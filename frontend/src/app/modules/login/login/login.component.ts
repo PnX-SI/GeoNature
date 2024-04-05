@@ -114,4 +114,15 @@ export class LoginComponent implements OnInit {
       }
     }
   }
+
+
+  /**
+   * Returns the login URL for a given provider.
+   *
+   * @param {string} provider_id - The ID of the provider.
+   * @return {string} The login URL for the provider.
+   */
+  getProviderLoginUrl(provider_id: string): string {
+    return `${this.config.API_ENDPOINT}/auth/login/${provider_id}`;
+  }
 }

@@ -72,6 +72,7 @@ export class AuthService {
       nom_role: data.user.nom_role,
       nom_complet: data.user.nom_role + ' ' + data.user.prenom_role,
       id_organisme: data.user.id_organisme,
+      provider: data.user.provider
     };
     this.setCurrentUser(userForFront);
     this.loginError = false;
@@ -132,21 +133,15 @@ export class AuthService {
   }
 
   logout() {
+    const provider = this.getCurrentUser().provider;
     this.cleanLocalStorage();
     this.cruvedService.clearCruved();
-    this._http.get<any>(`${this.config.API_ENDPOINT}/auth/logout`).subscribe(() => {
-      location.reload();
-    });
-
-    if (this.config.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
-      this._http
-        .get<any>(`${this.config.API_ENDPOINT}/auth/external_provider_revoke_url`)
-        .subscribe((url) => {
-          document.location.href = url;
-        });
-    } else {
-      this.router.navigate(['/login']);
+    let logout_url = `${this.config.API_ENDPOINT}/auth/logout`
+    if (provider !="default") {
+      logout_url = `${logout_url}/${provider}`
+    // this.router.navigate(['/login']);
     }
+    location.href = logout_url
   }
 
   private cleanLocalStorage() {

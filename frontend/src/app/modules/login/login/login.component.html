@@ -74,23 +74,34 @@
                 >
                   Se connecter
                 </button>
-                <hr>
+                <hr />
                 <ng-container>
                   <div class="text-center">
                     <p>Login with other GeoNature</p>
-                    <ng-container *ngFor="let provider of authProviders" >
-                      <a *ngIf="provider.is_uh" class="btn btn-success">Se connecter sur {{provider.logo}}{{provider.label}}</a>
+                    <ng-container *ngFor="let provider of authProviders">
+                      <a
+                        *ngIf="provider.is_uh"
+                        class="btn btn-success"
+                        [href]="getProviderLoginUrl(provider.id_provider)"
+                      >
+                        Se connecter sur {{ provider.logo }}{{ provider.label }}
+                      </a>
                     </ng-container>
                   </div>
                   <div class="text-center">
                     <p>Login with other providers</p>
-                    <ng-container *ngFor="let provider of authProviders" >
-                      <a *ngIf="!provider.is_uh" class="btn btn-primary">Se connecter sur {{provider.logo}}{{provider.label}}</a>
+                    <ng-container *ngFor="let provider of authProviders">
+                      <a
+                        [href]="getProviderLoginUrl(provider.id_provider)"
+                        *ngIf="!provider.is_uh"
+                        class="btn btn-primary rounded"
+                      >
+                        <span [innerHTML]="provider.logo | safeHTML"></span>
+                        Se connecter sur {{ provider.label }}
+                      </a>
                     </ng-container>
                   </div>
                 </ng-container>
-                
-                
 
                 <br />
 
