@@ -23,7 +23,8 @@
   padding-top: 40px;
 }
 
-.step ul li.done, li.current {
+.step ul li.done,
+li.current {
   color: black;
 }
 
@@ -42,41 +43,38 @@
   top: 0;
   transform: translateX(-50%);
   background-color: #888d8f;
-  color: #FFF;
+  color: #fff;
   cursor: pointer;
 }
 
 .step ul li.done:before {
-  background-color:  #28a745;
-
+  background-color: #28a745;
 }
 
 .step ul li.current:before {
-  background-color:  #28a745;
+  background-color: #28a745;
 }
 
- li.current{
+li.current {
   color: black;
-  font-weight: bold;;
+  font-weight: bold;
 }
 
 .step ul li:after {
-  content: "";
+  content: '';
   display: block;
   width: 100%;
   height: 3px;
-  background-color: #CCC;
+  background-color: #ccc;
   top: 15px;
   position: absolute;
   z-index: -1;
   margin-left: -50%;
 }
 
-.step ul li.done+li:after {
+.step ul li.done + li:after {
   background-color: #28a745;
 }
-
-
 
 .step ul li:first-child:after {
   content: none;
