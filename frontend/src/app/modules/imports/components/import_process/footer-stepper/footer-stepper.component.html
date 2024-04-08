@@ -1,20 +1,22 @@
 <div class="d-flex flex-row justify-content-between">
-    <button
-        type="button"
-        id="cancelImport"
-        (click)="deleteImport()"
-        mat-raised-button
-        color="warn"
-    >
-        Annuler et supprimer l’import
-    </button>
-    <button
-        *ngIf="stepComponent.step>1"
-        type="button"
-        id="importListPage"
-        (click)="saveAndLeaveImport()"
-        mat-raised-button
-        color="accent"
-        [disabled]="!stepComponent.isNextStepAvailable()"
-    >Enregistrer et quitter</button>
+  <button
+    type="button"
+    id="cancelImport"
+    (click)="deleteImport()"
+    mat-raised-button
+    color="warn"
+  >
+    Annuler et supprimer l’import
+  </button>
+  <button
+    *ngIf="stepComponent.step > 1"
+    type="button"
+    id="importListPage"
+    (click)="saveAndLeaveImport()"
+    mat-raised-button
+    color="accent"
+    [disabled]="!stepComponent.isNextStepAvailable()"
+  >
+    Enregistrer et quitter
+  </button>
 </div>
