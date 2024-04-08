@@ -1,87 +1,97 @@
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title mb-0">{{'Import.FileUpload' | translate}}</h5>
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title mb-0">{{ 'Import.FileUpload' | translate }}</h5>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="uploadForm">
+      <div class="form-group">
+        <label>{{ 'Import.ChooseDataset' | translate }}</label>
+        <div
+          class="custom-file"
+          id="upload_files"
+        >
+          <pnx-datasets
+            *ngIf="destination"
+            [parentFormControl]="uploadForm.get('dataset')"
+            [creatableInModule]="destination?.module.module_code"
+            [moduleCode]="destination?.module.module_code"
+          ></pnx-datasets>
         </div>
-        <div class="card-body">
-            <form
-                [formGroup]="uploadForm"
-            >
-                <div class="form-group">
-                    <label>{{'Import.ChooseDataset' | translate}}</label>
-                    <div
-                        class="custom-file"
-                        id="upload_files"
-                    >
-                        <pnx-datasets
-                            *ngIf="destination"
-                            [parentFormControl]="uploadForm.get('dataset')"
-                            [creatableInModule]="destination?.module.module_code"
-                            [moduleCode]="destination?.module.module_code"
-                        >
-                        </pnx-datasets>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>{{'Import.ImportFile' | translate}}</label>
-                    <div
-                        class="custom-file"
-                        id="upload_files"
-                    >
-                        <input
-                            class="custom-file-input"
-                            type=file
-                            (change)="onFileSelected($event.target.files[0])"
-                            id="selectedFile"
-                            name="file"
-                            [accept]="acceptedExtensions"
-                        >
-                        <label
-                            class="custom-file-label"
-                            [class.error-file]="!isNextStepAvailable() && uploadForm.get('file').errors"
-                            for="selectedFile"
-                        >{{fileName ? fileName : 'Import.ChooseFile' | translate }}</label>
-                    </div>
-                </div>
-            </form>
-            <div class="text-danger" *ngIf="file && maxFileSize * 1024 * 1024 < file.size">
-                {{ 'Import.Errors.FileTooBig' | translate :{maxFileSize: maxFileSize} }}
-            </div>
-            <div class="text-danger" *ngIf="emptyError || file && !file.size">
-                {{ 'Import.Errors.EmptyFile' | translate }}
-            </div>
-            <div class="text-danger" *ngIf="columnFirstError">
-                {{ 'Import.Errors.FileColumn' | translate }}
-            </div>
-            <div class="text-danger" *ngIf="fileName && fileName.length > maxFileNameLength">
-                {{ 'Import.Errors.FileNameBig' | translate :{maxFileNameLength: maxFileNameLength} }}
-            </div>
-            <!-- Navigation buttons -->
-            <div class="navigate-btn">
-                <button
-                    type="submit"
-                    class="d-flex justify-content-center align-content-between"
-                    mat-raised-button
-                    color=primary
-                    [disabled]="!isNextStepAvailable()"
-                    (click)="onNextStep()"
-                    id="validate"
-                >
-                    {{ 'Import.Next' | translate }}
-                    <i class="material-icons"> navigate_next </i>
-                </button>
-            </div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'Import.ImportFile' | translate }}</label>
+        <div
+          class="custom-file"
+          id="upload_files"
+        >
+          <input
+            class="custom-file-input"
+            type="file"
+            (change)="onFileSelected($event.target.files[0])"
+            id="selectedFile"
+            name="file"
+            [accept]="acceptedExtensions"
+          />
+          <label
+            class="custom-file-label"
+            [class.error-file]="!isNextStepAvailable() && uploadForm.get('file').errors"
+            for="selectedFile"
+          >
+            {{ fileName ? fileName : ('Import.ChooseFile' | translate) }}
+          </label>
         </div>
+      </div>
+    </form>
+    <div
+      class="text-danger"
+      *ngIf="file && maxFileSize * 1024 * 1024 < file.size"
+    >
+      {{ 'Import.Errors.FileTooBig' | translate: { maxFileSize: maxFileSize } }}
     </div>
+    <div
+      class="text-danger"
+      *ngIf="emptyError || (file && !file.size)"
+    >
+      {{ 'Import.Errors.EmptyFile' | translate }}
+    </div>
+    <div
+      class="text-danger"
+      *ngIf="columnFirstError"
+    >
+      {{ 'Import.Errors.FileColumn' | translate }}
+    </div>
+    <div
+      class="text-danger"
+      *ngIf="fileName && fileName.length > maxFileNameLength"
+    >
+      {{ 'Import.Errors.FileNameBig' | translate: { maxFileNameLength: maxFileNameLength } }}
+    </div>
+    <!-- Navigation buttons -->
+    <div class="navigate-btn">
+      <button
+        type="submit"
+        class="d-flex justify-content-center align-content-between"
+        mat-raised-button
+        color="primary"
+        [disabled]="!isNextStepAvailable()"
+        (click)="onNextStep()"
+        id="validate"
+      >
+        {{ 'Import.Next' | translate }}
+        <i class="material-icons">navigate_next</i>
+      </button>
+    </div>
+  </div>
+</div>
 <!-- Spinner -->
 <div
-    *ngIf="isUploadRunning"
-    class="spinner"
+  *ngIf="isUploadRunning"
+  class="spinner"
 >
-    <mat-spinner
-        class="upload-spinner"
-        [color]="color"
-        [diameter]="150"
-        [strokeWidth]="12"
-    >
-    </mat-spinner>
+  <mat-spinner
+    class="upload-spinner"
+    [color]="color"
+    [diameter]="150"
+    [strokeWidth]="12"
+  ></mat-spinner>
 </div>

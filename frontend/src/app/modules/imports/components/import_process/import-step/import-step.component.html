@@ -1,229 +1,252 @@
-<div *ngIf="!importData.processed; else elseBlock" class="card">
-    <h4 class="card-header">
-        <mat-icon>check</mat-icon>
-        Validation
-    </h4>
-    <div class="card-body">
-        <div *ngIf="!progressBar && errorIsNotCheck">
-        <p>Avant de procéder à l'import de vos données, il est nécessaire de valider la conformité de ces dernières</p>
-        <button (click)="performChecks()"
-                mat-raised-button
-                color="primary">
-            Lancer la vérification
-        </button>
-        </div>
-        <div *ngIf="errorIsCheck">
-            Erreur lors de la vérification, veuillez vérifier votre fichier
-        </div>
-        <div *ngIf="progressBar">
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="text-controls d-flex align-items-center flex-column pb-2">
-                    <p> Contrôles en cours sur les données </p>
-                    <mat-progress-bar class="progress-bar" [value]="progress"></mat-progress-bar>
-                </div>
-            </div>
-        </div>
+<div
+  *ngIf="!importData.processed; else elseBlock"
+  class="card"
+>
+  <h4 class="card-header">
+    <mat-icon>check</mat-icon>
+    Validation
+  </h4>
+  <div class="card-body">
+    <div *ngIf="!progressBar && errorIsNotCheck">
+      <p>
+        Avant de procéder à l'import de vos données, il est nécessaire de valider la conformité de
+        ces dernières
+      </p>
+      <button
+        (click)="performChecks()"
+        mat-raised-button
+        color="primary"
+      >
+        Lancer la vérification
+      </button>
     </div>
+    <div *ngIf="errorIsCheck">Erreur lors de la vérification, veuillez vérifier votre fichier</div>
+    <div *ngIf="progressBar">
+      <div class="d-flex justify-content-center align-items-center">
+        <div class="text-controls d-flex align-items-center flex-column pb-2">
+          <p>Contrôles en cours sur les données</p>
+          <mat-progress-bar
+            class="progress-bar"
+            [value]="progress"
+          ></mat-progress-bar>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <ng-template #elseBlock>
-    <div *ngIf="tableReady" >
-        <h3 class="title mb-0">
-            Récapitulatif avant import
-        </h3>
-        <div class="card">
-            <h4 class="card-header">
-                <mat-icon>build</mat-icon>
-                Rapports
-            </h4>
-            <div class="card-body card-margin">
-                 <div
-                     class="content-report card-margin"
-                 >
-                     <button
-                         (click)="openReportSheet(importData.id_import)"
-                         mat-raised-button
-                         color=accent
-                     >
-                     Rapport d'import/erreurs/avertissement
-                     </button>
-                     <div *ngIf="errorCount > 0"> {{errorCount}} erreur(s) </div>
-                     <div *ngIf="warningCount > 0"> {{warningCount}} avertissement(s) </div>
-                 </div>
-                 <div
-                     *ngIf="invalidRowCount > 0"
-                     class="content-report"
-                 >
-                     <button
-                         mat-raised-button
-                         color=primary
-                         (click)="_csvExport.onCSV(importData.id_import)"
-                     > Exporter vos {{invalidRowCount}} observations invalides </button>
-                 </div>
-            </div>
+  <div *ngIf="tableReady">
+    <h3 class="title mb-0">Récapitulatif avant import</h3>
+    <div class="card">
+      <h4 class="card-header">
+        <mat-icon>build</mat-icon>
+        Rapports
+      </h4>
+      <div class="card-body card-margin">
+        <div class="content-report card-margin">
+          <button
+            (click)="openReportSheet(importData.id_import)"
+            mat-raised-button
+            color="accent"
+          >
+            Rapport d'import/erreurs/avertissement
+          </button>
+          <div *ngIf="errorCount > 0">{{ errorCount }} erreur(s)</div>
+          <div *ngIf="warningCount > 0">{{ warningCount }} avertissement(s)</div>
         </div>
-
-
-        <div class="card card-margin" *ngIf="!importDone">
-            <h4 class="card-header">
-                <mat-icon>room</mat-icon>
-                Zone géographique
-            </h4>
-            <pnx-map
-                height="40vh"
-                searchBar="false"
-            >
-                <pnx-geojson
-                    [geojson]="this.previewData.valid_bbox"
-                    [zoomOnFirstTime]="true"
-                >
-                </pnx-geojson>
-            </pnx-map>
+        <div
+          *ngIf="invalidRowCount > 0"
+          class="content-report"
+        >
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="_csvExport.onCSV(importData.id_import)"
+          >
+            Exporter vos {{ invalidRowCount }} observations invalides
+          </button>
         </div>
-
+      </div>
     </div>
 
-
-<div
-        *ngIf="tableReady && !importDone"
-        class="card"
+    <div
+      class="card card-margin"
+      *ngIf="!importDone"
     >
-        <div class="card-header">
-            <h5 class="card-title mb-0">
-                <mat-icon>reorder</mat-icon>
-                Prévisualisation des observations valides prêtes à être importées
-            </h5>
-        </div>
-        <div class="card-body">
-
-            <mat-tab-group>
-            <mat-tab *ngFor="let entityPreview of this.previewData.entities" label="{{ entityPreview.entity.label }}">
-            <ngx-datatable
-                *ngIf="tableReady"
-                #table
-                class="material striped"
-                [rows]="entityPreview.valid_data"
-                [columns]="entityPreview.columns"
-                [columnMode]="'force'"
-                [headerHeight]="35"
-                [scrollbarH]="true"
-                [footerHeight]="40"
-                [rowHeight]="40"
-                [limit]="15"
-                [selectionType]='single'
-            >
-            </ngx-datatable>
-            </mat-tab>
-            </mat-tab-group>
-
-            <br />
-            <div
-                    *ngIf="importRunning"
-                    class="d-flex flex-column justify-content-center align-items-center w-100 mb-3"
-            >
-                    <p> Import des données en cours</p>
-                    <mat-spinner [color]="color" [diameter]="50" class="upload-spinner"></mat-spinner>
-            </div>
-
-            <div class="d-flex flex-row justify-content-between progressBar" *ngIf="!importRunning">
-                <button
-                    (click)="onPreviousStep()"
-                    class="d-flex justify-content-center align-content-between"
-                    mat-raised-button
-                    color="primary"
-                >
-                    <mat-icon>navigate_before</mat-icon>
-                    Précédent
-                </button>
-                <button
-                    *ngIf="nValidData > 0 && !importDone && errorIsNotImport"
-                    class="d-flex justify-content-center align-content-between button-success"
-                    (click)="onImport()"
-                    mat-raised-button
-                >
-                    Importer vos {{nValidData}} entitées valides
-                    <mat-icon>done</mat-icon>
-
-                </button>
-                <div *ngIf="errorIsImport" class="error-import">
-                    <div class="error-import__title">
-                      <mat-icon>error</mat-icon> {{ "Import.ErrorMessage.Title" | translate  }}
-                    </div>
-                    <div class="error-import__remark">
-                      {{ "Import.ErrorMessage.Remark" | translate  }}
-                    </div>
-                    <div class="error-import__description">
-                      <span>
-                        {{ "Import.ErrorMessage.DescriptionRestart" | translate  }}
-                      </span>
-                      <span>
-                        {{ "Import.ErrorMessage.DescriptionContactAdmin" | translate  }}
-                      </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <h4 class="card-header">
+        <mat-icon>room</mat-icon>
+        Zone géographique
+      </h4>
+      <pnx-map
+        height="40vh"
+        searchBar="false"
+      >
+        <pnx-geojson
+          [geojson]="this.previewData.valid_bbox"
+          [zoomOnFirstTime]="true"
+        ></pnx-geojson>
+      </pnx-map>
     </div>
+  </div>
+
+  <div
+    *ngIf="tableReady && !importDone"
+    class="card"
+  >
+    <div class="card-header">
+      <h5 class="card-title mb-0">
+        <mat-icon>reorder</mat-icon>
+        Prévisualisation des observations valides prêtes à être importées
+      </h5>
+    </div>
+    <div class="card-body">
+      <mat-tab-group>
+        <mat-tab
+          *ngFor="let entityPreview of this.previewData.entities"
+          label="{{ entityPreview.entity.label }}"
+        >
+          <ngx-datatable
+            *ngIf="tableReady"
+            #table
+            class="material striped"
+            [rows]="entityPreview.valid_data"
+            [columns]="entityPreview.columns"
+            [columnMode]="'force'"
+            [headerHeight]="35"
+            [scrollbarH]="true"
+            [footerHeight]="40"
+            [rowHeight]="40"
+            [limit]="15"
+            [selectionType]="single"
+          ></ngx-datatable>
+        </mat-tab>
+      </mat-tab-group>
+
+      <br />
+      <div
+        *ngIf="importRunning"
+        class="d-flex flex-column justify-content-center align-items-center w-100 mb-3"
+      >
+        <p>Import des données en cours</p>
+        <mat-spinner
+          [color]="color"
+          [diameter]="50"
+          class="upload-spinner"
+        ></mat-spinner>
+      </div>
+
+      <div
+        class="d-flex flex-row justify-content-between progressBar"
+        *ngIf="!importRunning"
+      >
+        <button
+          (click)="onPreviousStep()"
+          class="d-flex justify-content-center align-content-between"
+          mat-raised-button
+          color="primary"
+        >
+          <mat-icon>navigate_before</mat-icon>
+          Précédent
+        </button>
+        <button
+          *ngIf="nValidData > 0 && !importDone && errorIsNotImport"
+          class="d-flex justify-content-center align-content-between button-success"
+          (click)="onImport()"
+          mat-raised-button
+        >
+          Importer vos {{ nValidData }} entitées valides
+          <mat-icon>done</mat-icon>
+        </button>
+        <div
+          *ngIf="errorIsImport"
+          class="error-import"
+        >
+          <div class="error-import__title">
+            <mat-icon>error</mat-icon>
+            {{ 'Import.ErrorMessage.Title' | translate }}
+          </div>
+          <div class="error-import__remark">
+            {{ 'Import.ErrorMessage.Remark' | translate }}
+          </div>
+          <div class="error-import__description">
+            <span>
+              {{ 'Import.ErrorMessage.DescriptionRestart' | translate }}
+            </span>
+            <span>
+              {{ 'Import.ErrorMessage.DescriptionContactAdmin' | translate }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </ng-template>
 
-<div *ngIf="importDone" class="card">
-        <div class="card-header">
-            <h5 class="card-title">
-                <mat-icon>check</mat-icon>
-                Import terminé
-            </h5>
-        </div>
-        <div class="card-body">
-            <p>Vos {{nValidData}} observations ont bien été importées</p>
-            <button mat-raised-button
-                    color="primary"
-                    (click)="onRedirect()" >
-                Retour à la liste des imports
-            </button>
-        </div>
-    </div>
+<div
+  *ngIf="importDone"
+  class="card"
+>
+  <div class="card-header">
+    <h5 class="card-title">
+      <mat-icon>check</mat-icon>
+      Import terminé
+    </h5>
+  </div>
+  <div class="card-body">
+    <p>Vos {{ nValidData }} observations ont bien été importées</p>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onRedirect()"
+    >
+      Retour à la liste des imports
+    </button>
+  </div>
+</div>
 
 <div
-    *ngIf="spinner"
-    class="spinner"
+  *ngIf="spinner"
+  class="spinner"
 >
-    <mat-spinner
-        class="upload-spinner"
-        [color]="color"
-        [diameter]="150"
-        [strokeWidth]="12"
-    >
-    </mat-spinner>
+  <mat-spinner
+    class="upload-spinner"
+    [color]="color"
+    [diameter]="150"
+    [strokeWidth]="12"
+  ></mat-spinner>
 </div>
 
 <ng-template
-    #modalRedir
-    let-modal
+  #modalRedir
+  let-modal
 >
-    <div class="modal-header">
-        <h4
-            class="modal-title"
-            id="modal-basic-title"
-        >
-          Import des données en cours...
-        </h4>
-        <button
-            type="button"
-            class="close"
-            aria-label="Close"
-            (click)="modal.dismiss('Cross click')"
-        >
-        <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        L'import des fichier dans la synthèse est en cours... Un mail de notification vous sera envoyé à la fin du
-        traitement.
-    </div>
-    <div class="modal-footer">
-        <button
-            type="button"
-            class="btn btn-warning"
-            (click)="onRedirect(); modal.close()"
-        > OK </button>
-    </div>
+  <div class="modal-header">
+    <h4
+      class="modal-title"
+      id="modal-basic-title"
+    >
+      Import des données en cours...
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    L'import des fichier dans la synthèse est en cours... Un mail de notification vous sera envoyé à
+    la fin du traitement.
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-warning"
+      (click)="onRedirect(); modal.close()"
+    >
+      OK
+    </button>
+  </div>
 </ng-template>

@@ -2,7 +2,7 @@ fieldset {
   padding: 0.35em 0.625em 0.75em !important;
   border: 1px solid silver !important;
   border-radius: 3px;
-  margin-bottom: 30px // background-color: #f7f7f7;
+  margin-bottom: 30px; // background-color: #f7f7f7;
 }
 
 legend {
@@ -23,7 +23,6 @@ form.ng-invalid {
   font-size: 20px;
   background: black !important;
 }
-
 
 table {
   width: 100%;
@@ -78,7 +77,6 @@ tr:nth-child(even) {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-
 .navigate-btn {
   width: 100%;
   display: flex;
@@ -86,7 +84,7 @@ tr:nth-child(even) {
 }
 
 .card-body {
-  padding: 30px 40px
+  padding: 30px 40px;
 }
 
 select option.in_use,
@@ -113,6 +111,5 @@ ng-select span.in_use {
 
   .entity-tab-label {
     padding: 4px;
-  }  
-
+  }
 }

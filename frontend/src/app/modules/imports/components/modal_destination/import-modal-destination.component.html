@@ -1,56 +1,57 @@
 <ng-template
-    #content
-    let-c="close"
-    let-d="dismiss"
+  #content
+  let-c="close"
+  let-d="dismiss"
 >
-    <div class="modal-header">
-        <h5 class="modal-title"> {{ 'Import.ChooseDestination' | translate }} </h5>
-        <button
-            type="button"
-            class="close"
-            aria-label="Close"
-            (click)="closeModal()"
-        >
-            <span aria-hidden="true">&times;</span>
-        </button>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ 'Import.ChooseDestination' | translate }}</h5>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <pnx-destinations
+      label="{{ 'Import.Destinations' | translate }}"
+      [parentFormControl]="selectDestinationForm"
+    ></pnx-destinations>
+    <div
+      id="DestinationError"
+      *ngIf="isUserDestinationError"
+    >
+      <i
+        id="warningDataset"
+        class="material-icons"
+      >
+        warning
+      </i>
+      {{ DestinationError }}
     </div>
-    <div class="modal-body">
-        <pnx-destinations
-            label="{{ 'Import.Destinations' | translate }}"
-            [parentFormControl]="selectDestinationForm"
-        >
-        </pnx-destinations>
-        <div
-            id="DestinationError"
-            *ngIf="isUserDestinationError"
-        >
-            <i
-                id="warningDataset"
-                class="material-icons"
-            >warning</i> {{ DestinationError }}
-        </div>
+  </div>
+  <div class="modal-footer">
+    <div id="modalbuttons">
+      <button
+        (click)="onSubmit(selectDestinationForm.value)"
+        [disabled]="selectDestinationForm.invalid"
+        mat-raised-button
+        color="primary"
+      >
+        {{ 'Import.Validate' | translate }}
+      </button>
     </div>
-    <div class="modal-footer">
-        <div id="modalbuttons">
-            <button
-                (click)="onSubmit(selectDestinationForm.value)"
-                [disabled]="selectDestinationForm.invalid"
-                mat-raised-button
-                color="primary"
-            >
-                {{ 'Import.Validate' | translate }}
-            </button>
-        </div>
-    </div>
+  </div>
 </ng-template>
 
-
 <button
-    [disabled]="cruvedStore.cruved?.IMPORT?.module_objects?.IMPORT?.cruved?.U == 0"
-    mat-fab
-    color="primary"
-    (click)="onOpenModal(content)"
-    matTooltip="Nouvel import"
+  [disabled]="cruvedStore.cruved?.IMPORT?.module_objects?.IMPORT?.cruved?.U == 0"
+  mat-fab
+  color="primary"
+  (click)="onOpenModal(content)"
+  matTooltip="Nouvel import"
 >
-    <mat-icon>add</mat-icon>
+  <mat-icon>add</mat-icon>
 </button>
