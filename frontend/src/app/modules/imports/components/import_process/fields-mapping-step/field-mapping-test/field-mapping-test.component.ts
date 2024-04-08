@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ImportDataService } from '../../../../services/data.service';
 import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
+import { Cruved } from '@geonature/modules/imports/models/cruved.model';
 
 @Component({
   selector: 'pnx-field-mapping-test',
@@ -11,6 +12,7 @@ export class FieldMappingTestComponent implements OnInit {
   public targetFields;
   public sourceFields: Array<string> = [];
   public isReady: boolean = false;
+  public cruved: Cruved;
   constructor(public _fieldMappingService: FieldMappingService) {}
 
   ngOnInit() {
@@ -40,5 +42,28 @@ export class FieldMappingTestComponent implements OnInit {
         });
       });
     return result;
+  }
+
+  onNextStep() {
+    if (!this._fieldMappingService.mappingFormGroup?.valid) {
+      return;
+    }
+    let mappingValue = this._fieldMappingService.currentFieldMapping.value;
+    if (
+      this._fieldMappingService.mappingFormGroup.dirty &&
+      (this.cruved.C || (mappingValue && mappingValue.cruved.U && !mappingValue.public))
+    ) {
+      if (mappingValue && !mappingValue.public) {
+        // this.updateAvailable = true;
+        //     this.modalCreateMappingForm.setValue(mappingValue.label);
+        //   } else {
+        //     this.updateAvailable = false;
+        //     this.modalCreateMappingForm.setValue('');
+      }
+      //   this._modalService.open(this.saveMappingModal, { size: 'lg' });
+    } else {
+      // this.spinner = true;
+      // this.processNextStep();
+    }
   }
 }

@@ -26,6 +26,28 @@
           </div>
         </mat-tab>
       </mat-tab-group>
+      <div class="d-flex flex-row justify-content-between">
+        <button
+          mat-raised-button
+          class="d-flex justify-content-center align-content-between"
+          (click)="onPreviousStep()"
+          color="primary"
+        >
+          <mat-icon>navigate_before</mat-icon>
+
+          Précédent
+        </button>
+        <button
+          class="d-flex justify-content-center align-content-between"
+          mat-raised-button
+          color="primary"
+          [disabled]="_fieldMappingService.mappingFormControl?.valid"
+          (click)="onNextStep()"
+        >
+          Suivant
+          <mat-icon>navigate_next</mat-icon>
+        </button>
+      </div>
     </ng-container>
   </div>
 </div>
