@@ -94,7 +94,7 @@ def get_site_areas(id_site):
             corSiteModule.c.id_module == params["id_module"]
         )
 
-    data = DB.session.scalars(query).all()
+    data = DB.session.execute(query).all()
     features = []
     for d in data:
         feature = get_geojson_feature(d[2])
