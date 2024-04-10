@@ -86,7 +86,7 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
                 try:
                     sync_af_and_ds_by_user(id_role=current_user.id_role)
                 except Exception as e:
-                    log.exception("Error while get JDD via MTD")
+                    log.exception(f"Error while get JDD via MTD: {e}")
 
 
 @routes.route("/datasets", methods=["GET", "POST"])
