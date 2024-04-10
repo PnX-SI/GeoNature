@@ -1,14 +1,15 @@
 import logging
 import time
-from datetime import *
 from urllib.parse import urljoin
 
+from lxml import etree
 import requests
+
 from geonature.core.auth.routes import insert_user_and_org
 from geonature.core.gn_meta.models import CorAcquisitionFrameworkActor, CorDatasetActor
 from geonature.utils.config import config
 from geonature.utils.env import db
-from lxml import etree
+
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from sqlalchemy import func, select
@@ -71,12 +72,33 @@ class MTDInstanceApi:
         return parse_jdd_xml(xml)
 
     def get_ds_user_list(self):
+        """
+        Retrieve the list of of datasets (ds) for the user.
+
+        Returns
+        -------
+        list
+            A list of datasets (ds) for the user.
+        """
         url = urljoin(self.api_endpoint, self.ds_user_path)
         url = url.format(ID_ROLE=self.id_role)
         xml = self._get_xml_by_url(url)
         return parse_jdd_xml(xml)
 
-    def get_user_af_list(self, af_uuid):
+    def get_single_af(self, af_uuid):
+        """
+        Return a single acquistion framework based on its uuid.
+
+        Parameters
+        ----------
+        af_uuid : str
+            uuid of the acquisition framework
+
+        Returns
+        -------
+        dict
+            acquisition framework data
+        """
         url = urljoin(self.api_endpoint, self.single_af_path)
         url = url.format(ID_AF=af_uuid)
         xml = self._get_xml_by_url(url)
@@ -108,9 +130,9 @@ def add_unexisting_digitizer(id_digitizer):
     :param id_digitizer: as id role from meta info
     """
     if (
-        not db.session.scalars(
-            select(func.count("*").select_from(User).filter_by(id_role=id_digitizer).limit(1))
-        ).scalar_one()
+        not db.session.scalar(
+            select(func.count("*")).select_from(User).filter_by(id_role=id_digitizer)
+        )
         > 0
     ):
         # not fast - need perf optimization on user call
@@ -132,20 +154,16 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
     """
     cas_api = INPNCAS()
     # read nomenclatures from DB to avoid errors if GN nomenclature is not the same
-    list_cd_nomenclature = [
-        record[0]
-        for record in db.session.scalars(select(TNomenclatures.cd_nomenclature).distinct()).all()
-    ]
+    list_cd_nomenclature = db.session.scalars(
+        select(TNomenclatures.cd_nomenclature).distinct()
+    ).all()
     user_add_total_time = 0
     logger.debug("MTD - PROCESS AF LIST")
     for af in af_list:
         actors = af.pop("actors")
         with db.session.begin_nested():
             start_add_user_time = time.time()
-            if not id_role:
-                add_unexisting_digitizer(af["id_digitizer"])
-            else:
-                add_unexisting_digitizer(id_role)
+            add_unexisting_digitizer(af["id_digitizer"] if not id_role else id_role)
             user_add_total_time += time.time() - start_add_user_time
         af = sync_af(af)
         associate_actors(
@@ -193,16 +211,23 @@ def sync_af_and_ds():
 
 def sync_af_and_ds_by_user(id_role):
     """
-    Method to trigger MTD sync on user authent.
+    Method to trigger MTD sync on user authentication.
+
+    Args:
+        id_role (int): The ID of the role (group or user).
     """
 
     logger.info("MTD - SYNC USER : START")
 
+    # Create an instance of MTDInstanceApi
     mtd_api = MTDInstanceApi(
         config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"], id_role
     )
 
+    # Get the list of datasets (ds) for the user
     ds_list = mtd_api.get_ds_user_list()
+
+    # Get the unique UUIDs of the acquisition frameworks for the user
     user_af_uuids = [ds["uuid_acquisition_framework"] for ds in ds_list]
 
     # TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l'appel global des AF
@@ -210,10 +235,11 @@ def sync_af_and_ds_by_user(id_role):
     # af_list = mtd_api.get_af_list()
     # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
 
+    # Get the list of acquisition frameworks for the user
     # call INPN API for each AF to retrieve info
-    af_list = [mtd_api.get_user_af_list(af_uuid) for af_uuid in user_af_uuids]
+    af_list = [mtd_api.get_single_af(af_uuid) for af_uuid in user_af_uuids]
 
-    # start AF and DS lists
+    # Process the acquisition frameworks and datasets
     process_af_and_ds(af_list, ds_list, id_role)
 
     logger.info("MTD - SYNC USER : FINISH")
