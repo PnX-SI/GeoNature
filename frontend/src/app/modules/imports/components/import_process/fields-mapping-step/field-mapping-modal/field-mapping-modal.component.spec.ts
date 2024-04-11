@@ -8,9 +8,8 @@ describe('FieldMappingModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FieldMappingModalComponent ]
-    })
-    .compileComponents();
+      declarations: [FieldMappingModalComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FieldMappingModalComponent);
     component = fixture.componentInstance;

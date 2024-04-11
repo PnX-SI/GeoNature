@@ -8,9 +8,8 @@ describe('MappingSelectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MappingSelectionComponent ]
-    })
-    .compileComponents();
+      declarations: [MappingSelectionComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MappingSelectionComponent);
     component = fixture.componentInstance;
