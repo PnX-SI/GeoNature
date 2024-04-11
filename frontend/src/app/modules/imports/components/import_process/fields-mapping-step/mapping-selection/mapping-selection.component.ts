@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { FieldMapping } from '@geonature/modules/imports/models/mapping.model';
 
 import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
 import { ConfigService } from '@geonature/services/config.service';
-import { skip } from 'rxjs/operators';
+import { finalize, skip } from 'rxjs/operators';
 import { ImportProcessService } from '../../import-process.service';
+import { Cruved, toBooleanCruved } from '@geonature/modules/imports/models/cruved.model';
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ImportDataService } from '@geonature/modules/imports/services/data.service';
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: 'pnx-mapping-selection',
@@ -14,13 +19,34 @@ import { ImportProcessService } from '../../import-process.service';
 })
 export class MappingSelectionComponent implements OnInit {
   public userFieldMappings: Array<FieldMapping> = [];
-  public fieldMappingForm: FormControl = new FormControl();
+  public fieldMappingForm: FormControl;
+  public displayAllValues: boolean = false;
+  public createOrRenameMappingForm = new FormControl(null, [Validators.required]); // form to add a new mapping
+
+  public cruved: Cruved;
+
+  public renameMappingFormVisible: boolean = false;
+  public deleteMappingFormVisible: boolean = false;
+
+  @ViewChild('deleteConfirmModal') deleteConfirmModal;
 
   constructor(
     private _fm: FieldMappingService,
     private config: ConfigService,
-    private _importProcessService: ImportProcessService
-  ) {}
+    private _importProcessService: ImportProcessService,
+    private _importDataService: ImportDataService,
+    public cruvedStore: CruvedStoreService,
+    private _modalService: NgbModal,
+    private _commonService: CommonService
+  ) {
+    this.displayAllValues = this.config.IMPORT.DISPLAY_CHECK_BOX_MAPPED_FIELD;
+    this.cruved = toBooleanCruved(this.cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved);
+    this.fieldMappingForm = this._fm.mappingSelectionFormControl;
+  }
+
+  completionStatus() {
+    return this._fm.mappingCompletionStatus();
+  }
 
   ngOnInit() {
     this._fm.data.subscribe(({ fieldMappings, targetFields, sourceFields }) => {
@@ -50,4 +76,71 @@ export class MappingSelectionComponent implements OnInit {
   // hideCreateOrRenameMappingForm() {
   // this.createOrRenameMappingForm.reset();
   // }
+  toggleRenameMappingForm(valueToggle: boolean = null) {
+    if (!this.fieldMappingForm.value?.label) {
+      this._commonService.regularToaster('error', 'Veuillez sélectionner un mapping');
+    } else {
+      this.renameMappingFormVisible =
+        valueToggle !== null ? valueToggle : !this.renameMappingFormVisible;
+      if (this.renameMappingFormVisible) {
+        this.createOrRenameMappingForm.setValue(this.fieldMappingForm.value.label);
+      }
+    }
+  }
+
+  openDeleteModal() {
+    if (!this.fieldMappingForm.value?.label) {
+      this._commonService.regularToaster('error', 'Veuillez sélectionner un mapping');
+    } else {
+      this.toggleRenameMappingForm(false);
+      this.toggleDeleteModal(true);
+      this._modalService.open(this.deleteConfirmModal);
+    }
+  }
+
+  toggleDeleteModal(valueToggle: boolean = null) {
+    this.deleteMappingFormVisible =
+      valueToggle !== null ? valueToggle : !this.deleteMappingFormVisible;
+  }
+
+  renameMapping(): void {
+    this._importDataService
+      .renameFieldMapping(this.fieldMappingForm.value.id, this.createOrRenameMappingForm.value)
+      .pipe(
+        finalize(() => {
+          this.renameMappingFormVisible = false;
+        })
+      )
+      .subscribe((mapping: FieldMapping) => {
+        let index = this.userFieldMappings.findIndex((m: FieldMapping) => m.id == mapping.id);
+        this.fieldMappingForm.setValue(mapping);
+        this.userFieldMappings[index] = mapping;
+      });
+  }
+
+  deleteMapping() {
+    // this.spinner = true;
+    let mapping_id = this.fieldMappingForm.value.id;
+    this._importDataService
+      .deleteFieldMapping(mapping_id)
+      .pipe()
+      .subscribe(
+        () => {
+          this._commonService.regularToaster(
+            'success',
+            'Le mapping ' + this.fieldMappingForm.value.label + ' a bien été supprimé'
+          );
+          this.fieldMappingForm.setValue(null, { emitEvent: false });
+          this.userFieldMappings = this.userFieldMappings
+            .filter((mapping) => {
+              return mapping.id !== mapping_id;
+            })
+            .sort((a, b) => a.label.localeCompare(b.label));
+          // this.spinner = false;
+        },
+        () => {
+          // this.spinner = false;
+        }
+      );
+  }
 }

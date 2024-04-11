@@ -8,9 +8,8 @@ describe('MappingThemeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MappingThemeComponent ]
-    })
-    .compileComponents();
+      declarations: [MappingThemeComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MappingThemeComponent);
     component = fixture.componentInstance;
