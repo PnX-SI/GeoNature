@@ -8,9 +8,8 @@ describe('MappingFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MappingFormComponent ]
-    })
-    .compileComponents();
+      declarations: [MappingFormComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MappingFormComponent);
     component = fixture.componentInstance;

@@ -1,7 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ImportDataService } from '../../../../services/data.service';
 import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
-import { Cruved } from '@geonature/modules/imports/models/cruved.model';
+import { FieldMappingModalComponent } from '../field-mapping-modal/field-mapping-modal.component';
+import { Cruved, toBooleanCruved } from '@geonature/modules/imports/models/cruved.model';
+import { Step } from '@geonature/modules/imports/models/enums.model';
+import { ActivatedRoute } from '@angular/router';
+import { ImportProcessService } from '../../import-process.service';
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { concatMap, finalize, flatMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Import } from '@geonature/modules/imports/models/import.model';
+import {
+  ContentMapping,
+  FieldMappingValues,
+} from '@geonature/modules/imports/models/mapping.model';
+import { ConfigService } from '@geonature/services/config.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'pnx-field-mapping-test',
@@ -9,11 +24,24 @@ import { Cruved } from '@geonature/modules/imports/models/cruved.model';
   styleUrls: ['./field-mapping-test.component.scss'],
 })
 export class FieldMappingTestComponent implements OnInit {
+  @ViewChild('saveMappingModal') saveMappingModal;
   public targetFields;
   public sourceFields: Array<string> = [];
   public isReady: boolean = false;
   public cruved: Cruved;
-  constructor(public _fieldMappingService: FieldMappingService) {}
+  public updateAvailable: boolean = false;
+  public step: Step;
+  public modalCreateMappingForm = new FormControl('');
+
+  constructor(
+    public _fieldMappingService: FieldMappingService,
+    private _route: ActivatedRoute,
+    private importProcessService: ImportProcessService,
+    private _cruvedStore: CruvedStoreService,
+    private _importDataService: ImportDataService,
+    private _modalService: NgbModal,
+    private _configService: ConfigService
+  ) {}
 
   ngOnInit() {
     this._fieldMappingService.data.subscribe(({ fieldMappings, targetFields, sourceFields }) => {
@@ -25,6 +53,8 @@ export class FieldMappingTestComponent implements OnInit {
       this._fieldMappingService.populateMappingForm();
       this.isReady = true;
     });
+    this.step = this._route.snapshot.data.step;
+    this.cruved = toBooleanCruved(this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved);
   }
 
   /**
@@ -51,19 +81,112 @@ export class FieldMappingTestComponent implements OnInit {
     let mappingValue = this._fieldMappingService.currentFieldMapping.value;
     if (
       this._fieldMappingService.mappingFormGroup.dirty &&
-      (this.cruved.C || (mappingValue && mappingValue.cruved.U && !mappingValue.public))
+      (this.cruved.C || (mappingValue && mappingValue.cruved.U && !mappingValue.public)) //
     ) {
       if (mappingValue && !mappingValue.public) {
-        // this.updateAvailable = true;
-        //     this.modalCreateMappingForm.setValue(mappingValue.label);
-        //   } else {
-        //     this.updateAvailable = false;
-        //     this.modalCreateMappingForm.setValue('');
+        this.updateAvailable = true;
+        this.modalCreateMappingForm.setValue(mappingValue.label);
+      } else {
+        this.updateAvailable = false;
+        this.modalCreateMappingForm.setValue('');
       }
-      //   this._modalService.open(this.saveMappingModal, { size: 'lg' });
+      console.log(this.updateAvailable, this.modalCreateMappingForm.value);
+      this._modalService.open(this.saveMappingModal, { size: 'lg' });
     } else {
       // this.spinner = true;
-      // this.processNextStep();
+      this.processNextStep();
     }
+  }
+
+  getFieldMappingValues(): FieldMappingValues {
+    let values: FieldMappingValues = {};
+    for (let [key, value] of Object.entries(this._fieldMappingService.mappingFormGroup.value)) {
+      if (value != null) {
+        values[key] = Array.isArray(value) ? value : (value as string);
+      }
+    }
+    return values;
+  }
+
+  onSaveData(loadImport = false): Observable<Import> {
+    const formgroup = this._fieldMappingService.mappingFormGroup;
+    const mappingSelected = this._fieldMappingService.currentFieldMapping !== null;
+    return of(this.importProcessService.getImportData()).pipe(
+      concatMap((importData: Import) => {
+        if (mappingSelected || formgroup.dirty) {
+          return this._importDataService.setImportFieldMapping(
+            importData.id_import,
+            this.getFieldMappingValues()
+          );
+        } else {
+          return of(importData);
+        }
+      }),
+      concatMap((importData: Import) => {
+        if (!importData.loaded && loadImport) {
+          return this._importDataService.loadImport(importData.id_import);
+        } else {
+          return of(importData);
+        }
+      }),
+      concatMap((importData: Import) => {
+        if (
+          (mappingSelected || formgroup.dirty) &&
+          !this._configService.IMPORT.ALLOW_VALUE_MAPPING
+        ) {
+          return this._importDataService
+            .getContentMapping(this._configService.IMPORT.DEFAULT_VALUE_MAPPING_ID)
+            .pipe(
+              flatMap((mapping: ContentMapping) => {
+                return this._importDataService.setImportContentMapping(
+                  importData.id_import,
+                  mapping.values
+                );
+              })
+            );
+        } else {
+          return of(importData);
+        }
+      }),
+      finalize(() => console.log('pouet')) //this.spinner = false
+    );
+  }
+  processNextStep() {
+    this.onSaveData(true).subscribe((importData: Import) => {
+      this.importProcessService.setImportData(importData);
+      this.importProcessService.navigateToNextStep(this.step);
+    });
+  }
+
+  onPreviousStep() {
+    this.importProcessService.navigateToPreviousStep(this.step);
+  }
+
+  isNextStepAvailable() {
+    if (this.targetFields !== undefined) {
+      for (let entity of this.targetFields) {
+        if (this.invalidEntityControls(entity.entity.label) > 0) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    return false;
+  }
+
+  createMapping() {
+    // this.spinner = true;
+    this._importDataService
+      .createFieldMapping(this.modalCreateMappingForm.value, this.getFieldMappingValues())
+      .pipe()
+      .subscribe(
+        () => {
+          this.processNextStep();
+        },
+        () => {
+          // this.spinner = false;
+        }
+      );
   }
 }
