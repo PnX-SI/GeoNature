@@ -8,9 +8,8 @@ describe('MappingEntityComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MappingEntityComponent ]
-    })
-    .compileComponents();
+      declarations: [MappingEntityComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MappingEntityComponent);
     component = fixture.componentInstance;
