@@ -189,4 +189,22 @@ export class FieldMappingTestComponent implements OnInit {
         }
       );
   }
+  updateMapping() {
+    // this.spinner = true;
+    let name = '';
+    if (this.modalCreateMappingForm.value != this._fieldMappingService.mappingSelectionFormControl.value.label) {
+      name = this.modalCreateMappingForm.value;
+    }
+    this._importDataService
+      .updateFieldMapping(this._fieldMappingService.mappingSelectionFormControl.value.id, this.getFieldMappingValues(), name)
+      .pipe()
+      .subscribe(
+        () => {
+          this.processNextStep();
+        },
+        () => {
+          // this.spinner = false;
+        }
+      );
+  }
 }
