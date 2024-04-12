@@ -88,6 +88,10 @@ export class MappingSelectionComponent implements OnInit {
     }
   }
 
+  isMappingSelected(): boolean {  
+    return this.fieldMappingForm.value != null;
+  }
+
   openDeleteModal() {
     if (!this.fieldMappingForm.value?.label) {
       this._commonService.regularToaster('error', 'Veuillez sélectionner un mapping');
