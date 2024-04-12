@@ -28,14 +28,6 @@
       </ng-select>
     </div>
 
-    <div
-      *ngIf="completionStatus() > 0"
-      class="alert alert-warning"
-      role="alert"
-      style="text-align: center"
-    >
-      {{ completionStatus() }} champs cibles ont été associés à un champs source.
-    </div>
     <!-- RENAME and DELETE mapping buttons -->
     <div class="d-flex flex-row justify-content-center mt-3">
       <div class="d-flex justify-content-center align-content-between row w-100">
@@ -46,6 +38,7 @@
           mat-raised-button
           color="primary"
           (click)="toggleRenameMappingForm()"
+          [disabled]="!isMappingSelected()"
         >
           Renommer le modèle d'import
         </button>
@@ -55,6 +48,7 @@
           mat-raised-button
           color="warn"
           (click)="openDeleteModal()"
+          [disabled]="!isMappingSelected()"
         >
           Supprimer le modèle d'import
         </button>
