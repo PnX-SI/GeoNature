@@ -88,8 +88,17 @@ class MTDInstanceApi:
         """
         url = urljoin(self.api_endpoint, self.ds_user_path)
         url = url.format(ID_ROLE=self.id_role)
-        xml = self._get_xml_by_url(url)
-        return parse_jdd_xml(xml)
+        try:
+            xml = self._get_xml_by_url(url)
+        except requests.HttpError as http_error:
+            error_code = http_error.response.status_code
+            warning_message = f"""[HttpError : {error_code}] for URL "{url}"."""
+            if error_code == 404:
+                warning_message = f"""{warning_message} > Probably no dataset found for the user with ID '{self.id_role}'"""
+            logger.warning(warning_message)
+            return []
+        ds_list = parse_jdd_xml(xml)
+        return ds_list
 
     def get_list_af_for_user(self):
         """
