@@ -43,6 +43,9 @@ def sync_ds(ds, cd_nomenclatures):
     :param ds: <dict> DS infos
     :param cd_nomenclatures: <array> cd_nomenclature from ref_normenclatures.t_nomenclatures
     """
+    if not ds["id_nomenclature_data_origin"]:
+        ds["id_nomenclature_data_origin"] = "NSP"
+
     if ds["id_nomenclature_data_origin"] not in cd_nomenclatures:
         return
 
