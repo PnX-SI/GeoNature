@@ -90,7 +90,10 @@ def sync_ds(ds, cd_nomenclatures):
             .values(**ds)
         )
     DB.session.execute(statement)
-    dataset = DB.session.scalars(ds_query).first()
+
+    dataset = DB.session.scalars(
+        select(TDatasets).filter_by(unique_dataset_id=ds["unique_dataset_id"])
+    ).first()
 
     # Associate dataset to the modules if new dataset
     if not ds_exists:
