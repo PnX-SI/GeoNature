@@ -29,6 +29,7 @@ export class FieldMappingTestComponent implements OnInit {
   public sourceFields: Array<string> = [];
   public isReady: boolean = false;
   public cruved: Cruved;
+  public importData: Import;
   public updateAvailable: boolean = false;
   public step: Step;
   public modalCreateMappingForm = new FormControl('');
@@ -44,6 +45,7 @@ export class FieldMappingTestComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.importData = this.importProcessService.getImportData();
     this._fieldMappingService.data.subscribe(({ fieldMappings, targetFields, sourceFields }) => {
       if (!fieldMappings) return;
       this._fieldMappingService.parseData({ fieldMappings, targetFields, sourceFields });
@@ -51,10 +53,17 @@ export class FieldMappingTestComponent implements OnInit {
       this.sourceFields = this._fieldMappingService.getSourceFieldsData();
       this._fieldMappingService.initForm();
       this._fieldMappingService.populateMappingForm();
+      if (this.importData.fieldmapping) {
+        this._fieldMappingService.fillFormWithMapping(this.importData.fieldmapping, false);
+      }
       this.isReady = true;
     });
     this.step = this._route.snapshot.data.step;
     this.cruved = toBooleanCruved(this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved);
+  }
+
+  ngOnDestroy() {
+    this._fieldMappingService.destroySubscription();
   }
 
   /**
