@@ -49,16 +49,38 @@
                 </div>
               </ng-template>
             </ng-select>
+
             <div
               *ngIf="_fm.mappingFormGroup.controls[field.name_field]?.errors?.required"
-              class="invalid-feedback d-block"
+              class=""
             >
-              Sélectionnez {{ field.name_field }}
+              <strong class="invalid-feedback d-inline">Sélectionnez {{ field.name_field }}</strong>
+              <small
+                *ngIf="field.optional_conditions"
+                class="d-inline hint-condition"
+              >
+                (Optionnel si :
+                <ng-container *ngFor="let condition of field.optional_conditions">
+                  {{ condition }}
+                </ng-container>
+                )
+              </small>
             </div>
 
-            <div *ngIf="field.name_field == 'WKT'">
-              <small>*si pas de WKT, indiquez longitude et latitude.</small>
-            </div>
+            <ng-container
+              *ngIf="
+                !_fm.mappingFormGroup.controls[field.name_field]?.errors?.required &&
+                field.mandatory_conditions
+              "
+            >
+              <small class="hint-condition">
+                (Requis quand sont remplis :
+                <ng-container *ngFor="let condition of field.mandatory_conditions">
+                  {{ condition }}
+                </ng-container>
+                )
+              </small>
+            </ng-container>
 
             <div
               *ngIf="_fm.mappingFormGroup.controls[field.name_field].hasError('conflict')"
