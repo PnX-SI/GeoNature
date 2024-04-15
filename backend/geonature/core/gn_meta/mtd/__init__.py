@@ -37,6 +37,7 @@ class MTDInstanceApi:
     af_path = "/mtd/cadre/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_path = "/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_user_path = "/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}"
+    af_user_path = "/mtd/cadre/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     single_af_path = "/mtd/cadre/export/xml/GetRecordById?id={ID_AF}"
 
     # https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id=41542"
@@ -89,6 +90,31 @@ class MTDInstanceApi:
         url = url.format(ID_ROLE=self.id_role)
         xml = self._get_xml_by_url(url)
         return parse_jdd_xml(xml)
+
+    def get_list_af_for_user(self):
+        """
+        Retrieve a list of acquisition frameworks (af) for the user.
+
+        Returns
+        -------
+        list
+            A list of acquisition frameworks for the user.
+        """
+        url = urljoin(self.api_endpoint, self.af_user_path).format(ID_ROLE=self.id_role)
+        try:
+            xml = self._get_xml_by_url(url)
+        except requests.HttpError as http_error:
+            error_code = http_error.response.status_code
+            warning_message = f"""[HttpError : {error_code}] for URL "{url}"."""
+            if error_code == 404:
+                warning_message = f"""{warning_message} > Probably no acquisition framework found for the user with ID '{self.id_role}'"""
+            logger.warning(warning_message)
+            return []
+        _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+        root = etree.fromstring(xml, parser=_xml_parser)
+        af_iter = root.findall(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
+        af_list = [parse_acquisition_framework(af) for af in af_iter]
+        return af_list
 
     def get_single_af(self, af_uuid):
         """
@@ -245,7 +271,7 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
 
         # Get the list of acquisition frameworks for the user
         # call INPN API for each AF to retrieve info
-        af_list = [mtd_api.get_single_af(af_uuid) for af_uuid in user_af_uuids]
+        af_list = mtd_api.get_list_af_for_user()
     else:
         uuid_af = TAcquisitionFramework.query.get(id_af).unique_acquisition_framework_id
         uuid_af = str(uuid_af).upper()
