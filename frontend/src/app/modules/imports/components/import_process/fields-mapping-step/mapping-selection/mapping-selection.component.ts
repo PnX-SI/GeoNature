@@ -11,6 +11,7 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImportDataService } from '@geonature/modules/imports/services/data.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pnx-mapping-selection',
@@ -24,6 +25,8 @@ export class MappingSelectionComponent implements OnInit {
   public createOrRenameMappingForm = new FormControl(null, [Validators.required]); // form to add a new mapping
 
   public cruved: Cruved;
+
+  private fieldMappingSub: Subscription;
 
   public renameMappingFormVisible: boolean = false;
   public deleteMappingFormVisible: boolean = false;
@@ -53,7 +56,7 @@ export class MappingSelectionComponent implements OnInit {
       if (!fieldMappings) return;
       this.userFieldMappings = fieldMappings;
     });
-    this.fieldMappingForm.valueChanges
+    this.fieldMappingSub = this.fieldMappingForm.valueChanges
       .pipe(
         // skip first empty value to avoid reseting the field form if importData as mapping:
         skip(this._importProcessService.getImportData().fieldmapping === null ? 0 : 1)
@@ -61,6 +64,10 @@ export class MappingSelectionComponent implements OnInit {
       .subscribe((mapping: FieldMapping) => {
         this.onNewMappingSelected(mapping);
       });
+  }
+
+  ngOnDestroy() {
+    this.fieldMappingSub.unsubscribe();
   }
 
   /**
