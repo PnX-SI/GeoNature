@@ -21,11 +21,15 @@ def upgrade():
     op.add_column(
         table_name="bib_fields",
         schema="gn_imports",
-        column=sa.Column("mapping_condition", sa.String()),
+        column=sa.Column("mandatory_conditions", sa.ARRAY(sa.Unicode)),
     )
-    pass
+    op.add_column(
+        table_name="bib_fields",
+        schema="gn_imports",
+        column=sa.Column("optional_conditions", sa.ARRAY(sa.Unicode)),
+    )
 
 
 def downgrade():
-    op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="mapping_condition")
-    pass
+    op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="mandatory_if")
+    op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="optional_if")
