@@ -410,7 +410,8 @@ class BibFields(db.Model):
     nomenclature_type = relationship("BibNomenclaturesTypes")
     display = db.Column(db.Boolean, nullable=False)
     multi = db.Column(db.Boolean)
-    mapping_condition = db.Column(db.Unicode, nullable=True)
+    optional_conditions = db.Column(db.ARRAY(db.Unicode), nullable=True)
+    mandatory_conditions = db.Column(db.ARRAY(db.Unicode), nullable=True)
 
     entities = relationship("EntityField", back_populates="field")
 
