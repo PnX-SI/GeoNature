@@ -65,6 +65,8 @@ jsonschema_definitions = {
             "multi": {
                 "type": "boolean",
             },
+            "mandatory_conditions": {"type": ["array", "null"], "items": {"type": "string"}},
+            "optional_conditions": {"type": ["array", "null"], "items": {"type": "string"}},
         },
         "required": [
             "id_field",
