@@ -80,10 +80,13 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
     @routes.before_request
     def synchronize_mtd():
         if request.endpoint in ["gn_meta.get_datasets", "gn_meta.get_acquisition_frameworks_list"]:
-            try:
-                sync_af_and_ds_by_user(id_role=g.current_user.id_role)
-            except Exception as e:
-                log.exception("Error while get JDD via MTD")
+            from flask_login import current_user
+
+            if current_user.is_authenticated:
+                try:
+                    sync_af_and_ds_by_user(id_role=current_user.id_role)
+                except Exception as e:
+                    log.exception("Error while get JDD via MTD")
 
 
 @routes.route("/datasets", methods=["GET", "POST"])
