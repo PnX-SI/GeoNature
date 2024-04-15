@@ -2,6 +2,7 @@ import pytest
 from flask import g
 
 from geonature.core.gn_commons.models import TModules
+from geonature.utils.env import db
 
 from geonature.core.imports.models import Destination
 
