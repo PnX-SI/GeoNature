@@ -46,6 +46,8 @@ def sync_ds(ds, cd_nomenclatures):
     if not ds["cd_nomenclature_data_origin"]:
         ds["cd_nomenclature_data_origin"] = "NSP"
 
+    # FIXME: the following temporary fix was added due to possible differences in referential of nomenclatures values between INPN and GeoNature
+    #     should be fixed by ensuring that the two referentials are identical, at least for instances that integrates with INPN and thus rely on MTD synchronization from INPN Métadonnées: GINCO and DEPOBIO instances.
     if ds["cd_nomenclature_data_origin"] not in cd_nomenclatures:
         return
 
@@ -200,6 +202,7 @@ def associate_actors(actors, CorActor, pk_name, pk_value):
         if uuid_organism:
             with DB.session.begin_nested():
                 # create or update organisme
+                # FIXME: prevent update of organism email from actor email ! Several actors may be associated to the same organism and still have different mails !
                 id_organism = add_or_update_organism(
                     uuid=uuid_organism,
                     nom=actor["organism"] if actor["orgnanism"] else "",
