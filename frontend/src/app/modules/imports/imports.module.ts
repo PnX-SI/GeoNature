@@ -33,7 +33,6 @@ import { FooterStepperComponent } from './components/import_process/footer-stepp
 import { Step } from './models/enums.model';
 import { ImportReportComponent } from './components/import_report/import_report.component';
 import { DestinationsComponent } from './components/destinations/destinations.component';
-import { FieldMappingTestComponent } from './components/import_process/fields-mapping-step/field-mapping-test/field-mapping-test.component';
 import { FieldMappingModalComponent } from './components/import_process/fields-mapping-step/field-mapping-modal/field-mapping-modal.component';
 
 const routes: Routes = [
@@ -72,7 +71,7 @@ const routes: Routes = [
       },
       {
         path: ':id_import/fieldmapping',
-        component: FieldMappingTestComponent,
+        component: FieldsMappingStepComponent,
         data: { step: Step.FieldMapping },
         resolve: { importData: ImportProcessResolver },
       },
@@ -112,7 +111,7 @@ const routes: Routes = [
     ImportProcessComponent,
     ImportReportComponent,
     DestinationsComponent,
-    FieldMappingTestComponent,
+    FieldsMappingStepComponent,
     FieldMappingModalComponent,
   ],
   imports: [
