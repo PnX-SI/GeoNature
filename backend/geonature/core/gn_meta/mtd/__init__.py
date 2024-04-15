@@ -38,7 +38,7 @@ class MTDInstanceApi:
     ds_path = "/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_user_path = "/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     af_user_path = "/mtd/cadre/export/xml/GetRecordsByUserId?id={ID_ROLE}"
-    single_af_path = "/mtd/cadre/export/xml/GetRecordById?id={ID_AF}"
+    single_af_path = "/mtd/cadre/export/xml/GetRecordById?id={ID_AF}"  # NOTE: `ID_AF` is actually an UUID and not an ID from the point of view of geonature database.
 
     # https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id=41542"
     def __init__(self, api_endpoint, instance_id, id_role=None):
@@ -266,6 +266,7 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
     )
 
     # Get the list of datasets (ds) for the user
+    # NOTE: `mtd_api.get_ds_user_list()` tested and timed to about 7 seconds on the PROD instance 'GINCO Occtax' with id_role = 13829 > a user with a lot of metadata to be retrieved from 'INPN Métadonnées' to 'GINCO Occtax'
     ds_list = mtd_api.get_ds_user_list()
 
     if not id_af:
@@ -282,6 +283,9 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
         # call INPN API for each AF to retrieve info
         af_list = mtd_api.get_list_af_for_user()
     else:
+        # TODO: handle case where the AF ; corresponding to the provided `id_af` ; does not exist yet in the database
+        #   this case should not happend from a user action because the only case where `id_af` is provided is for when the user click to unroll an AF in the module Metadata, in which case the AF already exists in the database.
+        #   It would still be better to handle case where the AF does not exist in the database, and to first retrieve the AF from 'INPN Métadonnées' in this case
         uuid_af = TAcquisitionFramework.query.get(id_af).unique_acquisition_framework_id
         uuid_af = str(uuid_af).upper()
 
