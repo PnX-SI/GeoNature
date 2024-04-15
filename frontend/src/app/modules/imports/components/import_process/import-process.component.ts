@@ -34,6 +34,7 @@ export class ImportProcessComponent {
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
       this.step = this.route.snapshot.firstChild.data.step;
     });
+    this.step = this.route.snapshot.firstChild.data.step;
   }
 
   onActivate(stepComponent) {
