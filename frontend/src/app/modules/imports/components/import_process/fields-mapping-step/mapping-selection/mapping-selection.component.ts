@@ -88,7 +88,7 @@ export class MappingSelectionComponent implements OnInit {
     }
   }
 
-  isMappingSelected(): boolean {  
+  isMappingSelected(): boolean {
     return this.fieldMappingForm.value != null;
   }
 
