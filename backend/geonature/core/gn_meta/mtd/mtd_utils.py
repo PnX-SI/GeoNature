@@ -60,6 +60,7 @@ def sync_ds(ds, cd_nomenclatures):
     )
 
     if af is None:
+        log.warning(f"AF with UUID '{af_uuid}' not found in database.")
         return
 
     ds["id_acquisition_framework"] = af.id_acquisition_framework
