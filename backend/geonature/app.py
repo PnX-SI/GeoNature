@@ -156,7 +156,6 @@ def create_app(with_external_mods=True):
             if change == "delete" and hasattr(obj, "__before_commit_delete__"):
                 obj.__before_commit_delete__()
 
-    # setting g.current_user on each request
     @app.before_request
     def load_current_user():
         g._permissions_by_user = {}
