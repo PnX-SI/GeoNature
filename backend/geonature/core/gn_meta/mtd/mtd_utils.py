@@ -25,10 +25,10 @@ from .xml_parser import parse_acquisition_framwork_xml, parse_jdd_xml
 from .mtd_webservice import get_jdd_by_user_id, get_acquisition_framework, get_jdd_by_uuid
 
 NOMENCLATURE_MAPPING = {
-    "id_nomenclature_data_type": "DATA_TYP",
-    "id_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
-    "id_nomenclature_data_origin": "DS_PUBLIQUE",
-    "id_nomenclature_source_status": "STATUT_SOURCE",
+    "cd_nomenclature_data_type": "DATA_TYP",
+    "cd_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
+    "cd_nomenclature_data_origin": "DS_PUBLIQUE",
+    "cd_nomenclature_source_status": "STATUT_SOURCE",
 }
 
 # get the root logger
@@ -43,10 +43,10 @@ def sync_ds(ds, cd_nomenclatures):
     :param ds: <dict> DS infos
     :param cd_nomenclatures: <array> cd_nomenclature from ref_normenclatures.t_nomenclatures
     """
-    if not ds["id_nomenclature_data_origin"]:
-        ds["id_nomenclature_data_origin"] = "NSP"
+    if not ds["cd_nomenclature_data_origin"]:
+        ds["cd_nomenclature_data_origin"] = "NSP"
 
-    if ds["id_nomenclature_data_origin"] not in cd_nomenclatures:
+    if ds["cd_nomenclature_data_origin"] not in cd_nomenclatures:
         return
 
     # CONTROL AF
@@ -64,9 +64,9 @@ def sync_ds(ds, cd_nomenclatures):
 
     ds["id_acquisition_framework"] = af.id_acquisition_framework
     ds = {
-        field: (
+        field.replace("cd_nomenclature", "id_nomenclature"): (
             func.ref_nomenclatures.get_id_nomenclature(NOMENCLATURE_MAPPING[field], value)
-            if field.startswith("id_nomenclature")
+            if field.startswith("cd_nomenclature")
             else value
         )
         for field, value in ds.items()
