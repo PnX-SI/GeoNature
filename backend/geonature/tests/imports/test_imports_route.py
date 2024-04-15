@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from sqlalchemy import select
 from flask import url_for
 from werkzeug.exceptions import Unauthorized, Forbidden
 from jsonschema import validate as validate_json

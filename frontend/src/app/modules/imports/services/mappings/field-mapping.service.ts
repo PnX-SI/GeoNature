@@ -234,7 +234,7 @@ export class FieldMappingService {
       }
     );
 
-    this.currentSubscription = this.currentFieldMapping.subscribe((fieldMapping) => {
+    this.currentFieldMapping.subscribe((fieldMapping) => {
       this.fieldMappingStatus = {
         mapped: new Set<string>(),
         unmapped: new Set<string>(),
