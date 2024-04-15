@@ -83,8 +83,11 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
             from flask_login import current_user
 
             if current_user.is_authenticated:
+                params = request.json if request.is_json else request.args
                 try:
-                    sync_af_and_ds_by_user(id_role=current_user.id_role)
+                    list_id_af = params.get("id_acquisition_frameworks", [])
+                    for id_af in list_id_af:
+                        sync_af_and_ds_by_user(id_role=current_user.id_role, id_af=id_af)
                 except Exception as e:
                     log.exception(f"Error while get JDD via MTD: {e}")
 
