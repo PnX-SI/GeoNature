@@ -21,7 +21,6 @@ import { Subscription } from 'rxjs';
 export class MappingSelectionComponent implements OnInit {
   public userFieldMappings: Array<FieldMapping> = [];
   public fieldMappingForm: FormControl;
-  public displayAllValues: boolean = false;
   public createOrRenameMappingForm = new FormControl(null, [Validators.required]); // form to add a new mapping
 
   public cruved: Cruved;
@@ -42,7 +41,6 @@ export class MappingSelectionComponent implements OnInit {
     private _modalService: NgbModal,
     private _commonService: CommonService
   ) {
-    this.displayAllValues = this.config.IMPORT.DISPLAY_CHECK_BOX_MAPPED_FIELD;
     this.cruved = toBooleanCruved(this.cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved);
     this.fieldMappingForm = this._fm.mappingSelectionFormControl;
   }
