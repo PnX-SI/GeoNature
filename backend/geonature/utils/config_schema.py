@@ -159,9 +159,11 @@ class MetadataConfig(Schema):
     )
 
 
-class AuthentificationConfig(Schema):
-    EXTERNAL_PROVIDER = fields.Boolean(load_default=False)
-    PROVIDER_NAME = fields.String(load_default="default")
+class AuthenticationConfig(Schema):
+    AUTHENTICATION_CLASSES = fields.List(
+        fields.String(), load_default=[]
+    )  # MAYBE add default auth in this list ? (for people to disable the default login)
+    DISPLAY_DEFAULT_LOGIN_FORM = fields.Boolean(load_default=True)
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
@@ -562,8 +564,8 @@ class GnGeneralSchemaConf(Schema):
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
-    AUTHENTIFICATION_CONFIG = fields.Nested(
-        AuthentificationConfig, load_default=AuthentificationConfig().load({})
+    AUTHENTICATION = fields.Nested(
+        AuthenticationConfig, load_default=AuthentificationConfig().load({})
     )
 
     # @validates_schema
