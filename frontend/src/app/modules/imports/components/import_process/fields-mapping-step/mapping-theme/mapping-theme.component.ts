@@ -19,12 +19,16 @@ export class MappingThemeComponent implements OnInit {
   isMapped(keySource: string) {
     return this._fm.mappingStatus('mapped', keySource);
   }
-  // add a form control for each target field in the mappingForm
-  // mandatory target fields have a required validator
   displayAlert(field) {
     return (
       field.name_field === 'unique_id_sinp_generate' &&
       !this._fm.mappingFormGroup.get(field.name_field).value
     );
+  }
+  
+  getFieldLabels(labels:string[]):string[]{
+    return labels.map(label => {
+      return this.themeData.fields.find(field => field.name_field === label)?.fr_label
+    })
   }
 }
