@@ -25,10 +25,10 @@ export class MappingThemeComponent implements OnInit {
       !this._fm.mappingFormGroup.get(field.name_field).value
     );
   }
-  
-  getFieldLabels(labels:string[]):string[]{
-    return labels.map(label => {
-      return this.themeData.fields.find(field => field.name_field === label)?.fr_label
-    })
+
+  getFieldLabels(labels: string[]): string[] {
+    return labels.map((label) => {
+      return this.themeData.fields.find((field) => field.name_field === label)?.fr_label;
+    });
   }
 }
