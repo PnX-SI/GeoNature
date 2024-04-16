@@ -1089,18 +1089,18 @@ def upgrade():
         column_name="id_nomenclature_collection_technique",
         server_default=sa.func.pr_occhab.get_default_nomenclature_value("TECHNIQUE_COLLECT_HAB"),
     )
-    op.alter_column(
-        schema="pr_occhab",
-        table_name="t_stations",
-        column_name="unique_id_sinp_station",
-        nullable=True,
-    )
-    op.alter_column(
-        schema="pr_occhab",
-        table_name="t_habitats",
-        column_name="unique_id_sinp_hab",
-        nullable=True,
-    )
+    # op.alter_column(
+    #     schema="pr_occhab",
+    #     table_name="t_stations",
+    #     column_name="unique_id_sinp_station",
+    #     nullable=False,
+    # )
+    # op.alter_column(
+    #     schema="pr_occhab",
+    #     table_name="t_habitats",
+    #     column_name="unique_id_sinp_hab",
+    #     nullable=False,
+    # )
     op.alter_column(
         schema="pr_occhab",
         table_name="t_stations",
@@ -1111,18 +1111,6 @@ def upgrade():
 
 
 def downgrade():
-    op.alter_column(
-        schema="pr_occhab",
-        table_name="t_habitats",
-        column_name="unique_id_sinp_hab",
-        nullable=False,
-    )
-    op.alter_column(
-        schema="pr_occhab",
-        table_name="t_stations",
-        column_name="unique_id_sinp_station",
-        nullable=False,
-    )
     op.alter_column(
         schema="pr_occhab",
         table_name="t_habitats",

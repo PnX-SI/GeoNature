@@ -7,8 +7,10 @@ Create Date: 2024-02-15 16:20:57.049889
 """
 
 from alembic import op
+from psycopg2.errors import UniqueViolation
+from geonature.core.imports.models import ImportUserError
 import sqlalchemy as sa
-
+from sqlalchemy.orm.session import Session
 
 # revision identifiers, used by Alembic.
 revision = "bfc90691737d"
@@ -61,6 +63,7 @@ def upgrade():
 
 
 def downgrade():
+    session = Session(bind=op.get_bind())
     op.drop_index(
         schema="gn_imports",
         table_name="t_user_errors",
@@ -71,12 +74,42 @@ def downgrade():
         table_name="t_user_errors",
         index_name="t_user_errors_un",
     )
-    op.create_unique_constraint(
-        constraint_name="t_user_errors_un",
-        schema="gn_imports",
-        table_name="t_user_errors",
-        columns=("id_import", "id_error", "column_error"),
+
+    ImportUserErrorAlias = sa.orm.aliased(ImportUserError)
+    query = (
+        sa.select(sa.distinct(ImportUserError.pk))
+        .join(
+            ImportUserErrorAlias,
+            sa.and_(
+                ImportUserError.column == ImportUserErrorAlias.column,
+                ImportUserError.id_type == ImportUserErrorAlias.id_type,
+                ImportUserError.id_import == ImportUserErrorAlias.id_import,
+                ImportUserError.pk != ImportUserErrorAlias.pk,
+            ),
+        )
+        .where(
+            sa.exists(ImportUserErrorAlias.pk),
+        )
     )
+
+    duplicates = (session.scalars(query).all(),)
+    try:
+        op.create_unique_constraint(
+            constraint_name="t_user_errors_un",
+            schema="gn_imports",
+            table_name="t_user_errors",
+            columns=("id_import", "id_error", "column_error"),
+        )
+    except Exception:
+        message = ""
+        for id_duplicate in duplicates[0]:
+            message += (
+                f'\n\tThe following line {id_duplicate} of the table "t_user_errors", is a duplicate of'
+                + " another line, unable too create the constraint (id_import, id_error, id_duplicate)."
+            )
+
+        raise Exception(message)
+
     op.drop_constraint(
         schema="gn_imports",
         table_name="t_user_errors",
