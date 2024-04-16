@@ -6,7 +6,15 @@ import os
 
 from warnings import warn
 
-from marshmallow import Schema, fields, validates_schema, ValidationError, post_load, pre_load
+from marshmallow import (
+    INCLUDE,
+    Schema,
+    fields,
+    validates_schema,
+    ValidationError,
+    post_load,
+    pre_load,
+)
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
@@ -17,6 +25,8 @@ from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from geonature.utils.utilstoml import load_and_validate_toml
+
+from pypnusershub.auth.authentication import ProviderConfigurationSchema
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -160,10 +170,14 @@ class MetadataConfig(Schema):
 
 
 class AuthenticationConfig(Schema):
-    AUTHENTICATION_CLASSES = fields.List(
+    PROVIDERS = fields.List(
         fields.String(), load_default=[]
     )  # MAYBE add default auth in this list ? (for people to disable the default login)
+
     DISPLAY_DEFAULT_LOGIN_FORM = fields.Boolean(load_default=True)
+    PROVIDERS_CONFIG = fields.Dict(
+        load_default={},
+    )
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
@@ -565,7 +579,7 @@ class GnGeneralSchemaConf(Schema):
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
     AUTHENTICATION = fields.Nested(
-        AuthenticationConfig, load_default=AuthentificationConfig().load({})
+        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
     )
 
     # @validates_schema

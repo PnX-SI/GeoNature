@@ -47,18 +47,14 @@ export class AuthGuard implements CanActivate, CanActivateChild {
           return false;
         }
       } else {
-        if (configService.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
-          let data = await httpclient
-            .get(`${configService.API_ENDPOINT}/auth/get_current_user`)
-            .toPromise();
-          data = { ...data };
-          authService.manageUser(data);
-          return authService.isLoggedIn();
-        }
-        this._router.navigate(['/login'], {
-          queryParams: { ...route.queryParams, ...{ route: state.url.split('?')[0] } },
-        });
-        return false;
+        let data = await httpclient
+          .get(`${configService.API_ENDPOINT}/auth/get_current_user`)
+          .toPromise();
+        data = { ...data };
+        authService.manageUser(data);
+        const modules = await moduleService.loadModules().toPromise();
+        routingService.loadRoutes(modules, route._routerState.url);
+        return authService.isLoggedIn();
       }
     } else if (moduleService.shouldLoadModules) {
       const modules = await moduleService.loadModules().toPromise();
