@@ -31,5 +31,5 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="mandatory_if")
-    op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="optional_if")
+    op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="mandatory_conditions")
+    op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="optional_conditions")
