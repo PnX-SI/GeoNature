@@ -1,4 +1,7 @@
-<div class="card">
+<div
+  class="card"
+  *ngIf="showContentMappingForm"
+>
   <div class="card-header">
     <h5 class="card-title mb-0">Correspondance des nomenclatures</h5>
   </div>
@@ -157,10 +160,7 @@
       </fieldset>
     </form>
 
-    <form
-      [formGroup]="contentTargetForm"
-      *ngIf="showForm"
-    >
+    <form [formGroup]="contentTargetForm">
       <div *ngFor="let targetField of importValues | keyvalue">
         <div
           [hidden]="false"
