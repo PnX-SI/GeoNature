@@ -17,6 +17,7 @@ import { ContentMapping, ContentMappingValues } from '../../../models/mapping.mo
 import { Step } from '../../../models/enums.model';
 import { Import, ImportValues, Nomenclature } from '../../../models/import.model';
 import { ImportProcessService } from '../import-process.service';
+import _ from 'lodash';
 
 @Component({
   selector: 'content-mapping-step',
@@ -30,7 +31,7 @@ export class ContentMappingStepComponent implements OnInit {
   public importData: Import;
   public userContentMappings: Array<ContentMapping>;
   public importValues: ImportValues;
-  public showForm: boolean = false;
+  public showContentMappingForm: boolean = false;
   public contentTargetForm: FormGroup;
   public spinner: boolean = false;
   public updateAvailable: boolean = false;
@@ -96,7 +97,9 @@ export class ContentMappingStepComponent implements OnInit {
       if (this.importData.contentmapping) {
         this.fillContentFormWithMapping(this.importData.contentmapping);
       }
-      this.showForm = true;
+      if (_.isEmpty(importValues)) {
+        this.processNextStep();
+      } else this.showContentMappingForm = true;
     });
   }
 
