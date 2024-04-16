@@ -50,20 +50,17 @@
               </ng-template>
             </ng-select>
 
-            <div
-              *ngIf="_fm.mappingFormGroup.controls[field.name_field]?.errors?.required"
-              class=""
-            >
+            <div *ngIf="_fm.mappingFormGroup.controls[field.name_field]?.errors?.required">
               <strong class="invalid-feedback d-inline">Sélectionnez {{ field.name_field }}</strong>
               <small
                 *ngIf="field.optional_conditions"
                 class="d-inline hint-condition"
               >
-                (Optionnel si :
-                <ng-container *ngFor="let condition of field.optional_conditions">
-                  {{ condition }}
-                </ng-container>
-                )
+                Optionnel si :
+                <!-- <ng-container *ngFor="let condition of field.optional_conditions"> -->
+                ({{ getFieldLabels(field.optional_conditions).join(', ') }})
+                <!-- </ng-container> -->
+                {{ field.optional_conditions.length > 1 ? 'sont renseignées' : 'est renseignée' }}
               </small>
             </div>
 
@@ -74,11 +71,11 @@
               "
             >
               <small class="hint-condition">
-                (Requis quand sont remplis :
-                <ng-container *ngFor="let condition of field.mandatory_conditions">
-                  {{ condition }}
-                </ng-container>
-                )
+                Requis si
+                <!-- <ng-container *ngFor="let condition of "> -->
+                ({{ getFieldLabels(field.mandatory_conditions).join(', ') }})
+                <!-- </ng-container> -->
+                {{ field.mandatory_conditions?.length > 1 ? 'sont renseignées' : 'est renseignée' }}
               </small>
             </ng-container>
 
