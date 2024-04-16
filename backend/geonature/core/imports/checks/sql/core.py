@@ -89,6 +89,7 @@ def check_orphan_rows(imprt):
             error_type="ORPHAN_ROW",
             error_column=field.name_field,
             whereclause=sa.and_(
+                transient_table.c[field.source_field].isnot(None),
                 *[transient_table.c[col].is_(None) for col in imprt.destination.validity_columns]
             ),
         )
