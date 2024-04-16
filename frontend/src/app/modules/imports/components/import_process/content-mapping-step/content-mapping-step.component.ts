@@ -98,6 +98,10 @@ export class ContentMappingStepComponent implements OnInit {
         this.fillContentFormWithMapping(this.importData.contentmapping);
       }
       if (_.isEmpty(importValues)) {
+        this._commonService.regularToaster(
+          'info',
+          'Aucune nomenclature présente dans les données fournies, passage à l\'étape "Import des données".'
+        );
         this.processNextStep();
       } else this.showContentMappingForm = true;
     });
