@@ -53,8 +53,7 @@
       >
         <ng-container
           *ngIf="
-            config.AUTHENTIFICATION_CONFIG.PROVIDER_NAME != 'default' &&
-              config.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
+            currentUser.provider != 'default' && config.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
             else noUserManagement
           "
         >

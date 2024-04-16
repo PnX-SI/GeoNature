@@ -1,10 +1,12 @@
 import os
+import importlib
+
 from collections import ChainMap
 from urllib.parse import urlsplit
 
 from flask import Config
 from flask.helpers import get_root_path
-from marshmallow import EXCLUDE, INCLUDE
+from marshmallow import EXCLUDE, INCLUDE, Schema, fields
 from marshmallow.exceptions import ValidationError
 
 from geonature.utils.config_schema import (
@@ -19,6 +21,22 @@ from geonature.utils.errors import ConfigError
 __all__ = ["config", "config_frontend"]
 
 
+def validate_provider_config(config, config_toml):
+    if not "AUTHENTICATION" in config_toml:
+        return
+    for path_provider in config_toml["AUTHENTICATION"]["PROVIDERS"]:
+        import_path, class_name = (
+            ".".join(path_provider.split(".")[:-1]),
+            path_provider.split(".")[-1],
+        )
+        module = importlib.import_module(import_path)
+        class_ = getattr(module, class_name)
+        schema_unique_provider = class_.configuration_schema()
+        config["AUTHENTICATION"][class_.name] = schema_unique_provider(many=True).load(
+            config_toml["AUTHENTICATION"][class_.name], unknown=EXCLUDE
+        )
+
+
 # Load config from GEONATURE_* env vars and from GEONATURE_SETTINGS python module (if any)
 config_programmatic = Config(get_root_path("geonature"))
 config_programmatic.from_prefixed_env(prefix="GEONATURE")
@@ -26,13 +44,14 @@ if "GEONATURE_SETTINGS" in os.environ:
     config_programmatic.from_object(os.environ["GEONATURE_SETTINGS"])
 
 # Load toml file and override with env & py config
+
 config_toml = load_toml(CONFIG_FILE) if CONFIG_FILE else {}
 config_toml.update(config_programmatic)
 
 # Validate config
 try:
-    config_backend = GnPySchemaConf().load(config_toml, unknown=INCLUDE)
-    config_frontend = GnGeneralSchemaConf().load(config_toml, unknown=INCLUDE)
+    config_backend = GnPySchemaConf().load(config_toml, unknown=EXCLUDE)
+    config_frontend = GnGeneralSchemaConf().load(config_toml, unknown=EXCLUDE)
 except ValidationError as e:
     raise ConfigError(CONFIG_FILE, e.messages)
 
@@ -43,6 +62,10 @@ config_default = {
 }
 
 config = ChainMap({}, config_programmatic, config_backend, config_frontend, config_default)
+
+validate_provider_config(config, config_toml)
+
+print("EHHHHHHHHHHHHHHHHHHHHHH", config["AUTHENTICATION"])
 
 api_uri = urlsplit(config["API_ENDPOINT"])
 if "APPLICATION_ROOT" not in config:
