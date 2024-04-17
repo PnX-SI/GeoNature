@@ -18,6 +18,8 @@ from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from geonature.utils.utilstoml import load_and_validate_toml
 
+from pypnusershub.auth.authentication import ProviderConfigurationSchema
+
 
 class EmailStrOrListOfEmailStrField(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
@@ -160,10 +162,14 @@ class MetadataConfig(Schema):
 
 
 class AuthenticationConfig(Schema):
-    AUTHENTICATION_CLASSES = fields.List(
+    PROVIDERS = fields.List(
         fields.String(), load_default=[]
     )  # MAYBE add default auth in this list ? (for people to disable the default login)
+
     DISPLAY_DEFAULT_LOGIN_FORM = fields.Boolean(load_default=True)
+    PROVIDERS_CONFIG = fields.Dict(
+        load_default={},
+    )
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
