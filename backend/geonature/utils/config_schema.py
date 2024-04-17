@@ -565,7 +565,7 @@ class GnGeneralSchemaConf(Schema):
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
     AUTHENTICATION = fields.Nested(
-        AuthenticationConfig, load_default=AuthentificationConfig().load({})
+        AuthenticationConfig, load_default=AuthenticationConfig().load({})
     )
 
     # @validates_schema
