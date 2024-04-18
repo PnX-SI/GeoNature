@@ -43,7 +43,10 @@
         role="alert"
         style="text-align: center"
       >
-        {{ getMappedFieldsLength() }} champs cibles ont été associés à un champs source.
+        {{
+          'Import.SourceFieldsMapped' | translate: { mappedFieldsLength: getMappedFieldsLength() }
+        }}
+        <br />
       </div>
       <div
         *ngIf="getUnmappedFieldsLength() == 0"
@@ -51,8 +54,10 @@
         role="alert"
         style="text-align: center"
       >
-        L'ensemble des {{ sourceFields.length() }} champs du fichier d’import ont été associés à un
-        champs cible.
+        {{
+          'Import.SourceFieldsAllMapped' | translate: { sourceFieldsLength: sourceFields.length() }
+        }}
+        <br />
       </div>
       <mat-expansion-panel
         *ngIf="getUnmappedFieldsLength() > 0"
@@ -63,14 +68,17 @@
             role="alert"
             style="text-align: center"
           >
-            {{ getUnmappedFieldsLength() }} champs du fichier d’import ne sont actuellement associés
-            à aucun champs cible et seront donc ignorés.
+            {{
+              'Import.SourceFieldsUnmapped'
+                | translate: { unmappedFieldsLength: getUnmappedFieldsLength() }
+            }}
           </div>
         </mat-expansion-panel-header>
-        <span *ngFor="let unmapped of getUnmappedFields()">
-          {{ unmapped }}
+        <span *ngFor="let unmapped of getUnmappedFields(); let isLast = last">
+          {{ unmapped }}{{ isLast ? '.' : ',' }}
         </span>
       </mat-expansion-panel>
+      <br />
       <div class="d-flex flex-row justify-content-between">
         <button
           mat-raised-button
