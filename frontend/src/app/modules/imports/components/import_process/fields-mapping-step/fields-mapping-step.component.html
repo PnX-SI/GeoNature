@@ -37,6 +37,40 @@
         </mat-tab>
       </mat-tab-group>
       <br />
+      <div
+        *ngIf="getMappedFieldsLength() > 0"
+        class="alert alert-success"
+        role="alert"
+        style="text-align: center"
+      >
+        {{ getMappedFieldsLength() }} champs cibles ont été associés à un champs source.
+      </div>
+      <div
+        *ngIf="getUnmappedFieldsLength() == 0"
+        class="alert alert-success"
+        role="alert"
+        style="text-align: center"
+      >
+        L'ensemble des {{ sourceFields.length() }} champs du fichier d’import ont été associés à un
+        champs cible.
+      </div>
+      <mat-expansion-panel
+        *ngIf="getUnmappedFieldsLength() > 0"
+        class="alert alert-warning"
+      >
+        <mat-expansion-panel-header>
+          <div
+            role="alert"
+            style="text-align: center"
+          >
+            {{ getUnmappedFieldsLength() }} champs du fichier d’import ne sont actuellement associés
+            à aucun champs cible et seront donc ignorés.
+          </div>
+        </mat-expansion-panel-header>
+        <span *ngFor="let unmapped of getUnmappedFields()">
+          {{ unmapped }}
+        </span>
+      </mat-expansion-panel>
       <div class="d-flex flex-row justify-content-between">
         <button
           mat-raised-button
