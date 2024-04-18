@@ -111,4 +111,7 @@ tr:nth-child(even) {
 .mat-expansion-panel {
   background-color: #fff3cd;
   color: #856404;
+  span {
+    color: #666;
+  }
 }
