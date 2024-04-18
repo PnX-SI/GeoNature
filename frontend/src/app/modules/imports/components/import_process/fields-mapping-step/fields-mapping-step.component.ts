@@ -105,7 +105,6 @@ export class FieldsMappingStepComponent implements OnInit {
         this.updateAvailable = false;
         this.modalCreateMappingForm.setValue('');
       }
-      console.log(this.updateAvailable, this.modalCreateMappingForm.value);
       this._modalService.open(this.saveMappingModal, { size: 'lg' });
     } else {
       // this.spinner = true;
@@ -227,5 +226,17 @@ export class FieldsMappingStepComponent implements OnInit {
           // this.spinner = false;
         }
       );
+  }
+
+  getMappedFieldsLength(): Number {
+    return this._fieldMappingService.getMappedFieldsLength();
+  }
+
+  getUnmappedFieldsLength(): Number {
+    return this._fieldMappingService.getUnmappedFieldsLength();
+  }
+
+  getUnmappedFields() {
+    return this._fieldMappingService.getUnmappedFields();
   }
 }
