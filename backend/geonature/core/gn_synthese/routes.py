@@ -306,6 +306,7 @@ def get_one_synthese(auth, permissions, scope, id_synthese):
             "areas.id_area",
             "areas.area_name",
             "areas.area_type.type_name",
+            "areas.area_type.size_hierarchy",
         ],
     )
     # TODO: see if it work again after REBASE to 2.9.0 !
