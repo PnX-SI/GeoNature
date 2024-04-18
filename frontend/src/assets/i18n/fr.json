@@ -61,7 +61,7 @@
     "AdvancedFilters": "Filtres avancés",
     "OtherFilters": "Autres filtres",
     "Organism": "Organisme(s)",
-    "Filter":"Filtrer"
+    "Filter": "Filtrer"
   },
   "List": {
     "Columns": "Colonnes",
@@ -280,6 +280,9 @@
     "Next": "Suivant",
     "Validate": "Valider",
     "SkipContentMapping": "Aucune nomenclature présente dans les données fournies, passage à l'étape \"Import des données.\"",
+    "SourceFieldsUnmapped": "{{ unmappedFieldsLength }} champs du fichier d’import ne sont actuellement associés à aucun champs cible et seront donc ignorés.",
+    "SourceFieldsMapped": "{{ mappedFieldsLength }} champs cibles ont été associés à un champs source.",
+    "SourceFieldsAllMapped": "L'ensemble des {{ sourceFieldsLength }} champs du fichier d’import ont été associés à un champs cible.",
     "ErrorMessage": {
       "Title": "Le module d'import a rencontré un problème",
       "Remark": "Il s'agit d'un problème indépendant du controle des données.",
