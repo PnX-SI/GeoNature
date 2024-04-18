@@ -296,7 +296,7 @@ export class FieldMappingService {
     if (value) {
       this.fieldMappingStatus.mapped.add(value);
       this.fieldMappingStatus.unmapped.delete(value);
-    } else {
+    } else if (oldValue != null) {
       this.fieldMappingStatus.mapped.delete(oldValue);
       this.fieldMappingStatus.unmapped.add(oldValue);
     }
