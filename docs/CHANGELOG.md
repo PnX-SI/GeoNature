@@ -1,32 +1,42 @@
 CHANGELOG
 =========
 
-## 2.14.1 (unreleased)
+2.14.1
+------
 
 **🚀 Nouveautés**
 
 - [Synthèse] Possibilité d'ajouter des colonnes supplémentaires à la liste de résultats via le paramètre `ADDITIONAL_COLUMNS_FRONTEND`. Ces champs sont masqués par défaut et controlables depuis l'interface (#2946)
 - [Synthèse] Possiblité d'ajouter des exports personnalisés basé sur des vues SQL via le paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` (#2955)
 - [DynamicForm] Possibilité de définir une valeur par défaut sur le composant `bool_checkbox` (#2819)
-- [Occtax] Il n'est plus obligatoire de poster le champs `additionnal_fields` au niveau de l'API des relevés, taxons et dénombrements (#2937)
-- Simplification, automatisation et documentation du changement de l'URL de l'API de GeoNature au niveau du frontend (#2936)
-- Enrichissement des URI autorisés de connexion à la BDD PostgreSQL (#2947)
+
+- [Documentation] Simplification, automatisation et documentation du changement de l'URL de l'API de GeoNature au niveau du frontend (#2936)
+- [Configuration] Enrichissement des URI autorisés de connexion à la BDD PostgreSQL (#2947)
 
 **🐛 Corrections**
 
-- Suppression de l'utilisation du composant `ngx-mat-select-search` (#2826 & #2827)
 - [Occtax] Correction de l'inversion des valeurs par défaut de 2 nomenclatures (#2822)
 - [Synthèse] Correction du lien de renvoi vers le module de saisie d'une observation (#2907)
 - [Validation] Correction de l'enregistrement d'une validation quand l'utilisateur a des permissions avec une portée limitée (#2958)
-- Correction du double chargement des fondd de carte (#2902)
+- [OccHab] Prise en compte des permissions utilisateurs dans l'affichage des boutons d'actions (info,édition, suppression) dans la liste de stations du module OccHab (#2942)
+- [MTD] Amélioration des performances de la synchronisation avec le service MTD (#2922)
+- Correction du double chargement des fond de carte (#2902)
+- [Synthèse] Amélioration des performances de la liste des zonages dans les filtres de la synthèse (#2977 + Voir : https://github.com/PnX-SI/RefGeo/pull/22)
+- Correction de la redirection du bouton "Acceuil" (#2934)
+- Correction de la connexion avec le CAS de l'INPN (#2866)
+
 
 **💻 Développement**
 
-- Change path and remove branch name in .gitmodules (#2959)
+- Suppression de l'utilisation du composant `ngx-mat-select-search` (#2826 & #2827)
+- [Occtax] Il n'est plus obligatoire de poster le champs `additionnal_fields` au niveau de l'API des relevés, taxons et dénombrements (#2937)
+- Suppression des branches et ajout d'adresses relatives dans `.gitmodules` (#2959)
 - Lint et doc HTML/CSS (#2890 & #2960)
 - Correction de l'héritage des composants `GenericFormComponent` (#2961)
+- Utilisation de `pytest-benchmark` pour l'évaluation de performances automatisés des routes (#2896)
+- Utilisation de `marshmallow` pour la validation des données renvoyés par la route `get_observations_for_web` et ajout du contrôle de la présence des champs obligatoires (#2950)
 
-**⚠️ Notes de version**
+- **⚠️ Notes de version**
 
 - Les paramètres de la synthèse permettant de spécifier le nom de certaines colonnes de la vue d'export sont déprécies (`EXPORT_ID_SYNTHESE_COL`, `EXPORT_ID_DIGITISER_COL`, `EXPORT_OBSERVERS_COL`, `EXPORT_GEOJSON_4326_COL`, `EXPORT_GEOJSON_LOCAL_COL`).
 - Si vous aviez surcouché la vue par défaut `gn_synthese.v_synthese_for_export`, il est recommandé de ne plus le faire et de plutôt utiliser le nouveau paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` permettant de se créer ses propres vues d'export personnalisées.
