@@ -4,7 +4,7 @@
       *ngIf="userFieldMappings.length > 0"
       class="form-group"
     >
-      <legend class="px-1">Choix d’un modèle d'import prédéfini</legend>
+      <legend class="px-1">{{ 'Import.FieldMapping.ChooseMapping' | translate }}</legend>
       <ng-select
         id="mappingSelection"
         [items]="userFieldMappings"
@@ -40,7 +40,7 @@
           (click)="toggleRenameMappingForm()"
           [disabled]="!isMappingSelected()"
         >
-          Renommer le modèle d'import
+          {{ 'Import.FieldMapping.RenameMapping' | translate }}
         </button>
         <button
           *ngIf="cruved.D"
@@ -50,7 +50,7 @@
           (click)="openDeleteModal()"
           [disabled]="!isMappingSelected()"
         >
-          Supprimer le modèle d'import
+          {{ 'Import.FieldMapping.DeleteMapping' | translate }}
         </button>
       </div>
     </div>
@@ -85,7 +85,7 @@
         mat-raised-button
         color="warn"
       >
-        Annuler
+        {{ 'Cancel' | translate }}
       </button>
     </div>
   </fieldset>
@@ -98,8 +98,8 @@
   #deleteConfirmModal
   let-modalDelete
 >
-  <div class="modal-header">Confirmation</div>
-  <div class="modal-body">Voulez vous supprimer le modèle ?</div>
+  <div class="modal-header">{{ 'Import.FieldMapping.Confirmation' | translate }}</div>
+  <div class="modal-body">{{ 'Import.FieldMapping.DeleteMapping?' | translate }}</div>
   <div class="modal-footer">
     <button
       type="button"
@@ -107,7 +107,7 @@
       color="accent"
       (click)="modalDelete.close()"
     >
-      Annuler
+      {{ 'Cancel' | translate }}
     </button>
     <button
       type="button"
@@ -115,7 +115,7 @@
       color="warn"
       (click)="modalDelete.close(); deleteMapping()"
     >
-      Supprimer le modèle
+      {{ 'Import.FieldMapping.ConfirmMappingDeletion' | translate }}
     </button>
   </div>
 </ng-template>
