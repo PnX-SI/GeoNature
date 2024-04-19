@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-header">
-    <h5 class="card-title mb-0">Correspondance des champs avec le modèle</h5>
+    <h5 class="card-title mb-0">{{ 'Import.FieldMapping.Title' | translate }}</h5>
   </div>
   <div class="card-body">
     <pnx-mapping-selection></pnx-mapping-selection>
@@ -44,7 +44,8 @@
         style="text-align: center"
       >
         {{
-          'Import.SourceFieldsMapped' | translate: { mappedFieldsLength: getMappedFieldsLength() }
+          'Import.FieldMapping.SourceFieldsMapped'
+            | translate: { mappedFieldsLength: getMappedFieldsLength() }
         }}
         <br />
       </div>
@@ -55,7 +56,8 @@
         style="text-align: center"
       >
         {{
-          'Import.SourceFieldsAllMapped' | translate: { sourceFieldsLength: sourceFields.length() }
+          'Import.FieldMapping.SourceFieldsAllMapped'
+            | translate: { sourceFieldsLength: sourceFields.length() }
         }}
         <br />
       </div>
@@ -69,7 +71,7 @@
             style="text-align: center"
           >
             {{
-              'Import.SourceFieldsUnmapped'
+              'Import.FieldMapping.SourceFieldsUnmapped'
                 | translate: { unmappedFieldsLength: getUnmappedFieldsLength() }
             }}
           </div>
@@ -87,8 +89,7 @@
           color="primary"
         >
           <mat-icon>navigate_before</mat-icon>
-
-          Précédent
+          {{ 'Import.Before' | translate }}
         </button>
         <button
           class="d-flex justify-content-center align-content-between"
@@ -97,7 +98,7 @@
           [disabled]="!isNextStepAvailable()"
           (click)="onNextStep()"
         >
-          Suivant
+          {{ 'Import.Next' | translate }}
           <mat-icon>navigate_next</mat-icon>
         </button>
       </div>
@@ -114,7 +115,7 @@
       class="modal-title"
       id="modal-basic-title"
     >
-      Enregistrement du modèle
+      {{ 'Import.FieldMapping.SaveMapping' | translate }}
     </h4>
     <button
       type="button"
@@ -127,13 +128,11 @@
   </div>
   <div class="modal-body">
     <span *ngIf="!this.updateAvailable; else elseBlock">
-      Souhaitez sauvegarder vos correspondances dans un modèle pour les réutiliser lors d’un futur
-      import ?
+      {{ 'Import.FieldMapping.MappingCreate?' | translate }}
     </span>
     <ng-template #elseBlock>
       <span>
-        Le modèle de correspondance a été modifié ; souhaitez-vous mettre à jour le modèle existant
-        ou créer un nouveau modèle ?
+        {{ 'Import.FieldMapping.MappingChanged?' | translate }}
       </span>
     </ng-template>
     <form>
@@ -142,7 +141,7 @@
           for="mappingName"
           *ngIf="this.updateAvailable"
         >
-          Nom du modèle
+          {{ 'Import.FieldMapping.MappingName' | translate }}
         </label>
         <input
           [formControl]="modalCreateMappingForm"
@@ -154,7 +153,7 @@
           *ngIf="!modalCreateMappingForm.value"
           class="text-warning"
         >
-          Un nom doit être renseigné pour pouvoir créer un modèle
+          {{ 'Import.FieldMapping.MappingNameWarning' | translate }}
         </span>
         <span
           *ngIf="
@@ -164,7 +163,7 @@
           "
           class="text-warning"
         >
-          Changer de nom pour pouvoir enregistrer le modèle
+          {{ 'Import.FieldMapping.MappingChangeNameWarning' | translate }}
         </span>
       </div>
     </form>
@@ -176,7 +175,7 @@
       color="accent"
       (click)="modal.close(); processNextStep()"
     >
-      Continuer sans enregistrer
+      {{ 'Import.FieldMapping.DontSaveMapping' | translate }}
     </button>
     <button
       *ngIf="this.updateAvailable"
@@ -185,7 +184,7 @@
       color="primary"
       (click)="modal.close(); updateMapping(true)"
     >
-      Mettre à jour le modèle existant
+      {{ 'Import.FieldMapping.UpdateMapping' | translate }}
     </button>
     <button
       type="button"
@@ -199,7 +198,7 @@
             this._fieldMappingService.mappingSelectionFormControl.value.label)
       "
     >
-      Enregistrer un nouveau modèle
+      {{ 'Import.FieldMapping.SaveNewMapping' | translate }}
     </button>
   </div>
 </ng-template>
