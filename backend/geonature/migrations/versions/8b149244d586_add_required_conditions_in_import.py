@@ -23,12 +23,20 @@ def upgrade():
     op.add_column(
         table_name="bib_fields",
         schema="gn_imports",
-        column=sa.Column("mandatory_conditions", sa.ARRAY(sa.Unicode)),
+        column=sa.Column(
+            "mandatory_conditions",
+            sa.ARRAY(sa.Unicode),
+            comment="Contient la liste de champs qui rendent le champ obligatoire.",
+        ),
     )
     op.add_column(
         table_name="bib_fields",
         schema="gn_imports",
-        column=sa.Column("optional_conditions", sa.ARRAY(sa.Unicode)),
+        column=sa.Column(
+            "optional_conditions",
+            sa.ARRAY(sa.Unicode),
+            comment="Contient la liste de champs qui rendent le champ optionnel.",
+        ),
     )
 
     op.execute(
