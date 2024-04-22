@@ -54,6 +54,8 @@ export class MappingSelectionComponent implements OnInit {
       if (!fieldMappings) return;
       this.userFieldMappings = fieldMappings;
     });
+    this.fieldMappingForm.setValue(null);
+    this._fm.currentFieldMapping.next(null);
     this.fieldMappingSub = this.fieldMappingForm.valueChanges
       .pipe(
         // skip first empty value to avoid reseting the field form if importData as mapping:
