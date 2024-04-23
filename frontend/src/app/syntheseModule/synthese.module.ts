@@ -37,7 +37,7 @@ const routes: Routes = [
     SyntheseModalDownloadComponent,
     TaxonSheetComponent,
   ],
-  entryComponents: [
+  bootstrap: [
     SyntheseInfoObsComponent,
     SyntheseModalDownloadComponent,
     DiscussionCardComponent,
