@@ -1,8 +1,8 @@
 CHANGELOG
 =========
 
-2.14.1
-------
+2.14.1 (unreleased)
+-------------------
 
 **🚀 Nouveautés**
 
@@ -12,6 +12,7 @@ CHANGELOG
 
 - [Documentation] Simplification, automatisation et documentation du changement de l'URL de l'API de GeoNature au niveau du frontend (#2936)
 - [Configuration] Enrichissement des URI autorisés de connexion à la BDD PostgreSQL (#2947)
+- [TaxHub] Mise à jour de TaxRef (version 17)
 
 **🐛 Corrections**
 
