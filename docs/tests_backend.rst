@@ -242,19 +242,20 @@ possible de générer le coverage au format html en remplaçant ``xml`` par
 Evaluer les performances du backend
 -----------------------------------
 
-Les versions de GeoNature >2.14.1 intègrent la possibilité d'évaluer les performances de l'exécution de routes connues pour leur temps de traitement important. Par exemple, l'appel de la requête de données dans la synthèse avec une
-géographie non-présentes dans le référentiel géographique
+Les versions de GeoNature >2.14.1 intègrent la possibilité d'évaluer les performances de routes connues pour leur temps de traitement important. Par exemple, l'appel de la route ``gn_synthese.get_observations_for_web`` avec une géographie non-présente dans le référentiel géographique.
 
 Cette fonctionnalité s'appuie sur ``pytest`` et son extension ``pytest-benchmark``(https://pytest-benchmark.readthedocs.io/en/latest/).
 
 Lancement des tests de performances
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Plusieurs possibilités sont à dispositions.
+Il existe différentes manières de lancer les tests de performances:
 
-La première solution consiste à lancer ``pytest`` sans options. Cela lancera les tests unitaires et les tests de performances.
+- La commande ``pytest`` sans arguments. Cette dernière lancera les tests de performances en plus des tests unitaires.
+- La commande ``pytest --benchmark-only`` qui lancera uniquement les tests de performances.
 
-La deuxième solution consiste à lancer la commande ``pytest --benchmark-only``. Cela lancera uniquement les tests de performances.
+
+
 
 
 Ajouter des tests de performances
@@ -264,31 +265,53 @@ La création de tests de performance s'effectue à l'aide de la classe ``geonatu
 
 L'objet ``BenchmarkTest`` prend en argument :
 
- - la fonction à évaluer
- - le nom du test
- - les ``args``
- - les ``kwargs``
+ - La fonction dont on souhaite mesurer la performance
+ - Le nom du test
+ - Les ``args`` de la fonction
+ - les ``kwargs`` de la fonction
 
 
-Ce dernier permet de générer une fonction de test utilisable et intégrable dans l'exécution des tests unitaires
-de pytest.
+Cette classe permet de générer une fonction de test utilisable dans le _framework_ existant de ``pytest``. Pour cela, rien de plus simple ! Créer un fichier de test (de préférence dans le sous-dossier ``backend/geonature/tests/benchmarks``). 
 
-L'exemple suivant permet d'évaluer  la fonction ``print`` de Python.
+Import la classe BenchmarkTest dans le fichier de test.
 
 .. code-block::
     import pytest
+    from geonature.tests.benchmarks import BenchmarkTest
+
+
+Ajouter un test de performance, ici le test ``test_print`` qui teste la fonction ``print`` de Python.
+
+
+.. code-block::
+    
     bench = BenchmarkTest(print,"test_print",["Hello","World"],{})
 
+
+Ajouter la fonction générée dans ``bench`` dans une classe de test:
+
+.. code-block::
     @pytest.mark.benchmark(group="occhab") # Pas obligatoire mais permet de compartimenter les tests de performances
     @pytest.mark.usefixtures("client_class", "temporary_transaction")
         class TestBenchie:
             test_print = bench()
 
+.. note ::
+  Le décorateur ``@pytest.mark.benchmark`` permet de configurer l'éxecution des tests de performances par ``pytest-benchmark``. Dans l'exemple ci-dessus, on l'utilise pour regrouper les tests de performances
+  déclarés dans la classe ``TestBenchie`` dans un groupe nommée ``occhab``.
 
-Dans le cas où le test benchmark doit accéder à des fonctions ou des variables uniquement accessibles dans le contexte
+
+.. image:: images/benchmark_result.png
+   :width: 60%
+   :alt: Affichage des tests de performances
+   :align: center
+
+
+
+Si le test de performances doit accéder à des fonctions ou des variables uniquement accessibles dans le contexte
 de l'application flask, il faudra utiliser l'objet ``geonature.tests.benchmarks.CLater``. Ce dernier permet
-de déclarer un expression python retournant un object (fonction ou variable) dans une chaîne de caractère qui
-sera évalué (voir la fonction ``eval()`` de Python) uniquement lors de l'exécution du benchmark.
+de déclarer un expression python retournant un objet (fonction ou variable) dans une chaîne de caractère qui
+sera _évalué_ (voir la fonction ``eval()`` de Python) uniquement lors de l'exécution du benchmark.
 
 .. code-block::
   test_get_default_nomenclatures = BenchmarkTest(
@@ -298,10 +321,10 @@ sera évalué (voir la fonction ``eval()`` de Python) uniquement lors de l'exéc
     )()
 
 L'exécution de certaines benchmark de routes doivent inclure l'engistrement d'utilisateur de tests. Pour cela,
-il suffit d'utiliser la clé ``user_profile`` dans l'argument ``kwargs`` comme dans l'exemple ci-dessus.
+il suffit d'utiliser la clé ``user_profile`` dans l'argument ``kwargs`` (Voir code ci-dessus).
 
 Si l'utilisation de _fixtures_ est nécessaire à votre test de performance, utilisé la clé ``fixture`` 
-dans l'argument ``kwargs`` pour indiquer celles-ci: 
+dans l'argument ``kwargs``: 
 
 .. code-block::
   test_get_station = BenchmarkTest(
