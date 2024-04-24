@@ -1,5 +1,6 @@
 from math import ceil
 
+from apptax.taxonomie.models import Taxref
 from flask import current_app
 import sqlalchemy as sa
 from sqlalchemy import func, distinct
@@ -9,7 +10,7 @@ from geonature.utils.sentry import start_sentry_child
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import Synthese, TSources
 
-from geonature.core.imports.models import Entity, EntityField, BibFields
+from geonature.core.imports.models import Entity, EntityField, BibFields, TImports
 from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
@@ -346,3 +347,56 @@ def remove_data_from_synthese(imprt):
         with start_sentry_child(op="task", description="clean imported data"):
             Synthese.query.filter(Synthese.source == source).delete()
         db.session.delete(source)
+
+
+def report_plot(imprt: TImports):
+    from bokeh.plotting import figure
+    from bokeh.embed import json_item
+    from bokeh.layouts import column, row
+    from bokeh.models import CustomJS, Select
+
+    source = TSources.query.filter(
+        TSources.module.has(TModules.module_code == "IMPORT"),
+        TSources.name_source == f"Import(id={imprt.id_import})",
+    ).one_or_none()
+    ranks = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
+    data_per_ranks = []
+    figures = []
+    for rank in ranks:
+        query = (
+            sa.select(
+                func.count(distinct(Synthese.cd_nom)).label("count"),
+                getattr(Taxref, rank).label("rank_value"),
+            )
+            .select_from(Synthese)
+            .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+            .where(Synthese.id_dataset == imprt.id_dataset, Synthese.source == source)
+            .group_by(getattr(Taxref, rank))
+        )
+        results = db.session.execute(query).all()
+        rank_values = [r[1] for r in results]
+        count = [r[0] for r in results]
+
+        fig = figure(x_range=rank_values, title=f"Distribution des taxons (selon {rank})")
+        fig.vbar(x=rank_values, top=count, width=0.9)
+        if rank != "regne":
+            fig.visible = False
+        figures.append(fig)
+
+    plot_area = column(figures)
+    select_plot = Select(
+        title="Rank", value="regne", options=[(ix, rank) for ix, rank in enumerate(ranks)]
+    )
+    select_plot.js_on_change(
+        "value",
+        CustomJS(
+            args=dict(s=select_plot, col=plot_area),
+            code="""
+        for (const plot of col.children) {
+            plot.visible = false
+        }
+        col.children[s.value].visible = true
+    """,
+        ),
+    )
+    return json_item(row(select_plot, plot_area, sizing_mode="stretch_width"))

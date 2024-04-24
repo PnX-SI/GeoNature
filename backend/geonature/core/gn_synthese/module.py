@@ -3,6 +3,7 @@ from geonature.core.gn_synthese.imports import (
     check_transient_data,
     import_data_to_synthese,
     remove_data_from_synthese,
+    report_plot,
 )
 
 
@@ -21,4 +22,5 @@ class SyntheseModule(TModules):
         "statistics_labels": [
             {"key": "taxa_count", "value": "Nombre de taxons importés"},
         ],
+        "report_plot": report_plot,
     }

@@ -154,6 +154,10 @@ class Destination(db.Model):
     def statistics_labels(self):
         return self.module._imports_.get("statistics_labels", {})
 
+    @property
+    def plot_function(self):
+        return self.module._imports_.get("report_plot", {})
+
 
 @serializable
 class BibThemes(db.Model):
