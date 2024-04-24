@@ -1,3 +1,4 @@
+bokeh
 celery[redis]
 chardet  # imports
 click>=7.0
