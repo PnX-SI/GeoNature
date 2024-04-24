@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional, Set
 
 import numpy as np
 import pandas as pd
@@ -7,7 +7,7 @@ import sqlalchemy as sa
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
 
-from geonature.core.imports.models import BibFields
+from geonature.core.imports.models import BibFields, TImports
 
 from .utils import dfcheck
 
@@ -80,6 +80,25 @@ def check_required_values(df, fields: Dict[str, BibFields]):
 
 
 def _check_ordering(df, min_field, max_field):
+    """
+    Check if the values in the `min_field` are lower or equal to the values
+    in the `max_field` for all the rows of the dataframe `df`.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    min_field : str
+        The name of the column containing the minimum values.
+    max_field : str
+        The name of the column containing the maximum values.
+
+    Yields
+    ------
+    dict
+        Dictionary containing the invalid rows.
+
+    """
     ordered = df[min_field] <= df[max_field]
     ordered = ordered.fillna(False)
     invalid_rows = df[~ordered & df[min_field].notna() & df[max_field].notna()]
@@ -89,7 +108,39 @@ def _check_ordering(df, min_field, max_field):
 
 
 @dfcheck
-def check_counts(df, count_min_field, count_max_field, default_count=None):
+def check_counts(
+    df: pd.DataFrame, count_min_field: str, count_max_field: str, default_count: int = None
+):
+    """
+    Check if the value in the `count_min_field` is lower or equal to the value in the `count_max_field`
+
+    | count_min_field | count_max_field |
+    | --------------- | --------------- |
+    | 0               | 2               | --> ok
+    | 2               | 0               | --> provoke an error
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    count_min_field : BibField
+        The field containing the minimum count.
+    count_max_field : BibField
+        The field containing the maximum count.
+    default_count : object, optional
+        The default count to use if a count is missing, by default None.
+
+    Yields
+    ------
+    dict
+        Dictionary containing the error code, the column name and the invalid rows.
+
+    Returns
+    ------
+    set
+        Set of columns updated.
+
+    """
     count_min_col = count_min_field.dest_field
     count_max_col = count_max_field.dest_field
     updated_cols = {count_max_col}
@@ -130,7 +181,43 @@ def check_counts(df, count_min_field, count_max_field, default_count=None):
 
 
 @dfcheck
-def check_datasets(imprt, df, uuid_field, id_field, module_code, object_code=None):
+def check_datasets(
+    imprt: TImports,
+    df: pd.DataFrame,
+    uuid_field: BibFields,
+    id_field: BibFields,
+    module_code: str,
+    object_code: Optional[str] = None,
+) -> Set[str]:
+    """
+    Check if datasets exist and are authorized for the user and import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        Import to check datasets for.
+    df : pd.DataFrame
+        Dataframe to check.
+    uuid_field : BibFields
+        Field containing dataset UUIDs.
+    id_field : BibFields
+        Field to fill with dataset IDs.
+    module_code : str
+        Module code to check datasets for.
+    object_code : Optional[str], optional
+        Object code to check datasets for, by default None.
+
+    Yields
+    ------
+    dict
+        Dictionary containing error code, column name and invalid rows.
+
+    Returns
+    ------
+    Set[str]
+        Set of columns updated.
+
+    """
     updated_cols = set()
     uuid_col = uuid_field.dest_field
     id_col = id_field.dest_field
