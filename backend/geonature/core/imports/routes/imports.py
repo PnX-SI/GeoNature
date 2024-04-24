@@ -1,6 +1,7 @@
 import codecs
 from io import BytesIO, StringIO, TextIOWrapper
 import csv
+import json
 import unicodedata
 
 from flask import request, current_app, jsonify, g, stream_with_context, send_file
@@ -13,6 +14,7 @@ from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import joinedload, Load, load_only, undefer, contains_eager
 from sqlalchemy.orm.attributes import set_committed_value
 from sqlalchemy.sql.expression import collate, exists
+
 
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
@@ -692,3 +694,10 @@ def get_foreign_key_attr(obj, field: str):
         first_field = fields[0]
         remaining_fields = ".".join(fields[1:])
         return get_foreign_key_attr(elems[first_field].mapper.class_, remaining_fields)
+
+
+@blueprint.route("/<destination>/report_plot/<int:import_id>", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
+def report_plot(scope, imprt: TImports):
+
+    return json.dumps(imprt.destination.plot_function(imprt))

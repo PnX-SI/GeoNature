@@ -1,5 +1,6 @@
 from math import ceil
 
+from apptax.taxonomie.models import Taxref
 from flask import current_app
 import sqlalchemy as sa
 from sqlalchemy import func, distinct
@@ -9,7 +10,7 @@ from geonature.utils.sentry import start_sentry_child
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import Synthese, TSources
 
-from geonature.core.imports.models import Entity, EntityField, BibFields
+from geonature.core.imports.models import Entity, EntityField, BibFields, TImports
 from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
@@ -44,6 +45,11 @@ from geonature.core.imports.checks.sql import (
 )
 
 from .geo import set_geom_columns_from_area_codes
+from bokeh.plotting import figure
+from bokeh.layouts import column, row
+from bokeh.models.layouts import Row
+from bokeh.models import CustomJS, Select
+from bokeh.embed import json_item
 
 
 def check_transient_data(task, logger, imprt):
@@ -346,3 +352,94 @@ def remove_data_from_synthese(imprt):
         with start_sentry_child(op="task", description="clean imported data"):
             Synthese.query.filter(Synthese.source == source).delete()
         db.session.delete(source)
+
+
+def report_plot(imprt: TImports) -> Row:
+    """
+    Generate a plot of the taxonomic distribution (for each rank) based on the import.
+    The following ranks are used:
+    - group1_inpn
+    - group2_inpn
+    - group3_inpn
+    - sous_famille
+    - tribu
+    - classe
+    - ordre
+    - famille
+    - phylum
+    - regne
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import object to generate the plot from.
+
+    Returns
+    -------
+    dict
+        Returns a dict containing data required to generate the plot
+    """
+
+    # Get the source of the import
+    source = TSources.query.filter(
+        TSources.module.has(TModules.module_code == "IMPORT"),
+        TSources.name_source == f"Import(id={imprt.id_import})",
+    ).one_or_none()
+
+    # Define the taxonomic categories to consider
+    taxon_ranks = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
+    figures = []
+
+    # Generate the plot for each rank
+    for rank in taxon_ranks:
+        # Generate the query to retrieve the count for each value taken by the rank
+        query = (
+            sa.select(
+                func.count(distinct(Synthese.cd_nom)).label("count"),
+                getattr(Taxref, rank).label("rank_value"),
+            )
+            .select_from(Synthese)
+            .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+            .where(Synthese.id_dataset == imprt.id_dataset, Synthese.source == source)
+            .group_by(getattr(Taxref, rank))
+        )
+        results = db.session.execute(query).all()
+
+        # Extract the rank values and counts
+        rank_values = [r[1] for r in results]
+        count = [r[0] for r in results]
+
+        # Generate the bar plot
+        fig = figure(x_range=rank_values, title=f"Distribution des taxons (selon le rang = {rank})")
+        fig.vbar(x=rank_values, top=count, width=0.9)
+
+        # Hide the plot for non-kingdom ranks
+        if rank != "regne":
+            fig.visible = False
+
+        # Add the plot to the list of figures
+        figures.append(fig)
+
+    # Generate the layout with the plots and the rank selector
+    plot_area = column(figures)
+    select_plot = Select(
+        title="Rang",
+        value=(0, "regne"),
+        options=[(ix, rank) for ix, rank in enumerate(taxon_ranks)],
+    )
+
+    # Update the visibility of the plots when the category selector changes
+    select_plot.js_on_change(
+        "value",
+        CustomJS(
+            args=dict(s=select_plot, col=plot_area),
+            code="""
+        for (const plot of col.children) {
+            plot.visible = false
+        }
+        col.children[s.value].visible = true
+    """,
+        ),
+    )
+
+    return json_item(row(select_plot, plot_area, sizing_mode="stretch_width"))
