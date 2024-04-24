@@ -236,6 +236,7 @@
     "Destinations": "Destinations",
     "FileUpload": " Upload a file ",
     "ChooseDataset": "Select a dataset",
+    "DestinationLabel": "Import destination",
     "ChooseDestination": "Select a destination",
     "ImportFile": "Import a file",
     "ChooseFile": "Select a file",

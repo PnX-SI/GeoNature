@@ -271,6 +271,7 @@
     "previous": "Voir le média précédent"
   },
   "Import": {
+    "DestinationLabel": "Destination de l'import",
     "Destinations": "Destinations",
     "FileUpload": " Téléversement du fichier ",
     "ChooseDataset": "Choisir un jeu de données :",
