@@ -26,6 +26,7 @@ import { ContentMappingStepComponent } from './components/import_process/content
 import { ImportStepComponent } from './components/import_process/import-step/import-step.component';
 import { StepperComponent } from './components/import_process/stepper/stepper.component';
 import { FooterStepperComponent } from './components/import_process/footer-stepper/footer-stepper.component';
+import { HeaderStepperComponent } from './components/import_process/header-stepper/header-stepper.component';
 import { Step } from './models/enums.model';
 import { ImportReportComponent } from './components/import_report/import_report.component';
 import { DestinationsComponent } from './components/destinations/destinations.component';
@@ -99,6 +100,7 @@ const routes: Routes = [
     ImportStepComponent,
     StepperComponent,
     FooterStepperComponent,
+    HeaderStepperComponent,
     ImportProcessComponent,
     ImportReportComponent,
     DestinationsComponent,
