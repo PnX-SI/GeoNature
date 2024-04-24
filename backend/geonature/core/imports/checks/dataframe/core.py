@@ -17,18 +17,59 @@ __all__ = ["check_required_values", "check_counts", "check_datasets"]
 
 @dfcheck
 def check_required_values(df, fields: Dict[str, BibFields]):
+    """
+    Check if required values are present in the dataframe.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    fields : Dict[str, BibFields]
+        Dictionary of fields to check.
+
+    Yields
+    ------
+    dict
+        Dictionary containing the error code, the column name and the invalid rows.
+
+    Notes
+    -----
+    If a field is not mandatory and it has mandatory conditions, it will not raise an error
+    if any of the mandatory conditions are mapped.
+
+    If a field is mandatory and it has optional conditions, it will not raise an error
+    if any of the optional conditions is mapped.
+
+    If a field is mandatory and it is not mapped, it will raise an error for all the rows.
+    """
+
     for field_name, field in fields.items():
         if not field.mandatory:
+            if field.mandatory_conditions:
+                are_required_field_mapped = [
+                    fields[field_req].source_column in df
+                    for field_req in field.mandatory_conditions
+                ]
+                if not any(are_required_field_mapped):
+                    continue
             continue
+
+        if field.mandatory and field.optional_conditions:
+            # If a required field is optional thanks to other columns mapped
+            are_optional_field_mapped = [
+                fields[field_opt].source_column in df for field_opt in field.optional_conditions
+            ]
+            if any(are_optional_field_mapped):
+                continue
         if field.source_column not in df:
             continue
-            # XXX lever une erreur pour toutes les lignes si le champs n’est pas mappé
-            # XXX rise errors for missing mandatory field from mapping?
-            yield {
-                "error_code": "MISSING_VALUE",
-                "column": field_name,
-                "invalid_rows": df,
-            }
+        # XXX lever une erreur pour toutes les lignes si le champs n’est pas mappé
+        # XXX rise errors for missing mandatory field from mapping?
+        yield {
+            "error_code": "MISSING_VALUE",
+            "column": field_name,
+            "invalid_rows": df,
+        }
         invalid_rows = df[df[field.source_column].isna()]
         if len(invalid_rows):
             yield {
