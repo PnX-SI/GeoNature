@@ -1,7 +1,14 @@
 <div class="container">
-  <stepper [step]="step"></stepper>
-  <router-outlet (activate)="onActivate($event)"></router-outlet>
-  <footer>
-    <footer-stepper [stepComponent]="stepComponent"></footer-stepper>
-  </footer>
+  <div class="card">
+    <div class="card-header">
+      <header-stepper />
+      <stepper [step]="step"></stepper>
+    </div>
+    <div class="card-body">
+      <router-outlet (activate)="onActivate($event)"></router-outlet>
+      <footer>
+        <footer-stepper [stepComponent]="stepComponent"></footer-stepper>
+      </footer>
+    </div>
+  </div>
 </div>

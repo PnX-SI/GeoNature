@@ -35,7 +35,7 @@ li.current {
   display: block;
   width: 34px;
   height: 34px;
-  border: 3px solid #dce3e7;
+  border: 3px solid #f7f7f7;
   border-radius: 50%;
   line-height: 28px;
   position: absolute;
@@ -45,6 +45,7 @@ li.current {
   background-color: #888d8f;
   color: #fff;
   cursor: pointer;
+  z-index: 2;
 }
 
 .step ul li.done:before {
@@ -68,12 +69,13 @@ li.current {
   background-color: #ccc;
   top: 15px;
   position: absolute;
-  z-index: -1;
+  z-index: 1;
   margin-left: -50%;
 }
 
 .step ul li.done + li:after {
   background-color: #28a745;
+  z-index: 1;
 }
 
 .step ul li:first-child:after {
