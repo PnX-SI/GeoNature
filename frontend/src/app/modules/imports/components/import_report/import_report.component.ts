@@ -21,6 +21,10 @@ import { ConfigService } from '@geonature/services/config.service';
 import { CsvExportService } from '../../services/csv-export.service';
 import { FieldMappingValues } from '../../models/mapping.model';
 
+import { HttpClient } from '@angular/common/http';
+
+declare var Bokeh: any;
+
 interface MatchedNomenclature {
   source: Nomenclature;
   target: Nomenclature;
@@ -80,7 +84,8 @@ export class ImportReportComponent implements OnInit {
     private _router: Router,
     private _map: MapService,
     public _csvExport: CsvExportService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _httpclient: HttpClient
   ) {
     this.rank = this.rankOptions.includes(this.config.IMPORT.DEFAULT_RANK)
       ? this.config.IMPORT.DEFAULT_RANK
@@ -103,6 +108,9 @@ export class ImportReportComponent implements OnInit {
     this._dataService.getNomenclatures().subscribe((nomenclatures) => {
       this.nomenclatures = nomenclatures;
     });
+    this._httpclient.get<any>(`${this.config.API_ENDPOINT}/import/${this.importData.destination.code}/report_plot/${this.importData.id_import}`).subscribe((data) => {
+      Bokeh.embed.embed_item(data,"chartreport");
+    })
   }
 
   /** Gets the validBbox and validData (info about observations)
