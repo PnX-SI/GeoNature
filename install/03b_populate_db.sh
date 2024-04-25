@@ -47,7 +47,7 @@ then
     --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip \
     --zipfile RefSensibiliteV17_20240325.zip \
     --csvfile RefSensibilite_17.csv  \
-    --encoding=iso-8859-15
+    --encoding=utf-8
     geonature sensitivity refresh-rules-cache
 fi
 
