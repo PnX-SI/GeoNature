@@ -14,7 +14,7 @@ from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import joinedload, Load, load_only, undefer, contains_eager
 from sqlalchemy.orm.attributes import set_committed_value
 from sqlalchemy.sql.expression import collate, exists
-from bokeh.embed import json_item
+
 
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
@@ -700,4 +700,4 @@ def get_foreign_key_attr(obj, field: str):
 @permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def report_plot(scope, imprt: TImports):
 
-    return json.dumps(json_item(imprt.destination.plot_function(imprt)))
+    return json.dumps(imprt.destination.plot_function(imprt))
