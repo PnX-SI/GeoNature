@@ -23,8 +23,6 @@ import { FieldMappingValues } from '../../models/mapping.model';
 
 import { HttpClient } from '@angular/common/http';
 
-declare var Bokeh: any;
-
 interface MatchedNomenclature {
   source: Nomenclature;
   target: Nomenclature;
