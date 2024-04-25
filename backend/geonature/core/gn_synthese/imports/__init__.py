@@ -49,6 +49,7 @@ from bokeh.plotting import figure
 from bokeh.layouts import column, row
 from bokeh.models.layouts import Row
 from bokeh.models import CustomJS, Select
+from bokeh.embed import json_item
 
 
 def check_transient_data(task, logger, imprt):
@@ -430,4 +431,4 @@ def report_plot(imprt: TImports) -> Row:
         ),
     )
 
-    return row(select_plot, plot_area, sizing_mode="stretch_width")
+    return json_item(row(select_plot, plot_area, sizing_mode="stretch_width"))
