@@ -316,4 +316,10 @@ export class ImportDataService {
       {}
     );
   }
+
+  getReportPlot(destinationCode: string, importId: number) {
+    return this._http.get<any>(
+      `${this.config.API_ENDPOINT}/import/${destinationCode}/report_plot/${importId}`
+    );
+  }
 }
