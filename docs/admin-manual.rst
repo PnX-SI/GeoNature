@@ -2420,3 +2420,7 @@ Ce paramètre est composé de cinq valeurs, chacune séparée par un espace: min
 Modification de la fonction de validation automatique
 `````````````````````````````````````````````````````
 Dans GeoNature, la validation automatique est effectuée par une fonction en ``PL/pgSQL`` déclarée dans le schéma ``gn_profiles``. Si toutefois, le fonctionnement de celle-ci ne correspond à vos besoins, indiquer le nom de la nouvelle fonction dans la variable ``AUTO_VALIDATION_SQL_FUNCTION``. Attention, cette fonction doit aussi être stockée dans le schema ``gn_profiles``. Pour vous aidez, n'hésitez pas à regarder la définition de la fonction par défaut nommée ``fct_auto_validation``.
+
+
+
+.. include:: import_doc.rst

@@ -1,11 +1,11 @@
 
 Module d’import
-===============
+---------------
 Ce module permet d’importer des données depuis un fichier CSV dans [GeoNature](https://github.com/PnX-SI/GeoNature).
 
 
 Configuration du module
-=======================
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Vous pouvez modifier la configuration du module dans le fichier
 `geonature_config.toml` dans le dossier `config` de GeoNature, en vous inspirant 
@@ -17,7 +17,7 @@ Pour appliquer les modifications de la configuration du module, consultez
 la [rubrique dédiée de la documentation de GeoNature](https://docs.geonature.fr/installation.html#module-config).
 
 Configuration avancée
----------------------
+"""""""""""""""""""""
 
 Une autre partie se fait directement dans la base de données, dans les
 tables `dict_fields` et `dict_themes`, permettant de masquer, ajouter,
@@ -31,7 +31,7 @@ des "blocs" dans la table `gn_imports.dict_themes`, et d'y attribuer
 des champs (`dict_fields`) en y définissant leur ordre d'affichage.
 
 Permissions du module
-=====================
+^^^^^^^^^^^^^^^^^^^^^
 
 La gestions des permissions dans le module d'import se fait via le réglage
 du CRUVED à deux niveaux : au niveau de l'objet "import" et au
@@ -65,7 +65,7 @@ niveau de l'objet "mapping".
     sera sauvegardé uniquement avec l’import).
 
 Contrôles et transformations
-============================
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +-----------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------+---------------------+
 | Name                                          | Description                                                                                                                                                                                                                                                        | Step                | Type                |
 +===============================================+====================================================================================================================================================================================================================================================================+=====================+=====================+
@@ -187,7 +187,7 @@ Contrôles et transformations
 
 
 Utilisation du module d'imports
-================================
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Note : le processus a un petit peu évoluer en v2 avec notamment une
 étape supplémentaire.
@@ -277,7 +277,7 @@ Modèle de données du schéma `gn_imports` du module (à adapter à la version 
 
 
 Fonctionnement du module (serveur et BDD)
-=========================================
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - J'ai un R d'au moins 1 sur le module Import : J'accède au module et je vois les imports en fonction de mon R.
 - J'ai un C d'au moins 1 sur le module Import, je peux créer un import, ou terminer un import auquel j'ai accès.
