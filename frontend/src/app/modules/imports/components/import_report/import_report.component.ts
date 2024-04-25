@@ -56,10 +56,6 @@ export class ImportReportComponent implements OnInit {
   public nbTotalErrors: number = 0;
   public datasetName: string = '';
   public rank: string = null;
-  public doughnutChartLabels: Array<String> = [];
-  public doughnutChartData: Array<any> = [{ data: [] }];
-
-  public doughnutChartType: string = 'doughnut';
   public options: any = {
     legend: { position: 'left' },
   };
@@ -104,10 +100,8 @@ export class ImportReportComponent implements OnInit {
     this._dataService.getNomenclatures().subscribe((nomenclatures) => {
       this.nomenclatures = nomenclatures;
     });
-    this._httpclient
-      .get<any>(
-        `${this.config.API_ENDPOINT}/import/${this.importData.destination.code}/report_plot/${this.importData.id_import}`
-      )
+    this._dataService
+      .getReportPlot(this.importData.destination.code, this.importData.id_import)
       .subscribe((data) => {
         Bokeh.embed.embed_item(data, 'chartreport');
       });
