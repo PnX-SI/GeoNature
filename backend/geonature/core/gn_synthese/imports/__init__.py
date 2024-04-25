@@ -45,6 +45,10 @@ from geonature.core.imports.checks.sql import (
 )
 
 from .geo import set_geom_columns_from_area_codes
+from bokeh.plotting import figure
+from bokeh.layouts import column, row
+from bokeh.models.layouts import Row
+from bokeh.models import CustomJS, Select
 
 
 def check_transient_data(task, logger, imprt):
@@ -349,44 +353,70 @@ def remove_data_from_synthese(imprt):
         db.session.delete(source)
 
 
-def report_plot(imprt: TImports):
-    from bokeh.plotting import figure
-    from bokeh.embed import json_item
-    from bokeh.layouts import column, row
-    from bokeh.models import CustomJS, Select
+def report_plot(imprt: TImports) -> Row:
+    """
+    Generate a plot of taxonomic distribution based on the import.
 
+    Parameters
+    ----------
+    imprt : TImports
+        The import object to generate the plot from.
+
+    Returns
+    -------
+    bokeh.models.layouts.Row
+        The layout containing the plot and the taxon category selector.
+    """
+
+    # Get the source of the import
     source = TSources.query.filter(
         TSources.module.has(TModules.module_code == "IMPORT"),
         TSources.name_source == f"Import(id={imprt.id_import})",
     ).one_or_none()
-    ranks = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
-    data_per_ranks = []
+
+    # Define the taxonomic categories to consider
+    taxon_categories = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
     figures = []
-    for rank in ranks:
+
+    # Generate the plot for each category
+    for category in taxon_categories:
+        # Generate the query to retrieve the count for each value taken by the category
         query = (
             sa.select(
                 func.count(distinct(Synthese.cd_nom)).label("count"),
-                getattr(Taxref, rank).label("rank_value"),
+                getattr(Taxref, category).label("category_value"),
             )
             .select_from(Synthese)
             .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
             .where(Synthese.id_dataset == imprt.id_dataset, Synthese.source == source)
-            .group_by(getattr(Taxref, rank))
+            .group_by(getattr(Taxref, category))
         )
         results = db.session.execute(query).all()
-        rank_values = [r[1] for r in results]
+
+        # Extract the rank values and counts
+        category_values = [r[1] for r in results]
         count = [r[0] for r in results]
 
-        fig = figure(x_range=rank_values, title=f"Distribution des taxons (selon {rank})")
-        fig.vbar(x=rank_values, top=count, width=0.9)
-        if rank != "regne":
+        # Generate the bar plot
+        fig = figure(x_range=category_values, title=f"Distribution des taxons (selon {category})")
+        fig.vbar(x=category_values, top=count, width=0.9)
+
+        # Hide the plot for non-kingdom ranks
+        if category != "regne":
             fig.visible = False
+
+        # Add the plot to the list of figures
         figures.append(fig)
 
+    # Generate the layout with the plots and the rank selector
     plot_area = column(figures)
     select_plot = Select(
-        title="Rank", value="regne", options=[(ix, rank) for ix, rank in enumerate(ranks)]
+        title="Catégorie",
+        value=(0, "regne"),
+        options=[(ix, rank) for ix, rank in enumerate(taxon_categories)],
     )
+
+    # Update the visibility of the plots when the category selector changes
     select_plot.js_on_change(
         "value",
         CustomJS(
@@ -399,4 +429,5 @@ def report_plot(imprt: TImports):
     """,
         ),
     )
-    return json_item(row(select_plot, plot_area, sizing_mode="stretch_width"))
+
+    return row(select_plot, plot_area, sizing_mode="stretch_width")
