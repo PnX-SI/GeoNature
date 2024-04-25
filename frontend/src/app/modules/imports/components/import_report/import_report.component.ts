@@ -51,7 +51,6 @@ export class ImportReportComponent implements OnInit {
   public tableFieldsCorresp: Array<FieldMappingValues> = [];
   public expansionPanelHeight: string = '60px';
   public validBbox: any;
-  public taxaDistribution: Array<TaxaDistribution> = [];
   public importErrors: Array<ImportError> = [];
   public importWarnings: Array<ImportError> = [];
   public nbTotalErrors: number = 0;
@@ -94,7 +93,6 @@ export class ImportReportComponent implements OnInit {
     this.importData = this.importProcessService.getImportData();
     // Load additionnal data if imported data
     this.loadValidData(this.importData);
-    this.loadTaxaDistribution();
     this.loadDatasetName();
     // Add property to show errors lines. Need to do this to
     // show line per line...
@@ -106,9 +104,13 @@ export class ImportReportComponent implements OnInit {
     this._dataService.getNomenclatures().subscribe((nomenclatures) => {
       this.nomenclatures = nomenclatures;
     });
-    this._httpclient.get<any>(`${this.config.API_ENDPOINT}/import/${this.importData.destination.code}/report_plot/${this.importData.id_import}`).subscribe((data) => {
-      Bokeh.embed.embed_item(data,"chartreport");
-    })
+    this._httpclient
+      .get<any>(
+        `${this.config.API_ENDPOINT}/import/${this.importData.destination.code}/report_plot/${this.importData.id_import}`
+      )
+      .subscribe((data) => {
+        Bokeh.embed.embed_item(data, 'chartreport');
+      });
   }
 
   /** Gets the validBbox and validData (info about observations)
@@ -125,16 +127,6 @@ export class ImportReportComponent implements OnInit {
           this.validBbox = data.valid_bbox;
         });
       }
-    }
-  }
-
-  loadTaxaDistribution() {
-    const idSource: number | undefined = this.importData?.id_source;
-    if (idSource) {
-      this._dataService.getTaxaRepartition(idSource, this.rank).subscribe((data) => {
-        this.taxaDistribution = data;
-        this.updateChart();
-      });
     }
   }
 
@@ -167,28 +159,6 @@ export class ImportReportComponent implements OnInit {
     }
   }
 
-  updateChart() {
-    const labels: string[] = this.taxaDistribution.map((e) => e.group);
-    const data: number[] = this.taxaDistribution.map((e) => e.count);
-
-    this.doughnutChartLabels.length = 0;
-    // Must push here otherwise the chart will not update
-    this.doughnutChartLabels.push(...labels);
-
-    this.doughnutChartData[0].data.length = 0;
-    this.doughnutChartData[0].data = data;
-    this.chart.chart.update();
-  }
-
-  getChartPNG(): HTMLImageElement {
-    const chart: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('chart');
-    const img: HTMLImageElement = document.createElement('img');
-    if (chart) {
-      img.src = chart.toDataURL();
-    }
-    return img;
-  }
-
   exportFieldMapping() {
     // this.fields can be null
     // 4 : tab size
@@ -209,23 +179,45 @@ export class ImportReportComponent implements OnInit {
       saveAs(blob, `${this.importData?.id_import}_correspondances_nomenclatures.json`);
     }
   }
+  getChartPNG() {
+    const obj: any = Object.values(Bokeh.index)[0];
+    return obj.export().to_blob();
+  }
 
   exportAsPDF() {
     const img: HTMLImageElement = document.createElement('img');
     this.loadingPdf = true;
-    const chartImg: HTMLImageElement = this.getChartPNG();
-
     if (this._map.map) {
       leafletImage(
         this._map.map ? this._map.map : '',
         function (err, canvas) {
           img.src = canvas.toDataURL('image/png');
-          this.exportMapAndChartPdf(chartImg, img);
+          this.exportMapAndChartPdf(img);
         }.bind(this)
       );
     } else {
-      this.exportMapAndChartPdf(chartImg);
+      this.exportMapAndChartPdf();
     }
+  }
+
+  exportMapAndChartPdf(mapImg?) {
+    this.getChartPNG().then((chartImg) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(chartImg);
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        this._dataService.getPdf(this.importData?.id_import, mapImg?.src, base64data).subscribe(
+          (result) => {
+            this.loadingPdf = false;
+            saveAs(result, this.getExportFilename());
+          }, //
+          (error) => {
+            this.loadingPdf = false;
+            console.log('Error getting pdf');
+          }
+        );
+      };
+    });
   }
 
   downloadSourceFile() {
@@ -252,19 +244,6 @@ export class ImportReportComponent implements OnInit {
     return string_with_format;
   }
 
-  exportMapAndChartPdf(chartImg?, mapImg?) {
-    this._dataService.getPdf(this.importData?.id_import, mapImg?.src, chartImg.src).subscribe(
-      (result) => {
-        this.loadingPdf = false;
-        saveAs(result, this.getExportFilename());
-      }, //
-      (error) => {
-        this.loadingPdf = false;
-        console.log('Error getting pdf');
-      }
-    );
-  }
-
   goToSynthese(idDataSet: number) {
     let navigationExtras = {
       queryParams: {
@@ -274,9 +253,6 @@ export class ImportReportComponent implements OnInit {
     this._router.navigate(['/synthese'], navigationExtras);
   }
 
-  onRankChange($event) {
-    this.loadTaxaDistribution();
-  }
   navigateToImportList() {
     this._router.navigate([this.config.IMPORT.MODULE_URL]);
   }
