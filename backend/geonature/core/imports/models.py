@@ -156,7 +156,7 @@ class Destination(db.Model):
 
     @property
     def plot_function(self):
-        return self.module._imports_.get("report_plot", {})
+        return self.module._imports_.get("report_plot", lambda x: {})
 
 
 @serializable
