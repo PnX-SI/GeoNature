@@ -356,7 +356,18 @@ def remove_data_from_synthese(imprt):
 
 def report_plot(imprt: TImports) -> Row:
     """
-    Generate a plot of taxonomic distribution based on the import.
+    Generate a plot of the taxonomic distribution (for each category) based on the import.
+    The category values are taken from the following columns in Taxref:
+    - group1_inpn
+    - group2_inpn
+    - group3_inpn
+    - sous_famille
+    - tribu
+    - classe
+    - ordre
+    - famille
+    - phylum
+    - regne
 
     Parameters
     ----------
@@ -365,8 +376,8 @@ def report_plot(imprt: TImports) -> Row:
 
     Returns
     -------
-    bokeh.models.layouts.Row
-        The layout containing the plot and the taxon category selector.
+    dict
+        Returns a dict containing data required to generate the plot
     """
 
     # Get the source of the import
