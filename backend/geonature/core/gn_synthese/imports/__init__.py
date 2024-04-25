@@ -356,8 +356,8 @@ def remove_data_from_synthese(imprt):
 
 def report_plot(imprt: TImports) -> Row:
     """
-    Generate a plot of the taxonomic distribution (for each category) based on the import.
-    The category values are taken from the following columns in Taxref:
+    Generate a plot of the taxonomic distribution (for each rank) based on the import.
+    The following ranks are used:
     - group1_inpn
     - group2_inpn
     - group3_inpn
@@ -387,34 +387,34 @@ def report_plot(imprt: TImports) -> Row:
     ).one_or_none()
 
     # Define the taxonomic categories to consider
-    taxon_categories = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
+    taxon_ranks = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
     figures = []
 
-    # Generate the plot for each category
-    for category in taxon_categories:
-        # Generate the query to retrieve the count for each value taken by the category
+    # Generate the plot for each rank
+    for rank in taxon_ranks:
+        # Generate the query to retrieve the count for each value taken by the rank
         query = (
             sa.select(
                 func.count(distinct(Synthese.cd_nom)).label("count"),
-                getattr(Taxref, category).label("category_value"),
+                getattr(Taxref, rank).label("rank_value"),
             )
             .select_from(Synthese)
             .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
             .where(Synthese.id_dataset == imprt.id_dataset, Synthese.source == source)
-            .group_by(getattr(Taxref, category))
+            .group_by(getattr(Taxref, rank))
         )
         results = db.session.execute(query).all()
 
         # Extract the rank values and counts
-        category_values = [r[1] for r in results]
+        rank_values = [r[1] for r in results]
         count = [r[0] for r in results]
 
         # Generate the bar plot
-        fig = figure(x_range=category_values, title=f"Distribution des taxons (selon {category})")
-        fig.vbar(x=category_values, top=count, width=0.9)
+        fig = figure(x_range=rank_values, title=f"Distribution des taxons (selon le rang = {rank})")
+        fig.vbar(x=rank_values, top=count, width=0.9)
 
         # Hide the plot for non-kingdom ranks
-        if category != "regne":
+        if rank != "regne":
             fig.visible = False
 
         # Add the plot to the list of figures
@@ -425,7 +425,7 @@ def report_plot(imprt: TImports) -> Row:
     select_plot = Select(
         title="Catégorie",
         value=(0, "regne"),
-        options=[(ix, rank) for ix, rank in enumerate(taxon_categories)],
+        options=[(ix, rank) for ix, rank in enumerate(taxon_ranks)],
     )
 
     # Update the visibility of the plots when the category selector changes
