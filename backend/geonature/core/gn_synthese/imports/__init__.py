@@ -423,7 +423,7 @@ def report_plot(imprt: TImports) -> Row:
     # Generate the layout with the plots and the rank selector
     plot_area = column(figures)
     select_plot = Select(
-        title="Catégorie",
+        title="Rang",
         value=(0, "regne"),
         options=[(ix, rank) for ix, rank in enumerate(taxon_ranks)],
     )
