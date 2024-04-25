@@ -12,8 +12,8 @@ from geonature.core.imports.models import BibFields
 from .utils import dfcheck
 
 
-def convert_to_datetime(value):
-    value = value.strip()
+def convert_to_datetime(value_raw):
+    value = value_raw.strip()
     value = re.sub("[ ]+", " ", value)
     value = re.sub("[/.:]", "-", value)
     date_formats = [
@@ -37,6 +37,12 @@ def convert_to_datetime(value):
             return datetime.strptime(value, fmt)
         except ValueError:
             continue
+
+    try:
+        return datetime.fromisoformat(value_raw)
+    except:
+        pass
+
     return None
 
 
