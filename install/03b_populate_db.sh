@@ -46,7 +46,7 @@ then
     --source-name "Référentiel sensibilité TAXREF v17 20240325" \
     --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip \
     --zipfile RefSensibiliteV17_20240325.zip \
-    --csvfile RefSensibiliteV17_20240325/RefSensibilite_17.csv  \
+    --csvfile RefSensibilite_17.csv  \
     --encoding=iso-8859-15
     geonature sensitivity refresh-rules-cache
 fi
