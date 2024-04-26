@@ -3,7 +3,7 @@ from math import ceil
 from apptax.taxonomie.models import Taxref
 from flask import current_app
 import sqlalchemy as sa
-from sqlalchemy import func, distinct
+from sqlalchemy import func, distinct, select
 
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
@@ -356,6 +356,59 @@ def remove_data_from_synthese(imprt):
         with start_sentry_child(op="task", description="clean imported data"):
             Synthese.query.filter(Synthese.source == source).delete()
         db.session.delete(source)
+
+
+def get_name_geom_4326_field():
+    """Return the name of the field that contains the 4326 geometry.
+    For synthese, the name is actually the same for import transient table
+    `gn_imports.t_imports_synthese` and for the destination table `gn_synthese.synthese`.
+    Returns
+    -------
+    str
+        The name of the field
+    """
+    return "the_geom_4326"
+
+
+def get_where_clause_id_import(imprt):
+    """Construct a WHERE clause to filter data for the import.
+    Data is in :
+    - import transient table for an 'in-progress' import
+    - destination table for a 'done' import
+    Used in function `get_valid_bbox`.
+    Parameters
+    ----------
+    imprt : geonature.core.imports.models.TImport
+        The import object containing the import ID and destination.
+    Returns
+    -------
+    where_clause : sqlalchemy.BinaryExpression
+        A SQLAlchemy BinaryExpression that represents the WHERE clause.
+    """
+    where_clause = None
+    id_import = imprt.id_import
+    destination_import = imprt.destination
+
+    # If import is still in-progress data is retrieved from the import transient table,
+    #   otherwise the import is done and data is retrieved from the destination table
+    if imprt.loaded:
+        # Retrieve the import transient table ("t_imports_synthese")
+        transient_table = destination_import.get_transient_table()
+        # Set the WHERE clause
+        where_clause = transient_table.c["id_import"] == id_import
+    else:
+        # There is no 'id_import' field in the destination table 'synthese', must retrieve
+        #   the corresponding `id_source` from the table "t_sources"
+        id_source = db.session.scalar(
+            select(TSources.id_source).where(TSources.name_source == f"Import(id={id_import})")
+        )
+        # Retrieve the destination table ("synthese")
+        entity = Entity.query.filter_by(destination=destination_import, code="observation").one()
+        destination_table = entity.get_destination_table()
+        # Set the WHERE clause
+        where_clause = destination_table.c["id_source"] == id_source
+
+    return where_clause
 
 
 def report_plot(imprt: TImports) -> Row:
