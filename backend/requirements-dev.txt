@@ -58,6 +58,8 @@ blinker==1.7.0
     # via
     #   flask
     #   flask-mail
+bokeh==3.4.1
+    # via -r requirements-common.in
 boto3==1.29.1
     # via taxhub
 botocore==1.32.1
@@ -107,6 +109,8 @@ click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
+contourpy==1.2.1
+    # via bokeh
 cryptography==41.0.5
     # via authlib
 cssselect2==0.7.0
@@ -218,7 +222,9 @@ itsdangerous==2.1.2
     #   flask
     #   flask-wtf
 jinja2==3.1.2
-    # via flask
+    # via
+    #   bokeh
+    #   flask
 jmespath==1.0.1
     # via
     #   boto3
@@ -258,21 +264,28 @@ marshmallow-sqlalchemy==0.29.0
 munch==4.0.0
     # via fiona
 numpy==1.26.2
-    # via pandas
-    # via shapely
+    # via
+    #   bokeh
+    #   contourpy
+    #   pandas
+    #   shapely
 packaging==23.2
     # via
     #   -r requirements-common.in
+    #   bokeh
     #   flask-marshmallow
     #   geoalchemy2
     #   gunicorn
     #   marshmallow
     #   marshmallow-sqlalchemy
 pandas==2.1.4
-    # via -r requirements-common.in
+    # via
+    #   -r requirements-common.in
+    #   bokeh
 pillow==10.1.0
     # via
     #   -r requirements-common.in
+    #   bokeh
     #   cairosvg
     #   taxhub
     #   weasyprint
@@ -298,8 +311,8 @@ python-dateutil==2.8.2
     #   -r requirements-common.in
     #   botocore
     #   celery
-    #   usershub
     #   pandas
+    #   usershub
     #   utils-flask-sqlalchemy
 python-dotenv==1.0.0
     # via
@@ -310,6 +323,8 @@ python-dotenv==1.0.0
     #   usershub
 pytz==2023.3.post1
     # via pandas
+pyyaml==6.0.1
+    # via bokeh
 redis==5.0.1
     # via celery
 requests==2.31.0
@@ -350,6 +365,8 @@ tinycss2==1.2.1
     #   weasyprint
 toml==0.10.2
     # via -r requirements-common.in
+tornado==6.4
+    # via bokeh
 typing-extensions==4.8.0
     # via
     #   alembic
@@ -399,6 +416,8 @@ wtforms-sqlalchemy==0.3
     # via -r requirements-common.in
 xmltodict==0.13.0
     # via -r requirements-common.in
+xyzservices==2024.4.0
+    # via bokeh
 zipp==3.17.0
     # via importlib-metadata
 
