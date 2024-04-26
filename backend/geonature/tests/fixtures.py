@@ -35,7 +35,11 @@ from geonature.core.gn_synthese.models import (
     TReport,
     TSources,
 )
-from geonature.core.sensitivity.models import SensitivityRule, cor_sensitivity_area
+from geonature.core.sensitivity.models import (
+    CorSensitivityCriteria,
+    SensitivityRule,
+    cor_sensitivity_area,
+)
 from geonature.utils.env import db
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from pypnusershub.db.models import Application, Organisme
@@ -592,6 +596,9 @@ def synthese_sensitive_data(app, users, datasets, source):
     sensitivity_rule = db.session.execute(
         sa.select(SensitivityRule)
         .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
+        .join(
+            CorSensitivityCriteria, SensitivityRule.id == CorSensitivityCriteria.id_sensitivity_rule
+        )
         .join(LAreas, cor_sensitivity_area.c.id_area == LAreas.id_area)
         .where(SensitivityRule.active == True)
         .limit(1)
