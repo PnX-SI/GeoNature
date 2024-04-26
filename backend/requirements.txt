@@ -233,13 +233,13 @@ pyphen==0.14.0
     # via weasyprint
 pypn-habref-api==0.4.1
     # via -r requirements-dependencies.in
-pypn-ref-geo==1.5.1
+pypn-ref-geo==1.5.2
     # via
     #   -r requirements-dependencies.in
     #   taxhub
-pypnnomenclature==1.6.1
+pypnnomenclature==1.6.2
     # via -r requirements-dependencies.in
-pypnusershub==2.1.3
+pypnusershub==2.1.4
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -288,7 +288,7 @@ sqlalchemy==1.4.51
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==1.13.3
+taxhub==1.14.0
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
