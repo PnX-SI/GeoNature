@@ -12,6 +12,7 @@ from shapely.geometry import Point
 
 from geonature.core.imports.models import TImports, Destination, BibFields
 from geonature.core.imports.checks.dataframe import *
+from geonature.core.imports.checks.dataframe.types import convert_to_datetime
 from geonature.core.imports.checks.dataframe.geography import (
     check_wkt_inside_area_id,
     check_geometry_inside_l_areas,
@@ -307,6 +308,39 @@ class TestChecks:
                 columns=[fields[name].dest_field for name in ("datetime_min", "datetime_max")],
             ),
         )
+
+    def test_convert_to_datetime(self):
+        dates = [
+            # only date
+            ["01/02/2020", datetime(2020, 2, 1)],
+            ["01-02-2020", datetime(2020, 2, 1)],
+            ["01:02:2020", datetime(2020, 2, 1)],
+            ["2020/02/01", datetime(2020, 2, 1)],
+            ["2020-02-01", datetime(2020, 2, 1)],
+            ["2020:02:01", datetime(2020, 2, 1)],
+            # date + hour
+            ["01/02/2020 12", datetime(2020, 2, 1, 12)],
+            ["01/02/2020 12:00", datetime(2020, 2, 1, 12, 0)],
+            ["01/02/2020 12:00:54", datetime(2020, 2, 1, 12, 0, 54)],
+            ["01/02/2020 12:00:54:987654", datetime(2020, 2, 1, 12, 0, 54, 987654)],
+            # date + hour: spacing
+            ["01/02/2020 12:00:54", datetime(2020, 2, 1, 12, 0, 54)],
+            ["01/02/2020                          12:00:54", datetime(2020, 2, 1, 12, 0, 54)],
+            # ISO format
+            ["2020-02-01", datetime(2020, 2, 1)],
+            ["2020-02-01T12", datetime(2020, 2, 1, 12)],
+            ["2020-02-01T12:00", datetime(2020, 2, 1, 12, 0)],
+            ["2020-02-01T12:00:54", datetime(2020, 2, 1, 12, 0, 54)],
+            ["2020-02-01T12:00:54.987654", datetime(2020, 2, 1, 12, 0, 54, 987654)],
+            # fail
+            ["abc", None],
+            ["20-20-02", None],
+            ["2020-02-00000001T12:00", None],
+            ["2020-02-01T:00:54.9876540000000000", None],
+        ]
+
+        for date in dates:
+            assert convert_to_datetime(date[0]) == date[1]
 
     def test_dates_parsing(self, imprt):
         entity = imprt.destination.entities[0]
