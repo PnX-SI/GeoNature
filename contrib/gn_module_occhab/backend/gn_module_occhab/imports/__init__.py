@@ -307,3 +307,49 @@ def remove_data_from_occhab(imprt):
         r = db.session.execute(
             sa.delete(destination_table).where(destination_table.c.id_import == imprt.id_import)
         )
+
+
+def get_name_geom_4326_field():
+    """Return the name of the field that contains the 4326 geometry.
+    For occhab, the name is actually the same for import transient table
+    `gn_imports.t_imports_occhab` and for the destination table `pr_occhab.t_stations`.
+    Returns
+    -------
+    str
+        The name of the field
+    """
+    return "geom_4326"
+
+
+def get_where_clause_id_import(imprt):
+    """Construct a WHERE clause to filter data for the import.
+    Data is in :
+    - import transient table for an 'in-progress' import
+    - destination table for a 'done' import
+    Used in function `get_valid_bbox`.
+    Parameters
+    ----------
+    imprt : geonature.core.imports.models.TImport
+        The import object containing the import ID and destination.
+    Returns
+    -------
+    where_clause : sqlalchemy.BinaryExpression
+        A SQLAlchemy BinaryExpression that represents the WHERE clause.
+    """
+    where_clause = None
+    id_import = imprt.id_import
+    destination_import = imprt.destination
+
+    # If import is still in-progress data is retrieved from the import transient table,
+    #   otherwise the import is done and data is retrieved from the destination table
+    if imprt.loaded:
+        # Retrieve the import transient table ("t_imports_occhab")
+        table_with_data = destination_import.get_transient_table()
+    else:
+        # Retrieve the destination table ("t_stations")
+        entity = Entity.query.filter_by(destination=destination_import, code="station").one()
+        table_with_data = entity.get_destination_table()
+    # Set the WHERE clause
+    where_clause = table_with_data.c["id_import"] == id_import
+
+    return where_clause
