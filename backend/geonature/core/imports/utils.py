@@ -18,7 +18,8 @@ from weasyprint import HTML
 
 from geonature.utils.sentry import start_sentry_child
 from geonature.core.imports.models import ImportUserError, BibFields
-
+from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_synthese.models import TSources
 
 class ImportStep(IntEnum):
     UPLOAD = 1
@@ -102,13 +103,63 @@ def detect_separator(f, encoding):
 
 
 def get_valid_bbox(imprt, entity, geom_4326_field):
-    transient_table = imprt.destination.get_transient_table()
-    stmt = (
-        select(func.ST_AsGeojson(func.ST_Extent(transient_table.c[geom_4326_field.dest_field])))
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(transient_table.c[entity.validity_column] == True)
-    )
+    """Get the valid bounding box for a given import.
+    Parameters
+    ----------
+    imprt : geonature.core.imports.models.TImports
+        The import object.
+    entity : geonature.core.imports.models.Entity
+        The entity object (e.g.: observation, station...).
+    geom_4326_field : geonature.core.imports.models.BibFields
+        The field containing the geometry of the entity in the transient table.
+    Returns
+    -------
+    dict or None
+        The valid bounding box as a JSON object, or None if no valid bounding box.
+    Raises
+    ------
+    NotImplementedError
+        If the destination of the import is not implemented yet (e.g.: 'metadata'...)
+    """
+    # TODO: verify how to assert that an import has data in transient table or not and whether it is related to t_imports.date_end_import or t_imports.loaded fields
+    if imprt.loaded == True:
+        # Compute from entries in the transient table and related to the import
+        transient_table = imprt.destination.get_transient_table()
+        stmt = (
+            select(func.ST_AsGeojson(func.ST_Extent(transient_table.c[geom_4326_field.dest_field])))
+            .where(transient_table.c.id_import == imprt.id_import)
+            .where(transient_table.c[entity.validity_column] == True)
+        )
+    else:
+        # Compute from entries in the destination table and related to the import
+        id_module_import = db.session.execute(
+            select(TModules.id_module).where(TModules.module_code == "IMPORT")
+        ).scalar()
+        # TODO: build a destination-generic query using geom_4326_field.dest_field or another method to retrieve geom field from entity or destination
+        #   Need to handle the filtering by id_import in a generic way, but the logic is different between Synthese (no id_import field, and join needed) and occhab (with id_import field)
+        destination_table = entity.get_destination_table()
+        stmt = None
+        if imprt.destination.code == 'synthese':
+            stmt = (
+                select(
+                    func.ST_AsGeojson(
+                        func.ST_Extent(destination_table.c[geom_4326_field.dest_field])
+                    )
+                )
+                .join(TSources)
+                .where(TSources.id_module == id_module_import)
+                .where(TSources.name_source == f"Import(id={imprt.id_import})")
+            )
+        elif imprt.destination.code == 'occhab':
+            stmt = select(
+                func.ST_AsGeojson(func.ST_Extent(destination_table.c[geom_4326_field.dest_field]))
+            ).where(destination_table.c["id_import"] == imprt.id_import)
+        else:
+            raise NotImplementedError(f"function get_valid_bbox not implemented for an import with destination '{imprt.destination.code}'")
+
     (valid_bbox,) = db.session.execute(stmt).fetchone()
+
+
     if valid_bbox:
         return json.loads(valid_bbox)
 
