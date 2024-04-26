@@ -7,9 +7,8 @@ CHANGELOG
 **🚀 Nouveautés**
 
 - [Synthèse] Possibilité d'ajouter des colonnes supplémentaires à la liste de résultats via le paramètre `ADDITIONAL_COLUMNS_FRONTEND`. Ces champs sont masqués par défaut et controlables depuis l'interface (#2946)
-- [Synthèse] Possiblité d'ajouter des exports personnalisés basé sur des vues SQL via le paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` (#2955)
+- [Synthèse] Possiblité d'ajouter des exports personnalisés basés sur des vues SQL via le paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` (#2955)
 - [DynamicForm] Possibilité de définir une valeur par défaut sur le composant `bool_checkbox` (#2819)
-
 - [Documentation] Simplification, automatisation et documentation du changement de l'URL de l'API de GeoNature au niveau du frontend (#2936)
 - [Configuration] Enrichissement des URI autorisés de connexion à la BDD PostgreSQL (#2947)
 - [TaxHub] Mise à jour de TaxRef (version 17)
@@ -19,13 +18,12 @@ CHANGELOG
 - [Occtax] Correction de l'inversion des valeurs par défaut de 2 nomenclatures (#2822)
 - [Synthèse] Correction du lien de renvoi vers le module de saisie d'une observation (#2907)
 - [Validation] Correction de l'enregistrement d'une validation quand l'utilisateur a des permissions avec une portée limitée (#2958)
-- [OccHab] Prise en compte des permissions utilisateurs dans l'affichage des boutons d'actions (info,édition, suppression) dans la liste de stations du module OccHab (#2942)
+- [Occhab] Prise en compte des permissions utilisateurs dans l'affichage des boutons d'actions (info, édition, suppression) dans la liste de stations du module Occhab (#2942)
 - [MTD] Amélioration des performances de la synchronisation avec le service MTD (#2922)
 - Correction du double chargement des fond de carte (#2902)
-- [Synthèse] Amélioration des performances de la liste des zonages dans les filtres de la synthèse (#2977 + Voir : https://github.com/PnX-SI/RefGeo/pull/22)
-- Correction de la redirection du bouton "Acceuil" (#2934)
+- [Synthèse] Amélioration des performances de la liste des zonages dans les filtres de la synthèse (#2977 & https://github.com/PnX-SI/RefGeo/pull/22)
+- Correction de la redirection du bouton "Accueil" quand GeoNature est déployé sur une URL avec un suffixe (#2934)
 - Correction de la connexion avec le CAS de l'INPN (#2866)
-
 
 **💻 Développement**
 
@@ -34,15 +32,13 @@ CHANGELOG
 - Suppression des branches et ajout d'adresses relatives dans `.gitmodules` (#2959)
 - Lint et doc HTML/CSS (#2890 & #2960)
 - Correction de l'héritage des composants `GenericFormComponent` (#2961)
-- Utilisation de `pytest-benchmark` pour l'évaluation de performances automatisés des routes (#2896)
-- Utilisation de `marshmallow` pour la validation des données renvoyés par la route `get_observations_for_web` et ajout du contrôle de la présence des champs obligatoires (#2950)
+- Utilisation de `pytest-benchmark` pour l'évaluation automatique de performances des routes (#2896)
+- Utilisation de `marshmallow` pour la validation des données renvoyées par la route `get_observations_for_web` et ajout du contrôle de la présence des champs obligatoires (#2950)
 
 - **⚠️ Notes de version**
 
-- Les paramètres de la synthèse permettant de spécifier le nom de certaines colonnes de la vue d'export sont déprécies (`EXPORT_ID_SYNTHESE_COL`, `EXPORT_ID_DIGITISER_COL`, `EXPORT_OBSERVERS_COL`, `EXPORT_GEOJSON_4326_COL`, `EXPORT_GEOJSON_LOCAL_COL`).
+- Les paramètres de la synthèse permettant de spécifier le nom de certaines colonnes de la vue d'export sont dépréciés (`EXPORT_ID_SYNTHESE_COL`, `EXPORT_ID_DIGITISER_COL`, `EXPORT_OBSERVERS_COL`, `EXPORT_GEOJSON_4326_COL`, `EXPORT_GEOJSON_LOCAL_COL`).
 - Si vous aviez surcouché la vue par défaut `gn_synthese.v_synthese_for_export`, il est recommandé de ne plus le faire et de plutôt utiliser le nouveau paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` permettant de se créer ses propres vues d'export personnalisées.
-- Correction de la redirection du bouton "Accueil" quand GeoNature est déployé sur une URL avec un suffixe (#2934)
-- [Occhab] Correction de l'affichage des boutons d'action dans la liste des statuts en fonction des permissions de l'utilisateur connecté (#2942)
 
 
 2.14.0 - Talpa europaea 👓 (2024-02-28)
