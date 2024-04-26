@@ -32,13 +32,8 @@ export class SideNavService {
   }
 
   getHomeItem(): Module {
-    let abs_path = '/';
-    if (window.location.pathname) {
-      // for GeoNature URL like https://demo.geonature.fr/geonature/
-      abs_path = window.location.pathname;
-    }
     return {
-      module_url: abs_path,
+      module_url: '/',
       module_label: 'Accueil',
       module_picto: 'fa-home',
       id_module: 1,
