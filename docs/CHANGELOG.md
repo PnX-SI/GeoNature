@@ -11,7 +11,7 @@ CHANGELOG
 - [DynamicForm] Possibilité de définir une valeur par défaut sur le composant `bool_checkbox` (#2819)
 - [Documentation] Simplification, automatisation et documentation du changement de l'URL de l'API de GeoNature au niveau du frontend (#2936)
 - [Configuration] Enrichissement des URI autorisés de connexion à la BDD PostgreSQL (#2947)
-- [TaxHub] Mise à jour de TaxRef (version 17)
+- [TaxHub] Mise à jour de TaxHub en version 1.14.0, incluant par défaut Taxref v17, BDC statuts v17 et référentiel de sensibilité v17
 
 **🐛 Corrections**
 
@@ -24,6 +24,7 @@ CHANGELOG
 - [Synthèse] Amélioration des performances de la liste des zonages dans les filtres de la synthèse (#2977 & https://github.com/PnX-SI/RefGeo/pull/22)
 - Correction de la redirection du bouton "Accueil" quand GeoNature est déployé sur une URL avec un suffixe (#2934)
 - Correction de la connexion avec le CAS de l'INPN (#2866)
+- Correction d'une mauvaise synchronisation du cookie et du JWT via une MAJ de pypnusershub (PnX-SI/UsersHub-authentification-module#94)
 
 **💻 Développement**
 
@@ -35,10 +36,14 @@ CHANGELOG
 - Utilisation de `pytest-benchmark` pour l'évaluation automatique de performances des routes (#2896)
 - Utilisation de `marshmallow` pour la validation des données renvoyées par la route `get_observations_for_web` et ajout du contrôle de la présence des champs obligatoires (#2950)
 
-- **⚠️ Notes de version**
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
 
 - Les paramètres de la synthèse permettant de spécifier le nom de certaines colonnes de la vue d'export sont dépréciés (`EXPORT_ID_SYNTHESE_COL`, `EXPORT_ID_DIGITISER_COL`, `EXPORT_OBSERVERS_COL`, `EXPORT_GEOJSON_4326_COL`, `EXPORT_GEOJSON_LOCAL_COL`).
-- Si vous aviez surcouché la vue par défaut `gn_synthese.v_synthese_for_export`, il est recommandé de ne plus le faire et de plutôt utiliser le nouveau paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` permettant de se créer ses propres vues d'export personnalisées.
+- Si vous aviez surcouché la vue par défaut `gn_synthese.v_synthese_for_export`, il est recommandé de ne plus le faire et de plutôt utiliser le nouveau paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` permettant de se créer ses propres vues d'export personnalisées. Voir "Export des observations" dans la documentation du module Synthèse (https://docs.geonature.fr/admin-manual.html#module-synthese)
+- Vous pouvez mettre à jour TaxHub en version 1.14.0 (ou plus si compatible) et mettre à jour Taxref en version 17, ainsi que la BDC statuts et le référentiel de sensibilité
+- Vous pouvez mettre à jour UsersHub en version 2.4.2 (ou plus si compatible)
 
 
 2.14.0 - Talpa europaea 👓 (2024-02-28)
