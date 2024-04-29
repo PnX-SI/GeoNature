@@ -39,7 +39,6 @@ from pypnusershub.db.models import User
 from geonature.core.imports.blueprint import blueprint
 from geonature.core.imports.utils import (
     ImportStep,
-    get_valid_bbox,
     detect_encoding,
     detect_separator,
     insert_import_data_in_transient_table,
@@ -465,21 +464,8 @@ def preview_valid_data(scope, imprt):
     if not imprt.processed:
         raise Conflict("Import must have been prepared before executing this action.")
 
-    # FIXME FIXME FIXME
-    if imprt.destination.code == "synthese":
-        code_entity = "observation"
-        name_field_geom_4326 = "the_geom_4326"
-    elif imprt.destination.code == "occhab":
-        code_entity = "station"
-        name_field_geom_4326 = "geom_4326"
-
-    entity = Entity.query.filter_by(destination=imprt.destination, code=code_entity).one()
-    geom_4326_field = BibFields.query.filter_by(
-        destination=imprt.destination, name_field=name_field_geom_4326
-    ).one()
-
     data = {
-        "valid_bbox": get_valid_bbox(imprt, entity, geom_4326_field),
+        "valid_bbox": imprt.destination.import_mixin.compute_bounding_box(imprt),
         "entities": [],
     }
 
@@ -654,7 +640,7 @@ def delete_import(scope, imprt):
     db.session.execute(
         delete(transient_table).where(transient_table.c.id_import == imprt.id_import)
     )
-    imprt.destination.remove_data_from_destination(imprt)
+    imprt.destination.import_mixin.remove_data_from_destination(imprt)
     db.session.delete(imprt)
     db.session.commit()
     return jsonify()
@@ -726,4 +712,4 @@ def get_foreign_key_attr(obj, field: str):
 @permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def report_plot(scope, imprt: TImports):
 
-    return json.dumps(imprt.destination.plot_function(imprt))
+    return json.dumps(imprt.destination.import_mixin.report_plot(imprt))
