@@ -6,7 +6,7 @@ from enum import IntEnum
 from datetime import datetime, timedelta
 
 from flask import current_app, render_template
-from sqlalchemy import func, delete
+from sqlalchemy import delete
 from chardet.universaldetector import UniversalDetector
 from sqlalchemy.sql.expression import select, insert
 import pandas as pd
@@ -18,8 +18,6 @@ from weasyprint import HTML
 
 from geonature.utils.sentry import start_sentry_child
 from geonature.core.imports.models import ImportUserError, BibFields
-from geonature.core.gn_commons.models.base import TModules
-from geonature.core.gn_synthese.models import TSources
 
 
 class ImportStep(IntEnum):
@@ -101,61 +99,6 @@ def detect_separator(f, encoding):
     dialect = csv.Sniffer().sniff(sample)
     f.seek(position)
     return dialect.delimiter
-
-
-def get_valid_bbox(imprt, entity):
-    """Get the valid bounding box for a given import.
-    Parameters
-    ----------
-    imprt : geonature.core.imports.models.TImports
-        The import object.
-    entity : geonature.core.imports.models.Entity
-        The entity object (e.g.: observation, station...).
-    Returns
-    -------
-    dict or None
-        The valid bounding box as a JSON object, or None if no valid bounding box.
-    Raises
-    ------
-    NotImplementedError
-        If the function is not implemented for the destination of the import.
-    """
-    # Retrieve the name of the geom field to retrieve geometries of data from
-    if "get_name_geom_4326_field" not in imprt.destination.module._imports_:
-        raise NotImplementedError(
-            f"function get_valid_bbox not implemented for an import with destination '{imprt.destination.code}, needs `get_name_geom_4326_field` function"
-        )
-    name_geom_4326_field = imprt.destination.module._imports_["get_name_geom_4326_field"]()
-
-    # Retrieve the where clause to filter data for the given import
-    if "get_where_clause_id_import" not in imprt.destination.module._imports_:
-        raise NotImplementedError(
-            f"function get_valid_bbox not implemented for an import with destination '{imprt.destination.code}, needs `get_where_clause_id_import` function"
-        )
-    where_clause_id_import = imprt.destination.module._imports_["get_where_clause_id_import"](imprt)
-
-    # Build the statement to retrieve the valid bounding box
-    statement = None
-    if imprt.loaded == True:
-        # Compute from entries in the transient table and related to the import
-        transient_table = imprt.destination.get_transient_table()
-        statement = (
-            select(func.ST_AsGeojson(func.ST_Extent(transient_table.c[name_geom_4326_field])))
-            .where(where_clause_id_import)
-            .where(transient_table.c[entity.validity_column] == True)
-        )
-    else:
-        # Compute from entries in the destination table and related to the import
-        statement = select(
-            func.ST_AsGeojson(func.ST_Extent(destination_table.c[name_geom_4326_field]))
-        ).where(where_clause_id_import)
-
-    # Execute the statement to eventually retrieve the valid bounding box
-    (valid_bbox,) = db.session.execute(statement).fetchone()
-
-    # Return the valid bounding box or None
-    if valid_bbox:
-        return json.loads(valid_bbox)
 
 
 def preprocess_value(df, field, source_col):

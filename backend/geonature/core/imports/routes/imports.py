@@ -39,7 +39,6 @@ from pypnusershub.db.models import User
 from geonature.core.imports.blueprint import blueprint
 from geonature.core.imports.utils import (
     ImportStep,
-    get_valid_bbox,
     detect_encoding,
     detect_separator,
     insert_import_data_in_transient_table,
@@ -47,6 +46,7 @@ from geonature.core.imports.utils import (
     clean_import,
     generate_pdf_from_template,
 )
+from geonature.core.imports.bbox import get_valid_bbox
 from geonature.core.imports.tasks import do_import_checks, do_import_in_destination
 
 IMPORTS_PER_PAGE = 15
@@ -465,21 +465,8 @@ def preview_valid_data(scope, imprt):
     if not imprt.processed:
         raise Conflict("Import must have been prepared before executing this action.")
 
-    # FIXME FIXME FIXME
-    if imprt.destination.code == "synthese":
-        code_entity = "observation"
-        name_field_geom_4326 = "the_geom_4326"
-    elif imprt.destination.code == "occhab":
-        code_entity = "station"
-        name_field_geom_4326 = "geom_4326"
-
-    entity = Entity.query.filter_by(destination=imprt.destination, code=code_entity).one()
-    geom_4326_field = BibFields.query.filter_by(
-        destination=imprt.destination, name_field=name_field_geom_4326
-    ).one()
-
     data = {
-        "valid_bbox": get_valid_bbox(imprt, entity, geom_4326_field),
+        "valid_bbox": get_valid_bbox(imprt),
         "entities": [],
     }
 

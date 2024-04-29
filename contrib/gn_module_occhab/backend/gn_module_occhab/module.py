@@ -5,7 +5,7 @@ from .imports import (
     check_transient_data,
     import_data_to_occhab,
     remove_data_from_occhab,
-    get_name_geom_4326_field,
+    get_bbox_computation_infos,
     get_where_clause_id_import,
 )
 
@@ -25,6 +25,7 @@ class OcchabModule(TModules):
         "remove_data_from_destination": remove_data_from_occhab,
         "report_plot": distribution_plot,
         "get_name_geom_4326_field": get_name_geom_4326_field,
+        "get_bbox_computation_infos": get_bbox_computation_infos,
         "get_where_clause_id_import": get_where_clause_id_import,
         "statistics_labels": [
             {"key": "station_count", "value": "Nombre de stations importées"},

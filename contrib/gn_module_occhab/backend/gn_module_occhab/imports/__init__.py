@@ -6,6 +6,7 @@ from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
 
 from geonature.core.imports.models import Entity, EntityField, BibFields
+import geonature.core.imports.bbox as bbox
 from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
@@ -309,16 +310,19 @@ def remove_data_from_occhab(imprt):
         )
 
 
-def get_name_geom_4326_field():
-    """Return the name of the field that contains the 4326 geometry.
-    For occhab, the name is actually the same for import transient table
-    `gn_imports.t_imports_occhab` and for the destination table `pr_occhab.t_stations`.
+def get_bbox_computation_infos():
+    """Return the infos that will be used for the bbox computation.
+    For occhab, the bbox computation is relevant. The entity is "station", and the name_field is actually the same for import transient table `gn_imports.t_imports_synthese` and for the destination table `gn_synthese.synthese`.
     Returns
     -------
-    str
-        The name of the field
+    dict
+        A dictionary indexed by the keys from bbox.Key enum
     """
-    return "geom_4326"
+    return {
+        bbox.Key.IS_RELEVANT: True,
+        bbox.Key.NAME_FIELD: "geom_4326",
+        bbox.Key.CODE_ENTITY: "station",
+    }
 
 
 def get_where_clause_id_import(imprt):
