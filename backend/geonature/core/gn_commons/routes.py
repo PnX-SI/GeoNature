@@ -88,9 +88,7 @@ def list_modules():
         if any(module_dict["cruved"].values()):
             module_allowed = True
         if module.active_frontend:
-            module_dict["module_url"] = "{}/#/{}".format(
-                current_app.config["URL_APPLICATION"], module.module_path
-            )
+            module_dict["module_url"] = module.module_path
         else:
             module_dict["module_url"] = module.module_external_url
         module_dict["module_objects"] = {}
