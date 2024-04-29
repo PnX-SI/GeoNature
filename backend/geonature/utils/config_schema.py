@@ -6,7 +6,15 @@ import os
 
 from warnings import warn
 
-from marshmallow import Schema, fields, validates_schema, ValidationError, post_load, pre_load
+from marshmallow import (
+    INCLUDE,
+    Schema,
+    fields,
+    validates_schema,
+    ValidationError,
+    post_load,
+    pre_load,
+)
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
@@ -571,7 +579,7 @@ class GnGeneralSchemaConf(Schema):
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
     AUTHENTICATION = fields.Nested(
-        AuthenticationConfig, load_default=AuthenticationConfig().load({})
+        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
     )
 
     # @validates_schema

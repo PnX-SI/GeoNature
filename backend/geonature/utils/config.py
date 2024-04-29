@@ -21,7 +21,7 @@ from geonature.utils.errors import ConfigError
 __all__ = ["config", "config_frontend"]
 
 
-def load_config_provider(config: ChainMap, config_toml):
+def validate_provider_config(config_toml):
 
     for path_provider in config["AUTHENTICATION"]["PROVIDERS"]:
         import_path, class_name = (
@@ -30,21 +30,18 @@ def load_config_provider(config: ChainMap, config_toml):
         )
         module = importlib.import_module(import_path)
         class_ = getattr(module, class_name)
-        name_schema, schema_unique_provider = class_.configuration_schema()
-        schema = Schema.from_dict(
-            dict(
-                CONFIG=fields.List(
-                    fields.Nested(schema_unique_provider),
-                )
-            ),
-            name=name_schema,
+        schema_unique_provider = class_.configuration_schema()
+        # schema = Schema.from_dict(
+        #     dict(
+        #         CONFIG=fields.List(
+        #             fields.Nested(schema_unique_provider),
+        #         )
+        #     ),
+        #     name=class_.name,
+        # )
+        schema_unique_provider(many=True).load(
+            config_toml["AUTHENTICATION"][class_.name], unknown=EXCLUDE
         )
-
-        config["AUTHENTICATION"]["PROVIDERS_CONFIG"][name_schema] = schema().load(
-            config_toml, unknown=EXCLUDE
-        )
-
-    return config
 
 
 # Load config from GEONATURE_* env vars and from GEONATURE_SETTINGS python module (if any)
@@ -54,6 +51,7 @@ if "GEONATURE_SETTINGS" in os.environ:
     config_programmatic.from_object(os.environ["GEONATURE_SETTINGS"])
 
 # Load toml file and override with env & py config
+
 config_toml = load_toml(CONFIG_FILE) if CONFIG_FILE else {}
 config_toml.update(config_programmatic)
 
@@ -72,7 +70,7 @@ config_default = {
 
 config = ChainMap({}, config_programmatic, config_backend, config_frontend, config_default)
 
-config = load_config_provider(config, config_toml)
+validate_provider_config(config_toml)
 print(config["AUTHENTICATION"])
 
 api_uri = urlsplit(config["API_ENDPOINT"])
