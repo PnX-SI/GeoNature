@@ -49,9 +49,17 @@ Attributes
 
 .. py:function:: sync_af(af)
 
-   Will create or update a given AF according to UUID.
+   Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.
 
-   :param af: dict AF infos
+   Parameters
+   ----------
+   af : dict
+       AF infos.
+
+   Returns
+   -------
+   TAcquisitionFramework
+       The updated or inserted acquisition framework.
 
 
 .. py:function:: add_or_update_organism(uuid, nom, email)

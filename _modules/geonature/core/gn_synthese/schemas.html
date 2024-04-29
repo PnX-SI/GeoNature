@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geonature.core.gn_synthese.schemas &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -84,9 +82,17 @@
              
   <h1>Code source de geonature.core.gn_synthese.schemas</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">ma</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
 
 <span class="kn">from</span> <span class="nn">geonature.core.gn_commons.schemas</span> <span class="kn">import</span> <span class="n">ModuleSchema</span><span class="p">,</span> <span class="n">MediaSchema</span><span class="p">,</span> <span class="n">TValidationSchema</span>
-<span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.models</span> <span class="kn">import</span> <span class="n">BibReportsTypes</span><span class="p">,</span> <span class="n">TReport</span><span class="p">,</span> <span class="n">TSources</span><span class="p">,</span> <span class="n">Synthese</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BibReportsTypes</span><span class="p">,</span>
+    <span class="n">TReport</span><span class="p">,</span>
+    <span class="n">TSources</span><span class="p">,</span>
+    <span class="n">Synthese</span><span class="p">,</span>
+    <span class="n">VSyntheseForWebApp</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.synthese_config</span> <span class="kn">import</span> <span class="n">MANDATORY_COLUMNS</span>
 
 <span class="kn">from</span> <span class="nn">pypn_habref_api.schemas</span> <span class="kn">import</span> <span class="n">HabrefSchema</span>
 <span class="kn">from</span> <span class="nn">pypnusershub.schemas</span> <span class="kn">import</span> <span class="n">UserSchema</span>

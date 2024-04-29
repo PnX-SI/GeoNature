@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geonature.core.gn_commons.routes &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -181,9 +179,7 @@
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;cruved&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
             <span class="n">module_allowed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">active_frontend</span><span class="p">:</span>
-            <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/#/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">],</span> <span class="n">module</span><span class="o">.</span><span class="n">module_path</span>
-            <span class="p">)</span>
+            <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">module_path</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">module_external_url</span>
         <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_objects&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>

@@ -25,6 +25,7 @@ Classes
 
    geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor
    geonature.core.gn_meta.mtd.CorDatasetActor
+   geonature.core.gn_meta.mtd.TAcquisitionFramework
    geonature.core.gn_meta.mtd.MTDInstanceApi
    geonature.core.gn_meta.mtd.INPNCAS
 
@@ -60,7 +61,7 @@ Attributes
    geonature.core.gn_meta.mtd.formatter
 
 
-.. py:function:: insert_user_and_org(info_user)
+.. py:function:: insert_user_and_org(info_user, update_user_organism: bool = True)
 
 
 .. py:class:: CorAcquisitionFrameworkActor
@@ -177,6 +178,199 @@ Attributes
 
 
 
+.. py:class:: TAcquisitionFramework
+
+
+   Bases: :py:obj:`geonature.core.gn_meta.models.commons.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 't_acquisition_frameworks'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_acquisition_framework
+
+      
+
+   .. py:attribute:: unique_acquisition_framework_id
+
+      
+
+   .. py:attribute:: acquisition_framework_name
+
+      
+
+   .. py:attribute:: acquisition_framework_desc
+
+      
+
+   .. py:attribute:: id_nomenclature_territorial_level
+
+      
+
+   .. py:attribute:: territory_desc
+
+      
+
+   .. py:attribute:: keywords
+
+      
+
+   .. py:attribute:: id_nomenclature_financing_type
+
+      
+
+   .. py:attribute:: target_description
+
+      
+
+   .. py:attribute:: ecologic_or_geologic_target
+
+      
+
+   .. py:attribute:: acquisition_framework_parent_id
+
+      
+
+   .. py:attribute:: is_parent
+
+      
+
+   .. py:attribute:: opened
+
+      
+
+   .. py:attribute:: id_digitizer
+
+      
+
+   .. py:attribute:: acquisition_framework_start_date
+
+      
+
+   .. py:attribute:: acquisition_framework_end_date
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:attribute:: initial_closing_date
+
+      
+
+   .. py:attribute:: creator
+
+      
+
+   .. py:attribute:: nomenclature_territorial_level
+
+      
+
+   .. py:attribute:: nomenclature_financing_type
+
+      
+
+   .. py:attribute:: cor_af_actor
+
+      
+
+   .. py:attribute:: cor_objectifs
+
+      
+
+   .. py:attribute:: cor_volets_sinp
+
+      
+
+   .. py:attribute:: cor_territories
+
+      
+
+   .. py:attribute:: bibliographical_references
+
+      
+
+   .. py:attribute:: t_datasets
+
+      
+
+   .. py:attribute:: datasets
+
+      
+
+   .. py:method:: user_actors()
+
+
+   .. py:method:: organism_actors()
+
+
+   .. py:method:: is_deletable()
+
+
+   .. py:method:: has_instance_permission(scope, _through_ds=True)
+
+
+   .. py:method:: get_id(uuid_af)
+      :staticmethod:
+
+      return the acquisition framework's id
+      from its UUID if exist or None
+
+
+   .. py:method:: get_user_af(user, only_query=False, only_user=False)
+      :staticmethod:
+
+      get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
+      param:
+        - user from TRole model
+        - only_query: boolean (return the query not the id_datasets allowed if true)
+        - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
+
+      return: a list of id_dataset or a query
+
+
+   .. py:method:: _get_read_scope(user=None)
+      :classmethod:
+
+
+   .. py:method:: filter_by_scope(scope, *, query, user=None)
+      :classmethod:
+
+
+   .. py:method:: filter_by_readable(*, query, user=None)
+      :classmethod:
+
+      Return the afs where the user has autorization via its CRUVED
+
+
+   .. py:method:: filter_by_areas(areas, *, query)
+      :classmethod:
+
+      Filter meta by areas
+
+
+   .. py:method:: filter_by_params(params={}, *, _ds_search=True, query=None)
+      :classmethod:
+
+
+
 .. py:data:: config
 
    
@@ -199,9 +393,17 @@ Attributes
 
 .. py:function:: sync_af(af)
 
-   Will create or update a given AF according to UUID.
+   Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.
 
-   :param af: dict AF infos
+   Parameters
+   ----------
+   af : dict
+       AF infos.
+
+   Returns
+   -------
+   TAcquisitionFramework
+       The updated or inserted acquisition framework.
 
 
 .. py:function:: sync_ds(ds, cd_nomenclatures)
@@ -260,6 +462,11 @@ Attributes
 
       
 
+   .. py:attribute:: af_user_path
+      :value: '/mtd/cadre/export/xml/GetRecordsByUserId?id={ID_ROLE}'
+
+      
+
    .. py:attribute:: single_af_path
       :value: '/mtd/cadre/export/xml/GetRecordById?id={ID_AF}'
 
@@ -285,8 +492,37 @@ Attributes
 
    .. py:method:: get_ds_user_list()
 
+      Retrieve the list of of datasets (ds) for the user.
 
-   .. py:method:: get_user_af_list(af_uuid)
+      Returns
+      -------
+      list
+          A list of datasets (ds) for the user.
+
+
+   .. py:method:: get_list_af_for_user()
+
+      Retrieve a list of acquisition frameworks (af) for the user.
+
+      Returns
+      -------
+      list
+          A list of acquisition frameworks for the user.
+
+
+   .. py:method:: get_single_af(af_uuid)
+
+      Return a single acquistion framework based on its uuid.
+
+      Parameters
+      ----------
+      af_uuid : str
+          uuid of the acquisition framework
+
+      Returns
+      -------
+      dict
+          acquisition framework data
 
 
 
@@ -340,8 +576,12 @@ Attributes
    Method to trigger global MTD sync.
 
 
-.. py:function:: sync_af_and_ds_by_user(id_role)
+.. py:function:: sync_af_and_ds_by_user(id_role, id_af=None)
 
-   Method to trigger MTD sync on user authent.
+   Method to trigger MTD sync on user authentication.
+
+   Args:
+       id_role (int): The ID of the role (group or user).
+       id_af (str, optional): The ID of the AF (Acquisition Framework). Defaults to None.
 
 

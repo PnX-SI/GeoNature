@@ -222,10 +222,14 @@ Attributes
    .. :quickref: Metadata;
 
 
-.. py:function:: mtd_sync(id_role)
+.. py:function:: mtd_sync(id_role, id_af)
 
-   Trigger global sync or a sync for a given user only.
+   
+   Triggers :
+   - global sync for instance
+   - a sync for a given user only (if id_role is provided)
+   - a sync for a given AF (Acquisition Framework) only (if id_af is provided). NOTE: the AF should in this case already exist in the database, and only datasets associated to this AF will be retrieved
 
-   :param id_role: user id
+   NOTE: if both id_role and id_af are provided, only the datasets possibly associated to both the AF and the user will be retrieved.
 
 

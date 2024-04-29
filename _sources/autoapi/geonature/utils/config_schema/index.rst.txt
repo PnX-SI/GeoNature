@@ -36,6 +36,7 @@ Classes
    geonature.utils.config_schema.MetadataConfig
    geonature.utils.config_schema.GnPySchemaConf
    geonature.utils.config_schema.GnFrontEndConf
+   geonature.utils.config_schema.ExportObservationSchema
    geonature.utils.config_schema.Synthese
    geonature.utils.config_schema.MapConfig
    geonature.utils.config_schema.TaxHub
@@ -70,10 +71,12 @@ Attributes
    :param data_key: The name of the dict key in the external representation, i.e.
        the input of `load` and the output of `dump`.
        If `None`, the key will match the name of the field.
-   :param attribute: The name of the attribute to get the value from when serializing.
-       If `None`, assumes the attribute has the same name as the field.
+   :param attribute: The name of the key/attribute in the internal representation, i.e.
+       the output of `load` and the input of `dump`.
+       If `None`, the key/attribute will match the name of the field.
        Note: This should only be used for very specific use cases such as
-       outputting multiple fields for a single attribute. In most cases,
+       outputting multiple fields for a single attribute, or using keys/attributes
+       that are invalid variable names, unsuitable for field names. In most cases,
        you should use ``data_key`` instead.
    :param validate: Validator or collection of validators that are called
        during deserialization. Validator takes a field's input value as
@@ -1717,6 +1720,86 @@ Attributes
       
 
 
+.. py:class:: ExportObservationSchema(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: label
+
+      
+
+   .. py:attribute:: view_name
+
+      
+
+   .. py:attribute:: geojson_4326_field
+
+      
+
+   .. py:attribute:: geojson_local_field
+
+      
+
+
 .. py:class:: Synthese(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
 
 
@@ -1812,15 +1895,19 @@ Attributes
 
       
 
-   .. py:attribute:: COLUMNS_API_SYNTHESE_WEB_APP
-
-      
-
    .. py:attribute:: LIST_COLUMNS_FRONTEND
 
       
 
+   .. py:attribute:: ADDITIONAL_COLUMNS_FRONTEND
+
+      
+
    .. py:attribute:: EXPORT_COLUMNS
+
+      
+
+   .. py:attribute:: EXPORT_OBSERVATIONS_CUSTOM_VIEWS
 
       
 
@@ -1927,6 +2014,9 @@ Attributes
    .. py:attribute:: BLUR_SENSITIVE_OBSERVATIONS
 
       
+
+   .. py:method:: warn_deprecated(data, **kwargs)
+
 
 
 .. py:data:: BASEMAP

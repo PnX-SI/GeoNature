@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<html class="writer-html5" lang="fr" >
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geonature.core.auth.routes &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -71,9 +69,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
 </ul>
 </li>
@@ -125,7 +120,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.auth.routes.get_user_from_id_inpn_ws" title="geonature.core.auth.routes.get_user_from_id_inpn_ws"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_user_from_id_inpn_ws</span></code></a>(id_user)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.auth.routes.insert_user_and_org" title="geonature.core.auth.routes.insert_user_and_org"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_user_and_org</span></code></a>(info_user)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.auth.routes.insert_user_and_org" title="geonature.core.auth.routes.insert_user_and_org"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_user_and_org</span></code></a>(info_user[, update_user_organism])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -174,7 +169,7 @@ when the user logout we need clear the session to get the new cruved session</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.auth.routes.insert_user_and_org">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.auth.routes.</span></span><span class="sig-name descname"><span class="pre">insert_user_and_org</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/auth/routes.html#insert_user_and_org"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.auth.routes.insert_user_and_org" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">geonature.core.auth.routes.</span></span><span class="sig-name descname"><span class="pre">insert_user_and_org</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_user_organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/auth/routes.html#insert_user_and_org"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.auth.routes.insert_user_and_org" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>

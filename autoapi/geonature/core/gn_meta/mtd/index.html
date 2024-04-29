@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<html class="writer-html5" lang="fr" >
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geonature.core.gn_meta.mtd &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -71,9 +69,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
 </ul>
 </li>
@@ -131,10 +126,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.CorDatasetActor" title="geonature.core.gn_meta.mtd.CorDatasetActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorDatasetActor</span></code></a></p></td>
 <td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.MTDInstanceApi" title="geonature.core.gn_meta.mtd.MTDInstanceApi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MTDInstanceApi</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework" title="geonature.core.gn_meta.mtd.TAcquisitionFramework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TAcquisitionFramework</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.MTDInstanceApi" title="geonature.core.gn_meta.mtd.MTDInstanceApi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MTDInstanceApi</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.INPNCAS" title="geonature.core.gn_meta.mtd.INPNCAS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INPNCAS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.INPNCAS" title="geonature.core.gn_meta.mtd.INPNCAS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INPNCAS</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -144,14 +142,14 @@
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.insert_user_and_org" title="geonature.core.gn_meta.mtd.insert_user_and_org"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_user_and_org</span></code></a>(info_user)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.insert_user_and_org" title="geonature.core.gn_meta.mtd.insert_user_and_org"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_user_and_org</span></code></a>(info_user[, update_user_organism])</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.associate_actors" title="geonature.core.gn_meta.mtd.associate_actors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">associate_actors</span></code></a>(actors, CorActor, pk_name, pk_value)</p></td>
 <td><p>Associate actor and DS or AF according to CorActor value.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_af" title="geonature.core.gn_meta.mtd.sync_af"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_af</span></code></a>(af)</p></td>
-<td><p>Will create or update a given AF according to UUID.</p></td>
+<td><p>Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_ds" title="geonature.core.gn_meta.mtd.sync_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_ds</span></code></a>(ds, cd_nomenclatures)</p></td>
 <td><p>Will create or update a given DS according to UUID.</p></td>
@@ -174,8 +172,8 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_af_and_ds" title="geonature.core.gn_meta.mtd.sync_af_and_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_af_and_ds</span></code></a>()</p></td>
 <td><p>Method to trigger global MTD sync.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_af_and_ds_by_user" title="geonature.core.gn_meta.mtd.sync_af_and_ds_by_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_af_and_ds_by_user</span></code></a>(id_role)</p></td>
-<td><p>Method to trigger MTD sync on user authent.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_af_and_ds_by_user" title="geonature.core.gn_meta.mtd.sync_af_and_ds_by_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_af_and_ds_by_user</span></code></a>(id_role[, id_af])</p></td>
+<td><p>Method to trigger MTD sync on user authentication.</p></td>
 </tr>
 </tbody>
 </table>
@@ -200,7 +198,7 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.insert_user_and_org">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">insert_user_and_org</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/auth/routes.html#insert_user_and_org"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.insert_user_and_org" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">insert_user_and_org</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_user_organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/auth/routes.html#insert_user_and_org"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.insert_user_and_org" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
@@ -335,6 +333,241 @@ already created declarative model class as <code class="docutils literal notrans
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">TAcquisitionFramework</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.gn_meta.models.commons.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_acquisition_frameworks'</span></em><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.id_acquisition_framework">
+<span class="sig-name descname"><span class="pre">id_acquisition_framework</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.id_acquisition_framework" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.unique_acquisition_framework_id">
+<span class="sig-name descname"><span class="pre">unique_acquisition_framework_id</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.unique_acquisition_framework_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_name">
+<span class="sig-name descname"><span class="pre">acquisition_framework_name</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_desc">
+<span class="sig-name descname"><span class="pre">acquisition_framework_desc</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.id_nomenclature_territorial_level">
+<span class="sig-name descname"><span class="pre">id_nomenclature_territorial_level</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.id_nomenclature_territorial_level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.territory_desc">
+<span class="sig-name descname"><span class="pre">territory_desc</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.territory_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.keywords">
+<span class="sig-name descname"><span class="pre">keywords</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.keywords" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.id_nomenclature_financing_type">
+<span class="sig-name descname"><span class="pre">id_nomenclature_financing_type</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.id_nomenclature_financing_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.target_description">
+<span class="sig-name descname"><span class="pre">target_description</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.target_description" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.ecologic_or_geologic_target">
+<span class="sig-name descname"><span class="pre">ecologic_or_geologic_target</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.ecologic_or_geologic_target" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_parent_id">
+<span class="sig-name descname"><span class="pre">acquisition_framework_parent_id</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_parent_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.is_parent">
+<span class="sig-name descname"><span class="pre">is_parent</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.is_parent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.opened">
+<span class="sig-name descname"><span class="pre">opened</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.opened" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.id_digitizer">
+<span class="sig-name descname"><span class="pre">id_digitizer</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.id_digitizer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_start_date">
+<span class="sig-name descname"><span class="pre">acquisition_framework_start_date</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_start_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_end_date">
+<span class="sig-name descname"><span class="pre">acquisition_framework_end_date</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.acquisition_framework_end_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.initial_closing_date">
+<span class="sig-name descname"><span class="pre">initial_closing_date</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.initial_closing_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.creator">
+<span class="sig-name descname"><span class="pre">creator</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.creator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.nomenclature_territorial_level">
+<span class="sig-name descname"><span class="pre">nomenclature_territorial_level</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.nomenclature_territorial_level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.nomenclature_financing_type">
+<span class="sig-name descname"><span class="pre">nomenclature_financing_type</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.nomenclature_financing_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.cor_af_actor">
+<span class="sig-name descname"><span class="pre">cor_af_actor</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.cor_af_actor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.cor_objectifs">
+<span class="sig-name descname"><span class="pre">cor_objectifs</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.cor_objectifs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.cor_volets_sinp">
+<span class="sig-name descname"><span class="pre">cor_volets_sinp</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.cor_volets_sinp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.cor_territories">
+<span class="sig-name descname"><span class="pre">cor_territories</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.cor_territories" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.bibliographical_references">
+<span class="sig-name descname"><span class="pre">bibliographical_references</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.bibliographical_references" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.t_datasets">
+<span class="sig-name descname"><span class="pre">t_datasets</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.t_datasets" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.datasets">
+<span class="sig-name descname"><span class="pre">datasets</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.datasets" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.user_actors">
+<span class="sig-name descname"><span class="pre">user_actors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.user_actors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.user_actors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.organism_actors">
+<span class="sig-name descname"><span class="pre">organism_actors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.organism_actors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.organism_actors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.is_deletable">
+<span class="sig-name descname"><span class="pre">is_deletable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.is_deletable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.is_deletable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.has_instance_permission">
+<span class="sig-name descname"><span class="pre">has_instance_permission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_through_ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.has_instance_permission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.has_instance_permission" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.get_id">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid_af</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.get_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.get_id" title="Link to this definition"></a></dt>
+<dd><p>return the acquisition framework’s id
+from its UUID if exist or None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.get_user_af">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_af</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.get_user_af"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.get_user_af" title="Link to this definition"></a></dt>
+<dd><p>get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
+param:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>user from TRole model</p></li>
+<li><p>only_query: boolean (return the query not the id_datasets allowed if true)</p></li>
+<li><p>only_user: boolean: return only the dataset where user himself is actor (not with its organoism)</p></li>
+</ul>
+</div></blockquote>
+<p>return: a list of id_dataset or a query</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework._get_read_scope">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_read_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework._get_read_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework._get_read_scope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.filter_by_scope">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.filter_by_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.filter_by_scope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.filter_by_readable">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_readable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.filter_by_readable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.filter_by_readable" title="Link to this definition"></a></dt>
+<dd><p>Return the afs where the user has autorization via its CRUVED</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.filter_by_areas">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_areas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">areas</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.filter_by_areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.filter_by_areas" title="Link to this definition"></a></dt>
+<dd><p>Filter meta by areas</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.TAcquisitionFramework.filter_by_params">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_ds_search</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/aframework.html#TAcquisitionFramework.filter_by_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.TAcquisitionFramework.filter_by_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py data">
 <dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.config">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">config</span></span><a class="reference internal" href="../../../../../_modules/geonature/utils/config.html#config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.config" title="Link to this definition"></a></dt>
@@ -362,12 +595,21 @@ already created declarative model class as <code class="docutils literal notrans
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.sync_af">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">sync_af</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd/mtd_utils.html#sync_af"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.sync_af" title="Link to this definition"></a></dt>
-<dd><p>Will create or update a given AF according to UUID.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>af</strong> – dict AF infos</p>
+<dd><p>Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>af<span class="classifier">dict</span></dt><dd><p>AF infos.</p>
 </dd>
 </dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>TAcquisitionFramework</dt><dd><p>The updated or inserted acquisition framework.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -444,6 +686,11 @@ Return:</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.af_user_path">
+<span class="sig-name descname"><span class="pre">af_user_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/mtd/cadre/export/xml/GetRecordsByUserId?id={ID_ROLE}'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.af_user_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.af_user_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.single_af_path">
 <span class="sig-name descname"><span class="pre">single_af_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/mtd/cadre/export/xml/GetRecordById?id={ID_AF}'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.single_af_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.single_af_path" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -481,12 +728,48 @@ Return:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.get_ds_user_list">
 <span class="sig-name descname"><span class="pre">get_ds_user_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.get_ds_user_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.get_ds_user_list" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieve the list of of datasets (ds) for the user.</p>
+<section id="id2">
+<h4>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>list</dt><dd><p>A list of datasets (ds) for the user.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.get_user_af_list">
-<span class="sig-name descname"><span class="pre">get_user_af_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af_uuid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.get_user_af_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.get_user_af_list" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.get_list_af_for_user">
+<span class="sig-name descname"><span class="pre">get_list_af_for_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.get_list_af_for_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.get_list_af_for_user" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a list of acquisition frameworks (af) for the user.</p>
+<section id="id3">
+<h4>Returns<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>list</dt><dd><p>A list of acquisition frameworks for the user.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.get_single_af">
+<span class="sig-name descname"><span class="pre">get_single_af</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af_uuid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.get_single_af"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.get_single_af" title="Link to this definition"></a></dt>
+<dd><p>Return a single acquistion framework based on its uuid.</p>
+<section id="id4">
+<h4>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>af_uuid<span class="classifier">str</span></dt><dd><p>uuid of the acquisition framework</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h4>Returns<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dict</dt><dd><p>acquisition framework data</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 </dd></dl>
 
@@ -559,8 +842,13 @@ Return:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.sync_af_and_ds_by_user">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">sync_af_and_ds_by_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#sync_af_and_ds_by_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.sync_af_and_ds_by_user" title="Link to this definition"></a></dt>
-<dd><p>Method to trigger MTD sync on user authent.</p>
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">sync_af_and_ds_by_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_af</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#sync_af_and_ds_by_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.sync_af_and_ds_by_user" title="Link to this definition"></a></dt>
+<dd><p>Method to trigger MTD sync on user authentication.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>id_role (int): The ID of the role (group or user).
+id_af (str, optional): The ID of the AF (Acquisition Framework). Defaults to None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

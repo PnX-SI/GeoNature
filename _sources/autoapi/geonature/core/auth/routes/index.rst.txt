@@ -61,6 +61,6 @@ Attributes
 .. py:function:: get_user_from_id_inpn_ws(id_user)
 
 
-.. py:function:: insert_user_and_org(info_user)
+.. py:function:: insert_user_and_org(info_user, update_user_organism: bool = True)
 
 

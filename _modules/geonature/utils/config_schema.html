@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="../../../">
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geonature.utils.config_schema &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -89,19 +87,14 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Schema</span><span class="p">,</span>
-    <span class="n">fields</span><span class="p">,</span>
-    <span class="n">validates_schema</span><span class="p">,</span>
-    <span class="n">ValidationError</span><span class="p">,</span>
-    <span class="n">post_load</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">validates_schema</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">post_load</span><span class="p">,</span> <span class="n">pre_load</span>
 <span class="kn">from</span> <span class="nn">marshmallow.validate</span> <span class="kn">import</span> <span class="n">OneOf</span><span class="p">,</span> <span class="n">Regexp</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">Length</span>
 
 <span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.synthese_config</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">DEFAULT_EXPORT_COLUMNS</span><span class="p">,</span>
     <span class="n">DEFAULT_LIST_COLUMN</span><span class="p">,</span>
-    <span class="n">DEFAULT_COLUMNS_API_SYNTHESE</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">GEONATURE_VERSION</span><span class="p">,</span> <span class="n">BACKEND_DIR</span><span class="p">,</span> <span class="n">ROOT_DIR</span>
 <span class="kn">from</span> <span class="nn">geonature.utils.module</span> <span class="kn">import</span> <span class="n">iter_modules_dist</span><span class="p">,</span> <span class="n">get_module_config</span>
@@ -551,8 +544,8 @@
     <span class="n">SQLALCHEMY_DATABASE_URI</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">validate</span><span class="o">=</span><span class="n">Regexp</span><span class="p">(</span>
-            <span class="s2">&quot;^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+&quot;</span><span class="p">,</span>
-            <span class="n">error</span><span class="o">=</span><span class="s2">&quot;Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;^(postgres(?:ql)?)((\+psycopg2)?):\/\/(?:([^@\s]+)@)?([^\/\s]+)(?:\/(\w+))?(?:\?(.+))?&quot;</span><span class="p">,</span>
+            <span class="n">error</span><span class="o">=</span><span class="s2">&quot;PostgreSQL database URL is invalid. Check for authorized URL here : https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS&quot;</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">)</span></div>
 
@@ -750,6 +743,28 @@
 
 
 
+<div class="viewcode-block" id="ExportObservationSchema">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.ExportObservationSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">ExportObservationSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="ExportObservationSchema.label">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.ExportObservationSchema.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExportObservationSchema.view_name">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.ExportObservationSchema.view_name">[docs]</a>
+    <span class="n">view_name</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExportObservationSchema.geojson_4326_field">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.ExportObservationSchema.geojson_4326_field">[docs]</a>
+    <span class="n">geojson_4326_field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;geojson_4326&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExportObservationSchema.geojson_local_field">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.ExportObservationSchema.geojson_local_field">[docs]</a>
+    <span class="n">geojson_local_field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;geojson_local&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="Synthese">
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese">[docs]</a>
 <span class="k">class</span> <span class="nc">Synthese</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
@@ -850,20 +865,16 @@
 
     <span class="c1"># --------------------------------------------------------------------</span>
     <span class="c1"># SYNTHESE - OBSERVATIONS LIST</span>
-    <span class="c1"># Listes des champs renvoyés par l&#39;API synthese &#39;/synthese&#39;</span>
-    <span class="c1"># Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut</span>
-    <span class="c1"># d&#39;abbord s&#39;assurer que ces champs sont bien renvoyé par l&#39;API !</span>
+    <span class="c1"># Colonnes affichées par défaut sur la liste des résultats de la synthese</span>
     <span class="c1"># Champs disponibles: tous ceux de la vue &#39;v_synthese_for_web_app</span>
-<div class="viewcode-block" id="Synthese.COLUMNS_API_SYNTHESE_WEB_APP">
-<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.COLUMNS_API_SYNTHESE_WEB_APP">[docs]</a>
-    <span class="n">COLUMNS_API_SYNTHESE_WEB_APP</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">DEFAULT_COLUMNS_API_SYNTHESE</span>
-    <span class="p">)</span></div>
-
-    <span class="c1"># Colonnes affichées sur la liste des résultats de la sytnthese</span>
 <div class="viewcode-block" id="Synthese.LIST_COLUMNS_FRONTEND">
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.LIST_COLUMNS_FRONTEND">[docs]</a>
     <span class="n">LIST_COLUMNS_FRONTEND</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">DEFAULT_LIST_COLUMN</span><span class="p">)</span></div>
+
+    <span class="c1"># Colonnes affichables sur la liste des résultats de la synthese via la modale de selection des colonnes</span>
+<div class="viewcode-block" id="Synthese.ADDITIONAL_COLUMNS_FRONTEND">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.ADDITIONAL_COLUMNS_FRONTEND">[docs]</a>
+    <span class="n">ADDITIONAL_COLUMNS_FRONTEND</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[])</span></div>
 
 
     <span class="c1"># --------------------------------------------------------------------</span>
@@ -871,6 +882,12 @@
 <div class="viewcode-block" id="Synthese.EXPORT_COLUMNS">
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_COLUMNS">[docs]</a>
     <span class="n">EXPORT_COLUMNS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="n">DEFAULT_EXPORT_COLUMNS</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Synthese.EXPORT_OBSERVATIONS_CUSTOM_VIEWS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_OBSERVATIONS_CUSTOM_VIEWS">[docs]</a>
+    <span class="n">EXPORT_OBSERVATIONS_CUSTOM_VIEWS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">ExportObservationSchema</span><span class="p">),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[]</span>
+    <span class="p">)</span></div>
 
     <span class="c1"># Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED</span>
 <div class="viewcode-block" id="Synthese.EXPORT_ID_SYNTHESE_COL">
@@ -1013,6 +1030,25 @@
 <div class="viewcode-block" id="Synthese.BLUR_SENSITIVE_OBSERVATIONS">
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.BLUR_SENSITIVE_OBSERVATIONS">[docs]</a>
     <span class="n">BLUR_SENSITIVE_OBSERVATIONS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+    <span class="nd">@pre_load</span>
+<div class="viewcode-block" id="Synthese.warn_deprecated">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.warn_deprecated">[docs]</a>
+    <span class="k">def</span> <span class="nf">warn_deprecated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">deprecated</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;EXPORT_ID_SYNTHESE_COL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;EXPORT_ID_DIGITISER_COL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;EXPORT_OBSERVERS_COL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;EXPORT_GEOJSON_4326_COL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;EXPORT_GEOJSON_LOCAL_COL&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">deprecated_field</span> <span class="ow">in</span> <span class="n">deprecated</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deprecated_field</span><span class="si">}</span><span class="s2"> is deprecated - &quot;</span>
+                <span class="s2">&quot;Please use `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` parameter to customize your synthese exports &quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
 </div>
 
 

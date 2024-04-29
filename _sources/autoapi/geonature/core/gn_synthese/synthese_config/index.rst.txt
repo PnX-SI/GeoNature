@@ -23,7 +23,7 @@ Module Contents
    
 
 .. py:data:: MANDATORY_COLUMNS
-   :value: ['entity_source_pk_value', 'url_source', 'cd_nom']
+   :value: ['id_synthese', 'entity_source_pk_value', 'url_source', 'cd_nom']
 
    
 

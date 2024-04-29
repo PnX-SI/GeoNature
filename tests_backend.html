@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="./">
+<html class="writer-html5" lang="fr" >
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tests backend &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -285,6 +283,77 @@ ficher <code class="docutils literal notranslate"><span class="pre">test_gn_meta
 <p>Si vous souhaitez voir le coverage directement depuis le navigateur, il est
 possible de générer le coverage au format html en remplaçant <code class="docutils literal notranslate"><span class="pre">xml</span></code> par
 <code class="docutils literal notranslate"><span class="pre">html</span></code>.</p>
+</section>
+<section id="evaluer-les-performances-du-backend">
+<h2>Evaluer les performances du backend<a class="headerlink" href="#evaluer-les-performances-du-backend" title="Link to this heading"></a></h2>
+<p>Les versions de GeoNature &gt;2.14.1 intègrent la possibilité d’évaluer les performances de routes connues pour leur temps de traitement important. Par exemple, l’appel de la route <code class="docutils literal notranslate"><span class="pre">gn_synthese.get_observations_for_web</span></code> avec une géographie non-présente dans le référentiel géographique.</p>
+<p>Cette fonctionnalité s’appuie sur <code class="docutils literal notranslate"><span class="pre">pytest</span></code> et son extension <a href="#id1"><span class="problematic" id="id2">``</span></a>pytest-benchmark``(<a class="reference external" href="https://pytest-benchmark.readthedocs.io/en/latest/">https://pytest-benchmark.readthedocs.io/en/latest/</a>).</p>
+<section id="lancement-des-tests-de-performances">
+<h3>Lancement des tests de performances<a class="headerlink" href="#lancement-des-tests-de-performances" title="Link to this heading"></a></h3>
+<p>Il existe différentes manières de lancer les tests de performances:</p>
+<ul class="simple">
+<li><p>La commande <code class="docutils literal notranslate"><span class="pre">pytest</span></code> sans arguments. Cette dernière lancera les tests de performances en plus des tests unitaires.</p></li>
+<li><p>La commande <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--benchmark-only</span></code> qui lancera uniquement les tests de performances.</p></li>
+</ul>
+</section>
+<section id="ajouter-des-tests-de-performances">
+<h3>Ajouter des tests de performances<a class="headerlink" href="#ajouter-des-tests-de-performances" title="Link to this heading"></a></h3>
+<p>La création de tests de performance s’effectue à l’aide de la classe <code class="docutils literal notranslate"><span class="pre">geonature.tests.benchmarks.benchmark_generator.BenchmarkTest</span></code>.</p>
+<p>L’objet <code class="docutils literal notranslate"><span class="pre">BenchmarkTest</span></code> prend en argument :</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>La fonction dont on souhaite mesurer la performance</p></li>
+<li><p>Le nom du test</p></li>
+<li><p>Les <code class="docutils literal notranslate"><span class="pre">args</span></code> de la fonction</p></li>
+<li><p>les <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> de la fonction</p></li>
+</ul>
+</div></blockquote>
+<p>Cette classe permet de générer une fonction de test utilisable dans le _framework_ existant de <code class="docutils literal notranslate"><span class="pre">pytest</span></code>. Pour cela, rien de plus simple ! Créer un fichier de test (de préférence dans le sous-dossier <code class="docutils literal notranslate"><span class="pre">backend/geonature/tests/benchmarks</span></code>).</p>
+<p>Import la classe BenchmarkTest dans le fichier de test.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">geonature.tests.benchmarks</span> <span class="kn">import</span> <span class="n">BenchmarkTest</span>
+</pre></div>
+</div>
+<p>Ajouter un test de performance, ici le test <code class="docutils literal notranslate"><span class="pre">test_print</span></code> qui teste la fonction <code class="docutils literal notranslate"><span class="pre">print</span></code> de Python.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bench</span> <span class="o">=</span> <span class="n">BenchmarkTest</span><span class="p">(</span><span class="nb">print</span><span class="p">,</span><span class="s2">&quot;test_print&quot;</span><span class="p">,[</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span><span class="s2">&quot;World&quot;</span><span class="p">],{})</span>
+</pre></div>
+</div>
+<p>Ajouter la fonction générée dans <code class="docutils literal notranslate"><span class="pre">bench</span></code> dans une classe de test:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">benchmark</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s2">&quot;occhab&quot;</span><span class="p">)</span> <span class="c1"># Pas obligatoire mais permet de compartimenter les tests de performances</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">usefixtures</span><span class="p">(</span><span class="s2">&quot;client_class&quot;</span><span class="p">,</span> <span class="s2">&quot;temporary_transaction&quot;</span><span class="p">)</span>
+    <span class="k">class</span> <span class="nc">TestBenchie</span><span class="p">:</span>
+        <span class="n">test_print</span> <span class="o">=</span> <span class="n">bench</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.benchmark</span></code> permet de configurer l’éxecution des tests de performances par <code class="docutils literal notranslate"><span class="pre">pytest-benchmark</span></code>. Dans l’exemple ci-dessus, on l’utilise pour regrouper les tests de performances
+déclarés dans la classe <code class="docutils literal notranslate"><span class="pre">TestBenchie</span></code> dans un groupe nommée <code class="docutils literal notranslate"><span class="pre">occhab</span></code>.</p>
+</div>
+<a class="reference internal image-reference" href="_images/benchmark_result.png"><img alt="Affichage des tests de performances" class="align-center" src="_images/benchmark_result.png" style="width: 60%;" /></a>
+<p>Si le test de performances doit accéder à des fonctions ou des variables uniquement accessibles dans le contexte
+de l’application flask, il faudra utiliser l’objet <code class="docutils literal notranslate"><span class="pre">geonature.tests.benchmarks.CLater</span></code>. Ce dernier permet
+de déclarer un expression python retournant un objet (fonction ou variable) dans une chaîne de caractère qui
+sera _évalué_ (voir la fonction <code class="docutils literal notranslate"><span class="pre">eval()</span></code> de Python) uniquement lors de l’exécution du benchmark.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_get_default_nomenclatures</span> <span class="o">=</span> <span class="n">BenchmarkTest</span><span class="p">(</span>
+      <span class="n">CLater</span><span class="p">(</span><span class="s2">&quot;self.client.get&quot;</span><span class="p">),</span>
+      <span class="p">[</span><span class="n">CLater</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;url_for(&quot;gn_synthese.getDefaultsNomenclatures&quot;)&quot;&quot;&quot;</span><span class="p">)],</span>
+      <span class="nb">dict</span><span class="p">(</span><span class="n">user_profile</span><span class="o">=</span><span class="s2">&quot;self_user&quot;</span><span class="p">),</span>
+  <span class="p">)()</span>
+</pre></div>
+</div>
+<p>L’exécution de certaines benchmark de routes doivent inclure l’engistrement d’utilisateur de tests. Pour cela,
+il suffit d’utiliser la clé <code class="docutils literal notranslate"><span class="pre">user_profile</span></code> dans l’argument <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> (Voir code ci-dessus).</p>
+<p>Si l’utilisation de _fixtures_ est nécessaire à votre test de performance, utilisé la clé <code class="docutils literal notranslate"><span class="pre">fixture</span></code>
+dans l’argument <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_get_station</span> <span class="o">=</span> <span class="n">BenchmarkTest</span><span class="p">(</span>
+      <span class="n">CLater</span><span class="p">(</span><span class="s2">&quot;self.client.get&quot;</span><span class="p">),</span>
+      <span class="p">[</span><span class="n">CLater</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;url_for(&quot;occhab.get_station&quot;, id_station=8)&quot;&quot;&quot;</span><span class="p">)],</span>
+      <span class="nb">dict</span><span class="p">(</span><span class="n">user_profile</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">fixtures</span><span class="o">=</span><span class="p">[</span><span class="n">stations</span><span class="p">]),</span>
+  <span class="p">)()</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 

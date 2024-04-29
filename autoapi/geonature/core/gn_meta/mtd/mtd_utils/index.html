@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="../../../../../../">
+<html class="writer-html5" lang="fr" >
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geonature.core.gn_meta.mtd.mtd_utils &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -71,9 +69,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../index.html#package-contents">Package Contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../frontend.html">Frontend</a></li>
 </ul>
 </li>
@@ -120,7 +115,7 @@
 <td><p>Will create or update a given DS according to UUID.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.mtd_utils.sync_af" title="geonature.core.gn_meta.mtd.mtd_utils.sync_af"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_af</span></code></a>(af)</p></td>
-<td><p>Will create or update a given AF according to UUID.</p></td>
+<td><p>Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.mtd_utils.add_or_update_organism" title="geonature.core.gn_meta.mtd.mtd_utils.add_or_update_organism"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_or_update_organism</span></code></a>(uuid, nom, email)</p></td>
 <td><p>Create or update organism if UUID not exists in DB.</p></td>
@@ -174,12 +169,21 @@ Only process DS if dataset’s cd_nomenclatures exists in ref_normenclatures.t_n
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.mtd_utils.sync_af">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.mtd_utils.</span></span><span class="sig-name descname"><span class="pre">sync_af</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_meta/mtd/mtd_utils.html#sync_af"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.mtd_utils.sync_af" title="Link to this definition"></a></dt>
-<dd><p>Will create or update a given AF according to UUID.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>af</strong> – dict AF infos</p>
+<dd><p>Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>af<span class="classifier">dict</span></dt><dd><p>AF infos.</p>
 </dd>
 </dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>TAcquisitionFramework</dt><dd><p>The updated or inserted acquisition framework.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -201,8 +205,8 @@ Only process DS if dataset’s cd_nomenclatures exists in ref_normenclatures.t_n
 <dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.mtd_utils.associate_actors">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.mtd_utils.</span></span><span class="sig-name descname"><span class="pre">associate_actors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CorActor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_meta/mtd/mtd_utils.html#associate_actors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.mtd_utils.associate_actors" title="Link to this definition"></a></dt>
 <dd><p>Associate actor and DS or AF according to CorActor value.</p>
-<section id="parameters">
-<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>actors<span class="classifier">list</span></dt><dd><p>list of actors</p>
 </dd>

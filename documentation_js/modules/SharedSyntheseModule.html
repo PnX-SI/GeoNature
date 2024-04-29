@@ -8,172 +8,1189 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
-	   <link rel="stylesheet" href="../styles/style.css">
-        <link rel="stylesheet" href="../styles/dark.css">
+	    <link rel="stylesheet" href="../styles/style.css">
     </head>
     <body>
 
-        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
             <a href="../" class="navbar-brand">geonature documentation</a>
-            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+            <button type="button" class="btn btn-default btn-menu fa fa-bars" id="btn-menu"></button>
         </div>
 
         <div class="xs-menu menu" id="mobile-menu">
-                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+            <div id="book-search-input" role="search">
+                <input type="text" placeholder="Type to search">
+            </div>
+            <nav>
+            
+                <ul class="list">
+            
+                    <li class="title">
+                        <a href="../">geonature documentation</a>
+                    </li>
+            
+                    <li class="divider"></li>
+            
+            
+                    <li class="chapter">
+                        <a data-type="chapter-link" href="../"><span class="fa fa-home"></span>Getting started</a>
+                        <ul class="links">
+                                <li class="link">
+                                    <a href="../" >
+                                        <span class="fa fa-th"></span>Overview
+                                    </a>
+                                </li>
+                        </ul>
+                    </li>
+            
+                    <li class="chapter">
+                        <a data-type="chapter-link" href="./modules.html" >
+                            <span class="fa fa-archive"></span>
+                            <span>Modules</span>
+                            <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                    data-target="#xs-modules-links"
+                            ></span>
+                        </a>
+                        <ul class="links collapse in"
+                                id="xs-modules-links"
+                            >
+                                <li class="link">
+                                    <a href="../modules/AdminModule.html" >AdminModule</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../modules/AppModule.html" >AppModule</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../modules/GN2CommonModule.html" >GN2CommonModule</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../modules/GNPanelModule.html" >GNPanelModule</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../modules/LoginModule.html" >LoginModule</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../modules/SharedSyntheseModule.html"  class="active" >SharedSyntheseModule</a>
+                                </li>
+                        </ul>
+                    </li>
+            
+                    <li class="chapter">
+                        <div class="simple">
+                            <span class="fa fa-cogs"></span>
+                            <span>Components</span>
+                            <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                    data-target="#xs-components-links"
+                                ></span>
+                        </div>
+                        <ul class="links collapse in"
+                                id="xs-components-links"
+                            >
+                                <li class="link">
+                                    <a href="../components/AcquisitionFrameworksComponent.html" >AcquisitionFrameworksComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/ActorComponent.html" >ActorComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/AdminComponent.html" >AdminComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/AfCardComponent.html" >AfCardComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/AfFormComponent.html" >AfFormComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/AlertInfoComponent.html" >AlertInfoComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/AppComponent.html" >AppComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/AreasComponent.html" >AreasComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/AreasIntersectedComponent.html" >AreasIntersectedComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/AutoCompleteComponent.html" >AutoCompleteComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/BreadcrumbsComponent.html" >BreadcrumbsComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/ConfirmationDialog.html" >ConfirmationDialog</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DatalistComponent.html" >DatalistComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DatasetCardComponent.html" >DatasetCardComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DatasetFormComponent.html" >DatasetFormComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DatasetsComponent.html" >DatasetsComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DateComponent.html" >DateComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DiscussionCardComponent.html" >DiscussionCardComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DisplayMediasComponent.html" >DisplayMediasComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DumbSelectComponent.html" >DumbSelectComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/DynamicFormComponent.html" >DynamicFormComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/FooterComponent.html" >FooterComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/GNPanelComponent.html" >GNPanelComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/GPSComponent.html" >GPSComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/GenericFormComponent.html" >GenericFormComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/GenericFormGeneratorComponent.html" >GenericFormGeneratorComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/GeojsonComponent.html" >GeojsonComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/GeometryFormComponent.html" >GeometryFormComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/HomeContentComponent.html" >HomeContentComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/IntroductionComponent.html" >IntroductionComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/LeafletDrawComponent.html" >LeafletDrawComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/LeafletFileLayerComponent.html" >LeafletFileLayerComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/LoginComponent.html" >LoginComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MapComponent.html" >MapComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MapDataComponent.html" >MapDataComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MapListComponent.html" >MapListComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MapListGenericFiltersComponent.html" >MapListGenericFiltersComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MapOverLaysComponent.html" >MapOverLaysComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MarkerComponent.html" >MarkerComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MediaComponent.html" >MediaComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MediaDialog.html" >MediaDialog</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MediasComponent.html" >MediasComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MediasTestComponent.html" >MediasTestComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MetadataComponent.html" >MetadataComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MetadataDatasetComponent.html" >MetadataDatasetComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/ModalDownloadComponent.html" >ModalDownloadComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/ModalInfoObsComponent.html" >ModalInfoObsComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MultiSelectComponent.html" >MultiSelectComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/MunicipalitiesComponent.html" >MunicipalitiesComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/NavHomeComponent.html" >NavHomeComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/NewPasswordComponent.html" >NewPasswordComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/NomenclatureComponent.html" >NomenclatureComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/NotificationComponent.html" >NotificationComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/ObserversComponent.html" >ObserversComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/ObserversTextComponent.html" >ObserversTextComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/PageNotFoundComponent.html" >PageNotFoundComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/PasswordComponent.html" >PasswordComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/PeriodComponent.html" >PeriodComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/PlacesComponent.html" >PlacesComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/PlacesListComponent.html" >PlacesListComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/RulesComponent.html" >RulesComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/SidenavItemsComponent.html" >SidenavItemsComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/SignUpComponent.html" >SignUpComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/SyntheseCarteComponent.html" >SyntheseCarteComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/SyntheseComponent.html" >SyntheseComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/SyntheseInfoObsComponent.html" >SyntheseInfoObsComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/SyntheseListComponent.html" >SyntheseListComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/SyntheseModalDownloadComponent.html" >SyntheseModalDownloadComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/SyntheseSearchComponent.html" >SyntheseSearchComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/TaxaComponent.html" >TaxaComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/TaxonAdvancedModalComponent.html" >TaxonAdvancedModalComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/TaxonSheetComponent.html" >TaxonSheetComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/TaxonTreeComponent.html" >TaxonTreeComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/TaxonomyComponent.html" >TaxonomyComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../components/UserComponent.html" >UserComponent</a>
+                                </li>
+                        </ul>
+                    </li>
+            
+                    <li class="chapter">
+                        <div class="simple">
+                            <span class="fa fa-code"></span>
+                            <span>Directives</span>
+                            <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                    data-target="#xs-directives-links"
+                                ></span>
+                        </div>
+                        <ul class="links collapse in"
+                                id="xs-directives-links"
+                            >
+                                <li class="link">
+                                    <a href="../directives/DisableControlDirective.html" >DisableControlDirective</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../directives/DisplayMouseOverDirective.html" >DisplayMouseOverDirective</a>
+                                </li>
+                        </ul>
+                    </li>
+            
+                    <li class="chapter">
+                        <div class="simple">
+                            <span class="fa fa-file-code-o"></span>
+                            <span>Classes</span>
+                            <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                    data-target="#xs-classes-links"
+                                ></span>
+                        </div>
+                        <ul class="links collapse in"
+                                id="xs-classes-links"
+                            >
+                                <li class="link">
+                                    <a href="../classes/Config.html" >Config</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../classes/Media.html" >Media</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../classes/Page.html" >Page</a>
+                                </li>
+                        </ul>
+                    </li>
+            
+                    <li class="chapter">
+                        <a data-type="chapter-link" href="../routes.html" ><span class="fa fa-code-fork"></span>Routes</a>
+                    </li>
+            
+                    <li class="chapter">
+                        <div class="simple">
+                            <span class="fa fa-long-arrow-down"></span>
+                            <span>Injectables</span>
+                            <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                    data-target="#xs-injectables-links"
+                                ></span>
+                        </div>
+                        <ul class="links collapse in"
+                                id="xs-injectables-links"
+                            >
+                                <li class="link">
+                                    <a href="../injectables/AcquisitionFrameworkFormService.html" >AcquisitionFrameworkFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/ActorFormService.html" >ActorFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/AuthGuard.html" >AuthGuard</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/AuthService.html" >AuthService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/CommonService.html" >CommonService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/ConfigService.html" >ConfigService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/CruvedStoreService.html" >CruvedStoreService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/DataFormService.html" >DataFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/DatasetFormService.html" >DatasetFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/DynamicFormService.html" >DynamicFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/FormService.html" >FormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/GlobalSubService.html" >GlobalSubService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/MapListService.html" >MapListService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/MapService.html" >MapService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/MediaService.html" >MediaService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/MetadataDataService.html" >MetadataDataService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/MetadataSearchFormService.html" >MetadataSearchFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/MetadataService.html" >MetadataService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/ModuleGuardService.html" >ModuleGuardService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/ModuleService.html" >ModuleService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/MyCustomInterceptor.html" >MyCustomInterceptor</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/NgbDateFRParserFormatter.html" >NgbDateFRParserFormatter</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/NgbDatePeriodParserFormatter.html" >NgbDatePeriodParserFormatter</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/NominatimService.html" >NominatimService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/NotificationDataService.html" >NotificationDataService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/RoleFormService.html" >RoleFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/RoutingService.html" >RoutingService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/SideNavService.html" >SideNavService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/SignUpGuard.html" >SignUpGuard</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/SyntheseDataService.html" >SyntheseDataService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/SyntheseFormService.html" >SyntheseFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/SyntheseFormService.html" >SyntheseFormService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/SyntheseStoreService.html" >SyntheseStoreService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/TaxonAdvancedStoreService.html" >TaxonAdvancedStoreService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/UnauthorizedInterceptor.html" >UnauthorizedInterceptor</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/UserDataService.html" >UserDataService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/UserManagementGuard.html" >UserManagementGuard</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../injectables/UserPublicGuard.html" >UserPublicGuard</a>
+                                </li>
+                        </ul>
+                    </li>
+            
+                    <li class="chapter">
+                        <div class="simple">
+                            <span class="fa fa-info"></span>
+                            <span>Interfaces</span>
+                            <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                    data-target="#xs-interfaces-links"
+                                ></span>
+                        </div>
+                        <ul class="links collapse in"
+                                id="xs-interfaces-links"
+                            >
+                                <li class="link">
+                                    <a href="../interfaces/ColumnActions.html" >ColumnActions</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/DateStruc.html" >DateStruc</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/IBreadCrumb.html" >IBreadCrumb</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/IBuildBreadCrumb.html" >IBuildBreadCrumb</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/MediaDialogData.html" >MediaDialogData</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/MediaDialogData.html" >MediaDialogData</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/Module.html" >Module</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/Nomenclature.html" >Nomenclature</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/NotificationCard.html" >NotificationCard</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/NotificationCategory.html" >NotificationCategory</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/NotificationMethod.html" >NotificationMethod</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/NotificationRule.html" >NotificationRule</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/ParamsDict.html" >ParamsDict</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/Role.html" >Role</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/Taxon.html" >Taxon</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../interfaces/User.html" >User</a>
+                                </li>
+                        </ul>
+                    </li>
+            
+                    <li class="chapter">
+                        <div class="simple">
+                            <span class="fa fa-plus"></span>
+                            <span>Pipes</span>
+                            <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                    data-target="#xs-pipes-links"
+                                ></span>
+                        </div>
+                        <ul class="links collapse in"
+                                id="xs-pipes-links"
+                            >
+                                <li class="link">
+                                    <a href="../pipes/ReadablePropertiePipe.html" >ReadablePropertiePipe</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../pipes/SafeHtmlPipe.html" >SafeHtmlPipe</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../pipes/SafeStripHtmlPipe.html" >SafeStripHtmlPipe</a>
+                                </li>
+                                <li class="link">
+                                    <a href="../pipes/StripHtmlPipe.html" >StripHtmlPipe</a>
+                                </li>
+                        </ul>
+                    </li>
+            
+                    <li class="chapter">
+                        <a data-type="chapter-link" href="../miscellaneous.html" ><span class="fa fa-cubes"></span>Miscellaneous</a>
+                    </li>
+            
+                    <li class="chapter">
+                        <a data-type="chapter-link" href="../coverage.html" ><span class="fa fa-tasks"></span>Documentation coverage</a>
+                    </li>
+            
+                    <li class="divider"></li>
+                    <li class="copyright">
+                            Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank">
+                                        <img src="..//images/compodoc-vectorise.svg" class="img-responsive">
+                            </a>
+                    </li>
+            
+                </ul>
+            
+            </nav>
         </div>
 
         <div class="container-fluid main">
            <div class="row main">
                <div class="hidden-xs menu">
-                   <compodoc-menu mode="normal"></compodoc-menu>
+                   <nav>
+                   
+                       <ul class="list">
+                   
+                           <li class="title">
+                               <a href="../">geonature documentation</a>
+                           </li>
+                   
+                           <li class="divider"></li>
+                   
+                               <div id="book-search-input" role="search">
+                                   <input type="text" placeholder="Type to search">
+                               </div>
+                   
+                           <li class="chapter">
+                               <a data-type="chapter-link" href="../"><span class="fa fa-home"></span>Getting started</a>
+                               <ul class="links">
+                                       <li class="link">
+                                           <a href="../" >
+                                               <span class="fa fa-th"></span>Overview
+                                           </a>
+                                       </li>
+                               </ul>
+                           </li>
+                   
+                           <li class="chapter">
+                               <a data-type="chapter-link" href="./modules.html" >
+                                   <span class="fa fa-archive"></span>
+                                   <span>Modules</span>
+                                   <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                           data-target="#modules-links"
+                                   ></span>
+                               </a>
+                               <ul class="links collapse in"
+                                       id="modules-links"
+                   >
+                                       <li class="link">
+                                           <a href="../modules/AdminModule.html" >AdminModule</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../modules/AppModule.html" >AppModule</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../modules/GN2CommonModule.html" >GN2CommonModule</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../modules/GNPanelModule.html" >GNPanelModule</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../modules/LoginModule.html" >LoginModule</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../modules/SharedSyntheseModule.html"  class="active" >SharedSyntheseModule</a>
+                                       </li>
+                               </ul>
+                           </li>
+                   
+                           <li class="chapter">
+                               <div class="simple">
+                                   <span class="fa fa-cogs"></span>
+                                   <span>Components</span>
+                                   <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                           data-target="#components-links"
+                   ></span>
+                               </div>
+                               <ul class="links collapse in"
+                                       id="components-links"
+                   >
+                                       <li class="link">
+                                           <a href="../components/AcquisitionFrameworksComponent.html" >AcquisitionFrameworksComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/ActorComponent.html" >ActorComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/AdminComponent.html" >AdminComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/AfCardComponent.html" >AfCardComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/AfFormComponent.html" >AfFormComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/AlertInfoComponent.html" >AlertInfoComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/AppComponent.html" >AppComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/AreasComponent.html" >AreasComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/AreasIntersectedComponent.html" >AreasIntersectedComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/AutoCompleteComponent.html" >AutoCompleteComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/BreadcrumbsComponent.html" >BreadcrumbsComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/ConfirmationDialog.html" >ConfirmationDialog</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DatalistComponent.html" >DatalistComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DatasetCardComponent.html" >DatasetCardComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DatasetFormComponent.html" >DatasetFormComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DatasetsComponent.html" >DatasetsComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DateComponent.html" >DateComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DiscussionCardComponent.html" >DiscussionCardComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DisplayMediasComponent.html" >DisplayMediasComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DumbSelectComponent.html" >DumbSelectComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/DynamicFormComponent.html" >DynamicFormComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/FooterComponent.html" >FooterComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/GNPanelComponent.html" >GNPanelComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/GPSComponent.html" >GPSComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/GenericFormComponent.html" >GenericFormComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/GenericFormGeneratorComponent.html" >GenericFormGeneratorComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/GeojsonComponent.html" >GeojsonComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/GeometryFormComponent.html" >GeometryFormComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/HomeContentComponent.html" >HomeContentComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/IntroductionComponent.html" >IntroductionComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/LeafletDrawComponent.html" >LeafletDrawComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/LeafletFileLayerComponent.html" >LeafletFileLayerComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/LoginComponent.html" >LoginComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MapComponent.html" >MapComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MapDataComponent.html" >MapDataComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MapListComponent.html" >MapListComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MapListGenericFiltersComponent.html" >MapListGenericFiltersComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MapOverLaysComponent.html" >MapOverLaysComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MarkerComponent.html" >MarkerComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MediaComponent.html" >MediaComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MediaDialog.html" >MediaDialog</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MediasComponent.html" >MediasComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MediasTestComponent.html" >MediasTestComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MetadataComponent.html" >MetadataComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MetadataDatasetComponent.html" >MetadataDatasetComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/ModalDownloadComponent.html" >ModalDownloadComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/ModalInfoObsComponent.html" >ModalInfoObsComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MultiSelectComponent.html" >MultiSelectComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/MunicipalitiesComponent.html" >MunicipalitiesComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/NavHomeComponent.html" >NavHomeComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/NewPasswordComponent.html" >NewPasswordComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/NomenclatureComponent.html" >NomenclatureComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/NotificationComponent.html" >NotificationComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/ObserversComponent.html" >ObserversComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/ObserversTextComponent.html" >ObserversTextComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/PageNotFoundComponent.html" >PageNotFoundComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/PasswordComponent.html" >PasswordComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/PeriodComponent.html" >PeriodComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/PlacesComponent.html" >PlacesComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/PlacesListComponent.html" >PlacesListComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/RulesComponent.html" >RulesComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/SidenavItemsComponent.html" >SidenavItemsComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/SignUpComponent.html" >SignUpComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/SyntheseCarteComponent.html" >SyntheseCarteComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/SyntheseComponent.html" >SyntheseComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/SyntheseInfoObsComponent.html" >SyntheseInfoObsComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/SyntheseListComponent.html" >SyntheseListComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/SyntheseModalDownloadComponent.html" >SyntheseModalDownloadComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/SyntheseSearchComponent.html" >SyntheseSearchComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/TaxaComponent.html" >TaxaComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/TaxonAdvancedModalComponent.html" >TaxonAdvancedModalComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/TaxonSheetComponent.html" >TaxonSheetComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/TaxonTreeComponent.html" >TaxonTreeComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/TaxonomyComponent.html" >TaxonomyComponent</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../components/UserComponent.html" >UserComponent</a>
+                                       </li>
+                               </ul>
+                           </li>
+                   
+                           <li class="chapter">
+                               <div class="simple">
+                                   <span class="fa fa-code"></span>
+                                   <span>Directives</span>
+                                   <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                           data-target="#directives-links"
+                   ></span>
+                               </div>
+                               <ul class="links collapse in"
+                                       id="directives-links"
+                   >
+                                       <li class="link">
+                                           <a href="../directives/DisableControlDirective.html" >DisableControlDirective</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../directives/DisplayMouseOverDirective.html" >DisplayMouseOverDirective</a>
+                                       </li>
+                               </ul>
+                           </li>
+                   
+                           <li class="chapter">
+                               <div class="simple">
+                                   <span class="fa fa-file-code-o"></span>
+                                   <span>Classes</span>
+                                   <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                           data-target="#classes-links"
+                   ></span>
+                               </div>
+                               <ul class="links collapse in"
+                                       id="classes-links"
+                   >
+                                       <li class="link">
+                                           <a href="../classes/Config.html" >Config</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../classes/Media.html" >Media</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../classes/Page.html" >Page</a>
+                                       </li>
+                               </ul>
+                           </li>
+                   
+                           <li class="chapter">
+                               <a data-type="chapter-link" href="../routes.html" ><span class="fa fa-code-fork"></span>Routes</a>
+                           </li>
+                   
+                           <li class="chapter">
+                               <div class="simple">
+                                   <span class="fa fa-long-arrow-down"></span>
+                                   <span>Injectables</span>
+                                   <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                           data-target="#injectables-links"
+                   ></span>
+                               </div>
+                               <ul class="links collapse in"
+                                       id="injectables-links"
+                   >
+                                       <li class="link">
+                                           <a href="../injectables/AcquisitionFrameworkFormService.html" >AcquisitionFrameworkFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/ActorFormService.html" >ActorFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/AuthGuard.html" >AuthGuard</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/AuthService.html" >AuthService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/CommonService.html" >CommonService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/ConfigService.html" >ConfigService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/CruvedStoreService.html" >CruvedStoreService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/DataFormService.html" >DataFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/DatasetFormService.html" >DatasetFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/DynamicFormService.html" >DynamicFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/FormService.html" >FormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/GlobalSubService.html" >GlobalSubService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/MapListService.html" >MapListService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/MapService.html" >MapService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/MediaService.html" >MediaService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/MetadataDataService.html" >MetadataDataService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/MetadataSearchFormService.html" >MetadataSearchFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/MetadataService.html" >MetadataService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/ModuleGuardService.html" >ModuleGuardService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/ModuleService.html" >ModuleService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/MyCustomInterceptor.html" >MyCustomInterceptor</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/NgbDateFRParserFormatter.html" >NgbDateFRParserFormatter</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/NgbDatePeriodParserFormatter.html" >NgbDatePeriodParserFormatter</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/NominatimService.html" >NominatimService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/NotificationDataService.html" >NotificationDataService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/RoleFormService.html" >RoleFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/RoutingService.html" >RoutingService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/SideNavService.html" >SideNavService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/SignUpGuard.html" >SignUpGuard</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/SyntheseDataService.html" >SyntheseDataService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/SyntheseFormService.html" >SyntheseFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/SyntheseFormService.html" >SyntheseFormService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/SyntheseStoreService.html" >SyntheseStoreService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/TaxonAdvancedStoreService.html" >TaxonAdvancedStoreService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/UnauthorizedInterceptor.html" >UnauthorizedInterceptor</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/UserDataService.html" >UserDataService</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/UserManagementGuard.html" >UserManagementGuard</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../injectables/UserPublicGuard.html" >UserPublicGuard</a>
+                                       </li>
+                               </ul>
+                           </li>
+                   
+                           <li class="chapter">
+                               <div class="simple">
+                                   <span class="fa fa-info"></span>
+                                   <span>Interfaces</span>
+                                   <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                           data-target="#interfaces-links"
+                   ></span>
+                               </div>
+                               <ul class="links collapse in"
+                                       id="interfaces-links"
+                   >
+                                       <li class="link">
+                                           <a href="../interfaces/ColumnActions.html" >ColumnActions</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/DateStruc.html" >DateStruc</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/IBreadCrumb.html" >IBreadCrumb</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/IBuildBreadCrumb.html" >IBuildBreadCrumb</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/MediaDialogData.html" >MediaDialogData</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/MediaDialogData.html" >MediaDialogData</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/Module.html" >Module</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/Nomenclature.html" >Nomenclature</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/NotificationCard.html" >NotificationCard</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/NotificationCategory.html" >NotificationCategory</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/NotificationMethod.html" >NotificationMethod</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/NotificationRule.html" >NotificationRule</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/ParamsDict.html" >ParamsDict</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/Role.html" >Role</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/Taxon.html" >Taxon</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../interfaces/User.html" >User</a>
+                                       </li>
+                               </ul>
+                           </li>
+                   
+                           <li class="chapter">
+                               <div class="simple">
+                                   <span class="fa fa-plus"></span>
+                                   <span>Pipes</span>
+                                   <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                                           data-target="#pipes-links"
+                   ></span>
+                               </div>
+                               <ul class="links collapse in"
+                                       id="pipes-links"
+                   >
+                                       <li class="link">
+                                           <a href="../pipes/ReadablePropertiePipe.html" >ReadablePropertiePipe</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../pipes/SafeHtmlPipe.html" >SafeHtmlPipe</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../pipes/SafeStripHtmlPipe.html" >SafeStripHtmlPipe</a>
+                                       </li>
+                                       <li class="link">
+                                           <a href="../pipes/StripHtmlPipe.html" >StripHtmlPipe</a>
+                                       </li>
+                               </ul>
+                           </li>
+                   
+                           <li class="chapter">
+                               <a data-type="chapter-link" href="../miscellaneous.html" ><span class="fa fa-cubes"></span>Miscellaneous</a>
+                           </li>
+                   
+                           <li class="chapter">
+                               <a data-type="chapter-link" href="../coverage.html" ><span class="fa fa-tasks"></span>Documentation coverage</a>
+                           </li>
+                   
+                           <li class="divider"></li>
+                           <li class="copyright">
+                                   Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank">
+                                               <img src="..//images/compodoc-vectorise.svg" class="img-responsive">
+                                   </a>
+                           </li>
+                   
+                       </ul>
+                   
+                   </nav>
                </div>
-               <!-- START CONTENT -->
                <div class="content module">
                    <div class="content-data">
 
-
-
 <ol class="breadcrumb">
-    <li class="breadcrumb-item">Modules</li>
-    <li class="breadcrumb-item" >SharedSyntheseModule</li>
+  <li>Modules</li>
+  <li>SharedSyntheseModule</li>
 </ol>
 
-<div class="text-center module-graph-container">
-    <div id="module-graph-svg">
-        <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.47.0 (20210316.0004)
- -->
-<!-- Title: dependencies Pages: 1 -->
-<svg width="736pt" height="284pt"
- viewBox="0.00 0.00 736.00 284.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 280)">
-<title>dependencies</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-280 732,-280 732,4 -4,4"/>
-<text text-anchor="start" x="343.01" y="-42.4" font-family="Times-12" font-weight="bold" font-size="14.00">Legend</text>
-<polygon fill="#ffffb3" stroke="transparent" points="130,-10 130,-30 150,-30 150,-10 130,-10"/>
-<text text-anchor="start" x="153.63" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Declarations</text>
-<polygon fill="#8dd3c7" stroke="transparent" points="243,-10 243,-30 263,-30 263,-10 243,-10"/>
-<text text-anchor="start" x="266.73" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Module</text>
-<polygon fill="#80b1d3" stroke="transparent" points="329,-10 329,-30 349,-30 349,-10 329,-10"/>
-<text text-anchor="start" x="352.78" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Bootstrap</text>
-<polygon fill="#fdb462" stroke="transparent" points="426,-10 426,-30 446,-30 446,-10 426,-10"/>
-<text text-anchor="start" x="449.67" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Providers</text>
-<polygon fill="#fb8072" stroke="transparent" points="522,-10 522,-30 542,-30 542,-10 522,-10"/>
-<text text-anchor="start" x="545.73" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Exports</text>
-<g id="clust1" class="cluster">
-<title>cluster_SharedSyntheseModule</title>
-<polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-70 8,-268 720,-268 720,-70 8,-70"/>
-</g>
-<g id="clust2" class="cluster">
-<title>cluster_SharedSyntheseModule_declarations</title>
-<polygon fill="none" stroke="black" points="178,-78 178,-130 712,-130 712,-78 178,-78"/>
-</g>
-<g id="clust6" class="cluster">
-<title>cluster_SharedSyntheseModule_imports</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 170,-130 170,-78 16,-78"/>
-</g>
-<g id="clust7" class="cluster">
-<title>cluster_SharedSyntheseModule_exports</title>
-<polygon fill="none" stroke="black" points="92,-208 92,-260 635,-260 635,-208 92,-208"/>
-</g>
-<!-- AlertInfoComponent -->
-<g id="node1" class="node">
-<title>AlertInfoComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="703.92,-122 570.08,-122 570.08,-86 703.92,-86 703.92,-122"/>
-<text text-anchor="middle" x="637" y="-99.8" font-family="Times,serif" font-size="14.00">AlertInfoComponent</text>
-</g>
-<!-- SharedSyntheseModule -->
-<g id="node4" class="node">
-<title>SharedSyntheseModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="460.47,-187 457.47,-191 436.47,-191 433.47,-187 311.53,-187 311.53,-151 460.47,-151 460.47,-187"/>
-<text text-anchor="middle" x="386" y="-164.8" font-family="Times,serif" font-size="14.00">SharedSyntheseModule</text>
-</g>
-<!-- AlertInfoComponent&#45;&gt;SharedSyntheseModule -->
-<g id="edge1" class="edge">
-<title>AlertInfoComponent&#45;&gt;SharedSyntheseModule</title>
-<path fill="none" stroke="black" d="M598.88,-122.02C598.88,-139.37 598.88,-163 598.88,-163 598.88,-163 470.75,-163 470.75,-163"/>
-<polygon fill="black" stroke="black" points="470.75,-159.5 460.75,-163 470.75,-166.5 470.75,-159.5"/>
-</g>
-<!-- DiscussionCardComponent -->
-<g id="node2" class="node">
-<title>DiscussionCardComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="551.98,-122 382.02,-122 382.02,-86 551.98,-86 551.98,-122"/>
-<text text-anchor="middle" x="467" y="-99.8" font-family="Times,serif" font-size="14.00">DiscussionCardComponent</text>
-</g>
-<!-- DiscussionCardComponent&#45;&gt;SharedSyntheseModule -->
-<g id="edge2" class="edge">
-<title>DiscussionCardComponent&#45;&gt;SharedSyntheseModule</title>
-<path fill="none" stroke="black" d="M421.25,-122.11C421.25,-122.11 421.25,-140.99 421.25,-140.99"/>
-<polygon fill="black" stroke="black" points="417.75,-140.99 421.25,-150.99 424.75,-140.99 417.75,-140.99"/>
-</g>
-<!-- SyntheseInfoObsComponent -->
-<g id="node3" class="node">
-<title>SyntheseInfoObsComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="363.75,-122 186.25,-122 186.25,-86 363.75,-86 363.75,-122"/>
-<text text-anchor="middle" x="275" y="-99.8" font-family="Times,serif" font-size="14.00">SyntheseInfoObsComponent</text>
-</g>
-<!-- SyntheseInfoObsComponent&#45;&gt;SharedSyntheseModule -->
-<g id="edge3" class="edge">
-<title>SyntheseInfoObsComponent&#45;&gt;SharedSyntheseModule</title>
-<path fill="none" stroke="black" d="M337.7,-122.11C337.7,-122.11 337.7,-140.99 337.7,-140.99"/>
-<polygon fill="black" stroke="black" points="334.2,-140.99 337.7,-150.99 341.2,-140.99 334.2,-140.99"/>
-</g>
-<!-- AlertInfoComponent  -->
-<g id="node6" class="node">
-<title>AlertInfoComponent </title>
-<polygon fill="#fb8072" stroke="black" points="627.42,-252 490.58,-252 490.58,-216 627.42,-216 627.42,-252"/>
-<text text-anchor="middle" x="559" y="-229.8" font-family="Times,serif" font-size="14.00">AlertInfoComponent </text>
-</g>
-<!-- SharedSyntheseModule&#45;&gt;AlertInfoComponent  -->
-<g id="edge5" class="edge">
-<title>SharedSyntheseModule&#45;&gt;AlertInfoComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M460.75,-175C492.04,-175 521.27,-175 521.27,-175 521.27,-175 521.27,-205.98 521.27,-205.98"/>
-<polygon fill="black" stroke="black" points="517.77,-205.98 521.27,-215.98 524.77,-205.98 517.77,-205.98"/>
-</g>
-<!-- DiscussionCardComponent  -->
-<g id="node7" class="node">
-<title>DiscussionCardComponent </title>
-<polygon fill="#fb8072" stroke="black" points="472.98,-252 299.02,-252 299.02,-216 472.98,-216 472.98,-252"/>
-<text text-anchor="middle" x="386" y="-229.8" font-family="Times,serif" font-size="14.00">DiscussionCardComponent </text>
-</g>
-<!-- SharedSyntheseModule&#45;&gt;DiscussionCardComponent  -->
-<g id="edge6" class="edge">
-<title>SharedSyntheseModule&#45;&gt;DiscussionCardComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M386,-187.11C386,-187.11 386,-205.99 386,-205.99"/>
-<polygon fill="black" stroke="black" points="382.5,-205.99 386,-215.99 389.5,-205.99 382.5,-205.99"/>
-</g>
-<!-- SyntheseInfoObsComponent  -->
-<g id="node8" class="node">
-<title>SyntheseInfoObsComponent </title>
-<polygon fill="#fb8072" stroke="black" points="281.75,-252 100.25,-252 100.25,-216 281.75,-216 281.75,-252"/>
-<text text-anchor="middle" x="191" y="-229.8" font-family="Times,serif" font-size="14.00">SyntheseInfoObsComponent </text>
-</g>
-<!-- SharedSyntheseModule&#45;&gt;SyntheseInfoObsComponent  -->
-<g id="edge7" class="edge">
-<title>SharedSyntheseModule&#45;&gt;SyntheseInfoObsComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M311.27,-175C272.8,-175 233.88,-175 233.88,-175 233.88,-175 233.88,-205.98 233.88,-205.98"/>
-<polygon fill="black" stroke="black" points="230.38,-205.98 233.88,-215.98 237.38,-205.98 230.38,-205.98"/>
-</g>
-<!-- GN2CommonModule -->
-<g id="node5" class="node">
-<title>GN2CommonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="162.38,-122 159.38,-126 138.38,-126 135.38,-122 23.62,-122 23.62,-86 162.38,-86 162.38,-122"/>
-<text text-anchor="middle" x="93" y="-99.8" font-family="Times,serif" font-size="14.00">GN2CommonModule</text>
-</g>
-<!-- GN2CommonModule&#45;&gt;SharedSyntheseModule -->
-<g id="edge4" class="edge">
-<title>GN2CommonModule&#45;&gt;SharedSyntheseModule</title>
-<path fill="none" stroke="black" d="M131.41,-122.02C131.41,-139.37 131.41,-163 131.41,-163 131.41,-163 301.33,-163 301.33,-163"/>
-<polygon fill="black" stroke="black" points="301.33,-166.5 311.33,-163 301.33,-159.5 301.33,-166.5"/>
-</g>
-</g>
-</svg>
-
-    </div>
-    <i id="fullscreen" class="icon ion-ios-resize module-graph-fullscreen-btn" aria-hidden="true"></i>
-    <div class="btn-group size-buttons">
+<div class="text-center">
+    <object id="demo-svg" type="image/svg+xml" data="../modules/SharedSyntheseModule/dependencies.svg" style="width: 100%; height: 250px;">
+            Your browser does not support SVG
+    </object>
+    <div class="btn-group">
         <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
         <button id="reset" class="btn btn-default btn-sm">Reset</button>
         <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
@@ -183,23 +1200,16 @@
 <script src="../js/svg-pan-zoom.controls.js"></script>
 
 <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item">
-        <a href="#info" 
-            class="nav-link"
-            class="nav-link active"
-            role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+    <li class="active">
+        <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
     </li>
-    <li class="nav-item">
-        <a href="#source" 
-            class="nav-link"
-            
-            role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+    <li>
+        <a href="#source" role="tab" id="source-tab" data-toggle="tab">Source</a>
     </li>
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="info">
-
+    <div class="tab-pane fade active in" id="infos">
         <p class="comment">
             <h3>File</h3>
         </p>
@@ -208,61 +1218,49 @@
         </p>
 
 
-
-
-
         <div class="container-fluid module">
             <div class="row">
                 <div class="col-sm-3">
-                    <h3>Declarations<a href="https://angular.io/api/core/NgModule#declarations" target="_blank" rel="noopener noreferrer"
-                            title="Official documentation about module declarations"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
+                    <h3>Declarations<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#declarations-anchor" target="_blank"><span class="fa fa-info-circle"></span></a></h3>
                     <ul class="list-group">
-                        <li class="list-group-item">
-                            <a href="../components/AlertInfoComponent.html">AlertInfoComponent</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="../components/DiscussionCardComponent.html">DiscussionCardComponent</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="../components/SyntheseInfoObsComponent.html">SyntheseInfoObsComponent</a>
-                        </li>
+                            <li class="list-group-item">
+                                <a href="../components/SyntheseInfoObsComponent.html">SyntheseInfoObsComponent</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../components/DiscussionCardComponent.html">DiscussionCardComponent</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="../components/AlertInfoComponent.html">AlertInfoComponent</a>
+                            </li>
                     </ul>
                 </div>
                 <div class="col-sm-3">
-                    <h3>Imports<a href="https://angular.io/api/core/NgModule#imports" target="_blank" rel="noopener noreferrer"
-                            title="Official documentation about module imports"><span
-                                class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>Imports<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#imports-anchor" target="_blank"><span class="fa fa-info-circle"></a></h3>
                     <ul class="list-group">
-                        <li class="list-group-item">
-                            <a href="../modules/GN2CommonModule.html">GN2CommonModule</a>
-                        </li>
+                            <li class="list-group-item">
+                                    <a href="../modules/GN2CommonModule.html" >GN2CommonModule</a>
+                            </li>
                     </ul>
                 </div>
                 <div class="col-sm-3">
-                    <h3>Exports<a href="https://angular.io/api/core/NgModule#exports" target="_blank" rel="noopener noreferrer"
-                            title="Official documentation about module exports"><span
-                                class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>Exports<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#exports-anchor" target="_blank"><span class="fa fa-info-circle"></a></h3>
                     <ul class="list-group">
-                        <li class="list-group-item">
-                            <a href="../components/AlertInfoComponent.html">AlertInfoComponent</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="../components/DiscussionCardComponent.html">DiscussionCardComponent</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="../components/SyntheseInfoObsComponent.html">SyntheseInfoObsComponent</a>
-                        </li>
+                            <li class="list-group-item">
+                                    <a href="../components/SyntheseInfoObsComponent.html" >SyntheseInfoObsComponent</a>
+                            </li>
+                            <li class="list-group-item">
+                                    <a href="../components/DiscussionCardComponent.html" >DiscussionCardComponent</a>
+                            </li>
+                            <li class="list-group-item">
+                                    <a href="../components/AlertInfoComponent.html" >AlertInfoComponent</a>
+                            </li>
                     </ul>
                 </div>
             </div>
         </div>
-
-
     </div>
-
-
-    <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { NgModule } from &#x27;@angular/core&#x27;;
+    <div class="tab-pane fade tab-source-code" id="source">
+        <pre><code class="hljs javascript">import { NgModule } from &#x27;@angular/core&#x27;;
 import { CommonModule } from &#x27;@angular/common&#x27;;
 import { NgChartsModule } from &#x27;ng2-charts&#x27;;
 import { GN2CommonModule } from &#x27;@geonature_common/GN2Common.module&#x27;;
@@ -293,13 +1291,6 @@ export class SharedSyntheseModule {}
 
 
 
-
-
-
-
-
-
-
                    </div><div class="search-results">
     <div class="has-results">
         <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
@@ -310,31 +1301,8 @@ export class SharedSyntheseModule {}
     </div>
 </div>
 </div>
-               <!-- END CONTENT -->
            </div>
        </div>
-
-          <label class="dark-mode-switch">
-               <input type="checkbox">
-               <span class="slider">
-                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
-                    </svg>
-               </span>
-          </label>
-
-       <script>
-            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'module';
-            var COMPODOC_CURRENT_PAGE_URL = 'SharedSyntheseModule.html';
-            var MAX_SEARCH_RESULTS = 15;
-       </script>
-
-       <script src="../js/libs/custom-elements.min.js"></script>
-       <script src="../js/libs/lit-html.js"></script>
-
-       <script src="../js/menu-wc.js" defer></script>
-       <script nomodule src="../js/menu-wc_es5.js" defer></script>
 
        <script src="../js/libs/bootstrap-native.js"></script>
 
@@ -345,17 +1313,20 @@ export class SharedSyntheseModule {}
 
        <script src="../js/compodoc.js"></script>
 
-       <script src="../js/tabs.js"></script>
-       <script src="../js/menu.js"></script>
-       <script src="../js/libs/clipboard.min.js"></script>
-       <script src="../js/libs/prism.js"></script>
-       <script src="../js/sourceCode.js"></script>
-          <script src="../js/search/search.js"></script>
-          <script src="../js/search/lunr.min.js"></script>
-          <script src="../js/search/search-lunr.js"></script>
-          <script src="../js/search/search_index.js"></script>
-       <script src="../js/lazy-load-graphs.js"></script>
+       <script src="../js/search/search.js"></script>
+       <script src="../js/search/lunr.min.js"></script>
+       <script src="../js/search/search-lunr.js"></script>
 
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/highlight.pack.js"></script>
+       <script src="../js/libs/highlightjs-line-numbers.min.js"></script>
+       <script src="../js/search/search_index.js"></script>
+       <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                hljs.initHighlightingOnLoad();
+                hljs.initLineNumbersOnLoad();
+            });
+       </script>
 
     </body>
 </html>

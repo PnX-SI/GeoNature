@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geonature.core.gn_synthese.utils.query_select_sqla &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -320,7 +318,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">model_id_syn_col</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">subquery_observers</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">model_id_digitiser_column</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span>
             <span class="p">]</span>
-            <span class="n">datasets</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="n">datasets</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">))</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
             <span class="n">allowed_datasets</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">id_dataset</span> <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">]</span>
             <span class="n">ors_filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_id_dataset_column</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">allowed_datasets</span><span class="p">))</span>
 

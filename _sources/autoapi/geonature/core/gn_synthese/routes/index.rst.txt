@@ -131,6 +131,7 @@ Attributes
    POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
 
    :query str export_format: str<'csv', 'geojson', 'shapefiles', 'gpkg'>
+   :query str export_format: str<'csv', 'geojson', 'shapefiles', 'gpkg'>
 
 
 

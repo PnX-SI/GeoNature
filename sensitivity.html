@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="./">
+<html class="writer-html5" lang="fr" >
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gestion de la sensibilité &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -53,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html#tests-backend">Tests backend</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
@@ -179,8 +178,17 @@ de sensibilité :</p>
 </ul>
 <p>Le référentiel de sensibilité fourni par le SINP est normalement intégré
 à GeoNature lors de son installation. Sinon, il peut être manuellement
-intégré avec l’une ou l’autre des commandes suivantes :</p>
-<p>TaxRef v16 :</p>
+intégré ou mis à jour avec l’une ou l’autre des commandes suivantes (selon votre version de Taxref) :</p>
+<p>Taxref v17 :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v17 20240325&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_17.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">        </span>--encoding<span class="o">=</span>utf-8
+</pre></div>
+</div>
+<p>Taxref v16 :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
@@ -189,7 +197,7 @@ intégré avec l’une ou l’autre des commandes suivantes :</p>
 <span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>TaxRef v15 :</p>
+<p>Taxref v15 :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401875<span class="w"> </span><span class="se">\</span>
@@ -198,7 +206,7 @@ intégré avec l’une ou l’autre des commandes suivantes :</p>
 <span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>TaxRef v14 :</p>
+<p>Taxref v14 :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401876<span class="w"> </span><span class="se">\</span>
@@ -207,8 +215,10 @@ intégré avec l’une ou l’autre des commandes suivantes :</p>
 <span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>Le jeu de règles est fourni pour chaque version précise de TaxRef, certaines
+<p>Le jeu de règles est fourni pour chaque version précise de Taxref, certaines
 espèces sensibles pouvant voir leur <em>cd_nom</em> changé d’une version à l’autre.</p>
+<p>Si vous mettez à jour votre version du référentiel de sensibilité, il faut ensuite relancer
+le calcul des règles de sensibilité avec la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">refresh-rules-cache</span></code>.</p>
 </section>
 <section id="personnalisation">
 <h3>Personnalisation<a class="headerlink" href="#personnalisation" title="Link to this heading"></a></h3>

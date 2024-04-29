@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="./">
+<html class="writer-html5" lang="fr" >
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FAQ &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -55,8 +53,10 @@
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html#tests-backend">Tests backend</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#problemes-lies-au-frontend">Problèmes liés au frontend</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#changement-d-url-de-geonature">Changement d’URL de GeoNature</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#message-d-erreur-lors-de-la-compilation-du-frontend">Message d’erreur lors de la compilation du frontend</a></li>
 </ul>
 </li>
@@ -96,6 +96,10 @@
 <h1>FAQ<a class="headerlink" href="#faq" title="Link to this heading"></a></h1>
 <section id="problemes-lies-au-frontend">
 <h2>Problèmes liés au frontend<a class="headerlink" href="#problemes-lies-au-frontend" title="Link to this heading"></a></h2>
+<section id="changement-d-url-de-geonature">
+<h3>Changement d’URL de GeoNature<a class="headerlink" href="#changement-d-url-de-geonature" title="Link to this heading"></a></h3>
+<p>Si vous souhaitez changer l’URL de l’API de GeoNature, il est nécessaire d’indiquer les nouvelles adresses dans le fichier de configuration principale (<code class="docutils literal notranslate"><span class="pre">geonature/config/geonature_config.toml</span></code> pour GeoNature, ainsi que ceux de TaxHub et UsersHub)  ainsi que le fichier <code class="docutils literal notranslate"><span class="pre">frontend/src/assets/config.json</span></code> précisant l’URL de l’API au frontend. Pour mettre à jour ce fichier automatiquement, relancer le script <code class="docutils literal notranslate"><span class="pre">install/05_install_frontend.sh</span></code>.</p>
+</section>
 <section id="message-d-erreur-lors-de-la-compilation-du-frontend">
 <h3>Message d’erreur lors de la compilation du frontend<a class="headerlink" href="#message-d-erreur-lors-de-la-compilation-du-frontend" title="Link to this heading"></a></h3>
 <ul>

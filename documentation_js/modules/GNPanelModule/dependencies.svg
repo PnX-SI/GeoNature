@@ -22,45 +22,73 @@
 <text text-anchor="start" x="429.73" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Exports</text>
 <g id="clust1" class="cluster">
 <title>cluster_GNPanelModule</title>
-<polygon fill="none" stroke="black" stroke-dasharray="1,5" points="164,-70 164,-268 332,-268 332,-70 164,-70"/>
-</g>
-<g id="clust2" class="cluster">
-<title>cluster_GNPanelModule_declarations</title>
-<polygon fill="none" stroke="black" points="174,-78 174,-130 322,-130 322,-78 174,-78"/>
+<polygon fill="none" stroke="black" stroke-dasharray="1,5" points="36,-70 36,-268 460,-268 460,-70 36,-70"/>
 </g>
 <g id="clust5" class="cluster">
 <title>cluster_GNPanelModule_exports</title>
-<polygon fill="none" stroke="black" points="172,-208 172,-260 324,-260 324,-208 172,-208"/>
+<polygon fill="none" stroke="black" points="156,-208 156,-260 308,-260 308,-208 156,-208"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_GNPanelModule_declarations</title>
+<polygon fill="none" stroke="black" points="304,-78 304,-130 452,-130 452,-78 304,-78"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_GNPanelModule_imports</title>
+<polygon fill="none" stroke="black" points="44,-78 44,-130 296,-130 296,-78 44,-78"/>
 </g>
 <!-- GNPanelComponent -->
 <g id="node1" class="node">
 <title>GNPanelComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="314.15,-122 181.85,-122 181.85,-86 314.15,-86 314.15,-122"/>
-<text text-anchor="middle" x="248" y="-99.8" font-family="Times,serif" font-size="14.00">GNPanelComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="444.15,-122 311.85,-122 311.85,-86 444.15,-86 444.15,-122"/>
+<text text-anchor="middle" x="378" y="-99.8" font-family="Times,serif" font-size="14.00">GNPanelComponent</text>
 </g>
 <!-- GNPanelModule -->
 <g id="node2" class="node">
 <title>GNPanelModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="303.37,-187 300.37,-191 279.37,-191 276.37,-187 192.63,-187 192.63,-151 303.37,-151 303.37,-187"/>
-<text text-anchor="middle" x="248" y="-164.8" font-family="Times,serif" font-size="14.00">GNPanelModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="287.37,-187 284.37,-191 263.37,-191 260.37,-187 176.63,-187 176.63,-151 287.37,-151 287.37,-187"/>
+<text text-anchor="middle" x="232" y="-164.8" font-family="Times,serif" font-size="14.00">GNPanelModule</text>
 </g>
 <!-- GNPanelComponent&#45;&gt;GNPanelModule -->
 <g id="edge1" class="edge">
 <title>GNPanelComponent&#45;&gt;GNPanelModule</title>
-<path fill="none" stroke="black" d="M248,-122.11C248,-122.11 248,-140.99 248,-140.99"/>
-<polygon fill="black" stroke="black" points="244.5,-140.99 248,-150.99 251.5,-140.99 244.5,-140.99"/>
+<path fill="none" stroke="black" d="M378,-122.11C378,-141.34 378,-169 378,-169 378,-169 297.61,-169 297.61,-169"/>
+<polygon fill="black" stroke="black" points="297.61,-165.5 287.61,-169 297.61,-172.5 297.61,-165.5"/>
 </g>
 <!-- GNPanelComponent  -->
-<g id="node3" class="node">
+<g id="node5" class="node">
 <title>GNPanelComponent </title>
-<polygon fill="#fb8072" stroke="black" points="316.15,-252 179.85,-252 179.85,-216 316.15,-216 316.15,-252"/>
-<text text-anchor="middle" x="248" y="-229.8" font-family="Times,serif" font-size="14.00">GNPanelComponent </text>
+<polygon fill="#fb8072" stroke="black" points="300.15,-252 163.85,-252 163.85,-216 300.15,-216 300.15,-252"/>
+<text text-anchor="middle" x="232" y="-229.8" font-family="Times,serif" font-size="14.00">GNPanelComponent </text>
 </g>
 <!-- GNPanelModule&#45;&gt;GNPanelComponent  -->
-<g id="edge2" class="edge">
+<g id="edge4" class="edge">
 <title>GNPanelModule&#45;&gt;GNPanelComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M248,-187.11C248,-187.11 248,-205.99 248,-205.99"/>
-<polygon fill="black" stroke="black" points="244.5,-205.99 248,-215.99 251.5,-205.99 244.5,-205.99"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M232,-187.11C232,-187.11 232,-205.99 232,-205.99"/>
+<polygon fill="black" stroke="black" points="228.5,-205.99 232,-215.99 235.5,-205.99 228.5,-205.99"/>
+</g>
+<!-- CommonModule -->
+<g id="node3" class="node">
+<title>CommonModule</title>
+<polygon fill="#8dd3c7" stroke="black" points="287.67,-122 284.67,-126 263.67,-126 260.67,-122 176.33,-122 176.33,-86 287.67,-86 287.67,-122"/>
+<text text-anchor="middle" x="232" y="-99.8" font-family="Times,serif" font-size="14.00">CommonModule</text>
+</g>
+<!-- CommonModule&#45;&gt;GNPanelModule -->
+<g id="edge2" class="edge">
+<title>CommonModule&#45;&gt;GNPanelModule</title>
+<path fill="none" stroke="black" d="M232,-122.11C232,-122.11 232,-140.99 232,-140.99"/>
+<polygon fill="black" stroke="black" points="228.5,-140.99 232,-150.99 235.5,-140.99 228.5,-140.99"/>
+</g>
+<!-- MatIconModule -->
+<g id="node4" class="node">
+<title>MatIconModule</title>
+<polygon fill="#8dd3c7" stroke="black" points="158.47,-122 155.47,-126 134.47,-126 131.47,-122 51.53,-122 51.53,-86 158.47,-86 158.47,-122"/>
+<text text-anchor="middle" x="105" y="-99.8" font-family="Times,serif" font-size="14.00">MatIconModule</text>
+</g>
+<!-- MatIconModule&#45;&gt;GNPanelModule -->
+<g id="edge3" class="edge">
+<title>MatIconModule&#45;&gt;GNPanelModule</title>
+<path fill="none" stroke="black" d="M105,-122.11C105,-141.34 105,-169 105,-169 105,-169 166.3,-169 166.3,-169"/>
+<polygon fill="black" stroke="black" points="166.3,-172.5 176.3,-169 166.3,-165.5 166.3,-172.5"/>
 </g>
 </g>
 </svg>

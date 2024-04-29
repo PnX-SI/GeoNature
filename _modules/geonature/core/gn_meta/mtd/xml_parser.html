@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geonature.core.gn_meta.mtd.xml_parser &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
-
-  
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -288,15 +286,19 @@
         <span class="n">current_jdd</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;unique_dataset_id&quot;</span><span class="p">:</span> <span class="n">jdd_uuid</span><span class="p">,</span>
             <span class="s2">&quot;uuid_acquisition_framework&quot;</span><span class="p">:</span> <span class="n">ca_uuid</span><span class="p">,</span>
-            <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">dataset_name</span><span class="p">,</span>
+            <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">dataset_name</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">256</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_name</span><span class="p">[:</span><span class="mi">253</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">,</span>
             <span class="s2">&quot;dataset_shortname&quot;</span><span class="p">:</span> <span class="n">dataset_shortname</span><span class="p">,</span>
-            <span class="s2">&quot;dataset_desc&quot;</span><span class="p">:</span> <span class="n">dataset_desc</span><span class="p">,</span>
+            <span class="s2">&quot;dataset_desc&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="n">dataset_desc</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">256</span>
+                <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;Nom complet du jeu de données dans MTD : </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">dataset_desc</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
             <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="n">keywords</span><span class="p">,</span>
             <span class="s2">&quot;terrestrial_domain&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">terrestrial_domain</span><span class="p">),</span>
             <span class="s2">&quot;marine_domain&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">marine_domain</span><span class="p">),</span>
-            <span class="s2">&quot;id_nomenclature_data_type&quot;</span><span class="p">:</span> <span class="n">data_type</span><span class="p">,</span>
+            <span class="s2">&quot;cd_nomenclature_data_type&quot;</span><span class="p">:</span> <span class="n">data_type</span><span class="p">,</span>
             <span class="s2">&quot;id_digitizer&quot;</span><span class="p">:</span> <span class="n">id_digitizer</span><span class="p">,</span>
-            <span class="s2">&quot;id_nomenclature_data_origin&quot;</span><span class="p">:</span> <span class="n">code_statut_donnees_source</span><span class="p">,</span>
+            <span class="s2">&quot;cd_nomenclature_data_origin&quot;</span><span class="p">:</span> <span class="n">code_statut_donnees_source</span><span class="p">,</span>
             <span class="s2">&quot;actors&quot;</span><span class="p">:</span> <span class="n">all_actors</span><span class="p">,</span>
             <span class="s2">&quot;meta_create_date&quot;</span><span class="p">:</span> <span class="n">create_date</span><span class="p">,</span>
             <span class="s2">&quot;meta_update_date&quot;</span><span class="p">:</span> <span class="n">update_date</span><span class="p">,</span>
