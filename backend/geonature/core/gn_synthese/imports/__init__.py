@@ -11,6 +11,7 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import Synthese, TSources
 
 from geonature.core.imports.models import Entity, EntityField, BibFields, TImports
+import geonature.core.imports.bbox as bbox
 from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
@@ -358,16 +359,19 @@ def remove_data_from_synthese(imprt):
         db.session.delete(source)
 
 
-def get_name_geom_4326_field():
-    """Return the name of the field that contains the 4326 geometry.
-    For synthese, the name is actually the same for import transient table
-    `gn_imports.t_imports_synthese` and for the destination table `gn_synthese.synthese`.
+def get_bbox_computation_infos():
+    """Return the infos that will be used for the bbox computation.
+    For synthese, the bbox computation is relevant. The entity is "observation", and the name_field is actually the same for import transient table `gn_imports.t_imports_synthese` and for the destination table `gn_synthese.synthese`.
     Returns
     -------
-    str
-        The name of the field
+    dict
+        A dictionary indexed by the keys from bbox.Key enum
     """
-    return "the_geom_4326"
+    return {
+        bbox.Key.IS_RELEVANT: True,
+        bbox.Key.NAME_FIELD: "the_geom_4326",
+        bbox.Key.CODE_ENTITY: "observation",
+    }
 
 
 def get_where_clause_id_import(imprt):
