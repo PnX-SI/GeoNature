@@ -30,7 +30,6 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 0
-          ref: update-doc
 
       - name: Setup node
         uses: actions/setup-node@v3
