@@ -1,5 +1,5 @@
 Tests backend
--------------
+=============
 
 Cette documentation a pour objectif d'expliquer comment écrire des tests pour
 le backend de GeoNature.
@@ -19,7 +19,7 @@ tester différentes configurations plutôt qu'un seul les testant toutes d'un
 coup. Cela permet d'identifier plus précisément le test qui n'a pas fonctionné.
 
 Introduction
-************
+------------
 
 Comme spécifié dans la partie Développement, la librairie Python PyTest est 
 utilisée pour rédiger des tests. Elle permet de : 
@@ -32,7 +32,7 @@ utilisée pour rédiger des tests. Elle permet de :
   `documentation PyTest <https://docs.pytest.org/>`_ 
 
 Utilisation
-***********
+-----------
 
 Les tests sont des fonctions pouvant être regroupées dans des classes. La 
 nomenclature est la suivante : 
@@ -47,7 +47,7 @@ nomenclature est la suivante :
   pouvoir être détecté automatiquement par PyTest
 
 Fixtures
-********
+--------
 
 Les fixtures de PyTest peuvent permettre de nombreuses choses comme expliqué 
 dans la documentation PyTest sur `les fixtures <https://docs.pytest.org/explanation/fixtures.html#about-fixtures>`_.
@@ -106,7 +106,7 @@ Il est aussi possible de définir un ``scope`` d'une fixture comme ceci :
       return 2
 
 Exemple
-*******
+-------
 
 Voici un exemple de test qui a été fait dans GeoNature
 
@@ -132,7 +132,7 @@ l'attribut ``client`` de la classe, utile pour faire des requêtes http
 notamment. 
 
 Dans GitHub
-***********
+-----------
 
 Dans le dépôt de GeoNature sur GitHub, tous ces tests sont exécutés 
 automatiquement pour chaque commit d'une pull request grâce à PyTest et à 
@@ -143,7 +143,7 @@ request. Un coverage est aussi exécuté pour s'assurer que les nouveaux
 développements sont bien testés.
 
 Coverage
-********
+--------
 
 Le coverage est un système permettant de quantifier les lignes de code 
 exécutées par le test. Exemple rapide :
@@ -181,7 +181,7 @@ obtenir 100% de coverage sur la fonction ``ma_fonction_a_tester()``.
 
 
 Dans VSCode
-***********
+-----------
 
 Il est possible d'installer `l'extension Python <https://marketplace.visualstudio.com/items?itemName=ms-python.python>`_ pour facilement lancer et 
 debugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de 
@@ -199,7 +199,7 @@ projet avec le code suivant pour qu'il soit compatible avec GeoNature :
     }
 
 Exécuter un ou plusieurs test(s) en ligne de commande
-*****************************************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est 
 installé GeoNature et exécutez la commande suivante : 
@@ -236,3 +236,99 @@ Le format ``xml`` est interprété par l'extension VSCode `Coverage Gutters <htt
 Si vous souhaitez voir le coverage directement depuis le navigateur, il est 
 possible de générer le coverage au format html en remplaçant ``xml`` par 
 ``html``.
+
+
+
+Evaluer les performances du backend
+-----------------------------------
+
+Les versions de GeoNature >2.14.1 intègrent la possibilité d'évaluer les performances de routes connues pour leur temps de traitement important. Par exemple, l'appel de la route ``gn_synthese.get_observations_for_web`` avec une géographie non-présente dans le référentiel géographique.
+
+Cette fonctionnalité s'appuie sur ``pytest`` et son extension ``pytest-benchmark``(https://pytest-benchmark.readthedocs.io/en/latest/).
+
+Lancement des tests de performances
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Il existe différentes manières de lancer les tests de performances:
+
+- La commande ``pytest`` sans arguments. Cette dernière lancera les tests de performances en plus des tests unitaires.
+- La commande ``pytest --benchmark-only`` qui lancera uniquement les tests de performances.
+
+
+
+
+
+Ajouter des tests de performances
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+La création de tests de performance s'effectue à l'aide de la classe ``geonature.tests.benchmarks.benchmark_generator.BenchmarkTest``.
+
+L'objet ``BenchmarkTest`` prend en argument :
+
+ - La fonction dont on souhaite mesurer la performance
+ - Le nom du test
+ - Les ``args`` de la fonction
+ - les ``kwargs`` de la fonction
+
+
+Cette classe permet de générer une fonction de test utilisable dans le _framework_ existant de ``pytest``. Pour cela, rien de plus simple ! Créer un fichier de test (de préférence dans le sous-dossier ``backend/geonature/tests/benchmarks``). 
+
+Import la classe BenchmarkTest dans le fichier de test.
+
+.. code-block::
+    import pytest
+    from geonature.tests.benchmarks import BenchmarkTest
+
+
+Ajouter un test de performance, ici le test ``test_print`` qui teste la fonction ``print`` de Python.
+
+
+.. code-block::
+    
+    bench = BenchmarkTest(print,"test_print",["Hello","World"],{})
+
+
+Ajouter la fonction générée dans ``bench`` dans une classe de test:
+
+.. code-block::
+    @pytest.mark.benchmark(group="occhab") # Pas obligatoire mais permet de compartimenter les tests de performances
+    @pytest.mark.usefixtures("client_class", "temporary_transaction")
+        class TestBenchie:
+            test_print = bench()
+
+.. note ::
+  Le décorateur ``@pytest.mark.benchmark`` permet de configurer l'éxecution des tests de performances par ``pytest-benchmark``. Dans l'exemple ci-dessus, on l'utilise pour regrouper les tests de performances
+  déclarés dans la classe ``TestBenchie`` dans un groupe nommée ``occhab``.
+
+
+.. image:: images/benchmark_result.png
+   :width: 60%
+   :alt: Affichage des tests de performances
+   :align: center
+
+
+
+Si le test de performances doit accéder à des fonctions ou des variables uniquement accessibles dans le contexte
+de l'application flask, il faudra utiliser l'objet ``geonature.tests.benchmarks.CLater``. Ce dernier permet
+de déclarer un expression python retournant un objet (fonction ou variable) dans une chaîne de caractère qui
+sera _évalué_ (voir la fonction ``eval()`` de Python) uniquement lors de l'exécution du benchmark.
+
+.. code-block::
+  test_get_default_nomenclatures = BenchmarkTest(
+        CLater("self.client.get"),
+        [CLater("""url_for("gn_synthese.getDefaultsNomenclatures")""")],
+        dict(user_profile="self_user"),
+    )()
+
+L'exécution de certaines benchmark de routes doivent inclure l'engistrement d'utilisateur de tests. Pour cela,
+il suffit d'utiliser la clé ``user_profile`` dans l'argument ``kwargs`` (Voir code ci-dessus).
+
+Si l'utilisation de _fixtures_ est nécessaire à votre test de performance, utilisé la clé ``fixture`` 
+dans l'argument ``kwargs``: 
+
+.. code-block::
+  test_get_station = BenchmarkTest(
+        CLater("self.client.get"),
+        [CLater("""url_for("occhab.get_station", id_station=8)""")],
+        dict(user_profile="user", fixtures=[stations]),
+    )()

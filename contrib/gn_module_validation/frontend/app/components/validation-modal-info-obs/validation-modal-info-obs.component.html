@@ -1,8 +1,7 @@
 <!-- MODAL HEADER -->
 <div class="modal-header padding-md-all">
-
   <h5 class="my-3 ml-3">
-    {{edit ? "Modifier le statut de validation" : "Information sur l'observation"}}
+    {{ edit ? 'Modifier le statut de validation' : "Information sur l'observation" }}
   </h5>
 
   <button
@@ -33,8 +32,10 @@
         <label
           [ngStyle]="{
             'background-color': config.VALIDATION.STATUS_INFO[item.cd_nomenclature]?.color,
-            'color': ['0', '6'].includes(item.cd_nomenclature) ? 'darkslategray' : 'white',
-            'border-color': ['0', '6'].includes(item.cd_nomenclature) ? 'rgba(0,0,0,0.2)' : 'transparent'
+            color: ['0', '6'].includes(item.cd_nomenclature) ? 'darkslategray' : 'white',
+            'border-color': ['0', '6'].includes(item.cd_nomenclature)
+              ? 'rgba(0,0,0,0.2)'
+              : 'transparent'
           }"
           role="button"
           class="btn btn-success box-shadow status-badge"
@@ -44,17 +45,18 @@
             (click)="setCurrentCdNomenclature(item)"
             type="radio"
             [formControl]="statusForm.controls.statut"
-            value="{{item.id_nomenclature}}"
-          >
-          {{item.mnemonique}}</label>
+            value="{{ item.id_nomenclature }}"
+          />
+          {{ item.mnemonique }}
+        </label>
       </span>
     </div>
     <mat-form-field
       appearance="fill"
-      style="width:100%"
+      style="width: 100%"
       class="my-3"
     >
-      <mat-label class="gn-color">Comentaire :</mat-label>
+      <mat-label class="gn-color">Commentaire :</mat-label>
       <textarea
         matInput
         placeholder="Votre commentaire...."
@@ -99,15 +101,19 @@
   <button
     class="status-badge"
     mat-button
-    ngbTooltip="{{'Synthese.changeValidStatus' | translate}}"
+    ngbTooltip="{{ 'Synthese.changeValidStatus' | translate }}"
     (click)="editStatus()"
     [ngStyle]="{
       'background-color': currentValidationStatus?.color || 'red',
-      'color': ['0', '6'].includes(currentValidationStatus.cd_nomenclature) ? 'darkslategray' : 'white',
-      'border': ['0', '6'].includes(currentValidationStatus.cd_nomenclature) ? '1px solid rgba(0,0,0,0.2)' : 'transparent'
+      color: ['0', '6'].includes(currentValidationStatus.cd_nomenclature)
+        ? 'darkslategray'
+        : 'white',
+      border: ['0', '6'].includes(currentValidationStatus.cd_nomenclature)
+        ? '1px solid rgba(0,0,0,0.2)'
+        : 'transparent'
     }"
   >
-    {{currentValidationStatus.mnemonique}}
+    {{ currentValidationStatus.mnemonique }}
     <mat-icon>edit</mat-icon>
   </button>
 </pnx-synthese-info-obs>

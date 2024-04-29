@@ -4,14 +4,32 @@
   id="download-btn"
   (click)="openModal(loadContent)"
 >
-  <i class="fa fa-download" aria-hidden="true"> </i>
+  <i
+    class="fa fa-download"
+    aria-hidden="true"
+  ></i>
   {{ labelButton }}
 </button>
 
-<ng-template #loadContent id="modal-download" let-c="close" let-d="dismiss">
+<ng-template
+  #loadContent
+  id="modal-download"
+  let-c="close"
+  let-d="dismiss"
+>
   <div class="modal-header">
-    <h5 class="modal-title" id="modalLabel">Télécharger les données</h5>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <h5
+      class="modal-title"
+      id="modalLabel"
+    >
+      Télécharger les données
+    </h5>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -31,7 +49,10 @@
     </div>
 
     <br />
-    <div *ngIf="isDownloading" class="telechargement">
+    <div
+      *ngIf="isDownloading"
+      class="telechargement"
+    >
       {{ message }}
       <p>
         <ngb-progressbar
@@ -43,7 +64,10 @@
       </p>
     </div>
 
-    <div *ngIf="endLoad" class="telechargement">
+    <div
+      *ngIf="endLoad"
+      class="telechargement"
+    >
       {{ message }}
       <p>
         <ngb-progressbar

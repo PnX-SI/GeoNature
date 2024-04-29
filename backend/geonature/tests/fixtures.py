@@ -7,7 +7,7 @@ from warnings import warn
 import pytest
 import sqlalchemy as sa
 
-from flask import current_app, testing, url_for
+from flask import current_app, testing, url_for, request
 from geoalchemy2.shape import from_shape
 from PIL import Image
 from shapely.geometry import Point
@@ -35,7 +35,11 @@ from geonature.core.gn_synthese.models import (
     TReport,
     TSources,
 )
-from geonature.core.sensitivity.models import SensitivityRule, cor_sensitivity_area
+from geonature.core.sensitivity.models import (
+    CorSensitivityCriteria,
+    SensitivityRule,
+    cor_sensitivity_area,
+)
 from geonature.utils.env import db
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from pypnusershub.db.models import Application, Organisme
@@ -96,6 +100,10 @@ def app():
     app.testing = True
     app.test_client_class = GeoNatureClient
     app.config["SERVER_NAME"] = "test.geonature.fr"  # required by url_for
+
+    @app.before_request
+    def get_endpoint():
+        pytest.endpoint = request.endpoint
 
     with app.app_context():
         """
@@ -334,8 +342,16 @@ def users(app):
                 2,
                 False,
                 [],
-                {"C": 2, "OCCHAB": {"R": 2, "U": 1, "E": 2, "D": 1}},
+                {
+                    "C": 2,
+                    "OCCHAB": {"R": 2, "U": 1, "E": 2, "D": 1},
+                    "OCCTAX": {"R": 2, "U": 1, "E": 2, "D": 1},
+                },
             ),
+            {},
+        ),
+        (
+            ("user_with_blurring", organisme, 1, True, [], {}),
             {},
         ),
     ]
@@ -580,6 +596,9 @@ def synthese_sensitive_data(app, users, datasets, source):
     sensitivity_rule = db.session.execute(
         sa.select(SensitivityRule)
         .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
+        .join(
+            CorSensitivityCriteria, SensitivityRule.id == CorSensitivityCriteria.id_sensitivity_rule
+        )
         .join(LAreas, cor_sensitivity_area.c.id_area == LAreas.id_area)
         .where(SensitivityRule.active == True)
         .limit(1)

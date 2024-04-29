@@ -16,6 +16,7 @@ from flask import (
     g,
 )
 from geonature.core.gn_synthese.schemas import SyntheseSchema
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from pypnusershub.db.models import User
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
@@ -148,15 +149,14 @@ def get_observations_for_web(permissions):
 
     # Get Column Frontend parameter to return only the needed columns
     param_column_list = {
-        col["prop"] for col in current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
+        col["prop"]
+        for col in current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
+        + current_app.config["SYNTHESE"]["ADDITIONAL_COLUMNS_FRONTEND"]
     }
     # Init with compulsory columns
-    columns = [
-        "id",
-        VSyntheseForWebApp.id_synthese,
-        "url_source",
-        VSyntheseForWebApp.url_source,
-    ]
+    columns = []
+    for col in MANDATORY_COLUMNS:
+        columns.extend([col, getattr(VSyntheseForWebApp, col)])
 
     if "count_min_max" in param_column_list:
         count_min_max = case(
@@ -532,14 +532,38 @@ def export_observations_web(permissions):
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
 
     :query str export_format: str<'csv', 'geojson', 'shapefiles', 'gpkg'>
+    :query str export_format: str<'csv', 'geojson', 'shapefiles', 'gpkg'>
 
     """
     params = request.args
     # set default to csv
     export_format = params.get("export_format", "csv")
+    view_name_param = params.get("view_name", "gn_synthese.v_synthese_for_export")
     # Test export_format
-    if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
+    if export_format not in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise BadRequest("Unsupported format")
+    config_view = {
+        "view_name": "gn_synthese.v_synthese_for_web_app",
+        "geojson_4326_field": "geojson_4326",
+        "geojson_local_field": "geojson_local",
+    }
+    # Test export view name is config params for security reason
+    if view_name_param != "gn_synthese.v_synthese_for_export":
+        try:
+            config_view = next(
+                _view
+                for _view in current_app.config["SYNTHESE"]["EXPORT_OBSERVATIONS_CUSTOM_VIEWS"]
+                if _view["view_name"] == view_name_param
+            )
+        except StopIteration:
+            raise Forbidden("This view is not available for export")
+
+    geojson_4326_field = config_view["geojson_4326_field"]
+    geojson_local_field = config_view["geojson_local_field"]
+    try:
+        schema_name, view_name = view_name_param.split(".")
+    except ValueError:
+        raise BadRequest("view_name parameter must be a string with schema dot view_name")
 
     # get list of id synthese from POST
     id_list = request.get_json()
@@ -555,12 +579,18 @@ def export_observations_web(permissions):
     # Useful to have geom column so that they can be replaced by blurred geoms
     # (only if the user has sensitive permissions)
     export_view = GenericTableGeo(
-        tableName="v_synthese_for_export",
-        schemaName="gn_synthese",
+        tableName=view_name,
+        schemaName=schema_name,
         engine=DB.engine,
         geometry_field=None,
         srid=local_srid,
     )
+    mandatory_columns = {"id_synthese", geojson_4326_field, geojson_local_field}
+    if not mandatory_columns.issubset(set(map(lambda col: col.name, export_view.db_cols))):
+        print(set(map(lambda col: col.name, export_view.db_cols)))
+        raise BadRequest(
+            f"The view {view_name} miss one of required columns {str(mandatory_columns)}"
+        )
 
     # If there is no sensitive permissions => same path as before blurring implementation
     if not blurring_permissions:
@@ -591,8 +621,6 @@ def export_observations_web(permissions):
         )
 
         # Overwrite geometry columns to compute the blurred geometry from the blurring cte
-        geojson_4326_col = current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"]
-        geojson_local_col = current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"]
         columns_with_geom_excluded = [
             col
             for col in export_view.tableDef.columns
@@ -601,8 +629,8 @@ def export_observations_web(permissions):
                 "geometrie_wkt_4326",  # FIXME: hardcoded column names?
                 "x_centroid_4326",
                 "y_centroid_4326",
-                geojson_4326_col,
-                geojson_local_col,
+                geojson_4326_field,
+                geojson_local_field,
             ]
         ]
         # Recomputed the blurred geometries
@@ -610,9 +638,9 @@ def export_observations_web(permissions):
             func.st_astext(cte_synthese_filtered.c.geom).label("geometrie_wkt_4326"),
             func.st_x(func.st_centroid(cte_synthese_filtered.c.geom)).label("x_centroid_4326"),
             func.st_y(func.st_centroid(cte_synthese_filtered.c.geom)).label("y_centroid_4326"),
-            func.st_asgeojson(cte_synthese_filtered.c.geom).label(geojson_4326_col),
+            func.st_asgeojson(cte_synthese_filtered.c.geom).label(geojson_4326_field),
             func.st_asgeojson(func.st_transform(cte_synthese_filtered.c.geom, local_srid)).label(
-                geojson_local_col
+                geojson_local_field
             ),
         ]
 
@@ -625,14 +653,10 @@ def export_observations_web(permissions):
         .select_from(
             export_view.tableDef.join(
                 cte_synthese_filtered,
-                cte_synthese_filtered.c.id_synthese == export_view.tableDef.c.id_synthese,
+                cte_synthese_filtered.c.id_synthese == export_view.tableDef.columns["id_synthese"],
             )
         )
-        .where(
-            export_view.tableDef.columns[
-                current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]
-            ].in_(id_list)
-        )
+        .where(export_view.tableDef.columns["id_synthese"].in_(id_list))
     )
 
     # Get the results for export
@@ -642,11 +666,17 @@ def export_observations_web(permissions):
 
     db_cols_for_shape = []
     columns_to_serialize = []
-    # loop over synthese config to get the columns for export
+    # loop over synthese config to exclude columns if its default export
     for db_col in export_view.db_cols:
-        if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
-            db_cols_for_shape.append(db_col)
-            columns_to_serialize.append(db_col.key)
+        if view_name_param == "gn_synthese.v_synthese_for_export":
+            if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
+                db_cols_for_shape.append(db_col)
+                columns_to_serialize.append(db_col.key)
+        else:
+            # remove geojson fields of serialization
+            if db_col.key not in [geojson_4326_field, geojson_local_field]:
+                db_cols_for_shape.append(db_col)
+                columns_to_serialize.append(db_col.key)
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
@@ -657,9 +687,7 @@ def export_observations_web(permissions):
     elif export_format == "geojson":
         features = []
         for r in results:
-            geometry = json.loads(
-                getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
-            )
+            geometry = json.loads(getattr(r, geojson_4326_field))
             feature = Feature(
                 geometry=geometry,
                 properties=export_view.as_dict(r, fields=columns_to_serialize),
@@ -673,7 +701,7 @@ def export_observations_web(permissions):
                 export_format=export_format,
                 export_view=export_view,
                 db_cols=db_cols_for_shape,
-                geojson_col=current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
+                geojson_col=geojson_local_field,
                 data=results,
                 file_name=file_name,
             )

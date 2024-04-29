@@ -14,15 +14,21 @@ from jsonschema import validate as validate_json
 from geoalchemy2.shape import to_shape, from_shape
 from shapely.testing import assert_geometries_equal
 from shapely.geometry import Point
-from marshmallow import EXCLUDE
+from marshmallow import EXCLUDE, fields, Schema
+from marshmallow_geojson import FeatureSchema, GeoJSONSchema
+
 
 from geonature.utils.env import db
+from geonature.utils.config import config
 from geonature.core.gn_permissions.tools import get_permissions
 from geonature.core.gn_synthese.utils.blurring import split_blurring_precise_permissions
+from geonature.core.gn_synthese.schemas import SyntheseSchema
 from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+
 from geonature.core.gn_synthese.schemas import SyntheseSchema
 from geonature.core.gn_permissions.models import PermAction, Permission
 from geonature.core.gn_commons.models.base import TModules
@@ -32,9 +38,10 @@ from ref_geo.models import BibAreasTypes, LAreas
 from apptax.tests.fixtures import noms_example, attribut_example
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 
+from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
+
 from .fixtures import *
 from .fixtures import create_synthese, create_module, synthese_with_protected_status
-from .utils import jsonschema_definitions
 
 
 @pytest.fixture()
@@ -106,59 +113,85 @@ def synthese_for_observers(source, datasets):
             )
 
 
-synthese_properties = {
-    "type": "object",
-    "properties": {
-        "observations": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "number"},
-                    "cd_nom": {"type": "number"},
-                    "count_min_max": {"type": "string"},
-                    "dataset_name": {"type": "string"},
-                    "date_min": {"type": "string"},
-                    "entity_source_pk_value": {
-                        "oneOf": [
-                            {"type": "null"},
-                            {"type": "string"},
-                        ],
-                    },
-                    "lb_nom": {"type": "string"},
-                    "nom_vern_or_lb_nom": {"type": "string"},
-                    "unique_id_sinp": {
-                        "type": "string",
-                        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-                    },
-                    "observers": {
-                        "oneOf": [
-                            {"type": "null"},
-                            {"type": "string"},
-                        ],
-                    },
-                    "url_source": {
-                        "oneOf": [
-                            {"type": "null"},
-                            {"type": "string"},
-                        ],
-                    },
-                },
-                "required": [  # obligatoire pour le fonctionement du front
-                    "id",
-                    "cd_nom",
-                    "url_source",
-                    "entity_source_pk_value",
-                ],
-                # "additionalProperties": False,
-            },
-        },
-    },
-}
+# TODO : move and use those schemas in routes one day !
+class CustomRequiredConverter(GeoModelConverter):
+    """Custom converter to add kwargs required for mandatory and asked fields in get_observations_for_web view
+    Use to validate response in test"""
+
+    def _add_column_kwargs(self, kwargs, column):
+        super()._add_column_kwargs(kwargs, column)
+        default_cols = map(
+            lambda col: col["prop"],
+            config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
+            + config["SYNTHESE"]["ADDITIONAL_COLUMNS_FRONTEND"],
+        )
+        required_cols = list(default_cols) + MANDATORY_COLUMNS
+        kwargs["required"] = column.name in required_cols
+
+
+class VSyntheseForWebAppSchema(GeoAlchemyAutoSchema):
+    """
+    Schema for serialization/deserialization of VSyntheseForWebApp class
+    """
+
+    count_min_max = fields.Str()
+    nom_vern_or_lb_nom = fields.Str()
+
+    class Meta:
+        model = VSyntheseForWebApp
+        model_converter = CustomRequiredConverter
+
+
+# utility classes for VSyntheseForWebAppSchema validation
+class UngroupedFeatureSchema(FeatureSchema):
+    properties = fields.Nested(
+        VSyntheseForWebAppSchema,
+        required=True,
+    )
+
+
+class GroupedFeatureSchema(FeatureSchema):
+    class NestedObs(Schema):
+        observations = fields.List(
+            fields.Nested(VSyntheseForWebAppSchema, required=True), required=True
+        )
+
+    properties = fields.Nested(NestedObs, required=True)
+
+
+class UngroupedGeoJSONSchema(GeoJSONSchema):
+    feature_schema = UngroupedFeatureSchema
+
+
+class GroupedGeoJSONSchema(GeoJSONSchema):
+    feature_schema = GroupedFeatureSchema
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSynthese:
+    def test_required_fields_and_format(self, app, users):
+        # Test required fields base on VSyntheseForWebAppSchema surrounded by a custom converter : CustomRequiredConverter
+        # also test geojson serialization (grouped by geometry and not)
+        app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] += [
+            {"prop": "altitude_min", "name": "Altitude min"},
+            {"prop": "count_min_max", "name": "Dénombrement"},
+            {"prop": "nom_vern_or_lb_nom", "name": "Taxon"},
+        ]
+
+        app.config["SYNTHESE"]["ADDITIONAL_COLUMNS_FRONTEND"] += [
+            {"prop": "lb_nom", "name": "Nom scientifique"}
+        ]
+        url_ungrouped = url_for("gn_synthese.get_observations_for_web")
+        set_logged_user(self.client, users["admin_user"])
+        resp = self.client.get(url_ungrouped)
+        for f in resp.json["features"]:
+            UngroupedGeoJSONSchema().load(f)
+
+        url_grouped = url_for("gn_synthese.get_observations_for_web", format="grouped_geom")
+        resp = self.client.get(url_grouped)
+        for f in resp.json["features"]:
+            GroupedGeoJSONSchema().load(f)
+
     def test_synthese_scope_filtering(self, app, users, synthese_data):
         all_ids = {s.id_synthese for s in synthese_data.values()}
         sq = (
@@ -184,12 +217,6 @@ class TestSynthese:
 
     def test_get_observations_for_web(self, app, users, synthese_data, taxon_attribut):
         url = url_for("gn_synthese.get_observations_for_web")
-        schema = {
-            "definitions": jsonschema_definitions,
-            "$ref": "#/definitions/featurecollection",
-            "$defs": {"props": synthese_properties},
-        }
-
         r = self.client.get(url)
         assert r.status_code == Unauthorized.code
 
@@ -197,7 +224,9 @@ class TestSynthese:
 
         r = self.client.get(url)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
+
+        r = self.client.get(url)
+        assert r.status_code == 200
 
         # Add cd_nom column
         app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] += [
@@ -206,6 +235,7 @@ class TestSynthese:
                 "name": "Cdnom",
             }
         ]
+        # schema["properties"]["observations"]["items"]["required"] =
         # test on synonymy and taxref attrs
         filters = {
             "cd_ref": [taxon_attribut.bib_nom.cd_ref],
@@ -215,7 +245,6 @@ class TestSynthese:
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) > 0
         for feature in r.json["features"]:
             assert feature["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
@@ -241,12 +270,11 @@ class TestSynthese:
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
-            {f["properties"]["id"] for f in r.json["features"]}
+            {f["properties"]["id_synthese"] for f in r.json["features"]}
         )
         assert {synthese_data[k].id_synthese for k in ["p2_af1", "p2_af2"]}.isdisjoint(
-            {f["properties"]["id"] for f in r.json["features"]}
+            {f["properties"]["id_synthese"] for f in r.json["features"]}
         )
 
         # test geometry filter with circle radius
@@ -264,12 +292,11 @@ class TestSynthese:
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
-            {f["properties"]["id"] for f in r.json["features"]}
+            {f["properties"]["id_synthese"] for f in r.json["features"]}
         )
         assert {synthese_data[k].id_synthese for k in ["p2_af1", "p2_af2"]}.isdisjoint(
-            {f["properties"]["id"] for f in r.json["features"]}
+            {f["properties"]["id_synthese"] for f in r.json["features"]}
         )
 
         # test ref geo area filter
@@ -280,12 +307,11 @@ class TestSynthese:
         filters = {f"area_{com_type.id_type}": [chambery.id_area]}
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
-            {f["properties"]["id"] for f in r.json["features"]}
+            {f["properties"]["id_synthese"] for f in r.json["features"]}
         )
         assert {synthese_data[k].id_synthese for k in ["p2_af1", "p2_af2"]}.isdisjoint(
-            {f["properties"]["id"] for f in r.json["features"]}
+            {f["properties"]["id_synthese"] for f in r.json["features"]}
         )
 
         # test organism
@@ -294,7 +320,6 @@ class TestSynthese:
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) >= 2  # FIXME
 
         # test status lr
@@ -343,7 +368,9 @@ class TestSynthese:
         filters = {"has_comment": True}
         r = self.client.get(url, json=filters)
 
-        assert id_synthese in (feature["properties"]["id"] for feature in r.json["features"])
+        assert id_synthese in (
+            feature["properties"]["id_synthese"] for feature in r.json["features"]
+        )
 
     def test_get_observations_for_web_filter_id_source(self, users, synthese_data, source):
         set_logged_user(self.client, users["self_user"])
@@ -358,7 +385,7 @@ class TestSynthese:
             for synthese in synthese_data.values()
             if synthese.id_source == id_source
         }
-        response_data = {feature["properties"]["id"] for feature in r.json["features"]}
+        response_data = {feature["properties"]["id_synthese"] for feature in r.json["features"]}
         assert expected_data.issubset(response_data)
 
     @pytest.mark.parametrize(
@@ -391,7 +418,7 @@ class TestSynthese:
             for synthese in synthese_data.values()
             if synthese.id_module in id_modules_selected
         }
-        response_data = {feature["properties"]["id"] for feature in r.json["features"]}
+        response_data = {feature["properties"]["id_synthese"] for feature in r.json["features"]}
         assert expected_data.issubset(response_data)
         assert len(response_data) == expected_length
 
@@ -429,7 +456,9 @@ class TestSynthese:
         assert len(features) > 0
 
         for feat in features:
-            assert feat["properties"]["id"] in [synt.id_synthese for synt in synthese_data.values()]
+            assert feat["properties"]["id_synthese"] in [
+                synt.id_synthese for synt in synthese_data.values()
+            ]
         assert response.status_code == 200
 
     def test_get_synthese_data_aggregate(self, users, datasets, synthese_data):
@@ -485,35 +514,6 @@ class TestSynthese:
         assert response.status_code == 200
 
     @pytest.mark.parametrize(
-        "additionnal_column",
-        [("altitude_min"), ("count_min_max"), ("nom_vern_or_lb_nom")],
-    )
-    def test_get_observations_for_web_param_column_frontend(
-        self, app, users, synthese_data, additionnal_column
-    ):
-        """
-        Test de renseigner le paramètre LIST_COLUMNS_FRONTEND pour renvoyer uniquement
-        les colonnes souhaitées
-        """
-        app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] = [
-            {
-                "prop": additionnal_column,
-                "name": "My label",
-            }
-        ]
-
-        set_logged_user(self.client, users["self_user"])
-
-        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
-        data = response.get_json()
-
-        expected_columns = {"id", "url_source", additionnal_column}
-
-        assert all(
-            set(feature["properties"].keys()) == expected_columns for feature in data["features"]
-        )
-
-    @pytest.mark.parametrize(
         "group_inpn",
         [
             ("group2_inpn"),
@@ -535,7 +535,7 @@ class TestSynthese:
         )
         response_json = response.json
         assert obs.id_synthese in {
-            synthese["properties"]["id"] for synthese in response_json["features"]
+            synthese["properties"]["id_synthese"] for synthese in response_json["features"]
         }
 
     def test_export(self, users):
@@ -563,6 +563,36 @@ class TestSynthese:
             query_string={"export_format": "shapefile"},
         )
         assert response.status_code == 200
+
+    @pytest.mark.parametrize(
+        "view_name,response_status_code",
+        [
+            ("gn_synthese.v_synthese_for_web_app", 200),
+            ("gn_synthese.not_in_config", 403),
+            ("v_synthese_for_web_app", 400),  # miss schema name
+            ("gn_synthese.v_metadata_for_export", 400),  # miss required columns
+        ],
+    )
+    def test_export_observations_custom_view(self, users, app, view_name, response_status_code):
+        set_logged_user(self.client, users["self_user"])
+        if view_name != "gn_synthese.not_in_config":
+            app.config["SYNTHESE"]["EXPORT_OBSERVATIONS_CUSTOM_VIEWS"] = [
+                {
+                    "label": "Test export custom",
+                    "view_name": view_name,
+                    "geojson_4326_field": "st_asgeojson",
+                    "geojson_local_field": "st_asgeojson",
+                }
+            ]
+        response = self.client.post(
+            url_for("gn_synthese.export_observations_web"),
+            json=[1, 2, 3],
+            query_string={
+                "export_format": "geojson",
+                "view_name": view_name,
+            },
+        )
+        assert response.status_code == response_status_code
 
     def test_export_observations(self, users, synthese_data, synthese_sensitive_data, modules):
         data_synthese = synthese_data.values()
@@ -1403,7 +1433,9 @@ def blur_sensitive_observations(monkeypatch):
 
 def get_one_synthese_reponse_from_id(response: dict, id_synthese: int):
     return [
-        synthese for synthese in response["features"] if synthese["properties"]["id"] == id_synthese
+        synthese
+        for synthese in response["features"]
+        if synthese["properties"]["id_synthese"] == id_synthese
     ][0]
 
 
@@ -1531,7 +1563,9 @@ class TestSyntheseBlurring:
             ]
         )
 
-        json_synthese_ids = (feature["properties"]["id"] for feature in response_json["features"])
+        json_synthese_ids = (
+            feature["properties"]["id_synthese"] for feature in response_json["features"]
+        )
         assert all(synthese_id not in json_synthese_ids for synthese_id in sensitive_synthese_ids)
 
     def test_get_observations_for_web_blurring_grouped_geom(
@@ -1578,7 +1612,7 @@ class TestSyntheseBlurring:
             feature["geometry"] is None
             for feature in json_resp["features"]
             if all(
-                observation["id"] in sensitive_synthese_ids
+                observation["id_synthese"] in sensitive_synthese_ids
                 for observation in feature["properties"]["observations"]
             )
         )

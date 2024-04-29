@@ -1,7 +1,15 @@
 from geonature.utils.env import db, ma
+from geonature.utils.config import config
 
 from geonature.core.gn_commons.schemas import ModuleSchema, MediaSchema, TValidationSchema
-from geonature.core.gn_synthese.models import BibReportsTypes, TReport, TSources, Synthese
+from geonature.core.gn_synthese.models import (
+    BibReportsTypes,
+    TReport,
+    TSources,
+    Synthese,
+    VSyntheseForWebApp,
+)
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from pypn_habref_api.schemas import HabrefSchema
 from pypnusershub.schemas import UserSchema

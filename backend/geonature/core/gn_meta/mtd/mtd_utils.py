@@ -17,7 +17,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
 )
 from geonature.core.gn_commons.models import TModules
-from pypnusershub.db.models import Organisme as BibOrganismes
+from pypnusershub.db.models import Organisme as BibOrganismes, User
 from geonature.core.users import routes as users
 from geonature.core.auth.routes import insert_user_and_org, get_user_from_id_inpn_ws
 
@@ -25,10 +25,10 @@ from .xml_parser import parse_acquisition_framwork_xml, parse_jdd_xml
 from .mtd_webservice import get_jdd_by_user_id, get_acquisition_framework, get_jdd_by_uuid
 
 NOMENCLATURE_MAPPING = {
-    "id_nomenclature_data_type": "DATA_TYP",
-    "id_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
-    "id_nomenclature_data_origin": "DS_PUBLIQUE",
-    "id_nomenclature_source_status": "STATUT_SOURCE",
+    "cd_nomenclature_data_type": "DATA_TYP",
+    "cd_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
+    "cd_nomenclature_data_origin": "DS_PUBLIQUE",
+    "cd_nomenclature_source_status": "STATUT_SOURCE",
 }
 
 # get the root logger
@@ -43,51 +43,63 @@ def sync_ds(ds, cd_nomenclatures):
     :param ds: <dict> DS infos
     :param cd_nomenclatures: <array> cd_nomenclature from ref_normenclatures.t_nomenclatures
     """
-    if ds["id_nomenclature_data_origin"] not in cd_nomenclatures:
+    if not ds["cd_nomenclature_data_origin"]:
+        ds["cd_nomenclature_data_origin"] = "NSP"
+
+    # FIXME: the following temporary fix was added due to possible differences in referential of nomenclatures values between INPN and GeoNature
+    #     should be fixed by ensuring that the two referentials are identical, at least for instances that integrates with INPN and thus rely on MTD synchronization from INPN Métadonnées: GINCO and DEPOBIO instances.
+    if ds["cd_nomenclature_data_origin"] not in cd_nomenclatures:
         return
 
     # CONTROL AF
     af_uuid = ds.pop("uuid_acquisition_framework")
-    af = DB.session.scalar(
-        select(TAcquisitionFramework).filter_by(unique_acquisition_framework_id=af_uuid).limit(1)
-    ).first()
+    af = (
+        DB.session.execute(
+            select(TAcquisitionFramework).filter_by(unique_acquisition_framework_id=af_uuid)
+        )
+        .unique()
+        .scalar_one_or_none()
+    )
 
     if af is None:
+        log.warning(f"AF with UUID '{af_uuid}' not found in database.")
         return
 
     ds["id_acquisition_framework"] = af.id_acquisition_framework
     ds = {
-        k: (
-            func.ref_nomenclatures.get_id_nomenclature(NOMENCLATURE_MAPPING[k], v)
-            if k.startswith("id_nomenclature")
-            else v
+        field.replace("cd_nomenclature", "id_nomenclature"): (
+            func.ref_nomenclatures.get_id_nomenclature(NOMENCLATURE_MAPPING[field], value)
+            if field.startswith("cd_nomenclature")
+            else value
         )
-        for k, v in ds.items()
-        if v is not None
+        for field, value in ds.items()
+        if value is not None
     }
 
     ds_exists = DB.session.scalar(
-        select(
-            exists().where(
-                TDatasets.unique_dataset_id == ds["unique_dataset_id"],
-            )
+        exists()
+        .where(
+            TDatasets.unique_dataset_id == ds["unique_dataset_id"],
         )
+        .select()
     )
 
+    statement = (
+        pg_insert(TDatasets)
+        .values(**ds)
+        .on_conflict_do_nothing(index_elements=["unique_dataset_id"])
+    )
     if ds_exists:
         statement = (
             update(TDatasets)
             .where(TDatasets.unique_dataset_id == ds["unique_dataset_id"])
             .values(**ds)
         )
-    else:
-        statement = (
-            pg_insert(TDatasets)
-            .values(**ds)
-            .on_conflict_do_nothing(index_elements=["unique_dataset_id"])
-        )
     DB.session.execute(statement)
-    dataset = DB.session.scalars(ds_query).first()
+
+    dataset = DB.session.scalars(
+        select(TDatasets).filter_by(unique_dataset_id=ds["unique_dataset_id"])
+    ).first()
 
     # Associate dataset to the modules if new dataset
     if not ds_exists:
@@ -97,37 +109,39 @@ def sync_ds(ds, cd_nomenclatures):
 
 
 def sync_af(af):
-    """
-    Will create or update a given AF according to UUID.
+    """Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.
 
-    :param af: dict AF infos
+    Parameters
+    ----------
+    af : dict
+        AF infos.
+
+    Returns
+    -------
+    TAcquisitionFramework
+        The updated or inserted acquisition framework.
     """
     af_uuid = af["unique_acquisition_framework_id"]
-    count_af = DB.session.execute(
-        select(func.count("*"))
-        .select_from(TAcquisitionFramework)
-        .filter_by(unique_acquisition_framework_id=af_uuid)
-    ).scalar_one()
+    af_exists = DB.session.scalar(
+        exists().where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid).select()
+    )
 
-    if count_af > 0:
-        # this avoid useless nextval sequence
-        statement = (
-            update(TAcquisitionFramework)
-            .where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid)
-            .values(af)
-            .returning(TAcquisitionFramework.id_acquisition_framework)
-        )
-    else:
+    # Update statement if AF already exists in DB else insert statement
+    statement = (
+        update(TAcquisitionFramework)
+        .where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid)
+        .values(af)
+        .returning(TAcquisitionFramework)
+    )
+    if not af_exists:
         statement = (
             pg_insert(TAcquisitionFramework)
             .values(**af)
             .on_conflict_do_nothing(index_elements=["unique_acquisition_framework_id"])
-            .returning(TAcquisitionFramework.id_acquisition_framework)
+            .returning(TAcquisitionFramework)
         )
 
-    af_id = DB.session.execute(statement).scalar()
-    af = DB.session.get(TAcquisitionFramework, af_id)
-    return af
+    return DB.session.scalar(statement)
 
 
 def add_or_update_organism(uuid, nom, email):
@@ -139,9 +153,7 @@ def add_or_update_organism(uuid, nom, email):
     :param email: org email
     """
     # Test if actor already exists to avoid nextVal increase
-    org_exist = DB.session.execute(
-        select(exists().select_from(BibOrganismes).filter_by(uuid_organisme=uuid))
-    ).scalar_one()
+    org_exist = DB.session.scalar(exists().where(BibOrganismes.uuid_organisme == uuid).select())
 
     if org_exist:
         statement = (
@@ -185,26 +197,32 @@ def associate_actors(actors, CorActor, pk_name, pk_value):
         pk value
     """
     for actor in actors:
-        if not actor["uuid_organism"]:
-            continue
-        # test if actor already exists
-        with DB.session.begin_nested():
-            # create or update organisme
-            id_organism = add_or_update_organism(
-                uuid=actor["uuid_organism"],
-                nom=actor["organism"] or "",
-                email=actor["email"],
+        id_organism = None
+        uuid_organism = actor["uuid_organism"]
+        if uuid_organism:
+            with DB.session.begin_nested():
+                # create or update organisme
+                # FIXME: prevent update of organism email from actor email ! Several actors may be associated to the same organism and still have different mails !
+                id_organism = add_or_update_organism(
+                    uuid=uuid_organism,
+                    nom=actor["organism"] if actor["orgnanism"] else "",
+                    email=actor["email"],
+                )
+        values = dict(
+            id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
+                "ROLE_ACTEUR", actor["actor_role"]
+            ),
+            **{pk_name: pk_value},
+        )
+        if not id_organism:
+            values["id_role"] = DB.session.scalar(
+                select(User.id_role).filter_by(email=actor["email"])
             )
-        # Test if actor already exists to avoid nextVal increase
+        else:
+            values["id_organism"] = id_organism
         statement = (
             pg_insert(CorActor)
-            .values(
-                id_organism=id_organism,
-                id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-                    "ROLE_ACTEUR", actor["actor_role"]
-                ),
-                **{pk_name: pk_value},
-            )
+            .values(**values)
             .on_conflict_do_nothing(
                 index_elements=[pk_name, "id_organism", "id_nomenclature_actor_role"],
             )

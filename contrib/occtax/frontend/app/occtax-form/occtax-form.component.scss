@@ -3,7 +3,9 @@
   border: 1px solid #f1f1f1;
   border-radius: 2px;
   padding: 0px 15px;
-  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+  box-shadow:
+    0 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0 1px 1px 0 rgba(0, 0, 0, 0.14),
     0 1px 3px 0 rgba(0, 0, 0, 0.12);
   height: 100%;
 }
@@ -13,27 +15,24 @@
 }
 
 #taxon-tab {
-	padding-bottom: 45px;
+  padding-bottom: 45px;
 }
 
 #left-form {
   overflow-y: auto;
-    margin-right: 5%;
-
+  margin-right: 5%;
 }
 
 .vertical-align {
   vertical-align: middle;
 }
 
-
 #btn-finish {
   position: absolute;
   right: 25px;
   bottom: 20px;
-  z-index:100;
+  z-index: 100;
 }
-
 
 #btn-cancel {
   margin-right: 10px;
@@ -69,7 +68,7 @@
   position: absolute;
   left: 25%;
   bottom: 50px;
-  z-index:100;
+  z-index: 100;
 }
 
 /* Style the buttons that are used to open the tab content */

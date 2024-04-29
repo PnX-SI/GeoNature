@@ -19,16 +19,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        debian-version: ["11", "12"]
+        debian-version: ['11', '12']
         include:
-          - debian-version: "11"
-            python-version: "3.9"
-            postgres-version: "13"
-            postgis-version: "3.2"
-          - debian-version: "12"
-            python-version: "3.11"
-            postgres-version: "15"
-            postgis-version: "3.3"
+          - debian-version: '11'
+            python-version: '3.9'
+            postgres-version: '13'
+            postgis-version: '3.2'
+          - debian-version: '12'
+            python-version: '3.11'
+            postgres-version: '15'
+            postgis-version: '3.3'
 
     name: Debian ${{ matrix.debian-version }}
 
@@ -60,7 +60,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
+          cache: 'pip'
       - name: Install GDAL
         run: |
           sudo apt update
@@ -122,7 +122,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Test with pytest
         run: |
-          pytest -v --cov --cov-report xml
+          pytest -v --cov --cov-report xml --benchmark-skip
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Upload coverage to Codecov

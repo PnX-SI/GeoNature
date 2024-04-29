@@ -278,12 +278,12 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   onEachFeature(feature, layer) {
     // make a cache a layers in a dict with id key
-    this.layerDictCache(feature.properties.observations.id, layer);
+    this.layerDictCache(feature.properties.observations.id_synthese, layer);
     // set style
     if (this.areasEnable) {
-      this.setAreasStyle(layer, feature.properties.observations.id.length);
+      this.setAreasStyle(layer, feature.properties.observations.id_synthese.length);
     }
-    this.layerEvent(feature, layer, feature.properties.observations.id);
+    this.layerEvent(feature, layer, feature.properties.observations.id_synthese);
   }
 
   /**
@@ -323,7 +323,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       const geojsonLayer = new L.GeoJSON(change.inputSyntheseData.currentValue, {
         pointToLayer: (feature, latlng) => {
           const circleMarker = L.circleMarker(latlng);
-          let countObs = feature.properties.observations.id.length;
+          let countObs = feature.properties.observations.id_synthese.length;
           (circleMarker as any).nb_obs = countObs;
           circleMarker.bindTooltip(`${countObs}`, {
             permanent: true,

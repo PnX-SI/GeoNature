@@ -194,19 +194,11 @@ if [ -f "/var/log/geonature.log" ]; then
     sudo chown $USER: -R /var/log/geonature/
 fi
 
-
-if [[ ! -f "${newdir}/frontend/src/assets/config.json" ]]; then
-  echo "Création du fichiers de configuration du frontend …"
-  cp -n "${newdir}/frontend/src/assets/config.sample.json" "${newdir}/frontend/src/assets/config.json"
-fi
-echo "Mise à jour de la variable API_ENDPOINT dans le fichier de configuration du frontend …"
+# Update the API ENDPOINT in frontend configuration file
 api_end_point=$(geonature get-config API_ENDPOINT)
-if [ ! -z "$api_end_point" ]; then
-    # S’il une erreur se produit durant la récupération de la variable depuis GeoNature,
-    # utilisation de la valeur en provenant du fichier settings.ini
-    API_ENDPOINT="$my_url"
-fi
-sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' "${newdir}/frontend/src/assets/config.json"
+api_end_point=${api_end_point/'http:'/''}
+echo "Set API_ENDPOINT to "$api_end_point" in frontend configuration file..."
+echo '{"API_ENDPOINT":"'${api_end_point}'"}' > ${newdir}/frontend/src/assets/config.json
 
 echo "Mise à jour des fichiers de configuration frontend et rebuild du frontend…"
 geonature update-configuration

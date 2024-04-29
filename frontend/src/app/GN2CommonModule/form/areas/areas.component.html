@@ -1,4 +1,4 @@
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 <ng-select
   [ngClass]="class"
   [items]="areas | async"
@@ -26,7 +26,10 @@
     </div>
   </ng-template>
 
-  <ng-template ng-notfound-tmp let-searchTerm="searchTerm">
+  <ng-template
+    ng-notfound-tmp
+    let-searchTerm="searchTerm"
+  >
     <div class="ng-option disabled">
       <span
         class="bg-warning p-2 rounded"
@@ -38,7 +41,10 @@
     </div>
   </ng-template>
 
-  <ng-template ng-loadingtext-tmp let-searchTerm="searchTerm">
+  <ng-template
+    ng-loadingtext-tmp
+    let-searchTerm="searchTerm"
+  >
     <div
       class="ng-option disabled"
       matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
@@ -50,14 +56,24 @@
     </div>
   </ng-template>
 
-  <ng-template ng-option-tmp let-item="item">
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+  >
     <div matTooltip="{{ item.area_name }}">
       <span class="pre-wrap">{{ item.area_name }}</span>
     </div>
   </ng-template>
 
-  <ng-template ng-label-tmp let-item="item" let-clear="clear">
-    <span class="ng-value-label pl-2" [style.background-color]="item.kolor">
+  <ng-template
+    ng-label-tmp
+    let-item="item"
+    let-clear="clear"
+  >
+    <span
+      class="ng-value-label pl-2"
+      [style.background-color]="item.kolor"
+    >
       {{ item.area_name }}
     </span>
     <span

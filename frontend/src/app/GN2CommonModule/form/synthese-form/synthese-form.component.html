@@ -14,11 +14,13 @@
         [disabled]="disabled"
         [displayAll]="displayAll"
         [bindAllItem]="bindAllItem"
-      >
-      </pnx-multiselect>
+      ></pnx-multiselect>
     </div>
 
-    <div id="modif" class="form-check">
+    <div
+      id="modif"
+      class="form-check"
+    >
       <input
         id="modif_checkbox"
         class="form-check-input"
@@ -27,7 +29,10 @@
         type="checkbox"
         checked
       />
-      <label for="modif_checkbox" class="form-check-label">
+      <label
+        for="modif_checkbox"
+        class="form-check-label"
+      >
         <small>Données modifiées depuis la dernière validation</small>
       </label>
     </div>
@@ -39,10 +44,16 @@
       matTooltip="Filtrer selon le profil du taxon"
       matTooltipClass="validation-tooltip"
     >
-      <i class="fa fa-cog" aria-hidden="true"></i>
+      <i
+        class="fa fa-cog"
+        aria-hidden="true"
+      ></i>
     </button>
-    <div [(ngbCollapse)]="isCollapseScore" class="advanded-score">
-      <small> Score</small>
+    <div
+      [(ngbCollapse)]="isCollapseScore"
+      class="advanded-score"
+    >
+      <small>Score</small>
       <div class="input-group">
         <select
           class="form-control form-control-sm"
@@ -60,7 +71,12 @@
         matTooltipClass="validation-tooltip"
       >
         Localisation valide
-        <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
+        <mat-icon
+          class="material-icons-outlined"
+          inline="true"
+        >
+          info
+        </mat-icon>
       </small>
       <div class="input-group">
         <select
@@ -78,7 +94,12 @@
         matTooltipClass="validation-tooltip"
       >
         Altitude valide
-        <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
+        <mat-icon
+          class="material-icons-outlined"
+          inline="true"
+        >
+          info
+        </mat-icon>
       </small>
       <div class="input-group">
         <select
@@ -96,7 +117,12 @@
         matTooltipClass="validation-tooltip"
       >
         Phénologie valide
-        <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
+        <mat-icon
+          class="material-icons-outlined"
+          inline="true"
+        >
+          info
+        </mat-icon>
       </small>
       <div class="input-group">
         <select
@@ -122,15 +148,14 @@
       [listLength]="config.SYNTHESE.TAXON_RESULT_NUMBER"
       [apiEndPoint]="taxonApiEndPoint"
       (onChange)="formService.getCurrentTaxon($event)"
-    >
-    </pnx-taxonomy>
+    ></pnx-taxonomy>
 
     <div
       *ngIf="formService.selectedtaxonFromComponent.length > 0"
       class="alert alert-warning search-alert mt-2"
     >
       <p class="taxon-list">
-        <b> Taxon(s) recherché(s):</b>
+        <b>Taxon(s) recherché(s):</b>
       </p>
       <ul class="taxon-list">
         <li
@@ -147,11 +172,17 @@
       </ul>
     </div>
 
-    <button (click)="openModal()" class="btn btn-xs btn-outline-secondary advanced mt-2">
+    <button
+      (click)="openModal()"
+      class="btn btn-xs btn-outline-secondary advanced mt-2"
+    >
       Avancé
     </button>
 
-    <div *ngIf="formService.haveAdvancedFormValues()" class="alert alert-warning search-alert mt-2">
+    <div
+      *ngIf="formService.haveAdvancedFormValues()"
+      class="alert alert-warning search-alert mt-2"
+    >
       <h2 class="h6 mb-1"><small>Champs avancé(s) sélectionné(s) :</small></h2>
       <ul class="list-unstyled search-list">
         <li
@@ -219,16 +250,14 @@
         label="Date min"
         [parentFormControl]="formService.searchForm.controls.date_min"
         data-qa="synthese-form-date-min"
-      >
-      </pnx-date>
+      ></pnx-date>
     </div>
     <div class="row row-sm">
       <pnx-date
         label="Date max"
         [parentFormControl]="formService.searchForm.controls.date_max"
         data-qa="synthese-form-date-max"
-      >
-      </pnx-date>
+      ></pnx-date>
     </div>
 
     <button
@@ -237,7 +266,10 @@
       class="btn btn-sm btn-outline-shadow period"
       matTooltip="Ajouter une période"
     >
-      <i class="fa fa-cog" aria-hidden="true"></i>
+      <i
+        class="fa fa-cog"
+        aria-hidden="true"
+      ></i>
     </button>
     <div [(ngbCollapse)]="isCollapsePeriod">
       <div class="row row-sm">
@@ -246,15 +278,13 @@
             class="form-sm"
             label="Periode début"
             [parentFormControl]="formService.searchForm.controls.period_start"
-          >
-          </pnx-period>
+          ></pnx-period>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
           <pnx-period
             label="Periode fin"
             [parentFormControl]="formService.searchForm.controls.period_end"
-          >
-          </pnx-period>
+          ></pnx-period>
         </div>
         <small
           *ngIf="formService.searchForm.errors?.invalidPeriod"
@@ -276,8 +306,8 @@
           [parentFormControl]="area.control"
           [label]="area.label"
           [typeCodes]="area.type_code_array"
-        >
-        </pnx-areas>
+          [withoutGeom]="true"
+        ></pnx-areas>
       </div>
     </div>
   </fieldset>
@@ -286,24 +316,24 @@
     <legend>Qui ?</legend>
 
     <ng-container *ngIf="config.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
-      
       <pnx-observers
-      [multiSelect]="true"
-      [parentFormControl]="formService.searchForm.get('observers_list')"
-      [idMenu]="config.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
-      [label]="'Releve.Observers' | translate"
-      [bindAllItem]="true"
-      >
-    </pnx-observers>
-  </ng-container>
-  
-  <ng-template #observersTxtBlock>
-      <i class="fa fa-question-circle" matTooltip="Pour rechercher plusieurs observateurs, séparez-les par des virgules"></i>
+        [multiSelect]="true"
+        [parentFormControl]="formService.searchForm.get('observers_list')"
+        [idMenu]="config.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
+        [label]="'Releve.Observers' | translate"
+        [bindAllItem]="true"
+      ></pnx-observers>
+    </ng-container>
+
+    <ng-template #observersTxtBlock>
+      <i
+        class="fa fa-question-circle"
+        matTooltip="Pour rechercher plusieurs observateurs, séparez-les par des virgules"
+      ></i>
       <pnx-observers-text
         [label]="'Releve.Observer' | translate"
         [parentFormControl]="formService.searchForm.get('observers')"
-      >
-      </pnx-observers-text>
+      ></pnx-observers-text>
     </ng-template>
 
     <pnx-multiselect
@@ -314,8 +344,7 @@
       [label]="'Form.Organism' | translate"
       debounceTime="500"
       [disabled]="false"
-    >
-    </pnx-multiselect>
+    ></pnx-multiselect>
   </fieldset>
 
   <fieldset>
@@ -327,8 +356,7 @@
       [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
       label="{{ 'MetaData.AcquisitionFramework' | translate }}"
       data-qa="synthese-form-ca"
-    >
-    </pnx-acquisition-frameworks>
+    ></pnx-acquisition-frameworks>
 
     <pnx-datasets
       [displayOnlyActive]="false"
@@ -338,20 +366,18 @@
       [parentFormControl]="formService.searchForm.controls.id_dataset"
       label="{{ 'MetaData.Datasets' | translate }}"
       data-qa="synthese-form-dataset"
-    >
-    </pnx-datasets>
+    ></pnx-datasets>
   </fieldset>
 
   <fieldset>
     <legend>Filtres avancés</legend>
-    <small> Ajouter un filtre </small>
+    <small>Ajouter un filtre</small>
     <pnx-dynamic-form-generator
       *ngIf="formService.processedDefaultFilters"
       [myFormGroup]="formService.searchForm"
       [formsDefinition]="formService.dynamycFormDef"
       [defaults]="formService.processedDefaultFilters"
-    >
-    </pnx-dynamic-form-generator>
+    ></pnx-dynamic-form-generator>
   </fieldset>
 </div>
 
@@ -364,7 +390,10 @@
     matTooltip="{{ 'Form.RefreshFilters' | translate }}"
     data-qa="synthese-refresh-btn"
   >
-    <i class="fa fa-refresh" aria-hidden="true"></i>
+    <i
+      class="fa fa-refresh"
+      aria-hidden="true"
+    ></i>
   </button>
   <button
     data-qa="synthese-search-btn"

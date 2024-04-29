@@ -11,20 +11,16 @@
   Attribuer un statut de validation
 </button>
 
-
 <ng-template
   #content
   let-c="close"
   let-d="dismiss"
 >
-
   <!-- Modal Validation Popup-->
 
   <!-- Modal content-->
 
   <form class="modal-content">
-
-
     <div
       class="modal-header"
       style="justify-content: center"
@@ -43,33 +39,41 @@
     <div
       class="modal-body"
       id="bodyModal"
-      style="padding-top:30px;"
+      style="padding-top: 30px"
     >
-
-      <div> <span id="nbObs">{{this.observations.length}}</span> observation{{plurielObservations}}
-        sélectionnée{{plurielObservations}} </div>
+      <div>
+        <span id="nbObs">{{ this.observations.length }}</span>
+        observation{{ plurielObservations }} sélectionnée{{ plurielObservations }}
+      </div>
       <div
         *ngIf="nbOffPage !== 0"
         class="d-flex"
-      ><i
+      >
+        <i
           id="attention"
           class="material-icons"
-        >warning</i> Attention {{nbOffPage}} observation{{plurielNbOffPage}}
-        non-visible{{plurielNbOffPage}} (hors de la page courante) sélectionnée{{plurielNbOffPage}}
+        >
+          warning
+        </i>
+        Attention {{ nbOffPage }} observation{{ plurielNbOffPage }} non-visible{{
+          plurielNbOffPage
+        }}
+        (hors de la page courante) sélectionnée{{ plurielNbOffPage }}
       </div>
 
-      <br>
+      <br />
       <fieldset>
-        <legend> Choix du statut </legend>
+        <legend>Choix du statut</legend>
 
         <div>
           <span
             *ngFor="let item of validationStatus"
             id="validButtons"
           >
-
             <label
-              [ngStyle]="{'background-color': config.VALIDATION.STATUS_INFO[item.cd_nomenclature]?.color}"
+              [ngStyle]="{
+                'background-color': config.VALIDATION.STATUS_INFO[item.cd_nomenclature]?.color
+              }"
               role="button"
               class="btn btn-success box-shadow"
               aria-pressed="true"
@@ -78,32 +82,30 @@
                 (click)="setCurrentCdNomenclature(item)"
                 type="radio"
                 [formControl]="statusForm.controls.statut"
-                value="{{item.id_nomenclature}}"
-              >
-              {{item.mnemonique}}</label>
+                value="{{ item.id_nomenclature }}"
+              />
+              {{ item.mnemonique }}
+            </label>
           </span>
         </div>
-        <br>
+        <br />
         <div id="def">
           <pnx-validation-definitions></pnx-validation-definitions>
         </div>
-
       </fieldset>
-
 
       <div
         class="md-form mb-0"
-        style="padding-top:30px;"
+        style="padding-top: 30px"
       >
-        <span> Commentaire : </span>
+        <span>Commentaire :</span>
         <textarea
           type="text"
           rows="1"
           class="form-control md-textarea"
           [formControl]="statusForm.controls.comment"
-        > </textarea>
+        ></textarea>
       </div>
-
     </div>
 
     <!-- Bouton de fermeture de la modal pop-up ou envoi -->
@@ -128,5 +130,4 @@
       </button>
     </div>
   </form>
-
 </ng-template>

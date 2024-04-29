@@ -20,13 +20,6 @@ from pypnusershub.db.models import User
 from pypn_habref_api.schemas import HabrefSchema
 
 
-@post_dump
-def remove_additional_none_val(self, data, **kwargs):
-    if "additional_fields" in data and data["additional_fields"] is None:
-        data["additional_fields"] = {}
-    return data
-
-
 class GeojsonSerializationField(fields.Field):
     def _serialize(self, value, attr, obj):
         if value is None:
@@ -79,7 +72,6 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     medias = MA.Nested(MediaSchema, many=True)
-    pre_dump_fn = remove_additional_none_val
 
     @pre_load
     def make_counting(self, data, **kwargs):
@@ -94,11 +86,8 @@ class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
         include_fk = True
 
-    additional_fields = fields.Raw(allow_none=False, required=True)
-    # additional_fields = fields.Raw(load_only=True)
     cor_counting_occtax = MA.Nested(CountingSchema, many=True)
     taxref = MA.Nested(TaxrefSchema, dump_only=True)
-    pre_dump_fn = remove_additional_none_val
 
 
 class ReleveSchema(MA.SQLAlchemyAutoSchema):
@@ -135,8 +124,6 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
             data.pop("id_releve_occtax", None)
         data.pop("id_digitiser", None)  # id_digitiser is dump_only
         return data
-
-    pre_dump_fn = remove_additional_none_val
 
 
 class GeojsonReleveSchema(MA.Schema):

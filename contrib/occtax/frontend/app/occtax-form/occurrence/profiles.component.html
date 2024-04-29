@@ -1,19 +1,20 @@
-<div 
-  *ngIf="taxon !== null && profilErrors.length > 0" 
+<div
+  *ngIf="taxon !== null && profilErrors.length > 0"
   class="alert alert-warning"
 >
-  <h5> <mat-icon>warning</mat-icon> Donnée exceptionnelle</h5>
+  <h5>
+    <mat-icon>warning</mat-icon>
+    Donnée exceptionnelle
+  </h5>
   <ul>
     <li *ngFor="let err of profilErrors">
-      {{err.value}}
-  </li>
+      {{ err.value }}
+    </li>
   </ul>
-  <a 
+  <a
     target="_blank"
-    [routerLink]="['/synthese/taxon', taxon.cd_ref]" 
-    >    
-    <button mat-raised-button>
-      Voir la fiche profil du taxon
-    </button>
+    [routerLink]="['/synthese/taxon', taxon.cd_ref]"
+  >
+    <button mat-raised-button>Voir la fiche profil du taxon</button>
   </a>
 </div>

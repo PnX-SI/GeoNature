@@ -4,10 +4,12 @@
   height: 20px;
   padding: 0px;
   //background: #00ff00;
-  color: "black";
+  color: 'black';
   border: 1px solid black;
   text-align: center;
-  font: 15px Arial, sans-serif;
+  font:
+    15px Arial,
+    sans-serif;
   position: absolute;
   left: 0%;
   transform: translateX(0%);
@@ -110,7 +112,7 @@
     margin: 0px !important;
     padding: 0px !important;
   }
-  .datatable-checkbox input[type="checkbox"]:before {
+  .datatable-checkbox input[type='checkbox']:before {
     border-color: #bfbdbd !important;
   }
 }
@@ -176,20 +178,16 @@ button:active {
 }
 
 .chip-alert {
-  background-color: red!important;
+  background-color: red !important;
 }
 
 .chip-warning {
-  background-color: rgb(255, 123, 0)!important;
+  background-color: rgb(255, 123, 0) !important;
 }
-
-
 
 .chip-success {
-  background-color: green!important;
+  background-color: green !important;
 }
-
-
 
 .mat-chip {
   width: 70%;

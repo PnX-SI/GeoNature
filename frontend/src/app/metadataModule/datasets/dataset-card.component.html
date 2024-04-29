@@ -40,7 +40,7 @@
                 delete
               </mat-icon>
               <ng-template #elseblock>
-                <mat-icon> delete </mat-icon>
+                <mat-icon>delete</mat-icon>
               </ng-template>
             </button>
             <a
@@ -59,7 +59,10 @@
 
       <!-- Ligne des stats -->
       <div class="row">
-        <div *ngIf="nbTaxons" class="col-6">
+        <div
+          *ngIf="nbTaxons"
+          class="col-6"
+        >
           <div class="card">
             <div class="card-body">
               <div class="row">
@@ -67,14 +70,23 @@
                   <h5>Taxons</h5>
                   {{ nbTaxons }}
                 </div>
-                <div class="col-auto" width="60">
-                  <img src="./assets/images/Taxon_icon.svg" width="60" />
+                <div
+                  class="col-auto"
+                  width="60"
+                >
+                  <img
+                    src="./assets/images/Taxon_icon.svg"
+                    width="60"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div *ngIf="nbObservations" class="col-6">
+        <div
+          *ngIf="nbObservations"
+          class="col-6"
+        >
           <div class="card">
             <div class="card-body">
               <div class="row">
@@ -82,8 +94,14 @@
                   <h5>Observations</h5>
                   {{ nbObservations }}
                 </div>
-                <div class="col-auto" width="60">
-                  <img src="./assets/images/Donnee_icon.svg" width="64" />
+                <div
+                  class="col-auto"
+                  width="60"
+                >
+                  <img
+                    src="./assets/images/Donnee_icon.svg"
+                    width="64"
+                  />
                 </div>
               </div>
             </div>
@@ -99,24 +117,30 @@
         </div>
         <div class="card-body">
           <div class="b">Identification</div>
-          <div class="a" data-qa='pnx-metadata-dataset-name'>
-            <b>Nom : </b>
+          <div
+            class="a"
+            data-qa="pnx-metadata-dataset-name"
+          >
+            <b>Nom :</b>
             {{ dataset.dataset_name }}
           </div>
           <div class="a">
-            <b> Identifiant SINP du jeu de données :</b>
+            <b>Identifiant SINP du jeu de données :</b>
             {{ dataset.unique_dataset_id }}
           </div>
-          <div class="a" data-qa='pnx-metadata-dataset-id'>
-            <b> Identifiant GeoNature du jeu de données :</b>
+          <div
+            class="a"
+            data-qa="pnx-metadata-dataset-id"
+          >
+            <b>Identifiant GeoNature du jeu de données :</b>
             {{ dataset.id_dataset }}
           </div>
           <div class="a">
-            <b> Libellé court :</b>
+            <b>Libellé court :</b>
             {{ dataset.dataset_shortname || '-' }}
           </div>
           <div class="a">
-            <b> Description : </b>
+            <b>Description :</b>
             {{ dataset.dataset_desc || '-' }}
           </div>
           <br />
@@ -138,11 +162,11 @@
             <li *ngFor="let ter of dataset?.cor_territories">- {{ ter.label_default }}</li>
           </ul>
           <div class="a">
-            <b> Couverture du territoire terrestre :</b>
+            <b>Couverture du territoire terrestre :</b>
             {{ dataset.terrestrial_domain ? 'oui' : 'non' }}
           </div>
           <div class="a">
-            <b>Couverture du territoire marin : </b>
+            <b>Couverture du territoire marin :</b>
             {{ dataset.marine_domain ? 'oui' : 'non' }}
           </div>
 
@@ -150,22 +174,22 @@
 
           <div class="b">Cadre de référence</div>
           <div class="a">
-            <b> Titre du cadre d'acquisition :</b>
+            <b>Titre du cadre d'acquisition :</b>
             {{ dataset.acquisition_framework.acquisition_framework_name }}
           </div>
           <div class="a">
-            <b> Identifiant du cadre d'acquisition :</b>
+            <b>Identifiant du cadre d'acquisition :</b>
             {{ dataset.acquisition_framework.unique_acquisition_framework_id }}
           </div>
           <br />
 
           <div class="b">Processus de collecte</div>
           <div class="a">
-            <b>Libellé : </b>
+            <b>Libellé :</b>
             {{ dataset?.nomenclature_collecting_method.label_default || 'Non renseigné' }}
           </div>
           <div class="a">
-            <b> Description :</b>
+            <b>Description :</b>
             {{ dataset?.nomenclature_collecting_method.definition_default || 'Non renseigné' }}
           </div>
 
@@ -174,9 +198,12 @@
           <div *ngIf="dataset.cor_dataset_actor">
             <div class="b">Acteurs</div>
             <ng-container *ngIf="dataset.cor_dataset_actor.length; else elifNoActor">
-              <div class="a" *ngFor="let actor of dataset.cor_dataset_actor">
+              <div
+                class="a"
+                *ngFor="let actor of dataset.cor_dataset_actor"
+              >
                 <div>
-                  <b>{{ actor?.nomenclature_actor_role.mnemonique }} : </b>
+                  <b>{{ actor?.nomenclature_actor_role.mnemonique }} :</b>
                   {{ actor?.organism?.nom_organisme }}
                   <span
                     *ngIf="
@@ -195,7 +222,7 @@
             <ng-template #elifNoActor>
               <div class="a alert-actor">
                 <mat-icon>report</mat-icon>
-                <span> Aucun acteur renseigné </span>
+                <span>Aucun acteur renseigné</span>
               </div>
             </ng-template>
           </div>
@@ -204,7 +231,7 @@
           <div class="b">Créateur</div>
 
           <div class="a">
-            <b> Créateur du jeu de données :</b>
+            <b>Créateur du jeu de données :</b>
             {{ dataset.creator?.nom_complet || 'Non renseigné' }}
           </div>
 
@@ -213,7 +240,7 @@
           <div class="b">Type de financement :</div>
 
           <div class="a">
-            <b> Financement :</b>
+            <b>Financement :</b>
             {{ dataset?.nomenclature_data_origin?.label_default }}
           </div>
 
@@ -227,9 +254,23 @@
           <br />
 
           <h4>Spécificités GeoNature</h4>
-          <div class="align" data-qa='pnx-metadata-dataset-status'> <b>Actif :  </b>  {{dataset.active ? 'Oui' : 'Non'}} </div>
-          <div class="align"> <b> Validable :</b>  {{dataset.validable ? 'Oui' : 'Non'}} </div>
-          <div *ngIf="dataset.id_taxa_list" class="b"> ID de liste de taxon : {{dataset.id_taxa_list}} </div>
+          <div
+            class="align"
+            data-qa="pnx-metadata-dataset-status"
+          >
+            <b>Actif :</b>
+            {{ dataset.active ? 'Oui' : 'Non' }}
+          </div>
+          <div class="align">
+            <b>Validable :</b>
+            {{ dataset.validable ? 'Oui' : 'Non' }}
+          </div>
+          <div
+            *ngIf="dataset.id_taxa_list"
+            class="b"
+          >
+            ID de liste de taxon : {{ dataset.id_taxa_list }}
+          </div>
           <div *ngIf="dataset.modules.length">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
             <div class="a">
@@ -243,18 +284,28 @@
 
           <div *ngIf="dataset.additional_fields">
             <div class="b">Champ(s) addionnel(s) du jeu de données :</div>
-            <div class="a" *ngFor="let field of dataset.additional_fields">
-              - <span class="bold">{{ field.field_label }} : </span>
+            <div
+              class="a"
+              *ngFor="let field of dataset.additional_fields"
+            >
+              -
+              <span class="bold">{{ field.field_label }} :</span>
               <br />
               <div class="ml-5">
-                <span class="bold"> Description : </span>
-                <span> {{ field.description | json }} </span> <br />
-                <span class="bold"> Type widget : </span>
-                <span> {{ field.type_widget.widget_name }} </span> <br />
-                <span class="bold"> Obligatoire : </span> <span> {{ field.required }} </span> <br />
-                <span class="bold"> Quantitatif : </span> <span> {{ field.quantitative }} </span>
+                <span class="bold">Description :</span>
+                <span>{{ field.description | json }}</span>
                 <br />
-                <span class="bold"> Unité : </span> <span> {{ field.unity | json }} </span>
+                <span class="bold">Type widget :</span>
+                <span>{{ field.type_widget.widget_name }}</span>
+                <br />
+                <span class="bold">Obligatoire :</span>
+                <span>{{ field.required }}</span>
+                <br />
+                <span class="bold">Quantitatif :</span>
+                <span>{{ field.quantitative }}</span>
+                <br />
+                <span class="bold">Unité :</span>
+                <span>{{ field.unity | json }}</span>
               </div>
             </div>
           </div>
@@ -263,7 +314,10 @@
       <!-- Fin fiche descriptive -->
 
       <!-- Liste des sources -->
-      <div class="card" *ngIf="dataset.sources.length">
+      <div
+        class="card"
+        *ngIf="dataset.sources.length"
+      >
         <div class="card-header">
           <h5>Sources des données</h5>
         </div>
@@ -277,24 +331,48 @@
           [footerHeight]="30"
           [rowHeight]="40"
           [offset]="1"
-          [sorts]="[{prop: 'meta_create_date', dir: 'desc'}]"
+          [sorts]="[{ prop: 'meta_create_date', dir: 'desc' }]"
         >
-          <ngx-datatable-column name="Nom" [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              <a (click)="_router.navigate([row.module_url])" class="cursor-wait" *ngIf="row.module_url; else elseBlock">
-                 {{row.name_source}} <mat-icon class="icon-small">open_in_new</mat-icon>
+          <ngx-datatable-column
+            name="Nom"
+            [sortable]="false"
+          >
+            <ng-template
+              let-row="row"
+              ngx-datatable-cell-template
+            >
+              <a
+                (click)="_router.navigate([row.module_url])"
+                class="cursor-wait"
+                *ngIf="row.module_url; else elseBlock"
+              >
+                {{ row.name_source }}
+                <mat-icon class="icon-small">open_in_new</mat-icon>
               </a>
-              <ng-template #elseBlock>{{row.name_source}}</ng-template>
+              <ng-template #elseBlock>{{ row.name_source }}</ng-template>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Description" [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              {{row.desc_source}}
+          <ngx-datatable-column
+            name="Description"
+            [sortable]="false"
+          >
+            <ng-template
+              let-row="row"
+              ngx-datatable-cell-template
+            >
+              {{ row.desc_source }}
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Date" maxWidth=150 [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              {{row.meta_create_date | date:'dd-MM-yyyy'}}
+          <ngx-datatable-column
+            name="Date"
+            maxWidth="150"
+            [sortable]="false"
+          >
+            <ng-template
+              let-row="row"
+              ngx-datatable-cell-template
+            >
+              {{ row.meta_create_date | date: 'dd-MM-yyyy' }}
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>
@@ -304,7 +382,10 @@
 
     <div class="col-4">
       <!-- Bloc boutons -->
-      <div *ngIf="hasAnyButtons()" class="card">
+      <div
+        *ngIf="hasAnyButtons()"
+        class="card"
+      >
         <div class="card-body">
           <button
             *ngIf="dataset.cruved.E"
@@ -335,7 +416,7 @@
               (click)="sensiReport(dataset.id_dataset)"
             >
               Rapport de sensibilité
-              <mat-icon> do_not_touch </mat-icon>
+              <mat-icon>do_not_touch</mat-icon>
             </button>
           </span>
 
@@ -356,32 +437,34 @@
               (click)="uuidReport(dataset?.id_dataset)"
             >
               Rapport d'UUID
-              <mat-icon> format_list_numbered </mat-icon>
+              <mat-icon>format_list_numbered</mat-icon>
             </button>
           </span>
           <div *ngFor="let module of dataset?.modules">
-          <span
-            *ngIf="module.input_label"
-            [matTooltip]="
-              dataset.active ? module.input_label : 'Le jeu de données est inactif'
-            "
-          ><button
-              [disabled]="!dataset.active"
-              mat-raised-button
-              color="primary"
-              (click)="useModuleWithDs(module)"
+            <span
+              *ngIf="module.input_label"
+              [matTooltip]="dataset.active ? module.input_label : 'Le jeu de données est inactif'"
             >
-              {{module.input_label}}
-              <mat-icon> publish </mat-icon>
-            </button>
-          </span>
+              <button
+                [disabled]="!dataset.active"
+                mat-raised-button
+                color="primary"
+                (click)="useModuleWithDs(module)"
+              >
+                {{ module.input_label }}
+                <mat-icon>publish</mat-icon>
+              </button>
+            </span>
           </div>
         </div>
       </div>
       <!-- Fin bloc boutons -->
 
       <!-- Bloc BBOX -->
-      <div *ngIf="bbox" class="card">
+      <div
+        *ngIf="bbox"
+        class="card"
+      >
         <!-- changer la valeur du ngif quand la carte sera prete -->
         <div class="card-header">
           <h5>
@@ -394,21 +477,30 @@
               matTooltip="Afficher les données dans la Synthèse"
             >
               Afficher les données
-              <mat-icon> room </mat-icon>
+              <mat-icon>room</mat-icon>
             </button>
           </h5>
         </div>
         <div class="card-body">
           <!-- changer la valeur du ngif quand la carte sera prete -->
-          <pnx-map height="40vh" searchBar="false">
-            <pnx-geojson [geojson]="bbox" [zoomOnFirstTime]="true"> </pnx-geojson>
+          <pnx-map
+            height="40vh"
+            searchBar="false"
+          >
+            <pnx-geojson
+              [geojson]="bbox"
+              [zoomOnFirstTime]="true"
+            ></pnx-geojson>
           </pnx-map>
         </div>
       </div>
       <!-- Fin bloc BBOX -->
 
       <!-- Bloc PieChart -->
-      <div *ngIf="nbTaxons" class="card">
+      <div
+        *ngIf="nbTaxons"
+        class="card"
+      >
         <div class="card-header">
           <h5>Répartition des espèces</h5>
         </div>
@@ -423,8 +515,7 @@
               [plugins]="pieChartPlugins"
               type="doughnut"
               padding="20px"
-            >
-            </canvas>
+            ></canvas>
           </div>
         </div>
       </div>
@@ -437,8 +528,14 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-auto" width="60">
-              <img src="./assets/images/Taxon_icon_vert.svg" width="64" />
+            <div
+              class="col-auto"
+              width="60"
+            >
+              <img
+                src="./assets/images/Taxon_icon_vert.svg"
+                width="64"
+              />
             </div>
             <div class="col">
               <div>
@@ -462,5 +559,9 @@
 </div>
 
 <ng-template #spinnerBlock>
-  <mat-spinner diameter="50" strokeWidth="2" style="margin: 0 auto"> </mat-spinner>
+  <mat-spinner
+    diameter="50"
+    strokeWidth="2"
+    style="margin: 0 auto"
+  ></mat-spinner>
 </ng-template>

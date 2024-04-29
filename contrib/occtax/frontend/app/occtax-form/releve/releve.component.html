@@ -4,8 +4,7 @@
   data-qa="overlay"
   class="disabled-form"
   (click)="formDisabled()"
->
-</div>
+></div>
 
 <div class="row">
   <div
@@ -18,25 +17,24 @@
       [formControl]="propertiesForm.get('precision')"
       class="form-control form-control-sm"
       placeholder="Précision du pointage"
-    >
+    />
   </div>
 </div>
 
 <div class="row">
   <div class="col-8">
     <div *ngIf="config.OCCTAX.form_fields.place_name">
-      <small> {{ 'Releve.PlaceName' | translate }} </small>
+      <small>{{ 'Releve.PlaceName' | translate }}</small>
       <input
         class="form-control form-control-sm"
         type="text"
         [formControl]="propertiesForm.get('place_name')"
-      >
+      />
     </div>
   </div>
 </div>
 <div class="row">
   <div class="col-xl-8 col-lg-10">
-
     <!-- OBSERVATEURS -->
     <pnx-observers
       *ngIf="!config.OCCTAX.observers_txt; else elseBlock"
@@ -45,46 +43,49 @@
       [multiSelect]="true"
       [idMenu]="config.OCCTAX.id_observers_list"
       label="{{ 'Releve.Observers' | translate }}"
-    >
-    </pnx-observers>
+    ></pnx-observers>
     <ng-template #elseBlock>
       <pnx-observers-text
         [parentFormControl]="propertiesForm.get('observers_txt')"
-      >
-      </pnx-observers-text>
+      ></pnx-observers-text>
     </ng-template>
-
   </div>
 </div>
 <div class="row">
-  <div  class="col-xl-4 col-md-6 col-sm-8 col-11">
-      <!-- DATASET -->
-      <ng-container *ngIf="dataset?.active === false || !isDatasetUser(dataset?.id_dataset); else elseblocDatasetForm">
-        <div class="dataset-inactive">
-          <span style="display: block; font-size: 80%;"> {{ 'MetaData.Datasets' | translate }} </span>
-          <span 
-            class="dataset-block"
-            matTooltip="Le jeu de donnée n'est pas modifiable"> 
-            {{ dataset?.dataset_name}} 
-          </span> 
-        </div>
-      </ng-container>
-      <ng-template #elseblocDatasetForm>
-        <pnx-datasets 
-          #dataset
-          data-qa="pnx-occtax-releve-form-datasets"
-          label="{{ 'MetaData.Datasets' | translate }}" 
-          [parentFormControl]="propertiesForm.get('id_dataset')"
-          (valueLoaded)="userDatasets = $event.value"
-          [moduleCode]="moduleService.currentModule?.module_code"
-          [creatableInModule]="moduleService.currentModule?.module_code"
-          (onChange)="occtaxFormReleveService.onDatasetChanged($event);"
-          >
-        </pnx-datasets>
-      </ng-template>
+  <div class="col-xl-4 col-md-6 col-sm-8 col-11">
+    <!-- DATASET -->
+    <ng-container
+      *ngIf="
+        dataset?.active === false || !isDatasetUser(dataset?.id_dataset);
+        else elseblocDatasetForm
+      "
+    >
+      <div class="dataset-inactive">
+        <span style="display: block; font-size: 80%">
+          {{ 'MetaData.Datasets' | translate }}
+        </span>
+        <span
+          class="dataset-block"
+          matTooltip="Le jeu de donnée n'est pas modifiable"
+        >
+          {{ dataset?.dataset_name }}
+        </span>
+      </div>
+    </ng-container>
+    <ng-template #elseblocDatasetForm>
+      <pnx-datasets
+        #dataset
+        data-qa="pnx-occtax-releve-form-datasets"
+        label="{{ 'MetaData.Datasets' | translate }}"
+        [parentFormControl]="propertiesForm.get('id_dataset')"
+        (valueLoaded)="userDatasets = $event.value"
+        [moduleCode]="moduleService.currentModule?.module_code"
+        [creatableInModule]="moduleService.currentModule?.module_code"
+        (onChange)="occtaxFormReleveService.onDatasetChanged($event)"
+      ></pnx-datasets>
+    </ng-template>
   </div>
 </div>
-
 
 <div class="row">
   <div class="col-xl-4 col-md-6 col-sm-8 col-11">
@@ -96,8 +97,7 @@
       label="{{ 'Releve.MinDate' | translate }}"
       [parentFormControl]="propertiesForm.get('date_min')"
       (onSelectOrKeyIn)="globalFormService.synchronizeMax(propertiesForm, 'date_min', 'date_max')"
-      >
-    </pnx-date>
+    ></pnx-date>
   </div>
 
   <div
@@ -112,8 +112,7 @@
       label="{{ 'Releve.MaxDate' | translate }} "
       [parentFormControl]="propertiesForm.get('date_max')"
       (onSelectOrKeyIn)="globalFormService.synchronizeMin(propertiesForm, 'date_min', 'date_max')"
-      >
-    </pnx-date>
+    ></pnx-date>
   </div>
   <div class="d-flex align-content-end flex-wrap">
     <button
@@ -132,9 +131,9 @@
 <div
   *ngIf="propertiesForm.hasError('invalidDate')"
   class="error"
-  style="color:red; font-size: 80%; font-weight: 400;"
+  style="color: red; font-size: 80%; font-weight: 400"
 >
-  {{'Releve.Errors.DateMaxError' |translate}}
+  {{ 'Releve.Errors.DateMaxError' | translate }}
 </div>
 
 <div
@@ -142,21 +141,23 @@
   [hidden]="!occtaxFormReleveService.showTime"
 >
   <div class="col-md-4 col-sm-5 col-6">
-
     <!-- HOUR MIN -->
     <div
       *ngIf="config.OCCTAX.form_fields.hour_min"
       class="form-group"
     >
-      <small> {{'Releve.HourMin' | translate }} </small>
+      <small>{{ 'Releve.HourMin' | translate }}</small>
       <input
-        [ngClass]="{'is-invalid' : propertiesForm.get('hour_min').invalid || propertiesForm.hasError('invalidHour')}"
+        [ngClass]="{
+          'is-invalid':
+            propertiesForm.get('hour_min').invalid || propertiesForm.hasError('invalidHour')
+        }"
         [formControl]="propertiesForm.get('hour_min')"
         class="form-control form-control-sm"
         type="text"
-        placeholder="{{'Releve.HourFormat' | translate }}"
+        placeholder="{{ 'Releve.HourFormat' | translate }}"
         (keyup)="globalFormService.synchronizeMax(propertiesForm, 'hour_min', 'hour_max')"
-      >
+      />
     </div>
   </div>
 
@@ -169,26 +170,28 @@
       *ngIf="config.OCCTAX.form_fields.hour_max"
       class="form-group"
     >
-      <small> {{'Releve.HourMax' | translate }} </small>
+      <small>{{ 'Releve.HourMax' | translate }}</small>
       <input
-        [ngClass]="{'is-invalid' : propertiesForm.get('hour_max').invalid || propertiesForm.hasError('invalidHour')}"
+        [ngClass]="{
+          'is-invalid':
+            propertiesForm.get('hour_max').invalid || propertiesForm.hasError('invalidHour')
+        }"
         [formControl]="propertiesForm.get('hour_max')"
         class="form-control form-control-sm"
         type="text"
-        placeholder="{{'Releve.HourFormat' | translate }}"
+        placeholder="{{ 'Releve.HourFormat' | translate }}"
         (keyup)="globalFormService.synchronizeMin(propertiesForm, 'hour_min', 'hour_max')"
-      >
+      />
     </div>
   </div>
 </div>
 <div
   *ngIf="propertiesForm.hasError('invalidHour')"
   class="error"
-  style="margin-top: -.8rem; margin-bottom: .5rem; color:red; font-size: 80%; font-weight: 400;"
+  style="margin-top: -0.8rem; margin-bottom: 0.5rem; color: red; font-size: 80%; font-weight: 400"
 >
-  {{'Releve.Errors.HourMaxError' |translate}}
+  {{ 'Releve.Errors.HourMaxError' | translate }}
 </div>
-
 
 <div class="row">
   <!-- ALTITUDE MIN -->
@@ -196,13 +199,13 @@
     *ngIf="config.OCCTAX.form_fields.altitude_min"
     class="col-4"
   >
-    <small> {{ 'Releve.MinAltitude' | translate }} </small>
+    <small>{{ 'Releve.MinAltitude' | translate }}</small>
     <input
       class="form-control form-control-sm"
-      [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
+      [ngClass]="{ 'is-invalid': propertiesForm.hasError('invalidAlt') }"
       type="number"
       [formControl]="propertiesForm.get('altitude_min')"
-    >
+    />
   </div>
 
   <!-- ALTITUDE MAX -->
@@ -210,13 +213,13 @@
     *ngIf="config.OCCTAX.form_fields.altitude_max"
     class="col-4"
   >
-    <small> {{ 'Releve.MaxAltitude' | translate }} </small>
+    <small>{{ 'Releve.MaxAltitude' | translate }}</small>
     <input
       class="form-control form-control-sm"
-      [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
+      [ngClass]="{ 'is-invalid': propertiesForm.hasError('invalidAlt') }"
       type="number"
       [formControl]="propertiesForm.get('altitude_max')"
-    >
+    />
   </div>
 
   <div
@@ -226,50 +229,47 @@
     <pnx-areas-intersected-modal
       *ngIf="geojson"
       [geojson]="geojson"
-    >
-    </pnx-areas-intersected-modal>
+    ></pnx-areas-intersected-modal>
   </div>
-
 </div>
 <div
   *ngIf="propertiesForm.hasError('invalidAlt')"
   class="error"
-  style="color:red; font-size: 80%; font-weight: 400;"
+  style="color: red; font-size: 80%; font-weight: 400"
 >
-  {{'Releve.Errors.AltitudeError' |translate}}
+  {{ 'Releve.Errors.AltitudeError' | translate }}
 </div>
 
 <div class="row">
   <div class="col-xl-4 col-md-6 col-sm-8 col-10">
     <div *ngIf="config.OCCTAX.form_fields.depth_min">
-      <small> {{ 'Releve.MinDepth' | translate }} </small>
+      <small>{{ 'Releve.MinDepth' | translate }}</small>
       <input
         class="form-control form-control-sm"
         type="number"
-        [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidDepth')}"
+        [ngClass]="{ 'is-invalid': propertiesForm.hasError('invalidDepth') }"
         [formControl]="propertiesForm.get('depth_min')"
-      >
+      />
     </div>
   </div>
   <div class="col-xl-4 col-md-6 col-sm-8 col-10">
     <div *ngIf="config.OCCTAX.form_fields.depth_min">
-      <small> {{ 'Releve.MaxDepth' | translate }} </small>
+      <small>{{ 'Releve.MaxDepth' | translate }}</small>
       <input
         class="form-control form-control-sm"
         type="number"
-        [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidDepth')}"
+        [ngClass]="{ 'is-invalid': propertiesForm.hasError('invalidDepth') }"
         [formControl]="propertiesForm.get('depth_max')"
-      >
+      />
     </div>
   </div>
-
 </div>
 <div
   *ngIf="propertiesForm.hasError('invalidDepth')"
   class="error"
-  style="color:red; font-size: 80%; font-weight: 400;"
+  style="color: red; font-size: 80%; font-weight: 400"
 >
-  {{'Releve.Errors.DepthError' |translate}}
+  {{ 'Releve.Errors.DepthError' | translate }}
 </div>
 
 <div class="row">
@@ -280,20 +280,18 @@
       label="{{ 'Releve.GroupType' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP"
-    >
-    </pnx-nomenclature>
+    ></pnx-nomenclature>
   </div>
   <div
     *ngIf="config.OCCTAX.form_fields.grp_method"
     class="col-xl-4 col-md-5"
   >
-
-    <small> {{'Releve.GroupMethod' | translate}} </small>
+    <small>{{ 'Releve.GroupMethod' | translate }}</small>
     <input
       type="text"
       class="form-control form-control-sm"
       [formControl]="propertiesForm.get('grp_method')"
-    >
+    />
   </div>
   <div class="col-xl-4 col-md-5">
     <pnx-nomenclature
@@ -301,13 +299,9 @@
       label="{{ 'Releve.GeoObjectNature' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_geo_object_nature')"
       codeNomenclatureType="NAT_OBJ_GEO"
-    >
-    </pnx-nomenclature>
+    ></pnx-nomenclature>
   </div>
-
-
 </div>
-
 
 <div class="row">
   <!-- TECHNIQUE OBSERVATION -->
@@ -317,52 +311,48 @@
       label="{{ 'Releve.TechCollectCampanule' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
       codeNomenclatureType="TECHNIQUE_OBS"
-    >
-    </pnx-nomenclature>
+    ></pnx-nomenclature>
   </div>
-
 </div>
 
 <div class="row">
   <div class="col-6">
     <pnx-autocomplete
       *ngIf="config.OCCTAX.form_fields.habitat"
-      apiEndPoint="{{config.API_ENDPOINT}}/habref/habitats/autocomplete"
+      apiEndPoint="{{ config.API_ENDPOINT }}/habref/habitats/autocomplete"
       [searchAsParameter]="false"
       [parentFormControl]="occtaxFormReleveService.habitatForm"
       queryParamSearch="search_name"
-      [othersGetParams]="{cd_typo: this.config.OCCTAX?.CD_TYPO_HABITAT, id_list: this.config.OCCTAX?.ID_LIST_HABITAT}"
+      [othersGetParams]="{
+        cd_typo: this.config.OCCTAX?.CD_TYPO_HABITAT,
+        id_list: this.config.OCCTAX?.ID_LIST_HABITAT
+      }"
       keyValue="search_name"
       [formatter]="formatter"
       label="Habitat"
       placeholder="Tapez les premières lettres..."
-    >
-    </pnx-autocomplete>
+    ></pnx-autocomplete>
   </div>
 </div>
 
-
 <!-- COMMENTAIRE -->
 <div *ngIf="config.OCCTAX.form_fields.comment_releve">
-  <small> {{ 'Releve.Comment' | translate }} </small>
+  <small>{{ 'Releve.Comment' | translate }}</small>
   <textarea
     class="form-control"
     [formControl]="propertiesForm.get('comment')"
-  >
-  </textarea>
+  ></textarea>
 </div>
 <pnx-dynamic-form-generator
   [autoGenerated]="true"
   [myFormGroup]="propertiesForm.get('additional_fields')"
   [formsDefinition]="additionalFieldsForm"
->
-</pnx-dynamic-form-generator>
+></pnx-dynamic-form-generator>
 
 <div
   class="text-center"
-  style="margin-top: 10px;"
+  style="margin-top: 10px"
 >
-
   <ng-container>
     <button
       mat-raised-button
@@ -379,13 +369,12 @@
       matTooltip="Enregistrer le relevé et saisir les taxons"
       [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"
       (click)="submitReleveForm()"
-      >
+    >
       <mat-spinner
         *ngIf="occtaxFormReleveService.waiting"
         diameter="25"
         strokeWidth="2"
-      >
-      </mat-spinner>
+      ></mat-spinner>
       Enregistrer et saisir des taxons
     </button>
   </ng-container>

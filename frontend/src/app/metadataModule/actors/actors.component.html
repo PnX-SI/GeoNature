@@ -4,13 +4,22 @@
     (change)="toggleActorOrganismChoiceChange($event)"
     appearance="legacy"
   >
-    <mat-button-toggle value="organism" matTooltip="Renseigner un organisme uniquement">
+    <mat-button-toggle
+      value="organism"
+      matTooltip="Renseigner un organisme uniquement"
+    >
       <mat-icon>domain</mat-icon>
     </mat-button-toggle>
-    <mat-button-toggle value="person" matTooltip="Renseigner une personne uniquement">
+    <mat-button-toggle
+      value="person"
+      matTooltip="Renseigner une personne uniquement"
+    >
       <mat-icon>person</mat-icon>
     </mat-button-toggle>
-    <mat-button-toggle value="all" matTooltip="Renseigner un organisme et un personne">
+    <mat-button-toggle
+      value="all"
+      matTooltip="Renseigner un organisme et un personne"
+    >
       <mat-icon>domain</mat-icon>
       <mat-icon>person</mat-icon>
     </mat-button-toggle>
@@ -27,7 +36,7 @@
 
   <form [formGroup]="actorForm">
     <ng-container *ngIf="!isMainContact">
-      <small> Type de role </small>
+      <small>Type de role</small>
       <ng-select
         class="auto"
         [items]="role_types"
@@ -38,7 +47,12 @@
         [clearable]="false"
         formControlName="id_nomenclature_actor_role"
       >
-        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <ng-template
+          ng-option-tmp
+          let-item="item"
+          let-index="index"
+          let-search="searchTerm"
+        >
           <div [matTooltip]="item.label_default">
             <span class="pre-wrap">{{ item.label_default }}</span>
           </div>
@@ -48,7 +62,7 @@
 
     <!-- Organismes -->
     <ng-container *ngIf="toggleButtonValue == 'organism' || toggleButtonValue == 'all'">
-      <small> Organisme </small>
+      <small>Organisme</small>
       <ng-select
         class="auto"
         [items]="organisms"
@@ -66,8 +80,11 @@
           let-index="index"
           let-search="searchTerm"
         >
-          <div [matTooltip]="item.nom_organisme" [attr.data-qa]='"pnx-metadata-organism-"+item.nom_organisme'>
-            <span class="pre-wrap">{{item.nom_organisme}}</span>
+          <div
+            [matTooltip]="item.nom_organisme"
+            [attr.data-qa]="'pnx-metadata-organism-' + item.nom_organisme"
+          >
+            <span class="pre-wrap">{{ item.nom_organisme }}</span>
           </div>
         </ng-template>
       </ng-select>
@@ -75,7 +92,7 @@
 
     <!-- Personnes -->
     <ng-container *ngIf="toggleButtonValue == 'person' || toggleButtonValue == 'all'">
-      <small> Personne </small>
+      <small>Personne</small>
       <ng-select
         class="auto"
         [items]="roles"
@@ -87,7 +104,12 @@
         [virtualScroll]="true"
         formControlName="id_role"
       >
-        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <ng-template
+          ng-option-tmp
+          let-item="item"
+          let-index="index"
+          let-search="searchTerm"
+        >
           <div [matTooltip]="item.nom_complet">
             <span class="pre-wrap">{{ item.nom_complet }}</span>
           </div>

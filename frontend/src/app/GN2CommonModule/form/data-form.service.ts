@@ -316,18 +316,18 @@ export class DataFormService {
     });
   }
 
-  getAreas(area_type_list: Array<string>, area_name?) {
-    let params: HttpParams = new HttpParams();
+  getAreas(params: {}) {
+    let queryString: HttpParams = new HttpParams();
 
-    area_type_list.forEach((id_type) => {
-      params = params.append('type_code', id_type.toString());
-    });
-
-    if (area_name) {
-      params = params.set('area_name', area_name);
+    for (let key in params) {
+      let param = params[key];
+      if (Array.isArray(param)) {
+        param = param.join(',');
+      }
+      queryString = queryString.set(key, param);
     }
 
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/geo/areas`, { params: params });
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/geo/areas`, { params: queryString });
   }
 
   getAreasTypes() {
@@ -517,7 +517,7 @@ export class DataFormService {
     return httpParam.append('orderby', order_column);
   }
 
-  getDataList(api: string, application: string, params = {}) {
+  getDataList(api: string, application: string, params = {}, data = undefined) {
     let queryString: HttpParams = new HttpParams();
     for (const key of Object.keys(params)) {
       const param = params[key];
@@ -537,7 +537,11 @@ export class DataFormService {
           ? `${this.config.API_TAXHUB}/${api}`
           : api;
 
-    return this._http.get<any>(url, { params: queryString });
+    if (data !== undefined) {
+      return this._http.post<any>(url, data, { params: queryString });
+    } else {
+      return this._http.get<any>(url, { params: queryString });
+    }
   }
 
   subscribeAndDownload(

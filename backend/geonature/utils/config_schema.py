@@ -4,19 +4,14 @@
 
 import os
 
-from marshmallow import (
-    Schema,
-    fields,
-    validates_schema,
-    ValidationError,
-    post_load,
-)
+from warnings import warn
+
+from marshmallow import Schema, fields, validates_schema, ValidationError, post_load, pre_load
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
-    DEFAULT_COLUMNS_API_SYNTHESE,
 )
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
@@ -192,8 +187,8 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+",
-            error="Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name",
+            r"^(postgres(?:ql)?)((\+psycopg2)?):\/\/(?:([^@\s]+)@)?([^\/\s]+)(?:\/(\w+))?(?:\?(.+))?",
+            error="PostgreSQL database URL is invalid. Check for authorized URL here : https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS",
         ),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
@@ -281,6 +276,13 @@ class GnFrontEndConf(Schema):
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
 
 
+class ExportObservationSchema(Schema):
+    label = fields.String(required=True)
+    view_name = fields.String(required=True)
+    geojson_4326_field = fields.String(load_default="geojson_4326")
+    geojson_local_field = fields.String(load_default="geojson_local")
+
+
 class Synthese(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - SEARCH FORM
@@ -355,19 +357,18 @@ class Synthese(Schema):
 
     # --------------------------------------------------------------------
     # SYNTHESE - OBSERVATIONS LIST
-    # Listes des champs renvoyés par l'API synthese '/synthese'
-    # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
-    # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
+    # Colonnes affichées par défaut sur la liste des résultats de la synthese
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
-        fields.String, load_default=DEFAULT_COLUMNS_API_SYNTHESE
-    )
-    # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=DEFAULT_LIST_COLUMN)
+    # Colonnes affichables sur la liste des résultats de la synthese via la modale de selection des colonnes
+    ADDITIONAL_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=[])
 
     # --------------------------------------------------------------------
     # SYNTHESE - DOWNLOADS (AKA EXPORTS)
     EXPORT_COLUMNS = fields.List(fields.String(), load_default=DEFAULT_EXPORT_COLUMNS)
+    EXPORT_OBSERVATIONS_CUSTOM_VIEWS = fields.List(
+        fields.Nested(ExportObservationSchema), load_default=[]
+    )
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(load_default="id_synthese")
     EXPORT_ID_DATASET_COL = fields.String(load_default="jdd_id")
@@ -435,6 +436,22 @@ class Synthese(Schema):
     )
     # Activate the blurring of sensitive observations. Otherwise, exclude them
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
+
+    @pre_load
+    def warn_deprecated(self, data, **kwargs):
+        deprecated = {
+            "EXPORT_ID_SYNTHESE_COL",
+            "EXPORT_ID_DIGITISER_COL",
+            "EXPORT_OBSERVERS_COL",
+            "EXPORT_GEOJSON_4326_COL",
+            "EXPORT_GEOJSON_LOCAL_COL",
+        }
+        for deprecated_field in deprecated & set(data.keys()):
+            warn(
+                f"{deprecated_field} is deprecated - "
+                "Please use `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` parameter to customize your synthese exports "
+            )
+        return data
 
 
 # Map configuration

@@ -1,0 +1,137 @@
+name: Performance Evaluation
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      fail-fast: false
+      matrix:
+        debian-version: ["11", "12"]
+        include:
+          - debian-version: "11"
+            python-version: "3.9"
+            postgres-version: "13"
+            postgis-version: "3.2"
+          - debian-version: "12"
+            python-version: "3.11"
+            postgres-version: "15"
+            postgis-version: "3.3"
+
+    name: Debian ${{ matrix.debian-version }}
+
+    services:
+      postgres:
+        image: postgis/postgis:${{ matrix.postgres-version }}-${{ matrix.postgis-version }}
+        env:
+          POSTGRES_DB: geonature2db
+          POSTGRES_PASSWORD: geonatpasswd
+          POSTGRES_USER: geonatadmin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Add database extensions
+        run: |
+          psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
+        env:
+          PGPASSWORD: geonatpasswd
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+      - name: Install GDAL
+        run: |
+          sudo apt update
+          sudo apt install -y libgdal-dev
+      - name: Install dependencies
+        if: github.base_ref == 'master'
+        run: |
+          echo 'Installation des requirements de prod'
+          python -m pip install --upgrade pip
+          python -m pip install \
+            -e ..[tests] \
+            -r requirements.txt
+        working-directory: ./backend
+      - name: Install dependencies
+        if: github.base_ref != 'master'
+        run: |
+          echo 'Installation des requirements de dev'
+          python -m pip install --upgrade pip
+          python -m pip install \
+            -e ..[tests] \
+            -r requirements-dev.in
+        working-directory: ./backend
+      - name: Show database branches and dependencies
+        run: |
+          geonature db status --dependencies
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+      # - name: Restore database
+      #   run: |
+      #     # wget https://www.dropbox.com/scl/fi/17gsthsftfg59mxwmbbre/export_geonature_10000.zip?rlkey=33choleag4xw60wadm802c3oh&dl=1 -O 10kDump.zip
+      #     # unzip 10kDump.zip
+      #     wget https://www.dropbox.com/scl/fi/jjkxyg120bxc0dp8uy8kq/300KDump.sql?rlkey=tyuk2svitcb9nyshn7r09yo7b&dl=1 -O 300KDump.sql
+      #     ls
+      #     psql -h localhost -U geonatadmin -d geonature2db -f 300KDump.sql
+      #   env:
+      #     PGPASSWORD: geonatpasswd
+      - name: Install database
+        run: |
+          install/03b_populate_db.sh
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+          srid_local: 2154
+          install_bdc_statuts: true
+          add_sample_data: true
+          install_sig_layers: true
+          install_grid_layer_5: true
+          install_grid_layer_10: true
+          install_ref_sensitivity: true
+      - name: Show database status
+        run: |
+          geonature db status
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+
+      - name: Install core modules backend
+        run: |
+          pip install -e contrib/occtax
+          pip install -e contrib/gn_module_occhab
+          pip install -e contrib/gn_module_validation
+      - name: Show database status
+        run: |
+          geonature db status
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+      - name: Install core modules database
+        run: |
+          geonature upgrade-modules-db
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+      - name: Show database status
+        run: |
+          geonature db status --dependencies
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+      - name: Load benchmark stable data
+        run: |
+          wget https://geonature.fr/data/benchmark_history/benchmark_stable.json -O benchmark_stable.json
+
+      - name: Compare performance to stable data
+        run: |
+          pytest --benchmark-only --benchmark-compare-fail="mean:0.1" --benchmark-compare=benchmark_stable.json
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+        # https://stackoverflow.com/a/64126737 For posting results on GitHub Pull Requests

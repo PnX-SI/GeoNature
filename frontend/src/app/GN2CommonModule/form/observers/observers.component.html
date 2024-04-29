@@ -1,4 +1,4 @@
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 <ng-select
   [ngClass]="class"
   [items]="observers | async"
@@ -12,14 +12,19 @@
   [virtualScroll]="true"
   [formControl]="parentFormControl"
 >
-	<ng-template 
-    ng-option-tmp 
-    let-item="item" 
-    let-index="index" 
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
     let-search="searchTerm"
   >
-    <div matTooltip="{{item.nom_complet}}">
-      <span class="pre-wrap" [attr.data-qa]='"gn-common-form-observers-select-"+item.nom_complet'>{{item.nom_complet}}</span>
+    <div matTooltip="{{ item.nom_complet }}">
+      <span
+        class="pre-wrap"
+        [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
+      >
+        {{ item.nom_complet }}
+      </span>
     </div>
   </ng-template>
 </ng-select>

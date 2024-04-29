@@ -105,6 +105,8 @@ Les conventions précédentes concernent uniquement la BDD. Pour les modèles Py
 - Nommer les modèles sans le préfixe "t\_", et à les écrire au singulier. Exemple : ``class Observation:``.
 - Ne pas répeter le nom des tables dans les noms des colonnes.
 
+.. _typescript:
+
 Typescript
 **********
 
@@ -133,7 +135,8 @@ HTML
 ****
 
 - La longueur maximale pour une ligne de code est 100 caractères.
-- Lorsqu'il y a plus d'un attribut sur une balise, revenir à la ligne et aligner les attributs :
+- Revenir à la ligne avant et après le contenue d'une balise.
+- Lorsqu'il y a plus d'un attribut sur une balise, revenir à la ligne, aligner les attributs et aller a la ligne pour fermer la balise :
 
 ::
 
@@ -148,6 +151,7 @@ HTML
       </button>
 
 - VSCODE fournit un formatteur de HTML par défaut (Dans les options de VsCode, tapez "wrap attributes" et sélectionner "force-expand-multiline")
+- En plus du TypeScript/Javascript, Prettier permet de formater le HTML et le SCSS (Se référer à la configuration N’oubliez pas les :ref:`Typescript <typescript>`.)
 
 Style et ergonomie
 ******************

@@ -80,10 +80,16 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
     @routes.before_request
     def synchronize_mtd():
         if request.endpoint in ["gn_meta.get_datasets", "gn_meta.get_acquisition_frameworks_list"]:
-            try:
-                sync_af_and_ds_by_user(id_role=g.current_user.id_role)
-            except Exception as e:
-                log.exception("Error while get JDD via MTD")
+            from flask_login import current_user
+
+            if current_user.is_authenticated:
+                params = request.json if request.is_json else request.args
+                try:
+                    list_id_af = params.get("id_acquisition_frameworks", [])
+                    for id_af in list_id_af:
+                        sync_af_and_ds_by_user(id_role=current_user.id_role, id_af=id_af)
+                except Exception as e:
+                    log.exception(f"Error while get JDD via MTD: {e}")
 
 
 @routes.route("/datasets", methods=["GET", "POST"])
@@ -1061,14 +1067,21 @@ def publish_acquisition_framework(af_id):
 
 
 @routes.cli.command()
-@click.argument("id_role", nargs=1, required=False, default=None)
-def mtd_sync(id_role):
+@click.option("--id-role", nargs=1, required=False, default=None, help="ID of an user")
+@click.option(
+    "--id-af", nargs=1, required=False, default=None, help="ID of an acquisition framework"
+)
+def mtd_sync(id_role, id_af):
     """
-    Trigger global sync or a sync for a given user only.
+    \b
+    Triggers :
+    - global sync for instance
+    - a sync for a given user only (if id_role is provided)
+    - a sync for a given AF (Acquisition Framework) only (if id_af is provided). NOTE: the AF should in this case already exist in the database, and only datasets associated to this AF will be retrieved
 
-    :param id_role: user id
+    NOTE: if both id_role and id_af are provided, only the datasets possibly associated to both the AF and the user will be retrieved.
     """
     if id_role:
-        return sync_af_and_ds_by_user(id_role)
+        return sync_af_and_ds_by_user(id_role, id_af)
     else:
         return mtd_sync_af_and_ds()

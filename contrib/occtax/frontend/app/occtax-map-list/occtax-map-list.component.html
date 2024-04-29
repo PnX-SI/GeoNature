@@ -1,4 +1,7 @@
-<div class="container-fluid" data-qa="pnx-occtax-map-list">
+<div
+  class="container-fluid"
+  data-qa="pnx-occtax-map-list"
+>
   <div class="map-list-container">
     <div class="float-btns">
       <ng-container *ngIf="userCruved?.C != '0'">
@@ -28,7 +31,10 @@
         data-qa="pnx-occtax-filter"
       >
         Filtrer
-        <i class="fa fa-sliders" aria-hidden="true"></i>
+        <i
+          class="fa fa-sliders"
+          aria-hidden="true"
+        ></i>
       </button>
     </div>
 
@@ -42,7 +48,10 @@
         [ngStyle]="{ 'min-height.px': cardContentHeight }"
       >
         <!-- MAP -->
-        <pnx-map-list [idName]="mapListService.idName" height="100%"> </pnx-map-list>
+        <pnx-map-list
+          [idName]="mapListService.idName"
+          height="100%"
+        ></pnx-map-list>
       </div>
       <div
         class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
@@ -76,36 +85,51 @@
           (sort)="onColumnSort($event)"
         >
           <!-- Row Detail Template -->
-          <ngx-datatable-row-detail #myDetailRow rowHeight="100">
-            <ng-template ngx-datatable-row-detail-template let-row="row" let-expanded="expanded">
-              <div><strong>ID relevé : </strong>{{ row.id_releve_occtax }}</div>
+          <ngx-datatable-row-detail
+            #myDetailRow
+            rowHeight="100"
+          >
+            <ng-template
+              ngx-datatable-row-detail-template
+              let-row="row"
+              let-expanded="expanded"
+            >
+              <div>
+                <strong>ID relevé :</strong>
+                {{ row.id_releve_occtax }}
+              </div>
               <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
-                <div><strong>Commentaire : </strong>{{ row.comment }}</div>
+                <div>
+                  <strong>Commentaire :</strong>
+                  {{ row.comment }}
+                </div>
               </ng-container>
               <div>
-                <strong>Altitude : </strong
-                >{{
+                <strong>Altitude :</strong>
+                {{
                   row.altitude_min == row.altitude_max
                     ? row.altitude_min
                     : row.altitude_min + ' - ' + row.altitude_max
                 }}
               </div>
               <div>
-                <strong>Saisi par : </strong> {{ row?.digitiser?.nom_complet || '-'}} 
+                <strong>Saisi par :</strong>
+                {{ row?.digitiser?.nom_complet || '-' }}
               </div>
-              <div><strong>Observé par: </strong></div>
+              <div><strong>Observé par:</strong></div>
               <div style="margin-left: 20px">
                 <div *ngFor="let obs of displayObservateursTooltip(row)">
                   {{ obs }}
                 </div>
               </div>
-              <div><strong>Taxon(s): </strong></div>
+              <div><strong>Taxon(s):</strong></div>
               <div style="margin-left: 20px">
                 <div *ngIf="row.t_occurrences_occtax && row.t_occurrences_occtax.length == 0">
                   Aucun taxon
                 </div>
                 <div *ngFor="let taxon of displayTaxonsTooltip(row)">
-                  {{ taxon.taxName }} <br />
+                  {{ taxon.taxName }}
+                  <br />
                   <span [innerHTML]="taxon.icons | safeHTML"></span>
                   <!-- <pnx-display-medias [medias]="taxon.medias" diaporama="true" display='mini'></pnx-display-medias> -->
                 </div>
@@ -130,24 +154,29 @@
                 aria-expanded="false"
                 matTooltip="{{ 'List.Columns' | translate }}"
                 (click)="openModalCol($event, modalCol)"
-              >
-              </i>
+              ></i>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-row="row" let-expanded="expanded">
+            <ng-template
+              ngx-datatable-cell-template
+              let-row="row"
+              let-expanded="expanded"
+            >
               <a
                 href="javascript:void(0)"
                 matTooltip="Ouvrir/fermer le détail"
                 [class.datatable-icon-right]="!expanded"
                 [class.datatable-icon-down]="expanded"
                 (click)="toggleExpandRow(row)"
-              >
-              </a>
+              ></a>
             </ng-template>
           </ngx-datatable-column>
 
           <!-- ACTION COLUMNS -->
           <ngx-datatable-column maxWidth="10">
-            <ng-template let-row="row" ngx-datatable-cell-template>
+            <ng-template
+              let-row="row"
+              ngx-datatable-cell-template
+            >
               <ng-container *ngIf="row.rights.U; else disabledEditBlc">
                 <a
                   data-qa="edit-releve"
@@ -162,7 +191,10 @@
                 </a>
               </ng-container>
               <ng-template #disabledEditBlc>
-                <button class="btn btn-outline-shadow btn-no-padding btn-ghost" disabled="true">
+                <button
+                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
+                  disabled="true"
+                >
                   <i
                     class="fa fa-pencil-square-o disabled"
                     matTooltip="{{ 'Releve.Edit' | translate }} {{ row.id_releve_occtax }}"
@@ -174,7 +206,10 @@
           </ngx-datatable-column>
 
           <ngx-datatable-column maxWidth="10">
-            <ng-template let-row="row" ngx-datatable-cell-template>
+            <ng-template
+              let-row="row"
+              ngx-datatable-cell-template
+            >
               <ng-container *ngIf="row.rights.R; else disabledInfoBlc">
                 <a
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
@@ -188,7 +223,10 @@
                 </a>
               </ng-container>
               <ng-template #disabledInfoBlc>
-                <button class="btn btn-outline-shadow btn-no-padding btn-ghost" disabled="true">
+                <button
+                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
+                  disabled="true"
+                >
                   <i
                     class="fa fa-info-circle disabled"
                     matTooltip="{{ 'Releve.Info' | translate }} {{ row.id_releve_occtax }}"
@@ -200,7 +238,11 @@
           </ngx-datatable-column>
 
           <ngx-datatable-column maxWidth="10">
-            <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <ng-template
+              let-row="row"
+              let-rowIndex="rowIndex"
+              ngx-datatable-cell-template
+            >
               <button
                 class="btn btn-outline-shadow btn-no-padding btn-ghost"
                 [disabled]="!row.rights.D"
@@ -228,16 +270,22 @@
             >
               <!-- date -->
               <!-- Pour afficher la date, si période mise en forme en Du ... au ... -->
-              <ng-template ngx-datatable-cell-template let-row="row">
+              <ng-template
+                ngx-datatable-cell-template
+                let-row="row"
+              >
                 <div [ngSwitch]="mapListService['displayColumns'][index]['prop']">
-                  <span *ngSwitchCase="'date'" matTooltip="{{ displayDateTooltip(row) }}">
+                  <span
+                    *ngSwitchCase="'date'"
+                    matTooltip="{{ displayDateTooltip(row) }}"
+                  >
                     {{ displayDateTooltip(row) }}
                   </span>
                   <span *ngSwitchCase="'date_min'">
-                    {{ row.date_min | date : 'dd-MM-yyyy' }}
+                    {{ row.date_min | date: 'dd-MM-yyyy' }}
                   </span>
                   <span *ngSwitchCase="'date_max'">
-                    {{ row.date_max | date : 'dd-MM-yyyy' }}
+                    {{ row.date_max | date: 'dd-MM-yyyy' }}
                   </span>
                   <span
                     *ngSwitchCase="'nb_taxons'"
@@ -274,7 +322,11 @@
                   >
                     {{ row['dataset'].dataset_name || 'Aucun JDD' }}
                   </span>
-                  <span *ngSwitchDefault [matTooltip]="row[col.prop]" matTooltipPosition="left">
+                  <span
+                    *ngSwitchDefault
+                    [matTooltip]="row[col.prop]"
+                    matTooltipPosition="left"
+                  >
                     {{ row[col.prop] }}
                   </span>
                 </div>
@@ -296,12 +348,19 @@
         </button>
 
         <!-- MODAL COLUMNS -->
-        <ng-template #modalCol let-c="close" let-d="dismiss">
+        <ng-template
+          #modalCol
+          let-c="close"
+          let-d="dismiss"
+        >
           <div class="modal-header">
             <h4>{{ 'List.DisplayColumns' | translate }}</h4>
           </div>
           <div class="modal-body">
-            <li class="col-list" *ngFor="let col of mapListService.availableColumns">
+            <li
+              class="col-list"
+              *ngFor="let col of mapListService.availableColumns"
+            >
               <a>
                 <input
                   type="checkbox"
@@ -316,15 +375,27 @@
         </ng-template>
 
         <!-- MODAL DELETE -->
-        <ng-template #modalConfirm let-c="close" let-d="dismiss">
+        <ng-template
+          #modalConfirm
+          let-c="close"
+          let-d="dismiss"
+        >
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
+            <h5
+              class="modal-title"
+              id="exampleModalLabel"
+            >
               {{ 'Releve.Delete' | translate }}
               {{ mapListService.selectedRow[0][mapListService.idName] }} ?
             </h5>
           </div>
           <div class="modal-body">
-            <button type="button" mat-raised-button class="mr-1 uppercase" (click)="c()">
+            <button
+              type="button"
+              mat-raised-button
+              class="mr-1 uppercase"
+              (click)="c()"
+            >
               {{ 'Cancel' | translate }}
             </button>
             <button
@@ -341,16 +412,29 @@
         </ng-template>
 
         <!-- MODAL DOWNLOAD -->
-        <ng-template #modalDownload id="modal-download" let-c="close" let-d="dismiss">
+        <ng-template
+          #modalDownload
+          id="modal-download"
+          let-c="close"
+          let-d="dismiss"
+        >
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{{ 'DownloadData' | translate }}</h5>
+            <h5
+              class="modal-title"
+              id="exampleModalLabel"
+            >
+              {{ 'DownloadData' | translate }}
+            </h5>
           </div>
           <div class="modal-body">
-            <span [innerHTML]="config.OCCTAX.export_message"> </span> <br><br>
+            <span [innerHTML]="config.OCCTAX.export_message"></span>
+            <br />
+            <br />
 
             <div *ngIf="mapListService.page.totalElements > config.OCCTAX.MAX_EXPORT_NUMBER">
-              {{'DownloadOverflow' | translate }}
-              <br><br>
+              {{ 'DownloadOverflow' | translate }}
+              <br />
+              <br />
             </div>
 
             <div class="export-button">

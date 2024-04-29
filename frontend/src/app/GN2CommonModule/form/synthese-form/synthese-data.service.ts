@@ -102,10 +102,10 @@ export class SyntheseDataService {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxons_tree`);
   }
 
-  downloadObservations(idSyntheseList: Array<number>, format: string) {
+  downloadObservations(idSyntheseList: Array<number>, format: string, view_name: string) {
     this.isDownloading = true;
-    const queryString = new HttpParams().set('export_format', format);
-
+    let queryString = new HttpParams().set('export_format', format);
+    queryString = queryString.set('view_name', view_name);
     const source = this._api.post(
       `${this.config.API_ENDPOINT}/synthese/export_observations`,
       idSyntheseList,

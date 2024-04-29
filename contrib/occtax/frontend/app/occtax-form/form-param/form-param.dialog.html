@@ -1,10 +1,20 @@
-
-<ng-template #modalContent let-modal>
+<ng-template
+  #modalContent
+  let-modal
+>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">
+    <h4
+      class="modal-title"
+      id="modal-basic-title"
+    >
       Paramétrage de la valeur par défaut des champs du formulaire
     </h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -12,22 +22,26 @@
     <div class="help">
       <div
         class="display-help"
-        (click)='collapse()'
+        (click)="collapse()"
       >
         <ng-container *ngIf="state === 'collapsed'; else hideBlock">
-          Afficher l'aide <mat-icon>arrow_drop_down</mat-icon>
+          Afficher l'aide
+          <mat-icon>arrow_drop_down</mat-icon>
         </ng-container>
         <ng-template #hideBlock>
-          Masquer l'aide <mat-icon>arrow_drop_up</mat-icon>
+          Masquer l'aide
+          <mat-icon>arrow_drop_up</mat-icon>
         </ng-template>
       </div>
-      <p [@detailExpand]='state'>
+      <p [@detailExpand]="state">
         Cet espace permet de spécifier une valeur de remplacement par défaut pour certains champs du
-        formulaire.<br>
+        formulaire.
+        <br />
         Les 3 boutons ci-dessous permettent d'activer ou de désactiver cette fonctionnalité pour les
-        différentes parties du formulaire concernées.<br>
-        Un champ laissé vide n'affectera pas le formulaire qui continuera de prendre la valeur définie
-        par défaut au niveau de GeoNature.
+        différentes parties du formulaire concernées.
+        <br />
+        Un champ laissé vide n'affectera pas le formulaire qui continuera de prendre la valeur
+        définie par défaut au niveau de GeoNature.
       </p>
     </div>
     <div>
@@ -75,14 +89,12 @@
       [(selectedIndex)]="selectedIndex"
       backgroundColor="primary"
     >
-
       <!-- GEOSJON -->
       <mat-tab
         label="Localisation"
         [disabled]="!(occtaxFormParamService.geometryState|async)"
       >
-
-        <div style="display: inline-block; margin-top:10px;">
+        <div style="display: inline-block; margin-top: 10px">
           <button
             class="btn btn-primary"
             (click)="geometryFormMapper()"
@@ -93,13 +105,14 @@
 
         <div class="copied-geometry">
           <ng-container *ngIf="paramsForm.get('geometry').value !== null; else noGeometryBlock">
-            <mat-icon style="color: green">check</mat-icon> Une géométrie est proposée par défaut
+            <mat-icon style="color: green">check</mat-icon>
+            Une géométrie est proposée par défaut
           </ng-container>
           <ng-template #noGeometryBlock>
-            <mat-icon style="color: red">close</mat-icon>Aucune géométrie n'a été copiée pour le moment
+            <mat-icon style="color: red">close</mat-icon>
+            Aucune géométrie n'a été copiée pour le moment
           </ng-template>
         </div>
-
       </mat-tab>
 
       <!-- RELEVE -->
@@ -107,11 +120,10 @@
         [label]="'Releve.Releve' | translate"
         [disabled]="!(occtaxFormParamService.releveState|async)"
       >
-
-        <div style="margin-top:10px;">
+        <div style="margin-top: 10px">
           <button
             mat-flat-button
-            color=primary
+            color="primary"
             (click)="releveFormMapper()"
           >
             Copier les informations du relevé en cours
@@ -129,19 +141,19 @@
               class="form-control form-control-sm"
               placeholder="Précision du pointage"
               [formControl]="releveParamForm.get('precision')"
-            >
+            />
           </div>
 
-          <div 
+          <div
             *ngIf="config.OCCTAX.form_fields.place_name"
             class="col-4"
           >
-            <small> {{ 'Releve.PlaceName' | translate }} </small>
+            <small>{{ 'Releve.PlaceName' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="text"
               [formControl]="releveParamForm.get('place_name')"
-            >
+            />
           </div>
         </div>
 
@@ -151,19 +163,18 @@
           [idMenu]="config.OCCTAX.id_observers_list"
           label="{{ 'Releve.Observers' | translate }}"
           [bindAllItem]="true"
-        >
-        </pnx-observers>
+        ></pnx-observers>
         <ng-template #elseBlock>
-          <pnx-observers-text [parentFormControl]="releveParamForm.get('observers_txt')">
-          </pnx-observers-text>
+          <pnx-observers-text
+            [parentFormControl]="releveParamForm.get('observers_txt')"
+          ></pnx-observers-text>
         </ng-template>
 
         <pnx-datasets
           label="{{ 'MetaData.Datasets' | translate }}"
           [parentFormControl]="releveParamForm.get('id_dataset')"
           moduleCode="OCCTAX"
-        >
-        </pnx-datasets>
+        ></pnx-datasets>
 
         <div class="row">
           <div class="col-6">
@@ -173,8 +184,7 @@
               label="{{ 'Releve.MinDate' | translate }}"
               [defaultToday]="config.OCCTAX.DATE_FORM_WITH_TODAY"
               [parentFormControl]="releveParamForm.get('date_min')"
-            >
-            </pnx-date>
+            ></pnx-date>
           </div>
           <div class="col-6">
             <pnx-date
@@ -182,8 +192,7 @@
               [isInvalid]="releveParamForm.hasError('invalidDate') || releveParamForm.get('date_max').invalid"
               label="{{ 'Releve.MaxDate' | translate }} "
               [parentFormControl]="releveParamForm.get('date_max')"
-            >
-            </pnx-date>
+            ></pnx-date>
           </div>
         </div>
 
@@ -193,14 +202,14 @@
               *ngIf="config.OCCTAX.form_fields.hour_min"
               class="form-group"
             >
-              <small> {{'Releve.HourMin' | translate }} </small>
+              <small>{{'Releve.HourMin' | translate }}</small>
               <input
                 [ngClass]="{'is-invalid' : releveParamForm.get('hour_min').invalid || releveParamForm.hasError('invalidHour')}"
                 [formControl]="releveParamForm.get('hour_min')"
                 class="form-control form-control-sm"
                 type="text"
                 placeholder="{{'Releve.HourFormat' | translate }}"
-              >
+              />
             </div>
           </div>
           <div class="col-6">
@@ -208,14 +217,14 @@
               *ngIf="config.OCCTAX.form_fields.hour_max"
               class="form-group"
             >
-              <small> {{'Releve.HourMax' | translate }} </small>
+              <small>{{'Releve.HourMax' | translate }}</small>
               <input
                 [ngClass]="{'is-invalid' : releveParamForm.get('hour_max').invalid || releveParamForm.hasError('invalidHour')}"
                 [formControl]="releveParamForm.get('hour_max')"
                 class="form-control form-control-sm"
                 type="text"
                 placeholder="{{'Releve.HourFormat' | translate }}"
-              >
+              />
             </div>
           </div>
         </div>
@@ -225,12 +234,12 @@
             *ngIf="config.OCCTAX.form_fields.altitude_min"
             class="col-6"
           >
-            <small> {{ 'Releve.MinAltitude' | translate }} </small>
+            <small>{{ 'Releve.MinAltitude' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
               [formControl]="releveParamForm.get('altitude_min')"
-            >
+            />
           </div>
 
           <!-- ALTITUDE MAX -->
@@ -238,40 +247,39 @@
             *ngIf="config.OCCTAX.form_fields.altitude_max"
             class="col-6"
           >
-            <small> {{ 'Releve.MaxAltitude' | translate }} </small>
+            <small>{{ 'Releve.MaxAltitude' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
               [formControl]="releveParamForm.get('altitude_max')"
-            >
+            />
           </div>
         </div>
 
         <div class="row">
-          <div 
+          <div
             *ngIf="config.OCCTAX.form_fields.depth_min"
             class="col-6"
           >
-            <small> {{ 'Releve.MinDepth' | translate }} </small>
+            <small>{{ 'Releve.MinDepth' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
               [formControl]="releveParamForm.get('depth_min')"
-            >
+            />
           </div>
 
-          <div 
+          <div
             *ngIf="config.OCCTAX.form_fields.depth_min"
             class="col-6"
           >
-            <small> {{ 'Releve.MaxDepth' | translate }} </small>
+            <small>{{ 'Releve.MaxDepth' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
               [formControl]="releveParamForm.get('depth_max')"
-            >
+            />
           </div>
-
         </div>
 
         <div class="row">
@@ -283,23 +291,22 @@
               label="{{ 'Releve.GroupType' | translate }}"
               [parentFormControl]="releveParamForm.get('id_nomenclature_grp_typ')"
               codeNomenclatureType="TYP_GRP"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
             *ngIf="config.OCCTAX.form_fields.grp_method"
             class="col-4"
           >
-            <small> {{'Releve.GroupMethod' | translate}} </small>
+            <small>{{'Releve.GroupMethod' | translate}}</small>
             <input
               type="text"
               class="form-control form-control-sm"
               [formControl]="releveParamForm.get('grp_method')"
-            >
+            />
           </div>
 
-          <div 
+          <div
             *ngIf="config.OCCTAX.form_fields.geo_object_nature"
             class="col-4"
           >
@@ -307,8 +314,7 @@
               label="{{ 'Releve.GeoObjectNature' | translate }}"
               [parentFormControl]="releveParamForm.get('id_nomenclature_geo_object_nature')"
               codeNomenclatureType="NAT_OBJ_GEO"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
         </div>
 
@@ -317,19 +323,15 @@
           label="{{ 'Releve.TechCollectCampanule' | translate }}"
           [parentFormControl]="releveParamForm.get('id_nomenclature_tech_collect_campanule')"
           codeNomenclatureType="TECHNIQUE_OBS"
-        >
-        </pnx-nomenclature>
-
+        ></pnx-nomenclature>
 
         <div *ngIf="config.OCCTAX.form_fields.comment_releve">
-          <small> {{ 'Releve.Comment' | translate }} </small>
+          <small>{{ 'Releve.Comment' | translate }}</small>
           <textarea
             class="form-control"
             [formControl]="releveParamForm.get('comment')"
-          >
-          </textarea>
+          ></textarea>
         </div>
-
       </mat-tab>
 
       <!-- OCCTURRENCE -->
@@ -337,11 +339,10 @@
         [label]="'Taxon.Observation' | translate"
         [disabled]="!(occtaxFormParamService.occurrenceState|async)"
       >
-
-        <div style="margin-top:10px;">
+        <div style="margin-top: 10px">
           <button
             mat-flat-button
-            color=primary
+            color="primary"
             (click)="occurrenceFormMapper()"
           >
             Copier les informations du taxon en cours
@@ -353,12 +354,12 @@
             *ngIf="config.OCCTAX.form_fields.determiner"
             class="col-sm-6"
           >
-            <small> {{ 'Taxon.Determiner' | translate }} </small>
+            <small>{{ 'Taxon.Determiner' | translate }}</small>
             <input
               class="form-control form-control-sm"
               [formControl]="occurrenceParamForm.get('determiner')"
               type="text"
-            >
+            />
           </div>
 
           <div
@@ -369,8 +370,7 @@
               label="{{ 'Taxon.DeterminationMethod' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_determination_method')"
               codeNomenclatureType="METH_DETERMIN"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
         </div>
 
@@ -383,8 +383,7 @@
               label="{{ 'Taxon.ObservationStatus' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_observation_status')"
               codeNomenclatureType="STATUT_OBS"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
@@ -395,8 +394,7 @@
               label="{{ 'Taxon.ObsTech' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_obs_technique')"
               codeNomenclatureType="METH_OBS"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
@@ -407,8 +405,7 @@
               label="{{ 'Taxon.BiologicalCondition' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_bio_condition')"
               codeNomenclatureType="ETA_BIO"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
@@ -419,8 +416,7 @@
               label="{{ 'Taxon.Naturalness' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_naturalness')"
               codeNomenclatureType="NATURALITE"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
@@ -431,8 +427,7 @@
               label="{{ 'Taxon.BiologicalStatus' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_bio_status')"
               codeNomenclatureType="STATUT_BIO"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
@@ -443,8 +438,7 @@
               label="{{ 'Taxon.OccBehaviour' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_behaviour')"
               codeNomenclatureType="OCC_COMPORTEMENT"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
@@ -455,8 +449,7 @@
               label="{{ 'Taxon.StatusSource' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_source_status')"
               codeNomenclatureType="STATUT_SOURCE"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
@@ -467,8 +460,7 @@
               label="{{ 'Taxon.Blurring' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_blurring')"
               codeNomenclatureType="DEE_FLOU"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
         </div>
 
@@ -476,14 +468,13 @@
           <div
             *ngIf="config.OCCTAX.form_fields.exist_proof"
             class="col-lg-4 col-sm-6"
-            style="margin-bottom: 1rem;"
+            style="margin-bottom: 1rem"
           >
             <pnx-nomenclature
               label="{{ 'Taxon.ExistProof' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_exist_proof')"
               codeNomenclatureType="PREUVE_EXIST"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
@@ -491,12 +482,12 @@
             class="col-lg-4 col-sm-6"
           >
             <div class="form-group">
-              <small> {{ 'Taxon.DigitalProof' | translate }} </small>
+              <small>{{ 'Taxon.DigitalProof' | translate }}</small>
               <input
                 class="form-control form-control-sm"
                 [formControl]="occurrenceParamForm.get('digital_proof')"
                 type="text"
-              >
+              />
             </div>
           </div>
           <div
@@ -504,12 +495,12 @@
             class="col-lg-4 col-sm-6"
           >
             <div class="form-group">
-              <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
+              <small>{{ 'Taxon.NonDigitalProof' | translate }}</small>
               <input
                 class="form-control form-control-sm"
                 [formControl]="occurrenceParamForm.get('non_digital_proof')"
                 type="text"
-              >
+              />
             </div>
           </div>
         </div>
@@ -521,8 +512,7 @@
             [formControl]="occurrenceParamForm.get('comment')"
             rows="2"
             id="commentaire"
-          >
-          </textarea>
+          ></textarea>
         </div>
       </mat-tab>
 
@@ -531,7 +521,6 @@
         [label]="'Counting.Counting' | translate"
         [disabled]="!(occtaxFormParamService.countingState|async)"
       >
-
         <div class="row">
           <div
             *ngIf="config.OCCTAX.form_fields.life_stage"
@@ -541,8 +530,7 @@
               label="{{ 'Counting.LifeStage' | translate }}"
               codeNomenclatureType="STADE_VIE"
               [parentFormControl]="countingParamForm.get('id_nomenclature_life_stage')"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
           <div
             *ngIf="config.OCCTAX.form_fields.sex"
@@ -552,34 +540,33 @@
               label="{{ 'Counting.Sex' | translate }}"
               codeNomenclatureType="SEXE"
               [parentFormControl]="countingParamForm.get('id_nomenclature_sex')"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div
             *ngIf="config.OCCTAX.form_fields.count_min"
             class="col-sm-6"
           >
-            <small> {{ 'Counting.NumberMin' | translate }} </small>
+            <small>{{ 'Counting.NumberMin' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
               min="0"
               [formControl]="countingParamForm.get('count_min')"
-            >
+            />
           </div>
 
           <div
             *ngIf="config.OCCTAX.form_fields.count_max"
             class="col-sm-6"
           >
-            <small> {{ 'Counting.NumberMax' | translate }} </small>
+            <small>{{ 'Counting.NumberMax' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
               min="0"
               [formControl]="countingParamForm.get('count_max')"
-            >
+            />
           </div>
 
           <div
@@ -590,8 +577,7 @@
               label="{{ 'Counting.CountingObject' | translate }}"
               codeNomenclatureType="OBJ_DENBR"
               [parentFormControl]="countingParamForm.get('id_nomenclature_obj_count')"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
           <div
             *ngIf="config.OCCTAX.form_fields.type_count"
@@ -602,24 +588,20 @@
               label="{{ 'Counting.CountingType' | translate }}"
               codeNomenclatureType="TYP_DENBR"
               [parentFormControl]="countingParamForm.get('id_nomenclature_type_count')"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
         </div>
       </mat-tab>
-
     </mat-tab-group>
-
-
-
-
-
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">Fermer</button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close()"
+    >
+      Fermer
+    </button>
   </div>
 </ng-template>
-
-
-

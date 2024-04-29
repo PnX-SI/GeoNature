@@ -2194,26 +2194,23 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
 
     L'entête ``[SYNTHESE]`` au dessus ``EXPORT_COLUMNS`` indique simplement que cette variable appartient au bloc de configuration de la synthese. Ne pas rajouter l'entête à chaque paramètre de la synthese mais une seule fois au dessus de toutes les variables de configuration du module.
 
-Il est également possible de personnaliser ses exports en éditant le SQL de la vue ``gn_synthese.v_synthese_for_export`` (niveau SQL et administration GeoNature avancé).
+Il est également possible de personnaliser ses exports en créant vos propres vues personnalisées et en remplissant le paramètre suivant avec une ou plusieurs vues d'export spécifiques : 
 
-Attention, certains champs sont cependant obligatoires pour assurer la réalisation des fichiers d'export (csv, geojson et shapefile) et des filtres CRUVED.
+::
 
-La vue doit OBLIGATOIREMENT contenir les champs :
+    [SYNTHESE]
+      ...
+      EXPORT_OBSERVATIONS_CUSTOM_VIEWS = [
+          {
+              label = "format personnalisé", 
+              view_name = "gn_synthese.v_synthese_for_web_app", 
+          }
+      ]
 
-- geojson_4326
-- geojson_local
-- id_synthese,
-- jdd_id (l'ID du jeu de données)
-- id_digitiser
-- observateurs
 
-Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d'export si ils ne figurent pas dans la variable ``EXPORT_COLUMNS``. De manière générale, préférez rajouter des champs plutôt que d'en enlever !
+Ces vues doivent obligatoirement avoir une colonne `id_synthese`, une colonne `geojson_local` représentant le geojson de la géometrie en projection locale (pour la génération du shapefile et geopackage) et une colonne `geojson_4326` représentant le geojson de la géométrie en projection 4326 (pour la génération du geojson) (utilisez la fonction `st_asgeojson` - voir la vue par défaut `gn_synthese.v_synthese_for_export`).
 
-Le nom de ces champs peut cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``).
-
-NB : Lorsqu'on effectue une recherche dans la synthèse, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export`` correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
-
-La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web, il ne faut donc PAS la modifier.
+Selon les permissions de l'utilisation sur l'action "Export" du module Synthèse, le floutage pourra s'appliquer automatiquement à la vue d'export sur les mêmes champs géométriques que la vue `gn_synthese.v_synthese_for_export`, à savoir `geometrie_wkt_4326`, `x_centroid_4326`, `y_centroid_4326`, `geojson_local` et `geojson_4326`. Si vous ajoutez des champs représentant la géométrie de l'observation portant des noms différents que les 4 noms précités, ceux-ci ne pourront pas être floutés.
 
 **Export des métadonnées**
 
