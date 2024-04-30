@@ -50,6 +50,10 @@ from bokeh.layouts import column, row
 from bokeh.models.layouts import Row
 from bokeh.models import CustomJS, Select
 from bokeh.embed import json_item
+from bokeh.palettes import linear_palette, Turbo256, Plasma256
+from bokeh.models import Range1d, AnnularWedge, ColumnDataSource, Legend, LegendItem
+
+import numpy as np
 
 
 def check_transient_data(task, logger, imprt):
@@ -386,34 +390,93 @@ def report_plot(imprt: TImports) -> Row:
         TSources.name_source == f"Import(id={imprt.id_import})",
     ).one_or_none()
 
-    # Define the taxonomic categories to consider
+    # Define the taxonomic rank to consider
     taxon_ranks = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
     figures = []
 
     # Generate the plot for each rank
     for rank in taxon_ranks:
         # Generate the query to retrieve the count for each value taken by the rank
+        c_rank_taxref = getattr(Taxref, rank)
         query = (
             sa.select(
                 func.count(distinct(Synthese.cd_nom)).label("count"),
-                getattr(Taxref, rank).label("rank_value"),
+                c_rank_taxref.label("rank_value"),
             )
             .select_from(Synthese)
             .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-            .where(Synthese.id_dataset == imprt.id_dataset, Synthese.source == source)
-            .group_by(getattr(Taxref, rank))
+            .where(
+                Synthese.id_dataset == imprt.id_dataset,
+                Synthese.source == source,
+            )
+            .group_by(c_rank_taxref)
         )
-        results = db.session.execute(query).all()
+        data = np.asarray(
+            [r if r[1] != "" else (r[0], "Non-assigné") for r in db.session.execute(query).all()]
+        )
 
         # Extract the rank values and counts
-        rank_values = [r[1] for r in results]
-        count = [r[0] for r in results]
+        rank_values, counts = data[:, 1], data[:, 0].astype(int)
 
-        # Generate the bar plot
-        fig = figure(x_range=rank_values, title=f"Distribution des taxons (selon le rang = {rank})")
-        fig.vbar(x=rank_values, top=count, width=0.9)
+        # Get angles (in radians) where start each section of the pie chart
+        angles = np.cumsum(
+            [2 * np.pi * (count / sum(counts)) for i, count in enumerate(counts)]
+        ).tolist()
 
-        # Hide the plot for non-kingdom ranks
+        # Generate the color palette
+        palette = (
+            linear_palette(Turbo256, len(rank_values))
+            if len(rank_values) > 5
+            else linear_palette(Plasma256, len(rank_values))
+        )
+        colors = {value: palette[ix] for ix, value in enumerate(rank_values)}
+
+        # Store the data in a Bokeh data structure
+        browsers_source = ColumnDataSource(
+            dict(
+                start=[0] + angles[:-1],
+                end=angles,
+                colors=[colors[rank_value] for rank_value in rank_values],
+                countvalue=counts,
+                rankvalue=rank_values,
+            )
+        )
+        # Create the Figure object
+        fig = figure(
+            x_range=Range1d(start=-3, end=3),
+            y_range=Range1d(start=-3, end=3),
+            title=f"Distribution des taxons (selon le rang = {rank})",
+            tooltips=[("Number", "@countvalue"), (rank, "@rankvalue")],
+            width=600,
+            toolbar_location=None,
+        )
+        # Add the Pie chart
+        glyph = AnnularWedge(
+            x=0,
+            y=0,
+            inner_radius=0.9,
+            outer_radius=1.8,
+            start_angle="start",
+            end_angle="end",
+            line_color="white",
+            line_width=3,
+            fill_color="colors",
+        )
+        r = fig.add_glyph(browsers_source, glyph)
+
+        # Add the legend
+        legend = Legend(location="top_center")
+        for i, name in enumerate(colors):
+            legend.items.append(LegendItem(label=name, renderers=[r], index=i))
+        fig.add_layout(legend, "below")
+        fig.legend.ncols = 3 if len(colors) < 10 else 5
+
+        # ERASE the grid and axis
+        fig.grid.visible = False
+        fig.axis.visible = False
+        fig.title.text_font_size = "16pt"
+
+        # Hide the unselected rank plot
         if rank != "regne":
             fig.visible = False
 
@@ -422,13 +485,15 @@ def report_plot(imprt: TImports) -> Row:
 
     # Generate the layout with the plots and the rank selector
     plot_area = column(figures)
+
     select_plot = Select(
         title="Rang",
-        value=(0, "regne"),
+        value=0,  # Default is "regne"
         options=[(ix, rank) for ix, rank in enumerate(taxon_ranks)],
+        width=fig.width,
     )
 
-    # Update the visibility of the plots when the category selector changes
+    # Update the visibility of the plots when the taxonomic rank selector changes
     select_plot.js_on_change(
         "value",
         CustomJS(
@@ -441,5 +506,5 @@ def report_plot(imprt: TImports) -> Row:
     """,
         ),
     )
-
-    return json_item(row(select_plot, plot_area, sizing_mode="stretch_width"))
+    column_fig = column(plot_area, select_plot, sizing_mode="scale_width")
+    return json_item(column_fig)

@@ -111,8 +111,7 @@
       </div>
       {% if data.chart is not none %}
       <div id="chart" class="zone">
-        <p class="zone-geographique">Répartition taxonomique</p>
-        <img src="{{ data.chart }}">
+        <img src="{{ data.chart }}" alt="Répartition Taxonomique"/>
       </div>
       {% endif %}
     </div>
@@ -151,13 +150,13 @@
 <style>
   /* Puts style here since I cannot make blueprint static files work...*/
 .zone img {
-    max-width: 200px;
-    max-height: 100px;
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
 .zone {
-  max-width: 400px;
-  max-height: 100px;
+  width: 30%;
   margin-left: 0px;
   margin-top: 5px;
 }
@@ -220,7 +219,7 @@ h5 {
 }
 
 .left-block {
-  width: 700px;
+  width: 70%;
   margin-left: 5px;
 }
 .description {
