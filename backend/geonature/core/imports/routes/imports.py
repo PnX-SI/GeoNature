@@ -656,6 +656,9 @@ def export_pdf(scope, imprt):
     )
 
     ctx["map"] = request.form.get("map")
+    if ctx["map"] == "undefined":
+        ctx["map"] = None
+
     ctx["chart"] = request.form.get("chart")
     url_list = [
         current_app.config["URL_APPLICATION"],
