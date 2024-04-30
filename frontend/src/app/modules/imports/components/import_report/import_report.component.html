@@ -102,7 +102,7 @@
             <button
               mat-raised-button
               color="primary"
-              [disabled]="loadingPdf"
+              [disabled]="loadingPdf || loadingChart"
               (click)="exportAsPDF()"
               class="align-self-center"
             >
@@ -110,7 +110,7 @@
               <mat-icon *ngIf="loadingPdf">
                 <mat-spinner
                   color="warn"
-                  diameter="30"
+                  diameter="18"
                 ></mat-spinner>
               </mat-icon>
             </button>
@@ -451,9 +451,7 @@
             Afficher dans la synthèse
           </button>
         </div>
-        <div class="col-12">
-          <div id="chartreport"></div>
-        </div>
+        <div id="chartreport"></div>
       </div>
     </mat-expansion-panel>
   </div>

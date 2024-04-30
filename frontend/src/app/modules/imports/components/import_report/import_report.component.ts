@@ -22,11 +22,7 @@ import { CsvExportService } from '../../services/csv-export.service';
 import { FieldMappingValues } from '../../models/mapping.model';
 
 import { HttpClient } from '@angular/common/http';
-
-interface MatchedNomenclature {
-  source: Nomenclature;
-  target: Nomenclature;
-}
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-import-report',
@@ -56,6 +52,7 @@ export class ImportReportComponent implements OnInit {
   public nbTotalErrors: number = 0;
   public datasetName: string = '';
   public rank: string = null;
+  public loadingChart: boolean;
   public options: any = {
     legend: { position: 'left' },
   };
@@ -86,6 +83,7 @@ export class ImportReportComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadingChart = true;
     this.importData = this.importProcessService.getImportData();
     // Load additionnal data if imported data
     this.loadValidData(this.importData);
@@ -102,6 +100,7 @@ export class ImportReportComponent implements OnInit {
     });
     this._dataService
       .getReportPlot(this.importData.destination.code, this.importData.id_import)
+      .pipe(finalize(() => (this.loadingChart = false)))
       .subscribe((data) => {
         Bokeh.embed.embed_item(data, 'chartreport');
       });
@@ -173,45 +172,39 @@ export class ImportReportComponent implements OnInit {
       saveAs(blob, `${this.importData?.id_import}_correspondances_nomenclatures.json`);
     }
   }
-  getChartPNG() {
+  getChartPNG(): string {
     const obj: any = Object.values(Bokeh.index)[0];
-    return obj.export().to_blob();
+    return obj ? obj.export().canvas.toDataURL('image/png') : '';
   }
 
-  exportAsPDF() {
-    const img: HTMLImageElement = document.createElement('img');
+  async exportAsPDF() {
     this.loadingPdf = true;
+    const chartImgBase64 = await this.getChartPNG();
     if (this._map.map) {
       leafletImage(
         this._map.map ? this._map.map : '',
         function (err, canvas) {
-          img.src = canvas.toDataURL('image/png');
-          this.exportMapAndChartPdf(img);
+          const mapImgBase64 = canvas.toDataURL('image/png');
+          this.triggerPdfExport(chartImgBase64, mapImgBase64);
         }.bind(this)
       );
     } else {
-      this.exportMapAndChartPdf();
+      this.triggerPdfExport(chartImgBase64);
     }
   }
 
-  exportMapAndChartPdf(mapImg?) {
-    this.getChartPNG().then((chartImg) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(chartImg);
-      reader.onloadend = () => {
-        const base64data = reader.result;
-        this._dataService.getPdf(this.importData?.id_import, mapImg?.src, base64data).subscribe(
-          (result) => {
-            this.loadingPdf = false;
-            saveAs(result, this.getExportFilename());
-          }, //
-          (error) => {
-            this.loadingPdf = false;
-            console.log('Error getting pdf');
-          }
-        );
-      };
-    });
+  triggerPdfExport(chartImgBase64: string, mapImgBase64?: string) {
+    this._dataService
+      .getPdf(this.importData?.id_import, mapImgBase64, chartImgBase64)
+      .pipe(finalize(() => (this.loadingPdf = false)))
+      .subscribe(
+        (result) => {
+          saveAs(result, this.getExportFilename());
+        }, //
+        (error) => {
+          console.log('Error getting pdf');
+        }
+      );
   }
 
   downloadSourceFile() {
