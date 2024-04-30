@@ -249,7 +249,6 @@ def update_transient_data_from_dataframe(imprt, entity, updated_cols, df):
 
 def generate_pdf_from_template(template, data):
     template_rendered = render_template(template, data=data)
-    open("test.html", "w").write(template_rendered)
     html_file = HTML(
         string=template_rendered,
         base_url=current_app.config["API_ENDPOINT"],
