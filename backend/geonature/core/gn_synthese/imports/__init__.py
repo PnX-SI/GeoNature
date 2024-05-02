@@ -368,7 +368,6 @@ def get_bbox_computation_infos():
         A dictionary indexed by the keys from bbox.Key enum
     """
     return {
-        bbox.Key.IS_RELEVANT: True,
         bbox.Key.NAME_FIELD: "the_geom_4326",
         bbox.Key.CODE_ENTITY: "observation",
     }
