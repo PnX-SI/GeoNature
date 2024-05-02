@@ -24,11 +24,6 @@ import { FieldMappingValues } from '../../models/mapping.model';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
-interface MatchedNomenclature {
-  source: Nomenclature;
-  target: Nomenclature;
-}
-
 @Component({
   selector: 'pnx-import-report',
   templateUrl: 'import_report.component.html',
@@ -57,6 +52,7 @@ export class ImportReportComponent implements OnInit {
   public nbTotalErrors: number = 0;
   public datasetName: string = '';
   public rank: string = null;
+  public loadingChart: boolean;
   public options: any = {
     legend: { position: 'left' },
   };
@@ -87,6 +83,7 @@ export class ImportReportComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadingChart = true;
     this.importData = this.importProcessService.getImportData();
     // Load additionnal data if imported data
     this.loadValidData(this.importData);
@@ -103,6 +100,7 @@ export class ImportReportComponent implements OnInit {
     });
     this._dataService
       .getReportPlot(this.importData.destination.code, this.importData.id_import)
+      .pipe(finalize(() => (this.loadingChart = false)))
       .subscribe((data) => {
         Bokeh.embed.embed_item(data, 'chartreport');
       });
@@ -176,7 +174,7 @@ export class ImportReportComponent implements OnInit {
   }
   getChartPNG(): string {
     const obj: any = Object.values(Bokeh.index)[0];
-    return obj.export().canvas.toDataURL('image/png');
+    return obj ? obj.export().canvas.toDataURL('image/png') : '';
   }
 
   async exportAsPDF() {
@@ -196,16 +194,17 @@ export class ImportReportComponent implements OnInit {
   }
 
   triggerPdfExport(chartImgBase64: string, mapImgBase64?: string) {
-    this._dataService.getPdf(this.importData?.id_import, mapImgBase64, chartImgBase64).pipe(
-      finalize(() => this.loadingPdf = false)
-    ).subscribe(
-      (result) => {
-        saveAs(result, this.getExportFilename());
-      }, //
-      (error) => {
-        console.log('Error getting pdf');
-      },
-    );
+    this._dataService
+      .getPdf(this.importData?.id_import, mapImgBase64, chartImgBase64)
+      .pipe(finalize(() => (this.loadingPdf = false)))
+      .subscribe(
+        (result) => {
+          saveAs(result, this.getExportFilename());
+        }, //
+        (error) => {
+          console.log('Error getting pdf');
+        }
+      );
   }
 
   downloadSourceFile() {
