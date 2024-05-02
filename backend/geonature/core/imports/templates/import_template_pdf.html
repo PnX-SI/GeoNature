@@ -4,85 +4,84 @@
 <head>
     <meta charset="utf-8" />
     <title>Export rapport d'import</title>
+    <link rel="stylesheet"
+          type="text/css"
+          href="{{url_for('static', filename='css/metadata_pdf.css')}}">
+    <link rel="stylesheet"
+          type="text/css"
+          href="{{url_for('static', filename='css/metadata_pdf_custom.css')}}">
+    <img class="bandeau"
+         src="{{url_for('static', filename='images/Bandeau_pdf.png')}}"
+         alt="Bandeau">
+    <img class="logo"
+         src="{{url_for('static', filename='images/logo_structure.jpg')}}"
+         alt="Logo">
 </head>
 
 <body>
-    <div class="header">
-        <link rel="stylesheet"
-              type="text/css"
-              href="{{url_for('static', filename='css/metadata_pdf.css')}}">
-        <link rel="stylesheet"
-              type="text/css"
-              href="{{url_for('static', filename='css/metadata_pdf_custom.css')}}">
-        <img class="bandeau"
-             src="{{url_for('static', filename='images/Bandeau_pdf.png')}}"
-             alt="Bandeau">
-        <img class="logo"
-             src="{{url_for('static', filename='images/logo_structure.jpg')}}"
-             alt="Logo">
-    </div>
-    <div class="titre">
+    <div class="titre contentItem">
         <h5> Import ID : {{ data.id_import }} </h5>
         <h5> Date d'import : {{ data.date_end_import }} </h5>
         <h5> Nom du fichier d'import : {{ data.full_file_name }} </h5>
         <div class="ligne-titre ligne main-color"></div>
+        <div class="verticalSpacer"></div>
     </div>
-    <div class="content">
-        <div class="description">
-            <div class="left-block">
-                <p class="fiche-descriptive">Fiche descriptive</p>
-                <div class="information">
-                    <p class="info-titre">Identification</p>
-                    <p class="info-contenu">
-                        <br>
-                        Auteur :
-                        {% if data.authors_name: %}
-                        {{ data.authors_name }}
-                        {% endif %}
-                        <br>
-                        SRID :
-                        {% if data.srid: %}
-                        {{ data.srid }}
-                        {% endif %}
-                        <br>
-                        Encodage :
-                        {% if data.encoding: %}
-                        {{ data.encoding }}
-                        {% endif %}
-                        <br>
-                        Format :
-                        {% if data.format_source_file: %}
-                        {{ data.format_source_file }}
-                        {% endif %}
-                        <br>
-                        Jeux de données :
-                        {% if data.dataset: %}
-                        {{ data.dataset.dataset_name }}
-                        {% endif %}
-                    </p>
-                </div>
-
-                {% if data.keywords: %}
-                <div class="information">
-                    <p class="info-titre">Mots-clés</p>
-                    <p class="info-contenu">
-                        {{ data.keywords }}
-                    </p>
-                </div>
-                {% endif %}
+    <div class="description contentItem">
+        <div class="left-block">
+            <p class="fiche-descriptive">Fiche descriptive</p>
+            <div class="information">
+                <p class="info-titre">Identification</p>
+                <p class="info-contenu">
+                    <br>
+                    Auteur :
+                    {% if data.authors_name: %}
+                    {{ data.authors_name }}
+                    {% endif %}
+                    <br>
+                    SRID :
+                    {% if data.srid: %}
+                    {{ data.srid }}
+                    {% endif %}
+                    <br>
+                    Encodage :
+                    {% if data.encoding: %}
+                    {{ data.encoding }}
+                    {% endif %}
+                    <br>
+                    Format :
+                    {% if data.format_source_file: %}
+                    {{ data.format_source_file }}
+                    {% endif %}
+                    <br>
+                    Jeux de données :
+                    {% if data.dataset: %}
+                    {{ data.dataset.dataset_name }}
+                    {% endif %}
+                </p>
             </div>
-            {% if data.map %}
-            <div class="horizontal-spacer"></div>
-            <div class="zone">
-                <p class="zone-geographique">Zone géographique</p>
-                <img class="zone-geographique-map"
-                     src="{{ data.map }}">
+
+            {% if data.keywords: %}
+            <div class="information">
+                <p class="info-titre">Mots-clés</p>
+                <p class="info-contenu">
+                    {{ data.keywords }}
+                </p>
             </div>
             {% endif %}
         </div>
-        <div class="vertical-spacer"></div>
+        {% if data.map %}
+        <div class="horizontalSpacer"></div>
+        <div class="zone">
+            <p class="zone-geographique">Zone géographique</p>
+            <img class="zone-geographique-map"
+                 src="{{ data.map }}">
+        </div>
+        {% endif %}
+    </div>
+    <div class="verticalSpacer"></div>
+    <div class="contentItem">
         <p class="info-titre">Statistiques</p>
-        <div class="vertical-spacer-small"></div>
+        <div class="verticalSpacer--small"></div>
         <table class="custom-table">
             <thead>
                 <tr>
@@ -99,16 +98,17 @@
                 {% endfor %}
             </tbody>
         </table>
-        <div class="vertical-spacer"></div>
         {% if data.chart %}
-        <div class="zone">
-            <p class="charts">Répartition taxonomique</p>
-            <img class="charts-img" src="{{ data.chart }}">
-        </div>
-        <div class="vertical-spacer"></div>
+        <div class="verticalSpacer--small"></div>
+        <img class="charts-img"
+             src="{{ data.chart }}" />
         {% endif %}
+    </div>
+
+    <div class="verticalSpacer"></div>
+    <div class="contentItem">
         <p class="info-titre">Erreurs</p>
-        <div class="vertical-spacer-small"></div>
+        <div class="verticalSpacer--small"></div>
         <table class="custom-table">
             <thead>
                 <tr>
@@ -130,44 +130,70 @@
             </tbody>
         </table>
     </div>
-    <div class="footer">
-        <a href="{{data.url}}">Voir le rapport dans le module d'import</a>
+    <footer class="footer">
+        <span>Voir le rapport dans <a href="{{data.url}}">le module d'import</a></span>
         <span>{{data.date_end_import}}</span>
-    </div>
+    </footer>
 </body>
 <style>
     /* ***************************************************************************/
     /* layout item */
     /* ***************************************************************************/
-    .content {
-        margin: 20px;
+    @page {
+        size: A4;
+        margin-top: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-bottom: 40px;
     }
 
-    .vertical-spacer {
+    h5 {
+        margin: 10px;
+    }
+
+    .bandeau {
+        margin-top: -20px;
+        margin-left: -20px;
+        margin-right: -20px;
+    }
+
+    .footer {
+        margin-bottom: -40px;
+    }
+
+    .footer a {
+        text-decoration: none;
+        color: #f8af51;
+    }
+
+    .contentItem {
+        page-break-inside: avoid;
+        margin: 0;
+    }
+
+    /* ***************************************************************************/
+    /* spacer */
+    /* ***************************************************************************/
+
+    .horizontalSpacer {
+        width: 15px;
+    }
+
+    .verticalSpacer {
         height: 15px;
     }
-    
-    .vertical-spacer-small {
-        height: 5px;
-    }
 
-    .horizontal-spacer {
-        width: 2%;
+    .verticalSpacer--small {
+        height: 8px;
     }
 
     /* ***************************************************************************/
     /* layout item */
     /* ***************************************************************************/
 
-    .description {
-        width: 100%;
-        margin: 0;
-    }
-
     .left-block {
         min-width: 60%;
         width: 100%;
-        /* take all the space available: handle w or w/o the map */
     }
 
     .zone {
@@ -183,8 +209,8 @@
     }
 
     .charts-img {
-        max-width: 200px;
-        max-height: 100px;
+        max-height: 300px;
+        width: auto;
     }
 
     /* ***************************************************************************/
@@ -192,6 +218,7 @@
     /* ***************************************************************************/
 
     .custom-table {
+        page-break-inside: avoid;
         border-collapse: collapse;
         width: 100%;
     }
