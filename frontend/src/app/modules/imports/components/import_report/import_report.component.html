@@ -102,7 +102,7 @@
             <button
               mat-raised-button
               color="primary"
-              [disabled]="loadingPdf"
+              [disabled]="loadingPdf || loadingChart"
               (click)="exportAsPDF()"
               class="align-self-center"
             >
