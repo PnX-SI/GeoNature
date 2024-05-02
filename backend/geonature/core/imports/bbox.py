@@ -8,7 +8,6 @@ import json
 class Key(str, Enum):
     CODE_ENTITY = "code_entity"
     NAME_FIELD = "field_name"
-    IS_RELEVANT = "is_relevant"
 
 
 def get_valid_bbox(imprt):
@@ -30,17 +29,9 @@ def get_valid_bbox(imprt):
     """
     # Retrieve the name of the field and the name of the entity to retrieve geometries from
     if "get_bbox_computation_infos" not in imprt.destination.module._imports_:
-        raise NotImplementedError(
-            f"function get_valid_bbox not implemented for an import with destination '{imprt.destination.code}, needs `get_bbox_computation_infos` function"
-        )
-    infos = imprt.destination.module._imports_["get_bbox_computation_infos"]()
-
-    if not Key.IS_RELEVANT in infos:
-        raise NotImplementedError(
-            f"The function get_valid_bbox implementation for an import with destination '{imprt.destination.code}' is incomplete. It requires '{Key.IS_RELEVANT}' field"
-        )
-    if not infos[Key.IS_RELEVANT]:
         return None
+
+    infos = imprt.destination.module._imports_["get_bbox_computation_infos"]()
 
     if not Key.CODE_ENTITY in infos:
         raise NotImplementedError(
