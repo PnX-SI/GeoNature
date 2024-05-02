@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Step } from '../../models/enums.model';
 import { Import } from '../../models/import.model';
@@ -7,6 +7,7 @@ import { ConfigService } from '@geonature/services/config.service';
 @Injectable()
 export class ImportProcessService {
   private importData: Import | null = null;
+  public importDataUpdated: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private router: Router,
@@ -15,6 +16,7 @@ export class ImportProcessService {
 
   setImportData(importData: Import) {
     this.importData = importData;
+    this.importDataUpdated.emit();
   }
 
   getImportData(): Import | null {
@@ -66,6 +68,7 @@ export class ImportProcessService {
     if (!this.config.IMPORT.ALLOW_VALUE_MAPPING && nextStep === Step.ContentMapping) {
       nextStep += 1;
     }
+
     return nextStep;
   }
 
