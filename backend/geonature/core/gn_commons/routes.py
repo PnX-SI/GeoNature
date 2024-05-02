@@ -26,6 +26,7 @@ from geonature.utils.config import config_frontend, config
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scope
+from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 import geonature.core.gn_commons.tasks  # noqa: F401
 
 from shapely.geometry import shape
@@ -192,14 +193,11 @@ def get_additional_fields():
         else:
             query = query.where(TAdditionalFields.objects.any(code_object=object_code))
 
-    return jsonify(
-        [
-            d.as_dict(
-                fields=["bib_nomenclature_type", "modules", "objects", "datasets", "type_widget"]
-            )
-            for d in db.session.scalars(query).all()
-        ]
+    #
+    schema = TAdditionalFieldsSchema(
+        only=["bib_nomenclature_type", "modules", "objects", "datasets", "type_widget"], many=True
     )
+    return jsonify(schema.dump(db.session.scalars(query).all()))
 
 
 @routes.route("/t_mobile_apps", methods=["GET"])
