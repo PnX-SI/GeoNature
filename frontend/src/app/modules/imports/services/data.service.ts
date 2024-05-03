@@ -294,8 +294,10 @@ export class ImportDataService {
 
   getPdf(importId, mapImg, chartImg) {
     const formData = new FormData();
-    formData.append('map', mapImg);
-    if (chartImg !== '') {
+    if (mapImg) {
+      formData.append('map', mapImg);
+    }
+    if (chartImg) {
       formData.append('chart', chartImg);
     }
     return this._http.post(`${this.getUrlApiForADestination()}/export_pdf/${importId}`, formData, {
