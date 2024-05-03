@@ -100,8 +100,10 @@
         </table>
         {% if data.chart %}
         <div class="verticalSpacer--small"></div>
-        <img class="charts-img"
+        <div class="charts">
+        <img class="charts__img"
              src="{{ data.chart }}" />
+        </div>
         {% endif %}
     </div>
 
@@ -208,7 +210,12 @@
         max-width: 200px;
     }
 
-    .charts-img {
+    .charts {
+        width: 100%;
+
+    }
+    .charts__img {
+        margin: 0 auto;
         max-height: 300px;
         width: auto;
     }
