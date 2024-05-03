@@ -1,6 +1,7 @@
 from datetime import date
 
 from flask import current_app
+from geonature.core.imports.models import BibFields, Entity, TImports
 from sqlalchemy import func
 from sqlalchemy.sql.expression import select, update, join
 from sqlalchemy.sql import column
@@ -118,6 +119,18 @@ def generate_altitudes(imprt, geom_local_field, alt_min_field, alt_max_field):
 
 
 def check_duplicate_uuid(imprt, entity, uuid_field):
+    """
+    Check if there is already a record with the same uuid in the transient table. Include an error in the report for each entry with a uuid dupplicated.
+
+    Parameters
+    ----------
+    imprt : Import
+        The import to check.
+    entity : Entity
+        The entity to check.
+    uuid_field : Field
+        The field to check.
+    """
     transient_table = imprt.destination.get_transient_table()
     uuid_col = transient_table.c[uuid_field.dest_field]
     duplicates = get_duplicates_query(
@@ -138,6 +151,19 @@ def check_duplicate_uuid(imprt, entity, uuid_field):
 
 
 def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
+    """
+    Check if there is already a record with the same uuid in the destination table. Include an error in the report for each existing uuid in the destination table.
+    Parameters
+    ----------
+    imprt : Import
+        The import to check.
+    entity : Entity
+        The entity to check.
+    uuid_field : Field
+        The field to check.
+    whereclause : BooleanClause
+        The WHERE clause to apply to the check.
+    """
     transient_table = imprt.destination.get_transient_table()
     dest_table = entity.get_destination_table()
     report_erroneous_rows(
@@ -152,21 +178,65 @@ def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
     )
 
 
-def generate_missing_uuid(imprt, entity, uuid_field):
+def generate_missing_uuid(
+    imprt: TImports, entity: Entity, uuid_field: BibFields, origin_id_field: BibFields = None
+):
+    """
+    Update records in the transient table where the uuid is None
+    with a new UUID.
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    uuid_field : BibFields
+        The field to check.
+    origin_id_field : BibFields
+        Field used to generate the UUID
+    """
     transient_table = imprt.destination.get_transient_table()
-    stmt = (
-        update(transient_table)
-        .values(
-            {
-                transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
-            }
-        )
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(
-            transient_table.c[uuid_field.source_field] == None,
-        )
-        .where(transient_table.c[uuid_field.dest_field] == None)
+    # Generate UUID for missing UUID
+
+    whereclause = sa.and_(
+        transient_table.c[uuid_field.source_field] == None,
+        transient_table.c.id_import == imprt.id_import,
+        transient_table.c[uuid_field.dest_field] == None,
     )
+    if origin_id_field:
+        cte_generated_uuid = (
+            sa.select(
+                transient_table.c[origin_id_field.source_field],
+                func.uuid_generate_v4().label("uuid"),
+            )
+            .where(whereclause)
+            .group_by(transient_table.c[origin_id_field.name_field])
+            .cte("cte_generated_uuid")
+        )
+
+        stmt = (
+            update(transient_table)
+            .values(
+                {
+                    transient_table.c[uuid_field.dest_field]: cte_generated_uuid.c.uuid,
+                }
+            )
+            .where(
+                transient_table.c[origin_id_field.name_field]
+                == cte_generated_uuid.c[origin_id_field.name_field],
+                whereclause,
+            )
+        )
+    else:
+        stmt = (
+            update(transient_table)
+            .values(
+                {
+                    transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
+                }
+            )
+            .where(whereclause)
+        )
     db.session.execute(stmt)
 
 
@@ -308,3 +378,17 @@ def check_digital_proof_urls(imprt, entity, digital_proof_field):
             )
         ),
     )
+
+
+def check_entity_data_consistency(imprt, entity, fields):
+    transient_table = imprt.destination.get_transient_table()
+    """
+    function to count inconsistency
+    select *
+from (
+SELECT synthese.unique_id_sinp,ARRAY_AGG(md5(synthese::TEXT)) as A FROM gn_synthese.synthese as synthese
+group by synthese.unique_id_sinp
+ LIMIT 100 
+) as test
+where cardinality(test.a) >1
+    """

@@ -1,4 +1,6 @@
 from flask import current_app
+from geonature.core.imports.checks.sql.extra import generate_missing_uuid
+from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
@@ -88,7 +90,7 @@ class OcchabImportMixin(ImportMixin):
             .order_by(Entity.order)  # order matters for id_station
             .all()
         }
-        for entity in entities.values():
+        for code, entity in entities.items():
             fields = {ef.field.name_field: ef.field for ef in entity.fields}
             selected_fields = {
                 field_name: fields[field_name]
@@ -110,7 +112,7 @@ class OcchabImportMixin(ImportMixin):
                 imprt, entity, df, fields
             )  # FIXME do not check station uuid twice
 
-            if entity.code == "station":
+            if code == "station":
                 updated_cols |= check_datasets(
                     imprt,
                     entity,
@@ -124,7 +126,7 @@ class OcchabImportMixin(ImportMixin):
                 imprt, entity, df, fields
             )  # FIXME do not check required multi-entity fields twice
 
-            if entity.code == "station":
+            if code == "station":
                 updated_cols |= check_geography(
                     imprt,
                     entity,
@@ -150,7 +152,18 @@ class OcchabImportMixin(ImportMixin):
                 ],
             )
 
-            if entity.code == "station":
+            if code == "station":
+
+                if "unique_id_sinp_station" in selected_fields:
+                    generate_missing_uuid(imprt, entity, fields["unique_id_sinp_station"])
+
+                elif "id_station_source" in fields:
+                    generate_missing_uuid(
+                        imprt, entity, fields["unique_id_sinp_station"]
+                    )  # Ajouter column_id_source
+                # get row with uuid not in the dest table
+                # -> check_conistency
+
                 convert_geom_columns(
                     imprt,
                     entity,
@@ -192,14 +205,9 @@ class OcchabImportMixin(ImportMixin):
                         fields["geom_local"],
                         id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
                     )
-                if "unique_id_sinp_station" in selected_fields:
-                    check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp_station"])
-                    check_existing_uuid(imprt, entity, selected_fields["unique_id_sinp_station"])
-                if "id_station_source" in fields:
-                    check_duplicate_source_pk(imprt, entity, fields["id_station_source"])
-                    # TODO check existing source pk?
 
-            if entity.code == "habitat":
+            if code == "habitat":
+                generate_missing_uuid(imprt, entity, fields["unique_id_sinp_habitat"])
                 if "cd_hab" in selected_fields:
                     check_cd_hab(imprt, entity, selected_fields["cd_hab"])
                 if "unique_id_sinp_habitat" in selected_fields:

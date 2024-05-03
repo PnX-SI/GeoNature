@@ -132,6 +132,44 @@ def check_unicode_field(df, field, field_length):
         )
 
 
+def check_boolean_field(df, source_col, dest_col, required):
+    """
+    Check a boolean field in a dataframe.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    source_col : str
+        The name of the column to check.
+    dest_col : str
+        The name of the column where to store the result.
+    required : bool
+        Whether the column is mandatory or not.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code and the rows with errors.
+
+    Notes
+    -----
+    The error codes are:
+        - MISSING_VALUE: the column is mandatory and contains null values.
+        - INVALID_BOOL: the column is not of boolean type.
+
+    """
+
+    if not df[source_col].dtype == bool:
+        if required:
+            invalid_mask = df[source_col].apply(lambda x: type(x) != bool and pd.isnull(x))
+            yield dict(error_code="MISSING_VALUE", invalid_rows=df[invalid_mask])
+        else:
+            invalid_mask = df[source_col].apply(lambda x: type(x) != bool and (not pd.isnull(x)))
+            if invalid_mask.sum() > 0:
+                yield dict(error_code="INVALID_BOOL", invalid_rows=df[invalid_mask])
+
+
 def check_anytype_field(df, field_type, source_col, dest_col, required):
     updated_cols = set()
     if isinstance(field_type, sqltypes.DateTime):
@@ -142,6 +180,8 @@ def check_anytype_field(df, field_type, source_col, dest_col, required):
         updated_cols |= yield from check_uuid_field(df, source_col, dest_col, required)
     elif isinstance(field_type, sqltypes.String):
         yield from check_unicode_field(df, dest_col, field_length=field_type.length)
+    elif isinstance(field_type, sqltypes.Boolean):
+        yield from check_boolean_field(df, source_col, dest_col, required)
     else:
         raise Exception(
             "Unknown type {} for field {}".format(type(field_type), dest_col)
