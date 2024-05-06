@@ -30,7 +30,7 @@
         </div>
         <ngx-datatable
           #table
-          class="material striped"
+          class="Datatable material striped"
           [rows]="filteredHistory"
           [columnMode]="'force'"
           [headerHeight]="35"
@@ -146,10 +146,10 @@
               let-expanded="expanded"
             >
               <mat-button-toggle
-                class="button button-tooltip"
-                [ngClass]="hasStatistics(row) ? 'purple' : 'button-tooltip--disabled'"
+                class="Datatable__button Datatable__buttonTooltip"
+                [ngClass]="hasStatistics(row) ? 'purple' : 'Datatable__buttonTooltip--disabled'"
                 [matTooltip]="hasStatistics(row) ? getStatisticsTooltip(row) : None"
-                matTooltipClass="button-tooltip__tooltip"
+                matTooltipClass="Datatable__buttonTooltip"
               >
                 <mat-icon>query_stats</mat-icon>
               </mat-button-toggle>
@@ -168,7 +168,7 @@
                 [matTooltip]="getTooltip(row, 'edit')"
                 mat-icon-button
                 color="primary"
-                class="button"
+                class="Datatable__button"
                 *ngIf="!row.processing"
                 (click)="onFinishImport(row)"
               >
@@ -177,7 +177,7 @@
               <button
                 matTooltip="Rapport"
                 mat-icon-button
-                class="button"
+                class="Datatable__button"
                 color="primary"
                 [routerLink]="[row.destination.code, row.id_import, 'report']"
               >
@@ -186,7 +186,7 @@
               <button
                 *ngIf="row.errors_count"
                 mat-icon-button
-                class="button"
+                class="Datatable__button"
                 color="primary"
                 (click)="_csvExport.onCSV(row.id_import)"
                 matTooltip="Téléchargement des données invalides"
@@ -197,7 +197,7 @@
                 [disabled]="!row?.cruved?.D || !row?.dataset?.active"
                 mat-icon-button
                 color="warn"
-                class="button"
+                class="Datatable__button"
                 (click)="openDeleteModal(row, deleteModal)"
                 [matTooltip]="getTooltip(row, 'delete')"
               >
