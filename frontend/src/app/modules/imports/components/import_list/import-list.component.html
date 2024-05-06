@@ -1,27 +1,22 @@
-<div class="container-fluid import-list">
+<div class="container-fluid ImportList">
   <div class="card">
     <div class="card-header">
       <h5 class="card-title mb-0">Liste des imports</h5>
     </div>
     <div class="card-body">
-      <div *ngIf="!empty">
-        <div class="d-flex mb-2">
+      <div *ngIf="!empty; else emptyBlock">
+        <div class="Toolbar mb-2">
           <pnx-destinations
+            class="Toolbar__destinations"
             label="{{ 'Form.Filter' | translate }} {{ 'By' | translate | lowercase }} {{
               'Import.Destinations' | translate | lowercase
             }}"
             [parentFormControl]="selectDestinationForm"
             (onChange)="resetPage()"
             (onClear)="resetPage()"
-            class="flex-fill pr-1"
           ></pnx-destinations>
-          <div class="flex-fill">
-            <label
-              for="search"
-              class="mb-0"
-            >
-              <small>{{ 'Form.OtherFilters' | translate }}</small>
-            </label>
+          <div class="flex-fill Toolbar__search">
+            <small>{{ 'Form.OtherFilters' | translate }}</small>
             <input
               [formControl]="search"
               id="search"
@@ -35,9 +30,9 @@
         </div>
         <ngx-datatable
           #table
-          class="material striped"
+          class="Datatable material striped"
           [rows]="filteredHistory"
-          [columnMode]="'force'"
+          columnMode="force"
           [headerHeight]="35"
           [footerHeight]="30"
           [rowHeight]="40"
@@ -47,13 +42,29 @@
           [limit]="limit"
           (page)="setPage($event)"
           (sort)="onSort($event)"
+          [scrollbarH]="true"
         >
+          <ngx-datatable-column
+            name="Id Import"
+            [sortable]="true"
+            [width]="70"
+            [canAutoResize]="false"
+            [resizable]="false"
+            [frozenLeft]="true"
+          >
+            <ng-template
+              let-row="row"
+              ngx-datatable-cell-template
+            >
+              {{ row.id_import }}
+            </ng-template>
+          </ngx-datatable-column>
           <ngx-datatable-column
             *ngFor="let col of config.IMPORT.LIST_COLUMNS_FRONTEND"
             name="{{ col.name }}"
             [prop]="col.prop"
-            [maxWidth]="col.max_width"
             [sortable]="col.filter"
+            [maxWidth]="col.max_width"
           >
             <ng-template
               let-row="row"
@@ -86,10 +97,10 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
-            maxWidth="200"
             name="Destination"
             [sortable]="true"
             prop="destination.code"
+            [maxWidth]="150"
           >
             <ng-template
               let-row="row"
@@ -99,11 +110,10 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
-            maxWidth="200"
             name="Fin import"
             [sortable]="true"
+            [maxWidth]="100"
             prop="date_end_import"
-            class="date-col"
           >
             <ng-template
               let-row="row"
@@ -131,11 +141,9 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
-            [width]="30"
-            [resizeable]="false"
             [sortable]="false"
             [draggable]="false"
-            [canAutoResize]="false"
+            [maxWidth]="50"
           >
             <ng-template ngx-datatable-header-template>
               <i
@@ -151,10 +159,10 @@
               let-expanded="expanded"
             >
               <mat-button-toggle
-                class="button button-tooltip"
-                [ngClass]="hasStatistics(row) ? 'purple' : 'button-tooltip--disabled'"
+                class="Datatable__button Datatable__buttonTooltip"
+                [ngClass]="hasStatistics(row) ? 'purple' : 'Datatable__buttonTooltip--disabled'"
                 [matTooltip]="hasStatistics(row) ? getStatisticsTooltip(row) : None"
-                matTooltipClass="button-tooltip__tooltip"
+                matTooltipClass="Datatable__buttonTooltip"
               >
                 <mat-icon>query_stats</mat-icon>
               </mat-button-toggle>
@@ -163,35 +171,38 @@
           <ngx-datatable-column
             name="Actions"
             [sortable]="false"
+            [frozenRight]="true"
+            [width]="155"
+            [resizable]="false"
+            [canAutoResize]="false"
           >
             <ng-template
               let-row="row"
               ngx-datatable-cell-template
             >
               <button
-                [disabled]="!row?.cruved?.U || !row?.dataset?.active"
+                [disabled]="row.processing || !row?.cruved?.U || !row?.dataset?.active"
                 [matTooltip]="getTooltip(row, 'edit')"
                 mat-icon-button
                 color="primary"
-                class="button"
-                *ngIf="!row.processing"
+                class="Datatable__button"
                 (click)="onFinishImport(row)"
               >
                 <mat-icon>edit</mat-icon>
               </button>
               <button
+                class="Datatable__button"
                 matTooltip="Rapport"
                 mat-icon-button
-                class="button"
                 color="primary"
                 [routerLink]="[row.destination.code, row.id_import, 'report']"
               >
                 <mat-icon>info</mat-icon>
               </button>
               <button
-                *ngIf="row.errors_count"
+                [disabled]="!row.errors_count"
                 mat-icon-button
-                class="button"
+                class="Datatable__button"
                 color="primary"
                 (click)="_csvExport.onCSV(row.id_import)"
                 matTooltip="Téléchargement des données invalides"
@@ -202,7 +213,7 @@
                 [disabled]="!row?.cruved?.D || !row?.dataset?.active"
                 mat-icon-button
                 color="warn"
-                class="button"
+                class="Datatable__button"
                 (click)="openDeleteModal(row, deleteModal)"
                 [matTooltip]="getTooltip(row, 'delete')"
               >
@@ -212,7 +223,8 @@
           </ngx-datatable-column>
         </ngx-datatable>
       </div>
-      <div *ngIf="empty">Vous n'avez effectué aucun import</div>
+      <ng-template #emptyBlock>Vous n'avez effectué aucun import</ng-template>
+
       <import-modal-destination class="pull-right mt-3"></import-modal-destination>
 
       <ng-template
