@@ -14,7 +14,33 @@ ngx-datatable {
   padding: $line-tb-padding $line-tb-padding * 0.5 !important;
 }
 
-.import-list {
+.ImportList {
+  .Toolbar{
+    display: flex;
+    flex-flow: row wrap;
+    column-gap: 0.3em;
+
+    ::ng-deep small{
+      white-space: nowrap;
+    }
+
+    * {
+      min-width: 150px;
+    }
+
+    &__destinations{
+      max-width: 200px;
+    }
+    &__search {
+      input{
+        max-height: 36px;
+        &::placeholder {
+          color: #999; /* default theme ng-placehodler color */
+        }
+      }
+    }
+  }
+
   .button {
     margin-top: -0.5 * $line-tb-padding !important;
     padding: 0 !important;
