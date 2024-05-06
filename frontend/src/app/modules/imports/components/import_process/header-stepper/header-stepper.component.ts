@@ -3,6 +3,13 @@ import { Destination } from '@geonature/modules/imports/models/import.model';
 import { ActivatedRoute } from '@angular/router';
 import { ImportDataService } from '@geonature/modules/imports/services/data.service';
 import { ImportProcessService } from '../import-process.service';
+import { data, param } from 'cypress/types/jquery';
+
+interface ImportInfoBoxData {
+  destinationName: string;
+  destinationDatasetName?: string;
+  fileName: string;
+}
 
 @Component({
   selector: 'header-stepper',
@@ -10,8 +17,7 @@ import { ImportProcessService } from '../import-process.service';
   templateUrl: 'header-stepper.component.html',
 })
 export class HeaderStepperComponent implements OnInit, OnChanges {
-  private _destination: Destination | null;
-  public destinationDataset: string = null;
+  public infoBox: ImportInfoBoxData;
   constructor(
     private _importDataService: ImportDataService,
     private _route: ActivatedRoute,
@@ -24,13 +30,10 @@ export class HeaderStepperComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this._route.params.subscribe((params) => {
-      this._importDataService.getDestination(params['destination']).subscribe((dest) => {
-        this._destination = dest;
-      });
       this._importProcessService.importDataUpdated.subscribe(() => {
         this.updateDestinationDataset();
       });
-      this.updateDestinationDataset();
+      this.updateDestinationDataset(params);
     });
   }
 
@@ -42,17 +45,24 @@ export class HeaderStepperComponent implements OnInit, OnChanges {
    *
    * @return {void}
    */
-  updateDestinationDataset() {
+  updateDestinationDataset(params?: any) {
     const importData = this._importProcessService.getImportData();
-    if (!importData) return;
-    this._importDataService.getDatasetFromId(importData.id_dataset).subscribe((dataset) => {
-      if (dataset.dataset_name) {
-        this.destinationDataset = dataset.dataset_name;
-      }
-    });
-  }
-
-  get destinationLabel(): string {
-    return this._destination ? this._destination.label : '';
+    if (!importData && params) {
+      this._importDataService.getDestination(params['destination']).subscribe((dest) => {
+        this.infoBox = {
+          destinationDatasetName: undefined,
+          destinationName: dest.label,
+          fileName: undefined,
+        };
+      });
+      return;
+    }
+    const { dataset, destination, full_file_name } = importData;
+    this.infoBox = {
+      destinationDatasetName: dataset?.dataset_name,
+      destinationName: destination.label,
+      fileName: full_file_name,
+    };
+    console.log(1, this.infoBox);
   }
 }
