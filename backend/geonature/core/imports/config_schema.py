@@ -7,13 +7,6 @@ from marshmallow.validate import OneOf
 
 DEFAULT_LIST_COLUMN = [
     {
-        "prop": "id_import",
-        "name": "Id import",
-        "max_width": 70,
-        "show": True,
-        "filter": True,
-    },
-    {
         "prop": "format_source_file",
         "name": "Format",
         "max_width": 70,
