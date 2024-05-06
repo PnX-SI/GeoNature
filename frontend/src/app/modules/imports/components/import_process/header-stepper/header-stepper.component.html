@@ -1,10 +1,20 @@
-<h5 class="HeaderStepper">
-  <span class="HeaderStepper__destination">{{ destinationLabel }}</span>
-</h5>
-<h5
-  *ngIf="destinationDataset"
-  class="HeaderStepper"
->
-  <span>{{ 'Import.DestinatinationDatasetLabel' | translate }}:</span>
-  <span class="HeaderStepper__dataset">{{ destinationDataset }}</span>
-</h5>
+<ng-container *ngIf="infoBox">
+  <h5 class="HeaderStepper">
+    <span id="destination">{{ infoBox.destinationName }}</span>
+  </h5>
+  <h5
+    *ngIf="infoBox.destinationDatasetName"
+    class="HeaderStepper"
+  >
+    <span>{{ 'Import.DestinatinationDatasetLabel' | translate }}:</span>
+    <span id="dataset">{{ infoBox.destinationDatasetName }}</span>
+  </h5>
+
+  <h5
+    *ngIf="infoBox.fileName"
+    class="HeaderStepper"
+  >
+    <span>{{ 'Import.FileName' | translate }}:</span>
+    <span id="filename">{{ infoBox.fileName }}</span>
+  </h5>
+</ng-container>
