@@ -1,27 +1,22 @@
-<div class="container-fluid import-list">
+<div class="container-fluid ImportList">
   <div class="card">
     <div class="card-header">
       <h5 class="card-title mb-0">Liste des imports</h5>
     </div>
     <div class="card-body">
       <div *ngIf="!empty">
-        <div class="d-flex mb-2">
+        <div class="Toolbar mb-2">
           <pnx-destinations
+            class="Toolbar__destinations"
             label="{{ 'Form.Filter' | translate }} {{ 'By' | translate | lowercase }} {{
               'Import.Destinations' | translate | lowercase
             }}"
             [parentFormControl]="selectDestinationForm"
             (onChange)="resetPage()"
             (onClear)="resetPage()"
-            class="flex-fill pr-1"
           ></pnx-destinations>
-          <div class="flex-fill">
-            <label
-              for="search"
-              class="mb-0"
-            >
+          <div class="flex-fill Toolbar__search">
               <small>{{ 'Form.OtherFilters' | translate }}</small>
-            </label>
             <input
               [formControl]="search"
               id="search"
