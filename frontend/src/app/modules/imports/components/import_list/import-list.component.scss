@@ -7,12 +7,12 @@ $icon-size: 19px;
 }
 
 .ImportList {
-  .Toolbar{
+  .Toolbar {
     display: flex;
     flex-flow: row wrap;
     column-gap: 0.3em;
 
-    ::ng-deep small{
+    ::ng-deep small {
       white-space: nowrap;
     }
 
@@ -20,11 +20,11 @@ $icon-size: 19px;
       min-width: 150px;
     }
 
-    &__destinations{
+    &__destinations {
       max-width: 200px;
     }
     &__search {
-      input{
+      input {
         max-height: 36px;
         &::placeholder {
           color: #999; /* default theme ng-placehodler color */
@@ -32,7 +32,6 @@ $icon-size: 19px;
       }
     }
   }
-
 
   .Datatable {
     box-shadow: none !important;
