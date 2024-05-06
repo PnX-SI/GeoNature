@@ -49,6 +49,13 @@ $icon-size: 19px;
       }
     }
 
+    ::ng-deep .datatable-row-left {
+      background-color: #fff;
+      background-image: none !important;
+      .datatable-body-cell {
+        text-align: left;
+      }
+    }
     ::ng-deep .datatable-row-right {
       background-color: #fff;
       background-image: none !important;
