@@ -1,15 +1,21 @@
+
 .HeaderStepper {
   text-align: center;
   margin-top: 0.5em;
   font-size: 1rem;
-  &__destination {
+  #destination {
     font-weight: 700;
     padding-left: 0.2em;
     font-size: 1.5rem;
   }
-  &__dataset {
+  #dataset {
     padding-left: 0.2em;
-    color: #666;
+    color: var(--primary);
+    font-weight: 700;
+  }
+  #filename{
+    padding-left: 0.2em;
+    color: var(--secondary);
     font-weight: 700;
   }
 }
