@@ -1,12 +1,9 @@
 $line-tb-padding: 10px;
-$icon-size: 20px;
+$icon-size: 19px;
 
 .sortable .sort-btn:not([class*='datatable-icon-']):before {
   font-family: data-table;
   content: 'c';
-}
-:host ::ng-deep datatable-body-cell {
-  padding: $line-tb-padding $line-tb-padding * 0.5 !important;
 }
 
 .ImportList {
@@ -36,16 +33,38 @@ $icon-size: 20px;
     }
   }
 
+
   .Datatable {
     box-shadow: none !important;
+
+    ::ng-deep .datatable-header-cell,
+    ::ng-deep .datatable-body-cell {
+      padding: $line-tb-padding $line-tb-padding * 0.5 !important;
+      .datatable-body-cell-label,
+      .datatable-body-cell-label p {
+        overflow-y: hidden;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        height: 100%;
+      }
+    }
+
+    ::ng-deep .datatable-row-right {
+      background-color: #fff;
+      background-image: none !important;
+      .datatable-body-cell {
+        text-align: right;
+        padding: 0 !important;
+        margin: auto !important;
+      }
+    }
+
     &__button {
-      margin-top: -0.5 * $line-tb-padding !important;
-      padding: 0 !important;
+      padding: $icon-size / 4;
       height: 2 * $icon-size !important;
       width: 2 * $icon-size !important;
       mat-icon {
         font-size: $icon-size !important;
-        margin: auto;
       }
 
       &Tooltip {
