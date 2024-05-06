@@ -1,59 +1,81 @@
-import json
-
-from flask import jsonify
-from marshmallow import EXCLUDE
-import numpy as np
-
-
-from bokeh.layouts import column
-from bokeh.plotting import figure
-from bokeh.models import CustomJS, Select
-from bokeh.embed import json_item
+from apptax.taxonomie.models import Taxref
 import sqlalchemy as sa
 from sqlalchemy import func, distinct
 
-from gn_module_occhab.schemas import StationSchema, db
-from gn_module_occhab.models import OccurenceHabitat, Station
-from geonature.core.imports.models import Entity
+from geonature.utils.env import db
+from geonature.utils.sentry import start_sentry_child
+from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_synthese.models import Synthese, TSources
+
+from geonature.core.imports.models import TImports
+
+from bokeh.plotting import figure
+from bokeh.layouts import column, row
+from bokeh.models.layouts import Row
+from bokeh.models import CustomJS, Select
+from bokeh.embed import json_item
 from bokeh.palettes import linear_palette, Turbo256, Plasma256
-from sqlalchemy.orm import joinedload
 from bokeh.models import Range1d, AnnularWedge, ColumnDataSource, Legend, LegendItem
 
+import numpy as np
 
-def distribution_plot(imprt):
-    categories = [
-        "nom_cite",
-        "nomenclature_determination_type",
-        "nomenclature_collection_technique",
-    ]
-    id_import = imprt.id_import
-    query = Station.filter_by_params(dict(id_import=id_import)).options(
-        joinedload(Station.habitats).options(
-            joinedload(OccurenceHabitat.habref),
-        )
-    )
+
+def report_plot(imprt: TImports) -> Row:
+    """
+    Generate a plot of the taxonomic distribution (for each rank) based on the import.
+    The following ranks are used:
+    - group1_inpn
+    - group2_inpn
+    - group3_inpn
+    - sous_famille
+    - tribu
+    - classe
+    - ordre
+    - famille
+    - phylum
+    - regne
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import object to generate the plot from.
+
+    Returns
+    -------
+    dict
+        Returns a dict containing data required to generate the plot
+    """
+
+    # Get the source of the import
+    source = TSources.query.filter(
+        TSources.module.has(TModules.module_code == "IMPORT"),
+        TSources.name_source == f"Import(id={imprt.id_import})",
+    ).one_or_none()
+
+    # Define the taxonomic rank to consider
+    taxon_ranks = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
     figures = []
 
-    # Generate the plot for each categorie
-    for categorie in categories:
+    # Generate the plot for each rank
+    for rank in taxon_ranks:
         # Generate the query to retrieve the count for each value taken by the rank
-        param = getattr(OccurenceHabitat, categorie)
-        # print("param: ", param.__nomenclatures__)
+        c_rank_taxref = getattr(Taxref, rank)
         query = (
             sa.select(
-                func.count(distinct(OccurenceHabitat.id_habitat)),
-                param,
+                func.count(distinct(Synthese.cd_nom)).label("count"),
+                c_rank_taxref.label("rank_value"),
             )
-            .select_from(OccurenceHabitat)
-            .join(Station, OccurenceHabitat.id_station == Station.id_station)
-            .where(Station.id_import == id_import)
-            .group_by(param)
+            .select_from(Synthese)
+            .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+            .where(
+                Synthese.id_dataset == imprt.id_dataset,
+                Synthese.source == source,
+            )
+            .group_by(c_rank_taxref)
         )
-        query = query.options()
         data = np.asarray(
             [r if r[1] != "" else (r[0], "Non-assigné") for r in db.session.execute(query).all()]
         )
-        print("data: ", data)
 
         # Extract the rank values and counts
         rank_values, counts = data[:, 1], data[:, 0].astype(int)
@@ -81,13 +103,12 @@ def distribution_plot(imprt):
                 rankvalue=rank_values,
             )
         )
-
         # Create the Figure object
         fig = figure(
             x_range=Range1d(start=-3, end=3),
             y_range=Range1d(start=-3, end=3),
-            title=f"Distribution des taxons (selon le rang = HAAAA)",
-            tooltips=[("Number", "@countvalue"), ("HAAAA", "@rankvalue")],
+            title=f"Distribution des taxons (selon le rang = {rank})",
+            tooltips=[("Number", "@countvalue"), (rank, "@rankvalue")],
             width=600,
             toolbar_location=None,
         )
@@ -118,18 +139,19 @@ def distribution_plot(imprt):
         fig.title.text_font_size = "16pt"
 
         # Hide the unselected rank plot
-        # if rank != "regne":
-        #     fig.visible = False
+        if rank != "regne":
+            fig.visible = False
 
         # Add the plot to the list of figures
         figures.append(fig)
 
+    # Generate the layout with the plots and the rank selector
     plot_area = column(figures)
 
     select_plot = Select(
         title="Rang",
         value=0,  # Default is "regne"
-        options=[(ix, rank) for ix, rank in enumerate(categories)],
+        options=[(ix, rank) for ix, rank in enumerate(taxon_ranks)],
         width=fig.width,
     )
 
@@ -146,6 +168,5 @@ def distribution_plot(imprt):
     """,
         ),
     )
-
-    column_fig = column(plot_area, sizing_mode="scale_width")
+    column_fig = column(plot_area, select_plot, sizing_mode="scale_width")
     return json_item(column_fig)
