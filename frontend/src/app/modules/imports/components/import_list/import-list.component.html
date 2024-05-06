@@ -4,7 +4,7 @@
       <h5 class="card-title mb-0">Liste des imports</h5>
     </div>
     <div class="card-body">
-      <div *ngIf="!empty">
+      <div *ngIf="!empty; else emptyBlock">
         <div class="Toolbar mb-2">
           <pnx-destinations
             class="Toolbar__destinations"
@@ -207,7 +207,8 @@
           </ngx-datatable-column>
         </ngx-datatable>
       </div>
-      <div *ngIf="empty">Vous n'avez effectué aucun import</div>
+      <ng-template #emptyBlock>Vous n'avez effectué aucun import</ng-template>
+
       <import-modal-destination class="pull-right mt-3"></import-modal-destination>
 
       <ng-template
