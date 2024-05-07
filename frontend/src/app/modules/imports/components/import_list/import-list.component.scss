@@ -48,6 +48,10 @@ $icon-size: 19px;
       }
     }
 
+    ::ng-deep .datatable-footer {
+      overflow: hidden;
+    }
+
     ::ng-deep .datatable-row-left {
       background-color: #fff;
       .datatable-body-cell {
