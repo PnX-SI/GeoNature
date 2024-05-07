@@ -69,6 +69,8 @@ $icon-size: 19px;
     }
     ::ng-deep .datatable-row-right {
       .datatable-body-cell {
+        background-color: inherit;
+        transform: translate3d(12px, 0px, 0px); /* trick to remove extra space on the right */
         text-align: right;
         padding: 0 !important;
         margin: auto !important;
