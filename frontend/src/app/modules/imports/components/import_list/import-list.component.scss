@@ -52,6 +52,15 @@ $icon-size: 19px;
       overflow: hidden;
     }
 
+    ::ng-deep .datatable-row-odd {
+      ::ng-deep .datatable-row-left {
+        background-color: rgb(238, 238, 238) !important;
+      }
+      ::ng-deep .datatable-row-right {
+        background-color: rgb(238, 238, 238) !important;
+      }
+    }
+
     ::ng-deep .datatable-row-left {
       background-color: #fff;
       .datatable-body-cell {
