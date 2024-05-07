@@ -339,7 +339,7 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
-werkzeug==3.0.1
+werkzeug==3.0.3
     # via
     #   flask
     #   flask-login
