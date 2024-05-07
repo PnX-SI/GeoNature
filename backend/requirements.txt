@@ -244,7 +244,7 @@ pypnusershub==2.1.4
     #   -r requirements-dependencies.in
     #   pypnnomenclature
     #   taxhub
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
     # via
     #   -r requirements-common.in
     #   botocore
