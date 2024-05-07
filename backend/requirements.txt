@@ -83,7 +83,7 @@ fiona==1.8.22
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
-flask==3.0.1
+flask==3.0.3
     # via
     #   -r requirements-common.in
     #   flask-admin
