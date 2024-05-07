@@ -23,7 +23,7 @@ DEFAULT_LIST_COLUMN = [
     {
         "prop": "dataset.dataset_name",
         "name": "Voir la fiche du JDD",
-        "max_width": 400,
+        "max_width": 500,
         "show": True,
         "filter": False,
     },
