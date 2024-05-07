@@ -150,7 +150,6 @@ def occurrence_data(client: Any, releve_occtax: Any):
         "id_nomenclature_determination_method": dict_nomenclatures["METH_DETERMIN"],
         "nom_cite": "Canis lupus =   Canis lupus Linnaeus, 1758 - [ES - 60577]",
         "cd_nom": 60577,
-        "meta_v_taxref": "Taxref v15",
         "sample_number_proof": None,
         "digital_proof": None,
         "non_digital_proof": None,
