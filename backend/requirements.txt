@@ -79,7 +79,7 @@ cssselect2==0.7.0
     #   weasyprint
 defusedxml==0.7.1
     # via cairosvg
-fiona==1.8.22
+fiona==1.9.6
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
@@ -160,6 +160,7 @@ idna==3.6
 importlib-metadata==4.13.0 ; python_version < "3.10"
     # via
     #   -r requirements-common.in
+    #   fiona
     #   flask
 itsdangerous==2.1.2
     # via
@@ -201,8 +202,6 @@ marshmallow-sqlalchemy==1.0.0
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-munch==4.0.0
-    # via fiona
 numpy==1.26.3
     # via shapely
 packaging==23.2
