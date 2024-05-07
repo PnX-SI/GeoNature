@@ -66,17 +66,21 @@ $icon-size: 19px;
     }
 
     &__button {
+      $button-disabled-opacity: 0.2;
       padding: $icon-size / 4;
       height: 2 * $icon-size !important;
       width: 2 * $icon-size !important;
       mat-icon {
         font-size: $icon-size !important;
       }
+      &:disabled {
+        color: rgba(0, 0, 0, $button-disabled-opacity) !important;
+      }
 
       &Tooltip {
         filter: opacity(0.6);
         &--disabled {
-          filter: opacity(0.2);
+          filter: opacity($button-disabled-opacity);
         }
       }
     }
