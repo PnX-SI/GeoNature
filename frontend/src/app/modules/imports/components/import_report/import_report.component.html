@@ -146,12 +146,14 @@
                 <tr>
                   <th>Champ source</th>
                   <th>Champ cible</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let field of entity?.themes | keyvalue">
-                  <td>{{ field.value }}</td>
-                  <td>{{ field.key }}</td>
+                <tr *ngFor="let field of entity?.themes">
+                  <td>{{ field.source }}</td>
+                  <td>{{ field.destination }}</td>
+                  <td>{{ field.description }}</td>
                 </tr>
               </tbody>
             </table>

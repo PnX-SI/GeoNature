@@ -24,6 +24,12 @@ import { FieldMappingValues } from '../../models/mapping.model';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
+interface CorrespondancesField {
+  source: string;
+  description: string;
+  destination: string | string[];
+}
+
 @Component({
   selector: 'pnx-import-report',
   templateUrl: 'import_report.component.html',
@@ -256,17 +262,18 @@ export class ImportReportComponent implements OnInit {
     return tableFieldsCorresp;
   }
 
-  mapThemes(themes: ThemesFields[], fieldMapping: FieldMappingValues) {
+  mapThemes(themes: ThemesFields[], fieldMapping: FieldMappingValues): Array<CorrespondancesField> {
     const mappedThemes = themes.map((theme) => this.mapField(theme.fields, fieldMapping));
-    return Object.assign({}, ...mappedThemes);
+    return mappedThemes.flat();
   }
 
-  mapField(listField: Field[], fieldMapping: FieldMappingValues) {
-    const mappedFields = {};
-    listField.forEach((field) => {
-      if (Object.keys(fieldMapping).includes(field.name_field)) {
-        mappedFields[field.name_field] = fieldMapping[field.name_field];
-      }
+  mapField(listField: Field[], fieldMapping: FieldMappingValues): Array<CorrespondancesField> {
+    const mappedFields: Array<CorrespondancesField> = listField.map((field) => {
+      return {
+        source: field.name_field,
+        description: field.comment,
+        destination: fieldMapping[field.name_field],
+      };
     });
     return mappedFields;
   }
