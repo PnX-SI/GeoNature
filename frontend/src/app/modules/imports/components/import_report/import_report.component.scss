@@ -76,7 +76,21 @@ img {
   }
 }
 
+table {
+  display: block;
+  overflow-x: auto;
+}
+
 table caption {
   caption-side: top;
   border-collapse: collapse;
+}
+
+mat-panel-title {
+  justify-content: space-between;
+  align-items: center !important;
+  column-gap: 0.5rem;
+  h6 {
+    margin: 0 !important;
+  }
 }
