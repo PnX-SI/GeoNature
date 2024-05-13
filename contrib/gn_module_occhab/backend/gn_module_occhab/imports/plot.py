@@ -27,55 +27,49 @@ def distribution_plot(imprt):
         "nomenclature_determination_type",
         "nomenclature_collection_technique",
     ]
-    id_import = imprt.id_import
     figures = []
-
+    final_cat = []
     # Generate the plot for each categorie
     for categorie in categories:
-        # Generate the query to retrieve the count for each value taken by the rank
+        # Generate the query to retrieve the count for each value taken by the categorie
         c_categorie = getattr(OccurenceHabitat, categorie)
         if categorie in OccurenceHabitat.__nomenclatures__:
             query = (
                 sa.select(
                     func.count(distinct(OccurenceHabitat.id_habitat)),
-                    TNomenclatures.label_default.label("rank_value"),
-                    BibNomenclaturesTypes.label_default.label("rank"),
+                    TNomenclatures.label_default,
+                    BibNomenclaturesTypes.label_default,
                 )
                 .join(
                     c_categorie,
                 )
                 .join(TNomenclatures.nomenclature_type)
-                .where(OccurenceHabitat.id_import == id_import)
+                .where(OccurenceHabitat.id_import == imprt.id_import)
                 .group_by(TNomenclatures.label_default, BibNomenclaturesTypes.label_default)
             )
         else:
             query = (
                 sa.select(
                     func.count(distinct(OccurenceHabitat.id_habitat)),
-                    c_categorie.label("rank_value"),
-                    sa.literal(categorie).label("rank"),
+                    c_categorie,
+                    sa.literal(categorie),
                 )
-                .where(OccurenceHabitat.id_import == id_import)
+                .where(OccurenceHabitat.id_import == imprt.id_import)
                 .group_by(c_categorie)
             )
+
         data = np.asarray(
             [
                 r if r[1] != "" else (r[0], "Non-assigné")
                 for r in db.session.execute(query).unique().all()
             ]
         )
-        print("categorie: ", categorie)
-        print("data: ", data)
-        if len(data) < 1:
-            print("categories1: ", categories)
-            print("categorie: ", categorie)
-            categories.remove(categorie)
-            print("categories2: ", categories)
+        if data.size == 0:
             continue
 
         # Extract the rank values and counts
         rank_values, counts = data[:, 1], data[:, 0].astype(int)
-        rank = data[:, 2][0]
+        rank = data[0, 2]
 
         # Get angles (in radians) where start each section of the pie chart
         angles = np.cumsum(
@@ -142,13 +136,13 @@ def distribution_plot(imprt):
 
         # Add the plot to the list of figures
         figures.append(fig)
+        final_cat.append(categorie)
 
     plot_area = column(figures)
-
     select_plot = Select(
         title="Rang",
         value=0,  # Default is "regne"
-        options=[(ix, rank) for ix, rank in enumerate(categories)],
+        options=[(ix, rank) for ix, rank in enumerate(final_cat)],
         width=fig.width,
     )
 
