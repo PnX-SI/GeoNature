@@ -40,9 +40,7 @@ def distribution_plot(imprt):
                     TNomenclatures.label_default,
                     BibNomenclaturesTypes.label_default,
                 )
-                .join(
-                    c_categorie,
-                )
+                .join(c_categorie)
                 .join(TNomenclatures.nomenclature_type)
                 .where(OccurenceHabitat.id_import == imprt.id_import)
                 .group_by(TNomenclatures.label_default, BibNomenclaturesTypes.label_default)
@@ -67,9 +65,9 @@ def distribution_plot(imprt):
         if data.size == 0:
             continue
 
-        # Extract the rank values and counts
-        rank_values, counts = data[:, 1], data[:, 0].astype(int)
-        rank = data[0, 2]
+        # Extract the category values, counts and label
+        category_unique_value, counts = data[:, 1], data[:, 0].astype(int)
+        category_label = data[0, 2]
 
         # Get angles (in radians) where start each section of the pie chart
         angles = np.cumsum(
@@ -78,20 +76,20 @@ def distribution_plot(imprt):
 
         # Generate the color palette
         palette = (
-            linear_palette(Turbo256, len(rank_values))
-            if len(rank_values) > 5
-            else linear_palette(Plasma256, len(rank_values))
+            linear_palette(Turbo256, len(category_unique_value))
+            if len(category_unique_value) > 5
+            else linear_palette(Plasma256, len(category_unique_value))
         )
-        colors = {value: palette[ix] for ix, value in enumerate(rank_values)}
+        colors = {value: palette[ix] for ix, value in enumerate(category_unique_value)}
 
         # Store the data in a Bokeh data structure
         browsers_source = ColumnDataSource(
             dict(
                 start=[0] + angles[:-1],
                 end=angles,
-                colors=[colors[rank_value] for rank_value in rank_values],
+                colors=[colors[rank_value] for rank_value in category_unique_value],
                 countvalue=counts,
-                rankvalue=rank_values,
+                rankvalue=category_unique_value,
             )
         )
 
@@ -99,9 +97,9 @@ def distribution_plot(imprt):
         fig = figure(
             x_range=Range1d(start=-3, end=3),
             y_range=Range1d(start=-3, end=3),
-            title=f"Distribution des taxons (selon le rang = {rank})",
-            tooltips=[("Number", "@countvalue"), (f"{rank}", "@rankvalue")],
-            width=600,
+            title=f"Distribution des taxons (selon le rang = {category_label})",
+            tooltips=[("Number", "@countvalue"), (f"{category_label}", "@rankvalue")],
+            width=1000,
             toolbar_location=None,
         )
         # Add the Pie chart
@@ -123,7 +121,9 @@ def distribution_plot(imprt):
         for i, name in enumerate(colors):
             legend.items.append(LegendItem(label=name, renderers=[r], index=i))
         fig.add_layout(legend, "below")
-        fig.legend.ncols = 3 if len(colors) < 10 else 5
+        fig.legend.ncols = 3
+        if len(colors) > 10:
+            fig.legend.ncols = len(colors) // 4
 
         # ERASE the grid and axis
         fig.grid.visible = False
@@ -131,7 +131,7 @@ def distribution_plot(imprt):
         fig.title.text_font_size = "16pt"
 
         # Hide the unselected rank plot
-        if rank != categories[0]:
+        if category_label != categories[0]:
             fig.visible = False
 
         # Add the plot to the list of figures
@@ -140,7 +140,7 @@ def distribution_plot(imprt):
 
     plot_area = column(figures)
     select_plot = Select(
-        title="Rang",
+        title="Catégorie",
         value=0,  # Default is "regne"
         options=[(ix, rank) for ix, rank in enumerate(final_cat)],
         width=fig.width,
@@ -160,5 +160,5 @@ def distribution_plot(imprt):
         ),
     )
 
-    column_fig = column(plot_area, select_plot, sizing_mode="scale_width")
+    column_fig = column(plot_area, select_plot, sizing_mode="stretch_width")
     return json_item(column_fig)
