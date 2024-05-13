@@ -1,4 +1,5 @@
 from geonature.core.gn_commons.models import TModules
+from .imports.plot import distribution_plot
 from .imports import (
     preprocess_transient_data,
     check_transient_data,
@@ -20,6 +21,7 @@ class OcchabModule(TModules):
         "check_transient_data": check_transient_data,
         "import_data_to_destination": import_data_to_occhab,
         "remove_data_from_destination": remove_data_from_occhab,
+        "report_plot": distribution_plot,
         "statistics_labels": [
             {"key": "station_count", "value": "Nombre de stations importées"},
             {"key": "habitat_count", "value": "Nombre d’habitats importés"},
