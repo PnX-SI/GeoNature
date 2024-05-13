@@ -9,10 +9,11 @@ from bokeh.layouts import column
 from bokeh.plotting import figure
 from bokeh.models import CustomJS, Select
 from bokeh.embed import json_item
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 import sqlalchemy as sa
 from sqlalchemy import func, distinct
 
-from gn_module_occhab.schemas import StationSchema, db
+from gn_module_occhab.schemas import OccurenceHabitatSchema, StationSchema, db
 from gn_module_occhab.models import OccurenceHabitat, Station
 from geonature.core.imports.models import Entity
 from bokeh.palettes import linear_palette, Turbo256, Plasma256
@@ -27,36 +28,54 @@ def distribution_plot(imprt):
         "nomenclature_collection_technique",
     ]
     id_import = imprt.id_import
-    query = Station.filter_by_params(dict(id_import=id_import)).options(
-        joinedload(Station.habitats).options(
-            joinedload(OccurenceHabitat.habref),
-        )
-    )
     figures = []
 
     # Generate the plot for each categorie
     for categorie in categories:
         # Generate the query to retrieve the count for each value taken by the rank
-        param = getattr(OccurenceHabitat, categorie)
-        # print("param: ", param.__nomenclatures__)
-        query = (
-            sa.select(
-                func.count(distinct(OccurenceHabitat.id_habitat)),
-                param,
+        c_categorie = getattr(OccurenceHabitat, categorie)
+        if categorie in OccurenceHabitat.__nomenclatures__:
+            query = (
+                sa.select(
+                    func.count(distinct(OccurenceHabitat.id_habitat)),
+                    TNomenclatures.label_default.label("rank_value"),
+                    BibNomenclaturesTypes.label_default.label("rank"),
+                )
+                .join(
+                    c_categorie,
+                )
+                .join(TNomenclatures.nomenclature_type)
+                .where(OccurenceHabitat.id_import == id_import)
+                .group_by(TNomenclatures.label_default, BibNomenclaturesTypes.label_default)
             )
-            .select_from(OccurenceHabitat)
-            .join(Station, OccurenceHabitat.id_station == Station.id_station)
-            .where(Station.id_import == id_import)
-            .group_by(param)
-        )
-        query = query.options()
+        else:
+            query = (
+                sa.select(
+                    func.count(distinct(OccurenceHabitat.id_habitat)),
+                    c_categorie.label("rank_value"),
+                    sa.literal(categorie).label("rank"),
+                )
+                .where(OccurenceHabitat.id_import == id_import)
+                .group_by(c_categorie)
+            )
         data = np.asarray(
-            [r if r[1] != "" else (r[0], "Non-assigné") for r in db.session.execute(query).all()]
+            [
+                r if r[1] != "" else (r[0], "Non-assigné")
+                for r in db.session.execute(query).unique().all()
+            ]
         )
+        print("categorie: ", categorie)
         print("data: ", data)
+        if len(data) < 1:
+            print("categories1: ", categories)
+            print("categorie: ", categorie)
+            categories.remove(categorie)
+            print("categories2: ", categories)
+            continue
 
         # Extract the rank values and counts
         rank_values, counts = data[:, 1], data[:, 0].astype(int)
+        rank = data[:, 2][0]
 
         # Get angles (in radians) where start each section of the pie chart
         angles = np.cumsum(
@@ -86,8 +105,8 @@ def distribution_plot(imprt):
         fig = figure(
             x_range=Range1d(start=-3, end=3),
             y_range=Range1d(start=-3, end=3),
-            title=f"Distribution des taxons (selon le rang = HAAAA)",
-            tooltips=[("Number", "@countvalue"), ("HAAAA", "@rankvalue")],
+            title=f"Distribution des taxons (selon le rang = {rank})",
+            tooltips=[("Number", "@countvalue"), (f"{rank}", "@rankvalue")],
             width=600,
             toolbar_location=None,
         )
@@ -118,8 +137,8 @@ def distribution_plot(imprt):
         fig.title.text_font_size = "16pt"
 
         # Hide the unselected rank plot
-        # if rank != "regne":
-        #     fig.visible = False
+        if rank != categories[0]:
+            fig.visible = False
 
         # Add the plot to the list of figures
         figures.append(fig)
@@ -147,5 +166,5 @@ def distribution_plot(imprt):
         ),
     )
 
-    column_fig = column(plot_area, sizing_mode="scale_width")
+    column_fig = column(plot_area, select_plot, sizing_mode="scale_width")
     return json_item(column_fig)
