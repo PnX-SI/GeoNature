@@ -45,6 +45,7 @@ from .checks import (
 )
 from bokeh.embed.standalone import StandaloneEmbedJson
 
+
 class OcchabImportMixin(ImportMixin):
 
     @staticmethod
@@ -367,9 +368,7 @@ class OcchabImportMixin(ImportMixin):
             transient_table = imprt.destination.get_transient_table()
             statement = (
                 sa.select(
-                    sa.func.ST_AsGeojson(
-                        sa.func.ST_Extent(transient_table.c[name_geom_4326_field])
-                    )
+                    sa.func.ST_AsGeojson(sa.func.ST_Extent(transient_table.c[name_geom_4326_field]))
                 )
                 .where(where_clause_id_import)
                 .where(transient_table.c[entity.validity_column] == True)

@@ -134,6 +134,7 @@ class Destination(db.Model):
     @property
     def import_mixin(self):
         from geonature.core.imports.import_mixin import ImportMixin
+
         if not ImportMixin.is_implemented_in_module(type(self.module)):
             raise NotImplementedError
         return self.module
@@ -141,6 +142,7 @@ class Destination(db.Model):
     @property
     def statistics_labels(self):
         return self.import_mixin.statistics_labels()
+
 
 @serializable
 class BibThemes(db.Model):

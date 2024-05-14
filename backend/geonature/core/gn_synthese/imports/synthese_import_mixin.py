@@ -59,6 +59,7 @@ import numpy as np
 import typing
 import json
 
+
 class SyntheseImportMixin(ImportMixin):
 
     @staticmethod
@@ -276,24 +277,6 @@ class SyntheseImportMixin(ImportMixin):
                 fields["the_geom_local"],
                 id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
             )
-
-        #        progress = 0.4 + ((i + 1) / len(sql_checks)) * 0.6
-        #        task.update_state(state="PROGRESS", meta={"progress": progress})
-
-        # def get_where_clause_id_import(self, imprt: TImports) -> str:
-        #     return get_where_clause_id_import(imprt)
-
-        # def import_data_to_destination(self, imprt: TImports) -> None:
-        #     import_data_to_synthese(imprt)
-
-        # def remove_data_from_destination(self, imprt: TImports) -> None:
-        #     remove_data_from_synthese(imprt)
-
-        # def report_plot(self, imprt: TImports) -> Row:
-        #     return report_plot(imprt)
-
-        # def compute_bounding_box(self, imprt: TImports) -> None:
-        #     return None
 
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
