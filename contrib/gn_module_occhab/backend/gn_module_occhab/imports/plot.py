@@ -139,6 +139,10 @@ def distribution_plot(imprt) -> StandaloneEmbedJson:
         figures.append(fig)
         final_cat.append(categorie)
 
+    # No figure added: not plot needed
+    if not figures:
+        return None
+
     plot_area = column(figures)
     select_plot = Select(
         title="Catégorie",
