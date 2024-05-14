@@ -9,7 +9,6 @@ from geonature.utils.env import db
 from geonature.core.imports.models import Entity, BibFields, TImports
 from geonature.core.imports.import_mixin import ImportMixin, ImportStatisticsLabels
 from .plot import distribution_plot
-from bokeh.models.layouts import Row
 
 from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
@@ -44,7 +43,7 @@ from .checks import (
     generate_id_station,
     set_id_station_from_line_no,
 )
-
+from bokeh.embed.standalone import StandaloneEmbedJson
 
 class OcchabImportMixin(ImportMixin):
 
@@ -334,7 +333,7 @@ class OcchabImportMixin(ImportMixin):
             )
 
     @staticmethod
-    def report_plot(imprt: TImports) -> Row:
+    def report_plot(imprt: TImports) -> StandaloneEmbedJson:
         return distribution_plot(imprt)
 
     @staticmethod
