@@ -25,6 +25,7 @@
               placeholder="{{ 'Search' | translate }}"
               aria-label="Search"
               aria-describedby="basic-addon1"
+              data-qa="search-input-import-list"
             />
           </div>
         </div>
@@ -43,6 +44,7 @@
           (page)="setPage($event)"
           (sort)="onSort($event)"
           [scrollbarH]="true"
+          data-qa="import-list-table"
         >
           <ngx-datatable-column
             name="Id Import"
@@ -65,6 +67,7 @@
             [prop]="col.prop"
             [sortable]="col.filter"
             [maxWidth]="col.max_width"
+            data-qa="column-{{ col.name }}"
           >
             <ng-template
               let-row="row"
@@ -101,6 +104,7 @@
             [sortable]="true"
             prop="destination.code"
             [maxWidth]="150"
+            data-qa="destination-column"
           >
             <ng-template
               let-row="row"
@@ -114,6 +118,7 @@
             [sortable]="true"
             [maxWidth]="100"
             prop="date_end_import"
+            data-qa="fin-import-column"
           >
             <ng-template
               let-row="row"
@@ -175,6 +180,7 @@
             [width]="155"
             [resizable]="false"
             [canAutoResize]="false"
+            data-qa="actions-column"
           >
             <ng-template
               let-row="row"
