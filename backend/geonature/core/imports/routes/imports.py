@@ -465,7 +465,7 @@ def preview_valid_data(scope, imprt):
         raise Conflict("Import must have been prepared before executing this action.")
 
     data = {
-        "valid_bbox": imprt.destination.interface_import.compute_bounding_box(imprt),
+        "valid_bbox": imprt.destination.import_mixin.compute_bounding_box(imprt),
         "entities": [],
     }
 
@@ -640,7 +640,7 @@ def delete_import(scope, imprt):
     db.session.execute(
         delete(transient_table).where(transient_table.c.id_import == imprt.id_import)
     )
-    imprt.destination.interface_import.remove_data_from_destination(imprt)
+    imprt.destination.import_mixin.remove_data_from_destination(imprt)
     db.session.delete(imprt)
     db.session.commit()
     return jsonify()
@@ -712,4 +712,4 @@ def get_foreign_key_attr(obj, field: str):
 @permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def report_plot(scope, imprt: TImports):
 
-    return json.dumps(imprt.destination.interface_import.report_plot(imprt))
+    return json.dumps(imprt.destination.import_mixin.report_plot(imprt))
