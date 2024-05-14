@@ -1,5 +1,6 @@
 from .base import TModules
 import abc
+import typing
 
 
 class AbstractMixin(abc.ABC):
@@ -9,5 +10,5 @@ class AbstractMixin(abc.ABC):
         self._module = module
 
     @classmethod
-    def is_implemented_in_module(cls, module: TModules) -> bool:
-        return isinstance(module, cls)
+    def is_implemented_in_module(cls, module_type: typing.Type) -> bool:
+        return issubclass(module_type, cls)
