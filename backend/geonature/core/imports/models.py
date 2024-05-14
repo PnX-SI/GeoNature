@@ -132,7 +132,7 @@ class Destination(db.Model):
         return [entity.validity_column for entity in self.entities]
 
     @property
-    def interface_import(self):
+    def import_mixin(self):
         from geonature.core.imports.import_mixin import ImportMixin
         if not ImportMixin.is_implemented_in_module(type(self.module)):
             raise NotImplementedError
@@ -140,10 +140,7 @@ class Destination(db.Model):
 
     @property
     def statistics_labels(self):
-        from geonature.core.imports.import_mixin import ImportMixin
-        if not ImportMixin.is_implemented_in_module(type(self.module)):
-            raise NotImplementedError
-        return self.module.statistics_labels()
+        return self.import_mixin.statistics_labels()
 
 @serializable
 class BibThemes(db.Model):
