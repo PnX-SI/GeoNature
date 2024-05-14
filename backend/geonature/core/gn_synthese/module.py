@@ -1,7 +1,6 @@
 from geonature.core.gn_commons.models import TModules
 
 from geonature.core.gn_synthese.imports import SyntheseImportMixin
-from abc import ABCMeta
 
 
 class SyntheseModuleMetaclass(type(SyntheseImportMixin), type(TModules)):

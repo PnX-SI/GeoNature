@@ -11,6 +11,7 @@ class ImportStatisticsLabels(typing.TypedDict):
     key: str
     value: str
 
+
 class ImportInputUrl(typing.TypedDict):
     url: str
     label: str
