@@ -132,31 +132,22 @@ class Destination(db.Model):
         return [entity.validity_column for entity in self.entities]
 
     @property
-    def preprocess_transient_data(self):
-        if "preprocess_transient_data" in self.module._imports_:
-            return self.module._imports_["preprocess_transient_data"]
+    def interface_import(self):
+        from geonature.core.imports.interface_import import InterfaceImport
+
+        if InterfaceImport.is_implemented_in_module(self.module):
+            return self.module
         else:
-            return lambda *args, **kwargs: None
-
-    @property
-    def check_transient_data(self):
-        return self.module._imports_["check_transient_data"]
-
-    @property
-    def import_data_to_destination(self):
-        return self.module._imports_["import_data_to_destination"]
-
-    @property
-    def remove_data_from_destination(self):
-        return self.module._imports_["remove_data_from_destination"]
+            return None
 
     @property
     def statistics_labels(self):
-        return self.module._imports_.get("statistics_labels", {})
+        from geonature.core.imports.interface_import import InterfaceImport
 
-    @property
-    def plot_function(self):
-        return self.module._imports_.get("report_plot", lambda x: {})
+        if InterfaceImport.is_implemented_in_module(self.module):
+            return self.module.statistics_labels
+        else:
+            return {}
 
 
 @serializable
