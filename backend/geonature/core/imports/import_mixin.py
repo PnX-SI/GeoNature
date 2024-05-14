@@ -1,4 +1,4 @@
-from geonature.core.gn_commons.models import AbstractInterface
+from geonature.core.gn_commons.models import AbstractMixin
 from geonature.core.imports.models import TImports
 
 from bokeh.models.layouts import Row
@@ -12,7 +12,7 @@ class ImportStatisticsLabels(typing.TypedDict):
     value: str
 
 
-class InterfaceImport(AbstractInterface):
+class ImportMixin(AbstractMixin):
     @property
     @staticmethod
     @abstractmethod

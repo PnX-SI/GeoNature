@@ -2,7 +2,7 @@ from .base import TModules
 import abc
 
 
-class AbstractInterface(abc.ABC):
+class AbstractMixin(abc.ABC):
     _module: TModules = None
 
     def __init__(self, module: TModules) -> None:

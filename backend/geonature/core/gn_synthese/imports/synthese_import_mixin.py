@@ -1,6 +1,6 @@
 from math import ceil
 
-from geonature.core.imports.interface_import import InterfaceImport, ImportStatisticsLabels
+from geonature.core.imports.import_mixin import ImportMixin, ImportStatisticsLabels
 
 from apptax.taxonomie.models import Taxref
 from flask import current_app
@@ -59,7 +59,7 @@ import numpy as np
 import typing
 import json
 
-class SyntheseInterfaceImport(InterfaceImport):
+class SynthesesImportMixin(ImportMixin):
 
     @property
     @staticmethod
