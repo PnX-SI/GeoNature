@@ -1,3 +1,3 @@
 from .base import *
-from .abstract_interface import AbstractInterface
+from .abstract_mixin import AbstractMixin
 from .additional_fields import *

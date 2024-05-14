@@ -1,1 +1,1 @@
-from .synthese_interface_import import SyntheseInterfaceImport
+from .synthese_import_mixin import SynthesesImportMixin

@@ -133,18 +133,18 @@ class Destination(db.Model):
 
     @property
     def interface_import(self):
-        from geonature.core.imports.interface_import import InterfaceImport
+        from geonature.core.imports.import_mixin import ImportMixin
 
-        if InterfaceImport.is_implemented_in_module(self.module):
+        if ImportMixin.is_implemented_in_module(self.module):
             return self.module
         else:
             return None
 
     @property
     def statistics_labels(self):
-        from geonature.core.imports.interface_import import InterfaceImport
+        from geonature.core.imports.import_mixin import ImportMixin
 
-        if InterfaceImport.is_implemented_in_module(self.module):
+        if ImportMixin.is_implemented_in_module(self.module):
             return self.module.statistics_labels
         else:
             return {}
