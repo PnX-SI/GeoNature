@@ -1,7 +1,7 @@
 from geonature.core.gn_commons.models import AbstractMixin
 from geonature.core.imports.models import TImports
 
-from bokeh.models.layouts import Row
+from bokeh.embed.standalone import StandaloneEmbedJson
 
 from abc import abstractmethod
 import typing
@@ -45,7 +45,7 @@ class ImportMixin(AbstractMixin):
 
     @staticmethod
     @abstractmethod
-    def report_plot(imprt: TImports) -> Row:
+    def report_plot(imprt: TImports) -> StandaloneEmbedJson:
         pass
 
     @staticmethod

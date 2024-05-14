@@ -48,10 +48,10 @@ from geonature.core.imports.checks.sql import (
 
 from .geo import set_geom_columns_from_area_codes
 from bokeh.plotting import figure
-from bokeh.layouts import column, row
-from bokeh.models.layouts import Row
+from bokeh.layouts import column
 from bokeh.models import CustomJS, Select
 from bokeh.embed import json_item
+from bokeh.embed.standalone import StandaloneEmbedJson
 from bokeh.palettes import linear_palette, Turbo256, Plasma256
 from bokeh.models import Range1d, AnnularWedge, ColumnDataSource, Legend, LegendItem
 
@@ -393,7 +393,7 @@ class SyntheseImportMixin(ImportMixin):
             db.session.delete(source)
 
     @staticmethod
-    def report_plot(imprt: TImports) -> Row:
+    def report_plot(imprt: TImports) -> StandaloneEmbedJson:
         """
         Generate a plot of the taxonomic distribution (for each rank) based on the import.
         The following ranks are used:
@@ -574,7 +574,6 @@ class SyntheseImportMixin(ImportMixin):
             destination_table = entity.get_destination_table()
             # Set the WHERE clause
             where_clause_id_import = destination_table.c["id_source"] == id_source
-
 
         # Build the statement to retrieve the valid bounding box
         statement = None

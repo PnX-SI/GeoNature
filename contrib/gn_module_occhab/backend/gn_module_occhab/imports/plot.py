@@ -9,6 +9,7 @@ from bokeh.layouts import column
 from bokeh.plotting import figure
 from bokeh.models import CustomJS, Select
 from bokeh.embed import json_item
+from bokeh.embed.standalone import StandaloneEmbedJson
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 import sqlalchemy as sa
 from sqlalchemy import func, distinct
@@ -21,7 +22,7 @@ from sqlalchemy.orm import joinedload
 from bokeh.models import Range1d, AnnularWedge, ColumnDataSource, Legend, LegendItem
 
 
-def distribution_plot(imprt):
+def distribution_plot(imprt) -> StandaloneEmbedJson:
     categories = [
         "nom_cite",
         "nomenclature_determination_type",
