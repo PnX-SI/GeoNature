@@ -1,6 +1,6 @@
 from math import ceil
 
-from geonature.core.imports.import_mixin import ImportMixin, ImportStatisticsLabels
+from geonature.core.imports.import_mixin import ImportMixin, ImportStatisticsLabels, ImportInputUrl
 
 from apptax.taxonomie.models import Taxref
 from flask import current_app
@@ -59,11 +59,10 @@ import numpy as np
 import typing
 import json
 
-class SynthesesImportMixin(ImportMixin):
+class SyntheseImportMixin(ImportMixin):
 
-    @property
     @staticmethod
-    def statistics_labels(self) -> typing.List[ImportStatisticsLabels]:
+    def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         return [
             {"key": "taxa_count", "value": "Nombre de taxons importés"},
         ]
@@ -73,7 +72,7 @@ class SynthesesImportMixin(ImportMixin):
         pass
 
     @staticmethod
-    def check_transient_data(task, logger, imprt):
+    def check_transient_data(task, logger, imprt: TImports):
         entity = Entity.query.filter_by(destination=imprt.destination).one()  # Observation
 
         fields = {
@@ -269,9 +268,7 @@ class SynthesesImportMixin(ImportMixin):
             check_digital_proof_urls(imprt, entity, selected_fields["digital_proof"])
 
         if "WKT" in selected_fields:
-            check_is_valid_geography(
-                imprt, entity, selected_fields["WKT"], fields["the_geom_4326"]
-            )
+            check_is_valid_geography(imprt, entity, selected_fields["WKT"], fields["the_geom_4326"])
         if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
             check_geography_outside(
                 imprt,
@@ -553,7 +550,7 @@ class SynthesesImportMixin(ImportMixin):
     @staticmethod
     def compute_bounding_box(imprt: TImports):
         name_geom_4326_field = "the_geom_4326"
-        code_entity =  "observation"
+        code_entity = "observation"
 
         entity = Entity.query.filter_by(destination=imprt.destination, code=code_entity).one()
         where_clause_id_import = None
@@ -573,9 +570,7 @@ class SynthesesImportMixin(ImportMixin):
                 )
             )
             # Retrieve the destination table ("synthese")
-            entity = Entity.query.filter_by(
-                destination=imprt.destination, code="observation"
-            ).one()
+            entity = Entity.query.filter_by(destination=imprt.destination, code="observation").one()
             destination_table = entity.get_destination_table()
             # Set the WHERE clause
             where_clause_id_import = destination_table.c["id_source"] == id_source

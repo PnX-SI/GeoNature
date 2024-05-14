@@ -11,12 +11,15 @@ class ImportStatisticsLabels(typing.TypedDict):
     key: str
     value: str
 
+class ImportInputUrl(typing.TypedDict):
+    url: str
+    label: str
+
 
 class ImportMixin(AbstractMixin):
-    @property
     @staticmethod
     @abstractmethod
-    def statistics_labels(self) -> typing.List[ImportStatisticsLabels]:
+    def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         pass
 
     # The output of this method is NEVER used
