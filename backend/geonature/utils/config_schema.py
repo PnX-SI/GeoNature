@@ -174,6 +174,7 @@ class AuthenticationConfig(Schema):
         fields.String(), load_default=[]
     )  # MAYBE add default auth in this list ? (for people to disable the default login)
 
+    ID_GROUP_RECONCILIATION = fields.Integer()
     DISPLAY_DEFAULT_LOGIN_FORM = fields.Boolean(load_default=True)
     PROVIDERS_CONFIG = fields.Dict(
         load_default={},
