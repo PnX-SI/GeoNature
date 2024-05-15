@@ -135,6 +135,8 @@ class Destination(db.Model):
     def import_mixin(self):
         from geonature.core.imports.import_mixin import ImportMixin
 
+        print("MOOOOD", self.module)
+        print("DIRRRR", dir(self.module))
         if not ImportMixin.is_implemented_in_module(type(self.module)):
             raise NotImplementedError
         return self.module
