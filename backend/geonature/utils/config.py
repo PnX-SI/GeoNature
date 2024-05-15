@@ -21,9 +21,10 @@ from geonature.utils.errors import ConfigError
 __all__ = ["config", "config_frontend"]
 
 
-def validate_provider_config(config_toml):
-
-    for path_provider in config["AUTHENTICATION"]["PROVIDERS"]:
+def validate_provider_config(config, config_toml):
+    if not "AUTHENTICATION" in config_toml:
+        return
+    for path_provider in config_toml["AUTHENTICATION"]["PROVIDERS"]:
         import_path, class_name = (
             ".".join(path_provider.split(".")[:-1]),
             path_provider.split(".")[-1],
@@ -31,15 +32,7 @@ def validate_provider_config(config_toml):
         module = importlib.import_module(import_path)
         class_ = getattr(module, class_name)
         schema_unique_provider = class_.configuration_schema()
-        # schema = Schema.from_dict(
-        #     dict(
-        #         CONFIG=fields.List(
-        #             fields.Nested(schema_unique_provider),
-        #         )
-        #     ),
-        #     name=class_.name,
-        # )
-        schema_unique_provider(many=True).load(
+        config["AUTHENTICATION"][class_.name] = schema_unique_provider(many=True).load(
             config_toml["AUTHENTICATION"][class_.name], unknown=EXCLUDE
         )
 
@@ -70,8 +63,9 @@ config_default = {
 
 config = ChainMap({}, config_programmatic, config_backend, config_frontend, config_default)
 
-validate_provider_config(config_toml)
-print(config["AUTHENTICATION"])
+validate_provider_config(config, config_toml)
+
+print("EHHHHHHHHHHHHHHHHHHHHHH", config["AUTHENTICATION"])
 
 api_uri = urlsplit(config["API_ENDPOINT"])
 if "APPLICATION_ROOT" not in config:
