@@ -65,8 +65,6 @@ config = ChainMap({}, config_programmatic, config_backend, config_frontend, conf
 
 validate_provider_config(config, config_toml)
 
-print("EHHHHHHHHHHHHHHHHHHHHHH", config["AUTHENTICATION"])
-
 api_uri = urlsplit(config["API_ENDPOINT"])
 if "APPLICATION_ROOT" not in config:
     config["APPLICATION_ROOT"] = api_uri.path or "/"
