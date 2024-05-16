@@ -4,6 +4,8 @@ from geonature.utils.env import db
 from geonature.utils.celery import celery_app
 
 
-@task_postrun.connect
-def close_session(*args, **kwargs):
-    db.session.remove()
+# @task_postrun.connect
+# def close_session(*args, **kwargs):
+#     print(args)
+#     print(kwargs)
+#     db.session.remove()
