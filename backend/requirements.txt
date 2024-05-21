@@ -258,7 +258,7 @@ python-dotenv==1.0.1
     #   taxhub
 redis==5.0.1
     # via celery
-requests==2.31.0
+requests==2.32.0
     # via
     #   pypn-habref-api
     #   pypnusershub
