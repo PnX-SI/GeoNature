@@ -3,6 +3,7 @@
     Correspond a la centralisation des données de base
         relatifs aux protocoles de suivis
 """
+
 from datetime import datetime
 
 from geoalchemy2 import Geometry
@@ -230,7 +231,7 @@ class TIndividuals(DB.Model):
     id_individual = DB.Column(DB.Integer, primary_key=True)
     uuid_individual = DB.Column(UUID, nullable=False, server_default=DB.text("uuid_generate_v4()"))
     individual_name = DB.Column(DB.Unicode(255), nullable=False)
-    cd_nom = DB.Column(DB.Integer,DB.ForeignKey("taxonomie.taxref.cd_nom"), nullable=False)
+    cd_nom = DB.Column(DB.Integer, DB.ForeignKey("taxonomie.taxref.cd_nom"), nullable=False)
     id_nomenclature_sex = DB.Column(
         DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         server_default=DB.text(
