@@ -5,6 +5,7 @@ Revises: 446e902a14e7
 Create Date: 2023-10-04 09:39:48.879128
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID, JSONB
