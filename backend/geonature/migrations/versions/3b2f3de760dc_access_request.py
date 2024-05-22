@@ -129,6 +129,17 @@ def downgrade():
     DELETE FROM gn_permissions.cor_role_action_filter_module_object
         WHERE id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
     """)
+    
+    # FIX:
+    op.execute("""
+    DELETE FROM gn_permissions.cor_role_action_filter_module_object
+        WHERE id_object = gn_permissions.get_id_object('PRIVATE_OBSERVATION')
+    """)
+    op.execute("""
+    DELETE FROM gn_permissions.cor_role_action_filter_module_object
+        WHERE id_object = gn_permissions.get_id_object('SENSITIVE_OBSERVATION')
+    """)
+    
     op.execute("""
     CREATE FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter()
      RETURNS trigger
@@ -195,6 +206,19 @@ def downgrade():
         ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_filter
         FOREIGN KEY (id_filter) REFERENCES gn_permissions.t_filters (id_filter) ON UPDATE CASCADE
     """)
+    
+    # FIX:
+    op.execute("""
+    UPDATE gn_permissions.cor_role_action_filter_module_object
+        SET value_filter = 'DONNEES_DEGRADEES'
+        WHERE value_filter = 'fuzzy';
+    """)
+    op.execute("""
+    UPDATE gn_permissions.cor_role_action_filter_module_object
+        SET value_filter = 'DONNEES_PRECISES'
+        WHERE value_filter = 'exact';
+    """)
+
     op.execute("""
     UPDATE gn_permissions.cor_role_action_filter_module_object AS c
         SET id_filter = f.id_filter
