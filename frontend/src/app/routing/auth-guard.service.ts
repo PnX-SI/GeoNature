@@ -1,10 +1,4 @@
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  CanActivateChild,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { Injectable, Injector } from '@angular/core';
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
@@ -12,7 +6,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { RoutingService } from './routing.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate, CanActivateChild {
+export class AuthGuard  {
   constructor(
     private _router: Router,
     private _injector: Injector

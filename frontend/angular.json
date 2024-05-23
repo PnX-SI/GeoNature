@@ -91,15 +91,15 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "geonature:build",
-            "host": "127.0.0.1"
+            "host": "127.0.0.1",
+            "buildTarget": "geonature:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "geonature:build:production"
+              "buildTarget": "geonature:build:production"
             },
             "development": {
-              "browserTarget": "geonature:build:development"
+              "buildTarget": "geonature:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -107,7 +107,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "geonature:build"
+            "buildTarget": "geonature:build"
           }
         }
       }

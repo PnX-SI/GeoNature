@@ -43,9 +43,8 @@ const routes: Routes = [
     OccHabDatasetMapOverlayComponent,
   ],
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes), NgbModule],
-  entryComponents: [OccHabModalDownloadComponent],
+  bootstrap  : [OccHabModalDownloadComponent],
 
   providers: [OccHabDataService, OcchabStoreService, OccHabMapListService, StationResolver],
-  bootstrap: [],
 })
 export class GeonatureModule {}
