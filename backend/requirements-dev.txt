@@ -58,9 +58,9 @@ blinker==1.8.2
     # via
     #   flask
     #   flask-mail
-boto3==1.34.111
+boto3==1.34.112
     # via taxhub
-botocore==1.34.111
+botocore==1.34.112
     # via
     #   boto3
     #   s3transfer
@@ -116,7 +116,7 @@ dnspython==2.6.1
     # via email-validator
 email-validator==2.1.1
     # via wtforms-components
-fiona==1.8.22
+fiona==1.9.6
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
@@ -149,7 +149,7 @@ flask-cors==4.0.1
     #   taxhub
 flask-login==0.6.3
     # via pypnusershub
-flask-mail==0.9.1
+flask-mail==0.10.0
     # via -r requirements-common.in
 flask-marshmallow==1.2.1
     # via
@@ -205,6 +205,7 @@ idna==3.7
 importlib-metadata==4.13.0 ; python_version < "3.10"
     # via
     #   -r requirements-common.in
+    #   fiona
     #   flask
 infinity==1.5
     # via intervals
@@ -252,8 +253,6 @@ marshmallow-sqlalchemy==1.0.0
     #   taxhub
     #   usershub
     #   utils-flask-sqlalchemy-geo
-munch==4.0.0
-    # via fiona
 numpy==1.26.4
     # via shapely
 packaging==24.0
@@ -337,7 +336,7 @@ tinycss2==1.3.0
     #   weasyprint
 toml==0.10.2
     # via -r requirements-common.in
-typing-extensions==4.11.0
+typing-extensions==4.12.0
     # via
     #   alembic
     #   kombu
@@ -348,7 +347,7 @@ urllib3==1.26.18
     #   botocore
     #   requests
     #   taxhub
-validators==0.28.1
+validators==0.28.2
     # via wtforms-components
 vine==5.1.0
     # via
