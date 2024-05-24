@@ -9,11 +9,11 @@ import geonature.utils.command as command_utils
 from click.testing import CliRunner
 from geonature.utils.config import config
 from geonature.utils.env import db
-from munch import Munch
 from pypnusershub.db.models import User
 import pytest
 
 from .fixtures import *
+from .utils import dict2obj
 
 # Reuse Lambda function in the following tests
 abs_function = lambda *args, **kwargs: None
@@ -46,7 +46,7 @@ def iter_module_dist_mock(module_name):
 
     def _():
         return [
-            Munch.fromDict(
+            dict2obj(
                 {
                     "entry_points": {
                         "code": {"module": module_name, "load": module_code},
