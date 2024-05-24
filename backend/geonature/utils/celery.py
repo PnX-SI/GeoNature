@@ -43,6 +43,9 @@ class FlaskCelery(Celery):
             abstract = True
 
             def __call__(self, *args, **kwargs):
+                if hasattr(self, "app"):
+                    with self.app.app_context():
+                        return SQLASessionTask.__call__(self, *args, **kwargs)
                 if flask.has_app_context():
                     return SQLASessionTask.__call__(self, *args, **kwargs)
                 else:
