@@ -436,6 +436,10 @@ class SyntheseImportMixin(ImportMixin):
                 ]
             )
 
+            # if data is empty
+            if not data.size:
+                continue
+
             # Extract the rank values and counts
             rank_values, counts = data[:, 1], data[:, 0].astype(int)
 
@@ -468,7 +472,6 @@ class SyntheseImportMixin(ImportMixin):
                 y_range=Range1d(start=-3, end=3),
                 title=f"Distribution des taxons (selon le rang = {rank})",
                 tooltips=[("Number", "@countvalue"), (rank, "@rankvalue")],
-                width=600,
                 toolbar_location=None,
             )
             # Add the Pie chart
@@ -503,6 +506,9 @@ class SyntheseImportMixin(ImportMixin):
 
             # Add the plot to the list of figures
             figures.append(fig)
+
+        if not figures:
+            return {}
 
         # Generate the layout with the plots and the rank selector
         plot_area = column(figures)
