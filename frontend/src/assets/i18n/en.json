@@ -27,6 +27,7 @@
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
   "Download": "Download",
+  "Upload": "Upload",
   "Downloading": "Downloading",
   "DownloadOverflow": "The number of items is too big to be downloaded, please modify your request or contact your administrator",
   "AllItems": "all",
@@ -50,7 +51,8 @@
     "RefreshFilters": "Refresh filters",
     "AdvancedFilters": "Advanced filters",
     "OtherFilters": "Other filter",
-    "Organism": "Organism(s)"
+    "Organism": "Organism(s)",
+    "Filter":"Filtrer"
   },
   "List": {
     "Columns": "Columns",
@@ -224,5 +226,33 @@
     "type": "Media Type",
     "next": "Go to previous media",
     "previous": "Go to next media"
+  },
+  "Import": {
+    "Report": {
+      "Errors": {
+        "Entity": "Entity"
+      }
+    },
+    "Destinations": "Destinations",
+    "FileUpload": " Upload a file ",
+    "ChooseDataset": "Select a dataset",
+    "DestinationLabel": "Import destination",
+    "ChooseDestination": "Select a destination",
+    "ImportFile": "Import a file",
+    "ChooseFile": "Select a file",
+    "Next": "Next",
+    "Validate": "Validate",
+    "ErrorMessage": {
+      "Title": "The import module encountered an issue.",
+      "Remark": "This  issue is not related to the data control.",
+      "DescriptionRestart": "You can retry the import after parameters checking.",
+      "DescriptionContactAdmin": "If the problem ius still there, please contact your administrator."
+    },
+    "Errors": {
+      "FileTooBig": "Le fichier sélectionné est trop volumineux. La taille maximale est de {{maxFileSize}}Mo",
+      "EmptyFile": "Le fichier sélectionné est vide",
+      "FileColumn": "La première ligne du fichier doit correspondre au nom des colonnes",
+      "FileNameTooBig": "Le nom du fichier est trop long. Il doit faire moins de {{maxFileNameLength}} caractères."
+    }
   }
 }

@@ -368,13 +368,11 @@ def _session(app):
 
 
 @pytest.fixture
-def celery_eager(app):
+def celery_eager(app, monkeypatch):
     from geonature.utils.celery import celery_app
 
-    old_eager = celery_app.conf.task_always_eager
-    celery_app.conf.task_always_eager = True
-    yield
-    celery_app.conf.task_always_eager = old_eager
+    monkeypatch.setattr(celery_app.conf, "task_always_eager", True)
+    monkeypatch.setattr(celery_app.conf, "task_eager_propagates", True)
 
 
 @pytest.fixture(scope="function")
@@ -430,7 +428,7 @@ def datasets(users, acquisition_frameworks, module):
     ).scalar_one()
 
     # add module code in the list to associate them to datasets
-    writable_module_code = ["OCCTAX"]
+    writable_module_code = ["OCCTAX", "OCCHAB"]
     writable_module = db.session.scalars(
         select(TModules).where(TModules.module_code.in_(writable_module_code))
     ).all()
