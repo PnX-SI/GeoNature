@@ -468,7 +468,6 @@ class SyntheseImportMixin(ImportMixin):
                 y_range=Range1d(start=-3, end=3),
                 title=f"Distribution des taxons (selon le rang = {rank})",
                 tooltips=[("Number", "@countvalue"), (rank, "@rankvalue")],
-                width=600,
                 toolbar_location=None,
             )
             # Add the Pie chart

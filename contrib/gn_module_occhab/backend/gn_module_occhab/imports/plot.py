@@ -100,7 +100,6 @@ def distribution_plot(imprt) -> StandaloneEmbedJson:
             y_range=Range1d(start=-3, end=3),
             title=f"Distribution des taxons (selon le rang = {category_label})",
             tooltips=[("Number", "@countvalue"), (f"{category_label}", "@rankvalue")],
-            width=1000,
             toolbar_location=None,
         )
         # Add the Pie chart
