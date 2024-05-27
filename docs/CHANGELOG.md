@@ -15,7 +15,7 @@ CHANGELOG
 - [CAS-INPN] Fix du système d'authentification au CAS de l'INPN (#2866)
 - [Monitoring] Correction de la requête SQLAlchemy de récupération des aires de sites (#2954)
 - [Occtax] Correction de la transformation de la valeur par défaut dans les champs additionnels d'Occtax (#2978, #3011, #3017)
-- [RefGeo] Correction du filtre `type_code` de la route `/geo/areas`(#3057,PnX-SI/RefGeo#26)
+- [RefGeo] Correction du filtre `type_code` de la route `/geo/areas` (#3057, PnX-SI/RefGeo#26)
 
 2.14.1 (2024-04-29)
 -------------------
