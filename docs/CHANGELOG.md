@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+2.14.2 (2024-05-27)
+-------------------
+
+**🚀 Nouveautés**
+
+- Mise à jour de dépendances critiques (#3054)
+
+**🐛 Corrections**
+
+- Correction d'erreur dans les fichiers de traductions du frontend (#3026)
+- Correction de la fermeture des sessions SQLAlchemy lancées par Celery (#3050,#3065)
+- [CAS-INPN] Fix du système d'authentification au CAS de l'INPN (#2866)
+- [Monitoring] Correction de la requête SQLAlchemy de récupération des aires de sites (#2954)
+- [OccTax] Correction de la transformation de la valeur par défaut dans les champs additionels d'OccTax (#3017)
+
 2.14.1 (2024-04-29)
 -------------------
 
