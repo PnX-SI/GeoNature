@@ -25,9 +25,9 @@ blinker==1.8.2
     # via
     #   flask
     #   flask-mail
-boto3==1.34.111
+boto3==1.34.113
     # via taxhub
-botocore==1.34.111
+botocore==1.34.113
     # via
     #   boto3
     #   s3transfer
@@ -111,7 +111,7 @@ flask-cors==4.0.1
     #   taxhub
 flask-login==0.6.3
     # via pypnusershub
-flask-mail==0.9.1
+flask-mail==0.10.0
     # via -r requirements-common.in
 flask-marshmallow==1.2.1
     # via
@@ -232,13 +232,13 @@ pyphen==0.15.0
     # via weasyprint
 pypn-habref-api==0.4.1
     # via -r requirements-dependencies.in
-pypn-ref-geo==1.5.2
+pypn-ref-geo==1.5.3
     # via
     #   -r requirements-dependencies.in
     #   taxhub
-pypnnomenclature==1.6.2
+pypnnomenclature==1.6.3
     # via -r requirements-dependencies.in
-pypnusershub==2.1.4
+pypnusershub==2.1.5
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -287,7 +287,7 @@ sqlalchemy==1.4.52
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==1.14.0
+taxhub==1.14.1
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -298,7 +298,7 @@ tinycss2==1.3.0
     #   weasyprint
 toml==0.10.2
     # via -r requirements-common.in
-typing-extensions==4.11.0
+typing-extensions==4.12.0
     # via
     #   alembic
     #   kombu
@@ -318,7 +318,7 @@ utils-flask-sqlalchemy==0.4.1
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-utils-flask-sqlalchemy-geo==0.3.1
+utils-flask-sqlalchemy-geo==0.3.2
     # via
     #   -r requirements-dependencies.in
     #   pypn-ref-geo
@@ -352,7 +352,7 @@ wtforms-sqlalchemy==0.4.1
     # via -r requirements-common.in
 xmltodict==0.13.0
     # via -r requirements-common.in
-zipp==3.18.2
+zipp==3.19.0
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
