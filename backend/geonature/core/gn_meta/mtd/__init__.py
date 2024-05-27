@@ -90,9 +90,9 @@ class MTDInstanceApi:
         url = url.format(ID_ROLE=self.id_role)
         try:
             xml = self._get_xml_by_url(url)
-        except requests.HttpError as http_error:
+        except requests.HTTPError as http_error:
             error_code = http_error.response.status_code
-            warning_message = f"""[HttpError : {error_code}] for URL "{url}"."""
+            warning_message = f"""[HTTPError : {error_code}] for URL "{url}"."""
             if error_code == 404:
                 warning_message = f"""{warning_message} > Probably no dataset found for the user with ID '{self.id_role}'"""
             logger.warning(warning_message)
@@ -112,9 +112,9 @@ class MTDInstanceApi:
         url = urljoin(self.api_endpoint, self.af_user_path).format(ID_ROLE=self.id_role)
         try:
             xml = self._get_xml_by_url(url)
-        except requests.HttpError as http_error:
+        except requests.HTTPError as http_error:
             error_code = http_error.response.status_code
-            warning_message = f"""[HttpError : {error_code}] for URL "{url}"."""
+            warning_message = f"""[HTTPError : {error_code}] for URL "{url}"."""
             if error_code == 404:
                 warning_message = f"""{warning_message} > Probably no acquisition framework found for the user with ID '{self.id_role}'"""
             logger.warning(warning_message)
