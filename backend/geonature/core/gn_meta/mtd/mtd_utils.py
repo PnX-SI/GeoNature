@@ -140,8 +140,12 @@ def sync_af(af):
             .on_conflict_do_nothing(index_elements=["unique_acquisition_framework_id"])
             .returning(TAcquisitionFramework)
         )
+    DB.session.execute(statement)
 
-    return DB.session.scalar(statement)
+    acquisition_framework = DB.session.scalars(
+        select(TAcquisitionFramework).filter_by(unique_acquisition_framework_id=af_uuid)
+    )
+    return acquisition_framework
 
 
 def add_or_update_organism(uuid, nom, email):

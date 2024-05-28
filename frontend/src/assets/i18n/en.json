@@ -23,7 +23,7 @@
   "Columns": "Columns",
   "Cancel": "Cancel",
   "Delete": "Delete",
-  "NotAllowed": "You do not have the rights to perform this action",
+  "NotAllowed": "You do not have the permissions to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
   "Download": "Download",
@@ -48,7 +48,7 @@
   },
   "Form": {
     "RefreshFilters": "Refresh filters",
-    "AdvancedFilters": "Filtres avancés",
+    "AdvancedFilters": "Advanced filters",
     "OtherFilters": "Other filter",
     "Organism": "Organism(s)"
   },

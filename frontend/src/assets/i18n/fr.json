@@ -25,7 +25,7 @@
   "Delete": "Supprimer",
   "Yes": "Oui",
   "No": "Non",
-  "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
+  "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action",
   "LoginError": "Identifiant ou mot de passe incorrect",
   "Downloading": "Téléchargement en cours",
   "DownloadData": "Télécharger les données",
@@ -39,12 +39,12 @@
     "AddLine": "Localisez l'observation (ligne)",
     "AddPolygon": "Localisez l'observation (polygone)",
     "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé",
-    "FileLayerInfoMessage": "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre releve. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche ",
+    "FileLayerInfoMessage": "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre relevé. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche",
     "FileLayerInfoSynthese": "Fichier importé. Clic droit sur un objet pour afficher ses infos"
   },
   "MetaData": {
     "JddError": "Erreur lors de la récupération des jeux de données",
-    "JddErrorMTD": "Error lors de la récupération des JDD via l'application MTD",
+    "JddErrorMTD": "Erreur lors de la récupération des JDD via l'application MTD",
     "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
     "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
     "AF404": "Cadre d'acquisition inexistant",
@@ -66,7 +66,7 @@
     "DisplayColumns": "Colonnes à afficher"
   },
   "MapList": {
-    "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
+    "InvalidTypeError": "Le type de valeur renseigné ne correspond pas au type du champ",
     "NoColumnSelected": "Veuillez sélectionner une colonne à filtrer",
     "ObservationNumber": "Nombre d'observation(s) :"
   },
@@ -161,9 +161,9 @@
     "Errors": {
       "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
       "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
-      "ExistproofError": "Les preuves d'existence ne peuvent être remplies seulement si 'preuve d'existence = Oui'",
+      "ExistproofError": "Les preuves d'existence ne peuvent être renseignées seulement si 'preuve d'existence = Oui'",
       "NomCiteRequiredError": "Veuillez renseigner un taxon",
-      "CdNomRequiredError": "Veuillez selectionner taxon présent dans le référentiel Taxref",
+      "CdNomRequiredError": "Veuillez selectionner un taxon présent dans le référentiel Taxref",
       "DeterminerRequiredError": "Veuillez indiquer un déterminateur",
       "DeterminationMethodRequiredError": "Veuillez indiquer la méthode de détermination",
       "TechObsRequiredError": "Veuillez indiquer la technique d'observation",
@@ -194,7 +194,7 @@
   "Geo": {
     "Municipalities": "Communes"
   },
-  "IntroMessage": "Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
+  "IntroMessage": "Bienvenue dans le module Occtax. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
   "ErrorMessage": "Une erreur s'est produite",
   "Export": {
     "ExportModuleName": "Module d'export des données"
@@ -229,7 +229,7 @@
     "ObsState": "Statut de l'observation",
     "ObsTech": "Technique d'observation",
     "ObsStateBio": "Etat biologique",
-    "ObsStatusBio": "Status biologique",
+    "ObsStatusBio": "Statut biologique",
     "ObsStatBiogeo": "Statut biogéographique",
     "ObsBehav": "Comportement",
     "ObsSex": "Sexe",

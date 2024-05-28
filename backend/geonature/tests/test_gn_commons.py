@@ -6,6 +6,7 @@ import json
 from flask import url_for, current_app
 from geoalchemy2.elements import WKTElement
 from PIL import Image
+from marshmallow import Schema
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from sqlalchemy import func, select, exists
 from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
@@ -19,9 +20,14 @@ from geonature.core.gn_commons.tasks import clean_attachments
 from geonature.core.gn_permissions.models import PermObject
 from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
+from geonature.core.gn_commons.schemas import CastableField
 
 from .fixtures import *
 from .utils import set_logged_user
+
+
+class DummySchema(Schema):
+    test = CastableField()
 
 
 @pytest.fixture(scope="function")
@@ -46,7 +52,8 @@ def additional_field(app, datasets):
         description="une descrption",
         quantitative=False,
         unity="degré C",
-        field_values=["la", "li"],
+        field_values=[100, 200, 300],
+        default_value="100",
         id_widget=1,
         modules=[module],
         objects=[obj],
@@ -500,6 +507,9 @@ class TestCommons:
         assert "type_widget" in addi_one
         assert "bib_nomenclature_type" in addi_one
 
+        # test default value has been casted
+        assert type(addi_one["default_value"]) is int
+
     def test_get_additional_fields_multi_module(self, datasets, additional_field):
         response = self.client.get(
             url_for("gn_commons.get_additional_fields"),
@@ -560,6 +570,14 @@ class TestCommons:
         assert not db.session.scalar(
             exists().where(TAdditionalFields.field_name == "pytest_invvalid").select()
         )
+
+    @pytest.mark.parametrize(
+        "value, expected_type", [("1", int), ("1.0", float), ("1 ans", str), ("1,0", str)]
+    )
+    def test_castable_field(self, value, expected_type):
+        # test the serialization of a model using CastableField
+        result = DummySchema().dump({"test": value})
+        assert type(result["test"] == expected_type)
 
     def test_get_t_mobile_apps(self, mobile_app):
         import os, shutil, time

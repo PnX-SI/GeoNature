@@ -134,29 +134,28 @@ export class AuthService {
   logout() {
     this.cleanLocalStorage();
     this.cruvedService.clearCruved();
+    // call the logout route to delete the session
+    this._http.get<any>(`${this.config.API_ENDPOINT}/auth/logout`).subscribe(() => {
+      location.reload();
+    });
 
     if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       document.location.href = `${this.config.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${this.config.URL_APPLICATION}`;
     } else {
       this.router.navigate(['/login']);
-      // call the logout route to delete the session
-      // TODO: in case of different cruved user in DEPOBIO context must run this routes
-      // but actually make bug the INPN CAS deconnexion
-      this._http.get<any>(`${this.config.API_ENDPOINT}/auth/logout`).subscribe(() => {
-        location.reload();
-      });
-      // refresh the page to refresh all the shared service to avoid cruved conflict
     }
   }
 
   private cleanLocalStorage() {
     // Remove only local storage items need to clear when user logout
     localStorage.removeItem(this.prefix + 'current_user');
+    localStorage.removeItem(this.prefix + 'id_token');
+    localStorage.removeItem(this.prefix + 'expires_at');
     localStorage.removeItem('modules');
   }
 
   isAuthenticated(): boolean {
-    return this._cookie.get('token') !== null;
+    return this._cookie.check('gn_id_token') && this._cookie.get('gn_id_token') !== null;
   }
 
   handleLoginError() {

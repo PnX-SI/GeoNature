@@ -51,7 +51,7 @@ export function createTranslateLoader(http: HttpClient) {
 import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
-import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
+import { UserCasGuard, UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -111,6 +111,7 @@ export function initApp(injector) {
   ],
   providers: [
     AuthService,
+    UserCasGuard,
     AuthGuard,
     ModuleService,
     ToastrService,

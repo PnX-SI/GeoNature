@@ -29,3 +29,29 @@ def get_id_nomenclature(nomenclature_type_mnemonique, cd_nomenclature):
             )
         )
     )
+
+
+def dict2obj(dict_data):
+
+    # checking whether object d is a
+    # instance of class list
+    if isinstance(dict_data, list):
+        dict_data = [dict2obj(x) for x in dict_data]
+
+    # if d is not a instance of dict then
+    # directly object is returned
+    if not isinstance(dict_data, dict):
+        return dict_data
+
+    # declaring a class
+    class C:
+        def __getitem__(self, item):
+            return getattr(self, item)
+
+    # constructor of the class passed to obj
+    obj = C()
+
+    for k in dict_data:
+        obj.__dict__[k] = dict2obj(dict_data[k])
+
+    return obj
