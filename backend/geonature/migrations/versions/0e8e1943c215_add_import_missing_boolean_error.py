@@ -1,4 +1,4 @@
-"""add_missing_error
+"""add_import_missing_boolean_error
 
 Revision ID: 0e8e1943c215
 Revises: 8b149244d586
@@ -22,9 +22,9 @@ def upgrade():
         ImportUserErrorType.__table__,
         [
             {
-                "error_type": "Erreur de format",
+                "error_type": "Erreur de format booléen",
                 "name": "INVALID_BOOL",
-                "description": "Le champ doit être renseigne avec une valeur binaire (0 ou 1, true ou false).",
+                "description": "Le champ doit être renseigné avec une valeur binaire (0 ou 1, true ou false).",
             },
         ],
     )
