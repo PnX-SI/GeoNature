@@ -7,6 +7,7 @@ CHANGELOG
 **🚀 Nouveautés**
 
 - Mise à jour de dépendances critiques (#3054)
+- Mise à jour de NodeJS en version 20 (#2997)
 
 **🐛 Corrections**
 
