@@ -22,7 +22,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="text-muted">Jeu de données</h5>
-          <h4>
+          <h4 [attr.data-qa]="'dataset-' + dataset.dataset_name">
             {{ dataset.dataset_name }}
             <button
               *ngIf="dataset.cruved.D"

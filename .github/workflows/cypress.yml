@@ -31,6 +31,15 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Add postgis_raster database extension
@@ -109,6 +118,7 @@ jobs:
           geonature db upgrade occhab-samples@head
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
           geonature permissions supergrant --group --nom "Grp_admin" --yes
+          geonature db upgrade import-samples@head
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
@@ -121,6 +131,11 @@ jobs:
         env:
           TAXHUB_SETTINGS: test_config.py
           TAXHUB_SQLALCHEMY_DATABASE_URI: "postgresql://geonatadmin:geonatpasswd@127.0.0.1:5432/geonature2db"
+      - name: Run celery
+        run: celery -A geonature.celery_app:app worker &
+        working-directory: ./backend/geonature/
+        env:
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:

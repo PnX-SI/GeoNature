@@ -1,11 +1,17 @@
-<div class="container-fluid ImportList">
+<div
+  class="container-fluid ImportList"
+  data-qa="import-list"
+>
   <div class="card">
     <div class="card-header">
       <h5 class="card-title mb-0">Liste des imports</h5>
     </div>
     <div class="card-body">
       <div *ngIf="!empty; else emptyBlock">
-        <div class="Toolbar mb-2">
+        <div
+          class="Toolbar mb-2"
+          data-qa="import-list-toolbar"
+        >
           <pnx-destinations
             class="Toolbar__destinations"
             label="{{ 'Form.Filter' | translate }} {{ 'By' | translate | lowercase }} {{
@@ -14,6 +20,7 @@
             [parentFormControl]="selectDestinationForm"
             (onChange)="resetPage()"
             (onClear)="resetPage()"
+            data-qa="import-list-toolbar-destinations"
           ></pnx-destinations>
           <div class="flex-fill Toolbar__search">
             <small>{{ 'Form.OtherFilters' | translate }}</small>
@@ -25,6 +32,7 @@
               placeholder="{{ 'Search' | translate }}"
               aria-label="Search"
               aria-describedby="basic-addon1"
+              data-qa="import-list-toolbar-search"
             />
           </div>
         </div>
@@ -43,6 +51,7 @@
           (page)="setPage($event)"
           (sort)="onSort($event)"
           [scrollbarH]="true"
+          data-qa="import-list-table"
         >
           <ngx-datatable-column
             name="Id Import"
@@ -55,8 +64,11 @@
             <ng-template
               let-row="row"
               ngx-datatable-cell-template
+              let-rowIndex="rowIndex"
             >
-              {{ row.id_import }}
+              <div [attr.data-qa]="'import-list-table-row-' + rowIndex + '-id-import'">
+                {{ row.id_import }}
+              </div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
@@ -69,31 +81,41 @@
             <ng-template
               let-row="row"
               ngx-datatable-cell-template
+              let-rowIndex="rowIndex"
             >
-              <ng-container [ngSwitch]="col.prop">
-                <ng-container *ngSwitchCase="'dataset.dataset_name'">
-                  <a
-                    routerLink="/metadata/dataset_detail/{{ row.id_dataset }}"
-                    matTooltip="{{ col.name }}"
-                  >
-                    {{ row.dataset ? row.dataset.dataset_name : '' }}
-                  </a>
-                </ng-container>
-                <ng-container *ngSwitchCase="'date_create_import'">
-                  {{ row.date_create_import | date: 'dd-MM-yyyy' }}
-                </ng-container>
-                <ng-container *ngSwitchCase="'full_file_name'">
-                  <a
-                    href="javascript:void(0)"
-                    (click)="downloadSourceFile(row)"
-                  >
+              <div
+                [attr.data-qa]="
+                  'import-list-table-row-' + rowIndex + '-' + generateDataQaAttribute(col.name)
+                "
+              >
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchCase="'dataset.dataset_name'">
+                    <a
+                      routerLink="/metadata/dataset_detail/{{ row.id_dataset }}"
+                      matTooltip="{{ col.name }}"
+                    >
+                      {{ row.dataset ? row.dataset.dataset_name : '' }}
+                    </a>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'date_create_import'">
+                    {{ row.date_create_import | date: 'dd-MM-yyyy' }}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'full_file_name'">
+                    <a
+                      href="javascript:void(0)"
+                      (click)="downloadSourceFile(row)"
+                    >
+                      {{ row[col.prop] }}
+                    </a>
+                    <ng-container *ngSwitchCase="'statistics_rows'">
+                      {{ formattedRowCount(row) }}
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
                     {{ row[col.prop] }}
-                  </a>
+                  </ng-container>
                 </ng-container>
-                <ng-container *ngSwitchDefault>
-                  {{ row[col.prop] }}
-                </ng-container>
-              </ng-container>
+              </div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
@@ -156,6 +178,7 @@
             <ng-template
               ngx-datatable-cell-template
               let-row="row"
+              let-index="rowIndex"
               let-expanded="expanded"
             >
               <mat-button-toggle
@@ -163,6 +186,7 @@
                 [ngClass]="hasStatistics(row) ? 'purple' : 'Datatable__buttonTooltip--disabled'"
                 [matTooltip]="hasStatistics(row) ? getStatisticsTooltip(row) : None"
                 matTooltipClass="Datatable__buttonTooltip"
+                [attr.data-qa]="'import-list-table-row-' + index + '-statistics-toggle'"
               >
                 <mat-icon>query_stats</mat-icon>
               </mat-button-toggle>
@@ -178,6 +202,7 @@
           >
             <ng-template
               let-row="row"
+              let-index="rowIndex"
               ngx-datatable-cell-template
             >
               <button
@@ -187,6 +212,7 @@
                 color="primary"
                 class="Datatable__button"
                 (click)="onFinishImport(row)"
+                [attr.data-qa]="'import-list-table-row-' + index + '-actions-edit'"
               >
                 <mat-icon>edit</mat-icon>
               </button>
@@ -196,6 +222,7 @@
                 mat-icon-button
                 color="primary"
                 [routerLink]="[row.destination.code, row.id_import, 'report']"
+                [attr.data-qa]="'import-list-table-row-' + index + '-actions-report'"
               >
                 <mat-icon>info</mat-icon>
               </button>
@@ -206,6 +233,7 @@
                 color="primary"
                 (click)="_csvExport.onCSV(row.id_import)"
                 matTooltip="Téléchargement des données invalides"
+                [attr.data-qa]="'import-list-table-row-' + index + '-actions-csv'"
               >
                 <mat-icon>download</mat-icon>
               </button>
@@ -216,6 +244,7 @@
                 class="Datatable__button"
                 (click)="openDeleteModal(row, deleteModal)"
                 [matTooltip]="getTooltip(row, 'delete')"
+                [attr.data-qa]="'import-list-table-row-' + index + '-actions-delete'"
               >
                 <mat-icon>delete</mat-icon>
               </button>
@@ -225,12 +254,16 @@
       </div>
       <ng-template #emptyBlock>Vous n'avez effectué aucun import</ng-template>
 
-      <import-modal-destination class="pull-right mt-3"></import-modal-destination>
+      <import-modal-destination
+        class="pull-right mt-3"
+        data-qa="import-list-modal-destination"
+      ></import-modal-destination>
 
       <ng-template
         #deleteModal
         let-c="close "
         let-d="dismiss"
+        data-qa="import-list-modal-delete"
       >
         <import-delete
           [row]="deleteOne"
