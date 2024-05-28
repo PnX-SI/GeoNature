@@ -1,4 +1,4 @@
-FROM node:16-bullseye AS source-light
+FROM node:20-bullseye AS source-light
 
 WORKDIR /build/
 
