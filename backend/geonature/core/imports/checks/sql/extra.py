@@ -1,6 +1,7 @@
 from datetime import date
 
 from flask import current_app
+from geonature.core.imports.models import BibFields, Entity, TImports
 from sqlalchemy import func
 from sqlalchemy.sql.expression import select, update, join
 from sqlalchemy.sql import column
@@ -177,36 +178,65 @@ def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
     )
 
 
-def generate_missing_uuid(imprt, entity, uuid_field):
+def generate_missing_uuid(
+    imprt: TImports, entity: Entity, uuid_field: BibFields, origin_id_field: BibFields = None
+):
     """
     Update records in the transient table where the uuid is None
     with a new UUID.
     Parameters
     ----------
-    imprt : Import
+    imprt : TImports
         The import to check.
     entity : Entity
         The entity to check.
     uuid_field : BibFields
         The field to check.
+    origin_id_field : BibFields
+        Field used to generate the UUID
     """
     transient_table = imprt.destination.get_transient_table()
+    # Generate UUID for missing UUID
 
-    cte_generated_uuid = sa.select(func.uuid_generate_v4()).cte("cte_generated_uuid")
-
-    stmt = (
-        update(transient_table)
-        .values(
-            {
-                transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
-            }
-        )
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(
-            transient_table.c[uuid_field.source_field] == None,
-        )
-        .where(transient_table.c[uuid_field.dest_field] == None)
+    whereclause = sa.and_(
+        transient_table.c[uuid_field.source_field] == None,
+        transient_table.c.id_import == imprt.id_import,
+        transient_table.c[uuid_field.dest_field] == None,
     )
+    if origin_id_field:
+        cte_generated_uuid = (
+            sa.select(
+                transient_table.c[origin_id_field.source_field],
+                func.uuid_generate_v4().label("uuid"),
+            )
+            .where(whereclause)
+            .group_by(transient_table.c[origin_id_field.name_field])
+            .cte("cte_generated_uuid")
+        )
+
+        stmt = (
+            update(transient_table)
+            .values(
+                {
+                    transient_table.c[uuid_field.dest_field]: cte_generated_uuid.c.uuid,
+                }
+            )
+            .where(
+                transient_table.c[origin_id_field.name_field]
+                == cte_generated_uuid.c[origin_id_field.name_field],
+                whereclause,
+            )
+        )
+    else:
+        stmt = (
+            update(transient_table)
+            .values(
+                {
+                    transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
+                }
+            )
+            .where(whereclause)
+        )
     db.session.execute(stmt)
 
 
