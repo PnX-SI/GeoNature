@@ -84,10 +84,6 @@
               {{ importData?.source_count || 0 }}
             </p>
             <div *ngIf="importStatus === 'TERMINE'">
-              <p>
-                <b>Nombre d’entités importées :</b>
-                {{ importData?.import_count || 0 }}
-              </p>
               <div *ngFor="let item of importData?.destination.statistics_labels">
                 <ng-container *ngIf="importData?.statistics[item.key] !== null">
                   <p>
