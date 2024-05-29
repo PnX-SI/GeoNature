@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-backend:
-    name: Build backend image
+    name: Build backend images
     runs-on: ubuntu-latest
     steps:
       -
@@ -72,7 +72,7 @@ jobs:
           labels: ${{ steps.meta-prod.outputs.labels }}
 
   build-frontend:
-    name: Build frontend image
+    name: Build frontend images
     runs-on: ubuntu-latest
     steps:
       -
