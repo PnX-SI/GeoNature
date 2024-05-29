@@ -47,6 +47,9 @@ setuptools.setup(
             "myst-parser",
             "sphinx-autoapi",
         ],
+        "sentry": [
+            "sentry_sdk[flask]",
+        ],
     },
     classifiers=[
         "Framework :: Flask",
