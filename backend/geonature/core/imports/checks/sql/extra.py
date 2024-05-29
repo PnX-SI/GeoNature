@@ -243,24 +243,9 @@ def check_altitudes(imprt, entity, alti_min_field=None, alti_max_field=None):
     if alti_min_field:
         alti_min_name_field = alti_min_field.name_field
         alti_min_dest_col = transient_table.c[alti_min_field.dest_field]
-        report_erroneous_rows(
-            imprt,
-            entity,
-            error_type="INVALID_INTEGER",
-            error_column=alti_min_name_field,
-            whereclause=(alti_min_dest_col < 0),
-        )
 
     if alti_max_field:
-        alti_max_name_field = alti_max_field.name_field
         alti_max_dest_col = transient_table.c[alti_max_field.dest_field]
-        report_erroneous_rows(
-            imprt,
-            entity,
-            error_type="INVALID_INTEGER",
-            error_column=alti_max_name_field,
-            whereclause=(alti_max_dest_col < 0),
-        )
 
     if alti_min_field and alti_max_field:
         report_erroneous_rows(
