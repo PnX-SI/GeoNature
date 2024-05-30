@@ -25,30 +25,17 @@ def upgrade():
         sa.select(Destination.id_destination).where(Destination.code == "occhab")
     )
 
-    op.execute(
-        sa.update(BibFields)
-        .where(
-            BibFields.name_field == "id_station_source", BibFields.id_destination == occhab_dest_id
+    inter_fields_conditions = [
+        ["id_station_source", dict(optional_conditions=["unique_id_sinp_station"], mandatory=True)],
+        ["unique_id_sinp_station", dict(optional_conditions=["id_station_source"], mandatory=True)],
+        ["WKT", dict(optional_conditions=["longitude", "latitude"], mandatory=True)],
+    ]
+    for name_field, update_values in inter_fields_conditions:
+        op.execute(
+            sa.update(BibFields)
+            .where(BibFields.name_field == name_field, BibFields.id_destination == occhab_dest_id)
+            .values(**update_values)
         )
-        .values(optional_conditions=["unique_id_sinp_station"], mandatory=True)
-    )
-    op.execute(
-        sa.update(BibFields)
-        .where(
-            BibFields.name_field == "unique_id_sinp_station",
-            BibFields.id_destination == occhab_dest_id,
-        )
-        .values(optional_conditions=["id_station_source"], mandatory=True)
-    )
-
-    op.execute(
-        sa.update(BibFields)
-        .where(
-            BibFields.name_field == "WKT",
-            BibFields.id_destination == occhab_dest_id,
-        )
-        .values(optional_conditions=["longitude", "latitude"], mandatory=True)
-    )
 
     session.close()
 
