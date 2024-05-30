@@ -558,11 +558,6 @@ class FieldMapping(MappingTemplate):
                 }
                 for field in fields
             },
-            "allOf": [
-                optional_conditions_to_jsonschema(field.name_field, field.optional_conditions)
-                for field in fields
-                if field.optional_conditions
-            ],
             "required": [
                 field.name_field
                 for field in fields
@@ -575,7 +570,14 @@ class FieldMapping(MappingTemplate):
             },
             "additionalProperties": False,
         }
-        print(schema)
+        optional_conditions = [
+            optional_conditions_to_jsonschema(field.name_field, field.optional_conditions)
+            for field in fields
+            if field.optional_conditions
+        ]
+        if optional_conditions:
+            schema["allOf"] = optional_conditions
+
         try:
             validate_json(values, schema)
         except JSONValidationError as e:
