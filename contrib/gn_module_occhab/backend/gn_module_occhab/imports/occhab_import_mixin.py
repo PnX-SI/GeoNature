@@ -159,8 +159,8 @@ class OcchabImportMixin(ImportMixin):
 
                 elif "id_station_source" in fields:
                     generate_missing_uuid(
-                        imprt, entity, fields["unique_id_sinp_station"]
-                    )  # Ajouter column_id_source
+                        imprt, entity, fields["unique_id_sinp_station"], fields["id_station_source"]
+                    )
                 # get row with uuid not in the dest table
                 # -> check_conistency
 
