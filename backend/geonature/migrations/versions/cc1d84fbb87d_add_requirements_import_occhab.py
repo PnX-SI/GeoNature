@@ -24,6 +24,7 @@ def upgrade():
     occhab_dest_id = session.scalar(
         sa.select(Destination.id_destination).where(Destination.code == "occhab")
     )
+
     op.execute(
         sa.update(BibFields)
         .where(
@@ -39,6 +40,16 @@ def upgrade():
         )
         .values(optional_conditions=["id_station_source"], mandatory=True)
     )
+
+    op.execute(
+        sa.update(BibFields)
+        .where(
+            BibFields.name_field == "WKT",
+            BibFields.id_destination == occhab_dest_id,
+        )
+        .values(optional_conditions=["longitude", "latitude"], mandatory=True)
+    )
+
     session.close()
 
 
