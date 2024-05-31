@@ -17,7 +17,7 @@ export class MappingThemeComponent implements OnInit {
   ngOnInit() {}
 
   isMapped(keySource: string) {
-    return this._fm.mappingStatus('mapped', keySource);
+    return this._fm.checkTargetFieldStatus('mapped', keySource);
   }
   displayAlert(field) {
     return (

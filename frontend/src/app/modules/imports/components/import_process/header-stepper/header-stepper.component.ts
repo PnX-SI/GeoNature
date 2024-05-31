@@ -63,6 +63,5 @@ export class HeaderStepperComponent implements OnInit, OnChanges {
       destinationName: destination.label,
       fileName: full_file_name,
     };
-    console.log(1, this.infoBox);
   }
 }
