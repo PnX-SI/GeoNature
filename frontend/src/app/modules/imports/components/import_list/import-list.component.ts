@@ -12,6 +12,7 @@ import { ImportProcessService } from '../import_process/import-process.service';
 import { Import } from '../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
 import { CsvExportService } from '../../services/csv-export.service';
+import { formatRowCount } from '../../utils/format-row-count';
 
 @Component({
   styleUrls: ['import-list.component.scss'],
@@ -163,6 +164,10 @@ export class ImportListComponent implements OnInit {
     this._ds.downloadSourceFile(row.id_import).subscribe((result) => {
       saveAs(result, row.full_file_name);
     });
+  }
+
+  formattedRowCount(row: Import): string {
+    return formatRowCount(row);
   }
 
   openDeleteModal(row: Import, modalDelete) {
