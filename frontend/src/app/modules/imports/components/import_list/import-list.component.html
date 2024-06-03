@@ -25,7 +25,7 @@
               placeholder="{{ 'Search' | translate }}"
               aria-label="Search"
               aria-describedby="basic-addon1"
-              data-qa="search-input-import-list"
+              data-qa="import-list-toolbar-search"
             />
           </div>
         </div>
@@ -67,7 +67,7 @@
             [prop]="col.prop"
             [sortable]="col.filter"
             [maxWidth]="col.max_width"
-            data-qa="column-{{ col.name }}"
+            data-qa="import-list-table-column-{{ col.name }}"
           >
             <ng-template
               let-row="row"
@@ -104,7 +104,7 @@
             [sortable]="true"
             prop="destination.code"
             [maxWidth]="150"
-            data-qa="destination-column"
+            data-qa="import-list-table-column-destination"
           >
             <ng-template
               let-row="row"
@@ -118,7 +118,7 @@
             [sortable]="true"
             [maxWidth]="100"
             prop="date_end_import"
-            data-qa="fin-import-column"
+            data-qa="import-list-table-column-dateEnd"
           >
             <ng-template
               let-row="row"
@@ -180,7 +180,7 @@
             [width]="155"
             [resizable]="false"
             [canAutoResize]="false"
-            data-qa="actions-column"
+            data-qa="import-list-table-column-actions"
           >
             <ng-template
               let-row="row"

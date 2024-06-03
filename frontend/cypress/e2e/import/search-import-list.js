@@ -3,7 +3,7 @@ const tableSelector = '[data-qa=import-list-table]';
 const timeoutWait = 1000;
 const sizes = ['iphone-6', 'ipad-2', [1024, 768]];
 function filterMapList(importSeachTerm) {
-  cy.get('[data-qa="search-input-import-list"]').clear().type(importSeachTerm);
+  cy.get('[data-qa="import-list-toolbar-search"]').clear().type(importSeachTerm);
 }
 
 describe('Test specific route call with specific pattern used in filter input', () => {
@@ -18,7 +18,7 @@ describe('Test specific route call with specific pattern used in filter input', 
     cy.intercept(
       Cypress.env('apiEndpoint') + 'import/imports/?page=1&search=' + importSearchTerm
     ).as('getItems');
-    cy.get('[data-qa="search-input-import-list"]').clear().type(importSearchTerm);
+    cy.get('[data-qa="import-list-toolbar-search"]').clear().type(importSearchTerm);
 
     // Wait for the request and then verify the details
     cy.wait('@getItems').then((interception) => {
