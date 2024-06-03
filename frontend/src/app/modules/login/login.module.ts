@@ -10,10 +10,11 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 
 import { routes } from './login.routes';
 import { SignUpGuard, UserManagementGuard } from './routes-guard.service';
+import { LoginDialog } from './login/external-login-dialog';
 
 @NgModule({
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
-  declarations: [LoginComponent, NewPasswordComponent, SignUpComponent],
+  declarations: [LoginComponent, NewPasswordComponent, SignUpComponent, LoginDialog],
   providers: [SignUpGuard, UserManagementGuard],
 })
 export class LoginModule {}

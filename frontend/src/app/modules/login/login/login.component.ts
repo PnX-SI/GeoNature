@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 import { CommonService } from '@geonature_common/service/common.service';
 
@@ -10,6 +11,7 @@ import { ModuleService } from '@geonature/services/module.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoutingService } from '@geonature/routing/routing.service';
 import { Provider } from '../providers';
+import { LoginDialog } from './external-login-dialog';
 
 @Component({
   selector: 'pnx-login',
@@ -37,7 +39,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private _routingService: RoutingService,
-    private _cookie: CookieService
+    public dialog: MatDialog
   ) {
     this.enablePublicAccess = this.config.PUBLIC_ACCESS_USERNAME;
     this.APP_NAME = this.config.appName;
@@ -115,7 +117,6 @@ export class LoginComponent implements OnInit {
     }
   }
 
-
   /**
    * Returns the login URL for a given provider.
    *
@@ -124,5 +125,22 @@ export class LoginComponent implements OnInit {
    */
   getProviderLoginUrl(provider_id: string): string {
     return `${this.config.API_ENDPOINT}/auth/login/${provider_id}`;
+  }
+
+  openDialog(provider) {
+    const dialogRef = this.dialog.open(LoginDialog, {
+      height: '30%',
+      width: '30%',
+      position: { top: '10%' },
+      data: {
+        provider: provider,
+      },
+    });
+    // dialogRef.updateSize('100%', '100%');
+    const componentInstance: LoginDialog = dialogRef.componentInstance;
+    componentInstance.userLogged.subscribe((data) => {
+      this.handleRegister(data);
+      dialogRef.close();
+    });
   }
 }

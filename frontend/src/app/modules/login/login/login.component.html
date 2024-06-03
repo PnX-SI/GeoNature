@@ -74,42 +74,52 @@
                 >
                   Se connecter
                 </button>
-                <hr />
-                <ng-container>
-                  <div class="text-center">
-                    <p>Se connecter avec :</p>
-                    <ng-container *ngFor="let provider of authProviders">
+              </form>
+              <hr />
+              <ng-container>
+                <p>Se connecter avec :</p>
+                <div class="row center">
+                  <div *ngFor="let provider of authProviders">
+                    <button
+                      *ngIf="provider.is_uh; else externalAuthBlock"
+                      (click)="openDialog(provider)"
+                      class="btn btn-primary rounded mr-2 mt-2"
+                    >
+                      <span [innerHTML]="provider.logo | safeHTML"></span>
+                      {{ provider.label }}
+                    </button>
+                    <ng-template #externalAuthBlock>
                       <a
                         [href]="getProviderLoginUrl(provider.id_provider)"
-                        class="btn btn-primary rounded mr-2"
+                        class="btn btn-primary rounded mr-2 mt-2"
                       >
                         <span [innerHTML]="provider.logo | safeHTML"></span>
                         {{ provider.label }}
                       </a>
-                    </ng-container>
-                  </div>
-                </ng-container>
-
-                <br />
-
-                <div *ngIf="enable_sign_up">
-                  <div class="inscription">
-                    <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>
+                    </ng-template>
                   </div>
                 </div>
-                <div
-                  *ngFor="let link of external_links"
-                  class="external_link"
+              </ng-container>
+
+              <br />
+
+              <div *ngIf="enable_sign_up">
+                <div class="inscription">
+                  <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>
+                </div>
+              </div>
+              <div
+                *ngFor="let link of external_links"
+                class="external_link"
+              >
+                <a
+                  href="{{ link.url }}"
+                  target="_blank"
                 >
-                  <a
-                    href="{{ link.url }}"
-                    target="_blank"
-                  >
-                    {{ link.label }}
-                  </a>
-                </div>
-                <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
-              </form>
+                  {{ link.label }}
+                </a>
+              </div>
+              <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
             </ng-container>
 
             <ng-template #logPwdRecoBlock>
