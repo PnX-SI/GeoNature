@@ -80,8 +80,8 @@
               {{ importData?.format_source_file }}
             </p>
             <p>
-              <b>Nombre de lignes :</b>
-              {{ importData?.source_count || 0 }}
+              <b>Nombre de lignes importées :</b>
+              {{ formattedRowCount(importData) }}
             </p>
             <div *ngIf="importStatus === 'TERMINE'">
               <div *ngFor="let item of importData?.destination.statistics_labels">
