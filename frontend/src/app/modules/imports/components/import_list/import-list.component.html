@@ -90,6 +90,9 @@
                     {{ row[col.prop] }}
                   </a>
                 </ng-container>
+                <ng-container *ngSwitchCase="'statistics_rows'">
+                  {{ formattedRowCount(row) }}
+                </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{ row[col.prop] }}
                 </ng-container>

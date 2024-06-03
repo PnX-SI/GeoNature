@@ -23,6 +23,7 @@ import { FieldMappingValues } from '../../models/mapping.model';
 
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
+import { formatRowCount } from '../../utils/format-row-count';
 
 interface CorrespondancesField {
   source: string;
@@ -276,5 +277,9 @@ export class ImportReportComponent implements OnInit {
       };
     });
     return mappedFields;
+  }
+
+  formattedRowCount(row: Import): string {
+    return formatRowCount(row);
   }
 }

@@ -65,7 +65,8 @@ class SyntheseImportMixin(ImportMixin):
     @staticmethod
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         return [
-            {"key": "taxa_count", "value": "Nombre de taxons importés"},
+            {"key": "observation_count", "value": "Nombre d'observations importées"},
+            {"key": "taxa_count", "value": "Nombre de taxons"},
         ]
 
     @staticmethod
@@ -356,12 +357,17 @@ class SyntheseImportMixin(ImportMixin):
             select=select_stmt,
         )
         db.session.execute(insert_stmt)
+
+        # TODO: Improve this
         imprt.statistics = {
+            "observation_count": (
+                db.session.query(func.count(Synthese.cd_nom)).filter_by(source=source).scalar()
+            ),
             "taxa_count": (
                 db.session.query(func.count(distinct(Synthese.cd_nom)))
                 .filter_by(source=source)
                 .scalar()
-            )
+            ),
         }
 
     @staticmethod

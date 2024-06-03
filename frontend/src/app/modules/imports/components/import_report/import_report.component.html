@@ -80,14 +80,10 @@
               {{ importData?.format_source_file }}
             </p>
             <p>
-              <b>Nombre de lignes :</b>
-              {{ importData?.source_count || 0 }}
+              <b>Nombre de lignes importées :</b>
+              {{ formattedRowCount(importData) }}
             </p>
             <div *ngIf="importStatus === 'TERMINE'">
-              <p>
-                <b>Nombre d’entités importées :</b>
-                {{ importData?.import_count || 0 }}
-              </p>
               <div *ngFor="let item of importData?.destination.statistics_labels">
                 <ng-container *ngIf="importData?.statistics[item.key] !== null">
                   <p>
@@ -409,7 +405,7 @@
               color="accent"
               (click)="_csvExport.onCSV(importData?.id_import)"
             >
-              Exporter vos {{ nbTotalErrors }} observations invalides
+              Exporter vos {{ nbTotalErrors }} lignes invalides
             </button>
           </div>
         </div>
