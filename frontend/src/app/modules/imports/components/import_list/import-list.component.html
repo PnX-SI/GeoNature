@@ -14,6 +14,7 @@
             [parentFormControl]="selectDestinationForm"
             (onChange)="resetPage()"
             (onClear)="resetPage()"
+            data-qa="import-list-toolbar-destinations"
           ></pnx-destinations>
           <div class="flex-fill Toolbar__search">
             <small>{{ 'Form.OtherFilters' | translate }}</small>
@@ -53,6 +54,7 @@
             [canAutoResize]="false"
             [resizable]="false"
             [frozenLeft]="true"
+            data-qa="import-list-table-column-id"
           >
             <ng-template
               let-row="row"
@@ -149,6 +151,7 @@
             [sortable]="false"
             [draggable]="false"
             [maxWidth]="50"
+            data-qa="import-list-table-column-statistics"
           >
             <ng-template ngx-datatable-header-template>
               <i
@@ -193,6 +196,7 @@
                 color="primary"
                 class="Datatable__button"
                 (click)="onFinishImport(row)"
+                data-qa="import-list-table-column-actions-edit"
               >
                 <mat-icon>edit</mat-icon>
               </button>
@@ -202,6 +206,7 @@
                 mat-icon-button
                 color="primary"
                 [routerLink]="[row.destination.code, row.id_import, 'report']"
+                data-qa="import-list-table-column-actions-report"
               >
                 <mat-icon>info</mat-icon>
               </button>
@@ -212,6 +217,7 @@
                 color="primary"
                 (click)="_csvExport.onCSV(row.id_import)"
                 matTooltip="Téléchargement des données invalides"
+                data-qa="import-list-table-column-actions-csv"
               >
                 <mat-icon>download</mat-icon>
               </button>
@@ -222,6 +228,7 @@
                 class="Datatable__button"
                 (click)="openDeleteModal(row, deleteModal)"
                 [matTooltip]="getTooltip(row, 'delete')"
+                data-qa="import-list-table-column-actions-delete"
               >
                 <mat-icon>delete</mat-icon>
               </button>
@@ -231,12 +238,13 @@
       </div>
       <ng-template #emptyBlock>Vous n'avez effectué aucun import</ng-template>
 
-      <import-modal-destination class="pull-right mt-3"></import-modal-destination>
+      <import-modal-destination class="pull-right mt-3" data-qa="import-list-modal-destination"></import-modal-destination>
 
       <ng-template
         #deleteModal
         let-c="close "
         let-d="dismiss"
+        data-qa="import-list-modal-delete"
       >
         <import-delete
           [row]="deleteOne"
