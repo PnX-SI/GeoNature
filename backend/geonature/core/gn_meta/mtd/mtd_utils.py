@@ -208,7 +208,7 @@ def associate_actors(actors, CorActor, pk_name, pk_value):
                 # FIXME: prevent update of organism email from actor email ! Several actors may be associated to the same organism and still have different mails !
                 id_organism = add_or_update_organism(
                     uuid=uuid_organism,
-                    nom=actor["organism"] if actor["orgnanism"] else "",
+                    nom=actor["organism"] if actor["organism"] else "",
                     email=actor["email"],
                 )
         values = dict(
