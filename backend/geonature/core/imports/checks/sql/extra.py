@@ -180,11 +180,15 @@ def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
 
 
 def generate_missing_uuid(
-    imprt: TImports, entity: Entity, uuid_field: BibFields, origin_id_field: BibFields = None
+    imprt: TImports,
+    entity: Entity,
+    uuid_field: BibFields,
+    origin_id_field: BibFields = None,
 ):
     """
     Update records in the transient table where the uuid is None
     with a new UUID.
+
     Parameters
     ----------
     imprt : TImports
@@ -196,21 +200,25 @@ def generate_missing_uuid(
     origin_id_field : BibFields
         Field used to generate the UUID
     """
+
     transient_table = imprt.destination.get_transient_table()
     # Generate UUID for missing UUID
-
     whereclause = sa.and_(
-        transient_table.c[uuid_field.source_field] == None,
+        sa.or_(
+            transient_table.c[uuid_field.dest_field] == None,
+            transient_table.c[uuid_field.source_field] == None,
+        ),
         transient_table.c.id_import == imprt.id_import,
-        transient_table.c[uuid_field.dest_field] == None,
     )
+
     if origin_id_field:
+
         cte_generated_uuid = (
             sa.select(
                 transient_table.c[origin_id_field.source_field],
                 func.uuid_generate_v4().label("uuid"),
             )
-            .where(whereclause)
+            .where(transient_table.c[origin_id_field.source_field] != None)
             .group_by(transient_table.c[origin_id_field.name_field])
             .cte("cte_generated_uuid")
         )
@@ -219,25 +227,27 @@ def generate_missing_uuid(
             update(transient_table)
             .values(
                 {
-                    transient_table.c[uuid_field.dest_field]: cte_generated_uuid.c.uuid,
+                    getattr(transient_table.c, uuid_field.dest_field): cte_generated_uuid.c.uuid,
                 }
             )
             .where(
-                transient_table.c[origin_id_field.name_field]
-                == cte_generated_uuid.c[origin_id_field.name_field],
-                whereclause,
+                transient_table.c[origin_id_field.source_field]
+                == cte_generated_uuid.c[origin_id_field.source_field],
+                transient_table.c.id_import == imprt.id_import,
+                # whereclause,
             )
         )
-    else:
-        stmt = (
-            update(transient_table)
-            .values(
-                {
-                    transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
-                }
-            )
-            .where(whereclause)
+        db.session.execute(stmt)
+
+    stmt = (
+        update(transient_table)
+        .values(
+            {
+                transient_table.c.unique_id_sinp_station: func.uuid_generate_v4(),
+            }
         )
+        .where(whereclause)
+    )
     db.session.execute(stmt)
 
 
@@ -382,8 +392,22 @@ def check_digital_proof_urls(imprt, entity, digital_proof_field):
 
 
 def check_entity_data_consistency(imprt, entity, uuid_field):
+    """
+    Checks for rows with the same uuid, but differrent content,
+    in the same entity. Used mainely for parent entities.
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    uuid_field : BibFields
+        The field to check.
+    """
     transient_table = imprt.destination.get_transient_table()
     uuid_col = transient_table.c[uuid_field.dest_field]
+
+    # get duplicates uuids in the transient_table
     duplicates = get_duplicates_query(
         imprt,
         uuid_col,
@@ -392,12 +416,17 @@ def check_entity_data_consistency(imprt, entity, uuid_field):
             uuid_col != None,
         ),
     )
+
+    # get the mapped fields of the entity
     mappedfields = []
     for entityField in entity.fields:
         if entityField.field.name_field in imprt.fieldmapping.keys():
             mappedfields.append(entityField.field.source_field)
 
     columns = [getattr(transient_table.c, column_name) for column_name in mappedfields]
+
+    # hash the content of the entity to check for differences without
+    # comparing each columns
     hashedRows = (
         select(
             transient_table.c.line_no.label("lines"),
@@ -410,6 +439,7 @@ def check_entity_data_consistency(imprt, entity, uuid_field):
     hashedRows1 = aliased(hashedRows)
     hashedRows2 = aliased(hashedRows)
 
+    # get the rows with differences
     erroneous = (
         select(hashedRows1.c.lines)
         .join(hashedRows2, hashedRows1.c.uuid_col == hashedRows2.c.uuid_col)
