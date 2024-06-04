@@ -94,12 +94,16 @@ export class AccessRequestComponent implements OnInit {
   }
 
   private createRegularForm() {
-    this.regularFormGrp = this.formBuilder.group({
+    let defaultFormGroup = {
       areas: ['', Validators.required],
       taxa: [''],
       sensitive_access: [],
       end_access_date: [this.defaultEndAccess],
-    });
+    }
+    if (this.config.ENABLE_MANDATORY_SENSITIVE_ACCESS) {
+      defaultFormGroup['sensitive_access'] = [false, Validators.requiredTrue];
+    }
+    this.regularFormGrp = this.formBuilder.group(defaultFormGroup);
   }
 
   private createDynamicForm() {

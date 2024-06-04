@@ -19,7 +19,6 @@ export class CustomLoader implements TranslateLoader {
       map((data) => {
         const mergedTranslations = {};
         data.forEach((currentTranslations) => {
-          //Object.assign(translations, obj);
           merge(mergedTranslations, currentTranslations);
         });
         return mergedTranslations;

@@ -406,9 +406,9 @@ MAIL_ON_ERROR = false
         { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
     ]
 
-    # Autorise la visualisation des observations en mode zonage 
+    # Autorise la visualisation des observations en mode zonage
     ENABLE_AREA_AGGREGATION = fields.Boolean(load_default=True)
-    # Choisir la taille du zonage. Attention, si vous utilisez le floutage (DATA_BLURRING), 
+    # Choisir la taille du zonage. Attention, si vous utilisez le floutage (DATA_BLURRING),
     # il est nécessaire d'utiliser un type de zonage qui puisse s'imbriquer dans ceux du floutage.
     # Exemple : type de zonage M5 avec un floutage M5, M10, M75
     # OU type de zonage COM avecun floutage COM, DEP.
@@ -565,6 +565,10 @@ MAIL_ON_ERROR = false
     # Activer la possibilité de demander l'accès aux données sensibles.
     # Affiche une case à cocher dans le formulaire des demandes d'accès.
     ENABLE_SENSITIVE_ACCESS = true
+    # Rend obligatoire la coche de l'accès aux données sensibles.
+    # Nécessite ENABLE_SENSITIVE_ACCESS définit à "true".
+    # Par défaut, la coche n'est pas obligatoire.
+    ENABLE_MANDATORY_SENSITIVE_ACCESS = false
     # Liste de codes (table `ref_geo.bib_areas_type`, champ `type_code`) des
     # types de zones géographique sélectionnables dans le filtre par
     # zones géographiques du formulaire de demande d'accès.

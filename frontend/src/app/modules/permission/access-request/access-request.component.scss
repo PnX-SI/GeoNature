@@ -24,3 +24,7 @@ form.ng-invalid {
 .form-text {
   margin: 0.5rem 0;
 }
+.custom-control.custom-checkbox .ng-invalid + .custom-control-label::after {
+  border: 2px solid #ff0000 !important;
+  border-radius: .25rem;
+}
