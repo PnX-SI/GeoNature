@@ -1,1 +1,1 @@
-import './geonatureImport';
+import './geonatureInitImportList';
