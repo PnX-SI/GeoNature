@@ -1,5 +1,8 @@
 from flask import current_app
-from geonature.core.imports.checks.sql.extra import generate_missing_uuid
+from geonature.core.imports.checks.sql.extra import (
+    check_entity_data_consistency,
+    generate_missing_uuid,
+)
 from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
@@ -163,6 +166,7 @@ class OcchabImportMixin(ImportMixin):
                     )
                 # get row with uuid not in the dest table
                 # -> check_conistency
+                check_entity_data_consistency(imprt, entity, fields["unique_id_sinp_station"])
 
                 convert_geom_columns(
                     imprt,

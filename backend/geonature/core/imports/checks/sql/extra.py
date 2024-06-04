@@ -5,6 +5,7 @@ from geonature.core.imports.models import BibFields, Entity, TImports
 from sqlalchemy import func
 from sqlalchemy.sql.expression import select, update, join
 from sqlalchemy.sql import column
+from sqlalchemy.orm import aliased
 import sqlalchemy as sa
 
 from geonature.utils.env import db
@@ -380,15 +381,46 @@ def check_digital_proof_urls(imprt, entity, digital_proof_field):
     )
 
 
-def check_entity_data_consistency(imprt, entity, fields):
+def check_entity_data_consistency(imprt, entity, uuid_field):
     transient_table = imprt.destination.get_transient_table()
-    """
-    function to count inconsistency
-    select *
-from (
-SELECT synthese.unique_id_sinp,ARRAY_AGG(md5(synthese::TEXT)) as A FROM gn_synthese.synthese as synthese
-group by synthese.unique_id_sinp
- LIMIT 100 
-) as test
-where cardinality(test.a) >1
-    """
+    uuid_col = transient_table.c[uuid_field.dest_field]
+    duplicates = get_duplicates_query(
+        imprt,
+        uuid_col,
+        whereclause=sa.and_(
+            transient_table.c[entity.validity_column].isnot(None),
+            uuid_col != None,
+        ),
+    )
+    mappedfields = []
+    for entityField in entity.fields:
+        if entityField.field.name_field in imprt.fieldmapping.keys():
+            mappedfields.append(entityField.field.source_field)
+
+    columns = [getattr(transient_table.c, column_name) for column_name in mappedfields]
+    hashedRows = (
+        select(
+            transient_table.c.line_no.label("lines"),
+            uuid_col.label("uuid_col"),
+            func.md5(func.concat(*columns)).label("hashed"),
+        )
+        .where(transient_table.c.line_no == duplicates.c.lines)
+        .alias("hashedRows")
+    )
+    hashedRows1 = aliased(hashedRows)
+    hashedRows2 = aliased(hashedRows)
+
+    erroneous = (
+        select(hashedRows1.c.lines)
+        .join(hashedRows2, hashedRows1.c.uuid_col == hashedRows2.c.uuid_col)
+        .where(hashedRows1.c.hashed != hashedRows2.c.hashed)
+        .alias("erroneous")
+    )
+
+    report_erroneous_rows(
+        imprt,
+        entity,
+        error_type="DUPLICATE_UUID",
+        error_column=uuid_field.name_field,
+        whereclause=(transient_table.c.line_no == erroneous.c.lines),
+    )
