@@ -382,8 +382,22 @@ def check_digital_proof_urls(imprt, entity, digital_proof_field):
 
 
 def check_entity_data_consistency(imprt, entity, uuid_field):
+    """
+    Checks for rows with the same uuid, but differrent content,
+    in the same entity. Used mainely for parent entities.
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    uuid_field : BibFields
+        The field to check.
+    """
     transient_table = imprt.destination.get_transient_table()
     uuid_col = transient_table.c[uuid_field.dest_field]
+
+    # get duplicates uuids in the transient_table
     duplicates = get_duplicates_query(
         imprt,
         uuid_col,
@@ -392,12 +406,17 @@ def check_entity_data_consistency(imprt, entity, uuid_field):
             uuid_col != None,
         ),
     )
+
+    # get the mapped fields of the entity
     mappedfields = []
     for entityField in entity.fields:
         if entityField.field.name_field in imprt.fieldmapping.keys():
             mappedfields.append(entityField.field.source_field)
 
     columns = [getattr(transient_table.c, column_name) for column_name in mappedfields]
+
+    # hash the content of the entity to check for differences without
+    # comparing each columns
     hashedRows = (
         select(
             transient_table.c.line_no.label("lines"),
@@ -410,6 +429,7 @@ def check_entity_data_consistency(imprt, entity, uuid_field):
     hashedRows1 = aliased(hashedRows)
     hashedRows2 = aliased(hashedRows)
 
+    # get the rows with differences
     erroneous = (
         select(hashedRows1.c.lines)
         .join(hashedRows2, hashedRows1.c.uuid_col == hashedRows2.c.uuid_col)
