@@ -67,6 +67,7 @@
           id="srid"
           formControlName="srid"
           required
+          data-qa="import-new-decode-srid"
         >
           <option
             *ngFor="let srid of this.config.IMPORT.SRID"
@@ -99,6 +100,7 @@
         (click)="onSubmit()"
         [disabled]="!isNextStepAvailable()"
         id="validate"
+        data-qa="import-new-decode-validate"
       >
         Suivant
         <i class="material-icons">navigate_next</i>

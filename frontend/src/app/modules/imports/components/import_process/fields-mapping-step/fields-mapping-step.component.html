@@ -97,6 +97,7 @@
           color="primary"
           [disabled]="!isNextStepAvailable()"
           (click)="onNextStep()"
+          data-qa="import-new-fieldmapping-model-validate"
         >
           {{ 'Import.Next' | translate }}
           <mat-icon>navigate_next</mat-icon>

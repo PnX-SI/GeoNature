@@ -16,6 +16,7 @@
         (click)="performChecks()"
         mat-raised-button
         color="primary"
+        data-qa="import-new-verification-start"
       >
         Lancer la vérification
       </button>
@@ -153,6 +154,7 @@
           class="d-flex justify-content-center align-content-between button-success"
           (click)="onImport()"
           mat-raised-button
+          data-qa="import-new-execute-start"
         >
           Importer vos {{ nValidData }} entitées valides
           <mat-icon>done</mat-icon>

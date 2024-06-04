@@ -15,6 +15,7 @@
             [parentFormControl]="uploadForm.get('dataset')"
             [creatableInModule]="destination?.module.module_code"
             [moduleCode]="destination?.module.module_code"
+            data-qa="import-new-upload-datasets"
           ></pnx-datasets>
         </div>
       </div>
@@ -31,6 +32,7 @@
             id="selectedFile"
             name="file"
             [accept]="acceptedExtensions"
+            data-qa="import-new-upload-file"
           />
           <label
             class="custom-file-label"
@@ -76,6 +78,7 @@
         [disabled]="!isNextStepAvailable()"
         (click)="onNextStep()"
         id="validate"
+        data-qa="import-new-upload-validate"
       >
         {{ 'Import.Next' | translate }}
         <i class="material-icons">navigate_next</i>

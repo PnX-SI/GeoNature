@@ -2,6 +2,7 @@
   #content
   let-c="close"
   let-d="dismiss"
+  data-qa="import-modal-destination"
 >
   <div class="modal-header">
     <h5 class="modal-title">{{ 'Import.ChooseDestination' | translate }}</h5>
@@ -40,6 +41,7 @@
         [disabled]="selectDestinationForm.invalid"
         mat-raised-button
         color="primary"
+        data-qa="import-modal-destination-validate"
       >
         {{ 'Import.Validate' | translate }}
       </button>
@@ -52,6 +54,7 @@
   mat-fab
   color="primary"
   (click)="onOpenModal(content)"
+  data-qa="import-modal-destination-start"
   matTooltip="Nouvel import"
 >
   <mat-icon>add</mat-icon>
