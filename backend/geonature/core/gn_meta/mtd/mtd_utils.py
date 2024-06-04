@@ -130,21 +130,20 @@ def sync_af(af):
     statement = (
         update(TAcquisitionFramework)
         .where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid)
-        .values(af)
-        .returning(TAcquisitionFramework)
+        .values(**af)
     )
     if not af_exists:
         statement = (
             pg_insert(TAcquisitionFramework)
             .values(**af)
             .on_conflict_do_nothing(index_elements=["unique_acquisition_framework_id"])
-            .returning(TAcquisitionFramework)
         )
     DB.session.execute(statement)
 
     acquisition_framework = DB.session.scalars(
         select(TAcquisitionFramework).filter_by(unique_acquisition_framework_id=af_uuid)
-    )
+    ).first()
+
     return acquisition_framework
 
 
