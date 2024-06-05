@@ -166,6 +166,7 @@
             <ng-template
               ngx-datatable-cell-template
               let-row="row"
+              let-index="rowIndex"
               let-expanded="expanded"
             >
               <mat-button-toggle
@@ -173,7 +174,7 @@
                 [ngClass]="hasStatistics(row) ? 'purple' : 'Datatable__buttonTooltip--disabled'"
                 [matTooltip]="hasStatistics(row) ? getStatisticsTooltip(row) : None"
                 matTooltipClass="Datatable__buttonTooltip"
-                [attr.data-qa]="'import-list-table-row-' + row.id_import + '-statistics-toggle'"
+                [attr.data-qa]="'import-list-table-row-' + index + '-statistics-toggle'"
               >
                 <mat-icon>query_stats</mat-icon>
               </mat-button-toggle>
@@ -189,6 +190,7 @@
           >
             <ng-template
               let-row="row"
+              let-index="rowIndex"
               ngx-datatable-cell-template
             >
               <button
@@ -198,7 +200,7 @@
                 color="primary"
                 class="Datatable__button"
                 (click)="onFinishImport(row)"
-                [attr.data-qa]="'import-list-table-row-' + row.id_import + '-actions-edit'"
+                [attr.data-qa]="'import-list-table-row-' + index + '-actions-edit'"
               >
                 <mat-icon>edit</mat-icon>
               </button>
@@ -208,7 +210,7 @@
                 mat-icon-button
                 color="primary"
                 [routerLink]="[row.destination.code, row.id_import, 'report']"
-                [attr.data-qa]="'import-list-table-row-' + row.id_import + '-actions-report'"
+                [attr.data-qa]="'import-list-table-row-' + index + '-actions-report'"
               >
                 <mat-icon>info</mat-icon>
               </button>
@@ -219,7 +221,7 @@
                 color="primary"
                 (click)="_csvExport.onCSV(row.id_import)"
                 matTooltip="Téléchargement des données invalides"
-                [attr.data-qa]="'import-list-table-row-' + row.id_import + '-actions-csv'"
+                [attr.data-qa]="'import-list-table-row-' + index + '-actions-csv'"
               >
                 <mat-icon>download</mat-icon>
               </button>
@@ -230,7 +232,7 @@
                 class="Datatable__button"
                 (click)="openDeleteModal(row, deleteModal)"
                 [matTooltip]="getTooltip(row, 'delete')"
-                [attr.data-qa]="'import-list-table-row-' + row.id_import + '-actions-delete'"
+                [attr.data-qa]="'import-list-table-row-' + index + '-actions-delete'"
               >
                 <mat-icon>delete</mat-icon>
               </button>

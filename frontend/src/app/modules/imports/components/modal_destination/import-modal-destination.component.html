@@ -2,7 +2,6 @@
   #content
   let-c="close"
   let-d="dismiss"
-  data-qa="import-modal-destination"
 >
   <div class="modal-header">
     <h5 class="modal-title">{{ 'Import.ChooseDestination' | translate }}</h5>
@@ -19,7 +18,7 @@
     <pnx-destinations
       label="{{ 'Import.Destinations' | translate }}"
       [parentFormControl]="selectDestinationForm"
-      data-qa="import-modal-destination-destinations"
+      data-qa="import-new-modal-destinations"
     ></pnx-destinations>
     <div
       id="DestinationError"

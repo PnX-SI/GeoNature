@@ -46,7 +46,7 @@ describe('Import List - Toolbar - Destinations', () => {
       const code = DESTINATIONS_PROPERTIES[destinationAvailable].code;
       const request = generateRequestForDestination(code);
       cy.intercept("GET", request).as(`getImports${code}`);
-      cy.get("[data-qa=import-list-toolbar-destinations]").click()
+      cy.get('[data-qa="import-list-toolbar-destinations"] > [data-qa="destinations"]').click()
         .get("ng-dropdown-panel")
         .get(".ng-option").contains(destinationAvailable).then((destination) => {
           cy.wrap(destination).click();
@@ -56,14 +56,14 @@ describe('Import List - Toolbar - Destinations', () => {
     const request = generateRequestForDestination();
     cy.intercept("GET", request).as('getImports');
     // Clear selection
-    cy.get("[data-qa=import-list-toolbar-destinations]").get(".ng-clear-wrapper").click();
+    cy.get("[data-qa=import-list-toolbar-destinations]").find(".ng-clear-wrapper").click();
     cy.wait(`@getImports`);
   })
 
   it('Should filter the list with every available destinations', () => {
     // Select every destination, one after the other
     for (const destinationAvailable of AVAILABLE_DESTINATIONS) {
-      cy.get("[data-qa=import-list-toolbar-destinations]").click()
+      cy.get('[data-qa="import-list-toolbar-destinations"] > [data-qa="destinations"]').click()
         .get("ng-dropdown-panel")
         .get(".ng-option").contains(destinationAvailable).then((destination) => {
           cy.wrap(destination).click();
@@ -71,7 +71,7 @@ describe('Import List - Toolbar - Destinations', () => {
         });
     }
     // Clear selection
-    cy.get("[data-qa=import-list-toolbar-destinations]").get(".ng-clear-wrapper").click();
+    cy.get("[data-qa=import-list-toolbar-destinations]").find(".ng-clear-wrapper").click();
     checkImportListSize(AVAILABLE_IMPORTS_COUNT)
   })
 })
