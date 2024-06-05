@@ -157,31 +157,6 @@ class OcchabImportMixin(ImportMixin):
 
             if code == "station":
 
-                if "unique_id_sinp_station" in selected_fields:
-                    kwargs = (
-                        {"origin_id_field": selected_fields["id_station_source"]}
-                        if "id_station_source" in selected_fields
-                        else {}
-                    )
-
-                    generate_missing_uuid(
-                        imprt, entity, selected_fields["unique_id_sinp_station"], **kwargs
-                    )
-                    db.session.commit()
-
-                elif "id_station_source" in fields:
-                    generate_missing_uuid(
-                        imprt,
-                        entity,
-                        fields["unique_id_sinp_station"],
-                        origin_id_field=selected_fields["id_station_source"],
-                    )
-                # get row with uuid not in the dest table
-                # -> check_conistency
-                check_entity_data_consistency(
-                    imprt, entity, selected_fields, fields["unique_id_sinp_station"]
-                )
-
                 convert_geom_columns(
                     imprt,
                     entity,
@@ -264,6 +239,34 @@ class OcchabImportMixin(ImportMixin):
                     child_entity=entities["habitat"],
                     parent_line_no="station_line_no",
                 )
+        entity = entities["station"]
+        fields = {ef.field.name_field: ef.field for ef in entities["station"].fields}
+        selected_fields = {
+            field_name: fields[field_name]
+            for field_name, source_field in imprt.fieldmapping.items()
+            if source_field in imprt.columns and field_name in fields
+        }
+        if "unique_id_sinp_station" in selected_fields:
+            kwargs = (
+                {"origin_id_field": selected_fields["id_station_source"]}
+                if "id_station_source" in selected_fields
+                else {}
+            )
+
+            generate_missing_uuid(
+                imprt, entity, selected_fields["unique_id_sinp_station"], **kwargs
+            )
+
+        elif "id_station_source" in fields:
+            generate_missing_uuid(
+                imprt,
+                entity,
+                fields["unique_id_sinp_station"],
+                origin_id_field=selected_fields["id_station_source"],
+            )
+        check_entity_data_consistency(
+            imprt, entity, selected_fields, fields["unique_id_sinp_station"]
+        )
 
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:

@@ -234,7 +234,7 @@ def generate_missing_uuid(
                 transient_table.c[origin_id_field.source_field]
                 == cte_generated_uuid.c[origin_id_field.source_field],
                 transient_table.c.id_import == imprt.id_import,
-                # whereclause,
+                whereclause,
             )
         )
         db.session.execute(stmt)
@@ -243,10 +243,13 @@ def generate_missing_uuid(
         update(transient_table)
         .values(
             {
-                transient_table.c.unique_id_sinp_station: func.uuid_generate_v4(),
+                transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
             }
         )
-        .where(whereclause)
+        .where(
+            transient_table.c.id_import == imprt.id_import,
+            transient_table.c[uuid_field.dest_field] == None,
+        )
     )
     db.session.execute(stmt)
 
