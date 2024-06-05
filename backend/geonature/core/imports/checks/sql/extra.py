@@ -180,11 +180,15 @@ def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
 
 
 def generate_missing_uuid(
-    imprt: TImports, entity: Entity, uuid_field: BibFields, origin_id_field: BibFields = None
+    imprt: TImports,
+    entity: Entity,
+    uuid_field: BibFields,
+    origin_id_field: BibFields = None,
 ):
     """
     Update records in the transient table where the uuid is None
     with a new UUID.
+
     Parameters
     ----------
     imprt : TImports
@@ -196,21 +200,25 @@ def generate_missing_uuid(
     origin_id_field : BibFields
         Field used to generate the UUID
     """
+
     transient_table = imprt.destination.get_transient_table()
     # Generate UUID for missing UUID
-
     whereclause = sa.and_(
-        transient_table.c[uuid_field.source_field] == None,
+        sa.or_(
+            transient_table.c[uuid_field.dest_field] == None,
+            transient_table.c[uuid_field.source_field] == None,
+        ),
         transient_table.c.id_import == imprt.id_import,
-        transient_table.c[uuid_field.dest_field] == None,
     )
+
     if origin_id_field:
+
         cte_generated_uuid = (
             sa.select(
                 transient_table.c[origin_id_field.source_field],
                 func.uuid_generate_v4().label("uuid"),
             )
-            .where(whereclause)
+            .where(transient_table.c[origin_id_field.source_field] != None)
             .group_by(transient_table.c[origin_id_field.name_field])
             .cte("cte_generated_uuid")
         )
@@ -219,25 +227,27 @@ def generate_missing_uuid(
             update(transient_table)
             .values(
                 {
-                    transient_table.c[uuid_field.dest_field]: cte_generated_uuid.c.uuid,
+                    getattr(transient_table.c, uuid_field.dest_field): cte_generated_uuid.c.uuid,
                 }
             )
             .where(
-                transient_table.c[origin_id_field.name_field]
-                == cte_generated_uuid.c[origin_id_field.name_field],
-                whereclause,
+                transient_table.c[origin_id_field.source_field]
+                == cte_generated_uuid.c[origin_id_field.source_field],
+                transient_table.c.id_import == imprt.id_import,
+                # whereclause,
             )
         )
-    else:
-        stmt = (
-            update(transient_table)
-            .values(
-                {
-                    transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
-                }
-            )
-            .where(whereclause)
+        db.session.execute(stmt)
+
+    stmt = (
+        update(transient_table)
+        .values(
+            {
+                transient_table.c.unique_id_sinp_station: func.uuid_generate_v4(),
+            }
         )
+        .where(whereclause)
+    )
     db.session.execute(stmt)
 
 

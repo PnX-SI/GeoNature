@@ -158,11 +158,23 @@ class OcchabImportMixin(ImportMixin):
             if code == "station":
 
                 if "unique_id_sinp_station" in selected_fields:
-                    generate_missing_uuid(imprt, entity, fields["unique_id_sinp_station"])
+                    kwargs = (
+                        {"origin_id_field": selected_fields["id_station_source"]}
+                        if "id_station_source" in selected_fields
+                        else {}
+                    )
+
+                    generate_missing_uuid(
+                        imprt, entity, selected_fields["unique_id_sinp_station"], **kwargs
+                    )
+                    db.session.commit()
 
                 elif "id_station_source" in fields:
                     generate_missing_uuid(
-                        imprt, entity, fields["unique_id_sinp_station"], fields["id_station_source"]
+                        imprt,
+                        entity,
+                        fields["unique_id_sinp_station"],
+                        origin_id_field=selected_fields["id_station_source"],
                     )
                 # get row with uuid not in the dest table
                 # -> check_conistency
