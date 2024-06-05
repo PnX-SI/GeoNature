@@ -1,1 +1,14 @@
 import './geonatureInitImportList';
+import './backToImportList';
+import './checkCurrentPageIsImport';
+import './checkImportListSize';
+import './configureImportContentMapping';
+import './configureImportFieldMapping';
+import './configureImportFile';
+import './executeImport';
+import './loadImportFile';
+import './pickDestination';
+import './removeFirstImportInList';
+import './startImport';
+import './verifyImport';
+import './visitImport';

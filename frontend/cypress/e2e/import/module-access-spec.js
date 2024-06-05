@@ -1,35 +1,36 @@
 const SIDENAV_IMPORT_BUTTON_QA = "[data-qa=gn-sidenav-link-IMPORT]";
-const IMPORT_URL = "/#/import";
 
-const checkCurrentPageIsImport = () => {
-  // Check the url
-  cy.url().should('be.equal', `${Cypress.config("baseUrl")}${IMPORT_URL}`);
-  // Check that the main component is there
-  cy.get("[data-qa=import-list]").should('exist');
-}
+import { USERS } from "./constants/users";
+import { VIEWPORTS } from "./constants/common";
 
 // ////////////////////////////////////////////////////////////////////////////
 //
 // ////////////////////////////////////////////////////////////////////////////
 
-describe('Should', () => {
-  beforeEach(() => {
-    cy.viewport(1024, 768);
-    cy.geonatureLogin();
-    cy.visit('/#');
+describe(`Should be able to acces the import module`, () => {
+  VIEWPORTS.forEach((viewport) => {
+    context(`viewport: ${viewport.width}x${viewport.height}`, () => {
+      USERS.forEach((user) => {
+        context(`user: ${user.login.username}`, () => {
+
+          beforeEach(() => {
+            cy.viewport(viewport.width, viewport.height);
+            cy.geonatureLogin(user.login.username, user.login.password);
+            cy.visit('/#');
+          });
+
+          it('Should switch to import page after a click on the button', () => {
+            cy.get(SIDENAV_IMPORT_BUTTON_QA).should("exist").click();
+            cy.checkCurrentPageIsImport();
+          });
+
+          it('Should land directly to the import page', () => {
+            cy.visit('/#/import');
+            cy.checkCurrentPageIsImport();
+          });
+        });
+      });
+    })
   });
+});
 
-  it('Should display the import button in the sidenav panel', () => {
-    cy.get(SIDENAV_IMPORT_BUTTON_QA).should('exist');
-  })
-
-  it('Should switch to import page after a click on the button', () => {
-    cy.get(SIDENAV_IMPORT_BUTTON_QA).click();
-    checkCurrentPageIsImport();
-  })
-
-  it('Should land directly to the import page', () => {
-    cy.visit(IMPORT_URL);
-    checkCurrentPageIsImport();
-  })
-})

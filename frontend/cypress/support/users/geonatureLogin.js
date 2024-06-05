@@ -1,11 +1,19 @@
-Cypress.Commands.add("geonatureLogin", () => {
-  cy.session("admin", () => {
+const DEFAULT_LOGIN = {
+  username: "admin",
+  password: "admin"
+}
+
+Cypress.Commands.add("geonatureLogin", (username, password) => {
+  if (!username || !password) {
+    ({ username, password } = DEFAULT_LOGIN);
+  }
+  cy.session([username, password], () => {
     cy.request({
       method: 'POST',
-      url: 'http://localhost:8000/auth/login',
+      url: `${Cypress.env('apiEndpoint')}auth/login`,
       body: {
-        login: "admin",
-        password: "admin"
+        login: username,
+        password: password
       }
     })
       .its('body')
@@ -14,5 +22,6 @@ Cypress.Commands.add("geonatureLogin", () => {
         window.localStorage.setItem("gn_id_token", body.token);
         window.localStorage.setItem('gn_current_user', JSON.stringify(body.user));
       })
+    cy.log("Logged with: " + username);
   })
 });

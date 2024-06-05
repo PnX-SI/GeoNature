@@ -6,14 +6,15 @@ describe('Import - create a new import', () => {
   });
 
   it('Should be able to import a valid-file in synthese', () => {
-    startImport();
-    pickDestination();
-    loadImportFile();
-    configureImportFile();
-    configureImportFieldMapping();
-    configureImportContentMapping();
-    verifyImport();
-    executeImport();
-    removeLastImport();
+    cy.startImport();
+    cy.pickDestination();
+    cy.loadImportFile();
+    cy.configureImportFile();
+    cy.configureImportFieldMapping();
+    cy.configureImportContentMapping();
+    cy.verifyImport();
+    cy.executeImport();
+    cy.backToImportList();
+    cy.removeFirstImportInTable();
   })
 })
