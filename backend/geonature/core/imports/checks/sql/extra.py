@@ -391,7 +391,7 @@ def check_digital_proof_urls(imprt, entity, digital_proof_field):
     )
 
 
-def check_entity_data_consistency(imprt, entity, uuid_field):
+def check_entity_data_consistency(imprt, entity, fields, uuid_field):
     """
     Checks for rows with the same uuid, but differrent content,
     in the same entity. Used mainely for parent entities.
@@ -417,13 +417,7 @@ def check_entity_data_consistency(imprt, entity, uuid_field):
         ),
     )
 
-    # get the mapped fields of the entity
-    mappedfields = []
-    for entityField in entity.fields:
-        if entityField.field.name_field in imprt.fieldmapping.keys():
-            mappedfields.append(entityField.field.source_field)
-
-    columns = [getattr(transient_table.c, column_name) for column_name in mappedfields]
+    columns = [getattr(transient_table.c, field.source_field) for field in fields.values()]
 
     # hash the content of the entity to check for differences without
     # comparing each columns
@@ -436,15 +430,13 @@ def check_entity_data_consistency(imprt, entity, uuid_field):
         .where(transient_table.c.line_no == duplicates.c.lines)
         .alias("hashedRows")
     )
-    hashedRows1 = aliased(hashedRows)
-    hashedRows2 = aliased(hashedRows)
 
     # get the rows with differences
+
     erroneous = (
-        select(hashedRows1.c.lines)
-        .join(hashedRows2, hashedRows1.c.uuid_col == hashedRows2.c.uuid_col)
-        .where(hashedRows1.c.hashed != hashedRows2.c.hashed)
-        .alias("erroneous")
+        select(hashedRows.c.uuid_col)
+        .group_by(hashedRows.c.uuid_col)
+        .having(func.count(func.distinct(hashedRows.c.hashed)) > 1)
     )
 
     report_erroneous_rows(
@@ -452,5 +444,5 @@ def check_entity_data_consistency(imprt, entity, uuid_field):
         entity,
         error_type="DUPLICATE_UUID",
         error_column=uuid_field.name_field,
-        whereclause=(transient_table.c.line_no == erroneous.c.lines),
+        whereclause=(uuid_col == erroneous.c.uuid_col),
     )

@@ -178,7 +178,9 @@ class OcchabImportMixin(ImportMixin):
                     )
                 # get row with uuid not in the dest table
                 # -> check_conistency
-                check_entity_data_consistency(imprt, entity, fields["unique_id_sinp_station"])
+                check_entity_data_consistency(
+                    imprt, entity, selected_fields, fields["unique_id_sinp_station"]
+                )
 
                 convert_geom_columns(
                     imprt,
