@@ -109,6 +109,7 @@ jobs:
           geonature db upgrade occhab-samples@head
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
           geonature permissions supergrant --group --nom "Grp_admin" --yes
+          geonature db upgrade import-samples@head
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
