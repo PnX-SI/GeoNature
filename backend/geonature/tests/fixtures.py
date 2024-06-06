@@ -537,7 +537,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
     data = {}
     with db.session.begin_nested():
         for name, cd_nom, point, ds, comment_description, source_m in [
-            ("obs1", 713776, point1, datasets["own_dataset"], "obs1", sources_modules[0]),
+            # Donnnées de gypaète : possède des statuts de protection nationale
+            ("obs1", 2852, point1, datasets["own_dataset"], "obs1", sources_modules[0]),
             ("obs2", 212, point2, datasets["own_dataset"], "obs2", sources_modules[0]),
             ("obs3", 2497, point3, datasets["own_dataset"], "obs3", sources_modules[1]),
             ("p1_af1", 713776, point1, datasets["belong_af_1"], "p1_af1", sources_modules[1]),

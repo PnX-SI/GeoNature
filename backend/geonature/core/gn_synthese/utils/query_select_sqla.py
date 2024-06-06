@@ -318,7 +318,7 @@ class SyntheseQuery:
                 protection_status_value += value
 
         if protection_status_value or red_list_filters:
-            self.build_bdc_status_pr_nb_lateral_join(protection_status_value, red_list_filters)
+            self.build_bdc_status_filters(protection_status_value, red_list_filters)
         # remove attributes taxhub from filters
         self.filters = {
             colname: value
@@ -536,7 +536,7 @@ class SyntheseQuery:
         self.apply_all_filters(user, permissions)
         return self.build_query()
 
-    def build_bdc_status_pr_nb_lateral_join(self, protection_status_value, red_list_filters):
+    def build_bdc_status_filters(self, protection_status_value, red_list_filters):
         """
         Create subquery for bdc_status filters
 

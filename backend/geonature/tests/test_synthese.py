@@ -333,6 +333,8 @@ class TestSynthese:
         # test status protection
         filters = {"protections_protection_status": ["PN"]}
         r = self.client.get(url, json=filters)
+        # doit au moins contenir une donnée de gypaète (protection nationale)
+        assert len(r.json["features"]) >= 1
         assert r.status_code == 200
         # test status protection and znieff
         filters = {"protections_protection_status": ["PN"], "znief_protection_status": True}
@@ -1253,7 +1255,9 @@ class TestSynthese:
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
 
-        assert response.json == len(set(synt.cd_nom for synt in synthese_data.values()))
+        assert response.json == len(
+            set(synt.cd_nom for synt in synthese_data.values() if synt.id_dataset == id_dataset)
+        )
         assert response_empty.json == 0
 
     def test_get_observation_count(self, synthese_data, users):
