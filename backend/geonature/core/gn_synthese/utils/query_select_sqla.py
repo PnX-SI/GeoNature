@@ -274,6 +274,11 @@ class SyntheseQuery:
                 self.query = self.query.where(getattr(Taxref, colname).in_(value))
 
             if colname.startswith("taxhub_attribut"):
+                # Test si la valeur n'est pas une liste transformation
+                # de value en liste pour utiliser le filtre IN
+                if not type(value) is list:
+                    value = [value]
+
                 self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
                 taxhub_id_attr = colname[16:]
                 aliased_cor_taxon_attr[taxhub_id_attr] = aliased(CorTaxonAttribut)
