@@ -4,9 +4,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET search_path = pr_IMPORT,
-    pg_catalog,
-    public;
 ---------
 --DATAS--
 ---------
@@ -39,8 +36,8 @@ INSERT INTO utilisateurs.t_roles (
 VALUES (
         false,
         'admin-test-import',
-        'Administrateur',
-        'test',
+        'Administrateur-test-import',
+        NULL,
         NULL,
         '21232f297a57a5a743894a0e4a801fc3',
         -- MD5 of 'admin'
@@ -54,8 +51,8 @@ VALUES (
     (
         false,
         'agent-test-import',
-        'Agent',
-        'test',
+        'Agent-test-import',
+        NULL,
         NULL,
         'b33aed8f3134996703dc39f9a7c95783',
         -- MD5 of 'agent'
@@ -576,7 +573,11 @@ VALUES (
             FROM gn_meta.t_datasets
             WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'
         ),
-        NULL,
+        (
+            SELECT id_role
+            FROM utilisateurs.t_roles
+            WHERE identifiant = 'admin-test-import'
+        ),
         (
             SELECT id_organisme
             FROM utilisateurs.bib_organismes
@@ -597,20 +598,6 @@ VALUES (
             WHERE nom_organisme = 'ma structure test'
         ),
         ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6')
-    ),
-    (
-        (
-            SELECT id_dataset
-            FROM gn_meta.t_datasets
-            WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'
-        ),
-        (
-            SELECT id_role
-            FROM utilisateurs.t_roles
-            WHERE identifiant = 'partenaire'
-        ),
-        NULL,
-        ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8')
     ),
     (
         (
@@ -649,7 +636,7 @@ VALUES (
         (
             SELECT id_role
             FROM utilisateurs.t_roles
-            WHERE identifiant = 'partenaire'
+            WHERE identifiant = 'admin-test-import'
         ),
         NULL,
         ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8')
@@ -672,20 +659,6 @@ VALUES (
         (
             SELECT id_dataset
             FROM gn_meta.t_datasets
-            WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'
-        ),
-        NULL,
-        (
-            SELECT id_organisme
-            FROM utilisateurs.bib_organismes
-            WHERE nom_organisme = 'Autre'
-        ),
-        ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6')
-    ),
-    (
-        (
-            SELECT id_dataset
-            FROM gn_meta.t_datasets
             WHERE unique_dataset_id = '2f543d86-ec4e-4f1a-b4d9-123456789abc'
         ),
         NULL,
@@ -702,7 +675,11 @@ VALUES (
             FROM gn_meta.t_datasets
             WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1'
         ),
-        NULL,
+        (
+            SELECT id_role
+            FROM utilisateurs.t_roles
+            WHERE identifiant = 'admin-test-import'
+        ),
         (
             SELECT id_organisme
             FROM utilisateurs.bib_organismes
@@ -794,7 +771,7 @@ VALUES (
         4326,
         ';',
         'UTF-8',
-        'valid_file.csv',
+        'valid_file_test_import_synthese.csv',
         100,
         95,
         true,
@@ -822,7 +799,7 @@ VALUES (
         4326,
         ';',
         'UTF-8',
-        'valid_file.csv',
+        'valid_file_test_import_occhab.csv',
         100,
         95,
         true,
@@ -850,7 +827,7 @@ VALUES (
         4326,
         ';',
         'UTF-8',
-        'valid_file.csv',
+        'valid_file_test_import_synthese.csv',
         100,
         95,
         true,
