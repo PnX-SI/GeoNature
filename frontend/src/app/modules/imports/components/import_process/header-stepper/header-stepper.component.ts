@@ -57,6 +57,7 @@ export class HeaderStepperComponent implements OnInit, OnChanges {
       });
       return;
     }
+    if (!importData) return;
     const { dataset, destination, full_file_name } = importData;
     this.infoBox = {
       destinationDatasetName: dataset?.dataset_name,
