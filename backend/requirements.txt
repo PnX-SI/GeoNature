@@ -184,7 +184,7 @@ markupsafe==2.1.5
     #   mako
     #   werkzeug
     #   wtforms
-marshmallow==3.21.2
+marshmallow==3.21.3
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
