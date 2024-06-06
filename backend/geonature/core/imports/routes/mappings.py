@@ -123,7 +123,7 @@ def update_mapping(mapping, scope):
         except ValueError as e:
             raise BadRequest(*e.args)
         if mapping.type == "FIELD":
-            mapping.values.update(request.json)
+            mapping.values = request.json
         elif mapping.type == "CONTENT":
             for key, value in request.json.items():
                 if key not in mapping.values:
@@ -131,6 +131,7 @@ def update_mapping(mapping, scope):
                 else:
                     mapping.values[key].update(value)
             flag_modified(mapping, "values")  # nested dict modification not detected by MutableDict
+
     db.session.commit()
     return jsonify(mapping.as_dict())
 

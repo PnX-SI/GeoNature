@@ -7,14 +7,23 @@ from geonature.utils.env import db
 def generate_id_station(imprt, entity):
     transient_table = imprt.destination.get_transient_table()
     cte = (
-        sa.select(
-            sa.distinct(transient_table.c.unique_id_sinp_station).label("unique_id_sinp_station"),
-            sa.func.nextval("pr_occhab.t_stations_id_station_seq").label("id_station"),
-        )
-        .group_by(transient_table.c.unique_id_sinp_station)
-        .cte("cte_id_station")
+        sa.select(sa.distinct(transient_table.c.unique_id_sinp_station), transient_table.c.line_no)
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(transient_table.c[entity.validity_column].is_(True))
+        .cte("11")
     )
-
+    db.session.execute(
+        sa.update(transient_table)
+        .where(transient_table.c.line_no == cte.c.line_no)
+        .values({"id_station": sa.func.nextval("pr_occhab.t_stations_id_station_seq")})
+    )
+    cte = (
+        sa.select(transient_table.c.id_station, transient_table.c.unique_id_sinp_station)
+        .where(transient_table.c.id_station.is_not(None))
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(transient_table.c[entity.validity_column].is_(True))
+        .cte("cte")
+    )
     db.session.execute(
         sa.update(transient_table)
         .where(transient_table.c.id_import == imprt.id_import)
@@ -22,7 +31,6 @@ def generate_id_station(imprt, entity):
         .where(transient_table.c.unique_id_sinp_station == cte.c.unique_id_sinp_station)
         .values({"id_station": cte.c.id_station})
     )
-    db.session.flush()
 
 
 def set_id_station_from_line_no(imprt, station_entity, habitat_entity):
