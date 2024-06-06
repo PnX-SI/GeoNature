@@ -34,3 +34,10 @@ export const USERS = [
     }
   }
 ]
+
+export function availableDestinations(destinations) {
+  return Object.keys(destinations);
+}
+export function availableImportsCount(destinations) {
+  return Object.values(destinations).reduce((partialSum, item) => partialSum + item.count, 0);
+}

@@ -1,4 +1,4 @@
-import { USERS } from "./constants/users";
+import { USERS, availableDestinations, availableImportsCount } from "./constants/users";
 import { VIEWPORTS } from "./constants/common"
 // ////////////////////////////////////////////////////////////////////////////
 //
@@ -10,14 +10,6 @@ function generateRequestForDestination(destination) {
   }
   return `${Cypress.env('apiEndpoint')}/import/${destination}/imports/*`
 }
-
-function availableDestinations(destinations) {
-  return Object.keys(destinations);
-}
-function availableImportsCount(destinations) {
-  return Object.values(destinations).reduce((partialSum, item) => partialSum + item.count, 0);
-}
-
 describe("Import List - Toolbar - Destinations", () => {
   VIEWPORTS.forEach((viewport) => {
     context(`viewport: ${viewport.width}x${viewport.height}`, () => {
@@ -30,12 +22,12 @@ describe("Import List - Toolbar - Destinations", () => {
             cy.visitImport();
           })
           it('Should have pnx-destinations', () => {
-            cy.get("[data-qa=import-list-toolbar-destinations]").should('exist');
+            cy.get('[data-qa="import-list-toolbar-destinations"]').should('exist');
           })
 
           it('Should contains exactly all the available modules', () => {
             const destinations = Object.keys(user.destinations);
-            cy.get("[data-qa=import-list-toolbar-destinations]").should('exist').click()
+            cy.get('[data-qa="import-list-toolbar-destinations"]').should('exist').click()
               .get("ng-dropdown-panel")
               .get(".ng-option").then(options => {
                 expect(options.length === destinations.length)
