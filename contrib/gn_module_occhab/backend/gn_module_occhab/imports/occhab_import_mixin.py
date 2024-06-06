@@ -200,13 +200,54 @@ class OcchabImportMixin(ImportMixin):
                     )
 
             if code == "habitat":
-                generate_missing_uuid(imprt, entity, fields["unique_id_sinp_habitat"])
+
                 if "cd_hab" in selected_fields:
                     check_cd_hab(imprt, entity, selected_fields["cd_hab"])
                 if "unique_id_sinp_habitat" in selected_fields:
                     check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp_habitat"])
                     check_existing_uuid(imprt, entity, selected_fields["unique_id_sinp_habitat"])
 
+        # Generate Missing UUID
+        for code, entity in entities.items():
+            fields = {ef.field.name_field: ef.field for ef in entity.fields}
+            selected_fields = {
+                field_name: fields[field_name]
+                for field_name, source_field in imprt.fieldmapping.items()
+                if source_field in imprt.columns and field_name in fields
+            }
+            if code == "station":
+
+                if "unique_id_sinp_station" in selected_fields:
+                    kwargs = (
+                        {"origin_id_field": selected_fields["id_station_source"]}
+                        if "id_station_source" in selected_fields
+                        else {}
+                    )
+                    generate_missing_uuid(
+                        imprt, entity, selected_fields["unique_id_sinp_station"], **kwargs
+                    )
+
+                elif "id_station_source" in fields:
+                    generate_missing_uuid(
+                        imprt,
+                        entity,
+                        fields["unique_id_sinp_station"],
+                        origin_id_field=selected_fields["id_station_source"],
+                    )
+                check_entity_data_consistency(
+                    imprt, entity, selected_fields, fields["unique_id_sinp_station"]
+                )
+            elif code == "habitat":
+                generate_missing_uuid(imprt, entity, fields["unique_id_sinp_habitat"])
+        # Last Check
+        for code, entity in entities.items():
+            fields = {ef.field.name_field: ef.field for ef in entity.fields}
+            selected_fields = {
+                field_name: fields[field_name]
+                for field_name, source_field in imprt.fieldmapping.items()
+                if source_field in imprt.columns and field_name in fields
+            }
+            if code == "habitat":
                 set_id_parent_from_destination(
                     imprt,
                     parent_entity=entities["station"],
@@ -223,7 +264,6 @@ class OcchabImportMixin(ImportMixin):
                     parent_line_no="station_line_no",
                     fields=[
                         selected_fields.get("unique_id_sinp_station"),
-                        selected_fields.get("id_station_source"),
                     ],
                 )
                 check_no_parent_entity(
@@ -239,34 +279,6 @@ class OcchabImportMixin(ImportMixin):
                     child_entity=entities["habitat"],
                     parent_line_no="station_line_no",
                 )
-        entity = entities["station"]
-        fields = {ef.field.name_field: ef.field for ef in entities["station"].fields}
-        selected_fields = {
-            field_name: fields[field_name]
-            for field_name, source_field in imprt.fieldmapping.items()
-            if source_field in imprt.columns and field_name in fields
-        }
-        if "unique_id_sinp_station" in selected_fields:
-            kwargs = (
-                {"origin_id_field": selected_fields["id_station_source"]}
-                if "id_station_source" in selected_fields
-                else {}
-            )
-
-            generate_missing_uuid(
-                imprt, entity, selected_fields["unique_id_sinp_station"], **kwargs
-            )
-
-        elif "id_station_source" in fields:
-            generate_missing_uuid(
-                imprt,
-                entity,
-                fields["unique_id_sinp_station"],
-                origin_id_field=selected_fields["id_station_source"],
-            )
-        check_entity_data_consistency(
-            imprt, entity, selected_fields, fields["unique_id_sinp_station"]
-        )
 
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
@@ -308,7 +320,7 @@ class OcchabImportMixin(ImportMixin):
                 # if not selected_fields.get("unique_id_sinp_generate", False):
                 #    # even if not selected, add uuid column to force insert of NULL values instead of default generation of uuid
                 #    insert_fields |= {fields["unique_id_sinp_station"]}
-            else:  # habitat
+            elif entity.code == "habitat":  # habitat
                 # These fields are associated with habitat as necessary to find the corresponding station,
                 # but they are not inserted in habitat destination so we need to manually remove them.
                 insert_fields -= {fields["unique_id_sinp_station"], fields["id_station_source"]}
@@ -317,11 +329,13 @@ class OcchabImportMixin(ImportMixin):
                 #    # even if not selected, add uuid column to force insert of NULL values instead of default generation of uuid
                 #    insert_fields |= {fields["unique_id_sinp_habitat"]}
             names = ["id_import"] + [field.dest_field for field in insert_fields]
+
             select_stmt = (
                 sa.select(
                     sa.literal(imprt.id_import),
                     *[transient_table.c[field.dest_field] for field in insert_fields],
                 )
+                .distinct()
                 .where(transient_table.c.id_import == imprt.id_import)
                 .where(transient_table.c[entity.validity_column] == True)
             )
@@ -346,7 +360,9 @@ class OcchabImportMixin(ImportMixin):
                     station_entity=entities["station"],
                     habitat_entity=entities["habitat"],
                 )
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaa", select_stmt)
             r = db.session.execute(insert_stmt)
+            print("done for {}".format(entity.code))
             imprt.statistics.update({f"{entity.code}_count": r.rowcount})
 
     @staticmethod
@@ -358,7 +374,7 @@ class OcchabImportMixin(ImportMixin):
         )
         for entity in entities:
             destination_table = entity.get_destination_table()
-            r = db.session.execute(
+            db.session.execute(
                 sa.delete(destination_table).where(destination_table.c.id_import == imprt.id_import)
             )
 

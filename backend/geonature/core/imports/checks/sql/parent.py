@@ -29,8 +29,6 @@ def set_id_parent_from_destination(
             sa.update(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
             .where(transient_table.c[child_entity.validity_column].isnot(None))
-            # We need to complete the id_parent only for child not on the same row than a parent
-            .where(transient_table.c[parent_entity.validity_column].is_(None))
             # finding parent row:
             .where(transient_table.c[field.dest_column] == parent_destination.c[field.dest_column])
             .values({id_field.dest_column: parent_destination.c[id_field.dest_column]})
@@ -53,8 +51,6 @@ def set_parent_line_no(
             sa.update(transient_child)
             .where(transient_child.c.id_import == imprt.id_import)
             .where(transient_child.c[child_entity.validity_column].isnot(None))
-            # We need to complete the parent_line_no only for child not on the same row than a parent
-            .where(transient_child.c[parent_entity.validity_column].is_(None))
             # finding parent row:
             .where(transient_parent.c.id_import == imprt.id_import)
             .where(transient_parent.c[parent_entity.validity_column].isnot(None))
