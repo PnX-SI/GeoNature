@@ -83,6 +83,7 @@ export class FieldsMappingStepComponent implements OnInit {
       .themes.forEach(({ fields }) => {
         fields.forEach((field) => {
           let control = this._fieldMappingService.mappingFormGroup.controls[field.name_field];
+          if (control === undefined) return; // FIXME control is undefined when a new import is made after an other one without reload the page
           result += control.status === 'INVALID' ? 1 : 0;
         });
       });
