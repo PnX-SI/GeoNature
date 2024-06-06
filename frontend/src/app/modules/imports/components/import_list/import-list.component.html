@@ -57,7 +57,6 @@
             [canAutoResize]="false"
             [resizable]="false"
             [frozenLeft]="true"
-            data-qa="import-list-table-column-id"
           >
             <ng-template
               let-row="row"
@@ -72,7 +71,6 @@
             [prop]="col.prop"
             [sortable]="col.filter"
             [maxWidth]="col.max_width"
-            data-qa="import-list-table-column-{{ col.name }}"
           >
             <ng-template
               let-row="row"
@@ -109,7 +107,6 @@
             [sortable]="true"
             prop="destination.code"
             [maxWidth]="150"
-            data-qa="import-list-table-column-destination"
           >
             <ng-template
               let-row="row"
@@ -123,7 +120,6 @@
             [sortable]="true"
             [maxWidth]="100"
             prop="date_end_import"
-            data-qa="import-list-table-column-dateEnd"
           >
             <ng-template
               let-row="row"
