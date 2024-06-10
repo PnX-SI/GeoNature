@@ -204,7 +204,7 @@ marshmallow-sqlalchemy==1.0.0
     #   utils-flask-sqlalchemy-geo
 numpy==1.26.4
     # via shapely
-packaging==24.0
+packaging==24.1
     # via
     #   -r requirements-common.in
     #   geoalchemy2
