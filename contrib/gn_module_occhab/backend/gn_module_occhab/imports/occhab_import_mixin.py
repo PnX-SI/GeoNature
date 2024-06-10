@@ -360,9 +360,7 @@ class OcchabImportMixin(ImportMixin):
                     station_entity=entities["station"],
                     habitat_entity=entities["habitat"],
                 )
-            print("aaaaaaaaaaaaaaaaaaaaaaaaaaa", select_stmt)
             r = db.session.execute(insert_stmt)
-            print("done for {}".format(entity.code))
             imprt.statistics.update({f"{entity.code}_count": r.rowcount})
 
     @staticmethod
