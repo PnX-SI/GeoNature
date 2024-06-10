@@ -11,7 +11,7 @@ from geonature.utils.celery import celery_app
 
 from geonature.core.notifications.utils import dispatch_notifications
 
-from geonature.core.imports.models import TImports
+from geonature.core.imports.models import BibFields, Entity, EntityField, TImports
 from geonature.core.imports.checks.sql import init_rows_validity, check_orphan_rows
 
 
@@ -70,12 +70,26 @@ def do_import_in_destination(self, import_id):
     # Copy valid transient data to destination
     imprt.destination.import_mixin.import_data_to_destination(imprt)
 
-    imprt.import_count = db.session.execute(
-        db.select(func.count())
-        .select_from(transient_table)
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(sa.or_(*[transient_table.c[v] == True for v in imprt.destination.validity_columns]))
-    ).scalar()
+    count_entities = 0
+    for entity in (
+        Entity.query.filter_by(destination=imprt.destination).order_by(Entity.order).all()
+    ):
+        fields = BibFields.query.where(
+            BibFields.entities.any(EntityField.entity == entity),
+            BibFields.dest_field != None,
+            BibFields.name_field.in_(imprt.fieldmapping.keys()),
+        ).all()
+        columns_to_count_unique_entities = [
+            transient_table.c[field.dest_column] for field in fields
+        ]
+        n_valid_data = db.session.execute(
+            select(func.count(func.distinct(*columns_to_count_unique_entities)))
+            .select_from(transient_table)
+            .where(transient_table.c.id_import == imprt.id_import)
+            .where(transient_table.c[entity.validity_column] == True)
+        ).scalar()
+        count_entities += n_valid_data
+    imprt.import_count = count_entities
 
     # Clear transient data
     stmt = delete(transient_table).where(transient_table.c.id_import == imprt.id_import)
