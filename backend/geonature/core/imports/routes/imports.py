@@ -474,26 +474,28 @@ def preview_valid_data(scope, imprt):
     for entity in (
         Entity.query.filter_by(destination=imprt.destination).order_by(Entity.order).all()
     ):
-        fields = BibFields.query.filter(
+        fields = BibFields.query.where(
             BibFields.entities.any(EntityField.entity == entity),
             BibFields.dest_field != None,
             BibFields.name_field.in_(imprt.fieldmapping.keys()),
         ).all()
         columns = [{"prop": field.dest_column, "name": field.name_field} for field in fields]
+        columns_to_count_unique_entities = [transient_table.c[field.dest_column] for field in fields]
         valid_data = db.session.execute(
             select(*[transient_table.c[field.dest_column] for field in fields])
+            .distinct()
             .where(transient_table.c.id_import == imprt.id_import)
             .where(transient_table.c[entity.validity_column] == True)
             .limit(100)
         ).fetchall()
         n_valid_data = db.session.execute(
-            select(func.count())
+            select(func.count(func.distinct(*columns_to_count_unique_entities)))
             .select_from(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
             .where(transient_table.c[entity.validity_column] == True)
         ).scalar()
         n_invalid_data = db.session.execute(
-            select(func.count())
+            select(func.count(func.distinct(*columns_to_count_unique_entities)))
             .select_from(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
             .where(transient_table.c[entity.validity_column] == False)
