@@ -219,7 +219,7 @@ def generate_missing_uuid(
                 func.uuid_generate_v4().label("uuid"),
             )
             .where(transient_table.c[origin_id_field.source_field] != None)
-            .group_by(transient_table.c[origin_id_field.name_field])
+            .group_by(transient_table.c[origin_id_field.source_field])
             .cte("cte_generated_uuid")
         )
 
