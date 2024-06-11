@@ -480,7 +480,9 @@ def preview_valid_data(scope, imprt):
             BibFields.name_field.in_(imprt.fieldmapping.keys()),
         ).all()
         columns = [{"prop": field.dest_column, "name": field.name_field} for field in fields]
-        columns_to_count_unique_entities = [transient_table.c[field.dest_column] for field in fields]
+        columns_to_count_unique_entities = [
+            transient_table.c[field.dest_column] for field in fields
+        ]
         valid_data = db.session.execute(
             select(*[transient_table.c[field.dest_column] for field in fields])
             .distinct()

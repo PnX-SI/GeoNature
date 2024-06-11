@@ -159,15 +159,16 @@ def check_boolean_field(df, source_col, dest_col, required):
         - INVALID_BOOL: the column is not of boolean type.
 
     """
+    df[dest_col] = df[source_col].apply(int).apply(bool)
 
-    if not df[source_col].dtype == bool:
-        if required:
-            invalid_mask = df[source_col].apply(lambda x: type(x) != bool and pd.isnull(x))
-            yield dict(error_code="MISSING_VALUE", invalid_rows=df[invalid_mask])
-        else:
-            invalid_mask = df[source_col].apply(lambda x: type(x) != bool and (not pd.isnull(x)))
-            if invalid_mask.sum() > 0:
-                yield dict(error_code="INVALID_BOOL", invalid_rows=df[invalid_mask])
+    if required:
+        invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and pd.isnull(x))
+        yield dict(error_code="MISSING_VALUE", invalid_rows=df[invalid_mask])
+    else:
+        invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and (not pd.isnull(x)))
+        if invalid_mask.sum() > 0:
+            yield dict(error_code="INVALID_BOOL", invalid_rows=df[invalid_mask])
+    return {dest_col}
 
 
 def check_anytype_field(df, field_type, source_col, dest_col, required):
@@ -181,7 +182,7 @@ def check_anytype_field(df, field_type, source_col, dest_col, required):
     elif isinstance(field_type, sqltypes.String):
         yield from check_unicode_field(df, dest_col, field_length=field_type.length)
     elif isinstance(field_type, sqltypes.Boolean):
-        yield from check_boolean_field(df, source_col, dest_col, required)
+        updated_cols |= yield from check_boolean_field(df, source_col, dest_col, required)
     else:
         raise Exception(
             "Unknown type {} for field {}".format(type(field_type), dest_col)
