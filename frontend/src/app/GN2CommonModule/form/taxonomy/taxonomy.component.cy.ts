@@ -29,6 +29,22 @@
 //   constructor(){}
 // }
 
+import { TaxonomyComponent } from './taxonomy.component';
+
+describe('TaxonomyComponent', () => {
+
+  it('show component', () => {
+    
+    cy.mount(TaxonomyComponent, {
+      componentProperties: {},
+      imports: [],
+      declarations: [],
+      providers: [],
+    });
+  });
+});
+
+
 // describe('TaxonomyComponent', () => {
 //   let component: TaxonomyComponent;
 //   let fixture: ComponentFixture<TaxonomyComponent>;
