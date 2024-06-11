@@ -75,31 +75,38 @@
             <ng-template
               let-row="row"
               ngx-datatable-cell-template
+              let-rowIndex="rowIndex"
             >
-              <ng-container [ngSwitch]="col.prop">
-                <ng-container *ngSwitchCase="'dataset.dataset_name'">
-                  <a
-                    routerLink="/metadata/dataset_detail/{{ row.id_dataset }}"
-                    matTooltip="{{ col.name }}"
-                  >
-                    {{ row.dataset ? row.dataset.dataset_name : '' }}
-                  </a>
-                </ng-container>
-                <ng-container *ngSwitchCase="'date_create_import'">
-                  {{ row.date_create_import | date: 'dd-MM-yyyy' }}
-                </ng-container>
-                <ng-container *ngSwitchCase="'full_file_name'">
-                  <a
-                    href="javascript:void(0)"
-                    (click)="downloadSourceFile(row)"
-                  >
+              <div
+                [attr.data-qa]="
+                  'import-list-table-row-' + rowIndex + '-' + generateDataQaAttribute(col.name)
+                "
+              >
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchCase="'dataset.dataset_name'">
+                    <a
+                      routerLink="/metadata/dataset_detail/{{ row.id_dataset }}"
+                      matTooltip="{{ col.name }}"
+                    >
+                      {{ row.dataset ? row.dataset.dataset_name : '' }}
+                    </a>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'date_create_import'">
+                    {{ row.date_create_import | date: 'dd-MM-yyyy' }}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'full_file_name'">
+                    <a
+                      href="javascript:void(0)"
+                      (click)="downloadSourceFile(row)"
+                    >
+                      {{ row[col.prop] }}
+                    </a>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
                     {{ row[col.prop] }}
-                  </a>
+                  </ng-container>
                 </ng-container>
-                <ng-container *ngSwitchDefault>
-                  {{ row[col.prop] }}
-                </ng-container>
-              </ng-container>
+              </div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
