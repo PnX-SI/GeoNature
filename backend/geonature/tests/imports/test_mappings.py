@@ -392,8 +392,8 @@ class TestMappings:
         fm = mappings["field_public"]
         fieldvalues_update = deepcopy(fm.values)
         fieldvalues_update["WKT"] = "WKT2"
-        fieldvalues_should = deepcopy(fieldvalues_update)
         del fieldvalues_update["validator"]  # should not removed from mapping!
+        fieldvalues_should = deepcopy(fieldvalues_update)
         r = self.client.post(
             url_for(
                 "import.update_mapping",

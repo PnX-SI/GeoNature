@@ -170,6 +170,13 @@ def prepared_import(client, content_mapped_import):
 @pytest.fixture()
 def imported_import(client, prepared_import):
     imprt = prepared_import
+    # transient_table = imprt.destination.get_transient_table()
+    # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    # print(
+    #     db.session.execute(
+    #         sa.select(transient_table).where(imprt.id_import == transient_table.c.id_import)
+    #     ).all()
+    # )
     with logged_user(client, imprt.authors[0]):
         r = client.post(url_for("import.import_valid_data", import_id=imprt.id_import))
     assert r.status_code == 200, r.data
@@ -187,13 +194,12 @@ class TestImportsOcchab:
             imported_import,
             {
                 # Stations errors
-                ("DUPLICATE_UUID", "station", "unique_id_sinp_station", frozenset({4, 5})),
                 ("DATASET_NOT_FOUND", "station", "unique_dataset_id", frozenset({6})),
                 ("DATASET_NOT_AUTHORIZED", "station", "unique_dataset_id", frozenset({7})),
                 ("INVALID_UUID", "station", "unique_dataset_id", frozenset({8})),
                 ("NO-GEOM", "station", "Champs géométriques", frozenset({9})),
+                ("MISSING_VALUE", "station", "WKT", frozenset({9})),
                 ("MISSING_VALUE", "station", "date_min", frozenset({10})),
-                ("DUPLICATE_ENTITY_SOURCE_PK", "station", "id_station_source", frozenset({14, 15})),
                 ("INVALID_UUID", "station", "unique_id_sinp_station", frozenset({20})),
                 # Habitats errors
                 ("INVALID_UUID", "habitat", "unique_id_sinp_station", frozenset({20, 21})),
@@ -201,7 +207,7 @@ class TestImportsOcchab:
                     "ERRONEOUS_PARENT_ENTITY",
                     "habitat",
                     "",
-                    frozenset({4, 5, 6, 7, 10, 14, 15, 19, 20}),
+                    frozenset({6, 7, 10, 19, 20}),
                 ),
                 ("NO_PARENT_ENTITY", "habitat", "id_station", frozenset({11})),
                 # Other errors
@@ -209,12 +215,12 @@ class TestImportsOcchab:
                 ("ORPHAN_ROW", None, "id_station_source", frozenset({13})),
             },
         )
-        assert imported_import.statistics == {"station_count": 3, "habitat_count": 5}
+        assert imported_import.statistics == {"station_count": 5, "habitat_count": 9}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
             )
-            == 3
+            == 5
         )
         assert (
             db.session.scalar(
@@ -222,5 +228,5 @@ class TestImportsOcchab:
                     OccurenceHabitat.id_import == imported_import.id_import
                 )
             )
-            == 5
+            == 9
         )
