@@ -1,10 +1,12 @@
-import './geonatureInitImportList';
 import './backToImportList';
 import './checkCurrentPageIsImport';
 import './checkImportListSize';
 import './configureImportContentMapping';
 import './configureImportFieldMapping';
 import './configureImportFile';
+import './deleteCurrentImport';
+import './geonatureInitImportList';
+import "./hasToastError";
 import './executeImport';
 import './loadImportFile';
 import './pickDestination';

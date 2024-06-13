@@ -1,6 +1,4 @@
-const DEFAULT_FIXTURE = 'import/synthese/valid_file.csv';
-Cypress.Commands.add("loadImportFile", (fixture) => {
-  fixture = fixture ?? DEFAULT_FIXTURE;
+ypress.Commands.add("loadImportFile", (fixture) => {
   cy.fixture(fixture, null).as('validFile')
   cy.get('[data-qa="import-new-upload-file"]').selectFile('@validFile');
   cy.contains('valid_file.csv');

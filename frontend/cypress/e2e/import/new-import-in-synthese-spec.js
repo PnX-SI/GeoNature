@@ -1,5 +1,4 @@
 
-import { startImport, pickDestination, loadImportFile, configureImportFile, configureImportFieldMapping, configureImportContentMapping, verifyImport, executeImport, removeLastImport } from "./new-import-utils";
 describe('Import - create a new import', () => {
   beforeEach(() => {
     cy.geonatureInitImportList()
