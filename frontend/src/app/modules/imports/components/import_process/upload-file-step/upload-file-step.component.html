@@ -53,6 +53,7 @@
     <div
       class="text-danger"
       *ngIf="emptyError || (file && !file.size)"
+      data-qa="import-new-upload-error-empty"
     >
       {{ 'Import.Errors.EmptyFile' | translate }}
     </div>

@@ -5,10 +5,20 @@ export const FILES = {
       toast: '',
       formErrorElement: ''
     },
-    bad_csv: {
-      fixture: 'import/synthese/bad_csv.csv',
+    bad: {
+      fixture: 'import/synthese/bad.csv',
+      toast: '',
+      formErrorElement: '[data-qa="import-new-upload-error-empty"]'
+    },
+    empty: {
+      fixture: 'import/synthese/empty.csv',
       toast: 'File must start with columns',
       formErrorElement: '[data-qa="import-new-upload-error-firstColumn"]'
-    }
+    },
+    bad_extension: {
+      fixture: 'import/synthese/bad_extension.pdf',
+      toast: '',
+      formErrorElement: ''
+    },
   }
 }
