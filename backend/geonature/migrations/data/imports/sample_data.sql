@@ -831,7 +831,7 @@ VALUES (
         4326,
         ';',
         'UTF-8',
-        'valid_file_test_import_synthese.csv',
+        'valid_file_test_link_list_import_synthese',
         100,
         95,
         true,

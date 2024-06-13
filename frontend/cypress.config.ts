@@ -16,5 +16,6 @@ export default defineConfig({
     },
     baseUrl: 'http://127.0.0.1:4200',
     specPattern: 'cypress/e2e/**/*spec.{js,jsx,ts,tsx}',
+    downloadsFolder: 'cypress/downloads',
   },
 });

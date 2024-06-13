@@ -34,7 +34,8 @@ def downgrade():
         WHERE id_dataset IN (
             (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1'),
             (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'),
-            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '2f543d86-ec4e-4f1a-b4d9-123456789abc')
+            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '2f543d86-ec4e-4f1a-b4d9-123456789abc'),
+            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '5f45d560-1ce3-420c-b45c-3d589eedaee1')
         );
         """
     )
@@ -68,7 +69,8 @@ def downgrade():
         WHERE id_dataset IN (
             (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'),
             (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '2f543d86-ec4e-4f1a-b4d9-123456789abc'),
-            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1')
+            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1'),
+            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '5f45d560-1ce3-420c-b45c-3d589eedaee1')
         );
         """
     )
@@ -104,7 +106,8 @@ def downgrade():
         WHERE id_dataset IN (
             (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'),
             (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '2f543d86-ec4e-4f1a-b4d9-123456789abc'),
-            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1')
+            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1'),
+            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '5f45d560-1ce3-420c-b45c-3d589eedaee1')
         );
         """
     )
@@ -113,7 +116,7 @@ def downgrade():
     op.execute(
         """
         DELETE FROM gn_meta.t_datasets
-        WHERE unique_dataset_id IN ('9f86d081-8292-466e-9e7b-16f3960d255f', '2f543d86-ec4e-4f1a-b4d9-123456789abc', 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1');
+        WHERE unique_dataset_id IN ('9f86d081-8292-466e-9e7b-16f3960d255f', '2f543d86-ec4e-4f1a-b4d9-123456789abc', 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1', '5f45d560-1ce3-420c-b45c-3d589eedaee1');
         """
     )
 
@@ -132,7 +135,7 @@ def downgrade():
     SELECT ti.id_import
     FROM gn_imports.t_imports ti
     JOIN gn_meta.t_datasets td ON ti.id_dataset = td.id_dataset
-    WHERE td.dataset_name ILIKE '%JDD-test-IMPORT%';
+    WHERE td.dataset_name ILIKE '%JDD-TEST-IMPORT%';
     """
     )
 
