@@ -21,7 +21,7 @@ from geonature.core.imports.checks.dataframe import (
     concat_dates,
     check_required_values,
     check_types,
-    check_geography,
+    check_geometry,
     check_counts,
 )
 from geonature.core.imports.checks.sql import (
@@ -42,8 +42,8 @@ from geonature.core.imports.checks.sql import (
     check_altitudes,
     check_depths,
     check_digital_proof_urls,
-    check_geography_outside,
-    check_is_valid_geography,
+    check_geometry_outside,
+    check_is_valid_geometry,
 )
 
 from .geo import set_geom_columns_from_area_codes
@@ -140,9 +140,9 @@ class SyntheseImportMixin(ImportMixin):
                 updated_cols |= check_types(imprt, entity, df, fields)
             update_batch_progress(batch, 4)
 
-            logger.info(f"[{batch+1}/{batch_count}] Check geography…")
-            with start_sentry_child(op="check.df", description="set geography"):
-                updated_cols |= check_geography(
+            logger.info(f"[{batch+1}/{batch_count}] Check geometries…")
+            with start_sentry_child(op="check.df", description="set geometries"):
+                updated_cols |= check_geometry(
                     imprt,
                     entity,
                     df,
@@ -197,7 +197,7 @@ class SyntheseImportMixin(ImportMixin):
             geom_4326_field=fields["the_geom_4326"],
             geom_point_field=fields["the_geom_point"],
         )
-        # All valid rows should have a geom as verified in dataframe check 'check_geography'
+        # All valid rows should have a geom as verified in dataframe check 'check_geometry'
 
         do_nomenclatures_mapping(
             imprt,
@@ -269,9 +269,9 @@ class SyntheseImportMixin(ImportMixin):
             check_digital_proof_urls(imprt, entity, selected_fields["digital_proof"])
 
         if "WKT" in selected_fields:
-            check_is_valid_geography(imprt, entity, selected_fields["WKT"], fields["the_geom_4326"])
+            check_is_valid_geometry(imprt, entity, selected_fields["WKT"], fields["the_geom_4326"])
         if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
-            check_geography_outside(
+            check_geometry_outside(
                 imprt,
                 entity,
                 fields["the_geom_local"],

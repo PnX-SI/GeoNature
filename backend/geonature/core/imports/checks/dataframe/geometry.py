@@ -71,7 +71,7 @@ def check_wkt_inside_area_id(wkt: str, id_area: int, wkt_srid: int):
 
 
 @dfcheck
-def check_geography(
+def check_geometry(
     df,
     file_srid,
     geom_4326_field,

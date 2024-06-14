@@ -15,8 +15,8 @@ from ref_geo.models import LAreas
 __all__ = [
     "set_geom_point",
     "convert_geom_columns",
-    "check_is_valid_geography",
-    "check_geography_outside",
+    "check_is_valid_geometry",
+    "check_geometry_outside",
 ]
 
 
@@ -74,7 +74,7 @@ def convert_geom_columns(imprt, entity, geom_4326_field, geom_local_field):
         db.session.execute(stmt)
 
 
-def check_is_valid_geography(imprt, entity, wkt_field, geom_field):
+def check_is_valid_geometry(imprt, entity, wkt_field, geom_field):
     # It is useless to check valid WKT when created from X/Y
     transient_table = imprt.destination.get_transient_table()
     where_clause = sa.and_(
@@ -90,7 +90,7 @@ def check_is_valid_geography(imprt, entity, wkt_field, geom_field):
     )
 
 
-def check_geography_outside(imprt, entity, geom_local_field, id_area):
+def check_geometry_outside(imprt, entity, geom_local_field, id_area):
     transient_table = imprt.destination.get_transient_table()
     area = LAreas.query.filter(LAreas.id_area == id_area).one()
     report_erroneous_rows(

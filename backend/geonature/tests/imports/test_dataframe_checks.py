@@ -13,7 +13,7 @@ from shapely.geometry import Point
 from geonature.core.imports.models import TImports, Destination, BibFields
 from geonature.core.imports.checks.dataframe import *
 from geonature.core.imports.checks.dataframe.types import convert_to_datetime
-from geonature.core.imports.checks.dataframe.geography import (
+from geonature.core.imports.checks.dataframe.geometry import (
     check_wkt_inside_area_id,
     check_geometry_inside_l_areas,
 )
@@ -149,7 +149,7 @@ class TestChecks:
                 ]
             ],
         )
-        errors = check_geography.__wrapped__(
+        errors = check_geometry.__wrapped__(
             df,
             file_srid=imprt.srid,
             geom_4326_field=fields["the_geom_4326"],

@@ -22,7 +22,7 @@ from geonature.core.imports.utils import (
 )
 from geonature.core.imports.checks.dataframe import (
     check_datasets,
-    check_geography,
+    check_geometry,
     check_required_values,
     check_types,
     concat_dates,
@@ -35,8 +35,8 @@ from geonature.core.imports.checks.sql import (
     check_erroneous_parent_entities,
     check_duplicate_uuid,
     check_existing_uuid,
-    check_geography_outside,
-    check_is_valid_geography,
+    check_geometry_outside,
+    check_is_valid_geometry,
     check_no_parent_entity,
     convert_geom_columns,
     do_nomenclatures_mapping,
@@ -242,7 +242,7 @@ class OcchabImportMixin(ImportMixin):
             imprt, df, entity, fields, selected_fields
         )
 
-        updated_cols |= check_geography(
+        updated_cols |= check_geometry(
             imprt,
             entity,
             df,
@@ -292,10 +292,10 @@ class OcchabImportMixin(ImportMixin):
             selected_fields.get("depth_max"),
         )
         if "WKT" in selected_fields:
-            check_is_valid_geography(imprt, entity, selected_fields["WKT"], fields["geom_4326"])
+            check_is_valid_geometry(imprt, entity, selected_fields["WKT"], fields["geom_4326"])
         # TODO@TestImportsOcchab.test_import_valid_file: remove this check
         if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
-            check_geography_outside(
+            check_geometry_outside(
                 imprt,
                 entity,
                 fields["geom_local"],
