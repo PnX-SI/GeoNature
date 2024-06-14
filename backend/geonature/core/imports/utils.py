@@ -244,3 +244,37 @@ def generate_pdf_from_template(template, data):
     )
 
     return html_file.write_pdf()
+
+
+def get_mapping_data(import_, entity):
+    """
+    Get the mapping data for a given import and entity.
+
+    Parameters
+    ----------
+    import_ : TImports
+        The import to get the mapping data for.
+    entity : Entity
+        The entity to get the mapping data for.
+
+    Returns
+    -------
+    fields : dict
+        A dictionary with the all fields associated with an entity (check gn_imports.bib_fields). This dictionary is keyed by the name field and valued by the corresponding BibField object.
+    selected_fields : dict
+        In the same format as fields, but only the fields contained in the mapping.
+    source_cols : list
+        A subset of fields with only the source columns (check gn_imports.bib_fields.source_field).
+    """
+    fields = {ef.field.name_field: ef.field for ef in entity.fields}
+    selected_fields = {
+        field_name: fields[field_name]
+        for field_name, source_field in import_.fieldmapping.items()
+        if source_field in import_.columns and field_name in fields
+    }
+    source_cols = [
+        field.source_column
+        for field in selected_fields.values()
+        if field.source_field is not None and field.mnemonique is None
+    ]
+    return fields, selected_fields, source_cols

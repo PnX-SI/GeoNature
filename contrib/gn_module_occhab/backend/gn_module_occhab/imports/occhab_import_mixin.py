@@ -16,6 +16,7 @@ from geonature.core.imports.import_mixin import ImportMixin, ImportStatisticsLab
 from .plot import distribution_plot
 
 from geonature.core.imports.utils import (
+    get_mapping_data,
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
 )
@@ -32,7 +33,6 @@ from geonature.core.imports.checks.sql import (
     check_dates,
     check_depths,
     check_erroneous_parent_entities,
-    check_duplicate_source_pk,
     check_duplicate_uuid,
     check_existing_uuid,
     check_geography_outside,
@@ -83,202 +83,210 @@ class OcchabImportMixin(ImportMixin):
         return updated_cols
 
     @staticmethod
-    def check_transient_data(task, logger, imprt: TImports):
-        task.update_state(state="PROGRESS", meta={"progress": 0})
-        transient_table = imprt.destination.get_transient_table()
+    def dataframe_checks(imprt, df, entity, fields, selected_fields):
+        updated_cols = set({})
+        updated_cols |= check_types(
+            imprt, entity, df, fields
+        )  # FIXME do not check station uuid twice
 
-        entities = {
-            entity.code: entity
-            for entity in Entity.query.filter_by(destination=imprt.destination)
-            .order_by(Entity.order)  # order matters for id_station
-            .all()
-        }
-        for code, entity in entities.items():
-            fields = {ef.field.name_field: ef.field for ef in entity.fields}
-            selected_fields = {
-                field_name: fields[field_name]
-                for field_name, source_field in imprt.fieldmapping.items()
-                if source_field in imprt.columns and field_name in fields
-            }
-            source_cols = [
-                field.source_column
-                for field in selected_fields.values()
-                if field.source_field is not None and field.mnemonique is None
-            ]
-            updated_cols = set()
+        updated_cols |= check_required_values(
+            imprt, entity, df, fields
+        )  # FIXME do not check required multi-entity fields twice
 
-            ### Dataframe checks
+        return updated_cols
 
-            df = load_transient_data_in_dataframe(imprt, entity, source_cols)
+    @staticmethod
+    def generate_and_check_uuids(imprt):
+        entity_habitat = Entity.query.filter_by(code="habitat").one()
+        entity_station = Entity.query.filter_by(code="station").one()
+        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
 
-            updated_cols |= check_types(
-                imprt, entity, df, fields
-            )  # FIXME do not check station uuid twice
-
-            if code == "station":
-                updated_cols |= check_datasets(
-                    imprt,
-                    entity,
-                    df,
-                    uuid_field=fields["unique_dataset_id"],
-                    id_field=fields["id_dataset"],
-                    module_code="OCCHAB",
-                )
-
-            updated_cols |= check_required_values(
-                imprt, entity, df, fields
-            )  # FIXME do not check required multi-entity fields twice
-
-            if code == "station":
-                updated_cols |= check_geography(
-                    imprt,
-                    entity,
-                    df,
-                    file_srid=imprt.srid,
-                    geom_4326_field=fields["geom_4326"],
-                    geom_local_field=fields["geom_local"],
-                    wkt_field=fields["WKT"],
-                    latitude_field=fields["latitude"],
-                    longitude_field=fields["longitude"],
-                )
-
-            update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
-
-            ### SQL checks
-
-            do_nomenclatures_mapping(
-                imprt,
-                entity,
-                selected_fields,
-                fill_with_defaults=current_app.config["IMPORT"][
-                    "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
-                ],
+        if "unique_id_sinp_station" in selected_fields:
+            kwargs = (
+                {"origin_id_field": selected_fields["id_station_source"]}
+                if "id_station_source" in selected_fields
+                else {}
+            )
+            generate_missing_uuid(
+                imprt, entity_station, selected_fields["unique_id_sinp_station"], **kwargs
             )
 
-            if code == "station":
+        elif "id_station_source" in fields:
+            generate_missing_uuid(
+                imprt,
+                entity_station,
+                fields["unique_id_sinp_station"],
+                origin_id_field=selected_fields["id_station_source"],
+            )
 
-                convert_geom_columns(
-                    imprt,
-                    entity,
-                    geom_4326_field=fields["geom_4326"],
-                    geom_local_field=fields["geom_local"],
-                )
-                if imprt.fieldmapping.get("altitudes_generate", False):
-                    # TODO@TestImportsOcchab.test_import_valid_file: add testcase
-                    generate_altitudes(
-                        imprt,
-                        fields["the_geom_local"],
-                        fields["altitude_min"],
-                        fields["altitude_max"],
-                    )
-                check_altitudes(
-                    imprt,
-                    entity,
-                    selected_fields.get("altitude_min"),
-                    selected_fields.get("altitude_max"),
-                )
-                check_dates(
-                    imprt, entity, selected_fields.get("date_min"), selected_fields.get("date_max")
-                )
-                check_depths(
-                    imprt,
-                    entity,
-                    selected_fields.get("depth_min"),
-                    selected_fields.get("depth_max"),
-                )
-                if "WKT" in selected_fields:
-                    check_is_valid_geography(
-                        imprt, entity, selected_fields["WKT"], fields["geom_4326"]
-                    )
-                # TODO@TestImportsOcchab.test_import_valid_file: remove this check
-                if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
-                    check_geography_outside(
-                        imprt,
-                        entity,
-                        fields["geom_local"],
-                        id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
-                    )
+        generate_missing_uuid(imprt, entity_habitat, fields["unique_id_sinp_habitat"])
 
-            if code == "habitat":
+        set_id_parent_from_destination(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            id_field=fields["id_station"],
+            fields=[
+                selected_fields.get("unique_id_sinp_station"),
+            ],
+        )
+        set_parent_line_no(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            parent_line_no="station_line_no",
+            fields=[
+                selected_fields.get("unique_id_sinp_station"),
+            ],
+        )
+        check_no_parent_entity(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            id_parent="id_station",
+            parent_line_no="station_line_no",
+        )
+        check_erroneous_parent_entities(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            parent_line_no="station_line_no",
+        )
 
-                if "cd_hab" in selected_fields:
-                    check_cd_hab(imprt, entity, selected_fields["cd_hab"])
-                if "unique_id_sinp_habitat" in selected_fields:
-                    check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp_habitat"])
-                    check_existing_uuid(imprt, entity, selected_fields["unique_id_sinp_habitat"])
+    @staticmethod
+    def check_habitat(imprt):
+        entity_habitat = Entity.query.filter_by(code="habitat").one()
+        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
 
-        # Generate Missing UUID
-        for code, entity in entities.items():
-            fields = {ef.field.name_field: ef.field for ef in entity.fields}
-            selected_fields = {
-                field_name: fields[field_name]
-                for field_name, source_field in imprt.fieldmapping.items()
-                if source_field in imprt.columns and field_name in fields
-            }
-            if code == "station":
+        updated_cols = set()
 
-                if "unique_id_sinp_station" in selected_fields:
-                    kwargs = (
-                        {"origin_id_field": selected_fields["id_station_source"]}
-                        if "id_station_source" in selected_fields
-                        else {}
-                    )
-                    generate_missing_uuid(
-                        imprt, entity, selected_fields["unique_id_sinp_station"], **kwargs
-                    )
+        ### Dataframe checks
+        df = load_transient_data_in_dataframe(imprt, entity_habitat, source_cols)
+        updated_cols |= OcchabImportMixin.dataframe_checks(
+            imprt, df, entity_habitat, fields, selected_fields
+        )
+        update_transient_data_from_dataframe(imprt, entity_habitat, updated_cols, df)
 
-                elif "id_station_source" in fields:
-                    generate_missing_uuid(
-                        imprt,
-                        entity,
-                        fields["unique_id_sinp_station"],
-                        origin_id_field=selected_fields["id_station_source"],
-                    )
-                check_entity_data_consistency(
-                    imprt, entity, selected_fields, fields["unique_id_sinp_station"]
-                )
-            elif code == "habitat":
-                generate_missing_uuid(imprt, entity, fields["unique_id_sinp_habitat"])
-        # Last Check
-        for code, entity in entities.items():
-            fields = {ef.field.name_field: ef.field for ef in entity.fields}
-            selected_fields = {
-                field_name: fields[field_name]
-                for field_name, source_field in imprt.fieldmapping.items()
-                if source_field in imprt.columns and field_name in fields
-            }
-            if code == "habitat":
-                set_id_parent_from_destination(
-                    imprt,
-                    parent_entity=entities["station"],
-                    child_entity=entities["habitat"],
-                    id_field=fields["id_station"],
-                    fields=[
-                        selected_fields.get("unique_id_sinp_station"),
-                    ],
-                )
-                set_parent_line_no(
-                    imprt,
-                    parent_entity=entities["station"],
-                    child_entity=entities["habitat"],
-                    parent_line_no="station_line_no",
-                    fields=[
-                        selected_fields.get("unique_id_sinp_station"),
-                    ],
-                )
-                check_no_parent_entity(
-                    imprt,
-                    parent_entity=entities["station"],
-                    child_entity=entities["habitat"],
-                    id_parent="id_station",
-                    parent_line_no="station_line_no",
-                )
-                check_erroneous_parent_entities(
-                    imprt,
-                    parent_entity=entities["station"],
-                    child_entity=entities["habitat"],
-                    parent_line_no="station_line_no",
-                )
+        do_nomenclatures_mapping(
+            imprt,
+            entity_habitat,
+            selected_fields,
+            fill_with_defaults=current_app.config["IMPORT"][
+                "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
+            ],
+        )
+
+        if "cd_hab" in selected_fields:
+            check_cd_hab(imprt, entity_habitat, selected_fields["cd_hab"])
+        if "unique_id_sinp_habitat" in selected_fields:
+            check_duplicate_uuid(imprt, entity_habitat, selected_fields["unique_id_sinp_habitat"])
+            check_existing_uuid(imprt, entity_habitat, selected_fields["unique_id_sinp_habitat"])
+
+    @staticmethod
+    def check_station(imprt):
+        entity = Entity.query.filter_by(code="station").one()
+        fields, selected_fields, source_cols = get_mapping_data(imprt, entity)
+
+        # Save column names where the data was changed in the dataframe
+        updated_cols = set()
+
+        ### Dataframe checks
+        df = load_transient_data_in_dataframe(imprt, entity, source_cols)
+
+        updated_cols |= check_datasets(
+            imprt,
+            entity,
+            df,
+            uuid_field=fields["unique_dataset_id"],
+            id_field=fields["id_dataset"],
+            module_code="OCCHAB",
+        )
+        updated_cols |= OcchabImportMixin.dataframe_checks(
+            imprt, df, entity, fields, selected_fields
+        )
+
+        updated_cols |= check_geography(
+            imprt,
+            entity,
+            df,
+            file_srid=imprt.srid,
+            geom_4326_field=fields["geom_4326"],
+            geom_local_field=fields["geom_local"],
+            wkt_field=fields["WKT"],
+            latitude_field=fields["latitude"],
+            longitude_field=fields["longitude"],
+        )
+
+        update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
+        do_nomenclatures_mapping(
+            imprt,
+            entity,
+            selected_fields,
+            fill_with_defaults=current_app.config["IMPORT"][
+                "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
+            ],
+        )
+
+        convert_geom_columns(
+            imprt,
+            entity,
+            geom_4326_field=fields["geom_4326"],
+            geom_local_field=fields["geom_local"],
+        )
+        if imprt.fieldmapping.get("altitudes_generate", False):
+            # TODO@TestImportsOcchab.test_import_valid_file: add testcase
+            generate_altitudes(
+                imprt,
+                fields["the_geom_local"],
+                fields["altitude_min"],
+                fields["altitude_max"],
+            )
+        check_altitudes(
+            imprt,
+            entity,
+            selected_fields.get("altitude_min"),
+            selected_fields.get("altitude_max"),
+        )
+        check_dates(imprt, entity, selected_fields.get("date_min"), selected_fields.get("date_max"))
+        check_depths(
+            imprt,
+            entity,
+            selected_fields.get("depth_min"),
+            selected_fields.get("depth_max"),
+        )
+        if "WKT" in selected_fields:
+            check_is_valid_geography(imprt, entity, selected_fields["WKT"], fields["geom_4326"])
+        # TODO@TestImportsOcchab.test_import_valid_file: remove this check
+        if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
+            check_geography_outside(
+                imprt,
+                entity,
+                fields["geom_local"],
+                id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
+            )
+
+    @staticmethod
+    def check_transient_data(task, logger, imprt: TImports):
+        task.update_state(state="PROGRESS", meta={"progress": 0})
+        OcchabImportMixin.check_station(imprt)
+        OcchabImportMixin.check_habitat(imprt)
+        OcchabImportMixin.generate_and_check_uuids(imprt)
+
+        station_ = Entity.query.filter_by(code="station").one()
+        fields, selected_fields, _ = get_mapping_data(imprt, station_)
+        check_entity_data_consistency(
+            imprt,
+            station_,
+            selected_fields,
+            fields["unique_id_sinp_station"],
+        )
+        transient_table = imprt.destination.get_transient_table()
+        db.session.execute(
+            sa.update(transient_table)
+            .where(transient_table.c.station_valid == False)
+            .values({"habitat_valid": False})
+        )
+        task.update_state(state="PROGRESS", meta={"progress": 100})
 
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
