@@ -1,9 +1,6 @@
 <form>
-  <fieldset>
-    <div
-      *ngIf="userFieldMappings.length > 0"
-      class="form-group"
-    >
+  <fieldset *ngIf="userFieldMappings.length > 0">
+    <div class="form-group">
       <legend class="px-1">{{ 'Import.FieldMapping.ChooseMapping' | translate }}</legend>
       <ng-select
         id="mappingSelection"
@@ -12,6 +9,7 @@
         [formControl]="fieldMappingForm"
         [compareWith]="areMappingFieldEqual"
         [disableControl]="!userFieldMappings.length"
+        placeholder="{{ 'Browse' | translate }}"
       >
         <ng-template
           ng-option-tmp
