@@ -230,6 +230,9 @@ class OcchabImportMixin(ImportMixin):
         ### Dataframe checks
         df = load_transient_data_in_dataframe(imprt, entity, source_cols)
 
+        updated_cols |= OcchabImportMixin.dataframe_checks(
+            imprt, df, entity, fields, selected_fields
+        )
         updated_cols |= check_datasets(
             imprt,
             entity,
@@ -237,9 +240,6 @@ class OcchabImportMixin(ImportMixin):
             uuid_field=fields["unique_dataset_id"],
             id_field=fields["id_dataset"],
             module_code="OCCHAB",
-        )
-        updated_cols |= OcchabImportMixin.dataframe_checks(
-            imprt, df, entity, fields, selected_fields
         )
 
         updated_cols |= check_geometry(
