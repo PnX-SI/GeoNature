@@ -113,6 +113,32 @@ def check_integer_field(df, source_field, target_field, required):
         yield dict(
             error_code="INVALID_INTEGER",
             invalid_rows=invalid_rows,
+            comment="Les valeurs suivantes ne sont pas des entiers : {}".format(
+                ", ".join(map(lambda x: str(x), values_error))
+            ),
+        )
+    return {target_field}
+
+
+def check_numeric_field(df, source_field, target_field, required):
+    def to_numeric(x):
+        try:
+            return float(x)
+        except:
+            return None
+
+    numeric_col = df[source_field].apply(lambda x: to_numeric(x) if pd.notnull(x) else x)
+    if required:
+        invalid_rows = df[numeric_col.isna()]
+    else:
+        # invalid rows are NaN rows which were not already set to NaN
+        invalid_rows = df[numeric_col.isna() & df[source_field].notna()]
+    df[target_field] = numeric_col
+    values_error = invalid_rows[source_field]
+    if len(invalid_rows) > 0:
+        yield dict(
+            error_code="INVALID_NUMERIC",
+            invalid_rows=invalid_rows,
             comment="Les valeurs suivantes ne sont pas des nombres : {}".format(
                 ", ".join(map(lambda x: str(x), values_error))
             ),
@@ -183,6 +209,8 @@ def check_anytype_field(df, field_type, source_col, dest_col, required):
         yield from check_unicode_field(df, dest_col, field_length=field_type.length)
     elif isinstance(field_type, sqltypes.Boolean):
         updated_cols |= yield from check_boolean_field(df, source_col, dest_col, required)
+    elif isinstance(field_type, sqltypes.Numeric):
+        updated_cols |= yield from check_numeric_field(df, source_col, dest_col, required)
     else:
         raise Exception(
             "Unknown type {} for field {}".format(type(field_type), dest_col)
