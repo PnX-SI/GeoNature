@@ -402,7 +402,6 @@ class OcchabImportMixin(ImportMixin):
             else:
                 set_id_station_from_line_no(
                     imprt,
-                    station_entity=entities["station"],
                     habitat_entity=entities["habitat"],
                 )
             r = db.session.execute(insert_stmt)
