@@ -155,6 +155,21 @@ class OcchabImportMixin(ImportMixin):
 
     @staticmethod
     def check_habitat(imprt):
+        """
+        Check the habitat data before importing.
+
+        List of checks (in order of execution):
+        - check required values
+        - check types
+        - check the existence of cd_hab
+        - check the duplicates of unique_id_sinp_habitat (in the file and in the database)
+
+        Parameters
+        ----------
+        imprt : TImports
+            The import to check.
+
+        """
         entity_habitat = Entity.query.filter_by(code="habitat").one()
         fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
 
@@ -184,6 +199,28 @@ class OcchabImportMixin(ImportMixin):
 
     @staticmethod
     def check_station(imprt):
+        """
+        Check the station data before importing.
+
+        List of checks and data operations (in order of execution):
+        - check datasets
+        - check types
+        - check required values
+        - convert geom columns
+        - check geography
+        - generate altitudes if requested
+        - check altitudes
+        - check dates
+        - check depths
+        - check if given geometries are valid (see ST_VALID in PostGIS)
+        - if requested, check if given geometry is outside the restricted area
+
+        Parameters
+        ----------
+        imprt : TImports
+            The import to check.
+
+        """
         entity = Entity.query.filter_by(code="station").one()
         fields, selected_fields, source_cols = get_mapping_data(imprt, entity)
 
