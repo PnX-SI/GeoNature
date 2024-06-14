@@ -4,6 +4,7 @@ import csv
 import json
 from enum import IntEnum
 from datetime import datetime, timedelta
+from typing import IO, Any, Dict, Iterable, List, Optional, Set, Tuple
 
 from flask import current_app, render_template
 from sqlalchemy import delete
@@ -17,7 +18,7 @@ from geonature.utils.env import db
 from weasyprint import HTML
 
 from geonature.utils.sentry import start_sentry_child
-from geonature.core.imports.models import ImportUserError, BibFields
+from geonature.core.imports.models import Entity, ImportUserError, BibFields, TImports
 
 
 class ImportStep(IntEnum):
@@ -34,7 +35,18 @@ generated_fields = {
 }
 
 
-def clean_import(imprt, step: ImportStep):
+def clean_import(imprt: TImports, step: ImportStep) -> None:
+    """
+    Clean an import at a specific step.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to clean.
+    step : ImportStep
+        The step at which to clean the import.
+
+    """
     imprt.task_id = None
     if step <= ImportStep.UPLOAD:
         # source_file will be necessary overwritten
@@ -61,70 +73,150 @@ def clean_import(imprt, step: ImportStep):
         imprt.destination.import_mixin.remove_data_from_destination(imprt)
 
 
-def get_file_size(f):
-    current_position = f.tell()
-    f.seek(0, os.SEEK_END)
-    size = f.tell()
-    f.seek(current_position)
+def get_file_size(file_: IO) -> int:
+    """
+    Get the size of a file in bytes.
+
+    Parameters
+    ----------
+    file_ : IO
+        The file to get the size of.
+
+    Returns
+    -------
+    int
+        The size of the file in bytes.
+
+    """
+    current_position = file_.tell()
+    file_.seek(0, os.SEEK_END)
+    size = file_.tell()
+    file_.seek(current_position)
     return size
 
 
-def detect_encoding(f):
+def detect_encoding(file_: IO) -> str:
+    """
+    Detects the encoding of a file.
+
+    Parameters
+    ----------
+    file_ : IO
+        The file to detect the encoding of.
+
+    Returns
+    -------
+    str
+        The detected encoding. If no encoding is detected, then "UTF-8" is returned.
+
+    """
     begin = datetime.now()
     max_duration = timedelta(
         seconds=current_app.config["IMPORT"]["MAX_ENCODING_DETECTION_DURATION"]
     )
-    position = f.tell()
-    f.seek(0)
+    position = file_.tell()
+    file_.seek(0)
     detector = UniversalDetector()
-    for row in f:
+    for row in file_:
         detector.feed(row)
         if detector.done or (datetime.now() - begin) > max_duration:
             break
     detector.close()
-    f.seek(position)
+    file_.seek(position)
     return detector.result["encoding"] or "UTF-8"
 
 
-def detect_separator(f, encoding):
-    position = f.tell()
-    f.seek(0)
+def detect_separator(file_: IO, encoding: str) -> Optional[str]:
+    """
+    Detects the delimiter used in a CSV file.
+
+    Parameters
+    ----------
+    file_ : IO
+        The file object to detect the delimiter of.
+    encoding : str
+        The encoding of the file.
+
+    Returns
+    -------
+    Optional[str]
+        The delimiter used in the file, or None if no delimiter is detected.
+
+    Raises
+    ------
+    BadRequest
+        If the file starts with no column names.
+
+    """
+    position = file_.tell()
+    file_.seek(0)
     try:
-        sample = f.readline().decode(encoding)
+        sample = file_.readline().decode(encoding)
     except UnicodeDecodeError:
         # encoding is likely to be detected encoding, so prompt to errors
         return None
     if sample == "\n":  # files that do not start with column names
         raise BadRequest("File must start with columns")
     dialect = csv.Sniffer().sniff(sample)
-    f.seek(position)
+    file_.seek(position)
     return dialect.delimiter
 
 
-def preprocess_value(df, field, source_col):
+def preprocess_value(dataframe: pd.DataFrame, field: BibFields, source_col: str) -> pd.Series:
+    """
+    Preprocesses values in a DataFrame depending if the field contains multiple values (e.g. additional_data) or not.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The DataFrame to preprocess the value of.
+    field : BibFields
+        The field to preprocess.
+    source_col : str
+        The column to preprocess.
+
+    Returns
+    -------
+    pd.Series
+        The preprocessed value.
+
+    """
+
+    def build_additional_data(columns: dict):
+        result = {}
+        for key, value in columns.items():
+            if value is None:
+                continue
+            try:
+                value = json.loads(value)
+                assert type(value) is dict
+            except Exception:
+                value = {key: value}
+            result.update(value)
+        return result
+
     if field.multi:
         assert type(source_col) is list
-        col = df[source_col].apply(build_additional_data, axis=1)
+        col = dataframe[source_col].apply(build_additional_data, axis=1)
     else:
-        col = df[source_col]
+        col = dataframe[source_col]
     return col
 
 
-def build_additional_data(columns):
-    result = {}
-    for key, value in columns.items():
-        if value is None:
-            continue
-        try:
-            value = json.loads(value)
-            assert type(value) is dict
-        except Exception:
-            value = {key: value}
-        result.update(value)
-    return result
+def insert_import_data_in_transient_table(imprt: TImports) -> int:
+    """
+    Insert the data from the import file into the transient table.
 
+    Parameters
+    ----------
+    imprt : TImports
+        current import
 
-def insert_import_data_in_transient_table(imprt):
+    Returns
+    -------
+    int
+        The last line number of the import file that was inserted.
+    """
     transient_table = imprt.destination.get_transient_table()
 
     columns = imprt.columns
@@ -174,7 +266,26 @@ def insert_import_data_in_transient_table(imprt):
     return 1 + chunk.index[-1]  # +1 because chunk.index start at 0
 
 
-def build_fieldmapping(imprt, columns):
+def build_fieldmapping(
+    imprt: TImports, columns: Iterable[Any]
+) -> Tuple[Dict[str, Dict[str, Any]], List[str]]:
+    """
+    Build a dictionary that maps the source column names to the corresponding field and values.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    columns : Iterable[Any]
+        The columns to map.
+
+    Returns
+    -------
+    tuple
+        A tuple containing a dictionary that maps the source column names to the corresponding field and values,
+        and a list of the used columns.
+
+    """
     fields = BibFields.query.filter_by(destination=imprt.destination, autogenerated=False).all()
     fieldmapping = {}
     used_columns = []
@@ -199,7 +310,30 @@ def build_fieldmapping(imprt, columns):
     return fieldmapping, used_columns
 
 
-def load_transient_data_in_dataframe(imprt, entity, source_cols, offset=None, limit=None):
+def load_transient_data_in_dataframe(
+    imprt: TImports, entity: Entity, source_cols: list, offset: int = None, limit: int = None
+):
+    """
+    Load data from the transient table into a pandas dataframe.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to load.
+    entity : Entity
+        The entity to load.
+    source_cols : list
+        The columns to load from the transient table.
+    offset : int, optional
+        The number of rows to skip.
+    limit : int, optional
+        The maximum number of rows to load.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The dataframe containing the loaded data.
+    """
     transient_table = imprt.destination.get_transient_table()
     source_cols = ["id_import", "line_no", entity.validity_column] + source_cols
     stmt = (
@@ -220,13 +354,33 @@ def load_transient_data_in_dataframe(imprt, entity, source_cols, offset=None, li
     return df
 
 
-def update_transient_data_from_dataframe(imprt, entity, updated_cols, df):
+def update_transient_data_from_dataframe(
+    imprt: TImports, entity: Entity, updated_cols: Set[str], dataframe: pd.DataFrame
+):
+    """
+    Update the transient table with the data from the dataframe.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to update.
+    entity : Entity
+        The entity to update.
+    updated_cols : list
+        The columns to update.
+    df : pandas.DataFrame
+        The dataframe to use for the update.
+
+    Notes
+    -----
+    The dataframe must have the columns 'id_import' and 'line_no'.
+    """
     if not updated_cols:
         return
     transient_table = imprt.destination.get_transient_table()
     updated_cols = ["id_import", "line_no"] + list(updated_cols)
-    df.replace({np.nan: None}, inplace=True)
-    records = df[updated_cols].to_dict(orient="records")
+    dataframe.replace({np.nan: None}, inplace=True)
+    records = dataframe[updated_cols].to_dict(orient="records")
     insert_stmt = pg_insert(transient_table)
     insert_stmt = insert_stmt.values(records).on_conflict_do_update(
         index_elements=updated_cols[:2],
@@ -235,7 +389,22 @@ def update_transient_data_from_dataframe(imprt, entity, updated_cols, df):
     db.session.execute(insert_stmt)
 
 
-def generate_pdf_from_template(template, data):
+def generate_pdf_from_template(template: str, data: Any) -> bytes:
+    """
+    Generate a PDF document from a template.
+
+    Parameters
+    ----------
+    template : str
+        The name of the template file to use.
+    data : Any
+        The data to pass to the template.
+
+    Returns
+    -------
+    bytes
+        The PDF document as bytes.
+    """
     template_rendered = render_template(template, data=data)
     html_file = HTML(
         string=template_rendered,
@@ -246,7 +415,7 @@ def generate_pdf_from_template(template, data):
     return html_file.write_pdf()
 
 
-def get_mapping_data(import_, entity):
+def get_mapping_data(import_: TImports, entity: Entity):
     """
     Get the mapping data for a given import and entity.
 

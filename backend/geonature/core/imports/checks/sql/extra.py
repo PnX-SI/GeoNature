@@ -396,7 +396,7 @@ def check_digital_proof_urls(imprt, entity, digital_proof_field):
 
 def check_entity_data_consistency(imprt, entity, fields, uuid_field):
     """
-    Checks for rows with the same uuid, but differrent content,
+    Checks for rows with the same uuid, but different contents,
     in the same entity. Used mainely for parent entities.
     Parameters
     ----------
