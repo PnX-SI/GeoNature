@@ -447,3 +447,23 @@ def get_mapping_data(import_: TImports, entity: Entity):
         if field.source_field is not None and field.mnemonique is None
     ]
     return fields, selected_fields, source_cols
+
+
+def get_required(import_: TImports, entity: Entity):
+    fields, selected_fields, _ = get_mapping_data(import_, entity)
+    required_columns = set([])
+    for field, bib_field in fields.items():
+        if bib_field.mandatory and field in selected_fields:
+            required_columns.add(field)
+
+    for field, bib_field in selected_fields.items():
+        if all([field_name in selected_fields for field_name in bib_field.required_conditions]):
+            required_columns.add(field)
+
+    for field, bib_field in selected_fields.items():
+        if all([field_name in selected_fields for field_name in bib_field.optional_conditions]):
+            required_columns.remove(field)
+    return required_columns
+
+
+

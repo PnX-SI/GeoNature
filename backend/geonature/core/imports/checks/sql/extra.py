@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Any, Optional
 
 from flask import current_app
 from geonature.core.imports.models import BibFields, Entity, TImports
@@ -16,7 +17,32 @@ from apptax.taxonomie.models import Taxref, CorNomListe, BibNoms
 from pypn_habref_api.models import Habref
 
 
-def check_referential(imprt, entity, field, reference_field, error_type, reference_table=None):
+def check_referential(
+    imprt: TImports,
+    entity: Entity,
+    field: BibFields,
+    reference_field: sa.Column,
+    error_type: str,
+    reference_table: Optional[sa.Table] = None,
+) -> None:
+    """
+    Check the referential integrity of a column in the transient table.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    field : BibFields
+        The field to check.
+    reference_field : BibFields
+        The reference field to check.
+    error_type : str
+        The type of error encountered.
+    reference_table : Optional[sa.Table], optional
+        The reference table to check. If not provided, it will be inferred from the reference_field.
+    """
     transient_table = imprt.destination.get_transient_table()
     dest_field = transient_table.c[field.dest_field]
     if reference_table is None:
@@ -47,7 +73,24 @@ def check_referential(imprt, entity, field, reference_field, error_type, referen
     )
 
 
-def check_cd_nom(imprt, entity, field, list_id=None):
+def check_cd_nom(
+    imprt: TImports, entity: Entity, field: BibFields, list_id: Optional[int] = None
+) -> None:
+    """
+    Check the existence of a cd_nom in the Taxref referential.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    field : BibFields
+        The field to check.
+    list_id : Optional[int], optional
+        The list to filter on, by default None.
+
+    """
     # Filter out on a taxhub list if provided
     if list_id is not None:
         reference_table = join(Taxref, BibNoms).join(
@@ -61,11 +104,44 @@ def check_cd_nom(imprt, entity, field, list_id=None):
     )
 
 
-def check_cd_hab(imprt, entity, field):
+def check_cd_hab(imprt: TImports, entity: Entity, field: BibFields) -> None:
+    """
+    Check the existence of a cd_hab in the Habref referential.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    field : BibFields
+        The field to check.
+
+    """
     check_referential(imprt, entity, field, Habref.cd_hab, "CD_HAB_NOT_FOUND")
 
 
-def generate_altitudes(imprt, geom_local_field, alt_min_field, alt_max_field):
+def generate_altitudes(
+    imprt: TImports,
+    geom_local_field: BibFields,
+    alt_min_field: BibFields,
+    alt_max_field: BibFields,
+) -> None:
+    """
+    Generate the altitudes based on geomatries, and given altitues in an import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to generate altitudes for.
+    geom_local_field : BibFields
+        The field representing the geometry in the destination import's transient table.
+    alt_min_field : BibFields
+        The field representing the minimum altitude in the destination import's transient table.
+    alt_max_field : BibFields
+        The field representing the maximum altitude in the destination import's transient table.
+
+    """
     transient_table = imprt.destination.get_transient_table()
     geom_col = geom_local_field.dest_field
     altitudes = (
@@ -119,7 +195,7 @@ def generate_altitudes(imprt, geom_local_field, alt_min_field, alt_max_field):
     db.session.execute(stmt)
 
 
-def check_duplicate_uuid(imprt, entity, uuid_field):
+def check_duplicate_uuid(imprt: TImports, entity: Entity, uuid_field: BibFields):
     """
     Check if there is already a record with the same uuid in the transient table. Include an error in the report for each entry with a uuid dupplicated.
 
@@ -129,7 +205,7 @@ def check_duplicate_uuid(imprt, entity, uuid_field):
         The import to check.
     entity : Entity
         The entity to check.
-    uuid_field : Field
+    uuid_field : BibFields
         The field to check.
     """
     transient_table = imprt.destination.get_transient_table()
@@ -151,7 +227,12 @@ def check_duplicate_uuid(imprt, entity, uuid_field):
     )
 
 
-def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
+def check_existing_uuid(
+    imprt: TImports,
+    entity: Entity,
+    uuid_field: BibFields,
+    whereclause: Any = sa.true(),
+):
     """
     Check if there is already a record with the same uuid in the destination table. Include an error in the report for each existing uuid in the destination table.
     Parameters
@@ -160,7 +241,7 @@ def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
         The import to check.
     entity : Entity
         The entity to check.
-    uuid_field : Field
+    uuid_field : BibFields
         The field to check.
     whereclause : BooleanClause
         The WHERE clause to apply to the check.
@@ -209,6 +290,7 @@ def generate_missing_uuid(
             transient_table.c[uuid_field.source_field] == None,
         ),
         transient_table.c.id_import == imprt.id_import,
+        # transient_table.c[entity.validity_column].is_not(False),
     )
 
     if origin_id_field:
@@ -233,7 +315,6 @@ def generate_missing_uuid(
             .where(
                 transient_table.c[origin_id_field.source_field]
                 == cte_generated_uuid.c[origin_id_field.source_field],
-                transient_table.c.id_import == imprt.id_import,
                 whereclause,
             )
         )
@@ -254,7 +335,23 @@ def generate_missing_uuid(
     db.session.execute(stmt)
 
 
-def check_duplicate_source_pk(imprt, entity, field):
+def check_duplicate_source_pk(
+    imprt: TImports,
+    entity: Entity,
+    field: BibFields,
+) -> None:
+    """
+    Check for duplicate source primary keys in the transient table of an import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    field : BibFields
+        The field to check.
+    """
     transient_table = imprt.destination.get_transient_table()
     dest_col = transient_table.c[field.dest_column]
     duplicates = get_duplicates_query(
@@ -274,7 +371,27 @@ def check_duplicate_source_pk(imprt, entity, field):
     )
 
 
-def check_dates(imprt, entity, date_min_field=None, date_max_field=None):
+def check_dates(
+    imprt: TImports,
+    entity: Entity,
+    date_min_field: BibFields = None,
+    date_max_field: BibFields = None,
+) -> None:
+    """
+    Check the validity of dates in the transient table of an import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : TEntity
+        The entity to check.
+    date_min_field : BibFields, optional
+        The field representing the minimum date.
+    date_max_field : BibFields, optional
+        The field representing the maximum date.
+
+    """
     transient_table = imprt.destination.get_transient_table()
     today = date.today()
     if date_min_field:
@@ -322,7 +439,27 @@ def check_dates(imprt, entity, date_min_field=None, date_max_field=None):
         )
 
 
-def check_altitudes(imprt, entity, alti_min_field=None, alti_max_field=None):
+def check_altitudes(
+    imprt: TImports,
+    entity: Entity,
+    alti_min_field: BibFields = None,
+    alti_max_field: BibFields = None,
+) -> None:
+    """
+    Check the validity of altitudes in the transient table of an import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : TEntity
+        The entity to check.
+    alti_min_field : BibFields, optional
+        The field representing the minimum altitude.
+    alti_max_field : BibFields, optional
+        The field representing the maximum altitude.
+
+    """
     transient_table = imprt.destination.get_transient_table()
     if alti_min_field:
         alti_min_name_field = alti_min_field.name_field
@@ -341,7 +478,27 @@ def check_altitudes(imprt, entity, alti_min_field=None, alti_max_field=None):
         )
 
 
-def check_depths(imprt, entity, depth_min_field=None, depth_max_field=None):
+def check_depths(
+    imprt: TImports,
+    entity: Entity,
+    depth_min_field: BibFields = None,
+    depth_max_field: BibFields = None,
+) -> None:
+    """
+    Check the validity of depths in the transient table of an import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : TEntity
+        The entity to check.
+    depth_min_field : BibFields, optional
+        The field representing the minimum depth.
+    depth_max_field : BibFields, optional
+        The field representing the maximum depth.
+
+    """
     transient_table = imprt.destination.get_transient_table()
     if depth_min_field:
         depth_min_name_field = depth_min_field.name_field
@@ -376,6 +533,18 @@ def check_depths(imprt, entity, depth_min_field=None, depth_max_field=None):
 
 
 def check_digital_proof_urls(imprt, entity, digital_proof_field):
+    """
+    Checks for valid URLs in a given column of a transient table.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : TEntity
+        The entity to check.
+    digital_proof_field : TField
+        The field containing the URLs to check.
+    """
     transient_table = imprt.destination.get_transient_table()
     digital_proof_dest_col = transient_table.c[digital_proof_field.dest_field]
     report_erroneous_rows(
@@ -415,7 +584,7 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
         imprt,
         uuid_col,
         whereclause=sa.and_(
-            transient_table.c[entity.validity_column].isnot(None),
+            transient_table.c[entity.validity_column].is_(True),
             uuid_col != None,
         ),
     )
@@ -445,7 +614,7 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="DUPLICATE_UUID",
-        error_column=uuid_field.name_field,
+        error_type="INCOHERENT_DATA",
+        error_column="",  # uuid_field.name_field,
         whereclause=(uuid_col == erroneous.c.uuid_col),
     )

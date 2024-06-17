@@ -51,6 +51,12 @@ from .checks import (
 from bokeh.embed.standalone import StandaloneEmbedJson
 
 
+def get_occhab_entities() -> typing.Tuple[Entity, Entity]:
+    entity_habitat = Entity.query.filter_by(code="habitat").one()
+    entity_station = Entity.query.filter_by(code="station").one()
+    return entity_station, entity_habitat
+
+
 class OcchabImportMixin(ImportMixin):
 
     @staticmethod
@@ -96,10 +102,9 @@ class OcchabImportMixin(ImportMixin):
         return updated_cols
 
     @staticmethod
-    def generate_and_check_uuids(imprt):
-        entity_habitat = Entity.query.filter_by(code="habitat").one()
-        entity_station = Entity.query.filter_by(code="station").one()
-        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
+    def generate_uuids(imprt):
+        entity_station, entity_habitat = get_occhab_entities()
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
 
         if "unique_id_sinp_station" in selected_fields:
             kwargs = (
@@ -118,40 +123,8 @@ class OcchabImportMixin(ImportMixin):
                 fields["unique_id_sinp_station"],
                 origin_id_field=selected_fields["id_station_source"],
             )
-
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_habitat)
         generate_missing_uuid(imprt, entity_habitat, fields["unique_id_sinp_habitat"])
-
-        set_id_parent_from_destination(
-            imprt,
-            parent_entity=entity_station,
-            child_entity=entity_habitat,
-            id_field=fields["id_station"],
-            fields=[
-                selected_fields.get("unique_id_sinp_station"),
-            ],
-        )
-        set_parent_line_no(
-            imprt,
-            parent_entity=entity_station,
-            child_entity=entity_habitat,
-            parent_line_no="station_line_no",
-            fields=[
-                selected_fields.get("unique_id_sinp_station"),
-            ],
-        )
-        check_no_parent_entity(
-            imprt,
-            parent_entity=entity_station,
-            child_entity=entity_habitat,
-            id_parent="id_station",
-            parent_line_no="station_line_no",
-        )
-        check_erroneous_parent_entities(
-            imprt,
-            parent_entity=entity_station,
-            child_entity=entity_habitat,
-            parent_line_no="station_line_no",
-        )
 
     @staticmethod
     def check_habitat(imprt):
@@ -170,8 +143,10 @@ class OcchabImportMixin(ImportMixin):
             The import to check.
 
         """
-        entity_habitat = Entity.query.filter_by(code="habitat").one()
+        _, entity_habitat = get_occhab_entities()
         fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
+        source_cols.remove("src_unique_id_sinp_station")  # already checked in station_check
+        source_cols.remove("id_station_source")
 
         updated_cols = set()
 
@@ -221,21 +196,27 @@ class OcchabImportMixin(ImportMixin):
             The import to check.
 
         """
-        entity = Entity.query.filter_by(code="station").one()
-        fields, selected_fields, source_cols = get_mapping_data(imprt, entity)
+        tr_ = imprt.destination.get_transient_table()
+        entity_station, _ = get_occhab_entities()
+        db.session.execute(
+            sa.update(tr_)
+            .where(tr_.c.id_import == imprt.id_import)
+            .values(station_valid=True, habitat_valid=True)
+        )
+        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
 
         # Save column names where the data was changed in the dataframe
         updated_cols = set()
 
         ### Dataframe checks
-        df = load_transient_data_in_dataframe(imprt, entity, source_cols)
+        df = load_transient_data_in_dataframe(imprt, entity_station, source_cols)
 
         updated_cols |= OcchabImportMixin.dataframe_checks(
-            imprt, df, entity, fields, selected_fields
+            imprt, df, entity_station, fields, selected_fields
         )
         updated_cols |= check_datasets(
             imprt,
-            entity,
+            entity_station,
             df,
             uuid_field=fields["unique_dataset_id"],
             id_field=fields["id_dataset"],
@@ -244,7 +225,7 @@ class OcchabImportMixin(ImportMixin):
 
         updated_cols |= check_geometry(
             imprt,
-            entity,
+            entity_station,
             df,
             file_srid=imprt.srid,
             geom_4326_field=fields["geom_4326"],
@@ -254,10 +235,11 @@ class OcchabImportMixin(ImportMixin):
             longitude_field=fields["longitude"],
         )
 
-        update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
+        update_transient_data_from_dataframe(imprt, entity_station, updated_cols, df)
+
         do_nomenclatures_mapping(
             imprt,
-            entity,
+            entity_station,
             selected_fields,
             fill_with_defaults=current_app.config["IMPORT"][
                 "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
@@ -266,7 +248,7 @@ class OcchabImportMixin(ImportMixin):
 
         convert_geom_columns(
             imprt,
-            entity,
+            entity_station,
             geom_4326_field=fields["geom_4326"],
             geom_local_field=fields["geom_local"],
         )
@@ -280,24 +262,28 @@ class OcchabImportMixin(ImportMixin):
             )
         check_altitudes(
             imprt,
-            entity,
+            entity_station,
             selected_fields.get("altitude_min"),
             selected_fields.get("altitude_max"),
         )
-        check_dates(imprt, entity, selected_fields.get("date_min"), selected_fields.get("date_max"))
+        check_dates(
+            imprt, entity_station, selected_fields.get("date_min"), selected_fields.get("date_max")
+        )
         check_depths(
             imprt,
-            entity,
+            entity_station,
             selected_fields.get("depth_min"),
             selected_fields.get("depth_max"),
         )
         if "WKT" in selected_fields:
-            check_is_valid_geometry(imprt, entity, selected_fields["WKT"], fields["geom_4326"])
+            check_is_valid_geometry(
+                imprt, entity_station, selected_fields["WKT"], fields["geom_4326"]
+            )
         # TODO@TestImportsOcchab.test_import_valid_file: remove this check
         if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
             check_geometry_outside(
                 imprt,
-                entity,
+                entity_station,
                 fields["geom_local"],
                 id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
             )
@@ -305,24 +291,56 @@ class OcchabImportMixin(ImportMixin):
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
         task.update_state(state="PROGRESS", meta={"progress": 0})
+        entity_station, entity_habitat = get_occhab_entities()
         OcchabImportMixin.check_station(imprt)
         OcchabImportMixin.check_habitat(imprt)
-        OcchabImportMixin.generate_and_check_uuids(imprt)
+        OcchabImportMixin.generate_uuids(imprt)
 
-        station_ = Entity.query.filter_by(code="station").one()
-        fields, selected_fields, _ = get_mapping_data(imprt, station_)
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_habitat)
+        set_id_parent_from_destination(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            id_field=fields["id_station"],
+            fields=[
+                selected_fields.get("unique_id_sinp_station"),
+            ],
+        )
+        set_parent_line_no(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            parent_line_no="station_line_no",
+            fields=[
+                selected_fields.get("unique_id_sinp_station"),
+            ],
+        )
+
+        # FIXME??: check_erroneous_parent_entities is broken, was based on a NULL value on a boolean columns
+        # Duplicates of check_erroneous_parent_entities
+        # check_no_parent_entity(
+        #     imprt,
+        #     parent_entity=entity_station,
+        #     child_entity=entity_habitat,
+        #     id_parent="id_station",
+        #     parent_line_no="station_line_no",
+        # )
+
+        check_erroneous_parent_entities(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            parent_line_no="station_line_no",
+        )
+
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
         check_entity_data_consistency(
             imprt,
-            station_,
+            entity_station,
             selected_fields,
             fields["unique_id_sinp_station"],
         )
-        transient_table = imprt.destination.get_transient_table()
-        db.session.execute(
-            sa.update(transient_table)
-            .where(transient_table.c.station_valid == False)
-            .values({"habitat_valid": False})
-        )
+
         task.update_state(state="PROGRESS", meta={"progress": 100})
 
     @staticmethod
