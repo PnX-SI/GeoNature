@@ -28,7 +28,7 @@ def set_id_parent_from_destination(
         db.session.execute(
             sa.update(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[child_entity.validity_column].isnot(None))
+            .where(transient_table.c[child_entity.validity_column].is_(True))
             # finding parent row:
             .where(transient_table.c[field.dest_column] == parent_destination.c[field.dest_column])
             .values({id_field.dest_column: parent_destination.c[id_field.dest_column]})
@@ -50,10 +50,9 @@ def set_parent_line_no(
         db.session.execute(
             sa.update(transient_child)
             .where(transient_child.c.id_import == imprt.id_import)
-            .where(transient_child.c[child_entity.validity_column].isnot(None))
-            # finding parent row:
+            .where(transient_child.c[child_entity.validity_column].is_(True))
             .where(transient_parent.c.id_import == imprt.id_import)
-            .where(transient_parent.c[parent_entity.validity_column].isnot(None))
+            # .where(transient_parent.c[parent_entity.validity_column].isnot(False))
             .where(transient_parent.c[field.dest_column] == transient_child.c[field.dest_column])
             .values({parent_line_no: transient_parent.c.line_no})
         )
@@ -62,7 +61,6 @@ def set_parent_line_no(
 def check_no_parent_entity(imprt, parent_entity, child_entity, id_parent, parent_line_no):
     """
     Station may be referenced:
-    - on the same line (station_validity is not None)
     - by id_parent (parent already exists in destination)
     - by parent_line_no (new parent from another line of the imported file)
     """
@@ -73,10 +71,7 @@ def check_no_parent_entity(imprt, parent_entity, child_entity, id_parent, parent
         error_type="NO_PARENT_ENTITY",
         error_column=id_parent,
         whereclause=sa.and_(
-            # Complains for missing parent only for valid child, as parent may be missing
-            # because of erroneous uuid required to find the parent.
             transient_table.c[child_entity.validity_column].is_(True),
-            transient_table.c[parent_entity.validity_column].is_(None),  # no parent on same line
             transient_table.c[id_parent].is_(None),  # no parent in destination
             transient_table.c[parent_line_no].is_(None),  # no parent on another line
         ),
@@ -94,7 +89,7 @@ def check_erroneous_parent_entities(imprt, parent_entity, child_entity, parent_l
         error_type="ERRONEOUS_PARENT_ENTITY",
         error_column="",
         whereclause=sa.and_(
-            transient_child.c[child_entity.validity_column].isnot(None),
+            transient_child.c[child_entity.validity_column].is_(True),
             sa.or_(
                 # parent is on the same line
                 transient_child.c[parent_entity.validity_column].is_(False),
