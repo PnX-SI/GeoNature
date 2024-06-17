@@ -5,4 +5,5 @@ export interface Module {
   module_path: string;
   module_doc_url?: string;
   module_url?: string;
+  module_external_url?: string;
 }
