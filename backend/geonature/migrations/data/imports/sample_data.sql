@@ -520,6 +520,18 @@ VALUES (
         (
             SELECT id_module
             FROM gn_commons.t_modules
+            WHERE module_code = 'SYNTHESE'
+        ),
+        (
+            SELECT id_dataset
+            FROM gn_meta.t_datasets
+            WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'
+        )
+    ),
+    (
+        (
+            SELECT id_module
+            FROM gn_commons.t_modules
             WHERE module_code = 'IMPORT'
         ),
         (
