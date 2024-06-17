@@ -9,7 +9,7 @@ from sqlalchemy.sql import sqltypes
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 
 from geonature.core.imports.models import BibFields
-from .utils import dfcheck
+from .utils import dataframe_check
 
 
 def convert_to_datetime(value_raw):
@@ -218,7 +218,7 @@ def check_anytype_field(df, field_type, source_col, dest_col, required):
     return updated_cols
 
 
-@dfcheck
+@dataframe_check
 def check_types(entity, df, fields: Dict[str, BibFields]):
     updated_cols = set()
     destination_table = entity.get_destination_table()

@@ -12,7 +12,7 @@ from ref_geo.models import LAreas
 
 from geonature.utils.env import db
 
-from .utils import dfcheck
+from .utils import dataframe_check
 
 
 def get_srid_bounding_box(srid):
@@ -70,7 +70,7 @@ def check_wkt_inside_area_id(wkt: str, id_area: int, wkt_srid: int):
     return data is not None
 
 
-@dfcheck
+@dataframe_check
 def check_geometry(
     df,
     file_srid,

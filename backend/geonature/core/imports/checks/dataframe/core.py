@@ -9,13 +9,13 @@ from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.imports.models import BibFields, TImports
 
-from .utils import dfcheck
+from .utils import dataframe_check
 
 
 __all__ = ["check_required_values", "check_counts", "check_datasets"]
 
 
-@dfcheck
+@dataframe_check
 def check_required_values(df, fields: Dict[str, BibFields]):
     """
     Check if required values are present in the dataframe.
@@ -107,7 +107,7 @@ def _check_ordering(df, min_field, max_field):
     }
 
 
-@dfcheck
+@dataframe_check
 def check_counts(
     df: pd.DataFrame, count_min_field: str, count_max_field: str, default_count: int = None
 ):
@@ -180,7 +180,7 @@ def check_counts(
     return updated_cols
 
 
-@dfcheck
+@dataframe_check
 def check_datasets(
     imprt: TImports,
     df: pd.DataFrame,
