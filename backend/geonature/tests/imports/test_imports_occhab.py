@@ -170,13 +170,7 @@ def prepared_import(client, content_mapped_import):
 @pytest.fixture()
 def imported_import(client, prepared_import):
     imprt = prepared_import
-    # transient_table = imprt.destination.get_transient_table()
-    # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-    # print(
-    #     db.session.execute(
-    #         sa.select(transient_table).where(imprt.id_import == transient_table.c.id_import)
-    #     ).all()
-    # )
+
     with logged_user(client, imprt.authors[0]):
         r = client.post(url_for("import.import_valid_data", import_id=imprt.id_import))
     assert r.status_code == 200, r.data
