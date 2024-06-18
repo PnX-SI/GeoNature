@@ -608,6 +608,18 @@ VALUES (
             FROM gn_meta.t_datasets
             WHERE unique_dataset_id = '5f45d560-1ce3-420c-b45c-3d589eedaee1'
         )
+    ),
+    (
+        (
+            SELECT id_module
+            FROM gn_commons.t_modules
+            WHERE module_code = 'SYNTHESE'
+        ),
+        (
+            SELECT id_dataset
+            FROM gn_meta.t_datasets
+            WHERE unique_dataset_id = '2f543d86-ec4e-4f1a-b4d9-123456789abc'
+        )
     );
 -- Renseigner les tables de correspondance
 INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (
