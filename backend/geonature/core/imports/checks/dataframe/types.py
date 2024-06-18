@@ -4,6 +4,7 @@ from uuid import UUID
 from itertools import product
 from datetime import datetime
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import pandas as pd
 from sqlalchemy.sql import sqltypes
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
@@ -71,7 +72,7 @@ def check_datetime_field(df, source_field, target_field, required):
     values_error = invalid_rows[source_field]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_DATE",
+            error_code=ImportCodeError.INVALID_DATE,
             invalid_rows=invalid_rows,
             comment="Les dates suivantes ne sont pas au bon format: {}".format(
                 ", ".join(map(lambda x: str(x), values_error))
@@ -91,7 +92,7 @@ def check_uuid_field(df, source_field, target_field, required):
     values_error = invalid_rows[source_field]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_UUID",
+            error_code=ImportCodeError.INVALID_UUID,
             invalid_rows=invalid_rows,
             comment="Les UUID suivantes ne sont pas au bon format: {}".format(
                 ", ".join(map(lambda x: str(x), values_error))
@@ -111,7 +112,7 @@ def check_integer_field(df, source_field, target_field, required):
     values_error = invalid_rows[source_field]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_INTEGER",
+            error_code=ImportCodeError.INVALID_INTEGER,
             invalid_rows=invalid_rows,
             comment="Les valeurs suivantes ne sont pas des entiers : {}".format(
                 ", ".join(map(lambda x: str(x), values_error))
@@ -137,7 +138,7 @@ def check_numeric_field(df, source_field, target_field, required):
     values_error = invalid_rows[source_field]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_NUMERIC",
+            error_code=ImportCodeError.INVALID_NUMERIC,
             invalid_rows=invalid_rows,
             comment="Les valeurs suivantes ne sont pas des nombres : {}".format(
                 ", ".join(map(lambda x: str(x), values_error))
@@ -153,7 +154,7 @@ def check_unicode_field(df, field, field_length):
     invalid_rows = df[length > field_length]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_CHAR_LENGTH",
+            error_code=ImportCodeError.INVALID_CHAR_LENGTH,
             invalid_rows=invalid_rows,
         )
 
@@ -189,11 +190,11 @@ def check_boolean_field(df, source_col, dest_col, required):
 
     if required:
         invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and pd.isnull(x))
-        yield dict(error_code="MISSING_VALUE", invalid_rows=df[invalid_mask])
+        yield dict(error_code=ImportCodeError.MISSING_VALUE, invalid_rows=df[invalid_mask])
     else:
         invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and (not pd.isnull(x)))
         if invalid_mask.sum() > 0:
-            yield dict(error_code="INVALID_BOOL", invalid_rows=df[invalid_mask])
+            yield dict(error_code=ImportCodeError.INVALID_BOOL, invalid_rows=df[invalid_mask])
     return {dest_col}
 
 

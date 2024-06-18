@@ -464,6 +464,3 @@ def get_required(import_: TImports, entity: Entity):
         if all([field_name in selected_fields for field_name in bib_field.optional_conditions]):
             required_columns.remove(field)
     return required_columns
-
-
-

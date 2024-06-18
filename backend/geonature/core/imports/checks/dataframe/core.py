@@ -1,5 +1,6 @@
 from typing import Dict, Optional, Set
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
@@ -73,7 +74,7 @@ def check_required_values(df, fields: Dict[str, BibFields]):
         invalid_rows = df[df[field.source_column].isna()]
         if len(invalid_rows):
             yield {
-                "error_code": "MISSING_VALUE",
+                "error_code": ImportCodeError.MISSING_VALUE,
                 "column": field_name,
                 "invalid_rows": invalid_rows,
             }
@@ -236,7 +237,7 @@ def check_datasets(
         invalid_ds_mask = has_uuid_mask & ~valid_ds_mask
         if invalid_ds_mask.any():
             yield {
-                "error_code": "DATASET_NOT_FOUND",
+                "error_code": ImportCodeError.DATASET_NOT_FOUND,
                 "column": uuid_field.name_field,
                 "invalid_rows": df[invalid_ds_mask],
             }
@@ -258,7 +259,7 @@ def check_datasets(
         unauthorized_ds_mask = valid_ds_mask & ~authorized_ds_mask
         if unauthorized_ds_mask.any():
             yield {
-                "error_code": "DATASET_NOT_AUTHORIZED",
+                "error_code": ImportCodeError.DATASET_NOT_AUTHORIZED,
                 "column": uuid_field.name_field,
                 "invalid_rows": df[unauthorized_ds_mask],
             }

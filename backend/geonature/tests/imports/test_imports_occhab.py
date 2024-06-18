@@ -1,6 +1,7 @@
 from io import BytesIO
 from pathlib import Path
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
 
 from flask import url_for, g
@@ -188,34 +189,49 @@ class TestImportsOcchab:
             imported_import,
             {
                 # Stations errors
-                ("DATASET_NOT_FOUND", "station", "unique_dataset_id", frozenset({6})),
-                ("DATASET_NOT_AUTHORIZED", "station", "unique_dataset_id", frozenset({7})),
-                ("INVALID_UUID", "station", "unique_dataset_id", frozenset({8})),
+                (ImportCodeError.DATASET_NOT_FOUND, "station", "unique_dataset_id", frozenset({6})),
                 (
-                    "NO-GEOM",
+                    ImportCodeError.DATASET_NOT_AUTHORIZED,
+                    "station",
+                    "unique_dataset_id",
+                    frozenset({7}),
+                ),
+                (ImportCodeError.INVALID_UUID, "station", "unique_dataset_id", frozenset({8})),
+                (
+                    ImportCodeError.NO_GEOM,
                     "station",
                     "Champs géométriques",
                     frozenset({9, 11, 12, 13, 17, 18, 19, 21}),
                 ),
-                ("MISSING_VALUE", "station", "WKT", frozenset({9, 11, 12, 13, 17, 18, 19, 21})),
                 (
-                    "MISSING_VALUE",
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
+                    "WKT",
+                    frozenset({9, 11, 12, 13, 17, 18, 19, 21}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
                     "station",
                     "date_min",
                     frozenset({10, 11, 12, 13, 17, 18, 19, 21}),
                 ),
-                ("MISSING_VALUE", "habitat", "cd_hab", frozenset({8, 9, 12, 13})),
-                ("MISSING_VALUE", "habitat", "nom_cite", frozenset({8, 9, 12, 13})),
-                ("INVALID_UUID", "station", "unique_id_sinp_station", frozenset({20, 21})),
+                (ImportCodeError.MISSING_VALUE, "habitat", "cd_hab", frozenset({8, 9, 12, 13})),
+                (ImportCodeError.MISSING_VALUE, "habitat", "nom_cite", frozenset({8, 9, 12, 13})),
                 (
-                    "ERRONEOUS_PARENT_ENTITY",
+                    ImportCodeError.INVALID_UUID,
+                    "station",
+                    "unique_id_sinp_station",
+                    frozenset({20, 21}),
+                ),
+                (
+                    ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
                     frozenset({6, 7, 10, 11, 16, 17, 18, 19, 20, 21}),
                 ),
                 # Other errors
-                ("ORPHAN_ROW", None, "unique_id_sinp_station", frozenset({12})),
-                ("ORPHAN_ROW", None, "id_station_source", frozenset({13})),
+                (ImportCodeError.ORPHAN_ROW, None, "unique_id_sinp_station", frozenset({12})),
+                (ImportCodeError.ORPHAN_ROW, None, "id_station_source", frozenset({13})),
             },
         )
         assert imported_import.statistics == {"station_count": 5, "habitat_count": 6}
