@@ -2,6 +2,7 @@ from datetime import date
 from typing import Any, Optional
 
 from flask import current_app
+from geonature.core.imports.checks.errors import ImportCodeError
 from geonature.core.imports.models import BibFields, Entity, TImports
 from sqlalchemy import func
 from sqlalchemy.sql.expression import select, update, join
@@ -100,7 +101,12 @@ def check_cd_nom(
     else:
         reference_table = Taxref
     check_referential(
-        imprt, entity, field, Taxref.cd_nom, "CD_NOM_NOT_FOUND", reference_table=reference_table
+        imprt,
+        entity,
+        field,
+        Taxref.cd_nom,
+        ImportCodeError.CD_NOM_NOT_FOUND,
+        reference_table=reference_table,
     )
 
 
@@ -221,7 +227,7 @@ def check_duplicate_uuid(imprt: TImports, entity: Entity, uuid_field: BibFields)
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="DUPLICATE_UUID",
+        error_type=ImportCodeError.DUPLICATE_UUID,
         error_column=uuid_field.name_field,
         whereclause=(transient_table.c.line_no == duplicates.c.lines),
     )
@@ -365,7 +371,7 @@ def check_duplicate_source_pk(
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="DUPLICATE_ENTITY_SOURCE_PK",
+        error_type=ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK,
         error_column=field.name_field,
         whereclause=(transient_table.c.line_no == duplicates.c.lines),
     )
@@ -399,14 +405,14 @@ def check_dates(
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="DATE_MIN_TOO_HIGH",
+            error_type=ImportCodeError.DATE_MIN_TOO_HIGH,
             error_column=date_min_field.name_field,
             whereclause=(date_min_dest_col > today),
         )
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="DATE_MIN_TOO_LOW",
+            error_type=ImportCodeError.DATE_MIN_TOO_LOW,
             error_column=date_min_field.name_field,
             whereclause=(date_min_dest_col < date(1900, 1, 1)),
         )
@@ -415,7 +421,7 @@ def check_dates(
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="DATE_MAX_TOO_HIGH",
+            error_type=ImportCodeError.DATE_MAX_TOO_HIGH,
             error_column=date_max_field.name_field,
             whereclause=sa.and_(
                 date_max_dest_col > today,
@@ -425,7 +431,7 @@ def check_dates(
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="DATE_MAX_TOO_LOW",
+            error_type=ImportCodeError.DATE_MAX_TOO_LOW,
             error_column=date_max_field.name_field,
             whereclause=(date_max_dest_col < date(1900, 1, 1)),
         )
@@ -433,7 +439,7 @@ def check_dates(
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="DATE_MIN_SUP_DATE_MAX",
+            error_type=ImportCodeError.DATE_MIN_SUP_DATE_MAX,
             error_column=date_min_field.name_field,
             whereclause=(date_min_dest_col > date_max_dest_col),
         )
@@ -472,7 +478,7 @@ def check_altitudes(
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="ALTI_MIN_SUP_ALTI_MAX",
+            error_type=ImportCodeError.ALTI_MIN_SUP_ALTI_MAX,
             error_column=alti_min_name_field,
             whereclause=(alti_min_dest_col > alti_max_dest_col),
         )
@@ -506,7 +512,7 @@ def check_depths(
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="INVALID_INTEGER",
+            error_type=ImportCodeError.INVALID_INTEGER,
             error_column=depth_min_name_field,
             whereclause=(depth_min_dest_col < 0),
         )
@@ -517,7 +523,7 @@ def check_depths(
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="INVALID_INTEGER",
+            error_type=ImportCodeError.INVALID_INTEGER,
             error_column=depth_max_name_field,
             whereclause=(depth_max_dest_col < 0),
         )
@@ -526,7 +532,7 @@ def check_depths(
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="DEPTH_MIN_SUP_ALTI_MAX",  # Yes, there is a typo in db... Should be "DEPTH_MIN_SUP_DEPTH_MAX"
+            error_type=ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX,  # Yes, there is a typo in db... Should be "DEPTH_MIN_SUP_DEPTH_MAX"
             error_column=depth_min_name_field,
             whereclause=(depth_min_dest_col > depth_max_dest_col),
         )
@@ -550,7 +556,7 @@ def check_digital_proof_urls(imprt, entity, digital_proof_field):
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="INVALID_URL_PROOF",
+        error_type=ImportCodeError.INVALID_URL_PROOF,
         error_column=digital_proof_field.name_field,
         whereclause=(
             sa.and_(
@@ -614,7 +620,7 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="INCOHERENT_DATA",
+        error_type=ImportCodeError.INCOHERENT_DATA,
         error_column="",  # uuid_field.name_field,
         whereclause=(uuid_col == erroneous.c.uuid_col),
     )

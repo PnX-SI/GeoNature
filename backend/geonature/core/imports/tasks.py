@@ -20,6 +20,14 @@ logger = get_task_logger(__name__)
 
 @celery_app.task(bind=True)
 def do_import_checks(self, import_id):
+    """
+    Verify the import data.
+
+    Parameters
+    ----------
+    import_id : int
+        The ID of the import to verify.
+    """
     logger.info(f"Starting verification of import {import_id}.")
     imprt = db.session.get(TImports, import_id)
     if imprt is None or imprt.task_id != self.request.id:
@@ -60,6 +68,14 @@ def do_import_checks(self, import_id):
 
 @celery_app.task(bind=True)
 def do_import_in_destination(self, import_id):
+    """
+    Insert valid transient data into the destination of an import.
+
+    Parameters
+    ----------
+    import_id : int
+        The ID of the import to insert data into the destination.
+    """
     logger.info(f"Starting insertion in destination of import {import_id}.")
     imprt = db.session.get(TImports, import_id)
     if imprt is None or imprt.task_id != self.request.id:
@@ -113,7 +129,16 @@ def do_import_in_destination(self, import_id):
 
 
 # Send notification
-def notify_import_done(imprt):
+def notify_import_done(imprt: TImports):
+    """
+    Notify the authors of an import that it has finished.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import that has finished.
+
+    """
     id_authors = [author.id_role for author in imprt.authors]
     dispatch_notifications(
         code_categories=["IMPORT-DONE%"],

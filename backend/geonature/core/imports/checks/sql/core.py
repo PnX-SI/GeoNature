@@ -1,3 +1,4 @@
+from geonature.core.imports.checks.errors import ImportCodeError
 import sqlalchemy as sa
 
 from geonature.utils.env import db
@@ -88,7 +89,7 @@ def check_orphan_rows(imprt):
         report_erroneous_rows(
             imprt,
             entity=None,  # OK because ORPHAN_ROW has only WARNING level
-            error_type="ORPHAN_ROW",
+            error_type=ImportCodeError.ORPHAN_ROW,
             error_column=field.name_field,
             whereclause=sa.and_(
                 transient_table.c[field.source_field].isnot(None),
@@ -108,7 +109,7 @@ def check_mandatory_fields(imprt, entity, fields):
         report_erroneous_rows(
             imprt,
             entity=entity,
-            error_type="MISSING_VALUE",
+            error_type=ImportCodeError.MISSING_VALUE,
             error_column=field.name_field,
             whereclause=whereclause,
         )

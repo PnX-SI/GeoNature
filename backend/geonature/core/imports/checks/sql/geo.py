@@ -1,3 +1,4 @@
+from geonature.core.imports.checks.errors import ImportCodeError
 from sqlalchemy.sql.expression import select, update, join
 import sqlalchemy as sa
 from geoalchemy2.functions import (
@@ -84,7 +85,7 @@ def check_is_valid_geometry(imprt, entity, wkt_field, geom_field):
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="INVALID_GEOMETRY",
+        error_type=ImportCodeError.INVALID_GEOMETRY,
         error_column="WKT",
         whereclause=where_clause,
     )
@@ -96,7 +97,7 @@ def check_geometry_outside(imprt, entity, geom_local_field, id_area):
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="GEOMETRY_OUTSIDE",
+        error_type=ImportCodeError.GEOMETRY_OUTSIDE,
         error_column="Champs géométriques",
         whereclause=sa.and_(
             transient_table.c[entity.validity_column] == True,

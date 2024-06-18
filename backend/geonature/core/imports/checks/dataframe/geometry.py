@@ -1,5 +1,6 @@
 from functools import partial
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import sqlalchemy as sa
 from geoalchemy2.functions import ST_Transform, ST_GeomFromWKB, ST_GeomFromText
 import pandas as pd
@@ -120,7 +121,7 @@ def check_geometry(
             invalid_wkt = geom[wkt_mask & geom.isnull()]
             if not invalid_wkt.empty:
                 yield {
-                    "error_code": "INVALID_WKT",
+                    "error_code": ImportCodeError.INVALID_WKT,
                     "column": "WKT",
                     "invalid_rows": invalid_wkt,
                 }
@@ -136,7 +137,7 @@ def check_geometry(
             invalid_xy = df[xy_mask & geom.isnull()]
             if not invalid_xy.empty:
                 yield {
-                    "error_code": "INVALID_GEOMETRY",
+                    "error_code": ImportCodeError.INVALID_GEOMETRY,
                     "column": "longitude",
                     "invalid_rows": invalid_xy,
                 }
@@ -148,7 +149,7 @@ def check_geometry(
     if len(multiple_georef):
         geom[wkt_mask & xy_mask] = None
         yield {
-            "error_code": "MULTIPLE_ATTACHMENT_TYPE_CODE",
+            "error_code": ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE,
             "column": "Champs géométriques",
             "invalid_rows": multiple_georef,
         }
@@ -162,7 +163,7 @@ def check_geometry(
         if len(out_of_bound):
             geom.loc[mask & ~bound] = None
             yield {
-                "error_code": "GEOMETRY_OUT_OF_BOX",
+                "error_code": ImportCodeError.GEOMETRY_OUT_OF_BOX,
                 "column": column,
                 "invalid_rows": out_of_bound,
             }
@@ -192,7 +193,7 @@ def check_geometry(
     ]
     if len(multiple_code):
         yield {
-            "error_code": "MULTIPLE_CODE_ATTACHMENT",
+            "error_code": ImportCodeError.MULTIPLE_CODE_ATTACHMENT,
             "column": "Champs géométriques",
             "invalid_rows": multiple_code,
         }
@@ -203,7 +204,7 @@ def check_geometry(
     ]
     if len(no_geom):
         yield {
-            "error_code": "NO-GEOM",
+            "error_code": ImportCodeError.NO_GEOM,
             "column": "Champs géométriques",
             "invalid_rows": no_geom,
         }
