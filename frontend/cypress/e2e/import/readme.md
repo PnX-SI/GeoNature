@@ -1,5 +1,12 @@
 # Remarques sur les tests au niveau de l'import
 
+## Liste Import
+
+### Trie des colonnes de la liste d'import 
+
+- Le test sur le tri de la colonne "id" ne fonctionne pas (mis sur skip) --> à résoudre coté backend
+- Le test sur le tri de la colonne fichier donne un comportement bizarre (valid_file_link_* s'intercale avec les fichiers de nom 'valid_file_import_*' )
+
 ## Upload
 
 ### **vide** vs **invalide**

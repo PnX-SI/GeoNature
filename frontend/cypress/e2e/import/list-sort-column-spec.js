@@ -34,19 +34,16 @@ describe('Tests list import columns and rows content', () => {
           cy.viewport(viewport.width, viewport.height);
           cy.geonatureLogin(user.login.username, user.login.password);
           cy.visitImport();
-        });
-
-        before(() => {
-            cy.fetchGlobalColumns();
+          cy.getGlobalConfig();
         });
 
       it('should verify column names in header', () => {
 
-        cy.getGlobalColumns().then((columns) => {
+        cy.get("@globalColumnsConfig").then((columns) => {
         console.log(columns)
           cy.get('[data-qa=import-list-table] datatable-header-cell').should(($cells) => {
             columns.forEach((column) => {
-              expect($cells.toArray().some((cell) => cell.innerText.trim() === column.name)).to.be
+              expect($cells.toArray().some((cell) => cell.innerText.trim() === columnName)).to.be
                 .true;
             });
           });
@@ -68,7 +65,7 @@ describe('Tests list import columns and rows content', () => {
             getColumnIndexByName(columnName).then((columnIndex) => {
                 cy.get('[data-qa=import-list-table]').within(() => {
 
-                  cy.get('datatable-header-cell').contains(column.name).then(($headerCell) => {
+                  cy.get('datatable-header-cell').contains(columnName).then(($headerCell) => {
                     // const $sortIcon = $headerCell.find('.sort-btn');
                     // Single click (should change to descending order)
                     cy.get('datatable-header-cell').eq(columnIndex).click();

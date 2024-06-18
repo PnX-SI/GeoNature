@@ -2,7 +2,7 @@ export const FILTERS_TABLE = [
     {
       columnName: 'Voir la fiche du JDD',
       searchTerm: ['JDD-TEST', 'JDD-TEST-IMPORT-ADMIN', 'JDD-INVALID'],
-      expectedRowsCount: [3, 1, 0],
+      expectedRowsCount: [4, 1, 0],
     },
     {
       columnName: 'Fichier',
@@ -12,6 +12,6 @@ export const FILTERS_TABLE = [
     {
       columnName: 'Auteur',
       searchTerm: ['Administrateur-test-import', 'Agent-test-import'],
-      expectedRowsCount: [3, 1],
+      expectedRowsCount: [4, 1],
     },
   ];
