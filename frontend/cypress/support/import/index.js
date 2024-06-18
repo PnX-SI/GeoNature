@@ -9,6 +9,7 @@ import './geonatureInitImportList';
 import "./hasToastError";
 import './executeImport';
 import './loadImportFile';
+import './pickDataset';
 import './pickDestination';
 import './removeFirstImportInList';
 import './startImport';
@@ -29,5 +30,5 @@ Cypress.Commands.add('getGlobalConfig', () => {
                 }));
       return columns
     })
-    .as('globalColumnsConfig'); 
+    .as('globalColumnsConfig');
 });

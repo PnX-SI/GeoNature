@@ -1,7 +1,7 @@
 export const FILES = {
   synthese: {
     valid: {
-      fixture: 'import/synthese/valid_file.csv',
+      fixture: 'import/synthese/valid_file_test_link_list_import_synthese.csv',
       toast: '',
       formErrorElement: ''
     },

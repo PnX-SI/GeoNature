@@ -151,7 +151,7 @@ FROM (
     (
         SELECT id_action
         FROM gn_permissions.bib_actions
-        WHERE code_action IN ('C', 'R', 'U')
+        WHERE code_action IN ('C', 'R', 'U', 'D')
     ) ba,
     (
         SELECT id_module
@@ -185,7 +185,7 @@ FROM (
     (
         SELECT id_action
         FROM gn_permissions.bib_actions
-        WHERE code_action IN ('C')
+        WHERE code_action IN ('C', 'R', 'U', 'D')
     ) ba,
     (
         SELECT id_module

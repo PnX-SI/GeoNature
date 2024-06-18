@@ -6,13 +6,6 @@ import { FILES } from "./constants/files";
 //
 // ////////////////////////////////////////////////////////////////////////////
 
-function pickDataset(datasetName) {
-  cy.get('[data-qa="import-new-upload-datasets"]').should('exist').click()
-    .get("ng-dropdown-panel")
-    .get(".ng-option").contains(datasetName).then(dataset => {
-      cy.wrap(dataset).should('exist').click();
-    });
-}
 describe("Import - Upload step", () => {
   const viewport = VIEWPORTS[0];
   const user = USERS[1];
@@ -27,7 +20,7 @@ describe("Import - Upload step", () => {
     });
 
     it("Should be able to select a jdd", () => {
-      pickDataset(user.dataset);
+      cy.pickDataset(user.dataset);
       cy.get('[data-qa="import-new-upload-datasets"] > ng-select')
         .should("have.class", "ng-valid")
         .find('.ng-value-label')
@@ -39,7 +32,7 @@ describe("Import - Upload step", () => {
       cy.get('[data-qa="import-new-upload-datasets"] > ng-select')
         .should("have.class", "ng-invalid")
 
-      pickDataset(user.dataset);
+      cy.pickDataset(user.dataset);
 
       cy.get('[data-qa="import-new-upload-datasets"] > ng-select')
         .should("have.class", "ng-valid")
@@ -59,7 +52,7 @@ describe("Import - Upload step", () => {
 
     it("Should throw error if file is empty", () => {
       // required to trigger file validation
-      pickDataset(user.dataset);
+      cy.pickDataset(user.dataset);
       const file = FILES.synthese.empty
       cy.get(file.formErrorElement).should('not.exist')
       cy.loadImportFile(file.fixture);
@@ -69,7 +62,7 @@ describe("Import - Upload step", () => {
 
     it("Should throw error if csv is not valid", () => {
       // required to trigger file validation
-      pickDataset(user.dataset);
+      cy.pickDataset(user.dataset);
       const file = FILES.synthese.bad;
       cy.get(file.formErrorElement).should('not.exist');
       cy.fixture(file.fixture, null).as('import_file');

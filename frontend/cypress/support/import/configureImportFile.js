@@ -1,4 +1,4 @@
-const DEFAULT_SRID = 4326;
+const DEFAULT_SRID = "WGS84";
 
 Cypress.Commands.add("configureImportFile", (srid) => {
   srid = srid ?? DEFAULT_SRID;
