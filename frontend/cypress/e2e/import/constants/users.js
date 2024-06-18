@@ -15,7 +15,6 @@ export const USERS = [
         "code": "occhab"
       }
     },
-    "dataset": "JDD-TEST-IMPORT-ADMIN"
   },
   {
     "id": 1,
@@ -32,7 +31,8 @@ export const USERS = [
         "count": 0,
         "code": "occhab"
       }
-    }
+    },
+    "dataset": "JDD-TEST-IMPORT-2"
   }
 ]
 

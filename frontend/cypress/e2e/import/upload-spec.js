@@ -15,7 +15,7 @@ function pickDataset(datasetName) {
 }
 describe("Import - Upload step", () => {
   const viewport = VIEWPORTS[0];
-  const user = USERS[0];
+  const user = USERS[1];
   context(`viewport: ${viewport.width}x${viewport.height}`, () => {
     beforeEach(() => {
       cy.viewport(viewport.width, viewport.height);
@@ -46,6 +46,14 @@ describe("Import - Upload step", () => {
         .find('.ng-value-label')
         .should('exist')
         .should("contains.text", user.dataset);
+    });
+
+    it("Should access jdd only filtered based on permissions  ", () => {
+      cy.get('[data-qa="import-new-upload-datasets"] > ng-select')
+        .click()
+        .get(".ng-option")
+        .should('have.length', 1)
+        .should('contain', user.dataset);
 
     });
 
