@@ -163,6 +163,75 @@ FROM (
         FROM gn_permissions.t_objects
         WHERE code_object IN ('IMPORT', 'MAPPING')
     ) t_o;
+
+-- Insert permissions for agent-test-import
+INSERT INTO gn_permissions.t_permissions (
+        id_role,
+        id_action,
+        id_module,
+        id_object,
+        scope_value
+    )
+SELECT tr.id_role,
+    ba.id_action,
+    tm.id_module,
+    t_o.id_object,
+    1 AS scope_value
+FROM (
+        SELECT id_role
+        FROM utilisateurs.t_roles
+        WHERE identifiant = 'agent-test-import'
+    ) tr,
+    (
+        SELECT id_action
+        FROM gn_permissions.bib_actions
+        WHERE code_action IN ('C')
+    ) ba,
+    (
+        SELECT id_module
+        FROM gn_commons.t_modules
+        WHERE module_code = 'SYNTHESE'
+    ) tm,
+    (
+        SELECT id_object
+        FROM gn_permissions.t_objects
+        WHERE code_object IN ('ALL')
+    ) t_o;
+
+-- Insert permissions for agent-test-import
+INSERT INTO gn_permissions.t_permissions (
+        id_role,
+        id_action,
+        id_module,
+        id_object,
+        scope_value
+    )
+SELECT tr.id_role,
+    ba.id_action,
+    tm.id_module,
+    t_o.id_object,
+    1 AS scope_value
+FROM (
+        SELECT id_role
+        FROM utilisateurs.t_roles
+        WHERE identifiant = 'agent-test-import'
+    ) tr,
+    (
+        SELECT id_action
+        FROM gn_permissions.bib_actions
+        WHERE code_action IN ('R')
+    ) ba,
+    (
+        SELECT id_module
+        FROM gn_commons.t_modules
+        WHERE module_code = 'METADATA'
+    ) tm,
+    (
+        SELECT id_object
+        FROM gn_permissions.t_objects
+        WHERE code_object IN ('ALL')
+    ) t_o;
+
 -- Ajout du module occhab si non présent
 INSERT INTO gn_commons.t_modules (
         module_code,
