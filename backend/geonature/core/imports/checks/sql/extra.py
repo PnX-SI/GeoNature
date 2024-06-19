@@ -124,7 +124,7 @@ def check_cd_hab(imprt: TImports, entity: Entity, field: BibFields) -> None:
         The field to check.
 
     """
-    check_referential(imprt, entity, field, Habref.cd_hab, "CD_HAB_NOT_FOUND")
+    check_referential(imprt, entity, field, Habref.cd_hab, ImportCodeError.CD_HAB_NOT_FOUND)
 
 
 def generate_altitudes(
@@ -612,7 +612,7 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
     # get the rows with differences
 
     erroneous = (
-        select(hashedRows.c.uuid_col)
+        select(hashedRows.c.uuid_col.label("uuid_col"))
         .group_by(hashedRows.c.uuid_col)
         .having(func.count(func.distinct(hashedRows.c.hashed)) > 1)
     )
