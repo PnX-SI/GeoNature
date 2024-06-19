@@ -497,7 +497,27 @@ class MappingTemplate(db.Model):
             return True
 
 
-def optional_conditions_to_jsonschema(name_field: str, optional_conditions: Iterable[str]):
+def optional_conditions_to_jsonschema(name_field: str, optional_conditions: Iterable[str]) -> dict:
+    """
+    Convert optional conditions into a JSON schema.
+
+    Parameters
+    ----------
+    name_field : str
+        The name of the field.
+    optional_conditions : Iterable[str]
+        The optional conditions.
+
+    Returns
+    -------
+    dict
+        The JSON schema.
+
+    Notes
+    -----
+    The JSON schema is created to ensure that if any of the optional conditions is not provided,
+    the name_field is required.
+    """
     assert isinstance(optional_conditions, list)
     assert len(optional_conditions) > 0
     return {
@@ -506,16 +526,11 @@ def optional_conditions_to_jsonschema(name_field: str, optional_conditions: Iter
                 "if": {
                     "not": {
                         "properties": {
-                            field_opt: {
-                                "type": "string",
-                            }
-                            for field_opt in optional_conditions
+                            field_opt: {"type": "string"} for field_opt in optional_conditions
                         }
                     }
                 },
-                "then": {
-                    "required": [name_field],
-                },
+                "then": {"required": [name_field]},
             }
         ]
     }

@@ -67,7 +67,7 @@ def check_required_values(df, fields: Dict[str, BibFields]):
             # XXX lever une erreur pour toutes les lignes si le champs n’est pas mappé
             # XXX rise errors for missing mandatory field from mapping?
             yield {
-                "error_code": "MISSING_VALUE",
+                "error_code": ImportCodeError.MISSING_VALUE,
                 "column": field_name,
                 "invalid_rows": df,
             }
