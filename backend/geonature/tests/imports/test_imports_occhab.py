@@ -197,29 +197,19 @@ class TestImportsOcchab:
                     frozenset({7}),
                 ),
                 (ImportCodeError.INVALID_UUID, "station", "unique_dataset_id", frozenset({8})),
-                (
-                    ImportCodeError.NO_GEOM,
-                    "station",
-                    "Champs géométriques",
-                    frozenset({9, 11, 12, 13, 17, 18, 19, 21}),
-                ),
-                (
-                    ImportCodeError.MISSING_VALUE,
-                    "station",
-                    "WKT",
-                    frozenset({9, 11, 12, 13, 17, 18, 19, 21}),
-                ),
-                (
-                    ImportCodeError.MISSING_VALUE,
-                    "station",
-                    "date_min",
-                    frozenset({10, 11, 12, 13, 17, 18, 19, 21}),
-                ),
-                (ImportCodeError.MISSING_VALUE, "habitat", "cd_hab", frozenset({8, 9, 12, 13})),
-                (ImportCodeError.MISSING_VALUE, "habitat", "nom_cite", frozenset({8, 9, 12, 13})),
+                (ImportCodeError.NO_GEOM, "station", "Champs géométriques", frozenset({9})),
+                (ImportCodeError.MISSING_VALUE, "station", "WKT", frozenset({9})),
+                ("MISSING_VALUE", "station", "date_min", frozenset({10})),
                 (
                     ImportCodeError.INVALID_UUID,
                     "station",
+                    "unique_id_sinp_station",
+                    frozenset({20}),
+                ),
+                # Habitats errors
+                (
+                    ImportCodeError.INVALID_UUID,
+                    "habitat",
                     "unique_id_sinp_station",
                     frozenset({20, 21}),
                 ),
@@ -227,14 +217,15 @@ class TestImportsOcchab:
                     ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({6, 7, 10, 11, 16, 17, 18, 19, 20, 21}),
+                    frozenset({6, 7, 10, 19, 20}),
                 ),
+                (ImportCodeError.NO_PARENT_ENTITY, "habitat", "id_station", frozenset({11})),
                 # Other errors
                 (ImportCodeError.ORPHAN_ROW, None, "unique_id_sinp_station", frozenset({12})),
                 (ImportCodeError.ORPHAN_ROW, None, "id_station_source", frozenset({13})),
             },
         )
-        assert imported_import.statistics == {"station_count": 5, "habitat_count": 6}
+        assert imported_import.statistics == {"station_count": 5, "habitat_count": 9}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
@@ -247,5 +238,5 @@ class TestImportsOcchab:
                     OccurenceHabitat.id_import == imported_import.id_import
                 )
             )
-            == 6
+            == 9
         )
