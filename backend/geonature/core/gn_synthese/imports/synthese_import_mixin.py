@@ -44,6 +44,8 @@ from geonature.core.imports.checks.sql import (
     check_digital_proof_urls,
     check_geometry_outside,
     check_is_valid_geometry,
+    init_rows_validity,
+    check_orphan_rows,
 )
 
 from .geo import set_geom_columns_from_area_codes
@@ -74,6 +76,10 @@ class SyntheseImportMixin(ImportMixin):
 
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
+        init_rows_validity(imprt)
+        task.update_state(state="PROGRESS", meta={"progress": 0.05})
+        check_orphan_rows(imprt)
+        task.update_state(state="PROGRESS", meta={"progress": 0.1})
         entity = Entity.query.filter_by(destination=imprt.destination).one()  # Observation
 
         fields = {

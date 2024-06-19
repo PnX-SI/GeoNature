@@ -34,12 +34,6 @@ def do_import_checks(self, import_id):
         logger.warning("Task cancelled, doing nothing.")
         return
 
-    self.update_state(state="PROGRESS", meta={"progress": 0})
-    init_rows_validity(imprt)
-    self.update_state(state="PROGRESS", meta={"progress": 0.05})
-    check_orphan_rows(imprt)
-    self.update_state(state="PROGRESS", meta={"progress": 0.1})
-
     imprt.destination.import_mixin.check_transient_data(self, logger, imprt)
 
     self.update_state(state="PROGRESS", meta={"progress": 1})

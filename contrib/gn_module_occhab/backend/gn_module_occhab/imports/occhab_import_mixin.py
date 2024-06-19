@@ -43,6 +43,8 @@ from geonature.core.imports.checks.sql import (
     generate_altitudes,
     set_id_parent_from_destination,
     set_parent_line_no,
+    init_rows_validity,
+    check_orphan_rows,
 )
 from .checks import (
     generate_id_station,
@@ -291,6 +293,12 @@ class OcchabImportMixin(ImportMixin):
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
         task.update_state(state="PROGRESS", meta={"progress": 0})
+
+        init_rows_validity(imprt)
+        task.update_state(state="PROGRESS", meta={"progress": 0.05})
+        check_orphan_rows(imprt)
+        task.update_state(state="PROGRESS", meta={"progress": 0.1})
+
         entity_station, entity_habitat = get_occhab_entities()
         OcchabImportMixin.check_station(imprt)
         OcchabImportMixin.check_habitat(imprt)
