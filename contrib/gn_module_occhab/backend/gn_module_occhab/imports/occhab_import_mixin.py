@@ -20,6 +20,7 @@ from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
 )
+
 from geonature.core.imports.checks.dataframe import (
     check_datasets,
     check_geometry,
@@ -147,8 +148,6 @@ class OcchabImportMixin(ImportMixin):
         """
         _, entity_habitat = get_occhab_entities()
         fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
-        source_cols.remove("src_unique_id_sinp_station")  # already checked in station_check
-        source_cols.remove("id_station_source")
 
         updated_cols = set()
 
@@ -198,13 +197,9 @@ class OcchabImportMixin(ImportMixin):
             The import to check.
 
         """
-        tr_ = imprt.destination.get_transient_table()
+
         entity_station, _ = get_occhab_entities()
-        db.session.execute(
-            sa.update(tr_)
-            .where(tr_.c.id_import == imprt.id_import)
-            .values(station_valid=True, habitat_valid=True)
-        )
+
         fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
 
         # Save column names where the data was changed in the dataframe
@@ -304,6 +299,14 @@ class OcchabImportMixin(ImportMixin):
         OcchabImportMixin.check_habitat(imprt)
         OcchabImportMixin.generate_uuids(imprt)
 
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
+        check_entity_data_consistency(
+            imprt,
+            entity_station,
+            selected_fields,
+            fields["unique_id_sinp_station"],
+        )
+
         fields, selected_fields, _ = get_mapping_data(imprt, entity_habitat)
         set_id_parent_from_destination(
             imprt,
@@ -324,15 +327,13 @@ class OcchabImportMixin(ImportMixin):
             ],
         )
 
-        # FIXME??: check_erroneous_parent_entities is broken, was based on a NULL value on a boolean columns
-        # Duplicates of check_erroneous_parent_entities
-        # check_no_parent_entity(
-        #     imprt,
-        #     parent_entity=entity_station,
-        #     child_entity=entity_habitat,
-        #     id_parent="id_station",
-        #     parent_line_no="station_line_no",
-        # )
+        check_no_parent_entity(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            id_parent="id_station",
+            parent_line_no="station_line_no",
+        )
 
         check_erroneous_parent_entities(
             imprt,
@@ -341,15 +342,7 @@ class OcchabImportMixin(ImportMixin):
             parent_line_no="station_line_no",
         )
 
-        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
-        check_entity_data_consistency(
-            imprt,
-            entity_station,
-            selected_fields,
-            fields["unique_id_sinp_station"],
-        )
-
-        task.update_state(state="PROGRESS", meta={"progress": 100})
+        task.update_state(state="PROGRESS", meta={"progress": 1})
 
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
@@ -430,6 +423,8 @@ class OcchabImportMixin(ImportMixin):
                     imprt,
                     habitat_entity=entities["habitat"],
                 )
+            print(select_stmt.compile(compile_kwargs={"literal_binds": True}))
+            print("aaaaaaaaaaaaaaaa", db.session.execute(select_stmt).all())
             r = db.session.execute(insert_stmt)
             imprt.statistics.update({f"{entity.code}_count": r.rowcount})
 

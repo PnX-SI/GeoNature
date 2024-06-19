@@ -123,7 +123,7 @@ def update_mapping(mapping, scope):
         except ValueError as e:
             raise BadRequest(*e.args)
         if mapping.type == "FIELD":
-            mapping.values = request.json
+            mapping.values.update(request.json)
         elif mapping.type == "CONTENT":
             for key, value in request.json.items():
                 if key not in mapping.values:

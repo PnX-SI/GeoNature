@@ -19,9 +19,13 @@ def generate_id_station(imprt: TImports, station_entity: Entity) -> None:
     # Generate for each uuid an id_station
     transient_table = imprt.destination.get_transient_table()
     uuid_station_valid_cte = (
-        sa.select(sa.distinct(transient_table.c.unique_id_sinp_station), transient_table.c.line_no)
+        sa.select(
+            sa.distinct(transient_table.c.unique_id_sinp_station).label("unique_id_sinp_station"),
+            sa.func.min(transient_table.c.line_no).label("line_no"),
+        )
         .where(transient_table.c.id_import == imprt.id_import)
         .where(transient_table.c[station_entity.validity_column].is_(True))
+        .group_by(transient_table.c.unique_id_sinp_station)
         .cte("uuid_station_valid_cte")
     )
 
