@@ -199,7 +199,7 @@ class TestImportsOcchab:
                 (ImportCodeError.INVALID_UUID, "station", "unique_dataset_id", frozenset({8})),
                 (ImportCodeError.NO_GEOM, "station", "Champs géométriques", frozenset({9})),
                 (ImportCodeError.MISSING_VALUE, "station", "WKT", frozenset({9})),
-                ("MISSING_VALUE", "station", "date_min", frozenset({10})),
+                (ImportCodeError.MISSING_VALUE, "station", "date_min", frozenset({10})),
                 (
                     ImportCodeError.INVALID_UUID,
                     "station",
