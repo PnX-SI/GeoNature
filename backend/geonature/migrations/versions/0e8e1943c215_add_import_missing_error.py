@@ -25,16 +25,19 @@ def upgrade():
                 "error_type": "Erreur de format booléen",
                 "name": "INVALID_BOOL",
                 "description": "Le champ doit être renseigné avec une valeur binaire (0 ou 1, true ou false).",
+                "error_level": "ERROR",
             },
             {
                 "error_type": "Données incohérentes d'une ou plusieurs entités",
                 "name": "INCOHERENT_DATA",
                 "description": "Les données indiquées pour une ou plusieurs entités sont incohérentes sur différentes lignes.",
+                "error_level": "ERROR",
             },
             {
                 "error_type": "Erreur de format nombre",
                 "name": "INVALID_NUMERIC",
                 "description": "Le champ doit être renseigné avec une valeur numérique (entier, flottant).",
+                "error_level": "ERROR",
             },
         ],
     )
