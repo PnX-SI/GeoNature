@@ -9,7 +9,7 @@ function getURLStepImport(destination_label, id_import) {
     console.log(baseUrl)
     const urlStepsImport = {
         "step_1_upload": {
-            "url": `${baseUrl}import/${destination_label}/process/upload`,
+            "url": `${baseUrl}import/${destination_label}/process/${id_import}/upload`,
         },
         "step_2_decode_file": {
             "url": `${baseUrl}import/${destination_label}/process/${id_import}/decode`,
@@ -29,28 +29,44 @@ function getURLStepImport(destination_label, id_import) {
 }
 
 
-function findRowIndexByColumnValue(tableSelector, columnName, cellValue) {
-    cy.get(tableSelector).within(() => {
-        // Find the index of the column with the specified name
-        cy.get('datatable-header-cell')
-            .contains(columnName)
-            .invoke('index')
-            .then((columnIndex) => {
-                // Iterate over each row and find the cell in the column with the specified index
-                cy.get('datatable-body-row').each(($row, rowIndex) => {
-                    cy.wrap($row)
-                        .find(`datatable-body-cell:nth-child(${columnIndex + 1})`)
-                        .invoke('text')
-                        .then((text) => {
-                            if (text.trim() === cellValue) {
-                                // Return the row index
-                                cy.wrap(rowIndex).as('rowIndex');
-                            }
-                        });
-                });
-            });
+// function findRowIndexByColumnValue(tableSelector, columnName, cellValue) {
+//     cy.get(tableSelector).within(() => {
+//         // Find the index of the column with the specified name
+//         cy.get('datatable-header-cell')
+//             .contains(columnName)
+//             .invoke('index')
+//             .then((columnIndex) => {
+//                 console.log("columnIndex: " + columnIndex)
+//                 // Iterate over each row and find the cell in the column with the specified index
+//                 cy.get('datatable-body-row').each(($row, rowIndex) => {
+//                     console.log("rowIndex: " + rowIndex)
+//                     console.log("$row: ", $row)
+//                     const cellSelector = `[data-qa="import-list-table-row-${rowIndex}-${columnName.replace(/\s+/g, '-').toLowerCase()}"]`;
+//                     cy.wrap($row)
+//                         .find( cellSelector)
+//                         .invoke('text')
+//                         .then((text) => {
+//                             console.log("text: ", text)
+//                             if (text.trim() === cellValue) {
+//                                 // Return the row index
+//                                 cy.wrap(rowIndex).as('rowIndex');
+//                             }
+//                         });
+//                 });
+//             });
+//     });
+// }
+
+Cypress.Commands.add('getRowIndexByCellValue', (tableSelector, columnName, cellValue) => {
+    cy.get(`${tableSelector} datatable-body-row`).each(($row, rowIndex) => {
+        const cellSelector = `[data-qa="import-list-table-row-${rowIndex}-${columnName.replace(/\s+/g, '-').toLowerCase()}"]`;
+        cy.wrap($row).find(cellSelector).then(($cell) => {
+            if ($cell.text().trim() === cellValue) {
+                cy.wrap(rowIndex).as('rowIndex');
+            }
+        });
     });
-}
+});
 
 
 describe('Import Process Navigation', () => {
@@ -61,13 +77,8 @@ describe('Import Process Navigation', () => {
       const destination_url = 'synthese';
       const stepUpload = 'upload';
       const timeoutWait = 1000;
-    //   context(`user: ${user.login.username}`, () => {
-    //     beforeEach(() => {
-    //       cy.viewport(viewport.width, viewport.height);
-    //       cy.geonatureLogin(user.login.username, user.login.password);
-    //       cy.visitImport();
-    //     });
-        before(() => {
+      const selectorNavigationGeneral = SELECTORS_NAVIGATION.general;
+      before(() => {
             cy.viewport(viewport.width, viewport.height);
             cy.geonatureLogin(user.login.username, user.login.password);
             cy.visitImport();
@@ -77,14 +88,10 @@ describe('Import Process Navigation', () => {
     
             // STEP 1 - UPLOAD
             cy.pickDataset(user.dataset);
-            // Intercept the POST request http://127.0.0.1:8000/import/synthese/imports/upload
+          
             cy.log(Cypress.env('apiEndpoint') + `/import/${destination_url}/imports/${stepUpload}`)
-            // cy.intercept(
-            //     'POST',
-            //     Cypress.env('apiEndpoint') + `/import/${destination_url}/imports/${stepUpload}`
-            // ).as('validateUpload');
+
             cy.loadImportFile(FILES.synthese.valid.fixture);
-            // Wait for the intercepted request and then extract the id
             // Get the current URL
             cy.wait(timeoutWait);
             cy.url().then(url => {
@@ -98,6 +105,8 @@ describe('Import Process Navigation', () => {
                 // Save the ID as a Cypress variable
                 cy.wrap(id).as('newImportID');
             });
+            cy.visitImport()
+            // cy.get(selectorNavigationGeneral.save_and_quit_btn_selector).should('be.visible').click();
         });
 
 
@@ -105,48 +114,37 @@ describe('Import Process Navigation', () => {
             // Wait for the alias to be available
             cy.get('@newImportID').then((importID) => {    
                 // Define selectors and URLs using the newImportID
-                const selectors = getSelectorsForStep(STEP_NAMES[0]);
-                cy.log("selectors",selectors);
-                const selectorNavigationGeneral = SELECTORS_NAVIGATION.general;
+                const selectorNavigationStepUpload = getSelectorsForStep(STEP_NAMES[0]);
+                const selectorNavigationStepFile = getSelectorsForStep(STEP_NAMES[1]);
                 const urlStepsImport = getURLStepImport(destination_url, importID);
-                cy.log("urlStepsImport",urlStepsImport["step_2_decode_file"].url);
-                // Perform the navigation and checks
-                cy.url().should('eq', urlStepsImport.step_2_decode_file.url);
-                cy.visitImport();
-    
-                // Check fields upload are all filled
-                // cy.get(selectorNavigationGeneral.save_and_quit_btn_selector).should('be.visible').click();
-    
-                // Check if the import ID exists in the table
                 const tableSelector = '[data-qa=import-list-table]';
                 const columnName = 'Id Import';
+                cy.log("urlStepsImport",urlStepsImport["step_2_decode_file"].url);
+                // Call the command to find the row index
+                cy.getRowIndexByCellValue(tableSelector, columnName, importID);
+                // Perform the navigation and checks
 
-                // Call the function to find the row index
-                findRowIndexByColumnValue(tableSelector, columnName, importID);
+                cy.get('@rowIndex').then((RowIndex) => {
+                    // Perform actions with the found row index
+                   cy.get(`[data-qa="import-list-table-row-${RowIndex}-actions-edit"]`).should('be.enabled').click();
+                });
+                cy.wait(timeoutWait);
+                cy.get(selectorNavigationStepFile.back_btn_selector).should('be.visible').click();
+                cy.wait(timeoutWait);
+                cy.url().should('eq', urlStepsImport.step_1_upload.url);
+    
 
                 // Use the row index alias for further actions or assertions
+                cy.get(selectorNavigationStepUpload.next_btn_selector).should('be.enabled').click();
+                cy.get(selectorNavigationGeneral.save_and_quit_btn_selector).should('be.visible').click();
                 cy.get('@rowIndex').then((rowIndex) => {
                     cy.log('Row index:', rowIndex);
-                    expect(rowIndex).to.not.be.null; // Adjust based on your test requirements
+                    expect(rowIndex).to.not.be.null;
                 });
-                // cy.checkCellValueExistsInColumn(tableSelector, columnName, importID).then((cellValueExists) => {
-                //     if (cellValueExists) {
-                //         cy.log('The cell value exists in the specified column');
-                //     } else {
-                //         cy.log('The cell value does not exist in the specified column');
-                //     }
-                //     expect(cellValueExists).to.be.true; // Adjust assertion as needed
-                // });
-    
-                // Use the result in your test
-                // cy.get('@cellValueExists').then((exists) => {
-                //     if (cellValueExists) {
-                //         cy.log('The cell value exists in the specified column');
-                //     } else {
-                //         cy.log('The cell value does not exist in the specified column');
-                //     }
-                //     expect(cellValueExists).to.be.true; // Adjust assertion as needed
-                // });
+                // Delete file by using 
+                cy.visit(urlStepsImport.step_2_decode_file.url);
+                cy.get(selectorNavigationGeneral.cancel_and_delete_import_btn_selector).should('be.visible').click();
+                cy.url().should('eq', Cypress.env('urlApplication') + "import");
             });
         });
 

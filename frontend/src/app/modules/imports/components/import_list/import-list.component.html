@@ -61,8 +61,11 @@
             <ng-template
               let-row="row"
               ngx-datatable-cell-template
+              let-rowIndex="rowIndex"
             >
-              {{ row.id_import }}
+              <div [attr.data-qa]="'import-list-table-row-' + rowIndex + '-id-import'">
+                {{ row.id_import }}
+              </div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column

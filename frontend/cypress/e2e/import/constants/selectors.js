@@ -7,9 +7,9 @@ step:{
             'next_btn_selector': '[data-qa="import-new-upload-validate"]',
     },
     'decode': {
-            'back_btn_selector': '[data-qa="import-decode-back-btn"]',
-            'step_btn_selector': '[data-qa="import-decode-step-btn"]',
-            'next_btn_selector': '[data-qa="import-new-decode-validate"]',
+            'back_btn_selector': '[data-qa="import-file-decode-back-btn"]',
+            'step_btn_selector': '[data-qa="import-file-decode-step-btn"]',
+            'next_btn_selector': '[data-qa="import-new-file-decode-validate"]',
     },
     'fieldmapping': {
             'back_btn_selector': '[data-qa="import-fieldmapping-back-btn"]',
