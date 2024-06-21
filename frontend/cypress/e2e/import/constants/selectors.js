@@ -9,10 +9,10 @@ step:{
     'decode': {
             'back_btn_selector': '[data-qa="import-file-decode-back-btn"]',
             'step_btn_selector': '[data-qa="import-file-decode-step-btn"]',
-            'next_btn_selector': '[data-qa="import-new-file-decode-validate"]',
+            'next_btn_selector': '[data-qa="import-new-decode-validate"]',
     },
     'fieldmapping': {
-            'back_btn_selector': '[data-qa="import-fieldmapping-back-btn"]',
+            'back_btn_selector': '[data-qa="import-fieldmapping-model-back-btn"]',
             'step_btn_selector': '[data-qa="import-fieldmapping-step-btn"]',
             'next_btn_selector': '[data-qa="import-new-fieldmapping-model-validate"]',
     },
@@ -30,6 +30,7 @@ step:{
 general: {
     'save_and_quit_btn_selector': '[data-qa="import-new-footer-save"]',
     'cancel_and_delete_import_btn_selector': '[data-qa="import-new-footer-delete"]',
+    'delete-import-modal-btn-selector': '[data-qa="modal-delete-validate"]',
 }
 }
 

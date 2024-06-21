@@ -38,6 +38,7 @@
             class="custom-file-label"
             [class.error-file]="!isNextStepAvailable() && uploadForm.get('file').errors"
             for="selectedFile"
+            data-qa="import-new-upload-file-label"
           >
             {{ fileName ? fileName : ('Import.ChooseFile' | translate) }}
           </label>

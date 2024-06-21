@@ -27,3 +27,7 @@ Pas de check à l'envoi, pas de check à réception. On peut envoyer un PDF, ça
 Il s'agirait ici de tester le bon comportement de la balise **input**, avec son attribut **accept**. 
 
 Ce n'est pas trivial, et peut être considéré ok.
+
+### General - vérification des champs sauvegardé entre chaque étape
+
+La sauvegarde du changement de JDD choisi à l'étape UPLOAD ne fonctionne pas .
