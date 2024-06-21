@@ -1,4 +1,7 @@
-<div class="modal-header">
+<div
+  class="modal-header"
+  data-qa="import-modal-delete"
+>
   <h4 class="modal-title pull-left">Suppression</h4>
   <button
     type="button"
@@ -29,6 +32,7 @@
     (click)="deleteImport()"
     mat-raised-button
     color="warn"
+    data-qa="modal-delete-validate"
   >
     Supprimer
   </button>

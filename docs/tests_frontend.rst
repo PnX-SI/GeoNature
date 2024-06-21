@@ -24,6 +24,18 @@ Structure
 
 La nomenclature des fichiers de test est XXXXXXX-spec.js (XXXX correspondant au nom du module testé). 
 
+Afin d'améliorer la lisibilité des fichiers de test si un module contient beaucoup de tests il est nécessaire de séparer les tests end to end en plusieurs fichiers et les placer dans un dossier portant le nom du module.
+
+Exemple
+"""""""
+
+.. code-block:: bash
+
+    e2e
+    ├── import
+    │   ├── all-steps-spec.js
+    │   └── list-search-spec.js
+
 Dans chaque fichier la structure des tests est de la forme
 
 - une description
@@ -68,14 +80,17 @@ Angular et Cypress suggèrent l'ajout de tags de ce type:
 - test-qa
 - data-test
 
-Voir https://docs.cypress.io/guides/references/best-practices#Selecting-Elements pour les bonnes pratique de sélection d'éléments: 
+Il est recommandé d'utiliser un nom explicite pour éviter toutes confusions.
 
 Exemple
 """""""
 
 .. code-block:: HTML
 
-    <div data-qa="text_de_selection">
+    <button data-qa="import-list-new">New</button>
+
+Voir https://docs.cypress.io/guides/references/best-practices#Selecting-Elements pour les bonnes pratique de sélection d'éléments.
+
 
 Lancement
 *********

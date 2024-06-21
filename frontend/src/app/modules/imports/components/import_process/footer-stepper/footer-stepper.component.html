@@ -5,6 +5,7 @@
     (click)="deleteImport()"
     mat-raised-button
     color="warn"
+    data-qa="import-new-footer-delete"
   >
     Annuler et supprimer l’import
   </button>
@@ -16,6 +17,7 @@
     mat-raised-button
     color="accent"
     [disabled]="!stepComponent.isNextStepAvailable()"
+    data-qa="import-new-footer-save"
   >
     Enregistrer et quitter
   </button>

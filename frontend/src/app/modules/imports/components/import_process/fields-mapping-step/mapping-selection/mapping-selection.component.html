@@ -12,6 +12,7 @@
         [formControl]="fieldMappingForm"
         [compareWith]="areMappingFieldEqual"
         [disableControl]="!userFieldMappings.length"
+        data-qa="mapping-selection"
       >
         <ng-template
           ng-option-tmp
@@ -19,7 +20,7 @@
           let-index="index"
           let-search="searchTerm"
         >
-          <div>
+          <div [attr.data-qa]="'mapping-selection-' + index">
             <span class="pre-wrap">
               {{ item.label }}
             </span>

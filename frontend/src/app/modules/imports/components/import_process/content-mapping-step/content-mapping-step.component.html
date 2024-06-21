@@ -17,6 +17,7 @@
               id="contentMappingSelection"
               [formControl]="selectMappingContentForm"
               [compareWith]="areMappingContentEqual"
+              data-qa="import-new-contentmapping-model-select"
             >
               <option [ngValue]="null">-</option>
               <option
@@ -248,6 +249,7 @@
           (click)="onPreviousStep()"
           mat-raised-button
           color="primary"
+          data-qa="import-contentmapping-back-btn"
         >
           <mat-icon>navigate_before</mat-icon>
           Précédent
@@ -258,6 +260,7 @@
           (click)="onNextStep()"
           mat-raised-button
           color="primary"
+          data-qa="import-new-contentmapping-model-validate"
         >
           Suivant
           <mat-icon>navigate_next</mat-icon>

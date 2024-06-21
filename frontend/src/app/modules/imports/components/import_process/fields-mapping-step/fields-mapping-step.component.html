@@ -1,4 +1,7 @@
-<div class="card">
+<div
+  class="card"
+  data-qa="import-new-fieldmapping-form"
+>
   <div class="card-header">
     <h5 class="card-title mb-0">{{ 'Import.FieldMapping.Title' | translate }}</h5>
   </div>
@@ -87,6 +90,7 @@
           class="d-flex justify-content-center align-content-between"
           (click)="onPreviousStep()"
           color="primary"
+          data-qa="import-fieldmapping-model-back-btn"
         >
           <mat-icon>navigate_before</mat-icon>
           {{ 'Import.Before' | translate }}
@@ -97,6 +101,7 @@
           color="primary"
           [disabled]="!isNextStepAvailable()"
           (click)="onNextStep()"
+          data-qa="import-new-fieldmapping-model-validate"
         >
           {{ 'Import.Next' | translate }}
           <mat-icon>navigate_next</mat-icon>

@@ -110,7 +110,6 @@ export class UploadFileStepComponent implements OnInit {
       },
       (error) => {
         this.isUploadRunning = false;
-        this.commonService.regularToaster('error', error.error.description);
         if (error.status === 400) {
           if (error.error && error.error.description === 'Impossible to upload empty files') {
             this.emptyError = true;

@@ -18,6 +18,7 @@
     <pnx-destinations
       label="{{ 'Import.Destinations' | translate }}"
       [parentFormControl]="selectDestinationForm"
+      data-qa="import-new-modal-destinations"
     ></pnx-destinations>
     <div
       id="DestinationError"
@@ -39,6 +40,7 @@
         [disabled]="selectDestinationForm.invalid"
         mat-raised-button
         color="primary"
+        data-qa="import-modal-destination-validate"
       >
         {{ 'Import.Validate' | translate }}
       </button>
@@ -51,6 +53,7 @@
   mat-fab
   color="primary"
   (click)="onOpenModal(content)"
+  data-qa="import-modal-destination-start"
   matTooltip="Nouvel import"
 >
   <mat-icon>add</mat-icon>
