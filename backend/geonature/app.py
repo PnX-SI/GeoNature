@@ -14,7 +14,7 @@ else:
 from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
-from flask_babelex import Babel
+from flask_babel import Babel
 from flask_cors import CORS
 from flask_login import current_user
 from flask_sqlalchemy.track_modifications import before_models_committed
@@ -82,6 +82,16 @@ class MyJSONProvider(DefaultJSONProvider):
             return o._asdict()
         return DefaultJSONProvider.default(o)
 
+
+def get_locale():
+    # if a user is logged in, use the locale from the user settings
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.locale
+    # otherwise try to guess the language from the user accept
+    # header the browser transmits.  We support de/fr/en in this
+    # example.  The best match wins.
+    return request.accept_languages.best_match(['de', 'fr', 'en'])
 
 def create_app(with_external_mods=True):
     app = Flask(
@@ -177,11 +187,9 @@ def create_app(with_external_mods=True):
     admin.init_app(app)
 
     # babel
-    babel = Babel(app)
+    babel = Babel(app, locale_selector=get_locale)
 
-    @babel.localeselector
-    def get_locale():
-        return request.accept_languages.best_match(["de", "fr", "en"])
+
 
     # Enable serving of media files
     app.add_url_rule(

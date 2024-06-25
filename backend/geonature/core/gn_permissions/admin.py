@@ -9,6 +9,7 @@ from flask_admin.form.widgets import Select2Widget
 from markupsafe import Markup
 from sqlalchemy.orm import contains_eager, joinedload
 from sqlalchemy import select
+from markupsafe import Markup
 
 from geonature.utils.env import db
 from geonature.utils.config import config
