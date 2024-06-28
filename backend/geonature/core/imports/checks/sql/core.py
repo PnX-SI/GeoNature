@@ -14,7 +14,7 @@ from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 __all__ = ["init_rows_validity", "check_orphan_rows"]
 
 
-def init_rows_validity(imprt):
+def init_rows_validity(imprt, parent_entity=None, parent_ids=None):
     """
     Validity columns are three-states:
       - None: the row does not contains data for the given entity
@@ -50,7 +50,7 @@ def init_rows_validity(imprt):
             .all()
         )
         # Set validity=True for rows with not null field associated to this entity
-        db.session.execute(
+        query = (
             sa.update(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
             .where(
@@ -58,6 +58,43 @@ def init_rows_validity(imprt):
             )
             .values({entity.validity_column: True})
         )
+        db.session.execute(query)
+
+        if (
+            parent_entity is not None
+            and parent_ids is not None
+            and entity.code == parent_entity.code
+        ):
+            parent_table = entity.get_destination_table()
+            # Set validity=True for rows with every field empty
+            # but with an id not existing in the destination table
+
+            cte_ = (
+                sa.select(
+                    transient_table.c.line_no,
+                )
+                .where(
+                    sa.or_(
+                        *(
+                            transient_table.c[id_column].not_in(
+                                sa.select(sa.func.distinct(parent_table.c[id_column])).subquery()
+                            )
+                            for id_column in parent_ids
+                        )
+                    ),
+                )
+                .where(sa.and_(*(transient_table.c[id_column] != None for id_column in parent_ids)))
+                .where(transient_table.c[entity.validity_column] == None)
+                .where(transient_table.c.id_import == imprt.id_import)
+            ).cte("cte_")
+            query = (
+                sa.update(transient_table)
+                .where(transient_table.c.line_no == cte_.c.line_no)
+                .values({entity.validity_column: True})
+                .returning(transient_table.c.line_no)
+            )
+            db.session.execute(query).fetchall()
+
     # Rows with values only in fields shared between several entities will be ignored here.
     # But they will raise an error through check_orphan_rows.
 
@@ -93,7 +130,7 @@ def check_orphan_rows(imprt):
             error_column=field.name_field,
             whereclause=sa.and_(
                 transient_table.c[field.source_field].isnot(None),
-                *[transient_table.c[col].is_(None) for col in imprt.destination.validity_columns]
+                *[transient_table.c[col].is_(None) for col in imprt.destination.validity_columns],
             ),
         )
 

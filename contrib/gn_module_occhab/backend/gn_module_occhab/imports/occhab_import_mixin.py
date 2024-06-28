@@ -288,13 +288,17 @@ class OcchabImportMixin(ImportMixin):
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
         task.update_state(state="PROGRESS", meta={"progress": 0})
+        entity_station, entity_habitat = get_occhab_entities()
 
-        init_rows_validity(imprt)
+        init_rows_validity(
+            imprt,
+            parent_entity=entity_station,
+            parent_ids=["unique_id_sinp_station"],
+        )
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
         check_orphan_rows(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.1})
 
-        entity_station, entity_habitat = get_occhab_entities()
         OcchabImportMixin.check_station(imprt)
         OcchabImportMixin.check_habitat(imprt)
         OcchabImportMixin.generate_uuids(imprt)
@@ -423,8 +427,7 @@ class OcchabImportMixin(ImportMixin):
                     imprt,
                     habitat_entity=entities["habitat"],
                 )
-            print(select_stmt.compile(compile_kwargs={"literal_binds": True}))
-            print("aaaaaaaaaaaaaaaa", db.session.execute(select_stmt).all())
+
             r = db.session.execute(insert_stmt)
             imprt.statistics.update({f"{entity.code}_count": r.rowcount})
 
