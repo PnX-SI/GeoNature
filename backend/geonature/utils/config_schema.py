@@ -176,6 +176,7 @@ class AuthenticationConfig(Schema):
 
     DEFAULT_RECONCILIATION_GROUP_ID = fields.Integer()
     DISPLAY_DEFAULT_LOGIN_FORM = fields.Boolean(load_default=True)
+    ONLY_PROVIDER = fields.String(load_default=None)
     PROVIDERS_CONFIG = fields.Dict(
         load_default={},
     )

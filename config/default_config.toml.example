@@ -623,6 +623,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 [AUTHENTICATION]
     AUTHENTICATION_CLASSES=["pypnusershub.auth.providers.openid_provider.OpenIDProvider"]
     DISPLAY_DEFAULT_LOGIN_FORM = true
+    ONLY_PROVIDER = 'keycloak'
 
     # identifiant du groupe dans lequel les utilisateurs externes vont être ajoutés
     ID_GROUP_RECONCILIATION = 2
