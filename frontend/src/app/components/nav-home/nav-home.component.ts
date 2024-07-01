@@ -24,6 +24,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public locale: string;
   public moduleUrl: string;
   public notificationNumber: number;
+  public useLocalProvider: boolean; // Indicate if the user is logged in using a non local provider
 
   @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
@@ -50,6 +51,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
+    this.useLocalProvider = this.authService.canBeLoggedWithLocalProvider();
   }
 
   private extractLocaleFromUrl() {

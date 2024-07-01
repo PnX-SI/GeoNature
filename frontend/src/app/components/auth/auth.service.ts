@@ -21,6 +21,7 @@ export interface User {
   prenom_role?: string;
   nom_role?: string;
   nom_complet?: string;
+  providers?: string[];
 }
 
 @Injectable()
@@ -40,8 +41,15 @@ export class AuthService {
     private _routingService: RoutingService,
     private moduleService: ModuleService,
     public config: ConfigService
-  ) {}
+  ) {
+    this.refreshCurrentUserData();
+  }
 
+  refreshCurrentUserData() {
+    if (!this.currentUser) {
+      this.currentUser = this.getCurrentUser();
+    }
+  }
   setCurrentUser(user) {
     localStorage.setItem(this.prefix + 'current_user', JSON.stringify(user));
   }
@@ -72,6 +80,7 @@ export class AuthService {
       nom_role: data.user.nom_role,
       nom_complet: data.user.nom_role + ' ' + data.user.prenom_role,
       id_organisme: data.user.id_organisme,
+      providers: data.user.providers.map((provider) => provider.name),
     };
     this.setCurrentUser(userForFront);
     this.loginError = false;
@@ -162,5 +171,10 @@ export class AuthService {
 
   disableLoader() {
     this.isLoading = false;
+  }
+
+  canBeLoggedWithLocalProvider(): boolean {
+    this.refreshCurrentUserData();
+    return this.currentUser.providers.includes('local_provider');
   }
 }

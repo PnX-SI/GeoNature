@@ -31,6 +31,23 @@ export class SignUpGuard implements CanActivate {
 }
 
 @Injectable()
+export class UserEditGuard implements CanActivate {
+  constructor(
+    private _router: Router,
+    private _authService: AuthService
+  ) {}
+
+  canActivate() {
+    if (!this._authService.canBeLoggedWithLocalProvider()) {
+      this._router.navigate(['/']);
+      return false;
+    }
+
+    return true;
+  }
+}
+
+@Injectable()
 export class UserManagementGuard implements CanActivate {
   constructor(
     private _router: Router,
