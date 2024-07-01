@@ -197,9 +197,24 @@ class TestImportsOcchab:
                     frozenset({7}),
                 ),
                 (ImportCodeError.INVALID_UUID, "station", "unique_dataset_id", frozenset({8})),
-                (ImportCodeError.NO_GEOM, "station", "Champs géométriques", frozenset({9})),
-                (ImportCodeError.MISSING_VALUE, "station", "WKT", frozenset({9})),
-                (ImportCodeError.MISSING_VALUE, "station", "date_min", frozenset({10})),
+                (
+                    ImportCodeError.NO_GEOM,
+                    "station",
+                    "Champs géométriques",
+                    frozenset({9, 11, 12, 13, 17, 18, 19, 21}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
+                    "WKT",
+                    frozenset({9, 11, 12, 13, 17, 18, 19, 21}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
+                    "date_min",
+                    frozenset({10, 11, 12, 13, 17, 18, 19, 21}),
+                ),
                 (
                     ImportCodeError.INVALID_UUID,
                     "station",
@@ -217,7 +232,7 @@ class TestImportsOcchab:
                     ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({6, 7, 10, 19, 20}),
+                    frozenset({6, 7, 10, 17, 18, 19, 20}),
                 ),
                 (ImportCodeError.NO_PARENT_ENTITY, "habitat", "id_station", frozenset({11})),
                 # Other errors
