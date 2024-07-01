@@ -1,3 +1,4 @@
+from geonature.core.imports.checks.errors import ImportCodeError
 from sqlalchemy.sql.expression import select, update
 from sqlalchemy.sql import column
 import sqlalchemy as sa
@@ -74,7 +75,7 @@ def do_nomenclatures_mapping(imprt, entity, fields, fill_with_defaults=False):
         report_erroneous_rows(
             imprt,
             entity,
-            error_type="INVALID_NOMENCLATURE",
+            error_type=ImportCodeError.INVALID_NOMENCLATURE,
             error_column=field.name_field,
             whereclause=sa.and_(*erroneous_conds),
         )
@@ -106,7 +107,7 @@ def check_nomenclature_exist_proof(
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="INVALID_EXISTING_PROOF_VALUE",
+        error_type=ImportCodeError.INVALID_EXISTING_PROOF_VALUE,
         error_column=nomenclature_field.name_field,
         whereclause=sa.or_(
             sa.and_(oui_filter, ~proof_set_filter),
@@ -126,7 +127,7 @@ def check_nomenclature_blurring(imprt, entity, blurring_field):
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="CONDITIONAL_MANDATORY_FIELD_ERROR",
+        error_type=ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
         error_column=blurring_field.name_field,
         whereclause=(transient_table.c[blurring_field.dest_field] == None),
     )
@@ -141,7 +142,7 @@ def check_nomenclature_source_status(imprt, entity, source_status_field, ref_bib
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="CONDITIONAL_MANDATORY_FIELD_ERROR",
+        error_type=ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
         error_column=source_status_field.name_field,
         whereclause=sa.and_(
             transient_table.c[source_status_field.dest_field] == litterature.id_nomenclature,

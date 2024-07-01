@@ -1,6 +1,7 @@
 from collections import namedtuple
 from datetime import datetime
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
 import pandas as pd
 import numpy as np
@@ -13,7 +14,7 @@ from shapely.geometry import Point
 from geonature.core.imports.models import TImports, Destination, BibFields
 from geonature.core.imports.checks.dataframe import *
 from geonature.core.imports.checks.dataframe.types import convert_to_datetime
-from geonature.core.imports.checks.dataframe.geography import (
+from geonature.core.imports.checks.dataframe.geometry import (
     check_wkt_inside_area_id,
     check_geometry_inside_l_areas,
 )
@@ -149,7 +150,7 @@ class TestChecks:
                 ]
             ],
         )
-        errors = check_geography.__wrapped__(
+        errors = check_geometry.__wrapped__(
             df,
             file_srid=imprt.srid,
             geom_4326_field=fields["the_geom_4326"],
@@ -165,29 +166,39 @@ class TestChecks:
             errors,
             expected=[
                 Error(
-                    error_code="NO-GEOM",
+                    error_code=ImportCodeError.NO_GEOM,
                     column="Champs géométriques",
                     invalid_rows=frozenset([0, 1, 2]),
                 ),
-                Error(error_code="GEOMETRY_OUT_OF_BOX", column="WKT", invalid_rows=frozenset([5])),
                 Error(
-                    error_code="GEOMETRY_OUT_OF_BOX",
+                    error_code=ImportCodeError.GEOMETRY_OUT_OF_BOX,
+                    column="WKT",
+                    invalid_rows=frozenset([5]),
+                ),
+                Error(
+                    error_code=ImportCodeError.GEOMETRY_OUT_OF_BOX,
                     column="longitude",
                     invalid_rows=frozenset([6]),
                 ),
                 Error(
-                    error_code="MULTIPLE_ATTACHMENT_TYPE_CODE",
+                    error_code=ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE,
                     column="Champs géométriques",
                     invalid_rows=frozenset([7]),
                 ),
                 Error(
-                    error_code="MULTIPLE_CODE_ATTACHMENT",
+                    error_code=ImportCodeError.MULTIPLE_CODE_ATTACHMENT,
                     column="Champs géométriques",
                     invalid_rows=frozenset([8, 9, 10, 11]),
                 ),
-                Error(error_code="INVALID_WKT", column="WKT", invalid_rows=frozenset([15])),
                 Error(
-                    error_code="INVALID_GEOMETRY", column="longitude", invalid_rows=frozenset([16])
+                    error_code=ImportCodeError.INVALID_WKT,
+                    column="WKT",
+                    invalid_rows=frozenset([15]),
+                ),
+                Error(
+                    error_code=ImportCodeError.INVALID_GEOMETRY,
+                    column="longitude",
+                    invalid_rows=frozenset([16]),
                 ),
             ],
         )
@@ -221,18 +232,22 @@ class TestChecks:
             errors,
             expected=[
                 Error(
-                    error_code="INVALID_DATE", column="datetime_max", invalid_rows=frozenset([1])
+                    error_code=ImportCodeError.INVALID_DATE,
+                    column="datetime_max",
+                    invalid_rows=frozenset([1]),
                 ),
                 Error(
-                    error_code="INVALID_INTEGER",
+                    error_code=ImportCodeError.INVALID_INTEGER,
                     column="id_digitiser",
                     invalid_rows=frozenset([2]),
                 ),
                 Error(
-                    error_code="INVALID_UUID", column="unique_id_sinp", invalid_rows=frozenset([3])
+                    error_code=ImportCodeError.INVALID_UUID,
+                    column="unique_id_sinp",
+                    invalid_rows=frozenset([3]),
                 ),
                 Error(
-                    error_code="INVALID_CHAR_LENGTH",
+                    error_code=ImportCodeError.INVALID_CHAR_LENGTH,
                     column="meta_v_taxref",
                     invalid_rows=frozenset([4]),
                 ),
@@ -430,7 +445,7 @@ class TestChecks:
             errors,
             expected=[
                 Error(
-                    error_code="COUNT_MIN_SUP_COUNT_MAX",
+                    error_code=ImportCodeError.COUNT_MIN_SUP_COUNT_MAX,
                     column="count_min",
                     invalid_rows=frozenset([4, 5]),
                 ),

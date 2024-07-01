@@ -33,6 +33,7 @@
   "Download": "Télécharger",
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "AllItems": "Tous",
+  "Browse": "Parcourir",
   "Map": {
     "SearchLocation": "Rechercher un lieu",
     "LocationError": "Localisation non trouvée",
@@ -301,7 +302,7 @@
       "OptionalIf": "Optionnel si :",
       "RequiredIf": "Requis si :",
       "SinpUUIDWarning": "Attention les identifiants SINP ne seront pas générés",
-      "ChooseMapping": "Choix d’un modèle d'import prédéfini",
+      "ChooseMapping": "Utiliser un modèle d'import prédéfini",
       "RenameMapping": "Renommer le modèle d'import",
       "DeleteMapping": "Supprimer le modèle d'import",
       "DeleteMapping?": "Voulez vous supprimer le modèle ?",

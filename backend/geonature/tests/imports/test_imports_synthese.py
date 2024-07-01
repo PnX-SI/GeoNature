@@ -5,6 +5,7 @@ from operator import or_
 from functools import reduce
 import csv
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
 from flask import g, url_for, current_app
 from werkzeug.datastructures import Headers
@@ -45,8 +46,8 @@ from .utils import assert_import_errors as _assert_import_errors
 tests_path = Path(__file__).parent
 
 valid_file_expected_errors = {
-    ("DUPLICATE_ENTITY_SOURCE_PK", "id_synthese", frozenset([4, 5])),
-    ("COUNT_MIN_SUP_COUNT_MAX", "nombre_min", frozenset([6])),
+    (ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK, "id_synthese", frozenset([4, 5])),
+    (ImportCodeError.COUNT_MIN_SUP_COUNT_MAX, "nombre_min", frozenset([6])),
 }
 valid_file_invalid_rows = reduce(or_, [rows for _, _, rows in valid_file_expected_errors])
 valid_file_line_count = 6
@@ -943,18 +944,18 @@ class TestImportsSynthese:
         assert_import_errors(
             prepared_import,
             {
-                ("INVALID_ATTACHMENT_CODE", "codecommune", frozenset([3])),
-                ("INVALID_ATTACHMENT_CODE", "codedepartement", frozenset([5])),
-                ("INVALID_ATTACHMENT_CODE", "codemaille", frozenset([7])),
-                ("MULTIPLE_CODE_ATTACHMENT", "Champs géométriques", frozenset([8])),
+                (ImportCodeError.INVALID_ATTACHMENT_CODE, "codecommune", frozenset([3])),
+                (ImportCodeError.INVALID_ATTACHMENT_CODE, "codedepartement", frozenset([5])),
+                (ImportCodeError.INVALID_ATTACHMENT_CODE, "codemaille", frozenset([7])),
+                (ImportCodeError.MULTIPLE_CODE_ATTACHMENT, "Champs géométriques", frozenset([8])),
                 (
-                    "MULTIPLE_ATTACHMENT_TYPE_CODE",
+                    ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE,
                     "Champs géométriques",
                     frozenset([11, 15]),
                 ),
-                ("NO-GEOM", "Champs géométriques", frozenset([16])),
-                ("INVALID_GEOMETRY", "WKT", frozenset([17])),
-                ("GEOMETRY_OUTSIDE", "Champs géométriques", frozenset([18, 19])),
+                (ImportCodeError.NO_GEOM, "Champs géométriques", frozenset([16])),
+                (ImportCodeError.INVALID_GEOMETRY, "WKT", frozenset([17])),
+                (ImportCodeError.GEOMETRY_OUTSIDE, "Champs géométriques", frozenset([18, 19])),
             },
         )
 
@@ -963,11 +964,11 @@ class TestImportsSynthese:
         assert_import_errors(
             prepared_import,
             {
-                ("MISSING_VALUE", "cd_nom", frozenset([2, 5, 6])),
-                ("CD_NOM_NOT_FOUND", "cd_nom", frozenset([3, 7, 9, 11])),
-                ("CD_HAB_NOT_FOUND", "cd_hab", frozenset([5, 7, 8])),
-                ("INVALID_INTEGER", "cd_nom", frozenset([12])),
-                ("INVALID_INTEGER", "cd_hab", frozenset([13])),
+                (ImportCodeError.MISSING_VALUE, "cd_nom", frozenset([2, 5, 6])),
+                (ImportCodeError.CD_NOM_NOT_FOUND, "cd_nom", frozenset([3, 7, 9, 11])),
+                (ImportCodeError.CD_HAB_NOT_FOUND, "cd_hab", frozenset([5, 7, 8])),
+                (ImportCodeError.INVALID_INTEGER, "cd_nom", frozenset([12])),
+                (ImportCodeError.INVALID_INTEGER, "cd_hab", frozenset([13])),
             },
         )
 
@@ -977,7 +978,7 @@ class TestImportsSynthese:
             prepared_import,
             {
                 (
-                    "DUPLICATE_ENTITY_SOURCE_PK",
+                    ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK,
                     "entity_source_pk_value",
                     frozenset([5, 6]),
                 ),
@@ -994,9 +995,9 @@ class TestImportsSynthese:
         assert_import_errors(
             prepared_import,
             {
-                ("ALTI_MIN_SUP_ALTI_MAX", "altitude_min", alti_min_sup_alti_max),
-                ("INVALID_INTEGER", "altitude_min", frozenset([10, 12])),
-                ("INVALID_INTEGER", "altitude_max", frozenset([11, 12])),
+                (ImportCodeError.ALTI_MIN_SUP_ALTI_MAX, "altitude_min", alti_min_sup_alti_max),
+                (ImportCodeError.INVALID_INTEGER, "altitude_min", frozenset([10, 12])),
+                (ImportCodeError.INVALID_INTEGER, "altitude_max", frozenset([11, 12])),
             },
         )
         if has_french_dem():
@@ -1026,9 +1027,9 @@ class TestImportsSynthese:
         assert_import_errors(
             prepared_import,
             {
-                ("DUPLICATE_UUID", "unique_id_sinp", frozenset([3, 4])),
-                ("EXISTING_UUID", "unique_id_sinp", frozenset([5])),
-                ("INVALID_UUID", "unique_id_sinp", frozenset([6])),
+                (ImportCodeError.DUPLICATE_UUID, "unique_id_sinp", frozenset([3, 4])),
+                (ImportCodeError.EXISTING_UUID, "unique_id_sinp", frozenset([5])),
+                (ImportCodeError.INVALID_UUID, "unique_id_sinp", frozenset([6])),
             },
         )
         transient_table = prepared_import.destination.get_transient_table()
@@ -1044,14 +1045,14 @@ class TestImportsSynthese:
         assert_import_errors(
             prepared_import,
             {
-                ("DATE_MIN_SUP_DATE_MAX", "date_min", frozenset({4, 10})),
-                ("DATE_MIN_TOO_HIGH", "date_min", frozenset({3, 4})),
-                ("DATE_MAX_TOO_HIGH", "date_max", frozenset({5})),
-                ("MISSING_VALUE", "date_min", frozenset({12})),
-                ("INVALID_DATE", "date_min", frozenset({13})),
-                ("DATE_MIN_TOO_LOW", "date_min", frozenset({14, 15})),
-                ("DATE_MAX_TOO_LOW", "date_max", frozenset({15})),
-                ("INVALID_DATE", "meta_validation_date", frozenset({17})),
+                (ImportCodeError.DATE_MIN_SUP_DATE_MAX, "date_min", frozenset({4, 10})),
+                (ImportCodeError.DATE_MIN_TOO_HIGH, "date_min", frozenset({3, 4})),
+                (ImportCodeError.DATE_MAX_TOO_HIGH, "date_max", frozenset({5})),
+                (ImportCodeError.MISSING_VALUE, "date_min", frozenset({12})),
+                (ImportCodeError.INVALID_DATE, "date_min", frozenset({13})),
+                (ImportCodeError.DATE_MIN_TOO_LOW, "date_min", frozenset({14, 15})),
+                (ImportCodeError.DATE_MAX_TOO_LOW, "date_max", frozenset({15})),
+                (ImportCodeError.INVALID_DATE, "meta_validation_date", frozenset({17})),
             },
         )
 
@@ -1060,9 +1061,9 @@ class TestImportsSynthese:
         assert_import_errors(
             prepared_import,
             {
-                ("INVALID_URL_PROOF", "digital_proof", frozenset({3, 5, 6})),
+                (ImportCodeError.INVALID_URL_PROOF, "digital_proof", frozenset({3, 5, 6})),
                 (
-                    "INVALID_EXISTING_PROOF_VALUE",
+                    ImportCodeError.INVALID_EXISTING_PROOF_VALUE,
                     "id_nomenclature_exist_proof",
                     frozenset({9, 10, 12, 14, 16}),
                 ),
@@ -1074,7 +1075,7 @@ class TestImportsSynthese:
         assert_import_errors(
             prepared_import,
             {
-                ("DEPTH_MIN_SUP_ALTI_MAX", "depth_min", frozenset({7})),
+                (ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX, "depth_min", frozenset({7})),
             },
         )
 
@@ -1083,14 +1084,18 @@ class TestImportsSynthese:
         assert_import_errors(
             prepared_import,
             {
-                ("INVALID_NOMENCLATURE", "id_nomenclature_exist_proof", frozenset({3})),
                 (
-                    "INVALID_EXISTING_PROOF_VALUE",
+                    ImportCodeError.INVALID_NOMENCLATURE,
+                    "id_nomenclature_exist_proof",
+                    frozenset({3}),
+                ),
+                (
+                    ImportCodeError.INVALID_EXISTING_PROOF_VALUE,
                     "id_nomenclature_exist_proof",
                     frozenset({5, 6, 7, 8}),
                 ),
                 (
-                    "CONDITIONAL_MANDATORY_FIELD_ERROR",
+                    ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
                     "id_nomenclature_source_status",
                     frozenset({13}),
                 ),
@@ -1152,7 +1157,11 @@ class TestImportsSynthese:
         assert_import_errors(
             imported_import,
             {
-                ("INVALID_NOMENCLATURE", "id_nomenclature_naturalness", frozenset({3})),
+                (
+                    ImportCodeError.INVALID_NOMENCLATURE,
+                    "id_nomenclature_naturalness",
+                    frozenset({3}),
+                ),
             },
         )
         source = TSources.query.filter_by(
@@ -1172,8 +1181,8 @@ class TestImportsSynthese:
         assert_import_errors(
             imported_import,
             {
-                ("MISSING_VALUE", "cd_nom", frozenset({2})),
-                ("CD_NOM_NOT_FOUND", "cd_nom", frozenset({3})),
+                (ImportCodeError.MISSING_VALUE, "cd_nom", frozenset({2})),
+                (ImportCodeError.CD_NOM_NOT_FOUND, "cd_nom", frozenset({3})),
             },
         )
 

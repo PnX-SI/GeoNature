@@ -11,7 +11,7 @@ from geonature.core.imports.models import ImportUserError, ImportUserErrorType
 from geonature.core.imports.utils import generated_fields
 
 
-def dfcheck(check_function):
+def dataframe_check(check_function):
     """
     Decorator for check functions.
     Check functions must yield errors, and return updated_cols
@@ -43,6 +43,39 @@ def dfcheck(check_function):
 
 
 def report_error(imprt, entity, df, error):
+    """
+    Reports an error found in the dataframe, updates the validity column and insert
+    the error in the `t_user_errors` table.
+
+    Parameters
+    ----------
+    imprt : Import
+        The import entity.
+    entity : Entity
+        The entity to check.
+    df : pandas.DataFrame
+        The dataframe containing the data.
+    error : dict
+        The error to report. It should have the following keys:
+        - invalid_rows : DataFrame
+            The rows with errors.
+        - error_code : str
+            The name of the error code.
+        - column : str
+            The column with errors.
+        - comment : str, optional
+            A comment to add to the error.
+
+    Returns
+    -------
+    set
+        set containing the name of the entity validity column.
+
+    Raises
+    ------
+    Exception
+        If the error code is not found.
+    """
     if error["invalid_rows"].empty:
         return
     try:

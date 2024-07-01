@@ -35,6 +35,7 @@ def get_duplicates_query(imprt, dest_field, whereclause=sa.true()):
     duplicates = (
         select([func.unnest(partitions.c.duplicate_lines).label("lines")])
         .where(func.array_length(partitions.c.duplicate_lines, 1) > 1)
+        .distinct("lines")
         .alias("duplicates")
     )
     return duplicates

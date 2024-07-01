@@ -1,5 +1,6 @@
 from typing import Dict, Optional, Set
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
@@ -9,13 +10,13 @@ from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.imports.models import BibFields, TImports
 
-from .utils import dfcheck
+from .utils import dataframe_check
 
 
 __all__ = ["check_required_values", "check_counts", "check_datasets"]
 
 
-@dfcheck
+@dataframe_check
 def check_required_values(df, fields: Dict[str, BibFields]):
     """
     Check if required values are present in the dataframe.
@@ -66,14 +67,14 @@ def check_required_values(df, fields: Dict[str, BibFields]):
             # XXX lever une erreur pour toutes les lignes si le champs n’est pas mappé
             # XXX rise errors for missing mandatory field from mapping?
             yield {
-                "error_code": "MISSING_VALUE",
+                "error_code": ImportCodeError.MISSING_VALUE,
                 "column": field_name,
                 "invalid_rows": df,
             }
         invalid_rows = df[df[field.source_column].isna()]
         if len(invalid_rows):
             yield {
-                "error_code": "MISSING_VALUE",
+                "error_code": ImportCodeError.MISSING_VALUE,
                 "column": field_name,
                 "invalid_rows": invalid_rows,
             }
@@ -107,7 +108,7 @@ def _check_ordering(df, min_field, max_field):
     }
 
 
-@dfcheck
+@dataframe_check
 def check_counts(
     df: pd.DataFrame, count_min_field: str, count_max_field: str, default_count: int = None
 ):
@@ -180,7 +181,7 @@ def check_counts(
     return updated_cols
 
 
-@dfcheck
+@dataframe_check
 def check_datasets(
     imprt: TImports,
     df: pd.DataFrame,
@@ -236,7 +237,7 @@ def check_datasets(
         invalid_ds_mask = has_uuid_mask & ~valid_ds_mask
         if invalid_ds_mask.any():
             yield {
-                "error_code": "DATASET_NOT_FOUND",
+                "error_code": ImportCodeError.DATASET_NOT_FOUND,
                 "column": uuid_field.name_field,
                 "invalid_rows": df[invalid_ds_mask],
             }
@@ -258,7 +259,7 @@ def check_datasets(
         unauthorized_ds_mask = valid_ds_mask & ~authorized_ds_mask
         if unauthorized_ds_mask.any():
             yield {
-                "error_code": "DATASET_NOT_AUTHORIZED",
+                "error_code": ImportCodeError.DATASET_NOT_AUTHORIZED,
                 "column": uuid_field.name_field,
                 "invalid_rows": df[unauthorized_ds_mask],
             }
