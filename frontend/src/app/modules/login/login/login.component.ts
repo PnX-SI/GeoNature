@@ -50,14 +50,12 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    // if (this.config.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
-    //   this._authService.getLoginExternalProviderUrl().subscribe((url) => {
-    //     document.location.href = url;
-    //   });
-    // }
     this._authService.getAuthProviders().subscribe((providers) => {
       this.authProviders = providers;
     });
+    if (this.config.AUTHENTICATION.ONLY_PROVIDER) {
+      window.location.href = this.getProviderLoginUrl(this.config.AUTHENTICATION.ONLY_PROVIDER);
+    }
   }
 
   async register(form) {
