@@ -61,6 +61,7 @@ import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
 from geonature.utils.errors import GeonatureApiError
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
+from geonature.core.gn_meta.mtd import INPNCAS
 
 from ref_geo.models import LAreas
 
@@ -73,23 +74,6 @@ routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 
 # get the root logger
 log = logging.getLogger()
-
-
-if config["MTD"]["ACTIVATED"]:
-
-    @routes.before_request
-    def synchronize_mtd():
-        if request.endpoint in ["gn_meta.get_datasets", "gn_meta.get_acquisition_frameworks_list"]:
-            from flask_login import current_user
-
-            if current_user.is_authenticated:
-                params = request.json if request.is_json else request.args
-                try:
-                    list_id_af = params.get("id_acquisition_frameworks", [])
-                    for id_af in list_id_af:
-                        sync_af_and_ds_by_user(id_role=current_user.id_role, id_af=id_af)
-                except Exception as e:
-                    log.exception(f"Error while get JDD via MTD: {e}")
 
 
 @routes.route("/datasets", methods=["GET", "POST"])
