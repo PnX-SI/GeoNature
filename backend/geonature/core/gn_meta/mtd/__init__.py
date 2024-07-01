@@ -16,6 +16,7 @@ from geonature.utils.env import db
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
+from pypnusershub.auth.providers.cas_inpn_provider import *
 from sqlalchemy import func, select
 
 from .mtd_utils import associate_actors, sync_af, sync_ds
@@ -146,10 +147,13 @@ class MTDInstanceApi:
 
 
 class INPNCAS:
-    base_url = ""  # FIXME config["CAS"]["CAS_USER_WS"]["BASE_URL"]
-    user = ""  # FIXME config["CAS"]["CAS_USER_WS"]["BASE_URL"]
-    password = ""  # FIXME config["CAS"]["CAS_USER_WS"]["PASSWORD"]
+    base_url = ""
+    user = ""
+    password = ""
+    id_instance_filter = None
     id_search_path = "rechercheParId/{user_id}"
+    mtd_api_endpoint = ""
+    activated = False
 
     @classmethod
     def _get_user_json(cls, user_id):
@@ -238,7 +242,7 @@ def sync_af_and_ds():
     Method to trigger global MTD sync.
     """
     logger.info("MTD - SYNC GLOBAL : START")
-    mtd_api = MTDInstanceApi(config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"])
+    mtd_api = MTDInstanceApi(INPNCAS.mtd_api_endpoint, INPNCAS.id_instance_filter)
 
     af_list = mtd_api.get_af_list()
 
@@ -260,10 +264,7 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
 
     logger.info("MTD - SYNC USER : START")
 
-    # Create an instance of MTDInstanceApi
-    mtd_api = MTDInstanceApi(
-        config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"], id_role
-    )
+    mtd_api = MTDInstanceApi(INPNCAS.mtd_api_endpoint, INPNCAS.id_instance_filter, id_role)
 
     # Get the list of datasets (ds) for the user
     # NOTE: `mtd_api.get_ds_user_list()` tested and timed to about 7 seconds on the PROD instance 'GINCO Occtax' with id_role = 13829 > a user with a lot of metadata to be retrieved from 'INPN Métadonnées' to 'GINCO Occtax'
