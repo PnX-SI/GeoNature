@@ -32,6 +32,8 @@ from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
 from geonature.utils.env import db
 
+from pypnusershub.auth.auth_manager import auth_manager
+
 
 routes = Blueprint("gn_auth", __name__, template_folder="templates")
 log = logging.getLogger()
@@ -88,10 +90,12 @@ def insert_user_and_org(info_user, update_user_organism: bool = True):
         user_info["id_organisme"] = existing_user.id_organisme
 
     # Insert or update user
-    user_info = insert_or_update_role(user_info)
+    user_ = User(**user_info)
+    user_info = insert_or_update_role(user_, auth_manager.get_provider("local_provider"), "email")
 
     # Associate user to a default group if the user is not associated to any group
     user = existing_user or db.session.get(User, user_id)
+
     if not user.groups:
         if current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] and organism_id:
             # group socle 2 - for a user associated to an organism if users can see data from their organism

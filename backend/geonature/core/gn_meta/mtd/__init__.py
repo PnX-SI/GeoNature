@@ -206,9 +206,11 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
     for af in af_list:
         actors = af.pop("actors")
         with db.session.begin_nested():
-            start_add_user_time = time.time()
+            import time as t
+
+            start_add_user_time = t.time()
             add_unexisting_digitizer(af["id_digitizer"] if not id_role else id_role)
-            user_add_total_time += time.time() - start_add_user_time
+            user_add_total_time += t.time() - start_add_user_time
         af = sync_af(af)
         associate_actors(
             actors,
@@ -223,12 +225,14 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
         actors = ds.pop("actors")
         # CREATE DIGITIZER
         with db.session.begin_nested():
-            start_add_user_time = time.time()
+            import time as t
+
+            start_add_user_time = t.time()
             if not id_role:
                 add_unexisting_digitizer(ds["id_digitizer"])
             else:
                 add_unexisting_digitizer(id_role)
-            user_add_total_time += time.time() - start_add_user_time
+            user_add_total_time += t.time() - start_add_user_time
         ds = sync_ds(ds, list_cd_nomenclature)
         if ds is not None:
             associate_actors(actors, CorDatasetActor, "id_dataset", ds.id_dataset)
