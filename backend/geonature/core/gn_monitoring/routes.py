@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from geojson import FeatureCollection
 
 from geonature.utils.env import DB
+
 from geonature.core.gn_monitoring.models import TBaseSites, corSiteArea, corSiteModule
 
 from utils_flask_sqla.response import json_resp
@@ -94,7 +95,7 @@ def get_site_areas(id_site):
             corSiteModule.c.id_module == params["id_module"]
         )
 
-    data = DB.session.execute(query).all()
+    data = DB.session.scalars(query).all()
     features = []
     for d in data:
         feature = get_geojson_feature(d[2])

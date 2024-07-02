@@ -32,125 +32,11 @@ from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
 from geonature.utils.env import db
 
+from pypnusershub.auth.auth_manager import auth_manager
+
 
 routes = Blueprint("gn_auth", __name__, template_folder="templates")
 log = logging.getLogger()
-
-
-@routes.route("/login_cas", methods=["GET", "POST"])
-def loginCas():
-    """
-    Login route with the INPN CAS
-
-    .. :quickref: User;
-    """
-    config_cas = current_app.config["CAS"]
-    params = request.args
-    if "ticket" in params:
-        base_url = current_app.config["API_ENDPOINT"] + "/gn_auth/login_cas"
-        url_validate = "{url}?ticket={ticket}&service={service}".format(
-            url=config_cas["CAS_URL_VALIDATION"],
-            ticket=params["ticket"],
-            service=base_url,
-        )
-
-        response = utilsrequests.get(url_validate)
-        data = None
-        xml_dict = xmltodict.parse(response.content)
-        resp = xml_dict["cas:serviceResponse"]
-        if "cas:authenticationSuccess" in resp:
-            data = resp["cas:authenticationSuccess"]["cas:user"]
-        if data:
-            ws_user_url = "{url}/{user}/?verify=false".format(
-                url=config_cas["CAS_USER_WS"]["URL"], user=data
-            )
-            try:
-                response = utilsrequests.get(
-                    ws_user_url,
-                    (
-                        config_cas["CAS_USER_WS"]["ID"],
-                        config_cas["CAS_USER_WS"]["PASSWORD"],
-                    ),
-                )
-                assert response.status_code == 200
-            except AssertionError:
-                log.error("Error with the inpn authentification service")
-                raise CasAuthentificationError(
-                    "Error with the inpn authentification service", status_code=500
-                )
-            info_user = response.json()
-            data = insert_user_and_org(info_user, update_user_organism=False)
-            db.session.commit()
-
-            # creation de la Response
-            response = make_response(redirect(current_app.config["URL_APPLICATION"]))
-            cookie_exp = datetime.datetime.utcnow()
-            expiration = current_app.config["COOKIE_EXPIRATION"]
-            cookie_exp += datetime.timedelta(seconds=expiration)
-            data["id_application"] = (
-                db.session.execute(
-                    select(Application).filter_by(
-                        code_application=current_app.config["CODE_APPLICATION"]
-                    )
-                )
-                .scalar_one()
-                .id_application
-            )
-            token = encode_token(data)
-
-            token_exp = datetime.datetime.now(datetime.timezone.utc)
-            token_exp += datetime.timedelta(seconds=current_app.config["COOKIE_EXPIRATION"])
-
-            # User cookie
-            organism_id = info_user["codeOrganisme"]
-            if not organism_id:
-                organism_id = (
-                    db.session.execute(
-                        select(Organisme).filter_by(nom_organisme="Autre"),
-                    )
-                    .scalar_one()
-                    .id_organisme,
-                )
-            current_user = {
-                "user_login": data["identifiant"],
-                "id_role": data["id_role"],
-                "id_organisme": organism_id,
-            }
-
-            # Log the user in
-            user = db.session.execute(
-                sa.select(models.User)
-                .where(models.User.identifiant == current_user["user_login"])
-                .where(models.User.filter_by_app())
-            ).scalar_one()
-            login_user(user)
-
-            return response
-        else:
-            log.info("Erreur d'authentification lié au CAS, voir log du CAS")
-            log.error("Erreur d'authentification lié au CAS, voir log du CAS")
-            return render_template(
-                "cas_login_error.html",
-                cas_logout=current_app.config["CAS_PUBLIC"]["CAS_URL_LOGOUT"],
-                url_geonature=current_app.config["URL_APPLICATION"],
-            )
-    return jsonify({"message": "Authentification error"}, 500)
-
-
-@routes.route("/logout_cruved", methods=["GET"])
-@json_resp
-def logout_cruved():
-    """
-    Route to logout with cruved
-    To avoid multiples server call, we store the cruved in the session
-    when the user logout we need clear the session to get the new cruved session
-
-    .. :quickref: User;
-    """
-    copy_session_key = copy(session)
-    for key in copy_session_key:
-        session.pop(key)
-    return "Logout", 200
 
 
 def get_user_from_id_inpn_ws(id_user):
@@ -204,10 +90,12 @@ def insert_user_and_org(info_user, update_user_organism: bool = True):
         user_info["id_organisme"] = existing_user.id_organisme
 
     # Insert or update user
-    user_info = insert_or_update_role(user_info)
+    user_ = User(**user_info)
+    user_info = insert_or_update_role(user_, auth_manager.get_provider("local_provider"), "email")
 
     # Associate user to a default group if the user is not associated to any group
     user = existing_user or db.session.get(User, user_id)
+
     if not user.groups:
         if current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] and organism_id:
             # group socle 2 - for a user associated to an organism if users can see data from their organism

@@ -241,8 +241,6 @@ def associate_dataset_modules(dataset):
     """
     dataset.modules.extend(
         DB.session.scalars(
-            select(TModules).where(
-                TModules.module_code.in_(current_app.config["MTD"]["JDD_MODULE_CODE_ASSOCIATION"])
-            )
+            select(TModules).where(TModules.module_code.in_(["OCCTAX", "OCCHAB", "IMPORT"]))
         ).all()
     )

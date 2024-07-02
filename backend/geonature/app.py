@@ -11,7 +11,6 @@ if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
 else:
     from importlib.metadata import entry_points
-
 from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
@@ -33,6 +32,7 @@ else:  # retro-compatibility SQLAlchemy 1.3
     from sqlalchemy.engine import RowProxy as Row
 
 from geonature.utils.config import config
+
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import iter_modules_dist
@@ -45,6 +45,7 @@ from pypnusershub.db.tools import (
     AccessRightsExpiredError,
 )
 from pypnusershub.db.models import Application
+from pypnusershub.auth import auth_manager
 from pypnusershub.login_manager import login_manager
 
 
@@ -96,8 +97,9 @@ def create_app(with_external_mods=True):
         static_url_path=config["STATIC_URL"],
         template_folder="geonature/templates",
     )
-
     app.config.update(config)
+    auth_manager.init_app(app)
+    auth_manager.home_page = config["URL_APPLICATION"]
 
     # Enable deprecation warnings in debug mode
     if app.debug and not sys.warnoptions:
@@ -129,6 +131,8 @@ def create_app(with_external_mods=True):
     migrate.init_app(app, DB, directory=BACKEND_DIR / "geonature" / "migrations")
     MA.init_app(app)
     CORS(app, supports_credentials=True)
+    auth_manager.init_app(app)
+    auth_manager.home_page = config["URL_APPLICATION"]
 
     if "CELERY" in app.config:
         from geonature.utils.celery import celery_app
@@ -190,7 +194,6 @@ def create_app(with_external_mods=True):
     )
 
     for blueprint_path, url_prefix in [
-        ("pypnusershub.routes:routes", "/auth"),
         ("pypn_habref_api.routes:routes", "/habref"),
         ("pypnusershub.routes_register:bp", "/pypn/register"),
         ("pypnnomenclature.routes:routes", "/nomenclatures"),

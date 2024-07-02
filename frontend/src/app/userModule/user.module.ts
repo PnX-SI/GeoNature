@@ -7,10 +7,11 @@ import { UserComponent } from './user.component';
 import { PasswordComponent } from './password/password.component';
 //Services
 import { RoleFormService, UserDataService } from './services';
+import { UserEditGuard } from '@geonature/modules/login/routes-guard.service';
 
 const routes: Routes = [
-  { path: '', component: UserComponent },
-  { path: 'password', component: PasswordComponent },
+  { path: '', component: UserComponent, canActivate: [UserEditGuard] },
+  { path: 'password', component: PasswordComponent, canActivate: [UserEditGuard] },
 ];
 
 @NgModule({

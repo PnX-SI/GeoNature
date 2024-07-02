@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 import { CommonService } from '@geonature_common/service/common.service';
 
@@ -9,6 +10,8 @@ import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoutingService } from '@geonature/routing/routing.service';
+import { Provider } from '../providers';
+import { LoginDialog } from './external-login-dialog';
 
 @Component({
   selector: 'pnx-login',
@@ -19,7 +22,6 @@ export class LoginComponent implements OnInit {
   enable_sign_up: boolean = false;
   enable_user_management: boolean = false;
   external_links: [] = [];
-  public casLogin: boolean;
   public disableSubmit = false;
   public enablePublicAccess = null;
   identifiant: UntypedFormGroup;
@@ -27,20 +29,20 @@ export class LoginComponent implements OnInit {
   form: UntypedFormGroup;
   login_or_pass_recovery: boolean = false;
   public APP_NAME = null;
+  public authProviders: Array<Provider>;
 
   constructor(
-    private _authService: AuthService,
+    public _authService: AuthService, //FIXME : change to private (html must be modified)
     private _commonService: CommonService,
     public config: ConfigService,
     private moduleService: ModuleService,
     private router: Router,
     private route: ActivatedRoute,
     private _routingService: RoutingService,
-    private _cookie: CookieService
+    public dialog: MatDialog
   ) {
     this.enablePublicAccess = this.config.PUBLIC_ACCESS_USERNAME;
     this.APP_NAME = this.config.appName;
-    this.casLogin = this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION;
     this.enable_sign_up = this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
     this.enable_user_management =
       this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
@@ -48,19 +50,18 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-      // if token not here here, redirection to CAS login page
-      const url_redirection_cas = `${this.config.CAS_PUBLIC.CAS_URL_LOGIN}?service=${this.config.API_ENDPOINT}/gn_auth/login_cas`;
-      if (!this._authService.isLoggedIn()) {
-        document.location.href = url_redirection_cas;
-      }
+    this._authService.getAuthProviders().subscribe((providers) => {
+      this.authProviders = providers;
+    });
+    if (this.config.AUTHENTICATION.ONLY_PROVIDER) {
+      window.location.href = this.getProviderLoginUrl(this.config.AUTHENTICATION.ONLY_PROVIDER);
     }
   }
 
-  async register(user) {
+  async register(form) {
     this._authService.enableLoader();
     const data = await this._authService
-      .signinUser(user)
+      .signinUser(form)
       .toPromise()
       .catch(() => {
         this._authService.handleLoginError();
@@ -112,5 +113,32 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['']);
       }
     }
+  }
+
+  /**
+   * Returns the login URL for a given provider.
+   *
+   * @param {string} provider_id - The ID of the provider.
+   * @return {string} The login URL for the provider.
+   */
+  getProviderLoginUrl(provider_id: string): string {
+    return `${this.config.API_ENDPOINT}/auth/login/${provider_id}`;
+  }
+
+  openDialog(provider) {
+    const dialogRef = this.dialog.open(LoginDialog, {
+      height: '30%',
+      width: '30%',
+      position: { top: '10%' },
+      data: {
+        provider: provider,
+      },
+    });
+    // dialogRef.updateSize('100%', '100%');
+    const componentInstance: LoginDialog = dialogRef.componentInstance;
+    componentInstance.userLogged.subscribe((data) => {
+      this.handleRegister(data);
+      dialogRef.close();
+    });
   }
 }
