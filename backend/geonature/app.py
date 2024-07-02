@@ -21,10 +21,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.wrappers import Response
-from psycopg2.errors import UndefinedTable
 import sqlalchemy as sa
-from sqlalchemy.exc import OperationalError, ProgrammingError
-from sqlalchemy.orm.exc import NoResultFound
 
 if version.parse(sa.__version__) >= version.parse("1.4"):
     from sqlalchemy.engine import Row
@@ -39,11 +36,7 @@ from geonature.utils.module import iter_modules_dist
 from geonature.core.admin.admin import admin
 from geonature.middlewares import SchemeFix, RequestID
 
-from pypnusershub.db.tools import (
-    user_from_token,
-    UnreadableAccessRightsError,
-    AccessRightsExpiredError,
-)
+
 from pypnusershub.db.models import Application
 from pypnusershub.auth import auth_manager
 from pypnusershub.login_manager import login_manager
@@ -98,8 +91,6 @@ def create_app(with_external_mods=True):
         template_folder="geonature/templates",
     )
     app.config.update(config)
-    auth_manager.init_app(app)
-    auth_manager.home_page = config["URL_APPLICATION"]
 
     # Enable deprecation warnings in debug mode
     if app.debug and not sys.warnoptions:
@@ -203,7 +194,6 @@ def create_app(with_external_mods=True):
         ("geonature.core.users.routes:routes", "/users"),
         ("geonature.core.gn_synthese.routes:routes", "/synthese"),
         ("geonature.core.gn_meta.routes:routes", "/meta"),
-        ("geonature.core.auth.routes:routes", "/gn_auth"),
         ("geonature.core.gn_monitoring.routes:routes", "/gn_monitoring"),
         ("geonature.core.gn_profiles.routes:routes", "/gn_profiles"),
         ("geonature.core.sensitivity.routes:routes", None),

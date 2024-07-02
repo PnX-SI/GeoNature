@@ -59,10 +59,6 @@ COOKIE_AUTORENEW = true
 # Capturer toutes les exceptions (=true) ou pas (=false)
 TRAP_ALL_EXCEPTIONS = false
 
-# MTD (pour la connexion au webservice de métadonnées de l'INPN)
-XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
-MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
-
 # Configuration de l'accès sans authentication. Renseigner l’identifiant de l’utilisateur public.
 PUBLIC_ACCESS_USERNAME = ""
 
@@ -106,29 +102,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Les espaces présents en début et fin de chaine ainsi qu'avant et
     # après les virgules sont ignorés.
     ERROR_MAIL_TO = ["Prénom NOM <email@email.com>", "email2@email.com"]
-
-# CAS authentification (Optionnel, remplace l'authentification locale via UsersHub)
-[CAS_PUBLIC]
-    CAS_AUTHENTIFICATION = false
-    CAS_URL_LOGIN = "https://preprod-inpn.mnhn.fr/auth/login"
-    CAS_URL_LOGOUT = "https://preprod-inpn.mnhn.fr/auth/logout"
-
-[CAS]
-    CAS_URL_VALIDATION = "https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-
-[CAS.CAS_USER_WS]
-    URL = "https://inpn2.mnhn.fr/authentication/information"
-    BASE_URL = "https://inpn2.mnhn.fr/authentication/"
-    ID = "mon_id"
-    PASSWORD = "mon_pass"
-
-# Connexion avec le WS MTD
-[MTD]
-    # Modules auxquels les JDD sont automatiquement associés
-    JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
-    # Filter les JDD par id_instance
-    # ID_INSTANCE_FILTER = "null"
-    SYNC_LOG_LEVEL = "INFO"
 
 [BDD]
     id_area_type_municipality = 25
@@ -627,13 +600,14 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # identifiant du groupe dans lequel les utilisateurs externes vont être ajoutés
     ID_GROUP_RECONCILIATION = 2
+    group_mapping
 
     [[AUTHENTICATION.OPENID_PROVIDER_CONFIG]]
         id_provider = "keycloak"
         label = "KeyCloak"
         ISSUER = "http://MY_URL"
-        CLIENT_ID = "local-gn"
-        CLIENT_SECRET = "561vc5s4v6s5f4v65ds4v564fd"
+        CLIENT_ID = "ddd"
+        CLIENT_SECRET = "dddd"
 
     [[AUTHENTICATION.OPENID_PROVIDER_CONFIG]]
         id_provider = "google"

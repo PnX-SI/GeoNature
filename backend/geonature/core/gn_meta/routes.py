@@ -31,7 +31,6 @@ from geonature.core.gn_synthese.models import (
 )
 from geonature.core.gn_permissions.decorators import login_required
 
-from .mtd import sync_af_and_ds as mtd_sync_af_and_ds, sync_af_and_ds_by_user
 
 from ref_geo.models import LAreas
 from pypnnomenclature.models import TNomenclatures
@@ -56,12 +55,8 @@ from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_permissions.models import TObjects
-from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
-from geonature.utils.errors import GeonatureApiError
-from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
-from geonature.core.gn_meta.mtd import INPNCAS
 
 from ref_geo.models import LAreas
 
@@ -1048,24 +1043,3 @@ def publish_acquisition_framework(af_id):
     publish_acquisition_framework_mail(af)
 
     return af.as_dict()
-
-
-@routes.cli.command()
-@click.option("--id-role", nargs=1, required=False, default=None, help="ID of an user")
-@click.option(
-    "--id-af", nargs=1, required=False, default=None, help="ID of an acquisition framework"
-)
-def mtd_sync(id_role, id_af):
-    """
-    \b
-    Triggers :
-    - global sync for instance
-    - a sync for a given user only (if id_role is provided)
-    - a sync for a given AF (Acquisition Framework) only (if id_af is provided). NOTE: the AF should in this case already exist in the database, and only datasets associated to this AF will be retrieved
-
-    NOTE: if both id_role and id_af are provided, only the datasets possibly associated to both the AF and the user will be retrieved.
-    """
-    if id_role:
-        return sync_af_and_ds_by_user(id_role, id_af)
-    else:
-        return mtd_sync_af_and_ds()

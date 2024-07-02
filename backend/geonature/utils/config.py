@@ -1,27 +1,38 @@
-import os
 import importlib
-
+import os
 from collections import ChainMap
 from urllib.parse import urlsplit
 
 from flask import Config
 from flask.helpers import get_root_path
-from marshmallow import EXCLUDE, INCLUDE, Schema, fields
-from marshmallow.exceptions import ValidationError
-
-from geonature.utils.config_schema import (
-    GnGeneralSchemaConf,
-    GnPySchemaConf,
-)
-from geonature.utils.utilstoml import load_toml
+from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature.utils.env import CONFIG_FILE
 from geonature.utils.errors import ConfigError
-
+from geonature.utils.utilstoml import load_toml
+from marshmallow import EXCLUDE
+from marshmallow.exceptions import ValidationError
 
 __all__ = ["config", "config_frontend"]
 
 
 def validate_provider_config(config, config_toml):
+    """
+    Validate the authentication providers configuration.
+
+    Parameters
+    ----------
+    config : dict
+        The Flask application configuration.
+    config_toml : dict
+        The TOML configuration.
+
+
+    Raises
+    ------
+        ValidationError
+            If the authentication providers configuration is invalid.
+
+    """
     if not "AUTHENTICATION" in config_toml:
         return
     for path_provider in config_toml["AUTHENTICATION"]["PROVIDERS"]:
