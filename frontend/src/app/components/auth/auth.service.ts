@@ -5,8 +5,6 @@ import { HttpClient } from '@angular/common/http';
 
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
-import { forkJoin } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { ModuleService } from '../../services/module.service';
@@ -92,7 +90,7 @@ export class AuthService {
   }
 
   signinUser(form: any) {
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login/gn_ecrins`, form);
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login/local_provider`, form);
   }
 
   signinPublicUser(): Observable<any> {
@@ -141,7 +139,6 @@ export class AuthService {
   }
 
   logout() {
-    const provider = this.getCurrentUser().provider;
     this.cleanLocalStorage();
     this.cruvedService.clearCruved();
     let logout_url = `${this.config.API_ENDPOINT}/auth/logout`;

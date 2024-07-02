@@ -111,7 +111,7 @@ export class UserCasGuard implements CanActivate, CanActivateChild {
 
   async canActivate(): Promise<boolean> {
     let res: boolean = false;
-    if (this._configService.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+    if (this._configService?.CAS_PUBLIC?.CAS_AUTHENTIFICATION) {
       let data = await this._httpclient
         .get(`${this._configService.API_ENDPOINT}/auth/get_current_user`)
         .toPromise();

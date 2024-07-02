@@ -24,9 +24,6 @@ from geonature.core.gn_synthese.synthese_config import (
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
-from geonature.utils.utilstoml import load_and_validate_toml
-
-from pypnusershub.auth.authentication import ProviderConfigurationSchema
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -48,18 +45,6 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             # Validate email with Marshmallow
             validator = Email()
             validator(email)
-
-
-class MTDSchemaConf(Schema):
-    JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
-    ID_INSTANCE_FILTER = fields.Integer(load_default=None)
-    SYNC_LOG_LEVEL = fields.String(load_default="INFO")
-    ACTIVATED = fields.Boolean(load_default=True, default=False)
-
-
-class BddConfig(Schema):
-    ID_USER_SOCLE_1 = fields.Integer(load_default=7)
-    ID_USER_SOCLE_2 = fields.Integer(load_default=6)
 
 
 class RightsSchemaConf(Schema):
@@ -555,8 +540,6 @@ class GnGeneralSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     CODE_APPLICATION = fields.String(load_default="GN")
-    XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
-    MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     DISABLED_MODULES = fields.List(fields.String(), load_default=[])
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
     FRONTEND = fields.Nested(GnFrontEndConf, load_default=GnFrontEndConf().load({}))
@@ -564,14 +547,12 @@ class GnGeneralSchemaConf(Schema):
     MAPCONFIG = fields.Nested(MapConfig, load_default=MapConfig().load({}))
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
-    BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     STATIC_URL = fields.String(load_default="/static")
     MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
-    MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
@@ -583,18 +564,6 @@ class GnGeneralSchemaConf(Schema):
     AUTHENTICATION = fields.Nested(
         AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
     )
-
-    # @validates_schema
-    # def validate_enable_sign_up(self, data, **kwargs):
-    #     # si CAS_PUBLIC = true and ENABLE_SIGN_UP = true
-    #     if data["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"] and (
-    #         data["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"]
-    #         or data["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"]
-    #     ):
-    #         raise ValidationError(
-    #             "CAS_PUBLIC et ENABLE_SIGN_UP ou ENABLE_USER_MANAGEMENT ne peuvent être activés ensemble",
-    #             "ENABLE_SIGN_UP, ENABLE_USER_MANAGEMENT",
-    #         )
 
     @validates_schema
     def validate_account_autovalidation(self, data, **kwargs):

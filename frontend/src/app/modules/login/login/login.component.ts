@@ -50,12 +50,12 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._authService.getAuthProviders().subscribe((providers) => {
-      this.authProviders = providers;
-    });
     if (this.config.AUTHENTICATION.ONLY_PROVIDER) {
       window.location.href = this.getProviderLoginUrl(this.config.AUTHENTICATION.ONLY_PROVIDER);
     }
+    this._authService.getAuthProviders().subscribe((providers) => {
+      this.authProviders = providers;
+    });
   }
 
   async register(form) {
@@ -125,6 +125,11 @@ export class LoginComponent implements OnInit {
     return `${this.config.API_ENDPOINT}/auth/login/${provider_id}`;
   }
 
+  /**
+   * Opens a dialog to connect to a specified provider (with is_uh activated) .
+   *
+   * @param {Provider} provider - The provider for which the dialog is opened.
+   */
   openDialog(provider) {
     const dialogRef = this.dialog.open(LoginDialog, {
       height: '30%',
@@ -134,7 +139,7 @@ export class LoginComponent implements OnInit {
         provider: provider,
       },
     });
-    // dialogRef.updateSize('100%', '100%');
+
     const componentInstance: LoginDialog = dialogRef.componentInstance;
     componentInstance.userLogged.subscribe((data) => {
       this.handleRegister(data);
