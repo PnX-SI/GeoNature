@@ -193,8 +193,14 @@ class Entity(db.Model):
     validity_column = db.Column(db.String(64))
     destination_table_schema = db.Column(db.String(63))
     destination_table_name = db.Column(db.String(63))
+    id_unique_column = db.Column(
+        db.Integer, db.ForeignKey("gn_imports.bib_fields.id_field"), primary_key=True
+    )
+    id_parent = db.Column(db.Integer, ForeignKey("gn_imports.bib_entities.id_entity"))
 
+    parent = relationship("Entity", remote_side=[id_entity])
     fields = relationship("EntityField", back_populates="entity")
+    unique_column = relationship("BibFields")
 
     def get_destination_table(self):
         return Table(

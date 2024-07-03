@@ -10,6 +10,7 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.schema import Table, MetaData
 from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.orm.session import Session
 
 
 # revision identifiers, used by Alembic.
@@ -145,8 +146,25 @@ def upgrade():
         sa.Column("validity_column", sa.String(64)),
         sa.Column("destination_table_schema", sa.String(63)),
         sa.Column("destination_table_name", sa.String(63)),
+        sa.Column("id_unique_column", sa.Integer, sa.ForeignKey("bib_fields.id_field")),
+        sa.Column(
+            "id_parent",
+            sa.Integer,
+            sa.ForeignKey("bib_entities.id_entity"),
+        ),
         schema="gn_imports",
     )
+    bib_fields = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    unique_column_field_query = sa.select(bib_fields.c.id_field).where(
+        sa.and_(
+            bib_fields.c.id_destination == id_dest_synthese,
+            bib_fields.c.name_field == "unique_id_sinp",
+        )
+    )
+    session = Session(bind=op.get_bind())
+    id_unique_column_field = session.scalar(unique_column_field_query)
+
+    session.close()
     id_entity_obs = (
         op.get_bind()
         .execute(
@@ -159,6 +177,7 @@ def upgrade():
                 validity_column="valid",
                 destination_table_schema="gn_synthese",
                 destination_table_name="synthese",
+                id_unique_column=id_unique_column_field,
             )
             .returning(entity.c.id_entity)
         )
