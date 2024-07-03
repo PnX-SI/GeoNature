@@ -290,6 +290,7 @@ class OcchabImportMixin(ImportMixin):
         task.update_state(state="PROGRESS", meta={"progress": 0})
         entity_station, entity_habitat = get_occhab_entities()
 
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
         init_rows_validity(
             imprt,
             parent_entity=entity_station,
@@ -303,7 +304,6 @@ class OcchabImportMixin(ImportMixin):
         OcchabImportMixin.check_habitat(imprt)
         OcchabImportMixin.generate_uuids(imprt)
 
-        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
         check_entity_data_consistency(
             imprt,
             entity_station,
