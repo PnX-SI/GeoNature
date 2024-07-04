@@ -332,6 +332,12 @@ jsonschema_definitions = {
             "validity_column": {"type": "string"},
             "destination_table_schema": {"type": "string"},
             "destination_table_name": {"type": "string"},
+            "id_parent": {
+                "type": ["integer", "null"],
+            },
+            "id_unique_column": {
+                "type": ["integer", "null"],
+            },
         },
         "additionalProperties": False,
     },

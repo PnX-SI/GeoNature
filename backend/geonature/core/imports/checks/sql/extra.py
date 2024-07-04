@@ -12,7 +12,10 @@ import sqlalchemy as sa
 
 from geonature.utils.env import db
 
-from geonature.core.imports.checks.sql.utils import get_duplicates_query, report_erroneous_rows
+from geonature.core.imports.checks.sql.utils import (
+    get_duplicates_query,
+    report_erroneous_rows,
+)
 
 from apptax.taxonomie.models import Taxref, CorNomListe, BibNoms
 from pypn_habref_api.models import Habref
@@ -271,6 +274,7 @@ def generate_missing_uuid(
     entity: Entity,
     uuid_field: BibFields,
     origin_id_field: BibFields = None,
+    generate_uuid_if_empty=True,
 ):
     """
     Update records in the transient table where the uuid is None
@@ -296,7 +300,7 @@ def generate_missing_uuid(
             transient_table.c[uuid_field.source_field] == None,
         ),
         transient_table.c.id_import == imprt.id_import,
-        # transient_table.c[entity.validity_column].is_not(False),
+        # transient_table.c[entity.validity_column].is_not(None),
     )
 
     if origin_id_field:
@@ -315,7 +319,7 @@ def generate_missing_uuid(
             update(transient_table)
             .values(
                 {
-                    getattr(transient_table.c, uuid_field.dest_field): cte_generated_uuid.c.uuid,
+                    getattr(transient_table.c, uuid_field.source_field): cte_generated_uuid.c.uuid,
                 }
             )
             .where(
@@ -325,20 +329,21 @@ def generate_missing_uuid(
             )
         )
         db.session.execute(stmt)
+    if generate_uuid_if_empty:
+        stmt = (
+            update(transient_table)
+            .values(
+                {
+                    transient_table.c[uuid_field.source_field]: func.uuid_generate_v4(),
+                }
+            )
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[uuid_field.source_field] == None,
+            )
+        )
 
-    stmt = (
-        update(transient_table)
-        .values(
-            {
-                transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
-            }
-        )
-        .where(
-            transient_table.c.id_import == imprt.id_import,
-            transient_table.c[uuid_field.dest_field] == None,
-        )
-    )
-    db.session.execute(stmt)
+        db.session.execute(stmt)
 
 
 def check_duplicate_source_pk(
@@ -590,7 +595,7 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
         imprt,
         uuid_col,
         whereclause=sa.and_(
-            transient_table.c[entity.validity_column].is_(True),
+            transient_table.c[entity.validity_column].is_not(None),
             uuid_col != None,
         ),
     )
@@ -606,6 +611,7 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
             func.md5(func.concat(*columns)).label("hashed"),
         )
         .where(transient_table.c.line_no == duplicates.c.lines)
+        .where(transient_table.c.id_import == imprt.id_import)
         .alias("hashedRows")
     )
 

@@ -76,12 +76,7 @@ class SyntheseImportMixin(ImportMixin):
 
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
-        init_rows_validity(imprt)
-        task.update_state(state="PROGRESS", meta={"progress": 0.05})
-        check_orphan_rows(imprt)
-        task.update_state(state="PROGRESS", meta={"progress": 0.1})
         entity = Entity.query.filter_by(destination=imprt.destination).one()  # Observation
-
         fields = {
             field.name_field: field
             for field in BibFields.query.filter(BibFields.destination == imprt.destination)
@@ -95,6 +90,11 @@ class SyntheseImportMixin(ImportMixin):
             for field_name, source_field in imprt.fieldmapping.items()
             if source_field in imprt.columns
         }
+        generate_missing_uuid(imprt, entity, fields["unique_id_sinp"])
+        init_rows_validity(imprt)
+        task.update_state(state="PROGRESS", meta={"progress": 0.05})
+        check_orphan_rows(imprt)
+        task.update_state(state="PROGRESS", meta={"progress": 0.1})
 
         batch_size = current_app.config["IMPORT"]["DATAFRAME_BATCH_SIZE"]
         batch_count = ceil(imprt.source_count / batch_size)

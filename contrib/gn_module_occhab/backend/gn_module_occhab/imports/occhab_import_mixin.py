@@ -116,7 +116,11 @@ class OcchabImportMixin(ImportMixin):
                 else {}
             )
             generate_missing_uuid(
-                imprt, entity_station, selected_fields["unique_id_sinp_station"], **kwargs
+                imprt,
+                entity_station,
+                selected_fields["unique_id_sinp_station"],
+                generate_uuid_if_empty=False,
+                **kwargs,
             )
 
         elif "id_station_source" in fields:
@@ -125,6 +129,7 @@ class OcchabImportMixin(ImportMixin):
                 entity_station,
                 fields["unique_id_sinp_station"],
                 origin_id_field=selected_fields["id_station_source"],
+                generate_uuid_if_empty=False,
             )
         fields, selected_fields, _ = get_mapping_data(imprt, entity_habitat)
         generate_missing_uuid(imprt, entity_habitat, fields["unique_id_sinp_habitat"])
@@ -289,6 +294,7 @@ class OcchabImportMixin(ImportMixin):
     def check_transient_data(task, logger, imprt: TImports):
         task.update_state(state="PROGRESS", meta={"progress": 0})
         entity_station, entity_habitat = get_occhab_entities()
+        OcchabImportMixin.generate_uuids(imprt)
 
         fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
         init_rows_validity(imprt)
@@ -298,7 +304,6 @@ class OcchabImportMixin(ImportMixin):
 
         OcchabImportMixin.check_station(imprt)
         OcchabImportMixin.check_habitat(imprt)
-        OcchabImportMixin.generate_uuids(imprt)
 
         check_entity_data_consistency(
             imprt,

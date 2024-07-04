@@ -54,7 +54,13 @@ def init_rows_validity(imprt):
             sa.update(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
             .where(
-                sa.or_(*[transient_table.c[field.source_column].isnot(None) for field in fields])
+                sa.or_(
+                    *[
+                        transient_table.c[field.source_column].isnot(None)
+                        for field in fields
+                        if field.source_field != entity.unique_column.source_field
+                    ]
+                )
             )
             .values({entity.validity_column: True})
         )
@@ -69,7 +75,7 @@ def init_rows_validity(imprt):
                 transient_table.c.line_no,
             )
             .where(
-                sa.or_(
+                sa.and_(
                     transient_table.c[entity.unique_column.source_field].not_in(
                         sa.select(
                             sa.func.distinct(
@@ -87,7 +93,6 @@ def init_rows_validity(imprt):
                     ),
                 )
             )
-            .where()
             .where(transient_table.c[entity.unique_column.source_field] != None)
             .where(transient_table.c[entity.validity_column] == None)
             .where(transient_table.c.id_import == imprt.id_import)
@@ -99,14 +104,6 @@ def init_rows_validity(imprt):
             .returning(transient_table.c.line_no)
         )
         db.session.execute(query).fetchall()
-        print(entity.label)
-        print(
-            db.session.scalars(
-                sa.select(transient_table.c.line_no).where(
-                    transient_table.c[entity.validity_column] == True
-                )
-            ).all()
-        )
 
     # Rows with values only in fields shared between several entities will be ignored here.
     # But they will raise an error through check_orphan_rows.

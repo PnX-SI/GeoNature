@@ -201,26 +201,27 @@ class TestImportsOcchab:
                     ImportCodeError.NO_GEOM,
                     "station",
                     "Champs géométriques",
-                    frozenset({9, 11, 12, 13, 17, 18, 19, 21}),
+                    frozenset({9, 17, 18, 19, 21}),
                 ),
                 (
                     ImportCodeError.MISSING_VALUE,
                     "station",
                     "WKT",
-                    frozenset({9, 11, 12, 13, 17, 18, 19, 21}),
+                    frozenset({9, 17, 18, 19, 21}),
                 ),
                 (
                     ImportCodeError.MISSING_VALUE,
                     "station",
                     "date_min",
-                    frozenset({10, 11, 12, 13, 17, 18, 19, 21}),
+                    frozenset({10, 17, 18, 19, 21}),
                 ),
                 (
                     ImportCodeError.INVALID_UUID,
                     "station",
                     "unique_id_sinp_station",
-                    frozenset({20}),
+                    frozenset({20, 21}),
                 ),
+                (ImportCodeError.INCOHERENT_DATA, "station", "", frozenset({3, 6, 16, 17, 18, 19})),
                 # Habitats errors
                 (
                     ImportCodeError.INVALID_UUID,
@@ -232,20 +233,20 @@ class TestImportsOcchab:
                     ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({6, 7, 10, 17, 18, 19, 20}),
+                    frozenset({3, 6, 7, 10, 16, 17, 18, 19, 20, 21}),
                 ),
                 (ImportCodeError.NO_PARENT_ENTITY, "habitat", "id_station", frozenset({11})),
                 # Other errors
-                (ImportCodeError.ORPHAN_ROW, None, "unique_id_sinp_station", frozenset({12})),
+                (ImportCodeError.ORPHAN_ROW, None, "unique_id_sinp_station", frozenset({12, 13})),
                 (ImportCodeError.ORPHAN_ROW, None, "id_station_source", frozenset({13})),
             },
         )
-        assert imported_import.statistics == {"station_count": 5, "habitat_count": 9}
+        assert imported_import.statistics == {"station_count": 3, "habitat_count": 5}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
             )
-            == 5
+            == 3
         )
         assert (
             db.session.scalar(
@@ -253,5 +254,5 @@ class TestImportsOcchab:
                     OccurenceHabitat.id_import == imported_import.id_import
                 )
             )
-            == 9
+            == 5
         )
