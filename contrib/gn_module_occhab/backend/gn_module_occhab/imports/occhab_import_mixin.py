@@ -291,11 +291,7 @@ class OcchabImportMixin(ImportMixin):
         entity_station, entity_habitat = get_occhab_entities()
 
         fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
-        init_rows_validity(
-            imprt,
-            parent_entity=entity_station,
-            parent_ids=["unique_id_sinp_station"],
-        )
+        init_rows_validity(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
         check_orphan_rows(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.1})
