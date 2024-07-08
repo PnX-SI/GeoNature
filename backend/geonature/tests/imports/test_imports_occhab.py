@@ -6,6 +6,8 @@ import pytest
 
 from flask import url_for, g
 from werkzeug.datastructures import Headers
+from geoalchemy2.shape import from_shape
+from shapely.geometry import Point
 
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
@@ -179,8 +181,23 @@ def imported_import(client, prepared_import):
     return imprt
 
 
+@pytest.fixture(scope="function")
+def stations(datasets):
+    station = Station(
+        id_dataset=datasets["own_dataset"].id_dataset,
+        date_min="17/11/2023",
+        geom_4326=from_shape(Point(3.634, 44.399), 4326),
+        unique_id_sinp_station="490901ee-b3be-4a5f-9b30-e89c9e7a7d6c",
+    )
+    db.session.add(station)
+
+
 @pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "celery_eager", "default_occhab_destination"
+    "client_class",
+    "temporary_transaction",
+    "celery_eager",
+    "default_occhab_destination",
+    "stations",
 )
 class TestImportsOcchab:
     @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
@@ -241,7 +258,7 @@ class TestImportsOcchab:
                 (ImportCodeError.ORPHAN_ROW, None, "id_station_source", frozenset({13})),
             },
         )
-        assert imported_import.statistics == {"station_count": 3, "habitat_count": 5}
+        assert imported_import.statistics == {"station_count": 3, "habitat_count": 7}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
@@ -254,5 +271,5 @@ class TestImportsOcchab:
                     OccurenceHabitat.id_import == imported_import.id_import
                 )
             )
-            == 5
+            == 7
         )

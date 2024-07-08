@@ -8,7 +8,6 @@ from geonature.core.imports.models import (
     EntityField,
     BibFields,
 )
-from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 
 
 __all__ = ["init_rows_validity", "check_orphan_rows"]
@@ -42,64 +41,46 @@ def init_rows_validity(imprt):
             selected_fields_names.append(field_name)
     for entity in entities:
         # Select fields associated to this entity *and only to this entity*
+        dest_table = entity.get_destination_table()
         fields = (
             db.session.query(BibFields)
-            .filter(BibFields.name_field.in_(selected_fields_names))
-            .filter(BibFields.entities.any(EntityField.entity == entity))
-            .filter(~BibFields.entities.any(EntityField.entity != entity))
+            .where(BibFields.name_field.in_(selected_fields_names))
+            .where(BibFields.entities.any(EntityField.entity == entity))
+            .where(~BibFields.entities.any(EntityField.entity != entity))
+            .where(BibFields.source_field != entity.unique_column.source_field)
             .all()
         )
-        # Set validity=True for rows with not null field associated to this entity
-        query = (
-            sa.update(transient_table)
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(
-                sa.or_(
-                    *[
-                        transient_table.c[field.source_column].isnot(None)
-                        for field in fields
-                        if field.source_field != entity.unique_column.source_field
-                    ]
-                )
-            )
-            .values({entity.validity_column: True})
-        )
-        db.session.execute(query)
-
-        parent_table = entity.get_destination_table()
-        # Set validity=True for rows with every field empty
-        # but with an id not existing in the destination table
-
-        cte_ = (
+        cte = (  # quels entrées prendre en compte
             sa.select(
-                transient_table.c.line_no,
+                transient_table.c.line_no, transient_table.c[entity.unique_column.source_field]
             )
+            .where(transient_table.c.id_import == imprt.id_import)
             .where(
                 sa.and_(
-                    transient_table.c[entity.unique_column.source_field].not_in(
-                        sa.select(
-                            sa.func.distinct(
-                                sa.cast(
-                                    parent_table.c[entity.unique_column.dest_field],
-                                    sa.TEXT,
-                                ),
-                            )
-                        )
+                    sa.or_(  # Un des champs d'une entité est rempli
+                        *[transient_table.c[field.source_column].isnot(None) for field in fields]
                     ),
-                    transient_table.c[entity.unique_column.source_field].in_(
-                        sa.select(transient_table.c[entity.unique_column.source_field]).where(
-                            transient_table.c[entity.validity_column] == True
-                        )
+                    sa.or_(  # l'UUID n'existe pas dans la table parente ou l'UUID vide
+                        transient_table.c[entity.unique_column.source_field].not_in(
+                            sa.select(
+                                sa.cast(dest_table.c[entity.unique_column.dest_field], sa.TEXT)
+                            )
+                        ),
+                        transient_table.c[entity.unique_column.source_field] == None,
                     ),
                 )
             )
-            .where(transient_table.c[entity.unique_column.source_field] != None)
-            .where(transient_table.c[entity.validity_column] == None)
-            .where(transient_table.c.id_import == imprt.id_import)
-        ).cte("cte_")
+            .cte("cte")
+        )
         query = (
             sa.update(transient_table)
-            .where(transient_table.c.line_no == cte_.c.line_no)
+            .where(
+                sa.or_(
+                    transient_table.c[entity.unique_column.source_field]
+                    == cte.c[entity.unique_column.source_field],
+                    transient_table.c.line_no == cte.c.line_no,
+                )
+            )
             .values({entity.validity_column: True})
             .returning(transient_table.c.line_no)
         )
