@@ -229,8 +229,8 @@ export class FieldsMappingStepComponent implements OnInit {
       );
   }
 
-  getMappedFieldsLength(): Number {
-    return this._fieldMappingService.getMappedFieldsLength();
+  getMappedTargetFields(): Number {
+    return this._fieldMappingService.getMappedTargetFields().length;
   }
 
   getUnmappedFieldsLength(): Number {
