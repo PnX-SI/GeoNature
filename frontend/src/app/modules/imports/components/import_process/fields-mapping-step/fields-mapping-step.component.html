@@ -38,14 +38,14 @@
       </mat-tab-group>
       <br />
       <div
-        *ngIf="getMappedFieldsLength() > 0"
+        *ngIf="getMappedTargetFields() > 0"
         class="alert alert-success"
         role="alert"
         style="text-align: center"
       >
         {{
           'Import.FieldMapping.SourceFieldsMapped'
-            | translate: { mappedFieldsLength: getMappedFieldsLength() }
+            | translate: { mappedFieldsLength: getMappedTargetFields() }
         }}
         <br />
       </div>

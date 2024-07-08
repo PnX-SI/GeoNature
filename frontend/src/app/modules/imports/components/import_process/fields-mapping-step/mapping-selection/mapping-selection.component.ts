@@ -45,10 +45,6 @@ export class MappingSelectionComponent implements OnInit {
     this.fieldMappingForm = this._fm.mappingSelectionFormControl;
   }
 
-  completionStatus() {
-    return this._fm.mappingCompletionStatus();
-  }
-
   ngOnInit() {
     this._fm.data.subscribe(({ fieldMappings, targetFields, sourceFields }) => {
       if (!fieldMappings) return;
