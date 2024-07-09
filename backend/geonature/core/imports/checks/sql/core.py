@@ -1,4 +1,5 @@
 from geonature.core.imports.checks.errors import ImportCodeError
+from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 import sqlalchemy as sa
 
 from geonature.utils.env import db

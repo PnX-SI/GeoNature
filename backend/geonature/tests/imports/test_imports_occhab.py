@@ -186,7 +186,7 @@ def imported_import(client, prepared_import):
 def stations(datasets):
     station = Station(
         id_dataset=datasets["own_dataset"].id_dataset,
-        date_min=datetime.strptime("17/11/2023", "%d/%m/%y"),
+        date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
         geom_4326=from_shape(Point(3.634, 44.399), 4326),
         unique_id_sinp_station="490901ee-b3be-4a5f-9b30-e89c9e7a7d6c",
     )
