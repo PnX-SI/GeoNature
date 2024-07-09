@@ -257,13 +257,15 @@ def check_existing_uuid(
     """
     transient_table = imprt.destination.get_transient_table()
     dest_table = entity.get_destination_table()
+    select(transient_table.c[uuid_field.dest_field])
     report_erroneous_rows(
         imprt,
         entity,
         error_type="EXISTING_UUID",
         error_column=uuid_field.name_field,
         whereclause=sa.and_(
-            transient_table.c[uuid_field.dest_field] == dest_table.c[uuid_field.dest_field],
+            transient_table.c[uuid_field.source_field]
+            == sa.cast(dest_table.c[uuid_field.dest_field], sa.TEXT),
             whereclause,
         ),
     )
