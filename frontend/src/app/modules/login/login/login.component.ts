@@ -30,7 +30,8 @@ export class LoginComponent implements OnInit {
   login_or_pass_recovery: boolean = false;
   public APP_NAME = null;
   public authProviders: Array<Provider>;
-
+  public localProviderEnabled: boolean = true;
+  public isOtherProviders: boolean = false;
   constructor(
     public _authService: AuthService, //FIXME : change to private (html must be modified)
     private _commonService: CommonService,
@@ -55,6 +56,19 @@ export class LoginComponent implements OnInit {
     }
     this._authService.getAuthProviders().subscribe((providers) => {
       this.authProviders = providers;
+      this.isOtherProviders = this.authProviders.length > 1;
+      // If local provider is not available in the configuration, disable it
+      if (!this.authProviders.find((p) => p.id_provider === 'local_provider')) {
+        this.localProviderEnabled = false;
+      }
+      // Local provider should not be display in the other providers buttons
+      this.authProviders = this.authProviders.filter((p) => p.id_provider !== 'local_provider');
+
+      // If one provider is declared (except the local one)
+      if (this.authProviders.length === 1 && !this.localProviderEnabled) {
+        const provider = this.authProviders[0];
+        window.location.href = this.getProviderLoginUrl(provider.id_provider);
+      }
     });
   }
 

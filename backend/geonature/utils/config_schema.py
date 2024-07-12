@@ -157,20 +157,20 @@ class MetadataConfig(Schema):
 
 class AuthenticationConfig(Schema):
     PROVIDERS = fields.List(
-        fields.Dict(), load_default=[]
-    )  # MAYBE add default auth in this list ? (for people to disable the default login)
-
+        fields.Dict(),
+        load_default=[
+            dict(
+                module="pypnusershub.auth.providers.default.DefaultConfiguration",
+                id_provider="local_provider",
+            )
+        ],
+    )
     DEFAULT_RECONCILIATION_GROUP_ID = fields.Integer()
-    DISPLAY_DEFAULT_LOGIN_FORM = fields.Boolean(load_default=True)
-    ONLY_PROVIDER = fields.String(load_default=None)
 
     @validates_schema
     def validate_provider(self, data, **kwargs):
         for provider in data["PROVIDERS"]:
             ProviderConfigurationSchema().load(provider, unknown=INCLUDE)
-
-
-# class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
 
 class GnPySchemaConf(Schema):

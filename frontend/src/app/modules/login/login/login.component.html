@@ -28,7 +28,7 @@
           </div>
           <div class="panel-body">
             <ng-container *ngIf="!login_or_pass_recovery; else logPwdRecoBlock">
-              <ng-container *ngIf="this.config.AUTHENTICATION.DISPLAY_DEFAULT_LOGIN_FORM">
+              <ng-container *ngIf="localProviderEnabled">
                 <form
                   (ngSubmit)="register(userForm.value)"
                   #userForm="ngForm"
@@ -76,7 +76,7 @@
                 <hr />
               </ng-container>
 
-              <ng-container>
+              <ng-container *ngIf="isOtherProviders">
                 <p>Se connecter avec :</p>
                 <div class="row center">
                   <div *ngFor="let provider of authProviders">
