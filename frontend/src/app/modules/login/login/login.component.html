@@ -81,7 +81,7 @@
                 <div class="row center">
                   <div *ngFor="let provider of authProviders">
                     <button
-                      *ngIf="provider.is_external; else externalAuthBlock"
+                      *ngIf="!provider.is_external; else externalAuthBlock"
                       (click)="openDialog(provider)"
                       class="btn btn-primary rounded mr-2 mt-2"
                     >
