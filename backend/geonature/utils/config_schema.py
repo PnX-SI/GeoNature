@@ -24,6 +24,7 @@ from geonature.core.gn_synthese.synthese_config import (
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
+from pypnusershub.auth.authentication import ProviderConfigurationSchema
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -156,15 +157,17 @@ class MetadataConfig(Schema):
 
 class AuthenticationConfig(Schema):
     PROVIDERS = fields.List(
-        fields.String(), load_default=[]
+        fields.Dict(), load_default=[]
     )  # MAYBE add default auth in this list ? (for people to disable the default login)
 
     DEFAULT_RECONCILIATION_GROUP_ID = fields.Integer()
     DISPLAY_DEFAULT_LOGIN_FORM = fields.Boolean(load_default=True)
     ONLY_PROVIDER = fields.String(load_default=None)
-    PROVIDERS_CONFIG = fields.Dict(
-        load_default={},
-    )
+
+    @validates_schema
+    def validate_provider(self, data, **kwargs):
+        for provider in data["PROVIDERS"]:
+            ProviderConfigurationSchema().load(provider, unknown=INCLUDE)
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
