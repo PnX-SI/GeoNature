@@ -90,7 +90,7 @@ export class AuthService {
   }
 
   signinUser(form: any) {
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login/local_provider`, form);
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login`, form);
   }
 
   signinPublicUser(): Observable<any> {

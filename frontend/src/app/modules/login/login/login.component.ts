@@ -126,7 +126,7 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-   * Opens a dialog to connect to a specified provider (with is_uh activated) .
+   * Opens a dialog to connect to a specified provider (with is_external activated) .
    *
    * @param {Provider} provider - The provider for which the dialog is opened.
    */

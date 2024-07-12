@@ -15,39 +15,6 @@ from marshmallow.exceptions import ValidationError
 __all__ = ["config", "config_frontend"]
 
 
-def validate_provider_config(config, config_toml):
-    """
-    Validate the authentication providers configuration.
-
-    Parameters
-    ----------
-    config : dict
-        The Flask application configuration.
-    config_toml : dict
-        The TOML configuration.
-
-
-    Raises
-    ------
-        ValidationError
-            If the authentication providers configuration is invalid.
-
-    """
-    if not "AUTHENTICATION" in config_toml:
-        return
-    for path_provider in config_toml["AUTHENTICATION"]["PROVIDERS"]:
-        import_path, class_name = (
-            ".".join(path_provider.split(".")[:-1]),
-            path_provider.split(".")[-1],
-        )
-        module = importlib.import_module(import_path)
-        class_ = getattr(module, class_name)
-        schema_unique_provider = class_.configuration_schema()
-        config["AUTHENTICATION"][class_.name] = schema_unique_provider(many=True).load(
-            config_toml["AUTHENTICATION"][class_.name], unknown=EXCLUDE
-        )
-
-
 # Load config from GEONATURE_* env vars and from GEONATURE_SETTINGS python module (if any)
 config_programmatic = Config(get_root_path("geonature"))
 config_programmatic.from_prefixed_env(prefix="GEONATURE")
@@ -74,7 +41,6 @@ config_default = {
 
 config = ChainMap({}, config_programmatic, config_backend, config_frontend, config_default)
 
-validate_provider_config(config, config_toml)
 
 api_uri = urlsplit(config["API_ENDPOINT"])
 if "APPLICATION_ROOT" not in config:
