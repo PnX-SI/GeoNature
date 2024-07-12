@@ -594,25 +594,16 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     FOOTER = ""
 
 [AUTHENTICATION]
-    AUTHENTICATION_CLASSES=["pypnusershub.auth.providers.openid_provider.OpenIDProvider"]
-    DISPLAY_DEFAULT_LOGIN_FORM = true
-    ONLY_PROVIDER = 'keycloak'
-
-    # identifiant du groupe dans lequel les utilisateurs externes vont être ajoutés
-    ID_GROUP_RECONCILIATION = 2
-    group_mapping
-
-    [[AUTHENTICATION.OPENID_PROVIDER_CONFIG]]
-        id_provider = "keycloak"
-        label = "KeyCloak"
-        ISSUER = "http://MY_URL"
-        CLIENT_ID = "ddd"
-        CLIENT_SECRET = "dddd"
-
-    [[AUTHENTICATION.OPENID_PROVIDER_CONFIG]]
-        id_provider = "google"
-        logo = "<i class='fa fa-google' aria-hidden='true'></i>"
-        label = "Google"
-        ISSUER = "https://accounts.google.com/"
-        CLIENT_ID = "MY_CLIENT_ID"
-        CLIENT_SECRET = "MY_CLIENT_KEY"
+	DEFAULT_RECONCILIATION_GROUP_ID = 2
+    [[AUTHENTICATION.PROVIDERS]]
+        module="pypnusershub.auth.providers.default.DefaultConfiguration"
+		id_provider="local_provider"
+    
+    [[AUTHENTICATION.PROVIDERS]]
+        module="pypnusershub.auth.providers.openid_provider.OpenIDConnectProvider"
+		id_provider = "google"
+		logo = "<i class='fa fa-google' aria-hidden='true'></i>"
+		label = "Google"
+		ISSUER = "https://accounts.google.com/"
+		CLIENT_ID = "ID" # API key
+		CLIENT_SECRET = "SECRET" # API Secret
