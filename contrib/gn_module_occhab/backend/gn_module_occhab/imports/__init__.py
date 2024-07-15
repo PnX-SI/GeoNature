@@ -1,1 +1,1 @@
-from .occhab_import_mixin import OcchabImportMixin
+from .mixins import OcchabImportMixin

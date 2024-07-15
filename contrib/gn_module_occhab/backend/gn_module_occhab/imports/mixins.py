@@ -1,9 +1,11 @@
 from flask import current_app
 from geonature.core.imports.checks.sql.extra import (
     check_entity_data_consistency,
+    disable_duplicated_rows,
+    generate_missing_uuid_for_id_origin,
     generate_missing_uuid,
 )
-from geonature.core.imports.checks.sql.utils import report_erroneous_rows
+from geonature.core.imports.checks.sql.utils import report_erroneous_rows, print_transient_table
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
@@ -61,7 +63,6 @@ def get_occhab_entities() -> typing.Tuple[Entity, Entity]:
 
 
 class OcchabImportMixin(ImportMixin):
-
     @staticmethod
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         return [
@@ -105,37 +106,7 @@ class OcchabImportMixin(ImportMixin):
         return updated_cols
 
     @staticmethod
-    def generate_uuids(imprt):
-        entity_station, entity_habitat = get_occhab_entities()
-        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
-
-        if "unique_id_sinp_station" in selected_fields:
-            kwargs = (
-                {"origin_id_field": selected_fields["id_station_source"]}
-                if "id_station_source" in selected_fields
-                else {}
-            )
-            generate_missing_uuid(
-                imprt,
-                entity_station,
-                selected_fields["unique_id_sinp_station"],
-                generate_uuid_if_empty=False,
-                **kwargs,
-            )
-
-        elif "id_station_source" in fields:
-            generate_missing_uuid(
-                imprt,
-                entity_station,
-                fields["unique_id_sinp_station"],
-                origin_id_field=selected_fields["id_station_source"],
-                generate_uuid_if_empty=False,
-            )
-        fields, selected_fields, _ = get_mapping_data(imprt, entity_habitat)
-        generate_missing_uuid(imprt, entity_habitat, fields["unique_id_sinp_habitat"])
-
-    @staticmethod
-    def check_habitat(imprt):
+    def check_habitat_dataframe(imprt):
         """
         Check the habitat data before importing.
 
@@ -163,6 +134,12 @@ class OcchabImportMixin(ImportMixin):
         )
         update_transient_data_from_dataframe(imprt, entity_habitat, updated_cols, df)
 
+    @staticmethod
+    def check_habitat_sql(imprt):
+        entity_station, entity_habitat = get_occhab_entities()
+        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
+
+        ### SQL checks
         do_nomenclatures_mapping(
             imprt,
             entity_habitat,
@@ -171,15 +148,85 @@ class OcchabImportMixin(ImportMixin):
                 "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
             ],
         )
-
         if "cd_hab" in selected_fields:
             check_cd_hab(imprt, entity_habitat, selected_fields["cd_hab"])
         if "unique_id_sinp_habitat" in selected_fields:
             check_duplicate_uuid(imprt, entity_habitat, selected_fields["unique_id_sinp_habitat"])
-            check_existing_uuid(imprt, entity_habitat, selected_fields["unique_id_sinp_habitat"])
+            check_existing_uuid(
+                imprt,
+                entity_habitat,
+                selected_fields["unique_id_sinp_habitat"],
+                skip=True,  # TODO config
+            )
+        if current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"]:
+            generate_missing_uuid(
+                imprt,
+                entity_habitat,
+                fields["unique_id_sinp_habitat"],
+            )
+        else:
+            pass  # TODO: check_missing_uuid
+
+        set_id_parent_from_destination(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            id_field=fields["id_station"],
+            fields=[
+                selected_fields.get("unique_id_sinp_station"),
+            ],
+        )
+        set_parent_line_no(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            id_parent="id_station",
+            parent_line_no="station_line_no",
+            fields=[
+                selected_fields.get("id_station_source"),
+                selected_fields.get("unique_id_sinp_station"),
+            ],
+        )
+
+        check_no_parent_entity(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            id_parent="id_station",
+            parent_line_no="station_line_no",
+        )
+
+        check_erroneous_parent_entities(
+            imprt,
+            parent_entity=entity_station,
+            child_entity=entity_habitat,
+            parent_line_no="station_line_no",
+        )
 
     @staticmethod
-    def check_station(imprt):
+    def check_station_consistency(imprt):
+        transient_table = imprt.destination.get_transient_table()
+        entity_station, _ = get_occhab_entities()
+
+        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
+
+        if "id_station_source" in selected_fields:
+            check_entity_data_consistency(
+                imprt,
+                entity_station,
+                selected_fields,
+                selected_fields["id_station_source"],
+            )
+        if "unique_id_sinp_station" in selected_fields:
+            check_entity_data_consistency(
+                imprt,
+                entity_station,
+                selected_fields,
+                selected_fields["unique_id_sinp_station"],
+            )
+
+    @staticmethod
+    def check_station_dataframe(imprt):
         """
         Check the station data before importing.
 
@@ -203,6 +250,7 @@ class OcchabImportMixin(ImportMixin):
 
         """
 
+        transient_table = imprt.destination.get_transient_table()
         entity_station, _ = get_occhab_entities()
 
         fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
@@ -238,6 +286,13 @@ class OcchabImportMixin(ImportMixin):
         )
 
         update_transient_data_from_dataframe(imprt, entity_station, updated_cols, df)
+
+    @staticmethod
+    def check_station_sql(imprt):
+        transient_table = imprt.destination.get_transient_table()
+        entity_station, _ = get_occhab_entities()
+
+        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
 
         do_nomenclatures_mapping(
             imprt,
@@ -290,11 +345,63 @@ class OcchabImportMixin(ImportMixin):
                 id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
             )
 
+        # Checks before these lines create errors for each rows, including for duplicate
+        # station, whereas checks after create errors only for first row of duplicate station.
+        if "id_station_source" in selected_fields:
+            disable_duplicated_rows(
+                imprt,
+                entity_station,
+                selected_fields,
+                selected_fields["id_station_source"],
+            )
+        if "unique_id_sinp_station" in selected_fields:
+            disable_duplicated_rows(
+                imprt,
+                entity_station,
+                selected_fields,
+                selected_fields["unique_id_sinp_station"],
+            )
+
+        # The check existing_uuid should preferably run before generating missing UUID
+        # for performance reason (this avoid looking for generated values in dest table).
+        if "unique_id_sinp_station" in selected_fields:
+            check_existing_uuid(
+                imprt,
+                entity_station,
+                selected_fields["unique_id_sinp_station"],
+                skip=True,  # TODO add config parameter
+            )
+
+        if current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"]:
+            # This generate UUID for all rows, not only for station!
+            generate_missing_uuid_for_id_origin(
+                imprt,
+                fields["unique_id_sinp_station"],
+                id_origin_field=fields["id_station_source"],
+            )
+            if "id_station_source" in selected_fields:
+                # UUID have been already generated where id_station_source is defined,
+                # generate UUID only when there are no id_station_source.
+                whereclause = transient_table.c[
+                    selected_fields["id_station_source"].source_field
+                ].is_(None)
+            else:
+                whereclause = None
+            print_transient_table(imprt)
+            generate_missing_uuid(
+                imprt,
+                entity_station,
+                fields["unique_id_sinp_station"],
+                whereclause=whereclause,
+            )
+            print_transient_table(imprt)
+        else:
+            pass  # TODO: check missing uuid
+
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
         task.update_state(state="PROGRESS", meta={"progress": 0})
         entity_station, entity_habitat = get_occhab_entities()
-        OcchabImportMixin.generate_uuids(imprt)
 
         fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
         init_rows_validity(imprt)
@@ -302,50 +409,17 @@ class OcchabImportMixin(ImportMixin):
         check_orphan_rows(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.1})
 
-        OcchabImportMixin.check_station(imprt)
-        OcchabImportMixin.check_habitat(imprt)
+        # We first check station consistency in order to avoid checking
+        # incoherent station data
+        OcchabImportMixin.check_station_consistency(imprt)
 
-        check_entity_data_consistency(
-            imprt,
-            entity_station,
-            selected_fields,
-            fields["unique_id_sinp_station"],
-        )
+        # We run station & habitat dataframe checks before SQL checks in order to avoid
+        # check_types overriding generated values during SQL checks.
+        OcchabImportMixin.check_station_dataframe(imprt)
+        OcchabImportMixin.check_habitat_dataframe(imprt)
 
-        fields, selected_fields, _ = get_mapping_data(imprt, entity_habitat)
-        set_id_parent_from_destination(
-            imprt,
-            parent_entity=entity_station,
-            child_entity=entity_habitat,
-            id_field=fields["id_station"],
-            fields=[
-                selected_fields.get("unique_id_sinp_station"),
-            ],
-        )
-        set_parent_line_no(
-            imprt,
-            parent_entity=entity_station,
-            child_entity=entity_habitat,
-            parent_line_no="station_line_no",
-            fields=[
-                selected_fields.get("unique_id_sinp_station"),
-            ],
-        )
-
-        check_no_parent_entity(
-            imprt,
-            parent_entity=entity_station,
-            child_entity=entity_habitat,
-            id_parent="id_station",
-            parent_line_no="station_line_no",
-        )
-
-        check_erroneous_parent_entities(
-            imprt,
-            parent_entity=entity_station,
-            child_entity=entity_habitat,
-            parent_line_no="station_line_no",
-        )
+        OcchabImportMixin.check_station_sql(imprt)
+        OcchabImportMixin.check_habitat_sql(imprt)
 
         task.update_state(state="PROGRESS", meta={"progress": 1})
 
@@ -362,6 +436,22 @@ class OcchabImportMixin(ImportMixin):
             )
         }
         for entity in entities.values():
+            if entity.code == "station":
+                """
+                We need the id_station in transient table to use it when inserting habitats.
+                I have tried to use RETURNING after inserting the stations to update transient table, roughly:
+                WITH (INSERT pr_occhab.t_stations FROM SELECT ... RETURNING transient_table.line_no, id_station) AS insert_cte
+                UPDATE transient_table SET id_station = insert_cte.id_station WHERE transient_table.line_no = insert_cte.line_no
+                but RETURNING clause can only contains columns from INSERTed table so we can not return line_no.
+                Consequently, we generate id_station directly in transient table before inserting the stations.
+                """
+                generate_id_station(imprt, entity)
+            else:
+                set_id_station_from_line_no(
+                    imprt,
+                    habitat_entity=entities["habitat"],
+                )
+
             fields = {
                 ef.field.name_field: ef.field for ef in entity.fields if ef.field.dest_field != None
             }
@@ -400,38 +490,22 @@ class OcchabImportMixin(ImportMixin):
             names = ["id_import"] + [field.dest_field for field in insert_fields]
             select_stmt = (
                 sa.select(
-                    sa.literal(imprt.id_import),
+                    sa.literal(imprt.id_import).label("id_import"),
                     *[transient_table.c[field.dest_field] for field in insert_fields],
                 )
-                .distinct()
                 .where(transient_table.c.id_import == imprt.id_import)
                 .where(transient_table.c[entity.validity_column] == True)
+                .where(transient_table.c.id_station.is_not(None))
             )
             destination_table = entity.get_destination_table()
             insert_stmt = sa.insert(destination_table).from_select(
                 names=names,
                 select=select_stmt,
             )
-            if entity.code == "station":
-                """
-                We need the id_station in transient table to use it when inserting habitats.
-                I have tried to use RETURNING after inserting the stations to update transient table, roughly:
-                WITH (INSERT pr_occhab.t_stations FROM SELECT ... RETURNING transient_table.line_no, id_station) AS insert_cte
-                UPDATE transient_table SET id_station = insert_cte.id_station WHERE transient_table.line_no = insert_cte.line_no
-                but RETURNING clause can only contains columns from INSERTed table so we can not return line_no.
-                Consequently, we generate id_station directly in transient table before inserting the stations.
-                """
-                generate_id_station(imprt, entity)
-            else:
-                set_id_station_from_line_no(
-                    imprt,
-                    habitat_entity=entities["habitat"],
-                )
-
             r = db.session.execute(insert_stmt)
             imprt.statistics.update({f"{entity.code}_count": r.rowcount})
 
-    @staticmethod
+    @staticmethod  # TODO refuser la suppression de l’import si des stations de l’import ont des habitats ne provenant pas de l’import
     def remove_data_from_destination(imprt: TImports) -> None:
         entities = (
             Entity.query.filter_by(destination=imprt.destination)

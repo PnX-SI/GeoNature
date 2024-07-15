@@ -41,9 +41,16 @@ def set_parent_line_no(
     imprt,
     parent_entity,
     child_entity,
+    id_parent,
     parent_line_no,
     fields,
 ):
+    """
+    Set parent_line_no on child entities when:
+    - no parent entity on same line
+    - parent entity is valid
+    - looking for parent entity through each given field in fields
+    """
     transient_child = imprt.destination.get_transient_table()
     transient_parent = aliased(transient_child, name="transient_parent")
     for field in fields:
@@ -68,7 +75,7 @@ def check_no_parent_entity(imprt, parent_entity, child_entity, id_parent, parent
     Station may be referenced:
     - on the same line (station_validity is not None)
     - by id_parent (parent already exists in destination)
-    - by parent_line_no (new parent from another line of the imported file)
+    - by parent_line_no (new parent from another line of the imported file - see set_parent_line_no)
     """
     transient_table = imprt.destination.get_transient_table()
     report_erroneous_rows(

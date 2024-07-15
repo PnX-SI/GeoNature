@@ -42,23 +42,38 @@ def get_duplicates_query(imprt, dest_field, whereclause=sa.true()):
     return duplicates
 
 
-def report_erroneous_rows(imprt, entity, error_type, error_column, whereclause):
+def report_erroneous_rows(
+    imprt,
+    entity,
+    error_type,
+    error_column,
+    whereclause,
+    level_validity_mapping={"ERROR": False},
+):
     """
     This function report errors where whereclause in true.
     But the function also set validity column to False for errors with ERROR level.
     Warning: level of error "ERROR", the entity must be defined
+
+    level_validity_mapping may be used to override default behavior:
+      - level does not exist in dict: row validity is untouched
+      - level exists in dict: row validity is set accordingly:
+        - False: row is marked as erroneous
+        - None: row is marked as should not be imported
     """
     transient_table = imprt.destination.get_transient_table()
     error_type = ImportUserErrorType.query.filter_by(name=error_type).one()
     error_column = generated_fields.get(error_column, error_column)
     error_column = imprt.fieldmapping.get(error_column, error_column)
-    if error_type.level == "ERROR":
+    if error_type.level in level_validity_mapping:
         assert entity is not None
         cte = (
             update(transient_table)
             .values(
                 {
-                    transient_table.c[entity.validity_column]: False,
+                    transient_table.c[entity.validity_column]: level_validity_mapping[
+                        error_type.level
+                    ],
                 }
             )
             .where(transient_table.c.id_import == imprt.id_import)
@@ -102,8 +117,8 @@ def report_erroneous_rows(imprt, entity, error_type, error_column, whereclause):
 def print_transient_table(imprt, columns=None):
     trans_table = imprt.destination.get_transient_table()
     res = db.session.execute(
-        sa.select(*([trans_table.c[col] for col in columns] if columns else [trans_table])).where(
-            imprt.id_import == trans_table.c.id_import
-        )
+        sa.select(*([trans_table.c[col] for col in columns] if columns else [trans_table]))
+        .where(imprt.id_import == trans_table.c.id_import)
+        .order_by(trans_table.c.line_no)
     ).all()
-    print(pd.DataFrame(res, columns=columns))
+    print(pd.DataFrame(res, columns=columns).to_string())
