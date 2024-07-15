@@ -78,7 +78,7 @@ def get_fields(scope, destination):
             )
         data.append(
             {
-                "entity": entity.as_dict(fields=["label"]),
+                "entity": entity.as_dict(fields=["label", "parent", "unique_column"]),
                 "themes": themes,
             }
         )

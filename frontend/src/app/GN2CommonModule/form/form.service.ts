@@ -159,13 +159,13 @@ export class FormService {
    */
 
   /**
-   * Validator function that checks if any of reference controls is not null, then the current control must not be null.
+   * Validator function that checks if all of reference controls are not null, then the current control must not be null.
    *
    * @param {string[]} referenceControlNames - The names of the controls in the same form group that holds the reference value.
    * @param {AbstractControl} currentControl - The control to be validated.
    * @return {boolean} True if the validation is successful, false otherwise.
    */
-  areAnyOfReferenceControlOrCurrentControlIsNotNull(
+  areAllRefControlsNotNull(
     referenceControlNames: string[],
     currentControl: AbstractControl
   ): boolean {
@@ -190,18 +190,47 @@ export class FormService {
     });
     return validation;
   }
+
+  /**
+   * Checks if any of the reference controls are not null.
+   *
+   * @param {string[]} referenceControlNames - The names of the controls in the same form group that holds the reference value.
+   * @param {AbstractControl} currentControl - The control to be validated.
+   * @return {boolean} True if any of the reference controls is not null, false otherwise.
+   */
+  areAnyRefControlsNotNull(
+    referenceControlNames: string[],
+    currentControl: AbstractControl
+  ): boolean {
+    let result = false;
+    referenceControlNames.forEach((referenceControlName) => {
+      const referenceControl = currentControl.parent.get(referenceControlName);
+
+      // Throw an error if the reference control is null or undefined
+      if (referenceControl == null) throw Error('Reference formControl is null or undefined');
+
+      if (referenceControl.value !== null && referenceControl.value !== undefined) {
+        result = true;
+      }
+    });
+    return result;
+  }
+
   /**
    * Generates a validator function that requires the current control if any of the reference controls is not null.
    *
    * @param {string[]} referenceControlNames - The name of the control in the same form group that holds the reference value.
    * @return {ValidatorFn} The validator function.
    */
-  RequiredIfControlIsNotNullValidator(referenceControlNames: string[]): ValidatorFn {
+  RequiredIfControlIsNotNullValidator(
+    referenceControlNames: string[],
+    entityControls: string[]
+  ): ValidatorFn {
     return (currentControl: AbstractControl): ValidationErrors | null => {
-      return this.areAnyOfReferenceControlOrCurrentControlIsNotNull(
-        referenceControlNames,
-        currentControl
-      )
+      if (!this.areAnyRefControlsNotNull(entityControls, currentControl)) {
+        return null;
+      }
+      return this.areAllRefControlsNotNull(referenceControlNames, currentControl)
         ? Validators.required(currentControl)
         : null;
     };
@@ -212,14 +241,25 @@ export class FormService {
    * @param {string[]} referenceControlNames - The name of the control in the same form group that holds the reference value.
    * @return {ValidatorFn} The validator function.
    */
-  NotRequiredIfControlIsNotNullValidator(referenceControlNames: string[]): ValidatorFn {
+  NotRequiredIfControlIsNotNullValidator(
+    referenceControlNames: string[],
+    entityControls: string[]
+  ): ValidatorFn {
     return (currentControl: AbstractControl): ValidationErrors | null => {
-      return this.areAnyOfReferenceControlOrCurrentControlIsNotNull(
-        referenceControlNames,
-        currentControl
-      )
+      if (!this.areAnyRefControlsNotNull(entityControls, currentControl)) {
+        return null;
+      }
+      return this.areAllRefControlsNotNull(referenceControlNames, currentControl)
         ? null
         : Validators.required(currentControl);
+    };
+  }
+
+  NotRequiredIfNoOther(entityControls: string[]): ValidatorFn {
+    return (currentControl: AbstractControl): ValidationErrors | null => {
+      return this.areAnyRefControlsNotNull(entityControls, currentControl)
+        ? Validators.required(currentControl)
+        : null;
     };
   }
 }
