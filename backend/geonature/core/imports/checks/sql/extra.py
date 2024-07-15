@@ -241,9 +241,11 @@ def check_existing_uuid(
     entity: Entity,
     uuid_field: BibFields,
     whereclause: Any = sa.true(),
+    skip=False,
 ):
     """
-    Check if there is already a record with the same uuid in the destination table. Include an error in the report for each existing uuid in the destination table.
+    Check if there is already a record with the same uuid in the destination table.
+    Include an error in the report for each existing uuid in the destination table.
     Parameters
     ----------
     imprt : Import
@@ -254,32 +256,81 @@ def check_existing_uuid(
         The field to check.
     whereclause : BooleanClause
         The WHERE clause to apply to the check.
+    skip: Boolean
+        Raise SKIP_EXISTING_UUID instead of EXISTING_UUID and set row validity to None (do not import)
     """
     transient_table = imprt.destination.get_transient_table()
     dest_table = entity.get_destination_table()
-    select(transient_table.c[uuid_field.dest_field])
+    error_type = "SKIP_EXISTING_UUID" if skip else "EXISTING_UUID"
     report_erroneous_rows(
         imprt,
         entity,
-        error_type="EXISTING_UUID",
+        error_type=error_type,
         error_column=uuid_field.name_field,
         whereclause=sa.and_(
-            transient_table.c[uuid_field.source_field]
-            == sa.cast(dest_table.c[uuid_field.dest_field], sa.TEXT),
+            transient_table.c[uuid_field.dest_field] == dest_table.c[uuid_field.dest_field],
+            transient_table.c[entity.validity_column].is_(True),
             whereclause,
         ),
+        level_validity_mapping={"ERROR": False, "WARNING": None},
     )
+
+
+def generate_missing_uuid_for_id_origin(
+    imprt: TImports,
+    uuid_field: BibFields,
+    id_origin_field: BibFields,
+):
+    """
+    Update records in the transient table where the uuid is None
+    with a new UUID.
+    Generate UUID in transient table when there are no UUID yet, but
+    there are a id_origin.
+    Ensure rows with same id_origin get the same UUID.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    uuid_field : BibFields
+        The field to check.
+    id_origin_field : BibFields
+        Field used to generate the UUID
+    """
+    transient_table = imprt.destination.get_transient_table()
+    cte_generated_uuid = (
+        sa.select(
+            transient_table.c[id_origin_field.source_field].label("id_source"),
+            func.uuid_generate_v4().label("uuid"),
+        )
+        .group_by(transient_table.c[id_origin_field.source_field])
+        .cte("cte_generated_uuid")
+    )
+
+    stmt = (
+        update(transient_table)
+        .values(
+            {
+                transient_table.c[uuid_field.dest_field]: cte_generated_uuid.c.uuid,
+            }
+        )
+        .where(
+            transient_table.c.id_import == imprt.id_import,
+            transient_table.c[id_origin_field.source_field] == cte_generated_uuid.c.id_source,
+            transient_table.c[uuid_field.source_field].is_(None),
+        )
+    )
+    db.session.execute(stmt)
 
 
 def generate_missing_uuid(
     imprt: TImports,
     entity: Entity,
     uuid_field: BibFields,
-    origin_id_field: BibFields = None,
-    generate_uuid_if_empty=True,
+    whereclause: Any = None,
 ):
     """
-    Update records in the transient table where the uuid is None
+    Update records in the transient table where the UUID is None
     with a new UUID.
 
     Parameters
@@ -290,62 +341,25 @@ def generate_missing_uuid(
         The entity to check.
     uuid_field : BibFields
         The field to check.
-    origin_id_field : BibFields
-        Field used to generate the UUID
     """
 
     transient_table = imprt.destination.get_transient_table()
-    # Generate UUID for missing UUID
-    whereclause = sa.and_(
-        sa.or_(
-            transient_table.c[uuid_field.dest_field] == None,
-            transient_table.c[uuid_field.source_field] == None,
-        ),
-        transient_table.c.id_import == imprt.id_import,
-        # transient_table.c[entity.validity_column].is_not(None),
+    stmt = (
+        update(transient_table)
+        .values(
+            {
+                transient_table.c[uuid_field.dest_field]: func.uuid_generate_v4(),
+            }
+        )
+        .where(
+            transient_table.c.id_import == imprt.id_import,
+            transient_table.c[entity.validity_column].is_not(None),
+            transient_table.c[uuid_field.source_field].is_(None),
+        )
     )
-
-    if origin_id_field:
-
-        cte_generated_uuid = (
-            sa.select(
-                transient_table.c[origin_id_field.source_field],
-                func.uuid_generate_v4().label("uuid"),
-            )
-            .where(transient_table.c[origin_id_field.source_field] != None)
-            .group_by(transient_table.c[origin_id_field.source_field])
-            .cte("cte_generated_uuid")
-        )
-
-        stmt = (
-            update(transient_table)
-            .values(
-                {
-                    getattr(transient_table.c, uuid_field.source_field): cte_generated_uuid.c.uuid,
-                }
-            )
-            .where(
-                transient_table.c[origin_id_field.source_field]
-                == cte_generated_uuid.c[origin_id_field.source_field],
-                whereclause,
-            )
-        )
-        db.session.execute(stmt)
-    if generate_uuid_if_empty:
-        stmt = (
-            update(transient_table)
-            .values(
-                {
-                    transient_table.c[uuid_field.source_field]: func.uuid_generate_v4(),
-                }
-            )
-            .where(
-                transient_table.c.id_import == imprt.id_import,
-                transient_table.c[uuid_field.source_field] == None,
-            )
-        )
-
-        db.session.execute(stmt)
+    if whereclause is not None:
+        stmt = stmt.where(whereclause)
+    db.session.execute(stmt)
 
 
 def check_duplicate_source_pk(
@@ -576,7 +590,7 @@ def check_digital_proof_urls(imprt, entity, digital_proof_field):
     )
 
 
-def check_entity_data_consistency(imprt, entity, fields, uuid_field):
+def check_entity_data_consistency(imprt, entity, fields, grouping_field):
     """
     Checks for rows with the same uuid, but different contents,
     in the same entity. Used mainely for parent entities.
@@ -586,19 +600,21 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
         The import to check.
     entity : Entity
         The entity to check.
-    uuid_field : BibFields
-        The field to check.
+    fields : BibFields
+        The fields to check.
+    grouping_field : BibFields
+        The field to group identical rows.
     """
     transient_table = imprt.destination.get_transient_table()
-    uuid_col = transient_table.c[uuid_field.dest_field]
+    grouping_col = transient_table.c[grouping_field.source_field]
 
-    # get duplicates uuids in the transient_table
+    # get duplicates rows in the transient_table
     duplicates = get_duplicates_query(
         imprt,
-        uuid_col,
+        grouping_col,
         whereclause=sa.and_(
             transient_table.c[entity.validity_column].is_not(None),
-            uuid_col != None,
+            grouping_col != None,
         ),
     )
 
@@ -609,7 +625,7 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
     hashedRows = (
         select(
             transient_table.c.line_no.label("lines"),
-            uuid_col.label("uuid_col"),
+            grouping_col.label("grouping_col"),
             func.md5(func.concat(*columns)).label("hashed"),
         )
         .where(transient_table.c.line_no == duplicates.c.lines)
@@ -620,15 +636,47 @@ def check_entity_data_consistency(imprt, entity, fields, uuid_field):
     # get the rows with differences
 
     erroneous = (
-        select(hashedRows.c.uuid_col.label("uuid_col"))
-        .group_by(hashedRows.c.uuid_col)
+        select(hashedRows.c.grouping_col.label("grouping_col"))
+        .group_by(hashedRows.c.grouping_col)
         .having(func.count(func.distinct(hashedRows.c.hashed)) > 1)
     )
 
+    # note: rows are unidentified (None) instead of being marked as invalid (False) in order to avoid running checks
     report_erroneous_rows(
         imprt,
         entity,
         error_type=ImportCodeError.INCOHERENT_DATA,
-        error_column="",  # uuid_field.name_field,
-        whereclause=(uuid_col == erroneous.c.uuid_col),
+        error_column=grouping_field.name_field,  # FIXME
+        whereclause=(grouping_col == erroneous.c.grouping_col),
+        level_validity_mapping={"ERROR": None},
+    )
+
+
+def disable_duplicated_rows(imprt, entity, fields, grouping_field):
+    """
+    When several rows have the same value in grouping field (typically UUID) field,
+    first one is untouched but following rows have validity set to None (do not import).
+    """
+    transient_table = imprt.destination.get_transient_table()
+    grouping_col = transient_table.c[grouping_field.source_field]
+
+    duplicates = (
+        select(
+            transient_table.c.line_no,
+            func.row_number()
+            .over(partition_by=grouping_col, order_by=transient_table.c.line_no)
+            .label("row_number"),
+        )
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(grouping_col.isnot(None))
+        .where(transient_table.c[entity.validity_column].is_(True))
+        .cte()
+    )
+
+    db.session.execute(
+        sa.update(transient_table)
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(transient_table.c.line_no == duplicates.c.line_no)
+        .where(duplicates.c.row_number > 1)  # keep first row
+        .values({entity.validity_column: None})
     )
