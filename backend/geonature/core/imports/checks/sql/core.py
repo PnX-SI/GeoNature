@@ -94,18 +94,25 @@ def check_orphan_rows(imprt):
         )
 
 
+def check_mandatory_field(imprt, entity, field):
+    transient_table = imprt.destination.get_transient_table()
+    source_field = transient_table.c[field.source_column]
+    whereclause = sa.and_(
+        transient_table.c[entity.validity_column].isnot(None),
+        source_field.is_(None),
+    )
+    report_erroneous_rows(
+        imprt,
+        entity=entity,
+        error_type=ImportCodeError.MISSING_VALUE,
+        error_column=field.name_field,
+        whereclause=whereclause,
+    )
+
+
 # Currently not used as done during dataframe checks
 def check_mandatory_fields(imprt, entity, fields):
     for field in fields.values():
         if not field.mandatory or not field.dest_field:
             continue
-        transient_table = imprt.destination.get_transient_table()
-        source_field = transient_table.c[field.source_column]
-        whereclause = source_field.is_(None)
-        report_erroneous_rows(
-            imprt,
-            entity=entity,
-            error_type=ImportCodeError.MISSING_VALUE,
-            error_column=field.name_field,
-            whereclause=whereclause,
-        )
+        check_mandatory_field(imprt, entity, field)
