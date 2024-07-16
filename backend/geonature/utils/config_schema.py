@@ -160,7 +160,7 @@ class AuthenticationConfig(Schema):
         fields.Dict(),
         load_default=[
             dict(
-                module="pypnusershub.auth.providers.default.DefaultConfiguration",
+                module="pypnusershub.auth.providers.default.LocalProvider",
                 id_provider="local_provider",
             )
         ],

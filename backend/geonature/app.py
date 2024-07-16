@@ -143,8 +143,6 @@ def create_app(with_external_mods=True):
     # Pass parameters to the submodules
     app.config["MA"] = MA
 
-    login_manager.init_app(app)
-
     # For deleting files on "delete" media
     @before_models_committed.connect_via(app)
     def on_before_models_committed(sender, changes):
