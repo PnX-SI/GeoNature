@@ -49,6 +49,9 @@ from geonature.core.imports.checks.sql import (
     init_rows_validity,
     check_orphan_rows,
 )
+from geonature.core.imports.checks.sql.core import (
+    check_mandatory_field,
+)
 from .checks import (
     generate_id_station,
     set_id_station_from_line_no,
@@ -165,7 +168,7 @@ class OcchabImportMixin(ImportMixin):
                 fields["unique_id_sinp_habitat"],
             )
         else:
-            pass  # TODO: check_missing_uuid
+            check_mandatory_field(imprt, entity_habitat, fields["unique_id_sinp_habitat"])
 
         set_id_parent_from_destination(
             imprt,
@@ -344,6 +347,8 @@ class OcchabImportMixin(ImportMixin):
                 fields["geom_local"],
                 id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
             )
+        if not current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"]:
+            check_mandatory_field(imprt, entity_station, fields["unique_id_sinp_station"])
 
         # Checks before these lines create errors for each rows, including for duplicate
         # station, whereas checks after create errors only for first row of duplicate station.
@@ -395,8 +400,6 @@ class OcchabImportMixin(ImportMixin):
                 whereclause=whereclause,
             )
             print_transient_table(imprt)
-        else:
-            pass  # TODO: check missing uuid
 
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
