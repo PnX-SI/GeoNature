@@ -44,7 +44,7 @@ Dans l'exemple ci-dessous, on déclare deux fournisseurs d'identités : le premi
     Vous pouvez consulter la documentation détaillée sur le `lien suivant <https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#param%C3%A8tres-de-configurations-des-protocoles-de-connexions-inclus>`_ pour obtenir la liste et les descriptions des paramètres de configuration de chaque protocole de connexion.
 
 .. warning:: 
-Soyez prudent lors de la modification de la variable de configuration ``AUTHENTICATION.PROVIDERS``. Si vous supprimez le fournisseur d'identité par défaut, vous ne pourrez plus vous connecter à GeoNature avec l'authentification par défaut. Par conséquent, si vous souhaitez également utiliser l'authentification par défaut de GeoNature en plus d'un autre fournisseur d'identité, vous devez le redéclarer dans la configuration. (voir l'exemple ci-dessus)
+    Soyez prudent lors de la modification de la variable de configuration ``AUTHENTICATION.PROVIDERS``. Si vous n'indiquez pas le fournisseur d'identité par défaut, vous ne pourrez plus vous connecter à GeoNature avec l'authentification par défaut. Par conséquent, si vous souhaitez également utiliser l'authentification par défaut de GeoNature en plus d'un autre fournisseur d'identité, vous devez le redéclarer dans la configuration. (voir l'exemple ci-dessus)
 
 Se connecter à un autre GeoNature
 ``````````````````````````````````
@@ -98,3 +98,12 @@ Si les protocoles de connexion que nous avons implémentés ne vous suffisent pa
 
 .. note::
     Plus de détails sur la classe ``pypnusershub.auth.Authentication`` sont disponibles dans la documentation de l'`API <https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#ajouter-son-propre-protocole-de-connexion>`_. 
+
+
+Désactiver l'authentification par défaut
+````````````````````````````````````````
+
+Si vous souhaitez désactiver l'authentification par défaut au profit d'un ou plusieurs autres fournisseurs d'identités, il suffit de ne pas déclarer celui-ci dans la section `[[AUTHENTICATION.PROVIDERS]]` dans la partie `AUTHENTICATION` de la configuration.
+
+.. note:: 
+    Si un seul fournisseur d'identités (différent de l'authentification par défaut) est déclaré dans la section `[[AUTHENTICATION.PROVIDERS]]` de la configuration, l'utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.
