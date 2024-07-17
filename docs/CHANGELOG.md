@@ -9,6 +9,16 @@ CHANGELOG
 - Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identités (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
 
 
+**⚠️ Notes de version**
+ 
+ - La synchronisation avec le service MTD de l'INPN n'existe plus dans GeoNature, cette dernière a été déplacée dans un module externe : https://github.com/PnX-SI/mtd_sync
+   - Supprimer les variables de configuration suivantes du fichier `geonature_config.toml` : 
+     - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
+     - toutes les variables dans `[CAS_PUBLIC]`, `[CAS]`, `[CAS.CAS_USER_WS]`, `[MTD]`
+     - `ID_USER_SOCLE_1` et `ID_USER_SOCLE_2` dans la section `BDD` 
+   - Installer le nouveau module externe à l'aide de la commande : `pip install git+https://github.com/PnX-SI/mtd_sync`
+   - Remplisser la configuration dans un fichier `mtd_sync.toml`
+
 2.14.2 (2024-05-28)
 -------------------
 
