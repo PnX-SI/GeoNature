@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+2.15.0 (unreleased)
+-------------------
+
+**🚀 Nouveautés**
+
+- Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identités (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
+
+
 2.14.2 (2024-05-28)
 -------------------
 
