@@ -1,21 +1,22 @@
 
-Se connecter à d'autres fournisseurs d'identité
-"""""""""""""""""""""""""""""""""""""""""""""""
-Depuis la version 2.3 du module ``UsersHub-authentification-module``, il est maintenant possible de se connecter à GeoNature à l'aide de fournisseurs d'identités externes (comme Google, GitHub ou INPN).
+Se connecter à d'autres fournisseurs d'identités
+""""""""""""""""""""""""""""""""""""""""""""""""
+Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l'aide de fournisseurs d'identités externes (comme Google, GitHub ou INPN).
 Pour cela, il est nécessaire d'implémenter le protocole de connexion pour permettre à GeoNature de communiquer avec ces fournisseurs.
-Par défaut, GeoNature vient avec plusieurs protocoles de connexion implémentés, tels que :
+Actuellement, GeoNature vient avec plusieurs protocoles de connexion implémentés, tels que :
 
 - OpenID
 - OpenIDConnect (OAuth2.0)
 - GeoNature Externe
 
-Configurer un nouveau fournisseur d'identité
+Ajouter un nouveau fournisseur d'identité
 ````````````````````````````````````````````
 
-Pour ajouter un nouveau fournisseur d'identité à votre instance de GeoNature, vous devez ajouter une section ``[[AUTHENTICATION.PROVIDERS]]`` dans la partie ``AUTHENTICATION`` de votre fichier de configuration.
+Pour ajouter un nouveau fournisseur d'identités à votre instance de GeoNature, vous devez ajouter une section ``[[AUTHENTICATION.PROVIDERS]]`` dans la partie ``AUTHENTICATION`` de votre fichier de configuration.
 Chaque section doit comporter deux variables obligatoires: ``module`` et ``id_provider``. La variable ``module`` indique le chemin vers la classe Python qui implémente le protocole de connexion, tandis que ``id_provider`` indique l'identifiant unique du fournisseur d'identité.
-Vous pouvez également ajouter des variables de configuration spécifiques au protocole de connexion correspondant.
-Dans l'exemple ci-dessous, on déclare deux fournisseurs d'identités: le premier est le fournisseur d'identité par défaut (local) et le deuxième permet de se connecter à l'INPN.
+Vous devez également ajouter les variables de configuration spécifiques au protocole de connexion correspondant.
+
+Dans l'exemple ci-dessous, on déclare deux fournisseurs d'identités : le premier est le fournisseur d'identité par défaut (local) et le deuxième permet de se connecter à l'INPN.
 
 .. code:: toml
 
@@ -31,16 +32,19 @@ Dans l'exemple ci-dessous, on déclare deux fournisseurs d'identités: le premie
             WS_ID ="secret"
             WS_PASSWORD ="secret"
 
+
 .. note:: 
-    La list des protocoles de connexion implémentés :
+    Les protocoles de connexion implémentés sont les suivants :
      - ``pypnusershub.auth.providers.default.LocalProvider`` : protocole de connexion par défaut dans GeoNature.
      - ``pypnusershub.auth.providers.cas_inpn_provider.AuthenficationCASINPN`` : CAS de l'INPN.
      - ``pypnusershub.auth.providers.openid_provider.OpenIDConnectProvider`` : OpenIDConnect.
      - ``pypnusershub.auth.providers.openid_provider.OpenIDProvider`` : OpenID.
      - ``pypnusershub.auth.providers.usershub_provider.ExternalUsersHubAuthProvider`` : Autre application utilisant ``UsersHub-authentification-module`` comme système d'authentification.
+     
+    Vous pouvez consulter la documentation détaillée sur le `lien suivant <https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#param%C3%A8tres-de-configurations-des-protocoles-de-connexions-inclus>`_ pour obtenir la liste et les descriptions des paramètres de configuration de chaque protocole de connexion.
 
 .. warning:: 
-    Soyez prudent lors de la modification de la variable de configuration ``AUTHENTICATION.PROVIDERS``. Si vous supprimez le fournisseur d'identité par défaut, vous ne pourrez plus vous connecter à GeoNature avec l'authentification par défaut. Par conséquent, si vous souhaitez également utiliser l'authentification par défaut de GeoNature en plus d'un autre fournisseur d'identité, vous devez redéclarer celui-ci dans la configuration. (voir exemple ci-dessus)
+Soyez prudent lors de la modification de la variable de configuration ``AUTHENTICATION.PROVIDERS``. Si vous supprimez le fournisseur d'identité par défaut, vous ne pourrez plus vous connecter à GeoNature avec l'authentification par défaut. Par conséquent, si vous souhaitez également utiliser l'authentification par défaut de GeoNature en plus d'un autre fournisseur d'identité, vous devez le redéclarer dans la configuration. (voir l'exemple ci-dessus)
 
 Se connecter à un autre GeoNature
 ``````````````````````````````````
@@ -60,7 +64,7 @@ Pour utiliser ce dernier, ajouter la section ``[[AUTHENTICATION.PROVIDERS]]`` su
 Créer son propre module de connexion
 ````````````````````````````````````
 
-Si les protocoles de connexion que nous avons implémentés ne sont pas suffisant pour votre application, vous pouvez ajouter votre propre protocole de connexion à l'aide de la classe ``pypnusershub.auth.Authentication``.
+Si les protocoles de connexion que nous avons implémentés ne vous suffisent pas, vous pouvez ajouter votre propre protocole de connexion en utilisant la classe ``pypnusershub.auth.Authentication``.
 
 .. code:: python
 
@@ -73,7 +77,7 @@ Si les protocoles de connexion que nous avons implémentés ne sont pas suffisan
 
 
     class NEW_PROVIDER(Authentication):
-        is_external = True # go through an external connection portal
+        is_external = True # si redirection vers un portail de connexion externe
 
         def authenticate(self, *args, **kwargs) -> Union[Response, models.User]:
             pass # doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d'identités
@@ -86,8 +90,11 @@ Si les protocoles de connexion que nous avons implémentés ne sont pas suffisan
             pass # si une action spécifique doit être faite lors de la déconnexion
 
         def configure(self, configuration: Union[dict, Any]):
-            pass # Indique la configuration d'un fournisseur d'identités
+            class SchemaConf(ProviderConfigurationSchema):
+                VAR = fields.String(required=True)
+            configuration = SchemaConf().load(configuration) # Si besoin d'un processus de validation
+            ...# Configuration du fournisseur d'identités
 
 
 .. note::
-    Plus de détails sur la classe ``pypnusershub.auth.Authentication`` sont disponibles dans la documentation de l'`API <https://github.com/PnX-SI/UsersHub-authentification-module>`_. 
+    Plus de détails sur la classe ``pypnusershub.auth.Authentication`` sont disponibles dans la documentation de l'`API <https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#ajouter-son-propre-protocole-de-connexion>`_. 
