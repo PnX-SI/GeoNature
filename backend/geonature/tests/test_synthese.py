@@ -1,4 +1,5 @@
 from io import StringIO
+import sys
 import csv
 import datetime
 import itertools
@@ -42,6 +43,8 @@ from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
 
 from .fixtures import *
 from .fixtures import create_synthese, create_module, synthese_with_protected_status
+
+csv.field_size_limit(sys.maxsize)
 
 
 @pytest.fixture()
