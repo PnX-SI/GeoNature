@@ -581,7 +581,7 @@ class TestOcchab:
         # Read the CSV and verify all declared stations are contained in the export
         uuids_INPN_export = pd.read_csv(
             StringIO(response.data.decode("utf-8")), sep=";"
-        ).identifiantStaSINP.unique()
+        ).uuid_station.unique()
         assert all([True if uuid_ in uuids_INPN_export else False for uuid_ in uuidINPN])
 
         # Test the GEOJSON export
@@ -591,8 +591,7 @@ class TestOcchab:
         assert response.status_code == 200
         # READ the GEOJson and check if all stations INPN uuid are present
         uuids_INPN_export = [
-            item["properties"]["identifiantStaSINP"]
-            for item in json.loads(response.data)["features"]
+            item["properties"]["uuid_station"] for item in json.loads(response.data)["features"]
         ]
         assert all([True if uuid_ in uuids_INPN_export else False for uuid_ in uuidINPN])
 
