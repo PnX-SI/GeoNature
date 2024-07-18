@@ -18,9 +18,10 @@ depends_on = None
 
 
 def upgrade():
+    op.execute("DROP VIEW pr_occhab.v_export_sinp;")
     op.execute(
         """
-        create or replace view pr_occhab.v_export_sinp_test as
+        create or replace view pr_occhab.v_export_sinp as
             select
                 s.id_station,
                 s.id_dataset,
@@ -35,11 +36,11 @@ def upgrade():
                 ','::text),
                 s.observers_txt::text) as "observateurs",
                 nom2.cd_nomenclature as "methode_calcul_surface",
-                ST_Area(s.geom_4326) as "surface",
+                s.area as "surface",
                 public.st_astext(s.geom_4326) as "geometry",
                 public.st_asgeojson(s.geom_4326) as geojson,
                 s.geom_local,
-                nom3.cd_nomenclature as "natureObjetGeo",
+                nom3.cd_nomenclature as "nature_objet_geo",
                 h.unique_id_sinp_hab as "uuid_habitat",
                 s.altitude_min as "altitude_min",
                 s.altitude_max as "altitude_max",
@@ -84,6 +85,7 @@ def upgrade():
 
 
 def downgrade():
+    op.execute("DROP VIEW pr_occhab.v_export_sinp;")
     op.execute(
         """
         CREATE OR REPLACE view pr_occhab.v_export_sinp AS
