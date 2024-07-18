@@ -6,10 +6,21 @@ Create Date: 2023-10-20 09:05:49.973738
 
 """
 
+import warnings
+
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.orm import Session
 from sqlalchemy.schema import Table, MetaData
 from sqlalchemy.dialects.postgresql import JSON
+
+from geonature.core.gn_commons.models.base import CorModuleDataset, TModules
+from geonature.core.gn_permissions.models import (
+    PermObject,
+    PermissionAvailable,
+    PermAction,
+    Permission,
+)
 
 
 # revision identifiers, used by Alembic.
@@ -17,6 +28,22 @@ revision = "2b0b3bd0248c"
 down_revision = "2896cf965dd6"
 branch_labels = None
 depends_on = None
+
+
+def get_module_id(session, module_code):
+    return session.scalar(sa.select(TModules.id_module).where(TModules.module_code == module_code))
+
+
+def get_id_object(session, code_object):
+    return session.scalar(
+        sa.select(PermObject.id_object).where(PermObject.code_object == code_object)
+    )
+
+
+def get_id_action(session, code_action):
+    return session.scalar(
+        sa.select(PermAction.id_action).where(PermAction.code_action == code_action)
+    )
 
 
 def upgrade():
@@ -212,45 +239,52 @@ def upgrade():
     # Remove from bib_fields columns moved to cor_entity_field
     for column_name in ["desc_field", "id_theme", "order_field", "comment"]:
         op.drop_column(schema="gn_imports", table_name="bib_fields", column_name=column_name)
+
+    session = Session(bind=op.get_bind())
+
+    id_module_import = get_module_id(session, "IMPORT")
+    id_module_synthese = get_module_id(session, "SYNTHESE")
+
+    id_object_import = get_id_object(session, "IMPORT")
+    id_object_all = get_id_object(session, "ALL")
+
+    id_action_create = get_id_action(session, "C")
+
+    session.close()
+
     ### Permissions
+
+    #### Enlever scope dans C IMPORT
     op.execute(
-        """
-        INSERT INTO
-            gn_permissions.t_permissions_available (id_module, id_object, id_action, label, scope_filter)
-        SELECT
-            m.id_module, o.id_object, a.id_action, 'Importer des observations', TRUE
-        FROM
-            gn_commons.t_modules m,
-            gn_permissions.t_objects o,
-            gn_permissions.bib_actions a
-        WHERE
-            m.module_code = 'SYNTHESE'
-            AND
-            o.code_object = 'ALL'
-            AND
-            a.code_action = 'C'
-        """
+        sa.update(PermissionAvailable)
+        .where(
+            PermissionAvailable.id_action == id_action_create,
+            PermissionAvailable.id_module == id_module_import,
+        )
+        .values(scope_filter=False)
     )
+
     op.execute(
-        """
-        INSERT INTO
-            gn_permissions.t_permissions (id_role, id_module, id_object, id_action, scope_value)
-        SELECT
-            p.id_role, new_module.id_module, new_object.id_object, p.id_action, p.scope_value
-        FROM
-            gn_permissions.t_permissions p
-                JOIN gn_permissions.bib_actions a USING(id_action)
-                JOIN gn_commons.t_modules m USING(id_module)
-                JOIN gn_permissions.t_objects o USING(id_object)
-                JOIN utilisateurs.t_roles r USING(id_role),
-            gn_commons.t_modules new_module,
-            gn_permissions.t_objects new_object
-        WHERE
-            a.code_action = 'C' AND m.module_code = 'IMPORT' AND o.code_object = 'IMPORT'
-            AND
-            new_module.module_code = 'SYNTHESE' AND new_object.code_object = 'ALL';
-        """
+        sa.insert(PermissionAvailable).values(
+            id_action=id_action_create, id_module=id_module_synthese, id_object=id_object_all
+        )
     )
+
+    op.execute(
+        sa.insert(Permission).from_select(
+            ["id_role", "id_action", "id_module", "id_object"],
+            sa.select(
+                Permission.id_role,
+                Permission.id_action,
+                sa.literal(id_module_synthese).label("id_module"),
+                sa.literal(id_object_all).label("id_object"),
+            ).where(
+                Permission.id_action == id_action_create,
+                Permission.id_module == id_module_import,
+            ),
+        )
+    )
+
     # TODO constraint entity_field.entity.id_destination == entity_field.field.id_destination
     ### Remove synthese specific 'id_source' column
     op.drop_column(schema="gn_imports", table_name="t_imports", column_name="id_source_synthese")
@@ -326,8 +360,55 @@ def upgrade():
         """
     )
 
+    ## JDD IMPORT -> JDD Synthese
+    # update row with module = import to module=synthese in cor_module_dataset, only if the dataset is not already associated with a synthese
+    cte_ = (
+        sa.select(CorModuleDataset.id_dataset.label("id_dataset"))
+        .where(CorModuleDataset.id_module == id_module_synthese)
+        .cte("dataset_already_associated_with_synthese")
+    )
+    op.execute(
+        sa.update(CorModuleDataset)
+        .where(
+            CorModuleDataset.id_module == id_module_import,
+            CorModuleDataset.id_dataset != cte_.c.id_dataset,
+        )
+        .values(id_module=id_module_synthese)
+    )
+    # delete remaining rows with association between datasets and the import module
+    op.execute(
+        sa.delete(CorModuleDataset).where(
+            CorModuleDataset.id_module == id_module_import,
+        )
+    )
+
 
 def downgrade():
+    session = Session(bind=op.get_bind())
+
+    id_module_import = get_module_id(session, "IMPORT")
+    id_module_synthese = get_module_id(session, "SYNTHESE")
+
+    id_action_create = get_id_action(session, "C")
+
+    session.close()
+
+    ## C IMPORT -> C Synthese
+    warnings.warn("!!!!! Created synthese permissions created previously will remain !!!!)")
+    ## JDD Synthese -> JDD Import
+    warnings.warn(
+        "Re-add association between datasets and the import module (!!!!! association between synthese and dataset created previously will remain! !!!!)"
+    )
+    op.execute(
+        sa.insert(CorModuleDataset).from_select(
+            ["id_module", "id_dataset"],
+            sa.select(
+                sa.literal(id_module_import).label("id_module"),
+                CorModuleDataset.id_dataset.label("id_dataset"),
+            ).where(CorModuleDataset.id_module == id_module_synthese),
+        )
+    )
+
     meta = MetaData(bind=op.get_bind())
     # Remove new error types
     error_type = Table("bib_errors_types", meta, autoload=True, schema="gn_imports")
