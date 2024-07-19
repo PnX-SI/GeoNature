@@ -235,4 +235,8 @@ export class ImportListComponent implements OnInit {
     }
     return statKey;
   }
+
+  private generateDataQaAttribute(columnName: string): string {
+    return columnName.replace(/\s+/g, '-').toLowerCase();
+  }
 }

@@ -16,6 +16,7 @@
         (click)="performChecks()"
         mat-raised-button
         color="primary"
+        data-qa="import-new-verification-start"
       >
         Lancer la vérification
       </button>
@@ -35,7 +36,10 @@
   </div>
 </div>
 <ng-template #elseBlock>
-  <div *ngIf="tableReady">
+  <div
+    *ngIf="tableReady"
+    data-qa="import-recapitulatif"
+  >
     <h3 class="title mb-0">Récapitulatif avant import</h3>
     <div class="card">
       <h4 class="card-header">
@@ -72,6 +76,7 @@
     <div
       class="card card-margin"
       *ngIf="!importDone && this.previewData.valid_bbox"
+      data-qa="import-recapitulatif-map"
     >
       <h4 class="card-header">
         <mat-icon>room</mat-icon>
@@ -153,6 +158,7 @@
           class="d-flex justify-content-center align-content-between button-success"
           (click)="onImport()"
           mat-raised-button
+          data-qa="import-new-execute-start"
         >
           Importer vos {{ nValidData }} entitées valides
           <mat-icon>done</mat-icon>

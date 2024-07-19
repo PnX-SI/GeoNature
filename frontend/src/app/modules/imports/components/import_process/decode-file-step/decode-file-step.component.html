@@ -11,6 +11,7 @@
           class="custom-select mr-sm-2"
           id="encoding"
           formControlName="encoding"
+          data-qa="import-new-decode-encode"
           required
         >
           <option
@@ -30,6 +31,7 @@
           class="custom-select mr-sm-2"
           id="format"
           formControlName="format"
+          data-qa="import-new-decode-format"
           required
         >
           <option
@@ -49,6 +51,7 @@
           class="custom-select mr-sm-2"
           id="separator"
           formControlName="separator"
+          data-qa="import-new-decode-delimiter"
           required
         >
           <option
@@ -67,6 +70,7 @@
           id="srid"
           formControlName="srid"
           required
+          data-qa="import-new-decode-srid"
         >
           <option
             *ngFor="let srid of this.config.IMPORT.SRID"
@@ -87,6 +91,7 @@
         color="primary"
         (click)="onPreviousStep()"
         id="validate"
+        data-qa="import-file-decode-back-btn"
       >
         <i class="material-icons">navigate_before</i>
         Précédent
@@ -99,6 +104,7 @@
         (click)="onSubmit()"
         [disabled]="!isNextStepAvailable()"
         id="validate"
+        data-qa="import-new-decode-validate"
       >
         Suivant
         <i class="material-icons">navigate_next</i>

@@ -32,6 +32,7 @@
               [clearable]="true"
               [virtualScroll]="true"
               formControlName="{{ field.name_field }}"
+              [attr.data-qa]="'import-fieldmapping-theme-' + field.name_field"
             >
               <ng-template
                 ng-option-tmp
