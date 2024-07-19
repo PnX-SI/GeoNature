@@ -1,4 +1,7 @@
-<div class="card">
+<div
+  class="card"
+  data-qa="import-new-fieldmapping-form"
+>
   <div class="card-header">
     <h5 class="card-title mb-0">{{ 'Import.FieldMapping.Title' | translate }}</h5>
   </div>
@@ -87,6 +90,7 @@
           class="d-flex justify-content-center align-content-between"
           (click)="onPreviousStep()"
           color="primary"
+          data-qa="import-fieldmapping-model-back-btn"
         >
           <mat-icon>navigate_before</mat-icon>
           {{ 'Import.Before' | translate }}
@@ -97,6 +101,7 @@
           color="primary"
           [disabled]="!isNextStepAvailable()"
           (click)="onNextStep()"
+          data-qa="import-new-fieldmapping-model-validate"
         >
           {{ 'Import.Next' | translate }}
           <mat-icon>navigate_next</mat-icon>
@@ -110,7 +115,10 @@
   #saveMappingModal
   let-modal
 >
-  <div class="modal-header">
+  <div
+    class="modal-header"
+    data-qa="import-fieldmapping-saving-modal"
+  >
     <h4
       class="modal-title"
       id="modal-basic-title"
@@ -122,6 +130,7 @@
       class="close"
       aria-label="Close"
       (click)="modal.dismiss('Cross click')"
+      data-qa="import-fieldmapping-saving-modal-close"
     >
       <span aria-hidden="true">&times;</span>
     </button>
@@ -148,6 +157,7 @@
           class="form-control"
           id="mappingName"
           placeholder="Nom du modèle"
+          data-qa="import-fieldmapping-saving-modal-mapping-name"
         />
         <span
           *ngIf="!modalCreateMappingForm.value"
@@ -174,6 +184,7 @@
       mat-raised-button
       color="accent"
       (click)="modal.close(); processNextStep()"
+      data-qa="import-fieldmapping-saving-modal-cancel"
     >
       {{ 'Import.FieldMapping.DontSaveMapping' | translate }}
     </button>
@@ -183,6 +194,7 @@
       mat-raised-button
       color="primary"
       (click)="modal.close(); updateMapping(true)"
+      data-qa="import-fieldmapping-saving-modal-ok"
     >
       {{ 'Import.FieldMapping.UpdateMapping' | translate }}
     </button>
@@ -197,6 +209,7 @@
           modalCreateMappingForm.value ==
             this._fieldMappingService.mappingSelectionFormControl.value.label)
       "
+      data-qa="import-fieldmapping-saving-modal-new-ok"
     >
       {{ 'Import.FieldMapping.SaveNewMapping' | translate }}
     </button>

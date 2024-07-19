@@ -1,13 +1,9 @@
-
-
 beforeEach(() => {
   cy.geonatureLogin();
   cy.visit('/#/occtax_ds');
 });
 
-
 it('Should click on OCCTAX_DS module and load data with module_code in url', () => {
-
   cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX_DS/releves?**').as('getReleves');
   cy.wait('@getReleves').then((interception) => {
     expect(interception.response.statusCode, 200);

@@ -3,18 +3,21 @@
     <li
       [ngClass]="{ done: step > Step.Upload, current: step == Step.Upload }"
       (click)="importProcessService.navigateToStep(Step.Upload)"
+      data-qa="import-upload-step-btn"
     >
       Téléversement du fichier
     </li>
     <li
       [ngClass]="{ done: step > Step.Decode, current: step == Step.Decode }"
       (click)="importProcessService.navigateToStep(Step.Decode)"
+      data-qa="import-decode-step-btn"
     >
       Configuration du fichier
     </li>
     <li
       [ngClass]="{ done: step > Step.FieldMapping, current: step == Step.FieldMapping }"
       (click)="importProcessService.navigateToStep(Step.FieldMapping)"
+      data-qa="import-fieldmapping-step-btn"
     >
       Correspondance des champs
     </li>
@@ -22,12 +25,14 @@
       *ngIf="config.IMPORT.ALLOW_VALUE_MAPPING"
       [ngClass]="{ done: step > Step.ContentMapping, current: step == Step.ContentMapping }"
       (click)="importProcessService.navigateToStep(Step.ContentMapping)"
+      data-qa="import-contentmapping-step-btn"
     >
       Correspondance des nomenclatures
     </li>
     <li
       [ngClass]="{ done: step > Step.Import, current: step == Step.Import }"
       (click)="importProcessService.navigateToStep(Step.Import)"
+      data-qa="import-data-step-btn"
     >
       Import des données
     </li>

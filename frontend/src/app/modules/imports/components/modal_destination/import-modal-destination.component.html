@@ -14,7 +14,10 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="modal-body">
+  <div
+    class="modal-body"
+    data-qa="import-new-modal-destinations"
+  >
     <pnx-destinations
       label="{{ 'Import.Destinations' | translate }}"
       [parentFormControl]="selectDestinationForm"
@@ -39,6 +42,7 @@
         [disabled]="selectDestinationForm.invalid"
         mat-raised-button
         color="primary"
+        data-qa="import-modal-destination-validate"
       >
         {{ 'Import.Validate' | translate }}
       </button>
@@ -51,6 +55,7 @@
   mat-fab
   color="primary"
   (click)="onOpenModal(content)"
+  data-qa="import-modal-destination-start"
   matTooltip="Nouvel import"
 >
   <mat-icon>add</mat-icon>
