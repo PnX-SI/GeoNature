@@ -49,6 +49,8 @@ class VmValidProfiles(DB.Model):
     last_valid_data = DB.Column(DB.DateTime)
     count_valid_data = DB.Column(DB.Integer)
     active_life_stage = DB.Column(DB.Boolean)
+    count_observers = DB.Column(DB.Integer)
+    count_city = DB.Column(DB.Integer)
 
 
 @serializable
