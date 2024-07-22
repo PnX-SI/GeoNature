@@ -32,7 +32,16 @@ describe('Tests gn_synthese', () => {
 
     cy.intercept(Cypress.env('apiEndpoint') + 'synthese/for_web?**', (req) => {
       if (req.body.hasOwnProperty('date_min')) {
-        req.alias = 'filteredByDate';
+        const cells = cy.get('.synthese-list-col-date_min');
+        cells.then((d) => {
+          expect(d.length).to.greaterThan(0);
+        });
+        cells.each(($el, index, $list) => {
+          var [day, month, year] = $el.text().split('-');
+          const date = new Date(year, month - 1, day);
+          expect(date).to.be.greaterThan(new Date('2016-12-24'));
+          expect(date).to.be.lessThan(new Date('2017-01-02'));
+        });
       }
     });
 
@@ -49,20 +58,6 @@ describe('Tests gn_synthese', () => {
 
     // search
     cy.get('[data-qa="synthese-search-btn"]').click();
-
-    cy.wait('@filteredByDate').then(() => {
-      // get datatable cells containing the observater info
-      const cells = cy.get('.synthese-list-col-date_min');
-      cells.then((d) => {
-        expect(d.length).to.greaterThan(0);
-      });
-      cells.each(($el, index, $list) => {
-        var [day, month, year] = $el.text().split('-');
-        const date = new Date(year, month - 1, day);
-        expect(date).to.be.greaterThan(new Date('2016-12-24'));
-        expect(date).to.be.lessThan(new Date('2017-01-02'));
-      });
-    });
   });
 
   it('Should search by observer', function () {
@@ -109,31 +104,28 @@ describe('Tests gn_synthese', () => {
     // Intercept request to datasets which must have a parameter to "id_acquisition_framework"
     cy.intercept(Cypress.env('apiEndpoint') + 'meta/datasets?**', (req) => {
       if (req.body.hasOwnProperty('id_acquisition_frameworks')) {
-        req.alias = 'filteredDatasets';
+        // select CA 1 and check JDD-1 is in list
+        cy.get('[data-qa="synthese-form-ca"] ng-select').click();
+        cy.get('[data-qa="CA-1"]').click();
+        cy.get('[data-qa="synthese-form-dataset"] ng-select').click();
+        cy.get('[data-qa="JDD-1"]').click();
+        cy.get('[data-qa="synthese-search-btn"]')
+          .click()
+          .wait(1000)
+          .then(() => {
+            const resultsCells = cy.get('.synthese-list-col-dataset_name');
+            resultsCells.then((d) => {
+              expect(d.length).to.greaterThan(0);
+            });
+            resultsCells.each(($el, index, $list) => {
+              expect($el.text().trim()).to.be.equal('JDD-1');
+            });
+          });
       }
     });
     // select a CA without dataset and check JDD 1 is not in list
     cy.get('[data-qa="CA-2-empty"]').click();
     // wait for the filtered request
-    cy.wait('@filteredDatasets');
-
-    // select CA 1 and check JDD-1 is in list
-    cy.get('[data-qa="synthese-form-ca"] ng-select').click();
-    cy.get('[data-qa="CA-1"]').click();
-    cy.get('[data-qa="synthese-form-dataset"] ng-select').click();
-    cy.get('[data-qa="JDD-1"]').click();
-    cy.get('[data-qa="synthese-search-btn"]')
-      .click()
-      .wait(1000)
-      .then(() => {
-        const resultsCells = cy.get('.synthese-list-col-dataset_name');
-        resultsCells.then((d) => {
-          expect(d.length).to.greaterThan(0);
-        });
-        resultsCells.each(($el, index, $list) => {
-          expect($el.text().trim()).to.be.equal('JDD-1');
-        });
-      });
   });
 
   it('Should open the observation details pop-up and check its content', () => {
