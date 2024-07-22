@@ -30,6 +30,20 @@
         </div>
         <div class="card">
           <div class="card-body">
+            <mat-icon>group icon</mat-icon>
+            <h3>{{ profile?.count_observers }}</h3>
+            <p class="text-muted">Observateurs</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <mat-icon>location_city</mat-icon>
+            <h3>{{ profile?.count_city }}</h3>
+            <p class="text-muted">Communes</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
             <mat-icon>schedule</mat-icon>
             <h3>{{ profile?.first_valid_data | date: 'dd/MM/yyyy' }}</h3>
             <!-- <mat-icon style="color:green">check</mat-icon> -->
