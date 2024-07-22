@@ -1,5 +1,6 @@
 from math import ceil
 
+
 from geonature.core.imports.import_mixin import ImportMixin, ImportStatisticsLabels, ImportInputUrl
 
 from apptax.taxonomie.models import Taxref
@@ -23,6 +24,7 @@ from geonature.core.imports.checks.dataframe import (
     check_types,
     check_geography,
     check_counts,
+    check_datasets,
 )
 from geonature.core.imports.checks.sql import (
     do_nomenclatures_mapping,
@@ -97,7 +99,7 @@ class SyntheseImportMixin(ImportMixin):
         def update_batch_progress(batch, step):
             start = 0.1
             end = 0.4
-            step_count = 7
+            step_count = 8
             progress = start + ((batch + 1) / batch_count) * (step / step_count) * (end - start)
             task.update_state(state="PROGRESS", meta={"progress": progress})
 
@@ -141,6 +143,17 @@ class SyntheseImportMixin(ImportMixin):
                 updated_cols |= check_types(imprt, entity, df, fields)
             update_batch_progress(batch, 4)
 
+            logger.info(f"[{batch+1}/{batch_count}] Check dataset rows")
+            with start_sentry_child(op="check.df", description="check datasets rows"):
+                updated_cols |= check_datasets(
+                    imprt,
+                    entity,
+                    df,
+                    uuid_field=fields["unique_dataset_id"],
+                    id_field=fields["id_dataset"],
+                    module_code="SYNTHESE",
+                )
+            update_batch_progress(batch, 5)
             logger.info(f"[{batch+1}/{batch_count}] Check geography…")
             with start_sentry_child(op="check.df", description="set geography"):
                 updated_cols |= check_geography(
@@ -157,7 +170,7 @@ class SyntheseImportMixin(ImportMixin):
                     codemaille_field=fields["codemaille"],
                     codedepartement_field=fields["codedepartement"],
                 )
-            update_batch_progress(batch, 5)
+            update_batch_progress(batch, 6)
 
             logger.info(f"[{batch+1}/{batch_count}] Check counts…")
             with start_sentry_child(op="check.df", description="check count"):
@@ -169,12 +182,12 @@ class SyntheseImportMixin(ImportMixin):
                     fields["count_max"],
                     default_count=current_app.config["IMPORT"]["DEFAULT_COUNT_VALUE"],
                 )
-            update_batch_progress(batch, 6)
+            update_batch_progress(batch, 7)
 
             logger.info(f"[{batch+1}/{batch_count}] Updating import data from dataframe…")
             with start_sentry_child(op="check.df", description="save dataframe"):
                 update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
-            update_batch_progress(batch, 7)
+            update_batch_progress(batch, 8)
 
         # Checks in SQL
         convert_geom_columns(
@@ -334,6 +347,8 @@ class SyntheseImportMixin(ImportMixin):
             else:
                 if source_field in imprt.columns:
                     insert_fields |= {field}
+
+        insert_fields -= {fields["unique_dataset_id"]}  # Column only used for filling `id_dataset`
 
         select_stmt = (
             sa.select(
