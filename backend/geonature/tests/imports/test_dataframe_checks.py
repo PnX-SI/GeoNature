@@ -1,5 +1,6 @@
 from collections import namedtuple
 from datetime import datetime
+from uuid import UUID
 
 from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
@@ -13,7 +14,7 @@ from shapely.geometry import Point
 
 from geonature.core.imports.models import TImports, Destination, BibFields
 from geonature.core.imports.checks.dataframe import *
-from geonature.core.imports.checks.dataframe.types import convert_to_datetime
+from geonature.core.imports.checks.dataframe.cast import convert_to_datetime
 from geonature.core.imports.checks.dataframe.geometry import (
     check_wkt_inside_area_id,
     check_geometry_inside_l_areas,
@@ -80,6 +81,124 @@ class TestChecks:
             expected=[
                 Error(error_code="MISSING_VALUE", column="cd_nom", invalid_rows=frozenset([0])),
                 Error(error_code="MISSING_VALUE", column="nom_cite", invalid_rows=frozenset([1])),
+            ],
+        )
+
+    def test_check_required_values_geom_conditions(self, imprt):
+        fields = get_fields(
+            imprt, ["WKT", "latitude", "longitude", "codecommune", "codedepartement", "codemaille"]
+        )
+        assert fields["WKT"].mandatory is True
+        assert set(fields["WKT"].optional_conditions) == {
+            "latitude",
+            "longitude",
+            "codecommune",
+            "codedepartement",
+            "codemaille",
+        }
+        assert fields["WKT"].mandatory_conditions is None
+        assert fields["latitude"].mandatory is True
+        assert set(fields["latitude"].optional_conditions) == {
+            "WKT",
+            "codecommune",
+            "codedepartement",
+            "codemaille",
+        }
+        assert set(fields["latitude"].mandatory_conditions) == {"longitude"}
+        assert fields["longitude"].mandatory is True
+        assert set(fields["longitude"].optional_conditions) == {
+            "WKT",
+            "codecommune",
+            "codedepartement",
+            "codemaille",
+        }
+        assert set(fields["longitude"].mandatory_conditions) == {"latitude"}
+        # code are not marked as mandatory because using them is discouraged and to not confuse users
+        assert fields["codecommune"].mandatory is False
+        assert fields["codecommune"].optional_conditions is None
+        assert fields["codecommune"].mandatory_conditions is None
+        assert fields["codedepartement"].mandatory is False
+        assert fields["codedepartement"].optional_conditions is None
+        assert fields["codedepartement"].mandatory_conditions is None
+        assert fields["codemaille"].mandatory is False
+        assert fields["codemaille"].optional_conditions is None
+        assert fields["codemaille"].mandatory_conditions is None
+
+        # All fields are mapped
+        df = pd.DataFrame(
+            [
+                [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],  # NO-GEOM
+                [np.nan, "x", np.nan, np.nan, np.nan, np.nan],  # missing longitude
+                [np.nan, np.nan, "y", np.nan, np.nan, np.nan],  # missing latitude
+                [np.nan, "x", "y", np.nan, np.nan, np.nan],
+                ["wkt", np.nan, np.nan, np.nan, np.nan, np.nan],
+                ["wkt", "x", np.nan, np.nan, np.nan, np.nan],  # missing longitude
+                ["wkt", np.nan, "y", np.nan, np.nan, np.nan],  # missing latitude
+                ["wkt", "x", "y", np.nan, np.nan, np.nan],
+                [np.nan, np.nan, np.nan, "5101", np.nan, np.nan],
+                [np.nan, np.nan, np.nan, np.nan, "5", np.nan],
+                [np.nan, np.nan, np.nan, np.nan, np.nan, "5kmL93E0905N6250"],
+            ],
+            columns=[field.source_column for field in fields.values()],
+        )
+        errors = check_required_values.__wrapped__(df, fields)
+        assert_errors(
+            errors,
+            expected=[
+                Error(
+                    error_code="NO-GEOM", column="Champs géométriques", invalid_rows=frozenset([0])
+                ),
+                Error(
+                    error_code="MISSING_VALUE", column="latitude", invalid_rows=frozenset([2, 6])
+                ),
+                Error(
+                    error_code="MISSING_VALUE", column="longitude", invalid_rows=frozenset([1, 5])
+                ),
+            ],
+        )
+
+        # Only latitude and longitude are mapped
+        df = pd.DataFrame(
+            [
+                [np.nan, np.nan],
+                ["x", np.nan],  # missing longitude
+                [np.nan, "y"],  # missing latitude
+                ["x", "y"],
+            ],
+            columns=[field.source_column for field in [fields["latitude"], fields["longitude"]]],
+        )
+        errors = check_required_values.__wrapped__(df, fields)
+        assert_errors(
+            errors,
+            expected=[
+                Error(
+                    error_code="NO-GEOM", column="Champs géométriques", invalid_rows=frozenset([0])
+                ),
+                Error(error_code="MISSING_VALUE", column="latitude", invalid_rows=frozenset([2])),
+                Error(error_code="MISSING_VALUE", column="longitude", invalid_rows=frozenset([1])),
+            ],
+        )
+
+        # Only WKT and latitude are mapped
+        df = pd.DataFrame(
+            [
+                [np.nan, np.nan],
+                ["WKT", np.nan],
+                [np.nan, "x"],  # missing latitude
+                ["WKT", "x"],  # missing longitude
+            ],
+            columns=[field.source_column for field in [fields["WKT"], fields["latitude"]]],
+        )
+        errors = check_required_values.__wrapped__(df, fields)
+        assert_errors(
+            errors,
+            expected=[
+                Error(
+                    error_code="NO-GEOM", column="Champs géométriques", invalid_rows=frozenset([0])
+                ),
+                Error(
+                    error_code="MISSING_VALUE", column="longitude", invalid_rows=frozenset([2, 3])
+                ),
             ],
         )
 
@@ -165,11 +284,6 @@ class TestChecks:
         assert_errors(
             errors,
             expected=[
-                Error(
-                    error_code=ImportCodeError.NO_GEOM,
-                    column="Champs géométriques",
-                    invalid_rows=frozenset([0, 1, 2]),
-                ),
                 Error(
                     error_code=ImportCodeError.GEOMETRY_OUT_OF_BOX,
                     column="WKT",

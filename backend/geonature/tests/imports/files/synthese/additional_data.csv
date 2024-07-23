@@ -1,4 +1,4 @@
-entity_source_pk_value;date_min;nom_cite;observateurs;WKT;cd_nom;altitude_min;altitude_max;Erreur(s) attendue(s);additional_data;additional_data2;données additionnelles attendues :
+entity_source_pk_value;date_min;nom_cite;observers;WKT;cd_nom;altitude_min;altitude_max;Erreur(s) attendue(s);additional_data;additional_data2;données additionnelles attendues :
 1;2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;10;1000;Valide;"{""a"": ""A""}";;"{""a"": ""A""}"
 2;2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;10;1000;Valide;"{""a"": ""A""}";"{""b"": ""B""}";"{""a"": ""A"", ""b"": ""B""}"
 3;2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;10;1000;Valide;"{""a"": ""A""}";salut;"{""a"": ""A"", ""additional_data2"": ""salut""}"

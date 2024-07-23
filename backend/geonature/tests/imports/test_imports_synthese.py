@@ -969,6 +969,8 @@ class TestImportsSynthese:
                 (ImportCodeError.NO_GEOM, "Champs géométriques", frozenset([16])),
                 (ImportCodeError.INVALID_GEOMETRY, "WKT", frozenset([17])),
                 (ImportCodeError.GEOMETRY_OUTSIDE, "Champs géométriques", frozenset([18, 19])),
+                (ImportCodeError.MISSING_VALUE, "latitude", frozenset([21])),
+                (ImportCodeError.MISSING_VALUE, "longitude", frozenset([20])),
             },
         )
 

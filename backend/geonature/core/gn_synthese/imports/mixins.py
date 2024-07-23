@@ -92,7 +92,6 @@ class SyntheseImportMixin(ImportMixin):
             for field_name, source_field in imprt.fieldmapping.items()
             if source_field in imprt.columns
         }
-        generate_missing_uuid(imprt, entity, fields["unique_id_sinp"])
         init_rows_validity(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
         check_orphan_rows(imprt)
@@ -111,7 +110,7 @@ class SyntheseImportMixin(ImportMixin):
         source_cols = [
             field.source_column
             for field in selected_fields.values()
-            if field.source_field is not None and field.mnemonique is None
+            if field.mandatory or (field.source_field is not None and field.mnemonique is None)
         ]
 
         for batch in range(batch_count):

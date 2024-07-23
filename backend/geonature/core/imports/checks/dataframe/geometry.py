@@ -198,17 +198,6 @@ def check_geometry(
             "invalid_rows": multiple_code,
         }
 
-    # Rows with no geom
-    no_geom = df[
-        ~wkt_mask & ~xy_mask & ~codecommune_mask & ~codemaille_mask & ~codedepartement_mask
-    ]
-    if len(no_geom):
-        yield {
-            "error_code": ImportCodeError.NO_GEOM,
-            "column": "Champs géométriques",
-            "invalid_rows": no_geom,
-        }
-
     if file_srid == 4326:
         geom_4326_col = geom_4326_field.dest_field
         df[geom_4326_col] = geom[geom.notna()].apply(

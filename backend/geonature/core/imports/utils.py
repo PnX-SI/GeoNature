@@ -433,7 +433,7 @@ def get_mapping_data(import_: TImports, entity: Entity):
     selected_fields : dict
         In the same format as fields, but only the fields contained in the mapping.
     source_cols : list
-        A subset of fields with only the source columns (check gn_imports.bib_fields.source_field).
+        List of fields to load in dataframe, mainly source column of non-nomenclature fields
     """
     fields = {ef.field.name_field: ef.field for ef in entity.fields}
     selected_fields = {
@@ -441,12 +441,21 @@ def get_mapping_data(import_: TImports, entity: Entity):
         for field_name, source_field in import_.fieldmapping.items()
         if source_field in import_.columns and field_name in fields
     }
-    source_cols = [
-        field.source_column
-        for field in selected_fields.values()
-        if field.source_field is not None and field.mnemonique is None
-    ]
-    return fields, selected_fields, source_cols
+    source_cols = set()
+    for field in selected_fields.values():
+        # load source col of all non-nomenclature fields
+        if field.mnemonique is None and field.source_field is not None:
+            source_cols |= {field.source_field}
+        # load source col of all mandatory fields
+        if field.mandatory:
+            source_cols |= {field.source_field}
+        # load all selected field used in conditions
+        conditions = set(field.mandatory_conditions or {}) | set(field.optional_conditions or {})
+        if conditions:
+            source_cols |= set(
+                [selected_fields[f].source_field for f in conditions if f in selected_fields]
+            )
+    return fields, selected_fields, list(source_cols)
 
 
 def get_required(import_: TImports, entity: Entity):
