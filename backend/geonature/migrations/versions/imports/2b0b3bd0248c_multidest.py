@@ -254,7 +254,7 @@ def upgrade():
                 a.code_action = 'C'
         )
         UPDATE gn_permissions.t_permissions_available pa
-        SET scope_filter = false
+        SET scope_filter = NULL
         FROM CTE
         WHERE
             pa.id_module = CTE.id_module
@@ -403,8 +403,8 @@ def upgrade():
     op.execute(
         f"""
         UPDATE gn_commons.cor_module_dataset
-        SET id_module = {ID_MODULE_IMPORT}
-        WHERE id_module = {ID_MODULE_SYNTHESE};
+        SET id_module = {ID_MODULE_SYNTHESE}
+        WHERE id_module = {ID_MODULE_IMPORT};
         """
     )
 
