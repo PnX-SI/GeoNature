@@ -42,6 +42,65 @@ def dataframe_check(check_function):
     return wrapper
 
 
+def error_replace(old_code, old_columns, new_code, new_column=None):
+    """
+    For rows which trigger old_code error on all old_columns, these errors are replaced
+    by new_code error on new_column.
+    Usage example:
+        @dataframe_check
+        @error_replace(ImportCodeError.MISSING_VALUE, {"WKT","latitude","longitude"}, ImportCodeError.NO_GEOM, "Champs géométriques")
+        def check_required_values:
+            …
+        => MISSING_VALUE on WKT, latitude and longitude are replaced by NO-GEOM on "Champs géométrique"
+    If new_code is None, error is deleted
+    """
+
+    def _error_replace(check_function):
+        @wraps(check_function)
+        def __error_replace(*args, **kwargs):
+            matching_errors = []
+            errors_gen = check_function(*args, **kwargs)
+            try:
+                while True:
+                    error = next(errors_gen)
+                    if error["error_code"] != old_code:
+                        yield error
+                        continue
+                    if error["column"] not in old_columns:
+                        yield error
+                        continue
+                    matching_errors.append(error)
+            except StopIteration as e:
+                if matching_errors:
+                    matching_indexes = list(
+                        map(lambda e: set(e["invalid_rows"].index), matching_errors)
+                    )
+                    commons_indexes = set.intersection(*matching_indexes)
+                    if commons_indexes and new_code is not None:
+                        # Yield replacing error
+                        yield {
+                            "error_code": new_code,
+                            "column": new_column,
+                            "invalid_rows": matching_errors[0]["invalid_rows"].loc[
+                                list(commons_indexes)
+                            ],
+                        }
+                    for error in matching_errors:
+                        indexes = set(error["invalid_rows"].index) - commons_indexes
+                        if indexes:
+                            # Yield old error but without rows where new error have been yield
+                            yield {
+                                "error_code": error["error_code"],
+                                "column": error["column"],
+                                "invalid_rows": error["invalid_rows"].loc[list(indexes)],
+                            }
+                return e.value
+
+        return __error_replace
+
+    return _error_replace
+
+
 def report_error(imprt, entity, df, error):
     """
     Reports an error found in the dataframe, updates the validity column and insert

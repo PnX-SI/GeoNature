@@ -1,4 +1,4 @@
-date_min;nom_cite;observateurs;WKT;cd_nom;cd_hab;Erreur(s) attendue(s)
+date_min;nom_cite;observers;WKT;cd_nom;cd_hab;Erreur(s) attendue(s)
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);;;MISSING_VALUE (cd_nom)
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);123456789;;CD_NOM_NOT_FOUND
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;Valide

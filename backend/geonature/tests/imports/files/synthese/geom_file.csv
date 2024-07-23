@@ -1,4 +1,4 @@
-date_min;cd_nom;nom_cite;observateurs;WKT;latitude;longitude;codecommune;codedepartement;codemaille;erreur attendue
+date_min;cd_nom;nom_cite;observers;WKT;latitude;longitude;codecommune;codedepartement;codemaille;erreur attendue
 2017-01-01;67111;Ablette;Toto;;;;13088;;;Valide (codecommune)
 2017-01-01;67111;Ablette;Toto;;;;code com invalide;;;INVALID_ATTACHMENT_CODE (codecommune)
 2017-01-01;67111;Ablette;Toto;;;;;13;;Valide (codedépartement)  # FIXME invalide altitude_min (bord de mer)
@@ -17,3 +17,5 @@ date_min;cd_nom;nom_cite;observateurs;WKT;latitude;longitude;codecommune;codedep
 2017-01-01;67111;Ablette;Toto;POLYGON((0 0, 1 1, 1 2, 1 1, 0 0));;;;;;INVALID_GEOMETRY
 2017-01-01;67111;Ablette;Toto;POINT(6.5 44.85);;;;;;GEOMETRY_OUTSIDE
 2017-01-01;67111;Ablette;Toto;;44.85;6.5;;;;GEOMETRY_OUTSIDE
+2017-01-01;67111;Ablette;Toto;;44.85;;;;;MISSING_VALUE(longitude)
+2017-01-01;67111;Ablette;Toto;;;6.5;;;;MISSING_VALUE(latitude)

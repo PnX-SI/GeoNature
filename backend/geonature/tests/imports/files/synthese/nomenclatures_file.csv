@@ -1,4 +1,4 @@
-date_min;nom_cite;observateurs;WKT;cd_nom;id_nomenclature_exist_proof;digital_proof;non_digital_proof;id_nomenclature_blurring;id_nomenclature_source_status;reference_biblio;Erreur(s) attendue(s)
+date_min;nom_cite;observers;WKT;cd_nom;id_nomenclature_exist_proof;digital_proof;non_digital_proof;id_nomenclature_blurring;id_nomenclature_source_status;reference_biblio;Erreur(s) attendue(s)
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;;;NSP;;;-
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;?;;;NSP;;;INVALID_NOMENCLATURE
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Non;;;NSP;;;-

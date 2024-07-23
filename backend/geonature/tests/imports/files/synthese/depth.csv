@@ -1,4 +1,4 @@
-date_min;nom_cite;observateurs;WKT;cd_nom;depth_min;depth_max;Erreur(s) attendue(s)
+date_min;nom_cite;observers;WKT;cd_nom;depth_min;depth_max;Erreur(s) attendue(s)
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;;Valide
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;10;;Valide
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;10;Valide

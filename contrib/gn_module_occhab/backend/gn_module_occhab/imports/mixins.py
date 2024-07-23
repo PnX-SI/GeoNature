@@ -102,9 +102,7 @@ class OcchabImportMixin(ImportMixin):
             imprt, entity, df, fields
         )  # FIXME do not check station uuid twice
 
-        updated_cols |= check_required_values(
-            imprt, entity, df, fields
-        )  # FIXME do not check required multi-entity fields twice
+        updated_cols |= check_required_values(imprt, entity, df, fields)
 
         return updated_cols
 
@@ -140,7 +138,7 @@ class OcchabImportMixin(ImportMixin):
     @staticmethod
     def check_habitat_sql(imprt):
         entity_station, entity_habitat = get_occhab_entities()
-        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_habitat)
 
         ### SQL checks
         do_nomenclatures_mapping(
@@ -153,6 +151,8 @@ class OcchabImportMixin(ImportMixin):
         )
         if "cd_hab" in selected_fields:
             check_cd_hab(imprt, entity_habitat, selected_fields["cd_hab"])
+        if not current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"]:
+            check_mandatory_field(imprt, entity_habitat, fields["unique_id_sinp_station"])
         if "unique_id_sinp_habitat" in selected_fields:
             check_duplicate_uuid(imprt, entity_habitat, selected_fields["unique_id_sinp_habitat"])
             check_existing_uuid(
@@ -211,7 +211,7 @@ class OcchabImportMixin(ImportMixin):
         transient_table = imprt.destination.get_transient_table()
         entity_station, _ = get_occhab_entities()
 
-        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
 
         if "id_station_source" in selected_fields:
             check_entity_data_consistency(
@@ -295,7 +295,7 @@ class OcchabImportMixin(ImportMixin):
         transient_table = imprt.destination.get_transient_table()
         entity_station, _ = get_occhab_entities()
 
-        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
+        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
 
         do_nomenclatures_mapping(
             imprt,
@@ -347,8 +347,6 @@ class OcchabImportMixin(ImportMixin):
                 fields["geom_local"],
                 id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
             )
-        if not current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"]:
-            check_mandatory_field(imprt, entity_station, fields["unique_id_sinp_station"])
 
         # Checks before these lines create errors for each rows, including for duplicate
         # station, whereas checks after create errors only for first row of duplicate station.
@@ -392,14 +390,14 @@ class OcchabImportMixin(ImportMixin):
                 ].is_(None)
             else:
                 whereclause = None
-            print_transient_table(imprt)
             generate_missing_uuid(
                 imprt,
                 entity_station,
                 fields["unique_id_sinp_station"],
                 whereclause=whereclause,
             )
-            print_transient_table(imprt)
+        else:
+            check_mandatory_field(imprt, entity_station, fields["unique_id_sinp_station"])
 
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
