@@ -103,6 +103,23 @@ cor_site_type = DB.Table(
     schema="gn_monitoring",
 )
 
+cor_grp_site_module = DB.Table(
+    "cor_grp_site_module",
+    DB.Column(
+        "id_site_group",
+        DB.Integer,
+        DB.ForeignKey("gn_monitoring.t_sites_groups.id_sites_group"),
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_module",
+        DB.Integer,
+        DB.ForeignKey(TModules.id_module),
+        primary_key=True,
+    ),
+    schema="gn_monitoring",
+)
+
 
 @serializable
 class BibTypeSite(DB.Model):
