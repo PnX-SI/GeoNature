@@ -262,15 +262,9 @@ class TestImportsOcchab:
                     frozenset({7}),
                 ),
                 (
-                    ImportCodeError.NO_GEOM,  # FIXME
+                    ImportCodeError.NO_GEOM,
                     "station",
                     "Champs géométriques",
-                    frozenset({8}),
-                ),
-                (
-                    ImportCodeError.MISSING_VALUE,  # FIXME
-                    "station",
-                    "WKT",
                     frozenset({8}),
                 ),
                 (
@@ -374,6 +368,12 @@ class TestImportsOcchab:
                 (
                     ImportCodeError.MISSING_VALUE,
                     "station",
+                    "id_station_source",
+                    frozenset({35}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
                     "unique_id_sinp_station",
                     frozenset({20, 21, 35}),
                 ),
@@ -433,10 +433,22 @@ class TestImportsOcchab:
                     frozenset({20, 21, 24, 35}),
                 ),
                 (
+                    ImportCodeError.MISSING_VALUE,
+                    "habitat",
+                    "id_station_source",
+                    frozenset({10, 35}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "habitat",
+                    "unique_id_sinp_station",
+                    frozenset({10, 20, 21, 22, 23, 32, 35, 37}),
+                ),
+                (
                     ImportCodeError.NO_PARENT_ENTITY,
                     "habitat",
                     "id_station",
-                    frozenset({10, 16, 17, 18, 22, 23, 27, 28, 29, 30, 31, 32, 33, 34}),  # 19,26?
+                    frozenset({16, 17, 18, 27, 28, 29, 30, 31, 33, 34}),  # 19,26?
                 ),
                 (
                     ImportCodeError.SKIP_EXISTING_UUID,
@@ -459,7 +471,7 @@ class TestImportsOcchab:
                 ),
             },
         )
-        assert imported_import.statistics == {"station_count": 3, "habitat_count": 7}
+        assert imported_import.statistics == {"station_count": 3, "habitat_count": 6}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)

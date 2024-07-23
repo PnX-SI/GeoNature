@@ -188,7 +188,7 @@ def check_boolean_field(df, source_col, dest_col, required):
     """
     df[dest_col] = df[source_col].apply(int).apply(bool)
 
-    if required:
+    if required:  # FIXME: to remove as done in check_required_value
         invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and pd.isnull(x))
         yield dict(error_code=ImportCodeError.MISSING_VALUE, invalid_rows=df[invalid_mask])
     else:
