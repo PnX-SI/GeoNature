@@ -231,7 +231,7 @@ BEGIN
 		LEFT OUTER JOIN ref_geo.l_areas l USING(id_area)
 	) s
 	WHERE my_cd_ref = s.cd_ref
-		AND (st_intersects(my_geom, s.geom) OR s.geom IS NULL) -- paramètre géographique
+		AND (public.st_intersects(my_geom, s.geom) OR s.geom IS NULL) -- paramètre géographique
 		AND (-- paramètre période
 			(to_char(my_date_obs, 'MMDD') between to_char(s.date_min, 'MMDD') and to_char(s.date_max, 'MMDD') )
 		)
