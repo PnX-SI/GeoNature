@@ -117,6 +117,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);
         this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
+        for (let actor of this.selectedObs.dataset.cor_dataset_actor) {
+          if (actor.role) actor.display_name = actor.role.nom_complet;
+          else if (actor.organism) actor.display_name = actor.organism.nom_organisme;
+        }
 
         const areaDict = {};
         // for each area type we want all the areas: we build an dict of array

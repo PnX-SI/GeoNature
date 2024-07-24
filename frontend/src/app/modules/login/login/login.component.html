@@ -1,13 +1,11 @@
 <div
+  *ngIf="!this.config.AUTHENTICATION.ONLY_PROVIDER"
   id="login-body"
   style="background: url({{ this.config.API_ENDPOINT }}{{
     this.config.STATIC_URL
   }}/images/login_background.jpg) center 10% no-repeat;"
 >
-  <div
-    *ngIf="!casLogin"
-    class="container"
-  >
+  <div class="container">
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div
@@ -30,73 +28,98 @@
           </div>
           <div class="panel-body">
             <ng-container *ngIf="!login_or_pass_recovery; else logPwdRecoBlock">
-              <form
-                (ngSubmit)="register(userForm.value)"
-                #userForm="ngForm"
-              >
-                <!-- <div class="form-group inner-addon right-addon">
-                                        <i class="fa fa-user"></i>
-                                        <input type="text" class="form-control" name="username" placeholder="Identifiant" ngModel>
-                                    </div> -->
-                <div class="form-group">
-                  <i class="addon fa fa-user"></i>
-                  <input
-                    type="text"
-                    id="login"
-                    class="form-control"
-                    name="username"
-                    ngModel
-                    placeholder="Identifiant"
-                    autofocus
-                    data-qa="gn-connection-id"
-                  />
-                </div>
-                <div class="form-group">
-                  <i class="addon fa fa-lock"></i>
-                  <input
-                    type="password"
-                    name="password"
-                    class="form-control"
-                    placeholder="Mot de passe"
-                    ngModel
-                    data-qa="gn-connection-pwd"
-                  />
-                </div>
-                <div
-                  *ngIf="enable_user_management"
-                  class="forgot"
-                  (click)="login_or_pass_recovery = true"
+              <ng-container *ngIf="localProviderEnabled">
+                <form
+                  (ngSubmit)="register(userForm.value)"
+                  #userForm="ngForm"
                 >
-                  {{ 'ForgotPasswordOrLogin' | translate }}
-                </div>
+                  <div class="form-group">
+                    <i class="addon fa fa-user"></i>
+                    <input
+                      type="text"
+                      id="login"
+                      class="form-control"
+                      name="login"
+                      ngModel
+                      placeholder="Identifiant"
+                      autofocus
+                      data-qa="gn-connection-id"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <i class="addon fa fa-lock"></i>
+                    <input
+                      type="password"
+                      name="password"
+                      class="form-control"
+                      placeholder="Mot de passe"
+                      ngModel
+                      data-qa="gn-connection-pwd"
+                    />
+                  </div>
+                  <div
+                    *ngIf="enable_user_management"
+                    class="forgot"
+                    (click)="login_or_pass_recovery = true"
+                  >
+                    {{ 'ForgotPasswordOrLogin' | translate }}
+                  </div>
 
-                <button
-                  class="btn btn-lg btn-success btn-block text-uppercase"
-                  type="submit"
-                  data-qa="gn-connection-button"
-                >
-                  Se connecter
-                </button>
-                <br />
+                  <button
+                    class="btn btn-lg btn-success btn-block text-uppercase"
+                    type="submit"
+                    data-qa="gn-connection-button"
+                  >
+                    Se connecter
+                  </button>
+                </form>
+                <hr />
+              </ng-container>
 
-                <div *ngIf="enable_sign_up">
-                  <div class="inscription">
-                    <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>
+              <ng-container *ngIf="isOtherProviders">
+                <p>Se connecter avec :</p>
+                <div class="row center">
+                  <div *ngFor="let provider of authProviders">
+                    <button
+                      *ngIf="!provider.is_external; else externalAuthBlock"
+                      (click)="openDialog(provider)"
+                      class="btn btn-primary rounded mr-2 mt-2"
+                    >
+                      <span [innerHTML]="provider.logo | safeHTML"></span>
+                      {{ provider.label }}
+                    </button>
+                    <ng-template #externalAuthBlock>
+                      <a
+                        [href]="getProviderLoginUrl(provider.id_provider)"
+                        class="btn btn-primary rounded mr-2 mt-2"
+                      >
+                        <span [innerHTML]="provider.logo | safeHTML"></span>
+                        {{ provider.label }}
+                      </a>
+                    </ng-template>
                   </div>
                 </div>
-                <div
-                  *ngFor="let link of external_links"
-                  class="external_link"
-                >
-                  <a
-                    href="{{ link.url }}"
-                    target="_blank"
-                  >
-                    {{ link.label }}
-                  </a>
+              </ng-container>
+
+              <br />
+
+              <div *ngIf="enable_sign_up">
+                <div class="inscription">
+                  <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>
                 </div>
-                <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
-              </form>
+              </div>
+              <div
+                *ngFor="let link of external_links"
+                class="external_link"
+              >
+                <a
+                  href="{{ link.url }}"
+                  target="_blank"
+                >
+                  {{ link.label }}
+                </a>
+              </div>
+              <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
             </ng-container>
 
             <ng-template #logPwdRecoBlock>

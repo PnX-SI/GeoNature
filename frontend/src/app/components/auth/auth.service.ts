@@ -5,13 +5,12 @@ import { HttpClient } from '@angular/common/http';
 
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
-import { forkJoin } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { ModuleService } from '../../services/module.service';
 import { RoutingService } from '@geonature/routing/routing.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { Provider } from '@geonature/modules/login/providers';
 
 export interface User {
   user_login: string;
@@ -20,6 +19,7 @@ export interface User {
   prenom_role?: string;
   nom_role?: string;
   nom_complet?: string;
+  providers?: string[];
 }
 
 @Injectable()
@@ -39,10 +39,21 @@ export class AuthService {
     private _routingService: RoutingService,
     private moduleService: ModuleService,
     public config: ConfigService
-  ) {}
+  ) {
+    this.refreshCurrentUserData();
+  }
 
+  refreshCurrentUserData() {
+    if (!this.currentUser) {
+      this.currentUser = this.getCurrentUser();
+    }
+  }
   setCurrentUser(user) {
     localStorage.setItem(this.prefix + 'current_user', JSON.stringify(user));
+  }
+
+  getAuthProviders(): Observable<Array<Provider>> {
+    return this._http.get<Array<Provider>>(`${this.config.API_ENDPOINT}/auth/providers`);
   }
 
   getCurrentUser() {
@@ -67,6 +78,7 @@ export class AuthService {
       nom_role: data.user.nom_role,
       nom_complet: data.user.nom_role + ' ' + data.user.prenom_role,
       id_organisme: data.user.id_organisme,
+      providers: data.user.providers.map((provider) => provider.name),
     };
     this.setCurrentUser(userForFront);
     this.loginError = false;
@@ -77,13 +89,8 @@ export class AuthService {
     localStorage.setItem(this.prefix + 'expires_at', authResult.expires);
   }
 
-  signinUser(user: any) {
-    const options = {
-      login: user.username,
-      password: user.password,
-    };
-
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login`, options);
+  signinUser(form: any) {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login`, form);
   }
 
   signinPublicUser(): Observable<any> {
@@ -134,16 +141,8 @@ export class AuthService {
   logout() {
     this.cleanLocalStorage();
     this.cruvedService.clearCruved();
-    // call the logout route to delete the session
-    this._http.get<any>(`${this.config.API_ENDPOINT}/auth/logout`).subscribe(() => {
-      location.reload();
-    });
-
-    if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-      document.location.href = `${this.config.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${this.config.URL_APPLICATION}`;
-    } else {
-      this.router.navigate(['/login']);
-    }
+    let logout_url = `${this.config.API_ENDPOINT}/auth/logout`;
+    location.href = logout_url;
   }
 
   private cleanLocalStorage() {
@@ -169,5 +168,10 @@ export class AuthService {
 
   disableLoader() {
     this.isLoading = false;
+  }
+
+  canBeLoggedWithLocalProvider(): boolean {
+    this.refreshCurrentUserData();
+    return this.currentUser.providers.includes('local_provider');
   }
 }

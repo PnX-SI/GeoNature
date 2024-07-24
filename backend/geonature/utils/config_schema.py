@@ -6,7 +6,15 @@ import os
 
 from warnings import warn
 
-from marshmallow import Schema, fields, validates_schema, ValidationError, post_load, pre_load
+from marshmallow import (
+    INCLUDE,
+    Schema,
+    fields,
+    validates_schema,
+    ValidationError,
+    post_load,
+    pre_load,
+)
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
@@ -16,7 +24,7 @@ from geonature.core.gn_synthese.synthese_config import (
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
-from geonature.utils.utilstoml import load_and_validate_toml
+from pypnusershub.auth.authentication import ProviderConfigurationSchema
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -38,39 +46,6 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             # Validate email with Marshmallow
             validator = Email()
             validator(email)
-
-
-class CasUserSchemaConf(Schema):
-    URL = fields.Url(load_default="https://inpn.mnhn.fr/authentication/information")
-    BASE_URL = fields.Url(load_default="https://inpn.mnhn.fr/authentication/")
-    ID = fields.String(load_default="mon_id")
-    PASSWORD = fields.String(load_default="mon_pass")
-
-
-class CasFrontend(Schema):
-    CAS_AUTHENTIFICATION = fields.Boolean(load_default=False)
-    CAS_URL_LOGIN = fields.Url(load_default="https://preprod-inpn.mnhn.fr/auth/login")
-    CAS_URL_LOGOUT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/auth/logout")
-
-
-class CasSchemaConf(Schema):
-    CAS_URL_VALIDATION = fields.String(
-        load_default="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-    )
-    CAS_USER_WS = fields.Nested(CasUserSchemaConf, load_default=CasUserSchemaConf().load({}))
-    USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(load_default=False)
-    # Quel modules seront associés au JDD récupérés depuis MTD
-
-
-class MTDSchemaConf(Schema):
-    JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
-    ID_INSTANCE_FILTER = fields.Integer(load_default=None)
-    SYNC_LOG_LEVEL = fields.String(load_default="INFO")
-
-
-class BddConfig(Schema):
-    ID_USER_SOCLE_1 = fields.Integer(load_default=7)
-    ID_USER_SOCLE_2 = fields.Integer(load_default=6)
 
 
 class RightsSchemaConf(Schema):
@@ -180,7 +155,22 @@ class MetadataConfig(Schema):
     )
 
 
-# class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
+class AuthenticationConfig(Schema):
+    PROVIDERS = fields.List(
+        fields.Dict(),
+        load_default=[
+            dict(
+                module="pypnusershub.auth.providers.default.LocalProvider",
+                id_provider="local_provider",
+            )
+        ],
+    )
+    DEFAULT_RECONCILIATION_GROUP_ID = fields.Integer()
+
+    @validates_schema
+    def validate_provider(self, data, **kwargs):
+        for provider in data["PROVIDERS"]:
+            ProviderConfigurationSchema().load(provider, unknown=INCLUDE)
 
 
 class GnPySchemaConf(Schema):
@@ -203,7 +193,6 @@ class GnPySchemaConf(Schema):
     STATIC_FOLDER = fields.String(load_default="static")
     CUSTOM_STATIC_FOLDER = fields.String(load_default=ROOT_DIR / "custom")
     MEDIA_FOLDER = fields.String(load_default="media")
-    CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
     CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
@@ -554,24 +543,19 @@ class GnGeneralSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     CODE_APPLICATION = fields.String(load_default="GN")
-    XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
-    MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     DISABLED_MODULES = fields.List(fields.String(), load_default=[])
-    CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
     FRONTEND = fields.Nested(GnFrontEndConf, load_default=GnFrontEndConf().load({}))
     SYNTHESE = fields.Nested(Synthese, load_default=Synthese().load({}))
     MAPCONFIG = fields.Nested(MapConfig, load_default=MapConfig().load({}))
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
-    BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     STATIC_URL = fields.String(load_default="/static")
     MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
-    MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
@@ -580,18 +564,9 @@ class GnGeneralSchemaConf(Schema):
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
-
-    @validates_schema
-    def validate_enable_sign_up(self, data, **kwargs):
-        # si CAS_PUBLIC = true and ENABLE_SIGN_UP = true
-        if data["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"] and (
-            data["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"]
-            or data["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"]
-        ):
-            raise ValidationError(
-                "CAS_PUBLIC et ENABLE_SIGN_UP ou ENABLE_USER_MANAGEMENT ne peuvent être activés ensemble",
-                "ENABLE_SIGN_UP, ENABLE_USER_MANAGEMENT",
-            )
+    AUTHENTICATION = fields.Nested(
+        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
+    )
 
     @validates_schema
     def validate_account_autovalidation(self, data, **kwargs):

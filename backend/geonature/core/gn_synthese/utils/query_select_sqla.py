@@ -274,6 +274,11 @@ class SyntheseQuery:
                 self.query = self.query.where(getattr(Taxref, colname).in_(value))
 
             if colname.startswith("taxhub_attribut"):
+                # Test si la valeur n'est pas une liste transformation
+                # de value en liste pour utiliser le filtre IN
+                if not type(value) is list:
+                    value = [value]
+
                 self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
                 taxhub_id_attr = colname[16:]
                 aliased_cor_taxon_attr[taxhub_id_attr] = aliased(CorTaxonAttribut)
@@ -313,7 +318,7 @@ class SyntheseQuery:
                 protection_status_value += value
 
         if protection_status_value or red_list_filters:
-            self.build_bdc_status_pr_nb_lateral_join(protection_status_value, red_list_filters)
+            self.build_bdc_status_filters(protection_status_value, red_list_filters)
         # remove attributes taxhub from filters
         self.filters = {
             colname: value
@@ -531,7 +536,7 @@ class SyntheseQuery:
         self.apply_all_filters(user, permissions)
         return self.build_query()
 
-    def build_bdc_status_pr_nb_lateral_join(self, protection_status_value, red_list_filters):
+    def build_bdc_status_filters(self, protection_status_value, red_list_filters):
         """
         Create subquery for bdc_status filters
 
@@ -539,9 +544,9 @@ class SyntheseQuery:
           - les statuts du type demandé par l'utilisateur
           - les status s'appliquent bien sur la zone géographique de la donnée (c-a-d le département)
 
-        Idée de façon à limiter le nombre de sous reqêtes,
+        Idée de façon à limiter le nombre de sous requêtes (le nombre de status demandé ne dégrade pas les performances),
             la liste des status selectionnés par l'utilisateur s'appliquant à l'observation est
-            aggrégée de façon à tester le nombre puis jointé sur le département de la donnée
+            aggrégée de façon à tester le nombre puis jointer sur le département de la donnée
         """
         # Ajout de la table taxref si non ajouté
         self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
@@ -559,11 +564,13 @@ class SyntheseQuery:
 
         # Creation requête CTE : taxon, zone d'application départementale des textes
         #   pour les taxons répondant aux critères de selection
-        bdc_status_cte = (
+        bdc_status_by_type_cte = (
             select(
                 TaxrefBdcStatutTaxon.cd_ref,
-                func.array_agg(bdc_statut_cor_text_area.c.id_area).label("ids_area"),
+                bdc_statut_cor_text_area.c.id_area,
+                TaxrefBdcStatutText.cd_type_statut,
             )
+            .distinct()
             .select_from(
                 TaxrefBdcStatutTaxon.__table__.join(
                     TaxrefBdcStatutCorTextValues,
@@ -601,15 +608,20 @@ class SyntheseQuery:
                 TaxrefBdcStatutText.cd_type_statut.in_(protection_status_value)
             )
 
-        bdc_status_cte = bdc_status_cte.where(or_(*bdc_status_filters))
+        bdc_status_by_type_cte = bdc_status_by_type_cte.where(or_(*bdc_status_filters))
+        bdc_status_by_type_cte = bdc_status_by_type_cte.cte(name="status_by_type")
 
         # group by de façon à ne selectionner que les taxons
-        #   qui ont les textes selectionnés par l'utilisateurs
-        bdc_status_cte = bdc_status_cte.group_by(TaxrefBdcStatutTaxon.cd_ref).having(
-            func.count(distinct(TaxrefBdcStatutText.cd_type_statut))
+        #   qui ont l'ensemble des textes selectionnés par l'utilisateur
+        #   c-a-d dont le nombre de cd_type_statut correspond au nombre demandé
+        bdc_status_cte = select(
+            bdc_status_by_type_cte.c.cd_ref,
+            func.array_agg(bdc_status_by_type_cte.c.id_area).label("ids_area"),
+        )
+        bdc_status_cte = bdc_status_cte.group_by(bdc_status_by_type_cte.c.cd_ref).having(
+            func.count(distinct(bdc_status_by_type_cte.c.cd_type_statut))
             == (len(protection_status_value) + len(red_list_filters))
         )
-
         bdc_status_cte = bdc_status_cte.cte(name="status")
 
         # Jointure sur le taxon

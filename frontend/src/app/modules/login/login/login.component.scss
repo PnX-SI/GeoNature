@@ -7,6 +7,10 @@
   background-color: #1d21249e;
 }
 
+mat-dialog-content {
+  z-index: 50;
+}
+
 .panel-heading {
   background-color: transparent;
   color: white;
@@ -29,12 +33,16 @@
   box-shadow: 0.5px -0.5px 0.5px 0.2rem rgba(98, 255, 0, 0.15) !important;
 }
 
+#externalLoginForm {
+  margin-top: 10%;
+}
+
 .addon {
   color: #55585a;
   position: absolute;
   top: 10px;
   left: 6px;
-  z-index: 9999;
+  z-index: 10;
   font-size: 18px;
 }
 

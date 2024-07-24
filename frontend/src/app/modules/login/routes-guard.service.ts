@@ -31,6 +31,23 @@ export class SignUpGuard implements CanActivate {
 }
 
 @Injectable()
+export class UserEditGuard implements CanActivate {
+  constructor(
+    private _router: Router,
+    private _authService: AuthService
+  ) {}
+
+  canActivate() {
+    if (!this._authService.canBeLoggedWithLocalProvider()) {
+      this._router.navigate(['/']);
+      return false;
+    }
+
+    return true;
+  }
+}
+
+@Injectable()
 export class UserManagementGuard implements CanActivate {
   constructor(
     private _router: Router,
@@ -67,41 +84,6 @@ export class UserPublicGuard implements CanActivate {
     ) {
       this._router.navigate(['/']);
       return false;
-    }
-    return true;
-  }
-}
-
-@Injectable()
-export class UserCasGuard implements CanActivate, CanActivateChild {
-  /*
-  A guard used to prevent public user from accessing certain routes :
-  - Used to prevent public user from accessing the "/user" route in which the user can see and change its own information
-  */
-
-  constructor(
-    private _router: Router,
-    public authService: AuthService,
-    public _configService: ConfigService,
-    private _httpclient: HttpClient
-  ) {}
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    return this.canActivate();
-  }
-
-  async canActivate(): Promise<boolean> {
-    let res: boolean = false;
-    if (this._configService.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-      let data = await this._httpclient
-        .get(`${this._configService.API_ENDPOINT}/auth/get_current_user`)
-        .toPromise();
-      data = { ...data };
-      this.authService.manageUser(data);
-      res = this.authService.isLoggedIn();
-      return res;
     }
     return true;
   }

@@ -53,4 +53,4 @@ class TAdditionalFields(DB.Model):
     )
 
     def __str__(self):
-        return f"{self.field_label} ({self.description})"
+        return self.field_label

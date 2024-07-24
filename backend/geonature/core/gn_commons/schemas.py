@@ -101,7 +101,7 @@ class TAdditionalFieldsSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     default_value = CastableField(allow_none=True)
-
+    code_nomenclature_type = fields.Str(allow_none=True)
     modules = fields.Nested(ModuleSchema, many=True, dump_only=True)
     objects = fields.Nested(PermObjectSchema, many=True, dump_only=True)
     type_widget = fields.Nested(BibWidgetSchema, dump_only=True)

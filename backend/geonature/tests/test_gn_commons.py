@@ -506,6 +506,7 @@ class TestCommons:
         addi_one = data[0]
         assert "type_widget" in addi_one
         assert "bib_nomenclature_type" in addi_one
+        assert "code_nomenclature_type" in addi_one
 
         # test default value has been casted
         assert type(addi_one["default_value"]) is int
