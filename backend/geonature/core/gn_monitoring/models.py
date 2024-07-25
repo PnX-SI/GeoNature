@@ -103,8 +103,8 @@ cor_site_type = DB.Table(
     schema="gn_monitoring",
 )
 
-cor_grp_site_module = DB.Table(
-    "cor_grp_site_module",
+cor_sites_group_module = DB.Table(
+    "cor_sites_group_module",
     DB.Column(
         "id_site_group",
         DB.Integer,
