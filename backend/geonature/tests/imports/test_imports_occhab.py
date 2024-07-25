@@ -173,6 +173,7 @@ def imported_import(client, prepared_import):
     with logged_user(client, imprt.authors[0]):
         r = client.post(url_for("import.import_valid_data", import_id=imprt.id_import))
     assert r.status_code == 200, r.data
+
     db.session.refresh(imprt)
     return imprt
 
@@ -183,6 +184,7 @@ def imported_import(client, prepared_import):
 class TestImportsOcchab:
     @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
     def test_import_valid_file(self, imported_import):
+
         assert_import_errors(
             imported_import,
             {

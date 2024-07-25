@@ -211,8 +211,6 @@ marshmallow-sqlalchemy==1.0.0
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-munch==4.0.0
-    # via fiona
 numpy==1.26.3
     # via
     #   bokeh

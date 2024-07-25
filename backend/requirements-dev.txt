@@ -62,7 +62,7 @@ bokeh==3.4.1
     # via -r requirements-common.in
 boto3==1.29.1
     # via taxhub
-botocore==1.34.112
+botocore==1.32.7
     # via
     #   boto3
     #   s3transfer
@@ -262,8 +262,6 @@ marshmallow-sqlalchemy==1.0.0
     #   taxhub
     #   usershub
     #   utils-flask-sqlalchemy-geo
-munch==4.0.0
-    # via fiona
 numpy==1.26.2
     # via
     #   bokeh
@@ -274,11 +272,9 @@ packaging==23.2
     # via
     #   -r requirements-common.in
     #   bokeh
-    #   flask-marshmallow
     #   geoalchemy2
     #   gunicorn
     #   marshmallow
-    #   marshmallow-sqlalchemy
 pandas==2.1.4
     # via
     #   -r requirements-common.in
@@ -332,7 +328,7 @@ requests==2.32.2
     # via
     #   pypn-habref-api
     #   pypnusershub
-s3transfer==0.10.1
+s3transfer==0.7.0
     # via boto3
 shapely==2.0.4
     # via
@@ -416,7 +412,9 @@ wtforms-components==0.10.5
 wtforms-sqlalchemy==0.4.1
     # via -r requirements-common.in
 xmltodict==0.13.0
-    # via -r requirements-common.in
+    # via
+    #   -r requirements-common.in
+    #   pypnusershub
 xyzservices==2024.4.0
     # via bokeh
 zipp==3.17.0
