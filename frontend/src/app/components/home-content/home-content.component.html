@@ -38,7 +38,102 @@
       </div>
     </div>
   </div>
-
+  <mat-tab-group>
+    <mat-tab label="Dernières Discussions">
+      <ngx-datatable
+        class="material striped margin-top-xs table-size expandable"
+        [rows]="discussions"
+        [columns]="columns"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [limit]="perPage"
+        [count]="totalPages"
+        [offset]="currentPage - 1"
+        (page)='changePage($event.offset + 1)'
+        (activate)="onRowClick($event)"
+      >
+            <!-- Row Detail Template -->
+            <ngx-datatable-row-detail
+            [rowHeight]="150"
+            #myDetailRow
+          >
+            <ng-template
+              ngx-datatable-row-detail-template
+              let-row="row"
+            >
+              <div class="row-detail">
+                <div>
+                  <strong>ID :</strong> {{ row.id_report }}
+                </div>
+                <ng-container *ngIf="row.comment">
+                  <div>
+                    <strong>Commentaire :</strong> {{ row.comment }}
+                  </div>
+                </ng-container>
+                <div>
+                  <strong>Date de création :</strong> {{ row.creation_date | date:'dd-MM-yyyy' }}
+                </div>
+                <div>
+                  <strong>Utilisateur :</strong> {{ row.user.nom_role || '-' }} {{ row.user.prenom_role || '-' }}
+                </div>
+              </div>
+            </ng-template>
+          </ngx-datatable-row-detail>
+    
+          <ngx-datatable-column
+          [width]="10"
+          [resizeable]="false"
+          [sortable]="false"
+          [draggable]="false"
+          [canAutoResize]="false"
+        >
+          <ng-template
+            ngx-datatable-cell-template
+            let-row="row"
+            let-expanded="expanded"
+          >
+            <a
+              href="javascript:void(0)"
+              matTooltip="Ouvrir/fermer le détail"
+              [class.datatable-icon-right]="!expanded"
+              [class.datatable-icon-down]="expanded"
+              (click)="toggleExpandRow(row)"
+            ></a>
+          </ng-template>
+        </ngx-datatable-column>
+<!-- Dynamic Data Columns -->
+      <!-- Dynamic Data Columns -->
+      <ng-container *ngFor="let col of columns">
+        <ngx-datatable-column
+          [width]="col.maxWidth || 150"
+          [prop]="col.prop"
+          [name]="col.name"
+          [sortable]="true"
+        >
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <span [ngSwitch]="col.prop">
+              <span *ngSwitchCase="'creation_date'">{{ row[col.prop] | date:'dd-MM-yyyy' }}</span>
+              <span *ngSwitchCase="'user.nom_role'">{{ row.user.nom_role || 'N/A' }}</span>
+              <span *ngSwitchCase="'user.prenom_role'">{{ row.user.prenom_role || 'N/A' }}</span>
+              <span *ngSwitchCase="'report_type.type'">{{ row.report_type.type || 'N/A' }}</span>
+              <span *ngSwitchDefault>{{ row[col.prop] || 'N/A' }}</span>
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+      </ng-container>
+    </ngx-datatable>
+      
+      <!-- Toggle for "Mes discussions" -->
+      <div class="toggle-container">
+        <label>
+          <input type="checkbox" [(ngModel)]="myReportsOnly" (change)="toggleMyReports()">
+          Mes discussions
+        </label>
+      </div>
+    </mat-tab>
+    <!-- TODO: Autres onglets à ajouter (Dernière validations etc) -->
+  </mat-tab-group>
   <div
     *ngIf="showGeneralStat"
     class="panel panel-container panel-top"

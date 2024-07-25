@@ -26,6 +26,15 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   public destroy$: Subject<boolean> = new Subject<boolean>();
   public cluserOrSimpleFeatureGroup = null;
 
+
+  discussions = [];
+  columns = [];
+  currentPage = 1;
+  perPage = 10;
+  totalPages = 1;
+  myReportsOnly = false; // Variable pour le filtre "Mes discussions"
+  sort = 'desc'; // Assurez-vous d'avoir une méthode ou une logique pour gérer le tri si nécessaire
+  expandedRow = null; // Track the currently expanded row
   constructor(
     private _SideNavService: SideNavService,
     private _syntheseApi: SyntheseDataService,
@@ -67,12 +76,14 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     if (this.showLastObsMap) {
       this.computeMapBloc();
     }
+    this.getDiscussions();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+
 
   private computeMapBloc() {
     this.cluserOrSimpleFeatureGroup.addTo(this._mapService.map);
@@ -139,4 +150,45 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
         this.locale = langChangeEvent.lang;
       });
   }
+
+  toggleMyReports() {
+    this.myReportsOnly = !this.myReportsOnly;
+    this.currentPage = 1; // Réinitialiser à la première page lors du changement du filtre
+    this.getDiscussions(); // Recharger les discussions avec le filtre mis à jour
+  }
+  setDiscussions(data) {
+    this.discussions = data.items || [];
+    this.totalPages = data.totalPages || 1;
+    this.columns = data.columns || [];
+  }
+
+  getDiscussions() {
+    const params = new URLSearchParams();
+    params.set('type', 'discussion');
+    params.set('sort', this.sort || 'desc');
+    params.set('page', this.currentPage.toString());
+    params.set('per_page', this.perPage.toString());
+    params.set('my_reports', this.myReportsOnly.toString());
+
+    this._syntheseApi.getReports(params.toString()).subscribe((response) => {
+      this.setDiscussions(response);
+    });
+  }
+
+  changePage(page: number) {
+    this.currentPage = page;
+    this.getDiscussions(); // Recharger les discussions pour la nouvelle page
+  }
+  onRowClick(event) {
+    console.log('Clicked row:', event.row);
+  }
+
+  toggleExpandRow(row) {
+    if (this.expandedRow === row) {
+      this.expandedRow = null; // Collapse if the same row is clicked again
+    } else {
+      this.expandedRow = row; // Expand the new row
+    }
+  }
+
 }

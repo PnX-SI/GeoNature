@@ -35,3 +35,19 @@ mat-spinner {
 #btn-map {
   font-weight: bold;
 }
+
+/* Ensure the rows have a white background color */
+ngx-datatable.bootstrap .datatable-body-row {
+  background-color: white; /* White background for rows */
+}
+
+/* Optional: Add a hover effect for better UX */
+ngx-datatable.bootstrap .datatable-body-row:hover {
+  background-color: #f5f5f5; /* Light grey background on hover */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* Optional: Highlight the selected row */
+ngx-datatable.bootstrap .datatable-body-row.selected {
+  background-color: #e0e0e0; /* Slightly darker background for selected row */
+}

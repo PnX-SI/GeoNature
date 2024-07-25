@@ -1488,57 +1488,83 @@ def update_content_report(id_report):
     session.commit()
 
 
-@routes.route("/reports", methods=["GET"])
+@routes.route("/reports", defaults={'id_synthese': None}, methods=["GET"])
+@routes.route("/reports/<int:id_synthese>", methods=["GET"])
 @permissions_required("R", module_code="SYNTHESE")
-def list_reports(permissions):
+def list_reports(permissions, id_synthese):
     type_name = request.args.get("type")
-    id_synthese = request.args.get("idSynthese")
+    # id_synthese = request.args.get("idSynthese")
     sort = request.args.get("sort")
-    # VERIFY ID SYNTHESE
-    synthese = db.get_or_404(Synthese, id_synthese)
-    if not synthese.has_instance_permission(permissions):
-        raise Forbidden
-    # START REQUEST
-    req = TReport.query.where(TReport.id_synthese == id_synthese)
-    # SORT
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 10))
+    my_reports = request.args.get("my_reports", 'false').lower() == 'true'
+
+    # Start query
+    req = TReport.query
+
+    # Verify and filter by id_synthese if provided
+    if id_synthese:
+        synthese = db.get_or_404(Synthese, id_synthese)
+        if not synthese.has_instance_permission(permissions):
+            raise Forbidden
+        req = req.where(TReport.id_synthese == id_synthese)
+
+    # Sort by creation date
     if sort == "asc":
         req = req.order_by(asc(TReport.creation_date))
-    if sort == "desc":
+    else:
         req = req.order_by(desc(TReport.creation_date))
-    # VERIFY AND SET TYPE
-    type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
-    # type param is not required to get all
-    if type_name and not type_exists:
-        raise BadRequest("This report type does not exist")
+       # Verify and filter by type
     if type_name:
+        type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
+        if not type_exists:
+            raise BadRequest("This report type does not exist")
         req = req.where(TReport.report_type.has(BibReportsTypes.type == type_name))
-    # filter by id_role for pin type only
-    if type_name and type_name == "pin":
+
+    # Filter by id_role for 'pin' type only or if my_reports is true
+    if type_name == "pin" or my_reports:
         req = req.where(TReport.id_role == g.current_user.id_role)
-    req = req.options(
-        joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
-        joinedload(TReport.report_type),
-    )
-    result = [
-        report.as_dict(
-            fields=[
-                "id_report",
-                "id_synthese",
-                "id_role",
-                "report_type.type",
-                "report_type.id_type",
-                "content",
-                "deleted",
-                "creation_date",
-                "user.nom_role",
-                "user.prenom_role",
-            ]
-        )
-        for report in req.all()
-    ]
-    return jsonify(result)
 
+    if not id_synthese:
+        paginated_results = req.paginate(page=page, per_page=per_page, error_out=False)
+        result = [
+            report.as_dict(
+                fields=[
+                    "id_report",
+                    "id_synthese",
+                    "id_role",
+                    "report_type.type",
+                    "report_type.id_type",
+                    "synthese.cd_nom",
+                    "content",
+                    "deleted",
+                    "creation_date",
+                    "user.nom_role",
+                    "user.prenom_role",
+                ]
+            )
+            for report in paginated_results.items
+        ]
+        columns = [
+            {"prop": "creation_date", "name": "Date commentaire"},
+            {"prop": "user.nom_prenom_role", "name": "Auteur"},
+            {"prop": "content", "name": "Contenu"},
+            {"prop": "synthese.cd_nom", "name": "Taxon Observé"},
+        ]
 
+        response = {
+            "total": req.total if id_synthese else len(result),
+            "pages": req.pages if id_synthese else 1,
+            "current_page": req.page if id_synthese else 1,
+            "per_page": req.per_page if id_synthese else len(result),
+            "items": result,
+            "columns": columns
+        }
+    else:
+        # Normal query with pagination
+        response = req.all()
+
+    return jsonify(response)
 @routes.route("/reports/<int:id_report>", methods=["DELETE"])
 @login_required
 @json_resp

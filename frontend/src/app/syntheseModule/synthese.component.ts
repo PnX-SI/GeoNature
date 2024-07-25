@@ -110,6 +110,7 @@ export class SyntheseComponent implements OnInit {
         }
 
         // Store geojson
+        // TODO: [IMPROVE][PAGINATE]
         this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(data));
         this.formatDataForTable(data);
 
@@ -132,6 +133,7 @@ export class SyntheseComponent implements OnInit {
   /** table data expect an array obs observation
    * the geojson get from API is a list of features whith an observation list
    */
+  // TODO: [IMPROVE][PAGINATE] data in datable is formated here
   formatDataForTable(geojson) {
     this._mapListService.tableData = [];
     const idSynthese = new Set();
