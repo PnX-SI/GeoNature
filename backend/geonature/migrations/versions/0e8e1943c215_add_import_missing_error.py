@@ -39,6 +39,12 @@ def upgrade():
                 "description": "Le champ doit être renseigné avec une valeur numérique (entier, flottant).",
                 "error_level": "ERROR",
             },
+            {
+                "error_type": "Ignorer les données existantes",
+                "name": "SKIP_EXISTING_UUID",
+                "description": "Les entitiés existantes selon UUID sont ignorees.",
+                "error_level": "WARNING",
+            },
         ],
     )
 
