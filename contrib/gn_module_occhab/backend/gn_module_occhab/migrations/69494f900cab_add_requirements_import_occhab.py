@@ -38,6 +38,8 @@ def upgrade():
             "longitude",
             dict(mandatory_conditions=["latitude"], optional_conditions=["WKT"], mandatory=True),
         ],
+        ["altitude_min", dict(mandatory_conditions=["altitude_max"], mandatory=False)],
+        ["depth_min", dict(mandatory_conditions=["depth_max"], mandatory=False)],
     ]
     for name_field, update_values in inter_fields_conditions:
         op.execute(
