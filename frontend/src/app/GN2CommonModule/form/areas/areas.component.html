@@ -34,6 +34,7 @@
       <span
         class="bg-warning p-2 rounded"
         matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
+        matTooltipPosition="after"
       >
         <mat-icon inline>warning_amber</mat-icon>
         Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»
@@ -48,6 +49,7 @@
     <div
       class="ng-option disabled"
       matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
+      matTooltipPosition="after"
     >
       <span class="bg-info p-2 rounded">
         <mat-icon inline>autorenew</mat-icon>
@@ -60,7 +62,10 @@
     ng-option-tmp
     let-item="item"
   >
-    <div matTooltip="{{ item.area_name }}">
+    <div 
+      matTooltip="{{ item.area_name }}"
+      matTooltipPosition="after"
+    >
       <span class="pre-wrap">{{ item.area_name }}</span>
     </div>
   </ng-template>
