@@ -30,6 +30,14 @@ def upgrade():
         ["id_station_source", dict(optional_conditions=["unique_id_sinp_station"], mandatory=True)],
         ["unique_id_sinp_station", dict(optional_conditions=["id_station_source"], mandatory=True)],
         ["WKT", dict(optional_conditions=["longitude", "latitude"], mandatory=True)],
+        [
+            "latitude",
+            dict(mandatory_conditions=["longitude"], optional_conditions=["WKT"], mandatory=True),
+        ],
+        [
+            "longitude",
+            dict(mandatory_conditions=["latitude"], optional_conditions=["WKT"], mandatory=True),
+        ],
     ]
     for name_field, update_values in inter_fields_conditions:
         op.execute(

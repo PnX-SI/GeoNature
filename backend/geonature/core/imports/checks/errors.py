@@ -52,6 +52,8 @@ class ImportCodeError:
         A uuid value is duplicated
     EXISTING_UUID: str
         A uuid value already exists in the destination table
+    SKIP_EXISTING_UUID: str
+        A uuid value already exists in the destination table and should be skipped
     MISSING_VALUE : str
         A required value is missing (see `mandatory` column in `gn_imports.bib_fields` table)
     MISSING_GEOM : str
@@ -151,6 +153,7 @@ class ImportCodeError:
     DUPLICATE_ROWS = "DUPLICATE_ROWS"
     DUPLICATE_UUID = "DUPLICATE_UUID"
     EXISTING_UUID = "EXISTING_UUID"
+    SKIP_EXISTING_UUID = "SKIP_EXISTING_UUID"
 
     # Missing value when required
     MISSING_VALUE = "MISSING_VALUE"
