@@ -1,9 +1,8 @@
 from .base import TModules
-import abc
 import typing
 
 
-class AbstractMixin(abc.ABC):
+class AbstractMixin:
     _module: TModules = None
 
     def __init__(self, module: TModules) -> None:
