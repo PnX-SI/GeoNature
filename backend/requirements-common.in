@@ -2,7 +2,7 @@ bokeh==3.4.1
 celery[redis]
 chardet  # imports
 click>=7.0
-fiona>=1.8.22,<1.9
+fiona>=1.9.6
 flask>=3.0
 flask-admin
 flask-cors

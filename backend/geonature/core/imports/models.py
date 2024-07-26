@@ -297,6 +297,8 @@ class TImports(InstancePermissionMixin, db.Model):
     date_end_import = db.Column(db.DateTime, nullable=True)
     source_count = db.Column(db.Integer, nullable=True)
     erroneous_rows = deferred(db.Column(ARRAY(db.Integer), nullable=True))
+    # TODO: integrate this in statistics
+    # statistics: common and destination (line count, etc. etc. dedans)
     import_count = db.Column(db.Integer, nullable=True)
     statistics = db.Column(
         MutableDict.as_mutable(JSON), nullable=False, server_default="'{}'::jsonb"

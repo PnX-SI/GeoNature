@@ -1,6 +1,9 @@
 <form>
-  <fieldset *ngIf="userFieldMappings.length > 0">
-    <div class="form-group">
+  <fieldset>
+    <div
+      *ngIf="userFieldMappings.length > 0"
+      class="form-group"
+    >
       <legend class="px-1">{{ 'Import.FieldMapping.ChooseMapping' | translate }}</legend>
       <ng-select
         id="mappingSelection"
@@ -10,6 +13,7 @@
         [compareWith]="areMappingFieldEqual"
         [disableControl]="!userFieldMappings.length"
         placeholder="{{ 'Browse' | translate }}"
+        data-qa="import-fieldmapping-selection-select"
       >
         <ng-template
           ng-option-tmp
@@ -17,7 +21,7 @@
           let-index="index"
           let-search="searchTerm"
         >
-          <div>
+          <div [attr.data-qa]="'import-fieldmapping-selection-' + index">
             <span class="pre-wrap">
               {{ item.label }}
             </span>
@@ -37,6 +41,7 @@
           color="primary"
           (click)="toggleRenameMappingForm()"
           [disabled]="!isMappingSelected()"
+          data-qa="import-fieldmapping-selection-button-rename"
         >
           {{ 'Import.FieldMapping.RenameMapping' | translate }}
         </button>
@@ -47,6 +52,7 @@
           color="warn"
           (click)="openDeleteModal()"
           [disabled]="!isMappingSelected()"
+          data-qa="import-fieldmapping-selection-button-delete"
         >
           {{ 'Import.FieldMapping.DeleteMapping' | translate }}
         </button>
@@ -63,6 +69,7 @@
         class="form-control mr-2"
         value="Inconnu"
         [formControl]="createOrRenameMappingForm"
+        data-qa="import-fieldmapping-selection-rename-text"
       />
       <button
         class="d-flex justify-content-center align-content-between mr-2 button-success"
@@ -73,6 +80,7 @@
           !createOrRenameMappingForm.valid ||
           fieldMappingForm.value.label.trim() == this.createOrRenameMappingForm.value.trim()
         "
+        data-qa="import-fieldmapping-selection-rename-ok"
       >
         <mat-icon>check</mat-icon>
       </button>
@@ -82,6 +90,7 @@
         (click)="toggleRenameMappingForm()"
         mat-raised-button
         color="warn"
+        data-qa="import-fieldmapping-selection-rename-cancel"
       >
         {{ 'Cancel' | translate }}
       </button>
@@ -95,6 +104,7 @@
 <ng-template
   #deleteConfirmModal
   let-modalDelete
+  data-qa="import-fieldmapping-selection-modal-delete"
 >
   <div class="modal-header">{{ 'Import.FieldMapping.Confirmation' | translate }}</div>
   <div class="modal-body">{{ 'Import.FieldMapping.DeleteMapping?' | translate }}</div>
@@ -104,6 +114,7 @@
       mat-raised-button
       color="accent"
       (click)="modalDelete.close()"
+      data-qa="import-fieldmapping-selection-modal-delete-cancel"
     >
       {{ 'Cancel' | translate }}
     </button>
@@ -112,6 +123,7 @@
       mat-raised-button
       color="warn"
       (click)="modalDelete.close(); deleteMapping()"
+      data-qa="import-fieldmapping-selection-modal-delete-ok"
     >
       {{ 'Import.FieldMapping.ConfirmMappingDeletion' | translate }}
     </button>

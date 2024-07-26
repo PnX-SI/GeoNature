@@ -59,10 +59,6 @@ COOKIE_AUTORENEW = true
 # Capturer toutes les exceptions (=true) ou pas (=false)
 TRAP_ALL_EXCEPTIONS = false
 
-# MTD (pour la connexion au webservice de métadonnées de l'INPN)
-XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
-MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
-
 # Configuration de l'accès sans authentication. Renseigner l’identifiant de l’utilisateur public.
 PUBLIC_ACCESS_USERNAME = ""
 
@@ -107,33 +103,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # après les virgules sont ignorés.
     ERROR_MAIL_TO = ["Prénom NOM <email@email.com>", "email2@email.com"]
 
-# CAS authentification (Optionnel, remplace l'authentification locale via UsersHub)
-[CAS_PUBLIC]
-    CAS_AUTHENTIFICATION = false
-    CAS_URL_LOGIN = "https://preprod-inpn.mnhn.fr/auth/login"
-    CAS_URL_LOGOUT = "https://preprod-inpn.mnhn.fr/auth/logout"
-
-[CAS]
-    CAS_URL_VALIDATION = "https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-
-[CAS.CAS_USER_WS]
-    URL = "https://inpn2.mnhn.fr/authentication/information"
-    BASE_URL = "https://inpn2.mnhn.fr/authentication/"
-    ID = "mon_id"
-    PASSWORD = "mon_pass"
-
-# Connexion avec le WS MTD
-[MTD]
-    # Modules auxquels les JDD sont automatiquement associés
-    JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
-    # Filter les JDD par id_instance
-    # ID_INSTANCE_FILTER = "null"
-    SYNC_LOG_LEVEL = "INFO"
-
 [BDD]
     id_area_type_municipality = 25
-    ID_USER_SOCLE_1 = 8
-    ID_USER_SOCLE_2 = 6
 
 [RIGHTS]
     NOTHING = 0
@@ -620,6 +591,20 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     FOOTER = ""
 
+[AUTHENTICATION]
+	DEFAULT_RECONCILIATION_GROUP_ID = 2
+    [[AUTHENTICATION.PROVIDERS]]
+        module="pypnusershub.auth.providers.default.DefaultConfiguration"
+		id_provider="local_provider"
+    
+    [[AUTHENTICATION.PROVIDERS]]
+        module="pypnusershub.auth.providers.openid_provider.OpenIDConnectProvider"
+		id_provider = "google"
+		logo = "<i class='fa fa-google' aria-hidden='true'></i>"
+		label = "Google"
+		ISSUER = "https://accounts.google.com/"
+		CLIENT_ID = "ID" # API key
+		CLIENT_SECRET = "SECRET" # API Secret
 
 [IMPORT]
     # Encodage des fichiers importés autorisées

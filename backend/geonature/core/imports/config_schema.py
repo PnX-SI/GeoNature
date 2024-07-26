@@ -28,8 +28,8 @@ DEFAULT_LIST_COLUMN = [
         "filter": False,
     },
     {
-        "prop": "import_count",
-        "name": "Nb de donnees",
+        "prop": "statistics_rows",
+        "name": "Lignes importées",
         "max_width": 100,
         "show": True,
         "filter": False,

@@ -1,0 +1,42 @@
+<div data-qa="external-gn-connection">
+  <h1 mat-dialog-title>Se connecter au {{data.provider.label}}</h1>
+
+  <div mat-dialog-content>
+    <form
+      #externalUserForm="ngForm"
+      (ngSubmit)="externalLogin(externalUserForm.value)"
+    >
+      <div class="form-group">
+        <i class="addon fa fa-user"></i>
+        <input
+          type="text"
+          id="login"
+          class="form-control"
+          name="login"
+          ngModel
+          placeholder="Identifiant"
+          autofocus
+          data-qa="gn-connection-id"
+        />
+      </div>
+      <div class="form-group mb-5">
+        <i class="addon fa fa-lock"></i>
+        <input
+          type="password"
+          name="password"
+          class="form-control"
+          placeholder="Mot de passe"
+          ngModel
+          data-qa="gn-connection-pwd"
+        />
+      </div>
+      <button
+        class="btn btn-lg btn-success btn-block text-uppercase"
+        type="submit"
+        data-qa="gn-connection-button"
+      >
+        Se connecter
+      </button>
+    </form>
+  </div>
+</div>

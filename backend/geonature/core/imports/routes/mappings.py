@@ -131,7 +131,6 @@ def update_mapping(mapping, scope):
                 else:
                     mapping.values[key].update(value)
             flag_modified(mapping, "values")  # nested dict modification not detected by MutableDict
-
     db.session.commit()
     return jsonify(mapping.as_dict())
 

@@ -53,10 +53,6 @@ mat-sidenav-content {
   height: 40px !important;
 }
 
-.mat-tooltip {
-  white-space: pre-line;
-}
-
 .app-content {
   //background-color: $solitude;
   //height: calc(100% - 5vh);
@@ -577,4 +573,15 @@ ngb-modal-backdrop {
 
 .mat-mdc-button-touch-target {
   display: none;
+}
+
+.cdk-overlay-pane {
+  &.mat-mdc-tooltip-panel {
+    .mat-mdc-tooltip {
+      div {
+        max-width: unset;
+      }
+      white-space: preserve nowrap;
+    }
+  }
 }

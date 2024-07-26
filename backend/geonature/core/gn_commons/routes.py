@@ -89,10 +89,10 @@ def list_modules():
         }
         if any(module_dict["cruved"].values()):
             module_allowed = True
-        if module.active_frontend:
-            module_dict["module_url"] = module.module_path
-        else:
-            module_dict["module_url"] = module.module_external_url
+        module_dict["module_external_url"] = (
+            "" if module.active_frontend else module.module_external_url
+        )
+        module_dict["module_url"] = module.module_path if module.active_frontend else ""
         module_dict["module_objects"] = {}
         # get cruved for each object
         for obj_dict in module_dict["objects"]:

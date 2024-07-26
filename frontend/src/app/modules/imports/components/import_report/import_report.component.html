@@ -3,11 +3,15 @@
     mat-raised-button
     class="back-button"
     (click)="navigateToImportList()"
+    data-qa="import-report-back"
   >
     <mat-icon>keyboard_arrow_left</mat-icon>
     Retour
   </button>
-  <div class="card-body mb-2 text-center">
+  <div
+    class="card-body mb-2 text-center"
+    data-qa="import-report"
+  >
     <div class="card content">
       <div class="row import-info align-content-center align-items-center">
         <div class="col-sm-10">
@@ -80,14 +84,10 @@
               {{ importData?.format_source_file }}
             </p>
             <p>
-              <b>Nombre de lignes :</b>
-              {{ importData?.source_count || 0 }}
+              <b>Nombre de lignes importées :</b>
+              {{ formattedRowCount(importData) }}
             </p>
             <div *ngIf="importStatus === 'TERMINE'">
-              <p>
-                <b>Nombre d’entités importées :</b>
-                {{ importData?.import_count || 0 }}
-              </p>
               <div *ngFor="let item of importData?.destination.statistics_labels">
                 <ng-container *ngIf="importData?.statistics[item.key] !== null">
                   <p>
@@ -105,6 +105,7 @@
               [disabled]="loadingPdf || loadingChart"
               (click)="exportAsPDF()"
               class="align-self-center"
+              data-qa="import-report-download-pdf"
             >
               Rapport PDF
               <mat-icon *ngIf="loadingPdf">
@@ -408,8 +409,9 @@
               class="mat-accent"
               color="accent"
               (click)="_csvExport.onCSV(importData?.id_import)"
+              data-qa="import-report-errors-csv"
             >
-              Exporter vos {{ nbTotalErrors }} observations invalides
+              Exporter vos {{ nbTotalErrors }} lignes invalides
             </button>
           </div>
         </div>
@@ -437,6 +439,7 @@
           <pnx-map
             height="40vh"
             searchBar="false"
+            data-qa="import-report-map"
           >
             <pnx-geojson
               [geojson]="validBbox"
@@ -453,7 +456,10 @@
             Afficher dans la synthèse
           </button>
         </div>
-        <div id="chartreport"></div>
+        <div
+          id="chartreport"
+          data-qa="import-report-chart"
+        ></div>
       </div>
     </mat-expansion-panel>
   </div>

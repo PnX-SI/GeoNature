@@ -1,6 +1,7 @@
 <div
   class="card"
   *ngIf="showContentMappingForm"
+  data-qa="import-contentmapping-form"
 >
   <div class="card-header">
     <h5 class="card-title mb-0">Correspondance des nomenclatures</h5>
@@ -17,6 +18,7 @@
               id="contentMappingSelection"
               [formControl]="selectMappingContentForm"
               [compareWith]="areMappingContentEqual"
+              data-qa="import-contentmapping-model-select"
             >
               <option [ngValue]="null">-</option>
               <option
@@ -38,6 +40,7 @@
               color="primary"
               (click)="showRenameMappingForm()"
               [disabled]="!deleteMappingEnabled()"
+              data-qa="import-contentmapping-selection-button-rename"
             >
               Renommer le modèle d'import
             </button>
@@ -48,6 +51,7 @@
               color="warn"
               (click)="openDeleteModal()"
               [disabled]="!deleteMappingEnabled()"
+              data-qa="import-contentmapping-selection-button-delete"
             >
               Supprimer le modèle d'import
             </button>
@@ -74,6 +78,7 @@
             class="form-control mr-2"
             value="Inconnu"
             [formControl]="createOrRenameMappingForm"
+            data-qa="import-contentmapping-selection-rename-text"
           />
           <button
             class="d-flex justify-content-center align-content-between mr-2 button-success"
@@ -85,6 +90,7 @@
               selectMappingContentForm.value.label.trim() ==
                 this.createOrRenameMappingForm.value.trim()
             "
+            data-qa="import-contentmapping-selection-rename-ok"
           >
             <mat-icon>check</mat-icon>
           </button>
@@ -94,6 +100,7 @@
             (click)="hideCreateOrRenameMappingForm()"
             mat-raised-button
             color="warn"
+            data-qa="import-contentmapping-selection-rename-cancel"
           >
             Annuler
           </button>
@@ -226,6 +233,7 @@
                     [compareWith]="areNomenclaturesEqual"
                     id="{{ targetField.key + '-' + index }}"
                     (change)="onSelectNomenclature(targetField.key + '-' + index)"
+                    [attr.data-qa]="'import-contentmapping-theme-' + targetField.key"
                   >
                     <option [ngValue]="null"></option>
                     <option
@@ -248,6 +256,7 @@
           (click)="onPreviousStep()"
           mat-raised-button
           color="primary"
+          data-qa="import-contentmapping-back-btn"
         >
           <mat-icon>navigate_before</mat-icon>
           Précédent
@@ -258,6 +267,7 @@
           (click)="onNextStep()"
           mat-raised-button
           color="primary"
+          data-qa="import-contentmapping-model-validate"
         >
           Suivant
           <mat-icon>navigate_next</mat-icon>
@@ -283,7 +293,10 @@
   #modalConfirm
   let-modal
 >
-  <div class="modal-header">
+  <div
+    class="modal-header"
+    data-qa="import-contentmapping-saving-modal"
+  >
     <h4
       class="modal-title"
       id="modal-basic-title"
@@ -295,6 +308,7 @@
       class="close"
       aria-label="Close"
       (click)="modal.dismiss('Cross click')"
+      data-qa="import-contentmapping-saving-modal-close"
     >
       <span aria-hidden="true">&times;</span>
     </button>
@@ -323,6 +337,7 @@
           class="form-control"
           id="mappingName"
           placeholder="Nom du modèle"
+          data-qa="import-contentmapping-saving-modal-mapping-name"
         />
         <span
           *ngIf="!modalCreateMappingForm.value"
@@ -348,6 +363,7 @@
       mat-raised-button
       color="accent"
       (click)="processNextStep(); modal.close()"
+      data-qa="import-contentmapping-saving-modal-cancel"
     >
       Ne pas enregistrer
     </button>
@@ -357,6 +373,7 @@
       mat-raised-button
       color="primary"
       (click)="updateMapping(); modal.close()"
+      data-qa="import-contentmapping-saving-modal-ok"
     >
       Mettre à jour le modèle d'import
     </button>
@@ -370,6 +387,7 @@
         (selectMappingContentForm.value &&
           modalCreateMappingForm.value == selectMappingContentForm.value.label)
       "
+      data-qa="import-contentmapping-saving-modal-new-ok"
     >
       Enregistrer un nouveau modèle d'import
     </button>
@@ -413,6 +431,7 @@
 <ng-template
   #deleteConfirmModal
   let-modalDelete
+  data-qa="import-contentmapping-selection-modal-delete"
 >
   <div class="modal-header">Confirmation</div>
   <div class="modal-body">Voulez vous supprimer le modèle ?</div>
@@ -422,6 +441,7 @@
       mat-raised-button
       color="accent"
       (click)="modalDelete.close()"
+      data-qa="import-contentmapping-selection-modal-delete-cancel"
     >
       Annuler
     </button>
@@ -430,6 +450,7 @@
       mat-raised-button
       color="warn"
       (click)="modalDelete.close(); deleteMapping()"
+      data-qa="import-contentmapping-selection-modal-delete-ok"
     >
       Supprimer le modèle
     </button>

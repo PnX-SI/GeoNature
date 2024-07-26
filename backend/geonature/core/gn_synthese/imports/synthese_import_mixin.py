@@ -23,6 +23,7 @@ from geonature.core.imports.checks.dataframe import (
     check_types,
     check_geometry,
     check_counts,
+    check_datasets,
 )
 from geonature.core.imports.checks.sql import (
     do_nomenclatures_mapping,
@@ -67,7 +68,8 @@ class SyntheseImportMixin(ImportMixin):
     @staticmethod
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         return [
-            {"key": "taxa_count", "value": "Nombre de taxons importés"},
+            {"key": "observation_count", "value": "Nombre d'observations importées"},
+            {"key": "taxa_count", "value": "Nombre de taxons"},
         ]
 
     @staticmethod
@@ -102,7 +104,7 @@ class SyntheseImportMixin(ImportMixin):
         def update_batch_progress(batch, step):
             start = 0.1
             end = 0.4
-            step_count = 7
+            step_count = 8
             progress = start + ((batch + 1) / batch_count) * (step / step_count) * (end - start)
             task.update_state(state="PROGRESS", meta={"progress": progress})
 
@@ -146,8 +148,19 @@ class SyntheseImportMixin(ImportMixin):
                 updated_cols |= check_types(imprt, entity, df, fields)
             update_batch_progress(batch, 4)
 
-            logger.info(f"[{batch+1}/{batch_count}] Check geometries…")
-            with start_sentry_child(op="check.df", description="set geometries"):
+            logger.info(f"[{batch+1}/{batch_count}] Check dataset rows")
+            with start_sentry_child(op="check.df", description="check datasets rows"):
+                updated_cols |= check_datasets(
+                    imprt,
+                    entity,
+                    df,
+                    uuid_field=fields["unique_dataset_id"],
+                    id_field=fields["id_dataset"],
+                    module_code="SYNTHESE",
+                )
+            update_batch_progress(batch, 5)
+            logger.info(f"[{batch+1}/{batch_count}] Check geography…")
+            with start_sentry_child(op="check.df", description="set geography"):
                 updated_cols |= check_geometry(
                     imprt,
                     entity,
@@ -162,7 +175,7 @@ class SyntheseImportMixin(ImportMixin):
                     codemaille_field=fields["codemaille"],
                     codedepartement_field=fields["codedepartement"],
                 )
-            update_batch_progress(batch, 5)
+            update_batch_progress(batch, 6)
 
             logger.info(f"[{batch+1}/{batch_count}] Check counts…")
             with start_sentry_child(op="check.df", description="check count"):
@@ -174,12 +187,12 @@ class SyntheseImportMixin(ImportMixin):
                     fields["count_max"],
                     default_count=current_app.config["IMPORT"]["DEFAULT_COUNT_VALUE"],
                 )
-            update_batch_progress(batch, 6)
+            update_batch_progress(batch, 7)
 
             logger.info(f"[{batch+1}/{batch_count}] Updating import data from dataframe…")
             with start_sentry_child(op="check.df", description="save dataframe"):
                 update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
-            update_batch_progress(batch, 7)
+            update_batch_progress(batch, 8)
 
         # Checks in SQL
         convert_geom_columns(
@@ -340,6 +353,8 @@ class SyntheseImportMixin(ImportMixin):
                 if source_field in imprt.columns:
                     insert_fields |= {field}
 
+        insert_fields -= {fields["unique_dataset_id"]}  # Column only used for filling `id_dataset`
+
         select_stmt = (
             sa.select(
                 *[transient_table.c[field.dest_field] for field in insert_fields],
@@ -362,12 +377,17 @@ class SyntheseImportMixin(ImportMixin):
             select=select_stmt,
         )
         db.session.execute(insert_stmt)
+
+        # TODO: Improve this
         imprt.statistics = {
+            "observation_count": (
+                db.session.query(func.count(Synthese.cd_nom)).filter_by(source=source).scalar()
+            ),
             "taxa_count": (
                 db.session.query(func.count(distinct(Synthese.cd_nom)))
                 .filter_by(source=source)
                 .scalar()
-            )
+            ),
         }
 
     @staticmethod

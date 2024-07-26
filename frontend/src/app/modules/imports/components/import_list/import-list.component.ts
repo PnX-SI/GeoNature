@@ -12,6 +12,7 @@ import { ImportProcessService } from '../import_process/import-process.service';
 import { Import } from '../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
 import { CsvExportService } from '../../services/csv-export.service';
+import { formatRowCount } from '../../utils/format-row-count';
 
 @Component({
   styleUrls: ['import-list.component.scss'],
@@ -165,6 +166,10 @@ export class ImportListComponent implements OnInit {
     });
   }
 
+  formattedRowCount(row: Import): string {
+    return formatRowCount(row);
+  }
+
   openDeleteModal(row: Import, modalDelete) {
     this.deleteOne = row;
     this._ds.setDestination(row.destination.code);
@@ -207,7 +212,7 @@ export class ImportListComponent implements OnInit {
   getStatisticsTooltip(row) {
     const statistics = this._getStatistics(row);
     return Object.keys(statistics)
-      .map((statkey) => this.getStatisticsLabel(row, statkey) + ' : ' + statistics[statkey])
+      .map((statkey) => this.getStatisticsLabel(row, statkey) + ': ' + statistics[statkey])
       .join('\n');
   }
 
@@ -229,5 +234,9 @@ export class ImportListComponent implements OnInit {
       return row.destination?.statistics_labels.find((stat) => stat.key === statKey).value;
     }
     return statKey;
+  }
+
+  private generateDataQaAttribute(columnName: string): string {
+    return columnName.replace(/\s+/g, '-').toLowerCase();
   }
 }

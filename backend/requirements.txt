@@ -17,11 +17,11 @@ attrs==23.2.0
     # via fiona
 authlib==1.3.0
     # via pypnusershub
-bcrypt==4.1.2
+bcrypt==4.1.3
     # via pypnusershub
 billiard==4.2.0
     # via celery
-blinker==1.7.0
+blinker==1.8.2
     # via
     #   flask
     #   flask-mail
@@ -29,19 +29,19 @@ bokeh==3.4.1
     # via -r requirements-common.in
 boto3==1.34.31
     # via taxhub
-botocore==1.34.31
+botocore==1.34.113
     # via
     #   boto3
     #   s3transfer
-cairocffi==1.6.1
+cairocffi==1.7.0
     # via
     #   cairosvg
     #   weasyprint
 cairosvg==2.7.1
     # via weasyprint
-celery[redis]==5.3.6
+celery[redis]==5.4.0
     # via -r requirements-common.in
-certifi==2023.11.17
+certifi==2024.2.2
     # via
     #   fiona
     #   pyproj
@@ -66,7 +66,7 @@ click==8.1.7
     #   fiona
     #   flask
     #   taxhub
-click-didyoumean==0.3.0
+click-didyoumean==0.3.1
     # via celery
 click-plugins==1.1.1
     # via
@@ -86,11 +86,11 @@ cssselect2==0.7.0
     #   weasyprint
 defusedxml==0.7.1
     # via cairosvg
-fiona==1.8.22
+fiona==1.9.6
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
-flask==3.0.1
+flask==3.0.3
     # via
     #   -r requirements-common.in
     #   flask-admin
@@ -112,22 +112,22 @@ flask-admin==1.6.1
     # via
     #   -r requirements-common.in
     #   pypnnomenclature
-flask-cors==4.0.0
+flask-cors==4.0.1
     # via
     #   -r requirements-common.in
     #   taxhub
 flask-login==0.6.3
     # via pypnusershub
-flask-mail==0.9.1
+flask-mail==0.10.0
     # via -r requirements-common.in
-flask-marshmallow==1.1.0
+flask-marshmallow==1.2.1
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
     #   pypn-ref-geo
     #   pypnnomenclature
     #   pypnusershub
-flask-migrate==4.0.5
+flask-migrate==4.0.7
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
@@ -148,7 +148,7 @@ flask-weasyprint==1.0.0
     # via -r requirements-common.in
 flask-wtf==1.2.1
     # via -r requirements-common.in
-geoalchemy2==0.14.3
+geoalchemy2==0.15.1
     # via utils-flask-sqlalchemy-geo
 geojson==3.1.0
     # via
@@ -156,19 +156,20 @@ geojson==3.1.0
     #   utils-flask-sqlalchemy-geo
 greenlet==3.0.3
     # via sqlalchemy
-gunicorn==21.2.0
+gunicorn==22.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
 html5lib==1.1
     # via weasyprint
-idna==3.6
+idna==3.7
     # via requests
 importlib-metadata==4.13.0 ; python_version < "3.10"
     # via
     #   -r requirements-common.in
+    #   fiona
     #   flask
-itsdangerous==2.1.2
+itsdangerous==2.2.0
     # via
     #   flask
     #   flask-wtf
@@ -180,19 +181,19 @@ jmespath==1.0.1
     # via
     #   boto3
     #   botocore
-kombu==5.3.5
+kombu==5.3.7
     # via celery
-lxml==5.1.0
+lxml==5.2.2
     # via -r requirements-common.in
-mako==1.3.2
+mako==1.3.5
     # via alembic
-markupsafe==2.1.4
+markupsafe==2.1.5
     # via
     #   jinja2
     #   mako
     #   werkzeug
     #   wtforms
-marshmallow==3.20.2
+marshmallow==3.21.2
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
@@ -210,8 +211,6 @@ marshmallow-sqlalchemy==1.0.0
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-munch==4.0.0
-    # via fiona
 numpy==1.26.3
     # via
     #   bokeh
@@ -246,19 +245,19 @@ psycopg2==2.9.9
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
-pycparser==2.21
+pycparser==2.22
     # via cffi
-pyphen==0.14.0
+pyphen==0.15.0
     # via weasyprint
 pypn-habref-api==0.4.1
     # via -r requirements-dependencies.in
-pypn-ref-geo==1.5.2
+pypn-ref-geo==1.5.3
     # via
     #   -r requirements-dependencies.in
     #   taxhub
-pypnnomenclature==1.6.2
+pypnnomenclature==1.6.3
     # via -r requirements-dependencies.in
-pypnusershub==2.1.4
+pypnusershub==2.1.5
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -284,13 +283,13 @@ pyyaml==6.0.1
     # via bokeh
 redis==5.0.1
     # via celery
-requests==2.31.0
+requests==2.32.2
     # via
     #   pypn-habref-api
     #   pypnusershub
-s3transfer==0.10.0
+s3transfer==0.10.1
     # via boto3
-shapely==2.0.2
+shapely==2.0.4
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
@@ -299,7 +298,7 @@ six==1.16.0
     #   fiona
     #   html5lib
     #   python-dateutil
-sqlalchemy==1.4.51
+sqlalchemy==1.4.52
     # via
     #   -r requirements-common.in
     #   alembic
@@ -314,11 +313,11 @@ sqlalchemy==1.4.51
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==1.14.0
+taxhub==1.14.1
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
-tinycss2==1.2.1
+tinycss2==1.3.0
     # via
     #   cairosvg
     #   cssselect2
@@ -349,7 +348,7 @@ utils-flask-sqlalchemy==0.4.1
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-utils-flask-sqlalchemy-geo==0.3.1
+utils-flask-sqlalchemy-geo==0.3.2
     # via
     #   -r requirements-dependencies.in
     #   pypn-ref-geo
@@ -369,7 +368,7 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
-werkzeug==3.0.1
+werkzeug==3.0.3
     # via
     #   flask
     #   flask-login
