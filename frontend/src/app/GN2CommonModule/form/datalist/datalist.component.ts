@@ -136,9 +136,16 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       const val = this.values[0][this.keyValue];
       this.parentFormControl.patchValue(this.multiple ? [val] : val);
     }
+
     // valeur par défaut (depuis input value)
-    if (!this.parentFormControl.value && this.default) {
+    if (
+      (!this.parentFormControl.value ||
+        (Array.isArray(this.parentFormControl.value) &&
+          this.parentFormControl.value.length == 0)) &&
+      this.default
+    ) {
       const value = this.multiple ? this.default : [this.default];
+
       const res = value.map((val) =>
         typeof val === 'object'
           ? (this.filteredValues.find((v) =>
