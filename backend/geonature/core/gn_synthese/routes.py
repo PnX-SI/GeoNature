@@ -1494,6 +1494,7 @@ def update_content_report(id_report):
 def list_reports(permissions, id_synthese):
     type_name = request.args.get("type")
     # id_synthese = request.args.get("idSynthese")
+    orderby = request.args.get("orderby", 'creation_date')
     sort = request.args.get("sort")
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 10))
@@ -1509,12 +1510,7 @@ def list_reports(permissions, id_synthese):
             raise Forbidden
         req = req.where(TReport.id_synthese == id_synthese)
 
-    # Sort by creation date
-    if sort == "asc":
-        req = req.order_by(asc(TReport.creation_date))
-    else:
-        req = req.order_by(desc(TReport.creation_date))
-       # Verify and filter by type
+    # Verify and filter by type
     if type_name:
         type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
         if not type_exists:
@@ -1525,44 +1521,68 @@ def list_reports(permissions, id_synthese):
     if type_name == "pin" or my_reports:
         req = req.where(TReport.id_role == g.current_user.id_role)
 
+    SORT_COLUMNS = ['user.nom_complet', 'content', 'creation_date']
+    # Determine the sorting
+    if orderby in SORT_COLUMNS:
+        if orderby == "user.nom_complet":
+            req = req.join(User).order_by(desc(User.nom_complet) if sort == "desc" else asc(User.nom_complet))
+        elif orderby == "content":
+            req = req.order_by(desc(TReport.content) if sort == "desc" else asc(TReport.content))
+        elif orderby == "creation_date":
+            req = req.order_by(desc(TReport.creation_date) if sort == "desc" else asc(TReport.creation_date))
+
+
     if not id_synthese:
         paginated_results = req.paginate(page=page, per_page=per_page, error_out=False)
-        result = [
-            report.as_dict(
+        result = []
+
+        for report in paginated_results.items:
+            report_dict = report.as_dict(
                 fields=[
                     "id_report",
                     "id_synthese",
                     "id_role",
                     "report_type.type",
                     "report_type.id_type",
-                    "synthese.cd_nom",
                     "content",
                     "deleted",
                     "creation_date",
-                    "user.nom_role",
-                    "user.prenom_role",
+                    "user.nom_complet",
+                    "synthese.cd_nom",
+                    "synthese.nom_cite",
+                    "synthese.observers",
+                    "synthese.date_min",
+                    "synthese.date_max",
                 ]
-            )
-            for report in paginated_results.items
-        ]
-        columns = [
-            {"prop": "creation_date", "name": "Date commentaire"},
-            {"prop": "user.nom_prenom_role", "name": "Auteur"},
-            {"prop": "content", "name": "Contenu"},
-            {"prop": "synthese.cd_nom", "name": "Taxon Observé"},
-        ]
+            )            
+            result.append(report_dict)
+
 
         response = {
-            "total": req.total if id_synthese else len(result),
-            "pages": req.pages if id_synthese else 1,
-            "current_page": req.page if id_synthese else 1,
-            "per_page": req.per_page if id_synthese else len(result),
-            "items": result,
-            "columns": columns
+            "total": paginated_results.total if id_synthese else len(result),
+            "pages": paginated_results.pages if id_synthese else 1,
+            "current_page": paginated_results.page if id_synthese else 1,
+            "per_page": paginated_results.per_page if id_synthese else len(result),
+            "items": result
         }
     else:
-        # Normal query with pagination
-        response = req.all()
+        response = [
+                report.as_dict(
+                    fields=[
+                        "id_report",
+                        "id_synthese",
+                        "id_role",
+                        "report_type.type",
+                        "report_type.id_type",
+                        "content",
+                        "deleted",
+                        "creation_date",
+                        "user.nom_role",
+                        "user.prenom_role",
+                    ]
+                )
+                for report in req.all()
+            ]
 
     return jsonify(response)
 @routes.route("/reports/<int:id_report>", methods=["DELETE"])

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
@@ -11,12 +11,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { ConfigService } from '@geonature/services/config.service';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, SyntheseDataService],
+  providers: [MapService, SyntheseDataService, DatePipe]
 })
 export class HomeContentComponent implements OnInit, AfterViewInit {
   public showLastObsMap: boolean = false;
@@ -27,21 +29,25 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   public cluserOrSimpleFeatureGroup = null;
 
 
+  @ViewChild('table')
+  table: DatatableComponent;
   discussions = [];
   columns = [];
   currentPage = 1;
   perPage = 10;
   totalPages = 1;
-  myReportsOnly = false; // Variable pour le filtre "Mes discussions"
-  sort = 'desc'; // Assurez-vous d'avoir une méthode ou une logique pour gérer le tri si nécessaire
-  expandedRow = null; // Track the currently expanded row
+  myReportsOnly = false; 
+  sort = 'desc'; 
+  orderby = 'date';
+  params:URLSearchParams = new URLSearchParams();
   constructor(
     private _SideNavService: SideNavService,
     private _syntheseApi: SyntheseDataService,
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
-    public config: ConfigService
+    public config: ConfigService,
+    private datePipe: DatePipe 
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -157,20 +163,31 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     this.getDiscussions(); // Recharger les discussions avec le filtre mis à jour
   }
   setDiscussions(data) {
-    this.discussions = data.items || [];
+    this.discussions = data.items.map(item => ({
+      ...item,
+      observation: `
+        <strong>Nom Cité:</strong> ${item.synthese.nom_cite || 'N/A'}<br>
+        <strong>Observateurs:</strong> ${item.synthese.observers || 'N/A'}<br>
+        <strong>Date Observation:</strong> ${this.formatDateRange(item.synthese.date_min, item.synthese.date_max) || 'N/A'}
+      `
+    })) || [];
+    this.columns = [
+      { prop: 'creation_date', name: 'Date commentaire', sortable: true },
+      { prop: 'user.nom_complet', name: 'Auteur', sortable: true },
+      { prop: 'content', name: 'Contenu', sortable: true },
+      { prop: 'observation', name: 'Observation', sortable: false, maxWidth: "500" } // La colonne non sortable
+    ];
     this.totalPages = data.totalPages || 1;
-    this.columns = data.columns || [];
   }
 
   getDiscussions() {
-    const params = new URLSearchParams();
-    params.set('type', 'discussion');
-    params.set('sort', this.sort || 'desc');
-    params.set('page', this.currentPage.toString());
-    params.set('per_page', this.perPage.toString());
-    params.set('my_reports', this.myReportsOnly.toString());
+    this.params.set('type', 'discussion');
+    this.params.set('sort', this.sort || 'desc');
+    this.params.set('page', this.currentPage.toString());
+    this.params.set('per_page', this.perPage.toString());
+    this.params.set('my_reports', this.myReportsOnly.toString());
 
-    this._syntheseApi.getReports(params.toString()).subscribe((response) => {
+    this._syntheseApi.getReports(this.params.toString()).subscribe((response) => {
       this.setDiscussions(response);
     });
   }
@@ -184,11 +201,27 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   }
 
   toggleExpandRow(row) {
-    if (this.expandedRow === row) {
-      this.expandedRow = null; // Collapse if the same row is clicked again
-    } else {
-      this.expandedRow = row; // Expand the new row
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
+  onColumnSort(event) {
+    this.params.set('orderby', event.column.prop);
+    this.getDiscussions()
+  }
+  formatDateRange(dateMin: string, dateMax: string): string {
+    if (!dateMin) return 'N/A'; // Si date_min est manquante
+
+    // Formatage des dates
+    const formattedDateMin = this.datePipe.transform(dateMin, 'dd-MM-yyyy');
+    const formattedDateMax = this.datePipe.transform(dateMax, 'dd-MM-yyyy');
+
+    if (!dateMax || formattedDateMin === formattedDateMax) {
+      // Si date_max est manquante ou identique à date_min
+      return formattedDateMin || 'N/A';
     }
+
+    // Si date_min et date_max sont différentes
+    return `${formattedDateMin} - ${formattedDateMax}`;
   }
 
 }

@@ -41,6 +41,7 @@
   <mat-tab-group>
     <mat-tab label="Dernières Discussions">
       <ngx-datatable
+        #table
         class="material striped margin-top-xs table-size expandable"
         [rows]="discussions"
         [columns]="columns"
@@ -51,77 +52,58 @@
         [count]="totalPages"
         [offset]="currentPage - 1"
         (page)='changePage($event.offset + 1)'
-        (activate)="onRowClick($event)"
+        (select)="onRowClick($event)"
+        (sort)="onColumnSort($event)"
       >
-            <!-- Row Detail Template -->
-            <ngx-datatable-row-detail
-            [rowHeight]="150"
-            #myDetailRow
-          >
-            <ng-template
-              ngx-datatable-row-detail-template
-              let-row="row"
-            >
-              <div class="row-detail">
-                <div>
-                  <strong>ID :</strong> {{ row.id_report }}
-                </div>
-                <ng-container *ngIf="row.comment">
-                  <div>
-                    <strong>Commentaire :</strong> {{ row.comment }}
-                  </div>
-                </ng-container>
-                <div>
-                  <strong>Date de création :</strong> {{ row.creation_date | date:'dd-MM-yyyy' }}
-                </div>
-                <div>
-                  <strong>Utilisateur :</strong> {{ row.user.nom_role || '-' }} {{ row.user.prenom_role || '-' }}
-                </div>
-              </div>
-            </ng-template>
-          </ngx-datatable-row-detail>
-    
-          <ngx-datatable-column
-          [width]="10"
-          [resizeable]="false"
-          [sortable]="false"
-          [draggable]="false"
-          [canAutoResize]="false"
-        >
-          <ng-template
-            ngx-datatable-cell-template
-            let-row="row"
-            let-expanded="expanded"
-          >
-            <a
-              href="javascript:void(0)"
-              matTooltip="Ouvrir/fermer le détail"
-              [class.datatable-icon-right]="!expanded"
-              [class.datatable-icon-down]="expanded"
-              (click)="toggleExpandRow(row)"
-            ></a>
-          </ng-template>
-        </ngx-datatable-column>
-<!-- Dynamic Data Columns -->
-      <!-- Dynamic Data Columns -->
-      <ng-container *ngFor="let col of columns">
-        <ngx-datatable-column
-          [width]="col.maxWidth || 150"
-          [prop]="col.prop"
-          [name]="col.name"
-          [sortable]="true"
-        >
-          <ng-template ngx-datatable-cell-template let-row="row">
-            <span [ngSwitch]="col.prop">
-              <span *ngSwitchCase="'creation_date'">{{ row[col.prop] | date:'dd-MM-yyyy' }}</span>
-              <span *ngSwitchCase="'user.nom_role'">{{ row.user.nom_role || 'N/A' }}</span>
-              <span *ngSwitchCase="'user.prenom_role'">{{ row.user.prenom_role || 'N/A' }}</span>
-              <span *ngSwitchCase="'report_type.type'">{{ row.report_type.type || 'N/A' }}</span>
-              <span *ngSwitchDefault>{{ row[col.prop] || 'N/A' }}</span>
-            </span>
-          </ng-template>
-        </ngx-datatable-column>
+ <!-- Row Detail Template -->
+ <ngx-datatable-row-detail [rowHeight]="150">
+  <ng-template ngx-datatable-row-detail-template let-row="row">
+    <div class="row-detail">
+      <ng-container *ngIf="row.content">
+        <div>
+          <strong>Commentaire :</strong> {{ row.content }}
+        </div>
       </ng-container>
+      <div>
+        <strong>Date du commentaire :</strong> {{ row.creation_date | date:'dd-MM-yyyy' }}
+      </div>
+      <div>
+        <strong>Utilisateur :</strong> {{ row.user.nom_complet }}
+      </div>
+    </div>
+  </ng-template>
+</ngx-datatable-row-detail>
+
+<ngx-datatable-column [width]="10" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+  <ng-template ngx-datatable-cell-template let-row="row" let-expanded="expanded">
+    <a
+      href="javascript:void(0)"
+      matTooltip="Ouvrir/fermer le détail"
+      [class.datatable-icon-right]="!expanded"
+      [class.datatable-icon-down]="expanded"
+      (click)="toggleExpandRow(row)"
+    ></a>
+  </ng-template>
+</ngx-datatable-column>
+<ng-container *ngFor="let col of columns">
+  <ngx-datatable-column
+    [width]="col.maxWidth || 150"
+    [prop]="col.prop"
+    [name]="col.name"
+    [sortable]="col.sortable !== false"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template ngx-datatable-cell-template let-row="row">
+      <span [ngSwitch]="col.prop">
+        <span *ngSwitchCase="'creation_date'">{{ row[col.prop] | date:'dd-MM-yyyy' }}</span>
+        <span *ngSwitchCase="'user.nom_complet'">{{ row.user.nom_complet || 'N/A' }}</span>
+        <span *ngSwitchCase="'observation'" [innerHTML]="row.observation"></span>
+        <span *ngSwitchDefault>{{ row[col.prop] || 'N/A' }}</span>
+      </span>
+    </ng-template>
+  </ngx-datatable-column>
+</ng-container>
     </ngx-datatable>
       
       <!-- Toggle for "Mes discussions" -->
