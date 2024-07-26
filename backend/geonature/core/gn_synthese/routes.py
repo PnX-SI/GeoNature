@@ -1488,17 +1488,17 @@ def update_content_report(id_report):
     session.commit()
 
 
-@routes.route("/reports", defaults={'id_synthese': None}, methods=["GET"])
+@routes.route("/reports", defaults={"id_synthese": None}, methods=["GET"])
 @routes.route("/reports/<int:id_synthese>", methods=["GET"])
 @permissions_required("R", module_code="SYNTHESE")
 def list_reports(permissions, id_synthese):
     type_name = request.args.get("type")
     # id_synthese = request.args.get("idSynthese")
-    orderby = request.args.get("orderby", 'creation_date')
+    orderby = request.args.get("orderby", "creation_date")
     sort = request.args.get("sort")
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 10))
-    my_reports = request.args.get("my_reports", 'false').lower() == 'true'
+    my_reports = request.args.get("my_reports", "false").lower() == "true"
 
     # Start query
     req = TReport.query
@@ -1521,16 +1521,21 @@ def list_reports(permissions, id_synthese):
     if type_name == "pin" or my_reports:
         req = req.where(TReport.id_role == g.current_user.id_role)
 
-    SORT_COLUMNS = ['user.nom_complet', 'content', 'creation_date']
+    SORT_COLUMNS = ["user.nom_complet", "content", "creation_date"]
     # Determine the sorting
     if orderby in SORT_COLUMNS:
         if orderby == "user.nom_complet":
-            req = req.join(User).order_by(desc(User.nom_complet) if sort == "desc" else asc(User.nom_complet))
+            req = req.join(User).order_by(
+                desc(User.nom_complet) if sort == "desc" else asc(User.nom_complet)
+            )
         elif orderby == "content":
             req = req.order_by(desc(TReport.content) if sort == "desc" else asc(TReport.content))
         elif orderby == "creation_date":
-            req = req.order_by(desc(TReport.creation_date) if sort == "desc" else asc(TReport.creation_date))
-
+            req = req.order_by(
+                desc(TReport.creation_date) if sort == "desc" else asc(TReport.creation_date)
+            )
+    else:
+        raise BadRequest("Bad orderby")
 
     if not id_synthese:
         paginated_results = req.paginate(page=page, per_page=per_page, error_out=False)
@@ -1554,37 +1559,38 @@ def list_reports(permissions, id_synthese):
                     "synthese.date_min",
                     "synthese.date_max",
                 ]
-            )            
+            )
             result.append(report_dict)
-
 
         response = {
             "total": paginated_results.total if id_synthese else len(result),
             "pages": paginated_results.pages if id_synthese else 1,
             "current_page": paginated_results.page if id_synthese else 1,
             "per_page": paginated_results.per_page if id_synthese else len(result),
-            "items": result
+            "items": result,
         }
     else:
         response = [
-                report.as_dict(
-                    fields=[
-                        "id_report",
-                        "id_synthese",
-                        "id_role",
-                        "report_type.type",
-                        "report_type.id_type",
-                        "content",
-                        "deleted",
-                        "creation_date",
-                        "user.nom_role",
-                        "user.prenom_role",
-                    ]
-                )
-                for report in req.all()
-            ]
+            report.as_dict(
+                fields=[
+                    "id_report",
+                    "id_synthese",
+                    "id_role",
+                    "report_type.type",
+                    "report_type.id_type",
+                    "content",
+                    "deleted",
+                    "creation_date",
+                    "user.nom_role",
+                    "user.prenom_role",
+                ]
+            )
+            for report in req.all()
+        ]
 
     return jsonify(response)
+
+
 @routes.route("/reports/<int:id_report>", methods=["DELETE"])
 @login_required
 @json_resp
