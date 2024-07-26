@@ -12,7 +12,7 @@ from geonature.core.imports.models import ImportUserErrorType
 
 # revision identifiers, used by Alembic.
 revision = "0e8e1943c215"
-down_revision = "8b149244d586"
+down_revision = "6e1852ecfea2"
 branch_labels = None
 depends_on = None
 

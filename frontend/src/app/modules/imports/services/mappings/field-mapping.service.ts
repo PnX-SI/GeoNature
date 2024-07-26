@@ -13,8 +13,6 @@ import { FieldMapping, FieldMappingValues } from '../../models/mapping.model';
 import { BehaviorSubject, Subscription, forkJoin } from 'rxjs';
 import { ImportProcessService } from '../../components/import_process/import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
-import { TaxonTreeComponent } from '@geonature_common/form/taxon-tree/taxon-tree.component';
-import { Observable } from 'rxjs-compat';
 import { FormService } from '@geonature_common/form/form.service';
 
 interface FieldsMappingStatus {
@@ -71,6 +69,8 @@ export class FieldMappingService {
    * Names of source fields.
    */
   private sourceFields: Array<string>;
+
+  private fieldsByEntity: Map<string, Array<string>> = new Map();
 
   /**
    * Status of field mappings.
