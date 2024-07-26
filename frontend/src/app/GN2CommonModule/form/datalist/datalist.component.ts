@@ -7,6 +7,7 @@ import {
   DoCheck,
   IterableDiffers,
   IterableDiffer,
+  SimpleChanges,
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
@@ -16,7 +17,7 @@ import { CommonService } from '../../service/common.service';
   selector: 'pnx-datalist',
   templateUrl: './datalist.component.html',
 })
-export class DatalistComponent extends GenericFormComponent implements OnInit {
+export class DatalistComponent extends GenericFormComponent implements OnInit, OnChanges {
   formId: string; // Unique form id
 
   @Input() designStyle: 'bootstrap' | 'material' = 'material';
@@ -56,6 +57,10 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     this.designStyle = this.designStyle || 'material';
     this.formId = `datalist_${Math.ceil(Math.random() * 1e10)}`;
     this.getData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("?????", changes)
   }
 
   onToppingRemoved(val) {
@@ -144,16 +149,28 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
           this.parentFormControl.value.length == 0)) &&
       this.default
     ) {
+      
       const value = this.multiple ? this.default : [this.default];
+      // check if the default value is in the provided values
+      const valuesID = this.values.map(el => el[this.keyValue]);
+      const defaultValuesID = value.map(el => el[this.keyValue]);
+      const defaultValueIsInValues = valuesID.some(el => defaultValuesID.includes(el));
+      
+      // patch value only if default value is in values
+      if(defaultValueIsInValues) {
+        const res = value.map((val) =>
+          typeof val === 'object'
+            ? (this.filteredValues.find((v) =>
+                Object.keys(val).every((key) => v[key] === val[key])
+              ) || {})[this.keyValue]
+            : val
+        );
+        this.parentFormControl.patchValue(this.multiple ? res : res[0]);
+        
+      }
 
-      const res = value.map((val) =>
-        typeof val === 'object'
-          ? (this.filteredValues.find((v) =>
-              Object.keys(val).every((key) => v[key] === val[key])
-            ) || {})[this.keyValue]
-          : val
-      );
-      this.parentFormControl.patchValue(this.multiple ? res : res[0]);
+      
+
     }
     this.parentFormControl.markAsTouched();
   }
