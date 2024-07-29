@@ -51,7 +51,6 @@
         [limit]="perPage"
         [count]="totalPages"
         [offset]="currentPage - 1"
-        (page)='changePage($event.offset + 1)'
         (select)="onRowClick($event)"
         (sort)="onColumnSort($event)"
       >
@@ -104,6 +103,29 @@
     </ng-template>
   </ngx-datatable-column>
 </ng-container>
+<ngx-datatable-footer>
+  <ng-template
+    ngx-datatable-footer-template
+    let-rowCount="rowCount"
+    let-pageSize="pageSize"
+    let-curPage="curPage"
+    let-offset="offset"
+  >
+     {{ pageSize }} / {{ totalRows }} total
+    <datatable-pager
+      [pagerLeftArrowIcon]="'datatable-icon-left'"
+      [pagerRightArrowIcon]="'datatable-icon-right'"
+      [pagerPreviousIcon]="'datatable-icon-prev'"
+      [pagerNextIcon]="'datatable-icon-skip'"
+      [page]="curPage"
+      [size]="pageSize"
+      [count]="totalRows"
+      [hidden]="!(totalRows / pageSize > 1)"
+      (change)="handlePageChange($event)"
+    >
+    </datatable-pager>
+  </ng-template>
+</ngx-datatable-footer>
     </ngx-datatable>
       
       <!-- Toggle for "Mes discussions" -->

@@ -1521,11 +1521,13 @@ def list_reports(permissions, id_synthese):
     if type_name == "pin" or my_reports:
         req = req.where(TReport.id_role == g.current_user.id_role)
 
+    # Join the User table
+    req = req.join(User, User.id_role == TReport.id_role)
     SORT_COLUMNS = ["user.nom_complet", "content", "creation_date"]
     # Determine the sorting
     if orderby in SORT_COLUMNS:
         if orderby == "user.nom_complet":
-            req = req.join(User).order_by(
+            req = req.order_by(
                 desc(User.nom_complet) if sort == "desc" else asc(User.nom_complet)
             )
         elif orderby == "content":
@@ -1563,10 +1565,10 @@ def list_reports(permissions, id_synthese):
             result.append(report_dict)
 
         response = {
-            "total": paginated_results.total if id_synthese else len(result),
-            "pages": paginated_results.pages if id_synthese else 1,
-            "current_page": paginated_results.page if id_synthese else 1,
-            "per_page": paginated_results.per_page if id_synthese else len(result),
+            "total": paginated_results.total,
+            "pages": paginated_results.pages,
+            "current_page": paginated_results.page,
+            "per_page": paginated_results.per_page,
             "items": result,
         }
     else:

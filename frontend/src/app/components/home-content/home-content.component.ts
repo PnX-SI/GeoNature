@@ -34,8 +34,9 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   discussions = [];
   columns = [];
   currentPage = 1;
-  perPage = 10;
+  perPage = 2;
   totalPages = 1;
+  totalRows:Number;
   myReportsOnly = false; 
   sort = 'desc'; 
   orderby = 'date';
@@ -177,7 +178,8 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
       { prop: 'content', name: 'Contenu', sortable: true },
       { prop: 'observation', name: 'Observation', sortable: false, maxWidth: "500" } // La colonne non sortable
     ];
-    this.totalPages = data.totalPages || 1;
+    this.totalRows = data.total || 0;  // Total number of items
+    this.totalPages = data.pages || 1; // Total number of pages
   }
 
   getDiscussions() {
@@ -192,10 +194,6 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     });
   }
 
-  changePage(page: number) {
-    this.currentPage = page;
-    this.getDiscussions(); // Recharger les discussions pour la nouvelle page
-  }
   onRowClick(event) {
     console.log('Clicked row:', event.row);
   }
@@ -204,8 +202,16 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     this.table.rowDetail.toggleExpandRow(row);
   }
 
+  handlePageChange(event: any) {
+    this.currentPage = event.page;
+    this.getDiscussions(); // Fetch data for the new page
+  }
+
   onColumnSort(event) {
-    this.params.set('orderby', event.column.prop);
+    this.sort = event.sorts[0].dir
+    this.orderby = event.sorts[0].prop
+    this.params.set('sort', this.sort);
+    this.params.set('orderby', this.orderby);
     this.getDiscussions()
   }
   formatDateRange(dateMin: string, dateMax: string): string {
