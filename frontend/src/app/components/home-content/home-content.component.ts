@@ -83,7 +83,7 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     if (this.showLastObsMap) {
       this.computeMapBloc();
     }
-    this.getDiscussions();
+    this.config.HOME.DISPLAY_LATEST_DISCUSSIONS ? this.getDiscussions() : null;
   }
 
   ngOnDestroy(): void {
@@ -159,7 +159,6 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   }
 
   toggleMyReports() {
-    this.myReportsOnly = !this.myReportsOnly;
     this.currentPage = 1; // Réinitialiser à la première page lors du changement du filtre
     this.getDiscussions(); // Recharger les discussions avec le filtre mis à jour
   }

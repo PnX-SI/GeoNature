@@ -38,8 +38,16 @@
       </div>
     </div>
   </div>
+  <div class="panel panel-container panel-top">
   <mat-tab-group>
-    <mat-tab label="Dernières Discussions">
+    <mat-tab *ngIf="config.HOME.DISPLAY_LATEST_DISCUSSIONS" label="Dernières Discussions">
+        <!-- Toggle for "Mes discussions" -->
+      <div class="toggle-container">
+        <label>
+          <input type="checkbox" [(ngModel)]="myReportsOnly" (change)="toggleMyReports()">
+          Mes discussions
+        </label>
+      </div>
       <ngx-datatable
         #table
         class="material striped margin-top-xs table-size expandable"
@@ -127,17 +135,10 @@
   </ng-template>
 </ngx-datatable-footer>
     </ngx-datatable>
-      
-      <!-- Toggle for "Mes discussions" -->
-      <div class="toggle-container">
-        <label>
-          <input type="checkbox" [(ngModel)]="myReportsOnly" (change)="toggleMyReports()">
-          Mes discussions
-        </label>
-      </div>
     </mat-tab>
     <!-- TODO: Autres onglets à ajouter (Dernière validations etc) -->
   </mat-tab-group>
+</div>
   <div
     *ngIf="showGeneralStat"
     class="panel panel-container panel-top"
