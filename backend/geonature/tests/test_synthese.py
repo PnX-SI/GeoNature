@@ -1386,6 +1386,15 @@ class TestSynthese:
         assert response.status_code == 200
         assert response.json[0]["cd_nom"] == synthese_data["obs1"].cd_nom
 
+        #recherche par le nom valide d'un taxon, alors que seul un synonyme est présent en synthese
+        response = self.client.get(
+            url_for("gn_synthese.get_autocomplete_taxons_synthese"),
+            query_string={"search_name": taxon.nom_valide},
+        )
+
+        assert response.status_code == 200
+        assert response.json[0]["cd_nom"] == taxon.cd_ref and response.json[0]["cd_nom"] != synthese_data["obs1"].cd_nom
+
 
 @pytest.fixture(scope="class")
 def synthese_module():
