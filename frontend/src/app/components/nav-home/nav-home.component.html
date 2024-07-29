@@ -53,8 +53,7 @@
       >
         <ng-container
           *ngIf="
-            !config.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
-              config.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
+            useLocalProvider && config.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
             else noUserManagement
           "
         >

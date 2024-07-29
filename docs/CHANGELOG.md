@@ -1,6 +1,24 @@
 CHANGELOG
 =========
 
+2.15.0 (unreleased)
+-------------------
+
+**🚀 Nouveautés**
+
+- Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identités (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
+
+
+**⚠️ Notes de version**
+ 
+ - La synchronisation avec le service MTD de l'INPN n'existe plus dans GeoNature, cette dernière a été déplacée dans un module externe : https://github.com/PnX-SI/mtd_sync
+   - Supprimer les variables de configuration suivantes du fichier `geonature_config.toml` : 
+     - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
+     - toutes les variables dans `[CAS_PUBLIC]`, `[CAS]`, `[CAS.CAS_USER_WS]`, `[MTD]`
+     - `ID_USER_SOCLE_1` et `ID_USER_SOCLE_2` dans la section `BDD` 
+   - Installer le nouveau module externe à l'aide de la commande : `pip install git+https://github.com/PnX-SI/mtd_sync`
+   - Remplisser la configuration dans un fichier `mtd_sync.toml`
+
 2.14.2 (2024-05-28)
 -------------------
 
@@ -11,10 +29,10 @@ CHANGELOG
 
 **🐛 Corrections**
 
-- Correction d'erreur dans les fichiers de traductions du frontend (#3026)
-- Correction de la fermeture des sessions SQLAlchemy lancées par Celery (#3050, #3065)
+- Correction d'erreurs dans les fichiers de traductions du frontend (#3026)
+- Correction de la fermeture des sessions SQLAlchemy lancées par Celery (#3050, #3062 )
 - [CAS-INPN] Fix du système d'authentification au CAS de l'INPN (#2866)
-- [Monitoring] Correction de la requête SQLAlchemy de récupération des aires de sites (#2954)
+- [Monitoring] Correction de la requête SQLAlchemy de récupération des aires de sites (#2984)
 - [Occtax] Correction de la transformation de la valeur par défaut dans les champs additionnels d'Occtax (#2978, #3011, #3017)
 - [RefGeo] Correction du filtre `type_code` de la route `/geo/areas` (#3057, PnX-SI/RefGeo#26)
 

@@ -56,3 +56,9 @@ REF_LAYERS=[
 
 [SYNTHESE]
 AREA_AGGREGATION_TYPE = "M5"
+STATUS_FILTERS = [
+    { "id" = "protections", "show" = true, "display_name" = "Taxons protégés", "status_types" = ["PN", "PR", "PD"] },
+    { "id" = "regulations", "show" = true, "display_name" = "Taxons réglementés", "status_types" = ["REGLII", "REGL", "REGLSO"] },
+    { "id" = "invasive", "show" = true, "display_name" = "Espèces envahissantes", "status_types" = ["REGLLUTTE"] },
+    { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
+]

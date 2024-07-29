@@ -11,7 +11,6 @@ if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
 else:
     from importlib.metadata import entry_points
-
 from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
@@ -22,10 +21,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.wrappers import Response
-from psycopg2.errors import UndefinedTable
 import sqlalchemy as sa
-from sqlalchemy.exc import OperationalError, ProgrammingError
-from sqlalchemy.orm.exc import NoResultFound
 
 if version.parse(sa.__version__) >= version.parse("1.4"):
     from sqlalchemy.engine import Row
@@ -33,18 +29,16 @@ else:  # retro-compatibility SQLAlchemy 1.3
     from sqlalchemy.engine import RowProxy as Row
 
 from geonature.utils.config import config
+
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import iter_modules_dist
 from geonature.core.admin.admin import admin
 from geonature.middlewares import SchemeFix, RequestID
 
-from pypnusershub.db.tools import (
-    user_from_token,
-    UnreadableAccessRightsError,
-    AccessRightsExpiredError,
-)
+
 from pypnusershub.db.models import Application
+from pypnusershub.auth import auth_manager
 from pypnusershub.login_manager import login_manager
 
 
@@ -96,7 +90,6 @@ def create_app(with_external_mods=True):
         static_url_path=config["STATIC_URL"],
         template_folder="geonature/templates",
     )
-
     app.config.update(config)
 
     # Enable deprecation warnings in debug mode
@@ -129,6 +122,8 @@ def create_app(with_external_mods=True):
     migrate.init_app(app, DB, directory=BACKEND_DIR / "geonature" / "migrations")
     MA.init_app(app)
     CORS(app, supports_credentials=True)
+    auth_manager.init_app(app, providers_declaration=config["AUTHENTICATION"]["PROVIDERS"])
+    auth_manager.home_page = config["URL_APPLICATION"]
 
     if "CELERY" in app.config:
         from geonature.utils.celery import celery_app
@@ -147,8 +142,6 @@ def create_app(with_external_mods=True):
     app.config["DB"] = DB
     # Pass parameters to the submodules
     app.config["MA"] = MA
-
-    login_manager.init_app(app)
 
     # For deleting files on "delete" media
     @before_models_committed.connect_via(app)
@@ -190,7 +183,6 @@ def create_app(with_external_mods=True):
     )
 
     for blueprint_path, url_prefix in [
-        ("pypnusershub.routes:routes", "/auth"),
         ("pypn_habref_api.routes:routes", "/habref"),
         ("pypnusershub.routes_register:bp", "/pypn/register"),
         ("pypnnomenclature.routes:routes", "/nomenclatures"),
@@ -200,7 +192,6 @@ def create_app(with_external_mods=True):
         ("geonature.core.users.routes:routes", "/users"),
         ("geonature.core.gn_synthese.routes:routes", "/synthese"),
         ("geonature.core.gn_meta.routes:routes", "/meta"),
-        ("geonature.core.auth.routes:routes", "/gn_auth"),
         ("geonature.core.gn_monitoring.routes:routes", "/gn_monitoring"),
         ("geonature.core.gn_profiles.routes:routes", "/gn_profiles"),
         ("geonature.core.sensitivity.routes:routes", None),
