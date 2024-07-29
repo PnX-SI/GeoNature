@@ -116,6 +116,10 @@
                 <strong>Saisi par :</strong>
                 {{ row?.digitiser?.nom_complet || '-' }}
               </div>
+              <div *ngIf="row.place_name != null && row.place_name != ''">
+                <strong>{{ 'Releve.PlaceName' | translate }} :</strong>
+                {{ row.place_name }}
+              </div>
               <div><strong>Observé par:</strong></div>
               <div style="margin-left: 20px">
                 <div *ngFor="let obs of displayObservateursTooltip(row)">
