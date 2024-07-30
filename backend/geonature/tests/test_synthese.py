@@ -1374,13 +1374,13 @@ class TestSynthese:
                     assert item["count"] >= test_cd_nom["count"]
 
     def test_get_autocomplete_taxons_synthese(self, synthese_data, users):
-        seach_name = synthese_data["obs1"].nom_cite
+        taxon = db.session.execute(select(Taxref).filter_by(cd_nom=synthese_data["obs1"].cd_nom)).scalar_one()
 
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(
             url_for("gn_synthese.get_autocomplete_taxons_synthese"),
-            query_string={"search_name": seach_name},
+            query_string={"search_name": taxon.lb_nom},
         )
 
         assert response.status_code == 200
