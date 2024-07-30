@@ -1374,7 +1374,7 @@ class TestSynthese:
                     assert item["count"] >= test_cd_nom["count"]
 
     def test_get_autocomplete_taxons_synthese(self, synthese_data, users):
-        taxon = db.session.execute(select(Taxref).filter_by(cd_nom=synthese_data["obs1"].cd_nom)).scalar_one()
+        taxon = db.session.execute(select(Taxref).filter_by(cd_nom=synthese_data["tax_search_1"].cd_nom)).scalar_one()
 
         set_logged_user(self.client, users["self_user"])
 
@@ -1384,7 +1384,7 @@ class TestSynthese:
         )
 
         assert response.status_code == 200
-        assert response.json[0]["cd_nom"] == synthese_data["obs1"].cd_nom
+        assert response.json[0]["cd_nom"] == synthese_data["tax_search_1"].cd_nom
 
         #recherche par le nom valide d'un taxon, alors que seul un synonyme est présent en synthese
         response = self.client.get(
@@ -1393,7 +1393,7 @@ class TestSynthese:
         )
 
         assert response.status_code == 200
-        assert response.json[0]["cd_nom"] == taxon.cd_ref and response.json[0]["cd_nom"] != synthese_data["obs1"].cd_nom
+        assert response.json[0]["cd_nom"] == taxon.cd_ref and response.json[0]["cd_nom"] != synthese_data["tax_search_1"].cd_nom
 
 
 @pytest.fixture(scope="class")
