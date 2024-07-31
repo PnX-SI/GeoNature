@@ -6,18 +6,34 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-- Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identités (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
+- Intégration du module Import dans le coeur de GeoNature et refonte de celui-ci pour qu'il puisse importer dans d'autres modules que Synthèse (https://github.com/PnX-SI/gn_module_import/issues/303)
+- Ajout de la possibilité d'importer des données depuis des fichiers vers le module Occhab
+- Autres évolutions du module Import à mentionner ici... (évolution des controles ? Import GeoJSON ? Graphiques génériques ? Meilleure gestion des formats de date ? Amélioration export PDF ? Import multi-JDD ?)
+- Ajout de tests frontend automatisés sur le module Import
+- Evolution du fonctionnement des permissions sur le module Import pour gérer son nouveau fonctionnement multi-destination (Action C ajoutée au module Synthèse, JDD à associer aux modules de destination...). Renvoyer vers la doc sur le sujet ?
+- Intégration et enrichissement de la documentation du module Import : https://docs.geonature.fr/xxxxxx
+- Amélioration export Occhab
+- Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identité (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
 
+**🐛 Corrections**
+
+- Correction de l'URL des modules externes dans le menu latéral (#3093)
 
 **⚠️ Notes de version**
- 
- - La synchronisation avec le service MTD de l'INPN n'existe plus dans GeoNature, cette dernière a été déplacée dans un module externe : https://github.com/PnX-SI/mtd_sync
-   - Supprimer les variables de configuration suivantes du fichier `geonature_config.toml` : 
+
+Si vous mettez à jour GeoNature : 
+
+- Le module Import a été intégré dans le coeur de GeoNature
+   - si vous aviez installé le module externe Import, XXXXX
+   - si vous n'aviez pas installé le module externe Import, il sera disponible après la mise à jour vers cette nouvelle version de GeoNature. Vous pouvez configurer les permissions de vos utilisateurs si vous souhaitez qu'ils y accédent
+   - la gestion des permissions et des JDD associés aux module a évolué. La migration est gérée automatiquement lors de la mise à jour pour garantir un fonctionnement identique. Voir la documentation (XXXXXXXXX) pour en savoir plus
+- La synchronisation avec le service MTD de l'INPN n'est plus intégrée dans le code de GeoNature, elle a été déplacée dans un module externe : https://github.com/PnX-SI/mtd_sync
+   - Si vous l'utilisiez, supprimer les variables de configuration suivantes du fichier `geonature_config.toml` : 
      - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
      - toutes les variables dans `[CAS_PUBLIC]`, `[CAS]`, `[CAS.CAS_USER_WS]`, `[MTD]`
      - `ID_USER_SOCLE_1` et `ID_USER_SOCLE_2` dans la section `BDD` 
-   - Installer le nouveau module externe à l'aide de la commande : `pip install git+https://github.com/PnX-SI/mtd_sync`
-   - Remplisser la configuration dans un fichier `mtd_sync.toml`
+   - Installez le nouveau module externe à l'aide de la commande : `pip install git+https://github.com/PnX-SI/mtd_sync`
+   - Remplissez la configuration dans un fichier `mtd_sync.toml`
 
 2.14.2 (2024-05-28)
 -------------------
