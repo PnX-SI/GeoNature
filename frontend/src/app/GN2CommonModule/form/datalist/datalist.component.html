@@ -57,6 +57,7 @@
       <mat-icon
         *ngIf="definition"
         [matTooltip]="definition"
+        matTooltipPosition="after"
         matTooltipClass="form-tooltip"
         class="small-icon"
         matSuffix
@@ -87,7 +88,10 @@
         let-index="index"
         let-search="searchTerm"
       >
-        <div [matTooltip]="item[keyLabel]">
+        <div 
+          [matTooltip]="item[keyLabel]"
+          matTooltipPosition="after"
+        >
           <span class="pre-wrap">{{ item[keyLabel] }}</span>
         </div>
       </ng-template>
