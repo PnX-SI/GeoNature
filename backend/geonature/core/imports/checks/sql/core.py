@@ -1,3 +1,5 @@
+from geonature.core.imports.checks.errors import ImportCodeError
+from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 import sqlalchemy as sa
 
 from geonature.utils.env import db
@@ -7,7 +9,6 @@ from geonature.core.imports.models import (
     EntityField,
     BibFields,
 )
-from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 
 
 __all__ = ["init_rows_validity", "check_orphan_rows"]
@@ -41,22 +42,51 @@ def init_rows_validity(imprt):
             selected_fields_names.append(field_name)
     for entity in entities:
         # Select fields associated to this entity *and only to this entity*
+        dest_table = entity.get_destination_table()
         fields = (
             db.session.query(BibFields)
-            .filter(BibFields.name_field.in_(selected_fields_names))
-            .filter(BibFields.entities.any(EntityField.entity == entity))
-            .filter(~BibFields.entities.any(EntityField.entity != entity))
+            .where(BibFields.name_field.in_(selected_fields_names))
+            .where(BibFields.entities.any(EntityField.entity == entity))
+            .where(~BibFields.entities.any(EntityField.entity != entity))
+            .where(BibFields.source_field != entity.unique_column.source_field)
             .all()
         )
-        # Set validity=True for rows with not null field associated to this entity
-        db.session.execute(
-            sa.update(transient_table)
+        cte = (  # quels entrées prendre en compte
+            sa.select(
+                transient_table.c.line_no, transient_table.c[entity.unique_column.source_field]
+            )
             .where(transient_table.c.id_import == imprt.id_import)
             .where(
-                sa.or_(*[transient_table.c[field.source_column].isnot(None) for field in fields])
+                sa.and_(
+                    sa.or_(  # Un des champs d'une entité est rempli
+                        *[transient_table.c[field.source_column].isnot(None) for field in fields]
+                    ),
+                    sa.or_(  # l'UUID n'existe pas dans la table parente ou l'UUID vide
+                        transient_table.c[entity.unique_column.source_field].not_in(
+                            sa.select(
+                                sa.cast(dest_table.c[entity.unique_column.dest_field], sa.TEXT)
+                            )
+                        ),
+                        transient_table.c[entity.unique_column.source_field] == None,
+                    ),
+                )
+            )
+            .cte("cte")
+        )
+        query = (
+            sa.update(transient_table)
+            .where(
+                sa.or_(
+                    transient_table.c[entity.unique_column.source_field]
+                    == cte.c[entity.unique_column.source_field],
+                    transient_table.c.line_no == cte.c.line_no,
+                )
             )
             .values({entity.validity_column: True})
+            .returning(transient_table.c.line_no)
         )
+        db.session.execute(query).fetchall()
+
     # Rows with values only in fields shared between several entities will be ignored here.
     # But they will raise an error through check_orphan_rows.
 
@@ -88,11 +118,11 @@ def check_orphan_rows(imprt):
         report_erroneous_rows(
             imprt,
             entity=None,  # OK because ORPHAN_ROW has only WARNING level
-            error_type="ORPHAN_ROW",
+            error_type=ImportCodeError.ORPHAN_ROW,
             error_column=field.name_field,
             whereclause=sa.and_(
                 transient_table.c[field.source_field].isnot(None),
-                *[transient_table.c[col].is_(None) for col in imprt.destination.validity_columns]
+                *[transient_table.c[col].is_(None) for col in imprt.destination.validity_columns],
             ),
         )
 
@@ -108,7 +138,7 @@ def check_mandatory_fields(imprt, entity, fields):
         report_erroneous_rows(
             imprt,
             entity=entity,
-            error_type="MISSING_VALUE",
+            error_type=ImportCodeError.MISSING_VALUE,
             error_column=field.name_field,
             whereclause=whereclause,
         )

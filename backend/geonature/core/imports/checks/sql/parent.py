@@ -1,9 +1,9 @@
+from geonature.core.imports.checks.errors import ImportCodeError
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased
 
 from geonature.utils.env import db
 from geonature.core.imports.checks.sql.utils import report_erroneous_rows
-
 
 __all__ = [
     "set_id_parent_from_destination",
@@ -74,7 +74,7 @@ def check_no_parent_entity(imprt, parent_entity, child_entity, id_parent, parent
     report_erroneous_rows(
         imprt,
         child_entity,
-        error_type="NO_PARENT_ENTITY",
+        error_type=ImportCodeError.NO_PARENT_ENTITY,
         error_column=id_parent,
         whereclause=sa.and_(
             # Complains for missing parent only for valid child, as parent may be missing
@@ -95,7 +95,7 @@ def check_erroneous_parent_entities(imprt, parent_entity, child_entity, parent_l
     report_erroneous_rows(
         imprt,
         child_entity,
-        error_type="ERRONEOUS_PARENT_ENTITY",
+        error_type=ImportCodeError.ERRONEOUS_PARENT_ENTITY,
         error_column="",
         whereclause=sa.and_(
             transient_child.c[child_entity.validity_column].isnot(None),

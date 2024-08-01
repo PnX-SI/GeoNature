@@ -10,6 +10,7 @@ from geonature.core.imports.models import (
     ImportUserErrorType,
 )
 from geonature.core.imports.utils import generated_fields
+import pandas as pd
 
 
 __all__ = ["get_duplicates_query", "report_erroneous_rows"]
@@ -35,6 +36,7 @@ def get_duplicates_query(imprt, dest_field, whereclause=sa.true()):
     duplicates = (
         select([func.unnest(partitions.c.duplicate_lines).label("lines")])
         .where(func.array_length(partitions.c.duplicate_lines, 1) > 1)
+        .distinct("lines")
         .alias("duplicates")
     )
     return duplicates
@@ -95,3 +97,13 @@ def report_erroneous_rows(imprt, entity, error_type, error_column, whereclause):
         select=(select(error_select).where(error_select.c.rows != None)),
     )
     db.session.execute(stmt)
+
+
+def print_transient_table(imprt, columns=None):
+    trans_table = imprt.destination.get_transient_table()
+    res = db.session.execute(
+        sa.select(*([trans_table.c[col] for col in columns] if columns else [trans_table])).where(
+            imprt.id_import == trans_table.c.id_import
+        )
+    ).all()
+    print(pd.DataFrame(res, columns=columns))

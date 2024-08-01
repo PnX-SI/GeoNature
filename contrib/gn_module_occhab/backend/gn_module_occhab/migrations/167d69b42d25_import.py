@@ -11,6 +11,7 @@ import sqlalchemy as sa
 from sqlalchemy.schema import Table, MetaData, ForeignKeyConstraint
 from sqlalchemy.dialects.postgresql import HSTORE, JSONB, UUID
 from geoalchemy2 import Geometry
+from sqlalchemy.orm.session import Session
 
 
 # revision identifiers, used by Alembic.
@@ -72,6 +73,7 @@ def upgrade():
                 validity_column="habitat_valid",
                 destination_table_schema="pr_occhab",
                 destination_table_name="t_habitats",
+                id_parent=id_entity_station,
             )
             .returning(entity.c.id_entity)
         )
@@ -1028,6 +1030,33 @@ def upgrade():
             ]
         )
     )
+    bib_fields = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    unique_column_field_query = sa.select(bib_fields.c.id_field).where(
+        sa.and_(
+            bib_fields.c.id_destination == id_dest_occhab,
+            bib_fields.c.name_field == "unique_id_sinp_station",
+        )
+    )
+    session = Session(bind=op.get_bind())
+    id_unique_column_field = session.scalar(unique_column_field_query)
+    op.execute(
+        sa.update(entity)
+        .where(entity.c.code == "station")
+        .values(id_unique_column=id_unique_column_field)
+    )
+    unique_column_field_query = sa.select(bib_fields.c.id_field).where(
+        sa.and_(
+            bib_fields.c.id_destination == id_dest_occhab,
+            bib_fields.c.name_field == "unique_id_sinp_habitat",
+        )
+    )
+    id_unique_column_field = session.scalar(unique_column_field_query)
+    op.execute(
+        sa.update(entity)
+        .where(entity.c.code == "habitat")
+        .values(id_unique_column=id_unique_column_field)
+    )
+    session.close()
     op.execute(
         """
         UPDATE

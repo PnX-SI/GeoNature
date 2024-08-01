@@ -12,6 +12,7 @@
         [formControl]="fieldMappingForm"
         [compareWith]="areMappingFieldEqual"
         [disableControl]="!userFieldMappings.length"
+        placeholder="{{ 'Browse' | translate }}"
         data-qa="import-fieldmapping-selection-select"
       >
         <ng-template

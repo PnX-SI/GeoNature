@@ -4,12 +4,13 @@ from uuid import UUID
 from itertools import product
 from datetime import datetime
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import pandas as pd
 from sqlalchemy.sql import sqltypes
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 
 from geonature.core.imports.models import BibFields
-from .utils import dfcheck
+from .utils import dataframe_check
 
 
 def convert_to_datetime(value_raw):
@@ -71,7 +72,7 @@ def check_datetime_field(df, source_field, target_field, required):
     values_error = invalid_rows[source_field]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_DATE",
+            error_code=ImportCodeError.INVALID_DATE,
             invalid_rows=invalid_rows,
             comment="Les dates suivantes ne sont pas au bon format: {}".format(
                 ", ".join(map(lambda x: str(x), values_error))
@@ -91,7 +92,7 @@ def check_uuid_field(df, source_field, target_field, required):
     values_error = invalid_rows[source_field]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_UUID",
+            error_code=ImportCodeError.INVALID_UUID,
             invalid_rows=invalid_rows,
             comment="Les UUID suivantes ne sont pas au bon format: {}".format(
                 ", ".join(map(lambda x: str(x), values_error))
@@ -111,7 +112,33 @@ def check_integer_field(df, source_field, target_field, required):
     values_error = invalid_rows[source_field]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_INTEGER",
+            error_code=ImportCodeError.INVALID_INTEGER,
+            invalid_rows=invalid_rows,
+            comment="Les valeurs suivantes ne sont pas des entiers : {}".format(
+                ", ".join(map(lambda x: str(x), values_error))
+            ),
+        )
+    return {target_field}
+
+
+def check_numeric_field(df, source_field, target_field, required):
+    def to_numeric(x):
+        try:
+            return float(x)
+        except:
+            return None
+
+    numeric_col = df[source_field].apply(lambda x: to_numeric(x) if pd.notnull(x) else x)
+    if required:
+        invalid_rows = df[numeric_col.isna()]
+    else:
+        # invalid rows are NaN rows which were not already set to NaN
+        invalid_rows = df[numeric_col.isna() & df[source_field].notna()]
+    df[target_field] = numeric_col
+    values_error = invalid_rows[source_field]
+    if len(invalid_rows) > 0:
+        yield dict(
+            error_code=ImportCodeError.INVALID_NUMERIC,
             invalid_rows=invalid_rows,
             comment="Les valeurs suivantes ne sont pas des nombres : {}".format(
                 ", ".join(map(lambda x: str(x), values_error))
@@ -127,9 +154,48 @@ def check_unicode_field(df, field, field_length):
     invalid_rows = df[length > field_length]
     if len(invalid_rows) > 0:
         yield dict(
-            error_code="INVALID_CHAR_LENGTH",
+            error_code=ImportCodeError.INVALID_CHAR_LENGTH,
             invalid_rows=invalid_rows,
         )
+
+
+def check_boolean_field(df, source_col, dest_col, required):
+    """
+    Check a boolean field in a dataframe.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    source_col : str
+        The name of the column to check.
+    dest_col : str
+        The name of the column where to store the result.
+    required : bool
+        Whether the column is mandatory or not.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code and the rows with errors.
+
+    Notes
+    -----
+    The error codes are:
+        - MISSING_VALUE: the column is mandatory and contains null values.
+        - INVALID_BOOL: the column is not of boolean type.
+
+    """
+    df[dest_col] = df[source_col].apply(int).apply(bool)
+
+    if required:
+        invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and pd.isnull(x))
+        yield dict(error_code=ImportCodeError.MISSING_VALUE, invalid_rows=df[invalid_mask])
+    else:
+        invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and (not pd.isnull(x)))
+        if invalid_mask.sum() > 0:
+            yield dict(error_code=ImportCodeError.INVALID_BOOL, invalid_rows=df[invalid_mask])
+    return {dest_col}
 
 
 def check_anytype_field(df, field_type, source_col, dest_col, required):
@@ -142,6 +208,10 @@ def check_anytype_field(df, field_type, source_col, dest_col, required):
         updated_cols |= yield from check_uuid_field(df, source_col, dest_col, required)
     elif isinstance(field_type, sqltypes.String):
         yield from check_unicode_field(df, dest_col, field_length=field_type.length)
+    elif isinstance(field_type, sqltypes.Boolean):
+        updated_cols |= yield from check_boolean_field(df, source_col, dest_col, required)
+    elif isinstance(field_type, sqltypes.Numeric):
+        updated_cols |= yield from check_numeric_field(df, source_col, dest_col, required)
     else:
         raise Exception(
             "Unknown type {} for field {}".format(type(field_type), dest_col)
@@ -149,7 +219,7 @@ def check_anytype_field(df, field_type, source_col, dest_col, required):
     return updated_cols
 
 
-@dfcheck
+@dataframe_check
 def check_types(entity, df, fields: Dict[str, BibFields]):
     updated_cols = set()
     destination_table = entity.get_destination_table()

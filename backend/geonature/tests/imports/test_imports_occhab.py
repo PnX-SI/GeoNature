@@ -1,10 +1,14 @@
+from datetime import datetime
 from io import BytesIO
 from pathlib import Path
 
+from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
 
 from flask import url_for, g
 from werkzeug.datastructures import Headers
+from geoalchemy2.shape import from_shape
+from shapely.geometry import Point
 
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
@@ -170,48 +174,92 @@ def prepared_import(client, content_mapped_import):
 @pytest.fixture()
 def imported_import(client, prepared_import):
     imprt = prepared_import
+
     with logged_user(client, imprt.authors[0]):
         r = client.post(url_for("import.import_valid_data", import_id=imprt.id_import))
     assert r.status_code == 200, r.data
-
     db.session.refresh(imprt)
     return imprt
 
 
+@pytest.fixture(scope="function")
+def stations(datasets):
+    station = Station(
+        id_dataset=datasets["own_dataset"].id_dataset,
+        date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
+        geom_4326=from_shape(Point(3.634, 44.399), 4326),
+        unique_id_sinp_station="490901ee-b3be-4a5f-9b30-e89c9e7a7d6c",
+    )
+    db.session.add(station)
+
+
 @pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "celery_eager", "default_occhab_destination"
+    "client_class",
+    "temporary_transaction",
+    "celery_eager",
+    "default_occhab_destination",
+    "stations",
 )
 class TestImportsOcchab:
     @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
     def test_import_valid_file(self, imported_import):
-
         assert_import_errors(
             imported_import,
             {
                 # Stations errors
-                ("DUPLICATE_UUID", "station", "unique_id_sinp_station", frozenset({4, 5})),
-                ("DATASET_NOT_FOUND", "station", "unique_dataset_id", frozenset({6})),
-                ("DATASET_NOT_AUTHORIZED", "station", "unique_dataset_id", frozenset({7})),
-                ("INVALID_UUID", "station", "unique_dataset_id", frozenset({8})),
-                ("NO-GEOM", "station", "Champs géométriques", frozenset({9})),
-                ("MISSING_VALUE", "station", "date_min", frozenset({10})),
-                ("DUPLICATE_ENTITY_SOURCE_PK", "station", "id_station_source", frozenset({14, 15})),
-                ("INVALID_UUID", "station", "unique_id_sinp_station", frozenset({20})),
-                # Habitats errors
-                ("INVALID_UUID", "habitat", "unique_id_sinp_station", frozenset({20, 21})),
+                (ImportCodeError.DATASET_NOT_FOUND, "station", "unique_dataset_id", frozenset({6})),
                 (
-                    "ERRONEOUS_PARENT_ENTITY",
+                    ImportCodeError.DATASET_NOT_AUTHORIZED,
+                    "station",
+                    "unique_dataset_id",
+                    frozenset({7}),
+                ),
+                (ImportCodeError.INVALID_UUID, "station", "unique_dataset_id", frozenset({8})),
+                (
+                    ImportCodeError.NO_GEOM,
+                    "station",
+                    "Champs géométriques",
+                    frozenset({9, 17, 18, 19, 21}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
+                    "WKT",
+                    frozenset({9, 17, 18, 19, 21}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
+                    "date_min",
+                    frozenset({10, 17, 18, 19, 21}),
+                ),
+                (
+                    ImportCodeError.INVALID_UUID,
+                    "station",
+                    "unique_id_sinp_station",
+                    frozenset({20, 21}),
+                ),
+                (ImportCodeError.INCOHERENT_DATA, "station", "", frozenset({3, 6, 16, 17, 18, 19})),
+                # Habitats errors
+                (
+                    ImportCodeError.INVALID_UUID,
+                    "habitat",
+                    "unique_id_sinp_station",
+                    frozenset({20, 21}),
+                ),
+                (
+                    ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({4, 5, 6, 7, 10, 14, 15, 19, 20}),
+                    frozenset({3, 6, 7, 10, 16, 17, 18, 19, 20, 21}),
                 ),
-                ("NO_PARENT_ENTITY", "habitat", "id_station", frozenset({11})),
+                (ImportCodeError.NO_PARENT_ENTITY, "habitat", "id_station", frozenset({11})),
                 # Other errors
-                ("ORPHAN_ROW", None, "unique_id_sinp_station", frozenset({12})),
-                ("ORPHAN_ROW", None, "id_station_source", frozenset({13})),
+                (ImportCodeError.ORPHAN_ROW, None, "unique_id_sinp_station", frozenset({12, 13})),
+                (ImportCodeError.ORPHAN_ROW, None, "id_station_source", frozenset({13})),
             },
         )
-        assert imported_import.statistics == {"station_count": 3, "habitat_count": 5}
+        assert imported_import.statistics == {"station_count": 3, "habitat_count": 7}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
@@ -224,5 +272,5 @@ class TestImportsOcchab:
                     OccurenceHabitat.id_import == imported_import.id_import
                 )
             )
-            == 5
+            == 7
         )
