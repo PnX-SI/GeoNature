@@ -5,12 +5,13 @@ from flask import g
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, synonym
+from sqlalchemy.orm import relationship, synonym, deferred
 from sqlalchemy.schema import FetchedValue, UniqueConstraint
 from sqlalchemy.sql import func, select
 
 
 from geonature.core.gn_meta.models import TDatasets as Dataset
+from geonature.core.imports.models import TImports as Import
 from geonature.utils.env import db
 from pypnnomenclature.models import TNomenclatures as Nomenclature
 from pypnnomenclature.utils import NomenclaturesMixin
@@ -34,7 +35,11 @@ class Station(NomenclaturesMixin, db.Model):
     __table_args__ = {"schema": "pr_occhab"}
 
     id_station = db.Column(db.Integer, primary_key=True)
-    unique_id_sinp_station = db.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    id_station_source = db.Column(db.String)
+    unique_id_sinp_station = db.Column(
+        UUID(as_uuid=True),
+        server_default=select(func.uuid_generate_v4()),
+    )
     id_dataset = db.Column(db.Integer, ForeignKey(Dataset.id_dataset), nullable=False)
     dataset = relationship(Dataset)
     date_min = db.Column(db.DateTime, server_default=FetchedValue())
@@ -48,8 +53,11 @@ class Station(NomenclaturesMixin, db.Model):
     depth_max = db.Column(db.Integer)
     area = db.Column(db.BigInteger)
     comment = db.Column(db.Unicode)
+    precision = db.Column(db.Integer)
     id_digitiser = db.Column(db.Integer)
-    geom_4326 = db.Column(Geometry("GEOMETRY"))
+    geom_local = deferred(db.Column(Geometry("GEOMETRY")))
+    geom_4326 = db.Column(Geometry("GEOMETRY", 4326))
+    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
 
     habitats = relationship(
         "OccurenceHabitat",
@@ -81,8 +89,7 @@ class Station(NomenclaturesMixin, db.Model):
         foreign_keys=[id_nomenclature_area_surface_calculation],
     )
     id_nomenclature_geographic_object = db.Column(
-        db.Integer,
-        ForeignKey(Nomenclature.id_nomenclature),
+        db.Integer, ForeignKey(Nomenclature.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_geographic_object = db.relationship(
         Nomenclature,
@@ -150,8 +157,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     )  # TODO: remove joined
     unique_id_sinp_hab = db.Column(
         UUID(as_uuid=True),
-        default=select(func.uuid_generate_v4()),
-        nullable=False,
+        server_default=select(func.uuid_generate_v4()),
     )
     cd_hab = db.Column(db.Integer, ForeignKey("ref_habitats.habref.cd_hab"), nullable=False)
     habref = db.relationship("Habref", lazy="joined")
@@ -159,6 +165,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     determiner = db.Column(db.Unicode)
     recovery_percentage = db.Column(db.Float)
     technical_precision = db.Column(db.Unicode)
+    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
 
     id_nomenclature_determination_type = db.Column(
         db.Integer, ForeignKey(Nomenclature.id_nomenclature)

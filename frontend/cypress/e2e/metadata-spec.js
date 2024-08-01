@@ -24,9 +24,7 @@ describe('Testing metadata', () => {
     cy.visit('/#/metadata');
   });
 
-
   it('should display "cadre d\'acquisition"', async () => {
-
     // const listCadreAcq = await promisify(cy.get("[data-qa='pnx-metadata-acq-framework']"));
     const wantedCA = await promisify(cy.get(caSelector));
     // listCadreAcq[0].firstChild.firstChild.firstChild.children[1].innerText;
@@ -50,19 +48,15 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(jdd);
     cy.get('[data-qa="pnx-metadata-exit-jdd"]').click();
-
   });
-  
-  it('should search a JDD and find it"', {defaultCommandTimeout: 60000},() => {
-    
+
+  it('should search a JDD and find it"', { defaultCommandTimeout: 60000 }, () => {
     cy.get('[data-qa="pnx-metadata-search"]').type(jdd);
     //http://127.0.0.1:8000/meta/acquisition_frameworks?datasets=0&creator=1&actors=1
-    cy.intercept(Cypress.env('apiEndpoint') + 'meta/acquisition_frameworks?**').as('getAF');
-    cy.wait('@getAF').then((interception) => {
+    cy.intercept(Cypress.env('apiEndpoint') + 'meta/acquisition_frameworks?**', (req) => {
       cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
       cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     });
-    
   });
 
   it('should create a new "cardre d\'acquisition"', () => {
@@ -110,7 +104,6 @@ describe('Testing metadata', () => {
     cy.get("[data-qa='pnx-metadata-save-af']").click();
     cy.get('[data-qa="pnx-metadata-acq-framework-name"]').contains(newCadreAcq.name);
   });
-
 
   it('should create a new "jeux de données"', () => {
     cy.visit('/#/metadata');
