@@ -7,7 +7,7 @@
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import select, func
 
 
@@ -16,12 +16,13 @@ from ref_geo.models import LAreas
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
+from pypnnomenclature.models import TNomenclatures
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
 
 
-corVisitObserver = DB.Table(
+cor_visit_observer = DB.Table(
     "cor_visit_observer",
     DB.Column(
         "id_base_visit",
@@ -39,7 +40,7 @@ corVisitObserver = DB.Table(
 )
 
 
-corSiteModule = DB.Table(
+cor_site_module = DB.Table(
     "cor_site_module",
     DB.Column(
         "id_base_site",
@@ -56,7 +57,7 @@ corSiteModule = DB.Table(
     schema="gn_monitoring",
 )
 
-corSiteArea = DB.Table(
+cor_site_area = DB.Table(
     "cor_site_area",
     DB.Column(
         "id_base_site",
@@ -67,6 +68,58 @@ corSiteArea = DB.Table(
     DB.Column("id_area", DB.Integer, ForeignKey(LAreas.id_area), primary_key=True),
     schema="gn_monitoring",
 )
+
+cor_module_type = DB.Table(
+    "cor_module_type",
+    DB.Column(
+        "id_module",
+        DB.Integer,
+        DB.ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_type_site",
+        DB.Integer,
+        DB.ForeignKey("gn_monitoring.bib_type_site.id_nomenclature_type_site"),
+        primary_key=True,
+    ),
+    schema="gn_monitoring",
+)
+
+cor_site_type = DB.Table(
+    "cor_site_type",
+    DB.Column(
+        "id_base_site",
+        DB.Integer,
+        DB.ForeignKey("gn_monitoring.t_base_sites.id_base_site"),
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_type_site",
+        DB.Integer,
+        DB.ForeignKey("gn_monitoring.bib_type_site.id_nomenclature_type_site"),
+        primary_key=True,
+    ),
+    schema="gn_monitoring",
+)
+
+
+@serializable
+class BibTypeSite(DB.Model):
+    __tablename__ = "bib_type_site"
+    __table_args__ = {"schema": "gn_monitoring"}
+
+    id_nomenclature_type_site = DB.Column(
+        DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        nullable=False,
+        primary_key=True,
+    )
+    config = DB.Column(JSONB)
+    nomenclature = DB.relationship(
+        TNomenclatures, uselist=False, backref=DB.backref("bib_type_site", uselist=False)
+    )
+
+    sites = DB.relationship("TBaseSites", secondary=cor_site_type, lazy="noload")
 
 
 @serializable
@@ -84,7 +137,7 @@ class TBaseVisits(DB.Model):
     # Pour le moment non défini comme une clé étrangère
     #   pour les questions de perfs
     #   a voir en fonction des usage
-    id_module = DB.Column(DB.Integer)
+    id_module = DB.Column(DB.Integer, ForeignKey("gn_commons.t_modules.id_module"))
 
     visit_date_min = DB.Column(DB.DateTime)
     visit_date_max = DB.Column(DB.DateTime)
@@ -102,15 +155,16 @@ class TBaseVisits(DB.Model):
 
     observers = DB.relationship(
         User,
-        secondary=corVisitObserver,
-        primaryjoin=(corVisitObserver.c.id_base_visit == id_base_visit),
-        secondaryjoin=(corVisitObserver.c.id_role == User.id_role),
-        foreign_keys=[corVisitObserver.c.id_base_visit, corVisitObserver.c.id_role],
+        secondary=cor_visit_observer,
+        primaryjoin=(cor_visit_observer.c.id_base_visit == id_base_visit),
+        secondaryjoin=(cor_visit_observer.c.id_role == User.id_role),
+        foreign_keys=[cor_visit_observer.c.id_base_visit, cor_visit_observer.c.id_role],
     )
+
+    observers_txt = DB.Column(DB.Unicode)
 
     dataset = relationship(
         TDatasets,
-        lazy="joined",
         primaryjoin=(TDatasets.id_dataset == id_dataset),
         foreign_keys=[id_dataset],
     )
@@ -128,7 +182,6 @@ class TBaseSites(DB.Model):
     id_base_site = DB.Column(DB.Integer, primary_key=True)
     id_inventor = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_nomenclature_type_site = DB.Column(DB.Integer)
     base_site_name = DB.Column(DB.Unicode)
     base_site_description = DB.Column(DB.Unicode)
     base_site_code = DB.Column(DB.Unicode)
@@ -153,8 +206,23 @@ class TBaseSites(DB.Model):
         "TModules",
         lazy="select",
         enable_typechecks=False,
-        secondary=corSiteModule,
-        primaryjoin=(corSiteModule.c.id_base_site == id_base_site),
-        secondaryjoin=(corSiteModule.c.id_module == TModules.id_module),
-        foreign_keys=[corSiteModule.c.id_base_site, corSiteModule.c.id_module],
+        secondary=cor_site_module,
+        primaryjoin=(cor_site_module.c.id_base_site == id_base_site),
+        secondaryjoin=(cor_site_module.c.id_module == TModules.id_module),
+        foreign_keys=[cor_site_module.c.id_base_site, cor_site_module.c.id_module],
     )
+
+
+@serializable
+class TObservations(DB.Model):
+    __tablename__ = "t_observations"
+    __table_args__ = {"schema": "gn_monitoring"}
+    id_observation = DB.Column(DB.Integer, primary_key=True, nullable=False, unique=True)
+    id_base_visit = DB.Column(DB.ForeignKey("gn_monitoring.t_base_visits.id_base_visit"))
+    id_digitiser = DB.Column(DB.Integer, DB.ForeignKey("utilisateurs.t_roles.id_role"))
+    digitiser = DB.relationship(
+        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+    )
+    cd_nom = DB.Column(DB.Integer)
+    comments = DB.Column(DB.String)
+    uuid_observation = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
