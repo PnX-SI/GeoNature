@@ -547,6 +547,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
             ("p2_af2", 2497, point2, datasets["belong_af_2"], "p2_af2", source),
             ("p2_af1", 2497, point2, datasets["belong_af_1"], "p2_af1", source),
             ("p3_af3", 2497, point3, datasets["belong_af_3"], "p3_af3", source),
+            ("tax_search_1", 713776, point1, datasets["own_dataset"], "tax_search_1", sources_modules[0]),
         ]:
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
