@@ -226,13 +226,21 @@ def create_app(with_external_mods=True):
         app.register_blueprint(blueprint, url_prefix=url_prefix)
 
     with app.app_context():
-        # taxhub
-        from apptax import taxhub_routes
+        # taxhub api
+        from apptax import taxhub_api_routes
 
-        for blueprint_path, url_prefix in taxhub_routes:
+        base_api_prefix = app.config["TAXHUB_API"].get("API_PREFIX")
+
+        for blueprint_path, url_prefix in taxhub_api_routes:
             module_name, blueprint_name = blueprint_path.split(":")
             blueprint = getattr(import_module(module_name), blueprint_name)
-            app.register_blueprint(blueprint, url_prefix="/taxhub" + url_prefix)
+            app.register_blueprint(blueprint, url_prefix="/taxhub" + base_api_prefix + url_prefix)
+
+        # taxhub admin
+        from apptax.admin.admin import adresses
+
+        app.register_blueprint(adresses, url_prefix="/taxhub")
+
         # register taxhub admin view which need app context
         from geonature.core.taxonomie.admin import load_admin_views
 

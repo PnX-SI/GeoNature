@@ -26,6 +26,7 @@ from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from pypnusershub.auth.authentication import ProviderConfigurationSchema
+from apptax.utils.config.config_schema import TaxhubApiConf
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -205,6 +206,7 @@ class GnPySchemaConf(Schema):
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
+    TAXHUB_API = fields.Nested(TaxhubApiConf, load_default=TaxhubApiConf().load({}))
 
     @post_load()
     def folders(self, data, **kwargs):
