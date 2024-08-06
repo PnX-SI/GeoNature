@@ -50,7 +50,9 @@ def configure_alembic(alembic_config):
     'migrations' entry point value of the 'gn_module' group for all modules having such entry point.
     Thus, alembic will find migrations of all installed geonature modules.
     """
-    version_locations = set(alembic_config.get_main_option("version_locations", default="").split())
+    version_locations = set(
+        alembic_config.get_main_option("version_locations", default="").split()
+    )
     if "VERSION_LOCATIONS" in config["ALEMBIC"]:
         version_locations |= set(config["ALEMBIC"]["VERSION_LOCATIONS"].split())
     for entry_point in chain(
@@ -85,13 +87,14 @@ class MyJSONProvider(DefaultJSONProvider):
 
 def get_locale():
     # if a user is logged in, use the locale from the user settings
-    user = getattr(g, 'user', None)
+    user = getattr(g, "user", None)
     if user is not None:
         return user.locale
     # otherwise try to guess the language from the user accept
     # header the browser transmits.  We support de/fr/en in this
     # example.  The best match wins.
-    return request.accept_languages.best_match(['de', 'fr', 'en'])
+    return request.accept_languages.best_match(["de", "fr", "en"])
+
 
 def create_app(with_external_mods=True):
     app = Flask(
@@ -189,13 +192,18 @@ def create_app(with_external_mods=True):
     # babel
     babel = Babel(app, locale_selector=get_locale)
 
-
-
     # Enable serving of media files
     app.add_url_rule(
         f"{config['MEDIA_URL']}/<path:filename>",
         view_func=lambda filename: send_from_directory(config["MEDIA_FOLDER"], filename),
         endpoint="media",
+    )
+    app.add_url_rule(
+        f"{config['MEDIA_URL']}/taxhub/<path:filename>",
+        view_func=lambda filename: send_from_directory(
+            config["MEDIA_FOLDER"] + "/taxhub", filename
+        ),
+        endpoint="media_taxhub",
     )
 
     for blueprint_path, url_prefix in [
