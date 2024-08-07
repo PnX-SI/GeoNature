@@ -17,7 +17,7 @@ from geonature.core.imports.checks.sql.utils import (
     report_erroneous_rows,
 )
 
-from apptax.taxonomie.models import Taxref, CorNomListe, BibNoms
+from apptax.taxonomie.models import Taxref, cor_nom_liste
 from pypn_habref_api.models import Habref
 
 
@@ -97,9 +97,10 @@ def check_cd_nom(
     """
     # Filter out on a taxhub list if provided
     if list_id is not None:
-        reference_table = join(Taxref, BibNoms).join(
-            CorNomListe,
-            sa.and_(BibNoms.id_nom == CorNomListe.id_nom, CorNomListe.id_liste == list_id),
+        reference_table = join(
+            Taxref,
+            cor_nom_liste,
+            sa.and_(cor_nom_liste.c.id_liste == list_id, cor_nom_liste.c.cd_nom == Taxref.cd_nom),
         )
     else:
         reference_table = Taxref
