@@ -287,7 +287,7 @@ fi
 
 if [ ! -d "${newdir}/backend/media/taxhub" ];then
     mkdir "${newdir}/backend/media/taxhub"
-    cp "${TAXHUB_DIR}"/static/medias/taxhub/* "${newdir}"/backend/media/taxhub/
+    cp -r "${TAXHUB_DIR}"/static/medias/* "${newdir}"/backend/media/taxhub/
 fi
 
 
