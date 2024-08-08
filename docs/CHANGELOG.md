@@ -6,6 +6,7 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
+- Intégration de TaxHub à GeoNature (voir la note de version de TaxHub 2.0.0 - LIEN)
 - Intégration du module Import dans le coeur de GeoNature et refonte de celui-ci pour qu'il puisse importer dans d'autres modules que Synthèse (https://github.com/PnX-SI/gn_module_import/issues/303)
 - Ajout de la possibilité d'importer des données depuis des fichiers vers le module Occhab
 - Autres évolutions du module Import à mentionner ici... (évolution des controles ? Import GeoJSON ? Graphiques génériques ? Meilleure gestion des formats de date ? Amélioration export PDF ? Import multi-JDD ?)
@@ -22,6 +23,16 @@ CHANGELOG
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature : 
+
+- L'application TaxHub a été integrée dans le backoffice de GeoNature (voir documentation TH) et accessible depuis la barre de menu :
+    - Les permissions basées sur les profils 1-6 ont été rappatriées et adaptées dans le modèle de permissions de GeoNature. 
+    TaxHub est désormais un "module" GeoNature et dispose des objets de permissions `TAXON`, `THEME`, `LISTE` et `ATTRIBUT` (voir doc GeoNature pour la description des objets). Les personnes ayant anciennement des droits 6 dans TaxHub on tous les droits sur les objets précédents. Les personnes ayant des droits inférieurs à 6 et ayant un compte sur TaxHub ont maintenant des droits sur l'objet `TAXON` (voir et éditer des taxons = ajouter des médias et des attributs)
+    - L'API de Taxhub est désormais disponible à l'URL `<URL_GEONATURE>/api/taxhub/api>` (le dernier /api est une rétrocompatibilité et sera enlevé de manière transparante dans les prochaines versions)
+    - Le paramètre `API_TAXHUB` est désormais obsolète (déduit de `API_ENDPOINT`) et peut être retiré du fichier de configuration
+    - Si vous utilisez Occtax-mobile, veillez à modifier le paramètre `taxhub_url` du fichier `/geonature/backend/media/mobile/occtax/settings.json`, pour mettre la valeur `<URL_GEONATURE>/api/taxhub>`
+    - Une redirection Apache automatique de l'URL de TaxHub et des médias est disponible à l'adresse suivante : XXXX
+    - ATLAS  a tester -> modification URL des médias
+    - suppression de la branche alembic taxhub : `geonature db downgrade taxhub@base`
 
 - Le module Import a été intégré dans le coeur de GeoNature
    - si vous aviez installé le module externe Import, XXXXX
