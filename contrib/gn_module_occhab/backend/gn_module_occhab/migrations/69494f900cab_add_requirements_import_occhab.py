@@ -1,4 +1,4 @@
-"""add_requirements_import_occhab
+"""add field conditions
 
 Revision ID: 69494f900cab
 Revises: fcf1e091b636

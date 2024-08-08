@@ -1,4 +1,4 @@
-"""add_import_missing_error
+"""add new import error types
 
 Revision ID: 0e8e1943c215
 Revises: 8b149244d586
@@ -58,3 +58,4 @@ def downgrade():
     op.execute(sa.delete(error_type).where(error_type.c.name == "INVALID_BOOL"))
     op.execute(sa.delete(error_type).where(error_type.c.name == "INCOHERENT_DATA"))
     op.execute(sa.delete(error_type).where(error_type.c.name == "INVALID_NUMERIC"))
+    op.execute(sa.delete(error_type).where(error_type.c.name == "SKIP_EXISTING_UUID"))
