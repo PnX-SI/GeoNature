@@ -86,7 +86,34 @@ def upgrade():
     op.execute(
         sa.update(field)
         .where(field.c.name_field == "WKT", field.c.id_destination == synthese_dest_id)
-        .values(optional_conditions=["latitude", "longitude"], mandatory=True)
+        .values(
+            optional_conditions=[
+                "latitude",
+                "longitude",
+                "codecommune",
+                "codedepartement",
+                "codemaille",
+            ],
+            mandatory=True,
+        )
+    )
+    op.execute(
+        sa.update(field)
+        .where(field.c.name_field == "longitude", field.c.id_destination == synthese_dest_id)
+        .values(
+            optional_conditions=["WKT", "codecommune", "codedepartement", "codemaille"],
+            mandatory_conditions=["latitude"],
+            mandatory=True,
+        )
+    )
+    op.execute(
+        sa.update(field)
+        .where(field.c.name_field == "latitude", field.c.id_destination == synthese_dest_id)
+        .values(
+            optional_conditions=["WKT", "codecommune", "codedepartement", "codemaille"],
+            mandatory_conditions=["longitude"],
+            mandatory=True,
+        )
     )
 
 
@@ -107,5 +134,15 @@ def downgrade():
     op.execute(
         sa.update(field)
         .where(field.c.name_field == "WKT", field.c.id_destination == synthese_dest_id)
+        .values(mandatory=False)
+    )
+    op.execute(
+        sa.update(field)
+        .where(field.c.name_field == "longitude", field.c.id_destination == synthese_dest_id)
+        .values(mandatory=False)
+    )
+    op.execute(
+        sa.update(field)
+        .where(field.c.name_field == "latitude", field.c.id_destination == synthese_dest_id)
         .values(mandatory=False)
     )
