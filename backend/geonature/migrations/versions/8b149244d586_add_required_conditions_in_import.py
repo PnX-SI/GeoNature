@@ -7,9 +7,7 @@ Create Date: 2024-03-20 11:17:57.360785
 """
 
 from alembic import op
-from geonature.core.imports.models import BibFields, Destination
 import sqlalchemy as sa
-from sqlalchemy.orm.session import Session
 
 
 # revision identifiers, used by Alembic.
@@ -78,24 +76,36 @@ def upgrade():
         ADD CONSTRAINT optional_conditions_field_exists CHECK (gn_imports.isInNameFields(optional_conditions,id_destination));
         """
     )
-    session = Session(bind=op.get_bind())
-    synthese_dest_id = session.scalar(
-        sa.select(Destination.id_destination).where(Destination.code == "synthese")
+    conn = op.get_bind()
+    metadata = sa.MetaData(bind=conn)
+    destination = sa.Table("bib_destinations", metadata, schema="gn_imports", autoload_with=conn)
+    synthese_dest_id = conn.scalar(
+        sa.select(destination.c.id_destination).where(destination.c.code == "synthese")
     )
+    field = sa.Table("bib_fields", metadata, schema="gn_imports", autoload_with=conn)
     op.execute(
-        sa.update(BibFields)
-        .where(BibFields.name_field == "WKT", BibFields.id_destination == synthese_dest_id)
+        sa.update(field)
+        .where(field.c.name_field == "WKT", field.c.id_destination == synthese_dest_id)
         .values(optional_conditions=["latitude", "longitude"], mandatory=True)
     )
-    session.close()
 
 
 def downgrade():
-
     op.drop_constraint("mandatory_conditions_field_exists", "bib_fields", schema="gn_imports")
     op.drop_constraint("optional_conditions_field_exists", "bib_fields", schema="gn_imports")
     op.execute("DROP FUNCTION IF EXISTS gn_imports.isInNameFields")
     op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="mandatory_conditions")
     op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="optional_conditions")
 
-    op.execute(sa.update(BibFields).where(BibFields.name_field == "WKT").values(mandatory=False))
+    conn = op.get_bind()
+    metadata = sa.MetaData(bind=conn)
+    destination = sa.Table("bib_destinations", metadata, schema="gn_imports", autoload_with=conn)
+    synthese_dest_id = conn.scalar(
+        sa.select(destination.c.id_destination).where(destination.c.code == "synthese")
+    )
+    field = sa.Table("bib_fields", metadata, schema="gn_imports", autoload_with=conn)
+    op.execute(
+        sa.update(field)
+        .where(field.c.name_field == "WKT", field.c.id_destination == synthese_dest_id)
+        .values(mandatory=False)
+    )
