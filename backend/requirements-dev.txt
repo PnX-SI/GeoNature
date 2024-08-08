@@ -37,7 +37,7 @@
     # via
     #   -r requirements-submodules.in
     #   pypn-ref-geo
-alembic==1.13.1
+alembic==1.13.2
     # via
     #   flask-migrate
     #   pypn-ref-geo
@@ -46,11 +46,13 @@ amqp==5.2.0
     # via kombu
 async-timeout==4.0.3
     # via redis
-attrs==23.2.0
+attrs==24.2.0
     # via fiona
-authlib==1.3.0
+authlib==1.3.1
     # via pypnusershub
-bcrypt==4.1.3
+babel==2.15.0
+    # via flask-babel
+bcrypt==4.2.0
     # via pypnusershub
 billiard==4.2.0
     # via celery
@@ -58,13 +60,7 @@ blinker==1.8.2
     # via
     #   flask
     #   flask-mail
-boto3==1.34.112
-    # via taxhub
-botocore==1.34.112
-    # via
-    #   boto3
-    #   s3transfer
-cairocffi==1.7.0
+cairocffi==1.7.1
     # via
     #   cairosvg
     #   weasyprint
@@ -72,11 +68,11 @@ cairosvg==2.7.1
     # via weasyprint
 celery[redis]==5.4.0
     # via -r requirements-common.in
-certifi==2024.2.2
+certifi==2024.7.4
     # via
     #   fiona
     #   requests
-cffi==1.16.0
+cffi==1.17.0
     # via
     #   cairocffi
     #   cryptography
@@ -104,7 +100,7 @@ click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
-cryptography==42.0.7
+cryptography==43.0.0
     # via authlib
 cssselect2==0.7.0
     # via
@@ -114,7 +110,7 @@ defusedxml==0.7.1
     # via cairosvg
 dnspython==2.6.1
     # via email-validator
-email-validator==2.1.1
+email-validator==2.2.0
     # via wtforms-components
 fiona==1.9.6
     # via
@@ -124,6 +120,7 @@ flask==3.0.3
     # via
     #   -r requirements-common.in
     #   flask-admin
+    #   flask-babel
     #   flask-cors
     #   flask-login
     #   flask-mail
@@ -143,6 +140,9 @@ flask-admin==1.6.1
     # via
     #   -r requirements-common.in
     #   pypnnomenclature
+    #   taxhub
+flask-babel==4.0.0
+    # via -r requirements-common.in
 flask-cors==4.0.1
     # via
     #   -r requirements-common.in
@@ -183,7 +183,7 @@ flask-wtf==1.2.1
     # via
     #   -r requirements-common.in
     #   usershub
-geoalchemy2==0.15.1
+geoalchemy2==0.15.2
     # via utils-flask-sqlalchemy-geo
 geojson==3.1.0
     # via
@@ -216,12 +216,10 @@ itsdangerous==2.2.0
     #   flask
     #   flask-wtf
 jinja2==3.1.4
-    # via flask
-jmespath==1.0.1
     # via
-    #   boto3
-    #   botocore
-kombu==5.3.7
+    #   flask
+    #   flask-babel
+kombu==5.4.0
     # via celery
 lxml==5.2.2
     # via -r requirements-common.in
@@ -234,7 +232,7 @@ markupsafe==2.1.5
     #   werkzeug
     #   wtforms
     #   wtforms-components
-marshmallow==3.21.2
+marshmallow==3.21.3
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
@@ -253,21 +251,21 @@ marshmallow-sqlalchemy==1.0.0
     #   taxhub
     #   usershub
     #   utils-flask-sqlalchemy-geo
-numpy==1.26.4
+numpy==2.0.1
     # via shapely
-packaging==24.0
+packaging==24.1
     # via
     #   -r requirements-common.in
     #   geoalchemy2
     #   gunicorn
     #   marshmallow
-pillow==10.3.0
+pillow==10.4.0
     # via
     #   -r requirements-common.in
     #   cairosvg
     #   taxhub
     #   weasyprint
-prompt-toolkit==3.0.43
+prompt-toolkit==3.0.47
     # via click-repl
 psycopg2==2.9.9
     # via
@@ -280,12 +278,11 @@ psycopg2==2.9.9
     #   usershub
 pycparser==2.22
     # via cffi
-pyphen==0.15.0
+pyphen==0.16.0
     # via weasyprint
 python-dateutil==2.9.0.post0
     # via
     #   -r requirements-common.in
-    #   botocore
     #   celery
     #   usershub
     #   utils-flask-sqlalchemy
@@ -296,15 +293,15 @@ python-dotenv==1.0.1
     #   pypnnomenclature
     #   taxhub
     #   usershub
-redis==5.0.4
+pytz==2024.1
+    # via flask-babel
+redis==5.0.8
     # via celery
-requests==2.32.2
+requests==2.32.3
     # via
     #   pypn-habref-api
     #   pypnusershub
-s3transfer==0.10.1
-    # via boto3
-shapely==2.0.4
+shapely==2.0.5
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
@@ -314,7 +311,7 @@ six==1.16.0
     #   html5lib
     #   python-dateutil
     #   wtforms-components
-sqlalchemy==1.4.52
+sqlalchemy==1.4.53
     # via
     #   -r requirements-common.in
     #   alembic
@@ -335,19 +332,20 @@ tinycss2==1.3.0
     #   cssselect2
     #   weasyprint
 toml==0.10.2
-    # via -r requirements-common.in
-typing-extensions==4.12.0
+    # via
+    #   -r requirements-common.in
+    #   taxhub
+typing-extensions==4.12.2
     # via
     #   alembic
     #   kombu
 tzdata==2024.1
     # via celery
-urllib3==1.26.18
+urllib3==2.2.2
     # via
-    #   botocore
     #   requests
     #   taxhub
-validators==0.28.2
+validators==0.33.0
     # via wtforms-components
 vine==5.1.0
     # via
@@ -382,8 +380,10 @@ wtforms-components==0.10.5
 wtforms-sqlalchemy==0.4.1
     # via -r requirements-common.in
 xmltodict==0.13.0
-    # via -r requirements-common.in
-zipp==3.18.2
+    # via
+    #   -r requirements-common.in
+    #   pypnusershub
+zipp==3.19.2
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
