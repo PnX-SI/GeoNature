@@ -586,11 +586,14 @@ class GnGeneralSchemaConf(Schema):
                 "Le paramètre API_TAXHUB est déprécié, il sera automatiquement déduit API_ENDPOINT et supprimé dans la version 2.14",
                 Warning,
             )
-        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub{data['TAXHUB']['API_PREFIX']}"
         return data
 
     @post_load
     def insert_module_config(self, data, **kwargs):
+        # URL de l'api taxub
+        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub{data['TAXHUB']['API_PREFIX']}"
+
+        # Configuration des modules actifs
         for dist in iter_modules_dist():
             module_code = dist.entry_points["code"].load()
             if module_code in data["DISABLED_MODULES"]:
