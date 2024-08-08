@@ -26,7 +26,7 @@ from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from pypnusershub.auth.authentication import ProviderConfigurationSchema
-from apptax.utils.config.config_schema import TaxhubApiConf
+from apptax.utils.config.config_schema import TaxhubAppConf
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -206,7 +206,6 @@ class GnPySchemaConf(Schema):
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
-    TAXHUB_API = fields.Nested(TaxhubApiConf, load_default=TaxhubApiConf().load({}))
 
     @post_load()
     def folders(self, data, **kwargs):
@@ -531,10 +530,6 @@ class MapConfig(Schema):
     REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
 
 
-class TaxHub(Schema):
-    ID_TYPE_MAIN_PHOTO = fields.Integer(load_default=1)
-
-
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(load_default="GeoNature2")
@@ -562,7 +557,8 @@ class GnGeneralSchemaConf(Schema):
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
-    TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    TAXHUB = fields.Nested(TaxhubAppConf, load_default=TaxhubAppConf().load({"API_PREFIX": "/api"}))
+
     HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
@@ -590,7 +586,7 @@ class GnGeneralSchemaConf(Schema):
                 "Le paramètre API_TAXHUB est déprécié, il sera automatiquement déduit API_ENDPOINT et supprimé dans la version 2.14",
                 Warning,
             )
-        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub"
+        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub{data['TAXHUB']['API_PREFIX']}"
         return data
 
     @post_load

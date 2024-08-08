@@ -229,7 +229,7 @@ def create_app(with_external_mods=True):
         # taxhub api
         from apptax import taxhub_api_routes
 
-        base_api_prefix = app.config["TAXHUB_API"].get("API_PREFIX")
+        base_api_prefix = app.config["TAXHUB"].get("API_PREFIX")
 
         for blueprint_path, url_prefix in taxhub_api_routes:
             module_name, blueprint_name = blueprint_path.split(":")

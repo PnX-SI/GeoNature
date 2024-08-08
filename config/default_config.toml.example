@@ -110,6 +110,13 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     MY_ORGANISM_DATA = 2
     ALL_DATA = 3
 
+# Configuration de taxhub
+[TAXHUB]
+    # Préfixe des routes de l'api de taxhub
+    API_PREFIX="/api"
+    # Identifiant du type de médias "Photo principale"
+    ID_TYPE_MAIN_PHOTO=1
+
 # Configuration générale de l'interface de GeoNature
 [FRONTEND]
     # En mode production (=true) moins de message dans la Console navigateur
