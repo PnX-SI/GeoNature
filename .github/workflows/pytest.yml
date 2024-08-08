@@ -95,7 +95,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
           srid_local: 2154
           install_bdc_statuts: true
-          taxref_refion: fr
+          taxref_region: fr
           add_sample_data: true
           install_sig_layers: true
           install_grid_layer_5: true
