@@ -2005,6 +2005,12 @@ Le champs "Attribut additionnels" permet d'ajouter des éléments de configurati
 - Ajouter un sous-titre descriptif : `{"help" : "mon sous titre"}`
 - Ajouter des valeurs min/max pour un input `number` : `{"min": 1, "max": 10}`
 
+TaxHub
+""""""
+
+Backoffice de gestion des taxons (basé sur TaxHub) permettant de faire des liste de taxons ainsi que d'ajouter des attributs etdes médias aux taxons.
+Voir la documentation de TaxHub : https://taxhub.readthedocs.io/fr/latest/
+
 Module OCCHAB
 -------------
 
@@ -2388,6 +2394,7 @@ Liste des propriétés disponibles :
 - tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)
 - tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)
 
+<<<<<<< HEAD
 Validation automatique
 """"""""""""""""""""""
 Depuis la version 2.14, il est possible d'activer la validation automatique d'observations.
@@ -2426,3 +2433,24 @@ Ce paramètre est composé de cinq valeurs, chacune séparée par un espace: min
 Modification de la fonction de validation automatique
 `````````````````````````````````````````````````````
 Dans GeoNature, la validation automatique est effectuée par une fonction en ``PL/pgSQL`` déclarée dans le schéma ``gn_profiles``. Si toutefois, le fonctionnement de celle-ci ne correspond à vos besoins, indiquer le nom de la nouvelle fonction dans la variable ``AUTO_VALIDATION_SQL_FUNCTION``. Attention, cette fonction doit aussi être stockée dans le schema ``gn_profiles``. Pour vous aidez, n'hésitez pas à regarder la définition de la fonction par défaut nommée ``fct_auto_validation``.
+=======
+
+
+Module TaxHub
+-------------
+
+Depuis la version 2.14 de GeoNature, TaxHub est integré comme un module de GeoNature. Il est disponible depuis le backoffice de GeoNature.
+
+L'emplacement de stockage des médias est contrôlé par le paramètre `MEDIA_FOLDER`. Les médias de TaxHub seront à l'emplacement `<MEDIA_FOLDER>/taxhub`. Par défaut tous les médias de GeoNature sont stocké dans le répertoire de GeoNature : `<GEONATURE_DIR>/backend/media`. Via ce paramètre, il est possible de mettre un chemin absolu pour stocker les médias n'importe ou sur votre serveur.
+
+Gestion des permissions
+```````````````````````
+
+La gestion des permissions du module TaxHub est entierement gérée par le module de gestion de permission de GeoNature. Dans le cas d'une installation standalone de TaxHub, se réferer à la documentation de TaxHub pour la gestion des permissions.
+
+Les permissions du module TaxHub peuvent être reglé aux trois niveaux (objets) suivants : 
+- TAXON : permet voir et modifier des taxons (ajout de médias, d'attributs et association de taxon à des listes)
+- THEME : permet de voir / modifier / supprimer des thêmes. Les thêmes sont des groupes d'attributs
+- LISTE : permet de voir / modifier / supprimer des listes de taxons
+- ATTRIBUT : permet de voir / modifier / supprimer des attributs de taxons
+>>>>>>> 9a28b7442 (doc on taxhub)

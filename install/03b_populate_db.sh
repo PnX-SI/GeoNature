@@ -6,7 +6,7 @@ geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM taxonomie.taxref); END
 || if [ "$install_bdc_statuts" = true ];
 then
     geonature db upgrade ref_geo_fr_departments@head
-    geonature taxref import-v17
+    geonature taxref import-v17 --taxref-region=${taxref_region:-fr}
 else
     geonature taxref import-v17 --skip-bdc-statuts
 fi
