@@ -5,7 +5,7 @@ from pathlib import Path
 from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
 
-from flask import url_for, g
+from flask import url_for, g, current_app
 from werkzeug.datastructures import Headers
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point
@@ -83,11 +83,19 @@ def contentmapping(occhab_destination):
 
 
 @pytest.fixture()
-def uploaded_import(client, users, datasets, import_file_name):
+def uploaded_import(client, users, datasets, station, habitat, import_file_name):
     with open(test_files_path / import_file_name, "rb") as f:
         test_file_line_count = sum(1 for line in f) - 1  # remove headers
         f.seek(0)
         content = f.read()
+        content = content.replace(
+            b"EXISTING_STATION_UUID",
+            station.unique_id_sinp_station.hex.encode("ascii"),
+        )
+        content = content.replace(
+            b"EXISTING_HABITAT_UUID",
+            habitat.unique_id_sinp_hab.hex.encode("ascii"),
+        )
         content = content.replace(
             b"VALID_DATASET_UUID",
             datasets["own_dataset"].unique_dataset_id.hex.encode("ascii"),
@@ -183,14 +191,37 @@ def imported_import(client, prepared_import):
 
 
 @pytest.fixture(scope="function")
-def stations(datasets):
+def station(datasets):
     station = Station(
         id_dataset=datasets["own_dataset"].id_dataset,
         date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
         geom_4326=from_shape(Point(3.634, 44.399), 4326),
-        unique_id_sinp_station="490901ee-b3be-4a5f-9b30-e89c9e7a7d6c",
     )
-    db.session.add(station)
+    with db.session.begin_nested():
+        db.session.add(station)
+    return station
+
+
+@pytest.fixture(scope="function")
+def habitat(station):
+    habitat = OccurenceHabitat(
+        station=station,
+        nom_cite="prairie",
+        cd_hab=24,
+        id_nomenclature_collection_technique=sa.func.pr_occhab.get_default_nomenclature_value(
+            "TECHNIQUE_COLLECT_HAB"
+        ),
+    )
+    with db.session.begin_nested():
+        db.session.add(habitat)
+    return habitat
+
+
+@pytest.fixture()
+def no_default_uuid(monkeypatch):
+    monkeypatch.setitem(
+        current_app.config["IMPORT"], "DEFAULT_GENERATE_MISSING_UUID", False
+    )
 
 
 @pytest.mark.usefixtures(
@@ -198,7 +229,6 @@ def stations(datasets):
     "temporary_transaction",
     "celery_eager",
     "default_occhab_destination",
-    "stations",
 )
 class TestImportsOcchab:
     @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
@@ -207,64 +237,112 @@ class TestImportsOcchab:
             imported_import,
             {
                 # Stations errors
-                (ImportCodeError.DATASET_NOT_FOUND, "station", "unique_dataset_id", frozenset({6})),
+                (
+                    ImportCodeError.DATASET_NOT_FOUND,
+                    "station",
+                    "unique_dataset_id",
+                    frozenset({5}),
+                ),
                 (
                     ImportCodeError.DATASET_NOT_AUTHORIZED,
                     "station",
                     "unique_dataset_id",
+                    frozenset({6}),
+                ),
+                (
+                    ImportCodeError.INVALID_UUID,
+                    "station",
+                    "unique_id_sinp_station",
+                    frozenset({24, 25}),
+                ),
+                (
+                    ImportCodeError.INVALID_UUID,
+                    "station",
+                    "unique_dataset_id",
                     frozenset({7}),
                 ),
-                (ImportCodeError.INVALID_UUID, "station", "unique_dataset_id", frozenset({8})),
                 (
                     ImportCodeError.NO_GEOM,
                     "station",
                     "Champs géométriques",
-                    frozenset({9, 17, 18, 19, 21}),
-                ),
-                (
-                    ImportCodeError.MISSING_VALUE,
-                    "station",
-                    "WKT",
-                    frozenset({9, 17, 18, 19, 21}),
+                    frozenset({8}),
                 ),
                 (
                     ImportCodeError.MISSING_VALUE,
                     "station",
                     "date_min",
-                    frozenset({10, 17, 18, 19, 21}),
+                    frozenset({9, 25}),
                 ),
                 (
-                    ImportCodeError.INVALID_UUID,
+                    ImportCodeError.INCOHERENT_DATA,
+                    "station",
+                    "unique_id_sinp_station",  # colonne de regroupement
+                    frozenset({16, 17, 18, 19, 29, 30, 33, 34}),
+                ),
+                (
+                    ImportCodeError.INCOHERENT_DATA,
+                    "station",
+                    "id_station_source",  # colonne de regroupement
+                    frozenset({22, 23, 27, 28, 31, 32}),
+                ),
+                (
+                    ImportCodeError.SKIP_EXISTING_UUID,
                     "station",
                     "unique_id_sinp_station",
-                    frozenset({20, 21}),
+                    frozenset({38}),  # seulement 38 car 39 et 40 même entité
                 ),
-                (ImportCodeError.INCOHERENT_DATA, "station", "", frozenset({3, 6, 16, 17, 18, 19})),
                 # Habitats errors
                 (
                     ImportCodeError.INVALID_UUID,
                     "habitat",
                     "unique_id_sinp_station",
-                    frozenset({20, 21}),
+                    frozenset({24, 26}),
+                ),
+                (
+                    ImportCodeError.INVALID_INTEGER,
+                    "habitat",
+                    "cd_hab",
+                    frozenset({19}),
                 ),
                 (
                     ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({3, 6, 7, 10, 16, 17, 18, 19, 20, 21}),
+                    frozenset({5, 6, 9, 24}),
                 ),
-                (ImportCodeError.NO_PARENT_ENTITY, "habitat", "id_station", frozenset({11})),
+                (
+                    ImportCodeError.NO_PARENT_ENTITY,
+                    "habitat",
+                    "id_station",
+                    frozenset({10, 16, 17, 18, 22, 23, 27, 28, 29, 30, 31, 32, 33, 34}),  # 19,26?
+                ),
+                (
+                    ImportCodeError.SKIP_EXISTING_UUID,
+                    "habitat",
+                    "unique_id_sinp_habitat",
+                    frozenset({40}),
+                ),
                 # Other errors
-                (ImportCodeError.ORPHAN_ROW, None, "unique_id_sinp_station", frozenset({12, 13})),
-                (ImportCodeError.ORPHAN_ROW, None, "id_station_source", frozenset({13})),
+                (
+                    ImportCodeError.ORPHAN_ROW,
+                    None,
+                    "unique_id_sinp_station",
+                    frozenset({11, 13}),
+                ),
+                (
+                    ImportCodeError.ORPHAN_ROW,
+                    None,
+                    "id_station_source",
+                    frozenset({12, 13}),
+                ),
             },
         )
-        assert imported_import.statistics == {"station_count": 3, "habitat_count": 7}
+        assert imported_import.statistics == {"station_count": 5, "habitat_count": 10}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
             )
-            == 3
+            == imported_import.statistics["station_count"]
         )
         assert (
             db.session.scalar(
@@ -272,5 +350,139 @@ class TestImportsOcchab:
                     OccurenceHabitat.id_import == imported_import.id_import
                 )
             )
-            == 7
+            == imported_import.statistics["habitat_count"]
+        )
+
+    @pytest.mark.parametrize("import_file_name", ["no_default_uuid.csv"])
+    def test_import_without_default_uuid(self, no_default_uuid, imported_import):
+        assert_import_errors(
+            imported_import,
+            {
+                # Stations errors
+                (
+                    ImportCodeError.INVALID_UUID,
+                    "station",
+                    "unique_id_sinp_station",
+                    frozenset({24, 25}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
+                    "id_station_source",
+                    frozenset({35}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
+                    "unique_id_sinp_station",
+                    frozenset({20, 21, 35}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "station",
+                    "date_min",
+                    frozenset({25}),
+                ),
+                (
+                    ImportCodeError.INCOHERENT_DATA,
+                    "station",
+                    "unique_id_sinp_station",  # colonne de regroupement
+                    frozenset({16, 17, 18, 19, 29, 30, 33, 34}),
+                ),
+                (
+                    ImportCodeError.INCOHERENT_DATA,
+                    "station",
+                    "id_station_source",  # colonne de regroupement
+                    frozenset({22, 23, 27, 28, 31, 32}),
+                ),
+                (
+                    ImportCodeError.SKIP_EXISTING_UUID,
+                    "station",
+                    "unique_id_sinp_station",
+                    frozenset({38}),  # seulement 38 car 39 et 40 même entité
+                ),
+                # Habitats errors
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "habitat",
+                    "unique_id_sinp_habitat",
+                    frozenset({5}),
+                ),
+                (
+                    ImportCodeError.INVALID_UUID,
+                    "habitat",
+                    "unique_id_sinp_habitat",
+                    frozenset({6}),
+                ),
+                (
+                    ImportCodeError.INVALID_UUID,
+                    "habitat",
+                    "unique_id_sinp_station",
+                    frozenset({24, 26}),
+                ),
+                (
+                    ImportCodeError.INVALID_INTEGER,
+                    "habitat",
+                    "cd_hab",
+                    frozenset({19}),
+                ),
+                (
+                    ImportCodeError.ERRONEOUS_PARENT_ENTITY,
+                    "habitat",
+                    "",
+                    frozenset({20, 21, 24, 35}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "habitat",
+                    "id_station_source",
+                    frozenset({10, 35}),
+                ),
+                (
+                    ImportCodeError.MISSING_VALUE,
+                    "habitat",
+                    "unique_id_sinp_station",
+                    frozenset({10, 20, 21, 22, 23, 32, 35, 37}),
+                ),
+                (
+                    ImportCodeError.NO_PARENT_ENTITY,
+                    "habitat",
+                    "id_station",
+                    frozenset({16, 17, 18, 27, 28, 29, 30, 31, 33, 34}),  # 19,26?
+                ),
+                (
+                    ImportCodeError.SKIP_EXISTING_UUID,
+                    "habitat",
+                    "unique_id_sinp_habitat",
+                    frozenset({40}),
+                ),
+                # Other errors
+                (
+                    ImportCodeError.ORPHAN_ROW,
+                    None,
+                    "unique_id_sinp_station",
+                    frozenset({11, 13}),
+                ),
+                (
+                    ImportCodeError.ORPHAN_ROW,
+                    None,
+                    "id_station_source",
+                    frozenset({12, 13}),
+                ),
+            },
+        )
+        assert imported_import.statistics == {"station_count": 3, "habitat_count": 6}
+        assert (
+            db.session.scalar(
+                sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
+            )
+            == imported_import.statistics["station_count"]
+        )
+        assert (
+            db.session.scalar(
+                sa.select(sa.func.count()).where(
+                    OccurenceHabitat.id_import == imported_import.id_import
+                )
+            )
+            == imported_import.statistics["habitat_count"]
         )

@@ -1,4 +1,4 @@
-"""add_import_missing_error
+"""add new import error types
 
 Revision ID: 0e8e1943c215
 Revises: 8b149244d586
@@ -8,7 +8,6 @@ Create Date: 2024-05-03 14:22:20.773467
 
 from alembic import op
 import sqlalchemy as sa
-from geonature.core.imports.models import ImportUserErrorType
 
 # revision identifiers, used by Alembic.
 revision = "0e8e1943c215"
@@ -18,8 +17,11 @@ depends_on = None
 
 
 def upgrade():
+    conn = op.get_bind()
+    metadata = sa.MetaData(bind=conn)
+    error_type = sa.Table("bib_errors_types", metadata, schema="gn_imports", autoload_with=conn)
     op.bulk_insert(
-        ImportUserErrorType.__table__,
+        error_type,
         [
             {
                 "error_type": "Erreur de format booléen",
@@ -39,11 +41,21 @@ def upgrade():
                 "description": "Le champ doit être renseigné avec une valeur numérique (entier, flottant).",
                 "error_level": "ERROR",
             },
+            {
+                "error_type": "Ignorer les données existantes",
+                "name": "SKIP_EXISTING_UUID",
+                "description": "Les entitiés existantes selon UUID sont ignorees.",
+                "error_level": "WARNING",
+            },
         ],
     )
 
 
 def downgrade():
-    op.execute(sa.delete(ImportUserErrorType).where(ImportUserErrorType.name == "INVALID_BOOL"))
-    op.execute(sa.delete(ImportUserErrorType).where(ImportUserErrorType.name == "INCOHERENT_DATA"))
-    op.execute(sa.delete(ImportUserErrorType).where(ImportUserErrorType.name == "INVALID_NUMERIC"))
+    conn = op.get_bind()
+    metadata = sa.MetaData(bind=conn)
+    error_type = sa.Table("bib_errors_types", metadata, schema="gn_imports", autoload_with=conn)
+    op.execute(sa.delete(error_type).where(error_type.c.name == "INVALID_BOOL"))
+    op.execute(sa.delete(error_type).where(error_type.c.name == "INCOHERENT_DATA"))
+    op.execute(sa.delete(error_type).where(error_type.c.name == "INVALID_NUMERIC"))
+    op.execute(sa.delete(error_type).where(error_type.c.name == "SKIP_EXISTING_UUID"))

@@ -31,9 +31,8 @@ def init_rows_validity(imprt):
         .where(transient_table.c.id_import == imprt.id_import)
         .values({entity.validity_column: None for entity in entities})
     )
-    # TODO handle multi columns
-    # Currently if only a multi-fields is mapped, it will be ignored without raising any error.
-    # This is not a very big issue as it is unlikely to map **only** a multi-field.
+    # Multi-entity fields are ignored for entity identification, but this is not an issue
+    # as rows with multi-entity field only will raise an ORPHAN_ROW error
     selected_fields_names = []
     for field_name, source_field in imprt.fieldmapping.items():
         if type(source_field) == list:
@@ -42,53 +41,21 @@ def init_rows_validity(imprt):
             selected_fields_names.append(field_name)
     for entity in entities:
         # Select fields associated to this entity *and only to this entity*
-        dest_table = entity.get_destination_table()
         fields = (
             db.session.query(BibFields)
             .where(BibFields.name_field.in_(selected_fields_names))
             .where(BibFields.entities.any(EntityField.entity == entity))
             .where(~BibFields.entities.any(EntityField.entity != entity))
-            .where(BibFields.source_field != entity.unique_column.source_field)
             .all()
         )
-        cte = (  # quels entrées prendre en compte
-            sa.select(
-                transient_table.c.line_no, transient_table.c[entity.unique_column.source_field]
-            )
+        db.session.execute(
+            sa.update(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
             .where(
-                sa.and_(
-                    sa.or_(  # Un des champs d'une entité est rempli
-                        *[transient_table.c[field.source_column].isnot(None) for field in fields]
-                    ),
-                    sa.or_(  # l'UUID n'existe pas dans la table parente ou l'UUID vide
-                        transient_table.c[entity.unique_column.source_field].not_in(
-                            sa.select(
-                                sa.cast(dest_table.c[entity.unique_column.dest_field], sa.TEXT)
-                            )
-                        ),
-                        transient_table.c[entity.unique_column.source_field] == None,
-                    ),
-                )
-            )
-            .cte("cte")
-        )
-        query = (
-            sa.update(transient_table)
-            .where(
-                sa.or_(
-                    transient_table.c[entity.unique_column.source_field]
-                    == cte.c[entity.unique_column.source_field],
-                    transient_table.c.line_no == cte.c.line_no,
-                )
+                sa.or_(*[transient_table.c[field.source_column].isnot(None) for field in fields])
             )
             .values({entity.validity_column: True})
-            .returning(transient_table.c.line_no)
         )
-        db.session.execute(query).fetchall()
-
-    # Rows with values only in fields shared between several entities will be ignored here.
-    # But they will raise an error through check_orphan_rows.
 
 
 def check_orphan_rows(imprt):
@@ -127,18 +94,25 @@ def check_orphan_rows(imprt):
         )
 
 
+def check_mandatory_field(imprt, entity, field):
+    transient_table = imprt.destination.get_transient_table()
+    source_field = transient_table.c[field.source_column]
+    whereclause = sa.and_(
+        transient_table.c[entity.validity_column].isnot(None),
+        source_field.is_(None),
+    )
+    report_erroneous_rows(
+        imprt,
+        entity=entity,
+        error_type=ImportCodeError.MISSING_VALUE,
+        error_column=field.name_field,
+        whereclause=whereclause,
+    )
+
+
 # Currently not used as done during dataframe checks
 def check_mandatory_fields(imprt, entity, fields):
     for field in fields.values():
         if not field.mandatory or not field.dest_field:
             continue
-        transient_table = imprt.destination.get_transient_table()
-        source_field = transient_table.c[field.source_column]
-        whereclause = source_field.is_(None)
-        report_erroneous_rows(
-            imprt,
-            entity=entity,
-            error_type=ImportCodeError.MISSING_VALUE,
-            error_column=field.name_field,
-            whereclause=whereclause,
-        )
+        check_mandatory_field(imprt, entity, field)

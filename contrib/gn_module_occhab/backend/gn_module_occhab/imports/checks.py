@@ -16,7 +16,7 @@ def generate_id_station(imprt: TImports, station_entity: Entity) -> None:
     entity : Entity
         station entity
     """
-    # Generate for each uuid an id_station
+    # Generate an id_station for the first occurance of each UUID
     transient_table = imprt.destination.get_transient_table()
     uuid_station_valid_cte = (
         sa.select(
@@ -33,26 +33,6 @@ def generate_id_station(imprt: TImports, station_entity: Entity) -> None:
         sa.update(transient_table)
         .where(transient_table.c.line_no == uuid_station_valid_cte.c.line_no)
         .values({"id_station": sa.func.nextval("pr_occhab.t_stations_id_station_seq")})
-    )
-
-    # in the previous query, we only updated the id_station for the first occurance of each uuid
-    # the following query will set the id_station for all occurrence of each uuid
-    id_station_to_uuid_cte = (
-        sa.select(transient_table.c.id_station, transient_table.c.unique_id_sinp_station)
-        .where(transient_table.c.id_station.is_not(None))
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(transient_table.c[station_entity.validity_column].is_(True))
-        .cte("cte")
-    )
-    db.session.execute(
-        sa.update(transient_table)
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(transient_table.c[station_entity.validity_column].is_(True))
-        .where(
-            transient_table.c.unique_id_sinp_station
-            == id_station_to_uuid_cte.c.unique_id_sinp_station
-        )
-        .values({"id_station": id_station_to_uuid_cte.c.id_station})
     )
 
 
