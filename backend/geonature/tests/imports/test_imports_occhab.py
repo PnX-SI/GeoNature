@@ -7,6 +7,7 @@ import pytest
 
 from flask import url_for, g, current_app
 from werkzeug.datastructures import Headers
+from werkzeug.exceptions import Conflict
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point
 
@@ -472,3 +473,27 @@ class TestImportsOcchab:
             )
             == imported_import.statistics["habitat_count"]
         )
+
+    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
+    def test_remove_import_with_manual_children(self, client, users, imported_import):
+        """
+        This test verifies that it is not possible to remove an import if an imported entity
+        has child data that do not come from this import (e.g. imported station with manually
+        added habitat in Occhab).
+        """
+        # We get an imported station, and manually add an habitat to it.
+        station = (
+            db.session.execute(
+                sa.select(Station).where(Station.id_import == imported_import.id_import).limit(1)
+            )
+            .scalars()
+            .first()
+        )
+        habitat = OccurenceHabitat(station=station, cd_hab=24, nom_cite="prairie")
+        with db.session.begin_nested():
+            db.session.add(habitat)
+        with logged_user(client, imported_import.authors[0]):
+            r = client.delete(url_for("import.delete_import", import_id=imported_import.id_import))
+        assert r.status_code == Conflict.code, r.data
+        assert str(station.id_station) in r.json["description"]
+        assert str(habitat.id_habitat) in r.json["description"]
