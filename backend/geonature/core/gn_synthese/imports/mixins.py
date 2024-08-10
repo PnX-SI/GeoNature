@@ -267,12 +267,15 @@ class SyntheseImportMixin(ImportMixin):
 
         if "unique_id_sinp" in selected_fields:
             check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp"])
+            if current_app.config["IMPORT"]["PER_DATASET_UUID_CHECK"]:
+                whereclause = Synthese.id_dataset == imprt.id_dataset
+            else:
+                whereclause = sa.true()
             check_existing_uuid(
                 imprt,
                 entity,
                 selected_fields["unique_id_sinp"],
-                # TODO: add parameter, see https://github.com/PnX-SI/gn_module_import/issues/459
-                whereclause=Synthese.id_dataset == imprt.id_dataset,
+                whereclause=whereclause,
             )
         if imprt.fieldmapping.get(
             "unique_id_sinp_generate",
@@ -448,10 +451,7 @@ class SyntheseImportMixin(ImportMixin):
                 )
                 .select_from(Synthese)
                 .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-                .where(
-                    Synthese.id_dataset == imprt.id_dataset,
-                    Synthese.source == source,
-                )
+                .where(Synthese.source == source)
                 .group_by(c_rank_taxref)
             )
             data = np.asarray(
