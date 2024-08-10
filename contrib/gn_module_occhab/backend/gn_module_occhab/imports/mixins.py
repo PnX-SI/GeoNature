@@ -1,4 +1,6 @@
 from flask import current_app
+from werkzeug.exceptions import Conflict
+
 from geonature.core.imports.checks.sql.extra import (
     check_entity_data_consistency,
     disable_duplicated_rows,
@@ -7,7 +9,8 @@ from geonature.core.imports.checks.sql.extra import (
 )
 from geonature.core.imports.checks.sql.utils import report_erroneous_rows, print_transient_table
 import sqlalchemy as sa
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, aliased
+from sqlalchemy.inspection import inspect
 
 import typing
 import json
@@ -506,17 +509,47 @@ class OcchabImportMixin(ImportMixin):
             r = db.session.execute(insert_stmt)
             imprt.statistics.update({f"{entity.code}_count": r.rowcount})
 
-    @staticmethod  # TODO refuser la suppression de l’import si des stations de l’import ont des habitats ne provenant pas de l’import
+    @staticmethod
     def remove_data_from_destination(imprt: TImports) -> None:
+        """
+        This function should be integrated in import core as usable for any
+        multi-entities (and mono-entity) destination.
+        Note: entities must have a single primary key.
+        """
         entities = (
             Entity.query.filter_by(destination=imprt.destination)
             .order_by(sa.desc(Entity.order))
             .all()
         )
         for entity in entities:
-            destination_table = entity.get_destination_table()
+            parent_table = entity.get_destination_table()
+            if entity.childs:
+                for child in entity.childs:
+                    child_table = child.get_destination_table()
+                    (parent_pk,) = inspect(parent_table).primary_key.columns
+                    (child_pk,) = inspect(child_table).primary_key.columns
+                    # Looking for parent rows belonging to this import with child rows
+                    # not belonging to this import.
+                    # We use is_distinct_from to match rows with NULL id_import.
+                    query = (
+                        sa.select(parent_pk, sa.func.array_agg(child_pk))
+                        .select_from(parent_table.join(child_table))
+                        .where(
+                            parent_table.c.id_import == imprt.id_import,
+                            child_table.c.id_import.is_distinct_from(imprt.id_import),
+                        )
+                        .group_by(parent_pk)
+                    )
+                    orphans = db.session.execute(query).fetchall()
+                    if orphans:
+                        description = "L’import ne peut pas être supprimé car cela provoquerai la suppression de données ne provenant pas de cet import :"
+                        description += "<ul>"
+                        for id_parent, ids_child in orphans:
+                            description += f"<li>{entity.label} {id_parent} : {child.label}s {*ids_child, }</li>"
+                        description += "</ul>"
+                        raise Conflict(description)
             db.session.execute(
-                sa.delete(destination_table).where(destination_table.c.id_import == imprt.id_import)
+                sa.delete(parent_table).where(parent_table.c.id_import == imprt.id_import)
             )
 
     @staticmethod
