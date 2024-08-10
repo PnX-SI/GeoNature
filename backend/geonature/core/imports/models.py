@@ -198,7 +198,8 @@ class Entity(db.Model):
     )
     id_parent = db.Column(db.Integer, ForeignKey("gn_imports.bib_entities.id_entity"))
 
-    parent = relationship("Entity", remote_side=[id_entity])
+    parent = relationship("Entity", back_populates="childs", remote_side=[id_entity])
+    childs = relationship("Entity", back_populates="parent")
     fields = relationship("EntityField", back_populates="entity")
     unique_column = relationship("BibFields")
 
