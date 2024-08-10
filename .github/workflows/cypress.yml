@@ -11,6 +11,7 @@ on:
       - hotfixes
       - develop
       - feat/import
+      - feat/occhab-check
 
 jobs:
   mount_app_and_run_cypress:

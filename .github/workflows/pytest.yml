@@ -12,6 +12,7 @@ on:
       - hotfixes
       - develop
       - feat/import
+      - feat/occhab-check
 
 jobs:
   build:
