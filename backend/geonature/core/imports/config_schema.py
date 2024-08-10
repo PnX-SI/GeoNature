@@ -106,7 +106,11 @@ class ImportConfigSchema(Schema):
         fields.Float, load_default=INSTANCE_BOUNDING_BOX
     )  # FIXME: unused
     ENABLE_BOUNDING_BOX_CHECK = fields.Boolean(load_default=True)  # FIXME : unused
-    ENABLE_SYNTHESE_UUID_CHECK = fields.Boolean(load_default=True)  # FIXME: unused
+    # When setting PER_DATASET_UUID_CHECK=True (used for import in synthese):
+    # - Replace the unicity constraint on unique_id_sinp with an unicity constraint on (unique_id_sinp,id_dataset).
+    # - Disable per-row dataset import by setting display=False in gn_imports.bib_fields
+    #   for the id_dataset field belonging to synthese destination.
+    PER_DATASET_UUID_CHECK = fields.Boolean(load_default=False)
     ALLOW_FIELD_MAPPING = fields.Boolean(load_default=ALLOW_FIELD_MAPPING)  # FIXME: unused
     DEFAULT_FIELD_MAPPING_ID = fields.Integer(
         load_default=DEFAULT_FIELD_MAPPING_ID
