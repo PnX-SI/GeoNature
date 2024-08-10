@@ -178,6 +178,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
         nullable=False,
+        server_default=FetchedValue(),
     )
     nomenclature_collection_technique = db.relationship(
         Nomenclature,
