@@ -26,7 +26,7 @@ export class IndividualsComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.getIndividuals().subscribe((data) => {
-      this.values = data;
+      this.values = data.filter(item => item.active);
     });
   }
 
