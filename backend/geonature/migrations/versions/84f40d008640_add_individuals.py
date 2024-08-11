@@ -163,6 +163,15 @@ def downgrade():
     op.drop_table("cor_individual_module", schema=SCHEMA)
     op.execute(
         """
+        DELETE FROM gn_commons.t_medias m
+        WHERE id_table_location IN (
+            SELECT id_table_location FROM gn_commons.bib_tables_location
+            WHERE table_name IN ('t_individuals', 't_marking_events')
+            );
+        """
+    )
+    op.execute(
+        """
         DELETE FROM gn_commons.bib_tables_location
         WHERE table_name IN ('t_individuals', 't_marking_events')
         AND schema_name='gn_monitoring';
