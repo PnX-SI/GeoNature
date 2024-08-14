@@ -50,6 +50,8 @@ attrs==23.2.0
     # via fiona
 authlib==1.3.0
     # via pypnusershub
+babel==2.16.0
+    # via flask-babel
 bcrypt==4.1.3
     # via pypnusershub
 billiard==4.2.0
@@ -60,12 +62,6 @@ blinker==1.8.2
     #   flask-mail
 bokeh==3.4.1
     # via -r requirements-common.in
-boto3==1.29.1
-    # via taxhub
-botocore==1.32.7
-    # via
-    #   boto3
-    #   s3transfer
 cairocffi==1.7.0
     # via
     #   cairosvg
@@ -131,6 +127,7 @@ flask==3.0.3
     # via
     #   -r requirements-common.in
     #   flask-admin
+    #   flask-babel
     #   flask-cors
     #   flask-login
     #   flask-mail
@@ -150,6 +147,9 @@ flask-admin==1.6.1
     # via
     #   -r requirements-common.in
     #   pypnnomenclature
+    #   taxhub
+flask-babel==4.0.0
+    # via -r requirements-common.in
 flask-cors==4.0.1
     # via
     #   -r requirements-common.in
@@ -226,10 +226,7 @@ jinja2==3.1.2
     # via
     #   bokeh
     #   flask
-jmespath==1.0.1
-    # via
-    #   boto3
-    #   botocore
+    #   flask-babel
 kombu==5.3.7
     # via celery
 lxml==5.2.2
@@ -306,7 +303,6 @@ pyproj==3.0.1 ; python_version < "3.10"
 python-dateutil==2.8.2
     # via
     #   -r requirements-common.in
-    #   botocore
     #   celery
     #   pandas
     #   usershub
@@ -319,7 +315,9 @@ python-dotenv==1.0.1
     #   taxhub
     #   usershub
 pytz==2023.3.post1
-    # via pandas
+    # via
+    #   flask-babel
+    #   pandas
 pyyaml==6.0.1
     # via bokeh
 redis==5.0.1
@@ -328,8 +326,6 @@ requests==2.32.2
     # via
     #   pypn-habref-api
     #   pypnusershub
-s3transfer==0.7.0
-    # via boto3
 shapely==2.0.4
     # via
     #   -r requirements-common.in
@@ -361,7 +357,9 @@ tinycss2==1.3.0
     #   cssselect2
     #   weasyprint
 toml==0.10.2
-    # via -r requirements-common.in
+    # via
+    #   -r requirements-common.in
+    #   taxhub
 tornado==6.4
     # via bokeh
 typing-extensions==4.8.0
@@ -374,7 +372,6 @@ tzdata==2023.3
     #   pandas
 urllib3==1.26.18
     # via
-    #   botocore
     #   requests
     #   taxhub
 validators==0.28.2

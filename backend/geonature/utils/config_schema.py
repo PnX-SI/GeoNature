@@ -3,6 +3,7 @@
 """
 
 import os
+import warnings
 
 from warnings import warn
 
@@ -26,6 +27,7 @@ from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from pypnusershub.auth.authentication import ProviderConfigurationSchema
+from apptax.utils.config.config_schema import TaxhubAppConf
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -529,10 +531,6 @@ class MapConfig(Schema):
     REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
 
 
-class TaxHub(Schema):
-    ID_TYPE_MAIN_PHOTO = fields.Integer(load_default=1)
-
-
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(load_default="GeoNature2")
@@ -542,7 +540,7 @@ class GnGeneralSchemaConf(Schema):
     DEBUG = fields.Boolean(load_default=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
-    API_TAXHUB = fields.Url(required=True)
+    API_TAXHUB = fields.Url()
     CODE_APPLICATION = fields.String(load_default="GN")
     DISABLED_MODULES = fields.List(fields.String(), load_default=[])
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
@@ -561,7 +559,8 @@ class GnGeneralSchemaConf(Schema):
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
-    TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    TAXHUB = fields.Nested(TaxhubAppConf, load_default=TaxhubAppConf().load({"API_PREFIX": "/api"}))
+
     HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
@@ -582,8 +581,21 @@ class GnGeneralSchemaConf(Schema):
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
 
+    @pre_load
+    def _pre_load(self, data, **kwargs):
+        if "API_TAXHUB" in data:
+            warnings.warn(
+                "Le paramètre API_TAXHUB est déprécié, il sera automatiquement déduit API_ENDPOINT et supprimé dans la version 2.14",
+                Warning,
+            )
+        return data
+
     @post_load
     def insert_module_config(self, data, **kwargs):
+        # URL de l'api taxub
+        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub{data['TAXHUB']['API_PREFIX']}"
+
+        # Configuration des modules actifs
         for dist in iter_modules_dist():
             module_code = dist.entry_points["code"].load()
             if module_code in data["DISABLED_MODULES"]:

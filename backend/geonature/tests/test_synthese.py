@@ -36,7 +36,7 @@ from geonature.core.gn_commons.models.base import TModules
 
 from apptax.taxonomie.models import Taxref
 from ref_geo.models import BibAreasTypes, LAreas
-from apptax.tests.fixtures import noms_example, attribut_example
+from apptax.tests.fixtures import noms_example, attribut_example, liste
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 
 from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
@@ -76,14 +76,14 @@ def taxon_attribut(noms_example, attribut_example, synthese_data):
     """
     Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
     """
-    from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
+    from apptax.taxonomie.models import Taxref, BibAttributs, CorTaxonAttribut
 
-    nom = db.session.scalars(select(BibNoms).filter_by(cd_ref=209902)).one()
+    nom = db.session.scalars(select(Taxref).filter_by(cd_nom=209902)).one()
     attribut = db.session.scalars(
         select(BibAttributs).filter_by(nom_attribut=attribut_example.nom_attribut)
     ).one()
     with db.session.begin_nested():
-        c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
+        c = CorTaxonAttribut(taxon=nom, bib_attribut=attribut, valeur_attribut="eau")
         db.session.add(c)
     return c
 
@@ -241,7 +241,7 @@ class TestSynthese:
         # schema["properties"]["observations"]["items"]["required"] =
         # test on synonymy and taxref attrs
         filters = {
-            "cd_ref": [taxon_attribut.bib_nom.cd_ref],
+            "cd_ref": [taxon_attribut.taxon.cd_ref],
             "taxhub_attribut_{}".format(taxon_attribut.bib_attribut.id_attribut): [
                 taxon_attribut.valeur_attribut
             ],
@@ -250,7 +250,7 @@ class TestSynthese:
         assert r.status_code == 200
         assert len(r.json["features"]) > 0
         for feature in r.json["features"]:
-            assert feature["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
+            assert feature["properties"]["cd_nom"] == 713776
 
         # test intersection filters
         filters = {

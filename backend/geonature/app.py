@@ -14,6 +14,7 @@ else:
 from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
+from flask_babel import Babel
 from flask_cors import CORS
 from flask_login import current_user
 from flask_sqlalchemy.track_modifications import before_models_committed
@@ -80,6 +81,17 @@ class MyJSONProvider(DefaultJSONProvider):
         if isinstance(o, Row):
             return o._asdict()
         return DefaultJSONProvider.default(o)
+
+
+def get_locale():
+    # if a user is logged in, use the locale from the user settings
+    user = getattr(g, "user", None)
+    if user is not None:
+        return user.locale
+    # otherwise try to guess the language from the user accept
+    # header the browser transmits.  We support de/fr/en in this
+    # example.  The best match wins.
+    return request.accept_languages.best_match(["de", "fr", "en"])
 
 
 def create_app(with_external_mods=True):
@@ -175,11 +187,21 @@ def create_app(with_external_mods=True):
 
     admin.init_app(app)
 
+    # babel
+    babel = Babel(app, locale_selector=get_locale)
+
     # Enable serving of media files
     app.add_url_rule(
         f"{config['MEDIA_URL']}/<path:filename>",
         view_func=lambda filename: send_from_directory(config["MEDIA_FOLDER"], filename),
         endpoint="media",
+    )
+    app.add_url_rule(
+        f"{config['MEDIA_URL']}/taxhub/<path:filename>",
+        view_func=lambda filename: send_from_directory(
+            config["MEDIA_FOLDER"] + "/taxhub", filename
+        ),
+        endpoint="media_taxhub",
     )
 
     for blueprint_path, url_prefix in [
@@ -203,6 +225,26 @@ def create_app(with_external_mods=True):
         app.register_blueprint(blueprint, url_prefix=url_prefix)
 
     with app.app_context():
+        # taxhub api
+        from apptax import taxhub_api_routes
+
+        base_api_prefix = app.config["TAXHUB"].get("API_PREFIX")
+
+        for blueprint_path, url_prefix in taxhub_api_routes:
+            module_name, blueprint_name = blueprint_path.split(":")
+            blueprint = getattr(import_module(module_name), blueprint_name)
+            app.register_blueprint(blueprint, url_prefix="/taxhub" + base_api_prefix + url_prefix)
+
+        # taxhub admin
+        from apptax.admin.admin import adresses
+
+        app.register_blueprint(adresses, url_prefix="/taxhub")
+
+        # register taxhub admin view which need app context
+        from geonature.core.taxonomie.admin import load_admin_views
+
+        load_admin_views(app, admin)
+
         # register errors handlers
         import geonature.core.errors
 

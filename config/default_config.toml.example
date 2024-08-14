@@ -41,8 +41,6 @@ URL_APPLICATION = "http://url.com/geonature"
 # URL de l'API de GeoNature. Remplacer "url.com" par votre domaine ou IP
 API_ENDPOINT = "http://url.com/geonature/api"
 
-# URL de l'API de Taxhub
-API_TAXHUB = "http://127.0.0.1:5000/api/"
 
 # Type de session
 SESSION_TYPE = "filesystem"
@@ -111,6 +109,13 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     MY_DATA = 1
     MY_ORGANISM_DATA = 2
     ALL_DATA = 3
+
+# Configuration de taxhub
+[TAXHUB]
+    # Préfixe des routes de l'api de taxhub
+    API_PREFIX="/api"
+    # Identifiant du type de médias "Photo principale"
+    ID_TYPE_MAIN_PHOTO=1
 
 # Configuration générale de l'interface de GeoNature
 [FRONTEND]
