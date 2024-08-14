@@ -3,7 +3,6 @@ from geonature.core.imports.models import TImports
 
 from bokeh.embed.standalone import StandaloneEmbedJson
 
-from abc import abstractmethod
 import typing
 
 
@@ -19,37 +18,30 @@ class ImportInputUrl(typing.TypedDict):
 
 class ImportMixin(AbstractMixin):
     @staticmethod
-    @abstractmethod
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:
-        pass
+        raise NotImplementedError
 
     # The output of this method is NEVER used
     @staticmethod
-    @abstractmethod
     def preprocess_transient_data(imprt: TImports, df) -> set:
-        return None
+        raise NotImplementedError
 
     @staticmethod
-    @abstractmethod
     def check_transient_data(task, logger, imprt: TImports) -> None:
-        pass
+        raise NotImplementedError
 
     @staticmethod
-    @abstractmethod
     def import_data_to_destination(imprt: TImports) -> None:
-        pass
+        raise NotImplementedError
 
     @staticmethod
-    @abstractmethod
     def remove_data_from_destination(imprt: TImports) -> None:
-        pass
+        raise NotImplementedError
 
     @staticmethod
-    @abstractmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:
-        pass
+        raise NotImplementedError
 
     @staticmethod
-    @abstractmethod
     def compute_bounding_box(imprt: TImports) -> None:
-        pass
+        raise NotImplementedError
