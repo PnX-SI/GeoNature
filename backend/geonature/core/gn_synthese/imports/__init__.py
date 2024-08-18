@@ -1,1 +1,1 @@
-from .mixins import SyntheseImportMixin
+

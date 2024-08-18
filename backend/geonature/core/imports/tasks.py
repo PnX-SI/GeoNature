@@ -34,7 +34,7 @@ def do_import_checks(self, import_id):
         logger.warning("Task cancelled, doing nothing.")
         return
 
-    imprt.destination.import_mixin.check_transient_data(self, logger, imprt)
+    imprt.destination.actions.check_transient_data(self, logger, imprt)
 
     self.update_state(state="PROGRESS", meta={"progress": 1})
 
@@ -78,7 +78,7 @@ def do_import_in_destination(self, import_id):
     transient_table = imprt.destination.get_transient_table()
 
     # Copy valid transient data to destination
-    imprt.destination.import_mixin.import_data_to_destination(imprt)
+    imprt.destination.actions.import_data_to_destination(imprt)
 
     count_entities = 0
     for entity in (

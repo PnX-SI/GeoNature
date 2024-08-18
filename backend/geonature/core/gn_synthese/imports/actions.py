@@ -1,6 +1,6 @@
 from math import ceil
 
-from geonature.core.imports.import_mixin import ImportMixin, ImportStatisticsLabels, ImportInputUrl
+from geonature.core.imports.actions import ImportActions, ImportStatisticsLabels, ImportInputUrl
 
 from apptax.taxonomie.models import Taxref
 from flask import current_app
@@ -63,7 +63,7 @@ import typing
 import json
 
 
-class SyntheseImportMixin(ImportMixin):
+class SyntheseImportActions(ImportActions):
 
     @staticmethod
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:

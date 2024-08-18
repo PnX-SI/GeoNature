@@ -70,7 +70,7 @@ def clean_import(imprt: TImports, step: ImportStep) -> None:
         imprt.date_end_import = None
         imprt.import_count = None
         imprt.statistics = {}
-        imprt.destination.import_mixin.remove_data_from_destination(imprt)
+        imprt.destination.actions.remove_data_from_destination(imprt)
 
 
 def get_file_size(file_: IO) -> int:
@@ -258,7 +258,7 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
             )
         df = pd.DataFrame(data)
 
-        imprt.destination.import_mixin.preprocess_transient_data(imprt, df)
+        imprt.destination.actions.preprocess_transient_data(imprt, df)
 
         records = df.to_dict(orient="records")
         db.session.execute(insert(transient_table).values(records))

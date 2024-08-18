@@ -1,4 +1,3 @@
-from geonature.core.gn_commons.models import AbstractMixin
 from geonature.core.imports.models import TImports
 
 from bokeh.embed.standalone import StandaloneEmbedJson
@@ -16,7 +15,7 @@ class ImportInputUrl(typing.TypedDict):
     label: str
 
 
-class ImportMixin(AbstractMixin):
+class ImportActions:
     @staticmethod
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         raise NotImplementedError

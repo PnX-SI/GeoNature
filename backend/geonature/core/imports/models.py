@@ -133,16 +133,12 @@ class Destination(db.Model):
         return [entity.validity_column for entity in self.entities]
 
     @property
-    def import_mixin(self):
-        from geonature.core.imports.import_mixin import ImportMixin
-
-        if not ImportMixin.is_implemented_in_module(type(self.module)):
-            raise NotImplementedError
-        return self.module
+    def statistics_labels(self):
+        return self.actions.statistics_labels()
 
     @property
-    def statistics_labels(self):
-        return self.import_mixin.statistics_labels()
+    def actions(self):
+        return self.module.__import_actions__
 
 
 @serializable

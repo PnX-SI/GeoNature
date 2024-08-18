@@ -17,7 +17,7 @@ import json
 
 from geonature.utils.env import db
 from geonature.core.imports.models import Entity, BibFields, TImports
-from geonature.core.imports.import_mixin import ImportMixin, ImportStatisticsLabels
+from geonature.core.imports.actions import ImportActions, ImportStatisticsLabels
 from .plot import distribution_plot
 
 from geonature.core.imports.utils import (
@@ -68,7 +68,7 @@ def get_occhab_entities() -> typing.Tuple[Entity, Entity]:
     return entity_station, entity_habitat
 
 
-class OcchabImportMixin(ImportMixin):
+class OcchabImportActions(ImportActions):
     @staticmethod
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         return [
