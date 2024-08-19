@@ -49,3 +49,7 @@ ngx-datatable-column {
   overflow: hidden; /* Empêche le débordement du texte */
   text-overflow: ellipsis; /* Affiche des points de suspension si le texte dépasse */
 }
+
+.toggle-container mat-slide-toggle {
+  padding: 4px;
+}

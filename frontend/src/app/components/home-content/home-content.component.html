@@ -46,14 +46,13 @@
       >
         <!-- Toggle for "Mes discussions" -->
         <div class="toggle-container">
-          <label>
-            <input
-              type="checkbox"
-              [(ngModel)]="myReportsOnly"
-              (change)="toggleMyReports()"
-            />
-            Mes discussions
-          </label>
+          <mat-slide-toggle
+            labelPosition="after"
+            [(ngModel)]="myReportsOnly"
+            (change)="toggleMyReports()"
+          >
+            Mes discussions uniquement
+          </mat-slide-toggle>
         </div>
         <ngx-datatable
           #table
