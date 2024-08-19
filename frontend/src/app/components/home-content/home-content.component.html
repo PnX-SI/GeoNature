@@ -61,6 +61,7 @@
         [offset]="currentPage - 1"
         (select)="onRowClick($event)"
         (sort)="onColumnSort($event)"
+        columnMode="force"
       >
  <!-- Row Detail Template -->
  <ngx-datatable-row-detail [rowHeight]="150">
