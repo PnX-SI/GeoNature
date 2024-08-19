@@ -1527,9 +1527,7 @@ def list_reports(permissions, id_synthese):
     # Determine the sorting
     if orderby in SORT_COLUMNS:
         if orderby == "user.nom_complet":
-            req = req.order_by(
-                desc(User.nom_complet) if sort == "desc" else asc(User.nom_complet)
-            )
+            req = req.order_by(desc(User.nom_complet) if sort == "desc" else asc(User.nom_complet))
         elif orderby == "content":
             req = req.order_by(desc(TReport.content) if sort == "desc" else asc(TReport.content))
         elif orderby == "creation_date":
