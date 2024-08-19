@@ -18,7 +18,7 @@ import { DatePipe } from '@angular/common';
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, SyntheseDataService, DatePipe]
+  providers: [MapService, SyntheseDataService, DatePipe],
 })
 export class HomeContentComponent implements OnInit, AfterViewInit {
   public showLastObsMap: boolean = false;
@@ -28,7 +28,6 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   public destroy$: Subject<boolean> = new Subject<boolean>();
   public cluserOrSimpleFeatureGroup = null;
 
-
   @ViewChild('table')
   table: DatatableComponent;
   discussions = [];
@@ -36,11 +35,11 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   currentPage = 1;
   perPage = 2;
   totalPages = 1;
-  totalRows:Number;
-  myReportsOnly = false; 
-  sort = 'desc'; 
+  totalRows: Number;
+  myReportsOnly = false;
+  sort = 'desc';
   orderby = 'date';
-  params:URLSearchParams = new URLSearchParams();
+  params: URLSearchParams = new URLSearchParams();
   constructor(
     private _SideNavService: SideNavService,
     private _syntheseApi: SyntheseDataService,
@@ -48,7 +47,7 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     private _moduleService: ModuleService,
     private translateService: TranslateService,
     public config: ConfigService,
-    private datePipe: DatePipe 
+    private datePipe: DatePipe
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -90,7 +89,6 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-
 
   private computeMapBloc() {
     this.cluserOrSimpleFeatureGroup.addTo(this._mapService.map);
@@ -163,21 +161,24 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     this.getDiscussions(); // Recharger les discussions avec le filtre mis à jour
   }
   setDiscussions(data) {
-    this.discussions = data.items.map(item => ({
-      ...item,
-      observation: `
+    this.discussions =
+      data.items.map((item) => ({
+        ...item,
+        observation: `
         <strong>Nom Cité:</strong> ${item.synthese.nom_cite || 'N/A'}<br>
         <strong>Observateurs:</strong> ${item.synthese.observers || 'N/A'}<br>
-        <strong>Date Observation:</strong> ${this.formatDateRange(item.synthese.date_min, item.synthese.date_max) || 'N/A'}
-      `
-    })) || [];
+        <strong>Date Observation:</strong> ${
+          this.formatDateRange(item.synthese.date_min, item.synthese.date_max) || 'N/A'
+        }
+      `,
+      })) || [];
     this.columns = [
       { prop: 'creation_date', name: 'Date commentaire', sortable: true },
       { prop: 'user.nom_complet', name: 'Auteur', sortable: true },
       { prop: 'content', name: 'Contenu', sortable: true },
-      { prop: 'observation', name: 'Observation', sortable: false, maxWidth: "500" } // La colonne non sortable
+      { prop: 'observation', name: 'Observation', sortable: false, maxWidth: '500' }, // La colonne non sortable
     ];
-    this.totalRows = data.total || 0;  // Total number of items
+    this.totalRows = data.total || 0; // Total number of items
     this.totalPages = data.pages || 1; // Total number of pages
   }
 
@@ -207,11 +208,11 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   }
 
   onColumnSort(event) {
-    this.sort = event.sorts[0].dir
-    this.orderby = event.sorts[0].prop
+    this.sort = event.sorts[0].dir;
+    this.orderby = event.sorts[0].prop;
     this.params.set('sort', this.sort);
     this.params.set('orderby', this.orderby);
-    this.getDiscussions()
+    this.getDiscussions();
   }
   formatDateRange(dateMin: string, dateMax: string): string {
     if (!dateMin) return 'N/A'; // Si date_min est manquante
@@ -228,5 +229,4 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     // Si date_min et date_max sont différentes
     return `${formattedDateMin} - ${formattedDateMax}`;
   }
-
 }

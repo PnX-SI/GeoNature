@@ -123,7 +123,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
    */
   getDiscussions() {
     const params = `type=discussion&sort=${this.sort}`;
-    this._syntheseDataService.getReports(params,this.idSynthese).subscribe((response) => {
+    this._syntheseDataService.getReports(params, this.idSynthese).subscribe((response) => {
       this.setDiscussions(response);
     });
   }

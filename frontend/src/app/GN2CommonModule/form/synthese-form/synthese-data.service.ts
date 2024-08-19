@@ -229,12 +229,11 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
-  getReports(params,idSynthese=null) {
+  getReports(params, idSynthese = null) {
     const baseUrl = `${this.config.API_ENDPOINT}/synthese/reports`;
     const url = idSynthese ? `${baseUrl}/${idSynthese}` : baseUrl;
     return this._api.get(`${url}?${params}`);
   }
-  
 
   createReport(params) {
     return this._api.post(`${this.config.API_ENDPOINT}/synthese/reports`, params);
