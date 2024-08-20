@@ -1,0 +1,1 @@
+import 'jquery/dist/jquery.slim';

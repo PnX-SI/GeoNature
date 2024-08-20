@@ -1,5 +1,12 @@
 {
   "compileOnSave": false,
+  "include": [
+    // "...",
+    "@types/jquery/index.d.ts", // Had to specify exact file here instead of wild card. Else jquery is also included.
+  ],
+  "exclude": [
+    "cypress/global.d.ts" // important to exclude this.
+  ],
   "compilerOptions": {
     "importHelpers": true,
     "outDir": "./dist/out-tsc",
@@ -15,7 +22,8 @@
       "dom"
     ],
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "./@types"
     ],
     "types": [],
     "baseUrl": "./",

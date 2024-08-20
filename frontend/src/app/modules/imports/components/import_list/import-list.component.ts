@@ -13,6 +13,7 @@ import { Import } from '../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
 import { CsvExportService } from '../../services/csv-export.service';
 import { formatRowCount } from '../../utils/format-row-count';
+import { Config } from 'datatables.net';
 
 @Component({
   styleUrls: ['import-list.component.scss'],
@@ -36,6 +37,7 @@ export class ImportListComponent implements OnInit {
   public inErrorImport: Array<number> = [];
   public checkingImport: Array<number> = [];
   private fetchTimeout: any;
+  public dtOptions: Config = {};
 
   /* Filter value storage */
   private destinationCode: string;
@@ -106,6 +108,28 @@ export class ImportListComponent implements OnInit {
     this._ds.getImportList(default_params, this.selectDestinationForm.value).subscribe((res) => {
       this.history = res['imports'];
       this.getImportsStatus();
+
+      this.dtOptions = {
+        data: this.history,
+        columns: [
+          {
+            title: 'Id Import',
+            data: 'id_import',
+          },
+          {
+            title: 'Id Import',
+            data: 'id_import',
+          },
+          {
+            title: 'Id Import',
+            data: 'id_import',
+          },
+          {
+            title: 'Id Import',
+            data: 'id_import',
+          },
+        ],
+      };
 
       this.filteredHistory = this.history;
       this.empty = res.length == 0;

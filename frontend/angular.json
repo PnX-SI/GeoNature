@@ -59,7 +59,8 @@
               "node_modules/@circlon/angular-tree-component/src/lib/angular-tree-component.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-              "node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
+              "node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css",
+              "node_modules/datatables.net-dt/css/jquery.dataTables.min.css"
             ],
             "scripts": [
               "node_modules/leaflet/dist/leaflet.js",
@@ -70,7 +71,9 @@
               "node_modules/@bokeh/bokehjs/build/js/bokeh-widgets.min.js",
               "node_modules/@bokeh/bokehjs/build/js/bokeh-mathjax.min.js",
               "node_modules/@bokeh/bokehjs/build/js/bokeh-gl.min.js",
-              "node_modules/@bokeh/bokehjs/build/js/bokeh-tables.min.js"
+              "node_modules/@bokeh/bokehjs/build/js/bokeh-tables.min.js",
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/datatables.net/js/jquery.dataTables.min.js"
             ]
           },
           "configurations": {
