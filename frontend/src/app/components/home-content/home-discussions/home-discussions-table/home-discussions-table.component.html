@@ -1,0 +1,16 @@
+<generic-table
+  #table
+  [rows]="discussions"
+  [columns]="columns"
+  [totalRows]="totalRows"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="'auto'"
+  [limit]="perPage"
+  [count]="totalRows"
+  [offset]="currentPage - 1"
+  (onRowSelect)="rowClick.emit($event)"
+  (onColumnSort)="columnSort.emit($event)"
+  (onToggleExpandRow)="handleExpandRow($event)"
+>
+</generic-table>

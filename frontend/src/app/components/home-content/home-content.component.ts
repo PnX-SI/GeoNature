@@ -82,7 +82,6 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     if (this.showLastObsMap) {
       this.computeMapBloc();
     }
-    this.config.HOME.DISPLAY_LATEST_DISCUSSIONS ? this.getDiscussions() : null;
   }
 
   ngOnDestroy(): void {
@@ -154,79 +153,5 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
       });
-  }
-
-  toggleMyReports() {
-    this.currentPage = 1; // Réinitialiser à la première page lors du changement du filtre
-    this.getDiscussions(); // Recharger les discussions avec le filtre mis à jour
-  }
-  setDiscussions(data) {
-    this.discussions =
-      data.items.map((item) => ({
-        ...item,
-        observation: `
-        <strong>Nom Cité:</strong> ${item.synthese.nom_cite || 'N/A'}<br>
-        <strong>Observateurs:</strong> ${item.synthese.observers || 'N/A'}<br>
-        <strong>Date Observation:</strong> ${
-          this.formatDateRange(item.synthese.date_min, item.synthese.date_max) || 'N/A'
-        }
-      `,
-      })) || [];
-    this.columns = [
-      { prop: 'creation_date', name: 'Date commentaire', sortable: true },
-      { prop: 'user.nom_complet', name: 'Auteur', sortable: true },
-      { prop: 'content', name: 'Contenu', sortable: true },
-      { prop: 'observation', name: 'Observation', sortable: false, maxWidth: '500' }, // La colonne non sortable
-    ];
-    this.totalRows = data.total || 0; // Total number of items
-    this.totalPages = data.pages || 1; // Total number of pages
-  }
-
-  getDiscussions() {
-    this.params.set('type', 'discussion');
-    this.params.set('sort', this.sort || 'desc');
-    this.params.set('page', this.currentPage.toString());
-    this.params.set('per_page', this.perPage.toString());
-    this.params.set('my_reports', this.myReportsOnly.toString());
-
-    this._syntheseApi.getReports(this.params.toString()).subscribe((response) => {
-      this.setDiscussions(response);
-    });
-  }
-
-  onRowClick(event) {
-    console.log('Clicked row:', event.row);
-  }
-
-  toggleExpandRow(row) {
-    this.table.rowDetail.toggleExpandRow(row);
-  }
-
-  handlePageChange(event: any) {
-    this.currentPage = event.page;
-    this.getDiscussions(); // Fetch data for the new page
-  }
-
-  onColumnSort(event) {
-    this.sort = event.sorts[0].dir;
-    this.orderby = event.sorts[0].prop;
-    this.params.set('sort', this.sort);
-    this.params.set('orderby', this.orderby);
-    this.getDiscussions();
-  }
-  formatDateRange(dateMin: string, dateMax: string): string {
-    if (!dateMin) return 'N/A'; // Si date_min est manquante
-
-    // Formatage des dates
-    const formattedDateMin = this.datePipe.transform(dateMin, 'dd-MM-yyyy');
-    const formattedDateMax = this.datePipe.transform(dateMax, 'dd-MM-yyyy');
-
-    if (!dateMax || formattedDateMin === formattedDateMax) {
-      // Si date_max est manquante ou identique à date_min
-      return formattedDateMin || 'N/A';
-    }
-
-    // Si date_min et date_max sont différentes
-    return `${formattedDateMin} - ${formattedDateMax}`;
   }
 }

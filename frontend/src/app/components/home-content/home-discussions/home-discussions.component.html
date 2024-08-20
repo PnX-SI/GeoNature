@@ -1,0 +1,16 @@
+<pnx-home-discussions-toggle
+  [isChecked]="myReportsOnly"
+  (toggle)="toggleMyReports()"
+></pnx-home-discussions-toggle>
+
+<pnx-home-discussions-table
+[discussions]="discussions"
+[columns]="columns"
+[currentPage]="currentPage"
+[perPage]="perPage"
+[totalPages]="totalPages"
+[totalRows]="totalRows"
+(rowClick)="onRowClick($event)"
+(columnSort)="onColumnSort($event)"
+(pageChange)="handlePageChange($event)"
+></pnx-home-discussions-table>
