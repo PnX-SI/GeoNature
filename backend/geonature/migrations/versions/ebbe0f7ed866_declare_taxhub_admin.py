@@ -25,15 +25,15 @@ def upgrade():
             """
             INSERT INTO gn_commons.t_modules
             (module_code, module_label, module_picto, module_desc, module_target, module_external_url, active_frontend, active_backend)
-            VALUES('TAXHUB', 'Taxhub', 'fa-leaf', 'Module TaxHub', '_blank', :module_url, false, false);
+            VALUES('TAXHUB', 'TaxHub', 'fa-sitemap', 'Module TaxHub', '_blank', :module_url, false, false);
 
             INSERT INTO gn_permissions.t_objects
             (code_object, description_object)
             VALUES
-            ('TAXON', 'Gestion des taxons dans TaxHub'),
-            ('THEME', 'Gestion des thêmes d''attribut dans TaxHub'),
-            ('LISTE', 'Gestion des listes dans TaxHub'),
-            ('ATTRIBUT', 'Gestion des types d''attributs dans TaxHub')
+            ('TAXONS', 'Gestion des taxons dans TaxHub'),
+            ('THEMES', 'Gestion des thèmes d''attributs dans TaxHub'),
+            ('LISTES', 'Gestion des listes dans TaxHub'),
+            ('ATTRIBUTS', 'Gestion des types d''attributs dans TaxHub')
             ;
 
             INSERT INTO gn_permissions.cor_object_module
@@ -41,10 +41,10 @@ def upgrade():
             SELECT _to.id_object, (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'TAXHUB')
             FROM (
                 VALUES 
-                    ('TAXON'), 
-                    ('THEME'), 
-                    ('LISTE'), 
-                    ('ATTRIBUT')
+                    ('TAXONS'), 
+                    ('THEMES'), 
+                    ('LISTES'), 
+                    ('ATTRIBUTS')
                 ) AS o (object_code)
             JOIN gn_permissions.t_objects _to ON _to.code_object = o.object_code;
             
@@ -66,20 +66,20 @@ def upgrade():
                 v.label
             FROM (
                     VALUES
-                    ('TAXHUB', 'TAXON', 'R', False, 'Voir les taxons')
-                    ,('TAXHUB', 'TAXON', 'U', False, 'Modifier les taxons (médias - liste - attributs)')
-                    ,('TAXHUB', 'THEME', 'C', False, 'Créer des thêmes')
-                    ,('TAXHUB', 'THEME', 'R', False, 'Voir les thêmes')
-                    ,('TAXHUB', 'THEME', 'U', False, 'Modifier les thêmes')
-                    ,('TAXHUB', 'THEME', 'D', False, 'Supprimer des thêmes')
-                    ,('TAXHUB', 'LISTE', 'C', False, 'Creer des listes')
-                    ,('TAXHUB', 'LISTE', 'R', False, 'Voir les listes')
-                    ,('TAXHUB', 'LISTE', 'U', False, 'Modifier les listes')
-                    ,('TAXHUB', 'LISTE', 'D', False, 'Supprimer des listes')
-                    ,('TAXHUB', 'ATTRIBUT', 'C', False, 'Créer des types d''attribut')
-                    ,('TAXHUB', 'ATTRIBUT', 'R', False, 'Voir les types d''attribut')
-                    ,('TAXHUB', 'ATTRIBUT', 'U', False, 'Modfier les types d''attribut')
-                    ,('TAXHUB', 'ATTRIBUT', 'D', False, 'Supprimer les types d''attribut')
+                    ('TAXHUB', 'TAXONS', 'R', False, 'Voir les taxons')
+                    ,('TAXHUB', 'TAXONS', 'U', False, 'Modifier les taxons (médias - listes - attributs)')
+                    ,('TAXHUB', 'THEMES', 'C', False, 'Créer des thèmes')
+                    ,('TAXHUB', 'THEMES', 'R', False, 'Voir les thèmes')
+                    ,('TAXHUB', 'THEMES', 'U', False, 'Modifier les thèmes')
+                    ,('TAXHUB', 'THEMES', 'D', False, 'Supprimer des thèmes')
+                    ,('TAXHUB', 'LISTES', 'C', False, 'Creer des listes')
+                    ,('TAXHUB', 'LISTES', 'R', False, 'Voir les listes')
+                    ,('TAXHUB', 'LISTES', 'U', False, 'Modifier les listes')
+                    ,('TAXHUB', 'LISTES', 'D', False, 'Supprimer des listes')
+                    ,('TAXHUB', 'ATTRIBUTS', 'C', False, 'Créer des types d''attributs')
+                    ,('TAXHUB', 'ATTRIBUTS', 'R', False, 'Voir les types d''attributs')
+                    ,('TAXHUB', 'ATTRIBUTS', 'U', False, 'Modfier les types d''attributs')
+                    ,('TAXHUB', 'ATTRIBUTS', 'D', False, 'Supprimer des types d''attributs')
                 ) AS v (module_code, object_code, action_code, scope_filter, label)
             JOIN
                 gn_commons.t_modules m ON m.module_code = v.module_code
@@ -92,7 +92,7 @@ def upgrade():
         ),
         module_url=f"{config['API_ENDPOINT']}/admin/taxons",
     )
-    # rappatriement des permissions de l'application TaxHub
+    # rapatriement des permissions de l'application TaxHub
 
     op.execute(
         """
