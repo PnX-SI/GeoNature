@@ -101,6 +101,7 @@ export function initApp(injector) {
       },
     }),
     LoginModule,
+    HomeDiscussionsComponent,
   ],
   declarations: [
     AppComponent,
@@ -112,9 +113,6 @@ export function initApp(injector) {
     IntroductionComponent,
     NotificationComponent,
     RulesComponent,
-    HomeDiscussionsTableComponent,
-    HomeDiscussionsComponent,
-    HomeDiscussionsToggleComponent,
   ],
   providers: [
     AuthService,

@@ -1,10 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 
 @Component({
+  standalone: true,
   selector: 'pnx-home-discussions-table',
   templateUrl: './home-discussions-table.component.html',
   styleUrls: ['./home-discussions-table.component.scss'],
+  imports: [GN2CommonModule, CommonModule],
 })
 
 export class HomeDiscussionsTableComponent {
