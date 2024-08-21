@@ -89,6 +89,10 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     this.destroy$.unsubscribe();
   }
 
+  get isExistBlockToDisplay(): boolean {
+    return this.config.HOME.DISPLAY_LATEST_DISCUSSIONS; // NOTES [projet ARB]: ajouter les autres config à afficher ici || this.config.HOME.DISPLAY_LATEST_VALIDATIONS ..;
+  }
+
   private computeMapBloc() {
     this.cluserOrSimpleFeatureGroup.addTo(this._mapService.map);
     this._syntheseApi

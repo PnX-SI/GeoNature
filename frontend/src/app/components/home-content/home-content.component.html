@@ -38,7 +38,7 @@
       </div>
     </div>
   </div>
-  <div class="panel panel-container panel-top">
+  <div class="panel panel-container panel-top" *ngIf="isExistBlockToDisplay">
     <mat-tab-group>
       <mat-tab
         *ngIf="config.HOME.DISPLAY_LATEST_DISCUSSIONS"
