@@ -191,67 +191,7 @@ Attention, pgAdmin va tronquer le résultat. Pour obtenir l'ensemble de la requ�
 Voir la requête d'import en synthèse à la fin de cette page.
 
 
-7 - On gère les nouveaux taxons vis à vis la saisie
-```````````````````````````````````````````````````
-
-Gestion des taxons dans ``taxonomie.bib_noms`` et de la liste des taxons saisissables dans Occtax.
-
-Cette étape est optionnelle et va permettre de rajouter les nouveaux taxons intégrés dans la synthèse dans la table des taxons de votre territoire (``taxonomie.bib_noms``) et dans la liste des taxons saisissables dans Occtax (``cor_nom_liste``).
-
-**Création d'une table temporaire**
-
-.. code:: sql
-
-    CREATE TABLE gn_imports.new_noms
-    ( 
-      cd_nom integer NOT NULL, 
-      cd_ref integer NOT NULL, 
-      nom_fr character varying, 
-      array_listes integer[],
-      CONSTRAINT new_noms_pkey PRIMARY KEY (cd_nom)
-    );
-
-**Insertion des nouveaux taxons dans cette table et calcul des listes**
-
-.. code:: sql
-
-    TRUNCATE TABLE gn_imports.new_noms;
-    INSERT INTO gn_imports.new_noms
-    SELECT DISTINCT 
-      i.cd_nom, 
-      t.cd_ref, 
-      split_part(t.nom_vern, ',', 1),
-      array_agg(DISTINCT l.id_liste) AS array_listes
-    FROM gn_imports.testimport i
-    LEFT JOIN taxonomie.taxref t ON t.cd_nom = i.cd_nom
-    LEFT JOIN taxonomie.bib_listes l ON id_liste = 100
-    WHERE i.cd_nom NOT IN (SELECT cd_nom FROM taxonomie.bib_noms)
-    GROUP BY i.cd_nom, t.cd_ref, nom_vern;
-
-**Insertion dans ``bib_noms``**
-
-.. code:: sql
-
-    SELECT setval('taxonomie.bib_noms_id_nom_seq', (SELECT max(id_nom) FROM taxonomie.bib_noms), true);
-    INSERT INTO taxonomie.bib_noms(cd_nom, cd_ref, nom_francais)
-    SELECT cd_nom, cd_ref, nom_fr FROM gn_imports.new_noms;
-
-**Insertion dans ``cor_nom_liste``**
-
-.. code:: sql
-
-    INSERT INTO taxonomie.cor_nom_liste (id_liste, id_nom)
-    SELECT unnest(array_listes) AS id_liste, n.id_nom 
-    FROM gn_imports.new_noms tnn
-    JOIN taxonomie.bib_noms n ON n.cd_nom = tnn.cd_nom;
-
-Si on veut nettoyer et qu'on est sur de ne plus en avoir besoin
-
-.. code:: sql
-
-    DROP TABLE gn_imports.new_noms;
-
-8 - Déplacement de la table importée (facultatif)
+7 - Déplacement de la table importée (facultatif)
 `````````````````````````````````````````````````
 
 On peut si on le souhaite déplacer la table vers une destination d'archivage

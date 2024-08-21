@@ -1705,31 +1705,28 @@ Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs pr
 Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
 Personnaliser la liste des taxons et habitats saisissables dans le module
-`````````````````````````````````````````````````````````````
+`````````````````````````````````````````````````````````````````````````
 
-Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
+Il est possible de limiter la liste des taxons saisissables dans Occtax, en renseignant le paramètre ``id_taxon_list``. Celui-ci n'est pas défini par défaut et c'est donc tout Taxref qui est proposé à la saisie par défaut.
 
-Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
+Une liste restreinte de taxons (8 seulement) est proposée par défaut (``id_taxon_list = 100``). L'administrateur peut changer, compléter ou supprimer cette liste.
 
-Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang ``genre`` :
+Le paramètre ``id_taxon_list = 100`` correspond donc à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax").
 
-Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 100, avec l'ensemble des taxons de ``bib_noms`` :
+Voici un exemple de requête SQL pour remplir la liste 100 avec tous les taxons de flore de Taxref à partir du rang ``genre`` :
 
 .. code-block:: sql
 
-    DELETE FROM taxonomie.cor_nom_liste;
-    DELETE FROM taxonomie.bib_noms;
-
-    INSERT INTO taxonomie.bib_noms(cd_nom,cd_ref,nom_francais)
-    SELECT cd_nom, cd_ref, nom_vern
+    INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
+    WITH tx as (select cd_nom, cd_ref, nom_vern
     FROM taxonomie.taxref
     WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL',
-      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR');
+      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR') )
+      SELECT 100,tr.cd_nom FROM taxonomie.taxref tr
+      join tx on tx.cd_nom = tr.cd_nom
+      where tr.regne = 'Plantae';
 
-    INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
-    SELECT 100,n.id_nom FROM taxonomie.bib_noms n;
-
-Il est également possible d'éditer des listes à partir de l'application TaxHub.
+Il est également possible de gérer les listes de taxons avec le module TaxHub.
 
 Il est de même possible de restreindre la liste d'habitats proposés dans le module :
 
@@ -1741,7 +1738,7 @@ Avec ``ID_LIST_HABITAT`` faisant référence aux listes définies dans ``ref_hab
 
 .. code-block:: sql
 
-        -- Création d'une liste restreinte d'habitats pour OccTax
+        -- Création d'une liste restreinte d'habitats pour Occtax
         -- (typologie EUNIS de niveau 2)
         INSERT INTO ref_habitats.cor_list_habitat clh(
         	cd_hab,
