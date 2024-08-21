@@ -60,7 +60,7 @@ export class HomeDiscussionsTableComponent {
 
   onRowClick(event: any) {
     // TODO: à pointer vers la route /synthese/occurence/:id_synthese/tab_discussion (qui sera fait dans une autre PR)
-    console.log('Clicked row:', event.row);
+    console.log('Clicked row:', event.selected[0].id_synthese);
   }
 
   getColumnsConfig() {
