@@ -16,7 +16,6 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
   @ViewChild('table') table: DatatableComponent;
 
   discussions = [];
-  columns = [];
   currentPage = 1;
   perPage = 2;
   totalPages = 1;
@@ -32,9 +31,8 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.getDiscussions();
-    console.log("INITIAL DISCUSSIONS", this.discussions);
   }
 
   ngOnDestroy() {
@@ -63,9 +61,9 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
 
   setDiscussions(data: any) {
     this.discussions = this.transformDiscussions(data.items);
-    this.columns = this.getColumnsConfig();
-    this.totalRows = data.total || 0;
-    this.totalPages = data.pages || 1;
+    this.totalRows = data.total;
+    this.totalPages = data.pages;
+    console.log('totalPages', this.totalPages);
   }
 
   transformDiscussions(items: any[]): any[] {
@@ -73,15 +71,6 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
       ...item,
       observation: this.formatObservation(item.synthese),
     }));
-  }
-
-  getColumnsConfig() {
-    return [
-      { prop: 'creation_date', name: 'Date commentaire', sortable: true },
-      { prop: 'user.nom_complet', name: 'Auteur', sortable: true },
-      { prop: 'content', name: 'Contenu', sortable: true },
-      { prop: 'observation', name: 'Observation', sortable: false, maxWidth: 500 },
-    ];
   }
 
   formatObservation(synthese: any): string {
@@ -94,24 +83,9 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
     `;
   }
 
-  toggleMyReports() {
+  toggleMyReports(isMyReports: boolean) {
+    this.myReportsOnly = isMyReports;
     this.currentPage = 1;
-    this.getDiscussions();
-  }
-  // TODO: déplacer le méthodes qui sont liées au composant table dans ce dernier et ajouter en input la fonction getDiscussions
-  onRowClick(event: any) {
-    // TODO: à pointer vers la route /synthese/occurence/:id_synthese/tab_discussion
-    console.log('Clicked row:', event.row);
-  }
-
-  handlePageChange(event: any) {
-    this.currentPage = event.page;
-    this.getDiscussions();
-  }
-
-  onColumnSort(event: any) {
-    this.sort = event.sorts[0].dir;
-    this.orderby = event.sorts[0].prop;
     this.getDiscussions();
   }
 
@@ -127,4 +101,23 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
 
     return `${formattedDateMin} - ${formattedDateMax}`;
   }
+
+  // Event handlers for updates from the child component
+  // NOTES: utilisation de service à la place ?
+  onSortChange(newSort: string) {
+    this.sort = newSort;
+    this.getDiscussions(); 
+  }
+
+  onOrderbyChange(newOrderby: string) {
+    this.orderby = newOrderby;
+    this.getDiscussions(); 
+  }
+
+  onCurrentPageChange(newPage: number) {
+    this.currentPage = newPage;
+    this.getDiscussions(); 
+  }
+
+
 }

@@ -20,7 +20,6 @@ import { HomeContentComponent } from './components/home-content/home-content.com
 import { HomeDiscussionsTableComponent } from './components/home-content/home-discussions/home-discussions-table/home-discussions-table.component';
 import { HomeDiscussionsComponent } from './components/home-content/home-discussions/home-discussions.component';
 import { HomeDiscussionsToggleComponent } from './components/home-content/home-discussions/home-discussions-toggle/home-discussions-toggle.component';
-import { GenericTableComponent } from './components/home-content/home-discussions/home-discussions-table/generic-table.component';
 
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -116,7 +115,6 @@ export function initApp(injector) {
     HomeDiscussionsTableComponent,
     HomeDiscussionsComponent,
     HomeDiscussionsToggleComponent,
-    GenericTableComponent,
   ],
   providers: [
     AuthService,

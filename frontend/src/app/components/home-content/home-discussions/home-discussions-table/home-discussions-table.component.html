@@ -1,16 +1,111 @@
-<generic-table
-  #table
-  [rows]="discussions"
-  [columns]="columns"
-  [totalRows]="totalRows"
-  [headerHeight]="50"
-  [footerHeight]="50"
-  [rowHeight]="'auto'"
-  [limit]="perPage"
-  [count]="totalRows"
-  [offset]="currentPage - 1"
-  (onRowSelect)="rowClick.emit($event)"
-  (onColumnSort)="columnSort.emit($event)"
-  (onToggleExpandRow)="handleExpandRow($event)"
->
-</generic-table>
+<ngx-datatable
+#table
+class="material striped margin-top-xs table-size expandable"
+[rows]="discussions"
+[columns]="columns"
+[headerHeight]="headerHeight"
+[footerHeight]="footerHeight"
+[rowHeight]="rowHeight"
+[limit]="perPage"
+[count]="count"
+[offset]="offset"
+[columnMode]="columnMode"
+(select)="onRowClick($event)"
+(sort)="onColumnSort($event)"
+> 
+          <ngx-datatable-row-detail [rowHeight]="150">
+            <ng-template
+              ngx-datatable-row-detail-template
+              let-row="row"
+            >
+              <div class="row-detail">
+                <ng-container *ngIf="row.content">
+                  <div>
+                    <strong>Commentaire :</strong>
+                    {{ row.content }}
+                  </div>
+                </ng-container>
+                <div>
+                  <strong>Date du commentaire :</strong>
+                  {{ row.creation_date | date: 'dd-MM-yyyy' }}
+                </div>
+                <div>
+                  <strong>Utilisateur :</strong>
+                  {{ row.user.nom_complet }}
+                </div>
+              </div>
+            </ng-template>
+          </ngx-datatable-row-detail>
+
+          <ngx-datatable-column
+            [width]="10"
+            [resizeable]="false"
+            [sortable]="false"
+            [draggable]="false"
+            [canAutoResize]="false"
+          >
+            <ng-template
+              ngx-datatable-cell-template
+              let-row="row"
+              let-expanded="expanded"
+            >
+              <a
+                href="javascript:void(0)"
+                matTooltip="Ouvrir/fermer le détail"
+                [class.datatable-icon-right]="!expanded"
+                [class.datatable-icon-down]="expanded"
+                (click)="handleExpandRow(row)"
+              ></a>
+            </ng-template>
+          </ngx-datatable-column>
+          <ng-container *ngFor="let col of columns">
+            <ngx-datatable-column
+              [width]="col.maxWidth || 150"
+              [prop]="col.prop"
+              [name]="col.name"
+              [sortable]="col.sortable !== false"
+              [resizeable]="true"
+              [canAutoResize]="true"
+            >
+              <ng-template
+                ngx-datatable-cell-template
+                let-row="row"
+              >
+                <span [ngSwitch]="col.prop">
+                  <span *ngSwitchCase="'creation_date'">
+                    {{ row[col.prop] | date: 'dd-MM-yyyy' }}
+                  </span>
+                  <span *ngSwitchCase="'user.nom_complet'">
+                    {{ row.user.nom_complet || 'N/A' }}
+                  </span>
+                  <span
+                    *ngSwitchCase="'observation'"
+                    [innerHTML]="row.observation"
+                  ></span>
+                  <span *ngSwitchDefault>{{ row[col.prop] || 'N/A' }}</span>
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+          </ng-container>
+          <ngx-datatable-footer>
+            <ng-template
+              ngx-datatable-footer-template
+              let-rowCount="rowCount"
+              let-pageSize="pageSize"
+              let-curPage="curPage"
+              let-offset="offset"
+            >
+              {{ totalRows }} total
+              <datatable-pager
+                [pagerLeftArrowIcon]="'datatable-icon-left'"
+                [pagerRightArrowIcon]="'datatable-icon-right'"
+                [pagerPreviousIcon]="'datatable-icon-prev'"
+                [pagerNextIcon]="'datatable-icon-skip'"
+                [page]="curPage"
+                [size]="pageSize"
+                [count]="totalRows"
+                (change)="pageChange.emit($event)"
+              ></datatable-pager>
+            </ng-template>
+          </ngx-datatable-footer>
+</ngx-datatable>
