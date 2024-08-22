@@ -1957,7 +1957,7 @@ Les champs additionnels ne sont pas créés comme des colonnes à part entière,
 
 Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
 
-Le backoffice de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
+Le module "Admin" de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
 Un champ additionnel est définit par:
 
 - son nom (nom dans la base de données)
@@ -2005,7 +2005,7 @@ Le champs "Attribut additionnels" permet d'ajouter des éléments de configurati
 TaxHub
 """"""
 
-Backoffice de gestion des taxons (basé sur TaxHub) permettant de faire des liste de taxons ainsi que d'ajouter des attributs etdes médias aux taxons.
+Module de gestion des taxons (basé sur TaxHub) permettant de faire des listes de taxons ainsi que d'ajouter des attributs et des médias aux taxons.
 Voir la documentation de TaxHub : https://taxhub.readthedocs.io/fr/latest/
 
 Module OCCHAB
@@ -2014,9 +2014,9 @@ Module OCCHAB
 Installer le module
 """""""""""""""""""
 
-Le module OCCHAB fait parti du coeur de GeoNature. Son installation est au choix de l'administrateur.
+Le module OCCHAB fait partie du coeur de GeoNature. Son installation est au choix de l'administrateur.
 
-Pour l'installer, lancer les commande suivante:
+Pour l'installer, lancer les commandes suivantes :
 
 .. code-block:: console
 
@@ -2030,8 +2030,8 @@ Base de données
 
 Le module s'appuie sur deux schémas :
 
-- ``ref_habitats`` correspond au référentiel habitat du MNHN,
-- ``pr_occhab`` correspond au schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN.
+- ``ref_habitats`` correspond au référentiel habitat du SINP,
+- ``pr_occhab`` correspond au schéma qui contient les données d'occurrence d'habitat, basé sur standard du SINP.
 
 Configuration
 """""""""""""
@@ -2107,15 +2107,15 @@ Il est aussi possible de passer plusieurs ``type_code`` regroupés dans un même
 
 **2.** Configurer les champs des exports
 
-Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue servant l'export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous.
+Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue SQL servant l'export.
 
 **Export des observations**
 
-Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
+Les exports (CSV, GeoJSON, Geopackage, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
 
 Il est possible de ne pas intégrer certains champs présents dans cette vue d'export. Pour cela modifier le paramètre ``EXPORT_COLUMNS``.
 
-Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
+Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans l'export au format shapefile.
 
 ::
 
@@ -2222,20 +2222,20 @@ Selon les permissions de l'utilisation sur l'action "Export" du module Synthèse
 
 **Export des métadonnées**
 
-En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
+En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la vue ``gn_synthese.v_metadata_for_export``. 
 
-Deux champs sont cependant obligatoire dans la vue :
+Deux champs sont cependant obligatoires dans cette vue :
 
 - ``jdd_id`` (qui correspond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``.
 - ``acteurs``:  Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ACTOR_COL``
 
 **Export des statuts taxonomiques (réglementations)**
 
-Cet export n'est pas basé sur une vue, il n'est donc pas possible de l'adapter.
+Cet export n'est pas basé sur une vue.
 
 **3.** Configurer les seuils du nombre de données pour la recherche et les exports
 
-Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultat affiché sur la carte et le nombre d'observations dans les exports.
+Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultats affichés sur la carte et le nombre d'observations dans les exports.
 
 Ces seuils sont modifiables respectivement par les variables ``NB_MAX_OBS_MAP`` et ``NB_MAX_OBS_EXPORT`` :
 
@@ -2391,22 +2391,25 @@ Liste des propriétés disponibles :
 - tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)
 - tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)
 
-<<<<<<< HEAD
 Validation automatique
 """"""""""""""""""""""
+
 Depuis la version 2.14, il est possible d'activer la validation automatique d'observations.
 
 Activation
 ``````````
-L'activation de la validation automatique s'effectue en ajoutant la ligne suivante dans le fichier de configuration du module de validation ``config/validation_config.toml``:
+
+L'activation de la validation automatique s'effectue en ajoutant la ligne suivante dans le fichier de configuration du module de validation ``config/validation_config.toml`` :
 
 ::
 
     AUTO_VALIDATION_ENABLED = true
 
-Condition de validation automatique
-```````````````````````````````````
-Une observation sera validée automatiquement si elle rencontre les conditions suivantes:
+Conditions de validation automatique
+````````````````````````````````````
+
+Une observation sera validée automatiquement si elle rencontre les conditions suivantes :
+
  * Son statut de validation est ``En attente de validation``
  * Si le score calculé à partir du profil de taxons est de 3. Se référer à la section `Profils de taxons`_ pour plus d'informations.
 
@@ -2417,7 +2420,7 @@ Si ces conditions sont remplies, alors le statut de validation de l'observation 
 Modification de la périodicité de la validation automatique
 ```````````````````````````````````````````````````````````
 
-Le processus de validation automatique est executé à une fréquence définie, par défaut toutes les heures. Si toutefois, vous souhaitez diminuer ou augmenter la durée entre chaque validation automatique, définissez cette dernière dans le fichier de configuration (``config/validation_config.toml``) dans la variable ``AUTO_VALIDATION_CRONTAB``. 
+Le processus de validation automatique est exécuté à une fréquence définie, par défaut toutes les heures. Si toutefois, vous souhaitez diminuer ou augmenter la durée entre chaque validation automatique, définissez cette dernière dans le fichier de configuration (``config/validation_config.toml``) dans la variable ``AUTO_VALIDATION_CRONTAB``. 
 
 ::
   
@@ -2429,25 +2432,24 @@ Ce paramètre est composé de cinq valeurs, chacune séparée par un espace: min
 
 Modification de la fonction de validation automatique
 `````````````````````````````````````````````````````
-Dans GeoNature, la validation automatique est effectuée par une fonction en ``PL/pgSQL`` déclarée dans le schéma ``gn_profiles``. Si toutefois, le fonctionnement de celle-ci ne correspond à vos besoins, indiquer le nom de la nouvelle fonction dans la variable ``AUTO_VALIDATION_SQL_FUNCTION``. Attention, cette fonction doit aussi être stockée dans le schema ``gn_profiles``. Pour vous aidez, n'hésitez pas à regarder la définition de la fonction par défaut nommée ``fct_auto_validation``.
-=======
 
+Dans GeoNature, la validation automatique est effectuée par une fonction en ``PL/pgSQL`` déclarée dans le schéma ``gn_profiles``. Si toutefois, le fonctionnement de celle-ci ne correspond pas à vos besoins, indiquez le nom de la nouvelle fonction dans la variable ``AUTO_VALIDATION_SQL_FUNCTION``. Attention, cette fonction doit aussi être stockée dans le schema ``gn_profiles``. Pour vous aider, n'hésitez pas à regarder la définition de la fonction par défaut nommée ``fct_auto_validation``.
 
 Module TaxHub
 -------------
 
-Depuis la version 2.14 de GeoNature, TaxHub est integré comme un module de GeoNature. Il est disponible depuis le backoffice de GeoNature.
+Depuis la version 2.14 de GeoNature, TaxHub est integré comme un module de GeoNature. Il est disponible depuis le module "Admin" de GeoNature.
 
-L'emplacement de stockage des médias est contrôlé par le paramètre `MEDIA_FOLDER`. Les médias de TaxHub seront à l'emplacement `<MEDIA_FOLDER>/taxhub`. Par défaut tous les médias de GeoNature sont stocké dans le répertoire de GeoNature : `<GEONATURE_DIR>/backend/media`. Via ce paramètre, il est possible de mettre un chemin absolu pour stocker les médias n'importe ou sur votre serveur.
+L'emplacement de stockage des médias est contrôlé par le paramètre `MEDIA_FOLDER`. Les médias de TaxHub seront à l'emplacement `<MEDIA_FOLDER>/taxhub`. Par défaut tous les médias de GeoNature sont stockés dans le répertoire de GeoNature : `<GEONATURE_DIR>/backend/media`. Via ce paramètre, il est possible de mettre un chemin absolu pour stocker les médias n'importe où ailleurs sur votre serveur.
 
 Gestion des permissions
 ```````````````````````
 
-La gestion des permissions du module TaxHub est entierement gérée par le module de gestion de permission de GeoNature. Dans le cas d'une installation standalone de TaxHub, se réferer à la documentation de TaxHub pour la gestion des permissions.
+La gestion des permissions du module TaxHub est entierement gérée par le module de gestion de permissions de GeoNature. Dans le cas d'une installation standalone de TaxHub, se réferer à la documentation de TaxHub pour la gestion des permissions.
 
-Les permissions du module TaxHub peuvent être reglé aux trois niveaux (objets) suivants : 
-- TAXON : permet voir et modifier des taxons (ajout de médias, d'attributs et association de taxon à des listes)
-- THEME : permet de voir / modifier / supprimer des thêmes. Les thêmes sont des groupes d'attributs
-- LISTE : permet de voir / modifier / supprimer des listes de taxons
-- ATTRIBUT : permet de voir / modifier / supprimer des attributs de taxons
->>>>>>> 9a28b7442 (doc on taxhub)
+Les permissions du module TaxHub peuvent être reglées aux trois niveaux (objets) suivants :
+
+- TAXONS : permet voir et modifier des taxons (ajout de médias, d'attributs et association de taxons à des listes)
+- THEMES : permet de voir / créer / modifier / supprimer des thèmes. Les thèmes sont des groupes d'attributs
+- LISTES : permet de voir / créer / modifier / supprimer des listes de taxons
+- ATTRIBUTS : permet de voir / créer / modifier / supprimer des attributs de taxons
