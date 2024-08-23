@@ -556,7 +556,7 @@ Les paramètres généraux dans la table ``gn_profiles.t_parameters`` :
 
 Les deux premiers paramètres permettent de filtrer les données dans la vue ``gn_profiles.v_synthese_for_profiles``. Cette vue comporte les données de la synthèse qui répondent aux paramètres et qui alimenteront les profils de taxons. Les clauses WHERE de cette vue peuvent être adaptées pour filtrer les données sur davantage de critères et répondre aux besoins plus spécifiques, mais sa structure doit rester inchangée.
 
-Les paramètres définis par taxon le sont dans la table ``gn_profiles.cor_taxons_profiles_parameters`` :
+Les paramètres définis par taxon le sont dans la table ``gn_profiles.cor_taxons_parameters`` :
 
 Les profils peuvent être calculés avec des règles différentes en fonction des taxons. Ceux-ci sont définis au niveau du cd_nom, à n'importe quel rang (espèce, famille, règne etc). Ils seront appliqués de manière récursive à tous les taxons situés "sous" le cd_ref paramétré.
 
@@ -564,7 +564,7 @@ Dans le cas où un taxon hérite de plusieurs règles (une définie pour son ord
 
 Par exemple, s'il existe des paramètres pour le phylum "Animalia" (cd_nom 183716) et d'autres pour le renard (cd_nom 60585), les paramètres du renard seront appliqués en priorité pour cette espèce, mais les paramètres Animalia s'appliqueront à tous les autres animaux.
 
-Les règles appliquables à chaque taxon sont récupérées par la fonction ``gn_profiles.get_profiles_parameters(cdnom)``.
+Les règles appliquables à chaque taxon sont récupérées par la fonction ``gn_profiles.get_parameters(cdnom)``.
 
 Pour chaque cd_nom, il est ainsi possible de définir les paramètres suivants :
 
