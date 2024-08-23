@@ -222,7 +222,7 @@ def get_observation_score():
             if type(data["life_stages"]) is not list:
                 raise BadRequest("life_stages must be a list")
             for life_stage in data["life_stages"]:
-                life_stage_value = DB.get(TNomenclatures, life_stage)
+                life_stage_value = DB.get_or_404(TNomenclatures, life_stage)
                 q = q_pheno.where(VmCorTaxonPhenology.id_nomenclature_life_stage == life_stage)
                 r_life_stage = DB.session.execute(q).all()
                 if len(r_life_stage) == 0:
