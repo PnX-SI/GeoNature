@@ -1,5 +1,6 @@
 import datetime
 import json
+from typing import Union
 
 from flask import current_app
 from lxml import etree as ET
@@ -59,6 +60,13 @@ def parse_actors_xml(actors):
             )
 
     return actor_list
+
+
+# TODO: IMPORTANT - filter the list of acquisition frameworks with `ID_INSTANCE_FILTER` as made for the list of datasets
+
+# TODO: make functions for AF and DS homogeneous: refactorize
+#   - Have functions `parse_acquisition_frameworks_xml`, and `parse_datasets_xml`, OR `parse_acquisition_framework`, and `parse_dataset`
+#   - Eventually split into distinct functions the XML parsing and the mapping of fields
 
 
 def parse_acquisition_framwork_xml(xml):
@@ -130,10 +138,33 @@ def parse_jdd_xml(xml):
 
     root = ET.fromstring(xml, parser=_xml_parser)
     jdd_list = []
+
+    def format_acquisition_framework_id_from_xml(provided_af_uuid) -> Union[str, None]:
+        """
+        Format the acquisition framework UUID provided for the dataset
+            i.e. the value for the tag `<jdd:identifiantCadre>` in the XML file
+
+        Args:
+            provided_af_uuid (str): The acquisition framework UUID
+        Returns:
+            Union[str, None]: The formatted acquisition framework UUID, or None if none was provided
+        """
+        if not provided_af_uuid:
+            return None
+
+        if provided_af_uuid.startswith("http://oafs.fr/meta/ca/"):
+            return provided_af_uuid.split("/")[-1]
+
+        return provided_af_uuid
+
     for jdd in root.findall(".//" + namespace + "JeuDeDonnees"):
         # We extract all the required informations from the different tags of the XML file
         jdd_uuid = get_tag_content(jdd, "identifiantJdd")
-        ca_uuid = get_tag_content(jdd, "identifiantCadre")
+        # TODO: handle case where value for the tag `<jdd:identifiantCadre>` in the XML file is not of the form `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+        #   Solutions - if in the form `http://oafs.fr/meta/ca/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (has some entries for INPN MTD PREPROD and instance 'Nationale') :
+        #       - (retained) Format by keeping only the `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` part
+        #       - Add a check further in the MTD sync to process only if ca_uuid is in the right format
+        ca_uuid = format_acquisition_framework_id_from_xml(get_tag_content(jdd, "identifiantCadre"))
         dataset_name = get_tag_content(jdd, "libelle")
         dataset_shortname = get_tag_content(jdd, "libelleCourt", default_value="")
         dataset_desc = get_tag_content(jdd, "description", default_value="")
