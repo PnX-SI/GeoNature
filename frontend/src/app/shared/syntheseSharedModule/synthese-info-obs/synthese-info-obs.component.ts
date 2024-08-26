@@ -10,6 +10,7 @@ import { finalize } from 'rxjs/operators';
 import { isEmpty, find } from 'lodash';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -23,6 +24,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() mailCustomSubject: string;
   @Input() mailCustomBody: string;
   @Input() useFrom: 'synthese' | 'validation';
+  @Input() selectedTab: string;
   public selectedObs: any;
   public validationHistory: Array<any> = [];
   public selectedObsTaxonDetail: any;
@@ -57,6 +59,27 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     '6': '#FFFFFF',
   };
   public comment: string;
+  tabs = [
+    { label: "Détail de l'occurrence", path: 'details' },
+    { label: 'Métadonnées', path: 'metadata' },
+    { label: 'Taxonomie', path: 'taxonomy' },
+    { label: 'Médias', path: 'media' },
+    { label: 'Zonage', path: 'zonage' },
+    { label: 'Validation', path: 'validation' },
+    { label: 'Discussion', path: 'discussion' },
+  ];
+  filteredTabs = [];
+  selectedIndex: number = 0;
+  defaultTab = 'details';
+  tabConditions = {
+    details: () => true,
+    metadata: () => true,
+    taxonomy: () => true,
+    media: () => !!this.selectedObs?.medias?.length,
+    zonage: () => true,
+    validation: () => true,
+    discussion: () => false,
+  };
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
@@ -66,7 +89,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _mapService: MapService,
     private _clipboard: Clipboard,
     private _moduleService: ModuleService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _router: Router,
+    private _route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -80,6 +105,13 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     });
   }
 
+  filterTabs() {
+    this.filteredTabs = this.tabs.filter((tab) => {
+      const condition = this.tabConditions[tab.path];
+      return condition ? condition() : false;
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.idSynthese && changes.idSynthese.currentValue) {
       this.loadAllInfo(changes.idSynthese.currentValue);
@@ -87,12 +119,21 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   }
 
   // HACK to display a second map on validation tab
-  setValidationTab() {
+  setValidationTab(event) {
     this.showValidation = true;
     if (this._mapService.map) {
       setTimeout(() => {
         this._mapService.map.invalidateSize();
       }, 100);
+    }
+    const tabIndex = event.index;
+    const tabPath = this.filteredTabs[tabIndex]?.path;
+    if (tabPath) {
+      // On met à jour la route pour refléter l'onglet sélectionné (sans recharger tout le composant)
+      this._router.navigate([this.useFrom, 'occurrence', this.idSynthese, tabPath], {
+        relativeTo: this._route,
+        replaceUrl: true,
+      });
     }
   }
 
@@ -169,6 +210,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             this.profile = profile;
           });
         });
+
+        this.filterTabs();
+        this.selectedTab = this.selectedTab ? this.selectedTab : this.defaultTab;
+        this.selectTab(this.selectedTab);
       });
 
     this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe((dataChecks) => {
@@ -355,5 +400,26 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       `${this.config.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`
     );
     this._commonService.translateToaster('info', 'Synthese.copy');
+  }
+
+  selectTab(tabPath: string) {
+    // On trouve l'onglet correspondant au label
+    const tab = this.filteredTabs.find((t) => t.path === tabPath);
+
+    if (tab) {
+      // On trouve l'index de l'onglet dans le tableau
+      const tabIndex = this.filteredTabs.indexOf(tab);
+
+      // On change change l'onglet sélectionné si le tabGroup est défini
+      if (tabIndex !== -1 && this.tabGroup) {
+        this.selectedIndex = tabIndex;
+      }
+
+      // On Navigue vers l'URL correspondante sans recharger le composant
+      this._router.navigate([this.useFrom, 'occurrence', this.idSynthese, tab.path], {
+        relativeTo: this._route,
+        replaceUrl: true,
+      });
+    }
   }
 }

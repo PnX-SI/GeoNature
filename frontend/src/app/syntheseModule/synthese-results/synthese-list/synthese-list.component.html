@@ -37,7 +37,7 @@
     >
       <button
         class="btn btn-outline-shadow btn-no-padding btn-ghost"
-        (click)="openInfoModal(row)"
+        [routerLink]="['occurrence', row['id_synthese'], 'details']"
       >
         <i
           #iElement

@@ -24,6 +24,7 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormArray, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -53,7 +54,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _router: Router
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
   }
@@ -151,6 +153,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     link.remove();
   }
 
+  // TODO: cette method peut être supprimé car redondante avec celle appelée dans syntheseComponent  https://github.com/PnX-SI/GeoNature/blob/a6a9c05acfa8a0a2f7aecbb70e6deacdb250b2c4/frontend/src/app/syntheseModule/synthese.component.ts#L222
+  //  car le composant est monté via la route /occurence/:id_synthese/:tab
   openInfoModal(row) {
     row.id_synthese = row.id_synthese;
     const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {

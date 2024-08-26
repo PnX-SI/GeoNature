@@ -18,7 +18,15 @@ import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.compone
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
 const routes: Routes = [
   { path: '', component: SyntheseComponent },
-  { path: 'occurrence/:id_synthese', component: SyntheseComponent, pathMatch: 'full' },
+  {
+    path: 'occurrence/:id_synthese/:tab',
+    component: SyntheseComponent,
+  },
+  {
+    path: 'occurrence/:id_synthese',
+    redirectTo: 'occurrence/:id_synthese/details',
+    pathMatch: 'full',
+  },
   { path: 'taxon/:cd_nom', component: TaxonSheetComponent },
 ];
 
