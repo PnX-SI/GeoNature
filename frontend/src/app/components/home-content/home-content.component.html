@@ -38,13 +38,16 @@
       </div>
     </div>
   </div>
-  <div class="panel panel-container panel-top" *ngIf="isExistBlockToDisplay">
+  <div
+    class="panel panel-container panel-top"
+    *ngIf="isExistBlockToDisplay"
+  >
     <mat-tab-group>
       <mat-tab
         *ngIf="config.HOME.DISPLAY_LATEST_DISCUSSIONS"
         label="Dernières Discussions"
       >
-      <pnx-home-discussions></pnx-home-discussions>
+        <pnx-home-discussions></pnx-home-discussions>
       </mat-tab>
       <!-- TODO: Autres onglets à ajouter (Dernière validations etc) -->
     </mat-tab-group>

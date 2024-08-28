@@ -14,7 +14,7 @@ import { HomeDiscussionsToggleComponent } from './home-discussions-toggle/home-d
   templateUrl: './home-discussions.component.html',
   styleUrls: ['./home-discussions.component.scss'],
   providers: [DatePipe],
-  imports: [HomeDiscussionsTableComponent,HomeDiscussionsToggleComponent],
+  imports: [HomeDiscussionsTableComponent, HomeDiscussionsToggleComponent],
 })
 export class HomeDiscussionsComponent implements OnInit, OnDestroy {
   @ViewChild('table') table: DatatableComponent;
@@ -46,9 +46,10 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
 
   getDiscussions() {
     const params = this.buildQueryParams();
-    this.syntheseApi.getReports(params.toString())
+    this.syntheseApi
+      .getReports(params.toString())
       .pipe(takeUntil(this.destroy$))
-      .subscribe(response => {
+      .subscribe((response) => {
         this.setDiscussions(response);
       });
   }
@@ -70,7 +71,7 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
   }
 
   transformDiscussions(items: any[]): any[] {
-    return items.map(item => ({
+    return items.map((item) => ({
       ...item,
       observation: this.formatObservation(item.synthese),
     }));
@@ -109,18 +110,16 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
   // NOTES: utilisation de service à la place ?
   onSortChange(newSort: string) {
     this.sort = newSort;
-    this.getDiscussions(); 
+    this.getDiscussions();
   }
 
   onOrderbyChange(newOrderby: string) {
     this.orderby = newOrderby;
-    this.getDiscussions(); 
+    this.getDiscussions();
   }
 
   onCurrentPageChange(newPage: number) {
     this.currentPage = newPage;
-    this.getDiscussions(); 
+    this.getDiscussions();
   }
-
-
 }

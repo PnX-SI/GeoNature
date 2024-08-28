@@ -11,7 +11,6 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
   styleUrls: ['./home-discussions-table.component.scss'],
   imports: [GN2CommonModule, CommonModule],
 })
-
 export class HomeDiscussionsTableComponent {
   @Input() discussions = [];
   @Input() currentPage = 1;
@@ -71,5 +70,4 @@ export class HomeDiscussionsTableComponent {
       { prop: 'observation', name: 'Observation', sortable: false, maxWidth: 500 },
     ];
   }
-
 }
