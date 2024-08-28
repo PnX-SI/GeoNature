@@ -105,7 +105,7 @@ class="material striped margin-top-xs table-size expandable"
                 [page]="curPage"
                 [size]="pageSize"
                 [count]="totalRows"
-                (change)="pageChange.emit($event)"
+                (change)="handlePageChange($event)"
               ></datatable-pager>
             </ng-template>
           </ngx-datatable-footer>
