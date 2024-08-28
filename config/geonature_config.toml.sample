@@ -23,7 +23,6 @@ DEFAULT_LANGUAGE='fr'
 TITLE = "Bienvenue dans GeoNature"
 INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
 FOOTER = ""
-DISPLAY_LATEST_DISCUSSIONS = true
 
 # Configuration liée aux ID de BDD
 [BDD]
