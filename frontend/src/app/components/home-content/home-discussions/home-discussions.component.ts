@@ -67,7 +67,6 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
     this.discussions = this.transformDiscussions(data.items);
     this.totalRows = data.total;
     this.totalPages = data.pages;
-    console.log('totalPages', this.totalPages);
   }
 
   transformDiscussions(items: any[]): any[] {

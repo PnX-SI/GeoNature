@@ -39,7 +39,6 @@ export class HomeDiscussionsTableComponent {
   constructor(private _router: Router) {}
 
   ngOnInit() {
-    console.log("totalRows", this.totalRows);
     this.columns = this.getColumnsConfig();
   }
 
