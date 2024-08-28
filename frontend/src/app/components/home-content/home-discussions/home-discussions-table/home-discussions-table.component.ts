@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 
@@ -35,7 +36,7 @@ export class HomeDiscussionsTableComponent {
 
   @ViewChild('table', { static: false }) table: DatatableComponent | undefined;
 
-  constructor() {}
+  constructor(private _router: Router) {}
 
   ngOnInit() {
     console.log("totalRows", this.totalRows);
@@ -58,9 +59,9 @@ export class HomeDiscussionsTableComponent {
     this.orderbyChange.emit(this.orderby);
   }
 
-  onRowClick(event: any) {
-    // TODO: à pointer vers la route /synthese/occurence/:id_synthese/tab_discussion (qui sera fait dans une autre PR)
-    console.log('Clicked row:', event.selected[0].id_synthese);
+  onRowClick(row: any) {
+    // TODO: ajouter au chemin 'discussions' une fois que la PR https://github.com/PnX-SI/GeoNature/pull/3169 a été reviewed et mergé
+    this._router.navigate(['/synthese', 'occurrence', row.id_synthese]);
   }
 
   getColumnsConfig() {

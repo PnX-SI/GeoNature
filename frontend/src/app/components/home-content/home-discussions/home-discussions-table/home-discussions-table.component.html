@@ -11,7 +11,6 @@ class="material striped margin-top-xs table-size expandable"
 [offset]="offset"
 [columnMode]="columnMode"
 [selectionType]="'single'"
-(select)="onRowClick($event)"
 (sort)="onColumnSort($event)"
 > 
           <ngx-datatable-row-detail [rowHeight]="150">
@@ -37,7 +36,30 @@ class="material striped margin-top-xs table-size expandable"
               </div>
             </ng-template>
           </ngx-datatable-row-detail>
-
+          <ngx-datatable-column
+           [maxWidth]="5"
+           [resizeable]="false"
+           [sortable]="false"
+           [draggable]="false"
+           [canAutoResize]="false"
+           >
+            <ng-template
+              let-row="row"
+              ngx-datatable-cell-template
+            >
+              <button
+                class="btn btn-outline-shadow btn-no-padding btn-ghost"
+                (click)="onRowClick(row)"
+              >
+                <i
+                  #iElement
+                  [matTooltip]="'Voir le fil de discussion lié à la synthese id : ' + row.id_synthese"
+                  class="fa fa-info-circle"
+                  aria-hidden="true "
+                ></i>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
           <ngx-datatable-column
             [width]="10"
             [resizeable]="false"
