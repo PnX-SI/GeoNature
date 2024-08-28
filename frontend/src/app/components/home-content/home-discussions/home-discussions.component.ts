@@ -24,6 +24,7 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
   perPage = 2;
   totalPages = 1;
   totalRows = 0;
+  totalFilteredRows = 0;
   myReportsOnly = false;
   sort = 'desc';
   orderby = 'date';
@@ -68,6 +69,7 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
     this.discussions = this.transformDiscussions(data.items);
     this.totalRows = data.total;
     this.totalPages = data.pages;
+    this.totalFilteredRows = data.total_filtered;
   }
 
   transformDiscussions(items: any[]): any[] {

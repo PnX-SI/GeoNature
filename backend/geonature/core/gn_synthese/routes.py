@@ -1538,6 +1538,7 @@ def list_reports(permissions, id_synthese):
         raise BadRequest("Bad orderby")
 
     if not id_synthese:
+        total = TReport.query.count()
         paginated_results = req.paginate(page=page, per_page=per_page, error_out=False)
         result = []
 
@@ -1563,7 +1564,8 @@ def list_reports(permissions, id_synthese):
             result.append(report_dict)
 
         response = {
-            "total": paginated_results.total,
+            "total_filtered": paginated_results.total,
+            "total": total,
             "pages": paginated_results.pages,
             "current_page": paginated_results.page,
             "per_page": paginated_results.per_page,

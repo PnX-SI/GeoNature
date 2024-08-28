@@ -17,6 +17,7 @@ export class HomeDiscussionsTableComponent {
   @Input() perPage = 2;
   @Input() totalPages = 1;
   @Input() totalRows = 0;
+  @Input() totalFilteredRows = 0;
   headerHeight: number = 50;
   footerHeight: number = 50;
   rowHeight: string | number = 'auto';
