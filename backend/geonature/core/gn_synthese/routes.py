@@ -21,7 +21,7 @@ from pypnusershub.db.models import User
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
-from sqlalchemy import distinct, func, desc, asc, select, case
+from sqlalchemy import distinct, func, desc, asc, select, case, or_
 from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
@@ -987,6 +987,9 @@ def get_autocomplete_taxons_synthese():
     :query str group2_inpn : filter with INPN group 2
     """
     search_name = request.args.get("search_name", "")
+
+    TaxrefSearchResult = aliased(Taxref)
+    TaxrefSynthese = aliased(Taxref)
     query = (
         select(
             VMTaxrefListForautocomplete,
@@ -995,7 +998,9 @@ def get_autocomplete_taxons_synthese():
             ),
         )
         .distinct()
-        .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
+        .join(TaxrefSearchResult, TaxrefSearchResult.cd_nom == VMTaxrefListForautocomplete.cd_nom)
+        .join(TaxrefSynthese, or_(TaxrefSearchResult.cd_nom == TaxrefSynthese.cd_nom, TaxrefSearchResult.cd_nom == TaxrefSynthese.cd_ref))
+        .join(Synthese, Synthese.cd_nom == TaxrefSynthese.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
     query = query.where(
