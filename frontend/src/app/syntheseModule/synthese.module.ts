@@ -16,10 +16,33 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 import { DiscussionCardComponent } from '@geonature/shared/discussionCardModule/discussion-card.component';
 import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
+import {
+  RouteService,
+  ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES,
+  ROUTE_MANDATORY,
+} from './taxon-sheet/taxon-sheet.route.service';
+
 const routes: Routes = [
   { path: '', component: SyntheseComponent },
   { path: 'occurrence/:id_synthese', component: SyntheseComponent, pathMatch: 'full' },
-  { path: 'taxon/:cd_nom', component: TaxonSheetComponent },
+  {
+    path: 'taxon/:cd_ref',
+    component: TaxonSheetComponent,
+    canActivateChild: [RouteService],
+    children: [
+      {
+        path: '',
+        redirectTo: ROUTE_MANDATORY.path,
+        pathMatch: 'prefix',
+      },
+      ...ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.map((tab) => {
+        return {
+          path: tab.path,
+          component: tab.component,
+        };
+      }),
+    ],
+  },
 ];
 
 @NgModule({
@@ -29,13 +52,13 @@ const routes: Routes = [
     SharedSyntheseModule,
     CommonModule,
     TreeModule,
+    TaxonSheetComponent,
   ],
   declarations: [
     SyntheseComponent,
     SyntheseListComponent,
     SyntheseCarteComponent,
     SyntheseModalDownloadComponent,
-    TaxonSheetComponent,
   ],
   entryComponents: [
     SyntheseInfoObsComponent,
@@ -43,6 +66,12 @@ const routes: Routes = [
     DiscussionCardComponent,
     AlertInfoComponent,
   ],
-  providers: [MapService, DynamicFormService, TaxonAdvancedStoreService, SyntheseFormService],
+  providers: [
+    MapService,
+    DynamicFormService,
+    TaxonAdvancedStoreService,
+    SyntheseFormService,
+    RouteService,
+  ],
 })
 export class SyntheseModule {}

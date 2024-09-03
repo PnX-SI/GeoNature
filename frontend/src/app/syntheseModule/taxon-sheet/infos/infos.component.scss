@@ -1,0 +1,19 @@
+.Infos {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  column-gap: 1rem;
+
+  &__infos {
+    display: flex;
+    flex-flow: column;
+    &CompleteName {
+      font-weight: lighter;
+      font-style: italic;
+    }
+    &VernacularName {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+  }
+}

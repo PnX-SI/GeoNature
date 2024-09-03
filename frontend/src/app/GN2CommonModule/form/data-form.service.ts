@@ -17,6 +17,8 @@ export interface ParamsDict {
   [key: string]: any;
 }
 
+export type Profile = GeoJSON.Feature;
+
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
   ['json', 'application/json'],
@@ -642,8 +644,10 @@ export class DataFormService {
     return this._http.get<any>(`${this.config.API_TAXHUB}/bdc_statuts/status_values/${statusType}`);
   }
 
-  getProfile(cdRef) {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`);
+  getProfile(cdRef): Observable<Profile> {
+    return this._http.get<Profile>(
+      `${this.config.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`
+    );
   }
 
   getPhenology(cdRef, idNomenclatureLifeStage?) {
