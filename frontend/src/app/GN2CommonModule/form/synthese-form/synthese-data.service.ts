@@ -55,6 +55,12 @@ export class SyntheseDataService {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/general_stats`);
   }
 
+  getSyntheseSpeciesSheetStat(cd_ref: number, areaType: string = 'COM') {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/species_stats/${cd_ref}`, {
+      params: new HttpParams().append('area_type', areaType),
+    });
+  }
+
   getTaxaCount(params = {}) {
     let queryString = new HttpParams();
     for (let key in params) {
