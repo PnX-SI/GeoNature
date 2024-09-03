@@ -1493,7 +1493,6 @@ def update_content_report(id_report):
 @permissions_required("R", module_code="SYNTHESE")
 def list_reports(permissions, id_synthese):
     type_name = request.args.get("type")
-    # id_synthese = request.args.get("idSynthese")
     orderby = request.args.get("orderby", "creation_date")
     sort = request.args.get("sort")
     page = int(request.args.get("page", 1))

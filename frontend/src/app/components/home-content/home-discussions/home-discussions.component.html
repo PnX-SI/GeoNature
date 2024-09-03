@@ -1,8 +1,9 @@
-<pnx-home-discussions-toggle
-  [isChecked]="myReportsOnly"
-  (toggle)="toggleMyReports($event)"
-></pnx-home-discussions-toggle>
-
+<div class="p-3">
+  <pnx-home-discussions-toggle
+    [isChecked]="myReportsOnly"
+    (toggle)="toggleMyReports($event)"
+  ></pnx-home-discussions-toggle>
+</div>
 <pnx-home-discussions-table
   [discussions]="discussions"
   [currentPage]="currentPage"
