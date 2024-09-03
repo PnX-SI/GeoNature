@@ -27,7 +27,7 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
   totalFilteredRows = 0;
   myReportsOnly = false;
   sort = 'desc';
-  orderby = 'date';
+  orderby = 'creation_date';
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -59,6 +59,7 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
     const params = new URLSearchParams();
     params.set('type', 'discussion');
     params.set('sort', this.sort);
+    params.set('orderby', this.orderby);
     params.set('page', this.currentPage.toString());
     params.set('per_page', this.perPage.toString());
     params.set('my_reports', this.myReportsOnly.toString());
@@ -110,13 +111,9 @@ export class HomeDiscussionsComponent implements OnInit, OnDestroy {
 
   // Event handlers for updates from the child component
   // NOTES: utilisation de service à la place ?
-  onSortChange(newSort: string) {
-    this.sort = newSort;
-    this.getDiscussions();
-  }
-
-  onOrderbyChange(newOrderby: string) {
-    this.orderby = newOrderby;
+  onSortChange(sortAndOrberby: { sort: string; orderby: string }) {
+    this.sort = sortAndOrberby.sort;
+    this.orderby = sortAndOrberby.orderby;
     this.getDiscussions();
   }
 

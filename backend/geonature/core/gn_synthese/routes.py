@@ -1488,10 +1488,9 @@ def update_content_report(id_report):
     session.commit()
 
 
-@routes.route("/reports", defaults={"id_synthese": None}, methods=["GET"])
-@routes.route("/reports/<int:id_synthese>", methods=["GET"])
-@permissions_required("R", module_code="SYNTHESE")
-def list_reports(permissions, id_synthese):
+@routes.route("/reports", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+def list_all_reports(scope):
     type_name = request.args.get("type")
     orderby = request.args.get("orderby", "creation_date")
     sort = request.args.get("sort")
@@ -1500,14 +1499,23 @@ def list_reports(permissions, id_synthese):
     my_reports = request.args.get("my_reports", "false").lower() == "true"
 
     # Start query
-    req = TReport.query
-
-    # Verify and filter by id_synthese if provided
-    if id_synthese:
-        synthese = db.get_or_404(Synthese, id_synthese)
-        if not synthese.has_instance_permission(permissions):
-            raise Forbidden
-        req = req.where(TReport.id_synthese == id_synthese)
+    req = (
+        db.session.query(TReport, User.nom_complet)
+        .select_from(TReport)
+        .join(User, TReport.id_role == User.id_role)
+        .options(
+            joinedload(TReport.report_type).load_only(
+                BibReportsTypes.type, BibReportsTypes.id_type
+            ),
+            joinedload(TReport.synthese).load_only(
+                Synthese.cd_nom,
+                Synthese.nom_cite,
+                Synthese.observers,
+                Synthese.date_min,
+                Synthese.date_max,
+            ),
+        )
+    )
 
     # Verify and filter by type
     if type_name:
@@ -1520,10 +1528,102 @@ def list_reports(permissions, id_synthese):
     if type_name == "pin" or my_reports:
         req = req.where(TReport.id_role == g.current_user.id_role)
 
-    # Join the User table
-    req = req.join(User, User.id_role == TReport.id_role)
-    SORT_COLUMNS = ["user.nom_complet", "content", "creation_date"]
+    # On vérifie les permissions en lecture sur la synthese
+    query = select(Synthese.id_synthese).select_from(Synthese)
+    query = Synthese.filter_by_scope(scope=scope, user=g.current_user, query=query)
+
+    res_ids_synthese = db.session.execute(query)
+    ids_synthese = [row[0] for row in res_ids_synthese]
+    req = req.filter(TReport.id_synthese.in_(ids_synthese))
+
+    SORT_COLUMNS = {
+        "user.nom_complet": User.nom_complet,
+        "content": TReport.content,
+        "creation_date": TReport.creation_date,
+    }
+
     # Determine the sorting
+    if orderby in SORT_COLUMNS:
+        sort_column = SORT_COLUMNS[orderby]
+        if sort == "desc":
+            req = req.order_by(desc(sort_column))
+        else:
+            req = req.order_by(asc(sort_column))
+    else:
+        raise BadRequest("Bad orderby")
+
+    total = TReport.query.count()
+    paginated_results = req.paginate(page=page, per_page=per_page, error_out=False)
+
+    result = []
+
+    for report, nom_complet in paginated_results.items:
+        report_dict = {
+            "id_report": report.id_report,
+            "id_synthese": report.id_synthese,
+            "id_role": report.id_role,
+            "report_type": {
+                "type": report.report_type.type,
+                "id_type": report.report_type.id_type,
+            },
+            "content": report.content,
+            "deleted": report.deleted,
+            "creation_date": report.creation_date,
+            "user": {"nom_complet": nom_complet},
+            "synthese": {
+                "cd_nom": report.synthese.cd_nom,
+                "nom_cite": report.synthese.nom_cite,
+                "observers": report.synthese.observers,
+                "date_min": report.synthese.date_min,
+                "date_max": report.synthese.date_max,
+            },
+        }
+        result.append(report_dict)
+
+    response = {
+        "total_filtered": paginated_results.total,
+        "total": total,
+        "pages": paginated_results.pages,
+        "current_page": paginated_results.page,
+        "per_page": paginated_results.per_page,
+        "items": result,
+    }
+    return jsonify(response)
+
+
+@routes.route("/reports/<int:id_synthese>", methods=["GET"])
+@permissions_required("R", module_code="SYNTHESE")
+def list_reports(permissions, id_synthese):
+    type_name = request.args.get("type")
+    orderby = request.args.get("orderby", "creation_date")
+    sort = request.args.get("sort")
+
+    # Start query
+    req = TReport.query
+
+    synthese = db.get_or_404(Synthese, id_synthese)
+    if not synthese.has_instance_permission(permissions):
+        raise Forbidden
+    req = req.where(TReport.id_synthese == id_synthese)
+
+    # Verify and filter by type
+    if type_name:
+        type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
+        if not type_exists:
+            raise BadRequest("This report type does not exist")
+        req = req.where(TReport.report_type.has(BibReportsTypes.type == type_name))
+
+    # Filter by id_role for 'pin' type only
+    if type_name == "pin":
+        req = req.where(TReport.id_role == g.current_user.id_role)
+
+    # Join the User table
+    req = req.options(
+        joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
+        joinedload(TReport.report_type),
+    )
+    # Determine the sorting
+    SORT_COLUMNS = ["user.nom_complet", "content", "creation_date"]
     if orderby in SORT_COLUMNS:
         if orderby == "user.nom_complet":
             req = req.order_by(desc(User.nom_complet) if sort == "desc" else asc(User.nom_complet))
@@ -1536,58 +1636,23 @@ def list_reports(permissions, id_synthese):
     else:
         raise BadRequest("Bad orderby")
 
-    if not id_synthese:
-        total = TReport.query.count()
-        paginated_results = req.paginate(page=page, per_page=per_page, error_out=False)
-        result = []
-
-        for report in paginated_results.items:
-            report_dict = report.as_dict(
-                fields=[
-                    "id_report",
-                    "id_synthese",
-                    "id_role",
-                    "report_type.type",
-                    "report_type.id_type",
-                    "content",
-                    "deleted",
-                    "creation_date",
-                    "user.nom_complet",
-                    "synthese.cd_nom",
-                    "synthese.nom_cite",
-                    "synthese.observers",
-                    "synthese.date_min",
-                    "synthese.date_max",
-                ]
-            )
-            result.append(report_dict)
-
-        response = {
-            "total_filtered": paginated_results.total,
-            "total": total,
-            "pages": paginated_results.pages,
-            "current_page": paginated_results.page,
-            "per_page": paginated_results.per_page,
-            "items": result,
-        }
-    else:
-        response = [
-            report.as_dict(
-                fields=[
-                    "id_report",
-                    "id_synthese",
-                    "id_role",
-                    "report_type.type",
-                    "report_type.id_type",
-                    "content",
-                    "deleted",
-                    "creation_date",
-                    "user.nom_role",
-                    "user.prenom_role",
-                ]
-            )
-            for report in req.all()
-        ]
+    response = [
+        report.as_dict(
+            fields=[
+                "id_report",
+                "id_synthese",
+                "id_role",
+                "report_type.type",
+                "report_type.id_type",
+                "content",
+                "deleted",
+                "creation_date",
+                "user.nom_role",
+                "user.prenom_role",
+            ]
+        )
+        for report in req.all()
+    ]
 
     return jsonify(response)
 

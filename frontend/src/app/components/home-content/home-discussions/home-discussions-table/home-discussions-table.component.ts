@@ -28,9 +28,9 @@ export class HomeDiscussionsTableComponent {
   rowDetailHeight: number = 150;
   columns = [];
   sort = 'desc';
-  orderby = 'date';
+  orderby = 'creation_date';
 
-  @Output() sortChange = new EventEmitter<string>();
+  @Output() sortChange = new EventEmitter<Object>();
   @Output() orderbyChange = new EventEmitter<string>();
   @Output() currentPageChange = new EventEmitter<number>();
 
@@ -54,8 +54,7 @@ export class HomeDiscussionsTableComponent {
   onColumnSort(event: any) {
     this.sort = event.sorts[0].dir;
     this.orderby = event.sorts[0].prop;
-    this.sortChange.emit(this.sort);
-    this.orderbyChange.emit(this.orderby);
+    this.sortChange.emit({ sort: this.sort, orderby: this.orderby });
   }
 
   onRowClick(row: any) {
