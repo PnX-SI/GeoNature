@@ -49,3 +49,8 @@ button[disabled] {
   height: 20px !important;
   font-size: 10px !important;
 }
+
+.Link {
+  color: var(--purple);
+  filter: brightness(70%);
+}
