@@ -1595,9 +1595,6 @@ def list_all_reports(scope):
 @permissions_required("R", module_code="SYNTHESE")
 def list_reports(permissions, id_synthese):
     type_name = request.args.get("type")
-    orderby = request.args.get("orderby", "creation_date")
-    sort = request.args.get("sort")
-
     # Start query
     req = TReport.query
 
@@ -1622,19 +1619,6 @@ def list_reports(permissions, id_synthese):
         joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
         joinedload(TReport.report_type),
     )
-    # Determine the sorting
-    SORT_COLUMNS = ["user.nom_complet", "content", "creation_date"]
-    if orderby in SORT_COLUMNS:
-        if orderby == "user.nom_complet":
-            req = req.order_by(desc(User.nom_complet) if sort == "desc" else asc(User.nom_complet))
-        elif orderby == "content":
-            req = req.order_by(desc(TReport.content) if sort == "desc" else asc(TReport.content))
-        elif orderby == "creation_date":
-            req = req.order_by(
-                desc(TReport.creation_date) if sort == "desc" else asc(TReport.creation_date)
-            )
-    else:
-        raise BadRequest("Bad orderby")
 
     response = [
         report.as_dict(

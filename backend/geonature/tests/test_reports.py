@@ -142,25 +142,9 @@ class TestReports:
         response = self.client.delete(url_for(url, id_report=alertReportId))
         assert not db.session.scalar(exists().where(TReport.id_report == alertReportId).select())
 
-    @pytest.mark.parametrize(
-        "sort,orderby,expected_error",
-        [
-            ("asc", "creation_date", False),
-            ("desc", "creation_date", False),
-            ("asc", "user.nom_complet", False),
-            ("asc", "content", False),
-            ("asc", "nom_cite", True),
-        ],
-    )
-    def test_list_reports(self, sort, orderby, expected_error, reports_data, synthese_data, users):
+    def test_list_reports(self, reports_data, synthese_data, users):
         url = "gn_synthese.list_reports"
         set_logged_user(self.client, users["admin_user"])
-        # TEST GET WITHOUT REQUIRED ID SYNTHESE
-        response = self.client.get(url_for(url))
-        assert response.status_code == 200
-        assert "items" in response.json
-        assert isinstance(response.json["items"], list)
-        assert len(response.json["items"]) >= 0
 
         ids = [s.id_synthese for s in synthese_data.values()]
         # TEST GET BY ID SYNTHESE
@@ -182,9 +166,32 @@ class TestReports:
             response = self.client.get(url_for(url, id_synthese=ids[1]))
             assert response.status_code == 200
 
+    @pytest.mark.parametrize(
+        "sort,orderby,expected_error",
+        [
+            ("asc", "creation_date", False),
+            ("desc", "creation_date", False),
+            ("asc", "user.nom_complet", False),
+            ("asc", "content", False),
+            ("asc", "nom_cite", True),
+        ],
+    )
+    def test_list_all_reports(
+        self, sort, orderby, expected_error, reports_data, synthese_data, users
+    ):
+        url = "gn_synthese.list_all_reports"
+        set_logged_user(self.client, users["admin_user"])
+        # TEST GET WITHOUT REQUIRED ID SYNTHESE
+        response = self.client.get(url_for(url, type="discussion"))
+        assert response.status_code == 200
+        assert "items" in response.json
+        assert isinstance(response.json["items"], list)
+        assert len(response.json["items"]) >= 0
+
+        ids = [s.id_synthese for s in synthese_data.values()]
         # TEST WITH MY_REPORTS TRUE
         set_logged_user(self.client, users["user"])
-        response = self.client.get(url_for(url, my_reports="true"))
+        response = self.client.get(url_for(url, type="discussion", my_reports="true"))
         assert response.status_code == 200
         items = response.json["items"]
         # Check that all items belong to the current user
