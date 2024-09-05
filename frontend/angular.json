@@ -33,14 +33,15 @@
             "assets": [
               "src/assets",
               {
-                "glob": "**/*",
-                "input": "external_modules/*/assets/",
-                "output": "./assets/"
+                "followSymlinks": true,
+                "glob": "**/assets/**/*",
+                "input": "./external_modules/",
+                "output": "/assets/"
               },
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images/",
-                "output": "."
+                "output": "/"
               }
             ],
             "styles": [
