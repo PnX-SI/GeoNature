@@ -99,6 +99,16 @@
             <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
           </a>
         </div>
+        <div *ngSwitchCase="'dataset_name'">
+          <a
+            class="Link"
+            [routerLink]="['/metadata/dataset_detail/' + row.id_dataset]"
+            *ngIf="row.hasOwnProperty('id_dataset'); else cellDefault"
+            matTooltip="Afficher la fiche du jeu de données"
+          >
+            <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+          </a>
+        </div>
         <ng-container *ngSwitchDefault>
           <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
         </ng-container>
