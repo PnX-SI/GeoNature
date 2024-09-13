@@ -3,6 +3,7 @@ minversion = "6.0"
 testpaths = [
     "backend/geonature/tests/",
 ]
+addopts = "--benchmark-skip"
 
 [tool.coverage.run]
 source = [
