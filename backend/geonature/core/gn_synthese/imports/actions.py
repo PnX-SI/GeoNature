@@ -16,6 +16,7 @@ from geonature.core.imports.models import Entity, EntityField, BibFields, TImpor
 from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
+    compute_bounding_box,
 )
 from geonature.core.imports.checks.dataframe import (
     concat_dates,
@@ -563,53 +564,16 @@ class SyntheseImportActions(ImportActions):
 
     @staticmethod
     def compute_bounding_box(imprt: TImports):
-        name_geom_4326_field = "the_geom_4326"
-        code_entity = "observation"
-
-        entity = Entity.query.filter_by(destination=imprt.destination, code=code_entity).one()
-        where_clause_id_import = None
-        # If import is still in-progress data is retrieved from the import transient table,
-        #   otherwise the import is done and data is retrieved from the destination table
-        if imprt.loaded:
-            # Retrieve the import transient table ("t_imports_synthese")
-            transient_table = imprt.destination.get_transient_table()
-            # Set the WHERE clause
-            where_clause_id_import = transient_table.c["id_import"] == imprt.id_import
-        else:
-            # There is no 'id_import' field in the destination table 'synthese', must retrieve
-            #   the corresponding `id_source` from the table "t_sources"
-            id_source = db.session.scalar(
+        # The destination where clause will be called only when the import is finished,
+        # avoiding looking for unexisting source when the import is still in progress.
+        destination_where_clause = (
+            lambda imprt, destination_table: db.session.scalar(
                 select(TSources.id_source).where(
                     TSources.name_source == f"Import(id={imprt.id_import})"
                 )
             )
-            # Retrieve the destination table ("synthese")
-            entity = Entity.query.filter_by(destination=imprt.destination, code="observation").one()
-            destination_table = entity.get_destination_table()
-            # Set the WHERE clause
-            where_clause_id_import = destination_table.c["id_source"] == id_source
-
-        # Build the statement to retrieve the valid bounding box
-        statement = None
-        if imprt.loaded == True:
-            # Compute from entries in the transient table and related to the import
-            transient_table = imprt.destination.get_transient_table()
-            statement = (
-                select(func.ST_AsGeojson(func.ST_Extent(transient_table.c[name_geom_4326_field])))
-                .where(where_clause_id_import)
-                .where(transient_table.c[entity.validity_column] == True)
-            )
-        else:
-            destination_table = entity.get_destination_table()
-            # Compute from entries in the destination table and related to the import
-            statement = select(
-                func.ST_AsGeojson(func.ST_Extent(destination_table.c[name_geom_4326_field]))
-            ).where(where_clause_id_import)
-
-        # Execute the statement to eventually retrieve the valid bounding box
-        (valid_bbox,) = db.session.execute(statement).fetchone()
-
-        # Return the valid bounding box or None
-        if valid_bbox:
-            return json.loads(valid_bbox)
-        pass
+            == destination_table.c.id_source
+        )
+        return compute_bounding_box(
+            imprt, "observation", "the_geom_4326", destination_where_clause=destination_where_clause
+        )
