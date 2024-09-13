@@ -133,7 +133,7 @@ class OcchabImportActions(ImportActions):
 
         ### Dataframe checks
         df = load_transient_data_in_dataframe(imprt, entity_habitat, source_cols)
-        updated_cols |= OcchabImportMixin.dataframe_checks(
+        updated_cols |= OcchabImportActions.dataframe_checks(
             imprt, df, entity_habitat, fields, selected_fields
         )
         update_transient_data_from_dataframe(imprt, entity_habitat, updated_cols, df)
@@ -267,7 +267,7 @@ class OcchabImportActions(ImportActions):
         ### Dataframe checks
         df = load_transient_data_in_dataframe(imprt, entity_station, source_cols)
 
-        updated_cols |= OcchabImportMixin.dataframe_checks(
+        updated_cols |= OcchabImportActions.dataframe_checks(
             imprt, df, entity_station, fields, selected_fields
         )
         updated_cols |= check_datasets(
@@ -415,15 +415,15 @@ class OcchabImportActions(ImportActions):
 
         # We first check station consistency in order to avoid checking
         # incoherent station data
-        OcchabImportMixin.check_station_consistency(imprt)
+        OcchabImportActions.check_station_consistency(imprt)
 
         # We run station & habitat dataframe checks before SQL checks in order to avoid
         # check_types overriding generated values during SQL checks.
-        OcchabImportMixin.check_station_dataframe(imprt)
-        OcchabImportMixin.check_habitat_dataframe(imprt)
+        OcchabImportActions.check_station_dataframe(imprt)
+        OcchabImportActions.check_habitat_dataframe(imprt)
 
-        OcchabImportMixin.check_station_sql(imprt)
-        OcchabImportMixin.check_habitat_sql(imprt)
+        OcchabImportActions.check_station_sql(imprt)
+        OcchabImportActions.check_habitat_sql(imprt)
 
         task.update_state(state="PROGRESS", meta={"progress": 1})
 
