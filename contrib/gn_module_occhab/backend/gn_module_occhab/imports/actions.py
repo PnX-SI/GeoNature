@@ -24,6 +24,7 @@ from geonature.core.imports.utils import (
     get_mapping_data,
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
+    compute_bounding_box,
 )
 
 from geonature.core.imports.checks.dataframe import (
@@ -558,51 +559,4 @@ class OcchabImportActions(ImportActions):
 
     @staticmethod
     def compute_bounding_box(imprt: TImports):
-        name_geom_4326_field = "geom_4326"
-        code_entity = "station"
-
-        entity = Entity.query.filter_by(destination=imprt.destination, code=code_entity).one()
-
-        where_clause_id_import = None
-        id_import = imprt.id_import
-        destination_import = imprt.destination
-
-        # If import is still in-progress data is retrieved from the import transient table,
-        #   otherwise the import is done and data is retrieved from the destination table
-        if imprt.loaded:
-            # Retrieve the import transient table ("t_imports_occhab")
-            table_with_data = destination_import.get_transient_table()
-        else:
-            # Retrieve the destination table ("t_stations")
-            entity = Entity.query.filter_by(destination=destination_import, code="station").one()
-            table_with_data = entity.get_destination_table()
-
-        # Set the WHERE clause
-        where_clause_id_import = table_with_data.c["id_import"] == id_import
-
-        # Build the statement to retrieve the valid bounding box
-        statement = None
-        if imprt.loaded == True:
-            # Compute from entries in the transient table and related to the import
-            transient_table = imprt.destination.get_transient_table()
-            statement = (
-                sa.select(
-                    sa.func.ST_AsGeojson(sa.func.ST_Extent(transient_table.c[name_geom_4326_field]))
-                )
-                .where(where_clause_id_import)
-                .where(transient_table.c[entity.validity_column] == True)
-            )
-        else:
-            destination_table = entity.get_destination_table()
-            # Compute from entries in the destination table and related to the import
-            statement = sa.select(
-                sa.func.ST_AsGeojson(sa.func.ST_Extent(destination_table.c[name_geom_4326_field]))
-            ).where(where_clause_id_import)
-
-        # Execute the statement to eventually retrieve the valid bounding box
-        (valid_bbox,) = db.session.execute(statement).fetchone()
-
-        # Return the valid bounding box or None
-        if valid_bbox:
-            return json.loads(valid_bbox)
-        pass
+        return compute_bounding_box(imprt, "station", "geom_4326")

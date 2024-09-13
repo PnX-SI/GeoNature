@@ -7,7 +7,8 @@ from datetime import datetime, timedelta
 from typing import IO, Any, Dict, Iterable, List, Optional, Set, Tuple
 
 from flask import current_app, render_template
-from sqlalchemy import delete
+import sqlalchemy as sa
+from sqlalchemy import func, select, delete
 from chardet.universaldetector import UniversalDetector
 from sqlalchemy.sql.expression import select, insert
 import pandas as pd
@@ -473,3 +474,48 @@ def get_required(import_: TImports, entity: Entity):
         if all([field_name in selected_fields for field_name in bib_field.optional_conditions]):
             required_columns.remove(field)
     return required_columns
+
+
+def compute_bounding_box(
+    imprt: TImports,
+    entity_code,
+    geom_4326_field,
+    *,
+    transient_where_clause=None,
+    destination_where_clause=None
+):
+    entity = Entity.query.filter_by(destination=imprt.destination, code=entity_code).one()
+    if imprt.date_end_import:  # import finished, retrieve data from destination table
+        destination_table = entity.get_destination_table()
+        geom_field = destination_table.c[geom_4326_field]
+        if (
+            destination_where_clause is None
+        ):  # assume there is an id_import column in the destination table
+            where_clause = destination_table.c.id_import == imprt.id_import
+        elif callable(destination_where_clause):
+            where_clause = destination_where_clause(imprt, destination_table)
+        else:
+            where_clause = destination_where_clause
+    elif imprt.processed:  # import controlled but not finished, retieve data from transient table
+        transient_table = imprt.destination.get_transient_table()
+        geom_field = transient_table.c[geom_4326_field]
+        if transient_where_clause is None:
+            where_clause = sa.and_(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == True,
+            )
+        elif callable(transient_where_clause):
+            where_clause = transient_where_clause(imprt, transient_table)
+        else:
+            where_clause = transient_where_clause
+    else:  # import still in progress, checks have not been runned yet, no valid data available
+        return None
+
+    statement = select(func.ST_AsGeojson(func.ST_Extent(geom_field))).where(where_clause)
+
+    # Execute the statement to eventually retrieve the valid bounding box
+    (valid_bbox,) = db.session.execute(statement).fetchone()
+
+    # Return the valid bounding box or None
+    if valid_bbox:
+        return json.loads(valid_bbox)
