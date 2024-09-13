@@ -6,13 +6,13 @@ on:
       - master
       - hotfixes
       - develop
+      - feat/import
   pull_request:
     branches:
       - master
       - hotfixes
       - develop
       - feat/import
-      - feat/occhab-check
 
 jobs:
   build:
