@@ -249,7 +249,7 @@ export class FormService {
       if (!this.areAnyRefControlsNotNull(entityControls, currentControl)) {
         return null;
       }
-      return this.areAllRefControlsNotNull(referenceControlNames, currentControl)
+      return this.areAnyRefControlsNotNull(referenceControlNames, currentControl)
         ? null
         : Validators.required(currentControl);
     };

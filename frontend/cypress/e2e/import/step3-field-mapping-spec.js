@@ -80,7 +80,7 @@ function fillTheFormRaw() {
 
 function fillTheForm() {
   // Fill in the form with mandatory field
-  cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('not.be.enabled');
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist');
 
   selectField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_debut');
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('not.be.enabled');
