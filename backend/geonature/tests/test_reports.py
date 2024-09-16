@@ -1,5 +1,6 @@
 import json
 
+from datetime import datetime
 import pytest
 from flask import url_for
 from sqlalchemy import func, select, exists
@@ -215,15 +216,19 @@ class TestReports:
 
             # Verify sorting
             items = response.json["items"]
+            reverse_sort = sort == "desc"
             if orderby == "creation_date":
-                dates = [item["creation_date"] for item in items]
-                assert dates == sorted(dates, reverse=(sort == "desc"))
+                dates = [
+                    datetime.strptime(item["creation_date"], "%a, %d %b %Y %H:%M:%S %Z")
+                    for item in items
+                ]
+                assert dates == sorted(dates, reverse=reverse_sort)
             elif orderby == "content":
                 contents = [item["content"] for item in items]
-                assert contents == sorted(contents, reverse=(sort == "desc"))
+                assert contents == sorted(contents, reverse=reverse_sort)
             elif orderby == "user.nom_complet":
                 names = [item["user"]["nom_complet"] for item in items]
-                assert names == sorted(names, reverse=(sort == "desc"))
+                assert names == sorted(names, reverse=reverse_sort)
 
 
 @pytest.mark.usefixtures("client_class", "notifications_enabled", "temporary_transaction")

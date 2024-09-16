@@ -1489,8 +1489,8 @@ def update_content_report(id_report):
 
 
 @routes.route("/reports", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-def list_all_reports(scope):
+@permissions_required("R", module_code="SYNTHESE")
+def list_all_reports(permissions):
     type_name = request.args.get("type")
     orderby = request.args.get("orderby", "creation_date")
     sort = request.args.get("sort")
@@ -1530,10 +1530,11 @@ def list_all_reports(scope):
 
     # On vérifie les permissions en lecture sur la synthese
     query = select(Synthese.id_synthese).select_from(Synthese)
-    query = Synthese.filter_by_scope(scope=scope, user=g.current_user, query=query)
-
-    res_ids_synthese = db.session.execute(query)
-    ids_synthese = [row[0] for row in res_ids_synthese]
+    synthese_query_obj = SyntheseQuery(Synthese, query, {})
+    synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
+    res_ids_synthese = db.session.execute(synthese_query_obj.query)
+    result = res_ids_synthese.fetchall()
+    ids_synthese = [row[0] for row in result]
     req = req.filter(TReport.id_synthese.in_(ids_synthese))
 
     SORT_COLUMNS = {
