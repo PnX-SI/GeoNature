@@ -184,7 +184,8 @@ export class FieldMappingService {
         this.fieldsByEntity.set(entity.label, entityFields);
       });
     });
-    this.fieldsByEntity = this.removeCommonStrings(this.fieldsByEntity);
+    if (this.fieldsByEntity.size > 1)
+      this.fieldsByEntity = this.removeCommonStrings(this.fieldsByEntity);
     return flattened;
   }
 

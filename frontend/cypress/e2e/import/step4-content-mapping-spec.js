@@ -129,6 +129,7 @@ function runTheProcessForOcchab(user) {
   cy.configureImportFile();
   // cy.configureImportFieldMapping();
   selectFieldMappingField('import-fieldmapping-theme-date_min', 'error');
+  selectFieldMappingField('import-fieldmapping-theme-WKT', 'error');
   cy.get('#mat-tab-label-0-1').click();
   selectFieldMappingField('import-fieldmapping-theme-nom_cite', 'error');
   selectFieldMappingField('import-fieldmapping-theme-cd_hab', 'error');
