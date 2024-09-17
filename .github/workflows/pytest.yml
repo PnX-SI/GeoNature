@@ -128,7 +128,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Upload coverage to Codecov
         if: ${{ matrix.debian-version == '12' }}
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: pytest
