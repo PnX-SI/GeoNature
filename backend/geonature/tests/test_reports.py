@@ -154,6 +154,12 @@ class TestReports:
         )
         assert response.status_code == 200
         assert len(response.json) == 1
+        # TEST VALID - ADD PIN
+        response = self.client.get(
+            url_for(url, id_synthese=ids[0], idRole=users["admin_user"].id_role, type="pin")
+        )
+        assert response.status_code == 200
+        assert len(response.json) == 0
         # TEST NO RESULT
         if len(ids) > 1:
             # not exists because ids[1] is an alert
