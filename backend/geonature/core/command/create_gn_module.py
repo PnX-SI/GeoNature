@@ -79,7 +79,8 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
                 f"Impossible de détecter le code du module, essayez de le spécifier."
             )
     # symlink module in exernal module directory
-    module_frontend_path = (module_path / "frontend").resolve()
+    module_frontend_path = (module_path / "frontend")
+    module_frontend_path = module_frontend_path.resolve()
     module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
     if os.path.exists(module_symlink):
         if module_frontend_path != os.readlink(module_symlink):
