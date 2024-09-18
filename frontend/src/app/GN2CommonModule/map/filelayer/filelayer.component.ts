@@ -67,8 +67,6 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
     // la
     // event on load success
     (this.fileLayerControl as any).loader.on('data:loaded', (event) => {
-      // remove layer from leaflet draw
-      this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
       // set marker editing OFF
       this.mapService.setEditingMarker(false);
       // remove the previous layer loaded via file layer
