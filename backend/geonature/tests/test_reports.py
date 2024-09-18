@@ -148,6 +148,7 @@ class TestReports:
         set_logged_user(self.client, users["admin_user"])
 
         ids = [s.id_synthese for s in synthese_data.values()]
+
         # TEST GET BY ID SYNTHESE
         response = self.client.get(
             url_for(url, id_synthese=ids[0], idRole=users["admin_user"].id_role, type="discussion")
