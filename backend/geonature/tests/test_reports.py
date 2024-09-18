@@ -154,6 +154,16 @@ class TestReports:
         )
         assert response.status_code == 200
         assert len(response.json) == 1
+
+        # TEST INVALID - TYPE DOES NOT EXISTS
+        response = self.client.get(
+            url_for(
+                url, id_synthese=ids[0], idRole=users["admin_user"].id_role, type="UNKNOW-PIN-TYPE"
+            )
+        )
+        assert response.status_code == 400
+        assert response.json["description"] == "This report type does not exist"
+
         # TEST VALID - ADD PIN
         response = self.client.get(
             url_for(url, id_synthese=ids[0], idRole=users["admin_user"].id_role, type="pin")
