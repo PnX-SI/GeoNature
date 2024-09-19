@@ -138,7 +138,16 @@ class Destination(db.Model):
 
     @property
     def actions(self):
-        return self.module.__import_actions__
+        try:
+            return self.module.__import_actions__
+        except AttributeError as exc:
+            """
+            This error is likely to occurs when you have some imports to a destination
+            for which the corresponding module is missing in the venv.
+            As a result, sqlalchemy fail to find the proper polymorphic identity,
+            and fallback on TModules which does not have __import_actions__ property.
+            """
+            raise AttributeError(f"Is your module of type '{self.module.type}' installed?") from exc
 
 
 @serializable
