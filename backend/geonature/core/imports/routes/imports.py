@@ -18,6 +18,7 @@ from sqlalchemy.sql.expression import collate, exists
 
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action
@@ -113,11 +114,12 @@ def get_import_list(scope, destination=None):
         TImports.query.options(
             contains_eager(TImports.dataset),
             contains_eager(TImports.authors),
-            contains_eager(TImports.destination).load_only(Destination.label, Destination.label),
+            contains_eager(TImports.destination).contains_eager(Destination.module),
         )
         .join(TImports.dataset, isouter=True)
         .join(TImports.authors, isouter=True)
         .join(Destination)
+        .join(TModules)
         .filter_by_scope(scope)
         .filter(or_(*filters) if len(filters) > 0 else True)
         .order_by(order_by)
