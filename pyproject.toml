@@ -38,3 +38,9 @@ exclude ='''
   )/
 )
 '''
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.format]
+max-line-length = "100"
