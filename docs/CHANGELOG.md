@@ -4,9 +4,11 @@ CHANGELOG
 2.15.0 (unreleased)
 -------------------
 
+TH v2 (intégré à GN et son module Admin), Import v3 (multi-destination, import Occhab et intégré au coeur de GN), authentification externe
+
 **🚀 Nouveautés**
 
-- Intégration de TaxHub à GeoNature (voir la note de version de TaxHub 2.0.0 - LIEN)
+- Intégration de TaxHub à GeoNature (#3150 + voir la note de version de TaxHub 2.0.0 - LIEN)
 - Intégration du module Import dans le coeur de GeoNature et refonte de celui-ci pour qu'il puisse importer dans d'autres modules que Synthèse (https://github.com/PnX-SI/gn_module_import/issues/303)
 - Ajout de la possibilité d'importer des données depuis des fichiers vers le module Occhab
 - Autres évolutions du module Import à mentionner ici... (évolution des controles ? Import GeoJSON ? Graphiques génériques ? Meilleure gestion des formats de date ? Amélioration export PDF ? Import multi-JDD ?)
@@ -24,15 +26,17 @@ CHANGELOG
 
 Si vous mettez à jour GeoNature : 
 
-- L'application TaxHub a été integrée dans le backoffice de GeoNature (voir documentation TH) et accessible depuis la barre de menu :
-    - Les permissions basées sur les profils 1-6 ont été rappatriées et adaptées dans le modèle de permissions de GeoNature. 
-    TaxHub est désormais un "module" GeoNature et dispose des objets de permissions `TAXON`, `THEME`, `LISTE` et `ATTRIBUT` (voir doc GeoNature pour la description des objets). Les personnes ayant anciennement des droits 6 dans TaxHub on tous les droits sur les objets précédents. Les personnes ayant des droits inférieurs à 6 et ayant un compte sur TaxHub ont maintenant des droits sur l'objet `TAXON` (voir et éditer des taxons = ajouter des médias et des attributs)
+- L'application TaxHub a été integrée dans le module Admin de GeoNature (voir documentation TH) et accessible depuis le menu latéral :
+    - Les permissions basées sur les profils 1-6 ont été rapatriées et adaptées dans le modèle de permissions de GeoNature. 
+    TaxHub est désormais un "module" GeoNature et dispose des objets de permissions `TAXONS`, `THEMES`, `LISTES` et `ATTRIBUTS` (voir doc GeoNature pour la description des objets). Les personnes ayant anciennement des droits 6 dans TaxHub ont toutes les permissions sur les objets pré-cités. Les personnes ayant des droits inférieurs à 6 et ayant un compte sur TaxHub ont maintenant des permissions sur l'objet `TAXON` (voir et éditer des taxons = ajouter des médias et des attributs)
     - L'API de Taxhub est désormais disponible à l'URL `<URL_GEONATURE>/api/taxhub/api>` (le dernier /api est une rétrocompatibilité et sera enlevé de manière transparante dans les prochaines versions)
-    - Le paramètre `API_TAXHUB` est désormais obsolète (déduit de `API_ENDPOINT`) et peut être retiré du fichier de configuration
+    - Le paramètre `API_TAXHUB` est désormais obsolète (déduit de `API_ENDPOINT`) et peut être retiré du fichier de configuration de GeoNature
     - Si vous utilisez Occtax-mobile, veillez à modifier le paramètre `taxhub_url` du fichier `/geonature/backend/media/mobile/occtax/settings.json`, pour mettre la valeur `<URL_GEONATURE>/api/taxhub>`
     - Une redirection Apache automatique de l'URL de TaxHub et des médias est disponible à l'adresse suivante : XXXX
     - ATLAS  a tester -> modification URL des médias
     - suppression de la branche alembic taxhub : `geonature db downgrade taxhub@base`
+    - désinstaller TH de votre serveur ?
+    - L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs de TH sont également centralisés dans le fichier de log de GeoNature
 
 - Le module Import a été intégré dans le coeur de GeoNature
    - si vous aviez installé le module externe Import, XXXXX
@@ -47,9 +51,6 @@ Si vous mettez à jour GeoNature :
    - Remplissez la configuration dans un fichier `mtd_sync.toml`
 
 2.14.2 (2024-05-28)
-
-2.14.0 (unreleased)
--------------------
 
 **🚀 Nouveautés**
 
@@ -194,16 +195,7 @@ Si vous mettez à jour GeoNature :
 - [Synthèse] Correction de la recherche par attribut TaxHub de type "multiselect" (#2767, par @mvergez)
 - [Occtax] Tri alphabétique de la liste des "Mes lieux" (#2805, par @DonovanMaillard)
 - [Documentation] Corrections et compléments de la documentation d'administrateur (#2812, par @marie-laure-cen)
-- Intégration de TaxHub dans GeoNature. L'interface est dispobible dans le "backoffice"
 
-**💻 Développement**
-
-- L'API de TaxHub est désormais disponible à l'URL `<URL_GEONATURE>/api/taxhub`.
-
-Note de version:
-
-- L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs sont également centralisés dans le fichier de log de GeoNature
-- Les permissions de TaxHub comme "module" de GeoNature ont été modifié. Voir la section "module TaxHub" de la doc administrateur de GeoNature. Les anciennes permissions de l'application TaxHub on été rappatriées dans ce nouveau modèle. Les utilisateurs avec un profil "6" ont tous les droits sur le modules, les personnes ayant des profils 1,3,4 ou 5 ont des droits sur les objets uniquement sur l'objet 'TAXON'.
 
 2.13.3 (2023-10-17)
 -------------------

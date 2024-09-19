@@ -21,6 +21,9 @@ from marshmallow.validate import OneOf, Regexp, Email, Length
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
+    DefaultGeographicOverview,
+    DefaultProfile,
+    DefaultSpeciesSheet,
 )
 from geonature.core.imports.config_schema import ImportConfigSchema
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
@@ -275,6 +278,26 @@ class ExportObservationSchema(Schema):
     geojson_local_field = fields.String(load_default="geojson_local")
 
 
+class SpeciesSheetProfile(Schema):
+    ENABLED = fields.Boolean(load_default=DefaultProfile.ENABLED)
+    LIST_INDICATORS = fields.List(fields.Dict, load_default=DefaultProfile.LIST_INDICATORS)
+
+
+class SpeciesSheetGeographicOverview(Schema):
+    pass
+
+
+class SpeciesSheet(Schema):
+    # --------------------------------------------------------------------
+    # SYNTHESE - SPECIES_SHEET
+    LIST_INDICATORS = fields.List(fields.Dict, load_default=DefaultSpeciesSheet.LIST_INDICATORS)
+
+    GEOGRAPHIC_OVERVIEW = fields.Dict(
+        load_default=SpeciesSheetGeographicOverview().load({})
+    )  # rename
+    PROFILE = fields.Nested(SpeciesSheetProfile, load_default=SpeciesSheetProfile().load({}))
+
+
 class Synthese(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - SEARCH FORM
@@ -428,6 +451,10 @@ class Synthese(Schema):
     )
     # Activate the blurring of sensitive observations. Otherwise, exclude them
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
+
+    # --------------------------------------------------------------------
+    # SYNTHESE - SPECIES_SHEET
+    SPECIES_SHEET = fields.Nested(SpeciesSheet, load_default=SpeciesSheet().load({}))
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):
