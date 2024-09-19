@@ -7,7 +7,6 @@ from werkzeug.exceptions import Unauthorized, BadRequest
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_commons.models import TValidations, VLatestValidations
 from geonature.core.gn_profiles.models import VConsistancyData
-from gn_module_validation.tasks import set_auto_validation
 from geonature.utils.env import db
 from geonature.utils.config import config
 
@@ -21,6 +20,8 @@ gn_module_validation = pytest.importorskip("gn_module_validation")
 pytestmark = pytest.mark.skipif(
     "VALIDATION" in config["DISABLED_MODULES"], reason="Validation is disabled"
 )
+
+from gn_module_validation.tasks import set_auto_validation
 
 
 @pytest.fixture()
