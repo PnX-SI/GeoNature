@@ -16,6 +16,7 @@ __all__ = [
     "check_nomenclature_exist_proof",
     "check_nomenclature_blurring",
     "check_nomenclature_source_status",
+    "check_nomenclature_technique_collect",
 ]
 
 
@@ -147,5 +148,27 @@ def check_nomenclature_source_status(imprt, entity, source_status_field, ref_bib
         whereclause=sa.and_(
             transient_table.c[source_status_field.dest_field] == litterature.id_nomenclature,
             transient_table.c[ref_biblio_field.dest_field] == None,
+        ),
+    )
+
+
+def check_nomenclature_technique_collect(
+    imprt, entity, source_status_field, technical_precision_field
+):
+    transient_table = imprt.destination.get_transient_table()
+    other = TNomenclatures.query.filter(
+        TNomenclatures.nomenclature_type.has(
+            BibNomenclaturesTypes.mnemonique == "TECHNIQUE_COLLECT_HAB"
+        ),
+        TNomenclatures.cd_nomenclature == "10",
+    ).one()
+    report_erroneous_rows(
+        imprt,
+        entity,
+        error_type=ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
+        error_column=source_status_field.name_field,
+        whereclause=sa.and_(
+            transient_table.c[source_status_field.dest_field] == other.id_nomenclature,
+            transient_table.c[technical_precision_field.dest_field] == None,
         ),
     )
