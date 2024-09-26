@@ -52,6 +52,7 @@ from geonature.core.gn_synthese.models import (
     SyntheseLogEntry,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+from geonature.core.gn_synthese.utils.species_sheet import SpeciesSheetUtils
 
 from geonature.core.gn_synthese.utils.blurring import (
     build_allowed_geom_cte,
@@ -66,7 +67,6 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required, permissions_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action, get_permissions
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
-
 from ref_geo.models import LAreas, BibAreasTypes
 
 from apptax.taxonomie.models import (
@@ -80,6 +80,8 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutValues,
     VMTaxrefListForautocomplete,
 )
+
+from geonature import app
 
 
 routes = Blueprint("gn_synthese", __name__)
@@ -965,28 +967,11 @@ def taxon_stats(scope, cd_ref):
 
     area_type = request.args.get("area_type")
 
-    if not area_type:
+    if not SpeciesSheetUtils.is_valid_area_type(area_type):
         raise BadRequest("Missing area_type parameter")
 
-    # Ensure area_type is valid
-    valid_area_types = (
-        db.session.query(BibAreasTypes.type_code)
-        .distinct()
-        .filter(BibAreasTypes.type_code == area_type)
-        .scalar()
-    )
-    if not valid_area_types:
-        raise BadRequest("Invalid area_type")
-
-    # Subquery to fetch areas based on area_type
-    areas_subquery = (
-        select([LAreas.id_area])
-        .where(LAreas.id_type == BibAreasTypes.id_type)
-        .where(BibAreasTypes.type_code == area_type)
-        .alias("areas")
-    )
-
-    taxref_cd_nom_list = db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
+    areas_subquery = SpeciesSheetUtils.get_area_subquery(area_type)
+    taxref_cd_nom_list = SpeciesSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
 
     # Main query to fetch stats
     query = (
@@ -1014,9 +999,8 @@ def taxon_stats(scope, cd_ref):
         .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
     )
 
-    synthese_query_obj = SyntheseQuery(Synthese, query, {})
-    synthese_query_obj.filter_query_with_cruved(g.current_user, scope)
-    result = DB.session.execute(synthese_query_obj.query)
+    synthese_query = SpeciesSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+    result = DB.session.execute(synthese_query)
     synthese_stats = result.fetchone()
 
     data = {
@@ -1031,6 +1015,40 @@ def taxon_stats(scope, cd_ref):
     }
 
     return data
+
+
+if app.config["SYNTHESE"]["SPECIES_SHEET"]["OBSERVERS"]["ENABLED"]:
+
+    @routes.route("/species_observers/<int:cd_ref>", methods=["GET"])
+    @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+    # @json_resp
+    def species_observers(scope, cd_ref):
+        per_page = int(request.args.get("per_page", 1))
+        page = request.args.get("page", 1, int)
+
+        # taxref_cd_nom_list = SpeciesSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+        query = (
+            db.session.query(
+                func.trim(func.unnest(func.string_to_array(Synthese.observers, ","))).label(
+                    "observer"
+                ),
+                func.min(Synthese.date_min).label("date_min"),
+                func.max(Synthese.date_max).label("date_max"),
+                func.count(Synthese.observers).label("count"),
+            ).group_by("observer")
+            # .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+        )
+        query = SpeciesSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+
+        results = query.paginate(page=page, per_page=per_page, error_out=False)
+        return jsonify(
+            {
+                "items": results.items,
+                "total": results.total,
+                "per_page": per_page,
+                "page": page,
+            }
+        )
 
 
 @routes.route("/taxons_tree", methods=["GET"])

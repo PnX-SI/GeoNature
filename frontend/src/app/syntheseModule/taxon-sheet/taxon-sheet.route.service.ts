@@ -9,6 +9,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { Observable } from 'rxjs';
 import { TabGeographicOverviewComponent } from './tab-geographic-overview/tab-geographic-overview.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
+import { TabObserversComponent } from './tab-observers/tab-observers.component';
 
 interface Tab {
   label: string;
