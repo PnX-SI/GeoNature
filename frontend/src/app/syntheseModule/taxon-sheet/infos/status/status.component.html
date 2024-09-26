@@ -1,13 +1,11 @@
 <div class="Status">
   <div class="Status__header">Statuts</div>
   <div class="Status__badges">
-    <span
-      class="badge badge-secondary"
-      *ngFor="let status of status; let isLast = last"
-      [style]="status.symbologyAsCSS"
-      matTooltip="{{ status.tooltip }}"
-    >
-      {{ status.badge }}
-    </span>
+    <gn-badge
+      *ngFor="let status of status"
+      [tooltip]="status.tooltip"
+      [text]="status.badge"
+      [symbology]="status.symbology"
+    />
   </div>
 </div>

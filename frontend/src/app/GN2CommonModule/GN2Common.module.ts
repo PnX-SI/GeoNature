@@ -40,6 +40,7 @@ import { AreasIntersectedComponent } from './form/areas-intersected/areas-inters
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
+import { BadgeComponent } from '@geonature_common/others/badge/badge.component';
 import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DateComponent } from './form/date/date.component';
@@ -141,6 +142,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     AreasComponent,
     NomenclatureComponent,
     ObserversComponent,
+    BadgeComponent,
     BreadcrumbsComponent,
     DateComponent,
     TaxonomyComponent,
@@ -208,6 +210,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     AcquisitionFrameworksComponent,
     AreasComponent,
     MunicipalitiesComponent,
+    BadgeComponent,
     BreadcrumbsComponent,
     DynamicFormComponent,
     NomenclatureComponent,
