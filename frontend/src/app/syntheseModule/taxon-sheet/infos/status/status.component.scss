@@ -1,0 +1,37 @@
+// ////////////////////////////////////////////////////////////////////////////
+//
+// ////////////////////////////////////////////////////////////////////////////
+
+.Status {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  $gap: 0.5rem;
+  column-gap: $gap;
+  line-height: 1;
+
+  &__header {
+    vertical-align: middle;
+  }
+  &__badges {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    gap: $gap;
+    line-height: inherit;
+    --bgColor: #ffffff; // Default value
+    --textColor: #444; // Default value
+    .badge {
+      display: flex;
+      flex-flow: row nowrap;
+      white-space: nowrap;
+      gap: $gap / 2;
+      text-transform: uppercase;
+      font-weight: bold;
+      background-color: var(--bgColor);
+      border: 2px solid color-mix(in srgb, var(--bgColor) 80%, black);
+      color: var(--textColor);
+    }
+  }
+}
