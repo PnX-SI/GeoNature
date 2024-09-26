@@ -1026,7 +1026,7 @@ if app.config["SYNTHESE"]["SPECIES_SHEET"]["OBSERVERS"]["ENABLED"]:
         per_page = int(request.args.get("per_page", 1))
         page = request.args.get("page", 1, int)
 
-        # taxref_cd_nom_list = SpeciesSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+        taxref_cd_nom_list = SpeciesSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
         query = (
             db.session.query(
                 func.trim(func.unnest(func.string_to_array(Synthese.observers, ","))).label(
@@ -1035,8 +1035,9 @@ if app.config["SYNTHESE"]["SPECIES_SHEET"]["OBSERVERS"]["ENABLED"]:
                 func.min(Synthese.date_min).label("date_min"),
                 func.max(Synthese.date_max).label("date_max"),
                 func.count(Synthese.observers).label("count"),
-            ).group_by("observer")
-            # .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+            )
+            .group_by("observer")
+            .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
         )
         query = SpeciesSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
 
