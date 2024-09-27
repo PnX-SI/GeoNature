@@ -31,6 +31,12 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
     configEnabledField: 'ENABLE_PROFILE',
     component: TabProfileComponent,
   },
+  {
+    label: 'Observateurs',
+    path: 'observers',
+    configEnabledField: 'ENABLE_OBSERVERS',
+    component: TabObserversComponent,
+  },
 ];
 
 @Injectable({

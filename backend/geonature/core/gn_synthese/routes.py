@@ -1017,7 +1017,7 @@ def taxon_stats(scope, cd_ref):
     return data
 
 
-if app.config["SYNTHESE"]["SPECIES_SHEET"]["OBSERVERS"]["ENABLED"]:
+if app.config["SYNTHESE"]["SPECIES_SHEET"]["ENABLE_OBSERVERS"]:
 
     @routes.route("/species_observers/<int:cd_ref>", methods=["GET"])
     @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
