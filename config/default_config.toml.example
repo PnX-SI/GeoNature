@@ -445,6 +445,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Options dédiées à la fiche taxon
         # Permet d'activer ou non la section "Profile"
         ENABLE_PROFILE = true
+        # Permet d'activer ou non la section "Taxonomy"
+        ENABLE_TAXONOMY = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
