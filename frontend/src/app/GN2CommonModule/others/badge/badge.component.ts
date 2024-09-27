@@ -1,6 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+import { Component, Input } from '@angular/core';
 
 // ////////////////////////////////////////////////////////////////////////////
 // helper method

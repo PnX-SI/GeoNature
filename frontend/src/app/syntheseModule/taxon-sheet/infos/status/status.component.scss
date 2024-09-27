@@ -7,18 +7,10 @@
   flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: center;
-  $gap: 0.5rem;
-  column-gap: $gap;
+  column-gap: 0.5rem;
   line-height: 1;
 
   &__header {
     vertical-align: middle;
-  }
-  &__badges {
-    display: flex;
-    flex-flow: row wrap;
-    width: 100%;
-    gap: $gap;
-    line-height: inherit;
   }
 }

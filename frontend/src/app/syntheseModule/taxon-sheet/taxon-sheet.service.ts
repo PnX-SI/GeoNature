@@ -6,15 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable()
 export class TaxonSheetService {
   taxon: BehaviorSubject<Taxon | null> = new BehaviorSubject<Taxon | null>(null);
-  symbology: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(private _ds: DataFormService) {}
-
-  fetchStatusSymbology() {
-    this._ds.fetchStatusSymbology().subscribe((symbology) => {
-      this.symbology.next(symbology);
-    });
-  }
 
   updateTaxonByCdRef(cd_ref: number) {
     const taxon = this.taxon.getValue();

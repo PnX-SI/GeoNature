@@ -75,6 +75,7 @@ import { ObserversTextComponent } from '@geonature_common/form/observers-text/ob
 import { PeriodComponent } from '@geonature_common/form/date/period.component';
 import { PlacesComponent } from './map/places/places.component';
 import { PlacesListComponent } from './map/placesList/placesList.component';
+import { StatusBadgesComponent } from '@geonature_common/others/status-badges/status-badges.component';
 import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
 import { TaxaComponent } from '@geonature_common/form/taxa/taxa.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
@@ -187,6 +188,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     SafeHtmlPipe,
     SyntheseSearchComponent,
     SafeStripHtmlPipe,
+    StatusBadgesComponent,
     StripHtmlPipe,
     TaxaComponent,
     TaxonAdvancedModalComponent,
@@ -291,6 +293,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     ReactiveFormsModule,
     ReadablePropertiePipe,
     SafeHtmlPipe,
+    StatusBadgesComponent,
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,

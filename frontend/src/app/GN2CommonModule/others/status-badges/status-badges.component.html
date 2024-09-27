@@ -1,0 +1,8 @@
+<div class="StatusBadges">
+  <gn-badge
+    *ngFor="let status of status"
+    [tooltip]="status.tooltip"
+    [text]="status.badge"
+    [symbology]="status.symbology"
+  />
+</div>
