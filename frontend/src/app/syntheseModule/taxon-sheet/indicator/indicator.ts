@@ -1,16 +1,17 @@
-type IndicatorRawType = 'number' | 'string' | 'date';
-export interface IndicatorRaw {
-  name: string;
-  matIcon: string;
-  field: string | Array<string>;
-  unit?: string;
-  type: IndicatorRawType;
-}
-
 export interface Indicator {
   name: string;
   matIcon: string;
   value: string | null;
+}
+
+type IndicatorRawType = 'number' | 'string' | 'date';
+export interface IndicatorDescription {
+  name: string;
+  matIcon: string;
+  field: string | Array<string>;
+  unit?: string;
+  separator?: string;
+  type: IndicatorRawType;
 }
 
 type Stats = Record<string, string>;
@@ -18,7 +19,7 @@ type Stats = Record<string, string>;
 const DEFAULT_VALUE = '-';
 const DEFAULT_SEPARATOR = '-';
 
-function getValue(field: string, indicatorConfig: IndicatorRaw, stats?: Stats) {
+function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: Stats) {
   if (stats && stats[field]) {
     let valueAsString = '';
     switch (indicatorConfig.type) {
@@ -37,24 +38,24 @@ function getValue(field: string, indicatorConfig: IndicatorRaw, stats?: Stats) {
   return DEFAULT_VALUE;
 }
 
-export function computeIndicatorFromConfig(
-  indicatorConfig: IndicatorRaw,
+export function computeIndicatorFromDecsription(
+  indicatorDescription: IndicatorDescription,
   stats?: Stats
 ): Indicator {
   let value = DEFAULT_VALUE;
   if (stats) {
-    if (Array.isArray(indicatorConfig.field)) {
-      const separator = indicatorConfig['separator'] ?? DEFAULT_SEPARATOR;
-      value = indicatorConfig.field
-        .map((field) => getValue(field, indicatorConfig, stats))
+    if (Array.isArray(indicatorDescription.field)) {
+      const separator = indicatorDescription.separator ?? DEFAULT_SEPARATOR;
+      value = indicatorDescription.field
+        .map((field) => getValue(field, indicatorDescription, stats))
         .join(' ' + separator + ' ');
     } else {
-      value = getValue(indicatorConfig.field, indicatorConfig, stats);
+      value = getValue(indicatorDescription.field, indicatorDescription, stats);
     }
   }
   return {
-    name: indicatorConfig.name,
-    matIcon: indicatorConfig.matIcon,
+    name: indicatorDescription.name,
+    matIcon: indicatorDescription.matIcon,
     value: value,
   };
 }

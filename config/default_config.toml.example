@@ -307,9 +307,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Vues d'export personnalisées
     EXPORT_OBSERVATIONS_CUSTOM_VIEWS = [
         {
-            label = "format personnalisé", 
+            label = "format personnalisé",
             view_name = "schema_name.view_name"
-        }    
+        }
     ]
     # Noms des colonnes obligatoires de la vue ``gn_synthese.v_metadata_for_export``
     EXPORT_METADATA_ID_DATASET_COL = "jdd_id"
@@ -440,6 +440,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
         # Seulement les données de présence
         cd_nomenclature_observation_status = ['Pr']
+
+    [SYNTHESE.SPECIES_SHEET]
+        # Options dédiées à la fiche espèce
+        #Permet d'activer ou non la section "Profile" de la fiche espèce
+        ENABLE_PROFILE = True
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
@@ -602,7 +607,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     [[AUTHENTICATION.PROVIDERS]]
         module="pypnusershub.auth.providers.default.DefaultConfiguration"
 		id_provider="local_provider"
-    
+
     [[AUTHENTICATION.PROVIDERS]]
         module="pypnusershub.auth.providers.openid_provider.OpenIDConnectProvider"
 		id_provider = "google"

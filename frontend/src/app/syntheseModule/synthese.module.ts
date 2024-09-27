@@ -19,7 +19,6 @@ import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
 import {
   RouteService,
   ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES,
-  ROUTE_MANDATORY,
 } from './taxon-sheet/taxon-sheet.route.service';
 
 const routes: Routes = [
@@ -32,7 +31,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: ROUTE_MANDATORY.path,
+        redirectTo: ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES[0].path,
         pathMatch: 'prefix',
       },
       ...ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.map((tab) => {
