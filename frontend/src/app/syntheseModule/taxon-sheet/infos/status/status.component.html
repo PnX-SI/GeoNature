@@ -1,11 +1,6 @@
 <div class="Status">
   <div class="Status__header">Statuts</div>
   <div class="Status__badges">
-    <gn-badge
-      *ngFor="let status of status"
-      [tooltip]="status.tooltip"
-      [text]="status.badge"
-      [symbology]="status.symbology"
-    />
+    <gn-status-badges [taxon]="taxon" />
   </div>
 </div>
