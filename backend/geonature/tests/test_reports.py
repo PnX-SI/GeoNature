@@ -159,7 +159,10 @@ class TestReports:
         # TEST INVALID - TYPE DOES NOT EXISTS
         response = self.client.get(
             url_for(
-                url, id_synthese=ids[0], idRole=users["admin_user"].id_role, type="UNKNOW-PIN-TYPE"
+                url,
+                id_synthese=ids[0],
+                idRole=users["admin_user"].id_role,
+                type="UNKNOW-REPORT-TYPE",
             )
         )
         assert response.status_code == 400
