@@ -1,5 +1,13 @@
 <div class="row row-sm form">
   <div class="col-2">
+    <small>ID Import</small>
+    <input
+      class="form-control form-control-sm"
+      [formControl]="mapListFormService.searchForm.get('id_import')"
+      placeHolder="Id de l'import"
+    />
+  </div>
+  <div class="col-2">
     <pnx-datasets
       label="{{ 'Releve.Dataset' | translate }}"
       [displayAll]="true"
@@ -35,11 +43,7 @@
     ></pnx-date>
   </div>
 
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="searchEvent($event)"
-  >
+  <button mat-raised-button color="primary" (click)="searchEvent($event)">
     Rechercher
   </button>
   <button
@@ -48,10 +52,7 @@
     (click)="resetFilterForm()"
     matTooltip="Raffraichir les filtres"
   >
-    <i
-      class="fa fa-refresh"
-      aria-hidden="true"
-    ></i>
+    <i class="fa fa-refresh" aria-hidden="true"></i>
   </button>
 
   <!-- {{mapListFormService.searchForm.value |json}} -->
