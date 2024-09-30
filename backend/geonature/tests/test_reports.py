@@ -145,9 +145,19 @@ class TestReports:
 
     def test_list_reports(self, reports_data, synthese_data, users):
         url = "gn_synthese.list_reports"
-        set_logged_user(self.client, users["admin_user"])
-
         ids = [s.id_synthese for s in synthese_data.values()]
+
+        # User: noright_user
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.get(
+            url_for(
+                url, id_synthese=ids[0], idRole=users["noright_user"].id_role, type="discussion"
+            )
+        )
+        assert response.status_code == Forbidden.code
+
+        # User: admin_user
+        set_logged_user(self.client, users["admin_user"])
 
         # TEST GET BY ID SYNTHESE
         response = self.client.get(
