@@ -220,6 +220,11 @@ class TestReports:
             for item in items
         )
 
+        # Test undefined type
+        response = self.client.get(url_for(url, type="UNKNOW-REPORT-TYPE", my_reports="true"))
+        assert response.status_code == 400
+        assert response.json["description"] == "This report type does not exist"
+
         # TEST SORT AND PAGINATION
         if expected_error:
             # Test with invalid orderby
