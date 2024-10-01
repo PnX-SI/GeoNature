@@ -156,12 +156,14 @@ def check_nomenclature_technique_collect(
     imprt, entity, source_status_field, technical_precision_field
 ):
     transient_table = imprt.destination.get_transient_table()
-    other = TNomenclatures.query.filter(
-        TNomenclatures.nomenclature_type.has(
-            BibNomenclaturesTypes.mnemonique == "TECHNIQUE_COLLECT_HAB"
-        ),
-        TNomenclatures.cd_nomenclature == "10",
-    ).one()
+    other = db.session.execute(
+        sa.select(TNomenclatures).where(
+            TNomenclatures.nomenclature_type.has(
+                BibNomenclaturesTypes.mnemonique == "TECHNIQUE_COLLECT_HAB"
+            ),
+            TNomenclatures.cd_nomenclature == "10",
+        )
+    ).scalar_one()
     report_erroneous_rows(
         imprt,
         entity,
