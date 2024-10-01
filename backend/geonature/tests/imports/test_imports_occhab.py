@@ -84,7 +84,9 @@ def contentmapping(occhab_destination):
 
 
 @pytest.fixture()
-def uploaded_import(client, users, datasets, station, habitat, import_file_name):
+def uploaded_import(
+    client, users, datasets, station, habitat, import_file_name, display_unique_dataset_id
+):
     with open(test_files_path / import_file_name, "rb") as f:
         test_file_line_count = sum(1 for line in f) - 1  # remove headers
         f.seek(0)

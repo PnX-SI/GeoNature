@@ -1,11 +1,11 @@
 import pytest
 from flask import g
-from sqlalchemy import select
+import sqlalchemy as sa
 
 from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import db
 
-from geonature.core.imports.models import Destination
+from geonature.core.imports.models import BibFields, Destination
 
 
 @pytest.fixture(scope="session")
@@ -41,17 +41,20 @@ def default_synthese_destination(app, default_destination, synthese_destination)
 @pytest.fixture(scope="session")
 def list_all_module_dest_code():
     module_code_dest = db.session.scalars(
-        select(TModules.module_code).join(Destination, Destination.id_module == TModules.id_module)
+        sa.select(TModules.module_code).join(
+            Destination, Destination.id_module == TModules.id_module
+        )
     ).all()
     return module_code_dest
 
 
 @pytest.fixture(scope="session")
 def all_modules_destination(list_all_module_dest_code):
+
     dict_modules_dest = {}
 
     for module_code in list_all_module_dest_code:
-        query = select(Destination).filter(
+        query = sa.select(Destination).filter(
             Destination.module.has(TModules.module_code == module_code)
         )
 
@@ -60,3 +63,15 @@ def all_modules_destination(list_all_module_dest_code):
         dict_modules_dest[module_code] = result
 
     return dict_modules_dest
+
+
+@pytest.fixture()
+def display_unique_dataset_id():
+    """
+    This fixture is temporary and must be removed when the UUID of a JDD can be mapped in the
+    fieldmapping step !
+    """
+    query = (
+        sa.update(BibFields).where(BibFields.name_field == "unique_dataset_id").values(display=True)
+    )
+    db.session.execute(query)
