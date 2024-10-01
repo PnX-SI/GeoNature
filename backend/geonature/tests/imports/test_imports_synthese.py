@@ -118,7 +118,7 @@ def autogenerate():
 
 
 @pytest.fixture()
-def import_dataset(datasets, import_file_name):
+def import_dataset(datasets, import_file_name, display_unique_dataset_id):
     ds = datasets["own_dataset"]
     if import_file_name == "nomenclatures_file.csv":
         previous_data_origin = ds.nomenclature_data_origin
