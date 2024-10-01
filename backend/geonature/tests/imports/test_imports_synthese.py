@@ -118,7 +118,7 @@ def autogenerate():
 
 
 @pytest.fixture()
-def import_dataset(datasets, import_file_name, display_unique_dataset_id):
+def import_dataset(datasets, import_file_name):
     ds = datasets["own_dataset"]
     if import_file_name == "nomenclatures_file.csv":
         previous_data_origin = ds.nomenclature_data_origin
@@ -270,7 +270,11 @@ def change_id_list_conf(monkeypatch, sample_taxhub_list):
 
 
 @pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "celery_eager", "default_synthese_destination"
+    "client_class",
+    "temporary_transaction",
+    "celery_eager",
+    "default_synthese_destination",
+    "display_unique_dataset_id",
 )
 class TestImportsSynthese:
     def test_import_permissions(self, g_permissions, synthese_destination):
