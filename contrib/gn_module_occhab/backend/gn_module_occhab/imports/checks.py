@@ -66,17 +66,34 @@ def set_id_station_from_line_no(imprt: TImports, habitat_entity: Entity) -> None
 
 
 def check_permissions(imprt: TImports, entity_habitat: Entity) -> None:
+    """
+    Check that the user has update right on all stations associated with the imported habitats.
+
+    Parameters
+    ----------
+    imprt : TImports
+        Current import
+    entity_habitat : Entity
+        The entity representing the habitat.
+
+    """
+
     transient_table = imprt.destination.get_transient_table()
 
+    # Get User permissions on OCCHAB
+    author = imprt.authors[0]
+    cruved = get_scopes_by_action(id_role=author.id_role, module_code="OCCHAB")
+
+    # Select all entry in the transition table where an id_station is indicated
     cte_ = sa.select(transient_table.c.id_station).where(
         transient_table.c.id_import == imprt.id_import,
         transient_table.c.id_station.isnot(None),
         Station.id_station == transient_table.c.id_station,
     )
-    author = imprt.authors[0]
-    cruved = get_scopes_by_action(id_role=author.id_role, module_code="OCCHAB")
+    # Complete with a whereclause filtering stations updatable by the user
     cte_ = Station.filter_by_scope(scope=cruved["U"], user=author, query=cte_)
 
+    # Return error when a station in the transition table is not updatable
     report_erroneous_rows(
         imprt,
         entity=entity_habitat,

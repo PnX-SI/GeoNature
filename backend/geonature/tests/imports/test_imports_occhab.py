@@ -118,7 +118,6 @@ def uploaded_import(
             b"FORBIDDEN_DATASET_UUID",
             datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
         )
-        print(content)
         f = BytesIO(content)
         data = {
             "file": (f, import_file_name),
