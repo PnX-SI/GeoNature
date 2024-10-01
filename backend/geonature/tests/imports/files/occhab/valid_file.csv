@@ -40,3 +40,4 @@ On importe une station qui existe déjà en base et un nouvel habitat, seul l�
 On importe une station et un habitat existant déjà en base;SKIP_EXISTING_UUID;SKIP_EXISTING_UUID;;EXISTING_STATION_UUID;;17/11/2023;17/11/2023;Toto;;POINT(3.634 44.399);St;EXISTING_HABITAT_UUID;prairie;24;;
 technique collect vaut « autre » mais pas de précision fournise;OK !;CONDITIONAL_MANDATORY_FIELD_ERROR;;;VALID_DATASET_UUID;17/11/2023;17/11/2023;Toto;;POINT(3.634 44.399);St;;prairie;24;;10
 technique collect vaut « autre » et une précision est bien fournies;OK !;OK !;;;VALID_DATASET_UUID;17/11/2023;17/11/2023;Toto;;POINT(3.634 44.399);St;;prairie;24;moyen précis;10
+;DATASET_NOT_AUTHORIZED(unique_dataset_id);OK ! ;;STRANGER_STATION_UUID;;;;;;;;;prairie;24;moyen précis;10

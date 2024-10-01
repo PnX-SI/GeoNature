@@ -1,4 +1,8 @@
+from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.imports.checks.errors import ImportCodeError
+from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 from geonature.core.imports.models import Entity, TImports
+from gn_module_occhab.models import Station
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased
 
@@ -58,4 +62,25 @@ def set_id_station_from_line_no(imprt: TImports, habitat_entity: Entity) -> None
         .where(transient_station.c.id_import == imprt.id_import)
         .where(transient_station.c.line_no == transient_habitat.c.station_line_no)
         .values({"id_station": transient_station.c.id_station})
+    )
+
+
+def check_permissions(imprt: TImports, entity_habitat: Entity) -> None:
+    transient_table = imprt.destination.get_transient_table()
+
+    cte_ = sa.select(transient_table.c.id_station).where(
+        transient_table.c.id_import == imprt.id_import,
+        transient_table.c.id_station.isnot(None),
+        Station.id_station == transient_table.c.id_station,
+    )
+    author = imprt.authors[0]
+    cruved = get_scopes_by_action(id_role=author.id_role, module_code="OCCHAB")
+    cte_ = Station.filter_by_scope(scope=cruved["U"], user=author, query=cte_)
+
+    report_erroneous_rows(
+        imprt,
+        entity=entity_habitat,
+        error_type=ImportCodeError.DATASET_NOT_AUTHORIZED,
+        error_column="",
+        whereclause=sa.and_(transient_table.c.id_station.not_in(cte_.subquery())),
     )
