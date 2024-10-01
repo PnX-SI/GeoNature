@@ -318,6 +318,12 @@ class TestImportsOcchab:
                     frozenset({10, 16, 17, 18, 22, 23, 27, 28, 29, 30, 31, 32, 33, 34}),  # 19,26?
                 ),
                 (
+                    ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
+                    "habitat",
+                    "id_nomenclature_collection_technique",
+                    frozenset({41}),
+                ),
+                (
                     ImportCodeError.SKIP_EXISTING_UUID,
                     "habitat",
                     "unique_id_sinp_habitat",
@@ -338,7 +344,7 @@ class TestImportsOcchab:
                 ),
             },
         )
-        assert imported_import.statistics == {"station_count": 5, "habitat_count": 10}
+        assert imported_import.statistics == {"station_count": 7, "habitat_count": 11}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)

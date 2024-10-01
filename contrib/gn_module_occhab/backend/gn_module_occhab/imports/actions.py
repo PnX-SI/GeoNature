@@ -52,6 +52,7 @@ from geonature.core.imports.checks.sql import (
     set_parent_line_no,
     init_rows_validity,
     check_orphan_rows,
+    check_nomenclature_technique_collect,
 )
 from geonature.core.imports.checks.sql.core import (
     check_mandatory_field,
@@ -173,6 +174,13 @@ class OcchabImportActions(ImportActions):
             )
         else:
             check_mandatory_field(imprt, entity_habitat, fields["unique_id_sinp_habitat"])
+
+        check_nomenclature_technique_collect(
+            imprt,
+            entity_habitat,
+            fields["id_nomenclature_collection_technique"],
+            fields["technical_precision"],
+        )
 
         set_id_parent_from_destination(
             imprt,
