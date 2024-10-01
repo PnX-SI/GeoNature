@@ -5,14 +5,14 @@ from sqlalchemy.orm import joinedload
 from geonature.core.imports.schemas import DestinationSchema
 from geonature.core.imports.blueprint import blueprint
 from geonature.utils.env import db
+from flask_login import current_user
 
 
 @blueprint.route("/destinations/", methods=["GET"])
 @login_required
 def list_destinations():
     schema = DestinationSchema()
-    destinations = Destination.query.all()
-    # FIXME: filter with C permissions?
+    destinations = Destination.filter_by_permissions(current_user)
     return schema.dump(destinations, many=True)
 
 

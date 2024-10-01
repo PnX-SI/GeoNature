@@ -2,6 +2,7 @@ from datetime import datetime
 from collections.abc import Mapping
 import re
 from typing import Iterable, List
+from geonature.core.gn_permissions.models import PermAction, Permission
 from packaging import version
 
 from flask import g
@@ -22,6 +23,7 @@ if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
 else:  # retro-compatibility Flask-SQLAlchemy 2
     from flask_sqlalchemy import BaseQuery as Query
 
+from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import db
@@ -148,6 +150,22 @@ class Destination(db.Model):
             and fallback on TModules which does not have __import_actions__ property.
             """
             raise AttributeError(f"Is your module of type '{self.module.type}' installed?") from exc
+
+    @staticmethod
+    def filter_by_permissions(user: User):
+
+        action_create = db.session.scalar(
+            sa.select(PermAction.id_action).where(PermAction.code_action == "C"),
+        )
+        query = sa.select(Destination).where(
+            sa.or_(
+                Permission.id_role == user.id_role,
+                Permission.role.has(User.members.any(User.id_role == user.id_role)),
+            ),
+            Permission.id_module == Destination.id_module,
+            Permission.id_action == action_create,
+        )
+        return db.session.scalars(query).all()
 
 
 @serializable
