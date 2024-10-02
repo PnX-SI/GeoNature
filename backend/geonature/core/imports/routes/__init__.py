@@ -12,7 +12,7 @@ from flask_login import current_user
 @login_required
 def list_destinations():
     schema = DestinationSchema()
-    destinations = Destination.filter_by_permissions(current_user)
+    destinations = Destination.filter_by_role(current_user)
     return schema.dump(destinations, many=True)
 
 

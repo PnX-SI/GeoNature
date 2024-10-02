@@ -1,7 +1,7 @@
 from datetime import datetime
 from collections.abc import Mapping
 import re
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 from geonature.core.gn_permissions.models import PermAction, Permission
 from packaging import version
 
@@ -28,7 +28,7 @@ from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import db
 from geonature.utils.celery import celery_app
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_permissions, get_scopes_by_action
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TDatasets
 from pypnnomenclature.models import BibNomenclaturesTypes
@@ -152,20 +152,36 @@ class Destination(db.Model):
             raise AttributeError(f"Is your module of type '{self.module.type}' installed?") from exc
 
     @staticmethod
-    def filter_by_permissions(user: User):
+    def filter_by_role(user: Optional[User] = None) -> List["Destination"]:
+        """
+        Return a list of allowed destinations for a given user.
 
-        action_create = db.session.scalar(
-            sa.select(PermAction.id_action).where(PermAction.code_action == "C"),
-        )
-        query = sa.select(Destination).where(
-            sa.or_(
-                Permission.id_role == user.id_role,
-                Permission.role.has(User.members.any(User.id_role == user.id_role)),
-            ),
-            Permission.id_module == Destination.id_module,
-            Permission.id_action == action_create,
-        )
-        return db.session.scalars(query).all()
+        Parameters
+        ----------
+        user : User, optional
+            The user to filter destinations for. If not provided, the current_user is used.
+
+        Returns
+        -------
+        allowed_destination : List of Destination
+            List of allowed destinations for the given user.
+        """
+        # Retrieve all destinations
+        all_destination = db.session.scalars(sa.select(Destination)).all()
+
+        # If no user is provided, use the current user
+        if not user:
+            user = g.current_user
+
+        # Filter destinations based on permissions for each destination module for the selected user
+        allowed_destination = []
+        for dest in all_destination:
+            perm = get_permissions(
+                action_code="C", id_role=user.id_role, module_code=dest.module.module_code
+            )
+            if len(perm) > 0:
+                allowed_destination.append(dest)
+        return allowed_destination
 
 
 @serializable
