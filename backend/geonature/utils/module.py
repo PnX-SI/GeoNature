@@ -42,7 +42,11 @@ def get_module_config_path(module_code):
 
 def get_module_config(module_dist):
     module_code = module_dist.entry_points["code"].load()
-    config = {"MODULE_CODE": module_code, "MODULE_URL": f"/{module_code.lower()}"}
+    config = {
+        "MODULE_CODE": module_code,
+        "MODULE_URL": f"/{module_code.lower()}",  # path to the module in the frontend
+        "MODULE_API": f"/{module_code.lower()}",  # path to the module API
+    }
     try:
         config_schema = module_dist.entry_points["config_schema"].load()
     except KeyError:
