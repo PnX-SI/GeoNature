@@ -18,16 +18,27 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column(
+    with op.batch_alter_table(schema="gn_permissions", table_name="t_permissions") as batch_op:
+        batch_op.add_column(
+            column=sa.Column("created_on", sa.DateTime),
+        )
+        batch_op.add_column(
+            column=sa.Column("expire_on", sa.DateTime),
+        )
+        batch_op.add_column(
+            column=sa.Column("validated", sa.Boolean, server_default=sa.true()),
+        )
+    # We set server_default after column creation to initialialize existing rows with NULL value
+    op.alter_column(
         schema="gn_permissions",
         table_name="t_permissions",
-        column=sa.Column("expire_on", sa.DateTime),
+        column_name="created_on",
+        server_default=sa.func.now(),
     )
 
 
 def downgrade():
-    op.drop_column(
-        schema="gn_permissions",
-        table_name="t_permissions",
-        column_name="expire_on",
-    )
+    with op.batch_alter_table(schema="gn_permissions", table_name="t_permissions") as batch_op:
+        batch_op.drop_column(column_name="validated")
+        batch_op.drop_column(column_name="created_on")
+        batch_op.drop_column(column_name="expire_on")
