@@ -553,7 +553,9 @@ class TestOcchab:
 
     def test_filter_by_scope(self):
         res = (
-            db.session.scalars(sa.select(Station).where(Station.filter_by_scope(0))).unique().all()
+            db.session.scalars(sa.select(Station).where(Station.filter_by_scope(scope=0)))
+            .unique()
+            .all()
         )
         assert not len(res)  # <=> len(res) == 0
 

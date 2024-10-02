@@ -20,6 +20,8 @@ from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
 from werkzeug.datastructures import TypeConversionDict
 
+from flask_login import current_user
+
 cor_station_observer = db.Table(
     "cor_station_observer",
     db.Column("id_cor_station_observer", db.Integer, primary_key=True),
@@ -127,11 +129,27 @@ class Station(NomenclaturesMixin, db.Model):
         return query
 
     @qfilter
-    def filter_by_scope(cls, scope, user=None, *, query):
+    def filter_by_scope(cls, scope, user=None, **kwargs):
+        """
+        Filter Station instances by scope and user.
+
+        Parameters
+        ----------
+        scope : int
+            0, 1, 2 or 3
+        user : User, optional
+            user instance. If None, use current_user (default is None)
+
+        Returns
+        -------
+        sqlalchemy.sql.expression.BooleanClauseList
+            filter by scope and user
+        """
         if user is None:
-            user = g.current_user
+            user = current_user
+
         if scope == 0:
-            return sa.false()
+            return False
         elif scope in (1, 2):
             ds_list = Dataset.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
             return sa.or_(
