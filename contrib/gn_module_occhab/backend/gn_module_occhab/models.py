@@ -126,23 +126,18 @@ class Station(NomenclaturesMixin, db.Model):
             query = query.where(Station.date_max <= date_up)
         return query
 
-    @qfilter(query=True)
+    @qfilter
     def filter_by_scope(cls, scope, user=None, *, query):
         if user is None:
             user = g.current_user
         if scope == 0:
-            query = query.where(sa.false())
+            return sa.false()
         elif scope in (1, 2):
             ds_list = Dataset.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
-            query = query.where(
-                sa.or_(
-                    Station.observers.any(id_role=user.id_role),
-                    Station.id_dataset.in_(
-                        [ds.id_dataset for ds in db.session.execute(ds_list).all()]
-                    ),
-                )
+            return sa.or_(
+                Station.observers.any(id_role=user.id_role),
+                Station.id_dataset.in_([ds.id_dataset for ds in db.session.execute(ds_list).all()]),
             )
-        return query
 
 
 @serializable

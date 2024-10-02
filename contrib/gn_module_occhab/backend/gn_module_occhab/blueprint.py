@@ -75,8 +75,7 @@ def get_joinedload_when_scope(scope):
 @permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
 def list_stations(scope):
     joinedload_when_scope = get_joinedload_when_scope(scope)
-    stations = Station.filter_by_params(request.args)
-    stations = Station.filter_by_scope(scope=scope, query=stations)
+    stations = Station.filter_by_params(request.args).where(Station.filter_by_scope(scope=scope))
     stations = stations.order_by(Station.date_min.desc()).options(
         raiseload("*"),
         joinedload(Station.observers),

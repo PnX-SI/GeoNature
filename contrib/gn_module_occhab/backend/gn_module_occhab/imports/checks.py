@@ -84,20 +84,14 @@ def check_permissions(imprt: TImports, entity_habitat: Entity) -> None:
     author = imprt.authors[0]
     cruved = get_scopes_by_action(id_role=author.id_role, module_code="OCCHAB")
 
-    # Select all entry in the transition table where an id_station is indicated
-    cte_ = sa.select(transient_table.c.id_station).where(
-        transient_table.c.id_import == imprt.id_import,
-        transient_table.c.id_station.isnot(None),
-        Station.id_station == transient_table.c.id_station,
-    )
-    # Complete with a whereclause filtering stations updatable by the user
-    cte_ = Station.filter_by_scope(scope=cruved["U"], user=author, query=cte_)
-
     # Return error when a station in the transition table is not updatable
     report_erroneous_rows(
         imprt,
         entity=entity_habitat,
         error_type=ImportCodeError.DATASET_NOT_AUTHORIZED,
         error_column="",
-        whereclause=sa.and_(transient_table.c.id_station.not_in(cte_.subquery())),
+        whereclause=sa.and_(
+            transient_table.c.id_station == Station.id_station,
+            sa.not_(Station.filter_by_scope(scope=cruved["U"], user=author)),
+        ),
     )
