@@ -203,7 +203,9 @@ class Permission(db.Model):
         ForeignKey(PermObject.id_object),
         default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
     )
+    created_on = db.Column(sa.DateTime, server_default=sa.func.now())
     expire_on = db.Column(db.DateTime)
+    validated = db.Column(sa.Boolean, server_default=sa.true())
 
     role = db.relationship(User, backref=db.backref("permissions", cascade_backrefs=False))
     action = db.relationship(PermAction)
@@ -280,8 +282,13 @@ class Permission(db.Model):
 
     @property
     def is_active(self):
-        return self.expire_on is None or self.expire_on > datetime.now()
+        return (
+            self.expire_on is None or self.expire_on > datetime.now()
+        ) and self.validated is True
 
     @classmethod
     def active_filter(cls):
-        return sa.or_(cls.expire_on.is_(sa.null()), cls.expire_on > sa.func.now())
+        return sa.and_(
+            sa.or_(cls.expire_on.is_(sa.null()), cls.expire_on > sa.func.now()),
+            cls.validated.is_(True),
+        )

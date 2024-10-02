@@ -23,7 +23,7 @@ from geonature.utils.env import db
 
 from pypnusershub.db.models import User
 
-from sqlalchemy import select
+from sqlalchemy import select, null
 
 
 @pytest.fixture(scope="class")
@@ -332,6 +332,17 @@ class TestPermissions:
         permissions("r1", "---1--", expire_on=datetime.now() + timedelta(days=1))
 
         assert_cruved("r1", "110100")
+
+    def test_validation_perm(self, permissions, assert_cruved):
+        """
+        Permission not yet validated or refused should be ignored.
+        """
+        permissions("r1", "1-----")  # validation status default to True
+        permissions("r1", "-1----", validated=null())  # validation pending
+        permissions("r1", "--1---", validated=False)  # permission refused
+        permissions("r1", "---1--", validated=True)  # permission granted
+
+        assert_cruved("r1", "100100")
 
 
 @pytest.mark.usefixtures("temporary_transaction", "g_permissions")
