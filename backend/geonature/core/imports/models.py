@@ -152,7 +152,7 @@ class Destination(db.Model):
             raise AttributeError(f"Is your module of type '{self.module.type}' installed?") from exc
 
     @staticmethod
-    def filter_by_role(user: Optional[User] = None) -> List["Destination"]:
+    def allowed_destinations(user: Optional[User] = None) -> List["Destination"]:
         """
         Return a list of allowed destinations for a given user.
 
@@ -182,6 +182,24 @@ class Destination(db.Model):
             if len(perm) > 0:
                 allowed_destination.append(dest)
         return allowed_destination
+
+    @qfilter
+    def filter_by_role(user: Optional[User] = None):
+        """
+        Filter Destination by role.
+
+        Parameters
+        ----------
+        user : User, optional
+            The user to filter destinations for. If not provided, the current_user is used.
+
+        Returns
+        -------
+        sqlalchemy.sql.elements.BinaryExpression
+            A filter criterion for the ``id_destination`` column of the ``Destination`` table.
+        """
+        allowed_destination = Destination.allowed_destinations(user=user)
+        return Destination.id_destination.in_(map(lambda x: x.id_destination, allowed_destination))
 
 
 @serializable
