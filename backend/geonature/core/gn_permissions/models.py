@@ -239,13 +239,14 @@ class Permission(db.Model):
     )
 
     id_permission = db.Column(db.Integer, primary_key=True)
-    id_role = db.Column(db.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action))
-    id_module = db.Column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_role = db.Column(db.Integer, ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
+    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action), nullable=False)
+    id_module = db.Column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"), nullable=False)
     id_object = db.Column(
         db.Integer,
         ForeignKey(PermObject.id_object),
         default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
+        nullable=False,
     )
     created_on = db.Column(sa.DateTime, server_default=sa.func.now())
     expire_on = db.Column(db.DateTime)

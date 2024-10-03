@@ -1,7 +1,9 @@
 from collections import ChainMap
 from datetime import datetime, timedelta
 from itertools import product
+from copy import deepcopy
 
+from marshmallow.exceptions import ValidationError
 import pytest
 from flask import g
 import sqlalchemy as sa
@@ -19,6 +21,7 @@ from geonature.core.gn_permissions.tools import (
     get_scopes_by_action,
     has_any_permissions_by_action,
 )
+from geonature.core.gn_permissions.schemas import PermissionSchema
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
@@ -505,3 +508,43 @@ class TestPermissionsFilters:
             "D",
             [{"SCOPE": 1, "TAXONS": [capra_ibex, cinnamon]}, {"SCOPE": 2, "TAXONS": [animalia]}],
         )
+
+
+@pytest.mark.usefixtures("temporary_transaction")
+class TestPermissionSchema:
+    def test_permission_schema(self, roles, actions, module_a):
+        gap = db.session.execute(
+            sa.select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Gap",
+            )
+        ).scalar_one()
+        capra_ibex = db.session.execute(
+            sa.select(Taxref).where(Taxref.cd_nom == 61098)
+        ).scalar_one()
+        data = {
+            "id_role": roles["r1"].id_role,
+            "id_action": actions["R"].id_action,
+            "id_module": module_a.id_module,
+            "scope_value": 3,
+            "areas_filter": [{"id_area": gap.id_area}],
+            "taxons_filter": [{"cd_nom": capra_ibex.cd_nom}],
+        }
+        schema = PermissionSchema(only=["areas_filter", "taxons_filter"])
+        schema.load(data)
+        unexisting_area_data = deepcopy(data)
+        unexisting_area_id = (
+            db.session.execute(sa.select(sa.func.max(LAreas.id_area)).select_from(LAreas)).scalar()
+            + 1
+        )
+        unexisting_area_data["areas_filter"] = [{"id_area": unexisting_area_id}]
+        with pytest.raises(ValidationError, match="Area does not exist"):
+            schema.load(unexisting_area_data)
+        unexisting_taxon_data = deepcopy(data)
+        unexisting_taxon_id = (
+            db.session.execute(sa.select(sa.func.max(Taxref.cd_nom)).select_from(Taxref)).scalar()
+            + 1
+        )
+        unexisting_taxon_data["taxons_filter"] = [{"cd_nom": unexisting_taxon_id}]
+        with pytest.raises(ValidationError, match="Taxon does not exist"):
+            schema.load(unexisting_taxon_data)
