@@ -1,4 +1,5 @@
 from collections import ChainMap
+from datetime import datetime, timedelta
 from itertools import product
 
 import pytest
@@ -319,6 +320,18 @@ class TestPermissions:
         assert has_any_permissions_by_action(
             id_role=roles["r2"].id_role, module_code=module_a.module_code
         ) == b_cruved("111111")
+
+    def test_expired_perm(self, permissions, assert_cruved):
+        """
+        Expired permissions should not been taken into account.
+        Permissons with expire_on=NULL should be considered active.
+        """
+        permissions("r1", "1-----")
+        permissions("r1", "-1----", expire_on=None)
+        permissions("r1", "--1---", expire_on=datetime.now() - timedelta(days=1))
+        permissions("r1", "---1--", expire_on=datetime.now() + timedelta(days=1))
+
+        assert_cruved("r1", "110100")
 
 
 @pytest.mark.usefixtures("temporary_transaction", "g_permissions")

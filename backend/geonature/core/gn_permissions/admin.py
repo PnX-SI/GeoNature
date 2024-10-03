@@ -368,6 +368,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "role.identifiant": "identifiant du rôle",
         "role.nom_complet": "nom du rôle",
         "availability": "Permission",
+        "expire_on": "Date d’expiration",
         "scope": "Filtre sur l'appartenance des données",
         "sensitivity_filter": (
             "Flouter" if config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"] else "Exclure"
