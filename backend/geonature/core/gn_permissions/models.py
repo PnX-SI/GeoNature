@@ -3,6 +3,7 @@ Models of gn_permissions schema
 """
 
 from packaging import version
+from datetime import datetime
 
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, ForeignKeyConstraint
@@ -202,6 +203,7 @@ class Permission(db.Model):
         ForeignKey(PermObject.id_object),
         default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
     )
+    expire_on = db.Column(db.DateTime)
 
     role = db.relationship(User, backref=db.backref("permissions", cascade_backrefs=False))
     action = db.relationship(PermAction)
@@ -278,8 +280,8 @@ class Permission(db.Model):
 
     @property
     def is_active(self):
-        return True
+        return self.expire_on is None or self.expire_on > datetime.now()
 
     @classmethod
     def active_filter(cls):
-        return sa.true()
+        return sa.or_(cls.expire_on.is_(sa.null()), cls.expire_on > sa.func.now())
