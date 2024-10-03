@@ -288,6 +288,15 @@ class OptionQuerySelectField(QuerySelectField):
 
 class UserAjaxModelLoader(QueryAjaxModelLoader):
     def format(self, user):
+        """
+        Instead of returning a list of tuple (id, label), we return a list of tuple (id, label, excluded_availabilities).
+        The third element of each tuple is the list of type of permissions the user already have, so it is useless
+        to add this permission to the user, and they will be not available in the front select.
+        Two remarks:
+        - We only consider active permissions of the user
+        - If the type of the permission allows two or more filters, we do not exclude it as it makes sens to add several
+          permissions of the same type with differents set of filters.
+        """
         if not user:
             return None
 

@@ -129,6 +129,7 @@ def permissions(roles, groups, actions, module_gn):
         scope_type = db.session.execute(
             select(PermFilterType).filter_by(code_filter_type="SCOPE")
         ).scalar_one()
+        perms = {}
         with db.session.begin_nested():
             for a, s in zip("CRUVED", cruved):
                 if s == "-":
@@ -137,9 +138,11 @@ def permissions(roles, groups, actions, module_gn):
                     s = None
                 else:
                     s = int(s)
-                db.session.add(
-                    Permission(role=role, action=actions[a], module=module, scope_value=s, **kwargs)
+                perms[a] = Permission(
+                    role=role, action=actions[a], module=module, scope_value=s, **kwargs
                 )
+                db.session.add(perms[a])
+        return perms
 
     return _permissions
 
