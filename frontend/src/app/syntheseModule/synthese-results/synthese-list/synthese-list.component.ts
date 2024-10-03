@@ -33,7 +33,6 @@ import { Router } from '@angular/router';
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = null;
   public selectedObs: any;
-  public selectObsTaxonInfo: any;
   public selectedObsTaxonDetail: any;
   public previousRow: any;
   public rowNumber: number;

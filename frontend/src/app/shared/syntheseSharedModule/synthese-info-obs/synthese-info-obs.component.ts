@@ -38,7 +38,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public profileDataChecks: any;
   public showValidation = false;
 
-  public selectObsTaxonInfo;
   public selectCdNomenclature;
   public formatedAreas = [];
   public isLoading = false;
@@ -195,22 +194,19 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
         }
 
-        this._gnDataService
-          .getTaxonAttributsAndMedia(
-            this.selectedObs.cd_nom,
-            this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB
-          )
-          .subscribe((taxAttr) => {
-            this.selectObsTaxonInfo = taxAttr;
-          });
-
         if (this.selectedObs['unique_id_sinp']) {
           this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
         }
         let cdNom = this.selectedObs['cd_nom'];
         let areasStatus = this.selectedObs['areas'].map((area) => area.id_area);
-        this._gnDataService.getTaxonInfo(cdNom, areasStatus).subscribe((taxInfo) => {
+        const taxhubFields = ['attributs', 'attributs.bib_attribut.label_attribut', 'status'];
+        this._gnDataService.getTaxonInfo(cdNom, taxhubFields, areasStatus).subscribe((taxInfo) => {
           this.selectedObsTaxonDetail = taxInfo;
+          // filter attributs
+          this.selectedObsTaxonDetail.attributs = taxInfo['attributs'].filter((v) =>
+            this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut)
+          );
+
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers
               .map((el) => el.email)

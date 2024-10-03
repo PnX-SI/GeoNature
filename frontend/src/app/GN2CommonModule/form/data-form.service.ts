@@ -142,25 +142,15 @@ export class DataFormService {
     });
   }
 
-  getTaxonInfo(cd_nom: number, areasStatus?: Array<string>) {
+  getTaxonInfo(cd_nom: number, fields?: Array<string>, areasStatus?: Array<string>) {
     let query_string = new HttpParams();
     if (areasStatus) {
       query_string = query_string.append('areas_status', areasStatus.join(','));
     }
-    return this._http.get<Taxon>(`${this.config.API_TAXHUB}/taxref/${cd_nom}`, {
-      params: query_string,
-    });
-  }
-
-  getTaxonAttributsAndMedia(cd_nom: number, id_attributs?: Array<number>) {
-    let query_string = new HttpParams();
-    if (id_attributs) {
-      id_attributs.forEach((id) => {
-        query_string = query_string.append('id_attribut', id.toString());
-      });
+    if (fields) {
+      query_string = query_string.append('fields', fields.join(','));
     }
-
-    return this._http.get<any>(`${this.config.API_TAXHUB}/bibnoms/taxoninfo/${cd_nom}`, {
+    return this._http.get<Taxon>(`${this.config.API_TAXHUB}/taxref/${cd_nom}`, {
       params: query_string,
     });
   }
