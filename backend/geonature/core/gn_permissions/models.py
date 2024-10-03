@@ -275,3 +275,11 @@ class Permission(db.Model):
     @qfilter(query=True)
     def nice_order(cls, **kwargs):
         return _nice_order(cls, kwargs["query"])
+
+    @property
+    def is_active(self):
+        return True
+
+    @classmethod
+    def active_filter(cls):
+        return sa.true()

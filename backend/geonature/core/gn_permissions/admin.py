@@ -132,10 +132,11 @@ def permissions_formatter(view, context, model, name):
     o += "<thead><tr>" + "".join([f"<th>{col}</th>" for col in columns]) + "</tr></thead>"
     o += "<tbody>"
     for ap in available_permissions:
+        permissions = [p for p in model.permissions if p.is_active]
         own_permissions = list(
             filter(
                 lambda p: p.module == ap.module and p.object == ap.object and p.action == ap.action,
-                model.permissions,
+                permissions,
             )
         )
         permissions = [(own_permissions, True)]
@@ -243,7 +244,8 @@ def permissions_formatter(view, context, model, name):
 
 def permissions_count_formatter(view, context, model, name):
     url = url_for("permissions/permission.index_view", flt1_rle_equals=model.id_role)
-    return Markup(f'<a href="{url}">{len(model.permissions)}</a>')
+    permissions_count = len([p for p in model.permissions if p.is_active])
+    return Markup(f'<a href="{url}">{permissions_count}</a>')
 
 
 ### Widgets
@@ -314,7 +316,9 @@ class UserAjaxModelLoader(QueryAjaxModelLoader):
             )
             return filters_count < 2
 
-        availabilities = {p.availability for p in user.permissions if p.availability}
+        availabilities = {
+            p.availability for p in user.permissions if p.availability and p.is_active
+        }
         excluded_availabilities = filter(filter_availability, availabilities)
         excluded_availabilities = map(format_availability, excluded_availabilities)
         return super().format(user) + (list(excluded_availabilities),)
@@ -426,6 +430,12 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ),
     }
 
+    def get_query(self):
+        return super().get_query().where(Permission.active_filter())
+
+    def get_count_query(self):
+        return super().get_count_query().where(Permission.active_filter())
+
     def render(self, template, **kwargs):
         self.extra_js = [url_for("static", filename="js/hide_unnecessary_filters.js")]
         return super().render(template, **kwargs)
@@ -513,6 +523,14 @@ class RolePermAdmin(CruvedProtectedMixin, ModelView):
         "permissions_count": permissions_count_formatter,
     }
 
+    def get_query(self):
+        # TODO : change to sqla2.0 query when flask admin update to sqla2
+        return db.session.query(User).where(User.filter_by_app())
+
+    def get_count_query(self):
+        # TODO : change to sqla2.0 query when flask admin update to sqla2
+        return db.session.query(sa.func.count("*")).select_from(User).where(User.filter_by_app())
+
 
 class GroupPermAdmin(RolePermAdmin):
     column_list = (
@@ -522,17 +540,10 @@ class GroupPermAdmin(RolePermAdmin):
     column_details_list = ("nom_role", "permissions_count", "permissions")
 
     def get_query(self):
-        # TODO : change to sqla2.0 query when flask admin update to sqla2
-        return db.session.query(User).filter_by(groupe=True).where(User.filter_by_app())
+        return super().get_query().where(User.groupe.is_(sa.true()))
 
     def get_count_query(self):
-        # TODO : change to sqla2.0 query when flask admin update to sqla2
-        return (
-            db.session.query(sa.func.count("*"))
-            .select_from(User)
-            .where(User.groupe == True)
-            .where(User.filter_by_app())
-        )
+        return super().get_count_query().where(User.groupe.is_(sa.true()))
 
 
 class UserPermAdmin(RolePermAdmin):
@@ -557,17 +568,10 @@ class UserPermAdmin(RolePermAdmin):
     )
 
     def get_query(self):
-        # TODO : change to sqla2.0 query when flask admin update to sqla2
-        return db.session.query(User).filter_by(groupe=False).where(User.filter_by_app())
+        return super().get_query().where(User.groupe.is_(sa.false()))
 
     def get_count_query(self):
-        # TODO : change to sqla2.0 query when flask admin update to sqla2
-        return (
-            db.session.query(sa.func.count("*"))
-            .select_from(User)
-            .where(User.groupe == False)
-            .where(User.filter_by_app())
-        )
+        return super().get_count_query().where(User.groupe.is_(sa.false()))
 
 
 admin.add_view(
