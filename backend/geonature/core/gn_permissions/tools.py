@@ -29,6 +29,7 @@ def _get_user_permissions(id_role):
             joinedload(Permission.action),
         )
         .where(
+            Permission.active_filter(),
             sa.or_(
                 # direct permissions
                 Permission.id_role == id_role,
