@@ -1514,6 +1514,7 @@ def list_all_reports(permissions):
                 Synthese.date_min,
                 Synthese.date_max,
             ),
+            joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
         )
     )
     # Verify and filter by type
@@ -1553,16 +1554,12 @@ def list_all_reports(permissions):
         raise BadRequest("Bad orderby")
 
     # Pagination
-    total = db.session.scalar(select(func.count("*")).select_from(query))
-    nb_pages = total // per_page
-    offset = per_page * (page - 1)
-    query = query.limit(per_page).offset(offset)
-
-    paginated_results = db.session.execute(query).all()
+    total = db.session.scalar(select(func.count("*")).select_from(TReport))
+    paginated_results = db.paginate(query, page=page, per_page=per_page)
 
     result = []
 
-    for report, nom_complet in paginated_results:
+    for report in paginated_results.items:
         report_dict = {
             "id_report": report.id_report,
             "id_synthese": report.id_synthese,
@@ -1574,7 +1571,7 @@ def list_all_reports(permissions):
             "content": report.content,
             "deleted": report.deleted,
             "creation_date": report.creation_date,
-            "user": {"nom_complet": nom_complet},
+            "user": {"nom_complet": report.user.nom_complet},
             "synthese": {
                 "cd_nom": report.synthese.cd_nom,
                 "nom_cite": report.synthese.nom_cite,
@@ -1586,9 +1583,9 @@ def list_all_reports(permissions):
         result.append(report_dict)
 
     response = {
-        "total_filtered": len(paginated_results),
+        "total_filtered": paginated_results.total,
         "total": total,
-        "pages": nb_pages,
+        "pages": paginated_results.pages,
         "current_page": page,
         "per_page": per_page,
         "items": result,
