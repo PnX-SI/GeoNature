@@ -134,13 +134,13 @@ class PermissionAvailable(db.Model):
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
 
     filters_fields = {
-        "SCOPE": scope_filter,
-        "SENSITIVITY": sensitivity_filter,
+        "SCOPE": "scope_filter",
+        "SENSITIVITY": "sensitivity_filter",
     }
 
     @property
     def filters(self):
-        return [k for k, v in self.filters_fields.items() if getattr(self, v.name)]
+        return [k for k, v in self.filters_fields.items() if getattr(self, v)]
 
     def __str__(self):
         s = self.module.module_label
@@ -219,8 +219,8 @@ class Permission(db.Model):
     )
 
     filters_fields = {
-        "SCOPE": scope_value,
-        "SENSITIVITY": sensitivity_filter,
+        "SCOPE": "scope_value",
+        "SENSITIVITY": "sensitivity_filter",
     }
 
     @staticmethod
@@ -244,7 +244,7 @@ class Permission(db.Model):
         for name, field in self.filters_fields.items():
             # Get filter comparison function or use default comparison function
             __le_fct__ = getattr(self, f"__{name}_le__", Permission.__default_le__)
-            self_value, other_value = getattr(self, field.name), getattr(other, field.name)
+            self_value, other_value = getattr(self, field), getattr(other, field)
             if not __le_fct__(self_value, other_value):
                 return False
         return True
@@ -253,13 +253,16 @@ class Permission(db.Model):
     def filters(self):
         filters = []
         for name, field in self.filters_fields.items():
-            value = getattr(self, field.name)
-            if field.nullable:
-                if value is None:
-                    continue
-            if field.type.python_type == bool:
-                if not value:
-                    continue
+            value = getattr(self, field)
+            mapper = self.__mapper__
+            if field in mapper.columns:
+                column = mapper.columns[field]
+                if column.nullable:
+                    if value is None:
+                        continue
+                if column.type.python_type is bool:
+                    if not value:
+                        continue
             filters.append(PermFilter(name, value))
         return filters
 
