@@ -486,6 +486,10 @@ class Synthese(DB.Model):
                     or self.dataset.has_instance_permission(perm.scope_value)
                 ):
                     continue  # scope filter denied access, check next permission
+            if perm.areas_filter:
+                if set(perm.areas_filter).isdisjoint(self.areas):
+                    # the permission does not allows any area overlapping the observation areas
+                    continue
             return True  # no filter exclude this permission
         return False
 
@@ -664,6 +668,13 @@ class VSyntheseForWebApp(DB.Model):
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)
 
+    areas = relationship(
+        LAreas,
+        secondary=corAreaSynthese,
+        primaryjoin=corAreaSynthese.c.id_synthese == id_synthese,
+        secondaryjoin=corAreaSynthese.c.id_area == LAreas.id_area,
+        overlaps="areas,synthese_obs",
+    )
     medias = relationship(
         TMedias, primaryjoin=(TMedias.uuid_attached_row == foreign(unique_id_sinp)), uselist=True
     )

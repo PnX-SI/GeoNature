@@ -37,6 +37,7 @@ from geonature.core.gn_commons.models.base import TModules
 from apptax.taxonomie.models import Taxref
 from ref_geo.models import BibAreasTypes, LAreas
 from apptax.tests.fixtures import noms_example, attribut_example, liste
+from pypnusershub.db.models import User
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 
 from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
@@ -2012,3 +2013,63 @@ class TestMediaTaxon:
 
         assert response.status_code == 200
         assert isinstance(response.json["items"], list)
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestSyntheseGeographicFilter:
+    def test_geographic_filter_get_obs(self, synthese_data, synthese_read_permissions):
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        chambery = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Chambéry")
+        ).scalar_one()
+        guirec = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Perros-Guirec")
+        ).scalar_one()
+        synthese_read_permissions(user, scope_value=None, areas_filter=[chambery, guirec])
+        set_logged_user(self.client, user)
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
+        )
+        assert response.status_code == 200, response.data
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs2"].id_synthese,
+            )
+        )
+        assert response.status_code == Forbidden.code, response.data
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs3"].id_synthese,
+            )
+        )
+        assert response.status_code == 200, response.data
+
+    def test_geographic_filter_list_obs(self, synthese_data, synthese_read_permissions):
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        chambery = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Chambéry")
+        ).scalar_one()
+        guirec = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Perros-Guirec")
+        ).scalar_one()
+        synthese_read_permissions(user, scope_value=None, areas_filter=[chambery, guirec])
+        set_logged_user(self.client, user)
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese.get_observations_for_web",
+            )
+        )
+        assert response.status_code == 200, response.data
+        response_ids = [f["properties"]["id_synthese"] for f in response.json["features"]]
+        assert synthese_data["obs1"].id_synthese in response_ids
+        assert synthese_data["obs2"].id_synthese not in response_ids
+        assert synthese_data["obs3"].id_synthese in response_ids
