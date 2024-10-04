@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
@@ -11,12 +11,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { ConfigService } from '@geonature/services/config.service';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, SyntheseDataService],
+  providers: [MapService, SyntheseDataService, DatePipe],
 })
 export class HomeContentComponent implements OnInit, AfterViewInit {
   public showLastObsMap: boolean = false;
@@ -26,13 +28,26 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   public destroy$: Subject<boolean> = new Subject<boolean>();
   public cluserOrSimpleFeatureGroup = null;
 
+  @ViewChild('table')
+  table: DatatableComponent;
+  discussions = [];
+  columns = [];
+  currentPage = 1;
+  perPage = 2;
+  totalPages = 1;
+  totalRows: Number;
+  myReportsOnly = false;
+  sort = 'desc';
+  orderby = 'date';
+  params: URLSearchParams = new URLSearchParams();
   constructor(
     private _SideNavService: SideNavService,
     private _syntheseApi: SyntheseDataService,
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
-    public config: ConfigService
+    public config: ConfigService,
+    private datePipe: DatePipe
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -72,6 +87,10 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  get isExistBlockToDisplay(): boolean {
+    return this.config.HOME.DISPLAY_LATEST_DISCUSSIONS; // NOTES [projet ARB]: ajouter les autres config à afficher ici || this.config.HOME.DISPLAY_LATEST_VALIDATIONS ..;
   }
 
   private computeMapBloc() {

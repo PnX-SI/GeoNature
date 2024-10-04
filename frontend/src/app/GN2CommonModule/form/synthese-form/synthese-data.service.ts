@@ -229,8 +229,10 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
-  getReports(params) {
-    return this._api.get(`${this.config.API_ENDPOINT}/synthese/reports?${params}`);
+  getReports(params, idSynthese = null) {
+    const baseUrl = `${this.config.API_ENDPOINT}/synthese/reports`;
+    const url = idSynthese ? `${baseUrl}/${idSynthese}` : baseUrl;
+    return this._api.get(`${url}?${params}`);
   }
 
   createReport(params) {

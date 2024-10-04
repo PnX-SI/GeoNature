@@ -129,6 +129,7 @@ class HomeConfig(Schema):
         load_default="Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     )
     FOOTER = fields.String(load_default="")
+    DISPLAY_LATEST_DISCUSSIONS = fields.Boolean(load_default=True)
 
 
 class MetadataConfig(Schema):
