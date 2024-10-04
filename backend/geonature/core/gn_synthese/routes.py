@@ -15,7 +15,7 @@ from flask import (
     jsonify,
     g,
 )
-from geonature.core.gn_synthese.schemas import SyntheseSchema
+from geonature.core.gn_synthese.schemas import ReportSchema, SyntheseSchema
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from pypnusershub.db.models import User
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
@@ -1491,6 +1491,7 @@ def update_content_report(id_report):
 @routes.route("/reports", methods=["GET"])
 @permissions_required("R", module_code="SYNTHESE")
 def list_all_reports(permissions):
+    # Parameters
     type_name = request.args.get("type")
     orderby = request.args.get("orderby", "creation_date")
     sort = request.args.get("sort")
@@ -1499,9 +1500,8 @@ def list_all_reports(permissions):
     my_reports = request.args.get("my_reports", "false").lower() == "true"
 
     # Start query
-    req = (
-        db.session.query(TReport, User.nom_complet)
-        .select_from(TReport)
+    query = (
+        sa.select(TReport, User.nom_complet)
         .join(User, TReport.id_role == User.id_role)
         .options(
             joinedload(TReport.report_type).load_only(
@@ -1516,26 +1516,25 @@ def list_all_reports(permissions):
             ),
         )
     )
-
     # Verify and filter by type
     if type_name:
-        type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
+        type_exists = db.session.scalar(
+            sa.exists(BibReportsTypes).where(BibReportsTypes.type == type_name).select()
+        )
         if not type_exists:
             raise BadRequest("This report type does not exist")
-        req = req.where(TReport.report_type.has(BibReportsTypes.type == type_name))
+        query = query.where(TReport.report_type.has(BibReportsTypes.type == type_name))
 
     # Filter by id_role for 'pin' type only or if my_reports is true
     if type_name == "pin" or my_reports:
-        req = req.where(TReport.id_role == g.current_user.id_role)
+        query = query.where(TReport.id_role == g.current_user.id_role)
 
     # On vérifie les permissions en lecture sur la synthese
-    query = select(Synthese.id_synthese).select_from(Synthese)
-    synthese_query_obj = SyntheseQuery(Synthese, query, {})
+    synthese_query = select(Synthese.id_synthese).select_from(Synthese)
+    synthese_query_obj = SyntheseQuery(Synthese, synthese_query, {})
     synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
-    res_ids_synthese = db.session.execute(synthese_query_obj.query)
-    result = res_ids_synthese.fetchall()
-    ids_synthese = [row[0] for row in result]
-    req = req.filter(TReport.id_synthese.in_(ids_synthese))
+    ids_synthese = db.session.scalars(synthese_query_obj.query).all()
+    query = query.where(TReport.id_synthese.in_(ids_synthese))
 
     SORT_COLUMNS = {
         "user.nom_complet": User.nom_complet,
@@ -1547,18 +1546,23 @@ def list_all_reports(permissions):
     if orderby in SORT_COLUMNS:
         sort_column = SORT_COLUMNS[orderby]
         if sort == "desc":
-            req = req.order_by(desc(sort_column))
+            query = query.order_by(desc(sort_column))
         else:
-            req = req.order_by(asc(sort_column))
+            query = query.order_by(asc(sort_column))
     else:
         raise BadRequest("Bad orderby")
 
-    total = TReport.query.count()
-    paginated_results = req.paginate(page=page, per_page=per_page, error_out=False)
+    # Pagination
+    total = db.session.scalar(select(func.count("*")).select_from(query))
+    nb_pages = total // per_page
+    offset = per_page * (page - 1)
+    query = query.limit(per_page).offset(offset)
+
+    paginated_results = db.session.execute(query).all()
 
     result = []
 
-    for report, nom_complet in paginated_results.items:
+    for report, nom_complet in paginated_results:
         report_dict = {
             "id_report": report.id_report,
             "id_synthese": report.id_synthese,
@@ -1582,11 +1586,11 @@ def list_all_reports(permissions):
         result.append(report_dict)
 
     response = {
-        "total_filtered": paginated_results.total,
+        "total_filtered": len(paginated_results),
         "total": total,
-        "pages": paginated_results.pages,
-        "current_page": paginated_results.page,
-        "per_page": paginated_results.per_page,
+        "pages": nb_pages,
+        "current_page": page,
+        "per_page": per_page,
         "items": result,
     }
     return jsonify(response)
@@ -1596,50 +1600,35 @@ def list_all_reports(permissions):
 @permissions_required("R", module_code="SYNTHESE")
 def list_reports(permissions, id_synthese):
     type_name = request.args.get("type")
-    # Start query
-    req = TReport.query
 
     synthese = db.get_or_404(Synthese, id_synthese)
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
-    req = req.where(TReport.id_synthese == id_synthese)
+
+    query = sa.select(TReport).where(TReport.id_synthese == id_synthese)
 
     # Verify and filter by type
     if type_name:
-        type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
+        type_exists = db.session.scalar(
+            sa.exists(BibReportsTypes).where(BibReportsTypes.type == type_name).select()
+        )
         if not type_exists:
             raise BadRequest("This report type does not exist")
-        req = req.where(TReport.report_type.has(BibReportsTypes.type == type_name))
+        query = query.where(TReport.report_type.has(BibReportsTypes.type == type_name))
 
     # Filter by id_role for 'pin' type only
     if type_name == "pin":
-        req = req.where(TReport.id_role == g.current_user.id_role)
+        query = query.where(TReport.id_role == g.current_user.id_role)
 
     # Join the User table
-    req = req.options(
+    query = query.options(
         joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
         joinedload(TReport.report_type),
     )
 
-    response = [
-        report.as_dict(
-            fields=[
-                "id_report",
-                "id_synthese",
-                "id_role",
-                "report_type.type",
-                "report_type.id_type",
-                "content",
-                "deleted",
-                "creation_date",
-                "user.nom_role",
-                "user.prenom_role",
-            ]
-        )
-        for report in req.all()
-    ]
-
-    return jsonify(response)
+    return ReportSchema(many=True, only=["+user.nom_role", "+user.prenom_role"]).dump(
+        db.session.scalars(query).all()
+    )
 
 
 @routes.route("/reports/<int:id_report>", methods=["DELETE"])
