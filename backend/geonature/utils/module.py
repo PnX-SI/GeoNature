@@ -111,6 +111,10 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
     if module is None:
         # add module to database
         try:
+            module_label = module_dist.entry_points["label"].load()
+        except KeyError:
+            module_label = module_code.capitalize()
+        try:
             module_picto = module_dist.entry_points["picto"].load()
         except KeyError:
             module_picto = "fa-puzzle-piece"
@@ -125,7 +129,7 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
         module = TModules(
             type=module_type,
             module_code=module_code,
-            module_label=module_code.capitalize(),
+            module_label=module_label,
             module_path=module_code.lower(),
             module_target="_self",
             module_picto=module_picto,
