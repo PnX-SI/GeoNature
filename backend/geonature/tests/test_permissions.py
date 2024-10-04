@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from itertools import product
 
 import pytest
-
 from flask import g
+import sqlalchemy as sa
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
@@ -23,6 +23,7 @@ from geonature.utils.env import db
 
 from pypnusershub.db.models import User
 
+from ref_geo.models import BibAreasTypes, LAreas
 from sqlalchemy import select, null
 
 
@@ -202,9 +203,10 @@ def assert_permissions(roles):
             module_code=module_code,
             object_code=object_code,
         )
-        perms = set((p.scope_value, p.sensitivity_filter) for p in perms)
+        perms = set((p.scope_value, p.sensitivity_filter, frozenset(p.areas_filter)) for p in perms)
         expected_perms = set(
-            (p.get("SCOPE", None), p.get("SENSITIVITY", False)) for p in expected_perms
+            (p.get("SCOPE", None), p.get("SENSITIVITY", False), frozenset(p.get("AREAS", [])))
+            for p in expected_perms
         )
         assert perms == expected_perms
 
@@ -374,3 +376,63 @@ class TestPermissionsFilters:
         assert_permissions(
             "g12_r1", "U", [{"SCOPE": 2, "SENSITIVITY": True}, {"SCOPE": 1, "SENSITIVITY": False}]
         )
+
+    def test_geographic_filter(self, roles, permissions, assert_permissions):
+        grenoble = db.session.execute(
+            sa.select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Grenoble",
+            )
+        ).scalar_one()
+
+        permissions("r1", "1-----")
+        permissions("r1", "-1----", areas_filter=[])
+        permissions("r1", "--1---", areas_filter=[grenoble])
+
+        assert_permissions("r1", "C", [{"SCOPE": 1, "AREAS": []}])
+        assert_permissions("r1", "R", [{"SCOPE": 1, "AREAS": []}])
+        assert_permissions("r1", "U", [{"SCOPE": 1, "AREAS": [grenoble]}])
+
+    def test_geographic_filter_overlap(self, roles, permissions, assert_permissions):
+        grenoble = db.session.execute(
+            sa.select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Grenoble",
+            )
+        ).scalar_one()
+        gap = db.session.execute(
+            sa.select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Gap",
+            )
+        ).scalar_one()
+
+        assert Permission(areas_filter=[gap]) <= Permission(areas_filter=[gap])
+        assert not Permission(areas_filter=[gap]) <= Permission(areas_filter=[grenoble])
+        assert not Permission(areas_filter=[grenoble]) <= Permission(areas_filter=[gap])
+
+        permissions("g1", "1-----", areas_filter=[grenoble])
+        permissions("g2", "1-----", areas_filter=[])
+        permissions("g1", "-1----", areas_filter=[grenoble])
+        permissions("g2", "-2----", areas_filter=[])
+        permissions("g1", "--2---", areas_filter=[grenoble])
+        permissions("g2", "--1---", areas_filter=[])
+        permissions("g1", "---1--", areas_filter=[grenoble])
+        permissions("g2", "---2--", areas_filter=[grenoble])
+        permissions("g1", "----1-", areas_filter=[grenoble, gap])
+        permissions("g2", "----2-", areas_filter=[grenoble])
+        permissions("g1", "-----1", areas_filter=[grenoble])
+        permissions("g2", "-----2", areas_filter=[grenoble, gap])
+
+        assert_permissions("g12_r1", "C", [{"SCOPE": 1, "AREAS": []}])
+        assert_permissions("g12_r1", "R", [{"SCOPE": 2, "AREAS": []}])
+        assert_permissions(
+            "g12_r1", "U", [{"SCOPE": 1, "AREAS": []}, {"SCOPE": 2, "AREAS": [grenoble]}]
+        )
+        assert_permissions("g12_r1", "V", [{"SCOPE": 2, "AREAS": [grenoble]}])
+        assert_permissions(
+            "g12_r1",
+            "E",
+            [{"SCOPE": 1, "AREAS": [grenoble, gap]}, {"SCOPE": 2, "AREAS": [grenoble]}],
+        )
+        assert_permissions("g12_r1", "D", [{"SCOPE": 2, "AREAS": [grenoble, gap]}])

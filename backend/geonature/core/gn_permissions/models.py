@@ -5,6 +5,7 @@ Models of gn_permissions schema
 from packaging import version
 from datetime import datetime
 
+from ref_geo.models import LAreas
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.sql import select
@@ -133,10 +134,12 @@ class PermissionAvailable(db.Model):
 
     scope_filter = db.Column(db.Boolean, server_default=sa.false())
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+    areas_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
 
     filters_fields = {
         "SCOPE": "scope_filter",
         "SENSITIVITY": "sensitivity_filter",
+        "GEOGRAPHIC": "areas_filter",
     }
 
     @property
@@ -177,6 +180,25 @@ class PermFilter:
                 return """<i class="fa fa-low-vision" aria-hidden="true"></i>  non sensible"""
             else:
                 return """<i class="fa fa-eye" aria-hidden="true"></i>  sensible et non sensible"""
+        elif self.name == "GEOGRAPHIC":
+            if self.value:
+                areas_names = ", ".join([a.area_name for a in self.value])
+                return f"""<i class="fa fa-map-marker" aria-hidden="true"></i>  {areas_names}"""
+            else:
+                return """<i class="fa fa-globe" aria-hidden="true"></i>  partout"""
+
+
+cor_permission_area = db.Table(
+    "cor_permission_area",
+    sa.Column(
+        "id_permission",
+        sa.Integer,
+        sa.ForeignKey("gn_permissions.t_permissions.id_permission"),
+        primary_key=True,
+    ),
+    sa.Column("id_area", sa.Integer, sa.ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
+    schema="gn_permissions",
+)
 
 
 @serializable
@@ -215,6 +237,7 @@ class Permission(db.Model):
     scope_value = db.Column(db.Integer, ForeignKey(PermScope.value), nullable=True)
     scope = db.relationship(PermScope)
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+    areas_filter = db.relationship(LAreas, secondary=cor_permission_area)
 
     availability = db.relationship(
         PermissionAvailable,
@@ -225,6 +248,7 @@ class Permission(db.Model):
     filters_fields = {
         "SCOPE": "scope_value",
         "SENSITIVITY": "sensitivity_filter",
+        "GEOGRAPHIC": "areas_filter",
     }
 
     @staticmethod
@@ -235,6 +259,10 @@ class Permission(db.Model):
     def __SENSITIVITY_le__(a, b):
         # False only if: A is False and b is True
         return (not a) <= (not b)
+
+    @staticmethod
+    def __GEOGRAPHIC_le__(a, b):
+        return (a and set(a).issubset(b)) or not b
 
     @staticmethod
     def __default_le__(a, b):
@@ -267,6 +295,9 @@ class Permission(db.Model):
                 if column.type.python_type is bool:
                     if not value:
                         continue
+            elif field in mapper.relationships:
+                if value == []:
+                    continue
             filters.append(PermFilter(name, value))
         return filters
 

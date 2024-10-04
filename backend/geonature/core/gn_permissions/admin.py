@@ -1,6 +1,7 @@
 from flask import url_for, has_app_context, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
+from ref_geo.models import BibAreasTypes, LAreas
 import sqlalchemy as sa
 from flask_admin.contrib.sqla.tools import get_primary_key
 from flask_admin.contrib.sqla.fields import QuerySelectField
@@ -332,6 +333,27 @@ class UserAjaxModelLoader(QueryAjaxModelLoader):
         )
 
 
+class AreaAjaxModelLoader(QueryAjaxModelLoader):
+    def format(self, area):
+        return (area.id_area, f"{area.area_name} ({area.area_type.type_name})")
+
+    def get_one(self, pk):
+        # prevent autoflush from occuring during populate_obj
+        with self.session.no_autoflush:
+            return self.session.get(self.model, pk)
+
+    def get_query(self):
+        return (
+            super()
+            .get_query()
+            .join(LAreas.area_type)
+            .where(
+                BibAreasTypes.type_code.in_(config["PERMISSIONS"]["GEOGRAPHIC_FILTER_AREA_TYPES"])
+            )
+            .order_by(BibAreasTypes.id_type, LAreas.area_name)
+        )
+
+
 ### ModelViews
 
 
@@ -374,6 +396,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
             "Flouter" if config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"] else "Exclure"
         )
         + " les données sensibles",
+        "areas_filter": "Filtre géographique",
     }
     column_select_related_list = ("availability",)
     column_searchable_list = ("role.identifiant", "role.nom_complet")
@@ -404,23 +427,23 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", False),
         ("id_action", False),
     ]
-    form_columns = ("role", "availability", "scope", "sensitivity_filter")
+    form_columns = ("role", "availability", "scope", "sensitivity_filter", "areas_filter")
     form_overrides = dict(
         availability=OptionQuerySelectField,
     )
     form_args = dict(
         availability=dict(
             query_factory=lambda: PermissionAvailable.nice_order(),
-            options_additional_values=["sensitivity_filter", "scope_filter"],
+            options_additional_values=["sensitivity_filter", "scope_filter", "areas_filter"],
         ),
     )
     create_template = "admin/hide_select2_options_create.html"
     edit_template = "admin/hide_select2_options_edit.html"
     form_ajax_refs = {
         "role": UserAjaxModelLoader(
-            "role",
-            db.session,
-            User,
+            name="role",
+            session=db.session,
+            model=User,
             fields=(
                 "identifiant",
                 "nom_role",
@@ -428,6 +451,15 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
             ),
             placeholder="Veuillez sélectionner un utilisateur ou un groupe",
             minimum_input_length=0,
+        ),
+        "areas_filter": AreaAjaxModelLoader(
+            name="areas_filter",
+            session=db.session,
+            model=LAreas,
+            fields=(LAreas.area_name, LAreas.area_code),
+            page_size=25,
+            placeholder="Sélectionnez une ou plusieurs zones géographiques",
+            minimum_input_length=1,
         ),
     }
 
@@ -475,6 +507,7 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         "object": "Objet",
         "scope_filter": "Filtre appartenance",
         "sensitivity_filter": "Filtre sensibilité",
+        "areas_filter": "Filtre géographique",
     }
     column_formatters = {
         "module": lambda v, c, m, p: m.module.module_code,
@@ -491,7 +524,7 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", False),
         ("id_action", False),
     ]
-    form_columns = ("scope_filter", "sensitivity_filter")
+    form_columns = ("scope_filter", "sensitivity_filter", "areas_filter")
 
 
 class RolePermAdmin(CruvedProtectedMixin, ModelView):

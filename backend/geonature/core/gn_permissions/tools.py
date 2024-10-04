@@ -3,7 +3,8 @@ import logging
 from itertools import groupby, permutations
 
 import sqlalchemy as sa
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.dialects.postgresql import array_agg, aggregate_order_by
 from flask import has_request_context, g
 
 from geonature.core.gn_commons.models import TModules
@@ -12,6 +13,7 @@ from geonature.core.gn_permissions.models import (
     PermObject,
     PermScope,
     Permission,
+    cor_permission_area,
 )
 from geonature.utils.env import db
 
@@ -21,13 +23,26 @@ log = logging.getLogger()
 
 
 def _get_user_permissions(id_role):
-    return db.session.scalars(
+    # This subquery create a list of areas which is used to identify duplicated permissions.
+    areas_filter_query = (
+        sa.select(
+            cor_permission_area.c.id_permission,
+            array_agg(
+                aggregate_order_by(cor_permission_area.c.id_area, cor_permission_area.c.id_area),
+            ).label("areas_filter"),
+        )
+        .group_by(cor_permission_area.c.id_permission)
+        .subquery()
+    )
+    query = (
         sa.select(Permission)
         .options(
             joinedload(Permission.module),
             joinedload(Permission.object),
             joinedload(Permission.action),
+            selectinload(Permission.areas_filter),
         )
+        .outerjoin(areas_filter_query)
         .where(
             Permission.active_filter(),
             sa.or_(
@@ -39,13 +54,20 @@ def _get_user_permissions(id_role):
             ),
         )
         .order_by(Permission.id_module, Permission.id_object, Permission.id_action)
+        # Remove duplicate permissions (typically overlapping user-level and group-level permissions)
         .distinct(
             Permission.id_module,
             Permission.id_object,
             Permission.id_action,
-            *Permission.filters_fields.values(),
+            *[
+                getattr(Permission, v)
+                for v in Permission.filters_fields.values()
+                if v in Permission.__mapper__.columns
+            ],
+            areas_filter_query.c.areas_filter,
         )
-    ).all()
+    )
+    return db.session.scalars(query).all()
 
 
 def get_user_permissions(id_role=None):
@@ -69,6 +91,8 @@ def _get_permissions(id_role, module_code, object_code, action_code):
     }
 
     # Remove all permissions supersed by another permission
+    # /!\ if p1 == p2, both will be removed!
+    # Ensure to eliminate all duplicates when querying permissions
     for p1, p2 in permutations(permissions, 2):
         if p1 in permissions and p1 <= p2:
             permissions.remove(p1)
