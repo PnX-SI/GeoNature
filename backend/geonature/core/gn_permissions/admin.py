@@ -188,7 +188,7 @@ def permissions_formatter(view, context, model, name):
                         o += """<ul class="list-group">"""
                         for flt_name in perm.availability.filters:
                             flt_field = Permission.filters_fields[flt_name]
-                            flt = PermFilter(flt_name, getattr(perm, flt_field.name))
+                            flt = PermFilter(flt_name, getattr(perm, flt_field))
                             o += f"""<li class="list-group-item">{flt}</li>"""
                         o += "</ul>"
                     o += """</div></div>"""
@@ -308,7 +308,7 @@ class UserAjaxModelLoader(QueryAjaxModelLoader):
         def filter_availability(availability):
             filters_count = sum(
                 [
-                    getattr(availability, field.name)
+                    getattr(availability, field)
                     for field in PermissionAvailable.filters_fields.values()
                 ]
             )
