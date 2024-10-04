@@ -1225,6 +1225,32 @@ class TestSynthese:
         )
         assert response.status_code == Forbidden.code
 
+    def test_taxon_observer(self, synthese_data, users):
+        set_logged_user(self.client, users["stranger_user"])
+
+        CD_REF = 2497
+        CD_REF_OBSERVERS = {
+            "items": [
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "Bobby Bob",
+                }
+            ],
+            "total": 2,
+            "per_page": 1,
+            "page": 1,
+        }
+        # Missing area_type parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_observers", cd_ref=CD_REF),
+        )
+        response_json = response.get_json()
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS
+
     def test_color_taxon(self, synthese_data, users):
         # Note: require grids 5×5!
         set_logged_user(self.client, users["self_user"])
