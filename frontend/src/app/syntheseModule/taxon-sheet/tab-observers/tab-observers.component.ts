@@ -25,7 +25,7 @@ export class TabObserversComponent implements OnInit {
     { prop: 'date_min', name: 'Plus ancienne' },
     { prop: 'date_max', name: 'Plus récente' },
     { prop: 'observation_count', name: "Nombre d'observations" },
-    { prop: 'media_count', name: "Nombre de media" },
+    { prop: 'media_count', name: 'Nombre de media' },
   ];
 
   constructor(
@@ -52,7 +52,7 @@ export class TabObserversComponent implements OnInit {
       return;
     }
     this._syntheseDataService
-      .getSyntheseSpeciesSheetObservers(taxon.cd_ref, this.pagination)
+      .getSyntheseTaxonSheetObservers(taxon.cd_ref, this.pagination)
       .subscribe((data) => {
         // Store result
         this.items = data.items;

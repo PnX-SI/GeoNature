@@ -53,12 +53,11 @@ from geonature.core.gn_synthese.models import (
     SyntheseLogEntry,
 )
 from geonature.core.gn_commons.models import TMedias
-from geonature.core.gn_commons.models import TMedias
 
 from pypnusershub.db import User
 
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-from geonature.core.gn_synthese.utils.species_sheet import SpeciesSheetUtils
+from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils
 
 from geonature.core.gn_synthese.utils.blurring import (
     build_allowed_geom_cte,
@@ -973,11 +972,11 @@ def taxon_stats(scope, cd_ref):
 
     area_type = request.args.get("area_type")
 
-    if not SpeciesSheetUtils.is_valid_area_type(area_type):
+    if not TaxonSheetUtils.is_valid_area_type(area_type):
         raise BadRequest("Missing area_type parameter")
 
-    areas_subquery = SpeciesSheetUtils.get_area_subquery(area_type)
-    taxref_cd_nom_list = SpeciesSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+    areas_subquery = TaxonSheetUtils.get_area_subquery(area_type)
+    taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
 
     # Main query to fetch stats
     query = (
@@ -1005,7 +1004,7 @@ def taxon_stats(scope, cd_ref):
         .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
     )
 
-    synthese_query = SpeciesSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+    synthese_query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
     result = DB.session.execute(synthese_query)
     synthese_stats = result.fetchone()
 
@@ -1023,16 +1022,16 @@ def taxon_stats(scope, cd_ref):
     return data
 
 
-if app.config["SYNTHESE"]["SPECIES_SHEET"]["ENABLE_OBSERVERS"]:
+if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
 
-    @routes.route("/species_observers/<int:cd_ref>", methods=["GET"])
+    @routes.route("/taxon_observers/<int:cd_ref>", methods=["GET"])
     @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
     # @json_resp
-    def species_observers(scope, cd_ref):
+    def taxon_observers(scope, cd_ref):
         per_page = int(request.args.get("per_page", 1))
         page = request.args.get("page", 1, int)
 
-        taxref_cd_nom_list = SpeciesSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+        taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
 
         query = (
             db.session.query(
@@ -1048,7 +1047,7 @@ if app.config["SYNTHESE"]["SPECIES_SHEET"]["ENABLE_OBSERVERS"]:
             .outerjoin(TMedias, TMedias.uuid_attached_row == Synthese.unique_id_sinp)
             .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
         )
-        query = SpeciesSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+        query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
 
         results = query.paginate(page=page, per_page=per_page, error_out=False)
         return jsonify(

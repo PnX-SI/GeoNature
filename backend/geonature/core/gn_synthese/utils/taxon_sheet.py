@@ -8,7 +8,7 @@ from apptax.taxonomie.models import Taxref
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 
-class SpeciesSheetUtils:
+class TaxonSheetUtils:
 
     @staticmethod
     def get_cd_nom_list_from_cd_ref(cd_ref: int) -> typing.List[int]:

@@ -62,11 +62,11 @@ export class SyntheseDataService {
     });
   }
 
-  getSyntheseSpeciesSheetObservers(
+  getSyntheseTaxonSheetObservers(
     cd_ref: number,
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION
   ) {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/species_observers/${cd_ref}`, {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_observers/${cd_ref}`, {
       params: {
         per_page: pagination.perPage,
         page: pagination.currentPage,
