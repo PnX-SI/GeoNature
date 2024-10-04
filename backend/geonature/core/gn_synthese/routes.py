@@ -43,6 +43,7 @@ from geonature.core.notifications.utils import dispatch_notifications
 from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     CorAreaSynthese,
+    CorObserverSynthese,
     DefaultsNomenclaturesValue,
     Synthese,
     TSources,
@@ -51,6 +52,11 @@ from geonature.core.gn_synthese.models import (
     TReport,
     SyntheseLogEntry,
 )
+from geonature.core.gn_commons.models import TMedias
+from geonature.core.gn_commons.models import TMedias
+
+from pypnusershub.db import User
+
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.gn_synthese.utils.species_sheet import SpeciesSheetUtils
 
@@ -1027,16 +1033,19 @@ if app.config["SYNTHESE"]["SPECIES_SHEET"]["ENABLE_OBSERVERS"]:
         page = request.args.get("page", 1, int)
 
         taxref_cd_nom_list = SpeciesSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+
         query = (
             db.session.query(
-                func.trim(func.unnest(func.string_to_array(Synthese.observers, ","))).label(
-                    "observer"
-                ),
+                func.concat(User.prenom_role, " ", User.nom_role).label("observer"),
                 func.min(Synthese.date_min).label("date_min"),
                 func.max(Synthese.date_max).label("date_max"),
-                func.count(Synthese.observers).label("count"),
+                func.count(Synthese.id_synthese).label("observation_count"),
+                func.count(TMedias.uuid_attached_row).label("media_count"),
             )
-            .group_by("observer")
+            .group_by(User.id_role)
+            .join(CorObserverSynthese, CorObserverSynthese.id_synthese == Synthese.id_synthese)
+            .join(User, User.id_role == CorObserverSynthese.id_role)
+            .outerjoin(TMedias, TMedias.uuid_attached_row == Synthese.unique_id_sinp)
             .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
         )
         query = SpeciesSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)

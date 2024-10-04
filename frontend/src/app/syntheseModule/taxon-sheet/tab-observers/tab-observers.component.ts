@@ -24,7 +24,8 @@ export class TabObserversComponent implements OnInit {
     { prop: 'observer', name: 'Observateur' },
     { prop: 'date_min', name: 'Plus ancienne' },
     { prop: 'date_max', name: 'Plus récente' },
-    { prop: 'count', name: "Nombre d'observations" },
+    { prop: 'observation_count', name: "Nombre d'observations" },
+    { prop: 'media_count', name: "Nombre de media" },
   ];
 
   constructor(
