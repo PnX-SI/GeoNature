@@ -1554,7 +1554,11 @@ def list_all_reports(permissions):
         raise BadRequest("Bad orderby")
 
     # Pagination
-    total = db.session.scalar(select(func.count("*")).select_from(TReport))
+    total = db.session.scalar(
+        select(func.count("*"))
+        .select_from(TReport)
+        .where(TReport.report_type.has(BibReportsTypes.type == type_name))
+    )
     paginated_results = db.paginate(query, page=page, per_page=per_page)
 
     result = []
