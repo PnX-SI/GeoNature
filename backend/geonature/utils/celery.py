@@ -1,6 +1,5 @@
 from celery import Celery
 import flask
-from geonature.utils.env import db
 
 
 class FlaskCelery(Celery):
@@ -33,7 +32,7 @@ class FlaskCelery(Celery):
 
     def init_app(self, app):
         self.app = app
-        self.config_from_object(app.config)
+        self.config_from_object(app.config["CELERY"])
 
 
-celery_app = FlaskCelery("geonature")
+celery_app = Celery("geonature")  # FIX ME
