@@ -35,9 +35,33 @@ def upgrade():
         column_name="created_on",
         server_default=sa.func.now(),
     )
+    op.create_table(
+        "cor_permission_area",
+        sa.Column(
+            "id_permission",
+            sa.Integer,
+            sa.ForeignKey("gn_permissions.t_permissions.id_permission"),
+            primary_key=True,
+        ),
+        sa.Column(
+            "id_area", sa.Integer, sa.ForeignKey("ref_geo.l_areas.id_area"), primary_key=True
+        ),
+        schema="gn_permissions",
+    )
+    with op.batch_alter_table(
+        schema="gn_permissions", table_name="t_permissions_available"
+    ) as batch_op:
+        batch_op.add_column(
+            column=sa.Column("areas_filter", sa.Boolean, nullable=False, server_default=sa.false())
+        )
 
 
 def downgrade():
+    with op.batch_alter_table(
+        schema="gn_permissions", table_name="t_permissions_available"
+    ) as batch_op:
+        batch_op.drop_column(column_name="areas_filter")
+    op.drop_table(schema="gn_permissions", table_name="cor_permission_area")
     with op.batch_alter_table(schema="gn_permissions", table_name="t_permissions") as batch_op:
         batch_op.drop_column(column_name="validated")
         batch_op.drop_column(column_name="created_on")
