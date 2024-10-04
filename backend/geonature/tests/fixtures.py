@@ -515,6 +515,8 @@ def create_synthese(
     cor_observers=[],
     date_min="",
     date_max="",
+    altitude_min=800,
+    altitude_max=1200,
     **kwargs,
 ):
     now = datetime.datetime.now()
@@ -536,6 +538,8 @@ def create_synthese(
         the_geom_local=func.ST_Transform(geom, 2154),  # FIXME
         date_min=date_min,
         date_max=date_max,
+        altitude_min=altitude_min,
+        altitude_max=altitude_max,
         cor_observers=cor_observers,
         **kwargs,
     )
@@ -550,9 +554,25 @@ def synthese_data(app, users, datasets, source, sources_modules):
     date_2 = datetime.datetime(2024, 10, 3, 8, 9, 10)
     date_3 = datetime.datetime(2024, 10, 4, 17, 4, 9)
     date_4 = datetime.datetime(2024, 10, 5, 22, 22, 22)
+    altitude_1 = 800
+    altitude_2 = 900
+    altitude_3 = 1000
+    altitude_4 = 1100
+
     data = {}
     with db.session.begin_nested():
-        for name, cd_nom, point, ds, comment_description, source_m, date_min, date_max in [
+        for (
+            name,
+            cd_nom,
+            point,
+            ds,
+            comment_description,
+            source_m,
+            date_min,
+            date_max,
+            altitude_min,
+            altitude_max,
+        ) in [
             # Donnnées de gypaète : possède des statuts de protection nationale
             (
                 "obs1",
@@ -563,6 +583,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 sources_modules[0],
                 date_1,
                 date_1,
+                altitude_1,
+                altitude_1,
             ),
             (
                 "obs2",
@@ -573,6 +595,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 sources_modules[0],
                 date_1,
                 date_4,
+                altitude_1,
+                altitude_4,
             ),
             (
                 "obs3",
@@ -583,6 +607,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 sources_modules[1],
                 date_2,
                 date_3,
+                altitude_2,
+                altitude_3,
             ),
             (
                 "p1_af1",
@@ -593,6 +619,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 sources_modules[1],
                 date_1,
                 date_3,
+                altitude_1,
+                altitude_3,
             ),
             (
                 "p1_af1_2",
@@ -603,6 +631,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 sources_modules[1],
                 date_3,
                 date_3,
+                altitude_3,
+                altitude_3,
             ),
             (
                 "p1_af2",
@@ -613,6 +643,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 sources_modules[1],
                 date_3,
                 date_4,
+                altitude_3,
+                altitude_4,
             ),
             (
                 "p2_af2",
@@ -623,6 +655,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 source,
                 date_1,
                 date_2,
+                altitude_1,
+                altitude_2,
             ),
             (
                 "p2_af1",
@@ -633,6 +667,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 source,
                 date_1,
                 date_1,
+                altitude_1,
+                altitude_1,
             ),
             (
                 "p3_af3",
@@ -643,6 +679,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 source,
                 date_2,
                 date_2,
+                altitude_2,
+                altitude_2,
             ),
         ]:
             unique_id_sinp = (
@@ -662,6 +700,8 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 [users["admin_user"], users["user"]],
                 date_min,
                 date_max,
+                altitude_min,
+                altitude_max,
                 **kwargs,
             )
             db.session.add(s)
