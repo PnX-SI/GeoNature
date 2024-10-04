@@ -91,7 +91,7 @@ export class TaxonSheetComponent implements OnInit {
       const cd_ref = params['cd_ref'];
       if (cd_ref) {
         this._tss.updateTaxonByCdRef(cd_ref);
-        this._syntheseDataService.getSyntheseSpeciesSheetStat(cd_ref).subscribe((stats) => {
+        this._syntheseDataService.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats) => {
           this.setIndicators(stats);
         });
       }

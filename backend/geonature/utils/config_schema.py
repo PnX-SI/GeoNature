@@ -272,9 +272,9 @@ class ExportObservationSchema(Schema):
     geojson_local_field = fields.String(load_default="geojson_local")
 
 
-class SpeciesSheet(Schema):
+class TaxonSheet(Schema):
     # --------------------------------------------------------------------
-    # SYNTHESE - SPECIES_SHEET
+    # SYNTHESE - TAXON_SHEET
     ENABLE_PROFILE = fields.Boolean(load_default=True)
 
 
@@ -433,8 +433,8 @@ class Synthese(Schema):
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
 
     # --------------------------------------------------------------------
-    # SYNTHESE - SPECIES_SHEET
-    SPECIES_SHEET = fields.Nested(SpeciesSheet, load_default=SpeciesSheet().load({}))
+    # SYNTHESE - TAXON_SHEET
+    TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):

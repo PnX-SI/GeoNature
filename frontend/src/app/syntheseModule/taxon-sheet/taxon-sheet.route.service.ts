@@ -41,8 +41,8 @@ export class RouteService implements CanActivateChild {
     private _config: ConfigService,
     private _router: Router
   ) {
-    if (this._config['SYNTHESE']?.['SPECIES_SHEET']) {
-      const config = this._config['SYNTHESE']['SPECIES_SHEET'];
+    if (this._config['SYNTHESE']?.['TAXON_SHEET']) {
+      const config = this._config['SYNTHESE']['TAXON_SHEET'];
       this.TAB_LINKS = ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.filter(
         (tab) => !tab.configEnabledField || config[tab.configEnabledField]
       );

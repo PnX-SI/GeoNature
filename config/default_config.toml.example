@@ -441,9 +441,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Seulement les données de présence
         cd_nomenclature_observation_status = ['Pr']
 
-    [SYNTHESE.SPECIES_SHEET]
-        # Options dédiées à la fiche espèce
-        #Permet d'activer ou non la section "Profile" de la fiche espèce
+    [SYNTHESE.TAXON_SHEET]
+        # Options dédiées à la fiche taxon
+        # Permet d'activer ou non la section "Profile"
         ENABLE_PROFILE = True
 
 # Gestion des demandes d'inscription
