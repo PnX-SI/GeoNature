@@ -260,7 +260,7 @@ class TestReports:
                 assert dates == sorted(dates, reverse=reverse_sort)
             elif orderby == "content":
                 contents = [item["content"] for item in items]
-                assert contents == sorted(contents, reverse=reverse_sort)
+                assert contents == sorted(contents, reverse=reverse_sort, key=str.casefold)
             elif orderby == "user.nom_complet":
                 names = [item["user"]["nom_complet"] for item in items]
                 assert names == sorted(names, reverse=reverse_sort)
