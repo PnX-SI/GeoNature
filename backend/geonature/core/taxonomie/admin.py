@@ -21,12 +21,12 @@ class CruvedProtectedBibListesView(CruvedProtectedMixin, BibListesView):
 
 class CruvedProtectedTaxrefView(CruvedProtectedMixin, TaxrefView):
     module_code = "TAXHUB"
-    object_code = "TAXON"
+    object_code = "TAXONS"
 
 
 class CruvedProtectedTMediasView(CruvedProtectedMixin, TMediasView):
     module_code = "TAXHUB"
-    object_code = "TAXON"
+    object_code = "TAXONS"
 
 
 class CruvedProtectedBibAttributsView(CruvedProtectedMixin, BibAttributsView):
