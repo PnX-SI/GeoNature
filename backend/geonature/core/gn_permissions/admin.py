@@ -2,6 +2,7 @@ from flask import url_for, has_app_context, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
 from ref_geo.models import BibAreasTypes, LAreas
+from apptax.taxonomie.models import Taxref
 import sqlalchemy as sa
 from flask_admin.contrib.sqla.tools import get_primary_key
 from flask_admin.contrib.sqla.fields import QuerySelectField
@@ -354,6 +355,11 @@ class AreaAjaxModelLoader(QueryAjaxModelLoader):
         )
 
 
+class TaxrefAjaxModelLoader(QueryAjaxModelLoader):
+    def format(self, taxref):
+        return (taxref.cd_nom, taxref.nom_vern_or_lb_nom)
+
+
 ### ModelViews
 
 
@@ -397,6 +403,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         )
         + " les données sensibles",
         "areas_filter": "Filtre géographique",
+        "taxons_filter": "Filtre taxonomique",
     }
     column_select_related_list = ("availability",)
     column_searchable_list = ("role.identifiant", "role.nom_complet")
@@ -427,14 +434,26 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", False),
         ("id_action", False),
     ]
-    form_columns = ("role", "availability", "scope", "sensitivity_filter", "areas_filter")
+    form_columns = (
+        "role",
+        "availability",
+        "scope",
+        "sensitivity_filter",
+        "areas_filter",
+        "taxons_filter",
+    )
     form_overrides = dict(
         availability=OptionQuerySelectField,
     )
     form_args = dict(
         availability=dict(
             query_factory=lambda: PermissionAvailable.nice_order(),
-            options_additional_values=["sensitivity_filter", "scope_filter", "areas_filter"],
+            options_additional_values=[
+                "sensitivity_filter",
+                "scope_filter",
+                "areas_filter",
+                "taxons_filter",
+            ],
         ),
     )
     create_template = "admin/hide_select2_options_create.html"
@@ -459,6 +478,15 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
             fields=(LAreas.area_name, LAreas.area_code),
             page_size=25,
             placeholder="Sélectionnez une ou plusieurs zones géographiques",
+            minimum_input_length=1,
+        ),
+        "taxons_filter": TaxrefAjaxModelLoader(
+            name="taxons_filter",
+            session=db.session,
+            model=Taxref,
+            fields=(Taxref.lb_nom, Taxref.nom_valide, Taxref.cd_nom),
+            page_size=25,
+            placeholder="Sélectionnez un ou plusieurs taxons",
             minimum_input_length=1,
         ),
     }
@@ -508,6 +536,7 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         "scope_filter": "Filtre appartenance",
         "sensitivity_filter": "Filtre sensibilité",
         "areas_filter": "Filtre géographique",
+        "taxons_filter": "Filtre taxonomique",
     }
     column_formatters = {
         "module": lambda v, c, m, p: m.module.module_code,
@@ -524,7 +553,7 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", False),
         ("id_action", False),
     ]
-    form_columns = ("scope_filter", "sensitivity_filter", "areas_filter")
+    form_columns = ("scope_filter", "sensitivity_filter", "areas_filter", "taxons_filter")
 
 
 class RolePermAdmin(CruvedProtectedMixin, ModelView):

@@ -14,10 +14,12 @@ from geonature.core.gn_permissions.models import (
     PermScope,
     Permission,
     cor_permission_area,
+    cor_permission_taxref,
 )
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
+from apptax.taxonomie.models import Taxref
 
 log = logging.getLogger()
 
@@ -34,6 +36,16 @@ def _get_user_permissions(id_role):
         .group_by(cor_permission_area.c.id_permission)
         .subquery()
     )
+    taxons_filter_query = (
+        sa.select(
+            cor_permission_taxref.c.id_permission,
+            array_agg(
+                aggregate_order_by(cor_permission_taxref.c.cd_nom, cor_permission_taxref.c.cd_nom),
+            ).label("taxons_filter"),
+        )
+        .group_by(cor_permission_taxref.c.id_permission)
+        .subquery()
+    )
     query = (
         sa.select(Permission)
         .options(
@@ -41,8 +53,10 @@ def _get_user_permissions(id_role):
             joinedload(Permission.object),
             joinedload(Permission.action),
             selectinload(Permission.areas_filter),
+            selectinload(Permission.taxons_filter).joinedload(Taxref.tree),
         )
         .outerjoin(areas_filter_query)
+        .outerjoin(taxons_filter_query)
         .where(
             Permission.active_filter(),
             sa.or_(
@@ -65,6 +79,7 @@ def _get_user_permissions(id_role):
                 if v in Permission.__mapper__.columns
             ],
             areas_filter_query.c.areas_filter,
+            taxons_filter_query.c.taxons_filter,
         )
     )
     return db.session.scalars(query).all()
