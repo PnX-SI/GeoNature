@@ -2073,3 +2073,55 @@ class TestSyntheseGeographicFilter:
         assert synthese_data["obs1"].id_synthese in response_ids
         assert synthese_data["obs2"].id_synthese not in response_ids
         assert synthese_data["obs3"].id_synthese in response_ids
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestSyntheseTaxonomicFilter:
+    def test_taxonomic_filter_get_obs(self, synthese_data, synthese_read_permissions):
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        taxon1 = synthese_data["obs1"].taxref
+        taxon2 = synthese_data["obs2"].taxref.parent
+        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon1, taxon2])
+        set_logged_user(self.client, user)
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
+        )
+        assert response.status_code == 200, response.data
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs2"].id_synthese,
+            )
+        )
+        assert response.status_code == 200, response.data
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs3"].id_synthese,
+            )
+        )
+        assert response.status_code == Forbidden.code, response.data
+
+    def test_taxonomic_filter_list_obs(self, synthese_data, synthese_read_permissions):
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        taxon1 = synthese_data["obs1"].taxref
+        taxon2 = synthese_data["obs2"].taxref.parent
+        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon1, taxon2])
+        set_logged_user(self.client, user)
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese.get_observations_for_web",
+            )
+        )
+        assert response.status_code == 200, response.data
+        response_ids = [f["properties"]["id_synthese"] for f in response.json["features"]]
+        assert synthese_data["obs1"].id_synthese in response_ids
+        assert synthese_data["obs2"].id_synthese in response_ids
+        assert synthese_data["obs3"].id_synthese not in response_ids

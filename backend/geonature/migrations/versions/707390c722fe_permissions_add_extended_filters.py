@@ -88,6 +88,26 @@ def upgrade():
             m.module_code = 'SYNTHESE' AND o.code_object = 'ALL' and a.code_action IN ('R','E')
         """
     )
+    op.execute(
+        """
+        UPDATE
+            gn_permissions.t_permissions_available pa
+        SET
+            taxons_filter = True
+        FROM
+            gn_commons.t_modules m,
+            gn_permissions.t_objects o,
+            gn_permissions.bib_actions a
+        WHERE
+            pa.id_module = m.id_module
+            AND
+            pa.id_object = o.id_object
+            AND
+            pa.id_action = a.id_action
+            AND
+            m.module_code = 'SYNTHESE' AND o.code_object = 'ALL' and a.code_action IN ('R','E')
+        """
+    )
 
 
 def downgrade():

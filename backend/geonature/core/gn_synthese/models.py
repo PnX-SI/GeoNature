@@ -9,6 +9,7 @@ from sqlalchemy.orm import (
     relationship,
     column_property,
     foreign,
+    remote,
     joinedload,
     contains_eager,
     deferred,
@@ -39,7 +40,7 @@ from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
-from apptax.taxonomie.models import Taxref
+from apptax.taxonomie.models import Taxref, TaxrefTree
 from geonature.core.imports.models import TImports as Import
 from ref_geo.models import LAreas
 
@@ -401,6 +402,9 @@ class Synthese(DB.Model):
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
     taxref = relationship(Taxref)
+    taxref_tree = relationship(
+        TaxrefTree, primaryjoin=foreign(cd_nom) == remote(TaxrefTree.cd_nom), viewonly=True
+    )
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
     habitat = relationship(Habref)
     nom_cite = DB.Column(DB.Unicode(length=1000), nullable=False)
@@ -467,7 +471,7 @@ class Synthese(DB.Model):
         if not permissions:
             return False
         for perm in permissions:
-            if perm.has_other_filters_than("SCOPE", "SENSITIVITY", "GEOGRAPHIC"):
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY", "GEOGRAPHIC", "TAXONOMIC"):
                 continue  # unsupported filters
             if perm.sensitivity_filter:
                 if current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]:
@@ -489,6 +493,11 @@ class Synthese(DB.Model):
             if perm.areas_filter:
                 if set(perm.areas_filter).isdisjoint(self.areas):
                     # the permission does not allows any area overlapping the observation areas
+                    continue
+            if perm.taxons_filter:
+                if set(map(int, self.taxref_tree.path.split("."))).isdisjoint(
+                    [t.cd_ref for t in perm.taxons_filter]
+                ):
                     continue
             return True  # no filter exclude this permission
         return False
@@ -674,6 +683,10 @@ class VSyntheseForWebApp(DB.Model):
         primaryjoin=corAreaSynthese.c.id_synthese == id_synthese,
         secondaryjoin=corAreaSynthese.c.id_area == LAreas.id_area,
         overlaps="areas,synthese_obs",
+    )
+    taxref = relationship(Taxref, primaryjoin=foreign(cd_nom) == Taxref.cd_nom)
+    taxref_tree = relationship(
+        TaxrefTree, primaryjoin=foreign(cd_nom) == remote(TaxrefTree.cd_nom), viewonly=True
     )
     medias = relationship(
         TMedias, primaryjoin=(TMedias.uuid_attached_row == foreign(unique_id_sinp)), uselist=True
