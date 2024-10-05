@@ -13,7 +13,11 @@ from geonature.core.gn_permissions.models import (
     Permission,
     PermissionAvailable,
 )
-from geonature.core.gn_permissions.tools import get_scopes_by_action, has_any_permissions_by_action
+from geonature.core.gn_permissions.tools import (
+    get_permissions,
+    get_scopes_by_action,
+    has_any_permissions_by_action,
+)
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
@@ -185,6 +189,27 @@ def assert_cruved(roles):
     return _assert_cruved
 
 
+@pytest.fixture()
+def assert_permissions(roles):
+    def _assert_permissions(role, action_code, expected_perms, module=None, object=None):
+        role = roles[role]
+        module_code = module.module_code if module else None
+        object_code = object.code_object if object else None
+        perms = get_permissions(
+            id_role=role.id_role,
+            action_code=action_code,
+            module_code=module_code,
+            object_code=object_code,
+        )
+        perms = set((p.scope_value, p.sensitivity_filter) for p in perms)
+        expected_perms = set(
+            (p.get("SCOPE", None), p.get("SENSITIVITY", False)) for p in expected_perms
+        )
+        assert perms == expected_perms
+
+    return _assert_permissions
+
+
 @pytest.fixture(scope="class")
 def g_permissions():
     """
@@ -294,3 +319,34 @@ class TestPermissions:
         assert has_any_permissions_by_action(
             id_role=roles["r2"].id_role, module_code=module_a.module_code
         ) == b_cruved("111111")
+
+
+@pytest.mark.usefixtures("temporary_transaction", "g_permissions")
+class TestPermissionsFilters:
+    def test_sensitivity_filter(self, roles, permissions, assert_permissions):
+        permissions("r1", "1-----")
+        permissions("r1", "-1----", sensitivity_filter=False)
+        permissions("r1", "--1---", sensitivity_filter=True)
+
+        assert_permissions("r1", "C", [{"SCOPE": 1, "SENSITIVITY": False}])
+        assert_permissions("r1", "R", [{"SCOPE": 1, "SENSITIVITY": False}])
+        assert_permissions("r1", "U", [{"SCOPE": 1, "SENSITIVITY": True}])
+
+    def test_sensitivity_filter_overlap(self, permissions, assert_permissions):
+        permissions("g1", "1-----", sensitivity_filter=True)
+        permissions("g2", "1-----", sensitivity_filter=False)
+        permissions("g1", "-1----", sensitivity_filter=True)
+        permissions("g2", "-2----", sensitivity_filter=False)
+        permissions("g1", "--2---", sensitivity_filter=True)
+        permissions("g2", "--1---", sensitivity_filter=False)
+
+        # g2 permisson is superior
+        assert_permissions("g12_r1", "C", [{"SCOPE": 1, "SENSITIVITY": False}])
+
+        # g2 permisson is superior
+        assert_permissions("g12_r1", "R", [{"SCOPE": 2, "SENSITIVITY": False}])
+
+        # g1 and g2 permissions can not be simplified
+        assert_permissions(
+            "g12_r1", "U", [{"SCOPE": 2, "SENSITIVITY": True}, {"SCOPE": 1, "SENSITIVITY": False}]
+        )
