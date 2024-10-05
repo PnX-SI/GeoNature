@@ -22,6 +22,7 @@ from geonature.core.gn_permissions.tools import (
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
+from apptax.taxonomie.models import Taxref
 
 from ref_geo.models import BibAreasTypes, LAreas
 from sqlalchemy import select, null
@@ -203,10 +204,25 @@ def assert_permissions(roles):
             module_code=module_code,
             object_code=object_code,
         )
-        perms = set((p.scope_value, p.sensitivity_filter, frozenset(p.areas_filter)) for p in perms)
+        perms = set(
+            (
+                p.scope_value,
+                p.sensitivity_filter,
+                frozenset(p.areas_filter),
+                frozenset(p.taxons_filter),
+            )
+            for p in perms
+        )
         expected_perms = set(
-            (p.get("SCOPE", None), p.get("SENSITIVITY", False), frozenset(p.get("AREAS", [])))
-            for p in expected_perms
+            (
+                (
+                    p.get("SCOPE", None),
+                    p.get("SENSITIVITY", False),
+                    frozenset(p.get("AREAS", [])),
+                    frozenset(p.get("TAXONS", [])),
+                )
+                for p in expected_perms
+            )
         )
         assert perms == expected_perms
 
@@ -436,3 +452,56 @@ class TestPermissionsFilters:
             [{"SCOPE": 1, "AREAS": [grenoble, gap]}, {"SCOPE": 2, "AREAS": [grenoble]}],
         )
         assert_permissions("g12_r1", "D", [{"SCOPE": 2, "AREAS": [grenoble, gap]}])
+
+    def test_taxonomic_filter(self, roles, permissions, assert_permissions):
+        animalia = db.session.execute(sa.select(Taxref).where(Taxref.cd_nom == 183716)).scalar_one()
+
+        permissions("r1", "1-----")
+        permissions("r1", "-1----", taxons_filter=[])
+        permissions("r1", "--1---", taxons_filter=[animalia])
+
+        assert_permissions("r1", "C", [{"SCOPE": 1, "TAXONS": []}])
+        assert_permissions("r1", "R", [{"SCOPE": 1, "TAXONS": []}])
+        assert_permissions("r1", "U", [{"SCOPE": 1, "TAXONS": [animalia]}])
+
+    def test_taxonomic_filter_overlap(self, roles, permissions, assert_permissions):
+        animalia = db.session.execute(sa.select(Taxref).where(Taxref.cd_nom == 183716)).scalar_one()
+        capra_ibex = db.session.execute(
+            sa.select(Taxref).where(Taxref.cd_nom == 61098)
+        ).scalar_one()
+        cinnamon = db.session.execute(sa.select(Taxref).where(Taxref.cd_nom == 706584)).scalar_one()
+
+        assert Permission(taxons_filter=[animalia]) <= Permission(taxons_filter=[animalia])
+        assert Permission(taxons_filter=[capra_ibex]) <= Permission(taxons_filter=[animalia])
+        assert not Permission(taxons_filter=[animalia]) <= Permission(taxons_filter=[capra_ibex])
+        assert not Permission(taxons_filter=[cinnamon]) <= Permission(taxons_filter=[animalia])
+        assert not Permission(taxons_filter=[cinnamon]) <= Permission(taxons_filter=[capra_ibex])
+        assert not Permission(taxons_filter=[cinnamon, capra_ibex]) <= Permission(
+            taxons_filter=[animalia]
+        )
+
+        permissions("g1", "1-----", taxons_filter=[capra_ibex])
+        permissions("g2", "1-----", taxons_filter=[])
+        permissions("g1", "-1----", taxons_filter=[capra_ibex])
+        permissions("g2", "-2----", taxons_filter=[])
+        permissions("g1", "--2---", taxons_filter=[capra_ibex])
+        permissions("g2", "--1---", taxons_filter=[])
+        permissions("g1", "---1--", taxons_filter=[capra_ibex])
+        permissions("g2", "---2--", taxons_filter=[capra_ibex])
+        permissions("g1", "----1-", taxons_filter=[capra_ibex])
+        permissions("g2", "----2-", taxons_filter=[animalia])
+        permissions("g1", "-----1", taxons_filter=[capra_ibex, cinnamon])
+        permissions("g2", "-----2", taxons_filter=[animalia])
+
+        assert_permissions("g12_r1", "C", [{"SCOPE": 1, "TAXONS": []}])
+        assert_permissions("g12_r1", "R", [{"SCOPE": 2, "TAXONS": []}])
+        assert_permissions(
+            "g12_r1", "U", [{"SCOPE": 1, "TAXONS": []}, {"SCOPE": 2, "TAXONS": [capra_ibex]}]
+        )
+        assert_permissions("g12_r1", "V", [{"SCOPE": 2, "TAXONS": [capra_ibex]}])
+        assert_permissions("g12_r1", "E", [{"SCOPE": 2, "TAXONS": [animalia]}])
+        assert_permissions(
+            "g12_r1",
+            "D",
+            [{"SCOPE": 1, "TAXONS": [capra_ibex, cinnamon]}, {"SCOPE": 2, "TAXONS": [animalia]}],
+        )

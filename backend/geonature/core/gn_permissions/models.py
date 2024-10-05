@@ -15,6 +15,7 @@ from utils_flask_sqla.models import qfilter
 
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
+from apptax.taxonomie.models import Taxref
 
 from geonature.utils.env import db
 from geonature.core.gn_commons.models.base import TModules
@@ -135,11 +136,13 @@ class PermissionAvailable(db.Model):
     scope_filter = db.Column(db.Boolean, server_default=sa.false())
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
     areas_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+    taxons_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
 
     filters_fields = {
         "SCOPE": "scope_filter",
         "SENSITIVITY": "sensitivity_filter",
         "GEOGRAPHIC": "areas_filter",
+        "TAXONOMIC": "taxons_filter",
     }
 
     @property
@@ -186,6 +189,12 @@ class PermFilter:
                 return f"""<i class="fa fa-map-marker" aria-hidden="true"></i>  {areas_names}"""
             else:
                 return """<i class="fa fa-globe" aria-hidden="true"></i>  partout"""
+        elif self.name == "TAXONOMIC":
+            if self.value:
+                taxons_names = ", ".join([t.nom_vern_or_lb_nom for t in self.value])
+                return f"""<i class="fa fa-tree" aria-hidden="true"></i>  {taxons_names}"""
+            else:
+                return """<i class="fa fa-universal-access" aria-hidden="true"></i>  le vivant"""
 
 
 cor_permission_area = db.Table(
@@ -197,6 +206,19 @@ cor_permission_area = db.Table(
         primary_key=True,
     ),
     sa.Column("id_area", sa.Integer, sa.ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
+    schema="gn_permissions",
+)
+
+
+cor_permission_taxref = db.Table(
+    "cor_permission_taxref",
+    sa.Column(
+        "id_permission",
+        sa.Integer,
+        sa.ForeignKey("gn_permissions.t_permissions.id_permission"),
+        primary_key=True,
+    ),
+    sa.Column("cd_nom", sa.Integer, sa.ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True),
     schema="gn_permissions",
 )
 
@@ -238,6 +260,7 @@ class Permission(db.Model):
     scope = db.relationship(PermScope)
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
     areas_filter = db.relationship(LAreas, secondary=cor_permission_area)
+    taxons_filter = db.relationship(Taxref, secondary=cor_permission_taxref)
 
     availability = db.relationship(
         PermissionAvailable,
@@ -249,6 +272,7 @@ class Permission(db.Model):
         "SCOPE": "scope_value",
         "SENSITIVITY": "sensitivity_filter",
         "GEOGRAPHIC": "areas_filter",
+        "TAXONOMIC": "taxons_filter",
     }
 
     @staticmethod
@@ -263,6 +287,11 @@ class Permission(db.Model):
     @staticmethod
     def __GEOGRAPHIC_le__(a, b):
         return (a and set(a).issubset(b)) or not b
+
+    @staticmethod
+    def __TAXONOMIC_le__(a, b):
+        # True if *all* taxons of a is included in *any* taxons of b
+        return (a and any(all((_a <= _b for _a in a)) for _b in b)) or not b
 
     @staticmethod
     def __default_le__(a, b):

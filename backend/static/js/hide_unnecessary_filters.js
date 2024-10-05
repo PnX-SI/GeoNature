@@ -21,6 +21,12 @@ $('#availability').on('change', function() {
     else {
         $("#areas_filter").parent().hide();
     }
+
+    if (selected && selected.hasAttribute("taxons_filter"))
+        $("#taxons_filter").parent().show();
+    else {
+        $("#taxons_filter").parent().hide();
+    }
 });
 
 $('#availability').trigger('change');

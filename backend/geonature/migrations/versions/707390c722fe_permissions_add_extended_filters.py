@@ -48,11 +48,25 @@ def upgrade():
         ),
         schema="gn_permissions",
     )
+    op.create_table(
+        "cor_permission_taxref",
+        sa.Column(
+            "id_permission",
+            sa.Integer,
+            sa.ForeignKey("gn_permissions.t_permissions.id_permission"),
+            primary_key=True,
+        ),
+        sa.Column("cd_nom", sa.Integer, sa.ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True),
+        schema="gn_permissions",
+    )
     with op.batch_alter_table(
         schema="gn_permissions", table_name="t_permissions_available"
     ) as batch_op:
         batch_op.add_column(
             column=sa.Column("areas_filter", sa.Boolean, nullable=False, server_default=sa.false())
+        )
+        batch_op.add_column(
+            column=sa.Column("taxons_filter", sa.Boolean, nullable=False, server_default=sa.false())
         )
     op.execute(
         """
@@ -80,7 +94,9 @@ def downgrade():
     with op.batch_alter_table(
         schema="gn_permissions", table_name="t_permissions_available"
     ) as batch_op:
+        batch_op.drop_column(column_name="taxons_filter")
         batch_op.drop_column(column_name="areas_filter")
+    op.drop_table(schema="gn_permissions", table_name="cor_permission_taxref")
     op.drop_table(schema="gn_permissions", table_name="cor_permission_area")
     with op.batch_alter_table(schema="gn_permissions", table_name="t_permissions") as batch_op:
         batch_op.drop_column(column_name="validated")
