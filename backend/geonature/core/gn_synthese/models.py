@@ -51,6 +51,7 @@ from geonature.core.gn_commons.models import (
     TMedias,
     TModules,
 )
+from geonature.core.gn_permissions.models import Permission
 from geonature.utils.env import DB, db
 
 
@@ -187,6 +188,7 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
 
     def lateraljoin_last_validation(self):
+        # FIXME missing order by!
         subquery = (
             select(TValidations)
             .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
@@ -450,10 +452,8 @@ class Synthese(DB.Model):
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
-    def _has_scope_grant(self, scope):
-        if scope == 0:
-            return False
-        elif scope in (1, 2):
+    def _has_scope_grant(self, scope) -> bool:
+        if scope in (1, 2):
             if g.current_user == self.digitiser:
                 return True
             if g.current_user in self.cor_observers:
@@ -461,38 +461,36 @@ class Synthese(DB.Model):
             return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
+        return False
 
-    def _has_permissions_grant(self, permissions):
-        blur_sensitive_observations = current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]
+    def _has_permissions_grant(self, permissions) -> bool:
         if not permissions:
             return False
         for perm in permissions:
-            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY", "GEOGRAPHIC"):
                 continue  # unsupported filters
             if perm.sensitivity_filter:
-                if (
-                    blur_sensitive_observations
-                    and self.nomenclature_sensitivity.cd_nomenclature == "4"
-                ):
-                    continue
-                if (
-                    not blur_sensitive_observations
-                    and self.nomenclature_sensitivity.cd_nomenclature != "0"
-                ):
-                    continue
+                if current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]:
+                    # refuse access to obs with no diffusion sensitivity level
+                    # (lower sensitivity level will trigger blurring)
+                    if self.nomenclature_sensitivity.cd_nomenclature == "4":
+                        continue
+                else:
+                    # refuse access to obs with any sensitivity level (as blurring is disabled)
+                    if self.nomenclature_sensitivity.cd_nomenclature != "0":
+                        continue
             if perm.scope_value:
-                if g.current_user == self.digitiser:
-                    return True
-                if g.current_user in self.cor_observers:
-                    return True
-                if self.dataset.has_instance_permission(perm.scope_value):
-                    return True
-                continue  # scope filter denied access, check next permission
+                if not (
+                    g.current_user == self.digitiser
+                    or g.current_user in self.cor_observers
+                    or self.dataset.has_instance_permission(perm.scope_value)
+                ):
+                    continue  # scope filter denied access, check next permission
             return True  # no filter exclude this permission
         return False
 
-    def has_instance_permission(self, permissions):
-        if type(permissions) == int:
+    def has_instance_permission(self, permissions) -> bool:
+        if type(permissions) is int:
             return self._has_scope_grant(permissions)
         else:
             return self._has_permissions_grant(permissions)
