@@ -38,7 +38,7 @@ function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: 
   return DEFAULT_VALUE;
 }
 
-export function computeIndicatorFromDecsription(
+export function computeIndicatorFromDescription(
   indicatorDescription: IndicatorDescription,
   stats?: Stats
 ): Indicator {
