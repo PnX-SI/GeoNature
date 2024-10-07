@@ -5,11 +5,12 @@
     [columns]="columns"
     columnMode="force"
     [draggable]="false"
-    [externalPaging]="true"
-    [count]="pagination.totalItems"
     (page)="onChangePage($event)"
     footerHeight="auto"
     headerHeight="auto"
+    [externalPaging]="true"
+    [count]="pagination.totalItems"
+    [limit]="pagination.perPage"
     rowHeight="auto"
   ></ngx-datatable>
 </div>

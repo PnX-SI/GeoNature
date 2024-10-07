@@ -48,7 +48,8 @@ export class TabObserversComponent implements OnInit {
   fetchObservers() {
     const taxon = this._tss.taxon.getValue();
     if (!taxon) {
-      console.log('taxon is undefined');
+      this.items = [];
+      this.pagination = DEFAULT_PAGINATION;
       return;
     }
     this._syntheseDataService
