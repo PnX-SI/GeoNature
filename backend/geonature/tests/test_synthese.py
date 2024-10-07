@@ -1228,6 +1228,11 @@ class TestSynthese:
     def test_taxon_observer(self, synthese_data, users):
         set_logged_user(self.client, users["stranger_user"])
 
+        SORT_ORDER_UNDEFINED = "sort-order-undefined"
+        SORT_ORDER_ASC = "asc"
+        SORT_ORDER_DESC = "desc"
+        SORT_BY_UNDEFINED = "sort-by-undefined"
+
         CD_REF = 2497
         CD_REF_OBSERVERS = {
             "items": [
@@ -1243,11 +1248,32 @@ class TestSynthese:
             "per_page": 1,
             "page": 1,
         }
+
+        # Unknow sort_order parameters: shoudl fallback in asc
+        response = self.client.get(
+            url_for("gn_synthese.taxon_observers", cd_ref=CD_REF, sort_order=SORT_ORDER_UNDEFINED),
+        )
+        assert response.status_code == 200
+
+        # Unknow sort_by parameters
+        response = self.client.get(
+            url_for(
+                "gn_synthese.taxon_observers",
+                cd_ref=CD_REF,
+                sort_order=SORT_ORDER_ASC,
+                sort_by=SORT_BY_UNDEFINED,
+            ),
+        )
+        assert response.status_code == BadRequest.code
+        assert (
+            response.json["description"] == f"The sort_by column {SORT_BY_UNDEFINED} is not defined"
+        )
+
         # Missing area_type parameter
         response = self.client.get(
             url_for("gn_synthese.taxon_observers", cd_ref=CD_REF),
         )
-        response_json = response.get_json()
+
         assert response.status_code == 200
         assert response.get_json() == CD_REF_OBSERVERS
 
