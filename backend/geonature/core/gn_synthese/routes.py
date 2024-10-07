@@ -957,11 +957,11 @@ def general_stats(permissions):
     return data
 
 
-@routes.route("/species_stats/<int:cd_ref>", methods=["GET"])
+@routes.route("/taxon_stats/<int:cd_ref>", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @json_resp
-def species_stats(scope, cd_ref):
-    """Return stats about distinct species."""
+def taxon_stats(scope, cd_ref):
+    """Return stats for a specific taxon"""
 
     area_type = request.args.get("area_type")
 

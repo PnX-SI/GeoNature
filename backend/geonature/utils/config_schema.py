@@ -18,13 +18,7 @@ from marshmallow import (
 )
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
-from geonature.core.gn_synthese.synthese_config import (
-    DEFAULT_EXPORT_COLUMNS,
-    DEFAULT_LIST_COLUMN,
-    DefaultGeographicOverview,
-    DefaultProfile,
-    DefaultSpeciesSheet,
-)
+from geonature.core.gn_synthese.synthese_config import DEFAULT_EXPORT_COLUMNS, DEFAULT_LIST_COLUMN
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
@@ -278,24 +272,10 @@ class ExportObservationSchema(Schema):
     geojson_local_field = fields.String(load_default="geojson_local")
 
 
-class SpeciesSheetProfile(Schema):
-    ENABLED = fields.Boolean(load_default=DefaultProfile.ENABLED)
-    LIST_INDICATORS = fields.List(fields.Dict, load_default=DefaultProfile.LIST_INDICATORS)
-
-
-class SpeciesSheetGeographicOverview(Schema):
-    pass
-
-
-class SpeciesSheet(Schema):
+class TaxonSheet(Schema):
     # --------------------------------------------------------------------
-    # SYNTHESE - SPECIES_SHEET
-    LIST_INDICATORS = fields.List(fields.Dict, load_default=DefaultSpeciesSheet.LIST_INDICATORS)
-
-    GEOGRAPHIC_OVERVIEW = fields.Dict(
-        load_default=SpeciesSheetGeographicOverview().load({})
-    )  # rename
-    PROFILE = fields.Nested(SpeciesSheetProfile, load_default=SpeciesSheetProfile().load({}))
+    # SYNTHESE - TAXON_SHEET
+    ENABLE_PROFILE = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
@@ -453,8 +433,8 @@ class Synthese(Schema):
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
 
     # --------------------------------------------------------------------
-    # SYNTHESE - SPECIES_SHEET
-    SPECIES_SHEET = fields.Nested(SpeciesSheet, load_default=SpeciesSheet().load({}))
+    # SYNTHESE - TAXON_SHEET
+    TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):
