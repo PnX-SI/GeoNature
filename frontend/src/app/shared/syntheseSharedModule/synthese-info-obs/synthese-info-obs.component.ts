@@ -11,6 +11,7 @@ import { isEmpty, find } from 'lodash';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -24,7 +25,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() mailCustomSubject: string;
   @Input() mailCustomBody: string;
   @Input() useFrom: 'synthese' | 'validation';
+
+  // path name of the selected tab (check tabs property)
   @Input() selectedTab: string;
+
   public selectedObs: any;
   public validationHistory: Array<any> = [];
   public selectedObsTaxonDetail: any;
@@ -59,7 +63,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     '6': '#FFFFFF',
   };
   public comment: string;
-  tabs = [
+
+  // List of tabs
+  private tabs: Array<any> = [
     { label: "Détail de l'occurrence", path: 'details' },
     { label: 'Métadonnées', path: 'metadata' },
     { label: 'Taxonomie', path: 'taxonomy' },
@@ -68,18 +74,26 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     { label: 'Validation', path: 'validation' },
     { label: 'Discussion', path: 'discussion' },
   ];
-  filteredTabs = [];
-  selectedIndex: number = 0;
-  defaultTab = 'details';
-  tabConditions = {
+
+  // Condition to make a tab visible
+  private tabConditions: Object = {
     details: () => true,
     metadata: () => true,
     taxonomy: () => true,
     media: () => !!this.selectedObs?.medias?.length,
     zonage: () => true,
     validation: () => true,
-    discussion: () => false,
+    discussion: () => true,
   };
+  // List of visible tabs (based on `tabConditions`)
+  public filteredTabs: Array<any> = [];
+
+  // index of the current tab (populate by the mat-tab-group)
+  public selectedIndex: number = 0;
+
+  // default tab
+  private defaultTab: string = 'details';
+
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
@@ -91,7 +105,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _moduleService: ModuleService,
     public config: ConfigService,
     private _router: Router,
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
+    private _location: Location
   ) {}
 
   ngOnInit() {
@@ -128,13 +143,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     }
     const tabIndex = event.index;
     const tabPath = this.filteredTabs[tabIndex]?.path;
-    if (tabPath) {
-      // On met à jour la route pour refléter l'onglet sélectionné (sans recharger tout le composant)
-      this._router.navigate([this.useFrom, 'occurrence', this.idSynthese, tabPath], {
-        relativeTo: this._route,
-        replaceUrl: true,
-      });
+    if (!tabPath) {
+      throw new Error(`Tab Index ${tabIndex} is not associated to a path!`);
     }
+    // On met à jour la route pour refléter l'onglet sélectionné (sans recharger tout le composant)
+    this.setUrlForTab(tabPath);
   }
 
   loadAllInfo(idSynthese) {
@@ -211,6 +224,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           });
         });
 
+        // Verify if a tab is indicated in the url, if true, set the tab to the indicated tab
         this.filterTabs();
         this.selectedTab = this.selectedTab ? this.selectedTab : this.defaultTab;
         this.selectTab(this.selectedTab);
@@ -402,24 +416,32 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     this._commonService.translateToaster('info', 'Synthese.copy');
   }
 
+  /**
+   * Change the selected tab, if the tabGroup is defined and navigate to the corresponding URL
+   * without reloading the component.
+   *
+   * @param {string} tabPath path of the tab to select
+   * @throws {Error} if the tabPath is not associated to a tab
+   */
   selectTab(tabPath: string) {
-    // On trouve l'onglet correspondant au label
-    const tab = this.filteredTabs.find((t) => t.path === tabPath);
-
-    if (tab) {
-      // On trouve l'index de l'onglet dans le tableau
-      const tabIndex = this.filteredTabs.indexOf(tab);
-
-      // On change change l'onglet sélectionné si le tabGroup est défini
-      if (tabIndex !== -1 && this.tabGroup) {
-        this.selectedIndex = tabIndex;
-      }
-
-      // On Navigue vers l'URL correspondante sans recharger le composant
-      this._router.navigate([this.useFrom, 'occurrence', this.idSynthese, tab.path], {
-        relativeTo: this._route,
-        replaceUrl: true,
-      });
+    const tabIndex = this.filteredTabs.findIndex((t) => t.path === tabPath);
+    if (tabIndex == -1) {
+      throw new Error(`Tab Path ${tabPath} is not associated to a tab!`);
     }
+
+    if (this.tabGroup) {
+      this.selectedIndex = tabIndex;
+    }
+
+    // On Navigue vers l'URL correspondante sans recharger le composant
+    this.setUrlForTab(tabPath);
+  }
+
+  /**
+   * Navigates to a specific tab, without reloading the component.
+   * @param tabPath the path (check `filteredTabs` property) of the tab to navigate to
+   */
+  setUrlForTab(tabPath: string) {
+    this._location.replaceState(`/${this.useFrom}/occurrence/${this.idSynthese}/${tabPath}`);
   }
 }
