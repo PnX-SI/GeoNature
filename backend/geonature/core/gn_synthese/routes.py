@@ -961,7 +961,7 @@ def general_stats(permissions):
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @json_resp
 def taxon_stats(scope, cd_ref):
-    """Return stats about distinct taxon"""
+    """Return stats for a specific taxon"""
 
     area_type = request.args.get("area_type")
 
