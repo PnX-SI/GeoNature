@@ -153,19 +153,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     link.remove();
   }
 
-  // TODO: cette method peut être supprimé car redondante avec celle appelée dans syntheseComponent  https://github.com/PnX-SI/GeoNature/blob/a6a9c05acfa8a0a2f7aecbb70e6deacdb250b2c4/frontend/src/app/syntheseModule/synthese.component.ts#L222
-  //  car le composant est monté via la route /occurence/:id_synthese/:tab
-  openInfoModal(row) {
-    row.id_synthese = row.id_synthese;
-    const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
-      size: 'lg',
-      windowClass: 'large-modal',
-    });
-    modalRef.componentInstance.idSynthese = row.id_synthese;
-    modalRef.componentInstance.header = true;
-    modalRef.componentInstance.useFrom = 'synthese';
-  }
-
   openModalCol($event, modal) {
     this.ngbModal.open(modal);
   }
