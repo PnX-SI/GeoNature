@@ -22,7 +22,7 @@ from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
-from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
+from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager, Query
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 from sqlalchemy.orm import load_only, aliased, Load, with_expression
@@ -57,7 +57,7 @@ from geonature.core.gn_commons.models import TMedias
 from pypnusershub.db import User
 
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils
+from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils, SortOrder
 
 from geonature.core.gn_synthese.utils.blurring import (
     build_allowed_geom_cte,
@@ -1030,6 +1030,15 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
     def taxon_observers(scope, cd_ref):
         per_page = int(request.args.get("per_page", 1))
         page = request.args.get("page", 1, int)
+        sort_by = request.args.get("sort_by", "id")
+        sort_order = request.args.get("sort_order", SortOrder.ASC, SortOrder)
+
+        # Handle sorting
+        if sort_order not in [SortOrder.ASC, SortOrder.DESC]:
+            raise BadRequest(f"The sort_order {sort_order} is undefined")
+
+        if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:
+            raise BadRequest(f"The sort_by column {sort_by} is not defined")
 
         taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
 
@@ -1048,8 +1057,9 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
             .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
         )
         query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+        query = TaxonSheetUtils.update_query_with_sorting(query, sort_by, sort_order)
+        results = TaxonSheetUtils.paginate(query, page, per_page)
 
-        results = query.paginate(page=page, per_page=per_page, error_out=False)
         return jsonify(
             {
                 "items": results.items,

@@ -12,6 +12,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
+import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
 
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
@@ -64,12 +65,15 @@ export class SyntheseDataService {
 
   getSyntheseTaxonSheetObservers(
     cd_ref: number,
-    pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION
+    pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
+    sort: SyntheseDataSortItem = DEFAULT_SORT
   ) {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_observers/${cd_ref}`, {
       params: {
         per_page: pagination.perPage,
         page: pagination.currentPage,
+        sort_by: sort.sortBy,
+        sort_order: sort.sortOrder,
       },
     });
   }

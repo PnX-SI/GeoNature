@@ -9,6 +9,11 @@ import {
   DEFAULT_PAGINATION,
   SyntheseDataPaginationItem,
 } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import {
+  DEFAULT_SORT,
+  SORT_ORDER,
+  SyntheseDataSortItem,
+} from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 @Component({
   standalone: true,
   selector: 'tab-observers',
@@ -17,16 +22,21 @@ import {
   imports: [GN2CommonModule, CommonModule],
 })
 export class TabObserversComponent implements OnInit {
-  items: any[] = [];
-  pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION;
-
-  readonly columns = [
-    { prop: 'observer', name: 'Observateur' },
+  readonly COLUMNS = [
+    { prop: 'observer', name: 'Observateur', sort: true, order: 'asc' },
     { prop: 'date_min', name: 'Plus ancienne' },
     { prop: 'date_max', name: 'Plus récente' },
     { prop: 'observation_count', name: "Nombre d'observations" },
     { prop: 'media_count', name: 'Nombre de media' },
   ];
+  readonly DEFAULT_SORT = {
+    ...DEFAULT_SORT,
+    sortBy: this.COLUMNS[0].prop,
+    sortOrder: SORT_ORDER.ASC,
+  };
+  items: any[] = [];
+  pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION;
+  sort: SyntheseDataSortItem = this.DEFAULT_SORT;
 
   constructor(
     private _syntheseDataService: SyntheseDataService,
@@ -45,15 +55,24 @@ export class TabObserversComponent implements OnInit {
     this.fetchObservers();
   }
 
+  onSort(event) {
+    this.sort = {
+      sortBy: event.column.prop,
+      sortOrder: event.newValue,
+    };
+    this.fetchObservers();
+  }
+
   fetchObservers() {
     const taxon = this._tss.taxon.getValue();
     if (!taxon) {
       this.items = [];
       this.pagination = DEFAULT_PAGINATION;
+      this.sort = this.DEFAULT_SORT;
       return;
     }
     this._syntheseDataService
-      .getSyntheseTaxonSheetObservers(taxon.cd_ref, this.pagination)
+      .getSyntheseTaxonSheetObservers(taxon.cd_ref, this.pagination, this.sort)
       .subscribe((data) => {
         // Store result
         this.items = data.items;
