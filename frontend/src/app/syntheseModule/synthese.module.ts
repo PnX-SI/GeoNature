@@ -16,16 +16,21 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 import { DiscussionCardComponent } from '@geonature/shared/discussionCardModule/discussion-card.component';
 import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
+import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SyntheseObsModalWrapperComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs-container.component';
+import { BrowserModule } from '@angular/platform-browser';
 const routes: Routes = [
-  { path: '', component: SyntheseComponent },
   {
-    path: 'occurrence/:id_synthese/:tab',
+    path: '',
     component: SyntheseComponent,
-  },
-  {
-    path: 'occurrence/:id_synthese',
-    redirectTo: 'occurrence/:id_synthese/details',
-    pathMatch: 'full',
+    children: [
+      {
+        path: 'occurrence/:id_synthese',
+        redirectTo: 'occurrence/:id_synthese/details',
+        pathMatch: 'full',
+      },
+      { path: 'occurrence/:id_synthese/:tab', component: SyntheseObsModalWrapperComponent },
+    ],
   },
   { path: 'taxon/:cd_nom', component: TaxonSheetComponent },
 ];
@@ -37,6 +42,7 @@ const routes: Routes = [
     SharedSyntheseModule,
     CommonModule,
     TreeModule,
+    NgbModule,
   ],
   declarations: [
     SyntheseComponent,
@@ -46,11 +52,19 @@ const routes: Routes = [
     TaxonSheetComponent,
   ],
   entryComponents: [
+    SyntheseComponent,
     SyntheseInfoObsComponent,
     SyntheseModalDownloadComponent,
     DiscussionCardComponent,
     AlertInfoComponent,
+    SyntheseObsModalWrapperComponent,
   ],
-  providers: [MapService, DynamicFormService, TaxonAdvancedStoreService, SyntheseFormService],
+  providers: [
+    MapService,
+    DynamicFormService,
+    TaxonAdvancedStoreService,
+    SyntheseFormService,
+    NgbActiveModal,
+  ],
 })
 export class SyntheseModule {}
