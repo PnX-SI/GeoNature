@@ -1028,7 +1028,7 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
     @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
     # @json_resp
     def taxon_observers(scope, cd_ref):
-        per_page = int(request.args.get("per_page", 1))
+        per_page = request.args.get("per_page", 10, int)
         page = request.args.get("page", 1, int)
         sort_by = request.args.get("sort_by", "observer")
         sort_order = request.args.get("sort_order", SortOrder.ASC, SortOrder)
