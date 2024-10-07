@@ -52,11 +52,10 @@ def info():
         q = (
             select(
                 SensitivityRule.source,
-                func.count(SensitivityRule.id)
-                .where(SensitivityRule.active == True)
-                .label("active_count"),
+                func.count(SensitivityRule.id).label("active_count"),
                 func.count(SensitivityRule.id).label("total_count"),
             )
+            .where(SensitivityRule.active == True)
             .group_by(SensitivityRule.source)
             .order_by(SensitivityRule.source)
         )
@@ -70,6 +69,8 @@ def info():
                 select(func.count("*"))
                 .select_from(SensitivityRule)
                 .distinct(SensitivityRule.cd_nom)
+                .group_by(SensitivityRule.cd_nom)
+                .order_by(SensitivityRule.cd_nom)
             )
         )
     )
@@ -80,13 +81,15 @@ def info():
                 .select_from(SensitivityRule)
                 .filter_by(active=True)
                 .distinct(SensitivityRule.cd_nom)
+                .group_by(SensitivityRule.cd_nom)
+                .order_by(SensitivityRule.cd_nom)
             )
         )
     )
     click.echo(
         "\tRègles actives extrapolées aux taxons enfants : {}".format(
             db.session.scalar(
-                func.count(func.distinct(SensitivityRuleCache.c.cd_nom)).label("count")
+                select(func.count(func.distinct(SensitivityRuleCache.c.cd_nom)).label("count"))
             )
         )
     )
