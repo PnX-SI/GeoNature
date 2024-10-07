@@ -21,10 +21,24 @@ import {
   ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES,
   ROUTE_MANDATORY,
 } from './taxon-sheet/taxon-sheet.route.service';
-
+import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SyntheseObsModalWrapperComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs-container.component';
 const routes: Routes = [
-  { path: '', component: SyntheseComponent },
-  { path: 'occurrence/:id_synthese', component: SyntheseComponent, pathMatch: 'full' },
+  {
+    path: '',
+    component: SyntheseComponent,
+    children: [
+      {
+        path: 'occurrence/:id_synthese',
+        redirectTo: 'occurrence/:id_synthese/details',
+        pathMatch: 'full',
+      },
+      {
+        path: 'occurrence/:id_synthese/:tab',
+        component: SyntheseObsModalWrapperComponent,
+      },
+    ],
+  },
   {
     path: 'taxon/:cd_ref',
     component: TaxonSheetComponent,
@@ -52,6 +66,7 @@ const routes: Routes = [
     SharedSyntheseModule,
     CommonModule,
     TreeModule,
+    NgbModule,
     TaxonSheetComponent,
   ],
   declarations: [
@@ -61,16 +76,19 @@ const routes: Routes = [
     SyntheseModalDownloadComponent,
   ],
   entryComponents: [
+    SyntheseComponent,
     SyntheseInfoObsComponent,
     SyntheseModalDownloadComponent,
     DiscussionCardComponent,
     AlertInfoComponent,
+    SyntheseObsModalWrapperComponent,
   ],
   providers: [
     MapService,
     DynamicFormService,
     TaxonAdvancedStoreService,
     SyntheseFormService,
+    NgbActiveModal,
     RouteService,
   ],
 })

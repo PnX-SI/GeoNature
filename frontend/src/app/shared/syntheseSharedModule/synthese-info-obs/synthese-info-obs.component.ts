@@ -10,6 +10,8 @@ import { finalize } from 'rxjs/operators';
 import { isEmpty, find } from 'lodash';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -23,6 +25,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() mailCustomSubject: string;
   @Input() mailCustomBody: string;
   @Input() useFrom: 'synthese' | 'validation';
+
+  // path name of the selected tab (check tabs property)
+  @Input() selectedTab: string;
+
   public selectedObs: any;
   public validationHistory: Array<any> = [];
   public selectedObsTaxonDetail: any;
@@ -57,6 +63,37 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     '6': '#FFFFFF',
   };
   public comment: string;
+
+  // List of tabs
+  private tabs: Array<any> = [
+    { label: "Détail de l'occurrence", path: 'details' },
+    { label: 'Métadonnées', path: 'metadata' },
+    { label: 'Taxonomie', path: 'taxonomy' },
+    { label: 'Médias', path: 'media' },
+    { label: 'Zonage', path: 'zonage' },
+    { label: 'Validation', path: 'validation' },
+    { label: 'Discussion', path: 'discussion' },
+  ];
+
+  // Condition to make a tab visible
+  private tabConditions: Object = {
+    details: () => true,
+    metadata: () => true,
+    taxonomy: () => true,
+    media: () => !!this.selectedObs?.medias?.length,
+    zonage: () => true,
+    validation: () => true,
+    discussion: () => true,
+  };
+  // List of visible tabs (based on `tabConditions`)
+  public filteredTabs: Array<any> = [];
+
+  // index of the current tab (populate by the mat-tab-group)
+  public selectedIndex: number = 0;
+
+  // default tab
+  private defaultTab: string = 'details';
+
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
@@ -66,7 +103,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _mapService: MapService,
     private _clipboard: Clipboard,
     private _moduleService: ModuleService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _router: Router,
+    private _route: ActivatedRoute,
+    private _location: Location
   ) {}
 
   ngOnInit() {
@@ -80,6 +120,13 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     });
   }
 
+  filterTabs() {
+    this.filteredTabs = this.tabs.filter((tab) => {
+      const condition = this.tabConditions[tab.path];
+      return condition ? condition() : false;
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.idSynthese && changes.idSynthese.currentValue) {
       this.loadAllInfo(changes.idSynthese.currentValue);
@@ -87,13 +134,20 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   }
 
   // HACK to display a second map on validation tab
-  setValidationTab() {
+  setValidationTab(event) {
     this.showValidation = true;
     if (this._mapService.map) {
       setTimeout(() => {
         this._mapService.map.invalidateSize();
       }, 100);
     }
+    const tabIndex = event.index;
+    const tabPath = this.filteredTabs[tabIndex]?.path;
+    if (!tabPath) {
+      throw new Error(`Tab Index ${tabIndex} is not associated to a path!`);
+    }
+    // On met à jour la route pour refléter l'onglet sélectionné (sans recharger tout le composant)
+    this.setUrlForTab(tabPath);
   }
 
   loadAllInfo(idSynthese) {
@@ -169,6 +223,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             this.profile = profile;
           });
         });
+
+        // Verify if a tab is indicated in the url, if true, set the tab to the indicated tab
+        this.filterTabs();
+        this.selectedTab = this.selectedTab ? this.selectedTab : this.defaultTab;
+        this.selectTab(this.selectedTab);
       });
 
     this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe((dataChecks) => {
@@ -355,5 +414,34 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       `${this.config.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`
     );
     this._commonService.translateToaster('info', 'Synthese.copy');
+  }
+
+  /**
+   * Change the selected tab, if the tabGroup is defined and navigate to the corresponding URL
+   * without reloading the component.
+   *
+   * @param {string} tabPath path of the tab to select
+   * @throws {Error} if the tabPath is not associated to a tab
+   */
+  selectTab(tabPath: string) {
+    const tabIndex = this.filteredTabs.findIndex((t) => t.path === tabPath);
+    if (tabIndex == -1) {
+      throw new Error(`Tab Path ${tabPath} is not associated to a tab!`);
+    }
+
+    if (this.tabGroup) {
+      this.selectedIndex = tabIndex;
+    }
+
+    // On Navigue vers l'URL correspondante sans recharger le composant
+    this.setUrlForTab(tabPath);
+  }
+
+  /**
+   * Navigates to a specific tab, without reloading the component.
+   * @param tabPath the path (check `filteredTabs` property) of the tab to navigate to
+   */
+  setUrlForTab(tabPath: string) {
+    this._location.replaceState(`/${this.useFrom}/occurrence/${this.idSynthese}/${tabPath}`);
   }
 }

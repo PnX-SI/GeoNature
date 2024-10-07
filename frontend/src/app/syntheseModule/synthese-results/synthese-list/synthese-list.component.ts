@@ -24,6 +24,7 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormArray, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -53,7 +54,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _router: Router
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
   }
@@ -149,17 +151,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  openInfoModal(row) {
-    row.id_synthese = row.id_synthese;
-    const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
-      size: 'lg',
-      windowClass: 'large-modal',
-    });
-    modalRef.componentInstance.idSynthese = row.id_synthese;
-    modalRef.componentInstance.header = true;
-    modalRef.componentInstance.useFrom = 'synthese';
   }
 
   openModalCol($event, modal) {
