@@ -845,6 +845,8 @@ def reports_data(users, synthese_data):
         reports = [
             (ids[0], users["admin_user"].id_role, "comment1", discussionId, False),
             (ids[1], users["admin_user"].id_role, "comment1", alertId, False),
+            (ids[2], users["user"].id_role, "a_comment1", discussionId, True),
+            (ids[3], users["user"].id_role, "b_comment1", discussionId, True),
         ]
         for id_synthese, *args in reports:
             data.append(create_report(id_synthese, *args))

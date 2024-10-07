@@ -1,5 +1,6 @@
 import json
 
+from datetime import datetime
 import pytest
 from flask import url_for
 from sqlalchemy import func, select, exists
@@ -144,29 +145,125 @@ class TestReports:
 
     def test_list_reports(self, reports_data, synthese_data, users):
         url = "gn_synthese.list_reports"
-        # TEST GET WITHOUT REQUIRED ID SYNTHESE
-        set_logged_user(self.client, users["admin_user"])
-        response = self.client.get(url_for(url))
-        assert response.status_code == NotFound.code
         ids = [s.id_synthese for s in synthese_data.values()]
+
+        # User: noright_user
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.get(
+            url_for(
+                url, id_synthese=ids[0], idRole=users["noright_user"].id_role, type="discussion"
+            )
+        )
+        assert response.status_code == Forbidden.code
+
+        # User: admin_user
+        set_logged_user(self.client, users["admin_user"])
+
         # TEST GET BY ID SYNTHESE
         response = self.client.get(
-            url_for(url, idSynthese=ids[0], idRole=users["admin_user"].id_role, type="discussion")
+            url_for(url, id_synthese=ids[0], idRole=users["admin_user"].id_role, type="discussion")
         )
         assert response.status_code == 200
         assert len(response.json) == 1
+
+        # TEST INVALID - TYPE DOES NOT EXISTS
+        response = self.client.get(
+            url_for(
+                url,
+                id_synthese=ids[0],
+                idRole=users["admin_user"].id_role,
+                type="UNKNOW-REPORT-TYPE",
+            )
+        )
+        assert response.status_code == 400
+        assert response.json["description"] == "This report type does not exist"
+
+        # TEST VALID - ADD PIN
+        response = self.client.get(
+            url_for(url, id_synthese=ids[0], idRole=users["admin_user"].id_role, type="pin")
+        )
+        assert response.status_code == 200
+        assert len(response.json) == 0
         # TEST NO RESULT
         if len(ids) > 1:
             # not exists because ids[1] is an alert
-            response = self.client.get(url_for(url, idSynthese=ids[1], type="discussion"))
+            response = self.client.get(url_for(url, id_synthese=ids[1], type="discussion"))
             assert response.status_code == 200
             assert len(response.json) == 0
             # TEST TYPE NOT EXISTS
-            response = self.client.get(url_for(url, idSynthese=ids[1], type="foo"))
+            response = self.client.get(url_for(url, id_synthese=ids[1], type="foo"))
             assert response.status_code == BadRequest.code
             # NO TYPE - TYPE IS NOT REQUIRED
-            response = self.client.get(url_for(url, idSynthese=ids[1]))
+            response = self.client.get(url_for(url, id_synthese=ids[1]))
             assert response.status_code == 200
+
+    @pytest.mark.parametrize(
+        "sort,orderby,expected_error",
+        [
+            ("asc", "creation_date", False),
+            ("desc", "creation_date", False),
+            ("asc", "user.nom_complet", False),
+            ("asc", "content", False),
+            ("asc", "nom_cite", True),
+        ],
+    )
+    def test_list_all_reports(
+        self, sort, orderby, expected_error, reports_data, synthese_data, users
+    ):
+        url = "gn_synthese.list_all_reports"
+        set_logged_user(self.client, users["admin_user"])
+        # TEST GET WITHOUT REQUIRED ID SYNTHESE
+        response = self.client.get(url_for(url, type="discussion"))
+        assert response.status_code == 200
+        assert "items" in response.json
+        assert isinstance(response.json["items"], list)
+        assert len(response.json["items"]) >= 0
+
+        ids = [s.id_synthese for s in synthese_data.values()]
+        # TEST WITH MY_REPORTS TRUE
+        set_logged_user(self.client, users["user"])
+        response = self.client.get(url_for(url, type="discussion", my_reports="true"))
+        assert response.status_code == 200
+        items = response.json["items"]
+        # Check that all items belong to the current user
+        id_role = users["user"].id_role
+        nom_complet = users["user"].nom_complet
+        assert all(
+            item["id_role"] == id_role and item["user"]["nom_complet"] == nom_complet
+            for item in items
+        )
+
+        # Test undefined type
+        response = self.client.get(url_for(url, type="UNKNOW-REPORT-TYPE", my_reports="true"))
+        assert response.status_code == 400
+        assert response.json["description"] == "This report type does not exist"
+
+        # TEST SORT AND PAGINATION
+        if expected_error:
+            # Test with invalid orderby
+            response = self.client.get(url_for(url, orderby=orderby, sort=sort))
+            assert response.status_code == BadRequest.code
+        else:
+            response = self.client.get(url_for(url, orderby=orderby, sort=sort, page=1, per_page=5))
+            assert response.status_code == 200
+            assert "items" in response.json
+            assert len(response.json["items"]) <= 5
+
+            # Verify sorting
+            items = response.json["items"]
+            reverse_sort = sort == "desc"
+            if orderby == "creation_date":
+                dates = [
+                    datetime.strptime(item["creation_date"], "%a, %d %b %Y %H:%M:%S %Z")
+                    for item in items
+                ]
+                assert dates == sorted(dates, reverse=reverse_sort)
+            elif orderby == "content":
+                contents = [item["content"] for item in items]
+                assert contents == sorted(contents, reverse=reverse_sort, key=str.casefold)
+            elif orderby == "user.nom_complet":
+                names = [item["user"]["nom_complet"] for item in items]
+                assert names == sorted(names, reverse=reverse_sort)
 
 
 @pytest.mark.usefixtures("client_class", "notifications_enabled", "temporary_transaction")

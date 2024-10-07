@@ -91,7 +91,7 @@ DEFAULT_COLUMNS_API_SYNTHESE = [
 ]
 
 # Mandatory columns for the frontend in Synthese API
-MANDATORY_COLUMNS = ["id_synthese", "entity_source_pk_value", "url_source", "cd_nom"]
+MANDATORY_COLUMNS = ["id_synthese", "entity_source_pk_value", "url_source", "cd_nom", "id_dataset"]
 
 # CONFIG MAP-LIST
 DEFAULT_LIST_COLUMN = [
@@ -100,3 +100,77 @@ DEFAULT_LIST_COLUMN = [
     {"prop": "dataset_name", "name": "JDD", "max_width": 200},
     {"prop": "observers", "name": "observateur", "max_width": 200},
 ]
+
+
+class DefaultProfile:
+    ENABLED = True
+    ## DEFAULT PROFILE INDICATORS
+    LIST_INDICATORS = [
+        {
+            "name": "observation(s) valide(s)",
+            "matIcon": "search",
+            "field": "count_valid_data",
+            "type": "number",
+        },
+        {
+            "name": "Première observation",
+            "matIcon": "schedule",
+            "field": "first_valid_data",
+            "type": "date",
+        },
+        {
+            "name": "Dernière observation",
+            "matIcon": "search",
+            "field": "last_valid_data",
+            "type": "date",
+        },
+        {
+            "name": "Plage d'altitude(s)",
+            "matIcon": "terrain",
+            "field": ["altitude_min", "altitude_max"],
+            "unit": "m",
+            "type": "number",
+        },
+    ]
+
+
+class DefaultGeographicOverview:
+    pass
+
+
+class DefaultSpeciesSheet:
+    ## DEFAULT SPECIES SHEET INDICATORS
+    LIST_INDICATORS = [
+        {
+            "name": "observation(s)",
+            "matIcon": "search",
+            "field": "observation_count",
+            "type": "number",
+        },
+        {
+            "name": "observateur(s)",
+            "matIcon": "people",
+            "field": "observer_count",
+            "type": "number",
+        },
+        {
+            "name": "commune(s)",
+            "matIcon": "location_on",
+            "field": "area_count",
+            "type": "number",
+        },
+        {
+            "name": "Plage d'altitude(s)",
+            "matIcon": "terrain",
+            "unit": "m",
+            "type": "number",
+            "field": ["altitude_min", "altitude_max"],
+        },
+        {
+            "name": "Plage d'observation(s)",
+            "matIcon": "date_range",
+            "type": "date",
+            "field": ["date_min", "date_max"],
+            "separator": "-",
+        },
+    ]

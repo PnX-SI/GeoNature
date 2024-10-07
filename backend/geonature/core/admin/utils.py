@@ -10,6 +10,8 @@ class CruvedProtectedMixin:
     def is_accessible(self):
         if g.current_user is None:
             raise Unauthorized  # return False leads to Forbidden which is different
+        if not g.current_user.is_authenticated:
+            raise Unauthorized
         return self._can_action("R")
 
     def _can_action(self, action):

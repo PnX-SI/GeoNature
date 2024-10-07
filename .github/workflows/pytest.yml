@@ -123,11 +123,12 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Test with pytest
         run: |
-          pytest -v --cov --cov-report xml --benchmark-skip
+          pytest -v --cov --cov-report xml
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Upload coverage to Codecov
-        if: ${{ matrix.debian-version == '11' }}
-        uses: codecov/codecov-action@v3
+        if: ${{ matrix.debian-version == '12' }}
+        uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           flags: pytest
