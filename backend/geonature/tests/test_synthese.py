@@ -1154,7 +1154,7 @@ class TestSynthese:
             url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_INVALID),
         )
         assert response.status_code == 400
-        assert response.json["description"] == "Invalid area_type"
+        assert response.json["description"] == "Invalid area_type parameter"
 
         # Invalid cd_ref parameter
         response = self.client.get(

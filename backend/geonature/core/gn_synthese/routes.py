@@ -972,8 +972,11 @@ def taxon_stats(scope, cd_ref):
 
     area_type = request.args.get("area_type")
 
-    if not TaxonSheetUtils.is_valid_area_type(area_type):
+    if not area_type:
         raise BadRequest("Missing area_type parameter")
+
+    if not TaxonSheetUtils.is_valid_area_type(area_type):
+        raise BadRequest("Invalid area_type parameter")
 
     areas_subquery = TaxonSheetUtils.get_area_subquery(area_type)
     taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
