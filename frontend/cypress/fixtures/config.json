@@ -203,7 +203,6 @@
     "DISPLAY_MAP_LAST_OBS": true
   },
   "DEFAULT_LANGUAGE": "fr",
-  "API_TAXHUB": "http://127.0.0.1:5000",
   "ACCOUNT_MANAGEMENT": {
     "AUTO_DATASET_CREATION": true,
     "ENABLE_USER_MANAGEMENT": false,

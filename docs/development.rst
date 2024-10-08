@@ -232,7 +232,6 @@ Il est nécessaire de changer la configuration du fichier ``config/geonature_con
 
   URL_APPLICATION = 'http://127.0.0.1:4200'
   API_ENDPOINT = 'http://127.0.0.1:8000'
-  API_TAXHUB =  'http://127.0.0.1:5000/api'
 
 N’oubliez pas les :ref:`actions à effectuer après modification de la configuration <post_config_change>`.
 

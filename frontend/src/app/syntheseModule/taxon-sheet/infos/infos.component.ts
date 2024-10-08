@@ -35,7 +35,9 @@ export class InfosComponent implements OnInit {
             (m) => m.id_type == this._config.TAXHUB.ID_TYPE_MAIN_PHOTO
           );
           if (media) {
-            this.mediaUrl = `${this._config.API_TAXHUB}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
+            this.mediaUrl = `${this._ds.getTaxhubAPI()}/tmedias/thumbnail/${
+              media.id_media
+            }?h=300&w300`;
           }
         });
     });
