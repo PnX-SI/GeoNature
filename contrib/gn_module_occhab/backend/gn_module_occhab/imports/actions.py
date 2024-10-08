@@ -58,7 +58,7 @@ from geonature.core.imports.checks.sql.core import (
     check_mandatory_field,
 )
 from .checks import (
-    check_permissions,
+    check_existing_station_permissions,
     generate_id_station,
     set_id_station_from_line_no,
 )
@@ -192,7 +192,8 @@ class OcchabImportActions(ImportActions):
                 selected_fields.get("unique_id_sinp_station"),
             ],
         )
-        check_permissions(imprt, entity_habitat)
+        check_existing_station_permissions(imprt)
+
         set_parent_line_no(
             imprt,
             parent_entity=entity_station,

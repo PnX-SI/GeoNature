@@ -65,20 +65,18 @@ def set_id_station_from_line_no(imprt: TImports, habitat_entity: Entity) -> None
     )
 
 
-def check_permissions(imprt: TImports, entity_habitat: Entity) -> None:
+def check_existing_station_permissions(imprt: TImports) -> None:
     """
-    Check that the user has update right on all stations associated with the imported habitats.
+    Check that the user has update right on all stations associated with the newly imported habitats.
 
     Parameters
     ----------
     imprt : TImports
         Current import
-    entity_habitat : Entity
-        The entity representing the habitat.
-
     """
 
     transient_table = imprt.destination.get_transient_table()
+    entity_habitat = Entity.query.filter_by(code="habitat").one()
 
     # Get User permissions on OCCHAB
     author = imprt.authors[0]
