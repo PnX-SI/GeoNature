@@ -259,7 +259,7 @@ packaging==24.1
     #   geoalchemy2
     #   gunicorn
     #   marshmallow
-pillow==10.4.0
+pillow==9.5.0
     # via
     #   -r requirements-common.in
     #   cairosvg
