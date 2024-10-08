@@ -23,11 +23,8 @@ class TaxonSheetUtils:
     def update_query_with_sorting(query: Query, sort_by: str, sort_order: SortOrder) -> Query:
         if sort_order == SortOrder.ASC:
             return query.order_by(asc(sort_by))
-        elif sort_order == SortOrder.DESC:
-            return query.order_by(desc(sort_by))
-        else:
-            raise BadRequest("The sorting attribute is undefined")
-        return
+
+        return query.order_by(desc(sort_by))
 
     @staticmethod
     def paginate(query: Query, page: int, per_page: int) -> Pagination:

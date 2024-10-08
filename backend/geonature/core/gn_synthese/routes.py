@@ -1037,9 +1037,6 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
         sort_order = request.args.get("sort_order", SortOrder.ASC, SortOrder)
 
         # Handle sorting
-        if sort_order not in [SortOrder.ASC, SortOrder.DESC]:
-            raise BadRequest(f"The sort_order {sort_order} is undefined")
-
         if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:
             raise BadRequest(f"The sort_by column {sort_by} is not defined")
 

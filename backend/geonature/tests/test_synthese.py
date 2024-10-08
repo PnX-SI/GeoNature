@@ -1226,7 +1226,9 @@ class TestSynthese:
         assert response.status_code == Forbidden.code
 
     def test_taxon_observer(self, synthese_data, users):
-        set_logged_user(self.client, users["admin_user"])
+        set_logged_user(self.client, users["stranger_user"])
+
+        ## Test Data
 
         SORT_ORDER_UNDEFINED = "sort-order-undefined"
         SORT_ORDER_ASC = "asc"
@@ -1238,45 +1240,47 @@ class TestSynthese:
         CD_REF_OBSERVERS_ASC = {
             "items": [
                 {
-                    "date_max": "Mon, 20 May 2019 00:00:00 GMT",
-                    "date_min": "Mon, 20 May 2019 00:00:00 GMT",
-                    "media_count": 0,
-                    "observation_count": 1,
-                    "observer": "Albert Christophe",
-                },
-                {
-                    "date_max": "Fri, 04 Oct 2024 17:04:09 GMT",
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 4,
+                    "observation_count": 3,
+                    "observer": "Administrateur Test",
+                },
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
                     "observer": "Bob Bobby",
                 },
             ],
-            "total": 8,
-            "per_page": 2,
             "page": 1,
+            "per_page": 2,
+            "total": 2,
         }
         CD_REF_OBSERVERS_DESC = {
             "items": [
                 {
-                    "date_max": "Sat, 20 Apr 2019 00:00:00 GMT",
-                    "date_min": "Thu, 08 Sep 2016 00:00:00 GMT",
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
                     "observation_count": 3,
-                    "observer": "Rippert Laurent",
+                    "observer": "Bob Bobby",
                 },
                 {
-                    "date_max": "Sat, 20 Apr 2019 00:00:00 GMT",
-                    "date_min": "Sat, 20 Apr 2019 00:00:00 GMT",
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 1,
-                    "observer": "Lecuyer Clément",
+                    "observation_count": 3,
+                    "observer": "Administrateur Test",
                 },
             ],
             "page": 1,
             "per_page": 2,
-            "total": 8,
+            "total": 2,
         }
+
+        ## sort_order
 
         # Unknow sort_order parameters: shoudl fallback in asc
         response = self.client.get(
@@ -1290,7 +1294,7 @@ class TestSynthese:
         assert response.status_code == 200
         assert response.get_json() == CD_REF_OBSERVERS_ASC
 
-        # Sort order ASC
+        # sort order ASC
         response = self.client.get(
             url_for(
                 "gn_synthese.taxon_observers",
@@ -1302,7 +1306,7 @@ class TestSynthese:
         assert response.status_code == 200
         assert response.get_json() == CD_REF_OBSERVERS_ASC
 
-        # Sort order DESC
+        # sort order DESC
         response = self.client.get(
             url_for(
                 "gn_synthese.taxon_observers",
@@ -1314,7 +1318,7 @@ class TestSynthese:
         assert response.status_code == 200
         assert response.get_json() == CD_REF_OBSERVERS_DESC
 
-        # Unknow sort_by parameters
+        ## sort_by
         response = self.client.get(
             url_for(
                 "gn_synthese.taxon_observers",
@@ -1329,7 +1333,7 @@ class TestSynthese:
             response.json["description"] == f"The sort_by column {SORT_BY_UNDEFINED} is not defined"
         )
 
-        # Everything is fine
+        # Ok
         response = self.client.get(
             url_for(
                 "gn_synthese.taxon_observers",
