@@ -33,6 +33,10 @@ export class DataFormService {
     public config: ConfigService
   ) {}
 
+  getTaxhubAPI() {
+    return `${this.config.API_ENDPOINT}/taxhub${this.config.TAXHUB.API_PREFIX}`;
+  }
+
   getNomenclature(
     codeNomenclatureType: string,
     regne?: string,
@@ -150,18 +154,18 @@ export class DataFormService {
     if (fields) {
       query_string = query_string.append('fields', fields.join(','));
     }
-    return this._http.get<Taxon>(`${this.config.API_TAXHUB}/taxref/${cd_nom}`, {
+    return this._http.get<Taxon>(`${this.getTaxhubAPI()}/taxref/${cd_nom}`, {
       params: query_string,
     });
   }
 
   getTaxaBibList() {
-    return this._http.get<any>(`${this.config.API_TAXHUB}/biblistes/`).pipe(map((d) => d.data));
+    return this._http.get<any>(`${this.getTaxhubAPI()}/biblistes/`).pipe(map((d) => d.data));
   }
 
   async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
     const response = await this._http
-      .get<Taxon>(`${this.config.API_TAXHUB}/taxref/${cd_nom}`)
+      .get<Taxon>(`${this.getTaxhubAPI()}/taxref/${cd_nom}`)
       .toPromise();
     return response;
   }
@@ -171,7 +175,7 @@ export class DataFormService {
     params = params.set('rank_limit', rank);
     params = params.set('fields', 'lb_auteur,nom_complet_html');
 
-    let url = `${this.config.API_TAXHUB}/taxref/search/lb_nom`;
+    let url = `${this.getTaxhubAPI()}/taxref/search/lb_nom`;
     if (search) {
       url = `${url}/${search}`;
     }
@@ -216,19 +220,19 @@ export class DataFormService {
   }
 
   getRegneAndGroup2Inpn() {
-    return this._http.get<any>(`${this.config.API_TAXHUB}/taxref/regnewithgroupe2`);
+    return this._http.get<any>(`${this.getTaxhubAPI()}/taxref/regnewithgroupe2`);
   }
 
   getGroup3Inpn() {
-    return this._http.get<any>(`${this.config.API_TAXHUB}/taxref/groupe3_inpn`);
+    return this._http.get<any>(`${this.getTaxhubAPI()}/taxref/groupe3_inpn`);
   }
 
   getTaxhubBibAttributes() {
-    return this._http.get<any>(`${this.config.API_TAXHUB}/bibattributs/`);
+    return this._http.get<any>(`${this.getTaxhubAPI()}/bibattributs/`);
   }
 
   getTaxonomyHabitat() {
-    return this._http.get<any>(`${this.config.API_TAXHUB}/taxref/bib_habitats`);
+    return this._http.get<any>(`${this.getTaxhubAPI()}/taxref/bib_habitats`);
   }
 
   getTypologyHabitat(id_list: number) {
@@ -526,7 +530,7 @@ export class DataFormService {
       application === 'GeoNature'
         ? `${this.config.API_ENDPOINT}/${api}`
         : application === 'TaxHub'
-          ? `${this.config.API_TAXHUB}/${api}`
+          ? `${this.getTaxhubAPI()}/${api}`
           : api;
 
     if (data !== undefined) {
@@ -631,7 +635,7 @@ export class DataFormService {
   }
 
   getStatusValues(statusType: String) {
-    return this._http.get<any>(`${this.config.API_TAXHUB}/bdc_statuts/status_values/${statusType}`);
+    return this._http.get<any>(`${this.getTaxhubAPI()}/bdc_statuts/status_values/${statusType}`);
   }
 
   getProfile(cdRef): Observable<Profile> {
@@ -666,7 +670,7 @@ export class DataFormService {
     if (statusTypes) {
       queryString = queryString.set('codes', statusTypes.join(','));
     }
-    return this._http.get<any>(`${this.config.API_TAXHUB}/bdc_statuts/status_types`, {
+    return this._http.get<any>(`${this.getTaxhubAPI()}/bdc_statuts/status_types`, {
       params: queryString,
     });
   }

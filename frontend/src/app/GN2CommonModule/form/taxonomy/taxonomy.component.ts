@@ -130,9 +130,9 @@ export class TaxonomyComponent implements OnInit, OnChanges {
 
   setApiEndPoint(idList) {
     if (idList) {
-      this.apiEndPoint = `${this.config.API_TAXHUB}/taxref/allnamebylist/${idList}`;
+      this.apiEndPoint = `${this._dfService.getTaxhubAPI()}/taxref/allnamebylist/${idList}`;
     } else {
-      this.apiEndPoint = `${this.config.API_TAXHUB}/taxref/allnamebylist`;
+      this.apiEndPoint = `${this._dfService.getTaxhubAPI()}/taxref/allnamebylist`;
     }
   }
 
