@@ -12,7 +12,6 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class ModalInfoObsComponent implements OnInit {
   @Input() syntheseObs: any;
-  public selectObsTaxonInfo;
   public selectedObs;
   public selectedObsTaxonDetail;
   public formatedAreas = [];
@@ -64,14 +63,14 @@ export class ModalInfoObsComponent implements OnInit {
         //   this.selectedObs['cd_nom']
         //   }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
       });
-    this._gnDataService
-      .getTaxonAttributsAndMedia(syntheseObs.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
-      .subscribe((data) => {
-        this.selectObsTaxonInfo = data;
-      });
 
-    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom).subscribe((data) => {
-      this.selectedObsTaxonDetail = data;
+    const taxhubFields = ['attributs', 'attributs.bib_attribut.label_attribut', 'status'];
+    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom, taxhubFields).subscribe((taxInfo) => {
+      this.selectedObsTaxonDetail = taxInfo;
+      // filter attributs
+      this.selectedObsTaxonDetail.attributs = taxInfo['attributs'].filter((v) =>
+        this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut)
+      );
     });
   }
 

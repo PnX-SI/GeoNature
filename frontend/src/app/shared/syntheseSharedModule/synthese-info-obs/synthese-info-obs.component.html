@@ -416,10 +416,10 @@
         <table class="font-xs table table-striped table-sm">
           <tr
             class="font-xs"
-            *ngFor="let attr of selectObsTaxonInfo?.attributs"
+            *ngFor="let attr of selectedObsTaxonDetail?.attributs"
           >
             <td>
-              <b>{{ attr.label_attribut }}</b>
+              <b>{{ attr?.bib_attribut?.label_attribut }}</b>
             </td>
             <td>{{ attr.valeur_attribut }}</td>
           </tr>
