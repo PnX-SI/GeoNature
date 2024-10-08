@@ -15,7 +15,7 @@ from geonature.core.admin.utils import CruvedProtectedMixin
 
 class CruvedProtectedBibListesView(CruvedProtectedMixin, BibListesView):
     module_code = "TAXHUB"
-    object_code = "LISTE"
+    object_code = "LISTES"
     extra_actions_perm = {".import_cd_nom_view": "C"}
 
 
@@ -31,12 +31,12 @@ class CruvedProtectedTMediasView(CruvedProtectedMixin, TMediasView):
 
 class CruvedProtectedBibAttributsView(CruvedProtectedMixin, BibAttributsView):
     module_code = "TAXHUB"
-    object_code = "ATTRIBUT"
+    object_code = "ATTRIBUTS"
 
 
 class CruvedProtectedBibThemes(CruvedProtectedMixin, BibThemesView):
     module_code = "TAXHUB"
-    object_code = "THEME"
+    object_code = "THEMES"
 
 
 def load_admin_views(app, admin):
