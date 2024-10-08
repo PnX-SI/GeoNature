@@ -547,7 +547,6 @@ class GnGeneralSchemaConf(Schema):
     DEBUG = fields.Boolean(load_default=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
-    API_TAXHUB = fields.Url()
     CODE_APPLICATION = fields.String(load_default="GN")
     DISABLED_MODULES = fields.List(fields.String(), load_default=[])
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
@@ -591,15 +590,13 @@ class GnGeneralSchemaConf(Schema):
     def _pre_load(self, data, **kwargs):
         if "API_TAXHUB" in data:
             warnings.warn(
-                "Le paramètre API_TAXHUB est déprécié, il sera automatiquement déduit API_ENDPOINT et supprimé dans la version 2.14",
+                "Le paramètre API_TAXHUB n'est plus utilisé depuis la version 2.15.",
                 Warning,
             )
         return data
 
     @post_load
     def insert_module_config(self, data, **kwargs):
-        # URL de l'api taxub
-        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub{data['TAXHUB']['API_PREFIX']}"
 
         # Configuration des modules actifs
         for dist in iter_modules_dist():
