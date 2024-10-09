@@ -245,6 +245,15 @@ def check_datasets(
                 "invalid_rows": df[invalid_ds_mask],
             }
 
+        inactive_dataset = [uuid for uuid, ds in datasets.items() if not ds.active]
+        inactive_dataset_mask = df[uuid_col].isin(inactive_dataset)
+        if inactive_dataset_mask.any():
+            yield {
+                "error_code": ImportCodeError.DATASET_NOT_ACTIVE,
+                "column": uuid_field.name_field,
+                "invalid_rows": df[inactive_dataset_mask],
+            }
+
         # Warning: we check only permissions of first author, but currently there it only one author per import.
         authorized_datasets = {
             ds.unique_dataset_id.hex: ds

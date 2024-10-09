@@ -8,6 +8,8 @@ class ImportCodeError:
         The referenced dataset was not found
     DATASET_NOT_AUTHORIZED : str
         The dataset is not authorized to the current user
+    DATASET_NOT_ACTIVE : str
+        The dataset is inactive
     MULTIPLE_ATTACHMENT_TYPE_CODE : str
         Multiple attachments of the same type are not allowed
     MULTIPLE_CODE_ATTACHMENT : str
@@ -118,11 +120,14 @@ class ImportCodeError:
         The habitat code is not found
     CD_NOM_NOT_FOUND : str
         The cd_nom is not found in the instance TaxRef
+
+
     """
 
     # Dataset error
     DATASET_NOT_FOUND = "DATASET_NOT_FOUND"
     DATASET_NOT_AUTHORIZED = "DATASET_NOT_AUTHORIZED"
+    DATASET_NOT_ACTIVE = "DATASET_NOT_ACTIVE"
     MULTIPLE_ATTACHMENT_TYPE_CODE = "MULTIPLE_ATTACHMENT_TYPE_CODE"
     MULTIPLE_CODE_ATTACHMENT = "MULTIPLE_CODE_ATTACHMENT"
 

@@ -433,7 +433,7 @@ def datasets(users, acquisition_frameworks, module):
         select(TModules).where(TModules.module_code.in_(writable_module_code))
     ).all()
 
-    def create_dataset(name, id_af, digitizer=None, modules=writable_module):
+    def create_dataset(name, id_af, digitizer=None, modules=writable_module, active=True):
         with db.session.begin_nested():
             dataset = TDatasets(
                 id_acquisition_framework=id_af,
@@ -443,6 +443,7 @@ def datasets(users, acquisition_frameworks, module):
                 marine_domain=True,
                 terrestrial_domain=True,
                 id_digitizer=digitizer.id_role if digitizer else None,
+                active=active,
             )
             if digitizer and digitizer.organisme:
                 actor = CorDatasetActor(
@@ -477,6 +478,13 @@ def datasets(users, acquisition_frameworks, module):
             ),
         ]
     }
+    datasets["own_dataset_not_activated"] = create_dataset(
+        "own_dataset_not_activated",
+        af.id_acquisition_framework,
+        users["user"],
+        active=False,
+    )
+
     datasets["with_module_1"] = create_dataset(
         name="module_1_dataset",
         id_af=af_1.id_acquisition_framework,
