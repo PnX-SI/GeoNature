@@ -5,6 +5,7 @@ import json
 import unicodedata
 
 from flask import request, current_app, jsonify, g, stream_with_context, send_file
+from flask_login import current_user
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, Gone, NotFound
 
 # url_quote was deprecated in werkzeug 3.0 https://stackoverflow.com/a/77222063/5807438
@@ -127,6 +128,8 @@ def get_import_list(scope, destination=None):
 
     if destination:
         query = query.filter(TImports.destination == destination)
+
+    query = query.where(Destination.filter_by_role(user=current_user))
 
     imports = query.paginate(page=page, error_out=False, max_per_page=limit)
 

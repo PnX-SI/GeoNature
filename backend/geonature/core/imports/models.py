@@ -176,14 +176,14 @@ class Destination(db.Model):
         allowed_destination = []
         for dest in all_destination:
             max_scope = get_scopes_by_action(
-                action_code="C", id_role=user.id_role, module_code=dest.module.module_code
-            )
+                id_role=user.id_role, module_code=dest.module.module_code
+            )["C"]
             if max_scope > 0:
                 allowed_destination.append(dest)
         return allowed_destination
 
     @qfilter
-    def filter_by_role(user: Optional[User] = None):
+    def filter_by_role(cls, user: Optional[User] = None, **kwargs):
         """
         Filter Destination by role.
 
