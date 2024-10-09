@@ -82,7 +82,7 @@ describe('Import List - Toolbar - Destinations', () => {
           });
 
           it('Should filter the list with every available destinations', () => {
-            const destinations = availableDestinations(user.availableDestinations);
+            const destinations = availableDestinations(user.destinations);
             // Select every destination, one after the other
             for (const destinationKey of destinations) {
               cy.get(SELECTOR_IMPORT_LIST_TOOLBAR).within(() => {

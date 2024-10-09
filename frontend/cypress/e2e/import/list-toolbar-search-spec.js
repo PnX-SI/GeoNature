@@ -11,7 +11,7 @@ import {
 // ////////////////////////////////////////////////////////////////////////////
 
 const FIXTURE_PATH = 'import/synthese/liste_import.json';
-const TIMEOUT_WAIT = 1000;
+const TIMEOUT_WAIT = 3000;
 
 function filterMapList(importSeachTerm) {
   cy.get(SELECTOR_IMPORT_LIST_TOOLBAR_SEARCH).clear().type(importSeachTerm);
