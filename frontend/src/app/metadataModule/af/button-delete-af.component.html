@@ -1,0 +1,23 @@
+<ng-container [ngSwitch]="buttonType">
+  <button
+    *ngSwitchCase="ButtonType.Toolbar"
+    mat-icon-button
+    [disabled]="disabled"
+    matTooltip="Supprimer le cadre d'acquisition"
+    (click)="deleteAcquisitionFramework()"
+    style="color: black"
+  >
+    <mat-icon>delete</mat-icon>
+  </button>
+  <button
+    *ngSwitchCase="ButtonType.Floating"
+    mat-mini-fab
+    color="warn"
+    [disabled]="disabled"
+    matTooltip="Supprimer le cadre d'acquisition"
+    (click)="deleteAcquisitionFramework()"
+    class="mr-2 float-right"
+  >
+    <mat-icon>delete</mat-icon>
+  </button>
+</ng-container>
