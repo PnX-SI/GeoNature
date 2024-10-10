@@ -661,7 +661,6 @@ def export_pdf(scope, imprt):
     if not imprt.has_instance_permission(scope):
         raise Forbidden
     ctx = imprt.as_dict()
-    print(ctx)
 
     ctx["map"] = request.form.get("map")
     if ctx["map"] == "undefined":
