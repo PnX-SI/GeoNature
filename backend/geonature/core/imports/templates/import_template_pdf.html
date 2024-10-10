@@ -60,6 +60,7 @@
       </div>
     </div>
 
+    {% if data.processed %}
     <div class="card card50">
       <div class="card-header">Zone géographique</div>
 
@@ -71,9 +72,10 @@
         </p>
       </div>
     </div>
+    {% endif %}
 
-    {% if data.processed %}
     
+    {% if data.date_end_import is not None %}
     <div class="row card">
         <div class="card-header">
           Statistiques
@@ -106,7 +108,8 @@
         </div>
   
     </div>
-    
+    {% endif %}
+    {% if data.processed %}
     <div class="row card">
         <div class="card-header">
           Erreurs
