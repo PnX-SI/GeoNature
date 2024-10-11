@@ -30,8 +30,7 @@ export class TabGeographicOverviewComponent implements OnInit {
   observations: FeatureCollection | null = null;
   areasEnable: boolean;
   areasLegend: any;
-  private areasLabelSwitchBtn;
-  public featureGroup: any;
+  private _areasLabelSwitchBtn;
   styleTabGeoJson: {};
 
   mapAreasStyle: MapAreasStyle = {
@@ -58,7 +57,6 @@ export class TabGeographicOverviewComponent implements OnInit {
     this.areasEnable =
       this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
       this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
-    this.featureGroup = new L.FeatureGroup();
   }
 
   ngOnInit() {
@@ -154,13 +152,13 @@ export class TabGeographicOverviewComponent implements OnInit {
           }
         };
 
-        this.areasLabelSwitchBtn = L.DomUtil.create(
+        this._areasLabelSwitchBtn = L.DomUtil.create(
           'label',
           'custom-control-label',
           switchBtnContainer
         );
-        this.areasLabelSwitchBtn.setAttribute('for', 'toggle-areas-btn');
-        this.areasLabelSwitchBtn.innerText = this.translateService.instant(
+        this._areasLabelSwitchBtn.setAttribute('for', 'toggle-areas-btn');
+        this._areasLabelSwitchBtn.innerText = this.translateService.instant(
           'Synthese.Map.AreasToggleBtn'
         );
 
