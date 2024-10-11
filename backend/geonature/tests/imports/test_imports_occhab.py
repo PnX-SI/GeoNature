@@ -108,7 +108,7 @@ def uploaded_import(
             datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
         )
         content = content.replace(
-            b"DATASET_NOT_ACTIVE",
+            b"INACTIVE_DATASET_UUID",
             datasets["own_dataset_not_activated"].unique_dataset_id.hex.encode("ascii"),
         )
         f = BytesIO(content)
