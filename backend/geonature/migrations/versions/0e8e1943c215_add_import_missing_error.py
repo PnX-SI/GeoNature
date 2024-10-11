@@ -47,6 +47,12 @@ def upgrade():
                 "description": "Les entitiés existantes selon UUID sont ignorees.",
                 "error_level": "WARNING",
             },
+            {
+                "error_type": "Erreur de référentiel",
+                "name": "DATASET_NOT_ACTIVE",
+                "description": "Les jeux de données doivent être actifs pour pouvoir importer des données.",
+                "error_level": "ERROR",
+            },
         ],
     )
 
@@ -59,3 +65,4 @@ def downgrade():
     op.execute(sa.delete(error_type).where(error_type.c.name == "INCOHERENT_DATA"))
     op.execute(sa.delete(error_type).where(error_type.c.name == "INVALID_NUMERIC"))
     op.execute(sa.delete(error_type).where(error_type.c.name == "SKIP_EXISTING_UUID"))
+    op.execute(sa.delete(error_type).where(error_type.c.name == "DATASET_NOT_ACTIVE"))
