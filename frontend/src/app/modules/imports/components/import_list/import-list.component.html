@@ -188,7 +188,10 @@
                 matTooltipClass="Datatable__buttonTooltip"
                 [attr.data-qa]="'import-list-table-row-' + index + '-statistics-toggle'"
               >
-                <mat-icon>query_stats</mat-icon>
+                <i
+                  class="fa fa-line-chart"
+                  aria-hidden="true"
+                ></i>
               </mat-button-toggle>
             </ng-template>
           </ngx-datatable-column>
@@ -231,11 +234,14 @@
                 mat-icon-button
                 class="Datatable__button"
                 color="primary"
-                (click)="_csvExport.onCSV(row.id_import)"
+                (click)="downloadFileWithInvalidLine(row)"
                 matTooltip="Téléchargement des données invalides"
                 [attr.data-qa]="'import-list-table-row-' + index + '-actions-csv'"
               >
-                <mat-icon>download</mat-icon>
+                <i
+                  class="fa fa-download"
+                  aria-hidden="true"
+                ></i>
               </button>
               <button
                 [disabled]="!row?.cruved?.D || !row?.dataset?.active"
