@@ -660,15 +660,7 @@ def export_pdf(scope, imprt):
     """
     if not imprt.has_instance_permission(scope):
         raise Forbidden
-    ctx = imprt.as_dict(
-        fields=[
-            "errors",
-            "errors.type",
-            "errors.entity",
-            "dataset.dataset_name",
-            "destination.statistics_labels",
-        ]
-    )
+    ctx = imprt.as_dict()
 
     ctx["map"] = request.form.get("map")
     if ctx["map"] == "undefined":
@@ -685,7 +677,6 @@ def export_pdf(scope, imprt):
     ctx["url"] = "/".join(url_list)
 
     ctx["statistics_formated"] = {}
-
     for label_dict in ctx["destination"]["statistics_labels"]:
         key = label_dict["value"]
         if label_dict["key"] in ctx["statistics"]:

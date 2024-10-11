@@ -151,7 +151,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let field of entity?.themes">
+                <tr *ngFor="let field of filterMappingWithoutValue(entity?.themes)">
                   <td>{{ field.source }}</td>
                   <td>{{ field.destination }}</td>
                   <td>{{ field.description }}</td>
