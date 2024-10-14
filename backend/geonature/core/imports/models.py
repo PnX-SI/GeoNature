@@ -32,6 +32,7 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TDatasets
 from pypnnomenclature.models import BibNomenclaturesTypes
 from pypnusershub.db.models import User
+from flask_login import current_user
 
 
 class ImportModule(TModules):
@@ -151,14 +152,16 @@ class Destination(db.Model):
             raise AttributeError(f"Is your module of type '{self.module.type}' installed?") from exc
 
     @staticmethod
-    def allowed_destinations(user: Optional[User] = None) -> List["Destination"]:
+    def allowed_destinations(user: Optional[User] = None, action: str = "C") -> List["Destination"]:
         """
-        Return a list of allowed destinations for a given user.
+        Return a list of allowed destinations for a given user and an action.
 
         Parameters
         ----------
         user : User, optional
             The user to filter destinations for. If not provided, the current_user is used.
+        action : str
+            The action to filter destinations for. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
 
         Returns
         -------
@@ -177,7 +180,7 @@ class Destination(db.Model):
         for dest in all_destination:
             max_scope = get_scopes_by_action(
                 id_role=user.id_role, module_code=dest.module.module_code
-            )["C"]
+            )[action]
             if max_scope > 0:
                 allowed_destination.append(dest)
         return allowed_destination
@@ -388,6 +391,7 @@ class TImports(InstancePermissionMixin, db.Model):
 
     @property
     def cruved(self):
+
         scopes_by_action = get_scopes_by_action(module_code="IMPORT", object_code="IMPORT")
         return {
             action: self.has_instance_permission(scope)
@@ -410,20 +414,32 @@ class TImports(InstancePermissionMixin, db.Model):
         else:
             return -1
 
-    def has_instance_permission(self, scope, user=None):
+    def has_instance_permission(self, scope, user=None, action="C"):
+
         if user is None:
             user = g.current_user
+
+        allowed_destination = Destination.allowed_destinations(user=current_user, action=action)
+        is_authorised_destination = self.destination in allowed_destination
+        # user have the right to read an import wether or not the destination is allowed for him
+        if action == "R":
+            is_authorised_destination = True
+
         if scope == 0:  # pragma: no cover (should not happen as already checked by the decorator)
             return False
         elif scope == 1:  # self
-            return user.id_role in [author.id_role for author in self.authors]
+            return (
+                user.id_role in [author.id_role for author in self.authors]
+                and is_authorised_destination
+            )
         elif scope == 2:  # organism
             return user.id_role in [author.id_role for author in self.authors] or (
                 user.id_organisme is not None
                 and user.id_organisme in [author.id_organisme for author in self.authors]
+                and is_authorised_destination
             )
         elif scope == 3:  # all
-            return True
+            return True and is_authorised_destination
 
     def as_dict(self, import_as_dict):
         import_as_dict["authors_name"] = "; ".join([author.nom_complet for author in self.authors])
