@@ -303,21 +303,8 @@ class SyntheseImportActions(ImportActions):
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
         module = TModules.query.filter_by(module_code="IMPORT").one()
-        name_source = f"Import(id={imprt.id_import})"
+        name_source = "Import"
         source = TSources.query.filter_by(module=module, name_source=name_source).one_or_none()
-        if source is None:
-            entity_source_pk_field = BibFields.query.filter_by(
-                destination=imprt.destination,
-                name_field="entity_source_pk_value",
-            ).one()
-            source = TSources(
-                module=module,
-                name_source=name_source,
-                desc_source=f"Imported data from import module (id={imprt.id_import})",
-                entity_source_pk_field=entity_source_pk_field.dest_field,
-            )
-            db.session.add(source)
-            db.session.flush()  # force id_source definition
         transient_table = imprt.destination.get_transient_table()
 
         fields = {
@@ -364,6 +351,7 @@ class SyntheseImportActions(ImportActions):
                 sa.literal(source.id_source),
                 sa.literal(source.module.id_module),
                 sa.literal(imprt.id_dataset),
+                sa.literal(imprt.id_import),
                 sa.literal("I"),
             )
             .where(transient_table.c.id_import == imprt.id_import)
@@ -373,6 +361,7 @@ class SyntheseImportActions(ImportActions):
             "id_source",
             "id_module",
             "id_dataset",
+            "id_import",
             "last_action",
         ]
         insert_stmt = sa.insert(Synthese).from_select(
@@ -384,25 +373,21 @@ class SyntheseImportActions(ImportActions):
         # TODO: Improve this
         imprt.statistics = {
             "observation_count": (
-                db.session.query(func.count(Synthese.cd_nom)).filter_by(source=source).scalar()
+                db.session.query(func.count(Synthese.cd_nom))
+                .filter_by(id_import=imprt.id_import)
+                .scalar()
             ),
             "taxa_count": (
                 db.session.query(func.count(distinct(Synthese.cd_nom)))
-                .filter_by(source=source)
+                .filter_by(id_import=imprt.id_import)
                 .scalar()
             ),
         }
 
     @staticmethod
     def remove_data_from_destination(imprt: TImports) -> None:
-        source = TSources.query.filter(
-            TSources.module.has(TModules.module_code == "IMPORT"),
-            TSources.name_source == f"Import(id={imprt.id_import})",
-        ).one_or_none()
-        if source is not None:
-            with start_sentry_child(op="task", description="clean imported data"):
-                Synthese.query.filter(Synthese.source == source).delete()
-            db.session.delete(source)
+        with start_sentry_child(op="task", description="clean imported data"):
+            Synthese.query.filter(Synthese.id_import == imprt.id_import).delete()
 
     @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:
@@ -431,12 +416,6 @@ class SyntheseImportActions(ImportActions):
             Returns a dict containing data required to generate the plot
         """
 
-        # Get the source of the import
-        source = TSources.query.filter(
-            TSources.module.has(TModules.module_code == "IMPORT"),
-            TSources.name_source == f"Import(id={imprt.id_import})",
-        ).one_or_none()
-
         # Define the taxonomic rank to consider
         taxon_ranks = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
         figures = []
@@ -452,7 +431,7 @@ class SyntheseImportActions(ImportActions):
                 )
                 .select_from(Synthese)
                 .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-                .where(Synthese.source == source)
+                .where(Synthese.id_import == imprt.id_import)
                 .group_by(c_rank_taxref)
             )
             data = np.asarray(
@@ -567,12 +546,7 @@ class SyntheseImportActions(ImportActions):
         # The destination where clause will be called only when the import is finished,
         # avoiding looking for unexisting source when the import is still in progress.
         destination_where_clause = (
-            lambda imprt, destination_table: db.session.scalar(
-                select(TSources.id_source).where(
-                    TSources.name_source == f"Import(id={imprt.id_import})"
-                )
-            )
-            == destination_table.c.id_source
+            lambda imprt, destination_table: imprt.id_import == destination_table.c.id_source
         )
         return compute_bounding_box(
             imprt, "observation", "the_geom_4326", destination_where_clause=destination_where_clause
