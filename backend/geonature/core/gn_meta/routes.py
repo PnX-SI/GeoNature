@@ -774,7 +774,7 @@ def delete_acquisition_framework(scope, af_id):
         )
     if af.has_datasets():
         raise Conflict(
-            "La suppression du cadre d’acquisition n'est pas possible "
+            "La suppression du cadre d’acquisition est impossible "
             "car celui-ci contient des jeux de données."
         )
 
