@@ -780,7 +780,7 @@ def delete_acquisition_framework(scope, af_id):
 
     if af.has_child_acquisition_framework():
         raise Conflict(
-            "La suppression du cadre d’acquisition n'est pas possible "
+            "La suppression du cadre d’acquisition est impossible "
             "car celui-ci est le parent d'autre(s) cadre(s) d'acquisition."
         )
     db.session.delete(af)
