@@ -9,8 +9,32 @@ from flask_login import current_user
 
 
 @blueprint.route("/destinations/", methods=["GET"])
+def list_all_destinations():
+    """
+    Return the list of all destinations.
+
+    Returns:
+    -------
+    destinations : List of Destination
+        List of all destinations.
+    """
+
+    schema = DestinationSchema()
+    destinations = Destination.query.all()
+    return schema.dump(destinations, many=True)
+
+
+@blueprint.route("/destinations/allowed", methods=["GET"])
 @login_required
-def list_destinations():
+def allowed_destinations():
+    """
+    Return a list of allowed destinations for the current user.
+
+    Returns:
+    -------
+    destinations : List of Destination
+        List of allowed destinations for the current user.
+    """
     schema = DestinationSchema()
     destinations = Destination.allowed_destinations(current_user)
     return schema.dump(destinations, many=True)

@@ -29,6 +29,10 @@ export const USERS = [
         count: 1,
         code: 'synthese',
       },
+      Occhab: {
+        count: 0,
+        code: 'occhab',
+      },
     },
     dataset: 'JDD-TEST-IMPORT-2',
     datasetId: 9998,
