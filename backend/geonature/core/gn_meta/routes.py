@@ -1,5 +1,5 @@
 """
-    Routes for gn_meta 
+    Routes for gn_meta
 """
 
 import datetime as dt
@@ -772,10 +772,16 @@ def delete_acquisition_framework(scope, af_id):
         raise Forbidden(
             f"User {g.current_user} cannot delete acquisition framework {af.id_acquisition_framework}"
         )
-    if not af.is_deletable():
+    if af.has_datasets():
         raise Conflict(
-            "La suppression du cadre d’acquisition n'est pas possible "
+            "La suppression du cadre d’acquisition est impossible "
             "car celui-ci contient des jeux de données."
+        )
+
+    if af.has_child_acquisition_framework():
+        raise Conflict(
+            "La suppression du cadre d’acquisition est impossible "
+            "car celui-ci est le parent d'autre(s) cadre(s) d'acquisition."
         )
     db.session.delete(af)
     db.session.commit()

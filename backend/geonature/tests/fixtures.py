@@ -387,12 +387,16 @@ def acquisition_frameworks(users):
         )
     ).scalar_one()
 
-    def create_af(name, creator):
+    def create_af(name, creator, is_parent, parent_af=None):
         with db.session.begin_nested():
             af = TAcquisitionFramework(
                 acquisition_framework_name=name,
                 acquisition_framework_desc=name,
                 creator=creator,
+                is_parent=is_parent,
+                acquisition_framework_parent_id=(
+                    parent_af.id_acquisition_framework if parent_af else None
+                ),
             )
             db.session.add(af)
             if creator and creator.organisme:
@@ -400,20 +404,26 @@ def acquisition_frameworks(users):
                     organism=creator.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 af.cor_af_actor.append(actor)
+            db.session.flush()
         return af
 
     afs = {
-        name: create_af(name=name, creator=creator)
-        for name, creator in [
-            ("own_af", users["user"]),
-            ("associate_af", users["associate_user"]),
-            ("stranger_af", users["stranger_user"]),
-            ("orphan_af", None),
-            ("af_1", None),
-            ("af_2", None),
-            ("af_3", None),
+        name: create_af(name=name, creator=creator, is_parent=is_parent, parent_af=None)
+        for name, creator, is_parent in [
+            ("own_af", users["user"], False),
+            ("associate_af", users["associate_user"], False),
+            ("stranger_af", users["stranger_user"], False),
+            ("orphan_af", None, False),
+            ("af_1", None, False),
+            ("af_2", None, False),
+            ("af_3", None, False),
+            ("parent_af", users["user"], True),
+            ("parent_wo_children_af", users["user"], True),
+            ("delete_parent_wo_children_af", users["user"], True),
+            ("delete_af", users["user"], False),
         ]
     }
+    afs["child_af"] = create_af("child_af", users["user"], False, afs["parent_af"])
 
     return afs
 
