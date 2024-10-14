@@ -453,6 +453,10 @@ class Synthese(Schema):
         return data
 
 
+class PermissionConfig(Schema):
+    GEOGRAPHIC_FILTER_AREA_TYPES = fields.List(fields.String(), load_default=["COM", "DEP", "REG"])
+
+
 # Map configuration
 BASEMAP = [
     {
@@ -552,6 +556,7 @@ class GnGeneralSchemaConf(Schema):
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
     FRONTEND = fields.Nested(GnFrontEndConf, load_default=GnFrontEndConf().load({}))
     SYNTHESE = fields.Nested(Synthese, load_default=Synthese().load({}))
+    PERMISSIONS = fields.Nested(PermissionConfig, load_default=PermissionConfig().load({}))
     MAPCONFIG = fields.Nested(MapConfig, load_default=MapConfig().load({}))
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
