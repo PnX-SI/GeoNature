@@ -26,14 +26,15 @@
   gap: 10px;
   overflow-y: auto;
   min-height: 0;
+  justify-content: start;
 }
 
 .media-item {
   cursor: pointer;
   display: flex;
-  justify-content: center;
   align-items: center;
   padding: 10px;
+  justify-content: flex-start;
 }
 
 .media-viewer {

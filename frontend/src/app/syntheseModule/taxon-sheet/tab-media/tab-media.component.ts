@@ -24,8 +24,8 @@ export class TabMediaComponent implements OnInit {
   currentPage: number = 1;
 
   constructor(
-    private _ms: MediaService,
-    private _tss: TaxonSheetService
+      protected _ms: MediaService,
+      private _tss: TaxonSheetService
   ) {}
 
   ngOnInit() {
