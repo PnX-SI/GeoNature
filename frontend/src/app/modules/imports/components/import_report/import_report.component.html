@@ -452,10 +452,7 @@
               class="button-link"
               extended
               [routerLink]="'/' + this.importData.destination.code"
-              [queryParams]="{
-                id_import: this.importData.id_import,
-                id_dataset: this.importData.id_dataset
-              }"
+              [queryParams]="{ id_import: this.importData.id_import }"
               color="primary"
               [disabled]="importData?.date_end_import === null"
             >
