@@ -32,7 +32,6 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TDatasets
 from pypnnomenclature.models import BibNomenclaturesTypes
 from pypnusershub.db.models import User
-from flask_login import current_user
 
 
 class ImportModule(TModules):
@@ -186,7 +185,7 @@ class Destination(db.Model):
         return allowed_destination
 
     @qfilter
-    def filter_by_role(cls, user: Optional[User] = None, **kwargs):
+    def filter_by_role(cls, user: Optional[User] = None, action_code: str = "C", **kwargs):
         """
         Filter Destination by role.
 
@@ -200,8 +199,12 @@ class Destination(db.Model):
         sqlalchemy.sql.elements.BinaryExpression
             A filter criterion for the ``id_destination`` column of the ``Destination`` table.
         """
-        allowed_destination = Destination.allowed_destinations(user=user)
+        allowed_destination = Destination.allowed_destinations(user=user, action=action_code)
         return Destination.id_destination.in_(map(lambda x: x.id_destination, allowed_destination))
+
+    def has_instance_permission(self, action: str):
+        allowed_destination = Destination.allowed_destinations(user=g.current_user, action=action)
+        return self in allowed_destination
 
 
 @serializable
@@ -419,27 +422,21 @@ class TImports(InstancePermissionMixin, db.Model):
         if user is None:
             user = g.current_user
 
-        allowed_destination = Destination.allowed_destinations(user=current_user, action=action)
-        is_authorised_destination = self.destination in allowed_destination
         # user have the right to read an import wether or not the destination is allowed for him
-        if action == "R":
-            is_authorised_destination = True
+        if not self.destination.has_instance_permission(action) or action != "R":
+            return False
 
         if scope == 0:  # pragma: no cover (should not happen as already checked by the decorator)
             return False
         elif scope == 1:  # self
-            return (
-                user.id_role in [author.id_role for author in self.authors]
-                and is_authorised_destination
-            )
+            return user.id_role in [author.id_role for author in self.authors]
         elif scope == 2:  # organism
             return user.id_role in [author.id_role for author in self.authors] or (
                 user.id_organisme is not None
                 and user.id_organisme in [author.id_organisme for author in self.authors]
-                and is_authorised_destination
             )
         elif scope == 3:  # all
-            return True and is_authorised_destination
+            return True
 
     def as_dict(self, import_as_dict):
         import_as_dict["authors_name"] = "; ".join([author.nom_complet for author in self.authors])
