@@ -1,0 +1,48 @@
+.media-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  height: 100%;
+}
+
+.media-empty-list {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.media-warpper-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  min-width: 0;
+}
+
+.media-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(25% - 7.5px), 1fr));
+  gap: 10px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.media-item {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.media-viewer {
+  width: 50%;
+  overflow: hidden;
+}
+
+.paginator {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}

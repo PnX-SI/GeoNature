@@ -1,1 +1,44 @@
-<p>tab-media works!</p>
+<div class="media-container">
+  <div
+    class="media-empty-list"
+    *ngIf="_medias.length === 0"
+  >
+    <p class="no-media">{{ 'No media' | translate }}</p>
+  </div>
+
+  <div class="media-warpper-list">
+    <div class="media-list">
+      <ng-container *ngFor="let media of _medias">
+        <div
+          class="media-item"
+          (click)="selectMedia(media)"
+        >
+          <img
+            *ngIf="_ms.typeMedia(media) === 'Photo'"
+            [src]="_ms.href(media, 100)"
+            alt="Miniature"
+          />
+          <mat-icon *ngIf="_ms.typeMedia(media) !== 'Photo'">{{ _ms.icon(media) }}</mat-icon>
+        </div>
+      </ng-container>
+    </div>
+
+    <mat-paginator
+      class="paginator"
+      [length]="totalRows"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage - 1"
+      (page)="onPageChange($event)"
+      hidePageSize="true"
+    ></mat-paginator>
+  </div>
+
+  <div class="media-viewer">
+    <pnx-display-medias
+      [medias]="[selectedMedia]"
+      [index]="0"
+      display="xxlarge"
+      diaporama="false"
+    ></pnx-display-medias>
+  </div>
+</div>

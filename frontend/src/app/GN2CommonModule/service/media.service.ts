@@ -77,8 +77,10 @@ export class MediaService {
     return this._http.get(`${this.config.API_ENDPOINT}/gn_commons/medias/${uuidAttachedRow}`);
   }
 
-  getMediasSpecies(cdNom): Observable<any> {
-    return this._http.get(`${this.config.API_ENDPOINT}/gn_commons/medias/species/${cdNom}`);
+  getMediasSpecies(cdNom, params?: {}): Observable<any> {
+    return this._http.get(`${this.config.API_ENDPOINT}/gn_commons/medias/species/${cdNom}`, {
+      params,
+    });
   }
 
   postMedia(file: File, media): Observable<HttpEvent<any>> {

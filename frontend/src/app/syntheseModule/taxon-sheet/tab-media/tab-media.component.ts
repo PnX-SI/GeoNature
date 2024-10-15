@@ -1,19 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { MediaService } from '@geonature_common/service/media.service';
 import { TaxonSheetService } from '../taxon-sheet.service';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+import { CommonModule } from '@angular/common';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
+  standalone: true,
   selector: 'pnx-tab-media',
   templateUrl: './tab-media.component.html',
   styleUrls: ['./tab-media.component.scss'],
   providers: [MediaService],
+  imports: [GN2CommonModule, CommonModule],
 })
 export class TabMediaComponent implements OnInit {
-  private _medias: any;
-  private _thumbnail: any[] = [];
+  public _medias: any[] = [];
+  public _thumbnail: any[] = [];
+  public selectedMedia: any = {};
   taxon: Taxon | null = null;
+  pageSize: number = 12;
+  totalRows: number = 0;
+  currentPage: number = 1;
 
   constructor(
     private _ms: MediaService,
@@ -26,16 +34,39 @@ export class TabMediaComponent implements OnInit {
       if (!this.taxon) {
         return;
       }
-      this._ms.getMediasSpecies(this.taxon.cd_nom).subscribe((medias) => {
-        this._medias = medias.items;
-        if (this._medias) {
-          for (const media of this._medias) {
-            const thumbnail = this._ms.href(media, 300);
-            this._thumbnail.push(thumbnail);
-          }
-          console.log(this._thumbnail);
-        }
-      });
+      this.loadMedias();
     });
+  }
+
+  loadMedias(page: number = 1, pageSize: number = this.pageSize) {
+    const params = {
+      page: page,
+      per_page: pageSize,
+    };
+
+    this._ms.getMediasSpecies(this.taxon!.cd_nom, params).subscribe((response) => {
+      this._medias = response.items;
+      this.totalRows = response.total;
+      this._thumbnail = [];
+
+      for (const media of this._medias) {
+        const thumbnail = this._ms.href(media, 300);
+        this._thumbnail.push(thumbnail);
+      }
+
+      if (Object.keys(this.selectedMedia).length === 0) {
+        this.selectedMedia = this._medias[0];
+      }
+    });
+  }
+
+  selectMedia(media: any) {
+    this.selectedMedia = media;
+  }
+
+  onPageChange(event: PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    this.loadMedias(this.currentPage, this.pageSize);
   }
 }

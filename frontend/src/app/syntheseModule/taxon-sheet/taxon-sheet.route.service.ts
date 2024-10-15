@@ -32,11 +32,11 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
     component: TabProfileComponent,
   },
   {
-    label: 'Media',
+    label: 'Médias',
     path: 'media',
-    configEnabledField: 'ENABLE_MEDIA',   
+    configEnabledField: 'ENABLE_MEDIA',
     component: TabMediaComponent,
-  }
+  },
 ];
 
 @Injectable({
