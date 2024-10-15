@@ -1,176 +1,190 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>Export rapport d'import</title>
-    <link rel="stylesheet"
-          type="text/css"
-          href="{{url_for('static', filename='css/metadata_pdf.css')}}">
-    <link rel="stylesheet"
-          type="text/css"
-          href="{{url_for('static', filename='css/metadata_pdf_custom.css')}}">
-    <img class="bandeau"
-         src="{{url_for('static', filename='images/Bandeau_pdf.png')}}"
-         alt="Bandeau">
-    <img class="logo"
-         src="{{url_for('static', filename='images/logo_structure.jpg')}}"
-         alt="Logo">
-</head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='css/metadata_pdf.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='css/metadata_pdf_custom.css')}}"
+    />
+    <img
+      class="bandeau"
+      src="{{url_for('static', filename='images/Bandeau_pdf.png')}}"
+      alt="Bandeau"
+    />
+    <img
+      class="logo"
+      src="{{url_for('static', filename='images/logo_structure.jpg')}}"
+      alt="Logo"
+    />
+  </head>
 
-<body>
-    <div class="titre contentItem">
-        <h5> Import ID : {{ data.id_import }} </h5>
-        <h5> Date d'import : {{ data.date_end_import }} </h5>
-        <h5> Nom du fichier d'import : {{ data.full_file_name }} </h5>
-        <div class="ligne-titre ligne main-color"></div>
-        <div class="verticalSpacer"></div>
+  <body>
+    <div id="titre-pdf">
+      <h1>Rapport de l'import n°{{ data.id_import }}</h1>
+      <h4 style="color: #666">
+        Fichier : {{ data.full_file_name }} - Date d'import : {{ data.date_end_import or "en cours"
+        }}
+      </h4>
     </div>
-    <div class="description contentItem">
-        <div class="left-block">
-            <p class="fiche-descriptive">Fiche descriptive</p>
-            <div class="information">
-                <p class="info-titre">Identification</p>
-                <p class="info-contenu">
-                    <br>
-                    Auteur :
-                    {% if data.authors_name: %}
-                    {{ data.authors_name }}
-                    {% endif %}
-                    <br>
-                    SRID :
-                    {% if data.srid: %}
-                    {{ data.srid }}
-                    {% endif %}
-                    <br>
-                    Encodage :
-                    {% if data.encoding: %}
-                    {{ data.encoding }}
-                    {% endif %}
-                    <br>
-                    Format :
-                    {% if data.format_source_file: %}
-                    {{ data.format_source_file }}
-                    {% endif %}
-                    <br>
-                    Jeux de données :
-                    {% if data.dataset: %}
-                    {{ data.dataset.dataset_name }}
-                    {% endif %}
-                </p>
-            </div>
+    <div class="ligne-titre ligne main-color"></div>
+    <br />
+    <div class="card card50">
+      <div class="card-header">Fiche Descriptive</div>
+      <div class="card-body">
+        <ul id="description-list">
+          {% for label, key in {"Auteur:": "authors_name", "SRID:": "srid", "Encodage:": "encoding",
+          "Format:": "format_source_file"}.items() %}
+          <li>
+            <b>{{label}}</b>
+            : {{data[key]}}
+          </li>
 
-            {% if data.keywords: %}
-            <div class="information">
-                <p class="info-titre">Mots-clés</p>
-                <p class="info-contenu">
-                    {{ data.keywords }}
-                </p>
+          {% endfor %}
+        {% if data.dataset: %}
+            <li><b>Jeu de données</b> : {{ data.dataset.dataset_name }}</li>
+        {% endif %}
+        </ul>
+        {% if data.keywords: %}
+        <div class="information">
+          <p class="info-titre">Mots-clés</p>
+          <p class="info-contenu">{{ data.keywords }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if data.processed %}
+    <div class="card card50">
+      <div class="card-header">Zone géographique</div>
+
+      <div class="card-body">
+          <img
+            class="zone-geographique-map"
+            src="{{ data.map }}"
+          />
+        </p>
+      </div>
+    </div>
+    {% endif %}
+
+    
+    {% if data.date_end_import is not none %}
+    <div class="row card">
+        <div class="card-header">
+          Statistiques
+        </div>
+        <div class="card-body">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th class="main-color">Champs</th>
+                        <th class="main-color">Valeur</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, value in data.statistics_formated.items() %}
+                    <tr>
+                    <td>{{ key|capitalize }}</td>
+                    <td>{{ value }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if data.chart %}
+            <div class="charts">
+                <img
+                class="charts__img"
+                src="{{ data.chart }}"
+                />
             </div>
             {% endif %}
         </div>
-        {% if data.map %}
-        <div class="horizontalSpacer"></div>
-        <div class="zone">
-            <p class="zone-geographique">Zone géographique</p>
-            <img class="zone-geographique-map"
-                 src="{{ data.map }}">
-        </div>
-        {% endif %}
+  
     </div>
-    <div class="verticalSpacer"></div>
-    <div class="contentItem">
-        <p class="info-titre">Statistiques</p>
-        <div class="verticalSpacer--small"></div>
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th class="main-color">Champs</th>
-                    <th class="main-color">Valeur</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for key, value in data.statistics_formated.items() %}
-                <tr>
-                    <td>{{ key|capitalize }}</td>
-                    <td>{{ value }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% if data.chart %}
-        <div class="verticalSpacer--small"></div>
-        <div class="charts">
-        <img class="charts__img"
-             src="{{ data.chart }}" />
+    {% endif %}
+    {% if data.processed %}
+    <div class="row card">
+        <div class="card-header">
+          Erreurs
         </div>
-        {% endif %}
-    </div>
-
-    <div class="verticalSpacer"></div>
-    <div class="contentItem">
-        <p class="info-titre">Erreurs</p>
-        <div class="verticalSpacer--small"></div>
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th class="main-color">Type d'erreur</th>
-                    <th class="main-color">Champ</th>
-                    <th class="main-color">Nombre d'erreur(s)</th>
-                    <th class="main-color">Entité</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="card-body">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th class="main-color">Type d'erreur</th>
+                        <th class="main-color">Champ</th>
+                        <th class="main-color">Nombre d'erreur(s)</th>
+                        <th class="main-color">Entité</th>
+                    </tr>
+                </thead>
+                <tbody>
                 {% for error in data.errors %}
-                <tr>
-                    <td>{{ error.type.description }}</td>
-                    <td>{{ error.column }}</td>
-                    <td>{{ error.rows | length }}</td>
-                    <td>{{ error.entity.label if error.entity else "" }}</td>
-                </tr>
+                    <tr>
+                        <td>{{ error.type.description }}</td>
+                        <td>{{ error.column }}</td>
+                        <td>{{ error.rows | length }}</td>
+                        <td>{{ error.entity.label if error.entity else "" }}</td>
+                    </tr>
                 {% endfor %}
             </tbody>
-        </table>
+            </table>
+        </div>
     </div>
+    
+    {% endif %} <!-- Endif import.processed-->
+
+
     <footer class="footer">
-        <span>Voir le rapport dans <a href="{{data.url}}">le module d'import</a></span>
-        <span>{{data.date_end_import}}</span>
+      <span>
+        Voir le rapport dans
+        <a href="{{data.url}}">le module d'import</a>
+      </span>
+      <span>{{data.date_end_import or 'en cours'}}</span>
     </footer>
-</body>
-<style>
+  </body>
+  <style>
     /* ***************************************************************************/
     /* layout item */
     /* ***************************************************************************/
     @page {
-        size: A4;
-        margin-top: 20px;
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-bottom: 40px;
+      size: A4;
+      margin-top: 20px;
+      margin-left: 20px;
+      margin-right: 20px;
+      margin-bottom: 40px;
     }
-
+    body{
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
     h5 {
-        margin: 10px;
+      margin: 10px;
     }
 
     .bandeau {
-        margin-top: -20px;
-        margin-left: -20px;
-        margin-right: -20px;
+      margin-top: -20px;
+      margin-left: -20px;
+      margin-right: -20px;
     }
 
     .footer {
-        margin-bottom: -40px;
+      margin-bottom: -40px;
     }
 
     .footer a {
-        text-decoration: none;
-        color: #f8af51;
+      text-decoration: none;
+      color: #f8af51;
     }
 
     .contentItem {
-        page-break-inside: avoid;
-        margin: 0;
+      page-break-inside: avoid;
+      margin: 0;
     }
 
     /* ***************************************************************************/
@@ -178,15 +192,15 @@
     /* ***************************************************************************/
 
     .horizontalSpacer {
-        width: 15px;
+      width: 15px;
     }
 
     .verticalSpacer {
-        height: 15px;
+      height: 15px;
     }
 
     .verticalSpacer--small {
-        height: 8px;
+      height: 8px;
     }
 
     /* ***************************************************************************/
@@ -194,30 +208,28 @@
     /* ***************************************************************************/
 
     .left-block {
-        min-width: 60%;
-        width: 100%;
+      min-width: 60%;
+      width: 100%;
+      border-radius: 0;
     }
 
     .zone {
-        min-width: 33%;
-        max-width: 33%;
+      min-width: 33%;
+      max-width: 33%;
     }
 
     .zone-geographique-map {
-        margin-top: 0;
-        margin-left: 31px;
-        max-height: 150px;
-        max-width: 200px;
+      margin-top: 0;
+      margin-left: 31px;
+      max-width: 100%;
     }
 
     .charts {
-        width: 100%;
-
+      width: 100%;
+      text-align: center !important;
     }
     .charts__img {
-        margin: 0 auto;
-        max-height: 300px;
-        width: auto;
+      width: auto;
     }
 
     /* ***************************************************************************/
@@ -225,30 +237,66 @@
     /* ***************************************************************************/
 
     .custom-table {
-        page-break-inside: avoid;
-        border-collapse: collapse;
-        width: 100%;
+      page-break-inside: avoid;
+      border-collapse: collapse;
+      width: 100%;
     }
 
     .custom-table td,
     .custom-table th {
-        border: 1px solid #ddd;
-        padding: 8px;
+      border: 1px solid #ddd;
+      padding: 8px;
     }
 
     .custom-table tr:nth-child(even) {
-        background-color: #f2f2f2;
+      background-color: #f2f2f2;
     }
 
     .custom-table td {
-        font-size: 10px;
+      font-size: 10px;
     }
 
     .custom-table th {
-        text-align: left;
-        color: white;
-        font-size: 12px;
+      text-align: left;
+      color: white;
+      font-size: 12px;
     }
-</style>
+    .description {
+      border-radius: 0 !important;
+    }
+    #titre-pdf {
+      text-align: center;
+      width: 100%;
+    }
 
+    .card {
+      border: 1px solid #bbb;
+      border-radius: 5px 5px 0px 0px;
+      margin: 1em;
+    }
+    .card50{
+      float: left;
+      width: 46%;
+      margin-left: 1%;
+    }
+    .card-header {
+      background-color: #97bf32;
+      color: #fff;
+      padding: 5px;
+      padding-left: 10px;
+      font-weight: bold;
+      font-size: large;
+    }
+    .card-body {
+      padding: 10px;
+    }
+
+    #description-list {
+      list-style: none;
+    }
+    .row{
+      width: 100%;
+      display: inline-block;
+    }
+  </style>
 </html>

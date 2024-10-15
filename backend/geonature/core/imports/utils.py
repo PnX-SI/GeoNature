@@ -412,7 +412,6 @@ def generate_pdf_from_template(template: str, data: Any) -> bytes:
         base_url=current_app.config["API_ENDPOINT"],
         encoding="utf-8",
     )
-
     return html_file.write_pdf()
 
 

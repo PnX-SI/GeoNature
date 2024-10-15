@@ -118,6 +118,10 @@ def uploaded_import(
             b"FORBIDDEN_DATASET_UUID",
             datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
         )
+        content = content.replace(
+            b"INACTIVE_DATASET_UUID",
+            datasets["own_dataset_not_activated"].unique_dataset_id.hex.encode("ascii"),
+        )
         f = BytesIO(content)
         data = {
             "file": (f, import_file_name),
@@ -281,6 +285,13 @@ class TestImportsOcchab:
                     frozenset({43}),
                 ),
                 (
+
+                    ImportCodeError.DATASET_NOT_ACTIVE,
+                    "station",
+                    "unique_dataset_id",
+                    frozenset({44}),
+                ),
+                (
                     ImportCodeError.INVALID_UUID,
                     "station",
                     "unique_id_sinp_station",
@@ -339,7 +350,7 @@ class TestImportsOcchab:
                     ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({5, 6, 9, 24}),
+                    frozenset({5, 6, 9, 24, 43}),
                 ),
                 (
                     ImportCodeError.NO_PARENT_ENTITY,

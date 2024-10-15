@@ -41,3 +41,4 @@ On importe une station et un habitat existant déjà en base;SKIP_EXISTING_UUID;
 technique collect vaut « autre » mais pas de précision fournise;OK !;CONDITIONAL_MANDATORY_FIELD_ERROR;;;VALID_DATASET_UUID;17/11/2023;17/11/2023;Toto;;POINT(3.634 44.399);St;;prairie;24;;10
 technique collect vaut « autre » et une précision est bien fournies;OK !;OK !;;;VALID_DATASET_UUID;17/11/2023;17/11/2023;Toto;;POINT(3.634 44.399);St;;prairie;24;moyen précis;10
 L’habitat est crée dans une station que existe en base mais sur laquelle nous n’avons pas les droits;DATASET_NOT_AUTHORIZED(unique_dataset_id);OK ! ;;STRANGER_STATION_UUID;;;;;;;;;prairie;24;moyen précis;10
+jeu de données pas actif;DATASET_NOT_ACTIVE;ERRONEOUS_PARENT_ENTITY;;;INACTIVE_DATASET_UUID;17/11/2023;17/11/2023;Toto;;POINT(3.634 44.399);St;;prairie;24;moyen précis;10
