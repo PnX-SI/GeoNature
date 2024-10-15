@@ -151,7 +151,9 @@ class Destination(db.Model):
             raise AttributeError(f"Is your module of type '{self.module.type}' installed?") from exc
 
     @staticmethod
-    def allowed_destinations(user: Optional[User] = None, action: str = "C") -> List["Destination"]:
+    def allowed_destinations(
+        user: Optional[User] = None, action_code: str = "C"
+    ) -> List["Destination"]:
         """
         Return a list of allowed destinations for a given user and an action.
 
@@ -179,7 +181,7 @@ class Destination(db.Model):
         for dest in all_destination:
             max_scope = get_scopes_by_action(
                 id_role=user.id_role, module_code=dest.module.module_code
-            )[action]
+            )[action_code]
             if max_scope > 0:
                 allowed_destination.append(dest)
         return allowed_destination
@@ -199,11 +201,13 @@ class Destination(db.Model):
         sqlalchemy.sql.elements.BinaryExpression
             A filter criterion for the ``id_destination`` column of the ``Destination`` table.
         """
-        allowed_destination = Destination.allowed_destinations(user=user, action=action_code)
+        allowed_destination = Destination.allowed_destinations(user=user, action_code=action_code)
         return Destination.id_destination.in_(map(lambda x: x.id_destination, allowed_destination))
 
-    def has_instance_permission(self, action: str):
-        allowed_destination = Destination.allowed_destinations(user=g.current_user, action=action)
+    def has_instance_permission(self, user, action_code: str):
+        if not user:
+            user = g.current_user
+        allowed_destination = Destination.allowed_destinations(user=user, action_code=action_code)
         return self in allowed_destination
 
 
@@ -417,13 +421,12 @@ class TImports(InstancePermissionMixin, db.Model):
         else:
             return -1
 
-    def has_instance_permission(self, scope, user=None, action="C"):
+    def has_instance_permission(self, scope, user=None, action_code="C"):
 
         if user is None:
             user = g.current_user
 
-        # user have the right to read an import wether or not the destination is allowed for him
-        if not self.destination.has_instance_permission(action) or action != "R":
+        if not self.destination.has_instance_permission(user, action_code) and action_code != "R":
             return False
 
         if scope == 0:  # pragma: no cover (should not happen as already checked by the decorator)

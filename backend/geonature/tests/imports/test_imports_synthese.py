@@ -281,14 +281,19 @@ class TestImportsSynthese:
         with db.session.begin_nested():
             organisme = Organisme(nom_organisme="test_import")
             db.session.add(organisme)
+
             group = User(groupe=True)
             db.session.add(group)
+
             user = User(groupe=False)
             db.session.add(user)
+
             other_user = User(groupe=False)
             other_user.organisme = organisme
             db.session.add(other_user)
+
             user.groups.append(group)
+
             imprt = TImports(destination=synthese_destination)
             db.session.add(imprt)
 
@@ -300,52 +305,77 @@ class TestImportsSynthese:
         assert get_scopes_by_action(user.id_role) == {action: 0 for action in "CRUVED"}
 
         update_action = PermAction.query.filter(PermAction.code_action == "U").one()
+        read_action = PermAction.query.filter(PermAction.code_action == "R").one()
         import_module = TModules.query.filter(TModules.module_code == "IMPORT").one()
         import_object = PermObject.query.filter_by(code_object="IMPORT").one()
+        synthese_module = TModules.query.filter(TModules.module_code == "SYNTHESE").one()
+        all_object = PermObject.query.filter_by(code_object="ALL").one()
 
         # Add permission for it-self
         with db.session.begin_nested():
-            permission = Permission(
+            permission_update_import = Permission(
                 role=user,
                 action=update_action,
                 scope_value=1,
                 module=import_module,
                 object=import_object,
             )
-            db.session.add(permission)
+            db.session.add(permission_update_import)
+
+            permission_import_read = Permission(
+                role=user,
+                action=read_action,
+                scope_value=2,
+                module=import_module,
+                object=import_object,
+            )
+            db.session.add(permission_import_read)
+
+            permission_synth = Permission(
+                role=user,
+                action=update_action,
+                scope_value=2,
+                module=synthese_module,
+                object=all_object,
+            )
+            db.session.add(permission_synth)
+
         # clean cache
         g._permissions = {}
         g._permissions_by_user = {}
         scope = get_scopes_by_action(user.id_role)["U"]
         assert scope == 1
-        assert imprt.has_instance_permission(scope, user=user) is False
+        assert imprt.has_instance_permission(scope, user=user, action_code="U") is False
         imprt.authors.append(user)
-        assert imprt.has_instance_permission(scope, user=user) is True
+        assert imprt.has_instance_permission(scope, user=user, action_code="U") is True
 
         # Change permission to organism filter
-        permission.scope_value = 2
+        permission_update_import.scope_value = 2
         db.session.commit()
         scope = get_scopes_by_action(user.id_role)["U"]
         assert scope == 2
         # right as we still are author:
-        assert imprt.has_instance_permission(scope, user=user) is True
+        assert imprt.has_instance_permission(scope, user=user, action_code="U") is True
         imprt.authors.remove(user)
-        assert imprt.has_instance_permission(scope, user=user) is False
+        assert imprt.has_instance_permission(scope, user=user, action_code="U") is False
         imprt.authors.append(other_user)
         db.session.commit()
         # we are not in the same organism than other_user:
-        assert imprt.has_instance_permission(scope, user=user) is False
+        assert imprt.has_instance_permission(scope, user=user, action_code="U") is False
         organisme.members.append(user)
         db.session.commit()
         scope = get_scopes_by_action(user.id_role)["U"]
-        assert imprt.has_instance_permission(scope, user=user) is True
+        assert imprt.has_instance_permission(scope, user=user, action_code="U") is True
 
-        permission.scope_value = None
+        permission_update_import.scope_value = None
         imprt.authors.remove(other_user)
         db.session.commit()
         scope = get_scopes_by_action(user.id_role)["U"]
         assert scope == 3
-        assert imprt.has_instance_permission(scope, user=user) is True
+        assert imprt.has_instance_permission(scope, user=user, action_code="U") is True
+
+        # Should be always true
+        assert imprt.has_instance_permission(scope, user=user, action_code="R") is True
 
     def test_list_imports(self, imports, users):
         r = self.client.get(url_for("import.get_import_list"))

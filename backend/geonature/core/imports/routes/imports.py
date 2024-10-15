@@ -149,7 +149,7 @@ def get_one_import(scope, imprt):
     Get an import.
     """
     # check that the user has read permission to this particular import instance:
-    if not imprt.has_instance_permission(scope, action="R"):
+    if not imprt.has_instance_permission(scope, action_code="R"):
         raise Forbidden
     return jsonify(imprt.as_dict())
 
@@ -167,7 +167,7 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
     :form int datasetId: dataset ID to which import data
     """
     if imprt:
-        if not imprt.has_instance_permission(scope, action="C"):
+        if not imprt.has_instance_permission(scope, action_code="C"):
             raise Forbidden
         if not imprt.dataset.active:
             raise Forbidden("Le jeu de données est fermé.")
@@ -223,7 +223,7 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
 @blueprint.route("/<destination>/imports/<int:import_id>/decode", methods=["POST"])
 @permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def decode_file(scope, imprt):
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.dataset.active:
         raise Forbidden("Le jeu de données est fermé.")
@@ -289,7 +289,7 @@ def decode_file(scope, imprt):
 @blueprint.route("/<destination>/imports/<int:import_id>/fieldmapping", methods=["POST"])
 @permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def set_import_field_mapping(scope, imprt):
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.dataset.active:
         raise Forbidden("Le jeu de données est fermé.")
@@ -306,7 +306,7 @@ def set_import_field_mapping(scope, imprt):
 @blueprint.route("/<destination>/imports/<int:import_id>/load", methods=["POST"])
 @permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def load_import(scope, imprt):
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.dataset.active:
         raise Forbidden("Le jeu de données est fermé.")
@@ -333,7 +333,7 @@ def get_import_columns_name(scope, imprt):
 
     Return all the columns of the file of an import
     """
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.columns:
         raise Conflict(description="Data have not been decoded.")
@@ -349,7 +349,7 @@ def get_import_values(scope, imprt):
     Return all values present in imported file for nomenclated fields
     """
     # check that the user has read permission to this particular import instance:
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.loaded:
         raise Conflict(description="Data have not been loaded")
@@ -399,7 +399,7 @@ def get_import_values(scope, imprt):
 @blueprint.route("/<destination>/imports/<int:import_id>/contentmapping", methods=["POST"])
 @permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def set_import_content_mapping(scope, imprt):
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.dataset.active:
         raise Forbidden("Le jeu de données est fermé.")
@@ -419,7 +419,7 @@ def prepare_import(scope, imprt):
     """
     Prepare data to be imported: apply all checks and transformations.
     """
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.dataset.active:
         raise Forbidden("Le jeu de données est fermé.")
@@ -462,7 +462,7 @@ def preview_valid_data(scope, imprt):
     Conflict
         If the import is not processed, i.e. it has not been prepared yet.
     """
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.processed:
         raise Conflict("Import must have been prepared before executing this action.")
@@ -525,7 +525,7 @@ def get_import_errors(scope, imprt):
 
     Get errors of an import.
     """
-    if not imprt.has_instance_permission(scope, action="R"):
+    if not imprt.has_instance_permission(scope, action_code="R"):
         raise Forbidden
     return jsonify([error.as_dict(fields=["type", "entity"]) for error in imprt.errors])
 
@@ -533,7 +533,7 @@ def get_import_errors(scope, imprt):
 @blueprint.route("/<destination>/imports/<int:import_id>/source_file", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def get_import_source_file(scope, imprt):
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if imprt.source_file is None:
         raise Gone
@@ -553,7 +553,7 @@ def get_import_invalid_rows_as_csv(scope, imprt):
 
     Export invalid data in CSV.
     """
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.processed:
         raise Conflict("Import must have been prepared before executing this action.")
@@ -603,7 +603,7 @@ def import_valid_data(scope, imprt):
 
     Import valid data in destination table.
     """
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.dataset.active:
         raise Forbidden("Le jeu de données est fermé.")
@@ -638,7 +638,7 @@ def delete_import(scope, imprt):
 
     Delete an import.
     """
-    if not imprt.has_instance_permission(scope, action="C"):
+    if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
     if not imprt.dataset.active:
         raise Forbidden("Le jeu de données est fermé.")
@@ -659,7 +659,7 @@ def export_pdf(scope, imprt):
     """
     Downloads the report in pdf format
     """
-    if not imprt.has_instance_permission(scope, action="R"):
+    if not imprt.has_instance_permission(scope, action_code="R"):
         raise Forbidden
     ctx = imprt.as_dict(
         fields=[
@@ -718,6 +718,6 @@ def get_foreign_key_attr(obj, field: str):
 @blueprint.route("/<destination>/report_plot/<int:import_id>", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def report_plot(scope, imprt: TImports):
-    if not imprt.has_instance_permission(scope, action="R"):
+    if not imprt.has_instance_permission(scope, action_code="R"):
         raise Forbidden
     return json.dumps(imprt.destination.actions.report_plot(imprt))
