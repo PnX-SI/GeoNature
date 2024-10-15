@@ -1,14 +1,14 @@
-<div class="media-container">
-  <div
-    class="media-empty-list"
-    *ngIf="_medias.length === 0"
-  >
-    <p class="no-media">{{ 'No media' | translate }}</p>
-  </div>
+<div
+  class="media-empty-list"
+  *ngIf="medias.length === 0"
+>
+  <p class="no-media">No media</p>
+</div>
+<div class="media-container" *ngIf="medias.length !== 0">
 
   <div class="media-warpper-list">
     <div class="media-list">
-      <ng-container *ngFor="let media of _medias">
+      <ng-container *ngFor="let media of medias">
         <div
           class="media-item"
           (click)="selectMedia(media)"
