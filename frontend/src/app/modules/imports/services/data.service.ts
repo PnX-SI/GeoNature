@@ -310,21 +310,9 @@ export class ImportDataService {
    *
    * @returns An array of {Destination} objects.
    */
-  getDestinations(): Observable<Array<Destination>> {
+  getDestinations(actionCode: string = ''): Observable<Array<Destination>> {
     return this._http.get<Array<Destination>>(
-      `${this.config.API_ENDPOINT}/import/destinations/`,
-      {}
-    );
-  }
-
-  /**
-   * Retrieve the list of allowed import destinations for the current user.
-   *
-   * @return Observable of an array of Destination objects
-   */
-  getAllowedDestinations(): Observable<Array<Destination>> {
-    return this._http.get<Array<Destination>>(
-      `${this.config.API_ENDPOINT}/import/destinations/allowed`,
+      `${this.config.API_ENDPOINT}/import/destinations/${actionCode}`,
       {}
     );
   }
