@@ -9,6 +9,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { Observable } from 'rxjs';
 import { TabGeographicOverviewComponent } from './tab-geographic-overview/tab-geographic-overview.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
+import { TabMediaComponent } from './tab-media/tab-media.component';
 
 interface Tab {
   label: string;
@@ -30,6 +31,12 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
     configEnabledField: 'ENABLE_PROFILE',
     component: TabProfileComponent,
   },
+  {
+    label: 'Media',
+    path: 'media',
+    configEnabledField: 'ENABLE_MEDIA',   
+    component: TabMediaComponent,
+  }
 ];
 
 @Injectable({

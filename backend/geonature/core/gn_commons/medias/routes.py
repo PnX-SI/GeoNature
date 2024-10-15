@@ -8,6 +8,7 @@ from werkzeug.exceptions import NotFound
 
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TMedias
+from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import DB
 from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 from sqlalchemy import select
@@ -116,3 +117,28 @@ def get_media_thumb(id_media, size):
     url_thumb = media_repo.get_thumbnail_url(size)
 
     return redirect(url_thumb)
+
+@routes.route("/medias/species/<int:cd_nom>", methods=["GET"])
+@json_resp_accept_empty_list
+def get_species_medias(cd_nom):
+    """
+    Retourne tous les médias liés à une espèce (cd_nom)
+    """
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+
+    query = (
+        select(TMedias)
+        .join(Synthese, Synthese.unique_id_sinp == TMedias.uuid_attached_row)
+        .where(Synthese.cd_nom == cd_nom)
+        .order_by(TMedias.id_media)
+    )
+
+    pagination = DB.paginate(query, page=page, per_page=per_page)
+    
+    return {
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "items": [media.as_dict() for media in pagination.items]
+    }
