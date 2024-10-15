@@ -89,7 +89,7 @@ def uploaded_import(
     users,
     datasets,
     station,
-    station_other_dataset,
+    station_stranger_dataset,
     habitat,
     import_file_name,
     display_unique_dataset_id,
@@ -104,7 +104,7 @@ def uploaded_import(
         )
         content = content.replace(
             b"STRANGER_STATION_UUID",
-            station_other_dataset.unique_id_sinp_station.hex.encode("ascii"),
+            station_stranger_dataset.unique_id_sinp_station.hex.encode("ascii"),
         )
         content = content.replace(
             b"EXISTING_HABITAT_UUID",
@@ -221,7 +221,7 @@ def station(datasets):
 
 
 @pytest.fixture(scope="function")
-def station_other_dataset(datasets):
+def station_stranger_dataset(datasets):
     station = Station(
         id_dataset=datasets["stranger_dataset"].id_dataset,
         date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
