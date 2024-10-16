@@ -2,16 +2,16 @@
 Routes of the gn_permissions blueprint
 """
 
-import json
 from copy import copy
 
-from flask import Blueprint, request, Response, render_template, session
+from flask import Blueprint, Response, session
+import sqlalchemy as sa
 
-from geonature.utils.env import DB
+from geonature.utils.env import db
 from sqlalchemy.orm import joinedload
-from utils_flask_sqla.response import json_resp
-from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.models import PermissionAvailable
+from geonature.core.gn_permissions.schemas import PermissionAvailableSchema
+from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.commands import supergrant
 
 
@@ -37,3 +37,11 @@ def logout():
     for key in copy_session_key:
         session.pop(key)
     return Response("Logout", 200)
+
+
+@routes.route("/availables", methods=["GET"])
+@login_required
+def list_permissions_availables():
+    pa = db.session.execute(sa.select(PermissionAvailable)).scalars()
+    schema = PermissionAvailableSchema(only=["action", "module", "object"])
+    return schema.dump(pa, many=True)
