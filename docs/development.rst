@@ -27,7 +27,7 @@ API
 
 GeoNature utilise :
 
-- l'API de TaxHub (recherche taxon, règne et groupe d'un taxon...)
+- l'API de TaxHub (recherche taxon, règne et groupe d'un taxon...), intégrée à GeoNature depuis sa version 2.15
 - l'API du sous-module Nomenclatures (typologies et listes déroulantes)
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
@@ -242,15 +242,8 @@ Autres extensions en développement
 Il n'est pas forcémment utile de passer toutes les extensions en mode dévelomment.
 Pour plus d'informations, référez-vous aux documentations dédiées :
 
-- https://taxhub.readthedocs.io/fr/latest/installation.html#developpement
+- https://taxhub.readthedocs.io/fr/latest/developpement.html
 - https://usershub.readthedocs.io/fr/latest/
-
-Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://127.0.0.1:5000, alors vous pouvez avoir besoin de passer TaxHub en mode développement :
-
-.. code-block:: bash
-
-  source ~/taxhub/venv/bin/activate
-  flask run
 
 Debugger avec un navigateur
 ***************************
