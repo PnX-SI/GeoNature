@@ -79,12 +79,14 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
 
     @routes.before_request
     def synchronize_mtd():
+        # TODO: add `if request.method != "OPTIONS" and [...]` in the following condition
         if request.endpoint in ["gn_meta.get_datasets", "gn_meta.get_acquisition_frameworks_list"]:
             from flask_login import current_user
 
             if current_user.is_authenticated:
                 params = request.json if request.is_json else request.args
                 try:
+                    # TODO: trigger a user sync without id_af in case no id_af is provided
                     list_id_af = params.get("id_acquisition_frameworks", [])
                     for id_af in list_id_af:
                         sync_af_and_ds_by_user(id_role=current_user.id_role, id_af=id_af)

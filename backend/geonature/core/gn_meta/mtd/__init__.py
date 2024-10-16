@@ -36,6 +36,7 @@ logger.propagate = False
 class MTDInstanceApi:
     af_path = "/mtd/cadre/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_path = "/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
+    # TODO: check if there are endpoints to retrieve metadata for a given user and instance, and not only a given user and whatever instance
     ds_user_path = "/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     af_user_path = "/mtd/cadre/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     single_af_path = "/mtd/cadre/export/xml/GetRecordById?id={ID_AF}"  # NOTE: `ID_AF` is actually an UUID and not an ID from the point of view of geonature database.
@@ -60,7 +61,10 @@ class MTDInstanceApi:
     def _get_af_xml(self):
         return self._get_xml(self.af_path)
 
-    def get_af_list(self):
+    # TODO: make the functions `get_af_list` and `get_ds_list` homogeneous
+    #   - Use functions `parse_acquisition_framworks_xml`, and `parse_datasets_xml`, OR `parse_acquisition_framework`, and `parse_dataset`
+
+    def get_af_list(self) -> list:
         xml = self._get_af_xml()
         _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
         root = etree.fromstring(xml, parser=_xml_parser)
@@ -73,7 +77,7 @@ class MTDInstanceApi:
     def _get_ds_xml(self):
         return self._get_xml(self.ds_path)
 
-    def get_ds_list(self):
+    def get_ds_list(self) -> list:
         xml = self._get_ds_xml()
         return parse_jdd_xml(xml)
 
@@ -206,11 +210,19 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
             add_unexisting_digitizer(af["id_digitizer"] if not id_role else id_role)
             user_add_total_time += time.time() - start_add_user_time
         af = sync_af(af)
+        # TODO: choose whether or not to commit retrieval of the AF before association of actors
+        #   and possibly retrieve an AF without any actor associated to it
+        db.session.commit()
+        # If AF has not been synchronized ; due to the lack of a UUID ; actor cannot be associated to it
+        #   and thus we skip to the next AF
+        if not af:
+            continue
         associate_actors(
             actors,
             CorAcquisitionFrameworkActor,
             "id_acquisition_framework",
             af.id_acquisition_framework,
+            af.unique_acquisition_framework_id,
         )
         # TODO: remove actors removed from MTD
     db.session.commit()
@@ -227,7 +239,13 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
             user_add_total_time += time.time() - start_add_user_time
         ds = sync_ds(ds, list_cd_nomenclature)
         if ds is not None:
-            associate_actors(actors, CorDatasetActor, "id_dataset", ds.id_dataset)
+            associate_actors(
+                actors,
+                CorDatasetActor,
+                "id_dataset",
+                ds.id_dataset,
+                ds.unique_dataset_id,
+            )
 
     user_add_total_time = round(user_add_total_time, 2)
     db.session.commit()
@@ -253,11 +271,13 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
     """
     Method to trigger MTD sync on user authentication.
 
-    Args:
-        id_role (int): The ID of the role (group or user).
-        id_af (str, optional): The ID of the AF (Acquisition Framework). Defaults to None.
+    Parameters
+    -----------
+    id_role : int
+        The ID of the role (group or user).
+    id_af : str, optional
+        The ID of an AF (Acquisition Framework).
     """
-
     logger.info("MTD - SYNC USER : START")
 
     # Create an instance of MTDInstanceApi
