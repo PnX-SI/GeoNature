@@ -14,6 +14,7 @@ from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 from sqlalchemy import select
 
 from ..routes import routes
+from apptax.taxonomie.models import Taxref
 
 
 @routes.route("/medias/<string:uuid_attached_row>", methods=["GET"])
@@ -119,11 +120,11 @@ def get_media_thumb(id_media, size):
     return redirect(url_thumb)
 
 
-@routes.route("/medias/species/<int:cd_nom>", methods=["GET"])
+@routes.route("/medias/taxon/<int:cd_ref>", methods=["GET"])
 @json_resp_accept_empty_list
-def get_species_medias(cd_nom):
+def get_taxon_medias(cd_ref):
     """
-    Retourne tous les médias liés à une espèce (cd_nom)
+    Retourne tous les médias liés à une espèce (cd_ref)
     """
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 20, type=int)
@@ -131,8 +132,10 @@ def get_species_medias(cd_nom):
     query = (
         select(TMedias)
         .join(Synthese, Synthese.unique_id_sinp == TMedias.uuid_attached_row)
-        .where(Synthese.cd_nom == cd_nom)
-        .order_by(TMedias.id_media)
+        .join(Taxref, Synthese.cd_nom == Taxref.cd_nom)
+        .where(Taxref.cd_ref == cd_ref)
+        .where(TMedias.is_public == True)
+        .order_by(TMedias.meta_create_date.desc())
     )
 
     pagination = DB.paginate(query, page=page, per_page=per_page)

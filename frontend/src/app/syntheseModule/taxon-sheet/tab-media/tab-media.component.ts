@@ -16,7 +16,6 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class TabMediaComponent implements OnInit {
   public medias: any[] = [];
-  public thumbnail: any[] = [];
   public selectedMedia: any = {};
   taxon: Taxon | null = null;
   pageSize: number = 12;
@@ -44,15 +43,9 @@ export class TabMediaComponent implements OnInit {
       per_page: pageSize,
     };
 
-    this._ms.getMediasSpecies(this.taxon!.cd_nom, params).subscribe((response) => {
+    this._ms.getMediasSpecies(this.taxon!.cd_ref, params).subscribe((response) => {
       this.medias = response.items;
       this.totalRows = response.total;
-      this.thumbnail = [];
-
-      for (const media of this.medias) {
-        const thumbnail = this._ms.href(media, 300);
-        this.thumbnail.push(thumbnail);
-      }
 
       if (Object.keys(this.selectedMedia).length === 0) {
         this.selectedMedia = this.medias[0];
