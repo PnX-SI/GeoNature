@@ -25,7 +25,7 @@ if [ ! -d "${olddir}/backend" ] || [ ! -d "${olddir}/frontend" ] || [ ! -f "${ol
     exit 1
 fi
 
-#  before 2.15 suppression de l'application Taxhub  - Rappatriement des médias TaxHub necessite de connaitre l'emplacement de taxhub
+# before 2.15 : suppression de l'application TaxHub - Rapatriement des médias TaxHub nécessite de connaitre l'emplacement de TaxHub
 if [ ! -d "${newdir}/backend/media/taxhub" ];then
     TAXHUB_DIR="${HOME}/taxhub"
     if (($# > 1)); then
