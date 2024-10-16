@@ -7,7 +7,7 @@ Architecture
 GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner :
 
 - UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, applications), utilisable par les différentes applications de son système d'informations.
-- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général.
+- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général. TaxHub est intégré à GeoNature depuis sa version 2.15.
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
 - ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le MNT, le calcul automatique d'altitude et les intersections spatiales.
 
@@ -356,11 +356,6 @@ Cette section liste les branches Alembic disponibles et leur impact sur la base 
 * ``habitats`` : Créé le schéma ``ref_habitats``. Fourni par Habref-api-module.
 * ``habitats_inpn_data`` : Insère le référentiel HABREF de l’INPN en base. Fourni par Habref-api-module.
 * ``ref_geo`` : Créé le schéma ``ref_geo``. Fourni par RefGeo.
-
-Si vous utilisez TaxHub, vous pouvez être intéressé par les branches suivantes :
-
-* ``taxhub`` : Déclare l’application TaxHub dans la liste des applications. Fourni par TaxHub.
-* ``taxhub-admin`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à TaxHub. Fourni par TaxHub.
 
 Si vous utilisez UsersHub, vous pouvez être intéressé par les branches suivantes :
 
@@ -975,7 +970,6 @@ Logs
 * Logs d’installation de GeoNature : ``geonature/install/install.log``
 * Logs de GeoNature : ``/var/log/geonature/geonature.log``
 * Logs du worker Celery : ``/var/log/geonature/geonature-worker.log``
-* Logs de TaxHub : ``/var/log/taxhub.log``
 * Logs de UsersHub : ``/var/log/usershub.log``
 
 Commandes GeoNature
@@ -1012,18 +1006,15 @@ Démarrer / arrêter les API
 * Redémarrer GeoNature : ``systemctl restart geonature``
 * Vérifier l’état de GeoNature : ``systemctl status geonature``
 
-Les mêmes commandes sont disponibles pour TaxHub en remplacant ``geonature`` par ``taxhub``.
-
 Supervision des services
 """"""""""""""""""""""""
 
-- Vérifier que les applications GeoNature et TaxHub sont accessibles en http
+- Vérifier que l'application GeoNature est accessible en http
 - Vérifier que leurs services (API) sont lancés et fonctionnent correctement (tester les deux routes ci-dessous).
 
   - Exemple de route locale pour tester l'API GeoNature : http://127.0.0.1:8000/occtax/defaultNomenclatures qui ne doit pas renvoyer de 404. URL absolue : https://urlgeonature/api/occtax/defaultNomenclatures
-  - Exemple de route locale pour tester l'API TaxHub : http://127.0.0.1:5000/api/taxref/regnewithgroupe2 qui ne doit pas renvoyer de 404. URL absolue : https://urltaxhub/api/taxref/regnewithgroupe2
 
-- Vérifier que les fichiers de logs de TaxHub et GeoNature ne sont pas trop volumineux pour la capacité du serveur
+- Vérifier que le fichier de logs de GeoNature n'est pas trop volumineux pour la capacité du serveur
 - Vérifier que les services nécessaires au fonctionnement de l'application tournent bien (Apache, PostgreSQL)
 
 Maintenance
@@ -1051,7 +1042,7 @@ Attention : ne pas stopper le backend (des opérations en BDD en cours pourraien
 
 - Redémarrage de PostgreSQL
 
-  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez les commandes ``sudo systemctl restart geonature`` et ``sudo systemctl restart taxhub`` (GeoNature 2.8+).
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage de l'API GeoNature pour que celle-ci continue de fonctionner. Pour cela, lancez la commande ``sudo systemctl restart geonature`` (GeoNature 2.8+).
 
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
 
@@ -2006,7 +1997,7 @@ TaxHub
 """"""
 
 Module de gestion des taxons (basé sur TaxHub) permettant de faire des listes de taxons ainsi que d'ajouter des attributs et des médias aux taxons.
-Voir la documentation de TaxHub : https://taxhub.readthedocs.io/fr/latest/
+Voir la documentation de TaxHub : https://taxhub.readthedocs.io/fr/
 
 Module OCCHAB
 -------------
@@ -2311,9 +2302,8 @@ Une commande dans TaxHub permet de désactiver automatiquement les textes en deh
 
 ::
 
-  cd ~/taxhub
-  source venv/bin/activate
-  flask taxref enable-bdc-statut-text -d <MON_DEP_1> -d <MON_DEP_2> --clean
+  source ~/geonature/backend/venv/bin/activate
+  geonature taxref enable-bdc-statut-text -d <MON_DEP_1> -d <MON_DEP_2> --clean
 
 **6.** Définir des filtres par défaut
 
@@ -2438,7 +2428,7 @@ Dans GeoNature, la validation automatique est effectuée par une fonction en ``P
 Module TaxHub
 -------------
 
-Depuis la version 2.14 de GeoNature, TaxHub est integré comme un module de GeoNature. Il est disponible depuis le module "Admin" de GeoNature.
+Depuis la version 2.15 de GeoNature, TaxHub est integré comme un module de GeoNature. Il est disponible depuis le module "Admin" de GeoNature.
 
 L'emplacement de stockage des médias est contrôlé par le paramètre `MEDIA_FOLDER`. Les médias de TaxHub seront à l'emplacement `<MEDIA_FOLDER>/taxhub`. Par défaut tous les médias de GeoNature sont stockés dans le répertoire de GeoNature : `<GEONATURE_DIR>/backend/media`. Via ce paramètre, il est possible de mettre un chemin absolu pour stocker les médias n'importe où ailleurs sur votre serveur.
 
