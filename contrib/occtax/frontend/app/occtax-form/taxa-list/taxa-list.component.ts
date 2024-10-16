@@ -11,6 +11,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxDataService } from '../../services/occtax-data.service';
 
 @Component({
   selector: 'pnx-occtax-form-taxa-list',
@@ -19,6 +20,7 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
   @ViewChild('tabOccurence') tabOccurence: ElementRef;
+  public taxRefVersion: string;
 
   constructor(
     public ngbModal: NgbModal,
@@ -27,11 +29,13 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     private occtaxFormService: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
+    private _occtaxDataService: OcctaxDataService,
     public ms: MediaService,
     public config: ConfigService
   ) {}
 
   ngOnInit() {
+    this.taxRefVersion = this._occtaxDataService.taxRefVersion;
     combineLatest(this.occtaxFormService.occtaxData, this.occtaxFormOccurrenceService.occurrence)
       .pipe(
         filter(
