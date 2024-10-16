@@ -219,19 +219,23 @@ class TestReports:
         assert isinstance(response.json["items"], list)
         assert len(response.json["items"]) >= 0
 
-        ids = [s.id_synthese for s in synthese_data.values()]
         # TEST WITH MY_REPORTS TRUE
         set_logged_user(self.client, users["user"])
         response = self.client.get(url_for(url, type="discussion", my_reports="true"))
         assert response.status_code == 200
         items = response.json["items"]
-        # Check that all items belong to the current user
-        id_role = users["user"].id_role
-        nom_complet = users["user"].nom_complet
-        assert all(
-            item["id_role"] == id_role and item["user"]["nom_complet"] == nom_complet
-            for item in items
-        )
+        expected_ids = [
+            10001,  # User is observer
+            10003,  # User is report owner
+            10004,  # User is report owner
+        ]
+        # Missing cases:
+        # - User is digitiser
+        # - User has post a report in the same synthese
+        # They involve adding data to the `synthese_data` fixture, which could cause other tests to fail.
+        item_ids = [item["id_report"] for item in items]
+        item_ids.sort()
+        assert expected_ids == item_ids
 
         # Test undefined type
         response = self.client.get(url_for(url, type="UNKNOW-REPORT-TYPE", my_reports="true"))
