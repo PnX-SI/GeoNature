@@ -4,8 +4,10 @@
 >
   <p class="no-media">No media</p>
 </div>
-<div class="media-container" *ngIf="medias.length !== 0">
-
+<div
+  class="media-container"
+  *ngIf="medias.length !== 0"
+>
   <div class="media-warpper-list">
     <div class="media-list">
       <ng-container *ngFor="let media of medias">

@@ -118,14 +118,15 @@ def get_media_thumb(id_media, size):
 
     return redirect(url_thumb)
 
+
 @routes.route("/medias/species/<int:cd_nom>", methods=["GET"])
 @json_resp_accept_empty_list
 def get_species_medias(cd_nom):
     """
     Retourne tous les médias liés à une espèce (cd_nom)
     """
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 20, type=int)
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 20, type=int)
 
     query = (
         select(TMedias)
@@ -135,10 +136,10 @@ def get_species_medias(cd_nom):
     )
 
     pagination = DB.paginate(query, page=page, per_page=per_page)
-    
+
     return {
         "total": pagination.total,
         "page": pagination.page,
         "per_page": pagination.per_page,
-        "items": [media.as_dict() for media in pagination.items]
+        "items": [media.as_dict() for media in pagination.items],
     }
