@@ -77,12 +77,6 @@ export class MediaService {
     return this._http.get(`${this.config.API_ENDPOINT}/gn_commons/medias/${uuidAttachedRow}`);
   }
 
-  getMediasTaxon(cdRef: number, params?: {}): Observable<any> {
-    return this._http.get(`${this.config.API_ENDPOINT}/synthese/taxon_medias/${cdRef}`, {
-      params,
-    });
-  }
-
   postMedia(file: File, media): Observable<HttpEvent<any>> {
     const formData = new FormData();
     const postData = media;

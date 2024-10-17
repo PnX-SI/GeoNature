@@ -5,6 +5,7 @@ import { TaxonSheetService } from '../taxon-sheet.service';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 export interface Pagination {
   totalItems: number;
@@ -23,7 +24,6 @@ export const DEFAULT_PAGINATION: Pagination = {
   selector: 'pnx-tab-media',
   templateUrl: './tab-media.component.html',
   styleUrls: ['./tab-media.component.scss'],
-  providers: [MediaService],
   imports: [GN2CommonModule, CommonModule],
 })
 export class TabMediaComponent implements OnInit {
@@ -33,8 +33,9 @@ export class TabMediaComponent implements OnInit {
   pagination: Pagination = DEFAULT_PAGINATION;
 
   constructor(
-    protected _ms: MediaService,
-    private _tss: TaxonSheetService
+    public ms: MediaService,
+    private _tss: TaxonSheetService,
+    private _syntheseDataService: SyntheseDataService
   ) {}
 
   ngOnInit() {
@@ -51,8 +52,8 @@ export class TabMediaComponent implements OnInit {
   }
 
   loadMedias() {
-    this._ms
-      .getMediasTaxon(this.taxon.cd_ref, {
+    this._syntheseDataService
+      .getTaxonMedias(this.taxon.cd_ref, {
         page: this.pagination.currentPage + 1,
         per_page: this.pagination.perPage,
       })
