@@ -8,7 +8,7 @@
   class="media-container"
   *ngIf="medias.length !== 0"
 >
-  <div class="media-warpper-list">
+  <div class="media-wrapper-list">
     <div class="media-list">
       <ng-container *ngFor="let media of medias">
         <div
@@ -19,19 +19,33 @@
             *ngIf="_ms.typeMedia(media) === 'Photo'"
             [src]="_ms.href(media, 100)"
             alt="Miniature"
+            [ngClass]="
+              media.id_media == selectedMedia.id_media
+                ? 'media-with-thumbnail media-with-thumbnail--selected'
+                : 'media-with-thumbnail'
+            "
           />
-          <mat-icon *ngIf="_ms.typeMedia(media) !== 'Photo'">{{ _ms.icon(media) }}</mat-icon>
+          <div
+            *ngIf="_ms.typeMedia(media) !== 'Photo'"
+            [ngClass]="
+              media.id_media == selectedMedia.id_media
+                ? 'media-without-thumbnail media-without-thumbnail--selected'
+                : 'media-without-thumbnail'
+            "
+          >
+            <mat-icon>{{ _ms.icon(media) }}</mat-icon>
+          </div>
         </div>
       </ng-container>
     </div>
 
     <mat-paginator
       class="paginator"
-      [length]="totalRows"
-      [pageSize]="pageSize"
-      [pageIndex]="currentPage - 1"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [pageSize]="pagination.perPage"
+      [length]="pagination.totalItems"
+      [pageIndex]="pagination.currentPage"
       (page)="onPageChange($event)"
-      hidePageSize="true"
     ></mat-paginator>
   </div>
 

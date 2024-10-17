@@ -6,6 +6,18 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
 
+export interface Pagination {
+  totalItems: number;
+  currentPage: number;
+  perPage: number;
+}
+
+export const DEFAULT_PAGINATION: Pagination = {
+  totalItems: 0,
+  currentPage: 1,
+  perPage: 10,
+};
+
 @Component({
   standalone: true,
   selector: 'pnx-tab-media',
@@ -18,9 +30,7 @@ export class TabMediaComponent implements OnInit {
   public medias: any[] = [];
   public selectedMedia: any = {};
   taxon: Taxon | null = null;
-  pageSize: number = 12;
-  totalRows: number = 0;
-  currentPage: number = 1;
+  pagination: Pagination = DEFAULT_PAGINATION;
 
   constructor(
     protected _ms: MediaService,
@@ -31,26 +41,32 @@ export class TabMediaComponent implements OnInit {
     this._tss.taxon.subscribe((taxon) => {
       this.taxon = taxon;
       if (!this.taxon) {
+        this.medias = [];
+        this.selectedMedia = {};
+        this.pagination = DEFAULT_PAGINATION;
         return;
       }
       this.loadMedias();
     });
   }
 
-  loadMedias(page: number = 1, pageSize: number = this.pageSize) {
-    const params = {
-      page: page,
-      per_page: pageSize,
-    };
-
-    this._ms.getMediasSpecies(this.taxon!.cd_ref, params).subscribe((response) => {
-      this.medias = response.items;
-      this.totalRows = response.total;
-
-      if (Object.keys(this.selectedMedia).length === 0) {
-        this.selectedMedia = this.medias[0];
-      }
-    });
+  loadMedias() {
+    this._ms
+      .getMediasSpecies(this.taxon.cd_ref, {
+        page: this.pagination.currentPage,
+        per_page: this.pagination.perPage,
+      })
+      .subscribe((response) => {
+        this.medias = response.items;
+        this.pagination = {
+          totalItems: response.total,
+          currentPage: response.page,
+          perPage: response.per_page,
+        };
+        if (!this.medias.some((media) => media.id_media == this.selectedMedia.id_media)) {
+          this.selectedMedia = this.medias[0];
+        }
+      });
   }
 
   selectMedia(media: any) {
@@ -58,8 +74,8 @@ export class TabMediaComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    this.currentPage = event.pageIndex + 1;
-    this.pageSize = event.pageSize;
-    this.loadMedias(this.currentPage, this.pageSize);
+    this.pagination.currentPage = event.pageIndex + 1;
+    this.pagination.perPage = event.pageSize;
+    this.loadMedias();
   }
 }
