@@ -214,7 +214,9 @@ class Destination(db.Model):
         if not user:
             user = g.current_user
 
-        max_scope = get_scopes_by_action(id_role=user.id_role, module_code=self.code)[action_code]
+        max_scope = get_scopes_by_action(id_role=user.id_role, module_code=self.module.module_code)[
+            action_code
+        ]
         return max_scope > 0
 
 
