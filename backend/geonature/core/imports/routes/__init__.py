@@ -35,3 +35,15 @@ def list_all_destinations(action_code):
         query = query.where(Destination.filter_by_role(g.current_user, action_code))
     destinations = db.session.execute(query).scalars().all()
     return schema.dump(destinations, many=True)
+
+
+@blueprint.route("/destination/<destinationCode>", methods=["GET"])
+@login_required
+def get_destination(destinationCode):
+    schema = DestinationSchema(only=["module"])
+    destination = db.session.execute(
+        db.select(Destination)
+        .options(joinedload("module"))
+        .where(Destination.code == destinationCode)
+    ).scalar_one_or_none()
+    return schema.dump(destination)
