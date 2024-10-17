@@ -148,7 +148,7 @@ export class MediaService {
     };
   }
 
-  href(media, thumbnail = null) {
+  href(media: Media, thumbnail = null) {
     if (!(media instanceof Media)) {
       media = new Media(media);
     }
