@@ -189,11 +189,6 @@ def downgrade():
         .values(id_import=None, id_source=t_sources.c.id_source)
     )
     op.execute(t_sources.delete().where(t_sources.c.name_source == "Import"))
-    op.drop_column(
-        schema="gn_synthese",
-        table_name="synthese",
-        column_name="id_import",
-    )
 
     op.execute(
         """
@@ -201,6 +196,11 @@ def downgrade():
         """
     )
 
+    op.drop_column(
+        schema="gn_synthese",
+        table_name="synthese",
+        column_name="id_import",
+    )
     op.execute(
         """
         CREATE VIEW gn_synthese.v_synthese_for_web_app AS
