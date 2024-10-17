@@ -418,15 +418,19 @@
                 [zoomOnFirstTime]="true"
               ></pnx-geojson>
             </pnx-map>
-            <button
-              mat-raised-button
-              class="align-self-center"
-              color="primary"
-              [disabled]="importData?.date_end_import === null"
-              (click)="goToSynthese(importData?.id_dataset)"
-            >
-              Afficher dans la synthèse
-            </button>
+            <div class="align-self-center">
+              <a
+                mat-raised-button
+                class="button-link"
+                extended
+                [routerLink]="'/' + this.importData.destination.code"
+                [queryParams]="{ id_import: this.importData.id_import }"
+                color="primary"
+                [disabled]="importData?.date_end_import === null"
+              >
+                Afficher dans {{ this.importData.destination.label }}
+              </a>
+            </div>
           </div>
           <div
             id="chartreport"

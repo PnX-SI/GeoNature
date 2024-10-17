@@ -76,11 +76,15 @@ export class SyntheseComponent implements OnInit {
       this._fs
         .processDefaultFilters(this.config.SYNTHESE.DEFAULT_FILTERS)
         .subscribe((processedDefaultFilters) => {
+          if (params.get('id_import')) {
+            processedDefaultFilters['id_import'] = params.get('id_import');
+          }
           this._fs.searchForm.patchValue(this._fs.processedDefaultFilters);
           this._fs.processedDefaultFilters = processedDefaultFilters;
           this._changeDetector.detectChanges();
 
           this.loadAndStoreData(this._fs.formatParams());
+          this._fs.processedDefaultFilters['id_import'] = null;
         });
     });
   }

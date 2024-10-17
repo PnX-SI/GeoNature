@@ -126,6 +126,14 @@ class Station(NomenclaturesMixin, db.Model):
         date_up = params.get("date_up", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
         if date_up:
             query = query.where(Station.date_max <= date_up)
+        id_import = params.get("id_import", type=int)
+        if id_import:
+            query = query.where(
+                sa.or_(
+                    Station.id_import == id_import,
+                    Station.habitats.any(OccurenceHabitat.id_import == id_import),
+                )
+            )
         return query
 
     @qfilter

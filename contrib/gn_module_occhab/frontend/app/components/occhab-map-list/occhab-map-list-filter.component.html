@@ -1,5 +1,13 @@
 <div class="row row-sm form">
   <div class="col-2">
+    <small>ID Import</small>
+    <input
+      class="form-control form-control-sm"
+      [formControl]="mapListFormService.searchForm.get('id_import')"
+      placeHolder="Id de l'import"
+    />
+  </div>
+  <div class="col-2">
     <pnx-datasets
       label="{{ 'Releve.Dataset' | translate }}"
       [displayAll]="true"

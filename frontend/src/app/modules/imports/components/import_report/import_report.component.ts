@@ -238,15 +238,6 @@ export class ImportReportComponent implements OnInit {
     return string_with_format;
   }
 
-  goToSynthese(idDataSet: number) {
-    let navigationExtras = {
-      queryParams: {
-        id_dataset: idDataSet,
-      },
-    };
-    this._router.navigate(['/synthese'], navigationExtras);
-  }
-
   navigateToImportList() {
     this._router.navigate([this.config.IMPORT.MODULE_URL]);
   }
