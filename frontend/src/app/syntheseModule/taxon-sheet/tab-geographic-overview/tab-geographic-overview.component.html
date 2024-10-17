@@ -1,7 +1,32 @@
-<pnx-map height="60vh">
-  <pnx-geojson
-    [geojson]="observations"
-    [zoomOnFirstTime]="true"
-    [style]="styleTabGeoJson"
-  ></pnx-geojson>
-</pnx-map>
+<div class="TabGeographic">
+  <pnx-map
+    class="TabGeographic__map"
+    height="60vh"
+  >
+    <pnx-geojson
+      [geojson]="observations"
+      [zoomOnFirstTime]="true"
+      [style]="styleTabGeoJson"
+    ></pnx-geojson>
+  </pnx-map>
+  <div class="TabGeographic__side">
+    <div class="Toolbar__item">
+      <mat-label>Période</mat-label>
+      <mat-slider
+        class="DateSlider"
+        [displayWith]="formatLabel"
+        [min]="YEAR_INTERVAL.min"
+        [max]="YEAR_INTERVAL.max"
+      >
+        <input
+          [value]="year_interval.min"
+          matSliderStartThumb
+        />
+        <input
+          [value]="year_interval.max"
+          matSliderEndThumb
+        />
+      </mat-slider>
+    </div>
+  </div>
+</div>

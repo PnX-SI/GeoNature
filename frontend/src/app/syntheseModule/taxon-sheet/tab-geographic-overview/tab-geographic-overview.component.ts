@@ -11,6 +11,7 @@ import * as L from 'leaflet';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MapService } from '@geonature_common/map/map.service';
+import { MatSliderModule } from '@angular/material/slider';
 
 interface MapAreasStyle {
   color: string;
@@ -24,7 +25,7 @@ interface MapAreasStyle {
   selector: 'tab-geographic-overview',
   templateUrl: 'tab-geographic-overview.component.html',
   styleUrls: ['tab-geographic-overview.component.scss'],
-  imports: [GN2CommonModule, CommonModule],
+  imports: [GN2CommonModule, CommonModule, MatSliderModule],
 })
 export class TabGeographicOverviewComponent implements OnInit {
   observations: FeatureCollection | null = null;
@@ -32,6 +33,15 @@ export class TabGeographicOverviewComponent implements OnInit {
   areasLegend: any;
   private _areasLabelSwitchBtn;
   styleTabGeoJson: {};
+
+  readonly YEAR_INTERVAL: {
+    min: '1970';
+    max: '2024';
+  };
+  year_interval: {
+    min: '2002';
+    max: '2020';
+  };
 
   mapAreasStyle: MapAreasStyle = {
     color: '#FFFFFF',
@@ -57,6 +67,10 @@ export class TabGeographicOverviewComponent implements OnInit {
     this.areasEnable =
       this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
       this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
+  }
+
+  formatLabel(value: number): string {
+    return `${value}`;
   }
 
   ngOnInit() {
