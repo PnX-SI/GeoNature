@@ -22,16 +22,15 @@ import {
   imports: [GN2CommonModule, CommonModule],
 })
 export class TabObserversComponent implements OnInit {
-  readonly COLUMNS = [
-    { prop: 'observer', name: 'Observateur', sort: true, order: 'asc' },
-    { prop: 'date_min', name: 'Plus ancienne' },
-    { prop: 'date_max', name: 'Plus récente' },
-    { prop: 'observation_count', name: "Nombre d'observations" },
-    { prop: 'media_count', name: 'Nombre de media' },
-  ];
+  readonly PROP_OBSERVER = 'observer';
+  readonly PROP_DATE_MIN = 'date_min';
+  readonly PROP_DATE_MAX = 'date_max';
+  readonly PROP_OBSERVATION_COUNT = 'observation_count';
+  readonly PROP_MEDIA_COUNT = 'media_count';
+
   readonly DEFAULT_SORT = {
     ...DEFAULT_SORT,
-    sortBy: this.COLUMNS[0].prop,
+    sortBy: this.PROP_OBSERVER,
     sortOrder: SORT_ORDER.ASC,
   };
   items: any[] = [];
@@ -40,7 +39,6 @@ export class TabObserversComponent implements OnInit {
 
   constructor(
     private _syntheseDataService: SyntheseDataService,
-    private _config: ConfigService,
     private _tss: TaxonSheetService
   ) {}
 
@@ -48,6 +46,10 @@ export class TabObserversComponent implements OnInit {
     this._tss.taxon.subscribe((taxon: Taxon | null) => {
       this.fetchObservers();
     });
+  }
+
+  renderDate(date: string): string {
+    return new Date(date).toLocaleDateString();
   }
 
   onChangePage(event) {
