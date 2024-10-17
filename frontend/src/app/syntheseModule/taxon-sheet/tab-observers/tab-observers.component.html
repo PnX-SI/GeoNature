@@ -1,0 +1,19 @@
+<div class="Observers">
+  <ngx-datatable
+    class="Observers__table material striped"
+    [rows]="items"
+    [columns]="COLUMNS"
+    columnMode="force"
+    [draggable]="false"
+    (page)="onChangePage($event)"
+    footerHeight="auto"
+    headerHeight="auto"
+    [externalPaging]="true"
+    [count]="pagination.totalItems"
+    [limit]="pagination.perPage"
+    rowHeight="auto"
+    [externalSorting]="true"
+    (sort)="onSort($event)"
+    [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
+  ></ngx-datatable>
+</div>
