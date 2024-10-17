@@ -8,6 +8,11 @@ on:
         default: "master"
         required: false
         type: string
+      upload_coverage:
+        description: "Téléverser la couverture de code sur Codecov"
+        default: false
+        required: false
+        type: boolean
 
 jobs:
   build:
@@ -54,7 +59,7 @@ jobs:
           repository: pnx-si/geonature
           ref: ${{ inputs.geonature_ref }}
           submodules: true
-      - name: Clone module
+      - name: Clone ${{ github.event.repository.name }} module
         uses: actions/checkout@v4
         with:
           path: ${{ env.MODULE_DIR }}
@@ -118,7 +123,7 @@ jobs:
           pip install -e contrib/occtax
           pip install -e contrib/gn_module_occhab
           pip install -e contrib/gn_module_validation
-      - name: Install module backend
+      - name: Install ${{ github.event.repository.name }} module backend
         run: |
           pip install -e .
         working-directory: ${{ env.MODULE_DIR }}
@@ -142,3 +147,8 @@ jobs:
         run: |
           coverage report
         working-directory: ${{ env.MODULE_DIR }}
+      - name: Upload coverage to Codecov
+        if: ${{ inputs.upload_coverage && matrix.name == 'Debian 12' }}
+        uses: codecov/codecov-action@v2
+        with:
+          flags: pytest
