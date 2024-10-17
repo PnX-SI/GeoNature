@@ -169,22 +169,13 @@ class Destination(db.Model):
         allowed_destination : List of Destination
             List of allowed destinations for the given user.
         """
-        # Retrieve all destinations
-        all_destination = db.session.scalars(sa.select(Destination)).all()
-
         # If no user is provided, use the current user
         if not user:
             user = g.current_user
 
-        # Filter destinations based on permissions for each destination module for the selected user
-        allowed_destination = []
-        for dest in all_destination:
-            max_scope = get_scopes_by_action(
-                id_role=user.id_role, module_code=dest.module.module_code
-            )[action_code]
-            if max_scope > 0:
-                allowed_destination.append(dest)
-        return allowed_destination
+        # Retrieve all destinations
+        all_destination = db.session.scalars(sa.select(Destination)).all()
+        return [dest for dest in all_destination if dest.has_instance_permission(user, action_code)]
 
     @qfilter
     def filter_by_role(cls, user: Optional[User] = None, action_code: str = "C", **kwargs):
@@ -204,11 +195,27 @@ class Destination(db.Model):
         allowed_destination = Destination.allowed_destinations(user=user, action_code=action_code)
         return Destination.id_destination.in_(map(lambda x: x.id_destination, allowed_destination))
 
-    def has_instance_permission(self, user, action_code: str):
+    def has_instance_permission(self, user: Optional[User] = None, action_code: str = "C"):
+        """
+        Check if a user has the permissions to do an action on this destination.
+
+        Parameters
+        ----------
+        user : User, optional
+            The user to check the permission for. If not provided, the current_user is used.
+        action_code : str
+            The action to check the permission for. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
+
+        Returns
+        -------
+        bool
+            True if the user has the right to do the action on this destination, False otherwise.
+        """
         if not user:
             user = g.current_user
-        allowed_destination = Destination.allowed_destinations(user=user, action_code=action_code)
-        return self in allowed_destination
+
+        max_scope = get_scopes_by_action(id_role=user.id_role, module_code=self.code)[action_code]
+        return max_scope > 0
 
 
 @serializable
