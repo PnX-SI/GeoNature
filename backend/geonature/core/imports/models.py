@@ -1,7 +1,7 @@
 from datetime import datetime
 from collections.abc import Mapping
 import re
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 from packaging import version
 
 from flask import g
@@ -22,6 +22,7 @@ if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
 else:  # retro-compatibility Flask-SQLAlchemy 2
     from flask_sqlalchemy import BaseQuery as Query
 
+from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import db
@@ -148,6 +149,75 @@ class Destination(db.Model):
             and fallback on TModules which does not have __import_actions__ property.
             """
             raise AttributeError(f"Is your module of type '{self.module.type}' installed?") from exc
+
+    @staticmethod
+    def allowed_destinations(
+        user: Optional[User] = None, action_code: str = "C"
+    ) -> List["Destination"]:
+        """
+        Return a list of allowed destinations for a given user and an action.
+
+        Parameters
+        ----------
+        user : User, optional
+            The user to filter destinations for. If not provided, the current_user is used.
+        action : str
+            The action to filter destinations for. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
+
+        Returns
+        -------
+        allowed_destination : List of Destination
+            List of allowed destinations for the given user.
+        """
+        # If no user is provided, use the current user
+        if not user:
+            user = g.current_user
+
+        # Retrieve all destinations
+        all_destination = db.session.scalars(sa.select(Destination)).all()
+        return [dest for dest in all_destination if dest.has_instance_permission(user, action_code)]
+
+    @qfilter
+    def filter_by_role(cls, user: Optional[User] = None, action_code: str = "C", **kwargs):
+        """
+        Filter Destination by role.
+
+        Parameters
+        ----------
+        user : User, optional
+            The user to filter destinations for. If not provided, the current_user is used.
+
+        Returns
+        -------
+        sqlalchemy.sql.elements.BinaryExpression
+            A filter criterion for the ``id_destination`` column of the ``Destination`` table.
+        """
+        allowed_destination = Destination.allowed_destinations(user=user, action_code=action_code)
+        return Destination.id_destination.in_(map(lambda x: x.id_destination, allowed_destination))
+
+    def has_instance_permission(self, user: Optional[User] = None, action_code: str = "C"):
+        """
+        Check if a user has the permissions to do an action on this destination.
+
+        Parameters
+        ----------
+        user : User, optional
+            The user to check the permission for. If not provided, the current_user is used.
+        action_code : str
+            The action to check the permission for. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
+
+        Returns
+        -------
+        bool
+            True if the user has the right to do the action on this destination, False otherwise.
+        """
+        if not user:
+            user = g.current_user
+
+        max_scope = get_scopes_by_action(id_role=user.id_role, module_code=self.module.module_code)[
+            action_code
+        ]
+        return max_scope > 0
 
 
 @serializable
@@ -337,6 +407,7 @@ class TImports(InstancePermissionMixin, db.Model):
 
     @property
     def cruved(self):
+
         scopes_by_action = get_scopes_by_action(module_code="IMPORT", object_code="IMPORT")
         return {
             action: self.has_instance_permission(scope)
@@ -359,9 +430,14 @@ class TImports(InstancePermissionMixin, db.Model):
         else:
             return -1
 
-    def has_instance_permission(self, scope, user=None):
+    def has_instance_permission(self, scope, user=None, action_code="C"):
+
         if user is None:
             user = g.current_user
+
+        if not self.destination.has_instance_permission(user, action_code) and action_code != "R":
+            return False
+
         if scope == 0:  # pragma: no cover (should not happen as already checked by the decorator)
             return False
         elif scope == 1:  # self

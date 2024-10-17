@@ -305,9 +305,14 @@ export class ImportDataService {
     });
   }
 
-  getDestinations(): Observable<Array<Destination>> {
+  /**
+   * Retrieve the list of all import destinations available in the current GeoNature instance.
+   *
+   * @returns An array of {Destination} objects.
+   */
+  getDestinations(actionCode: string = ''): Observable<Array<Destination>> {
     return this._http.get<Array<Destination>>(
-      `${this.config.API_ENDPOINT}/import/destinations/`,
+      `${this.config.API_ENDPOINT}/import/destinations/${actionCode}`,
       {}
     );
   }

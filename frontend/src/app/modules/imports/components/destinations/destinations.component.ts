@@ -13,6 +13,8 @@ export class DestinationsComponent extends GenericFormComponent {
   destinations: Array<Destination>;
 
   @Input() bindValue: string = 'code';
+  @Input() displayAllowed: boolean = false; // To show only the destination for the current user
+  @Input() actionCode: string = 'C'; // action_code used to filter destination
   @Output() onClear = new EventEmitter<any>();
 
   constructor(private _ds: ImportDataService) {
@@ -23,7 +25,10 @@ export class DestinationsComponent extends GenericFormComponent {
   }
 
   getDestinations() {
-    this._ds.getDestinations().subscribe((destinations) => {
+    const method = this.displayAllowed
+      ? this._ds.getDestinations(this.actionCode)
+      : this._ds.getDestinations();
+    method.subscribe((destinations) => {
       this.destinations = destinations;
     });
   }
