@@ -8,13 +8,11 @@ from werkzeug.exceptions import NotFound
 
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TMedias
-from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db, DB
 from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 from sqlalchemy import select
 
 from ..routes import routes
-from apptax.taxonomie.models import Taxref
 
 
 @routes.route("/medias/<string:uuid_attached_row>", methods=["GET"])
@@ -118,32 +116,3 @@ def get_media_thumb(id_media, size):
     url_thumb = media_repo.get_thumbnail_url(size)
 
     return redirect(url_thumb)
-
-
-@routes.route("/medias/taxon/<int:cd_ref>", methods=["GET"])
-@json_resp_accept_empty_list
-def get_taxon_medias(cd_ref):
-    """
-    Retourne tous les médias liés à une espèce (cd_ref)
-    """
-    page = request.args.get("page", 1, type=int)
-    per_page = request.args.get("per_page", 20, type=int)
-
-    query = (
-        select(TMedias)
-        .join(Synthese, Synthese.unique_id_sinp == TMedias.uuid_attached_row)
-        .where(TMedias.is_public == True)
-        .order_by(TMedias.meta_create_date.desc())
-    )
-
-    taxref_cd_nom_list = db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
-    query = query.where(Synthese.cd_nom.in_(taxref_cd_nom_list))
-
-    pagination = DB.paginate(query, page=page, per_page=per_page)
-
-    return {
-        "total": pagination.total,
-        "page": pagination.page,
-        "per_page": pagination.per_page,
-        "items": [media.as_dict() for media in pagination.items],
-    }

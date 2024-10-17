@@ -52,7 +52,7 @@ export class TabMediaComponent implements OnInit {
 
   loadMedias() {
     this._ms
-      .getMediasSpecies(this.taxon.cd_ref, {
+      .getMediasTaxon(this.taxon.cd_ref, {
         page: this.pagination.currentPage + 1,
         per_page: this.pagination.perPage,
       })
