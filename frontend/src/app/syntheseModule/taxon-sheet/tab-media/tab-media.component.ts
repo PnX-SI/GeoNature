@@ -14,7 +14,7 @@ export interface Pagination {
 
 export const DEFAULT_PAGINATION: Pagination = {
   totalItems: 0,
-  currentPage: 1,
+  currentPage: 0,
   perPage: 10,
 };
 
@@ -53,14 +53,14 @@ export class TabMediaComponent implements OnInit {
   loadMedias() {
     this._ms
       .getMediasSpecies(this.taxon.cd_ref, {
-        page: this.pagination.currentPage,
+        page: this.pagination.currentPage + 1,
         per_page: this.pagination.perPage,
       })
       .subscribe((response) => {
         this.medias = response.items;
         this.pagination = {
           totalItems: response.total,
-          currentPage: response.page,
+          currentPage: response.page - 1,
           perPage: response.per_page,
         };
         if (!this.medias.some((media) => media.id_media == this.selectedMedia.id_media)) {
@@ -74,7 +74,7 @@ export class TabMediaComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    this.pagination.currentPage = event.pageIndex + 1;
+    this.pagination.currentPage = event.pageIndex;
     this.pagination.perPage = event.pageSize;
     this.loadMedias();
   }
