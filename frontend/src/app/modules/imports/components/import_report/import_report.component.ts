@@ -26,9 +26,9 @@ import { finalize } from 'rxjs/operators';
 import { formatRowCount } from '../../utils/format-row-count';
 
 interface CorrespondancesField {
-  source: string;
+  source: string | string[];
   description: string;
-  destination: string | string[];
+  destination: string;
 }
 
 @Component({
@@ -262,9 +262,9 @@ export class ImportReportComponent implements OnInit {
   mapField(listField: Field[], fieldMapping: FieldMappingValues): Array<CorrespondancesField> {
     const mappedFields: Array<CorrespondancesField> = listField.map((field) => {
       return {
-        source: field.name_field,
+        source: fieldMapping[field.name_field],
         description: field.comment,
-        destination: fieldMapping[field.name_field],
+        destination: field.name_field,
       };
     });
     return mappedFields;
@@ -272,5 +272,11 @@ export class ImportReportComponent implements OnInit {
 
   formattedRowCount(row: Import): string {
     return formatRowCount(row);
+  }
+
+  filterMappingWithoutValue(fields: Array<any>): Array<any> {
+    return fields.filter((field) => {
+      return field.destination != null && field.source != null;
+    });
   }
 }

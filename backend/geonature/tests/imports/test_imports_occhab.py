@@ -84,7 +84,16 @@ def contentmapping(occhab_destination):
 
 
 @pytest.fixture()
-def uploaded_import(client, users, datasets, station, habitat, import_file_name):
+def uploaded_import(
+    client,
+    users,
+    datasets,
+    station,
+    station_stranger_dataset,
+    habitat,
+    import_file_name,
+    display_unique_dataset_id,
+):
     with open(test_files_path / import_file_name, "rb") as f:
         test_file_line_count = sum(1 for line in f) - 1  # remove headers
         f.seek(0)
@@ -92,6 +101,10 @@ def uploaded_import(client, users, datasets, station, habitat, import_file_name)
         content = content.replace(
             b"EXISTING_STATION_UUID",
             station.unique_id_sinp_station.hex.encode("ascii"),
+        )
+        content = content.replace(
+            b"STRANGER_STATION_UUID",
+            station_stranger_dataset.unique_id_sinp_station.hex.encode("ascii"),
         )
         content = content.replace(
             b"EXISTING_HABITAT_UUID",
@@ -104,6 +117,10 @@ def uploaded_import(client, users, datasets, station, habitat, import_file_name)
         content = content.replace(
             b"FORBIDDEN_DATASET_UUID",
             datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
+        )
+        content = content.replace(
+            b"INACTIVE_DATASET_UUID",
+            datasets["own_dataset_not_activated"].unique_dataset_id.hex.encode("ascii"),
         )
         f = BytesIO(content)
         data = {
@@ -204,6 +221,18 @@ def station(datasets):
 
 
 @pytest.fixture(scope="function")
+def station_stranger_dataset(datasets):
+    station = Station(
+        id_dataset=datasets["stranger_dataset"].id_dataset,
+        date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
+        geom_4326=from_shape(Point(3.634, 44.399), 4326),
+    )
+    with db.session.begin_nested():
+        db.session.add(station)
+    return station
+
+
+@pytest.fixture(scope="function")
 def habitat(station):
     habitat = OccurenceHabitat(
         station=station,
@@ -232,6 +261,7 @@ def no_default_uuid(monkeypatch):
 class TestImportsOcchab:
     @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
     def test_import_valid_file(self, imported_import):
+
         assert_import_errors(
             imported_import,
             {
@@ -247,6 +277,18 @@ class TestImportsOcchab:
                     "station",
                     "unique_dataset_id",
                     frozenset({6}),
+                ),
+                (
+                    ImportCodeError.DATASET_NOT_AUTHORIZED,
+                    "habitat",
+                    "",
+                    frozenset({43}),
+                ),
+                (
+                    ImportCodeError.DATASET_NOT_ACTIVE,
+                    "station",
+                    "unique_dataset_id",
+                    frozenset({44}),
                 ),
                 (
                     ImportCodeError.INVALID_UUID,
@@ -307,13 +349,19 @@ class TestImportsOcchab:
                     ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({5, 6, 9, 24}),
+                    frozenset({5, 6, 9, 24, 44}),
                 ),
                 (
                     ImportCodeError.NO_PARENT_ENTITY,
                     "habitat",
                     "id_station",
                     frozenset({10, 16, 17, 18, 22, 23, 27, 28, 29, 30, 31, 32, 33, 34}),  # 19,26?
+                ),
+                (
+                    ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
+                    "habitat",
+                    "id_nomenclature_collection_technique",
+                    frozenset({41}),
                 ),
                 (
                     ImportCodeError.SKIP_EXISTING_UUID,
@@ -336,7 +384,7 @@ class TestImportsOcchab:
                 ),
             },
         )
-        assert imported_import.statistics == {"station_count": 5, "habitat_count": 10}
+        assert imported_import.statistics == {"station_count": 7, "habitat_count": 11}
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)

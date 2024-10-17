@@ -165,7 +165,15 @@ export class ImportListComponent implements OnInit {
       saveAs(result, row.full_file_name);
     });
   }
-
+  /**
+   * Downloads a CSV file with the lines that had errors during the import.
+   *
+   * @param imprt The import that we want to download the errors for.
+   */
+  downloadFileWithInvalidLine(imprt: Import) {
+    this._ds.setDestination(imprt.destination.code);
+    this._csvExport.onCSV(imprt.id_import);
+  }
   formattedRowCount(row: Import): string {
     return formatRowCount(row);
   }
