@@ -7,6 +7,13 @@
   </ng-template>
 
   <ng-template
+    #cellNumberTemplate
+    let-value="value"
+  >
+    {{ value ? value : '-' }}
+  </ng-template>
+
+  <ng-template
     #cellDefaultTemplate
     let-value="value"
   >
@@ -77,7 +84,7 @@
         let-row="row"
       >
         <ng-template
-          *ngTemplateOutlet="cellDefaultTemplate; context: { value: row[PROP_OBSERVATION_COUNT] }"
+          *ngTemplateOutlet="cellNumberTemplate; context: { value: row[PROP_OBSERVATION_COUNT] }"
         ></ng-template>
       </ng-template>
     </ngx-datatable-column>
@@ -90,7 +97,7 @@
         let-row="row"
       >
         <ng-template
-          *ngTemplateOutlet="cellDefaultTemplate; context: { value: row[PROP_MEDIA_COUNT] }"
+          *ngTemplateOutlet="cellNumberTemplate; context: { value: row[PROP_MEDIA_COUNT] }"
         ></ng-template>
       </ng-template>
     </ngx-datatable-column>
