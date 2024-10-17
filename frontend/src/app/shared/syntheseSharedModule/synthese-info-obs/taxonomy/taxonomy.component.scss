@@ -1,0 +1,23 @@
+.Taxonomy {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  row-gap: 0.5rem;
+
+  &__subtitle {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+    text-underline-offset: 0.4rem;
+    text-decoration-thickness: 2px;
+  }
+  .Classification {
+    &__name {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    &__value {
+      width: 100%;
+      padding-left: 1rem;
+    }
+  }
+}
