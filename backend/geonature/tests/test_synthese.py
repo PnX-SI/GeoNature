@@ -1837,12 +1837,13 @@ class TestSyntheseBlurring:
         # the user has no right to see it
         assert len(response.json["features"]) == 0
 
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestMediaTaxon:
     def test_taxon_medias(self, synthese_read_permissions, users):
         set_logged_user(self.client, users["self_user"])
         synthese_read_permissions(users["self_user"], None, sensitivity_filter=True)
-        
+
         cd_ref = db.session.scalar(select(Taxref.cd_ref))
 
         response = self.client.get(url_for("gn_synthese.taxon_medias", cd_ref=cd_ref))
