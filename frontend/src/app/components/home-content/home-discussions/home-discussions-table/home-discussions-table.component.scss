@@ -1,8 +1,12 @@
-.Discussions__content {
-  max-height: 100%;
-  padding-bottom: 1rem;
-  border: 3px solid coral;
-  white-space: pre-line;
-  overflow: auto;
-  text-overflow: ellipsis;
+.TextContentContainer {
+  max-height: 70px !important;
+  overflow: hidden;
+  &:hover {
+    overflow-y: scroll;
+  }
+
+  .TextContent {
+    white-space: pre-line;
+    text-overflow: ellipsis;
+  }
 }

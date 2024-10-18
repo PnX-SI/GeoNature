@@ -79,11 +79,10 @@
       ngx-datatable-cell-template
       let-row="row"
     >
-      <div
-        class="Discussions__content"
-        [matTooltip]="row[PROP_CONTENT]"
-      >
-        {{ row[PROP_CONTENT] }}
+      <div class="TextContentContainer">
+        <div class="TextContent">
+          {{ row[PROP_CONTENT] }}
+        </div>
       </div>
     </ng-template>
   </ngx-datatable-column>
