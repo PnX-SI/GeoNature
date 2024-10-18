@@ -408,14 +408,6 @@ def upgrade():
         """
     )
 
-    # delete remaining rows with association between datasets and the import module
-    op.execute(
-        f"""
-        DELETE FROM gn_commons.cor_module_dataset
-        WHERE id_module = {ID_MODULE_IMPORT};
-        """
-    )
-
 
 def downgrade():
 
