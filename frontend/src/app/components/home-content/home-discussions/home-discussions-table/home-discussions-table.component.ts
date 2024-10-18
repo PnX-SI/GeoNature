@@ -1,8 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { Router } from '@angular/router';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -11,63 +21,125 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
   styleUrls: ['./home-discussions-table.component.scss'],
   imports: [GN2CommonModule, CommonModule],
 })
-export class HomeDiscussionsTableComponent {
-  @Input() discussions = [];
-  @Input() currentPage = 1;
-  @Input() perPage = 2;
-  @Input() totalPages = 1;
-  @Input() totalRows = 0;
-  @Input() totalFilteredRows = 0;
-  headerHeight: number = 50;
-  footerHeight: number = 50;
-  rowHeight: string | number = 'auto';
+export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
+  readonly PROP_CREATION_DATE = 'creation_date';
+  readonly PROP_USER = 'user.nom_complet';
+  readonly PROP_CONTENT = 'content';
+  readonly PROP_OBSERVATION = 'observation';
+
+  discussions = [];
+  currentPage = 1;
+  perPage = 2;
+  totalPages = 1;
+  totalRows = 0;
+  totalFilteredRows = 0;
   limit: number = 10;
   count: number = 0;
   offset: number = 0;
-  columnMode: string = 'force';
-  rowDetailHeight: number = 150;
-  columns = [];
   sort = 'desc';
-  orderby = 'creation_date';
+  orderby = this.PROP_CREATION_DATE;
 
-  @Output() sortChange = new EventEmitter<Object>();
-  @Output() orderbyChange = new EventEmitter<string>();
-  @Output() currentPageChange = new EventEmitter<number>();
+  private destroy$ = new Subject<void>();
 
-  @ViewChild('table', { static: false }) table: DatatableComponent | undefined;
-
-  constructor(private _router: Router) {}
-
-  ngOnInit() {
-    this.columns = this.getColumnsConfig();
+  _myReportsOnly: boolean;
+  @Input()
+  set myReportsOnly(value: boolean) {
+    this._myReportsOnly = value;
+    this._fetchDiscussions();
   }
 
-  handleExpandRow(row: any) {
-    this.table.rowDetail.toggleExpandRow(row);
+  constructor(
+    private _router: Router,
+    private _syntheseApi: SyntheseDataService
+  ) {}
+
+  ngOnInit() {
+    this._fetchDiscussions();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   handlePageChange(event: any) {
     this.currentPage = event.page;
-    this.currentPageChange.emit(this.currentPage);
+    this._fetchDiscussions();
   }
 
   onColumnSort(event: any) {
     this.sort = event.sorts[0].dir;
     this.orderby = event.sorts[0].prop;
-    this.sortChange.emit({ sort: this.sort, orderby: this.orderby });
+    this._fetchDiscussions();
   }
 
-  onRowClick(row: any) {
-    // TODO: ajouter au chemin 'discussions' une fois que la PR https://github.com/PnX-SI/GeoNature/pull/3169 a été reviewed et mergé
-    this._router.navigate(['/synthese', 'occurrence', row.id_synthese]);
+  navigateToDiscussion(id_synthese: number) {
+    this._router.navigate(['/synthese', 'occurrence', id_synthese, 'discussion']);
   }
 
-  getColumnsConfig() {
-    return [
-      { prop: 'creation_date', name: 'Date commentaire', sortable: true },
-      { prop: 'user.nom_complet', name: 'Auteur', sortable: true },
-      { prop: 'content', name: 'Contenu', sortable: true },
-      { prop: 'observation', name: 'Observation', sortable: false, maxWidth: 500 },
-    ];
+  renderDate(date: string): string {
+    return new Date(date).toLocaleDateString();
+  }
+
+  private _fetchDiscussions() {
+    console.log('-- fetch discussions');
+    const params = this._buildQueryParams();
+    console.log(params);
+    this._syntheseApi
+      .getReports(params.toString())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        this._setDiscussions(response);
+      });
+  }
+
+  private _buildQueryParams(): URLSearchParams {
+    const params = new URLSearchParams();
+    params.set('type', 'discussion');
+    params.set('sort', this.sort);
+    params.set('orderby', this.orderby);
+    params.set('page', this.currentPage.toString());
+    params.set('per_page', this.perPage.toString());
+    params.set('my_reports', this._myReportsOnly.toString());
+    return params;
+  }
+
+  // //////////////////////////////////////////////////////
+  // Discussion process
+  // //////////////////////////////////////////////////////
+  private _setDiscussions(data: any) {
+    this.discussions = this._transformDiscussions(data.items);
+    this.totalRows = data.total;
+    this.totalPages = data.pages;
+    this.totalFilteredRows = data.total_filtered;
+  }
+
+  private _transformDiscussions(items: any[]): any[] {
+    return items.map((item) => ({
+      ...item,
+      observation: this._formatObservation(item.synthese),
+    }));
+  }
+
+  private _formatObservation(synthese: any): string {
+    return `
+      <strong>Nom Cité:</strong> ${synthese.nom_cite || 'N/A'}<br>
+      <strong>Observateurs:</strong> ${synthese.observers || 'N/A'}<br>
+      <strong>Date Observation:</strong> ${
+        this._formatDateRange(synthese.date_min, synthese.date_max) || 'N/A'
+      }
+    `;
+  }
+
+  private _formatDateRange(dateMin: string, dateMax: string): string {
+    if (!dateMin) return 'N/A';
+
+    const formattedDateMin = this.renderDate(dateMin);
+    const formattedDateMax = this.renderDate(dateMax);
+
+    if (!dateMax || formattedDateMin === formattedDateMax) {
+      return formattedDateMin || 'N/A';
+    }
+    return `${formattedDateMin} - ${formattedDateMax}`;
   }
 }
