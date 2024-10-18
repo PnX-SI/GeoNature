@@ -8,7 +8,7 @@ from werkzeug.exceptions import NotFound
 
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TMedias
-from geonature.utils.env import DB
+from geonature.utils.env import db, DB
 from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 from sqlalchemy import select
 
