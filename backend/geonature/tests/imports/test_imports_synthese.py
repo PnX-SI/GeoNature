@@ -967,9 +967,14 @@ class TestImportsSynthese:
             .where(transient_table.c.id_import == imprt.id_import)
         ).scalar()
         assert transient_rows_count == 0
-        assert valid_file_line_count - len(valid_file_invalid_rows) == imprt.import_count
+        assert (
+            valid_file_line_count - len(valid_file_invalid_rows) == imprt.statistics["import_count"]
+        )
         assert valid_file_taxa_count == imprt.statistics["taxa_count"]
-        assert Synthese.query.filter_by(id_import=imprt.id_import).count() == imprt.import_count
+        assert (
+            Synthese.query.filter_by(id_import=imprt.id_import).count()
+            == imprt.statistics["import_count"]
+        )
 
         # Delete step
         r = self.client.delete(url_for("import.delete_import", import_id=imprt.id_import))

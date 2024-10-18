@@ -41,7 +41,6 @@ export interface Import {
   date_update_import: string;
   date_end_import: null | string;
   source_count: number;
-  import_count: number;
   statistics: object;
   date_min_data: string;
   date_max_data: string;

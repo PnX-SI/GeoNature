@@ -99,7 +99,7 @@ def do_import_in_destination(self, import_id):
             .where(transient_table.c[entity.validity_column] == True)
         ).scalar()
         count_entities += n_valid_data
-    imprt.import_count = count_entities
+    imprt.statistics["import_count"] = count_entities
 
     # Clear transient data
     stmt = delete(transient_table).where(transient_table.c.id_import == imprt.id_import)
