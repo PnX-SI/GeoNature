@@ -81,7 +81,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
     this.canImport = canCreateImport && canCreateSynthese;
     // get wiewport height to set the number of rows in the tabl
-    const h = document.documentElement.clientHeight;
+    const h = document.documentElement.clientHeight * 0.86;
     this.rowNumber = Math.trunc(h / 37);
 
     this.initListColumns();
