@@ -69,7 +69,7 @@ class SyntheseImportActions(ImportActions):
     @staticmethod
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         return [
-            {"key": "observation_count", "value": "Nombre d'observations importées"},
+            {"key": "import_count", "value": "Nombre d'observations importées"},
             {"key": "taxa_count", "value": "Nombre de taxons"},
         ]
 

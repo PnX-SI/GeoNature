@@ -38,7 +38,7 @@ def upgrade():
     op.execute(
         """
     INSERT INTO gn_notifications.bib_notifications_templates 
-    VALUES  ('IMPORT-DONE', 'EMAIL', '<p>Bonjour <i>{{ role.nom_complet }}</i> !</p> <p>Votre <a href="{{ url }}">import <b>n°{{ import.id_import }}</b></a> s’est terminé correctement {% if import.import_count == import.source_count %} 👌 et a été bien {% else %} 👍 mais a été partiellement {% endif %} intégré dans la synthèse.</p><p> {{ import.import_count }} / {{ import.source_count }} données ont pu être effectivement intégrées dans la synthèse.</p><hr><p><i>Vous recevez cet email automatiquement via le service de notification de GeoNature. <a href="{{url_notification_rules}}">Gestion de vos règles de notification</a>.</i></p>')
+    VALUES  ('IMPORT-DONE', 'EMAIL', '<p>Bonjour <i>{{ role.nom_complet }}</i> !</p> <p>Votre <a href="{{ url }}">import <b>n°{{ import.id_import }}</b></a> s’est terminé correctement {% if import.statistics["import_count"] == import.source_count %} 👌 et a été bien {% else %} 👍 mais a été partiellement {% endif %} intégré dans la synthèse.</p><p> {{ import.statistics["import_count"] }} / {{ import.source_count }} données ont pu être effectivement intégrées dans la synthèse.</p><hr><p><i>Vous recevez cet email automatiquement via le service de notification de GeoNature. <a href="{{url_notification_rules}}">Gestion de vos règles de notification</a>.</i></p>')
     """
     )
 

@@ -69,8 +69,8 @@ def clean_import(imprt: TImports, step: ImportStep) -> None:
         imprt.processed = False
     if step <= ImportStep.IMPORT:
         imprt.date_end_import = None
-        imprt.import_count = None
-        imprt.statistics = {}
+
+        imprt.statistics = {"import_count": None}
         imprt.destination.actions.remove_data_from_destination(imprt)
 
 
