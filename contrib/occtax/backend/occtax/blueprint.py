@@ -598,8 +598,6 @@ def export(scope):
 
     data = db.session.execute(q)
 
-    print(data)
-
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
