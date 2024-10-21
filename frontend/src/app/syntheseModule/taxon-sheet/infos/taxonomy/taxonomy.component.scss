@@ -1,0 +1,12 @@
+.Taxonomy {
+  display: flex;
+  flex-flow: column;
+  &__completeName {
+    font-weight: lighter;
+    font-style: italic;
+  }
+  &__vernacularName {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+}
