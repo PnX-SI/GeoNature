@@ -1,18 +1,21 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  ViewChild,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+interface PaginationItem {
+  totalItems: number;
+  currentPage: number;
+  perPage: number;
+}
+
+interface SortingItem {
+  sort: 'asc' | 'desc';
+  orderby: string;
+}
 
 @Component({
   standalone: true,
@@ -27,17 +30,19 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   readonly PROP_CONTENT = 'content';
   readonly PROP_OBSERVATION = 'observation';
 
+  readonly DEFAULT_PAGINATION: PaginationItem = {
+    totalItems: 0,
+    currentPage: 1,
+    perPage: 2,
+  };
+  readonly DEFAULT_SORTING: SortingItem = {
+    sort: 'desc',
+    orderby: this.PROP_CREATION_DATE,
+  };
+
   discussions = [];
-  currentPage = 1;
-  perPage = 2;
-  totalPages = 1;
-  totalRows = 0;
-  totalFilteredRows = 0;
-  limit: number = 10;
-  count: number = 0;
-  offset: number = 0;
-  sort = 'desc';
-  orderby = this.PROP_CREATION_DATE;
+  pagination: PaginationItem = this.DEFAULT_PAGINATION;
+  sort: SortingItem = this.DEFAULT_SORTING;
 
   private destroy$ = new Subject<void>();
 
@@ -62,14 +67,17 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  handlePageChange(event: any) {
-    this.currentPage = event.page;
+  onChangePage(event: any) {
+    this.pagination.currentPage = event.offset + 1;
     this._fetchDiscussions();
   }
 
   onColumnSort(event: any) {
-    this.sort = event.sorts[0].dir;
-    this.orderby = event.sorts[0].prop;
+    this.sort = {
+      sort: event.newValue,
+      orderby: event.column.prop,
+    };
+    this.pagination.currentPage = 1;
     this._fetchDiscussions();
   }
 
@@ -82,9 +90,7 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   }
 
   private _fetchDiscussions() {
-    console.log('-- fetch discussions');
     const params = this._buildQueryParams();
-    console.log(params);
     this._syntheseApi
       .getReports(params.toString())
       .pipe(takeUntil(this.destroy$))
@@ -96,10 +102,10 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   private _buildQueryParams(): URLSearchParams {
     const params = new URLSearchParams();
     params.set('type', 'discussion');
-    params.set('sort', this.sort);
-    params.set('orderby', this.orderby);
-    params.set('page', this.currentPage.toString());
-    params.set('per_page', this.perPage.toString());
+    params.set('sort', this.sort.sort);
+    params.set('orderby', this.sort.orderby);
+    params.set('page', this.pagination.currentPage.toString());
+    params.set('per_page', this.pagination.perPage.toString());
     params.set('my_reports', this._myReportsOnly.toString());
     return params;
   }
@@ -109,9 +115,11 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   // //////////////////////////////////////////////////////
   private _setDiscussions(data: any) {
     this.discussions = this._transformDiscussions(data.items);
-    this.totalRows = data.total;
-    this.totalPages = data.pages;
-    this.totalFilteredRows = data.total_filtered;
+    this.pagination = {
+      totalItems: data.total,
+      currentPage: data.current_page,
+      perPage: data.per_page,
+    };
   }
 
   private _transformDiscussions(items: any[]): any[] {
