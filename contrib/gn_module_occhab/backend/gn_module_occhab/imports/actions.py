@@ -590,7 +590,7 @@ class OcchabImportActions(ImportActions):
             )
             where_clause = sa.or_(
                 destination_sta_table.c.id_import == imprt.id_import,
-                destination_sta_table.c.id_station == cte.c.id_station,
+                destination_sta_table.c.id_station.in_(cte),
             )
             return compute_bounding_box(
                 imprt, "station", "geom_4326", destination_where_clause=where_clause
