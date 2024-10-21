@@ -1,13 +1,4 @@
-import { filter } from 'rxjs/operators';
-import {
-  Component,
-  OnInit,
-  Input,
-  OnChanges,
-  DoCheck,
-  IterableDiffers,
-  IterableDiffer,
-} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
@@ -37,6 +28,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   @Input() filters = {}; // help
 
   @Input() default;
+  @Input() nullDefault;
 
   @Input() dataPath: string; // pour atteindre la liste si elle n'est pas à la racine de la réponse de l'api.
   // si on a 'data/liste' on mettra dataPath='data'
@@ -70,7 +62,15 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   getFilteredValues() {
     let values = this.values || [];
-
+    // if(this.nullDefault){
+    //   values.push()
+    // }
+    if (this.nullDefault && !this.required) {
+      let obj = {};
+      obj[this.keyValue] = null;
+      obj[this.keyLabel] = '-- Aucun --';
+      values.unshift(obj);
+    }
     values = values
       // filter search
       .filter(
@@ -133,20 +133,34 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       this.filteredValues.length === 1 &&
       !(this.parentFormControl.value && this.parentFormControl.value.length)
     ) {
-      const val = this.values[0][this.keyValue];
-      this.parentFormControl.patchValue(this.multiple ? [val] : val);
+      const val = this.nullDefault ? null : this.values[0][this.keyValue];
+      this.parentFormControl.patchValue(this.multiple && !this.nullDefault ? [val] : val);
     }
+
     // valeur par défaut (depuis input value)
-    if (!this.parentFormControl.value && this.default) {
+    if (
+      (!this.parentFormControl.value ||
+        (Array.isArray(this.parentFormControl.value) &&
+          this.parentFormControl.value.length == 0)) &&
+      this.default
+    ) {
       const value = this.multiple ? this.default : [this.default];
-      const res = value.map((val) =>
-        typeof val === 'object'
-          ? (this.filteredValues.find((v) =>
-              Object.keys(val).every((key) => v[key] === val[key])
-            ) || {})[this.keyValue]
-          : val
-      );
-      this.parentFormControl.patchValue(this.multiple ? res : res[0]);
+      // check if the default value is in the provided values
+      const valuesID = this.values.map((el) => el[this.keyValue]);
+      const defaultValuesID = value.map((el) => el[this.keyValue]);
+      const defaultValueIsInValues = valuesID.some((el) => defaultValuesID.includes(el));
+
+      // patch value only if default value is in values
+      if (defaultValueIsInValues) {
+        const res = value.map((val) =>
+          typeof val === 'object'
+            ? (this.filteredValues.find((v) =>
+                Object.keys(val).every((key) => v[key] === val[key])
+              ) || {})[this.keyValue]
+            : val
+        );
+        this.parentFormControl.patchValue(this.multiple ? res : res[0]);
+      }
     }
     this.parentFormControl.markAsTouched();
   }
