@@ -547,6 +547,7 @@ class GnGeneralSchemaConf(Schema):
     DEBUG = fields.Boolean(load_default=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
+    API_TAXHUB = fields.Url()
     CODE_APPLICATION = fields.String(load_default="GN")
     DISABLED_MODULES = fields.List(fields.String(), load_default=[])
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
