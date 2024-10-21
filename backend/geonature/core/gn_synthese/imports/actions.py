@@ -372,11 +372,6 @@ class SyntheseImportActions(ImportActions):
 
         # TODO: Improve this
         imprt.statistics = {
-            "observation_count": (
-                db.session.query(func.count(Synthese.cd_nom))
-                .filter_by(id_import=imprt.id_import)
-                .scalar()
-            ),
             "taxa_count": (
                 db.session.query(func.count(distinct(Synthese.cd_nom)))
                 .filter_by(id_import=imprt.id_import)
