@@ -5,6 +5,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HomeDiscussionsService } from '../home-discussions.service';
 
 interface PaginationItem {
   totalItems: number;
@@ -23,6 +24,7 @@ interface SortingItem {
   templateUrl: './home-discussions-table.component.html',
   styleUrls: ['./home-discussions-table.component.scss'],
   imports: [GN2CommonModule, CommonModule],
+  providers: [HomeDiscussionsService],
 })
 export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   readonly PROP_CREATION_DATE = 'creation_date';
@@ -55,7 +57,8 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
 
   constructor(
     private _router: Router,
-    private _syntheseApi: SyntheseDataService
+    private _syntheseApi: SyntheseDataService,
+    private _homeDiscussions: HomeDiscussionsService
   ) {}
 
   ngOnInit() {
@@ -82,7 +85,7 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   }
 
   navigateToDiscussion(id_synthese: number) {
-    this._router.navigate(['/synthese', 'occurrence', id_synthese, 'discussion']);
+    this._router.navigate(this._homeDiscussions.computeDiscussionsRedirectionUrl(id_synthese));
   }
 
   renderDate(date: string): string {

@@ -11,7 +11,6 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { ConfigService } from '@geonature/services/config.service';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -28,17 +27,6 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   public destroy$: Subject<boolean> = new Subject<boolean>();
   public cluserOrSimpleFeatureGroup = null;
 
-  @ViewChild('table')
-  table: DatatableComponent;
-  discussions = [];
-  columns = [];
-  currentPage = 1;
-  perPage = 2;
-  totalPages = 1;
-  totalRows: Number;
-  myReportsOnly = false;
-  sort = 'desc';
-  orderby = 'date';
   params: URLSearchParams = new URLSearchParams();
   constructor(
     private _SideNavService: SideNavService,
@@ -46,8 +34,7 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
-    public config: ConfigService,
-    private datePipe: DatePipe
+    public config: ConfigService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
