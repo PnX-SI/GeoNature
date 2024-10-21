@@ -384,7 +384,11 @@ class TestImportsOcchab:
                 ),
             },
         )
-        assert imported_import.statistics == {"station_count": 7, "habitat_count": 11}
+        assert imported_import.statistics == {
+            "import_count": 18,
+            "station_count": 7,
+            "habitat_count": 11,
+        }
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
@@ -506,7 +510,11 @@ class TestImportsOcchab:
                 ),
             },
         )
-        assert imported_import.statistics == {"station_count": 3, "habitat_count": 6}
+        assert imported_import.statistics == {
+            "import_count": 9,
+            "station_count": 3,
+            "habitat_count": 6,
+        }
         assert (
             db.session.scalar(
                 sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
