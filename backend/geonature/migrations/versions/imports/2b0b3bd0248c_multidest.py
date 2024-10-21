@@ -6,6 +6,8 @@ Create Date: 2023-10-20 09:05:49.973738
 
 """
 
+import warnings
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.schema import Table, MetaData
@@ -231,7 +233,37 @@ def upgrade():
     # Remove from bib_fields columns moved to cor_entity_field
     for column_name in ["desc_field", "id_theme", "order_field", "comment"]:
         op.drop_column(schema="gn_imports", table_name="bib_fields", column_name=column_name)
+
     ### Permissions
+
+    #### Enlever scope dans C IMPORT
+    op.execute(
+        """
+        WITH CTE AS (
+            SELECT
+                m.id_module, o.id_object, a.id_action
+            FROM
+                gn_commons.t_modules m,
+                gn_permissions.t_objects o,
+                gn_permissions.bib_actions a
+            WHERE
+                m.module_code = 'IMPORT'
+                AND
+                o.code_object = 'ALL'
+                AND
+                a.code_action = 'C'
+        )
+        UPDATE gn_permissions.t_permissions_available pa
+        SET scope_filter = NULL
+        FROM CTE
+        WHERE
+            pa.id_module = CTE.id_module
+            AND
+            pa.id_object = CTE.id_object
+            AND
+            pa.id_action = CTE.id_action
+        """
+    )
     op.execute(
         """
         INSERT INTO
@@ -250,6 +282,7 @@ def upgrade():
             a.code_action = 'C'
         """
     )
+
     op.execute(
         """
         INSERT INTO
@@ -270,6 +303,7 @@ def upgrade():
             new_module.module_code = 'SYNTHESE' AND new_object.code_object = 'ALL';
         """
     )
+
     # TODO constraint entity_field.entity.id_destination == entity_field.field.id_destination
     ### Remove synthese specific 'id_source' column
     op.drop_column(schema="gn_imports", table_name="t_imports", column_name="id_source_synthese")
@@ -345,8 +379,69 @@ def upgrade():
         """
     )
 
+    ID_MODULE_IMPORT = (
+        op.get_bind()
+        .execute(
+            """
+            SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT';
+            """
+        )
+        .first()[0]
+    )
+    ID_MODULE_SYNTHESE = (
+        op.get_bind()
+        .execute(
+            """
+            SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'SYNTHESE';
+            """
+        )
+        .first()[0]
+    )
+
+    ## JDD IMPORT -> JDD Synthese
+    # update row with module = import to module=synthese in cor_module_dataset, only if the dataset is not already associated with a synthese
+    op.execute(
+        f"""
+        UPDATE gn_commons.cor_module_dataset
+        SET id_module = {ID_MODULE_SYNTHESE}
+        WHERE id_module = {ID_MODULE_IMPORT};
+        """
+    )
+
 
 def downgrade():
+
+    ## C IMPORT -> C Synthese
+    warnings.warn("!!!!! Created synthese permissions created previously will remain !!!!)")
+    ## JDD Synthese -> JDD Import
+    warnings.warn(
+        "Re-add association between datasets and the import module (!!!!! association between synthese and dataset created previously will remain! !!!!)"
+    )
+
+    ID_MODULE_IMPORT = (
+        op.get_bind()
+        .execute(
+            """
+        SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT';
+        """
+        )
+        .first()[0]
+    )
+    ID_MODULE_SYNTHESE = (
+        op.get_bind()
+        .execute(
+            """
+        SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'SYNTHESE';
+        """
+        )
+        .first()[0]
+    )
+    op.execute(
+        f"""INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset) 
+        SELECT {ID_MODULE_IMPORT}, id_dataset FROM gn_commons.cor_module_dataset WHERE id_module = {ID_MODULE_SYNTHESE};
+        """
+    )
+
     meta = MetaData(bind=op.get_bind())
     # Remove new error types
     error_type = Table("bib_errors_types", meta, autoload=True, schema="gn_imports")
