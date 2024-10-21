@@ -31,6 +31,17 @@ export class HomeDiscussionsService {
     }
   }
 
+  get isAvailable(): boolean {
+    for (const module of this.MODULES_PREVALENCE) {
+      if (this._isDiscussionsAllowedInModule(module)) {
+        if (this._isDiscussionsAvailableInModule(module)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   computeDiscussionsRedirectionUrl(id: number): Array<string> {
     for (const module of this.MODULES_PREVALENCE) {
       if (this._isDiscussionsAllowedInModule(module)) {

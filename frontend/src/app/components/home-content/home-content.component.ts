@@ -11,13 +11,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { ConfigService } from '@geonature/services/config.service';
-import { DatePipe } from '@angular/common';
+import { HomeDiscussionsService } from './home-discussions/home-discussions.service';
 
 @Component({
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, SyntheseDataService, DatePipe],
+  providers: [MapService, SyntheseDataService, HomeDiscussionsService],
 })
 export class HomeContentComponent implements OnInit, AfterViewInit {
   public showLastObsMap: boolean = false;
@@ -34,7 +34,8 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _discussionsService: HomeDiscussionsService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -77,7 +78,7 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   }
 
   get isExistBlockToDisplay(): boolean {
-    return this.config.HOME.DISPLAY_LATEST_DISCUSSIONS; // NOTES [projet ARB]: ajouter les autres config à afficher ici || this.config.HOME.DISPLAY_LATEST_VALIDATIONS ..;
+    return this._discussionsService.isAvailable; // NOTES [projet ARB]: ajouter les autres config à afficher ici || this.config.HOME.DISPLAY_LATEST_VALIDATIONS ..;
   }
 
   private computeMapBloc() {
