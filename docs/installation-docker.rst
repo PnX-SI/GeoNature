@@ -1,7 +1,7 @@
 Docker
 ******
 
-L'installation de GeoNature avec Docker est la manière la plus simple de déployer GeoNature, ses 4 modules externes principaux (Import, Export, Dashboard, Monitoring), TaxHub et UsersHub, mais aussi de les mettre à jour, avec seulement quelques lignes de commandes.
+L'installation de GeoNature avec Docker est la manière la plus simple de déployer GeoNature, ses 4 modules externes principaux (Import, Export, Dashboard, Monitoring) et UsersHub, mais aussi de les mettre à jour, avec seulement quelques lignes de commandes.
 
 Elle permet aussi d'installer GeoNature sur différents systèmes, et pas uniquement sur Debian, comme c'est le cas avec l'installation classique.
 
@@ -12,7 +12,7 @@ Docker Compose
 
 Pour déployer facilement GeoNature avec Docker, utilisez le Docker Compose proposé et documenté dans le dépôt `GeoNature-Docker-services <https://github.com/PnX-SI/Geonature-Docker-services/>`_.
 
-Pour des déploiements Docker plus avancés et spécifiques, des images Docker des différents outils (GeoNature, TaxHub, UsersHub, GeoNature et ses 4 modules externes principaux) sont automatiquement construites et publiées à chaque nouvelle version publiée.
+Pour des déploiements Docker plus avancés et spécifiques, des images Docker des différents outils (GeoNature, UsersHub, GeoNature et ses 4 modules externes principaux) sont automatiquement construites et publiées à chaque nouvelle version publiée.
 
 Image backend
 -------------

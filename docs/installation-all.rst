@@ -7,11 +7,10 @@ En lançant le script d'installation ci-dessous, l'application GeoNature ainsi q
 
 Les applications suivantes seront installées :
 
-- `GeoNature <https://github.com/PnX-SI/GeoNature>`_
-- `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui pilote le schéma ``taxonomie``
+- `GeoNature <https://github.com/PnX-SI/GeoNature>`_ (incluant `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui pilote le schéma ``taxonomie``)
 - `UsersHub <https://github.com/PnX-SI/UsersHub>`_ qui pilote le schéma ``utilisateurs`` (le paramètre ``install_usershub_app`` du fichier de configuration ``install_all.ini`` permet de désactiver l'installation de l'application. Il est cependant recommandé d'installer l'application pour disposer d'une interface pour gérer les utilisateurs dans GeoNature)
 
-Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation :ref:`installation-standalone`.
+Si vous disposez déjà de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation :ref:`installation-standalone`.
 
 
 Installation des applications
@@ -19,7 +18,7 @@ Installation des applications
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur dédié précédemment créé lors de l’étape de :ref:`preparation-server` (usuellement ``geonatureadmin``).
 
-* Se placer à la racine du ``home`` de l'utilisateur puis récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
+* Se placer à la racine du ``home`` de l'utilisateur puis récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature (incluant TaxHub) et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
   .. code:: console
 
@@ -56,7 +55,6 @@ Une fois l'installation terminée, lancez la commande suivante:
 Les applications sont disponibles aux adresses suivantes :
 
 - http://monip.com/geonature/
-- http://monip.com/taxhub/
 - http://monip.com/usershub/ (en option)
 
 Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin).
@@ -83,14 +81,13 @@ Si vous rencontrez une erreur, se reporter aux fichiers de logs ``/home/`whoami`
 
     Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour accéder à la BDD depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), vous pouvez consulter cette documentation https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst.
     Attention, exposer la base de données sur internet n'est pas recommandé. Il est préférable de se connecter via un tunnel SSH. QGIS et la plupart des outils d'administration de base de données permettent d'établir une connexion à la base de cette manière.
-    Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API de GeoNature, UsersHub et TaxHub :
+    Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API de GeoNature et UsersHub :
 
     .. code:: console
 
         $ sudo systemctl restart geonature
         $ sudo systemctl restart geonature-worker
         $ sudo systemctl restart usershub
-        $ sudo systemctl restart taxhub
 
 :Note:
 
