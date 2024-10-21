@@ -25,6 +25,10 @@ export interface Dataset {
   dataset_name: string;
   active: boolean;
 }
+export interface ImportStatistics {
+  import_count: number;
+  [propName: string]: any;
+}
 
 export interface Import {
   id_import: number;
@@ -41,8 +45,7 @@ export interface Import {
   date_update_import: string;
   date_end_import: null | string;
   source_count: number;
-  import_count: number;
-  statistics: object;
+  statistics: ImportStatistics;
   date_min_data: string;
   date_max_data: string;
   step: Step;
