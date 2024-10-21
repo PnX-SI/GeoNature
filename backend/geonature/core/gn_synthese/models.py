@@ -585,7 +585,7 @@ class VSyntheseForWebApp(DB.Model):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer, nullable=False)
-    id_import = DB.Column(DB.Integer, nullable=False)
+    id_import = DB.Column(DB.Integer, nullable=True)
     id_module = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)

@@ -423,7 +423,7 @@
                 mat-raised-button
                 class="button-link"
                 extended
-                [routerLink]="'/' + this.importData.destination.code"
+                [routerLink]="'/' + this.importData.destination.module.module_path"
                 [queryParams]="{ id_import: this.importData.id_import }"
                 color="primary"
                 [disabled]="importData?.date_end_import === null"

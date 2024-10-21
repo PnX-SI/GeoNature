@@ -338,6 +338,7 @@ class ImportQuery(Query):
         "destination.code",
         "destination.label",
         "destination.statistics_labels",
+        "destination.module",
     ]
 )
 class TImports(InstancePermissionMixin, db.Model):

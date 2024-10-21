@@ -36,7 +36,7 @@ def upgrade():
     id_import_module = conn.execute(
         sa.select(t_modules.c.id_module).where(t_modules.c.module_code == "IMPORT")
     ).scalar_one()
-    results = conn.execute(
+    id_source = conn.execute(
         t_sources.insert()
         .values(
             name_source="Import",
@@ -45,8 +45,7 @@ def upgrade():
             id_module=id_import_module,
         )
         .returning(t_sources.c.id_source)
-    )
-    id_source = [id_source for id_source, in results][0]
+    ).scalar_one()
     op.execute(
         sa.update(t_synthese)
         .where(t_synthese.c.id_source == t_sources.c.id_source)
