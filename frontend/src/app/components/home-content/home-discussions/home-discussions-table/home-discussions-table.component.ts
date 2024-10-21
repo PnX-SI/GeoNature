@@ -1,8 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { HomeDiscussionsService } from '../home-discussions.service';
+
+interface PaginationItem {
+  totalItems: number;
+  currentPage: number;
+  perPage: number;
+}
+
+interface SortingItem {
+  sort: 'asc' | 'desc';
+  orderby: string;
+}
 
 @Component({
   standalone: true,
@@ -10,64 +24,133 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
   templateUrl: './home-discussions-table.component.html',
   styleUrls: ['./home-discussions-table.component.scss'],
   imports: [GN2CommonModule, CommonModule],
+  providers: [HomeDiscussionsService],
 })
-export class HomeDiscussionsTableComponent {
-  @Input() discussions = [];
-  @Input() currentPage = 1;
-  @Input() perPage = 2;
-  @Input() totalPages = 1;
-  @Input() totalRows = 0;
-  @Input() totalFilteredRows = 0;
-  headerHeight: number = 50;
-  footerHeight: number = 50;
-  rowHeight: string | number = 'auto';
-  limit: number = 10;
-  count: number = 0;
-  offset: number = 0;
-  columnMode: string = 'force';
-  rowDetailHeight: number = 150;
-  columns = [];
-  sort = 'desc';
-  orderby = 'creation_date';
+export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
+  readonly PROP_CREATION_DATE = 'creation_date';
+  readonly PROP_USER = 'user.nom_complet';
+  readonly PROP_CONTENT = 'content';
+  readonly PROP_OBSERVATION = 'observation';
 
-  @Output() sortChange = new EventEmitter<Object>();
-  @Output() orderbyChange = new EventEmitter<string>();
-  @Output() currentPageChange = new EventEmitter<number>();
+  readonly DEFAULT_PAGINATION: PaginationItem = {
+    totalItems: 0,
+    currentPage: 1,
+    perPage: 2,
+  };
+  readonly DEFAULT_SORTING: SortingItem = {
+    sort: 'desc',
+    orderby: this.PROP_CREATION_DATE,
+  };
 
-  @ViewChild('table', { static: false }) table: DatatableComponent | undefined;
+  discussions = [];
+  pagination: PaginationItem = this.DEFAULT_PAGINATION;
+  sort: SortingItem = this.DEFAULT_SORTING;
 
-  constructor(private _router: Router) {}
+  private destroy$ = new Subject<void>();
+
+  _myReportsOnly: boolean;
+  @Input()
+  set myReportsOnly(value: boolean) {
+    this._myReportsOnly = value;
+    this._fetchDiscussions();
+  }
+
+  constructor(
+    private _router: Router,
+    private _syntheseApi: SyntheseDataService,
+    private _homeDiscussions: HomeDiscussionsService
+  ) {}
 
   ngOnInit() {
-    this.columns = this.getColumnsConfig();
+    this._fetchDiscussions();
   }
 
-  handleExpandRow(row: any) {
-    this.table.rowDetail.toggleExpandRow(row);
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  handlePageChange(event: any) {
-    this.currentPage = event.page;
-    this.currentPageChange.emit(this.currentPage);
+  onChangePage(event: any) {
+    this.pagination.currentPage = event.offset + 1;
+    this._fetchDiscussions();
   }
 
   onColumnSort(event: any) {
-    this.sort = event.sorts[0].dir;
-    this.orderby = event.sorts[0].prop;
-    this.sortChange.emit({ sort: this.sort, orderby: this.orderby });
+    this.sort = {
+      sort: event.newValue,
+      orderby: event.column.prop,
+    };
+    this.pagination.currentPage = 1;
+    this._fetchDiscussions();
   }
 
-  onRowClick(row: any) {
-    // TODO: ajouter au chemin 'discussions' une fois que la PR https://github.com/PnX-SI/GeoNature/pull/3169 a été reviewed et mergé
-    this._router.navigate(['/synthese', 'occurrence', row.id_synthese]);
+  navigateToDiscussion(id_synthese: number) {
+    this._router.navigate(this._homeDiscussions.computeDiscussionsRedirectionUrl(id_synthese));
   }
 
-  getColumnsConfig() {
-    return [
-      { prop: 'creation_date', name: 'Date commentaire', sortable: true },
-      { prop: 'user.nom_complet', name: 'Auteur', sortable: true },
-      { prop: 'content', name: 'Contenu', sortable: true },
-      { prop: 'observation', name: 'Observation', sortable: false, maxWidth: 500 },
-    ];
+  renderDate(date: string): string {
+    return new Date(date).toLocaleDateString();
+  }
+
+  private _fetchDiscussions() {
+    const params = this._buildQueryParams();
+    this._syntheseApi
+      .getReports(params.toString())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        this._setDiscussions(response);
+      });
+  }
+
+  private _buildQueryParams(): URLSearchParams {
+    const params = new URLSearchParams();
+    params.set('type', 'discussion');
+    params.set('sort', this.sort.sort);
+    params.set('orderby', this.sort.orderby);
+    params.set('page', this.pagination.currentPage.toString());
+    params.set('per_page', this.pagination.perPage.toString());
+    params.set('my_reports', this._myReportsOnly.toString());
+    return params;
+  }
+
+  // //////////////////////////////////////////////////////
+  // Discussion process
+  // //////////////////////////////////////////////////////
+  private _setDiscussions(data: any) {
+    this.discussions = this._transformDiscussions(data.items);
+    this.pagination = {
+      totalItems: data.total,
+      currentPage: data.current_page,
+      perPage: data.per_page,
+    };
+  }
+
+  private _transformDiscussions(items: any[]): any[] {
+    return items.map((item) => ({
+      ...item,
+      observation: this._formatObservation(item.synthese),
+    }));
+  }
+
+  private _formatObservation(synthese: any): string {
+    return `
+      <strong>Nom Cité:</strong> ${synthese.nom_cite || 'N/A'}<br>
+      <strong>Observateurs:</strong> ${synthese.observers || 'N/A'}<br>
+      <strong>Date Observation:</strong> ${
+        this._formatDateRange(synthese.date_min, synthese.date_max) || 'N/A'
+      }
+    `;
+  }
+
+  private _formatDateRange(dateMin: string, dateMax: string): string {
+    if (!dateMin) return 'N/A';
+
+    const formattedDateMin = this.renderDate(dateMin);
+    const formattedDateMax = this.renderDate(dateMax);
+
+    if (!dateMax || formattedDateMin === formattedDateMax) {
+      return formattedDateMin || 'N/A';
+    }
+    return `${formattedDateMin} - ${formattedDateMax}`;
   }
 }

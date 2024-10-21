@@ -2,39 +2,17 @@
   #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="discussions"
-  [columns]="columns"
-  [headerHeight]="headerHeight"
-  [footerHeight]="footerHeight"
-  [rowHeight]="rowHeight"
-  [limit]="perPage"
-  [count]="count"
-  [offset]="offset"
-  [columnMode]="columnMode"
+  headerHeight="50"
+  footerHeight="50"
+  rowHeight="100"
+  [externalPaging]="true"
+  [limit]="pagination.perPage"
+  [count]="pagination.totalItems"
+  (page)="onChangePage($event)"
+  [externalSorting]="true"
+  [sorts]="[{ prop: sort.sort, dir: sort.orderby }]"
   (sort)="onColumnSort($event)"
 >
-  <ngx-datatable-row-detail [rowHeight]="150">
-    <ng-template
-      ngx-datatable-row-detail-template
-      let-row="row"
-    >
-      <div class="row-detail">
-        <ng-container *ngIf="row.content">
-          <div>
-            <strong>Commentaire :</strong>
-            {{ row.content }}
-          </div>
-        </ng-container>
-        <div>
-          <strong>Date du commentaire :</strong>
-          {{ row.creation_date | date: 'dd-MM-yyyy' }}
-        </div>
-        <div>
-          <strong>Utilisateur :</strong>
-          {{ row.user.nom_complet }}
-        </div>
-      </div>
-    </ng-template>
-  </ngx-datatable-row-detail>
   <ngx-datatable-column
     [maxWidth]="5"
     [resizeable]="false"
@@ -48,7 +26,7 @@
     >
       <button
         class="btn btn-outline-shadow btn-no-padding btn-ghost"
-        (click)="onRowClick(row)"
+        (click)="navigateToDiscussion(row.id_synthese)"
       >
         <i
           #iElement
@@ -60,74 +38,67 @@
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
-    [width]="10"
-    [resizeable]="false"
-    [sortable]="false"
-    [draggable]="false"
-    [canAutoResize]="false"
+    width="150"
+    [prop]="PROP_CREATION_DATE"
+    name="Date commentaire"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
   >
     <ng-template
       ngx-datatable-cell-template
       let-row="row"
-      let-expanded="expanded"
     >
-      <a
-        href="javascript:void(0)"
-        matTooltip="Ouvrir/fermer le détail"
-        [class.datatable-icon-right]="!expanded"
-        [class.datatable-icon-down]="expanded"
-        (click)="handleExpandRow(row)"
-      ></a>
+      {{ renderDate(row[PROP_CREATION_DATE]) }}
     </ng-template>
   </ngx-datatable-column>
-  <ng-container *ngFor="let col of columns">
-    <ngx-datatable-column
-      [width]="col.maxWidth || 150"
-      [prop]="col.prop"
-      [name]="col.name"
-      [sortable]="col.sortable !== false"
-      [resizeable]="true"
-      [canAutoResize]="true"
-    >
-      <ng-template
-        ngx-datatable-cell-template
-        let-row="row"
-      >
-        <span [ngSwitch]="col.prop">
-          <span *ngSwitchCase="'creation_date'">
-            {{ row[col.prop] | date: 'dd-MM-yyyy' }}
-          </span>
-          <span *ngSwitchCase="'user.nom_complet'">
-            {{ row.user.nom_complet || 'N/A' }}
-          </span>
-          <span
-            *ngSwitchCase="'observation'"
-            [innerHTML]="row.observation"
-          ></span>
-          <span *ngSwitchDefault>{{ row[col.prop] || 'N/A' }}</span>
-        </span>
-      </ng-template>
-    </ngx-datatable-column>
-  </ng-container>
-  <ngx-datatable-footer>
+  <ngx-datatable-column
+    width="150"
+    [prop]="PROP_USER"
+    name="Auteur"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
     <ng-template
-      ngx-datatable-footer-template
-      let-rowCount="rowCount"
-      let-pageSize="pageSize"
-      let-curPage="curPage"
-      let-offset="offset"
+      ngx-datatable-cell-template
+      let-row="row"
     >
-      {{ totalFilteredRows }} / {{ totalRows }} total
-      <datatable-pager
-        [pagerLeftArrowIcon]="'datatable-icon-left'"
-        [pagerRightArrowIcon]="'datatable-icon-right'"
-        [pagerPreviousIcon]="'datatable-icon-prev'"
-        [pagerNextIcon]="'datatable-icon-skip'"
-        [page]="curPage"
-        [size]="pageSize"
-        [count]="totalRows"
-        (change)="handlePageChange($event)"
-      ></datatable-pager>
+      {{ row[PROP_USER] }}
     </ng-template>
-  </ngx-datatable-footer>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    [prop]="PROP_CONTENT"
+    width="600"
+    height="100"
+    name="Contenu"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      <div class="TextContentContainer">
+        <div class="TextContent">
+          {{ row[PROP_CONTENT] }}
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    width="600"
+    [prop]="PROP_OBSERVATION"
+    name="Observation"
+    [sortable]="false"
+    [resizeable]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      <span [innerHTML]="row.observation"></span>
+    </ng-template>
+  </ngx-datatable-column>
 </ngx-datatable>
