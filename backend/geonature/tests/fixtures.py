@@ -385,12 +385,16 @@ def acquisition_frameworks(users):
         )
     ).scalar_one()
 
-    def create_af(name, creator):
+    def create_af(name, creator, is_parent, parent_af=None):
         with db.session.begin_nested():
             af = TAcquisitionFramework(
                 acquisition_framework_name=name,
                 acquisition_framework_desc=name,
                 creator=creator,
+                is_parent=is_parent,
+                acquisition_framework_parent_id=(
+                    parent_af.id_acquisition_framework if parent_af else None
+                ),
             )
             db.session.add(af)
             if creator and creator.organisme:
@@ -398,20 +402,26 @@ def acquisition_frameworks(users):
                     organism=creator.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 af.cor_af_actor.append(actor)
+            db.session.flush()
         return af
 
     afs = {
-        name: create_af(name=name, creator=creator)
-        for name, creator in [
-            ("own_af", users["user"]),
-            ("associate_af", users["associate_user"]),
-            ("stranger_af", users["stranger_user"]),
-            ("orphan_af", None),
-            ("af_1", None),
-            ("af_2", None),
-            ("af_3", None),
+        name: create_af(name=name, creator=creator, is_parent=is_parent, parent_af=None)
+        for name, creator, is_parent in [
+            ("own_af", users["user"], False),
+            ("associate_af", users["associate_user"], False),
+            ("stranger_af", users["stranger_user"], False),
+            ("orphan_af", None, False),
+            ("af_1", None, False),
+            ("af_2", None, False),
+            ("af_3", None, False),
+            ("parent_af", users["user"], True),
+            ("parent_wo_children_af", users["user"], True),
+            ("delete_parent_wo_children_af", users["user"], True),
+            ("delete_af", users["user"], False),
         ]
     }
+    afs["child_af"] = create_af("child_af", users["user"], False, afs["parent_af"])
 
     return afs
 
@@ -512,9 +522,23 @@ def sources_modules(modules):
 
 
 def create_synthese(
-    geom, taxon, user, dataset, source, uuid=func.uuid_generate_v4(), cor_observers=[], **kwargs
+    geom,
+    taxon,
+    user,
+    dataset,
+    source,
+    uuid=func.uuid_generate_v4(),
+    cor_observers=[],
+    date_min="",
+    date_max="",
+    altitude_min=800,
+    altitude_max=1200,
+    **kwargs,
 ):
     now = datetime.datetime.now()
+
+    date_min = date_min if date_min else now
+    date_max = date_max if date_max else now
 
     return Synthese(
         id_source=source.id_source,
@@ -528,8 +552,10 @@ def create_synthese(
         the_geom_4326=geom,
         the_geom_point=geom,
         the_geom_local=func.ST_Transform(geom, 2154),  # FIXME
-        date_min=now,
-        date_max=now,
+        date_min=date_min,
+        date_max=date_max,
+        altitude_min=altitude_min,
+        altitude_max=altitude_max,
         cor_observers=cor_observers,
         **kwargs,
     )
@@ -540,19 +566,138 @@ def synthese_data(app, users, datasets, source, sources_modules):
     point1 = Point(5.92, 45.56)
     point2 = Point(-1.54, 46.85)
     point3 = Point(-3.486786, 48.832182)
+    date_1 = datetime.datetime(2024, 10, 2, 11, 22, 33)
+    date_2 = datetime.datetime(2024, 10, 3, 8, 9, 10)
+    date_3 = datetime.datetime(2024, 10, 4, 17, 4, 9)
+    date_4 = datetime.datetime(2024, 10, 5, 22, 22, 22)
+    altitude_1 = 800
+    altitude_2 = 900
+    altitude_3 = 1000
+    altitude_4 = 1100
+
     data = {}
     with db.session.begin_nested():
-        for name, cd_nom, point, ds, comment_description, source_m in [
+        for (
+            name,
+            cd_nom,
+            point,
+            ds,
+            comment_description,
+            source_m,
+            date_min,
+            date_max,
+            altitude_min,
+            altitude_max,
+        ) in [
             # Donnnées de gypaète : possède des statuts de protection nationale
-            ("obs1", 2852, point1, datasets["own_dataset"], "obs1", sources_modules[0]),
-            ("obs2", 212, point2, datasets["own_dataset"], "obs2", sources_modules[0]),
-            ("obs3", 2497, point3, datasets["own_dataset"], "obs3", sources_modules[1]),
-            ("p1_af1", 713776, point1, datasets["belong_af_1"], "p1_af1", sources_modules[1]),
-            ("p1_af1_2", 212, point1, datasets["belong_af_1"], "p1_af1_2", sources_modules[1]),
-            ("p1_af2", 212, point1, datasets["belong_af_2"], "p1_af2", sources_modules[1]),
-            ("p2_af2", 2497, point2, datasets["belong_af_2"], "p2_af2", source),
-            ("p2_af1", 2497, point2, datasets["belong_af_1"], "p2_af1", source),
-            ("p3_af3", 2497, point3, datasets["belong_af_3"], "p3_af3", source),
+            (
+                "obs1",
+                2852,
+                point1,
+                datasets["own_dataset"],
+                "obs1",
+                sources_modules[0],
+                date_1,
+                date_1,
+                altitude_1,
+                altitude_1,
+            ),
+            (
+                "obs2",
+                212,
+                point2,
+                datasets["own_dataset"],
+                "obs2",
+                sources_modules[0],
+                date_1,
+                date_4,
+                altitude_1,
+                altitude_4,
+            ),
+            (
+                "obs3",
+                2497,
+                point3,
+                datasets["own_dataset"],
+                "obs3",
+                sources_modules[1],
+                date_2,
+                date_3,
+                altitude_2,
+                altitude_3,
+            ),
+            (
+                "p1_af1",
+                713776,
+                point1,
+                datasets["belong_af_1"],
+                "p1_af1",
+                sources_modules[1],
+                date_1,
+                date_3,
+                altitude_1,
+                altitude_3,
+            ),
+            (
+                "p1_af1_2",
+                212,
+                point1,
+                datasets["belong_af_1"],
+                "p1_af1_2",
+                sources_modules[1],
+                date_3,
+                date_3,
+                altitude_3,
+                altitude_3,
+            ),
+            (
+                "p1_af2",
+                212,
+                point1,
+                datasets["belong_af_2"],
+                "p1_af2",
+                sources_modules[1],
+                date_3,
+                date_4,
+                altitude_3,
+                altitude_4,
+            ),
+            (
+                "p2_af2",
+                2497,
+                point2,
+                datasets["belong_af_2"],
+                "p2_af2",
+                source,
+                date_1,
+                date_2,
+                altitude_1,
+                altitude_2,
+            ),
+            (
+                "p2_af1",
+                2497,
+                point2,
+                datasets["belong_af_1"],
+                "p2_af1",
+                source,
+                date_1,
+                date_1,
+                altitude_1,
+                altitude_1,
+            ),
+            (
+                "p3_af3",
+                2497,
+                point3,
+                datasets["belong_af_3"],
+                "p3_af3",
+                source,
+                date_2,
+                date_2,
+                altitude_2,
+                altitude_2,
+            ),
         ]:
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
@@ -569,6 +714,10 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 source_m,
                 unique_id_sinp,
                 [users["admin_user"], users["user"]],
+                date_min,
+                date_max,
+                altitude_min,
+                altitude_max,
                 **kwargs,
             )
             db.session.add(s)
@@ -851,6 +1000,8 @@ def reports_data(users, synthese_data):
         reports = [
             (ids[0], users["admin_user"].id_role, "comment1", discussionId, False),
             (ids[1], users["admin_user"].id_role, "comment1", alertId, False),
+            (ids[2], users["user"].id_role, "a_comment1", discussionId, True),
+            (ids[3], users["user"].id_role, "b_comment1", discussionId, True),
         ]
         for id_synthese, *args in reports:
             data.append(create_report(id_synthese, *args))

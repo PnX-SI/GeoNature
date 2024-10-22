@@ -11,8 +11,7 @@ from marshmallow.exceptions import ValidationError
 TEMPLATE_CONFIG_FILE = """
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:5432/mabase"
 URL_APPLICATION = 'http://url.com/geonature'
-API_ENDPOINT = 'http://url.com/geonature/api'
-API_TAXHUB = 'http://url.com/taxhub/api'
+API_ENDPOINT = 'http://url.com/geonature/api' 
 
 SECRET_KEY = 'super secret key'
 

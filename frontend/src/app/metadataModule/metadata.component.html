@@ -164,6 +164,11 @@
                     >
                       <mat-icon>create</mat-icon>
                     </a>
+                    <gn-button-delete-af
+                      [acquisitionFramework]="af"
+                      buttonType="Toolbar"
+                      (click)="$event.stopPropagation()"
+                    />
                     <button
                       *ngIf="config.METADATA?.ENABLE_CLOSE_AF"
                       type="button"

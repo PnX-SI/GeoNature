@@ -25,6 +25,8 @@ import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
 
+import { FormArray, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -33,7 +35,6 @@ import { ModuleService } from '@geonature/services/module.service';
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = null;
   public selectedObs: any;
-  public selectObsTaxonInfo: any;
   public selectedObsTaxonDetail: any;
   public previousRow: any;
   public rowNumber: number;
@@ -60,7 +61,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService,
     public config: ConfigService,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    private _router: Router
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
     const currentModule = this._moduleService.currentModule;
@@ -168,17 +170,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  openInfoModal(row) {
-    row.id_synthese = row.id_synthese;
-    const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
-      size: 'lg',
-      windowClass: 'large-modal',
-    });
-    modalRef.componentInstance.idSynthese = row.id_synthese;
-    modalRef.componentInstance.header = true;
-    modalRef.componentInstance.useFrom = 'synthese';
   }
 
   openModalCol($event, modal) {

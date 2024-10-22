@@ -273,10 +273,7 @@ packaging==23.2
     #   gunicorn
     #   marshmallow
 pandas==2.1.4
-    # via
-    #   -r requirements-common.in
-    #   bokeh
-pillow==10.1.0
+pillow==9.5.0
     # via
     #   -r requirements-common.in
     #   bokeh

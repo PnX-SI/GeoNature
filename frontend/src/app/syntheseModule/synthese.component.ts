@@ -7,7 +7,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import * as cloneDeep from 'lodash/cloneDeep';
 import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
@@ -36,7 +36,8 @@ export class SyntheseComponent implements OnInit {
     private _route: ActivatedRoute,
     private _ngModal: NgbModal,
     private _changeDetector: ChangeDetectorRef,
-    public config: ConfigService
+    public config: ConfigService,
+    private _router: Router
   ) {}
 
   ngOnInit() {
@@ -114,6 +115,7 @@ export class SyntheseComponent implements OnInit {
         }
 
         // Store geojson
+        // TODO: [IMPROVE][PAGINATE]
         this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(data));
         this.formatDataForTable(data);
 
@@ -136,6 +138,7 @@ export class SyntheseComponent implements OnInit {
   /** table data expect an array obs observation
    * the geojson get from API is a list of features whith an observation list
    */
+  // TODO: [IMPROVE][PAGINATE] data in datable is formated here
   formatDataForTable(geojson) {
     this._mapListService.tableData = [];
     const idSynthese = new Set();
@@ -231,6 +234,17 @@ export class SyntheseComponent implements OnInit {
     modalRef.componentInstance.idSynthese = idSynthese;
     modalRef.componentInstance.header = true;
     modalRef.componentInstance.useFrom = 'synthese';
+
+    let tabRoute = this._route.snapshot.paramMap.get('tab');
+    if (tabRoute != null) {
+      modalRef.componentInstance.selectedTab = tabRoute;
+    }
+
+    modalRef.result
+      .then((result) => {})
+      .catch((_) => {
+        this._router.navigate([modalRef.componentInstance.useFrom]);
+      });
   }
 
   mooveButton() {

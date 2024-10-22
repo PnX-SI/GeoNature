@@ -55,8 +55,8 @@ export class SyntheseDataService {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/general_stats`);
   }
 
-  getSyntheseSpeciesSheetStat(cd_ref: number, areaType: string = 'COM') {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/species_stats/${cd_ref}`, {
+  getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM') {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_stats/${cd_ref}`, {
       params: new HttpParams().append('area_type', areaType),
     });
   }
@@ -229,8 +229,10 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
-  getReports(params) {
-    return this._api.get(`${this.config.API_ENDPOINT}/synthese/reports?${params}`);
+  getReports(params, idSynthese = null) {
+    const baseUrl = `${this.config.API_ENDPOINT}/synthese/reports`;
+    const url = idSynthese ? `${baseUrl}/${idSynthese}` : baseUrl;
+    return this._api.get(`${url}?${params}`);
   }
 
   createReport(params) {

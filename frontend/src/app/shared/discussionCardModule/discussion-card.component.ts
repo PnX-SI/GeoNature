@@ -122,8 +122,8 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
    * get all discussion by module and type
    */
   getDiscussions() {
-    const params = `idSynthese=${this.idSynthese}&type=discussion&sort=${this.sort}`;
-    this._syntheseDataService.getReports(params).subscribe((response) => {
+    const params = `type=discussion&sort=${this.sort}`;
+    this._syntheseDataService.getReports(params, this.idSynthese).subscribe((response) => {
       this.setDiscussions(response);
     });
   }

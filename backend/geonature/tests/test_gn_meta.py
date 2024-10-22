@@ -160,11 +160,17 @@ class TestGNMeta:
             )
             ta = TAcquisitionFramework
             sc = db.session.scalars
+
             assert set(sc(ta.filter_by_scope(0, query=qs)).unique().all()) == set([])
             assert set(sc(ta.filter_by_scope(1, query=qs)).unique().all()) == set(
                 [
                     acquisition_frameworks["own_af"],
                     acquisition_frameworks["orphan_af"],  # through DS
+                    acquisition_frameworks["parent_af"],
+                    acquisition_frameworks["child_af"],
+                    acquisition_frameworks["parent_wo_children_af"],
+                    acquisition_frameworks["delete_parent_wo_children_af"],
+                    acquisition_frameworks["delete_af"],
                 ]
             )
             assert set(sc(ta.filter_by_scope(2, query=qs)).unique().all()) == set(
@@ -172,17 +178,40 @@ class TestGNMeta:
                     acquisition_frameworks["own_af"],
                     acquisition_frameworks["associate_af"],
                     acquisition_frameworks["orphan_af"],  # through DS
+                    acquisition_frameworks["parent_af"],
+                    acquisition_frameworks["child_af"],
+                    acquisition_frameworks["parent_wo_children_af"],
+                    acquisition_frameworks["delete_parent_wo_children_af"],
+                    acquisition_frameworks["delete_af"],
                 ]
             )
             assert set(sc(ta.filter_by_scope(3, query=qs)).unique().all()) == set(
                 acquisition_frameworks.values()
             )
 
-    def test_acquisition_framework_is_deletable(self, app, acquisition_frameworks, datasets):
-        assert acquisition_frameworks["own_af"].is_deletable() == True
-        assert (
-            acquisition_frameworks["orphan_af"].is_deletable() == False
-        )  # DS are attached to this AF
+    @pytest.mark.parametrize(
+        "af,has_datasets",
+        [
+            ("own_af", False),
+            ("orphan_af", True),
+        ],
+    )
+    def test_acquisition_framework_has_datasets(
+        self, app, acquisition_frameworks, datasets, af, has_datasets
+    ):
+        assert acquisition_frameworks[af].has_datasets() == has_datasets
+
+    @pytest.mark.parametrize(
+        "af,has_child_af",
+        [
+            ("parent_af", True),
+            ("parent_wo_children_af", False),
+        ],
+    )
+    def test_acquisition_framework_has_child_acquisition_framework(
+        self, app, acquisition_frameworks, datasets, af, has_child_af
+    ):
+        assert acquisition_frameworks[af].has_child_acquisition_framework() == has_child_af
 
     def test_create_acquisition_framework(self, users):
         set_logged_user(self.client, users["user"])
@@ -205,37 +234,32 @@ class TestGNMeta:
 
         assert response.status_code == Forbidden.code
 
-    def test_delete_acquisition_framework(self, app, users, acquisition_frameworks, datasets):
-        af_id = acquisition_frameworks["orphan_af"].id_acquisition_framework
+    @pytest.mark.parametrize(
+        "user,dataset,status_code",
+        [
+            (None, "orphan_af", Unauthorized.code),
+            ("noright_user", "orphan_af", Forbidden.code),
+            ("self_user", "orphan_af", Forbidden.code),
+            ("admin_user", "orphan_af", Conflict.code),
+            ("admin_user", "parent_af", Conflict.code),
+            ("user", "own_af", 204),
+            ("user", "delete_parent_wo_children_af", 204),
+            ("user", "delete_af", 204),
+        ],
+    )
+    def test_delete_acquisition_framework(
+        self, app, users, acquisition_frameworks, datasets, user, dataset, status_code
+    ):
+        if user:
+            set_logged_user(self.client, users[user])
 
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == Unauthorized.code
-
-        set_logged_user(self.client, users["noright_user"])
-
-        # The user has no rights on METADATA module
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == Forbidden.code
-        assert "METADATA" in response.json["description"]
-
-        set_logged_user(self.client, users["self_user"])
-
-        # The user has right on METADATA module, but not on this specific AF
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == Forbidden.code
-        assert "METADATA" not in response.json["description"]
-
-        set_logged_user(self.client, users["admin_user"])
-
-        # The AF can not be deleted due to attached DS
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == Conflict.code
-
-        set_logged_user(self.client, users["user"])
-        af_id = acquisition_frameworks["own_af"].id_acquisition_framework
-
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == 204
+        response = self.client.delete(
+            url_for(
+                "gn_meta.delete_acquisition_framework",
+                af_id=acquisition_frameworks[dataset].id_acquisition_framework,
+            )
+        )
+        assert response.status_code == status_code
 
     def test_update_acquisition_framework(self, users, acquisition_frameworks):
         new_name = "thenewname"
@@ -1092,7 +1116,7 @@ class TestGNMeta:
 
         assert isinstance(afquery, Select)
         assert isinstance(afuser, list)
-        assert len(afuser) == 1
+        assert len(afuser) == 6
         assert isinstance(afdefault, list)
         assert len(afdefault) >= 1
 

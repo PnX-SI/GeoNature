@@ -17,6 +17,8 @@ attrs==23.2.0
     # via fiona
 authlib==1.3.0
     # via pypnusershub
+babel==2.16.0
+    # via flask-babel
 bcrypt==4.1.3
     # via pypnusershub
 billiard==4.2.0
@@ -94,6 +96,7 @@ flask==3.0.3
     # via
     #   -r requirements-common.in
     #   flask-admin
+    #   flask-babel
     #   flask-cors
     #   flask-login
     #   flask-mail
@@ -112,6 +115,9 @@ flask-admin==1.6.1
     # via
     #   -r requirements-common.in
     #   pypnnomenclature
+    #   taxhub
+flask-babel==4.0.0
+    # via -r requirements-common.in
 flask-cors==4.0.1
     # via
     #   -r requirements-common.in
@@ -173,14 +179,15 @@ itsdangerous==2.2.0
     # via
     #   flask
     #   flask-wtf
-jinja2==3.1.3
+
+jinja2==3.1.4
     # via
     #   bokeh
     #   flask
 jmespath==1.0.1
     # via
-    #   boto3
-    #   botocore
+    #   flask
+    #   flask-babel
 kombu==5.3.7
     # via celery
 lxml==5.2.2
@@ -225,10 +232,7 @@ packaging==23.2
     #   gunicorn
     #   marshmallow
 pandas==2.2.2
-    # via
-    #   -r requirements-common.in
-    #   bokeh
-pillow==10.2.0
+pillow==9.5.0
     # via
     #   -r requirements-common.in
     #   bokeh
@@ -257,7 +261,7 @@ pypn-ref-geo==1.5.3
     #   taxhub
 pypnnomenclature==1.6.3
     # via -r requirements-dependencies.in
-pypnusershub==2.1.5
+pypnusershub==3.0.0
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -267,7 +271,6 @@ pyproj==3.0.1 ; python_version < "3.10"
 python-dateutil==2.8.2
     # via
     #   -r requirements-common.in
-    #   botocore
     #   celery
     #   pandas
     #   utils-flask-sqlalchemy
@@ -277,18 +280,16 @@ python-dotenv==1.0.1
     #   pypn-ref-geo
     #   pypnnomenclature
     #   taxhub
-pytz==2024.1
+pytz==2024.2
     # via pandas
 pyyaml==6.0.1
     # via bokeh
-redis==5.0.1
+redis==5.0.4
     # via celery
 requests==2.32.2
     # via
     #   pypn-habref-api
     #   pypnusershub
-s3transfer==0.10.1
-    # via boto3
 shapely==2.0.4
     # via
     #   -r requirements-common.in
@@ -313,7 +314,7 @@ sqlalchemy==1.4.52
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==1.14.1
+taxhub==2.0.0rc1
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -326,7 +327,7 @@ toml==0.10.2
     # via -r requirements-common.in
 tornado==6.4
     # via bokeh
-typing-extensions==4.9.0
+typing-extensions==4.12.0
     # via
     #   alembic
     #   kombu
@@ -336,7 +337,6 @@ tzdata==2023.4
     #   pandas
 urllib3==1.26.18
     # via
-    #   botocore
     #   requests
     #   taxhub
 utils-flask-sqlalchemy==0.4.1
@@ -384,7 +384,7 @@ xmltodict==0.13.0
     # via -r requirements-common.in
 xyzservices==2024.4.0
     # via bokeh
-zipp==3.17.0
+zipp==3.19.0
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:

@@ -220,6 +220,7 @@ export class ImportListComponent implements OnInit {
   getStatisticsTooltip(row) {
     const statistics = this._getStatistics(row);
     return Object.keys(statistics)
+      .filter((statkey) => this.getStatisticsLabel(row, statkey) != null) // filter out statistics with no label
       .map((statkey) => this.getStatisticsLabel(row, statkey) + ': ' + statistics[statkey])
       .join('\n');
   }
@@ -239,7 +240,7 @@ export class ImportListComponent implements OnInit {
    */
   getStatisticsLabel(row: any, statKey: string): string {
     if (row.hasOwnProperty('destination')) {
-      return row.destination?.statistics_labels.find((stat) => stat.key === statKey).value;
+      return row.destination?.statistics_labels.find((stat) => stat.key === statKey)?.value;
     }
     return statKey;
   }

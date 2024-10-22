@@ -28,14 +28,18 @@ export class InfosComponent implements OnInit {
       if (!this.taxon) {
         return;
       }
-      this._ds.getTaxonAttributsAndMedia(this.taxon.cd_ref).subscribe((taxonAttrAndMedias) => {
-        const media = taxonAttrAndMedias.medias.find(
-          (m) => m.id_type == this._config['TAXHUB']['ID_TYPE_MAIN_PHOTO']
-        );
-        if (media) {
-          this.mediaUrl = `${this._config.API_TAXHUB}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
-        }
-      });
+      this._ds
+        .getTaxonInfo(this.taxon.cd_ref, ['medias', 'cd_nom'])
+        .subscribe((taxonAttrAndMedias) => {
+          const media = taxonAttrAndMedias['medias'].find(
+            (m) => m.id_type == this._config.TAXHUB.ID_TYPE_MAIN_PHOTO
+          );
+          if (media) {
+            this.mediaUrl = `${this._ds.getTaxhubAPI()}/tmedias/thumbnail/${
+              media.id_media
+            }?h=300&w300`;
+          }
+        });
     });
   }
 }

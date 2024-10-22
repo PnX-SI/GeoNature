@@ -15,10 +15,14 @@
   <div class="row">
     <div class="col-8">
       <div class="card">
-        <div class="card-body">
-          <h5 class="text-muted">Cadre d'acquisition</h5>
-          <h4>
-            {{ af?.acquisition_framework_name }}
+        <div class="card-body af-card-header">
+          <div class="af-card-header__left">
+            <h5 class="text-muted">Cadre d'acquisition</h5>
+            <h4>
+              {{ af?.acquisition_framework_name }}
+            </h4>
+          </div>
+          <div class="af-card-header__right">
             <button
               [routerLink]="['/metadata/af', af?.id_acquisition_framework]"
               [disabled]="!af?.cruved?.U"
@@ -29,7 +33,11 @@
             >
               <mat-icon>create</mat-icon>
             </button>
-          </h4>
+            <gn-button-delete-af
+              [acquisitionFramework]="af"
+              buttonType="Floating"
+            />
+          </div>
         </div>
       </div>
     </div>

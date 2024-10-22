@@ -30,6 +30,11 @@ cache/*
 .angulardoc.json
 Pipfile.lock
 
+custom/*
+!custom/.gitkeep
+
+environ
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

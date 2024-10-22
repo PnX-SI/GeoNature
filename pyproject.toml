@@ -3,6 +3,7 @@ minversion = "6.0"
 testpaths = [
     "backend/geonature/tests/",
 ]
+addopts = "--benchmark-skip"
 
 [tool.coverage.run]
 source = [
@@ -37,3 +38,9 @@ exclude ='''
   )/
 )
 '''
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.format]
+max-line-length = "100"

@@ -8,6 +8,7 @@ import { DynamicFormService } from '@geonature_common/form/dynamic-form-generato
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 
 @Component({
   selector: 'pnx-validation-taxon-advanced',
@@ -33,10 +34,11 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
     public activeModal: NgbActiveModal,
     public formService: SyntheseFormService,
     public storeService: TaxonAdvancedStoreService,
-    public config: ConfigService
+    public config: ConfigService,
+    public _ds: DataFormService
   ) {
     // Set config parameters
-    this.URL_AUTOCOMPLETE = this.config.API_TAXHUB + '/taxref/search/lb_nom';
+    this.URL_AUTOCOMPLETE = this._ds.getTaxhubAPI() + '/taxref/search/lb_nom';
 
     const actionMapping: IActionMapping = {
       mouse: {

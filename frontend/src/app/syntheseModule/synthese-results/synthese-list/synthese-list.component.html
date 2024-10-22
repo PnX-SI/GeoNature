@@ -37,7 +37,7 @@
     >
       <button
         class="btn btn-outline-shadow btn-no-padding btn-ghost"
-        (click)="openInfoModal(row)"
+        [routerLink]="['occurrence', row['id_synthese'], 'details']"
       >
         <i
           #iElement
@@ -82,11 +82,38 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      <span [title]="row[col.prop]">
-        {{
-          col.prop == 'date_max' || col.prop == 'date_min' ? getDate(row[col.prop]) : row[col.prop]
-        }}
+      <span
+        [title]="row[col.prop]"
+        [ngSwitch]="col.prop"
+      >
+        <div *ngSwitchCase="'date_min' || 'date_max'">
+          {{ getDate(row[col.prop]) }}
+        </div>
+        <div *ngSwitchCase="'nom_vern_or_lb_nom'">
+          <a
+            class="Link"
+            [routerLink]="['taxon/' + row.cd_nom]"
+            *ngIf="row.hasOwnProperty('cd_nom'); else cellDefault"
+            matTooltip="Afficher la fiche du taxon"
+          >
+            <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+          </a>
+        </div>
+        <div *ngSwitchCase="'dataset_name'">
+          <a
+            class="Link"
+            [routerLink]="['/metadata/dataset_detail/' + row.id_dataset]"
+            *ngIf="row.hasOwnProperty('id_dataset'); else cellDefault"
+            matTooltip="Afficher la fiche du jeu de données"
+          >
+            <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+          </a>
+        </div>
+        <ng-container *ngSwitchDefault>
+          <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+        </ng-container>
       </span>
+      <ng-template #cellDefault>{{ row[col.prop] }}</ng-template>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

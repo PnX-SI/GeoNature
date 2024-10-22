@@ -25,7 +25,7 @@ if [ ! -d "${olddir}/backend" ] || [ ! -d "${olddir}/frontend" ] || [ ! -f "${ol
     exit 1
 fi
 
-# before 2.13 - Rappatriement des médias TaxHub necessite de connaitre l'emplacement de taxhub
+# before 2.15 : suppression de l'application TaxHub - Rapatriement des médias TaxHub nécessite de connaitre l'emplacement de TaxHub
 if [ ! -d "${newdir}/backend/media/taxhub" ];then
     TAXHUB_DIR="${HOME}/taxhub"
     if (($# > 1)); then
@@ -260,7 +260,7 @@ done
 deactivate
 
 
-# before 2.13
+# before 2.15 - Suppression de l'application Taxhub et de la configuration du service systemctl
 if [ -f "/etc/systemd/system/taxhub.service" ]; then
     sudo systemctl stop taxhub 
     sudo systemctl disable taxhub
@@ -269,6 +269,7 @@ if [ -f "/etc/systemd/system/taxhub.service" ]; then
     sudo systemctl reset-failed
 fi
 
+# before 2.15 - Suppression de l'application Taxhub et de la configuration apache
 if [ -f "/etc/apache2/sites-available/taxhub.conf" ]; then
     rm /etc/apache2/sites-available/taxhub.conf
 fi
@@ -278,15 +279,18 @@ if [ -f "/etc/apache2/sites-available/taxhub-le-ssl.conf" ]; then
     rm -r /var/log/taxhub/
 fi
 
-if [ ! -d "${newdir}/backend/medias/taxhub" ]; then
-    mkdir -p "${newdir}"/backend/medias/taxhub/
-    cp 
+if [ -f "/etc/apache2/conf-available/taxhub.conf" ]; then
+    rm /etc/apache2/conf-available/taxhub.conf
 fi
 
-# before 2.13 - Rappatriement des médias TaxHub
+if [ -f "/etc/apache2/conf-available/taxhub-le-ssl.conf" ]; then
+    rm /etc/apache2/conf-available/taxhub-le-ssl.conf
+    rm -r /var/log/taxhub/
+fi
 
+# before 2.15 - Suppression de l'application Taxhub et rapatriement des médias TaxHub
 if [ ! -d "${newdir}/backend/media/taxhub" ];then
-    mkdir "${newdir}/backend/media/taxhub"
+    mkdir -p "${newdir}/backend/media/taxhub"
     cp -r "${TAXHUB_DIR}"/static/medias/* "${newdir}"/backend/media/taxhub/
 fi
 

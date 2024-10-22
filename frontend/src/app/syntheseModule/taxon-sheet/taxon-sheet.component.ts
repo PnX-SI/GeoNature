@@ -6,16 +6,54 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { ConfigService } from '@geonature/services/config.service';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { InfosComponent } from './infos/infos.component';
 import { LayoutComponent } from './layout/layout.component';
-import { computeIndicatorFromConfig, Indicator, IndicatorRaw } from './indicator/indicator';
+import {
+  computeIndicatorFromDescription,
+  Indicator,
+  IndicatorDescription,
+} from './indicator/indicator';
 import { IndicatorComponent } from './indicator/indicator.component';
 import { CommonModule } from '@angular/common';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonSheetService } from './taxon-sheet.service';
 import { RouteService } from './taxon-sheet.route.service';
+
+const INDICATORS: Array<IndicatorDescription> = [
+  {
+    name: 'observation(s)',
+    matIcon: 'search',
+    field: 'observation_count',
+    type: 'number',
+  },
+  {
+    name: 'observateur(s)',
+    matIcon: 'people',
+    field: 'observer_count',
+    type: 'number',
+  },
+  {
+    name: 'commune(s)',
+    matIcon: 'location_on',
+    field: 'area_count',
+    type: 'number',
+  },
+  {
+    name: "Plage d'altitude(s)",
+    matIcon: 'terrain',
+    unit: 'm',
+    type: 'number',
+    field: ['altitude_min', 'altitude_max'],
+  },
+  {
+    name: "Plage d'observation(s)",
+    matIcon: 'date_range',
+    type: 'date',
+    field: ['date_min', 'date_max'],
+    separator: '-',
+  },
+];
 
 @Component({
   standalone: true,
@@ -44,7 +82,6 @@ export class TaxonSheetComponent implements OnInit {
     private _route: ActivatedRoute,
     private _tss: TaxonSheetService,
     private _syntheseDataService: SyntheseDataService,
-    private _config: ConfigService,
     private _routes: RouteService
   ) {
     this.TAB_LINKS = this._routes.TAB_LINKS;
@@ -54,7 +91,7 @@ export class TaxonSheetComponent implements OnInit {
       const cd_ref = params['cd_ref'];
       if (cd_ref) {
         this._tss.updateTaxonByCdRef(cd_ref);
-        this._syntheseDataService.getSyntheseSpeciesSheetStat(cd_ref).subscribe((stats) => {
+        this._syntheseDataService.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats) => {
           this.setIndicators(stats);
         });
       }
@@ -62,18 +99,9 @@ export class TaxonSheetComponent implements OnInit {
   }
 
   setIndicators(stats: any) {
-    if (
-      this._config &&
-      this._config['SYNTHESE'] &&
-      this._config['SYNTHESE']['SPECIES_SHEET'] &&
-      this._config['SYNTHESE']['SPECIES_SHEET']['LIST_INDICATORS']
-    ) {
-      this.indicators = this._config['SYNTHESE']['SPECIES_SHEET']['LIST_INDICATORS'].map(
-        (indicatorConfig: IndicatorRaw) => computeIndicatorFromConfig(indicatorConfig, stats)
-      );
-    } else {
-      this.indicators = [];
-    }
+    this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
+      computeIndicatorFromDescription(indicatorConfig, stats)
+    );
   }
 
   goToPath(path: string) {

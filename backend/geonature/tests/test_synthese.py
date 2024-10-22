@@ -1114,6 +1114,63 @@ class TestSynthese:
 
         assert response.status_code == 200
 
+    def test_taxon_stats(self, synthese_data, users):
+        set_logged_user(self.client, users["stranger_user"])
+
+        AREA_TYPE_VALID = "COM"
+        AREA_TYPE_INVALID = "UNDEFINED"
+        CD_REF_INVALID = 987654321
+        CD_REF_INVALID_STATS = {
+            "altitude_max": None,
+            "altitude_min": None,
+            "area_count": 0,
+            "cd_ref": CD_REF_INVALID,
+            "date_max": None,
+            "date_min": None,
+            "observation_count": 0,
+            "observer_count": 0,
+        }
+        CD_REF_VALID = 2497
+        CD_REF_VALID_STATS = {
+            "altitude_max": 900,
+            "altitude_min": 800,
+            "area_count": 2,
+            "cd_ref": CD_REF_VALID,
+            "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+            "observation_count": 3,
+            "observer_count": 1,
+        }
+
+        # Missing area_type parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID),
+        )
+        assert response.status_code == 400
+        assert response.json["description"] == "Missing area_type parameter"
+
+        # Invalid area_type parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_INVALID),
+        )
+        assert response.status_code == 400
+        assert response.json["description"] == "Invalid area_type"
+
+        # Invalid cd_ref parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_INVALID, area_type=AREA_TYPE_VALID),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_INVALID_STATS
+
+        # Invalid cd_ref parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_VALID),
+        )
+        response_json = response.get_json()
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_VALID_STATS
+
     def test_get_one_synthese_record(self, app, users, synthese_data):
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)

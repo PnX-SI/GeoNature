@@ -21,9 +21,6 @@ from marshmallow.validate import OneOf, Regexp, Email, Length
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
-    DefaultGeographicOverview,
-    DefaultProfile,
-    DefaultSpeciesSheet,
 )
 from geonature.core.imports.config_schema import ImportConfigSchema
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
@@ -130,6 +127,7 @@ class HomeConfig(Schema):
         load_default="Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     )
     FOOTER = fields.String(load_default="")
+    DISPLAY_LATEST_DISCUSSIONS = fields.Boolean(load_default=True)
 
 
 class MetadataConfig(Schema):
@@ -278,24 +276,10 @@ class ExportObservationSchema(Schema):
     geojson_local_field = fields.String(load_default="geojson_local")
 
 
-class SpeciesSheetProfile(Schema):
-    ENABLED = fields.Boolean(load_default=DefaultProfile.ENABLED)
-    LIST_INDICATORS = fields.List(fields.Dict, load_default=DefaultProfile.LIST_INDICATORS)
-
-
-class SpeciesSheetGeographicOverview(Schema):
-    pass
-
-
-class SpeciesSheet(Schema):
+class TaxonSheet(Schema):
     # --------------------------------------------------------------------
-    # SYNTHESE - SPECIES_SHEET
-    LIST_INDICATORS = fields.List(fields.Dict, load_default=DefaultSpeciesSheet.LIST_INDICATORS)
-
-    GEOGRAPHIC_OVERVIEW = fields.Dict(
-        load_default=SpeciesSheetGeographicOverview().load({})
-    )  # rename
-    PROFILE = fields.Nested(SpeciesSheetProfile, load_default=SpeciesSheetProfile().load({}))
+    # SYNTHESE - TAXON_SHEET
+    ENABLE_PROFILE = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
@@ -453,8 +437,8 @@ class Synthese(Schema):
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
 
     # --------------------------------------------------------------------
-    # SYNTHESE - SPECIES_SHEET
-    SPECIES_SHEET = fields.Nested(SpeciesSheet, load_default=SpeciesSheet().load({}))
+    # SYNTHESE - TAXON_SHEET
+    TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):
@@ -612,15 +596,13 @@ class GnGeneralSchemaConf(Schema):
     def _pre_load(self, data, **kwargs):
         if "API_TAXHUB" in data:
             warnings.warn(
-                "Le paramètre API_TAXHUB est déprécié, il sera automatiquement déduit API_ENDPOINT et supprimé dans la version 2.14",
+                "Le paramètre API_TAXHUB n'est plus utilisé depuis la version 2.15.",
                 Warning,
             )
         return data
 
     @post_load
     def insert_module_config(self, data, **kwargs):
-        # URL de l'api taxub
-        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub{data['TAXHUB']['API_PREFIX']}"
 
         # Configuration des modules actifs
         for dist in iter_modules_dist():

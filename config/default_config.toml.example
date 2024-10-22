@@ -307,9 +307,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Vues d'export personnalisées
     EXPORT_OBSERVATIONS_CUSTOM_VIEWS = [
         {
-            label = "format personnalisé", 
+            label = "format personnalisé",
             view_name = "schema_name.view_name"
-        }    
+        }
     ]
     # Noms des colonnes obligatoires de la vue ``gn_synthese.v_metadata_for_export``
     EXPORT_METADATA_ID_DATASET_COL = "jdd_id"
@@ -440,6 +440,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
         # Seulement les données de présence
         cd_nomenclature_observation_status = ['Pr']
+
+    [SYNTHESE.TAXON_SHEET]
+        # Options dédiées à la fiche taxon
+        # Permet d'activer ou non la section "Profile"
+        ENABLE_PROFILE = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
@@ -595,13 +600,14 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     TITLE = "Bienvenue dans GeoNature"
     INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     FOOTER = ""
+    DISPLAY_LATEST_DISCUSSIONS = true
 
 [AUTHENTICATION]
 	DEFAULT_RECONCILIATION_GROUP_ID = 2
     [[AUTHENTICATION.PROVIDERS]]
         module="pypnusershub.auth.providers.default.DefaultConfiguration"
 		id_provider="local_provider"
-    
+
     [[AUTHENTICATION.PROVIDERS]]
         module="pypnusershub.auth.providers.openid_provider.OpenIDConnectProvider"
 		id_provider = "google"
