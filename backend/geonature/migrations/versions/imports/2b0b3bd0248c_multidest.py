@@ -236,34 +236,6 @@ def upgrade():
 
     ### Permissions
 
-    #### Enlever scope dans C IMPORT
-    op.execute(
-        """
-        WITH CTE AS (
-            SELECT
-                m.id_module, o.id_object, a.id_action
-            FROM
-                gn_commons.t_modules m,
-                gn_permissions.t_objects o,
-                gn_permissions.bib_actions a
-            WHERE
-                m.module_code = 'IMPORT'
-                AND
-                o.code_object = 'ALL'
-                AND
-                a.code_action = 'C'
-        )
-        UPDATE gn_permissions.t_permissions_available pa
-        SET scope_filter = NULL
-        FROM CTE
-        WHERE
-            pa.id_module = CTE.id_module
-            AND
-            pa.id_object = CTE.id_object
-            AND
-            pa.id_action = CTE.id_action
-        """
-    )
     op.execute(
         """
         INSERT INTO
