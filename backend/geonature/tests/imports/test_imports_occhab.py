@@ -595,3 +595,27 @@ class TestImportsOcchab:
                 ]
             ],
         }
+
+    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
+    def test_bbox_computation_transient(
+        self,
+        prepared_import,
+        coord_station: Tuple[Point, int],
+        coord_station_test_file: Tuple[Point, int],
+    ):
+        bbox = prepared_import.destination.actions.compute_bounding_box(prepared_import)
+
+        x1, y1 = coord_station[0].x, coord_station[0].y
+        x2, y2 = coord_station_test_file[0].x, coord_station_test_file[0].y
+        assert bbox == {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [x2, y1],
+                    [x2, y2],
+                    [x1, y2],
+                    [x1, y1],
+                    [x2, y1],
+                ]
+            ],
+        }

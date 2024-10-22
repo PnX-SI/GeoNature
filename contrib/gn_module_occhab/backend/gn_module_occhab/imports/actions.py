@@ -570,39 +570,10 @@ class OcchabImportActions(ImportActions):
 
     @staticmethod
     def compute_bounding_box(imprt: TImports):
-        entity_habitat = Entity.query.filter_by(destination=imprt.destination, code="habitat").one()
-        entity_station = Entity.query.filter_by(destination=imprt.destination, code="station").one()
 
-        # To fetch the involved station in the import :
-        # - station imported
-        # - station where new habitat were imported
-
-        # In the case of an import finished, whereclause must look into `t_stations` and `t_habitat`
-        if imprt.date_end_import:
-            destination_hab_table = entity_habitat.get_destination_table()
-            destination_sta_table = entity_station.get_destination_table()
-            cte = (
-                sa.select(
-                    destination_hab_table.c.id_station,
-                )
-                .where(destination_hab_table.c.id_import == imprt.id_import)
-                .cte("other_station")
-            )
-            where_clause = sa.or_(
-                destination_sta_table.c.id_import == imprt.id_import,
-                destination_sta_table.c.id_station.in_(cte),
-            )
-            return compute_bounding_box(
-                imprt, "station", "geom_4326", destination_where_clause=where_clause
-            )
-
-        # In the case of an import in progress, whereclause must look only in the transient table
-        transient_table = imprt.destination.get_transient_table()
-        where_clause = sa.and_(
-            transient_table.c.id_import == imprt.id_import,
-            transient_table.c[entity_habitat.validity_column] == True,
-            transient_table.c[entity_station.validity_column] != False,
-        )
         return compute_bounding_box(
-            imprt, "station", "geom_4326", transient_where_clause=where_clause
+            imprt=imprt,
+            geom_entity_code="station",
+            geom_4326_field_name="geom_4326",
+            child_entity_code="habitat",
         )

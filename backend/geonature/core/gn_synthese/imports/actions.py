@@ -540,9 +540,5 @@ class SyntheseImportActions(ImportActions):
     def compute_bounding_box(imprt: TImports):
         # The destination where clause will be called only when the import is finished,
         # avoiding looking for unexisting source when the import is still in progress.
-        destination_where_clause = (
-            lambda imprt, destination_table: imprt.id_import == destination_table.c.id_import
-        )
-        return compute_bounding_box(
-            imprt, "observation", "the_geom_4326", destination_where_clause=destination_where_clause
-        )
+
+        return compute_bounding_box(imprt, "observation", "the_geom_4326")
