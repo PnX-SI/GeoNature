@@ -570,4 +570,10 @@ class OcchabImportActions(ImportActions):
 
     @staticmethod
     def compute_bounding_box(imprt: TImports):
-        return compute_bounding_box(imprt, "station", "geom_4326")
+
+        return compute_bounding_box(
+            imprt=imprt,
+            geom_entity_code="station",
+            geom_4326_field_name="geom_4326",
+            child_entity_code="habitat",
+        )

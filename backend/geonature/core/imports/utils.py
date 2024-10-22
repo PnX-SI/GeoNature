@@ -477,44 +477,149 @@ def get_required(import_: TImports, entity: Entity):
 
 def compute_bounding_box(
     imprt: TImports,
-    entity_code,
-    geom_4326_field,
+    geom_entity_code: str,
+    geom_4326_field_name: str,
     *,
+    child_entity_code: str = None,
     transient_where_clause=None,
     destination_where_clause=None
 ):
-    entity = Entity.query.filter_by(destination=imprt.destination, code=entity_code).one()
-    if imprt.date_end_import:  # import finished, retrieve data from destination table
-        destination_table = entity.get_destination_table()
-        geom_field = destination_table.c[geom_4326_field]
-        if (
-            destination_where_clause is None
-        ):  # assume there is an id_import column in the destination table
-            where_clause = destination_table.c.id_import == imprt.id_import
-        elif callable(destination_where_clause):
-            where_clause = destination_where_clause(imprt, destination_table)
+    """
+    Compute the bounding box of an entity with a geometry in the given import, based on its
+    entities tree (e.g. Station -> Habitat; Site -> Visite -> Observation).
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to get the bounding box of.
+    geom_entity_code : str
+        The code of the entity that contains the geometry.
+    geom_4326_field_name : str
+        The name of the column in the geom entity table that contains the geometry.
+    child_entity_code : str, optional
+        The code of the last child entity (of the geom entity) to consider when computing the bounding box. If not given,
+        bounding-box will be computed only on the geom entity.
+    transient_where_clause : sqlalchemy.sql.elements.BooleanClauseList, optional
+        A where clause to apply to the query when computing the bounding box of a processed import.
+    destination_where_clause : sqlalchemy.sql.elements.BooleanClauseList, optional
+        A where clause to apply to the query when computing the bounding box of a finished import.
+
+    Returns
+    -------
+    valid_bbox : dict
+        The bounding box of all entities in the given import, in GeoJSON format.
+    """
+
+    def get_entities_hierarchy(parent_entity, child_entity) -> Iterable[Entity]:
+        """
+        Get all entities between the parent_entity and the child_entity, in order from parent to child.
+
+        Parameters
+        ----------
+        parent_entity : Entity
+            The parent entity.
+        child_entity : Entity
+            The child entity.
+
+        Yields
+        ------
+        Entity
+            The entities between the parent and child entity, in order from parent to child.
+        """
+        current = child_entity
+        while current != parent_entity and current:
+            yield current
+            current = current.parent
+
+    parent_entity: Entity = db.session.execute(
+        sa.select(Entity).filter_by(destination=imprt.destination, code=geom_entity_code)
+    ).scalar_one()
+    parent_table = parent_entity.get_destination_table()
+    transient_table = imprt.destination.get_transient_table()
+
+    # If only one entity in an import destination
+    if not child_entity_code:
+        if imprt.date_end_import:
+            table = parent_table
+        elif imprt.processed:
+            table = transient_table
         else:
-            where_clause = destination_where_clause
-    elif imprt.processed:  # import controlled but not finished, retieve data from transient table
-        transient_table = imprt.destination.get_transient_table()
-        geom_field = transient_table.c[geom_4326_field]
-        if transient_where_clause is None:
-            where_clause = sa.and_(
-                transient_table.c.id_import == imprt.id_import,
-                transient_table.c[entity.validity_column] == True,
-            )
-        elif callable(transient_where_clause):
-            where_clause = transient_where_clause(imprt, transient_table)
-        else:
-            where_clause = transient_where_clause
-    else:  # import still in progress, checks have not been runned yet, no valid data available
+            return None
+
+        assert geom_4326_field_name in table.columns
+        query = select(func.ST_AsGeojson(func.ST_Extent(table.c[geom_4326_field_name]))).where(
+            table.c.id_import == imprt.id_import
+        )
+        (valid_bbox,) = db.session.execute(query).fetchone()
+        if valid_bbox:
+            return json.loads(valid_bbox)
         return None
 
-    statement = select(func.ST_AsGeojson(func.ST_Extent(geom_field))).where(where_clause)
+    child_entity: Entity = db.session.execute(
+        sa.select(Entity).filter_by(destination=imprt.destination, code=child_entity_code)
+    ).scalar_one()
 
-    # Execute the statement to eventually retrieve the valid bounding box
+    # When the import is finished
+    if imprt.date_end_import:
+        entities = list(get_entities_hierarchy(parent_entity, child_entity))
+        entities.reverse()
+
+        # Geom entity linked to the current import based on their children (or grand-children, etc.)
+        query = sa.select(parent_table.c[geom_4326_field_name].label("geom"))
+        or_where_clause = []
+        for entity in entities:
+            ent_table = entity.get_destination_table()
+            query = query.join(ent_table)
+            or_where_clause.append(ent_table.c.id_import == imprt.id_import)
+        query.where(sa.or_(*or_where_clause))
+
+        # Merge with geom entity with an id_import equal to the current import
+        query = sa.union(
+            query,
+            sa.select(parent_table.c[geom_4326_field_name].label("geom")).where(
+                parent_table.c.id_import == imprt.id_import
+            ),
+        ).subquery()
+        if destination_where_clause:
+            query = query.where(destination_where_clause)
+
+    # When the import is processed (data are check and prepared but not loaded in the destination)
+    elif imprt.processed:
+        transient_table = imprt.destination.get_transient_table()
+
+        # query all existing entities'geom
+        query = sa.select(parent_table.c[geom_4326_field_name].label("geom")).where(
+            transient_table.c.id_import == imprt.id_import,  # basic !
+            sa.and_(  # Check that no parent entity is invalid
+                transient_table.c[entity.validity_column] != False
+                for entity in get_entities_hierarchy(parent_entity, child_entity)
+            ),
+            transient_table.c[parent_entity.validity_column]
+            == None,  # Check that parent entity already exists in DB
+            transient_table.c[parent_entity.unique_column.dest_field]
+            == parent_table.c[parent_entity.unique_column.dest_field],  # for join
+        )
+
+        # UNION between existing geom in the DB and new entities'geom in the transient table
+        query = sa.union(
+            query,
+            sa.select(transient_table.c[geom_4326_field_name].label("geom")).where(
+                sa.and_(
+                    transient_table.c.id_import == imprt.id_import,
+                    transient_table.c[parent_entity.validity_column] == True,
+                )
+            ),
+        ).subquery()
+
+        if transient_where_clause:
+            query = query.where(transient_where_clause)
+
+    else:
+        return None
+    # Compute the bounding box using geom entities returned by the query
+    statement = select(func.ST_AsGeojson(func.ST_Extent(query.c.geom)))
     (valid_bbox,) = db.session.execute(statement).fetchone()
 
-    # Return the valid bounding box or None
+    # If a valid bbox is found, return it
     if valid_bbox:
         return json.loads(valid_bbox)

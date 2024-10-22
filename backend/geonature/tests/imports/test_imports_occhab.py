@@ -1,11 +1,13 @@
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
+from typing import Tuple
 
 from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
 
 from flask import url_for, g, current_app
+from shapely import to_wkt
 from werkzeug.datastructures import Headers
 from werkzeug.exceptions import Conflict
 from geoalchemy2.shape import from_shape
@@ -93,6 +95,7 @@ def uploaded_import(
     habitat,
     import_file_name,
     display_unique_dataset_id,
+    coord_station_test_file,
 ):
     with open(test_files_path / import_file_name, "rb") as f:
         test_file_line_count = sum(1 for line in f) - 1  # remove headers
@@ -122,6 +125,11 @@ def uploaded_import(
             b"INACTIVE_DATASET_UUID",
             datasets["own_dataset_not_activated"].unique_dataset_id.hex.encode("ascii"),
         )
+        content = content.replace(
+            b"COORD_STATION",
+            to_wkt(coord_station_test_file[0]).encode("ascii"),
+        )
+
         f = BytesIO(content)
         data = {
             "file": (f, import_file_name),
@@ -209,11 +217,21 @@ def imported_import(client, prepared_import):
 
 
 @pytest.fixture(scope="function")
-def station(datasets):
+def coord_station_test_file():
+    return Point(3.634, 44.399), 4326
+
+
+@pytest.fixture(scope="function")
+def coord_station():
+    return Point(4.634, 43.399), 4326
+
+
+@pytest.fixture(scope="function")
+def station(datasets, coord_station):
     station = Station(
         id_dataset=datasets["own_dataset"].id_dataset,
         date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
-        geom_4326=from_shape(Point(3.634, 44.399), 4326),
+        geom_4326=from_shape(*coord_station),
     )
     with db.session.begin_nested():
         db.session.add(station)
@@ -221,11 +239,11 @@ def station(datasets):
 
 
 @pytest.fixture(scope="function")
-def station_stranger_dataset(datasets):
+def station_stranger_dataset(datasets, coord_station):
     station = Station(
         id_dataset=datasets["stranger_dataset"].id_dataset,
         date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
-        geom_4326=from_shape(Point(3.634, 44.399), 4326),
+        geom_4326=from_shape(*coord_station),
     )
     with db.session.begin_nested():
         db.session.add(station)
@@ -553,3 +571,51 @@ class TestImportsOcchab:
         assert r.status_code == Conflict.code, r.data
         assert str(station.id_station) in r.json["description"]
         assert str(habitat.id_habitat) in r.json["description"]
+
+    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
+    def test_bbox_computation(
+        self,
+        imported_import,
+        coord_station: Tuple[Point, int],
+        coord_station_test_file: Tuple[Point, int],
+    ):
+        bbox = imported_import.destination.actions.compute_bounding_box(imported_import)
+
+        x1, y1 = coord_station[0].x, coord_station[0].y
+        x2, y2 = coord_station_test_file[0].x, coord_station_test_file[0].y
+        assert bbox == {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [x2, y1],
+                    [x2, y2],
+                    [x1, y2],
+                    [x1, y1],
+                    [x2, y1],
+                ]
+            ],
+        }
+
+    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
+    def test_bbox_computation_transient(
+        self,
+        prepared_import,
+        coord_station: Tuple[Point, int],
+        coord_station_test_file: Tuple[Point, int],
+    ):
+        bbox = prepared_import.destination.actions.compute_bounding_box(prepared_import)
+
+        x1, y1 = coord_station[0].x, coord_station[0].y
+        x2, y2 = coord_station_test_file[0].x, coord_station_test_file[0].y
+        assert bbox == {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [x2, y1],
+                    [x2, y2],
+                    [x1, y2],
+                    [x1, y1],
+                    [x2, y1],
+                ]
+            ],
+        }
