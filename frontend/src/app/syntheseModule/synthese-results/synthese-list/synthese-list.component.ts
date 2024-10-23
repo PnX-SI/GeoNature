@@ -27,6 +27,7 @@ import { ModuleService } from '@geonature/services/module.service';
 
 import { FormArray, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { fromEvent } from 'rxjs';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -81,8 +82,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
     this.canImport = canCreateImport && canCreateSynthese;
     // get wiewport height to set the number of rows in the tabl
-    const h = document.documentElement.clientHeight * 0.86;
-    this.rowNumber = Math.trunc(h / 37);
+    const resizeObservable = fromEvent(window, 'resize');
+    resizeObservable.subscribe((e) => {
+      this.setHeightLeftPanel();
+    });
+    this.setHeightLeftPanel();
 
     this.initListColumns();
 
@@ -128,6 +132,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
   private resetSorting() {
     this.table.sorts = [];
+  }
+
+  private setHeightLeftPanel() {
+    const h = document.documentElement.clientHeight * 0.86;
+    this.rowNumber = Math.trunc(h / 37);
   }
 
   initListColumns() {
