@@ -79,13 +79,17 @@ class SyntheseImportActions(ImportActions):
 
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
-        entity = Entity.query.filter_by(destination=imprt.destination).one()  # Observation
-        fields = {
-            field.name_field: field
-            for field in BibFields.query.filter(BibFields.destination == imprt.destination)
+        entity = db.session.execute(
+            select(Entity).where(Entity.destination == imprt.destination)
+        ).scalar_one()  # Observation
+
+        entity_bib_fields = db.session.scalars(
+            sa.select(BibFields)
+            .where(BibFields.destination == imprt.destination)
             .options(sa.orm.selectinload(BibFields.entities).joinedload(EntityField.entity))
-            .all()
-        }
+        ).all()
+
+        fields = {field.name_field: field for field in entity_bib_fields}
         # Note: multi fields are not selected here, and therefore, will be not loaded in dataframe or checked in SQL.
         # Fix this code (see import function) if you want to operate on multi fields data.
         selected_fields = {
@@ -302,17 +306,21 @@ class SyntheseImportActions(ImportActions):
 
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
-        module = TModules.query.filter_by(module_code="IMPORT").one()
+        module = db.session.execute(
+            sa.select(TModules).filter_by(module_code="IMPORT")
+        ).scalar_one()
         name_source = "Import"
-        source = TSources.query.filter_by(module=module, name_source=name_source).one_or_none()
+        source = db.session.execute(
+            sa.select(TSources).filter_by(module=module, name_source=name_source)
+        ).scalar_one_or_none()
         transient_table = imprt.destination.get_transient_table()
 
-        fields = {
-            field.name_field: field
-            for field in BibFields.query.filter(
+        destination_bib_fields = db.session.scalars(
+            sa.select(BibFields).where(
                 BibFields.destination == imprt.destination, BibFields.dest_field != None
-            ).all()
-        }
+            )
+        ).all()
+        fields = {field.name_field: field for field in destination_bib_fields}
 
         # Construct the exact list of required fields to copy from transient table to synthese
         # This list contains generated fields, and selected fields (including multi fields).
@@ -373,16 +381,18 @@ class SyntheseImportActions(ImportActions):
         # TODO: Improve this
         imprt.statistics = {
             "taxa_count": (
-                db.session.query(func.count(distinct(Synthese.cd_nom)))
-                .filter_by(id_import=imprt.id_import)
-                .scalar()
+                db.session.scalar(
+                    sa.select(func.count(distinct(Synthese.cd_nom))).where(
+                        Synthese.id_import == imprt.id_import
+                    )
+                )
             ),
         }
 
     @staticmethod
     def remove_data_from_destination(imprt: TImports) -> None:
         with start_sentry_child(op="task", description="clean imported data"):
-            Synthese.query.filter(Synthese.id_import == imprt.id_import).delete()
+            db.session.execute(sa.delete(Synthese).where(Synthese.id_import == imprt.id_import))
 
     @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:

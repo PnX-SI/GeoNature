@@ -10,6 +10,8 @@ from geonature.core.gn_synthese.models import CorAreaSynthese, Synthese, VSynthe
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
+from geonature.utils.env import db
+
 
 def split_blurring_precise_permissions(permissions):
     """
@@ -25,14 +27,13 @@ def build_sensitive_unsensitive_filters():
     """
     Return where clauses for sensitive and non-sensitive observations.
     """
-    non_sensitive_nomenc = (
-        TNomenclatures.query.with_entities(TNomenclatures.id_nomenclature)
-        .filter(
+    non_sensitive_nomenc = db.session.execute(
+        sa.select(TNomenclatures.id_nomenclature)
+        .where(
             TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
         )
         .filter(TNomenclatures.cd_nomenclature == "0")
-        .one()
-    )
+    ).scalar_one()
 
     return (
         Synthese.id_nomenclature_sensitivity != non_sensitive_nomenc.id_nomenclature,
