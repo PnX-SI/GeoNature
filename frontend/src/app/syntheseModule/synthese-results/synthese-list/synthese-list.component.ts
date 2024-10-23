@@ -84,9 +84,9 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     // get wiewport height to set the number of rows in the tabl
     const resizeObservable = fromEvent(window, 'resize');
     resizeObservable.subscribe((e) => {
-      this.setHeightLeftPanel();
+      this.setHeightListPanel();
     });
-    this.setHeightLeftPanel();
+    this.setHeightListPanel();
 
     this.initListColumns();
 
@@ -134,7 +134,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.table.sorts = [];
   }
 
-  private setHeightLeftPanel() {
+  private setHeightListPanel() {
     const h = document.documentElement.clientHeight * 0.86;
     this.rowNumber = Math.trunc(h / 37);
   }
