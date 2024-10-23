@@ -7,7 +7,7 @@
   [columns]="defaultColumns"
   [columnMode]="'force'"
   [headerHeight]="50"
-  [footerHeight]="35"
+  [footerHeight]="50"
   [selected]="mapListService.selectedRow"
   [selectionType]="'single'"
   [count]="mapListService.tableData.length"
@@ -118,7 +118,7 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<div class="row mt-3 justify-content-end">
+<div class="actions-btns mt-3">
   <div class="col-auto">
     <button
       *ngIf="canImport"
