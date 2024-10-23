@@ -1,0 +1,91 @@
+.ImportReport {
+  background-color: transparent;
+  border: none;
+  font:
+    400 14px/20px Roboto,
+    sans-serif;
+
+  h3 {
+    margin-bottom: 0;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 0.5rem;
+
+    h5,
+    h6 {
+      margin: 0;
+    }
+  }
+
+  &__title {
+    text-align: center;
+    height: 64px;
+    .BackButton {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      margin: 0;
+      padding: 0;
+
+      button {
+        max-width: 150px;
+      }
+    }
+
+    .Status {
+      text-align: right;
+      font-weight: bold;
+
+      &.unfinished {
+        color: orange;
+      }
+
+      &.inerror {
+        color: red;
+      }
+
+      &.importdone {
+        color: green;
+      }
+    }
+  }
+
+  &__content {
+    .mat-expansion-panel-header.mat-expanded {
+      background: #f7f7f7 !important;
+    }
+
+    table {
+      display: block;
+      overflow-x: auto;
+    }
+
+    table caption {
+      caption-side: top;
+      border-collapse: collapse;
+    }
+
+    button {
+      padding: 10px;
+      min-height: 36px;
+      max-height: 100px !important;
+      height: auto !important;
+
+      .ButtonContent {
+        text-overflow: ellipsis !important;
+        overflow: hidden !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+    }
+  }
+}
+
+.button-link {
+  text-decoration: none;
+}

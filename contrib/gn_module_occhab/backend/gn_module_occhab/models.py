@@ -5,12 +5,13 @@ from flask import g
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, synonym
+from sqlalchemy.orm import relationship, synonym, deferred
 from sqlalchemy.schema import FetchedValue, UniqueConstraint
 from sqlalchemy.sql import func, select
 
 
 from geonature.core.gn_meta.models import TDatasets as Dataset
+from geonature.core.imports.models import TImports as Import
 from geonature.utils.env import db
 from pypnnomenclature.models import TNomenclatures as Nomenclature
 from pypnnomenclature.utils import NomenclaturesMixin
@@ -18,6 +19,8 @@ from pypnusershub.db.models import User
 from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
 from werkzeug.datastructures import TypeConversionDict
+
+from flask_login import current_user
 
 cor_station_observer = db.Table(
     "cor_station_observer",
@@ -34,7 +37,11 @@ class Station(NomenclaturesMixin, db.Model):
     __table_args__ = {"schema": "pr_occhab"}
 
     id_station = db.Column(db.Integer, primary_key=True)
-    unique_id_sinp_station = db.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    id_station_source = db.Column(db.String)
+    unique_id_sinp_station = db.Column(
+        UUID(as_uuid=True),
+        server_default=select(func.uuid_generate_v4()),
+    )
     id_dataset = db.Column(db.Integer, ForeignKey(Dataset.id_dataset), nullable=False)
     dataset = relationship(Dataset)
     date_min = db.Column(db.DateTime, server_default=FetchedValue())
@@ -48,8 +55,11 @@ class Station(NomenclaturesMixin, db.Model):
     depth_max = db.Column(db.Integer)
     area = db.Column(db.BigInteger)
     comment = db.Column(db.Unicode)
+    precision = db.Column(db.Integer)
     id_digitiser = db.Column(db.Integer)
-    geom_4326 = db.Column(Geometry("GEOMETRY"))
+    geom_local = deferred(db.Column(Geometry("GEOMETRY")))
+    geom_4326 = db.Column(Geometry("GEOMETRY", 4326))
+    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
 
     habitats = relationship(
         "OccurenceHabitat",
@@ -81,8 +91,7 @@ class Station(NomenclaturesMixin, db.Model):
         foreign_keys=[id_nomenclature_area_surface_calculation],
     )
     id_nomenclature_geographic_object = db.Column(
-        db.Integer,
-        ForeignKey(Nomenclature.id_nomenclature),
+        db.Integer, ForeignKey(Nomenclature.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_geographic_object = db.relationship(
         Nomenclature,
@@ -117,25 +126,46 @@ class Station(NomenclaturesMixin, db.Model):
         date_up = params.get("date_up", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
         if date_up:
             query = query.where(Station.date_max <= date_up)
-        return query
-
-    @qfilter(query=True)
-    def filter_by_scope(cls, scope, user=None, *, query):
-        if user is None:
-            user = g.current_user
-        if scope == 0:
-            query = query.where(sa.false())
-        elif scope in (1, 2):
-            ds_list = Dataset.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
+        id_import = params.get("id_import", type=int)
+        if id_import:
             query = query.where(
                 sa.or_(
-                    Station.observers.any(id_role=user.id_role),
-                    Station.id_dataset.in_(
-                        [ds.id_dataset for ds in db.session.execute(ds_list).all()]
-                    ),
+                    Station.id_import == id_import,
+                    Station.habitats.any(OccurenceHabitat.id_import == id_import),
                 )
             )
         return query
+
+    @qfilter
+    def filter_by_scope(cls, scope, user=None, **kwargs):
+        """
+        Filter Station instances by scope and user.
+
+        Parameters
+        ----------
+        scope : int
+            0, 1, 2 or 3
+        user : User, optional
+            user instance. If None, use current_user (default is None)
+
+        Returns
+        -------
+        sqlalchemy.sql.expression.BooleanClauseList
+            filter by scope and user
+        """
+        if user is None:
+            user = current_user
+
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            ds_list = Dataset.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
+
+            return sa.or_(
+                Station.observers.any(id_role=user.id_role),
+                Station.id_dataset.in_([ds.id_dataset for ds in db.session.execute(ds_list).all()]),
+            )
+        return True
 
 
 @serializable
@@ -150,8 +180,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     )  # TODO: remove joined
     unique_id_sinp_hab = db.Column(
         UUID(as_uuid=True),
-        default=select(func.uuid_generate_v4()),
-        nullable=False,
+        server_default=select(func.uuid_generate_v4()),
     )
     cd_hab = db.Column(db.Integer, ForeignKey("ref_habitats.habref.cd_hab"), nullable=False)
     habref = db.relationship("Habref", lazy="joined")
@@ -159,6 +188,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     determiner = db.Column(db.Unicode)
     recovery_percentage = db.Column(db.Float)
     technical_precision = db.Column(db.Unicode)
+    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
 
     id_nomenclature_determination_type = db.Column(
         db.Integer, ForeignKey(Nomenclature.id_nomenclature)
@@ -171,6 +201,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
         nullable=False,
+        server_default=FetchedValue(),
     )
     nomenclature_collection_technique = db.relationship(
         Nomenclature,

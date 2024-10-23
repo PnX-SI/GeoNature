@@ -277,6 +277,12 @@ export const DYNAMIC_FORM_DEF = [
     required: false,
   },
   {
+    type_widget: 'number',
+    attribut_label: 'ID import',
+    attribut_name: 'id_import',
+    required: false,
+  },
+  {
     type_widget: 'datalist',
     attribut_name: 'id_source',
     attribut_label: 'Source de la donnée',

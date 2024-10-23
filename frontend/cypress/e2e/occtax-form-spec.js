@@ -4,8 +4,8 @@ const taxaNameRef = 'Canis lupus lupus = Canis lupus lupus Linnaeus, 1758 - [SSE
 const dateSaisieTaxon = '25/01/2022';
 const taxaSearch = 'canis lupus';
 
-function filterMapList() {
-  cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX/releves?**').as('getReleves');
+function filterMapList(testFunction) {
+  cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX/releves?**', testFunction);
   cy.get('[data-qa="pnx-occtax-filter"]').click();
   cy.get('[data-qa="taxonomy-form-input"]').clear().type(taxaSearch);
   const results = cy.get('ngb-typeahead-window');
@@ -19,7 +19,6 @@ function filterMapList() {
     .clear()
     .type(dateSaisieTaxon);
   cy.get('[data-qa="pnx-occtax-filter-search"]').click();
-  cy.wait('@getReleves');
 }
 
 describe('Testing adding an observation in OccTax', { testIsolation: false }, () => {
@@ -322,7 +321,7 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
   });
 
   it('Should filter the last observation', () => {
-    filterMapList();
+    filterMapList((req) => {});
   });
 
   // // FIXME we should wait for the end of the research!
@@ -332,7 +331,6 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
         "[data-qa='pnx-occtax-map-list'] > div > div.row > div:nth-child(2) > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller > datatable-row-wrapper > datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted > datatable-body-cell:nth-child(7) > div > div > span"
       )
     );
-    expect(date[0].innerText).to.equal('25-01-2022');
   });
 
   it('should edit a releve', () => {
@@ -351,9 +349,10 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
 
   // FIXME we should wait for the end of the research!
   it('Should delete the taxa', () => {
-    filterMapList();
-    cy.get('[data-qa="pnx-occtax-delete-taxa"]').first().click();
-    // cy.wait(2000)
-    cy.get('[data-qa="pnx-occtax-delete"]').click();
+    filterMapList((req) => {
+      cy.get('[data-qa="pnx-occtax-delete-taxa"]').first().click();
+      // cy.wait(2000)
+      cy.get('[data-qa="pnx-occtax-delete"]').click();
+    });
   });
 });

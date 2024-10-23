@@ -40,6 +40,7 @@ from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
 from apptax.taxonomie.models import Taxref
+from geonature.core.imports.models import TImports as Import
 from ref_geo.models import LAreas
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
@@ -264,6 +265,7 @@ class Synthese(DB.Model):
     id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source), nullable=False)
     source = relationship(TSources)
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
+    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
     module = DB.relationship(TModules)
     entity_source_pk_value = DB.Column(DB.Unicode)
     id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
@@ -583,6 +585,7 @@ class VSyntheseForWebApp(DB.Model):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer, nullable=False)
+    id_import = DB.Column(DB.Integer, nullable=True)
     id_module = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
