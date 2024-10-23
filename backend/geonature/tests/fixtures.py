@@ -21,6 +21,7 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutText,
 )
 from geonature import create_app
+from geonature.utils.config import config
 from geonature.core.gn_commons.models import BibTablesLocation, TMedias, TModules
 from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
@@ -96,6 +97,7 @@ class GeoNatureClient(JSONClient):
 
 @pytest.fixture(scope="session", autouse=True)
 def app():
+    config["CELERY"]["task_always_eager"] = True
     app = create_app()
     app.testing = True
     app.test_client_class = GeoNatureClient
