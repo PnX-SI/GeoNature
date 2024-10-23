@@ -140,8 +140,7 @@ def create_app(with_external_mods=True):
     if "CELERY" in app.config:
         from geonature.utils.celery import celery_app
 
-        # celery_app.init_app(app)
-        celery_app.conf.update(app.config["CELERY"])
+        celery_app.init_app(app)
 
     # Emails configuration
     if app.config["MAIL_CONFIG"]:
