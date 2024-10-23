@@ -589,7 +589,11 @@ class TestGNMeta:
             qs = select(TDatasets).where(TDatasets.id_dataset.in_(ds_ids))
             assert set(sc(dsc.filter_by_scope(0, query=qs)).unique().all()) == set([])
             assert set(sc(dsc.filter_by_scope(1, query=qs)).unique().all()) == set(
-                [datasets["own_dataset"], datasets["own_dataset_not_activated"]]
+                [
+                    datasets["own_dataset"],
+                    datasets["own_dataset_not_activated"],
+                    datasets["private"],
+                ]
             )
             assert set(sc(dsc.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
