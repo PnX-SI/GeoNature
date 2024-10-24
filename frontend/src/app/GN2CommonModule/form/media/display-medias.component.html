@@ -67,7 +67,7 @@
           </ng-container>
           <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
             <img
-              *ngIf="['medium', 'small'].includes(display)"
+              *ngIf="['medium', 'small', 'xlarge', 'xxlarge'].includes(display)"
               class="media-center"
               [src]="media.href(config.API_ENDPOINT, config.MEDIA_URL, thumbnailHeight)"
               [ngClass]="{ 'media-diapo-link': !!diaporama }"
