@@ -22,7 +22,7 @@ from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
-from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
+from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager, Query
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 from sqlalchemy.orm import load_only, aliased, Load, with_expression
@@ -43,6 +43,7 @@ from geonature.core.notifications.utils import dispatch_notifications
 from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     CorAreaSynthese,
+    CorObserverSynthese,
     DefaultsNomenclaturesValue,
     Synthese,
     TSources,
@@ -51,7 +52,12 @@ from geonature.core.gn_synthese.models import (
     TReport,
     SyntheseLogEntry,
 )
+from geonature.core.gn_commons.models import TMedias
+
+from pypnusershub.db import User
+
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils, SortOrder
 
 from geonature.core.gn_synthese.utils.blurring import (
     build_allowed_geom_cte,
@@ -66,7 +72,6 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required, permissions_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action, get_permissions
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
-
 from ref_geo.models import LAreas, BibAreasTypes
 
 from apptax.taxonomie.models import (
@@ -80,6 +85,8 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutValues,
     VMTaxrefListForautocomplete,
 )
+
+from geonature import app
 
 
 routes = Blueprint("gn_synthese", __name__)
@@ -968,25 +975,11 @@ def taxon_stats(scope, cd_ref):
     if not area_type:
         raise BadRequest("Missing area_type parameter")
 
-    # Ensure area_type is valid
-    valid_area_types = (
-        db.session.query(BibAreasTypes.type_code)
-        .distinct()
-        .filter(BibAreasTypes.type_code == area_type)
-        .scalar()
-    )
-    if not valid_area_types:
-        raise BadRequest("Invalid area_type")
+    if not TaxonSheetUtils.is_valid_area_type(area_type):
+        raise BadRequest("Invalid area_type parameter")
 
-    # Subquery to fetch areas based on area_type
-    areas_subquery = (
-        select([LAreas.id_area])
-        .where(LAreas.id_type == BibAreasTypes.id_type)
-        .where(BibAreasTypes.type_code == area_type)
-        .alias("areas")
-    )
-
-    taxref_cd_nom_list = db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
+    areas_subquery = TaxonSheetUtils.get_area_subquery(area_type)
+    taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
 
     # Main query to fetch stats
     query = (
@@ -1014,9 +1007,8 @@ def taxon_stats(scope, cd_ref):
         .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
     )
 
-    synthese_query_obj = SyntheseQuery(Synthese, query, {})
-    synthese_query_obj.filter_query_with_cruved(g.current_user, scope)
-    result = DB.session.execute(synthese_query_obj.query)
+    synthese_query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+    result = DB.session.execute(synthese_query)
     synthese_stats = result.fetchone()
 
     data = {
@@ -1031,6 +1023,55 @@ def taxon_stats(scope, cd_ref):
     }
 
     return data
+
+
+if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
+
+    @routes.route("/taxon_observers/<int:cd_ref>", methods=["GET"])
+    @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+    # @json_resp
+    def taxon_observers(scope, cd_ref):
+        per_page = request.args.get("per_page", 10, int)
+        page = request.args.get("page", 1, int)
+        sort_by = request.args.get("sort_by", "observer")
+        sort_order = request.args.get("sort_order", SortOrder.ASC, SortOrder)
+
+        # Handle sorting
+        if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:
+            raise BadRequest(f"The sort_by column {sort_by} is not defined")
+
+        taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+
+        query = (
+            db.session.query(
+                # func.concat(User.prenom_role, " ", User.nom_role).label("observer"),
+                func.trim(func.unnest(func.string_to_array(Synthese.observers, ","))).label(
+                    "observer"
+                ),
+                func.min(Synthese.date_min).label("date_min"),
+                func.max(Synthese.date_max).label("date_max"),
+                func.count(Synthese.id_synthese).label("observation_count"),
+                func.count(TMedias.uuid_attached_row).label("media_count"),
+            )
+            .group_by("observer")
+            # .group_by(User.id_role)
+            # .join(CorObserverSynthese, CorObserverSynthese.id_synthese == Synthese.id_synthese)
+            # .join(User, User.id_role == CorObserverSynthese.id_role)
+            .outerjoin(TMedias, TMedias.uuid_attached_row == Synthese.unique_id_sinp)
+            .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+        )
+        query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+        query = TaxonSheetUtils.update_query_with_sorting(query, sort_by, sort_order)
+        results = TaxonSheetUtils.paginate(query, page, per_page)
+
+        return jsonify(
+            {
+                "items": results.items,
+                "total": results.total,
+                "per_page": per_page,
+                "page": page,
+            }
+        )
 
 
 @routes.route("/taxons_tree", methods=["GET"])

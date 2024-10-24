@@ -9,6 +9,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { Observable } from 'rxjs';
 import { TabGeographicOverviewComponent } from './tab-geographic-overview/tab-geographic-overview.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
+import { TabObserversComponent } from './tab-observers/tab-observers.component';
 
 interface Tab {
   label: string;
@@ -29,6 +30,12 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
     path: 'profile',
     configEnabledField: 'ENABLE_PROFILE',
     component: TabProfileComponent,
+  },
+  {
+    label: 'Observateurs',
+    path: 'observers',
+    configEnabledField: 'ENABLE_OBSERVERS',
+    component: TabObserversComponent,
   },
 ];
 
