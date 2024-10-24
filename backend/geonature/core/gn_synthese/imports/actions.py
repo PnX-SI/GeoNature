@@ -1,67 +1,60 @@
+import typing
 from math import ceil
 
-from geonature.core.imports.actions import ImportActions, ImportStatisticsLabels, ImportInputUrl
-
-from apptax.taxonomie.models import Taxref
-from flask import current_app
 import sqlalchemy as sa
-from sqlalchemy import func, distinct, select
-
-from geonature.utils.env import db
-from geonature.utils.sentry import start_sentry_child
+from apptax.taxonomie.models import Taxref
+from bokeh.embed.standalone import StandaloneEmbedJson
+from flask import current_app
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import Synthese, TSources
-
-from geonature.core.imports.models import Entity, EntityField, BibFields, TImports
-from geonature.core.imports.utils import (
-    load_transient_data_in_dataframe,
-    update_transient_data_from_dataframe,
-    compute_bounding_box,
+from geonature.core.imports.actions import (
+    ImportActions,
+    ImportInputUrl,
+    ImportStatisticsLabels,
 )
 from geonature.core.imports.checks.dataframe import (
-    concat_dates,
-    check_required_values,
-    check_types,
-    check_geometry,
     check_counts,
     check_datasets,
+    check_geometry,
+    check_required_values,
+    check_types,
+    concat_dates,
 )
 from geonature.core.imports.checks.sql import (
-    do_nomenclatures_mapping,
-    check_nomenclature_exist_proof,
-    check_nomenclature_blurring,
-    check_nomenclature_source_status,
-    convert_geom_columns,
-    set_geom_point,
-    check_cd_nom,
-    check_cd_hab,
-    generate_altitudes,
-    check_duplicate_uuid,
-    check_existing_uuid,
-    generate_missing_uuid,
-    check_duplicate_source_pk,
-    check_dates,
     check_altitudes,
+    check_cd_hab,
+    check_cd_nom,
+    check_dates,
     check_depths,
     check_digital_proof_urls,
+    check_duplicate_source_pk,
+    check_duplicate_uuid,
+    check_existing_uuid,
     check_geometry_outside,
     check_is_valid_geometry,
-    init_rows_validity,
+    check_nomenclature_blurring,
+    check_nomenclature_exist_proof,
+    check_nomenclature_source_status,
     check_orphan_rows,
+    convert_geom_columns,
+    do_nomenclatures_mapping,
+    generate_altitudes,
+    generate_missing_uuid,
+    init_rows_validity,
+    set_geom_point,
 )
+from geonature.core.imports.models import BibFields, Entity, EntityField, TImports
+from geonature.core.imports.utils import (
+    compute_bounding_box,
+    load_transient_data_in_dataframe,
+    update_transient_data_from_dataframe,
+)
+from geonature.utils.env import db
+from geonature.utils.sentry import start_sentry_child
+from sqlalchemy import distinct, func, select
 
 from .geo import set_geom_columns_from_area_codes
-from bokeh.plotting import figure
-from bokeh.layouts import column
-from bokeh.models import CustomJS, Select
-from bokeh.embed import json_item
-from bokeh.embed.standalone import StandaloneEmbedJson
-from bokeh.palettes import linear_palette, Turbo256, Plasma256
-from bokeh.models import Range1d, AnnularWedge, ColumnDataSource, Legend, LegendItem
-
-import numpy as np
-import typing
-import json
+from .plot import taxon_distribution_plot
 
 
 class SyntheseImportActions(ImportActions):
@@ -396,159 +389,8 @@ class SyntheseImportActions(ImportActions):
 
     @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:
-        """
-        Generate a plot of the taxonomic distribution (for each rank) based on the import.
-        The following ranks are used:
-        - group1_inpn
-        - group2_inpn
-        - group3_inpn
-        - sous_famille
-        - tribu
-        - classe
-        - ordre
-        - famille
-        - phylum
-        - regne
-
-        Parameters
-        ----------
-        imprt : TImports
-            The import object to generate the plot from.
-
-        Returns
-        -------
-        dict
-            Returns a dict containing data required to generate the plot
-        """
-
-        # Define the taxonomic rank to consider
-        taxon_ranks = "regne phylum classe ordre famille sous_famille tribu group1_inpn group2_inpn group3_inpn".split()
-        figures = []
-
-        # Generate the plot for each rank
-        for rank in taxon_ranks:
-            # Generate the query to retrieve the count for each value taken by the rank
-            c_rank_taxref = getattr(Taxref, rank)
-            query = (
-                sa.select(
-                    func.count(distinct(Synthese.cd_nom)).label("count"),
-                    c_rank_taxref.label("rank_value"),
-                )
-                .select_from(Synthese)
-                .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-                .where(Synthese.id_import == imprt.id_import)
-                .group_by(c_rank_taxref)
-            )
-            data = np.asarray(
-                [
-                    r if r[1] != "" else (r[0], "Non-assigné")
-                    for r in db.session.execute(query).all()
-                ]
-            )
-
-            # if data is empty
-            if not data.size:
-                continue
-
-            # Extract the rank values and counts
-            rank_values, counts = data[:, 1], data[:, 0].astype(int)
-
-            # Get angles (in radians) where start each section of the pie chart
-            angles = np.cumsum(
-                [2 * np.pi * (count / sum(counts)) for i, count in enumerate(counts)]
-            ).tolist()
-
-            # Generate the color palette
-            palette = (
-                linear_palette(Turbo256, len(rank_values))
-                if len(rank_values) > 5
-                else linear_palette(Plasma256, len(rank_values))
-            )
-            colors = {value: palette[ix] for ix, value in enumerate(rank_values)}
-
-            # Store the data in a Bokeh data structure
-            browsers_source = ColumnDataSource(
-                dict(
-                    start=[0] + angles[:-1],
-                    end=angles,
-                    colors=[colors[rank_value] for rank_value in rank_values],
-                    countvalue=counts,
-                    rankvalue=rank_values,
-                )
-            )
-            # Create the Figure object
-            fig = figure(
-                x_range=Range1d(start=-3, end=3),
-                y_range=Range1d(start=-3, end=3),
-                title=f"Distribution des taxons (selon le rang = {rank})",
-                tooltips=[("Number", "@countvalue"), (rank, "@rankvalue")],
-                toolbar_location=None,
-            )
-            # Add the Pie chart
-            glyph = AnnularWedge(
-                x=0,
-                y=0,
-                inner_radius=0.9,
-                outer_radius=1.8,
-                start_angle="start",
-                end_angle="end",
-                line_color="white",
-                line_width=3,
-                fill_color="colors",
-            )
-            r = fig.add_glyph(browsers_source, glyph)
-
-            # Add the legend
-            legend = Legend(location="top_center")
-            for i, name in enumerate(colors):
-                legend.items.append(LegendItem(label=name, renderers=[r], index=i))
-            fig.add_layout(legend, "below")
-            fig.legend.ncols = 3 if len(colors) < 10 else 5
-
-            # ERASE the grid and axis
-            fig.grid.visible = False
-            fig.axis.visible = False
-            fig.title.text_font_size = "16pt"
-
-            # Hide the unselected rank plot
-            if rank != "regne":
-                fig.visible = False
-
-            # Add the plot to the list of figures
-            figures.append(fig)
-
-        if not figures:
-            return {}
-
-        # Generate the layout with the plots and the rank selector
-        plot_area = column(figures)
-
-        select_plot = Select(
-            title="Rang",
-            value=0,  # Default is "regne"
-            options=[(ix, rank) for ix, rank in enumerate(taxon_ranks)],
-            width=fig.width,
-        )
-
-        # Update the visibility of the plots when the taxonomic rank selector changes
-        select_plot.js_on_change(
-            "value",
-            CustomJS(
-                args=dict(s=select_plot, col=plot_area),
-                code="""
-            for (const plot of col.children) {
-                plot.visible = false
-            }
-            col.children[s.value].visible = true
-        """,
-            ),
-        )
-        column_fig = column(plot_area, select_plot, sizing_mode="scale_width")
-        return json_item(column_fig)
+        return taxon_distribution_plot(imprt)
 
     @staticmethod
     def compute_bounding_box(imprt: TImports):
-        # The destination where clause will be called only when the import is finished,
-        # avoiding looking for unexisting source when the import is still in progress.
-
         return compute_bounding_box(imprt, "observation", "the_geom_4326")
