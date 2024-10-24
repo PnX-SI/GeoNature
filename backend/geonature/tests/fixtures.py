@@ -443,7 +443,9 @@ def datasets(users, acquisition_frameworks, module):
         select(TModules).where(TModules.module_code.in_(writable_module_code))
     ).all()
 
-    def create_dataset(name, id_af, digitizer=None, modules=writable_module, active=True):
+    def create_dataset(
+        name, id_af, digitizer=None, modules=writable_module, active=True, private=False
+    ):
         with db.session.begin_nested():
             dataset = TDatasets(
                 id_acquisition_framework=id_af,
@@ -460,6 +462,16 @@ def datasets(users, acquisition_frameworks, module):
                     organism=digitizer.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 dataset.cor_dataset_actor.append(actor)
+
+            if private:
+                dataset.nomenclature_data_origin = db.session.execute(
+                    select(TNomenclatures).where(
+                        TNomenclatures.nomenclature_type.has(
+                            BibNomenclaturesTypes.mnemonique == "DS_PUBLIQUE"
+                        ),
+                        TNomenclatures.mnemonique == "Privée",
+                    )
+                ).scalar_one()
 
             db.session.add(dataset)
             db.session.flush()  # Required to retrieve ids of created object
@@ -493,6 +505,9 @@ def datasets(users, acquisition_frameworks, module):
         af.id_acquisition_framework,
         users["user"],
         active=False,
+    )
+    datasets["private"] = create_dataset(
+        "private", af.id_acquisition_framework, users["user"], private=True
     )
 
     datasets["with_module_1"] = create_dataset(
