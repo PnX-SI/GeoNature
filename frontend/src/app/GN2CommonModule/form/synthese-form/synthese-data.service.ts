@@ -61,6 +61,12 @@ export class SyntheseDataService {
     });
   }
 
+  getTaxonMedias(cdRef: number, params?: {}): Observable<any> {
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon_medias/${cdRef}`, {
+      params,
+    });
+  }
+
   getTaxaCount(params = {}) {
     let queryString = new HttpParams();
     for (let key in params) {
