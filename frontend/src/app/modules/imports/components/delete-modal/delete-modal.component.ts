@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonService } from '@geonature_common/service/common.service';
 import { ImportDataService } from '../../services/data.service';
-import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Import } from '../../models/import.model';
 
 @Component({
@@ -15,14 +15,14 @@ export class ModalDeleteImport implements OnInit {
   constructor(
     private _commonService: CommonService,
     private _ds: ImportDataService,
-    private _router: Router
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {}
 
   deleteImport() {
     this._ds.deleteImport(this.row.id_import).subscribe(() => {
-      this._commonService.regularToaster('success', 'Import supprimé.');
+      this._commonService.translateToaster('success', 'Import.ImportStatus.DeleteSuccessfully');
       this.onDelete.emit();
       this.c();
     });
