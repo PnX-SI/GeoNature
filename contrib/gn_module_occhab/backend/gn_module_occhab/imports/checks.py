@@ -57,10 +57,12 @@ def set_id_station_from_line_no(imprt: TImports, habitat_entity: Entity) -> None
     transient_station = aliased(transient_habitat)
     db.session.execute(
         sa.update(transient_habitat)
-        .where(transient_habitat.c.id_import == imprt.id_import)
-        .where(transient_habitat.c[habitat_entity.validity_column].is_(True))
-        .where(transient_station.c.id_import == imprt.id_import)
-        .where(transient_station.c.line_no == transient_habitat.c.station_line_no)
+        .where(
+            transient_habitat.c.id_import == imprt.id_import,
+            transient_habitat.c[habitat_entity.validity_column].is_(True),
+            transient_station.c.id_import == imprt.id_import,
+            transient_station.c.line_no == transient_habitat.c.station_line_no,
+        )
         .values({"id_station": transient_station.c.id_station})
     )
 

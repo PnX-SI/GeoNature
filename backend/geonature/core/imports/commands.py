@@ -1,6 +1,7 @@
 import click
 
 from flask.cli import with_appcontext
+import sqlalchemy as sa
 
 from geonature.utils.env import db
 
@@ -118,6 +119,6 @@ def fix_mappings():
         ("Synthese GeoNature", synthese_fieldmappings),
         ("Format DEE (champs 10 char)", dee_fieldmappings),
     ]:
-        mapping = FieldMapping.query.filter_by(label=label).one()
+        mapping = db.session.execute(sa.select(FieldMapping).filter_by(label=label)).scalar_one()
         mapping.values = values
         db.session.commit()

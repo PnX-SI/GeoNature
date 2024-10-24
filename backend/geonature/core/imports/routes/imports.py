@@ -112,7 +112,8 @@ def get_import_list(scope, destination=None):
         order_by = desc(order_by)
 
     query = (
-        TImports.query.options(
+        select(TImports)
+        .options(
             contains_eager(TImports.dataset),
             contains_eager(TImports.authors),
             contains_eager(TImports.destination).contains_eager(Destination.module),
@@ -121,15 +122,15 @@ def get_import_list(scope, destination=None):
         .join(TImports.authors, isouter=True)
         .join(Destination)
         .join(TModules)
-        .filter_by_scope(scope)
-        .filter(or_(*filters) if len(filters) > 0 else True)
+        .where(TImports.filter_by_scope(scope=scope))
+        .where(or_(*filters) if len(filters) > 0 else True)
         .order_by(order_by)
     )
 
     if destination:
-        query = query.filter(TImports.destination == destination)
+        query = query.where(TImports.destination == destination)
 
-    imports = query.paginate(page=page, error_out=False, max_per_page=limit)
+    imports = db.paginate(query, page=page, error_out=False, max_per_page=limit)
 
     data = {
         "imports": [imprt.as_dict() for imprt in imports.items],
@@ -353,13 +354,12 @@ def get_import_values(scope, imprt):
         raise Forbidden
     if not imprt.loaded:
         raise Conflict(description="Data have not been loaded")
-    nomenclated_fields = (
-        BibFields.query.filter(BibFields.mnemonique != None)
-        .filter(BibFields.destination == imprt.destination)
+    nomenclated_fields = db.session.scalars(
+        select(BibFields)
+        .where(BibFields.mnemonique != None, BibFields.destination == imprt.destination)
         .options(joinedload(BibFields.nomenclature_type))
         .order_by(BibFields.id_field)
-        .all()
-    )
+    ).all()
     # Note: response format is validated with jsonschema in tests
     transient_table = imprt.destination.get_transient_table()
     response = {}

@@ -1,12 +1,36 @@
+import pandas as pd
+
+
 def concat_dates(
-    df,
-    datetime_min_col,
-    datetime_max_col,
-    date_min_col,
-    date_max_col=None,
-    hour_min_col=None,
-    hour_max_col=None,
+    df: pd.DataFrame,
+    datetime_min_col: str,
+    datetime_max_col: str,
+    date_min_col: str,
+    date_max_col: str = None,
+    hour_min_col: str = None,
+    hour_max_col: str = None,
 ):
+    """
+    Concatenates date and time columns to form datetime columns.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The input DataFrame.
+    datetime_min_col : str
+        The column name for the minimum datetime.
+    datetime_max_col : str
+        The column name for the maximum datetime.
+    date_min_col : str
+        The column name for the minimum date.
+    date_max_col : str, optional
+        The column name for the maximum date.
+    hour_min_col : str, optional
+        The column name for the minimum hour.
+    hour_max_col : str, optional
+        The column name for the maximum hour.
+
+    """
     assert datetime_min_col
     assert datetime_max_col
     assert date_min_col  # date_min is a required field

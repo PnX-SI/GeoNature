@@ -327,6 +327,9 @@
       "Errors": {
         "Entity": "Entité"
       }
+    },
+    "ImportStatus": {
+      "DeleteSuccessfully": "Import supprimé"
     }
   }
 }

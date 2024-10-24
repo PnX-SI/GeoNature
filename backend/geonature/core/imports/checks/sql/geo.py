@@ -1,4 +1,5 @@
 from geonature.core.imports.checks.errors import ImportCodeError
+from geonature.core.imports.models import BibFields, Entity, TImports
 from sqlalchemy.sql.expression import select, update, join
 import sqlalchemy as sa
 from geoalchemy2.functions import (
@@ -21,13 +22,38 @@ __all__ = [
 ]
 
 
-def set_geom_point(imprt, entity, geom_4326_field, geom_point_field):
+def set_geom_point(
+    imprt: TImports,
+    entity: Entity,
+    geom_4326_field: BibFields,
+    geom_point_field: BibFields,
+) -> None:
+    """
+    Set the_geom_point as the centroid of the geometry in the transient table of an import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to update.
+    entity : Entity
+        The entity to update.
+    geom_4326_field : BibFields
+        Field representing the geometry in the transient table.
+    geom_point_field : BibFields
+        Field representing the centroid of the geometry in the transient table.
+
+    Returns
+    -------
+    None
+    """
     transient_table = imprt.destination.get_transient_table()
     # Set the_geom_point:
     stmt = (
         update(transient_table)
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(transient_table.c[entity.validity_column] == True)
+        .where(
+            transient_table.c.id_import == imprt.id_import,
+            transient_table.c[entity.validity_column] == True,
+        )
         .values(
             {
                 geom_point_field.dest_field: ST_Centroid(
@@ -39,9 +65,25 @@ def set_geom_point(imprt, entity, geom_4326_field, geom_point_field):
     db.session.execute(stmt)
 
 
-def convert_geom_columns(imprt, entity, geom_4326_field, geom_local_field):
+def convert_geom_columns(
+    imprt: TImports,
+    entity: Entity,
+    geom_4326_field: BibFields,
+    geom_local_field: BibFields,
+) -> None:
     """
-    Set geom_local from geom_4326, or geom_4326 from geom_local.
+    Convert the geometry from the file SRID to the local SRID in the transient table of an import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to update.
+    entity : Entity
+        The entity to update.
+    geom_4326_field : BibFields
+        Field representing the geometry in the transient table in SRID 4326.
+    geom_local_field : BibFields
+        Field representing the geometry in the transient table in the local SRID.
     """
     file_srid = imprt.srid
     local_srid = db.session.execute(sa.func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()
@@ -63,9 +105,11 @@ def convert_geom_columns(imprt, entity, geom_4326_field, geom_local_field):
         transient_table = imprt.destination.get_transient_table()
         stmt = (
             update(transient_table)
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[entity.validity_column] == True)
-            .where(transient_table.c[source_col] != None)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == True,
+                transient_table.c[source_col] != None,
+            )
             .values(
                 {
                     dest_col: ST_Transform(transient_table.c[source_col], dest_srid),
@@ -75,7 +119,30 @@ def convert_geom_columns(imprt, entity, geom_4326_field, geom_local_field):
         db.session.execute(stmt)
 
 
-def check_is_valid_geometry(imprt, entity, wkt_field, geom_field):
+def check_is_valid_geometry(
+    imprt: TImports,
+    entity: Entity,
+    wkt_field: BibFields,
+    geom_field: BibFields,
+) -> None:
+    """
+    Check if the geometry is valid in the transient table of an import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    wkt_field : BibFields
+        Field representing the WKT of the geometry.
+    geom_field : BibFields
+        Field representing the geometry.
+
+    Returns
+    -------
+    None
+    """
     # It is useless to check valid WKT when created from X/Y
     transient_table = imprt.destination.get_transient_table()
     where_clause = sa.and_(

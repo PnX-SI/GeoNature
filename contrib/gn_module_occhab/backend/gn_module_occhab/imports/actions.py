@@ -13,7 +13,6 @@ from sqlalchemy.orm import joinedload, aliased
 from sqlalchemy.inspection import inspect
 
 import typing
-import json
 
 from geonature.utils.env import db
 from geonature.core.imports.models import Entity, BibFields, TImports
@@ -83,12 +82,12 @@ class OcchabImportActions(ImportActions):
     def preprocess_transient_data(imprt: TImports, df) -> set:
         updated_cols = set()
         date_min_field = db.session.execute(
-            db.select(BibFields)
+            sa.select(BibFields)
             .where(BibFields.destination == imprt.destination)
             .where(BibFields.name_field == "date_min")
         ).scalar_one()
         date_max_field = db.session.execute(
-            db.select(BibFields)
+            sa.select(BibFields)
             .where(BibFields.destination == imprt.destination)
             .where(BibFields.name_field == "date_max")
         ).scalar_one()
@@ -223,10 +222,9 @@ class OcchabImportActions(ImportActions):
 
     @staticmethod
     def check_station_consistency(imprt):
-        transient_table = imprt.destination.get_transient_table()
         entity_station, _ = get_occhab_entities()
 
-        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
+        _, selected_fields, _ = get_mapping_data(imprt, entity_station)
 
         if "id_station_source" in selected_fields:
             check_entity_data_consistency(
@@ -268,7 +266,6 @@ class OcchabImportActions(ImportActions):
 
         """
 
-        transient_table = imprt.destination.get_transient_table()
         entity_station, _ = get_occhab_entities()
 
         fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
@@ -417,7 +414,7 @@ class OcchabImportActions(ImportActions):
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
         task.update_state(state="PROGRESS", meta={"progress": 0})
-        entity_station, entity_habitat = get_occhab_entities()
+        entity_station, _ = get_occhab_entities()
 
         fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
         init_rows_validity(imprt)
@@ -445,9 +442,13 @@ class OcchabImportActions(ImportActions):
         entities = {
             entity.code: entity
             for entity in (
-                Entity.query.filter_by(destination=imprt.destination)
-                .options(joinedload(Entity.fields))
-                .order_by(Entity.order)
+                db.session.scalars(
+                    sa.select(Entity)
+                    .filter_by(destination=imprt.destination)
+                    .options(joinedload(Entity.fields))
+                    .order_by(Entity.order)
+                )
+                .unique()
                 .all()
             )
         }
@@ -528,11 +529,11 @@ class OcchabImportActions(ImportActions):
         multi-entities (and mono-entity) destination.
         Note: entities must have a single primary key.
         """
-        entities = (
-            Entity.query.filter_by(destination=imprt.destination)
+        entities = db.session.scalars(
+            sa.select(Entity)
+            .filter_by(destination=imprt.destination)
             .order_by(sa.desc(Entity.order))
-            .all()
-        )
+        ).all()
         for entity in entities:
             parent_table = entity.get_destination_table()
             if entity.childs:
