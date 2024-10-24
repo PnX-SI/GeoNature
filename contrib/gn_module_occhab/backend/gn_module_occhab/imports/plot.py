@@ -98,7 +98,7 @@ def distribution_plot(imprt) -> StandaloneEmbedJson:
         fig = figure(
             x_range=Range1d(start=-3, end=3),
             y_range=Range1d(start=-3, end=3),
-            title=f"Distribution des taxons (selon le rang = {category_label})",
+            title=f'Distribution des stations selon "{category_label}"',
             tooltips=[("Number", "@countvalue"), (f"{category_label}", "@rankvalue")],
             toolbar_location=None,
         )
