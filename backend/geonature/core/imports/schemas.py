@@ -18,7 +18,7 @@ class DestinationSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
     module = ma.Nested(ModuleSchema)
 
 
-class MappingTemplateSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+class MappingSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = MappingTemplate
         include_fk = True
@@ -27,3 +27,4 @@ class MappingTemplateSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
 
     destination = ma.Nested(DestinationSchema)
     cruved = fields.Dict()
+    values = fields.Dict()

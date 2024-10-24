@@ -1,5 +1,5 @@
 from flask import request, jsonify, current_app, g
-from geonature.core.imports.schemas import MappingTemplateSchema
+from geonature.core.imports.schemas import MappingSchema
 from werkzeug.exceptions import Forbidden, Conflict, BadRequest, NotFound
 from sqlalchemy.orm.attributes import flag_modified
 import sqlalchemy as sa
@@ -54,7 +54,7 @@ def list_mappings(destination, mappingtype, scope):
         .unique()
         .all()
     )
-    return jsonify(MappingTemplateSchema(many=True).dump(mappings))
+    return jsonify(MappingSchema(many=True).dump(mappings))
 
 
 @blueprint.route("/<destination>/<mappingtype>mappings/<int:id_mapping>/", methods=["GET"])
@@ -69,7 +69,7 @@ def get_mapping(mapping, scope):
         raise Forbidden
     if mapping.active is False:
         raise Forbidden(description="Mapping is not active.")
-    return jsonify(mapping.as_dict())
+    return jsonify(MappingSchema().dump(mapping))
 
 
 @blueprint.route("/<destination>/<mappingtype>mappings/", methods=["POST"])
