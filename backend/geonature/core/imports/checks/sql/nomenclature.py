@@ -3,10 +3,12 @@ from sqlalchemy.sql.expression import select, update
 from sqlalchemy.sql import column
 import sqlalchemy as sa
 
+from geonature.core.gn_meta.models import TDatasets
+
 from geonature.utils.env import db
 
 from geonature.core.imports.models import TImports
-from geonature.core.imports.checks.sql.utils import report_erroneous_rows
+from geonature.core.imports.checks.sql.utils import print_transient_table, report_erroneous_rows
 
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
@@ -117,20 +119,33 @@ def check_nomenclature_exist_proof(
     )
 
 
-# TODO This check will requires to evolve to handle per-row dataset,
-# as private status will require to be checker for each row.
-def check_nomenclature_blurring(imprt, entity, blurring_field):
+def check_nomenclature_blurring(
+    imprt, entity, blurring_field, id_dataset_field, uuid_dataset_field
+):
     """
     Raise an error if blurring not set.
     Required if the dataset is private.
     """
     transient_table = imprt.destination.get_transient_table()
+    id_nomenclature_private = db.session.scalar(
+        select(TNomenclatures.id_nomenclature).where(
+            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "DS_PUBLIQUE"),
+            TNomenclatures.mnemonique == "Privée",
+        )
+    )
     report_erroneous_rows(
         imprt,
         entity,
         error_type=ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
         error_column=blurring_field.name_field,
-        whereclause=(transient_table.c[blurring_field.dest_field] == None),
+        whereclause=sa.and_(
+            sa.or_(
+                transient_table.c[id_dataset_field.name_field] == TDatasets.id_dataset,
+                transient_table.c[uuid_dataset_field.name_field] == TDatasets.unique_dataset_id,
+            ),
+            TDatasets.id_nomenclature_data_origin == id_nomenclature_private,
+            transient_table.c[blurring_field.dest_field] == None,
+        ),
     )
 
 
