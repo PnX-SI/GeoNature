@@ -95,6 +95,11 @@ def small_batch(monkeypatch):
     monkeypatch.setitem(current_app.config["IMPORT"], "DATAFRAME_BATCH_SIZE", 3)
 
 
+@pytest.fixture
+def check_private_jdd(monkeypatch):
+    monkeypatch.setitem(current_app.config["IMPORT"], "CHECK_PRIVATE_JDD_BLURING", True)
+
+
 @pytest.fixture()
 def no_default_nomenclatures(monkeypatch):
     monkeypatch.setitem(
@@ -157,6 +162,10 @@ def uploaded_import(new_import, datasets, import_file_name):
                 content = content.replace(
                     b"FORBIDDEN_DATASET_UUID",
                     datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
+                )
+                content = content.replace(
+                    b"PRIVATE_DATASET_UUID",
+                    datasets["private"].unique_dataset_id.hex.encode("ascii"),
                 )
                 new_import.full_file_name = "jdd_to_import_file.csv"
             else:
@@ -234,7 +243,7 @@ def content_mapped_import(client, import_file_name, loaded_import):
 
 
 @pytest.fixture()
-def prepared_import(client, content_mapped_import, small_batch):
+def prepared_import(client, content_mapped_import, small_batch, check_private_jdd):
     set_logged_user(client, content_mapped_import.authors[0])
     r = client.post(url_for("import.prepare_import", import_id=content_mapped_import.id_import))
     assert r.status_code == 200, r.data
@@ -1322,13 +1331,18 @@ class TestImportsSynthese:
             assert error_row == source_row
 
     @pytest.mark.parametrize("import_file_name", ["jdd_to_import_file.csv"])
-    def test_import_jdd_file(self, imported_import):
+    def test_import_jdd_file(self, imported_import, users):
         assert_import_errors(
             imported_import,
             {
                 # id_dataset errors
                 # The line 2 should not be error (should be the one selected jdd default)
-                (ImportCodeError.DATASET_NOT_AUTHORIZED, "unique_dataset_id", frozenset({2, 4})),
+                (ImportCodeError.DATASET_NOT_AUTHORIZED, "unique_dataset_id", frozenset({2, 4, 6})),
                 (ImportCodeError.DATASET_NOT_FOUND, "unique_dataset_id", frozenset({5})),
+                (
+                    ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
+                    "floutage_dee",
+                    frozenset({6}),
+                ),
             },
         )
