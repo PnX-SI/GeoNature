@@ -27,17 +27,16 @@ def build_sensitive_unsensitive_filters():
     """
     Return where clauses for sensitive and non-sensitive observations.
     """
-    non_sensitive_nomenc = db.session.execute(
-        sa.select(TNomenclatures.id_nomenclature)
-        .where(
-            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
+    non_sensitive_nomenc = db.session.scalar(
+        sa.select(TNomenclatures.id_nomenclature).where(
+            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE"),
+            TNomenclatures.cd_nomenclature == "0",
         )
-        .filter(TNomenclatures.cd_nomenclature == "0")
-    ).scalar_one()
+    )
 
     return (
-        Synthese.id_nomenclature_sensitivity != non_sensitive_nomenc.id_nomenclature,
-        Synthese.id_nomenclature_sensitivity == non_sensitive_nomenc.id_nomenclature,
+        Synthese.id_nomenclature_sensitivity != non_sensitive_nomenc,
+        Synthese.id_nomenclature_sensitivity == non_sensitive_nomenc,
     )
 
 

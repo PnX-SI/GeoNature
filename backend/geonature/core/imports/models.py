@@ -448,6 +448,22 @@ class TImports(InstancePermissionMixin, db.Model):
         elif scope == 3:  # all
             return True
 
+    @staticmethod
+    def filter_by_scope(scope, user=None, **kwargs):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            return sa.false()
+        elif scope in (1, 2):
+            filters = [User.id_role == user.id_role]
+            if scope == 2 and user.id_organisme is not None:
+                filters += [User.id_organisme == user.id_organisme]
+            return TImports.authors.any(sa.or_(*filters))
+        elif scope == 3:
+            return sa.true()
+        else:
+            raise Exception(f"Unexpected scope {scope}")
+
     def as_dict(self, import_as_dict):
         import_as_dict["authors_name"] = "; ".join([author.nom_complet for author in self.authors])
         if self.detected_encoding:
@@ -583,6 +599,25 @@ class MappingTemplate(db.Model):
             )
         elif scope == 3:
             return True
+
+    @staticmethod
+    def filter_by_scope(scope, user=None):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            return sa.false()
+        elif scope in (1, 2):
+            filters = [
+                MappingTemplate.public == True,
+                MappingTemplate.owners.any(id_role=user.id_role),
+            ]
+            if scope == 2 and user.id_organisme is not None:
+                filters.append(MappingTemplate.owners.any(id_organisme=user.id_organisme))
+            return sa.or_(*filters)
+        elif scope == 3:
+            return sa.true()
+        else:
+            raise Exception(f"Unexpected scope {scope}")
 
 
 def optional_conditions_to_jsonschema(name_field: str, optional_conditions: Iterable[str]) -> dict:

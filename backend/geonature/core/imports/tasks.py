@@ -81,13 +81,16 @@ def do_import_in_destination(self, import_id):
     imprt.destination.actions.import_data_to_destination(imprt)
 
     count_entities = 0
-    for entity in (
-        Entity.query.filter_by(destination=imprt.destination).order_by(Entity.order).all()
-    ):
-        fields = BibFields.query.where(
-            BibFields.entities.any(EntityField.entity == entity),
-            BibFields.dest_field != None,
-            BibFields.name_field.in_(imprt.fieldmapping.keys()),
+    entities = db.session.scalars(
+        sa.select(Entity).filter_by(destination=imprt.destination).order_by(Entity.order)
+    ).all()
+    for entity in entities:
+        fields = db.session.scalars(
+            sa.select(BibFields).where(
+                BibFields.entities.any(EntityField.entity == entity),
+                BibFields.dest_field != None,
+                BibFields.name_field.in_(imprt.fieldmapping.keys()),
+            )
         ).all()
         columns_to_count_unique_entities = [
             transient_table.c[field.dest_column] for field in fields
@@ -102,8 +105,9 @@ def do_import_in_destination(self, import_id):
     imprt.statistics["import_count"] = count_entities
 
     # Clear transient data
-    stmt = delete(transient_table).where(transient_table.c.id_import == imprt.id_import)
-    db.session.execute(stmt)
+    db.session.execute(
+        delete(transient_table).where(transient_table.c.id_import == imprt.id_import)
+    )
     imprt.loaded = False
 
     imprt = db.session.get(TImports, import_id, with_for_update={"of": TImports})

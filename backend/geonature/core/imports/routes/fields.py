@@ -2,7 +2,7 @@ from itertools import groupby
 
 from flask import jsonify
 from sqlalchemy.orm import joinedload, contains_eager, selectinload
-
+import sqlalchemy as sa
 from geonature.core.gn_permissions import decorators as permissions
 from pypnnomenclature.models import BibNomenclaturesTypes
 
@@ -14,6 +14,7 @@ from geonature.core.imports.models import (
 )
 
 from geonature.core.imports.blueprint import blueprint
+from geonature.utils.env import db
 
 
 @blueprint.route("/<destination>/fields", methods=["GET"])
@@ -27,16 +28,22 @@ def get_fields(scope, destination):
     You can find a jsonschema of the returned data in the associated test.
     """
     data = []
-    entities = Entity.query.filter_by(destination=destination).order_by(Entity.order).all()
+    entities = db.session.scalars(
+        sa.select(Entity).filter_by(destination=destination).order_by(Entity.order)
+    ).all()
     for entity in entities:
-        entity_fields = (
-            EntityField.query.filter(EntityField.entity == entity)
-            .filter(EntityField.field.has(BibFields.display == True))
+        entity_fields = db.session.scalars(
+            sa.select(EntityField)
+            .where(
+                EntityField.entity == entity,
+                EntityField.field.has(
+                    BibFields.display == True,
+                ),
+            )
             .join(BibThemes)
             .order_by(BibThemes.order_theme, EntityField.order_field)
             .options(selectinload(EntityField.field), selectinload(EntityField.theme))
-            .all()
-        )
+        ).all()
         themes = []
         for id_theme, efs in groupby(entity_fields, lambda ef: ef.theme.id_theme):
             efs = list(efs)
@@ -88,11 +95,16 @@ def get_fields(scope, destination):
 @blueprint.route("/<destination>/nomenclatures", methods=["GET"])
 def get_nomenclatures(destination):
     nomenclature_fields = (
-        BibFields.query.filter(BibFields.destination == destination)
-        .filter(BibFields.nomenclature_type != None)
-        .options(
-            joinedload(BibFields.nomenclature_type).joinedload(BibNomenclaturesTypes.nomenclatures),
+        db.session.scalars(
+            sa.select(BibFields)
+            .where(BibFields.destination == destination, BibFields.nomenclature_type != None)
+            .options(
+                joinedload(BibFields.nomenclature_type).joinedload(
+                    BibNomenclaturesTypes.nomenclatures
+                ),
+            )
         )
+        .unique()
         .all()
     )
     return jsonify(

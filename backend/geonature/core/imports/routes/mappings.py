@@ -1,6 +1,8 @@
 from flask import request, jsonify, current_app, g
+from geonature.core.imports.schemas import MappingTemplateSchema
 from werkzeug.exceptions import Forbidden, Conflict, BadRequest, NotFound
 from sqlalchemy.orm.attributes import flag_modified
+import sqlalchemy as sa
 
 from geonature.utils.env import db
 from geonature.core.gn_permissions import decorators as permissions
@@ -41,12 +43,18 @@ def list_mappings(destination, mappingtype, scope):
     :type type: str
     """
     mappings = (
-        MappingTemplate.query.filter(MappingTemplate.destination == destination)
-        .filter(MappingTemplate.type == mappingtype)
-        .filter(MappingTemplate.active == True)  # noqa: E712
-        .filter_by_scope(scope)
+        db.session.scalars(
+            sa.select(MappingTemplate).where(
+                MappingTemplate.destination == destination,
+                MappingTemplate.type == mappingtype,
+                MappingTemplate.active == True,
+                MappingTemplate.filter_by_scope(scope),
+            )
+        )
+        .unique()
+        .all()
     )
-    return jsonify([mapping.as_dict() for mapping in mappings])
+    return jsonify(MappingTemplateSchema(many=True).dump(mappings))
 
 
 @blueprint.route("/<destination>/<mappingtype>mappings/<int:id_mapping>/", methods=["GET"])
@@ -75,11 +83,15 @@ def add_mapping(destination, mappingtype, scope):
         raise BadRequest("Missing label")
 
     # check if name already exists
-    if db.session.query(
-        MappingTemplate.query.filter_by(
-            destination=destination, type=mappingtype, label=label
-        ).exists()
-    ).scalar():
+    if db.session.scalar(
+        sa.exists(MappingTemplate)
+        .where(
+            MappingTemplate.destination == destination,
+            MappingTemplate.type == mappingtype,
+            MappingTemplate.label == label,
+        )
+        .select()
+    ):
         raise Conflict(description="Un mapping de ce type portant ce nom existe déjà")
 
     MappingClass = FieldMapping if mappingtype == "FIELD" else ContentMapping
@@ -112,9 +124,15 @@ def update_mapping(mapping, scope):
     label = request.args.get("label")
     if label:
         # check if name already exists
-        if db.session.query(
-            MappingTemplate.query.filter_by(type=mapping.type, label=label).exists()
-        ).scalar():
+        template_exists = db.session.scalar(
+            sa.exists(MappingTemplate)
+            .where(
+                MappingTemplate.type == mapping.type,
+                MappingTemplate.label == label,
+            )
+            .select()
+        )
+        if template_exists:
             raise Conflict(description="Un mapping de ce type portant ce nom existe déjà")
         mapping.label = label
     if request.is_json:
