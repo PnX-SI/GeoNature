@@ -110,7 +110,7 @@ def check_datetime_field(
     Notes
     -----
     The error codes are:
-        - INVALID_DATE: the column is not of datetime type.
+        - INVALID_DATE: the value is not of datetime type.
     """
     datetime_col = df[source_field].apply(lambda x: convert_to_datetime(x) if pd.notnull(x) else x)
     if required:
@@ -161,7 +161,7 @@ def check_uuid_field(
     Notes
     -----
     The error codes are:
-        - INVALID_UUID: the column is not a UUID.
+        - INVALID_UUID: the value is not a valid UUID.
     """
     uuid_col = df[source_field].apply(lambda x: convert_to_uuid(x) if pd.notnull(x) else x)
     if required:
@@ -212,7 +212,7 @@ def check_integer_field(
     Notes
     -----
     The error codes are:
-        - INVALID_INTEGER: the column is not of integer type.
+        - INVALID_INTEGER: the value is not of integer type.
     """
     integer_col = df[source_field].apply(lambda x: convert_to_integer(x) if pd.notnull(x) else x)
     if required:
@@ -237,7 +237,7 @@ def check_numeric_field(
     df: pd.DataFrame, source_field: str, target_field: str, required: bool
 ) -> Set[str]:
     """
-    Check if a column is a numeric and convert it to numeric type.
+    Check if column string values are numerics and convert it to numeric type.
 
     Parameters
     ----------
@@ -263,7 +263,7 @@ def check_numeric_field(
     Notes
     -----
     The error codes are:
-        - INVALID_NUMERIC: the column is not of numeric type.
+        - INVALID_NUMERIC: the value is not of numeric type.
     """
 
     def to_numeric(x):
@@ -295,7 +295,7 @@ def check_unicode_field(
     df: pd.DataFrame, field: str, field_length: Optional[int]
 ) -> Iterator[Dict[str, Any]]:
     """
-    Check if a column is a unicode and check its length.
+    Check if column values have the right length.
 
     Parameters
     ----------
@@ -313,7 +313,7 @@ def check_unicode_field(
     Notes
     -----
     The error codes are:
-        - INVALID_CHAR_LENGTH: the column is too long.
+        - INVALID_CHAR_LENGTH: the string is too long.
     """
     if field_length is None:
         return
@@ -349,8 +349,8 @@ def check_boolean_field(df, source_col, dest_col, required):
     Notes
     -----
     The error codes are:
-        - MISSING_VALUE: the column is mandatory and contains null values.
-        - INVALID_BOOL: the column is not of boolean type.
+        - MISSING_VALUE: the value is mandatory but it's missing (null).
+        - INVALID_BOOL: the value is not a boolean.
 
     """
     df[dest_col] = df[source_col].apply(int).apply(bool)

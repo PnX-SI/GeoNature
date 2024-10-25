@@ -67,12 +67,15 @@ def check_wkt_inside_area_id(wkt: str, id_area: int, wkt_srid: int):
         srid of the provided wkt
     """
     local_srid = db.session.execute(sa.func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()
-    query = LAreas.query.filter(LAreas.id_area == id_area).filter(
-        LAreas.geom.ST_Contains(ST_Transform(ST_GeomFromText(wkt, wkt_srid), local_srid))
-    )
-    data = query.first()
 
-    return data is not None
+    return db.session.scalar(
+        sa.exists(LAreas)
+        .where(
+            LAreas.id_area == id_area,
+            LAreas.geom.ST_Contains(ST_Transform(ST_GeomFromText(wkt, wkt_srid), local_srid)),
+        )
+        .select()
+    )
 
 
 @dataframe_check
@@ -97,21 +100,21 @@ def check_geometry(
     file_srid : int
         The srid of the file
     geom_4326_field : BibFields
-        The column in the dataframe that contains the geometry in SRID 4326
+        The column in the dataframe that contains geometries in SRID 4326
     geom_local_field : BibFields
-        The column in the dataframe that contains the geometry in the SRID of the area
+        The column in the dataframe that contains geometries in the SRID of the area
     wkt_field : BibFields, optional
-        The column in the dataframe that contains the WKT of the geometry
+        The column in the dataframe that contains geometries' WKT
     latitude_field : BibFields, optional
-        The column in the dataframe that contains the latitude of the geometry
+        The column in the dataframe that contains latitudes
     longitude_field : BibFields, optional
-        The column in the dataframe that contains the longitude of the geometry
+        The column in the dataframe that contains longitudes
     codecommune_field : BibFields, optional
-        The column in the dataframe that contains the code commune of the geometry
+        The column in the dataframe that contains commune codes
     codemaille_field : BibFields, optional
-        The column in the dataframe that contains the code maille of the geometry
+        The column in the dataframe that contains maille codes
     codedepartement_field : BibFields, optional
-        The column in the dataframe that contains the code departement of the geometry
+        The column in the dataframe that contains departement codes
     id_area : int, optional
         The id of the area to check if the geometry is inside
 

@@ -38,9 +38,9 @@ def set_geom_point(
     entity : Entity
         The entity to update.
     geom_4326_field : BibFields
-        Field representing the geometry in the transient table.
+        Field containing the geometry in the transient table.
     geom_point_field : BibFields
-        Field representing the centroid of the geometry in the transient table.
+        Field to store the centroid of the geometry in the transient table.
 
     Returns
     -------
@@ -135,13 +135,10 @@ def check_is_valid_geometry(
     entity : Entity
         The entity to check.
     wkt_field : BibFields
-        Field representing the WKT of the geometry.
+        Field containing the source WKT of the geometry.
     geom_field : BibFields
-        Field representing the geometry.
+        Field containing the geometry from the WKT in `wkt_field` to be validated.
 
-    Returns
-    -------
-    None
     """
     # It is useless to check valid WKT when created from X/Y
     transient_table = imprt.destination.get_transient_table()
@@ -158,9 +155,29 @@ def check_is_valid_geometry(
     )
 
 
-def check_geometry_outside(imprt, entity, geom_local_field, id_area):
+def check_geometry_outside(
+    imprt: TImports,
+    entity: Entity,
+    geom_local_field: BibFields,
+    id_area: int,
+) -> None:
+    """
+    For an import, check if one or more geometries in the transient table are outside a defined area.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to check.
+    entity : Entity
+        The entity to check.
+    geom_local_field : BibFields
+        Field containing the geometry in the local SRID of the area.
+    id_area : int
+        The id of the area to check if the geometry is inside.
+
+    """
     transient_table = imprt.destination.get_transient_table()
-    area = LAreas.query.filter(LAreas.id_area == id_area).one()
+    area = db.session.execute(sa.select(LAreas).where(LAreas.id_area == id_area)).scalar_one()
     report_erroneous_rows(
         imprt,
         entity,
