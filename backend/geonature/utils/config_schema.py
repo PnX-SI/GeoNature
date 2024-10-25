@@ -437,6 +437,8 @@ class Synthese(Schema):
     # SYNTHESE - TAXON_SHEET
     TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
 
+    FIELD_OBSERVERS_SEPARATOR = fields.String(load_default=",")
+
     @pre_load
     def warn_deprecated(self, data, **kwargs):
         deprecated = {
