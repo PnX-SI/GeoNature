@@ -1035,6 +1035,9 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
         page = request.args.get("page", 1, int)
         sort_by = request.args.get("sort_by", "observer")
         sort_order = request.args.get("sort_order", SortOrder.ASC, SortOrder)
+        field_separator = request.args.get(
+            "field_separator", app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATOR"]
+        )
 
         # Handle sorting
         if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:
@@ -1044,10 +1047,9 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
 
         query = (
             db.session.query(
-                # func.concat(User.prenom_role, " ", User.nom_role).label("observer"),
-                func.trim(func.unnest(func.string_to_array(Synthese.observers, ","))).label(
-                    "observer"
-                ),
+                func.trim(
+                    func.unnest(func.string_to_array(Synthese.observers, field_separator))
+                ).label("observer"),
                 func.min(Synthese.date_min).label("date_min"),
                 func.max(Synthese.date_max).label("date_max"),
                 func.count(Synthese.id_synthese).label("observation_count"),
