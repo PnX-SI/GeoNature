@@ -25,6 +25,5 @@ class MappingSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         sqla_session = db.session
 
-    destination = ma.Nested(DestinationSchema)
     cruved = fields.Dict()
     values = fields.Dict()

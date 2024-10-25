@@ -53,7 +53,13 @@ def default_occhab_destination(app, default_destination, occhab_destination):
 
 @pytest.fixture()
 def fieldmapping(occhab_destination):
-    fields = BibFields.query.filter_by(destination=occhab_destination, display=True).all()
+    fields = (
+        db.session.scalars(
+            sa.select(BibFields).filter_by(destination=occhab_destination, display=True)
+        )
+        .unique()
+        .all()
+    )
     return {field.name_field: field.name_field for field in fields}
 
 
@@ -63,11 +69,17 @@ def contentmapping(occhab_destination):
     This content mapping matches cd_nomenclature AND mnemonique.
     """
     fields = (
-        BibFields.query.filter_by(destination=occhab_destination, display=True)
-        .filter(BibFields.nomenclature_type != None)
-        .options(
-            joinedload(BibFields.nomenclature_type).joinedload(BibNomenclaturesTypes.nomenclatures),
+        db.session.scalars(
+            sa.select(BibFields)
+            .filter_by(destination=occhab_destination, display=True)
+            .filter(BibFields.nomenclature_type != None)
+            .options(
+                joinedload(BibFields.nomenclature_type).joinedload(
+                    BibNomenclaturesTypes.nomenclatures
+                ),
+            )
         )
+        .unique()
         .all()
     )
     return {
