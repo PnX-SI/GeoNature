@@ -195,7 +195,8 @@ def check_nomenclature_source_status(
     imprt: TImports, entity: Entity, source_status_field: BibFields, ref_biblio_field: BibFields
 ) -> None:
     """
-    Check the nomenclature source status and raise an error if conditions are met.
+    Check the nomenclature source status and raise an error if the status is "Lit" (Literature)
+    whereas the reference biblio field is empty.
 
     Parameters
     ----------
@@ -244,7 +245,8 @@ def check_nomenclature_technique_collect(
     technical_precision_field: BibFields,
 ) -> None:
     """
-    Check the nomenclature source status and raise an error if conditions are met.
+    Check the nomenclature source status and raise an error if the status is "Autre, préciser"
+    whereas technical precision field is empty.
 
     Parameters
     ----------

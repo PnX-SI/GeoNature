@@ -59,7 +59,7 @@ def convert_to_datetime(value_raw):
 
     if not converted_date:
         try:
-            return datetime.fromisoformat(value_raw)
+            converted_date = datetime.fromisoformat(value_raw)
         except:
             pass
 

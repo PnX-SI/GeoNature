@@ -444,7 +444,7 @@ class OcchabImportActions(ImportActions):
             for entity in (
                 db.session.scalars(
                     sa.select(Entity)
-                    .filter_by(destination=imprt.destination)
+                    .where(Entity.destination==imprt.destination)
                     .options(joinedload(Entity.fields))
                     .order_by(Entity.order)
                 )
@@ -531,7 +531,7 @@ class OcchabImportActions(ImportActions):
         """
         entities = db.session.scalars(
             sa.select(Entity)
-            .filter_by(destination=imprt.destination)
+            .where(Entity.destination==imprt.destination)
             .order_by(sa.desc(Entity.order))
         ).all()
         for entity in entities:
