@@ -1053,13 +1053,10 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_OBSERVERS"]:
                 func.min(Synthese.date_min).label("date_min"),
                 func.max(Synthese.date_max).label("date_max"),
                 func.count(Synthese.id_synthese).label("observation_count"),
-                func.count(TMedias.uuid_attached_row).label("media_count"),
+                func.count(TMedias.id_media).label("media_count"),
             )
             .group_by("observer")
-            # .group_by(User.id_role)
-            # .join(CorObserverSynthese, CorObserverSynthese.id_synthese == Synthese.id_synthese)
-            # .join(User, User.id_role == CorObserverSynthese.id_role)
-            .outerjoin(TMedias, TMedias.uuid_attached_row == Synthese.unique_id_sinp)
+            .outerjoin(Synthese.medias)
             .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
         )
         query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
