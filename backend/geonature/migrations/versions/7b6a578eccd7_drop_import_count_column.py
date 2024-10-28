@@ -21,7 +21,7 @@ def upgrade():
     op.execute(
         """
         UPDATE gn_imports.t_imports
-        SET statistics = statistics::jsonb || jsonb_build_object('import_count', import_count);
+        SET statistics = statistics::jsonb || jsonb_build_object('import_count', import_count) || jsonb_build_object('nb_line_valid', import_count);
     """
     )
     op.drop_column(

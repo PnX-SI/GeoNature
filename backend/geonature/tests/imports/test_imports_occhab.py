@@ -418,6 +418,7 @@ class TestImportsOcchab:
             "import_count": 18,
             "station_count": 7,
             "habitat_count": 11,
+            "nb_line_valid": 13,
         }
         assert (
             db.session.scalar(
@@ -544,6 +545,7 @@ class TestImportsOcchab:
             "import_count": 9,
             "station_count": 3,
             "habitat_count": 6,
+            "nb_line_valid": 7,
         }
         assert (
             db.session.scalar(

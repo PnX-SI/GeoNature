@@ -104,6 +104,14 @@ def do_import_in_destination(self, import_id):
         count_entities += n_valid_data
     imprt.statistics["import_count"] = count_entities
 
+    # COUNT VALID ROW in SOURCE FILE
+    imprt.statistics["nb_line_valid"] = db.session.execute(
+        select(func.count("*"))
+        .select_from(transient_table)
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(sa.or_(*[transient_table.c[entity.validity_column] != False for entity in entities]))
+    ).scalar()
+
     # Clear transient data
     db.session.execute(
         delete(transient_table).where(transient_table.c.id_import == imprt.id_import)

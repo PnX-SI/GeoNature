@@ -496,24 +496,33 @@ def preview_valid_data(scope, imprt):
         columns_to_count_unique_entities = [
             transient_table.c[field.dest_column] for field in fields
         ]
+
         valid_data = db.session.execute(
             select(*[transient_table.c[field.dest_field] for field in fields])
             .distinct()
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[entity.validity_column] == True)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == True,
+            )
             .limit(100)
         ).all()
+
         n_valid_data = db.session.execute(
             select(func.count(func.distinct(*columns_to_count_unique_entities)))
             .select_from(transient_table)
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[entity.validity_column] == True)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == True,
+            )
         ).scalar()
+
         n_invalid_data = db.session.execute(
             select(func.count(func.distinct(*columns_to_count_unique_entities)))
             .select_from(transient_table)
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[entity.validity_column] == False)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == False,
+            )
         ).scalar()
         data["entities"].append(
             {
