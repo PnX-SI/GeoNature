@@ -6,7 +6,7 @@ Cette documentation est indicative car non-spécifique à GeoNature. Elle donne 
 Utilisation de Cerbot
 ---------------------
 
-Source : https://korben.info/securiser-facilement-gratuitement-site-https.html
+**Source.** `Sécuriser facilement et gratuitement un site avec HTTPS  <https://korben.info/securiser-facilement-gratuitement-site-https.html>`_
 
 La procédure décrit une méthode de certification HTTPS de votre domaine, grâce au service `Let's Encrypt <https://letsencrypt.org/>`_. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.
 
