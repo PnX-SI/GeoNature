@@ -15,7 +15,7 @@
           <pnx-destinations
             class="Toolbar__destinations"
             label="{{ 'Form.Filter' | translate }} {{ 'By' | translate | lowercase }} {{
-              'Import.Destinations' | translate | lowercase
+              'Import.Destination' | translate | lowercase
             }}"
             [parentFormControl]="selectDestinationForm"
             (onChange)="resetPage()"
@@ -76,7 +76,6 @@
             name="{{ col.name }}"
             [prop]="col.prop"
             [sortable]="col.filter"
-            [maxWidth]="col.max_width"
           >
             <ng-template
               let-row="row"
@@ -92,7 +91,7 @@
                   <ng-container *ngSwitchCase="'dataset.dataset_name'">
                     <a
                       routerLink="/metadata/dataset_detail/{{ row.id_dataset }}"
-                      matTooltip="{{ col.name }}"
+                      matTooltip="Voir la fiche du jeu de données"
                     >
                       {{ row.dataset ? row.dataset.dataset_name : '' }}
                     </a>
@@ -107,9 +106,9 @@
                     >
                       {{ row[col.prop] }}
                     </a>
-                    <ng-container *ngSwitchCase="'statistics_rows'">
-                      {{ formattedRowCount(row) }}
-                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'statistics_rows'">
+                    {{ formattedRowCount(row) }}
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     {{ row[col.prop] }}
@@ -167,14 +166,7 @@
             [draggable]="false"
             [maxWidth]="50"
           >
-            <ng-template ngx-datatable-header-template>
-              <i
-                class="fa fa-bar-chart"
-                aria-hidden="true"
-                data-toggle="dropdown"
-                aria-expanded="false"
-              ></i>
-            </ng-template>
+            <ng-template ngx-datatable-header-template>Stats</ng-template>
             <ng-template
               ngx-datatable-cell-template
               let-row="row"

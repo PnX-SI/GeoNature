@@ -2,7 +2,7 @@ import { USERS } from './constants/users';
 import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
 import { SELECTOR_IMPORT_LIST_TABLE } from './constants/selectors';
 
-const COLUMN_NAME = 'Voir la fiche du JDD';
+const COLUMN_NAME = 'Jeu de données';
 const JDD_LIST = ['JDD-TEST-IMPORT-ADMIN', 'JDD-TEST-IMPORT-2', 'JDD-TEST-IMPORT-3'];
 
 // ////////////////////////////////////////////////////////////////////////////

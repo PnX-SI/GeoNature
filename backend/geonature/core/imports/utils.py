@@ -338,9 +338,11 @@ def load_transient_data_in_dataframe(
     transient_table = imprt.destination.get_transient_table()
     source_cols = ["id_import", "line_no", entity.validity_column] + source_cols
     stmt = (
-        select([transient_table.c[col] for col in source_cols])
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(transient_table.c[entity.validity_column].isnot(None))
+        select(*[transient_table.c[col] for col in source_cols])
+        .where(
+            transient_table.c.id_import == imprt.id_import,
+            transient_table.c[entity.validity_column].isnot(None),
+        )
         .order_by(transient_table.c.line_no)
     )
     if offset is not None:

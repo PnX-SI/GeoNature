@@ -20,6 +20,8 @@ from geonature.core.imports.checks.dataframe.geometry import (
     check_geometry_inside_l_areas,
 )
 from ref_geo.models import LAreas
+from geonature.utils.env import db
+import sqlalchemy as sa
 
 
 Error = namedtuple("Error", ["error_code", "column", "invalid_rows"], defaults=([],))
@@ -27,23 +29,28 @@ Error = namedtuple("Error", ["error_code", "column", "invalid_rows"], defaults=(
 
 @pytest.fixture()
 def sample_area():
-    return LAreas.query.filter(LAreas.area_name == "Bouches-du-Rhône").one()
+    return db.session.execute(
+        sa.select(LAreas).filter(LAreas.area_name == "Bouches-du-Rhône")
+    ).scalar_one()
 
 
 @pytest.fixture()
 def imprt():
+    dest = db.session.execute(
+        sa.select(Destination).where(Destination.module.has(TModules.module_code == "SYNTHESE"))
+    ).scalar_one()
     return TImports(
         id_import=42,
         srid="2154",
-        destination=Destination.query.filter(
-            Destination.module.has(TModules.module_code == "SYNTHESE")
-        ).one(),
+        destination=dest,
     )
 
 
 def get_fields(imprt, names):
     return {
-        name: BibFields.query.filter_by(destination=imprt.destination, name_field=name).one()
+        name: db.session.execute(
+            sa.select(BibFields).filter_by(destination=imprt.destination, name_field=name)
+        ).scalar_one()
         for name in names
     }
 

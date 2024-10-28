@@ -275,6 +275,7 @@
     "DestinationLabel": "Destination",
     "DestinatinationDatasetLabel": "Jeu de données",
     "Destinations": "Destinations",
+    "Destination": "Destination",
     "FileUpload": " Téléversement du fichier ",
     "ChooseDataset": "Choisir un jeu de données :",
     "ChooseDestination": "Choisir une destination",
@@ -327,6 +328,9 @@
       "Errors": {
         "Entity": "Entité"
       }
+    },
+    "ImportStatus": {
+      "DeleteSuccessfully": "Import supprimé"
     }
   }
 }

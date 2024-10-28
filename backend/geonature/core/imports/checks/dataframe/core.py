@@ -24,7 +24,7 @@ __all__ = ["check_required_values", "check_counts", "check_datasets"]
     ImportCodeError.NO_GEOM,
     "Champs géométriques",
 )
-def check_required_values(df, fields: Dict[str, BibFields]):
+def check_required_values(df: pd.DataFrame, fields: Dict[str, BibFields]):
     """
     Check if required values are present in the dataframe.
 
@@ -82,7 +82,7 @@ def check_required_values(df, fields: Dict[str, BibFields]):
                 }
 
 
-def _check_ordering(df, min_field, max_field):
+def _check_ordering(df: pd.DataFrame, min_field: str, max_field: str):
     """
     Check if the values in the `min_field` are lower or equal to the values
     in the `max_field` for all the rows of the dataframe `df`.

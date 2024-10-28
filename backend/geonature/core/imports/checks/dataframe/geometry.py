@@ -1,6 +1,7 @@
 from functools import partial
 
 from geonature.core.imports.checks.errors import ImportCodeError
+from geonature.core.imports.models import BibFields
 import sqlalchemy as sa
 from geoalchemy2.functions import ST_Transform, ST_GeomFromWKB, ST_GeomFromText
 import pandas as pd
@@ -18,8 +19,7 @@ from .utils import dataframe_check
 
 def get_srid_bounding_box(srid):
     """
-    calculate the local bounding box and
-    return a shapely polygon of this BB with local coordq
+    Return the local bounding box for a given srid
     """
     xmin, ymin, xmax, ymax = CRS.from_epsg(srid).area_of_use.bounds
     bounding_polygon_4326 = Polygon([(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)])
@@ -47,45 +47,53 @@ def check_bound(p, bounding_box: Polygon):
 
 def check_geometry_inside_l_areas(geometry: BaseGeometry, id_area: int, geom_srid: int):
     """
-    Like check_wkt_inside_l_areas but with a conversion before
+    Same as `check_wkt_inside_l_areas` except we use a shapely geometry.
     """
-    wkt = geometry.wkt
-    return check_wkt_inside_area_id(wkt=wkt, id_area=id_area, wkt_srid=geom_srid)
+    return check_wkt_inside_area_id(wkt=geometry.wkt, id_area=id_area, wkt_srid=geom_srid)
 
 
 def check_wkt_inside_area_id(wkt: str, id_area: int, wkt_srid: int):
     """
     Checks if the provided wkt is inside the area defined
-    by id_area
-    Args:
-        wkt(str): geometry to check if inside the area
-        id_area(int): id to get the area in ref_geo.l_areas
-        wkt_srid(str): srid of the provided wkt
+    by id_area.
+
+    Parameters
+    ----------
+    wkt : str
+        geometry to check if inside the area
+    id_area : int
+        id to get the area in ref_geo.l_areas
+    wkt_srid : str
+        srid of the provided wkt
     """
     local_srid = db.session.execute(sa.func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()
-    query = LAreas.query.filter(LAreas.id_area == id_area).filter(
-        LAreas.geom.ST_Contains(ST_Transform(ST_GeomFromText(wkt, wkt_srid), local_srid))
-    )
-    data = query.first()
 
-    return data is not None
+    return db.session.scalar(
+        sa.exists(LAreas)
+        .where(
+            LAreas.id_area == id_area,
+            LAreas.geom.ST_Contains(ST_Transform(ST_GeomFromText(wkt, wkt_srid), local_srid)),
+        )
+        .select()
+    )
 
 
 @dataframe_check
 def check_geometry(
-    df,
-    file_srid,
-    geom_4326_field,
-    geom_local_field,
-    wkt_field=None,
-    latitude_field=None,
-    longitude_field=None,
-    codecommune_field=None,
-    codemaille_field=None,
-    codedepartement_field=None,
+    df: pd.DataFrame,
+    file_srid: int,
+    geom_4326_field: BibFields,
+    geom_local_field: BibFields,
+    wkt_field: BibFields = None,
+    latitude_field: BibFields = None,
+    longitude_field: BibFields = None,
+    codecommune_field: BibFields = None,
+    codemaille_field: BibFields = None,
+    codedepartement_field: BibFields = None,
     id_area: int = None,
 ):
     """
+
     What this check do:
     - check there is at least a wkt, a x/y or a code defined for each row
       (report NO-GEOM if there are not, or MULTIPLE_ATTACHMENT_TYPE_CODE if several are defined)
@@ -100,6 +108,32 @@ def check_geometry(
     - set geom_point
     - check geom validity (ST_IsValid)
     FIXME: area from code are never checked in bounding box!
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check
+    file_srid : int
+        The srid of the file
+    geom_4326_field : BibFields
+        The column in the dataframe that contains geometries in SRID 4326
+    geom_local_field : BibFields
+        The column in the dataframe that contains geometries in the SRID of the area
+    wkt_field : BibFields, optional
+        The column in the dataframe that contains geometries' WKT
+    latitude_field : BibFields, optional
+        The column in the dataframe that contains latitudes
+    longitude_field : BibFields, optional
+        The column in the dataframe that contains longitudes
+    codecommune_field : BibFields, optional
+        The column in the dataframe that contains commune codes
+    codemaille_field : BibFields, optional
+        The column in the dataframe that contains maille codes
+    codedepartement_field : BibFields, optional
+        The column in the dataframe that contains departement codes
+    id_area : int, optional
+        The id of the area to check if the geometry is inside (Not Implemented)
+
     """
 
     local_srid = db.session.execute(sa.func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()

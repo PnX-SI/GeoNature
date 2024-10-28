@@ -1,6 +1,6 @@
 export const FILTERS_TABLE = [
   {
-    columnName: 'Voir la fiche du JDD',
+    columnName: 'Jeu de données',
     searchTerm: ['JDD-TEST', 'JDD-TEST-IMPORT-ADMIN', 'JDD-INVALID'],
     expectedRowsCount: [4, 1, 0],
   },

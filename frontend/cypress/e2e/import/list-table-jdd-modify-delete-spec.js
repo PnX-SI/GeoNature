@@ -12,7 +12,7 @@ import {
 //
 // ////////////////////////////////////////////////////////////////////////////
 
-const COLUMN_NAME = 'Voir la fiche du JDD';
+const COLUMN_NAME = 'Jeu de données';
 const JDD_LIST = [
   {
     jdd_name: 'JDD-TEST-IMPORT-ADMIN',

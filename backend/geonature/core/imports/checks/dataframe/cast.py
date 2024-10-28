@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Any, Dict, Iterator, Optional, Set
 import re
 from uuid import UUID
 from itertools import product
@@ -9,11 +9,28 @@ import pandas as pd
 from sqlalchemy.sql import sqltypes
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 
-from geonature.core.imports.models import BibFields
+from geonature.core.imports.models import BibFields, Entity
 from .utils import dataframe_check
 
 
 def convert_to_datetime(value_raw):
+    """
+    Try to convert a date string to a datetime object.
+    If the input string does not match any of compatible formats, it will return
+    None.
+
+    Parameters
+    ----------
+    value_raw : str
+        The input string to convert
+
+    Returns
+    -------
+    converted_date : datetime or None
+        The converted datetime object or None if the conversion failed
+    """
+    converted_date: datetime = None
+
     value = value_raw.strip()
     value = re.sub("[ ]+", " ", value)
     value = re.sub("[/.:]", "-", value)
@@ -35,33 +52,66 @@ def convert_to_datetime(value_raw):
     for date_format, time_format in product(date_formats, time_formats):
         fmt = (date_format + " " + time_format) if time_format else date_format
         try:
-            return datetime.strptime(value, fmt)
+            converted_date = datetime.strptime(value, fmt)
+            break  # If successful conversion, will stop the loop
         except ValueError:
             continue
 
-    try:
-        return datetime.fromisoformat(value_raw)
-    except:
-        pass
+    if not converted_date:
+        try:
+            converted_date = datetime.fromisoformat(value_raw)
+        except:
+            pass
 
-    return None
+    return converted_date
 
 
 def convert_to_uuid(value, version=4):
     try:
         return UUID(str(value), version=version).hex
-    except Exception:
+    except ValueError:
         return None
 
 
 def convert_to_integer(value):
     try:
         return int(value)
-    except Exception:
+    except ValueError:
         return None
 
 
-def check_datetime_field(df, source_field, target_field, required):
+def check_datetime_field(
+    df: pd.DataFrame, source_field: str, target_field: str, required: bool
+) -> Set[str]:
+    """
+    Check if a column is a datetime and convert it to datetime type.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    source_field : str
+        The name of the column to check.
+    target_field : str
+        The name of the column where to store the result.
+    required : bool
+        Whether the column is mandatory or not.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code, the column name, and the invalid rows.
+
+    Returns
+    -------
+    set
+        Set containing the name of the target field.
+
+    Notes
+    -----
+    The error codes are:
+        - INVALID_DATE: the value is not of datetime type.
+    """
     datetime_col = df[source_field].apply(lambda x: convert_to_datetime(x) if pd.notnull(x) else x)
     if required:
         invalid_rows = df[datetime_col.isna()]
@@ -81,7 +131,38 @@ def check_datetime_field(df, source_field, target_field, required):
     return {target_field}
 
 
-def check_uuid_field(df, source_field, target_field, required):
+def check_uuid_field(
+    df: pd.DataFrame, source_field: str, target_field: str, required: bool
+) -> Set[str]:
+    """
+    Check if a column is a UUID and convert it to UUID type.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    source_field : str
+        The name of the column to check.
+    target_field : str
+        The name of the column where to store the result.
+    required : bool
+        Whether the column is mandatory or not.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code, the column name, and the invalid rows.
+
+    Returns
+    -------
+    set
+        Set containing the name of the target field.
+
+    Notes
+    -----
+    The error codes are:
+        - INVALID_UUID: the value is not a valid UUID.
+    """
     uuid_col = df[source_field].apply(lambda x: convert_to_uuid(x) if pd.notnull(x) else x)
     if required:
         invalid_rows = df[uuid_col.isna()]
@@ -101,7 +182,38 @@ def check_uuid_field(df, source_field, target_field, required):
     return {target_field}
 
 
-def check_integer_field(df, source_field, target_field, required):
+def check_integer_field(
+    df: pd.DataFrame, source_field: str, target_field: str, required: bool
+) -> Set[str]:
+    """
+    Check if a column is an integer and convert it to integer type.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    source_field : str
+        The name of the column to check.
+    target_field : str
+        The name of the column where to store the result.
+    required : bool
+        Whether the column is mandatory or not.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code, the column name, and the invalid rows.
+
+    Returns
+    -------
+    set
+        Set containing the name of the target field.
+
+    Notes
+    -----
+    The error codes are:
+        - INVALID_INTEGER: the value is not of integer type.
+    """
     integer_col = df[source_field].apply(lambda x: convert_to_integer(x) if pd.notnull(x) else x)
     if required:
         invalid_rows = df[integer_col.isna()]
@@ -121,7 +233,39 @@ def check_integer_field(df, source_field, target_field, required):
     return {target_field}
 
 
-def check_numeric_field(df, source_field, target_field, required):
+def check_numeric_field(
+    df: pd.DataFrame, source_field: str, target_field: str, required: bool
+) -> Set[str]:
+    """
+    Check if column string values are numerics and convert it to numeric type.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    source_field : str
+        The name of the column to check.
+    target_field : str
+        The name of the column where to store the result.
+    required : bool
+        Whether the column is mandatory or not.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code, the column name, and the invalid rows.
+
+    Returns
+    -------
+    set
+        Set containing the name of the target field.
+
+    Notes
+    -----
+    The error codes are:
+        - INVALID_NUMERIC: the value is not of numeric type.
+    """
+
     def to_numeric(x):
         try:
             return float(x)
@@ -147,7 +291,30 @@ def check_numeric_field(df, source_field, target_field, required):
     return {target_field}
 
 
-def check_unicode_field(df, field, field_length):
+def check_unicode_field(
+    df: pd.DataFrame, field: str, field_length: Optional[int]
+) -> Iterator[Dict[str, Any]]:
+    """
+    Check if column values have the right length.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    field : str
+        The name of the column to check.
+    field_length : Optional[int]
+        The maximum length of the column.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code, the column name, and the invalid rows.
+    Notes
+    -----
+    The error codes are:
+        - INVALID_CHAR_LENGTH: the string is too long.
+    """
     if field_length is None:
         return
     length = df[field].apply(lambda x: len(x) if pd.notnull(x) else x)
@@ -182,8 +349,8 @@ def check_boolean_field(df, source_col, dest_col, required):
     Notes
     -----
     The error codes are:
-        - MISSING_VALUE: the column is mandatory and contains null values.
-        - INVALID_BOOL: the column is not of boolean type.
+        - MISSING_VALUE: the value is mandatory but it's missing (null).
+        - INVALID_BOOL: the value is not a boolean.
 
     """
     df[dest_col] = df[source_col].apply(int).apply(bool)
@@ -198,7 +365,39 @@ def check_boolean_field(df, source_col, dest_col, required):
     return {dest_col}
 
 
-def check_anytype_field(df, field_type, source_col, dest_col, required):
+def check_anytype_field(
+    df: pd.DataFrame,
+    field_type: sqltypes.TypeEngine,
+    source_col: str,
+    dest_col: str,
+    required: bool,
+) -> Set[str]:
+    """
+    Check a field in a dataframe according to its type.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    field_type : sqlalchemy.TypeEngine
+        The type of the column to check.
+    source_col : str
+        The name of the column to check.
+    dest_col : str
+        The name of the column where to store the result.
+    required : bool
+        Whether the column is mandatory or not.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code and the rows with errors.
+
+    Returns
+    -------
+    set
+        Set containing the name of columns updated in the dataframe.
+    """
     updated_cols = set()
     if isinstance(field_type, sqltypes.DateTime):
         updated_cols |= yield from check_datetime_field(df, source_col, dest_col, required)
@@ -220,7 +419,24 @@ def check_anytype_field(df, field_type, source_col, dest_col, required):
 
 
 @dataframe_check
-def check_types(entity, df, fields: Dict[str, BibFields]):
+def check_types(entity: Entity, df: pd.DataFrame, fields: Dict[str, BibFields]) -> Set[str]:
+    """
+    Check the types of columns in a dataframe based on the provided fields.
+
+    Parameters
+    ----------
+    entity : Entity
+        The entity to check.
+    df : pd.DataFrame
+        The dataframe to check.
+    fields : Dict[str, BibFields]
+        A dictionary mapping column names to their corresponding BibFields.
+
+    Returns
+    -------
+    Set[str]
+        Set containing the names of updated columns.
+    """
     updated_cols = set()
     destination_table = entity.get_destination_table()
     transient_table = entity.destination.get_transient_table()
@@ -234,7 +450,7 @@ def check_types(entity, df, fields: Dict[str, BibFields]):
         assert entity in [ef.entity for ef in field.entities]  # FIXME
         if field.dest_field in destination_table.c:
             field_type = destination_table.c[field.dest_field].type
-        else:  # we may requires to convert some columns unused in final destination
+        else:  # we may require to convert some columns unused in final destination
             field_type = transient_table.c[field.dest_field].type
         updated_cols |= yield from map(
             lambda error: {"column": name, **error},

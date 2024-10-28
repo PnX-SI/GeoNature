@@ -112,7 +112,8 @@ def get_import_list(scope, destination=None):
         order_by = desc(order_by)
 
     query = (
-        TImports.query.options(
+        select(TImports)
+        .options(
             contains_eager(TImports.dataset),
             contains_eager(TImports.authors),
             contains_eager(TImports.destination).contains_eager(Destination.module),
@@ -121,15 +122,15 @@ def get_import_list(scope, destination=None):
         .join(TImports.authors, isouter=True)
         .join(Destination)
         .join(TModules)
-        .filter_by_scope(scope)
-        .filter(or_(*filters) if len(filters) > 0 else True)
+        .where(TImports.filter_by_scope(scope=scope))
+        .where(or_(*filters) if len(filters) > 0 else True)
         .order_by(order_by)
     )
 
     if destination:
-        query = query.filter(TImports.destination == destination)
+        query = query.where(TImports.destination == destination)
 
-    imports = query.paginate(page=page, error_out=False, max_per_page=limit)
+    imports = db.paginate(query, page=page, error_out=False, max_per_page=limit)
 
     data = {
         "imports": [imprt.as_dict() for imprt in imports.items],
@@ -353,13 +354,12 @@ def get_import_values(scope, imprt):
         raise Forbidden
     if not imprt.loaded:
         raise Conflict(description="Data have not been loaded")
-    nomenclated_fields = (
-        BibFields.query.filter(BibFields.mnemonique != None)
-        .filter(BibFields.destination == imprt.destination)
+    nomenclated_fields = db.session.scalars(
+        select(BibFields)
+        .where(BibFields.mnemonique != None, BibFields.destination == imprt.destination)
         .options(joinedload(BibFields.nomenclature_type))
         .order_by(BibFields.id_field)
-        .all()
-    )
+    ).all()
     # Note: response format is validated with jsonschema in tests
     transient_table = imprt.destination.get_transient_table()
     response = {}
@@ -444,7 +444,9 @@ def prepare_import(scope, imprt):
 @blueprint.route("/<destination>/imports/<int:import_id>/preview_valid_data", methods=["GET"])
 @permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def preview_valid_data(scope, imprt):
-    """Preview valid data for a given import.
+    """
+    Preview valid data for a given import.
+
     Parameters
     ----------
     scope : int
@@ -474,36 +476,53 @@ def preview_valid_data(scope, imprt):
 
     # Retrieve data for each entity from entries in the transient table which are related to the import
     transient_table = imprt.destination.get_transient_table()
-    for entity in (
-        Entity.query.filter_by(destination=imprt.destination).order_by(Entity.order).all()
-    ):
-        fields = BibFields.query.where(
-            BibFields.entities.any(EntityField.entity == entity),
-            BibFields.dest_field != None,
-            BibFields.name_field.in_(imprt.fieldmapping.keys()),
-        ).all()
+    entities = db.session.scalars(
+        select(Entity).filter_by(destination=imprt.destination).order_by(Entity.order)
+    ).all()
+
+    for entity in entities:
+        fields = (
+            db.session.scalars(
+                select(BibFields).where(
+                    BibFields.entities.any(EntityField.entity == entity),
+                    BibFields.dest_field != None,
+                    BibFields.name_field.in_(imprt.fieldmapping.keys()),
+                )
+            )
+            .unique()
+            .all()
+        )
         columns = [{"prop": field.dest_column, "name": field.name_field} for field in fields]
         columns_to_count_unique_entities = [
             transient_table.c[field.dest_column] for field in fields
         ]
+
         valid_data = db.session.execute(
-            select(*[transient_table.c[field.dest_column] for field in fields])
+            select(*[transient_table.c[field.dest_field] for field in fields])
             .distinct()
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[entity.validity_column] == True)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == True,
+            )
             .limit(100)
-        ).fetchall()
+        ).all()
+
         n_valid_data = db.session.execute(
             select(func.count(func.distinct(*columns_to_count_unique_entities)))
             .select_from(transient_table)
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[entity.validity_column] == True)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == True,
+            )
         ).scalar()
+
         n_invalid_data = db.session.execute(
             select(func.count(func.distinct(*columns_to_count_unique_entities)))
             .select_from(transient_table)
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[entity.validity_column] == False)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == False,
+            )
         ).scalar()
         data["entities"].append(
             {

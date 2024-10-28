@@ -39,7 +39,7 @@ def upgrade():
     id_occhab_mapping = session.execute(
         sa.insert(MappingTemplate)
         .values(
-            label="OccHab",
+            label="Occhab",
             type="FIELD",
             active=True,
             public=True,
