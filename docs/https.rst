@@ -1,7 +1,7 @@
 HTTPS
 *****
 
-Cette documentation est indicative car elle ne concerne pas GeoNature. Elle donne quelques indications sur la mise en place d'un certificat SSL pour une application web servie par Apache.
+Cette documentation est indicative car non-spécifique à GeoNature. Elle donne des indications sur la mise en place d'un certificat SSL pour une application web servie par Apache.
 
 Utilisation de Cerbot
 ---------------------
