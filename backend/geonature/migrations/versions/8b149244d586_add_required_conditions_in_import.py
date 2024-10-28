@@ -1,7 +1,7 @@
 """add required conditions in import
 
 Revision ID: 8b149244d586
-Revises: fe3d0b49ee14
+Revises: ebbe0f7ed866
 Create Date: 2024-03-20 11:17:57.360785
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "8b149244d586"
-down_revision = "fe3d0b49ee14"
+down_revision = "ebbe0f7ed866"
 branch_labels = None
 depends_on = None
 

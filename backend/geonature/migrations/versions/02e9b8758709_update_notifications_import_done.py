@@ -1,7 +1,7 @@
 """update notifications import-done to make them generic with respect to the destination
 
 Revision ID: 02e9b8758709
-Revises: 439dd64e9cd3
+Revises: 5a2c9c65129f
 Create Date: 2024-01-23 16:10:58.149517
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "02e9b8758709"
-down_revision = "439dd64e9cd3"
+down_revision = "5a2c9c65129f"
 branch_labels = None
 depends_on = None
 
