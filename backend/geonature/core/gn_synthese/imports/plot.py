@@ -143,7 +143,7 @@ def taxon_distribution_plot(imprt) -> StandaloneEmbedJson:
     plot_area = column(figures)
 
     select_plot = Select(
-        title="Rang",
+        title="Critère",
         value=0,  # Default is "regne"
         options=[(ix, rank) for ix, rank in enumerate(taxon_ranks)],
         width=fig.width,

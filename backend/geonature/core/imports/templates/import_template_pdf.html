@@ -97,14 +97,14 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {% if data.chart %}
+   
             <div class="charts">
                 <img
                 class="charts__img"
                 src="{{ data.chart }}"
                 />
             </div>
-            {% endif %}
+
         </div>
   
     </div>
@@ -220,7 +220,6 @@
 
     .zone-geographique-map {
       margin-top: 0;
-      margin-left: 31px;
       max-width: 100%;
     }
 
@@ -230,6 +229,7 @@
     }
     .charts__img {
       width: auto;
+      max-width: 50%;
     }
 
     /* ***************************************************************************/

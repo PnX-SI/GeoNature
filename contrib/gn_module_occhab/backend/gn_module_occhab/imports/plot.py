@@ -98,7 +98,7 @@ def distribution_plot(imprt) -> StandaloneEmbedJson:
         fig = figure(
             x_range=Range1d(start=-3, end=3),
             y_range=Range1d(start=-3, end=3),
-            title=f'Distribution des stations selon "{category_label}"',
+            title=f'Distribution des habitats selon "{category_label}"',
             tooltips=[("Number", "@countvalue"), (f"{category_label}", "@rankvalue")],
             toolbar_location=None,
         )
@@ -144,7 +144,7 @@ def distribution_plot(imprt) -> StandaloneEmbedJson:
 
     plot_area = column(figures)
     select_plot = Select(
-        title="Catégorie",
+        title="Critère",
         value=0,  # Default is "regne"
         options=[(ix, rank) for ix, rank in enumerate(final_cat)],
         width=fig.width,
