@@ -36,7 +36,7 @@ Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifi
 
 Utilisation de OpenSSL sur un environnement de test
 ---------------------------------------------------
-Cette procédure a été testée sur Debian 12 et Apache2 avec l'utilisation d'un certificat auto-signé. Cela signifier qu'une alerte sera envoyé aux navigatuers indiquant un manque de sécurisation du serveur.
+Cette procédure a été testée sur Debian 12 et Apache2 avec l'utilisation d'un certificat auto-signé. Cela signifie qu'une alerte sera envoyée aux navigateurs indiquant un manque de sécurisation du serveur.
 Cette méthode fonctionne avec un serveur sans nom de domaine.
 
 Création d'un nouveau certificat de 365 jours (30 jours par défaut), de type X509 avec l'emplacement des fichiers de certificat et de clé privé.
