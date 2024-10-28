@@ -14,6 +14,8 @@ import {
   SORT_ORDER,
   SyntheseDataSortItem,
 } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
+import { Loadable } from '../loadable';
+import { finalize } from 'rxjs/operators';
 @Component({
   standalone: true,
   selector: 'tab-observers',
@@ -21,7 +23,7 @@ import {
   styleUrls: ['tab-observers.component.scss'],
   imports: [GN2CommonModule, CommonModule],
 })
-export class TabObserversComponent implements OnInit {
+export class TabObserversComponent extends Loadable implements OnInit {
   readonly PROP_OBSERVER = 'observer';
   readonly PROP_DATE_MIN = 'date_min';
   readonly PROP_DATE_MAX = 'date_max';
@@ -40,7 +42,9 @@ export class TabObserversComponent implements OnInit {
   constructor(
     private _syntheseDataService: SyntheseDataService,
     private _tss: TaxonSheetService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this._tss.taxon.subscribe((taxon: Taxon | null) => {
@@ -65,16 +69,19 @@ export class TabObserversComponent implements OnInit {
     this.fetchObservers();
   }
 
-  fetchObservers() {
+  async fetchObservers() {
+    this.startLoading();
     const taxon = this._tss.taxon.getValue();
+    this.items = [];
     if (!taxon) {
-      this.items = [];
       this.pagination = DEFAULT_PAGINATION;
       this.sort = this.DEFAULT_SORT;
+      this.stopLoading();
       return;
     }
     this._syntheseDataService
       .getSyntheseTaxonSheetObservers(taxon.cd_ref, this.pagination, this.sort)
+      .pipe(finalize(() => this.stopLoading()))
       .subscribe((data) => {
         // Store result
         this.items = data.items;

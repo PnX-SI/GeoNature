@@ -35,6 +35,7 @@
     [externalSorting]="true"
     (sort)="onSort($event)"
     [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
+    [loadingIndicator]="isLoading"
   >
     <ngx-datatable-column
       name="Observateur"
