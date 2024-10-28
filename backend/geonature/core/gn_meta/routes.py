@@ -26,7 +26,6 @@ from geonature.utils.config import config
 from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import (
     Synthese,
-    TSources,
     CorAreaSynthese,
 )
 from geonature.core.gn_permissions.decorators import login_required
@@ -244,13 +243,8 @@ def uuid_report():
         select(Synthese)
         .where(Synthese.id_module == id_module if id_module is not None else True)
         .where(Synthese.id_dataset == ds_id if ds_id is not None else True)
+        .where(Synthese.id_import == id_import if id_import is not None else True)
     )
-
-    # TODO test in module import ?
-    if id_import:
-        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).where(
-            TSources.name_source == f"Import(id={id_import})"
-        )
 
     query = query.order_by(Synthese.id_synthese)
 
@@ -323,12 +317,8 @@ def sensi_report(ds_id=None):
         .where(LAreas.id_type == func.ref_geo.get_id_area_type("DEP"))
         .where(Synthese.id_module == id_module if id_module else True)
         .where(Synthese.id_dataset == ds_id)
+        .where(Synthese.id_import == id_import if id_import else True)
     )
-
-    if id_import:
-        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).where(
-            TSources.name_source == "Import(id={})".format(id_import)
-        )
 
     query = query.group_by(
         Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr

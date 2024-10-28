@@ -552,8 +552,11 @@ class TestOcchab:
         )
 
     def test_filter_by_scope(self):
-        res = Station.filter_by_scope(0)
-        res = db.session.scalars(res).unique().all()
+        res = (
+            db.session.scalars(sa.select(Station).where(Station.filter_by_scope(scope=0)))
+            .unique()
+            .all()
+        )
         assert not len(res)  # <=> len(res) == 0
 
     def test_has_instance_permission(self, stations):

@@ -5,12 +5,13 @@ on:
       - master
       - hotfixes
       - develop
-      - fixtestfront
+      - feat/import
   pull_request:
     branches:
       - master
       - hotfixes
       - develop
+      - feat/import
 
 jobs:
   mount_app_and_run_cypress:
@@ -28,6 +29,15 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -110,12 +120,18 @@ jobs:
           geonature db upgrade occhab-samples@head
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
           geonature permissions supergrant --group --nom "Grp_admin" --yes
+          geonature db upgrade import-samples@head
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
         run: geonature dev_back &
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
+      - name: Run celery
+        run: celery -A geonature.celery_app:app worker &
+        working-directory: ./backend/geonature/
+        env:
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:

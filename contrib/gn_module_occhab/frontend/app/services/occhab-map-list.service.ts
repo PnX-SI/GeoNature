@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MapListService } from '@geonature_common/map-list/map-list.service';
-import { OccHabDataService } from '../services/data.service';
-import * as moment from 'moment';
+import { Injectable } from "@angular/core";
+import { UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
+import { MapListService } from "@geonature_common/map-list/map-list.service";
+import { OccHabDataService } from "../services/data.service";
+import * as moment from "moment";
 
 @Injectable()
 export class OccHabMapListService {
@@ -14,6 +14,7 @@ export class OccHabMapListService {
   ) {
     this.searchForm = this._fb.group({
       id_dataset: null,
+      id_import: null,
       date_low: null,
       date_up: null,
       habitat: null,

@@ -1,7 +1,7 @@
 """add group3 inpn to synthese views
 
 Revision ID: 9f4db1786c22
-Revises: 446e902a14e7
+Revises: bfc90691737d
 Create Date: 2023-07-21 14:15:23.311469
 
 """
@@ -11,7 +11,7 @@ from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
 revision = "9f4db1786c22"
-down_revision = "5a2c9c65129f"
+down_revision = "bfc90691737d"
 branch_labels = None
 depends_on = ("c4415009f164",)  # Taxref v15 db structure
 

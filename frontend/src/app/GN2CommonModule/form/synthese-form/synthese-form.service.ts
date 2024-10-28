@@ -72,6 +72,7 @@ export class SyntheseFormService {
       observers_list: null,
       id_organism: null,
       id_dataset: null,
+      id_import: null,
       id_acquisition_framework: null,
       id_nomenclature_valid_status: null,
       modif_since_validation: [false, null],

@@ -37,8 +37,10 @@ ngx-datatable {
   box-shadow: none !important;
 }
 
-#download-btn {
-  margin-top: 5px;
+.actions-btns {
+  display: flex;
+  margin: 5px 15px 15px 15px;
+  justify-content: end;
 }
 
 button[disabled] {

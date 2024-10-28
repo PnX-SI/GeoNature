@@ -21,6 +21,7 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutText,
 )
 from geonature import create_app
+from geonature.utils.config import config
 from geonature.core.gn_commons.models import BibTablesLocation, TMedias, TModules
 from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
@@ -96,6 +97,7 @@ class GeoNatureClient(JSONClient):
 
 @pytest.fixture(scope="session", autouse=True)
 def app():
+    config["CELERY"]["task_always_eager"] = True
     app = create_app()
     app.testing = True
     app.test_client_class = GeoNatureClient
@@ -368,13 +370,11 @@ def _session(app):
 
 
 @pytest.fixture
-def celery_eager(app):
+def celery_eager(app, monkeypatch):
     from geonature.utils.celery import celery_app
 
-    old_eager = celery_app.conf.task_always_eager
-    celery_app.conf.task_always_eager = True
-    yield
-    celery_app.conf.task_always_eager = old_eager
+    monkeypatch.setattr(celery_app.conf, "task_always_eager", True)
+    monkeypatch.setattr(celery_app.conf, "task_eager_propagates", True)
 
 
 @pytest.fixture(scope="function")
@@ -440,12 +440,14 @@ def datasets(users, acquisition_frameworks, module):
     ).scalar_one()
 
     # add module code in the list to associate them to datasets
-    writable_module_code = ["OCCTAX"]
+    writable_module_code = ["OCCTAX", "OCCHAB"]
     writable_module = db.session.scalars(
         select(TModules).where(TModules.module_code.in_(writable_module_code))
     ).all()
 
-    def create_dataset(name, id_af, digitizer=None, modules=writable_module):
+    def create_dataset(
+        name, id_af, digitizer=None, modules=writable_module, active=True, private=False
+    ):
         with db.session.begin_nested():
             dataset = TDatasets(
                 id_acquisition_framework=id_af,
@@ -455,12 +457,23 @@ def datasets(users, acquisition_frameworks, module):
                 marine_domain=True,
                 terrestrial_domain=True,
                 id_digitizer=digitizer.id_role if digitizer else None,
+                active=active,
             )
             if digitizer and digitizer.organisme:
                 actor = CorDatasetActor(
                     organism=digitizer.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 dataset.cor_dataset_actor.append(actor)
+
+            if private:
+                dataset.nomenclature_data_origin = db.session.execute(
+                    select(TNomenclatures).where(
+                        TNomenclatures.nomenclature_type.has(
+                            BibNomenclaturesTypes.mnemonique == "DS_PUBLIQUE"
+                        ),
+                        TNomenclatures.mnemonique == "Privée",
+                    )
+                ).scalar_one()
 
             db.session.add(dataset)
             db.session.flush()  # Required to retrieve ids of created object
@@ -489,6 +502,16 @@ def datasets(users, acquisition_frameworks, module):
             ),
         ]
     }
+    datasets["own_dataset_not_activated"] = create_dataset(
+        "own_dataset_not_activated",
+        af.id_acquisition_framework,
+        users["user"],
+        active=False,
+    )
+    datasets["private"] = create_dataset(
+        "private", af.id_acquisition_framework, users["user"], private=True
+    )
+
     datasets["with_module_1"] = create_dataset(
         name="module_1_dataset",
         id_af=af_1.id_acquisition_framework,

@@ -7,7 +7,7 @@
   [columns]="defaultColumns"
   [columnMode]="'force'"
   [headerHeight]="50"
-  [footerHeight]="35"
+  [footerHeight]="50"
   [selected]="mapListService.selectedRow"
   [selectionType]="'single'"
   [count]="mapListService.tableData.length"
@@ -118,20 +118,36 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<button
-  type="button"
-  class="uppercase"
-  id="download-btn"
-  mat-raised-button
-  color="primary"
-  (click)="openDownloadModal()"
-  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
-  data-qa="synthese-download-btn"
->
-  {{ 'Download' | translate }}
-  <mat-icon>file_download</mat-icon>
-</button>
-
+<div class="actions-btns mt-3">
+  <div class="col-auto">
+    <button
+      *ngIf="canImport"
+      id="upload-btn"
+      mat-raised-button
+      color="primary"
+      class="btn-action uppercase"
+      [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
+    >
+      {{ 'Upload' | translate }}
+      <mat-icon>file_upload</mat-icon>
+    </button>
+  </div>
+  <div class="col-auto">
+    <button
+      type="button"
+      class="uppercase"
+      id="download-btn"
+      mat-raised-button
+      color="primary"
+      (click)="openDownloadModal()"
+      [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
+      data-qa="synthese-download-btn"
+    >
+      {{ 'Download' | translate }}
+      <mat-icon>file_download</mat-icon>
+    </button>
+  </div>
+</div>
 <ng-template
   #modalCol
   let-c="close"

@@ -2453,3 +2453,6 @@ Les permissions du module TaxHub peuvent être reglées aux trois niveaux (objet
 - THEMES : permet de voir / créer / modifier / supprimer des thèmes. Les thèmes sont des groupes d'attributs
 - LISTES : permet de voir / créer / modifier / supprimer des listes de taxons
 - ATTRIBUTS : permet de voir / créer / modifier / supprimer des attributs de taxons
+
+
+.. include:: import_doc.rst
