@@ -1,7 +1,7 @@
 """update synthese for import
 
 Revision ID: c49474d2f1f7
-Revises: a8a17e29f69c
+Revises: 0e8e1943c215
 Create Date: 2024-10-01 10:09:10.937073
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "c49474d2f1f7"
-down_revision = "a8a17e29f69c"
+down_revision = "0e8e1943c215"
 branch_labels = None
 depends_on = None
 
