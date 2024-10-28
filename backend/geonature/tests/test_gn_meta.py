@@ -144,6 +144,7 @@ class TestGNMeta:
 
             nested = db.session.begin_nested()
             af.t_datasets.remove(datasets["own_dataset"])
+            af.t_datasets.remove(datasets["private"])
             af.t_datasets.remove(datasets["own_dataset_not_activated"])
             # Now, the AF has no DS on which user is digitizer.
             assert af.has_instance_permission(1) == False
@@ -589,7 +590,11 @@ class TestGNMeta:
             qs = select(TDatasets).where(TDatasets.id_dataset.in_(ds_ids))
             assert set(sc(dsc.filter_by_scope(0, query=qs)).unique().all()) == set([])
             assert set(sc(dsc.filter_by_scope(1, query=qs)).unique().all()) == set(
-                [datasets["own_dataset"], datasets["own_dataset_not_activated"]]
+                [
+                    datasets["own_dataset"],
+                    datasets["own_dataset_not_activated"],
+                    datasets["private"],
+                ]
             )
             assert set(sc(dsc.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
@@ -597,6 +602,7 @@ class TestGNMeta:
                     datasets["own_dataset_not_activated"],
                     datasets["associate_dataset"],
                     datasets["associate_2_dataset_sensitive"],
+                    datasets["private"],
                 ]
             )
             assert set(sc(dsc.filter_by_scope(3, query=qs)).unique().all()) == set(

@@ -232,12 +232,14 @@ class SyntheseImportActions(ImportActions):
                 selected_fields.get("digital_proof"),
                 selected_fields.get("non_digital_proof"),
             )
-        if (
-            current_app.config["IMPORT"]["CHECK_PRIVATE_JDD_BLURING"]
-            # and not current_app.config["IMPORT"]["FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"]  # XXX
-            and imprt.dataset.nomenclature_data_origin.mnemonique == "Privée"
-        ):
-            check_nomenclature_blurring(imprt, entity, fields["id_nomenclature_blurring"])
+        if current_app.config["IMPORT"]["CHECK_PRIVATE_JDD_BLURING"]:
+            check_nomenclature_blurring(
+                imprt,
+                entity,
+                fields["id_nomenclature_blurring"],
+                fields["id_dataset"],
+                fields["unique_dataset_id"],
+            )
         if current_app.config["IMPORT"]["CHECK_REF_BIBLIO_LITTERATURE"]:
             check_nomenclature_source_status(
                 imprt, entity, fields["id_nomenclature_source_status"], fields["reference_biblio"]
