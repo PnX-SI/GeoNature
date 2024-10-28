@@ -444,7 +444,9 @@ def prepare_import(scope, imprt):
 @blueprint.route("/<destination>/imports/<int:import_id>/preview_valid_data", methods=["GET"])
 @permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def preview_valid_data(scope, imprt):
-    """Preview valid data for a given import.
+    """
+    Preview valid data for a given import.
+
     Parameters
     ----------
     scope : int
@@ -474,25 +476,33 @@ def preview_valid_data(scope, imprt):
 
     # Retrieve data for each entity from entries in the transient table which are related to the import
     transient_table = imprt.destination.get_transient_table()
-    for entity in (
-        Entity.query.filter_by(destination=imprt.destination).order_by(Entity.order).all()
-    ):
-        fields = BibFields.query.where(
-            BibFields.entities.any(EntityField.entity == entity),
-            BibFields.dest_field != None,
-            BibFields.name_field.in_(imprt.fieldmapping.keys()),
-        ).all()
+    entities = db.session.scalars(
+        select(Entity).filter_by(destination=imprt.destination).order_by(Entity.order)
+    ).all()
+
+    for entity in entities:
+        fields = (
+            db.session.scalars(
+                select(BibFields).where(
+                    BibFields.entities.any(EntityField.entity == entity),
+                    BibFields.dest_field != None,
+                    BibFields.name_field.in_(imprt.fieldmapping.keys()),
+                )
+            )
+            .unique()
+            .all()
+        )
         columns = [{"prop": field.dest_column, "name": field.name_field} for field in fields]
         columns_to_count_unique_entities = [
             transient_table.c[field.dest_column] for field in fields
         ]
         valid_data = db.session.execute(
-            select(*[transient_table.c[field.dest_column] for field in fields])
+            select(*[transient_table.c[field.dest_field] for field in fields])
             .distinct()
             .where(transient_table.c.id_import == imprt.id_import)
             .where(transient_table.c[entity.validity_column] == True)
             .limit(100)
-        ).fetchall()
+        ).all()
         n_valid_data = db.session.execute(
             select(func.count(func.distinct(*columns_to_count_unique_entities)))
             .select_from(transient_table)

@@ -464,7 +464,7 @@ def upgrade():
                 "display": True,
                 "mnemonique": None,
                 "source_field": "src_altitude_max",
-                "dest_field": "altitude_min",
+                "dest_field": "altitude_max",
             },
             {
                 id_entity_station: {

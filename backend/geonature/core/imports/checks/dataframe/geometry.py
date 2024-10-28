@@ -93,6 +93,22 @@ def check_geometry(
     id_area: int = None,
 ):
     """
+
+    What this check do:
+    - check there is at least a wkt, a x/y or a code defined for each row
+      (report NO-GEOM if there are not, or MULTIPLE_ATTACHMENT_TYPE_CODE if several are defined)
+    - set geom_local or geom_4326 or both (depending of file_srid) from wkt or x/y
+      - check wkt validity
+      - check x/y validity
+    - check wkt & x/y bounding box
+    What this check does not do (done later in SQL):
+    - set geom_4326 & geom_local from code
+      - verify code validity
+    - set geom_4326 from geom_local, or reciprocally, depending of file_srid
+    - set geom_point
+    - check geom validity (ST_IsValid)
+    FIXME: area from code are never checked in bounding box!
+
     Parameters
     ----------
     df : pandas.DataFrame
@@ -116,22 +132,8 @@ def check_geometry(
     codedepartement_field : BibFields, optional
         The column in the dataframe that contains departement codes
     id_area : int, optional
-        The id of the area to check if the geometry is inside
+        The id of the area to check if the geometry is inside (Not Implemented)
 
-    What this check do:
-    - check there is at least a wkt, a x/y or a code defined for each row
-      (report NO-GEOM if there are not, or MULTIPLE_ATTACHMENT_TYPE_CODE if several are defined)
-    - set geom_local or geom_4326 or both (depending of file_srid) from wkt or x/y
-      - check wkt validity
-      - check x/y validity
-    - check wkt & x/y bounding box
-    What this check does not do (done later in SQL):
-    - set geom_4326 & geom_local from code
-      - verify code validity
-    - set geom_4326 from geom_local, or reciprocally, depending of file_srid
-    - set geom_point
-    - check geom validity (ST_IsValid)
-    FIXME: area from code are never checked in bounding box!
     """
 
     local_srid = db.session.execute(sa.func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()
