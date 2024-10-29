@@ -206,6 +206,10 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
             add_unexisting_digitizer(af["id_digitizer"] if not id_role else id_role)
             user_add_total_time += time.time() - start_add_user_time
         af = sync_af(af)
+        # If the AF has not been retrieved, associated actors cannot be retrieved either
+        #   and thus we continue to the next AF
+        if not af:
+            continue
         associate_actors(
             actors,
             CorAcquisitionFrameworkActor,
