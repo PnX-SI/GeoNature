@@ -95,16 +95,26 @@
   position: relative;
 }
 
-.media-dialog {
-  position: relative;
-  padding: 30px;
-}
-
 .media-dialog-arrow {
   position: absolute;
   bottom: 50%;
   opacity: 0.4;
   background-color: lightgray;
+}
+
+.display-medias-container {
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.mat-mdc-dialog-content {
+  padding: 1rem;
+  max-height: 95vh;
+  overflow: hidden;
+  .mdc-card {
+    border: none;
+    box-shadow: none;
+  }
 }
 
 .media-dialog-arrow:hover {
