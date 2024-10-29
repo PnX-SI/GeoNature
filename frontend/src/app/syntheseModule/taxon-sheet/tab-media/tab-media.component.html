@@ -45,12 +45,8 @@
     ></mat-paginator>
   </div>
 
-  <div class="MediaContainer__view">
-    <pnx-display-medias
-      [medias]="[selectedMedia]"
-      [index]="0"
-      display="xxlarge"
-      diaporama="false"
-    ></pnx-display-medias>
-  </div>
+  <pnx-media-card
+    class="MediaContainer__view"
+    [inputMedia]="selectedMedia"
+  ></pnx-media-card>
 </div>
