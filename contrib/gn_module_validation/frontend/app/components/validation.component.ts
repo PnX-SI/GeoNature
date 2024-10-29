@@ -16,7 +16,7 @@ export class ValidationComponent implements OnInit {
   public validationStatus;
   public searchBarHidden: boolean = true;
   public idSynthese: any;
-
+  public selectedTab: string;
   public isCollapseValidationNavBar = false;
 
   constructor(
@@ -44,6 +44,7 @@ export class ValidationComponent implements OnInit {
     );
     this._commonService.translateToaster('info', 'Les 100 dernières observations');
     this.idSynthese = this._route.snapshot.paramMap.get('id_synthese');
+    this.selectedTab = this._route.snapshot.paramMap.get('tab');
   }
 
   getStatusNames() {

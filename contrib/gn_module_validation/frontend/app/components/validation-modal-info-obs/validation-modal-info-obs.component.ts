@@ -29,6 +29,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   @Input() id_synthese: any;
   @Input() uuidSynthese: any;
+  @Input() tab: string = 'details';
   @Output() modifiedStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
   @Output() onCloseModal = new EventEmitter();
