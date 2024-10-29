@@ -257,9 +257,12 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
     """
     Method to trigger MTD sync on user authentication.
 
-    Args:
-        id_role (int): The ID of the role (group or user).
-        id_af (str, optional): The ID of the AF (Acquisition Framework). Defaults to None.
+    Parameters
+    -----------
+    id_role : int
+        The ID of the role (group or user).
+    id_af : str, optional
+        The ID of an AF (Acquisition Framework).
     """
 
     logger.info("MTD - SYNC USER : START")
