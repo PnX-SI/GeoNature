@@ -1,8 +1,8 @@
 Installation de GeoNature uniquement
 ************************************
 
-Cette procédure détail l’installation de GeoNature seul, sans TaxHub et UsersHub.
-Si vous souhaitez installer GeoNature avec TaxHub et UsersHub, reportez-vous à la section :ref:`installation-all`.
+Cette procédure détaille l’installation de GeoNature (incluant TaxHub) sans UsersHub.
+Si vous souhaitez installer GeoNature avec UsersHub, reportez-vous à la section :ref:`installation-all`.
 
 Installation des dépendances
 ----------------------------
@@ -111,37 +111,9 @@ Lors de l'installation de la BDD (``02_create_db.sh``), le schéma ``utilisateur
 
 UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits. 
 
-Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le script ``02_create_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installez donc que l'application et pas la BDD.
+TaxHub v2 est intégré à GeoNature depuis sa version 2.15.0
 
-Télécharger TaxHub depuis son dépôt Github depuis la racine de votre utilisateur :
-
-::
-
-    cd ~
-    wget https://github.com/PnX-SI/TaxHub/archive/X.Y.Z.zip
-    unzip X.Y.Z.zip
-    rm X.Y.Z.zip
-    
-en mode développeur: 
-
-``https://github.com/PnX-SI/TaxHub.git``
-
-Rendez vous dans le répertoire téléchargé et dézippé, puis "désamplez" le fichier ``settings.ini`` et remplissez la configuration avec les paramètres de connexion à la BDD GeoNature précedemment installée :
-
-::
-
-    cp settings.ini.sample settings.ini
-    nano settings.ini
-
-Lancer le script d'installation de l'application :
-
-::
-
-    ./install_app.sh 2>&1 | tee install_app.log
-
-Suite à l'execution de ce script, l'application Taxhub a été lancée automatiquement par le superviseur et est disponible à l'adresse ``http://127.0.0.1:5000`` (et l'API, à ``http://127.0.0.1:5000/api``)
-
-Voir la doc d'installation de TaxHub : https://taxhub.readthedocs.io/
+Voir la documentation de TaxHub : https://taxhub.readthedocs.io/
 
 Voir la doc d'installation de UsersHub : https://usershub.readthedocs.io/
 
