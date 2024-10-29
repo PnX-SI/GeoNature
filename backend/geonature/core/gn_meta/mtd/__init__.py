@@ -60,7 +60,7 @@ class MTDInstanceApi:
     def _get_af_xml(self):
         return self._get_xml(self.af_path)
 
-    def get_af_list(self):
+    def get_af_list(self) -> list:
         xml = self._get_af_xml()
         _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
         root = etree.fromstring(xml, parser=_xml_parser)
@@ -73,7 +73,7 @@ class MTDInstanceApi:
     def _get_ds_xml(self):
         return self._get_xml(self.ds_path)
 
-    def get_ds_list(self):
+    def get_ds_list(self) -> list:
         xml = self._get_ds_xml()
         return parse_jdd_xml(xml)
 
