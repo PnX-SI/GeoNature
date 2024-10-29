@@ -56,6 +56,9 @@ export class DisplayMediasComponent {
       mini: 50,
       small: 100,
       medium: 200,
+      large: 300,
+      xlarge: 400,
+      xxlarge: 500,
     };
 
     this.height = heights[this.display] ? `${heights[this.display]}px` : '100%';
@@ -64,7 +67,6 @@ export class DisplayMediasComponent {
 
   openDialog(index) {
     const dialogRef = this.dialog.open(MediaDialog, {
-      width: '1000px',
       data: { medias: this.medias, index },
     });
   }
