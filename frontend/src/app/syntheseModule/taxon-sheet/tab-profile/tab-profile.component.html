@@ -1,0 +1,18 @@
+<div class="Profile">
+  <small class="Profile__disclaimer text-muted">
+    Le profil est calculé à partir des observations considérées comme valides
+  </small>
+  <div class="Profile__indicators">
+    <indicator
+      *ngFor="let indicator of indicators"
+      [indicator]="indicator"
+      [small]="true"
+    />
+  </div>
+  <pnx-map height="50vh">
+    <pnx-geojson
+      [geojson]="profile"
+      [zoomOnFirstTime]="true"
+    ></pnx-geojson>
+  </pnx-map>
+</div>

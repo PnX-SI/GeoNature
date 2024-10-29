@@ -37,8 +37,10 @@ ngx-datatable {
   box-shadow: none !important;
 }
 
-#download-btn {
-  margin-top: 5px;
+.actions-btns {
+  display: flex;
+  margin: 5px 15px 15px 15px;
+  justify-content: end;
 }
 
 button[disabled] {
@@ -48,4 +50,9 @@ button[disabled] {
 .row-sm {
   height: 20px !important;
   font-size: 10px !important;
+}
+
+.Link {
+  color: var(--purple);
+  filter: brightness(70%);
 }

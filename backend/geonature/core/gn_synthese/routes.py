@@ -15,7 +15,7 @@ from flask import (
     jsonify,
     g,
 )
-from geonature.core.gn_synthese.schemas import SyntheseSchema
+from geonature.core.gn_synthese.schemas import ReportSchema, SyntheseSchema
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from pypnusershub.db.models import User
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
@@ -40,6 +40,7 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.notifications.utils import dispatch_notifications
 
+import geonature.core.gn_synthese.module
 from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     CorAreaSynthese,
@@ -957,6 +958,82 @@ def general_stats(permissions):
     return data
 
 
+@routes.route("/taxon_stats/<int:cd_ref>", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+@json_resp
+def taxon_stats(scope, cd_ref):
+    """Return stats for a specific taxon"""
+
+    area_type = request.args.get("area_type")
+
+    if not area_type:
+        raise BadRequest("Missing area_type parameter")
+
+    # Ensure area_type is valid
+    valid_area_types = (
+        db.session.query(BibAreasTypes.type_code)
+        .distinct()
+        .filter(BibAreasTypes.type_code == area_type)
+        .scalar()
+    )
+    if not valid_area_types:
+        raise BadRequest("Invalid area_type")
+
+    # Subquery to fetch areas based on area_type
+    areas_subquery = (
+        select([LAreas.id_area])
+        .where(LAreas.id_type == BibAreasTypes.id_type)
+        .where(BibAreasTypes.type_code == area_type)
+        .alias("areas")
+    )
+
+    taxref_cd_nom_list = db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
+
+    # Main query to fetch stats
+    query = (
+        select(
+            [
+                func.count(distinct(Synthese.id_synthese)).label("observation_count"),
+                func.count(distinct(Synthese.observers)).label("observer_count"),
+                func.count(distinct(areas_subquery.c.id_area)).label("area_count"),
+                func.min(Synthese.altitude_min).label("altitude_min"),
+                func.max(Synthese.altitude_max).label("altitude_max"),
+                func.min(Synthese.date_min).label("date_min"),
+                func.max(Synthese.date_max).label("date_max"),
+            ]
+        )
+        .select_from(
+            sa.join(
+                Synthese,
+                CorAreaSynthese,
+                Synthese.id_synthese == CorAreaSynthese.id_synthese,
+            )
+            .join(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area)
+            .join(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
+            .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
+        )
+        .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+    )
+
+    synthese_query_obj = SyntheseQuery(Synthese, query, {})
+    synthese_query_obj.filter_query_with_cruved(g.current_user, scope)
+    result = DB.session.execute(synthese_query_obj.query)
+    synthese_stats = result.fetchone()
+
+    data = {
+        "cd_ref": cd_ref,
+        "observation_count": synthese_stats["observation_count"],
+        "observer_count": synthese_stats["observer_count"],
+        "area_count": synthese_stats["area_count"],
+        "altitude_min": synthese_stats["altitude_min"],
+        "altitude_max": synthese_stats["altitude_max"],
+        "date_min": synthese_stats["date_min"],
+        "date_max": synthese_stats["date_max"],
+    }
+
+    return data
+
+
 @routes.route("/taxons_tree", methods=["GET"])
 @login_required
 @json_resp
@@ -1414,53 +1491,146 @@ def update_content_report(id_report):
 
 @routes.route("/reports", methods=["GET"])
 @permissions_required("R", module_code="SYNTHESE")
-def list_reports(permissions):
+def list_all_reports(permissions):
+    # Parameters
     type_name = request.args.get("type")
-    id_synthese = request.args.get("idSynthese")
+    orderby = request.args.get("orderby", "creation_date")
     sort = request.args.get("sort")
-    # VERIFY ID SYNTHESE
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 10))
+    my_reports = request.args.get("my_reports", "false").lower() == "true"
+
+    # Start query
+    query = (
+        sa.select(TReport, User.nom_complet)
+        .join(User, TReport.id_role == User.id_role)
+        .options(
+            joinedload(TReport.report_type).load_only(
+                BibReportsTypes.type, BibReportsTypes.id_type
+            ),
+            joinedload(TReport.synthese).load_only(
+                Synthese.cd_nom,
+                Synthese.nom_cite,
+                Synthese.observers,
+                Synthese.date_min,
+                Synthese.date_max,
+            ),
+            joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
+        )
+    )
+    # Verify and filter by type
+    if type_name:
+        type_exists = db.session.scalar(
+            sa.exists(BibReportsTypes).where(BibReportsTypes.type == type_name).select()
+        )
+        if not type_exists:
+            raise BadRequest("This report type does not exist")
+        query = query.where(TReport.report_type.has(BibReportsTypes.type == type_name))
+
+    # Filter by id_role for 'pin' type only or if my_reports is true
+    if type_name == "pin" or my_reports:
+        query = query.where(TReport.id_role == g.current_user.id_role)
+
+    # On vérifie les permissions en lecture sur la synthese
+    synthese_query = select(Synthese.id_synthese).select_from(Synthese)
+    synthese_query_obj = SyntheseQuery(Synthese, synthese_query, {})
+    synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
+    ids_synthese = db.session.scalars(synthese_query_obj.query).all()
+    query = query.where(TReport.id_synthese.in_(ids_synthese))
+
+    SORT_COLUMNS = {
+        "user.nom_complet": User.nom_complet,
+        "content": TReport.content,
+        "creation_date": TReport.creation_date,
+    }
+
+    # Determine the sorting
+    if orderby in SORT_COLUMNS:
+        sort_column = SORT_COLUMNS[orderby]
+        if sort == "desc":
+            query = query.order_by(desc(sort_column))
+        else:
+            query = query.order_by(asc(sort_column))
+    else:
+        raise BadRequest("Bad orderby")
+
+    # Pagination
+    total = db.session.scalar(
+        select(func.count("*"))
+        .select_from(TReport)
+        .where(TReport.report_type.has(BibReportsTypes.type == type_name))
+    )
+    paginated_results = db.paginate(query, page=page, per_page=per_page)
+
+    result = []
+
+    for report in paginated_results.items:
+        report_dict = {
+            "id_report": report.id_report,
+            "id_synthese": report.id_synthese,
+            "id_role": report.id_role,
+            "report_type": {
+                "type": report.report_type.type,
+                "id_type": report.report_type.id_type,
+            },
+            "content": report.content,
+            "deleted": report.deleted,
+            "creation_date": report.creation_date,
+            "user": {"nom_complet": report.user.nom_complet},
+            "synthese": {
+                "cd_nom": report.synthese.cd_nom,
+                "nom_cite": report.synthese.nom_cite,
+                "observers": report.synthese.observers,
+                "date_min": report.synthese.date_min,
+                "date_max": report.synthese.date_max,
+            },
+        }
+        result.append(report_dict)
+
+    response = {
+        "total_filtered": paginated_results.total,
+        "total": total,
+        "pages": paginated_results.pages,
+        "current_page": page,
+        "per_page": per_page,
+        "items": result,
+    }
+    return jsonify(response)
+
+
+@routes.route("/reports/<int:id_synthese>", methods=["GET"])
+@permissions_required("R", module_code="SYNTHESE")
+def list_reports(permissions, id_synthese):
+    type_name = request.args.get("type")
+
     synthese = db.get_or_404(Synthese, id_synthese)
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
-    # START REQUEST
-    req = TReport.query.where(TReport.id_synthese == id_synthese)
-    # SORT
-    if sort == "asc":
-        req = req.order_by(asc(TReport.creation_date))
-    if sort == "desc":
-        req = req.order_by(desc(TReport.creation_date))
-    # VERIFY AND SET TYPE
-    type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
-    # type param is not required to get all
-    if type_name and not type_exists:
-        raise BadRequest("This report type does not exist")
+
+    query = sa.select(TReport).where(TReport.id_synthese == id_synthese)
+
+    # Verify and filter by type
     if type_name:
-        req = req.where(TReport.report_type.has(BibReportsTypes.type == type_name))
-    # filter by id_role for pin type only
-    if type_name and type_name == "pin":
-        req = req.where(TReport.id_role == g.current_user.id_role)
-    req = req.options(
+        type_exists = db.session.scalar(
+            sa.exists(BibReportsTypes).where(BibReportsTypes.type == type_name).select()
+        )
+        if not type_exists:
+            raise BadRequest("This report type does not exist")
+        query = query.where(TReport.report_type.has(BibReportsTypes.type == type_name))
+
+    # Filter by id_role for 'pin' type only
+    if type_name == "pin":
+        query = query.where(TReport.id_role == g.current_user.id_role)
+
+    # Join the User table
+    query = query.options(
         joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
         joinedload(TReport.report_type),
     )
-    result = [
-        report.as_dict(
-            fields=[
-                "id_report",
-                "id_synthese",
-                "id_role",
-                "report_type.type",
-                "report_type.id_type",
-                "content",
-                "deleted",
-                "creation_date",
-                "user.nom_role",
-                "user.prenom_role",
-            ]
-        )
-        for report in req.all()
-    ]
-    return jsonify(result)
+
+    return ReportSchema(many=True, only=["+user.nom_role", "+user.prenom_role"]).dump(
+        db.session.scalars(query).all()
+    )
 
 
 @routes.route("/reports/<int:id_report>", methods=["DELETE"])

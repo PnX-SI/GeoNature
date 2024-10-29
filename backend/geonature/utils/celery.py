@@ -1,6 +1,5 @@
 from celery import Celery
 import flask
-from geonature.utils.env import db
 
 
 class FlaskCelery(Celery):
@@ -8,7 +7,6 @@ class FlaskCelery(Celery):
     def __init__(self, *args, **kwargs):
 
         super(FlaskCelery, self).__init__(*args, **kwargs)
-        self.patch_task()
 
         if "app" in kwargs:
             self.init_app(kwargs["app"])
@@ -33,7 +31,9 @@ class FlaskCelery(Celery):
 
     def init_app(self, app):
         self.app = app
-        self.config_from_object(app.config)
+        self.config_from_object(app.config["CELERY"])
+        if not self.conf.task_always_eager:
+            self.patch_task()
 
 
 celery_app = FlaskCelery("geonature")

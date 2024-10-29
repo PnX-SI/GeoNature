@@ -1,5 +1,5 @@
 """
-    Routes for gn_meta 
+    Routes for gn_meta
 """
 
 import datetime as dt
@@ -26,12 +26,10 @@ from geonature.utils.config import config
 from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import (
     Synthese,
-    TSources,
     CorAreaSynthese,
 )
 from geonature.core.gn_permissions.decorators import login_required
 
-from .mtd import sync_af_and_ds as mtd_sync_af_and_ds, sync_af_and_ds_by_user
 
 from ref_geo.models import LAreas
 from pypnnomenclature.models import TNomenclatures
@@ -56,11 +54,8 @@ from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_permissions.models import TObjects
-from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
-from geonature.utils.errors import GeonatureApiError
-from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
 from ref_geo.models import LAreas
 
@@ -73,23 +68,6 @@ routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 
 # get the root logger
 log = logging.getLogger()
-
-
-if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
-
-    @routes.before_request
-    def synchronize_mtd():
-        if request.endpoint in ["gn_meta.get_datasets", "gn_meta.get_acquisition_frameworks_list"]:
-            from flask_login import current_user
-
-            if current_user.is_authenticated:
-                params = request.json if request.is_json else request.args
-                try:
-                    list_id_af = params.get("id_acquisition_frameworks", [])
-                    for id_af in list_id_af:
-                        sync_af_and_ds_by_user(id_role=current_user.id_role, id_af=id_af)
-                except Exception as e:
-                    log.exception(f"Error while get JDD via MTD: {e}")
 
 
 @routes.route("/datasets", methods=["GET", "POST"])
@@ -265,13 +243,8 @@ def uuid_report():
         select(Synthese)
         .where(Synthese.id_module == id_module if id_module is not None else True)
         .where(Synthese.id_dataset == ds_id if ds_id is not None else True)
+        .where(Synthese.id_import == id_import if id_import is not None else True)
     )
-
-    # TODO test in module import ?
-    if id_import:
-        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).where(
-            TSources.name_source == f"Import(id={id_import})"
-        )
 
     query = query.order_by(Synthese.id_synthese)
 
@@ -344,12 +317,8 @@ def sensi_report(ds_id=None):
         .where(LAreas.id_type == func.ref_geo.get_id_area_type("DEP"))
         .where(Synthese.id_module == id_module if id_module else True)
         .where(Synthese.id_dataset == ds_id)
+        .where(Synthese.id_import == id_import if id_import else True)
     )
-
-    if id_import:
-        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).where(
-            TSources.name_source == "Import(id={})".format(id_import)
-        )
 
     query = query.group_by(
         Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr
@@ -793,10 +762,16 @@ def delete_acquisition_framework(scope, af_id):
         raise Forbidden(
             f"User {g.current_user} cannot delete acquisition framework {af.id_acquisition_framework}"
         )
-    if not af.is_deletable():
+    if af.has_datasets():
         raise Conflict(
-            "La suppression du cadre d’acquisition n'est pas possible "
+            "La suppression du cadre d’acquisition est impossible "
             "car celui-ci contient des jeux de données."
+        )
+
+    if af.has_child_acquisition_framework():
+        raise Conflict(
+            "La suppression du cadre d’acquisition est impossible "
+            "car celui-ci est le parent d'autre(s) cadre(s) d'acquisition."
         )
     db.session.delete(af)
     db.session.commit()
@@ -1064,24 +1039,3 @@ def publish_acquisition_framework(af_id):
     publish_acquisition_framework_mail(af)
 
     return af.as_dict()
-
-
-@routes.cli.command()
-@click.option("--id-role", nargs=1, required=False, default=None, help="ID of an user")
-@click.option(
-    "--id-af", nargs=1, required=False, default=None, help="ID of an acquisition framework"
-)
-def mtd_sync(id_role, id_af):
-    """
-    \b
-    Triggers :
-    - global sync for instance
-    - a sync for a given user only (if id_role is provided)
-    - a sync for a given AF (Acquisition Framework) only (if id_af is provided). NOTE: the AF should in this case already exist in the database, and only datasets associated to this AF will be retrieved
-
-    NOTE: if both id_role and id_af are provided, only the datasets possibly associated to both the AF and the user will be retrieved.
-    """
-    if id_role:
-        return sync_af_and_ds_by_user(id_role, id_af)
-    else:
-        return mtd_sync_af_and_ds()

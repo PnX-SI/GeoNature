@@ -23,7 +23,11 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
+import { ModuleService } from '@geonature/services/module.service';
+
 import { FormArray, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { fromEvent } from 'rxjs';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -32,7 +36,6 @@ import { FormArray, FormControl } from '@angular/forms';
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = null;
   public selectedObs: any;
-  public selectObsTaxonInfo: any;
   public selectedObsTaxonDetail: any;
   public previousRow: any;
   public rowNumber: number;
@@ -47,21 +50,43 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table', { static: true }) table: DatatableComponent;
   private _latestWidth: number;
+  public destinationImportCode: string;
+
+  public userCruved: any;
+  public canImport: boolean = false;
+
   constructor(
     public mapListService: MapListService,
     public ngbModal: NgbModal,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _moduleService: ModuleService,
+    private _router: Router
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.module_code.toLowerCase();
   }
 
   ngOnInit() {
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.destination[0]?.code;
+
+    // get user cruved
+    this.userCruved = currentModule.cruved;
+    const cruvedImport = this._cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
+    const canCreateImport = cruvedImport.C > 0;
+    const canCreateSynthese = this.userCruved.C > 0;
+
+    this.canImport = canCreateImport && canCreateSynthese;
     // get wiewport height to set the number of rows in the tabl
-    const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 37);
+    const resizeObservable = fromEvent(window, 'resize');
+    resizeObservable.subscribe((e) => {
+      this.setHeightListPanel();
+    });
+    this.setHeightListPanel();
 
     this.initListColumns();
 
@@ -109,6 +134,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.table.sorts = [];
   }
 
+  private setHeightListPanel() {
+    const h = document.documentElement.clientHeight * 0.86;
+    this.rowNumber = Math.trunc(h / 37);
+  }
+
   initListColumns() {
     this.defaultColumns = this.SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND;
     let allColumnsTemp = [
@@ -149,17 +179,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  openInfoModal(row) {
-    row.id_synthese = row.id_synthese;
-    const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
-      size: 'lg',
-      windowClass: 'large-modal',
-    });
-    modalRef.componentInstance.idSynthese = row.id_synthese;
-    modalRef.componentInstance.header = true;
-    modalRef.componentInstance.useFrom = 'synthese';
   }
 
   openModalCol($event, modal) {

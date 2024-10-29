@@ -7,7 +7,7 @@ Architecture
 GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner :
 
 - UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, applications), utilisable par les différentes applications de son système d'informations.
-- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général.
+- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général. TaxHub est intégré à GeoNature depuis sa version 2.15.
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
 - ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le MNT, le calcul automatique d'altitude et les intersections spatiales.
 
@@ -357,11 +357,6 @@ Cette section liste les branches Alembic disponibles et leur impact sur la base 
 * ``habitats_inpn_data`` : Insère le référentiel HABREF de l’INPN en base. Fourni par Habref-api-module.
 * ``ref_geo`` : Créé le schéma ``ref_geo``. Fourni par RefGeo.
 
-Si vous utilisez TaxHub, vous pouvez être intéressé par les branches suivantes :
-
-* ``taxhub`` : Déclare l’application TaxHub dans la liste des applications. Fourni par TaxHub.
-* ``taxhub-admin`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à TaxHub. Fourni par TaxHub.
-
 Si vous utilisez UsersHub, vous pouvez être intéressé par les branches suivantes :
 
 * ``usershub`` : Déclare l’application UsersHub dans la liste des applications. Fourni par UsersHub.
@@ -556,7 +551,7 @@ Les paramètres généraux dans la table ``gn_profiles.t_parameters`` :
 
 Les deux premiers paramètres permettent de filtrer les données dans la vue ``gn_profiles.v_synthese_for_profiles``. Cette vue comporte les données de la synthèse qui répondent aux paramètres et qui alimenteront les profils de taxons. Les clauses WHERE de cette vue peuvent être adaptées pour filtrer les données sur davantage de critères et répondre aux besoins plus spécifiques, mais sa structure doit rester inchangée.
 
-Les paramètres définis par taxon le sont dans la table ``gn_profiles.cor_taxons_profiles_parameters`` :
+Les paramètres définis par taxon le sont dans la table ``gn_profiles.cor_taxons_parameters`` :
 
 Les profils peuvent être calculés avec des règles différentes en fonction des taxons. Ceux-ci sont définis au niveau du cd_nom, à n'importe quel rang (espèce, famille, règne etc). Ils seront appliqués de manière récursive à tous les taxons situés "sous" le cd_ref paramétré.
 
@@ -564,7 +559,7 @@ Dans le cas où un taxon hérite de plusieurs règles (une définie pour son ord
 
 Par exemple, s'il existe des paramètres pour le phylum "Animalia" (cd_nom 183716) et d'autres pour le renard (cd_nom 60585), les paramètres du renard seront appliqués en priorité pour cette espèce, mais les paramètres Animalia s'appliqueront à tous les autres animaux.
 
-Les règles appliquables à chaque taxon sont récupérées par la fonction ``gn_profiles.get_profiles_parameters(cdnom)``.
+Les règles appliquables à chaque taxon sont récupérées par la fonction ``gn_profiles.get_parameters(cdnom)``.
 
 Pour chaque cd_nom, il est ainsi possible de définir les paramètres suivants :
 
@@ -975,7 +970,6 @@ Logs
 * Logs d’installation de GeoNature : ``geonature/install/install.log``
 * Logs de GeoNature : ``/var/log/geonature/geonature.log``
 * Logs du worker Celery : ``/var/log/geonature/geonature-worker.log``
-* Logs de TaxHub : ``/var/log/taxhub.log``
 * Logs de UsersHub : ``/var/log/usershub.log``
 
 Commandes GeoNature
@@ -1012,18 +1006,15 @@ Démarrer / arrêter les API
 * Redémarrer GeoNature : ``systemctl restart geonature``
 * Vérifier l’état de GeoNature : ``systemctl status geonature``
 
-Les mêmes commandes sont disponibles pour TaxHub en remplacant ``geonature`` par ``taxhub``.
-
 Supervision des services
 """"""""""""""""""""""""
 
-- Vérifier que les applications GeoNature et TaxHub sont accessibles en http
+- Vérifier que l'application GeoNature est accessible en http
 - Vérifier que leurs services (API) sont lancés et fonctionnent correctement (tester les deux routes ci-dessous).
 
   - Exemple de route locale pour tester l'API GeoNature : http://127.0.0.1:8000/occtax/defaultNomenclatures qui ne doit pas renvoyer de 404. URL absolue : https://urlgeonature/api/occtax/defaultNomenclatures
-  - Exemple de route locale pour tester l'API TaxHub : http://127.0.0.1:5000/api/taxref/regnewithgroupe2 qui ne doit pas renvoyer de 404. URL absolue : https://urltaxhub/api/taxref/regnewithgroupe2
 
-- Vérifier que les fichiers de logs de TaxHub et GeoNature ne sont pas trop volumineux pour la capacité du serveur
+- Vérifier que le fichier de logs de GeoNature n'est pas trop volumineux pour la capacité du serveur
 - Vérifier que les services nécessaires au fonctionnement de l'application tournent bien (Apache, PostgreSQL)
 
 Maintenance
@@ -1051,7 +1042,7 @@ Attention : ne pas stopper le backend (des opérations en BDD en cours pourraien
 
 - Redémarrage de PostgreSQL
 
-  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez les commandes ``sudo systemctl restart geonature`` et ``sudo systemctl restart taxhub`` (GeoNature 2.8+).
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage de l'API GeoNature pour que celle-ci continue de fonctionner. Pour cela, lancez la commande ``sudo systemctl restart geonature`` (GeoNature 2.8+).
 
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
 
@@ -1441,7 +1432,7 @@ Vous pouvez aussi vous inspirer des exemples avancés de migration des données 
 .. include:: import-level-2.rst
 
 
-Comptes utilisateurs
+Authentification
 --------------------
 
 Demande de création de compte
@@ -1618,6 +1609,11 @@ Un lien GeoNature peut déclencher automatiquement une connexion avec l’utilis
 Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
 
 
+
+.. include:: admin/authentication_custom.rst
+
+
+
 .. include:: sensitivity.rst
 
 
@@ -1700,31 +1696,28 @@ Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs pr
 Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
 Personnaliser la liste des taxons et habitats saisissables dans le module
-`````````````````````````````````````````````````````````````
+`````````````````````````````````````````````````````````````````````````
 
-Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
+Il est possible de limiter la liste des taxons saisissables dans Occtax, en renseignant le paramètre ``id_taxon_list``. Celui-ci n'est pas défini par défaut et c'est donc tout Taxref qui est proposé à la saisie par défaut.
 
-Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
+Une liste restreinte de taxons (8 seulement) est proposée par défaut (``id_taxon_list = 100``). L'administrateur peut changer, compléter ou supprimer cette liste.
 
-Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang ``genre`` :
+Le paramètre ``id_taxon_list = 100`` correspond donc à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax").
 
-Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 100, avec l'ensemble des taxons de ``bib_noms`` :
+Voici un exemple de requête SQL pour remplir la liste 100 avec tous les taxons de flore de Taxref à partir du rang ``genre`` :
 
 .. code-block:: sql
 
-    DELETE FROM taxonomie.cor_nom_liste;
-    DELETE FROM taxonomie.bib_noms;
-
-    INSERT INTO taxonomie.bib_noms(cd_nom,cd_ref,nom_francais)
-    SELECT cd_nom, cd_ref, nom_vern
+    INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
+    WITH tx as (select cd_nom, cd_ref, nom_vern
     FROM taxonomie.taxref
     WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL',
-      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR');
+      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR') )
+      SELECT 100,tr.cd_nom FROM taxonomie.taxref tr
+      join tx on tx.cd_nom = tr.cd_nom
+      where tr.regne = 'Plantae';
 
-    INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
-    SELECT 100,n.id_nom FROM taxonomie.bib_noms n;
-
-Il est également possible d'éditer des listes à partir de l'application TaxHub.
+Il est également possible de gérer les listes de taxons avec le module TaxHub.
 
 Il est de même possible de restreindre la liste d'habitats proposés dans le module :
 
@@ -1736,7 +1729,7 @@ Avec ``ID_LIST_HABITAT`` faisant référence aux listes définies dans ``ref_hab
 
 .. code-block:: sql
 
-        -- Création d'une liste restreinte d'habitats pour OccTax
+        -- Création d'une liste restreinte d'habitats pour Occtax
         -- (typologie EUNIS de niveau 2)
         INSERT INTO ref_habitats.cor_list_habitat clh(
         	cd_hab,
@@ -1955,7 +1948,7 @@ Les champs additionnels ne sont pas créés comme des colonnes à part entière,
 
 Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
 
-Le backoffice de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
+Le module "Admin" de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
 Un champ additionnel est définit par:
 
 - son nom (nom dans la base de données)
@@ -2000,15 +1993,21 @@ Le champs "Attribut additionnels" permet d'ajouter des éléments de configurati
 - Ajouter un sous-titre descriptif : `{"help" : "mon sous titre"}`
 - Ajouter des valeurs min/max pour un input `number` : `{"min": 1, "max": 10}`
 
+TaxHub
+""""""
+
+Module de gestion des taxons (basé sur TaxHub) permettant de faire des listes de taxons ainsi que d'ajouter des attributs et des médias aux taxons.
+Voir la documentation de TaxHub : https://taxhub.readthedocs.io/fr/
+
 Module OCCHAB
 -------------
 
 Installer le module
 """""""""""""""""""
 
-Le module OCCHAB fait parti du coeur de GeoNature. Son installation est au choix de l'administrateur.
+Le module OCCHAB fait partie du coeur de GeoNature. Son installation est au choix de l'administrateur.
 
-Pour l'installer, lancer les commande suivante:
+Pour l'installer, lancer les commandes suivantes :
 
 .. code-block:: console
 
@@ -2022,8 +2021,8 @@ Base de données
 
 Le module s'appuie sur deux schémas :
 
-- ``ref_habitats`` correspond au référentiel habitat du MNHN,
-- ``pr_occhab`` correspond au schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN.
+- ``ref_habitats`` correspond au référentiel habitat du SINP,
+- ``pr_occhab`` correspond au schéma qui contient les données d'occurrence d'habitat, basé sur standard du SINP.
 
 Configuration
 """""""""""""
@@ -2099,15 +2098,15 @@ Il est aussi possible de passer plusieurs ``type_code`` regroupés dans un même
 
 **2.** Configurer les champs des exports
 
-Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue servant l'export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous.
+Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue SQL servant l'export.
 
 **Export des observations**
 
-Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
+Les exports (CSV, GeoJSON, Geopackage, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
 
 Il est possible de ne pas intégrer certains champs présents dans cette vue d'export. Pour cela modifier le paramètre ``EXPORT_COLUMNS``.
 
-Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
+Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans l'export au format shapefile.
 
 ::
 
@@ -2214,20 +2213,20 @@ Selon les permissions de l'utilisation sur l'action "Export" du module Synthèse
 
 **Export des métadonnées**
 
-En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
+En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la vue ``gn_synthese.v_metadata_for_export``. 
 
-Deux champs sont cependant obligatoire dans la vue :
+Deux champs sont cependant obligatoires dans cette vue :
 
 - ``jdd_id`` (qui correspond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``.
 - ``acteurs``:  Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ACTOR_COL``
 
 **Export des statuts taxonomiques (réglementations)**
 
-Cet export n'est pas basé sur une vue, il n'est donc pas possible de l'adapter.
+Cet export n'est pas basé sur une vue.
 
 **3.** Configurer les seuils du nombre de données pour la recherche et les exports
 
-Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultat affiché sur la carte et le nombre d'observations dans les exports.
+Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultats affichés sur la carte et le nombre d'observations dans les exports.
 
 Ces seuils sont modifiables respectivement par les variables ``NB_MAX_OBS_MAP`` et ``NB_MAX_OBS_EXPORT`` :
 
@@ -2303,9 +2302,8 @@ Une commande dans TaxHub permet de désactiver automatiquement les textes en deh
 
 ::
 
-  cd ~/taxhub
-  source venv/bin/activate
-  flask taxref enable-bdc-statut-text -d <MON_DEP_1> -d <MON_DEP_2> --clean
+  source ~/geonature/backend/venv/bin/activate
+  geonature taxref enable-bdc-statut-text -d <MON_DEP_1> -d <MON_DEP_2> --clean
 
 **6.** Définir des filtres par défaut
 
@@ -2385,19 +2383,23 @@ Liste des propriétés disponibles :
 
 Validation automatique
 """"""""""""""""""""""
+
 Depuis la version 2.14, il est possible d'activer la validation automatique d'observations.
 
 Activation
 ``````````
-L'activation de la validation automatique s'effectue en ajoutant la ligne suivante dans le fichier de configuration du module de validation ``config/validation_config.toml``:
+
+L'activation de la validation automatique s'effectue en ajoutant la ligne suivante dans le fichier de configuration du module de validation ``config/validation_config.toml`` :
 
 ::
 
     AUTO_VALIDATION_ENABLED = true
 
-Condition de validation automatique
-```````````````````````````````````
-Une observation sera validée automatiquement si elle rencontre les conditions suivantes:
+Conditions de validation automatique
+````````````````````````````````````
+
+Une observation sera validée automatiquement si elle rencontre les conditions suivantes :
+
  * Son statut de validation est ``En attente de validation``
  * Si le score calculé à partir du profil de taxons est de 3. Se référer à la section `Profils de taxons`_ pour plus d'informations.
 
@@ -2408,7 +2410,7 @@ Si ces conditions sont remplies, alors le statut de validation de l'observation 
 Modification de la périodicité de la validation automatique
 ```````````````````````````````````````````````````````````
 
-Le processus de validation automatique est executé à une fréquence définie, par défaut toutes les heures. Si toutefois, vous souhaitez diminuer ou augmenter la durée entre chaque validation automatique, définissez cette dernière dans le fichier de configuration (``config/validation_config.toml``) dans la variable ``AUTO_VALIDATION_CRONTAB``. 
+Le processus de validation automatique est exécuté à une fréquence définie, par défaut toutes les heures. Si toutefois, vous souhaitez diminuer ou augmenter la durée entre chaque validation automatique, définissez cette dernière dans le fichier de configuration (``config/validation_config.toml``) dans la variable ``AUTO_VALIDATION_CRONTAB``. 
 
 ::
   
@@ -2420,4 +2422,27 @@ Ce paramètre est composé de cinq valeurs, chacune séparée par un espace: min
 
 Modification de la fonction de validation automatique
 `````````````````````````````````````````````````````
-Dans GeoNature, la validation automatique est effectuée par une fonction en ``PL/pgSQL`` déclarée dans le schéma ``gn_profiles``. Si toutefois, le fonctionnement de celle-ci ne correspond à vos besoins, indiquer le nom de la nouvelle fonction dans la variable ``AUTO_VALIDATION_SQL_FUNCTION``. Attention, cette fonction doit aussi être stockée dans le schema ``gn_profiles``. Pour vous aidez, n'hésitez pas à regarder la définition de la fonction par défaut nommée ``fct_auto_validation``.
+
+Dans GeoNature, la validation automatique est effectuée par une fonction en ``PL/pgSQL`` déclarée dans le schéma ``gn_profiles``. Si toutefois, le fonctionnement de celle-ci ne correspond pas à vos besoins, indiquez le nom de la nouvelle fonction dans la variable ``AUTO_VALIDATION_SQL_FUNCTION``. Attention, cette fonction doit aussi être stockée dans le schema ``gn_profiles``. Pour vous aider, n'hésitez pas à regarder la définition de la fonction par défaut nommée ``fct_auto_validation``.
+
+Module TaxHub
+-------------
+
+Depuis la version 2.15 de GeoNature, TaxHub est integré comme un module de GeoNature. Il est disponible depuis le module "Admin" de GeoNature.
+
+L'emplacement de stockage des médias est contrôlé par le paramètre `MEDIA_FOLDER`. Les médias de TaxHub seront à l'emplacement `<MEDIA_FOLDER>/taxhub`. Par défaut tous les médias de GeoNature sont stockés dans le répertoire de GeoNature : `<GEONATURE_DIR>/backend/media`. Via ce paramètre, il est possible de mettre un chemin absolu pour stocker les médias n'importe où ailleurs sur votre serveur.
+
+Gestion des permissions
+```````````````````````
+
+La gestion des permissions du module TaxHub est entierement gérée par le module de gestion de permissions de GeoNature. Dans le cas d'une installation standalone de TaxHub, se réferer à la documentation de TaxHub pour la gestion des permissions.
+
+Les permissions du module TaxHub peuvent être reglées aux trois niveaux (objets) suivants :
+
+- TAXONS : permet voir et modifier des taxons (ajout de médias, d'attributs et association de taxons à des listes)
+- THEMES : permet de voir / créer / modifier / supprimer des thèmes. Les thèmes sont des groupes d'attributs
+- LISTES : permet de voir / créer / modifier / supprimer des listes de taxons
+- ATTRIBUTS : permet de voir / créer / modifier / supprimer des attributs de taxons
+
+
+.. include:: import_doc.rst

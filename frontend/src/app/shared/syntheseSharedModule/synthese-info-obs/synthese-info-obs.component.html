@@ -216,468 +216,481 @@
 </mat-card>
 
 <mat-tab-group
-  (selectedTabChange)="setValidationTab()"
+  [(selectedIndex)]="selectedIndex"
+  (selectedTabChange)="setValidationTab($event)"
   #tabGroup
   class="my-tab-grp"
 >
-  <mat-tab label="Détail de l'occurrence">
-    <table class="font-xs table table-striped table-sm">
-      <tr>
-        <td>{{ 'Synthese.ObsState' | translate }}</td>
-        <td>{{ selectedObs?.nomenclature_observation_status?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>{{ 'Synthese.ObsTech' | translate }}</td>
-        <td>{{ selectedObs?.nomenclature_obs_technique?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>{{ 'Synthese.ObsStateBio' | translate }}</td>
-        <td>{{ selectedObs?.nomenclature_bio_condition?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>{{ 'Synthese.ObsStatusBio' | translate }}</td>
-        <td>{{ selectedObs?.nomenclature_bio_status?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>{{ 'Synthese.ObsStatBiogeo' | translate }}</td>
-        <td>{{ selectedObs?.nomenclature_occ_biogeo_status?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>{{ 'Synthese.ObsBehav' | translate }}</td>
-        <td>{{ selectedObs?.nomenclature_behaviour?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>{{ 'Synthese.ObsSex' | translate }}</td>
-        <td data-qa="synthese-info-obs-sexe-value">
-          {{ selectedObs?.nomenclature_sex?.label_default }}
-        </td>
-      </tr>
-      <tr>
-        <td>{{ 'Synthese.ObsLifeStep' | translate }}</td>
-        <td>{{ selectedObs?.nomenclature_life_stage?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Denombrement min</td>
-        <td>{{ selectedObs?.count_min }}</td>
-      </tr>
-      <tr>
-        <td>Denombrement max</td>
-        <td>{{ selectedObs?.count_max }}</td>
-      </tr>
-      <tr>
-        <td>Type de dénombrement</td>
-        <td>{{ selectedObs?.nomenclature_type_count?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Objet du dénombrement</td>
-        <td>{{ selectedObs?.nomenclature_obj_count?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Naturalité</td>
-        <td>{{ selectedObs?.nomenclature_naturalness?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Commentaire relevé</td>
-        <td>{{ selectedObs?.comment_context }}</td>
-      </tr>
-      <tr>
-        <td>Commentaire occurrence</td>
-        <td>{{ selectedObs?.comment_description }}</td>
-      </tr>
-      <tr>
-        <td>Determinateur</td>
-        <td>{{ selectedObs?.determiner }}</td>
-      </tr>
-      <tr>
-        <td>{{ 'Synthese.DeterMeth' | translate }}</td>
-        <td>{{ selectedObs?.nomenclature_determination_method?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Preuve d'existence</td>
-        <td>{{ selectedObs?.nomenclature_exist_proof?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Preuve numérique</td>
-        <td>{{ selectedObs?.digital_proof }}</td>
-      </tr>
-      <tr>
-        <td>Preuve non numérique</td>
-        <td>{{ selectedObs?.non_digital_proof }}</td>
-      </tr>
-      <tr>
-        <td>Echantillon de preuve</td>
-        <td>{{ selectedObs?.sample_number_proof }}</td>
-      </tr>
-      <tr></tr>
-      <tr>
-        <td>Type de regroupement</td>
-        <td>{{ selectedObs?.nomenclature_grp_typ?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Méthode de regroupement</td>
-        <td>{{ selectedObs?.grp_method }}</td>
-      </tr>
-      <tr>
-        <td>Source de la donnée</td>
-        <td>{{ selectedObs?.nomenclature_source_status?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Statut de validation</td>
-        <td>{{ selectedObs?.nomenclature_valid_status?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Sensibilité</td>
-        <td>{{ selectedObs?.nomenclature_sensitivity?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Niveau de diffusion</td>
-        <td>{{ selectedObs?.nomenclature_diffusion_level?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Nature de l'objet géographique</td>
-        <td>{{ selectedObs?.nomenclature_geo_object_nature?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Floutage</td>
-        <td>{{ selectedObs?.nomenclature_blurring?.label_default }}</td>
-      </tr>
-      <tr>
-        <td>Identifiant unique SINP</td>
-        <td>{{ selectedObs?.unique_id_sinp }}</td>
-      </tr>
-      <tr>
-        <td>Champs additionnels</td>
-        <td>{{ selectedObs?.additional_data | json }}</td>
-      </tr>
-    </table>
-  </mat-tab>
-
-  <mat-tab label="Métadonnées">
-    <table class="font-xs table table-striped table-sm">
-      <tr>
-        <td>Jeu de données</td>
-        <td data-qa="synthese-obs-detail-jdd">{{ selectedObs?.dataset.dataset_name }}</td>
-      </tr>
-      <tr>
-        <td>Cadre d'acquisition</td>
-        <td data-qa="synthese-obs-detail-ca">
-          {{ selectedObs?.dataset.acquisition_framework.acquisition_framework_name }}
-        </td>
-      </tr>
-      <tr>
-        <td>Acteurs</td>
-        <td>
-          <ul>
-            <li *ngFor="let actor of selectedObs?.dataset.cor_dataset_actor">
-              {{ actor.display_name }}
-            </li>
-          </ul>
-        </td>
-      </tr>
-      <tr>
-        <td>Module de provenance</td>
-        <td>{{ selectedObs?.source.name_source }}</td>
-      </tr>
-    </table>
-  </mat-tab>
-
-  <mat-tab label="Taxonomie">
-    <table class="font-xs table table-striped table-sm">
-      <tr>
-        <td>
-          <b>Groupe taxonomique</b>
-        </td>
-        <td>{{ selectedObsTaxonDetail?.classe }}</td>
-      </tr>
-      <tr>
-        <td>
-          <b>Ordre</b>
-        </td>
-        <td>{{ selectedObsTaxonDetail?.ordre }}</td>
-      </tr>
-      <tr>
-        <td>
-          <b>Famille</b>
-        </td>
-        <td data-qa="synthese-obs-detail-taxo-familly">{{ selectedObsTaxonDetail?.famille }}</td>
-      </tr>
-    </table>
-
-    <h5 class="underlined underlined-sm main-color">Attribut(s) Taxonomique(s) locaux</h5>
-    <table class="font-xs table table-striped table-sm">
-      <tr
-        class="font-xs"
-        *ngFor="let attr of selectObsTaxonInfo?.attributs"
-      >
-        <td>
-          <b>{{ attr.label_attribut }}</b>
-        </td>
-        <td>{{ attr.valeur_attribut }}</td>
-      </tr>
-    </table>
-
-    <h5 class="underlined underlined-sm main-color">Statuts</h5>
-    <table
-      class="font-xs table table-sm"
-      *ngIf="selectedObsTaxonDetail?.status; else noStatus"
-    >
-      <ng-container *ngFor="let status of selectedObsTaxonDetail?.status | keyvalue">
-        <tr class="table-primary">
-          <th>{{ status.value.display }}</th>
-        </tr>
-        <tr *ngFor="let text of status.value.text | keyvalue">
-          <td>
-            <ul class="list-unstyled mt-2">
-              <li
-                *ngIf="text.value.full_citation"
-                class="d-flex w-100 justify-content-between"
-              >
-                <span class="flex-shrink-1 w-75">
-                  <strong [innerHtml]="text.value.full_citation | safeHTML"></strong>
-                  <br />
-                  ({{ text.value.lb_adm_tr }} - {{ text.value.cd_sig }})
-                </span>
-                <a
-                  *ngIf="text.value.doc_url"
-                  class="btn align-self-start"
-                  href="{{ text.value.doc_url }}"
-                  mat-stroked-button
-                  color="primary"
-                  target="_blank"
-                >
-                  Voir / Télécharger
-                  <mat-icon aria-hidden="true">launch</mat-icon>
-                </a>
-              </li>
-              <li>
-                <span *ngFor="let value of text.value.values | keyvalue">
-                  <strong *ngIf="value.value.code != 'true'">
-                    {{ value.value.code_statut }}
-                  </strong>
-                  {{ value.value.label_statut }}
-                  {{ value.value.rq_statut }}
-                </span>
-              </li>
-            </ul>
-          </td>
-        </tr>
-      </ng-container>
-    </table>
-    <ng-template #noStatus><p>Aucun</p></ng-template>
-  </mat-tab>
-  <ng-container *ngIf="selectedObs?.medias?.length">
-    <mat-tab label="Médias">
-      <h5 class="underlined underlined-sm main-color">Médias</h5>
-      <table class="font-xs table table-striped table-sm">
-        <ng-container *ngFor="let media of selectedObs?.medias; index as i">
-          <tr>
-            <td>Titre</td>
-            <td>
-              <a
-                target="_blank"
-                [href]="mediaService.href(media)"
-              >
-                {{ media.title_fr }}
-              </a>
-            </td>
-          </tr>
-          <tr *ngIf="media.description_fr">
-            <td>Description</td>
-            <td>{{ media.description_fr }}</td>
-          </tr>
-          <tr *ngIf="media.author">
-            <td>Auteur</td>
-            <td>{{ media.author }}</td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <pnx-display-medias
-                diaporama="true"
-                [medias]="selectedObs?.medias"
-                [index]="i"
-                display="medium"
-              ></pnx-display-medias>
-            </td>
-          </tr>
-        </ng-container>
-      </table>
-    </mat-tab>
-  </ng-container>
-
-  <mat-tab label="Zonage">
-    <table class="font-xs table table-striped table-sm">
-      <thead>
-        <tr>
-          <th class="table_date">Type de zonage</th>
-          <th class="table_comment">Zones</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let area_type of formatedAreas">
-          <td>
-            {{ area_type.area_type }}
-          </td>
-          <td>
-            <span
-              data-qa="synthese-obs-detail-area"
-              *ngFor="let area of area_type.areas; let index = index"
-            >
-              {{ area.area_name }}
-              <span *ngIf="index < area_type.areas.length - 1">,</span>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </mat-tab>
-
-  <mat-tab>
+  <mat-tab *ngFor="let tab of filteredTabs">
     <ng-template mat-tab-label>
-      <span>Validation</span>
+      <span>{{ tab.label }}</span>
     </ng-template>
-    <div *ngIf="showValidation">
-      <h3 data-qa="synthese-obs-detail-validation-title">Historique de validation de la donnée</h3>
-
-      <table class="font-xs table table-striped table-sm">
-        <thead>
+    <ng-container [ngSwitch]="tab.path">
+      <ng-container *ngSwitchCase="'details'">
+        <table class="font-xs table table-striped table-sm">
           <tr>
-            <th class="table_date">Date de validation</th>
-            <th class="table_status">Statut</th>
-            <th class="table_comment">Validateur</th>
-            <th class="table_comment">Commentaire</th>
+            <td>{{ 'Synthese.ObsState' | translate }}</td>
+            <td>{{ selectedObs?.nomenclature_observation_status?.label_default }}</td>
           </tr>
-        </thead>
+          <tr>
+            <td>{{ 'Synthese.ObsTech' | translate }}</td>
+            <td>{{ selectedObs?.nomenclature_obs_technique?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>{{ 'Synthese.ObsStateBio' | translate }}</td>
+            <td>{{ selectedObs?.nomenclature_bio_condition?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>{{ 'Synthese.ObsStatusBio' | translate }}</td>
+            <td>{{ selectedObs?.nomenclature_bio_status?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>{{ 'Synthese.ObsStatBiogeo' | translate }}</td>
+            <td>{{ selectedObs?.nomenclature_occ_biogeo_status?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>{{ 'Synthese.ObsBehav' | translate }}</td>
+            <td>{{ selectedObs?.nomenclature_behaviour?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>{{ 'Synthese.ObsSex' | translate }}</td>
+            <td data-qa="synthese-info-obs-sexe-value">
+              {{ selectedObs?.nomenclature_sex?.label_default }}
+            </td>
+          </tr>
+          <tr>
+            <td>{{ 'Synthese.ObsLifeStep' | translate }}</td>
+            <td>{{ selectedObs?.nomenclature_life_stage?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Denombrement min</td>
+            <td>{{ selectedObs?.count_min }}</td>
+          </tr>
+          <tr>
+            <td>Denombrement max</td>
+            <td>{{ selectedObs?.count_max }}</td>
+          </tr>
+          <tr>
+            <td>Type de dénombrement</td>
+            <td>{{ selectedObs?.nomenclature_type_count?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Objet du dénombrement</td>
+            <td>{{ selectedObs?.nomenclature_obj_count?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Naturalité</td>
+            <td>{{ selectedObs?.nomenclature_naturalness?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Commentaire relevé</td>
+            <td>{{ selectedObs?.comment_context }}</td>
+          </tr>
+          <tr>
+            <td>Commentaire occurrence</td>
+            <td>{{ selectedObs?.comment_description }}</td>
+          </tr>
+          <tr>
+            <td>Determinateur</td>
+            <td>{{ selectedObs?.determiner }}</td>
+          </tr>
+          <tr>
+            <td>{{ 'Synthese.DeterMeth' | translate }}</td>
+            <td>{{ selectedObs?.nomenclature_determination_method?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Preuve d'existence</td>
+            <td>{{ selectedObs?.nomenclature_exist_proof?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Preuve numérique</td>
+            <td>{{ selectedObs?.digital_proof }}</td>
+          </tr>
+          <tr>
+            <td>Preuve non numérique</td>
+            <td>{{ selectedObs?.non_digital_proof }}</td>
+          </tr>
+          <tr>
+            <td>Echantillon de preuve</td>
+            <td>{{ selectedObs?.sample_number_proof }}</td>
+          </tr>
+          <tr></tr>
+          <tr>
+            <td>Type de regroupement</td>
+            <td>{{ selectedObs?.nomenclature_grp_typ?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Méthode de regroupement</td>
+            <td>{{ selectedObs?.grp_method }}</td>
+          </tr>
+          <tr>
+            <td>Source de la donnée</td>
+            <td>{{ selectedObs?.nomenclature_source_status?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Statut de validation</td>
+            <td>{{ selectedObs?.nomenclature_valid_status?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Sensibilité</td>
+            <td>{{ selectedObs?.nomenclature_sensitivity?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Niveau de diffusion</td>
+            <td>{{ selectedObs?.nomenclature_diffusion_level?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Nature de l'objet géographique</td>
+            <td>{{ selectedObs?.nomenclature_geo_object_nature?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Floutage</td>
+            <td>{{ selectedObs?.nomenclature_blurring?.label_default }}</td>
+          </tr>
+          <tr>
+            <td>Identifiant unique SINP</td>
+            <td>{{ selectedObs?.unique_id_sinp }}</td>
+          </tr>
+          <tr>
+            <td>Champs additionnels</td>
+            <td>{{ selectedObs?.additional_data | json }}</td>
+          </tr>
+        </table>
+      </ng-container>
+      <!-- </mat-tab> -->
 
-        <tbody>
-          <tr *ngFor="let row of validationHistory">
-            <td width="15%">{{ row.date }}</td>
-            <td width="20%">
-              <span
-                class="validationCircle"
-                [ngStyle]="{ background: validationColor[row.cd_nomenclature] }"
-              >
-                <mat-icon
-                  *ngIf="row.typeValidation == 'True'"
-                  class="computer"
+      <ng-container *ngSwitchCase="'metadata'">
+        <table class="font-xs table table-striped table-sm">
+          <tr>
+            <td>Jeu de données</td>
+            <td data-qa="synthese-obs-detail-jdd">{{ selectedObs?.dataset.dataset_name }}</td>
+          </tr>
+          <tr>
+            <td>Cadre d'acquisition</td>
+            <td data-qa="synthese-obs-detail-ca">
+              {{ selectedObs?.dataset.acquisition_framework.acquisition_framework_name }}
+            </td>
+          </tr>
+          <tr>
+            <td>Acteurs</td>
+            <td>
+              <ul>
+                <li *ngFor="let actor of selectedObs?.dataset.cor_dataset_actor">
+                  {{ actor.display_name }}
+                </li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>Module de provenance</td>
+            <td>{{ selectedObs?.source.name_source }}</td>
+          </tr>
+        </table>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'taxonomy'">
+        <table class="font-xs table table-striped table-sm">
+          <tr>
+            <td>
+              <b>Groupe taxonomique</b>
+            </td>
+            <td>{{ selectedObsTaxonDetail?.classe }}</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Ordre</b>
+            </td>
+            <td>{{ selectedObsTaxonDetail?.ordre }}</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Famille</b>
+            </td>
+            <td data-qa="synthese-obs-detail-taxo-familly">
+              {{ selectedObsTaxonDetail?.famille }}
+            </td>
+          </tr>
+        </table>
+
+        <h5 class="underlined underlined-sm main-color">Attribut(s) Taxonomique(s) locaux</h5>
+        <table class="font-xs table table-striped table-sm">
+          <tr
+            class="font-xs"
+            *ngFor="let attr of selectedObsTaxonDetail?.attributs"
+          >
+            <td>
+              <b>{{ attr?.bib_attribut?.label_attribut }}</b>
+            </td>
+            <td>{{ attr.valeur_attribut }}</td>
+          </tr>
+        </table>
+
+        <h5 class="underlined underlined-sm main-color">Statuts</h5>
+        <table
+          class="font-xs table table-sm"
+          *ngIf="selectedObsTaxonDetail?.status; else noStatus"
+        >
+          <ng-container *ngFor="let status of selectedObsTaxonDetail?.status | keyvalue">
+            <tr class="table-primary">
+              <th>{{ status.value.display }}</th>
+            </tr>
+            <tr *ngFor="let text of status.value.text | keyvalue">
+              <td>
+                <ul class="list-unstyled mt-2">
+                  <li
+                    *ngIf="text.value.full_citation"
+                    class="d-flex w-100 justify-content-between"
+                  >
+                    <span class="flex-shrink-1 w-75">
+                      <strong [innerHtml]="text.value.full_citation | safeHTML"></strong>
+                      <br />
+                      ({{ text.value.lb_adm_tr }} - {{ text.value.cd_sig }})
+                    </span>
+                    <a
+                      *ngIf="text.value.doc_url"
+                      class="btn align-self-start"
+                      href="{{ text.value.doc_url }}"
+                      mat-stroked-button
+                      color="primary"
+                      target="_blank"
+                    >
+                      Voir / Télécharger
+                      <mat-icon aria-hidden="true">launch</mat-icon>
+                    </a>
+                  </li>
+                  <li>
+                    <span *ngFor="let value of text.value.values | keyvalue">
+                      <strong *ngIf="value.value.code != 'true'">
+                        {{ value.value.code_statut }}
+                      </strong>
+                      {{ value.value.label_statut }}
+                      {{ value.value.rq_statut }}
+                    </span>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+        <ng-template #noStatus><p>Aucun</p></ng-template>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'media'">
+        <h5 class="underlined underlined-sm main-color">Médias</h5>
+        <table class="font-xs table table-striped table-sm">
+          <ng-container *ngFor="let media of selectedObs?.medias; index as i">
+            <tr>
+              <td>Titre</td>
+              <td>
+                <a
+                  target="_blank"
+                  [href]="mediaService.href(media)"
                 >
-                  computer
-                </mat-icon>
-              </span>
-              <span
-                class="statusName"
-                class="ml-4"
-              >
-                {{ row.label_default }}
-              </span>
-            </td>
-            <td width="20%">
-              <span>{{ row.validator }}</span>
-            </td>
-            <td>{{ row.comment }}</td>
-          </tr>
-        </tbody>
-      </table>
+                  {{ media.title_fr }}
+                </a>
+              </td>
+            </tr>
+            <tr *ngIf="media.description_fr">
+              <td>Description</td>
+              <td>{{ media.description_fr }}</td>
+            </tr>
+            <tr *ngIf="media.author">
+              <td>Auteur</td>
+              <td>{{ media.author }}</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <pnx-display-medias
+                  diaporama="true"
+                  [medias]="selectedObs?.medias"
+                  [index]="i"
+                  display="medium"
+                ></pnx-display-medias>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </ng-container>
 
-      <div *ngIf="config.FRONTEND.ENABLE_PROFILES">
-        <div *ngIf="profile; else noProfile">
-          <h3>Profil du taxon</h3>
-          <div class="row row-sm">
-            <div class="col-4 padding-sm">
-              <h5>Informations générales sur le taxon</h5>
-              <table class="font-xs table table-striped table-sm">
-                <tr>
-                  <td>Nombre de données valides</td>
-                  <td>{{ profile?.properties?.count_valid_data }}</td>
-                </tr>
-                <tr>
-                  <td>Altitude minimale valide</td>
-                  <td>{{ profile?.properties?.altitude_min }}</td>
-                </tr>
-                <tr>
-                  <td>Altitude maximale valide</td>
-                  <td>{{ profile?.properties?.altitude_max }}</td>
-                </tr>
+      <ng-container *ngSwitchCase="'zonage'">
+        <table class="font-xs table table-striped table-sm">
+          <thead>
+            <tr>
+              <th class="table_date">Type de zonage</th>
+              <th class="table_comment">Zones</th>
+            </tr>
+          </thead>
 
-                <tr>
-                  <td>Première observation valide</td>
-                  <td>{{ profile?.properties?.first_valid_data | date: 'dd/MM/yyyy' }}</td>
-                </tr>
-                <tr>
-                  <td>Dernière observation valide</td>
-                  <td>{{ profile?.properties?.last_valid_data | date: 'dd/MM/yyyy' }}</td>
-                </tr>
-              </table>
+          <tbody>
+            <tr *ngFor="let area_type of formatedAreas">
+              <td>
+                {{ area_type.area_type }}
+              </td>
+              <td>
+                <span
+                  data-qa="synthese-obs-detail-area"
+                  *ngFor="let area of area_type.areas; let index = index"
+                >
+                  {{ area.area_name }}
+                  <span *ngIf="index < area_type.areas.length - 1">,</span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
 
-              <h5>Cohérence de la donnée</h5>
-              <table class="font-xs table table-sm table-striped">
-                <tr>
-                  <td>Dans l'aire d'observation valide</td>
-                  <td *ngIf="profileDataChecks?.valid_distribution">
-                    <mat-icon class="success">check</mat-icon>
-                  </td>
-                  <td *ngIf="!profileDataChecks?.valid_distribution">
-                    <mat-icon class="error">close</mat-icon>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Cohérence phénologique</td>
-                  <td *ngIf="profileDataChecks?.valid_phenology">
-                    <mat-icon class="success">check</mat-icon>
-                  </td>
-                  <td *ngIf="!profileDataChecks?.valid_phenology">
-                    <mat-icon class="error">close</mat-icon>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Dans la fourchette altitudinale valide</td>
-                  <td *ngIf="profileDataChecks?.valid_altitude">
-                    <mat-icon class="success">check</mat-icon>
-                  </td>
-                  <td *ngIf="!profileDataChecks?.valid_altitude">
-                    <mat-icon class="error">close</mat-icon>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Score</td>
-                  <td>{{ profileDataChecks?.score }}</td>
-                </tr>
-              </table>
+      <ng-container *ngSwitchCase="'validation'">
+        <div *ngIf="showValidation">
+          <h3 data-qa="synthese-obs-detail-validation-title">
+            Historique de validation de la donnée
+          </h3>
+
+          <table class="font-xs table table-striped table-sm">
+            <thead>
+              <tr>
+                <th class="table_date">Date de validation</th>
+                <th class="table_status">Statut</th>
+                <th class="table_comment">Validateur</th>
+                <th class="table_comment">Commentaire</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let row of validationHistory">
+                <td width="15%">{{ row.date }}</td>
+                <td width="20%">
+                  <span
+                    class="validationCircle"
+                    [ngStyle]="{ background: validationColor[row.cd_nomenclature] }"
+                  >
+                    <mat-icon
+                      *ngIf="row.typeValidation == 'True'"
+                      class="computer"
+                    >
+                      computer
+                    </mat-icon>
+                  </span>
+                  <span
+                    class="statusName"
+                    class="ml-4"
+                  >
+                    {{ row.label_default }}
+                  </span>
+                </td>
+                <td width="20%">
+                  <span>{{ row.validator }}</span>
+                </td>
+                <td>{{ row.comment }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div *ngIf="config.FRONTEND.ENABLE_PROFILES">
+            <div *ngIf="profile; else noProfile">
+              <h3>Profil du taxon</h3>
+              <div class="row row-sm">
+                <div class="col-4 padding-sm">
+                  <h5>Informations générales sur le taxon</h5>
+                  <table class="font-xs table table-striped table-sm">
+                    <tr>
+                      <td>Nombre de données valides</td>
+                      <td>{{ profile?.properties?.count_valid_data }}</td>
+                    </tr>
+                    <tr>
+                      <td>Altitude minimale valide</td>
+                      <td>{{ profile?.properties?.altitude_min }}</td>
+                    </tr>
+                    <tr>
+                      <td>Altitude maximale valide</td>
+                      <td>{{ profile?.properties?.altitude_max }}</td>
+                    </tr>
+
+                    <tr>
+                      <td>Première observation valide</td>
+                      <td>{{ profile?.properties?.first_valid_data | date: 'dd/MM/yyyy' }}</td>
+                    </tr>
+                    <tr>
+                      <td>Dernière observation valide</td>
+                      <td>{{ profile?.properties?.last_valid_data | date: 'dd/MM/yyyy' }}</td>
+                    </tr>
+                  </table>
+
+                  <h5>Cohérence de la donnée</h5>
+                  <table class="font-xs table table-sm table-striped">
+                    <tr>
+                      <td>Dans l'aire d'observation valide</td>
+                      <td *ngIf="profileDataChecks?.valid_distribution">
+                        <mat-icon class="success">check</mat-icon>
+                      </td>
+                      <td *ngIf="!profileDataChecks?.valid_distribution">
+                        <mat-icon class="error">close</mat-icon>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Cohérence phénologique</td>
+                      <td *ngIf="profileDataChecks?.valid_phenology">
+                        <mat-icon class="success">check</mat-icon>
+                      </td>
+                      <td *ngIf="!profileDataChecks?.valid_phenology">
+                        <mat-icon class="error">close</mat-icon>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Dans la fourchette altitudinale valide</td>
+                      <td *ngIf="profileDataChecks?.valid_altitude">
+                        <mat-icon class="success">check</mat-icon>
+                      </td>
+                      <td *ngIf="!profileDataChecks?.valid_altitude">
+                        <mat-icon class="error">close</mat-icon>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Score</td>
+                      <td>{{ profileDataChecks?.score }}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <h5>Aire de répartition des observations valides</h5>
+            <div class="mb-3 border border-secondary">
+              <pnx-map height="40vh">
+                <pnx-geojson
+                  [geojson]="selectedGeom"
+                  [style]="{ color: 'red' }"
+                ></pnx-geojson>
+                <pnx-geojson
+                  [geojson]="profile"
+                  [zoomOnFirstTime]="true"
+                ></pnx-geojson>
+              </pnx-map>
             </div>
           </div>
+          <ng-template #noProfile>
+            <span class="alert alert-info">Pas de profil pour ce taxon</span>
+            <br />
+            <br />
+          </ng-template>
         </div>
+      </ng-container>
 
-        <h5>Aire de répartition des observations valides</h5>
-        <div class="mb-3 border border-secondary">
-          <pnx-map height="40vh">
-            <pnx-geojson
-              [geojson]="selectedGeom"
-              [style]="{ color: 'red' }"
-            ></pnx-geojson>
-            <pnx-geojson
-              [geojson]="profile"
-              [zoomOnFirstTime]="true"
-            ></pnx-geojson>
-          </pnx-map>
-        </div>
-      </div>
-      <ng-template #noProfile>
-        <span class="alert alert-info">Pas de profil pour ce taxon</span>
-        <br />
-        <br />
-      </ng-template>
-    </div>
-  </mat-tab>
-
-  <mat-tab
-    label="{{ 'Synthese.Discussion' | translate }}"
-    *ngIf="config.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code)"
-  >
-    <pnx-discussion-card
-      [validationColor]="validationColor"
-      [idSynthese]="idSynthese"
-      [codeModule]="moduleInfos.code"
-      [additionalData]="{ data: validationHistory, dateField: 'dateTime' }"
-    ></pnx-discussion-card>
+      <ng-container
+        *ngIf="
+          config.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code) && tab.path === 'discussion'
+        "
+      >
+        <!-- <ng-template mat-tab-label>
+    <span>{{ tabLabels['discussion']  | translate }}</span>
+  </ng-template> -->
+        <pnx-discussion-card
+          [validationColor]="validationColor"
+          [idSynthese]="idSynthese"
+          [codeModule]="moduleInfos.code"
+          [additionalData]="{ data: validationHistory, dateField: 'dateTime' }"
+        ></pnx-discussion-card>
+      </ng-container>
+    </ng-container>
   </mat-tab>
 </mat-tab-group>

@@ -47,7 +47,10 @@ srid_local=2154
 default_language=fr
 
 # Installation de la base de connaissance des statuts
-install_bdc_statuts=true
+install_bdc_statuts=false
+
+# Nom de la colonne région à importer dans la colonne id_statut de taxref
+taxref_region=fr
 
 # Permet l'installation des couches SIG des communes et départements
 # Seules les couches de métropole en 2154 sont fournies (false conseillé hors métropole)

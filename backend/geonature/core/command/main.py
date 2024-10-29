@@ -115,7 +115,6 @@ def default_config():
     required_fields = (
         "URL_APPLICATION",
         "API_ENDPOINT",
-        "API_TAXHUB",
         "SECRET_KEY",
         "SQLALCHEMY_DATABASE_URI",
     )

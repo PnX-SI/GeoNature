@@ -15,7 +15,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
@@ -43,6 +42,15 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -95,6 +103,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
           srid_local: 2154
           install_bdc_statuts: true
+          taxref_region: fr
           add_sample_data: true
           install_sig_layers: true
           install_grid_layer_5: true
@@ -122,11 +131,12 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Test with pytest
         run: |
-          pytest -v --cov --cov-report xml --benchmark-skip
+          pytest -v --cov --cov-report xml
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Upload coverage to Codecov
-        if: ${{ matrix.debian-version == '11' }}
-        uses: codecov/codecov-action@v3
+        if: ${{ matrix.debian-version == '12' }}
+        uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           flags: pytest

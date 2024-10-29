@@ -1,8 +1,11 @@
+bokeh==3.4.1
 celery[redis]
+chardet  # imports
 click>=7.0
 fiona>=1.9.6
 flask>=3.0
 flask-admin
+flask-babel
 flask-cors
 flask-mail
 flask-marshmallow
@@ -17,9 +20,12 @@ importlib_metadata;python_version>"3.10"
 lxml
 marshmallow
 marshmallow-sqlalchemy
+pandas  # imports
 pillow
 packaging
 psycopg2
+pyproj<3.1;python_version<"3.10"  # imports
+pyproj;python_version>="3.10"  # imports
 python-dateutil
 shapely>=2.0.0
 sqlalchemy<2.0

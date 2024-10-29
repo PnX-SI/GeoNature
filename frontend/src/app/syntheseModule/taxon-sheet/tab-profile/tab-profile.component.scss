@@ -1,0 +1,14 @@
+.Profile {
+  display: flex;
+  flex-flow: column;
+  gap: 1rem;
+  &__disclaimer {
+    font-style: italic;
+  }
+  &__indicators {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 1rem;
+  }
+}

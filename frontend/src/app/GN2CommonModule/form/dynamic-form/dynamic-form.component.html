@@ -208,25 +208,30 @@
 
     <div *ngSwitchCase="'radio'">
       <div
-        *ngFor="let item of formDefComp['values']"
-        class="custom-control custom-radio"
-        [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
+        class="radio-group-container"
+        [ngClass]="{ 'border-red': form.get(formDefComp['attribut_name']).invalid }"
       >
-        <input
-          type="radio"
-          id="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
-          (click)="onRadioChange(item.value, form.get(formDefComp['attribut_name']))"
-          class="custom-control-input"
-          name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
-          [value]="item.value"
-          [formControl]="form.get(formDefComp['attribut_name'])"
-        />
-        <label
-          class="custom-control-label"
-          for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
+        <div
+          *ngFor="let item of formDefComp['values']"
+          class="custom-control custom-radio"
+          [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
         >
-          <span [innerHTML]="item.label"></span>
-        </label>
+          <input
+            type="radio"
+            id="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
+            (click)="onRadioChange(item.value, form.get(formDefComp['attribut_name']))"
+            class="custom-control-input"
+            name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
+            [value]="item.value"
+            [formControl]="form.get(formDefComp['attribut_name'])"
+          />
+          <label
+            class="custom-control-label"
+            for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
+          >
+            <span [innerHTML]="item.label"></span>
+          </label>
+        </div>
       </div>
     </div>
 

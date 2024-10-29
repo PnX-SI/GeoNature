@@ -3,20 +3,31 @@
 """
 
 import os
+import warnings
 
 from warnings import warn
 
-from marshmallow import Schema, fields, validates_schema, ValidationError, post_load, pre_load
+from marshmallow import (
+    INCLUDE,
+    Schema,
+    fields,
+    validates_schema,
+    ValidationError,
+    post_load,
+    pre_load,
+)
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
 )
+from geonature.core.imports.config_schema import ImportConfigSchema
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
-from geonature.utils.utilstoml import load_and_validate_toml
+from pypnusershub.auth.authentication import ProviderConfigurationSchema
+from apptax.utils.config.config_schema import TaxhubAppConf
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -38,39 +49,6 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             # Validate email with Marshmallow
             validator = Email()
             validator(email)
-
-
-class CasUserSchemaConf(Schema):
-    URL = fields.Url(load_default="https://inpn.mnhn.fr/authentication/information")
-    BASE_URL = fields.Url(load_default="https://inpn.mnhn.fr/authentication/")
-    ID = fields.String(load_default="mon_id")
-    PASSWORD = fields.String(load_default="mon_pass")
-
-
-class CasFrontend(Schema):
-    CAS_AUTHENTIFICATION = fields.Boolean(load_default=False)
-    CAS_URL_LOGIN = fields.Url(load_default="https://preprod-inpn.mnhn.fr/auth/login")
-    CAS_URL_LOGOUT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/auth/logout")
-
-
-class CasSchemaConf(Schema):
-    CAS_URL_VALIDATION = fields.String(
-        load_default="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-    )
-    CAS_USER_WS = fields.Nested(CasUserSchemaConf, load_default=CasUserSchemaConf().load({}))
-    USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(load_default=False)
-    # Quel modules seront associés au JDD récupérés depuis MTD
-
-
-class MTDSchemaConf(Schema):
-    JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
-    ID_INSTANCE_FILTER = fields.Integer(load_default=None)
-    SYNC_LOG_LEVEL = fields.String(load_default="INFO")
-
-
-class BddConfig(Schema):
-    ID_USER_SOCLE_1 = fields.Integer(load_default=7)
-    ID_USER_SOCLE_2 = fields.Integer(load_default=6)
 
 
 class RightsSchemaConf(Schema):
@@ -149,6 +127,7 @@ class HomeConfig(Schema):
         load_default="Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     )
     FOOTER = fields.String(load_default="")
+    DISPLAY_LATEST_DISCUSSIONS = fields.Boolean(load_default=True)
 
 
 class MetadataConfig(Schema):
@@ -180,7 +159,22 @@ class MetadataConfig(Schema):
     )
 
 
-# class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
+class AuthenticationConfig(Schema):
+    PROVIDERS = fields.List(
+        fields.Dict(),
+        load_default=[
+            dict(
+                module="pypnusershub.auth.providers.default.LocalProvider",
+                id_provider="local_provider",
+            )
+        ],
+    )
+    DEFAULT_RECONCILIATION_GROUP_ID = fields.Integer()
+
+    @validates_schema
+    def validate_provider(self, data, **kwargs):
+        for provider in data["PROVIDERS"]:
+            ProviderConfigurationSchema().load(provider, unknown=INCLUDE)
 
 
 class GnPySchemaConf(Schema):
@@ -203,7 +197,6 @@ class GnPySchemaConf(Schema):
     STATIC_FOLDER = fields.String(load_default="static")
     CUSTOM_STATIC_FOLDER = fields.String(load_default=ROOT_DIR / "custom")
     MEDIA_FOLDER = fields.String(load_default="media")
-    CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
     CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
@@ -281,6 +274,12 @@ class ExportObservationSchema(Schema):
     view_name = fields.String(required=True)
     geojson_4326_field = fields.String(load_default="geojson_4326")
     geojson_local_field = fields.String(load_default="geojson_local")
+
+
+class TaxonSheet(Schema):
+    # --------------------------------------------------------------------
+    # SYNTHESE - TAXON_SHEET
+    ENABLE_PROFILE = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
@@ -437,6 +436,10 @@ class Synthese(Schema):
     # Activate the blurring of sensitive observations. Otherwise, exclude them
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
 
+    # --------------------------------------------------------------------
+    # SYNTHESE - TAXON_SHEET
+    TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
+
     @pre_load
     def warn_deprecated(self, data, **kwargs):
         deprecated = {
@@ -539,10 +542,6 @@ class MapConfig(Schema):
     REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
 
 
-class TaxHub(Schema):
-    ID_TYPE_MAIN_PHOTO = fields.Integer(load_default=1)
-
-
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(load_default="GeoNature2")
@@ -552,46 +551,34 @@ class GnGeneralSchemaConf(Schema):
     DEBUG = fields.Boolean(load_default=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
-    API_TAXHUB = fields.Url(required=True)
+    API_TAXHUB = fields.Url()
     CODE_APPLICATION = fields.String(load_default="GN")
-    XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
-    MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     DISABLED_MODULES = fields.List(fields.String(), load_default=[])
-    CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
     FRONTEND = fields.Nested(GnFrontEndConf, load_default=GnFrontEndConf().load({}))
     SYNTHESE = fields.Nested(Synthese, load_default=Synthese().load({}))
+    IMPORT = fields.Nested(ImportConfigSchema, load_default=ImportConfigSchema().load({}))
     MAPCONFIG = fields.Nested(MapConfig, load_default=MapConfig().load({}))
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
-    BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     STATIC_URL = fields.String(load_default="/static")
     MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
-    MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
-    TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    TAXHUB = fields.Nested(TaxhubAppConf, load_default=TaxhubAppConf().load({"API_PREFIX": "/api"}))
+
     HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
-
-    @validates_schema
-    def validate_enable_sign_up(self, data, **kwargs):
-        # si CAS_PUBLIC = true and ENABLE_SIGN_UP = true
-        if data["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"] and (
-            data["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"]
-            or data["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"]
-        ):
-            raise ValidationError(
-                "CAS_PUBLIC et ENABLE_SIGN_UP ou ENABLE_USER_MANAGEMENT ne peuvent être activés ensemble",
-                "ENABLE_SIGN_UP, ENABLE_USER_MANAGEMENT",
-            )
+    AUTHENTICATION = fields.Nested(
+        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
+    )
 
     @validates_schema
     def validate_account_autovalidation(self, data, **kwargs):
@@ -605,8 +592,19 @@ class GnGeneralSchemaConf(Schema):
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
 
+    @pre_load
+    def _pre_load(self, data, **kwargs):
+        if "API_TAXHUB" in data:
+            warnings.warn(
+                "Le paramètre API_TAXHUB n'est plus utilisé depuis la version 2.15.",
+                Warning,
+            )
+        return data
+
     @post_load
     def insert_module_config(self, data, **kwargs):
+
+        # Configuration des modules actifs
         for dist in iter_modules_dist():
             module_code = dist.entry_points["code"].load()
             if module_code in data["DISABLED_MODULES"]:

@@ -68,6 +68,7 @@ def list_modules():
     query = (
         select(TModules)
         .options(joinedload(TModules.objects))
+        .options(joinedload(TModules.destination))
         .where(TModules.module_code.notin_(exclude))
         .order_by(TModules.module_order.asc())
         .order_by(TModules.module_label.asc())
@@ -80,7 +81,7 @@ def list_modules():
         # HACK : on a besoin d'avoir le module GeoNature en front pour l'URL de la doc
         if module.module_code == "GEONATURE":
             module_allowed = True
-        module_dict = module.as_dict(fields=["objects"])
+        module_dict = module.as_dict(fields=["objects", "destination.code"])
         # TODO : use has_any_permissions instead - must refactor the front
         module_dict["cruved"] = {
             action: get_scope(action, module_code=module.module_code, bypass_warning=True)
@@ -88,10 +89,10 @@ def list_modules():
         }
         if any(module_dict["cruved"].values()):
             module_allowed = True
-        if module.active_frontend:
-            module_dict["module_url"] = module.module_path
-        else:
-            module_dict["module_url"] = module.module_external_url
+        module_dict["module_external_url"] = (
+            "" if module.active_frontend else module.module_external_url
+        )
+        module_dict["module_url"] = module.module_path if module.active_frontend else ""
         module_dict["module_objects"] = {}
         # get cruved for each object
         for obj_dict in module_dict["objects"]:

@@ -5,12 +5,13 @@ on:
       - master
       - hotfixes
       - develop
-      - fixtestfront
+      - feat/import
   pull_request:
     branches:
       - master
       - hotfixes
       - develop
+      - feat/import
 
 jobs:
   mount_app_and_run_cypress:
@@ -28,6 +29,15 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -78,6 +88,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
           srid_local: 2154
           install_bdc_statuts: true
+          taxref_region: fr
           add_sample_data: true
           install_sig_layers: true
           install_grid_layer_5: true
@@ -100,7 +111,7 @@ jobs:
           cp ./config/settings.ini.sample ./config/settings.ini 
           ./install/05_install_frontend.sh --ci
         env:
-          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
+          GEONATURE_CONFIG_FILE: '${{ github.workspace }}/config/test_config.toml'
       - name: Install core modules
         run: |
           geonature install-gn-module contrib/occtax OCCTAX --build=false
@@ -109,18 +120,18 @@ jobs:
           geonature db upgrade occhab-samples@head
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
           geonature permissions supergrant --group --nom "Grp_admin" --yes
+          geonature db upgrade import-samples@head
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
         run: geonature dev_back &
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Run TaxHub backend
-        run: flask run --host=0.0.0.0 &
-        working-directory: ./backend/dependencies/TaxHub/
+      - name: Run celery
+        run: celery -A geonature.celery_app:app worker &
+        working-directory: ./backend/geonature/
         env:
-          TAXHUB_SETTINGS: test_config.py
-          TAXHUB_SQLALCHEMY_DATABASE_URI: "postgresql://geonatadmin:geonatpasswd@127.0.0.1:5432/geonature2db"
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:

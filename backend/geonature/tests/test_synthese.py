@@ -1,4 +1,5 @@
 from io import StringIO
+import sys
 import csv
 import datetime
 import itertools
@@ -35,13 +36,15 @@ from geonature.core.gn_commons.models.base import TModules
 
 from apptax.taxonomie.models import Taxref
 from ref_geo.models import BibAreasTypes, LAreas
-from apptax.tests.fixtures import noms_example, attribut_example
+from apptax.tests.fixtures import noms_example, attribut_example, liste
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 
 from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
 
 from .fixtures import *
 from .fixtures import create_synthese, create_module, synthese_with_protected_status
+
+csv.field_size_limit(sys.maxsize)
 
 
 @pytest.fixture()
@@ -73,14 +76,14 @@ def taxon_attribut(noms_example, attribut_example, synthese_data):
     """
     Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
     """
-    from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
+    from apptax.taxonomie.models import Taxref, BibAttributs, CorTaxonAttribut
 
-    nom = db.session.scalars(select(BibNoms).filter_by(cd_ref=209902)).one()
+    nom = db.session.scalars(select(Taxref).filter_by(cd_nom=209902)).one()
     attribut = db.session.scalars(
         select(BibAttributs).filter_by(nom_attribut=attribut_example.nom_attribut)
     ).one()
     with db.session.begin_nested():
-        c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
+        c = CorTaxonAttribut(taxon=nom, bib_attribut=attribut, valeur_attribut="eau")
         db.session.add(c)
     return c
 
@@ -238,7 +241,7 @@ class TestSynthese:
         # schema["properties"]["observations"]["items"]["required"] =
         # test on synonymy and taxref attrs
         filters = {
-            "cd_ref": [taxon_attribut.bib_nom.cd_ref],
+            "cd_ref": [taxon_attribut.taxon.cd_ref],
             "taxhub_attribut_{}".format(taxon_attribut.bib_attribut.id_attribut): [
                 taxon_attribut.valeur_attribut
             ],
@@ -247,7 +250,7 @@ class TestSynthese:
         assert r.status_code == 200
         assert len(r.json["features"]) > 0
         for feature in r.json["features"]:
-            assert feature["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
+            assert feature["properties"]["cd_nom"] == 713776
 
         # test intersection filters
         filters = {
@@ -1110,6 +1113,63 @@ class TestSynthese:
         response = self.client.get(url_for("gn_synthese.general_stats"))
 
         assert response.status_code == 200
+
+    def test_taxon_stats(self, synthese_data, users):
+        set_logged_user(self.client, users["stranger_user"])
+
+        AREA_TYPE_VALID = "COM"
+        AREA_TYPE_INVALID = "UNDEFINED"
+        CD_REF_INVALID = 987654321
+        CD_REF_INVALID_STATS = {
+            "altitude_max": None,
+            "altitude_min": None,
+            "area_count": 0,
+            "cd_ref": CD_REF_INVALID,
+            "date_max": None,
+            "date_min": None,
+            "observation_count": 0,
+            "observer_count": 0,
+        }
+        CD_REF_VALID = 2497
+        CD_REF_VALID_STATS = {
+            "altitude_max": 900,
+            "altitude_min": 800,
+            "area_count": 2,
+            "cd_ref": CD_REF_VALID,
+            "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+            "observation_count": 3,
+            "observer_count": 1,
+        }
+
+        # Missing area_type parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID),
+        )
+        assert response.status_code == 400
+        assert response.json["description"] == "Missing area_type parameter"
+
+        # Invalid area_type parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_INVALID),
+        )
+        assert response.status_code == 400
+        assert response.json["description"] == "Invalid area_type"
+
+        # Invalid cd_ref parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_INVALID, area_type=AREA_TYPE_VALID),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_INVALID_STATS
+
+        # Invalid cd_ref parameter
+        response = self.client.get(
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_VALID),
+        )
+        response_json = response.get_json()
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_VALID_STATS
 
     def test_get_one_synthese_record(self, app, users, synthese_data):
         response = self.client.get(

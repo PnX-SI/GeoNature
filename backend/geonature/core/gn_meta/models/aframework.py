@@ -121,14 +121,21 @@ class TAcquisitionFramework(db.Model):
     def organism_actors(self):
         return [actor.organism for actor in self.cor_af_actor if actor.organism]
 
-    def is_deletable(self):
-        return not (
-            db.session.scalar(
-                exists()
-                .select_from()
-                .where(TDatasets.id_acquisition_framework == self.id_acquisition_framework)
-                .select()
+    def has_datasets(self):
+        return db.session.scalar(
+            exists(TDatasets)
+            .where(TDatasets.id_acquisition_framework == self.id_acquisition_framework)
+            .select()
+        )
+
+    def has_child_acquisition_framework(self):
+        return db.session.scalar(
+            exists(TAcquisitionFramework)
+            .where(
+                TAcquisitionFramework.acquisition_framework_parent_id
+                == self.id_acquisition_framework
             )
+            .select()
         )
 
     def has_instance_permission(self, scope, _through_ds=True):

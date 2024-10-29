@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-SERVICES=("geonature" "geonature-worker" "taxhub" "usershub")
+
+
+SERVICES=("geonature" "geonature-worker" "usershub")
 
 newdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd )"
 if (($# > 0)); then
@@ -22,6 +24,19 @@ if [ ! -d "${olddir}/backend" ] || [ ! -d "${olddir}/frontend" ] || [ ! -f "${ol
     echo "L’ancien dossier '${olddir}' ne semble pas contenir une installation GeoNature, arrêt."
     exit 1
 fi
+
+# before 2.15 : suppression de l'application TaxHub - Rapatriement des médias TaxHub nécessite de connaitre l'emplacement de TaxHub
+if [ ! -d "${newdir}/backend/media/taxhub" ];then
+    TAXHUB_DIR="${HOME}/taxhub"
+    if (($# > 1)); then
+        TAXHUB_DIR="$(realpath "$2")"
+    fi
+    if [ ! -d "${TAXHUB_DIR}/apptax" ];then
+        echo $2
+        echo "Le dossier ${TAXHUB_DIR} ne semble pas contenir une installation de TaxHub. Veuillez spécifier le chemin vers TaxHub et celui de GeoNature : ./install/migration/migration.sh [OLD_GeoNature_dir] [OLD_TaxHub_dir]"
+    fi
+fi
+
 
 echo "Nouveau dossier GeoNature : ${newdir} ($(cat "${newdir}/VERSION"))"
 echo "Ancien dossier GeoNature : ${olddir} ($(cat "${olddir}/VERSION"))"
@@ -92,6 +107,7 @@ if [ ! -f "${newdir}/custom/css/metadata_pdf_custom.css" ] && [ -f "${olddir}/ba
   mkdir -p "${newdir}/custom/css/"
   cp "${olddir}/backend/static/css/custom.css" "${newdir}/custom/css/metadata_pdf_custom.css"
 fi
+
 
 
 echo "Mise à jour de node si nécessaire …"
@@ -243,4 +259,41 @@ done
 
 deactivate
 
+
+# before 2.15 - Suppression de l'application Taxhub et de la configuration du service systemctl
+if [ -f "/etc/systemd/system/taxhub.service" ]; then
+    sudo systemctl stop taxhub 
+    sudo systemctl disable taxhub
+    sudo rm /etc/systemd/system/taxhub
+    sudo systemctl daemon-reload
+    sudo systemctl reset-failed
+fi
+
+# before 2.15 - Suppression de l'application Taxhub et de la configuration apache
+if [ -f "/etc/apache2/sites-available/taxhub.conf" ]; then
+    rm /etc/apache2/sites-available/taxhub.conf
+fi
+
+if [ -f "/etc/apache2/sites-available/taxhub-le-ssl.conf" ]; then
+    rm /etc/apache2/sites-available/taxhub-le-ssl.conf
+    rm -r /var/log/taxhub/
+fi
+
+if [ -f "/etc/apache2/conf-available/taxhub.conf" ]; then
+    rm /etc/apache2/conf-available/taxhub.conf
+fi
+
+if [ -f "/etc/apache2/conf-available/taxhub-le-ssl.conf" ]; then
+    rm /etc/apache2/conf-available/taxhub-le-ssl.conf
+    rm -r /var/log/taxhub/
+fi
+
+# before 2.15 - Suppression de l'application Taxhub et rapatriement des médias TaxHub
+if [ ! -d "${newdir}/backend/media/taxhub" ];then
+    mkdir -p "${newdir}/backend/media/taxhub"
+    cp -r "${TAXHUB_DIR}"/static/medias/* "${newdir}"/backend/media/taxhub/
+fi
+
+
+sudo apachectl restart
 echo "Migration terminée"

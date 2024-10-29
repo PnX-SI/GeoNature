@@ -249,13 +249,7 @@ Cette fonctionnalité s'appuie sur ``pytest`` et son extension ``pytest-benchmar
 Lancement des tests de performances
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Il existe différentes manières de lancer les tests de performances:
-
-- La commande ``pytest`` sans arguments. Cette dernière lancera les tests de performances en plus des tests unitaires.
-- La commande ``pytest --benchmark-only`` qui lancera uniquement les tests de performances.
-
-
-
+Pour lancer les tests de performances, utiliser la commande suivante : ``pytest --benchmark-only``
 
 
 Ajouter des tests de performances

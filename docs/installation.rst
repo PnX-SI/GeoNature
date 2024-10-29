@@ -14,8 +14,8 @@ GeoNature repose sur les composants suivants :
 
 Deux méthodes d’installation existent :
 
-- :ref:`installation-all` : Installation automatisée de GeoNature, TaxHub et UsersHub.
-- :ref:`installation-standalone` : TaxHub et UsersHub ne sont pas installés (mais leurs schémas sont tous de même créés dans la base de données).
+- :ref:`installation-all` : Installation automatisée de GeoNature (incluant TaxHub) et UsersHub.
+- :ref:`installation-standalone` : UsersHub n'est pas installé (mais son schéma de BDD est tout de même créé dans la base de données de GeoNature).
 
 
 Prérequis
@@ -265,7 +265,7 @@ Mise à jour de l'application
 .. warning::
     Vérifiez préalablement la compatibilité des modules que vous utilisez avant de mettre GeoNature à jour.
     S’il est nécessaire de les mettre à jour, arrêtez vous après le remplacement du dossier par le nouveau code source
-    (et la récupération éventuelle de la configuration) ; le script de migration de GeoNature s’occupera automatiquement
+    (et la récupération éventuelle de la configuration); le script de migration de GeoNature s’occupera automatiquement
     d’installer la nouvelle version du module.
 
 La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche, ainsi que les médias depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
@@ -292,7 +292,7 @@ La mise à jour doit être réalisée avec votre utilisateur linux courant (``ge
 
 Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires.
 
-* Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (https://usershub.readthedocs.io et https://taxhub.readthedocs.io).
+* Si vous devez aussi mettre à jour UsersHub, suivez ses notes de version et sa documentation (https://usershub.readthedocs.io).
 
 * Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
 
@@ -310,5 +310,5 @@ Dans ce cas, les commandes à exécuter sont :
   git status # optionnel, pour connaitre l'état et la version ou branche actuellement utilisée
   git fetch
   git checkout X.Y.Z # où X.Y.Z est le numéro du tag de la version vers laquelle faire la mise à jour, ou le nom de la branche à utiliser
-  git submodule update # ou "git config submodule.recurse true" lancé une seule fois, pour que la mise à jour des sous-modules soit relancée automatiquement à chaque git pull
+  git submodule update # ou "git config submodule.recurse true" lancé une seule fois, pour que la mise à jour des sous-modules soit relancée automatiquement à chaque "git pull"
   ./install/migration/migration.sh .

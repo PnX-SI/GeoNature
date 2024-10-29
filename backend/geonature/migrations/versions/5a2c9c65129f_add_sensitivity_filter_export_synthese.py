@@ -1,7 +1,7 @@
 """add sensitivity filter export synthese
 
 Revision ID: 5a2c9c65129f
-Revises: 446e902a14e7
+Revises: 92f0083cf735
 Create Date: 2023-08-08 16:23:53.059110
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "5a2c9c65129f"
-down_revision = "d99a7c22cc3c"
+down_revision = "92f0083cf735"
 branch_labels = None
 depends_on = None
 

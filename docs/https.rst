@@ -40,7 +40,7 @@ Activer les modules ``ssl``, ``headers`` et ``rewrite`` puis redémarrer Apache�
     sudo a2enmod headers
     sudo apachectl restart
 
-Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifier, ils seront automatiquement associés à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.
+Les fichiers de configuration du site UsersHub n'est pas à modifier, il sera automatiquement associé à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.
 
 
 Configuration de l'application GeoNature
@@ -60,7 +60,6 @@ Modifier les éléments suivants :
 	
   URL_APPLICATION = 'https://mondomaine.fr/geonature'
   API_ENDPOINT = 'https://mondomaine.fr/geonature/api'
-  API_TAXHUB = 'https://mondomaine.fr/taxhub/api'
 
 Pour que ces modifications soient prises en compte, exécuter les :ref:`actions à effecture après modification de la configuration <post_config_change>`.
 
