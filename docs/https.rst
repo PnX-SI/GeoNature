@@ -1,26 +1,21 @@
 HTTPS
 *****
 
+Cette documentation est indicative car non-spécifique à GeoNature. Elle donne des indications sur la mise en place d'un certificat SSL pour une application web servie par Apache.
+
+Utilisation de Cerbot
+---------------------
+
+**Source.** `Sécuriser facilement et gratuitement un site avec HTTPS <https://korben.info/securiser-facilement-gratuitement-site-https.html>`_
+
 La procédure décrit une méthode de certification HTTPS de votre domaine, grâce au service `Let's Encrypt <https://letsencrypt.org/>`_. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.
 
-Cette documentation est indicative, car elle ne concerne pas GeoNature, mais la mise en place d'un certificat SSL pour une application web servie par Apache.
-
-Ressources : 
-
-- https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/
-- https://korben.info/securiser-facilement-gratuitement-site-https.html
-
-
-Installer certbot
------------------
+Cerbot ne peut pas être utilisé pour la création d'un certificat sur une adresse IP (Exemple d'instances de test sans nom de domaine). Pour celà utiliser OpenSSL présenté rapidement ci-dessous.
+Installation :
 
 ::
  
     sudo apt-get install python3-certbot-apache
-
-
-Lancer la commande cerbot
--------------------------
 
 Lancer la commande suivante pour générer des certificats et des clés pour le nom de domaine que vous souhaitez mettre en HTTPS.
 
@@ -28,9 +23,6 @@ Lancer la commande suivante pour générer des certificats et des clés pour le 
   
     sudo certbot --apache --email monemail@mondomaine.fr
     
-Prise en compte des nouvelles configurations Apache
----------------------------------------------------
-
 Activer les modules ``ssl``, ``headers`` et ``rewrite`` puis redémarrer Apache :
 
 ::
@@ -42,6 +34,45 @@ Activer les modules ``ssl``, ``headers`` et ``rewrite`` puis redémarrer Apache�
 
 Les fichiers de configuration du site UsersHub n'est pas à modifier, il sera automatiquement associé à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.
 
+Utilisation de OpenSSL sur un environnement de test
+---------------------------------------------------
+
+Cette procédure a été testée sur Debian 12 et Apache2 avec l'utilisation d'un certificat auto-signé. Cela signifie qu'une alerte sera envoyée aux navigateurs indiquant un manque de sécurisation du serveur.
+Cette méthode fonctionne avec un serveur sans nom de domaine.
+
+Création d'un nouveau certificat de 365 jours (30 jours par défaut), de type X509 avec l'emplacement des fichiers de certificat et de clé privé.
+
+::
+
+    sudo openssl req -new -x509 -days 365 -nodes -out /etc/ssl/certs/mailserver.crt -keyout /etc/ssl/private/mailserver.key
+
+Sécurisation de la clé
+
+::
+
+    sudo chmod 440 /etc/ssl/private/mailserver.key
+
+Chargement du module ssl dans Apache
+
+::
+
+    sudo a2enmod ssl
+
+Modification de la configuration du VirtualHost en éditant le fichier ``/etc/apache2/sites-available/geonature.conf``
+
+::
+
+    <VirtualHost *:443>
+        ServerName x.x.x.x
+        […]
+        SSLEngine on
+        SSLCertificateFile /etc/ssl/certs/mailserver.crt
+        SSLCertificateKeyFile /etc/ssl/private/mailserver.key
+    </VirtualHost>
+
+::
+
+    sudo apachectl restart
 
 Configuration de l'application GeoNature
 ----------------------------------------
