@@ -18,6 +18,8 @@ Installation des applications
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur dédié précédemment créé lors de l’étape de :ref:`preparation-server` (usuellement ``geonatureadmin``).
 
+Téléchargement
+^^^^^^^^^^^^^^
 * Se placer à la racine du ``home`` de l'utilisateur puis récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature (incluant TaxHub) et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
   .. code:: console
@@ -26,16 +28,32 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur d�
     $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 
 *Attention* : l'installation globale fonctionne uniquement si les scripts sont placés à la racine du ``home`` de l'utilisateur courant.	
-	
+
+Configuration
+^^^^^^^^^^^^^
+
 * Configurez votre installation en adaptant le fichier ``install_all.ini`` :
  
   .. code:: console
     
     $ nano install_all.ini
 
-Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur (avec un ``/`` à la fin) ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe. Le script se chargera d'installer PostgreSQL et de créer l'utilisateur de base de données que vous avez renseigné. Pour une installation de développement, pensez à renseigner ``mode=dev``.
+* Renseignez à minima :
 
-Il est déconseillé de modifier les numéros de version des dépendances, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.
+        * ``my_url`` : l'URL (ou IP) de votre serveur (avec un ``/`` à la fin)
+        * ``user_pg`` : l'utilisateur PostgreSQL que vous souhaitez voir créé
+        * ``user_pg_pass`` : mot de passe de l'utilisateur PostgreSQL
+
+        Le script se chargera d'installer PostgreSQL, de crééer la base de donnée et de créer l'utilisateur que vous avez renseigné. 
+
+* Variable ``mode``
+
+Pour l'installation d'une instance de production ou de test ``mode=prod``, pour une installation de développement ``mode=dev``.
+
+**Il est déconseillé de modifier les numéros de version des dépendances, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.**
+
+Installation
+^^^^^^^^^^^^^
 
 * Lancer l'installation :
  
