@@ -1,17 +1,18 @@
 """fix additionnal fields emmpty
 
 Revision ID: b66d30f4e3d1
-Revises: e170d1902137
+Revises: 43ecf0836b4a
 Create Date: 2023-12-19 14:46:28.208303
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
 revision = "b66d30f4e3d1"
-down_revision = "e170d1902137"
+down_revision = "43ecf0836b4a"
 branch_labels = None
 depends_on = None
 
