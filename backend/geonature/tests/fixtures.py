@@ -989,8 +989,9 @@ def reports_data(users, synthese_data):
     data = []
 
     # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
-    def create_report(id_synthese, id_role, content, id_type, deleted):
+    def create_report(id_synthese, id_report, id_role, content, id_type, deleted):
         new_report = TReport(
+            id_report=id_report,
             id_synthese=id_synthese,
             id_role=id_role,
             content=content,
@@ -1015,10 +1016,10 @@ def reports_data(users, synthese_data):
     )
     with db.session.begin_nested():
         reports = [
-            (ids[0], users["admin_user"].id_role, "comment1", discussionId, False),
-            (ids[1], users["admin_user"].id_role, "comment1", alertId, False),
-            (ids[2], users["user"].id_role, "a_comment1", discussionId, True),
-            (ids[3], users["user"].id_role, "b_comment1", discussionId, True),
+            (ids[0], 10001, users["admin_user"].id_role, "comment1", discussionId, False),
+            (ids[1], 10002, users["admin_user"].id_role, "comment1", alertId, False),
+            (ids[2], 10003, users["user"].id_role, "a_comment1", discussionId, True),
+            (ids[3], 10004, users["user"].id_role, "b_comment1", discussionId, True),
         ]
         for id_synthese, *args in reports:
             data.append(create_report(id_synthese, *args))

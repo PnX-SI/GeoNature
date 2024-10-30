@@ -21,7 +21,7 @@ from pypnusershub.db.models import User
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
-from sqlalchemy import distinct, func, desc, asc, select, case
+from sqlalchemy import distinct, func, desc, asc, select, case, or_
 from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
@@ -1529,7 +1529,18 @@ def list_all_reports(permissions):
 
     # Filter by id_role for 'pin' type only or if my_reports is true
     if type_name == "pin" or my_reports:
-        query = query.where(TReport.id_role == g.current_user.id_role)
+        query = query.where(
+            or_(
+                TReport.id_role == g.current_user.id_role,
+                TReport.id_synthese.in_(
+                    select(TReport.id_synthese).where(TReport.id_role == g.current_user.id_role)
+                ),
+                TReport.synthese.has(Synthese.id_digitiser == g.current_user.id_role),
+                TReport.synthese.has(
+                    Synthese.cor_observers.any(User.id_role == g.current_user.id_role)
+                ),
+            )
+        )
 
     # On vérifie les permissions en lecture sur la synthese
     synthese_query = select(Synthese.id_synthese).select_from(Synthese)

@@ -24,7 +24,8 @@ import { ValidationService } from './services/validation.service';
 // my module routing
 const routes: Routes = [
   { path: '', component: ValidationComponent },
-  { path: 'occurrence/:id_synthese', component: ValidationComponent, pathMatch: 'full' },
+  { path: 'occurrence/:id_synthese', component: ValidationComponent },
+  { path: 'occurrence/:id_synthese/:tab', component: ValidationComponent },
 ];
 
 @NgModule({
