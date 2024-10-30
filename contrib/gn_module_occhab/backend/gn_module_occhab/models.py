@@ -48,7 +48,15 @@ class Station(NomenclaturesMixin, db.Model):
     date_max = db.Column(db.DateTime, server_default=FetchedValue())
     observers_txt = db.Column(db.Unicode(length=500))
     station_name = db.Column(db.Unicode(length=1000))
-    is_habitat_complex = db.Column(db.Boolean)
+    # is_habitat_complex = db.Column(db.Boolean)
+    id_nomenclature_type_mosaique_habitat = db.Column(
+        db.Integer,
+        ForeignKey(Nomenclature.id_nomenclature),
+    )
+    type_mosaique_habitat = db.relationship(
+        Nomenclature,
+        foreign_keys=[id_nomenclature_type_mosaique_habitat],
+    )
     altitude_min = db.Column(db.Integer)
     altitude_max = db.Column(db.Integer)
     depth_min = db.Column(db.Integer)
