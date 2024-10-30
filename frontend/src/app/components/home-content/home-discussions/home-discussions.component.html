@@ -4,13 +4,4 @@
     (toggle)="toggleMyReports($event)"
   ></pnx-home-discussions-toggle>
 </div>
-<pnx-home-discussions-table
-  [discussions]="discussions"
-  [currentPage]="currentPage"
-  [perPage]="perPage"
-  [totalPages]="totalPages"
-  [totalRows]="totalRows"
-  [totalFilteredRows]="totalFilteredRows"
-  (sortChange)="onSortChange($event)"
-  (currentPageChange)="onCurrentPageChange($event)"
-></pnx-home-discussions-table>
+<pnx-home-discussions-table [myReportsOnly]="myReportsOnly"></pnx-home-discussions-table>
