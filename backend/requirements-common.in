@@ -30,7 +30,7 @@ python-dateutil
 shapely>=2.0.0
 sqlalchemy<2.0
 toml
-weasyprint<53
+weasyprint
 wtforms
 wtforms-sqlalchemy
 xmltodict
