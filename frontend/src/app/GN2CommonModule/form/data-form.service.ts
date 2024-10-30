@@ -159,6 +159,10 @@ export class DataFormService {
     });
   }
 
+  fetchStatusSymbology() {
+    return this._http.get<any>(`${this.getTaxhubAPI()}/bdc_statuts/status_symbologies`);
+  }
+
   getTaxaBibList() {
     return this._http.get<any>(`${this.getTaxhubAPI()}/biblistes/`).pipe(map((d) => d.data));
   }

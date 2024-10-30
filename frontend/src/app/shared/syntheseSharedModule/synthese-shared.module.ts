@@ -8,11 +8,22 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { SyntheseInfoObsComponent } from './synthese-info-obs/synthese-info-obs.component';
 import { DiscussionCardComponent } from '../discussionCardModule/discussion-card.component';
 import { AlertInfoComponent } from '../alertInfoModule/alert-Info.component';
+import { TaxonomyComponent } from './synthese-info-obs/taxonomy/taxonomy.component';
 
 @NgModule({
   imports: [CommonModule, GN2CommonModule, NgChartsModule, RouterModule, ClipboardModule],
-  exports: [SyntheseInfoObsComponent, DiscussionCardComponent, AlertInfoComponent],
-  declarations: [SyntheseInfoObsComponent, DiscussionCardComponent, AlertInfoComponent],
+  exports: [
+    SyntheseInfoObsComponent,
+    DiscussionCardComponent,
+    AlertInfoComponent,
+    TaxonomyComponent,
+  ],
+  declarations: [
+    SyntheseInfoObsComponent,
+    DiscussionCardComponent,
+    AlertInfoComponent,
+    TaxonomyComponent,
+  ],
   providers: [],
 })
 export class SharedSyntheseModule {}

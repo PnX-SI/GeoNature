@@ -35,7 +35,7 @@ export interface Taxon {
   nom_vern?: string;
   ordre?: string;
   phylum?: string;
-  statuts_protection?: any[];
+  status?: any[];
   synonymes?: any[];
 }
 

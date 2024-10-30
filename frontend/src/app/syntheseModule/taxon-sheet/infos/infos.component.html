@@ -1,18 +1,6 @@
 <div class="Infos">
-  <div class="Infos__infos">
-    <div
-      class="Infos__infosCompleteName"
-      *ngIf="taxon?.nom_complet"
-    >
-      {{ taxon?.nom_complet }}
-    </div>
-    <div
-      class="Infos__infosVernacularName"
-      *ngIf="taxon?.nom_vern"
-    >
-      {{ taxon?.nom_vern }}
-    </div>
-  </div>
+  <taxonomy [taxon]="taxon"></taxonomy>
+  <status [taxon]="taxon"></status>
 </div>
 <div
   class="card"

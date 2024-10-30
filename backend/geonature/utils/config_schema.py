@@ -280,6 +280,7 @@ class TaxonSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
     ENABLE_PROFILE = fields.Boolean(load_default=True)
+    ENABLE_TAXONOMY = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
