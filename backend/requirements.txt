@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-alembic==1.13.1
+alembic==1.13.3
     # via
     #   flask-migrate
     #   pypn-ref-geo
@@ -13,15 +13,15 @@ amqp==5.2.0
     # via kombu
 async-timeout==4.0.3
     # via redis
-attrs==23.2.0
+attrs==24.2.0
     # via fiona
-authlib==1.3.0
+authlib==1.3.2
     # via pypnusershub
 babel==2.16.0
     # via flask-babel
-bcrypt==4.1.3
+bcrypt==4.2.0
     # via pypnusershub
-billiard==4.2.0
+billiard==4.2.1
     # via celery
 blinker==1.8.2
     # via
@@ -29,27 +29,22 @@ blinker==1.8.2
     #   flask-mail
 bokeh==3.4.1
     # via -r requirements-common.in
-cairocffi==1.7.0
-    # via
-    #   cairosvg
-    #   weasyprint
-cairosvg==2.7.1
-    # via weasyprint
+brotli==1.1.0
+    # via fonttools
 celery[redis]==5.4.0
     # via -r requirements-common.in
-certifi==2024.2.2
+certifi==2024.8.30
     # via
     #   fiona
     #   pyproj
     #   requests
-cffi==1.16.0
+cffi==1.17.1
     # via
-    #   cairocffi
     #   cryptography
     #   weasyprint
 chardet==5.2.0
     # via -r requirements-common.in
-charset-normalizer==3.3.2
+charset-normalizer==3.4.0
     # via requests
 click==8.1.7
     # via
@@ -72,17 +67,13 @@ click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
-contourpy==1.2.1
+contourpy==1.3.0
     # via bokeh
-cryptography==42.0.2
+cryptography==43.0.3
     # via authlib
 cssselect2==0.7.0
-    # via
-    #   cairosvg
-    #   weasyprint
-defusedxml==0.7.1
-    # via cairosvg
-fiona==1.9.6
+    # via weasyprint
+fiona==1.10.1
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
@@ -112,7 +103,7 @@ flask-admin==1.6.1
     #   taxhub
 flask-babel==4.0.0
     # via -r requirements-common.in
-flask-cors==4.0.1
+flask-cors==5.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
@@ -144,25 +135,27 @@ flask-sqlalchemy==3.0.5
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy
-flask-weasyprint==1.0.0
+flask-weasyprint==1.1.0
     # via -r requirements-common.in
-flask-wtf==1.2.1
+flask-wtf==1.2.2
     # via -r requirements-common.in
-geoalchemy2==0.15.1
+fonttools[woff]==4.54.1
+    # via weasyprint
+geoalchemy2==0.15.2
     # via utils-flask-sqlalchemy-geo
 geojson==3.1.0
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
-greenlet==3.0.3
+greenlet==3.1.1
     # via sqlalchemy
-gunicorn==22.0.0
+gunicorn==23.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
 html5lib==1.1
     # via weasyprint
-idna==3.7
+idna==3.10
     # via requests
 importlib-metadata==4.13.0 ; python_version < "3.10"
     # via
@@ -178,19 +171,19 @@ jinja2==3.1.4
     #   bokeh
     #   flask
     #   flask-babel
-kombu==5.3.7
+kombu==5.4.2
     # via celery
-lxml==5.2.2
+lxml==5.3.0
     # via -r requirements-common.in
-mako==1.3.5
+mako==1.3.6
     # via alembic
-markupsafe==2.1.5
+markupsafe==3.0.2
     # via
     #   jinja2
     #   mako
     #   werkzeug
     #   wtforms
-marshmallow==3.21.2
+marshmallow==3.23.0
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
@@ -200,7 +193,7 @@ marshmallow==3.21.2
     #   utils-flask-sqlalchemy
 marshmallow-geojson==0.5.0
     # via utils-flask-sqlalchemy-geo
-marshmallow-sqlalchemy==1.0.0
+marshmallow-sqlalchemy==1.1.0
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
@@ -208,20 +201,20 @@ marshmallow-sqlalchemy==1.0.0
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-numpy==1.26.3
+numpy==2.0.2
     # via
     #   bokeh
     #   contourpy
     #   pandas
     #   shapely
-packaging==23.2
+packaging==24.1
     # via
     #   -r requirements-common.in
     #   bokeh
     #   geoalchemy2
     #   gunicorn
     #   marshmallow
-pandas==2.2.2
+pandas==2.2.3
     # via
     #   -r requirements-common.in
     #   bokeh
@@ -229,12 +222,11 @@ pillow==9.5.0
     # via
     #   -r requirements-common.in
     #   bokeh
-    #   cairosvg
     #   taxhub
     #   weasyprint
-prompt-toolkit==3.0.43
+prompt-toolkit==3.0.48
     # via click-repl
-psycopg2==2.9.9
+psycopg2==2.9.10
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
@@ -244,11 +236,13 @@ psycopg2==2.9.9
     #   taxhub
 pycparser==2.22
     # via cffi
-pyphen==0.15.0
+pydyf==0.11.0
+    # via weasyprint
+pyphen==0.17.0
     # via weasyprint
 pypn-habref-api==0.4.1
     # via -r requirements-dependencies.in
-pypn-ref-geo==1.5.3
+pypn-ref-geo==1.5.4
     # via
     #   -r requirements-dependencies.in
     #   taxhub
@@ -260,7 +254,7 @@ pypnusershub==3.0.0
     #   taxhub
 pyproj==3.0.1 ; python_version < "3.10"
     # via -r requirements-common.in
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
     # via
     #   -r requirements-common.in
     #   celery
@@ -276,24 +270,23 @@ pytz==2024.2
     # via
     #   flask-babel
     #   pandas
-pyyaml==6.0.1
+pyyaml==6.0.2
     # via bokeh
-redis==5.0.4
+redis==5.2.0
     # via celery
-requests==2.32.2
+requests==2.32.3
     # via
     #   pypn-habref-api
     #   pypnusershub
-shapely==2.0.4
+shapely==2.0.6
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
 six==1.16.0
     # via
-    #   fiona
     #   html5lib
     #   python-dateutil
-sqlalchemy==1.4.52
+sqlalchemy==1.4.54
     # via
     #   -r requirements-common.in
     #   alembic
@@ -312,26 +305,26 @@ taxhub==2.0.0
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
-tinycss2==1.3.0
+tinycss2==1.4.0
     # via
-    #   cairosvg
     #   cssselect2
     #   weasyprint
 toml==0.10.2
     # via
     #   -r requirements-common.in
     #   taxhub
-tornado==6.4
+tornado==6.4.1
     # via bokeh
-typing-extensions==4.12.0
+typing-extensions==4.12.2
     # via
     #   alembic
     #   kombu
-tzdata==2023.4
+tzdata==2024.2
     # via
     #   celery
+    #   kombu
     #   pandas
-urllib3==1.26.18
+urllib3==2.2.3
     # via
     #   requests
     #   taxhub
@@ -355,7 +348,7 @@ vine==5.1.0
     #   kombu
 wcwidth==0.2.13
     # via prompt-toolkit
-weasyprint==52.5
+weasyprint==62.3
     # via
     #   -r requirements-common.in
     #   flask-weasyprint
@@ -364,26 +357,25 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
-werkzeug==3.0.3
+werkzeug==3.0.6
     # via
     #   flask
     #   flask-login
-wtforms==3.1.2
+wtforms==3.2.1
     # via
     #   -r requirements-common.in
     #   flask-admin
     #   flask-wtf
     #   wtforms-sqlalchemy
-wtforms-sqlalchemy==0.4.1
+wtforms-sqlalchemy==0.4.2
     # via -r requirements-common.in
-xmltodict==0.13.0
+xmltodict==0.14.2
     # via
     #   -r requirements-common.in
     #   pypnusershub
-xyzservices==2024.4.0
+xyzservices==2024.9.0
     # via bokeh
-zipp==3.19.0
+zipp==3.20.2
     # via importlib-metadata
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
+zopfli==0.2.3.post1
+    # via fonttools
