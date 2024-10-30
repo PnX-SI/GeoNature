@@ -25,7 +25,6 @@ TH v2 (intégré à GN et son module Admin), Import v3 (multi-destination, impor
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature : 
-
 - L'application TaxHub a été integrée dans le module Admin de GeoNature (voir documentation TH) et accessible depuis le menu latéral :
     - Les permissions basées sur les profils 1-6 ont été rapatriées et adaptées dans le modèle de permissions de GeoNature. 
     TaxHub est désormais un "module" GeoNature et dispose des objets de permissions `TAXONS`, `THEMES`, `LISTES` et `ATTRIBUTS` (voir doc GeoNature pour la description des objets). Les personnes ayant anciennement des droits 6 dans TaxHub ont toutes les permissions sur les objets pré-cités. Les personnes ayant des droits inférieurs à 6 et ayant un compte sur TaxHub ont maintenant des permissions sur l'objet `TAXON` (voir et éditer des taxons = ajouter des médias et des attributs)
@@ -37,6 +36,7 @@ Si vous mettez à jour GeoNature :
     - suppression de la branche alembic taxhub : `geonature db downgrade taxhub@base`
     - désinstaller TH de votre serveur ?
     - L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs de TH sont également centralisés dans le fichier de log de GeoNature
+    - **⚠️Important⚠️** ! Ajouter l'extension `ltree` à votre base de données : `CREATE EXTENSION IF NOT EXISTS "ltree";`
 
 - Le module Import a été intégré dans le coeur de GeoNature
    - si vous aviez installé le module externe Import, XXXXX
@@ -51,6 +51,7 @@ Si vous mettez à jour GeoNature :
    - Remplissez la configuration dans un fichier `mtd_sync.toml`
 
 2.14.2 (2024-05-28)
+-------------------
 
 **🚀 Nouveautés**
 
