@@ -160,7 +160,7 @@ export class DataFormService {
   }
 
   fetchStatusSymbology() {
-    return this._http.get<any>(`${this.config.API_TAXHUB}/bdc_statuts/status_symbologies`);
+    return this._http.get<any>(`${this.getTaxhubAPI()}/bdc_statuts/status_symbologies`);
   }
 
   getTaxaBibList() {
