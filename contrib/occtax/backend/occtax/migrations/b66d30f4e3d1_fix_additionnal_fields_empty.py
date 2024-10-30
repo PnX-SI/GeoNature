@@ -1,4 +1,4 @@
-"""fix additionnal fields emmpty
+"""fix additionnal fields empty
 
 Revision ID: b66d30f4e3d1
 Revises: 43ecf0836b4a
