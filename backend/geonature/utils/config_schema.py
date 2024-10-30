@@ -280,6 +280,7 @@ class TaxonSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
     ENABLE_PROFILE = fields.Boolean(load_default=True)
+    ENABLE_OBSERVERS = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
@@ -439,6 +440,8 @@ class Synthese(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
     TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
+
+    FIELD_OBSERVERS_SEPARATOR = fields.String(load_default=",")
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):
