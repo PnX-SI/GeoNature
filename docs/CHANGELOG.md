@@ -17,6 +17,12 @@ TH v2 (intégré à GN et son module Admin), Import v3 (multi-destination, impor
 - Intégration et enrichissement de la documentation du module Import : https://docs.geonature.fr/xxxxxx
 - Amélioration export Occhab
 - Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identité (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
+- De nouvelles mailles (2km, 20km, 50km) sont disponibles (https://github.com/PnX-SI/RefGeo/releases/tag/1.5.4):
+```
+geonature db upgrade ref_geo_inpn_grids_2@head  # Insertion des mailles 2x2km métropole, fournies par l’INPN
+geonature db upgrade ref_geo_inpn_grids_20@head  # Insertion des mailles 20x20km métropole, fournies par l’INPN
+geonature db upgrade ref_geo_inpn_grids_50@head # Insertion des mailles 50x50km métropole, fournies par l’INPN
+``` 
 
 **🐛 Corrections**
 
