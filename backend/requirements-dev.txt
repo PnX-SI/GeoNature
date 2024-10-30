@@ -15,7 +15,6 @@
 -e file:dependencies/UsersHub-authentification-module#egg=pypnusershub
     # via
     #   -r requirements-submodules.in
-    #   pypnnomenclature
     #   taxhub
     #   usershub
 -e file:dependencies/TaxHub#egg=taxhub
@@ -273,6 +272,9 @@ packaging==23.2
     #   gunicorn
     #   marshmallow
 pandas==2.1.4
+    # via
+    #   -r requirements-common.in
+    #   bokeh
 pillow==9.5.0
     # via
     #   -r requirements-common.in
