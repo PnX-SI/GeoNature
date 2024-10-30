@@ -1,9 +1,7 @@
 import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Destination } from '@geonature/modules/imports/models/import.model';
 import { ActivatedRoute } from '@angular/router';
 import { ImportDataService } from '@geonature/modules/imports/services/data.service';
 import { ImportProcessService } from '../import-process.service';
-import { data, param } from 'cypress/types/jquery';
 
 interface ImportInfoBoxData {
   destinationName: string;
