@@ -1,12 +1,12 @@
 .TextContentContainer {
-    max-height: 70px !important;
-    overflow: hidden;
-    &:hover {
-      overflow-y: scroll;
-    }
-  
-    .TextContent {
-      white-space: pre-line;
-      text-overflow: ellipsis;
-    }
+  max-height: 70px !important;
+  overflow: hidden;
+  &:hover {
+    overflow-y: scroll;
   }
+
+  .TextContent {
+    white-space: pre-line;
+    text-overflow: ellipsis;
+  }
+}
