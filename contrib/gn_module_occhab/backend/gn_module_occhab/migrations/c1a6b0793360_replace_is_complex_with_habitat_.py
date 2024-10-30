@@ -104,7 +104,7 @@ def upgrade():
             sa.insert(bib_fields)
             .values(
                 name_field="id_nomenclature_type_mosaique_habitat",
-                fr_label="Mosaïque d'habitat",
+                fr_label="Mosaïque d'habitats",
                 source_field="src_id_nomenclature_type_mosaique_habitat",
                 dest_field="id_nomenclature_type_mosaique_habitat",
                 mandatory=False,
