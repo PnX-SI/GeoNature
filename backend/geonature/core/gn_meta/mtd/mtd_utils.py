@@ -238,25 +238,30 @@ def associate_actors(
     for actor in actors:
         id_organism = None
         uuid_organism = actor["uuid_organism"]
+        organism_name = actor["organism"]
+        email_actor = actor["email"]
         if uuid_organism:
             with DB.session.begin_nested():
                 # create or update organisme
                 # FIXME: prevent update of organism email from actor email ! Several actors may be associated to the same organism and still have different mails !
                 id_organism = add_or_update_organism(
                     uuid=uuid_organism,
-                    nom=actor["organism"] if actor["organism"] else "",
-                    email=actor["email"],
+                    nom=organism_name if organism_name else "",
+                    email=email_actor,
                 )
+        cd_nomenclature_actor_role = actor["actor_role"]
+        id_nomenclature_actor_role = func.ref_nomenclatures.get_id_nomenclature(
+            "ROLE_ACTEUR", cd_nomenclature_actor_role
+        )
         values = dict(
-            id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-                "ROLE_ACTEUR", actor["actor_role"]
-            ),
+            id_nomenclature_actor_role=id_nomenclature_actor_role,
             **{pk_name: pk_value},
         )
         if not id_organism:
-            values["id_role"] = DB.session.scalar(
-                select(User.id_role).filter_by(email=actor["email"])
+            id_user_from_email = DB.session.scalar(
+                select(User.id_role).filter_by(email=email_actor)
             )
+            values["id_role"] = id_user_from_email
         else:
             values["id_organism"] = id_organism
         statement = (
