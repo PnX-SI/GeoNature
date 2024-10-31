@@ -1,6 +1,7 @@
 import logging
 import json
 from copy import copy
+from typing import Literal, Union
 from flask import current_app
 
 from sqlalchemy import select, exists
@@ -210,7 +211,12 @@ def add_or_update_organism(uuid, nom, email):
     return DB.session.execute(statement).scalar()
 
 
-def associate_actors(actors, CorActor, pk_name, pk_value):
+def associate_actors(
+    actors,
+    CorActor: Union[CorAcquisitionFrameworkActor, CorDatasetActor],
+    pk_name: Literal["id_acquisition_framework", "id_dataset"],
+    pk_value: str,
+):
     """
     Associate actors with either a given :
     - Acquisition framework - writing to the table `gn_meta.cor_acquisition_framework_actor`.
@@ -220,9 +226,9 @@ def associate_actors(actors, CorActor, pk_name, pk_value):
     ----------
     actors : list
         list of actors
-    CorActor : db.Model
+    CorActor : Union[CorAcquisitionFrameworkActor, CorDatasetActor]
         the SQLAlchemy model corresponding to the destination table
-    pk_name : str
+    pk_name : Literal['id_acquisition_framework', 'id_dataset']
         pk attribute name:
         - 'id_acquisition_framework' for AF
         - 'id_dataset' for DS
