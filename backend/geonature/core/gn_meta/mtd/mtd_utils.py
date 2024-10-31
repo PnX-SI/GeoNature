@@ -1,11 +1,12 @@
 import logging
 import json
 from copy import copy
+import pprint
 from typing import Literal, Union
 from flask import current_app
 
 from sqlalchemy import select, exists
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.sql import func, update
 
 from sqlalchemy.dialects.postgresql import insert as pg_insert
@@ -216,6 +217,7 @@ def associate_actors(
     CorActor: Union[CorAcquisitionFrameworkActor, CorDatasetActor],
     pk_name: Literal["id_acquisition_framework", "id_dataset"],
     pk_value: str,
+    uuid_mtd: str,
 ):
     """
     Associate actors with either a given :
@@ -234,6 +236,8 @@ def associate_actors(
         - 'id_dataset' for DS
     pk_value : str
         pk value: ID of the AF or DS
+    uuid_mtd : str
+        UUID of the AF or DS
     """
     for actor in actors:
         id_organism = None
@@ -264,14 +268,26 @@ def associate_actors(
             values["id_role"] = id_user_from_email
         else:
             values["id_organism"] = id_organism
-        statement = (
-            pg_insert(CorActor)
-            .values(**values)
-            .on_conflict_do_nothing(
-                index_elements=[pk_name, "id_organism", "id_nomenclature_actor_role"],
+        try:
+            statement = (
+                pg_insert(CorActor)
+                .values(**values)
+                .on_conflict_do_nothing(
+                    index_elements=[
+                        pk_name,
+                        "id_organism",
+                        "id_nomenclature_actor_role",
+                    ],
+                )
             )
-        )
-        DB.session.execute(statement)
+            DB.session.execute(statement)
+        except IntegrityError as I:
+            DB.session.rollback()
+            logger.error(
+                f"MTD - DB INTEGRITY ERROR - actor association failed for {type_mtd} with UUID '{uuid_mtd}' and following actor information:\n"
+                + format_sqlalchemy_error_for_logging(I)
+                + format_str_dict_actor_for_logging(actor)
+            )
 
 
 def associate_dataset_modules(dataset):
@@ -287,3 +303,51 @@ def associate_dataset_modules(dataset):
             )
         ).all()
     )
+
+
+def format_sqlalchemy_error_for_logging(error: SQLAlchemyError):
+    """
+    Format SQLAlchemy error information in a nice way for MTD logging
+
+    Parameters
+    ----------
+    error : SQLAlchemyError
+        the SQLAlchemy error
+
+    Returns
+    -------
+    str
+        formatted error information
+    """
+    indented_original_error_message = str(error.orig).replace("\n", "\n\t")
+
+    formatted_error_message = "".join(
+        [
+            f"\t{indented_original_error_message}",
+            f"SQL QUERY:  {error.statement}\n",
+            f"\tSQL PARAMS:  {error.params}\n",
+        ]
+    )
+
+    return formatted_error_message
+
+
+def format_str_dict_actor_for_logging(actor: dict):
+    """
+    Format actor information in a nice way for MTD logging
+
+    Parameters
+    ----------
+    actor : dict
+        actor information: actor_role, email, name, organism, uuid_organism, ...
+
+    Returns
+    -------
+    str
+        formatted actor information
+    """
+    formatted_str_dict_actor = "\tACTOR:\n\t\t" + pprint.pformat(actor).replace(
+        "\n", "\n\t\t"
+    ).rstrip("\t")
+
+    return formatted_str_dict_actor

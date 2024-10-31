@@ -215,6 +215,7 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
             CorAcquisitionFrameworkActor,
             "id_acquisition_framework",
             af.id_acquisition_framework,
+            af.unique_acquisition_framework_id,
         )
         # TODO: remove actors removed from MTD
     db.session.commit()
@@ -231,7 +232,13 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
             user_add_total_time += time.time() - start_add_user_time
         ds = sync_ds(ds, list_cd_nomenclature)
         if ds is not None:
-            associate_actors(actors, CorDatasetActor, "id_dataset", ds.id_dataset)
+            associate_actors(
+                actors,
+                CorDatasetActor,
+                "id_dataset",
+                ds.id_dataset,
+                ds.unique_dataset_id,
+            )
 
     user_add_total_time = round(user_add_total_time, 2)
     db.session.commit()
