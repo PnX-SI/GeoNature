@@ -121,7 +121,8 @@ def sync_ds(ds, cd_nomenclatures):
 
 
 def sync_af(af):
-    """Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.
+    """
+    Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.
 
     Parameters
     ----------
