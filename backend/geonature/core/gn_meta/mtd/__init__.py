@@ -41,6 +41,7 @@ logger.propagate = False
 class MTDInstanceApi:
     af_path = "/mtd/cadre/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_path = "/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
+    # TODO: check if there are endpoints to retrieve metadata for a given user and instance, and not only a given user and whatever instance
     ds_user_path = "/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     af_user_path = "/mtd/cadre/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     single_af_path = "/mtd/cadre/export/xml/GetRecordById?id={ID_AF}"  # NOTE: `ID_AF` is actually an UUID and not an ID from the point of view of geonature database.
@@ -202,6 +203,8 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
             add_unexisting_digitizer(af["id_digitizer"] if not id_role else id_role)
             user_add_total_time += time.time() - start_add_user_time
         af = sync_af(af)
+        # TODO: choose whether or not to commit retrieval of the AF before association of actors
+        #   and possibly retrieve an AF without any actor associated to it
         # Commit here to retrieve the AF even if the association of actors that follows is to fail
         db.session.commit()
         # If the AF has not been retrieved, associated actors cannot be retrieved either
@@ -215,6 +218,7 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
             af.id_acquisition_framework,
             af.unique_acquisition_framework_id,
         )
+        # TODO: check the following TODO:
         # TODO: remove actors removed from MTD
     db.session.commit()
     logger.debug("MTD - PROCESS DS LIST")
@@ -282,19 +286,24 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
     ds_list = mtd_api.get_ds_user_list()
 
     if not id_af:
-        # Get the unique UUIDs of the acquisition frameworks for the user
-        set_user_af_uuids = {ds["uuid_acquisition_framework"] for ds in ds_list}
-        user_af_uuids = list(set_user_af_uuids)
-
-        # TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l'appel global des AF
-        # Ce code ne fonctionne pas pour cette raison -> AF manquants
-        # af_list = mtd_api.get_af_list()
-        # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
+        # TODO: check the following commented section
+        #   - Choose how to get the list of AF for the user, that will be retrieved
+        # # Get the unique UUIDs of the acquisition frameworks for the user
+        # set_user_af_uuids = {ds["uuid_acquisition_framework"] for ds in ds_list}
+        # user_af_uuids = list(set_user_af_uuids)
+        #
+        # # TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l'appel global des AF
+        # # Ce code ne fonctionne pas pour cette raison -> AF manquants
+        # # af_list = mtd_api.get_af_list()
+        # # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
 
         # Get the list of acquisition frameworks for the user
         # call INPN API for each AF to retrieve info
+        # TODO: check if there is any AF that is retrieved while not being associated to the current instance
+        #   this may theoretically happen as AF from the XML file are not yet filtered with the instance ID
         af_list = mtd_api.get_list_af_for_user()
     else:
+        # TODO: Check the following TODO
         # TODO: handle case where the AF ; corresponding to the provided `id_af` ; does not exist yet in the database
         #   this case should not happend from a user action because the only case where `id_af` is provided is for when the user click to unroll an AF in the module Metadata, in which case the AF already exists in the database.
         #   It would still be better to handle case where the AF does not exist in the database, and to first retrieve the AF from 'INPN Métadonnées' in this case
@@ -305,6 +314,10 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
         af_list = [mtd_api.get_single_af(uuid_af)]
 
         # Filter the datasets based on the specified UUID
+        # TODO: check if there could be a difference for the AF between :
+        #   - information displayed in the frontend page with the list of metadata
+        #   - information retrieved from INPN MTD sync and committed to the database meanwhile
+        #   If so, determine whether it is problematic ; and frontend content should be updated accordingly ; or not
         ds_list = [ds for ds in ds_list if ds["uuid_acquisition_framework"] == uuid_af]
 
     # Process the acquisition frameworks and datasets
