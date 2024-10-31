@@ -17,11 +17,17 @@ describe('Testing occhab', () => {
     cy.get(
       '[data-qa="pnx-occhab-form"] > div:nth-child(1) > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-left > div.leaflet-draw.leaflet-control > div:nth-child(1) > div > a'
     ).click();
-    cy.get(canvas).click(250, 250);
-    cy.get(canvas).click(300, 250);
-    cy.get(canvas).click(300, 300);
-    cy.get(canvas).click(250, 300);
-    cy.get(canvas).click(250, 250);
+    const positions = [
+      [250, 250],
+      [300, 250],
+      [300, 300],
+      [250, 300],
+      [250, 250],
+    ];
+    positions.forEach((pos) => {
+      cy.get(canvas).click(pos[0], pos[1]);
+      cy.wait(500);
+    });
     cy.get('#validateButton').should('be.disabled');
 
     cy.get('[data-qa="gn-common-form-observers-select"]').click();
