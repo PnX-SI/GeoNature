@@ -212,18 +212,22 @@ def add_or_update_organism(uuid, nom, email):
 
 def associate_actors(actors, CorActor, pk_name, pk_value):
     """
-    Associate actor and DS or AF according to CorActor value.
+    Associate actors with either a given :
+    - Acquisition framework - writing to the table `gn_meta.cor_acquisition_framework_actor`.
+    - Dataset - writing to the table `gn_meta.cor_dataset_actor`.
 
     Parameters
     ----------
     actors : list
         list of actors
     CorActor : db.Model
-        table model
+        the SQLAlchemy model corresponding to the destination table
     pk_name : str
-        pk attribute name
+        pk attribute name:
+        - 'id_acquisition_framework' for AF
+        - 'id_dataset' for DS
     pk_value : str
-        pk value
+        pk value: ID of the AF or DS
     """
     for actor in actors:
         id_organism = None
