@@ -4,28 +4,38 @@ CHANGELOG
 2.15.0 (unreleased)
 -------------------
 
-TH v2 (intégré à GN et son module Admin), Import v3 (multi-destination, import Occhab et intégré au coeur de GN), authentification externe
+- Nouvelle version (2.0.0) et déplacement de TaxHub dans GeoNature
+- Le module d'import est maintenant intégré dans GeoNature
+- La fiche taxon a été revu
+- 
 
 **🚀 Nouveautés**
 
-- Intégration de TaxHub ([2.0 Release Note](https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0)) à GeoNature (#3150)
+- [TaxHub] Intégration de TaxHub ([2.0 Release Note](https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0)) à GeoNature (#3150)
   - Plus besoin d'un web-service dédiée, la gestion de TaxHub est maintenant intégré à 
-- Refonte et intégration du module d'import dans GeoNature (#2833).
+- [Import] Refonte et intégration du module d'import dans GeoNature (#2833).
   - Ajout de l'import vers OccHab
   - Possibilité d'importer les données dans plusieurs modules (ou Destination). Suivre la documentation dédiée à ce sujet (mettre lien).
   - Evolution des permissions : la création d'un import dépend d'un C dans IMPORT et d'un C dans le module de destination (synthese et/ou occhab) (Voir documention <lien a ajouter>)
   - Plusieurs améliorations sur : les contrôles des données, la génération du rapport, les graphiques produits, de nouveaux tests frontends, etc.
-- Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identité (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
+- [Authentification] Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identité (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
   - Plusieurs protocoles de connexions intégrés : OAuth, CAS INPN, UserHub
   - Possibilité de se connecter sur d'autres GeoNature
-- Evolution de la fiche taxon (#3191, #3205, #3174,#3175)
+  - Voir la documentation pour plus de détails (ajouter lien)
+- [Synthèse] Evolution de la fiche taxon (#3191, #3205, #3174,#3175)
   - Affichage du profil d'un taxon
   - Affichage de la synthèse géographique d'un taxon
   - Affichage du statut de protection du taxon
   - Affichage des informations taxonomiques présentes dans TaxRef
-- Il est maintenant possible de supprimer un cadre d'acquisition vide (#3224)
-- 
-- De nouvelles mailles INPN sur la France métropolitaine (2km, 20km, 50km) sont disponibles (https://github.com/PnX-SI/RefGeo/releases/tag/1.5.4):
+
+- [Synthèse] Possibilité de partager une URL menant directement à un onglet (détails, taxonomie, discussion, validation, etc.) de la fiche d'une observation (#3169)
+- [Accueil] Ajout d'un bloc `Discussions` sur la page d'accueil (#3138)
+  - Affichage des discussions dans lesquels l'utilisateur participé, fait l'enregistrement ou est à l'orgine de l'observation.
+- [Occhab] Remplacement du champ `is_habitat_complex` par le nouveau champ du standart `id_nomenclature_type_habitat` (voir MosaiqueValue dans la version 2 standard INPN) (#3125)
+- [Occhab] Affichage de l'UUID d'une station dans l'interface (#3247)
+- [Méta-données]Il est maintenant possible de supprimer un cadre d'acquisition vide (#3224)
+- [Occtax] Ajout du nom de lieu dans le détail d'un relevé (#3145)
+- [RefGeo] De nouvelles mailles INPN sur la France métropolitaine (2km, 20km, 50km) sont disponibles (https://github.com/PnX-SI/RefGeo/releases/tag/1.5.4):
 ```
 geonature db upgrade ref_geo_inpn_grids_2@head  # Insertion des mailles 2x2km métropole, fournies par l’INPN
 geonature db upgrade ref_geo_inpn_grids_20@head  # Insertion des mailles 20x20km métropole, fournies par l’INPN
@@ -36,6 +46,12 @@ geonature db upgrade ref_geo_inpn_grids_50@head # Insertion des mailles 50x50km 
 
 - Correction de l'URL des modules externes dans le menu latéral (#3093)
 - Correction des erreurs d'exécution de la commande `geonature sensitivity info` (#3216)
+- Correction du placement des tooltips pour le composant `ng-select`(#3142)
+- Correction de l'export Occhab avec des champs additionnels vides (#2837)
+- Correction du bug d'édition d'une géométrie sur une carte Leaflet (#3196)
+- Lancement de `pytest` sans _benchmark_ ne nécessite plus l'ajout de `--benchmark-skip` (#3183)
+
+
 
 **⚠️ Notes de version**
 
@@ -74,6 +90,8 @@ Si vous mettez à jour GeoNature :
    - si vous aviez installé le module externe Import, XXXXX
    - si vous n'aviez pas installé le module externe Import, il sera disponible après la mise à jour vers cette nouvelle version de GeoNature. Vous pouvez configurer les permissions de vos utilisateurs si vous souhaitez qu'ils y accédent
    - la gestion des permissions et des JDD associés aux module a évolué. La migration est gérée automatiquement lors de la mise à jour pour garantir un fonctionnement identique. Voir la documentation (XXXXXXXXX) pour en savoir plus
+   - supprimer le dossier import, il ne sera plus utiliser dans la 2.15
+   - reporter la configuration IMPORT dans le fichier de configuration de GeoNature. (dans le bloc import, voir dans le fichier default toml)
 - La synchronisation avec le service MTD de l'INPN n'est plus intégrée dans le code de GeoNature, elle a été déplacée dans un module externe : https://github.com/PnX-SI/mtd_sync
    - Si vous l'utilisiez, supprimer les variables de configuration suivantes du fichier `geonature_config.toml` : 
      - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
