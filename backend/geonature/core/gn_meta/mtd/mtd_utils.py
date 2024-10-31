@@ -138,6 +138,16 @@ def sync_af(af):
     name_af = af["acquisition_framework_name"]
 
     logger.debug("MTD - PROCESSING AF WITH UUID '%s' AND NAME '%s'" % (af_uuid, name_af))
+
+    # Handle case where af_uuid is None, as it would raise an error at database level when executing the statement below.
+    #   None value for `af_uuid`, i.e. af UUID is missing, could be due to no UUID specified in `<ca:identifiantCadre/>` tag in the XML file.
+    #   If so, we skip the retrieval of the AF.
+    if not af_uuid:
+        logger.warning(
+            f"No UUID provided for the AF with UUID '{af_uuid}' and name '{name_af}' - SKIPPING SYNCHRONIZATION FOR THIS AF."
+        )
+        return None
+
     af_exists = DB.session.scalar(
         exists().where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid).select()
     )
