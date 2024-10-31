@@ -250,7 +250,7 @@ def associate_actors(
                 # FIXME: prevent update of organism email from actor email ! Several actors may be associated to the same organism and still have different mails !
                 id_organism = add_or_update_organism(
                     uuid=uuid_organism,
-                    nom=organism_name if organism_name else "",
+                    nom=organism_name if organism_name else None,
                     email=email_actor,
                 )
         cd_nomenclature_actor_role = actor["actor_role"]
