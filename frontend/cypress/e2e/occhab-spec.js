@@ -26,7 +26,7 @@ describe('Testing occhab', () => {
     ];
     positions.forEach((pos) => {
       cy.get(canvas).click(pos[0], pos[1]);
-      cy.wait(500);
+      cy.wait(1000);
     });
     cy.get('#validateButton').should('be.disabled');
 
