@@ -1,5 +1,6 @@
 import datetime
 import json
+from typing import Union
 
 from flask import current_app
 from lxml import etree as ET
@@ -130,10 +131,29 @@ def parse_jdd_xml(xml):
 
     root = ET.fromstring(xml, parser=_xml_parser)
     jdd_list = []
+
+    def format_acquisition_framework_id_from_xml(provided_af_uuid) -> Union[str, None]:
+        """
+        Format the acquisition framework UUID provided for the dataset
+            i.e. the value for the tag `<jdd:identifiantCadre>` in the XML file
+
+        Args:
+            provided_af_uuid (str): The acquisition framework UUID
+        Returns:
+            Union[str, None]: The formatted acquisition framework UUID, or None if none was provided
+        """
+        if not provided_af_uuid:
+            return None
+
+        if provided_af_uuid.startswith("http://oafs.fr/meta/ca/"):
+            return provided_af_uuid.split("/")[-1]
+
+        return provided_af_uuid
+
     for jdd in root.findall(".//" + namespace + "JeuDeDonnees"):
         # We extract all the required informations from the different tags of the XML file
         jdd_uuid = get_tag_content(jdd, "identifiantJdd")
-        ca_uuid = get_tag_content(jdd, "identifiantCadre")
+        ca_uuid = format_acquisition_framework_id_from_xml(get_tag_content(jdd, "identifiantCadre"))
         dataset_name = get_tag_content(jdd, "libelle")
         dataset_shortname = get_tag_content(jdd, "libelleCourt", default_value="")
         dataset_desc = get_tag_content(jdd, "description", default_value="")
