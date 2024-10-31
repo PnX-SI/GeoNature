@@ -290,13 +290,14 @@ def associate_actors(
             id_nomenclature_actor_role=id_nomenclature_actor_role,
             **{pk_name: pk_value},
         )
-        if not id_organism:
+        # Try to associate to an organism first, and if that is impossible, to a user
+        if id_organism:
+            values["id_organism"] = id_organism
+        else:
             id_user_from_email = DB.session.scalar(
                 select(User.id_role).filter_by(email=email_actor).where(User.groupe.is_(False))
             )
             values["id_role"] = id_user_from_email
-        else:
-            values["id_organism"] = id_organism
         try:
             statement = (
                 pg_insert(CorActor)
