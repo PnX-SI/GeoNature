@@ -1,25 +1,20 @@
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = [
-    "backend/geonature/tests/",
-]
+testpaths = ["backend/geonature/tests/"]
 addopts = "--benchmark-skip"
 
 [tool.coverage.run]
 source = [
-    "backend/geonature/",
-    "contrib/occtax/backend/occtax/",
-    "contrib/gn_module_occhab/backend/gn_module_occhab/",
-    "contrib/gn_module_validation/backend/gn_module_validation/",
+  "backend/geonature/",
+  "contrib/occtax/backend/occtax/",
+  "contrib/gn_module_occhab/backend/gn_module_occhab/",
+  "contrib/gn_module_validation/backend/gn_module_validation/",
 ]
-omit = [
-    "*/tests/*",
-    "*/migrations/*",
-]
+omit = ["*/tests/*", "*/migrations/*"]
 
 [tool.black]
 line-length = 100
-exclude ='''
+exclude = '''
 (
   /(
       \.eggs         # exclude a few common directories in the
