@@ -20,7 +20,7 @@ interface Tab {
 
 export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   {
-    label: 'Synthèse Géographique',
+    label: 'Synthèse géographique',
     path: 'geographic_overview',
     component: TabGeographicOverviewComponent,
     configEnabledField: null, // make it always available !
