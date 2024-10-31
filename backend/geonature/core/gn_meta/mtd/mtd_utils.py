@@ -31,8 +31,8 @@ NOMENCLATURE_MAPPING = {
     "cd_nomenclature_source_status": "STATUT_SOURCE",
 }
 
-# get the root logger
-log = logging.getLogger()
+# Get the logger instance "MTD_SYNC"
+logger = logging.getLogger("MTD_SYNC")
 
 
 def sync_ds(ds, cd_nomenclatures):
@@ -43,12 +43,22 @@ def sync_ds(ds, cd_nomenclatures):
     :param ds: <dict> DS infos
     :param cd_nomenclatures: <array> cd_nomenclature from ref_normenclatures.t_nomenclatures
     """
+
+    uuid_ds = ds["unique_dataset_id"]
+    name_ds = ds["dataset_name"]
+
+    logger.debug("MTD - PROCESSING DS WITH UUID '%s' AND NAME '%s'" % (uuid_ds, name_ds))
+
     if not ds["cd_nomenclature_data_origin"]:
         ds["cd_nomenclature_data_origin"] = "NSP"
 
     # FIXME: the following temporary fix was added due to possible differences in referential of nomenclatures values between INPN and GeoNature
     #     should be fixed by ensuring that the two referentials are identical, at least for instances that integrates with INPN and thus rely on MTD synchronization from INPN Métadonnées: GINCO and DEPOBIO instances.
-    if ds["cd_nomenclature_data_origin"] not in cd_nomenclatures:
+    ds_cd_nomenclature_data_origin = ds["cd_nomenclature_data_origin"]
+    if ds_cd_nomenclature_data_origin not in cd_nomenclatures:
+        logger.warning(
+            f"MTD - Nomenclature with code '{ds_cd_nomenclature_data_origin}' not found in database - SKIPPING SYNCHRONIZATION OF DATASET WITH UUID '{uuid_ds}' AND NAME '{name_ds}'"
+        )
         return
 
     # CONTROL AF
@@ -62,7 +72,9 @@ def sync_ds(ds, cd_nomenclatures):
     )
 
     if af is None:
-        log.warning(f"AF with UUID '{af_uuid}' not found in database.")
+        logger.warning(
+            f"MTD - AF with UUID '{af_uuid}' not found in database - SKIPPING SYNCHRONIZATION OF DATASET WITH UUID '{uuid_ds}' AND NAME '{name_ds}'"
+        )
         return
 
     ds["id_acquisition_framework"] = af.id_acquisition_framework
