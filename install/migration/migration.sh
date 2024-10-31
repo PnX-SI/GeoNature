@@ -133,6 +133,11 @@ cd "${newdir}/install"
 ./01_install_backend.sh
 source "${newdir}/backend/venv/bin/activate"
 
+# before 2.15 - If gn_module_import module previously installed
+if [ -f "${olddir}"/frontend/external_modules/import ];then 
+    rm "${olddir}"/frontend/external_modules/import
+fi
+
 echo "Installation des modules externes …"
 # Modules before 2.11
 if [ -d "${olddir}/external_modules/" ]; then
@@ -295,6 +300,7 @@ if [ ! -d "${newdir}/backend/media/taxhub" ];then
         cp -r "${TAXHUB_DIR}"/static/medias/* "${newdir}"/backend/media/taxhub/
     fi
 fi
+
 
 
 sudo apachectl restart
