@@ -18,11 +18,11 @@
 
   <div class="flex-container">
     <div>
-      <pnx-display-medias
-        [medias]="mediaForm.value.medias"
-        display="mini"
-        diaporama="true"
-      ></pnx-display-medias>
+      <pnx-media-item
+        [inputMedia]="mediaForm.value.medias[0]"
+        [diaporamaMedia]="mediaForm.value.medias"
+        display="icon"
+      ></pnx-media-item>
     </div>
   </div>
 </div>

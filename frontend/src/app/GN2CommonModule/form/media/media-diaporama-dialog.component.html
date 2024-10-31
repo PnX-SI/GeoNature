@@ -1,0 +1,27 @@
+<div
+  mat-dialog-content
+  class="media-dialog"
+>
+  <pnx-media-card
+    [ngClass]="{ 'media-dialog--fade-in': bDisplay, 'media-dialog--fade-out': !bDisplay }"
+    class="media-dialog__card"
+    [inputMedia]="currentMedia"
+  ></pnx-media-card>
+  <button
+    *ngIf="medias.length > 1"
+    mat-mini-fab
+    class="media-dialog__arrow media-dialog__arrow--left"
+    (click)="changeMedia(-1)"
+  >
+    <mat-icon matTooltip="{{ 'Media.previous' | translate }}">keyboard_arrow_left</mat-icon>
+  </button>
+
+  <button
+    *ngIf="medias.length > 1"
+    mat-mini-fab
+    class="media-dialog__arrow media-dialog__arrow--right"
+    (click)="changeMedia(1)"
+  >
+    <mat-icon matTooltip="{{ 'Media.next' | translate }}">keyboard_arrow_right</mat-icon>
+  </button>
+</div>
