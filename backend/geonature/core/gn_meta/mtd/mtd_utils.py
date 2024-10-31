@@ -3,6 +3,7 @@ import json
 from copy import copy
 import pprint
 from typing import Literal, Union
+import uuid
 from flask import current_app
 
 from sqlalchemy import select, exists
@@ -253,6 +254,34 @@ def associate_actors(
                     nom=organism_name if organism_name else None,
                     email=email_actor,
                 )
+        else:
+            # Retrieve or create an organism in database with `organism_name` as the organism name
+            # /!\ Handle case where there is also an organism with the name equals to the value of `name_organism`
+            #   - check if there already is an organism with the name `organism_name`
+            #       - if there is one:
+            #           - set `id_organism` with the ID of the existing organism
+            #       - if there is not:
+            #           - set `id_organism` with the ID of a newly created organism
+            if organism_name:
+                is_exists_organism = DB.session.scalar(
+                    exists().where(BibOrganismes.nom_organisme == organism_name).select()
+                )
+                if is_exists_organism:
+                    id_organism = DB.session.scalar(
+                        select(BibOrganismes.id_organisme)
+                        .where(BibOrganismes.nom_organisme == organism_name)
+                        .limit(1)
+                    )
+                else:
+                    with DB.session.begin_nested():
+                        # Create a new organism with the provided name
+                        #   /!\ We do not use the actor email as the organism email - field `bib_organismes.email_organisme` will be empty
+                        #   Only the three non-null fields will be written: `id_organisme`, `uuid_organisme`, `nom_organisme`.
+                        id_organism = add_or_update_organism(
+                            uuid=str(uuid.uuid4()),
+                            nom=organism_name,
+                            email=None,
+                        )
         cd_nomenclature_actor_role = actor["actor_role"]
         id_nomenclature_actor_role = func.ref_nomenclatures.get_id_nomenclature(
             "ROLE_ACTEUR", cd_nomenclature_actor_role
