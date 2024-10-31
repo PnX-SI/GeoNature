@@ -275,7 +275,7 @@ def associate_actors(
                 .on_conflict_do_nothing(
                     index_elements=[
                         pk_name,
-                        "id_organism",
+                        "id_organism" if id_organism else "id_role",
                         "id_nomenclature_actor_role",
                     ],
                 )
