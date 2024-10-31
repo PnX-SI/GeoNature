@@ -135,6 +135,9 @@ def sync_af(af):
         The updated or inserted acquisition framework.
     """
     af_uuid = af["unique_acquisition_framework_id"]
+    name_af = af["acquisition_framework_name"]
+
+    logger.debug("MTD - PROCESSING AF WITH UUID '%s' AND NAME '%s'" % (af_uuid, name_af))
     af_exists = DB.session.scalar(
         exists().where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid).select()
     )
