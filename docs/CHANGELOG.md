@@ -42,7 +42,7 @@ Si vous mettez à jour GeoNature :
     - suppression de la branche alembic taxhub : `geonature db downgrade taxhub@base`
     - désinstaller TH de votre serveur ?
     - L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs de TH sont également centralisés dans le fichier de log de GeoNature
-    - **⚠️Important⚠️** ! Ajouter l'extension `ltree` à votre base de données : `CREATE EXTENSION IF NOT EXISTS "ltree";`
+    - **⚠️Important⚠️** ! Ajouter l'extension `ltree` à votre base de données : `sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS ltree;"`
 
 - Le module Import a été intégré dans le coeur de GeoNature
    - si vous aviez installé le module externe Import, XXXXX
