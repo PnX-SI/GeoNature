@@ -8,16 +8,24 @@ TH v2 (intégré à GN et son module Admin), Import v3 (multi-destination, impor
 
 **🚀 Nouveautés**
 
-- Intégration de TaxHub à GeoNature (#3150 + voir la note de version de TaxHub 2.0.0 - LIEN)
-- Intégration du module Import dans le coeur de GeoNature et refonte de celui-ci pour qu'il puisse importer dans d'autres modules que Synthèse (https://github.com/PnX-SI/gn_module_import/issues/303)
-- Ajout de la possibilité d'importer des données depuis des fichiers vers le module Occhab
-- Autres évolutions du module Import à mentionner ici... (évolution des controles ? Import GeoJSON ? Graphiques génériques ? Meilleure gestion des formats de date ? Amélioration export PDF ? Import multi-JDD ?)
-- Ajout de tests frontend automatisés sur le module Import
-- Evolution du fonctionnement des permissions sur le module Import pour gérer son nouveau fonctionnement multi-destination (Action C ajoutée au module Synthèse, JDD à associer aux modules de destination...). Renvoyer vers la doc sur le sujet ?
-- Intégration et enrichissement de la documentation du module Import : https://docs.geonature.fr/xxxxxx
-- Amélioration export Occhab
+- Intégration de TaxHub ([2.0 Release Note](https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0)) à GeoNature (#3150)
+  - Plus besoin d'un web-service dédiée, la gestion de TaxHub est maintenant intégré à 
+- Refonte et intégration du module d'import dans GeoNature (#2833).
+  - Ajout de l'import vers OccHab
+  - Possibilité d'importer les données dans plusieurs modules (ou Destination). Suivre la documentation dédiée à ce sujet (mettre lien).
+  - Evolution des permissions : la création d'un import dépend d'un C dans IMPORT et d'un C dans le module de destination (synthese et/ou occhab) (Voir documention <lien a ajouter>)
+  - Plusieurs améliorations sur : les contrôles des données, la génération du rapport, les graphiques produits, de nouveaux tests frontends, etc.
 - Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identité (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
-- De nouvelles mailles (2km, 20km, 50km) sont disponibles (https://github.com/PnX-SI/RefGeo/releases/tag/1.5.4):
+  - Plusieurs protocoles de connexions intégrés : OAuth, CAS INPN, UserHub
+  - Possibilité de se connecter sur d'autres GeoNature
+- Evolution de la fiche taxon (#3191, #3205, #3174,#3175)
+  - Affichage du profil d'un taxon
+  - Affichage de la synthèse géographique d'un taxon
+  - Affichage du statut de protection du taxon
+  - Affichage des informations taxonomiques présentes dans TaxRef
+- Il est maintenant possible de supprimer un cadre d'acquisition vide (#3224)
+- 
+- De nouvelles mailles INPN sur la France métropolitaine (2km, 20km, 50km) sont disponibles (https://github.com/PnX-SI/RefGeo/releases/tag/1.5.4):
 ```
 geonature db upgrade ref_geo_inpn_grids_2@head  # Insertion des mailles 2x2km métropole, fournies par l’INPN
 geonature db upgrade ref_geo_inpn_grids_20@head  # Insertion des mailles 20x20km métropole, fournies par l’INPN
@@ -27,6 +35,7 @@ geonature db upgrade ref_geo_inpn_grids_50@head # Insertion des mailles 50x50km 
 **🐛 Corrections**
 
 - Correction de l'URL des modules externes dans le menu latéral (#3093)
+- Correction des erreurs d'exécution de la commande `geonature sensitivity info` (#3216)
 
 **⚠️ Notes de version**
 
@@ -38,9 +47,26 @@ Si vous mettez à jour GeoNature :
     - Le paramètre `API_TAXHUB` est désormais obsolète (déduit de `API_ENDPOINT`) et peut être retiré du fichier de configuration de GeoNature
     - Si vous utilisez Occtax-mobile, veillez à modifier le paramètre `taxhub_url` du fichier `/geonature/backend/media/mobile/occtax/settings.json`, pour mettre la valeur `<URL_GEONATURE>/api/taxhub>`
     - Une redirection Apache automatique de l'URL de TaxHub et des médias est disponible à l'adresse suivante : XXXX
-    - ATLAS  a tester -> modification URL des médias
-    - suppression de la branche alembic taxhub : `geonature db downgrade taxhub@base`
-    - désinstaller TH de votre serveur ?
+    - Les médias ont été déplacés du dossier `/static/medias/` vers `/media/taxhub/`.  
+    Les URL des images vont donc changer. Pour des questions de rétrocompatibilité avec d'autres outils (GeoNature-atlas ou GeoNature-citizen par exemple), vous pouvez définir des règles de redirection pour les médias dans le fichier de configuration Apache de TaxHub :
+    ```
+    # Cas où TaxHub et GeoNature sont sur le même sous-domaine
+    RewriteEngine on
+    RewriteRule   "^/taxhub/static/medias/(.+)" "/geonature/api/medias/taxhub/$1"  [R,L]
+    # Cas où TaxHub et GeoNature ont chacun un sous-domaine
+    RewriteEngine on
+    RewriteRule   "^/static/medias/(.+)" "https://geonature.<MON_DOMAINE.EXT>/api/medias/taxhub/$1"  [R,L]
+    ```
+    - L'application TaxHub n'est plus nécessaire, si vous voulez utilisez TaxHub uniquement au travers de GeoNature, effectuer les actions suivantes : 
+        - Suppression de la branche alembic taxhub : `geonature db downgrade taxhub-standalone@base`
+
+    - Les commandes de taxhub sont maitenant intégrées dans celles de GeoNature.
+    ```shell
+    geonature taxref info # avant flask taxref info
+    geonature taxref enable-bdc-statut-text # avant flask taxref enable-bdc-statut-text
+    geonature taxref migrate-to-v17 # flask taxref migrate-to-v17
+    ```
+
     - L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs de TH sont également centralisés dans le fichier de log de GeoNature
     - **⚠️Important⚠️** ! Ajouter l'extension `ltree` à votre base de données : `sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS ltree;"`
 
@@ -53,8 +79,7 @@ Si vous mettez à jour GeoNature :
      - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
      - toutes les variables dans `[CAS_PUBLIC]`, `[CAS]`, `[CAS.CAS_USER_WS]`, `[MTD]`
      - `ID_USER_SOCLE_1` et `ID_USER_SOCLE_2` dans la section `BDD` 
-   - Installez le nouveau module externe à l'aide de la commande : `pip install git+https://github.com/PnX-SI/mtd_sync`
-   - Remplissez la configuration dans un fichier `mtd_sync.toml`
+
 
 2.14.2 (2024-05-28)
 -------------------
