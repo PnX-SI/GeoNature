@@ -263,7 +263,7 @@ def associate_actors(
         )
         if not id_organism:
             id_user_from_email = DB.session.scalar(
-                select(User.id_role).filter_by(email=email_actor)
+                select(User.id_role).filter_by(email=email_actor).where(User.groupe.is_(False))
             )
             values["id_role"] = id_user_from_email
         else:
