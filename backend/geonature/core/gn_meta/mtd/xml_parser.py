@@ -62,7 +62,7 @@ def parse_actors_xml(actors):
     return actor_list
 
 
-def parse_acquisition_framwork_xml(xml):
+def parse_single_acquisition_framework_xml(xml):
     """
     Parse an xml of AF from a string
     Return:
