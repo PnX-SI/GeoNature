@@ -23,6 +23,7 @@ from .xml_parser import (
     parse_acquisition_framework,
     parse_single_acquisition_framework_xml,
     parse_jdd_xml,
+    parse_acquisition_frameworks_xml,
 )
 
 # create logger
@@ -66,13 +67,7 @@ class MTDInstanceApi:
 
     def get_af_list(self) -> list:
         xml = self._get_af_xml()
-        _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
-        root = etree.fromstring(xml, parser=_xml_parser)
-        af_iter = root.iterfind(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
-        af_list = []
-        for af in af_iter:
-            af_list.append(parse_acquisition_framework(af))
-        return af_list
+        return parse_acquisition_frameworks_xml(xml)
 
     def _get_ds_xml(self):
         return self._get_xml(self.ds_path)
@@ -123,10 +118,7 @@ class MTDInstanceApi:
                 warning_message = f"""{warning_message} > Probably no acquisition framework found for the user with ID '{self.id_role}'"""
             logger.warning(warning_message)
             return []
-        _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
-        root = etree.fromstring(xml, parser=_xml_parser)
-        af_iter = root.findall(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
-        af_list = [parse_acquisition_framework(af) for af in af_iter]
+        af_list = parse_acquisition_frameworks_xml(xml)
         return af_list
 
     def get_single_af(self, af_uuid):

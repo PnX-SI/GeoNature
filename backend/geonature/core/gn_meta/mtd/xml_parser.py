@@ -62,6 +62,28 @@ def parse_actors_xml(actors):
     return actor_list
 
 
+def parse_acquisition_frameworks_xml(xml: str) -> list:
+    """
+    Parse an XML of acquisition frameworks from a string.
+
+    Parameters
+    ----------
+    xml : str
+        The XML of acquisition frameworks
+
+    Returns
+    -------
+    af_list : list
+        A list of dict with each dict representing a parsed acquisition framework from the XML
+    """
+    root = ET.fromstring(xml, parser=_xml_parser)
+    af_iter = root.iterfind(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
+    af_list = []
+    for af in af_iter:
+        af_list.append(parse_acquisition_framework(af))
+    return af_list
+
+
 def parse_single_acquisition_framework_xml(xml):
     """
     Parse an xml of AF from a string
