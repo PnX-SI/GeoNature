@@ -133,6 +133,11 @@ cd "${newdir}/install"
 ./01_install_backend.sh
 source "${newdir}/backend/venv/bin/activate"
 
+# before 2.15 - If gn_module_import module previously installed
+if [ -f "${olddir}"/frontend/external_modules/import ];then 
+    rm "${olddir}"/frontend/external_modules/import
+fi
+
 echo "Installation des modules externes …"
 # Modules before 2.11
 if [ -d "${olddir}/external_modules/" ]; then
@@ -264,35 +269,38 @@ deactivate
 if [ -f "/etc/systemd/system/taxhub.service" ]; then
     sudo systemctl stop taxhub 
     sudo systemctl disable taxhub
-    sudo rm /etc/systemd/system/taxhub
+    sudo rm /etc/systemd/system/taxhub.service
     sudo systemctl daemon-reload
     sudo systemctl reset-failed
 fi
 
 # before 2.15 - Suppression de l'application Taxhub et de la configuration apache
 if [ -f "/etc/apache2/sites-available/taxhub.conf" ]; then
-    rm /etc/apache2/sites-available/taxhub.conf
+    sudo rm /etc/apache2/sites-available/taxhub.conf
 fi
 
 if [ -f "/etc/apache2/sites-available/taxhub-le-ssl.conf" ]; then
-    rm /etc/apache2/sites-available/taxhub-le-ssl.conf
-    rm -r /var/log/taxhub/
+    sudo rm /etc/apache2/sites-available/taxhub-le-ssl.conf
+    sudo rm -r /var/log/taxhub/
 fi
 
 if [ -f "/etc/apache2/conf-available/taxhub.conf" ]; then
-    rm /etc/apache2/conf-available/taxhub.conf
+    sudo rm /etc/apache2/conf-available/taxhub.conf
 fi
 
 if [ -f "/etc/apache2/conf-available/taxhub-le-ssl.conf" ]; then
-    rm /etc/apache2/conf-available/taxhub-le-ssl.conf
-    rm -r /var/log/taxhub/
+    sudo rm /etc/apache2/conf-available/taxhub-le-ssl.conf
+    sudo rm -r /var/log/taxhub/
 fi
 
 # before 2.15 - Suppression de l'application Taxhub et rapatriement des médias TaxHub
 if [ ! -d "${newdir}/backend/media/taxhub" ];then
     mkdir -p "${newdir}/backend/media/taxhub"
-    cp -r "${TAXHUB_DIR}"/static/medias/* "${newdir}"/backend/media/taxhub/
+    if [ -d "${TAXHUB_DIR}"/static/medias ]; then
+        cp -r "${TAXHUB_DIR}"/static/medias/* "${newdir}"/backend/media/taxhub/
+    fi
 fi
+
 
 
 sudo apachectl restart

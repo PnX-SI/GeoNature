@@ -14,25 +14,25 @@ import { TaxonSheetService } from '../taxon-sheet.service';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
-    name: 'observation(s) valide(s)',
+    name: 'observation(s) valide(s)*',
     matIcon: 'search',
     field: 'count_valid_data',
     type: 'number',
   },
   {
-    name: 'Première observation',
+    name: 'Première observation*',
     matIcon: 'schedule',
     field: 'first_valid_data',
     type: 'date',
   },
   {
-    name: 'Dernière observation',
+    name: 'Dernière observation*',
     matIcon: 'search',
     field: 'last_valid_data',
     type: 'date',
   },
   {
-    name: "Plage d'altitude(s)",
+    name: "Plage d'altitude(s)*",
     matIcon: 'terrain',
     field: ['altitude_min', 'altitude_max'],
     unit: 'm',
