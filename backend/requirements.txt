@@ -4,17 +4,20 @@
 #
 #    pip-compile requirements.in
 #
-alembic==1.13.3
+alembic==1.14.0
     # via
     #   flask-migrate
     #   pypn-ref-geo
     #   pypnusershub
 amqp==5.2.0
     # via kombu
-async-timeout==4.0.3
+async-timeout==5.0.1
     # via redis
 attrs==24.2.0
-    # via fiona
+    # via
+    #   fiona
+    #   jsonschema
+    #   referencing
 authlib==1.3.2
     # via pypnusershub
 babel==2.16.0
@@ -23,7 +26,7 @@ bcrypt==4.2.0
     # via pypnusershub
 billiard==4.2.1
     # via celery
-blinker==1.8.2
+blinker==1.9.0
     # via
     #   flask
     #   flask-mail
@@ -153,8 +156,6 @@ gunicorn==23.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
-html5lib==1.1
-    # via weasyprint
 idna==3.10
     # via requests
 importlib-metadata==4.13.0 ; python_version < "3.10"
@@ -171,6 +172,10 @@ jinja2==3.1.4
     #   bokeh
     #   flask
     #   flask-babel
+jsonschema==4.23.0
+    # via -r requirements-common.in
+jsonschema-specifications==2024.10.1
+    # via jsonschema
 kombu==5.4.2
     # via celery
 lxml==5.3.0
@@ -183,7 +188,7 @@ markupsafe==3.0.2
     #   mako
     #   werkzeug
     #   wtforms
-marshmallow==3.23.0
+marshmallow==3.23.1
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
@@ -207,7 +212,7 @@ numpy==2.0.2
     #   contourpy
     #   pandas
     #   shapely
-packaging==24.1
+packaging==24.2
     # via
     #   -r requirements-common.in
     #   bokeh
@@ -238,7 +243,7 @@ pycparser==2.22
     # via cffi
 pydyf==0.11.0
     # via weasyprint
-pyphen==0.17.0
+pyphen==0.15.0
     # via weasyprint
 pypn-habref-api==0.4.1
     # via -r requirements-dependencies.in
@@ -274,18 +279,24 @@ pyyaml==6.0.2
     # via bokeh
 redis==5.2.0
     # via celery
+referencing==0.35.1
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
 requests==2.32.3
     # via
     #   pypn-habref-api
     #   pypnusershub
+rpds-py==0.21.0
+    # via
+    #   jsonschema
+    #   referencing
 shapely==2.0.6
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
 six==1.16.0
-    # via
-    #   html5lib
-    #   python-dateutil
+    # via python-dateutil
 sqlalchemy==1.4.54
     # via
     #   -r requirements-common.in
@@ -309,6 +320,8 @@ tinycss2==1.4.0
     # via
     #   cssselect2
     #   weasyprint
+tinyhtml5==2.0.0
+    # via weasyprint
 toml==0.10.2
     # via
     #   -r requirements-common.in
@@ -348,16 +361,16 @@ vine==5.1.0
     #   kombu
 wcwidth==0.2.13
     # via prompt-toolkit
-weasyprint==62.3
+weasyprint==63.0
     # via
     #   -r requirements-common.in
     #   flask-weasyprint
 webencodings==0.5.1
     # via
     #   cssselect2
-    #   html5lib
     #   tinycss2
-werkzeug==3.0.6
+    #   tinyhtml5
+werkzeug==3.1.3
     # via
     #   flask
     #   flask-login
@@ -375,7 +388,7 @@ xmltodict==0.14.2
     #   pypnusershub
 xyzservices==2024.9.0
     # via bokeh
-zipp==3.20.2
+zipp==3.21.0
     # via importlib-metadata
 zopfli==0.2.3.post1
     # via fonttools

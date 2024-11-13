@@ -17,6 +17,7 @@ geojson
 gunicorn>=19.8.0
 importlib_metadata==4.13.0;python_version<"3.10"
 importlib_metadata;python_version>"3.10"
+jsonschema
 lxml
 marshmallow
 marshmallow-sqlalchemy
