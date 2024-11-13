@@ -270,7 +270,7 @@ class TDatasets(db.Model):
 
         areas = params.get("areas")
         if areas:
-            query = query.where_by_areas(areas)
+            query = TDatasets.filter_by_areas(areas, query=query)
 
         search = params.get("search")
         if search:
