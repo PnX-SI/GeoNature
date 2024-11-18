@@ -44,7 +44,7 @@ extensions = [
 ## AUTOAPI
 extensions.append("autoapi.extension")
 autoapi_dirs = ["../backend/geonature", "../backend/dependencies"]
-autoapi_ignore = ["*migrations*", "*tests*"]
+autoapi_ignore = ["*migrations*", "*tests*", "*celery_app.py"]
 autoapi_add_toctree_entry = False
 
 
@@ -97,25 +97,25 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "sphinx_book_theme"
 html_logo = "./images/LogoGeonature.jpg"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
-    "canonical_url": "",
-    "logo_only": False,
-    "display_version": True,
-    "prev_next_buttons_location": "bottom",
-    "style_external_links": False,
-    "style_nav_header_background": "white",
-    # Toc options
-    "collapse_navigation": True,
-    "sticky_navigation": True,
-    "navigation_depth": 4,
-    "includehidden": True,
-    "titles_only": False,
+    # "canonical_url": "",
+    # "logo_only": False,
+    # "display_version": True,
+    # "prev_next_buttons_location": "bottom",
+    # "style_external_links": False,
+    # "style_nav_header_background": "white",
+    # # Toc options
+    # "collapse_navigation": True,
+    # "sticky_navigation": True,
+    "navigation_depth": 3,
+    # "includehidden": True,
+    # "titles_only": False,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -128,7 +128,7 @@ html_static_path = ["_static"]
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-html_sidebars = {"**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"]}
+# html_sidebars = {"**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"]}
 # html_sidebars = {
 #     '**': [
 #         'relations.html',  # needs 'show_related': True theme option to display
