@@ -1,4 +1,4 @@
-INSTALLATION
+Installation
 ============
 
 GeoNature repose sur les composants suivants :

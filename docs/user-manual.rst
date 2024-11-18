@@ -1,4 +1,4 @@
-MANUEL UTILISATEUR
+Manuel utilisateur
 ==================
 
 Authentification

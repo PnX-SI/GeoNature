@@ -1,4 +1,4 @@
-DEVELOPPEMENT
+Développement
 =============
 
 Général

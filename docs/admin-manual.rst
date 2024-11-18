@@ -1,4 +1,4 @@
-MANUEL ADMINISTRATEUR
+Manuel administrateur
 =====================
 
 Architecture
@@ -2445,4 +2445,4 @@ Les permissions du module TaxHub peuvent être reglées aux trois niveaux (objet
 - ATTRIBUTS : permet de voir / créer / modifier / supprimer des attributs de taxons
 
 
-.. include:: import_doc.rst
+.. include:: admin/import_admin.rst
