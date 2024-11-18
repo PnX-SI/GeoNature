@@ -129,7 +129,7 @@ Créer la table transitoire
 
 Déclarer les attributs rendus accessibles à l’import dans **bib_fields**
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-fsdfdf
+
 
 .. code-block:: python
 
