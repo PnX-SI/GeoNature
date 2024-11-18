@@ -1641,6 +1641,8 @@ Bonnes pratiques Frontend
 
     <img src="assets/<gn_module_validation>/afb.png">
 
+.. include:: development/import-dev.rst
+
 
 Documentation
 -------------
