@@ -1,7 +1,7 @@
 """declare module TAXHUB
 
 Revision ID: ebbe0f7ed866
-Revises: f1dd984bff97
+Revises: 9f4db1786c22
 Create Date: 2023-08-02 13:15:38.542530
 
 """

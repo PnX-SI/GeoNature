@@ -59,7 +59,7 @@ echo "Copie des fichiers de configuration…"
 # Copy all config files (installation, GeoNature, modules)
 cp -n ${olddir}/config/*.{ini,toml} ${newdir}/config/
 if [ -f "${olddir}/environ" ]; then
-  cp -n "${olddir}/environ" "${newdir}/environ"
+    cp -n "${olddir}/environ" "${newdir}/environ"
 fi
 
 if [ -d "${olddir}/custom" ]; then
@@ -77,35 +77,35 @@ fi
 echo "Déplacement des anciens fichiers personnalisés ..."
 # before 2.12
 if [ ! -f "${newdir}/custom/css/frontend.css" ] && [ -f "${olddir}/frontend/src/assets/custom.css" ] \
-    && ! cmp -s "${olddir}/frontend/src/assets/custom.css" "${newdir}/backend/static/css/frontend.css"; then
-  mkdir -p "${newdir}/custom/css/"
-  cp "${olddir}/frontend/src/assets/custom.css" "${newdir}/custom/css/frontend.css"
+&& ! cmp -s "${olddir}/frontend/src/assets/custom.css" "${newdir}/backend/static/css/frontend.css"; then
+    mkdir -p "${newdir}/custom/css/"
+    cp "${olddir}/frontend/src/assets/custom.css" "${newdir}/custom/css/frontend.css"
 fi
 # before 2.7
 if [ ! -f "${newdir}/custom/css/frontend.css" ] && [ -f "${olddir}/frontend/src/custom/custom.scss" ] \
-    && ! cmp -s "${olddir}/frontend/src/custom/custom.scss" "${newdir}/backend/static/css/frontend.css"; then
-  mkdir -p "${newdir}/custom/css/"
-  cp "${olddir}/frontend/src/custom/custom.scss" "${newdir}/custom/css/frontend.css"
+&& ! cmp -s "${olddir}/frontend/src/custom/custom.scss" "${newdir}/backend/static/css/frontend.css"; then
+    mkdir -p "${newdir}/custom/css/"
+    cp "${olddir}/frontend/src/custom/custom.scss" "${newdir}/custom/css/frontend.css"
 fi
 # before 2.12
 for img in login_background.jpg logo_sidebar.jpg logo_structure.png; do
-  if [ ! -f "${newdir}/custom/images/${img}" ] && [ -f "${olddir}/frontend/src/custom/images/${img}" ] \
+    if [ ! -f "${newdir}/custom/images/${img}" ] && [ -f "${olddir}/frontend/src/custom/images/${img}" ] \
     && ! cmp -s "${olddir}/frontend/src/custom/images/${img}" "${newdir}/backend/static/images/${img}"; then
-    mkdir -p "${newdir}/custom/images/"
-    cp "${olddir}/frontend/src/custom/images/${img}" "${newdir}/custom/images/${img}"
-  fi
+        mkdir -p "${newdir}/custom/images/"
+        cp "${olddir}/frontend/src/custom/images/${img}" "${newdir}/custom/images/${img}"
+    fi
 done
 # before 2.12
 if [ ! -f "${newdir}/custom/images/favicon.ico" ] && [ -f "${olddir}/frontend/src/favicon.ico" ] \
-    && ! cmp -s "${olddir}/frontend/src/favicon.ico" "${newdir}/backend/static/images/favicon.ico"; then
-  mkdir -p "${newdir}/custom/images/"
-  cp "${olddir}/frontend/src/favicon.ico" "${newdir}/custom/images/favicon.ico"
+&& ! cmp -s "${olddir}/frontend/src/favicon.ico" "${newdir}/backend/static/images/favicon.ico"; then
+    mkdir -p "${newdir}/custom/images/"
+    cp "${olddir}/frontend/src/favicon.ico" "${newdir}/custom/images/favicon.ico"
 fi
 # before 2.12
 if [ ! -f "${newdir}/custom/css/metadata_pdf_custom.css" ] && [ -f "${olddir}/backend/static/css/custom.css" ] \
-    && ! cmp -s "${olddir}/backend/static/css/custom.css" "${newdir}/backend/static/css/metadata_pdf_custom.css"; then
-  mkdir -p "${newdir}/custom/css/"
-  cp "${olddir}/backend/static/css/custom.css" "${newdir}/custom/css/metadata_pdf_custom.css"
+&& ! cmp -s "${olddir}/backend/static/css/custom.css" "${newdir}/backend/static/css/metadata_pdf_custom.css"; then
+    mkdir -p "${newdir}/custom/css/"
+    cp "${olddir}/backend/static/css/custom.css" "${newdir}/custom/css/metadata_pdf_custom.css"
 fi
 
 
@@ -114,7 +114,7 @@ echo "Mise à jour de node si nécessaire …"
 cd "${newdir}"/install
 ./00_install_nvm.sh
 export NVM_DIR="$HOME/.nvm"
- [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 cd "${newdir}/frontend"
 nvm use
@@ -127,15 +127,19 @@ echo "Installation des dépendances node du backend …"
 cd "${newdir}/backend/static"
 npm ci --only=prod
 
-
 echo "Mise à jour du backend …"
 cd "${newdir}/install"
 ./01_install_backend.sh
 source "${newdir}/backend/venv/bin/activate"
 
+
+
 # before 2.15 - If gn_module_import module previously installed
-if [ -f "${olddir}"/frontend/external_modules/import ];then 
-    rm "${olddir}"/frontend/external_modules/import
+if [ -d ${olddir}/frontend/external_modules/import ];then
+    source ${olddir}/backend/venv/bin/activate
+    pip uninstall gn_module_import -y # require when git enabled
+    rm ${olddir}/frontend/external_modules/import
+    source deactivate
 fi
 
 echo "Installation des modules externes …"
@@ -267,7 +271,7 @@ deactivate
 
 # before 2.15 - Suppression de l'application Taxhub et de la configuration du service systemctl
 if [ -f "/etc/systemd/system/taxhub.service" ]; then
-    sudo systemctl stop taxhub 
+    sudo systemctl stop taxhub
     sudo systemctl disable taxhub
     sudo rm /etc/systemd/system/taxhub.service
     sudo systemctl daemon-reload
