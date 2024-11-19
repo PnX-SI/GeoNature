@@ -1,7 +1,7 @@
 """Add id_entity in users errors
 
 Revision ID: bfc90691737d
-Revises: 2b0b3bd0248c
+Revises: 02e9b8758709
 Create Date: 2024-02-15 16:20:57.049889
 
 """

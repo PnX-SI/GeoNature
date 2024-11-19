@@ -1,7 +1,7 @@
 """import schema
 
 Revision ID: 92f0083cf735
-Revises: 446e902a14e7
+Revises: ebbe0f7ed866
 Create Date: 2023-11-07 16:06:36.745188
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "92f0083cf735"
-down_revision = "d99a7c22cc3c"
+down_revision = "ebbe0f7ed866"
 branch_labels = None
 depends_on = ("2b0b3bd0248c",)
 
