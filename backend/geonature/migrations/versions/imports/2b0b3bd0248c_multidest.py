@@ -148,11 +148,11 @@ def upgrade():
         sa.Column("validity_column", sa.String(64)),
         sa.Column("destination_table_schema", sa.String(63)),
         sa.Column("destination_table_name", sa.String(63)),
-        sa.Column("id_unique_column", sa.Integer, sa.ForeignKey("bib_fields.id_field")),
+        sa.Column("id_unique_column", sa.Integer, sa.ForeignKey("gn_imports.bib_fields.id_field")),
         sa.Column(
             "id_parent",
             sa.Integer,
-            sa.ForeignKey("bib_entities.id_entity"),
+            sa.ForeignKey("gn_imports.bib_entities.id_entity"),
         ),
         schema="gn_imports",
     )
