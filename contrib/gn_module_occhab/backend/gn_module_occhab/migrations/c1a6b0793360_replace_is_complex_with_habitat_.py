@@ -16,7 +16,7 @@ from sqlalchemy.orm.session import Session
 revision = "c1a6b0793360"
 down_revision = "aed662bbd88a"
 branch_labels = None
-depends_on = None
+depends_on = ("5e882af04ff6",)
 
 
 def upgrade():

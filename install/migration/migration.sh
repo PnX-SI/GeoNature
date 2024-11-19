@@ -136,7 +136,10 @@ source "${newdir}/backend/venv/bin/activate"
 
 # before 2.15 - If gn_module_import module previously installed
 if [ -d ${olddir}/frontend/external_modules/import ];then
+    source ${olddir}/backend/venv/bin/activate
+    pip uninstall gn_module_import -y # require when git enabled
     rm ${olddir}/frontend/external_modules/import
+    source deactivate
 fi
 
 echo "Installation des modules externes …"
