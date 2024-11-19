@@ -1,17 +1,17 @@
 Intégrer l’import de données dans votre module
 ----------------------------------------------
 
-A partir de la version 2.15, le module d’Import permet l’ajout de nouvelle destination en dehors de la Synthèse. L’occasion d’ajouter la possibilité d’importer des données d’habitat dans le module Occhab.
-Cette section présente le processus d’ajout de l’import dans votre module externe GeoNature.
+A partir de la version 2.15, le module d’Import permet l’ajout de nouvelles destinations en plus de la Synthèse. Cela a été l’occasion d’ajouter la possibilité d’importer des données d’habitat dans le module Occhab.
+Cette section présente le processus d’ajout de l’import dans votre module GeoNature.
 
 Modification à apporter sur la base de données
-*************************************************
+**********************************************
 
 Plusieurs points sont essentiels au bon fonctionnement de l’import dans votre module :
 
 1. Avoir une permission C sur votre module de destination
 2. Créer un objet destination (`bib_destinations`) et autant d’entités (`bib_entities`) que vous avez d’objets dans votre module (e.g. habitat, station pour Occhab)
-3. Créer un table de transitoire permettant d’effectuer la complétion et le contrôle des données avant l’import des données vers la table de destination finale.
+3. Créer une table transitoire permettant d’effectuer la complétion et le contrôle des données avant l’import des données vers la table de destination finale.
 4. Pour chaque entité, déclarer les attributs rendus accessibles à l’import dans `bib_fields`
 5. Si de nouvelles erreurs de contrôle de données doivent être déclarées, ajouter ces dernières dans `bib_errors_type`
 
@@ -223,16 +223,16 @@ Ajout d'erreur
 Configuration
 *************
 
-Il faut d'abords créer une class héritant de la class `ImportActions`
+Il faut d'abord créer une classe héritant de la classe `ImportActions`
 
 .. code-block:: python
 
     class VotreModuleImportActions(ImportActions):
         def statistics_labels() -> typing.List[ImportStatisticsLabels]:
-        # Retourne un object contenant les label pour les statistiques
+        # Retourne un objet contenant les labels pour les statistiques
 
         def preprocess_transient_data(imprt: TImports, df) -> set:
-        # Effectue un pretraitement des données dans un dataframe
+        # Effectue un pré-traitement des données dans un dataframe
 
         def check_transient_data(task, logger, imprt: TImports) -> None:
         # Effectue la validation des données
@@ -244,19 +244,19 @@ Il faut d'abords créer une class héritant de la class `ImportActions`
         # Supprime les données de la table de destination
 
         def report_plot(imprt: TImports) -> StandaloneEmbedJson:
-        # Retourne des graphique sur l'import
+        # Retourne des graphiques sur l'import
 
         def compute_bounding_box(imprt: TImports) -> None:
         # Calcule la bounding box
 
-Dans cette class on retrouve toutes les fonctions obligatoires, a implementer pour pouvoir implementer l'import dans un module.
+Dans cette classe on retrouve toutes les fonctions obligatoires, à implementer pour pouvoir implementer l'import dans un module.
 
 Méthode à implémenter
 """""""""""""""""""""
 
 **``statistics_labels()``**
 
-Fonction qui renvoie un object de la forme suivante :
+Fonction qui renvoie un objet de la forme suivante :
 
 .. code-block:: python
 
@@ -264,37 +264,37 @@ Fonction qui renvoie un object de la forme suivante :
     {"key": "habitat_count", "value": "Nombre d’habitats importés"},
 
 
-Les statistiques sont calculer en amont,et ajouter a l'objet import dans la section statistique.
-Les valeurs des clés permettent de définir les labels a afficher pour les statistique affiché dans la liste d'import.
+Les statistiques sont calculées en amont, et ajoutés à l'objet import dans la section statistique.
+Les valeurs des clés permettent de définir les labels à afficher pour les statistique affichées dans la liste d'imports.
 
 ``preprocess_transient_data(imprt: TImports, df)``
 
-Fonction qui permet de faire un pre traitement sur les données de l'import, elle retourne un dataframe panda.
+Fonction qui permet de faire un pré-traitement sur les données de l'import, elle retourne un dataframe panda.
 
 ``check_transient_data(task, logger, imprt: TImports)``
 
-Dans cette fonction est effectuer la validation et le traitement des données de l'import.
+Dans cette fonction est effectuée la validation et le traitement des données de l'import.
 
-La fonction ``check_dates``, par exemple, utilisée dans l'import Occhab permet de validé tout les champ de type date présent dans l'import.
-Elle vérifie que le format est respecter.
+La fonction ``check_dates``, par exemple, utilisée dans l'import Occhab permet de valider tous les champs de type date présents dans l'import.
+Elle vérifie que le format est respecté.
 
-La fonction ``check_transient_data`` elle permet de génerer les uuid manquants dans l'import, elle permet notamment de generer un uuid commun a différente ligne de l'import quand id_origin est le même.
+La fonction ``check_transient_data`` permet de génerer les uuid manquants dans l'import, elle permet notamment de générer un UUID commun à différentes lignes de l'import quand id_origin est le même.
 
 ``import_data_to_destination(imprt: TImports)``
 
-Cette fonction permet d'implémenter l'import des données valides dans la table de destination une fois que toutes les vérifications ont était effectuées.
+Cette fonction permet d'implémenter l'import des données valides dans la table de destination une fois que toutes les vérifications ont été effectuées.
 
 ``remove_data_from_destination(imprt: TImports)``
 
 Cette fonction permet de supprimer les données d'un import, lors de la suppression d'un import.
-C'est notamment pour pouvoir implémenter cette fonction sue la colonne id_import est préconiser dans les tables de destination.
+C'est notamment pour pouvoir implémenter cette fonction que la colonne ``id_import`` est préconisée dans les tables de destination.
 
 ``report_plot(imprt: TImports)``
 
-Cette fonction permet de créer les graphiques afficher dans le raport d'import.
-Pour créer ces graphiques ont utilise la librairie bokeh (documentation : https://docs.bokeh.org/en/latest/). Il y a des exemples de creation de graphiques dans l'import occhab.
+Cette fonction permet de créer les graphiques affichés dans le raport d'import.
+Pour créer ces graphiques on utilise la librairie bokeh (documentation : https://docs.bokeh.org/en/latest/). Il y a des exemples de création de graphiques dans l'import Occhab.
 
 ``compute_bounding_box(imprt: TImports)``
 
-Cette fonction sert à calculer la bounding box, c'est à dire le plus petit polygonne dans lequel sont contenue toutes les données géographique importées.
+Cette fonction sert à calculer la bounding box des données importées, c'est-à-dire le plus petit polygone dans lequel sont contenues toutes les données géographique importées.
 Cette bounding box est affichée dans le rapport d'import une fois toutes les données validées.
