@@ -236,7 +236,7 @@ def parse_jdd_xml(xml):
         current_jdd = {
             "unique_dataset_id": jdd_uuid,
             "uuid_acquisition_framework": ca_uuid,
-            "dataset_name": dataset_name if len(dataset_name) < 256 else f"{dataset_name[:253]}...",
+            "dataset_name": dataset_name if len(dataset_name) < 256 else f"{dataset_name[:252]}...",
             "dataset_shortname": dataset_shortname,
             "dataset_desc": (
                 dataset_desc
