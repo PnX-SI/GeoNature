@@ -1,5 +1,3 @@
-import json
-
 import logging
 
 from flask import (
@@ -193,17 +191,19 @@ def list_notification_methods():
 @routes.route("/categories", methods=["GET"])
 @permissions.login_required
 def list_notification_categories():
-    notificationCategories = db.session.scalars(
+    categories = db.session.scalars(
         select(NotificationCategory).order_by(NotificationCategory.code.asc())
     ).all()
-    result = [
-        notificationsCategory.as_dict(
-            fields=[
-                "code",
-                "label",
-                "description",
-            ]
-        )
-        for notificationsCategory in notificationCategories
-    ]
-    return jsonify(result)
+    categories = [category for category in categories if category.is_allowed()]
+    return jsonify(
+        [
+            category.as_dict(
+                fields=[
+                    "code",
+                    "label",
+                    "description",
+                ]
+            )
+            for category in categories
+        ]
+    )

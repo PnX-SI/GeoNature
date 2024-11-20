@@ -3,10 +3,13 @@ Models of gn_notifications schema
 """
 
 import datetime
+from math import perm
 
+from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_permissions.models import PermAction, PermObject
+from geonature.core.gn_permissions.tools import get_user_permissions
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey
-from sqlalchemy.sql import select
 from sqlalchemy.orm import relationship
 from flask import g
 from utils_flask_sqla.models import qfilter
@@ -43,6 +46,26 @@ class NotificationCategory(db.Model):
     code = db.Column(db.Unicode, primary_key=True)
     label = db.Column(db.Unicode)
     description = db.Column(db.UnicodeText)
+
+    id_module = db.Column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    module = relationship(TModules)
+    id_object = db.Column(db.Integer, ForeignKey("gn_permissions.t_objects.id_object"))
+    object = relationship(PermObject)
+    id_action = db.Column(db.Integer, ForeignKey("gn_permissions.bib_actions.id_action"))
+    action = relationship(PermAction)
+
+    def is_allowed(self, user=None) -> bool:
+        if user is None:
+            user = g.current_user
+        id_role = user.id_role
+        permissions = get_user_permissions(id_role)
+        if self.id_module:
+            permissions = [p for p in permissions if p.id_module == self.id_module]
+        if self.id_object:
+            permissions = [p for p in permissions if p.id_object == self.id_object]
+        if self.id_action:
+            permissions = [p for p in permissions if p.id_action == self.id_action]
+        return bool(permissions)
 
     @property
     def display(self):
