@@ -422,7 +422,7 @@ def associate_actors(
                     else:
                         dict_data_generated_user = {
                             "id_role": id_user_contact_principal_for_orphan_metadata,
-                            "desc_role": user_contact_principal_for_orphan_metadata,
+                            "desc_role": desc_role_for_user_contact_principal_for_orphan_metadata,
                         }
                         dict_data_generated_user = insert_or_update_role(
                             data=dict_data_generated_user
