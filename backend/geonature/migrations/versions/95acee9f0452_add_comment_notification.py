@@ -9,12 +9,6 @@ Create Date: 2023-04-06 19:02:39.863972
 import sqlalchemy as sa
 from alembic import op
 
-from geonature.core.notifications.models import (
-    NotificationCategory,
-    NotificationRule,
-    NotificationTemplate,
-)
-
 # revision identifiers, used by Alembic.
 revision = "95acee9f0452"
 down_revision = "e2a94808cf76"
@@ -36,34 +30,45 @@ DB_CONTENT = (
 
 
 def upgrade():
-    bind = op.get_bind()
-    session = sa.orm.Session(bind=bind)
+    conn = op.get_bind()
+    metadata = sa.MetaData(bind=conn)
 
     # Add category
-    category = NotificationCategory(
-        code=CATEGORY_CODE,
-        label="Nouveau commentaire sur une observation",
-        description=(
-            "Se déclenche lorsqu'un nouveau commentaire est ajouté à une de vos observations, ou une observation que vous avez commenté"
-        ),
+    notification_category = sa.Table(
+        "bib_notifications_categories", metadata, schema="gn_notifications", autoload_with=conn
+    )
+    op.execute(
+        sa.insert(notification_category).values(
+            {
+                "code": CATEGORY_CODE,
+                "label": "Nouveau commentaire sur une observation",
+                "description": "Se déclenche lorsqu'un nouveau commentaire est ajouté à une de vos observations, ou une observation que vous avez commenté",
+            }
+        )
     )
 
-    session.add(category)
-
-    for method, content in (("EMAIL", EMAIL_CONTENT), ("DB", DB_CONTENT)):
-        template = NotificationTemplate(category=category, code_method=method, content=content)
-        session.add(template)
-
-    session.commit()
-
+    notification_template = sa.Table(
+        "bib_notifications_templates", metadata, schema="gn_notifications", autoload_with=conn
+    )
     op.execute(
-        f"""
-        INSERT INTO 
-            gn_notifications.t_notifications_rules (code_category, code_method)
-        VALUES
-            ('{CATEGORY_CODE}', 'DB'),
-            ('{CATEGORY_CODE}', 'EMAIL')
-        """
+        sa.insert(notification_template).values(
+            [
+                {"code_category": CATEGORY_CODE, "code_method": "EMAIL", "content": EMAIL_CONTENT},
+                {"code_category": CATEGORY_CODE, "code_method": "DB", "content": DB_CONTENT},
+            ]
+        )
+    )
+
+    notification_rule = sa.Table(
+        "t_notifications_rules", metadata, schema="gn_notifications", autoload_with=conn
+    )
+    op.execute(
+        sa.insert(notification_rule).values(
+            [
+                {"code_category": CATEGORY_CODE, "code_method": "EMAIL"},
+                {"code_category": CATEGORY_CODE, "code_method": "DB"},
+            ]
+        )
     )
 
 
