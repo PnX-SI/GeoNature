@@ -1,15 +1,15 @@
 
 Module d’import
 ---------------
-Ce module permet d’importer des données depuis un fichier CSV dans [GeoNature](https://github.com/PnX-SI/GeoNature).
+Ce module permet d’importer des données depuis un fichier CSV dans GeoNature.
 
 
 Concept
 """""""
 
-**Destination.** Une destination est déterminée par le module dans lequel on souhaite importer (e.g. Occhab, Synthèse, etc.)
+**Destination.** Une destination est déterminée par le module dans lequel on souhaite importer des données (e.g. Occhab, Synthèse, etc.).
 
-**Entités.** Une entité correspond est un objet dans une destination (e.g. station est une entité de la destination Occhab)
+**Entités.** Une entité correspond à un objet dans une destination (e.g. *station* est une entité de la destination *Occhab*)
 
 
 Faire un import, le minimum requis
@@ -22,29 +22,30 @@ Pour qu’un utilisateur puisse mener au bout un import, il doit posséder a min
 * Voir des mappings (R)
 * Droit de créer/saisir dans le module de destination (C dans OccHab par ex.)
 
-Jeu de données
-Un import s’effectue dans un jeu de données, par conséquent, ce dernier doit 
+**Jeu de données.** Un import s’effectue dans un jeu de données, par conséquent, ce dernier doit :
+
 - être associé aux modules de destination de l’import (Voir champ dans l’édition/création d’un JDD : Module(s) GeoNature associé(s) au jeu de données)
-- être actif
+- être actif.
 
 
 Déroulement d’un import
 """""""""""""""""""""""
 
 Dans le module d’import, deux actions sont possibles : la création d’un import, la modification de ce dernier et la suppression d’un import.
-Lors du lancement de la création d’un import, il vous est demandé en premier lieu de sélectionner la destination. Une fois la destination choisi, on entre dans la phase de préparation de l’import avec les étapes suivantes :
+Lors du lancement de la création d’un import, il faut sélectionner la destination. Une fois la destination choisie, la phase de préparation de l’import se déroule de la manière suivantes :
 
-1. Téléverser le fichier contenant les données et sélection du jeu de données
-2. Définition des paramètres de lecture du fichier téléversé
-3. Faire correspondre les colonnes de votre fichier avec les champs du modèle de données définit dans le module de destination
-4. Si des champs de données correspondent à des nomenclatures, une mise en correspondance des valeurs
-5. Contrôles des données du fichier source sélectionnées
+1. Téléverser le fichier contenant les données et sélection du jeu de données. Le format de fichier accepté est le CSV.
+2. Définir les paramètres de lecture du fichier téléversé. Les données du fichier source sont stocké en binaire dans la table des imports (``gn_imports.t_imports.source_file``). 
+3. Faire correspondre les colonnes de votre fichier avec les champs du modèle de données définit dans le module de destination. Pour aider l'utilisateur dans le remplissage du formulaire, il est possible de sauvegarder et réutiliser des  _mappings_. Plusieurs mappings sont disponibles avec l'installation de GeoNature. Ces mappings permettent notamment de faire la correspondance des  colonnes d'un fichier produit par un export GeoNature (Occhab et Synthèse). Les correspondances de champs sont stockées dans un champs JSON dans ``gn_imports.t_imports.fieldmapping``.
+4. Si des champs correspondant à des types de nomenclatures sont indiqués dans l'étape 3, une mise en correspondance des valeurs du fichier source avec les nomenclatures dans la base doit être faite. Si le fichier source comprend des lignes vides, on propose en plus de mapper le cas "Pas de valeur". Tout comme la correspondance des champs, la correspondance des valeurs de nomenclature est sauvegardé dans un champs JSONB ``gn_imports.t_imports.valuemapping``.
+5. Contrôles des données du fichier source sélectionnées (:ref:`c.f. Contrôles de données<controle donnees>`:).  
 
 Une fois, cette phase de préparation terminée, l’utilisateur se voit présenter les données jugées comme valide (resp. les données invalides). A cette étape, l’utilisateur à la choix de modifier les données invalides dans son fichier source et recommencer le processus de préparation de l’import OU lancer l’import des données dans la destination.
 Une fois l’import de données terminée, l’utilisateur est redirigé vers un rapport récapitulant les paramètres de l’import et un affichage de quelques statistiques spécifiques aux type de données importées.
+Une fois les données importées, les données sont supprimées de la table temporaire (``gn_imports.t_imports_synthese`` pour la Synthèse, ``gn_imports.t_imports_occhab`` pour Occhab).
 
 
-.. image:: _static/import/importderoulement.png
+.. image:: images/import/importderoulement.png
 
 Configuration du module d’import
 """"""""""""""""""""""""""""""""
@@ -56,24 +57,24 @@ Ajouter les variables directement dans le fichier de GeoNature principale.
  ============================================== ============================================================================================================================================================================ 
   ENCODAGE                                       Liste des encodages 
   acceptés                                                                                                                                                
-  INSTANCE_BOUNDING_BOX                          Zone rectangulaire dans lequel les données doivent appartenir                                                                                                               
+  INSTANCE_BOUNDING_BOX                          Zone rectangulaire dans laquel les données doivent appartenir                                                                                                               
   ENABLE_BOUNDING_BOX_CHECK                      Activer la vérification de l'appartenance des données importées à la bounding box définie dans INSTANCE_BOUNDING_BOX                                                        
-  ENABLE_SYNTHESE_UUID_CHECK                     Activer la vérification des UUID dans les données importées avec ceux présent dans la Synthèse                                                                              
+  ENABLE_SYNTHESE_UUID_CHECK                     Activer la vérification des UUID dans les données importées avec ceux de la Synthèse                                                                              
   MAX_FILE_SIZE                                  Taille maximale du fichier chargé (en Mo)                                                                                                                                   
   SRID                                           SRID autorisés pour les fichiers en entrée                                                                                                                                  
-  ALLOWED_EXTENSIONS                             Extensions autorisées (seul le csv est accepté actuellement)                                                                                                                
+  ALLOWED_EXTENSIONS                             Extensions autorisées (seul le format CSV est accepté actuellement)                                                                                                                
   ALLOW_VALUE_MAPPING                            Activer ou non l'étape du mapping des valeurs                                                                                                                               
   DEFAULT_VALUE_MAPPING_ID                       Si le mapping des valeurs est désactivé, specifier l'identifiant du mapping qui doit être utilisé                                                                           
-  FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE   Rempli les valeurs de nomenclature erroné par la valeur par defaut                                                                                                          
+  FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE   Rempli les valeurs de nomenclature erronées par la valeur par défaut                                                                                                          
   DISPLAY_CHECK_BOX_MAPPED_FIELD                 Afficher le bouton pour afficher/masquer les champs déjà mappés                                                                                                             
   CHECK_PRIVATE_JDD_BLURING                      Active la vérification de l'existence du champs "floutage" si le JDD est privé                                                                                              
-  CHECK_REF_BIBLIO_LITTERATURE                   Active la vérification qu'une ref biblio est fournie si la valeur du champs source = "litterature"                                                                          
+  CHECK_REF_BIBLIO_LITTERATURE                   Active la vérification de la référence bibliographique fournie si la valeur du champs source = "litterature"                                                                          
   CHECK_EXIST_PROOF                              Active la vérification qu'une preuve d'existance est fournie si preuve existance = "oui"                                                                                    
   EXPORT_REPORT_PDF_FILENAME                     Customiser le nom du fichier de rapport de l'import                                                                                                                         
   DEFAULT_RANK                                   Paramètre pour définir le rang utilisé pour le diagramme camembert du rapport d'import.                                                                                     
-  DEFAULT_GENERATE_MISSING_UUID                   L'UUID d'une entité importée sera généré s'il n'est pas indiqué dans les données du fichier d'entée,                                                                       
+  DEFAULT_GENERATE_MISSING_UUID                  L'UUID d'une entité importée sera généré s'il n'est pas indiqué dans le fichier source                                                                      
   ID_AREA_RESTRICTION                            Identifiant d'une géométrie présente dans RefGeo. Si différent de -1, vérifie si les géométries des entités importées sont bien dans l'emprise spatiale de cette dernière.  
-  ID_LIST_TAXA_RESTRICTION                       Id d'une liste de taxons permettant de restreindre l'import d'observations de taxons comprises dans cette dernière                                                          
+  ID_LIST_TAXA_RESTRICTION                       Identifiant d'une liste de taxons permettant de restreindre l'import d'observations dont les taxons appartiennent à cette dernière                                                          
   MODULE_URL                                     URL d'accès au module d'import                                                                                                                                              
   DATAFRAME_BATCH_SIZE                           Taille des `batch` de données importées en même temps                                                                                                                       
  ============================================== ============================================================================================================================================================================ 
@@ -93,9 +94,22 @@ Dans le module d’import, il existe le jeu de permissions suivant :
 * Modifier des mappings - U
 * Supprimer des mappings - D
 
-**Scope.** Similaire à d’autres permissions dans GeoNature, il est possible de limiter l’accès à l’utilisateur sur les données sur lesquelles il peut agir. L’ ajout de scope sur une permission de l’import limite ce dernier sur la visibilité des imports dans l’interface « Liste des Imports » ainsi que la possibilité (resp. impossbilité) de modifier ou supprimer un import. Par exemple,  un R2 sur « IMPORT » permet uniquement de voir les imports effectués par soi-même ou un utilisateur de son organisme.
-A noter que les jeux de données disponibles lors de la préparation de l’import s’appuie bien sur les permissions de l’utilisateur dans ce dernier ! 
+**Scope.** Similaire à d’autres permissions dans GeoNature, il est possible de limiter l’accès à l’utilisateur sur les données sur lesquelles il peut agir. L’ ajout de scope sur une permission de l’import limite  la visibilité des imports dans l’interface « Liste des Imports » ainsi que la possibilité (resp. impossbilité) de modifier ou supprimer un import. Par exemple,  un R2 sur « IMPORT » permet uniquement de voir les imports effectués par soi-même ou un utilisateur de son organisme.
+A noter! La liste des jeux de données disponibles s’appuie bien sur les permissions de l’utilisateur dans ce dernier ! 
 
+**Mapping.** Certains mappings sont définis comme "public" et sont vus par tout le monde. Seuls les administrateurs (U=3) et les propriétaires de ces mappings peuvent les modifier. Si vous modifiez un mapping sur lequel vous n'avez pas les droits, il vous sera proposé de créer un nouveau mapping vous appartenant avec les modifications que vous avez faites, mais sans modifier le mapping initial.
+
+**Jeu de données accessibles à l'import.** Les jeux de données selectionnables par un utilisateur lors de la création d'un import sont eux controlés par les permissions sur le C de l'objet "import" (combiné au R du module "Métadonnées). Les mappings constituent un "objet" du module d'import disposant de droits paramétrables pour les différents utilisateurs, indépendamment des permissions sur les imports. Le réglage des permissions se fait dans le module "Admin" de GeoNature ("Admin" -> "Permissions").
+
+
+Modification et Suppression d'un import
+"""""""""""""""""""""""""""""""""""""""
+
+**Comment sait-on qu'un import est terminée ?** Si une date apparait dans la colonne "Fin import" de la liste des imports, alors l'import est terminé.
+
+**Suppression d'un import** La suppression d'un import implique : la supression de l'import (l'objet) et **les données importées dans la table transitoire**. Si l'import est terminée, les données importées dans la destination sont supprimées. Dans le cas d'une destination avec plusieurs entités, si l'entité mère est associée à des entités filles ajoutées en dehors de l'import (un habitat est rajouté sur un station importée par exemple), la supression est bloquée.
+
+**Modification d'un import** Lors de la modification d'un import, vous serez redirigez vers l'étape de "Correspondances de champs". Si vous modifiez la correspondance des champs en cliquant sur "Suivant", cela entrainera la suppression des données dans la table transitoire et dans la destination si l'import est terminée.
 
 Contrôles de données
 """"""""""""""""""""
@@ -107,14 +121,14 @@ Contrôles de données
  =================================== ============================================================================================================================================================================================================================================================================================================== 
   DATASET_NOT_FOUND                   L’identifiant ne correspond à aucun jeu de données existant.                                                                                                                                                                                                                                                  
   DATASET_NOT_AUTHORIZED              L’utilisateur ne peut pas importé de nouvelles entités dans le jeu de données.                                                                                                                                                                                                                                
-  DATASET_NOT_ACTIVE                  Aucune donnée ne peut être importé dans le JDD indiqué car celui-ci n’est plus actif.                                                                                                                                                                                                                         
-  MULTIPLE_ATTACHMENT_TYPE_CODE       Plusieurs géoréférencements sont indiquées dans les colonnes  codeCommune, codeMaille, codeDépartement (Erreur Synthèse)                                                                                                                                                                                      
+  DATASET_NOT_ACTIVE                  Aucune donnée ne peut être importée dans le JDD indiqué car il n’est pas actif.                                                                                                                                                                                                                         
+  MULTIPLE_ATTACHMENT_TYPE_CODE       Plusieurs géoréférencements sont indiqués dans les colonnes : codeCommune, codeMaille, codeDépartement (Erreur Synthèse)                                                                                                                                                                                      
   MULTIPLE_CODE_ATTACHMENT            Plusieurs codes de rattachement fournis pour une même ligne. Une ligne doit avoir un seul code rattachement (code commune OU code maille OU code département)                                                                                                                                                 
-  INVALID_DATE                        Format de date invalide (Voir format de date autorisé)                                                                                                                                                                                                                                                        
+  INVALID_DATE                        Format de date invalide (Voir formats de date autorisés)                                                                                                                                                                                                                                                        
   INVALID_UUID                        Format de l’identifiant donnée ne respecte pas le format UUID (https://fr.wikipedia.org/wiki/Universally_unique_identifier)                                                                                                                                                                                   
   INVALID_INTEGER                     La donnée indiquée ne correspond pas un nombre entier.                                                                                                                                                                                                                                                        
   INVALID_NUMERIC                     La donnée indiquée ne correspond pas à un nombre réel (float)                                                                                                                                                                                                                                                 
-  INVALID_WKT                         La donnée fournie ne respecte pas le format WKT https://fr.wikipedia.org/wiki/Well-known_text                                                                                                                                                                                                                 
+  INVALID_WKT                         La donnée indiquée ne respecte pas le format WKT https://fr.wikipedia.org/wiki/Well-known_text                                                                                                                                                                                                                 
   INVALID_GEOMETRY                    La géométrie de la donnée renseignée est invalide (c.f  ST_VALID)                                                                                                                                                                                                                                             
   INVALID_BOOL                        La donnée fournie n’est pas un booléen                                                                                                                                                                                                                                                                        
   INVALID_ATTACHMENT_CODE             Le code commune/maille/département indiqué ne fait pas partie du référentiel des géographique.                                                                                                                                                                                                                
@@ -123,13 +137,13 @@ Contrôles de données
   DATE_MAX_TOO_LOW                    La date de fin est inférieure à 1900                                                                                                                                                                                                                                                                          
   DATE_MAX_TOO_HIGH                   La date de fin est dans le futur                                                                                                                                                                                                                                                                              
   DATE_MIN_TOO_LOW                    La date de début est inférieure à 1900                                                                                                                                                                                                                                                                        
-  DATE_MIN_SUP_DATE_MAX               La date de début est supérieur la date de fin                                                                                                                                                                                                                                                                 
-  DEPTH_MIN_SUP_ALTI_MAX              La profondeur minimum est supérieur à la profondeur maximale                                                                                                                                                                                                                                                  
-  ALTI_MIN_SUP_ALTI_MAX               L’altitude minimum est supérieur à l’altitude maximale                                                                                                                                                                                                                                                        
-  ORPHAN_ROW                          La ligne du fichier n’a pû être rattaché à aucune entité.                                                                                                                                                                                                                                                     
+  DATE_MIN_SUP_DATE_MAX               La date de début est supérieure à la date de fin                                                                                                                                                                                                                                                                 
+  DEPTH_MIN_SUP_ALTI_MAX              La profondeur minimum est supérieure à la profondeur maximale                                                                                                                                                                                                                                                  
+  ALTI_MIN_SUP_ALTI_MAX               L’altitude minimum est supérieure à l’altitude maximale                                                                                                                                                                                                                                                        
+  ORPHAN_ROW                          La ligne du fichier n’a pû être rattachée à aucune entité.                                                                                                                                                                                                                                                     
   DUPLICATE_ROWS                      Deux lignes du fichier sont identiques ; les lignes ne peuvent pas être dupliquées.                                                                                                                                                                                                                           
   DUPLICATE_UUID                      L'identifiant UUID d’une entité n'est pas unique dans le fichier fournis                                                                                                                                                                                                                                      
-  EXISTING_UUID                       L'identifiant UUID d’une entité fournie existe déjà dans la base de données. Il faut en fournir une autre ou laisser la valeur vide pour une attribution automatique.                                                                                                                                         
+  EXISTING_UUID                       L'identifiant UUID d’une entité fournie existe déjà dans la base de données. Il faut en fournir un autre ou laisser la valeur vide pour une attribution automatique.                                                                                                                                         
   SKIP_EXISTING_UUID                  Les entités existantes selon UUID sont ignorées.                                                                                                                                                                                                                                                              
   MISSING_VALUE                       Valeur manquante dans un champs obligatoire                                                                                                                                                                                                                                                                   
   MISSING_GEOM                        Géoréférencement manquant ; un géoréférencement doit être fourni, c’est à dire qu’il faut livrer : soit une géométrie, soit une ou plusieurs commune(s), ou département(s), ou maille(s), dont le champ “typeInfoGeo” est indiqué à 1.                                                                        
@@ -139,9 +153,9 @@ Contrôles de données
   ERRONEOUS_PARENT_ENTITY             L’entité parente est en erreur.                                                                                                                                                                                                                                                                               
   NO_PARENT_ENTITY                    Aucune entité parente identifiée.                                                                                                                                                                                                                                                                             
   DUPLICATE_ENTITY_SOURCE_PK          Deux lignes du fichier ont la même clé primaire d’origine ; les clés primaires du fichier source ne peuvent pas être dupliquées.                                                                                                                                                                              
-  COUNT_MIN_SUP_COUNT_MAX             Incohérence entre les champs dénombrement. La valeur de denombrement_min est supérieure à celle de denombrement _max ou la valeur de denombrement _max est inférieur à denombrement_min.                                                                                                                      
+  COUNT_MIN_SUP_COUNT_MAX             Incohérence entre les champs dénombrement. La valeur de denombrement_min est supérieure à celle de denombrement_max ou la valeur de denombrement_max est inférieure à denombrement_min.                                                                                                                      
   INVALID_NOMENCLATURE                Code nomenclature erroné ; La valeur du champ n’est pas dans la liste des codes attendus pour ce champ. Pour connaître la liste des codes autorisés, reportez-vous au Standard en cours.                                                                                                                      
-  INVALID_EXISTING_PROOF_VALUE        Incohérence entre les champs de preuve ; si le champ “preuveExistante” vaut oui, alors l’un des deux champs “preuveNumérique” ou “preuveNonNumérique” doit être rempli. A l’inverse, si l’un de ces deux champs est rempli, alors “preuveExistante” ne doit pas prendre une autre valeur que “oui” (code 1).  
+  INVALID_EXISTING_PROOF_VALUE        Incohérence entre les champs de preuve ; si le champ “preuveExistante” vaut oui, alors l’un des deux champs “preuveNumérique” ou “preuveNonNumérique” doit être rempli. A l’inverse, si l’un de ces deux champs est rempli, alors “preuveExistante” ne doit pas prendre une autre valeur que "oui" (code 1).  
   INVALID_NOMENCLATURE_WARNING        (Non bloquant) Code nomenclature erroné et remplacé par sa valeur par défaut ; La valeur du champ n’est pas dans la liste des codes attendus pour ce champ. Pour connaître la liste des codes autorisés, reportez-vous au Standard en cours.                                                                  
   CONDITIONAL_MANDATORY_FIELD_ERROR   Champs obligatoires conditionnels manquants. Il existe des ensembles de champs liés à un concept qui sont “obligatoires conditionnels”, c’est à dire que si l'un des champs du concept est utilisé, alors d'autres champs du concept deviennent obligatoires.                                                 
   UNKNOWN_ERROR                       Erreur inconnue                                                                                                                                                                                                                                                                                               
@@ -174,17 +188,40 @@ Date :
 - DD-MM-YYYY
 
 Heure : 
-    • %H
-    • %H-%M
-    • %H-%M-%S
-    • %H-%M-%S-%f
-    • %Hh
-    • %Hh%M
-    • %Hh%Mm
-    • %Hh%Mm%Ss
+
+- %H
+- %H-%M
+- %H-%M-%S
+- %H-%M-%S-%f
+- %Hh
+- %Hh%M
+- %Hh%Mm
+- %Hh%Mm%Ss
+
+
+Configuration avancée
+"""""""""""""""""""""
+
+Une autre partie se fait directement dans la base de données, dans les tables ``bib_fields``, ``bib_themes`` et ``cor_entity_field``.
+
+Dans ``bib_fields``, il est possible de :
+
+- Ajouter de nouveau(x) champ(s) pour une entité (e.g. Station) dans une destination (e.g. Occhab).
+- Masquer des champs existants. Pour cela, modifier la valeur de l'attribut ``display`` d'un champ.
+- Rendre obligatoire un champ. Pour cela, modifier la valeur de l'attribut ``mandatory`` d'un champ.
+- Rendre obligatoire/optionnel un champ si d'autre champ sont remplis. Voir les champs ``optional_conditions`` et ``mandatory_conditions``.
+
+Dans la table ``cor_entity_field`` :  
+
+- Paramètrer l'ordre des champs dans l'interface du mapping de champs. Voir le champ ``order_field``.
+- Changer le _tooltip_ d'un champ. Voir le champ ``comment``.
+- Regrouper des champs dans **thèmes** (voir ``bib_themes``) à l'aide du champs ``id_theme``.
+
+.. _controle donnees:
 
 Contrôle de données dans les destinations venant avec GeoNature
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 
 Dans cette section, nous présentons les contrôles de données effectuées pour les destinations embarquées dans GeoNature : Synthèse, Occhab.
 L’ordre des contrôles dans ces listes correspond bien à celui du processus définit dans le code de GeoNature.
@@ -247,3 +284,9 @@ De manière générale, nous séparons les contrôles de données en deux catég
 
 
 
+Modèle de données
+"""""""""""""""""
+
+Le diagramme ci-dessous présente le schéma de la base de données du module d'import. 
+
+.. image:: images/import/import_modele.png

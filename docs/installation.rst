@@ -282,7 +282,7 @@ La mise à jour doit être réalisée avec votre utilisateur linux courant (``ge
 
 * Télécharger la dernière version de GeoNature :
 
-  ::
+.. code-block:: bash
 
     wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
     unzip X.Y.Z.zip
@@ -290,7 +290,7 @@ La mise à jour doit être réalisée avec votre utilisateur linux courant (``ge
 
 * Renommer l'ancien repertoire de l'application, ainsi que le nouveau :
 
-  ::
+.. code-block:: bash
 
     mv ~/geonature/ ~/geonature_old/
     mv ~/GeoNature-X.Y.Z ~/geonature/
@@ -304,18 +304,19 @@ Sauf mentions contraires dans les notes de version, vous pouvez sauter des versi
 
 * Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
 
-::
-  ./install/migration/migration.sh 2>&1 | tee install/migration/migration.log
+.. code-block:: bash
+
+    ./install/migration/migration.sh 2>&1 | tee install/migration/migration.log
 
 Depuis la version 2.12, le script `migration.sh` peut prendre en argument le chemin vers l'ancien dossier d'installation de GeoNature. Il peut s’agir du même dossier que la nouvelle installation de GeoNature. Cela permet d'utiliser ce script si la nouvelle version de GeoNature est dans le même dossier et donc de gérer le cas où GeoNature est installé et mis à jour avec git.
 
 Dans ce cas, les commandes à exécuter sont : 
 
-::
-  
-  cd ~/GeoNature
-  git status # optionnel, pour connaitre l'état et la version ou branche actuellement utilisée
-  git fetch
-  git checkout X.Y.Z # où X.Y.Z est le numéro du tag de la version vers laquelle faire la mise à jour, ou le nom de la branche à utiliser
-  git submodule update # ou "git config submodule.recurse true" lancé une seule fois, pour que la mise à jour des sous-modules soit relancée automatiquement à chaque "git pull"
-  ./install/migration/migration.sh .
+.. code-block:: bash
+
+    cd ~/GeoNature
+    git status # optionnel, pour connaitre l'état et la version ou branche actuellement utilisée
+    git fetch
+    git checkout X.Y.Z # où X.Y.Z est le numéro du tag de la version vers laquelle faire la mise à jour, ou le nom de la branche à utiliser
+    git submodule update # ou "git config submodule.recurse true" lancé une seule fois, pour que la mise à jour des sous-modules soit relancée automatiquement à chaque "git pull"
+    ./install/migration/migration.sh .
