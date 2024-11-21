@@ -17,6 +17,7 @@ describe('Testing occhab', () => {
     cy.get(
       '[data-qa="pnx-occhab-form"] > div:nth-child(1) > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-left > div.leaflet-draw.leaflet-control > div:nth-child(1) > div > a'
     ).click();
+    cy.wait(10000);
     const positions = [
       [250, 250],
       [300, 250],
@@ -26,7 +27,7 @@ describe('Testing occhab', () => {
     ];
     positions.forEach((pos) => {
       cy.get(canvas).click(pos[0], pos[1]);
-      cy.wait(1000);
+      cy.wait(10000);
     });
     cy.get('#validateButton').should('be.disabled');
 
