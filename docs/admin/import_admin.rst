@@ -45,7 +45,7 @@ Une fois l’import de données terminée, l’utilisateur est redirigé vers un
 Une fois les données importées, les données sont supprimées de la table temporaire (``gn_imports.t_imports_synthese`` pour la Synthèse, ``gn_imports.t_imports_occhab`` pour Occhab).
 
 
-.. image:: images/import/importderoulement.png
+.. image:: images/import/import_etapes.png
 
 Configuration du module d’import
 """"""""""""""""""""""""""""""""
