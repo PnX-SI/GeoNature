@@ -24,7 +24,9 @@ export interface Field {
 }
 
 export interface FieldMappingValues {
-  [propName: string]: string | string[];
+  [propName: string]: {
+    column_src: string | string[];
+  };
 }
 
 export interface FieldMapping extends Mapping {

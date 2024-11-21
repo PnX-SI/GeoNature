@@ -117,7 +117,9 @@ export class FieldsMappingStepComponent implements OnInit {
     let values: FieldMappingValues = {};
     for (let [key, value] of Object.entries(this._fieldMappingService.mappingFormGroup.value)) {
       if (value != null) {
-        values[key] = Array.isArray(value) ? value : (value as string);
+        values[key] = {
+          column_src: Array.isArray(value) ? value : (value as string),
+        };
       }
     }
     return values;
