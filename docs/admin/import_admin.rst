@@ -184,19 +184,24 @@ Contrôles de données
 
 Date :
 
-- YYYY-MM-DD,
+- YYYY-MM-DD
 - DD-MM-YYYY
+- YYYY/MM/DD
+- DD/MM/YYYY
 
 Heure : 
 
-- %H
-- %H-%M
-- %H-%M-%S
-- %H-%M-%S-%f
-- %Hh
-- %Hh%M
-- %Hh%Mm
-- %Hh%Mm%Ss
+- H
+- H-M
+- H-M-S
+- H-M-S
+- H:M
+- H:M:S
+- H:M:S
+- Hh
+- HhM
+- HhMm
+- HhMmSs
 
 
 Configuration avancée

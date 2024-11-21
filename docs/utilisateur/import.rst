@@ -1,3 +1,9 @@
+.. raw:: html
+
+    <style> .red {color:red;font-weight:bold}img{margin-bottom:10px}</style>
+
+.. role:: red
+
 Import de données
 -----------------
 
@@ -8,79 +14,88 @@ Depuis le 2.15, GeoNature permet aussi d'importer des données depuis un fichier
 
 Créer un import
 """""""""""""""
-Le module permet de traiter un fichier CSV 
-(GeoJSON non disponible dans la v2 pour le moment) sous toute
-structure de données, d'établir les correspondances nécessaires entre
-le format source et le format de la synthèse, et de traduire le
-vocabulaire source vers les nomenclatures SINP. Il stocke et archive les
-données sources et intègre les données transformées dans la synthèse de
-GeoNature. Il semble préférable de prévoir un serveur disposant à minima
-de 4 Go de RAM.
 
-1.  Une fois connecté à GeoNature, accédez au module Imports. L'accueil
-    du module affiche une liste des imports en cours ou terminés, selon
+Pour réaliser un import dans une des destinations de GeoNature, vous devez :
+
+1.  Une fois connecté à GeoNature, accédez au module Import. L'accueil
+    du module affiche la "liste des imports" en cours ou terminés, selon
     les permissions de l'utilisateur connecté. Vous pouvez alors finir un
     import en cours, ou bien commencer un nouvel import.
 
-    .. image :: https://geonature.fr/docs/img/import/gn_imports-01.jpg
+.. image:: images/import/import_steps/00_imports_list.png
+
+2. Pour commencer un nouvel import, cliquez sur le bouton "+" en bas de la liste des imports. Dans la fenêtre qui s'affiche, il vous est demandé de sélectionner la destination de votre import.
+
+.. image:: images/import/import_steps/01_destination_choice.png
+
+3.  Une fois la destination choisie, vous serez redirigé vers une nouvelle page. 
+    Dans ce nouveau formulaire, choisissez le jeu de données qui sera associés aux données importées.  
+    Puis, téléverser le fichier CSV contenant les données que vous souhaitez importer. Une fois, les 
+    champs remplis, cliquez sur le bouton "Suivant". 
+
+.. image:: images/import/import_steps/02_upload_file.png
+
+4.  Dans ce nouveau formulaire, indiquez les paramètres de lecture de votre fichier. Plusieurs
+paramètres seront automatiquement détectés par GeoNature. Une fois, les champs remplis, cliquez sur le bouton "Suivant". 
+
+.. image:: images/import/import_steps/03_parameter_selection.png
+
+5.  Maintenant que le fichier est téleversé et chargé, il s'agit de faire 
+    correspondre les champs du fichier importé aux champs du modèle des entités (e.g. Station).
+    Pour vous aider dans la saisie, vous pouvez utiliser un mapping
+    déjà existant ou en créer un nouveau pour l'utiliser dans de futur import. 
+    Le module contient par défaut un mapping correspondant à un fichier exporté au format par défaut
+    des modules Synthèse et Occhab. Si vous créez un nouveau mapping, il
+    sera réutilisable pour les imports suivants. Une fois, la mise en correspondance terminée, 
+    cliquez sur le bouton "Suivant".
+
+.. image:: images/import/import_steps/04_01_mapping_cols.png
+
+    **Notes.** A la fin du formulaire, vous pouvez visualiser le nombre de correspondances effectuées
+    et les colonnes du fichier source qui n'ont pas été utilisées.
+
+.. image:: images/import/import_steps/04_02_mapping_cols_validate.png
+
+6.  La correspondance entre le fichier source et le modèle effectué, il faut maintenant faire
+    correspondre des valeurs des colonnes contenant des données de nomenclatures (e.g. Etat Biologique de l'observation)
+    avec les nomenclatures disponibles dans la base. Une fois, la correspondance terminée, 
+    cliquez sur le bouton "Suivant".
+
+.. image:: images/import/import_steps/05_mapping_value.png
 
 
-2.  Choisissez à quel JDD les données importées vont être associées. Si
-    vous souhaitez les associer à un nouveau JDD, il faut l'avoir créé
-    au préalable dans le module Métadonnées.
+7. Pour pouvoir importer les données présentes dans le fichier source, il est nécessaire d'
+effectuer des contrôles sur les données : vérification des types, vérification des formats de données (dates),
+vérification de cohérence de données (date début < date fin), etc. Pour lancer, le contrôle de données cliquez
+sur le bouton "Lancer la vérification".
 
-.. image :: https://geonature.fr/docs/img/import/gn_imports-02.jpg
+.. image:: images/import/import_steps/06_01_control_data.png
 
-3.  Chargez le fichier CSV (GeoJSON non disponible dans la v2 pour le moment) à importer.
+8. Une fois la vérification des données effectuée, un aperçu des données valides ainsi que leur emprise spatiale (*bounding box*) sont affichés. Si des erreurs sont présentes dans les données, un bouton "Rapport d'import/erreurs/avertissement" permet d'afficher les erreurs et d'ajuster votre fichier source ou paramètre de l'import. Si l'aperçu des données qui seront importées vous convient, cliquez sur le bouton "Importer les n entités valides".
 
-.. image :: https://geonature.fr/docs/img/import/gn_imports-03.jpg
+.. image:: images/import/import_steps/06_02_import_part1.png
 
-4.  Mapping des champs. Il s'agit de faire correspondre les champs du
-    fichier importé aux champs de la Synthèse (basé sur le standard
-    "Occurrences de taxons" du SINP). Vous pouvez utiliser un mapping
-    déjà existant ou en créer un nouveau. Le module contient par défaut
-    un mapping correspondant à un fichier exporté au format par défaut
-    de la synthèse de GeoNature. Si vous créez un nouveau mapping, il
-    sera ensuite réutilisable pour les imports suivants. Il est aussi
-    possible de choisir si les UUID uniques doivent être générés et si
-    les altitudes doivent être calculées automatiquement si elles ne
-    sont pas renseignées dans le fichier importé.
+9.  Une fois l'import terminée, un rapport récapitulatif est affiché avec les différents paramètres
+de l'import mais aussi plusieurs indicateurs statistiques sous forme de tableau et de graphique(s).
+Il est aussi possible d'exporter une version PDF de ce rapport.
 
-.. image :: https://geonature.fr/docs/img/import/gn_imports-04.jpg
-
-5.  Une fois le mapping des champs réalisé, au moins sur les champs
-    obligatoires, il faut alors valider le mapping pour lancer le
-    contrôle des données. Vous pouvez ensuite consulter les éventuelles
-    erreurs. Il est alors possible de corriger les données en erreurs
-    directement dans la base de données, dans la table temporaire des
-    données en cours d'import, puis de revalider le mapping, ou de
-    passer à l'étape suivante. Les données en erreur ne seront pas
-    importées et seront téléchargeables dans un fichier dédié à l'issue
-    du processus.
-
-.. image :: https://geonature.fr/docs/img/import/gn_imports-05.jpg
-
-7.  Mapping des contenus. Il s'agit de faire correspondre les valeurs
-    des champs du fichier importé avec les valeurs disponibles dans les
-    champs de la Synthèse de GeoNature (basés par défaut sur les
-    nomenclatures du SINP). Par défaut les correspondances avec les
-    nomenclatures du SINP sous forme de code ou de libellés sont
-    fournies.
-
-.. image :: https://geonature.fr/docs/img/import/gn_imports-06.jpg
-
-8.  La dernière étape permet d'avoir un aperçu des données à importer
-    et leur nombre, avant de valider l'import final dans la Synthèse de
-    GeoNature.
-
-.. image :: https://geonature.fr/docs/img/import/gn_imports-07.jpg
-
-
+.. image:: images/import/import_steps/07_report_part1.png
 
 Modifier un import
 """"""""""""""""""
+
+Pour modifier un import, rendez-vous dans la "Liste des imports", cliquez sur l'icone en forme de "crayon" dans la colonne "Actions".
+
+:red:`!! Attention !! La modification d'un import terminée provoquera la suppression des 
+données importées dans la table temporaire et dans la destination.`
 
 
 Supprimer un import
 """""""""""""""""""
 
+Pour supprimer un import, il suffit de cliquer sur l'icone en forme de poubelle dans la colonne "Actions".
+
+:red:`!! Attention !!La suppression d'un import terminée implique la suppression des données dans la destination.`
+
+
+**N.B.** Si vous avez associé une nouvelle entité fille (e.g. un habitat) à une entité mère (e.g. une station) lié à un import, la supression de l'import est bloquée.

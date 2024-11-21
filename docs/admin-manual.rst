@@ -1216,6 +1216,7 @@ propriété ``label``. Un exemple est disponible ci-dessous.
         label = "Mot de passe oublié ?"
         url = "https://mon.formulaire.de.motdepasse"
 
+
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
@@ -1239,28 +1240,28 @@ Autre exemple, il est possible personnaliser les polices ou les couleurs :
 
 .. code-block:: css
 
-/* IMPORT POLICE BEBAS NEUE
- * ! Bebas Neue by @Ryoichi Tsunekawa
- * License - Open Font License
- */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-/* Couleurs principales de l'application */
-.color-blue {
-  color:#678BC5!important; 
-}
-.color-orange {
-  color:#DEC70D!important;
-}
-.color-teal {
-  color:#A8DE0D!important;
-}
-.color-red {
-  color:#DE280D!important
-}
-#appName h3{
-	font-family:Bebas Neue,Arial,sans-serif!important;
-	font-size: xx-large
-}
+  /* IMPORT POLICE BEBAS NEUE
+  * ! Bebas Neue by @Ryoichi Tsunekawa
+  * License - Open Font License
+  */
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+  /* Couleurs principales de l'application */
+  .color-blue {
+    color:#678BC5!important; 
+  }
+  .color-orange {
+    color:#DEC70D!important;
+  }
+  .color-teal {
+    color:#A8DE0D!important;
+  }
+  .color-red {
+    color:#DE280D!important
+  }
+  #appName h3{
+    font-family:Bebas Neue,Arial,sans-serif!important;
+    font-size: xx-large
+  }
 
 Certains paramètres demandent l'ajout de la mention ``!important`` pour être pris en compte (https://github.com/PnX-SI/GeoNature/issues/2632).
 
