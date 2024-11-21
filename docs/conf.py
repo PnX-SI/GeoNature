@@ -108,7 +108,26 @@ html_logo = "./images/LogoGeonature.jpg"
 # documentation.
 #
 html_theme_options = {
-    "navigation_depth": 3,
+    "navigation_depth": 4,
+    "use_source_button": True,
+    "repository_provider": "github",
+    "repository_url": "https://github.com/PnX-SI/GeoNature",
+    "path_to_docs": "docs",
+    "repository_branch": "master",
+    "use_repository_button": True,
+    "collapse_navbar": True,
+    "icon_links": [
+        {
+            # Label for this link
+            "name": "GitHub",
+            # URL where the link will redirect
+            "url": "https://github.com/PnX-SI/GeoNature",  # required
+            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
+            "icon": "fa-brands fa-square-github",
+            # The type of image to be used (see below for details)
+            "type": "fontawesome",
+        }
+    ],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
