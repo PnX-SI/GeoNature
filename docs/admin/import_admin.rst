@@ -1,11 +1,11 @@
 
-Module d’import
+Module Import
 ---------------
 Ce module permet d’importer des données depuis un fichier CSV dans GeoNature.
 
 
-Concept
-"""""""
+Concepts
+""""""""
 
 **Destination.** Une destination est déterminée par le module dans lequel on souhaite importer des données (e.g. Occhab, Synthèse, etc.).
 

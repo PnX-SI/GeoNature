@@ -4,8 +4,8 @@
 
 .. role:: red
 
-Import de données
------------------
+Import
+------
 
 Depuis le 2.15, GeoNature permet aussi d'importer des données depuis un fichier CSV dans deux modules:
 
@@ -96,6 +96,3 @@ Supprimer un import
 Pour supprimer un import, il suffit de cliquer sur l'icone en forme de poubelle dans la colonne "Actions".
 
 :red:`!! Attention !!La suppression d'un import terminée implique la suppression des données dans la destination.`
-
-
-**N.B.** Si vous avez associé une nouvelle entité fille (e.g. un habitat) à une entité mère (e.g. une station) lié à un import, la supression de l'import est bloquée.
