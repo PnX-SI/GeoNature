@@ -1,8 +1,8 @@
 CHANGELOG
 =========
 
-2.15.0 - Pavo cristatus Linnaeus 🦚 (2024-11-22)
--------------------
+2.15.0 - Pavo cristatus Linnaeus, 1758 🦚 (2024-11-22)
+------------------------------------------------
 
 Cette nouvelle version de GeoNature apporte sont lot de nouveautés : 
  - Une nouvelle version TaxHub (V2.0.0)
