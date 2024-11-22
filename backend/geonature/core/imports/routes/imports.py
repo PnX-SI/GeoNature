@@ -368,7 +368,7 @@ def get_import_values(scope, imprt):
             # this nomenclated field is not mapped
             continue
         source = imprt.fieldmapping[field.name_field]
-        if source not in imprt.columns:
+        if source.get("column_src", None) not in imprt.columns:
             # the file do not contain this field expected by the mapping
             continue
         # TODO: vérifier que l’on a pas trop de valeurs différentes ?
