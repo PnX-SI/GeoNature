@@ -16,7 +16,8 @@ import { ConfigService } from '@geonature/services/config.service';
 export class NewPasswordComponent implements OnInit {
   token: string;
   form: UntypedFormGroup;
-  public casLogin;
+  password_recovery: boolean = false;
+  login_recovery: boolean = false;
 
   constructor(
     private _authService: AuthService,
@@ -33,7 +34,6 @@ export class NewPasswordComponent implements OnInit {
       }
       this.token = token;
     });
-    this.casLogin = this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION;
   }
 
   ngOnInit() {
