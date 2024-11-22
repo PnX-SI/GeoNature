@@ -293,8 +293,9 @@ def build_fieldmapping(
 
     for field in fields:
         if field.name_field in imprt.fieldmapping:
+            column_src = imprt.fieldmapping[field.name_field].get("column_src", None)
             if field.multi:
-                correct = list(set(columns) & set(imprt.fieldmapping[field.name_field]))
+                correct = list(set(columns) & set(column_src))
                 if len(correct) > 0:
                     fieldmapping[field.source_column] = {
                         "value": correct,
@@ -302,12 +303,12 @@ def build_fieldmapping(
                     }
                     used_columns.extend(correct)
             else:
-                if imprt.fieldmapping[field.name_field] in columns:
+                if column_src in columns:
                     fieldmapping[field.source_column] = {
-                        "value": imprt.fieldmapping[field.name_field],
+                        "value": column_src,
                         "field": field,
                     }
-                    used_columns.append(imprt.fieldmapping[field.name_field])
+                    used_columns.append(column_src)
     return fieldmapping, used_columns
 
 
