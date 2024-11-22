@@ -99,7 +99,7 @@ Si vous mettez à jour GeoNature :
      - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
      - toutes les variables dans `[CAS_PUBLIC]`, `[CAS]`, `[CAS.CAS_USER_WS]`, `[MTD]`
      - `ID_USER_SOCLE_1` et `ID_USER_SOCLE_2` dans la section `BDD` 
-
+- Le champ `id_digitizer` des tables `gn_monitoring.t_base_sites`, `gn_monitoring.t_base_visits` est obligatoire. Assurez vous qu'ils soient peuplés avant la mise à jour.
 
 2.14.2 (2024-05-28)
 -------------------
