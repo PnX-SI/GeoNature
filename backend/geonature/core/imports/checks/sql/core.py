@@ -8,13 +8,14 @@ from geonature.core.imports.models import (
     Entity,
     EntityField,
     BibFields,
+    TImports,
 )
 
 
 __all__ = ["init_rows_validity", "check_orphan_rows"]
 
 
-def init_rows_validity(imprt):
+def init_rows_validity(imprt: TImports):
     """
     Validity columns are three-states:
       - None: the row does not contains data for the given entity
@@ -35,9 +36,10 @@ def init_rows_validity(imprt):
     # as rows with multi-entity field only will raise an ORPHAN_ROW error
     selected_fields_names = []
     for field_name, source_field in imprt.fieldmapping.items():
-        if type(source_field) == list:
-            selected_fields_names.extend(set(source_field) & set(imprt.columns))
-        elif source_field in imprt.columns:
+        column_src = source_field.get("column_src", None)
+        if type(column_src) == list:
+            selected_fields_names.extend(set(column_src) & set(imprt.columns))
+        elif column_src in imprt.columns:
             selected_fields_names.append(field_name)
     for entity in entities:
         # Select fields associated to this entity *and only to this entity*
@@ -58,15 +60,16 @@ def init_rows_validity(imprt):
         )
 
 
-def check_orphan_rows(imprt):
+def check_orphan_rows(imprt: TImports):
     transient_table = imprt.destination.get_transient_table()
     # TODO: handle multi-source fields
     # This is actually not a big issue as multi-source fields are unlikely to also be multi-entity fields.
     selected_fields_names = []
     for field_name, source_field in imprt.fieldmapping.items():
-        if type(source_field) == list:
-            selected_fields_names.extend(set(source_field) & set(imprt.columns))
-        elif source_field in imprt.columns:
+        column_src = source_field.get("column_src", None)
+        if type(column_src) == list:
+            selected_fields_names.extend(set(column_src) & set(imprt.columns))
+        elif column_src in imprt.columns:
             selected_fields_names.append(field_name)
     # Select fields associated to multiple entities
     AllEntityField = sa.orm.aliased(EntityField)
