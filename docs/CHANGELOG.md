@@ -1,85 +1,94 @@
 CHANGELOG
 =========
 
-2.15.0 - Pavo cristatus Linnaeus, 1758 🦚 (2024-11-22)
-------------------------------------------------
+2.15.0 - Pavo cristatus 🦚 (unreleased)
+---------------------------------------
 
-Cette nouvelle version de GeoNature apporte sont lot de nouveautés : 
- - Une nouvelle version TaxHub (V2.0.0)
- - Une fiche de taxon enrichie intégrant le profil, une synthèse géographique, les informations taxonomiques ainsi qu'une liste des status de protection.
- - Le module d'Import est maintenant fourni par défaut dans GeoNature.
- - L'import de données dans Occhab est disponible
- - Les dernières discussions sont accessibles depuis la page d'acceuil.
+**⏩ En bref**
 
+- Nouvelle version de TaxHub (V2.0.0) intégrée à GeoNature
+- Fiche de taxon enrichie intégrant l'actuel profil mais aussi une synthèse géographique, les informations taxonomiques ainsi qu'une liste des statuts de protection
+- Module Import intégré à GeoNature
+- Import de données vers le module Occhab
+- Dernières discussions listées sur la page d'accueil
 
 **🚀 Nouveautés**
 
-- [TaxHub] Intégration de TaxHub ([2.0 Release Note](https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0)) à GeoNature (#3150)
-  - Le web-service dédiée est abandonnée, la gestion de TaxHub est maintenant intégré à l'interface d'administration de GeoNature. 
-- [Import] Refonte et intégration du module d'import dans GeoNature (#2833).
+- [TaxHub] Intégration de TaxHub ([2.0.0 Release Note](https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0)) à GeoNature (#3150)
+  - La gestion des taxons est maintenant intégrée dans le module Admin de GeoNature. 
+- [Import] Refonte et intégration du module Import dans GeoNature (#2833, #3070, #3067, #3039, #2862)
   - Ajout d'une nouvelle destination : Occhab
-  - Ajout de la possibilité d'étendre les destinations disponibles pour l'import de données. Suivre la [documentation](https://docs.geonature.fr/development.html#integrer-limport-de-donnees-dans-votre-module) dédiée à ce sujet .
-  - Evolution des permissions : la création d'un import dépend d'un C dans IMPORT et d'un C dans le module de destination (synthese et/ou occhab)
-  - Plusieurs améliorations: de nouveaux contrôles des données, un rapport d'import revu, intégration de nouveaux tests frontends, etc.
-- [Authentification] Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identité (#3111, https://github.com/PnX-SI/UsersHub-authentification-module/pull/93)
-  - Plusieurs protocoles de connexions intégrés : OAuth, CAS INPN, UserHub
-  - Possibilité de se connecter sur d'autres GeoNature
-  - Voir la documentation pour plus de détails (ajouter lien)
-- [Synthèse] Evolution de la fiche taxon (#3191, #3205, #3174,#3175)
-  - Affichage du profil d'un taxon
+  - Ajout de la possibilité d'étendre les destinations disponibles pour l'import de données. Suivre la [documentation](https://docs.geonature.fr/development.html#integrer-limport-de-donnees-dans-votre-module) dédiée à ce sujet
+  - Ajout d'un bouton pour importer des données directement depuis le module de destination (Synthèse et Occhab actuellement)
+  - Evolution des permissions : la création d'un import dépend de l'action C sur le module Import et de l'action C dans le module de destination (Synthèse et/ou Occhab)
+  - Plusieurs améliorations : de nouveaux contrôles des données, un rapport d'import revu, intégration de nouveaux tests frontends ...
+  - Intégration de la documentation du module dans la documentation de GeoNature (Admin, utilisateur, XXXXX URL)
+- [Authentification] Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identité (#3111)
+  - Plusieurs protocoles de connexion intégrés activables et paramétrables : OAuth, CAS INPN, UserHub
+  - Possibilité de se connecter sur d'autres instances GeoNature
+  - Voir la documentation pour plus de détails (XXXX ajouter lien)
+- [Synthèse] Evolution de la fiche taxon (#2981, #3131, #3187, #3175)
   - Affichage de la synthèse géographique d'un taxon
   - Affichage du statut de protection du taxon
-  - Affichage des informations taxonomiques présentes dans TaxRef
-
+  - Affichage des informations taxonomiques présentes dans Taxref
+  - Ajout d'un lien vers la fiche du taxon dans la liste des observations de la Synthèse (#2718)
 - [Synthèse] Possibilité de partager une URL de redirection vers un onglet (détails, taxonomie, discussion, validation, etc.) de la fiche d'une observation (#3169)
-- [Accueil] Ajout d'un bloc `Discussions` sur la page d'accueil (#3138)
-  - Affichage des discussions dans lesquels l'utilisateur a participé, ou associé à une des observations dont il est : soit l'observateur ou l'opérateur de la saisie.
-- [Occhab] Remplacement du champ `is_habitat_complex` par le nouveau champ `id_nomenclature_type_habitat` (voir MosaiqueValue dans la version 2 du standard INPN) (#3125)
-- [Occhab] Affichage de l'UUID d'une station dans l'interface (#3247)
-- [Méta-données] Il est maintenant possible de supprimer un cadre d'acquisition vide (#3224)
+- [Accueil] Ajout d'un bloc `Discussions` sur la page d'accueil, désactivable avec le paramètre `DISPLAY_LATEST_DISCUSSIONS` (#3138)
+  - Filtrable sur uniquement les discussions dans lesquels l'utilisateur authentifié a participé, ou associé à une des observations dont il est : soit l'observateur ou l'opérateur de la saisie (#3194)
+- [Occhab] Remplacement du champ `is_habitat_complex` par le nouveau champ `id_nomenclature_type_habitat` et intégration de la nomenclature SINP associée (voir MosaiqueValue dans la version 2 du standard SINP) (#3125)
+- [Occhab] Affichage de l'UUID de la station dans sa fiche détail (#3247)
+- [Occhab] Amélioration de l'export des données en revoyant la vue `pr_occhab.v_export_sinp` (#3122)
+- [Métadonnées] Possibilité de supprimer un cadre d'acquisition vide (#1673)
 - [Occtax] Ajout du nom de lieu dans le détail d'un relevé (#3145)
-- [RefGeo] De nouvelles mailles INPN sur la France métropolitaine (2km, 20km, 50km) sont disponibles (https://github.com/PnX-SI/RefGeo/releases/tag/1.5.4):
-```
-geonature db upgrade ref_geo_inpn_grids_2@head  # Insertion des mailles 2x2km métropole, fournies par l’INPN
-geonature db upgrade ref_geo_inpn_grids_20@head  # Insertion des mailles 20x20km métropole, fournies par l’INPN
-geonature db upgrade ref_geo_inpn_grids_50@head # Insertion des mailles 50x50km métropole, fournies par l’INPN
-``` 
+- [RefGeo] De nouvelles mailles INPN sur la France métropolitaine (2km, 20km, 50km) sont disponibles (https://github.com/PnX-SI/RefGeo/releases/tag/1.5.4)
+- [Monitoring] Ajout de la gestion de certaines tables directement dans GeoNature (#2824)
 
 **🐛 Corrections**
 
 - Correction de l'URL des modules externes dans le menu latéral (#3093)
 - Correction des erreurs d'exécution de la commande `geonature sensitivity info` (#3216)
-- Correction du placement des tooltips pour le composant `ng-select`(#3142)
+- Correction du placement des tooltips pour le composant `ng-select` (#3142)
+- Correction de l'interrogation des profils dans Occtax (#3156)
+- Correction de l'affichage du lieu dans les fiches des relevés Occtax (#3145)
 - Correction de l'export Occhab avec des champs additionnels vides (#2837)
-- Correction du bug d'édition d'une géométrie sur une carte Leaflet (#3196)
+- Correction d'un soucis de duplication des géométries quand on modifie un polygone (#3195)
+- Correction de la recherche avancée par zonage dans le module Métadonnées (#3250)
+- Correction d'un scroll non souhaité dans l'interface du module Synthèse (#3233)
+- Correction de l'affichage des acteurs dans les fiches des observations de la Synthèse (#3086)
+- Correction du chargement des champs additionnels de type Nomenclature (#3082)
+- Correction des filtres taxonomiques avancés dans le mdoule Synthèse (#3087)
+- Correction de l'affichage des boutons radio quand ceux-ci sont obligatoires (#3210)
+- Correction de la commande `geonature sensitivity info` (#3208)
+- Correction de la redirection vers la page d'authentification quand on accède au module Admin sans être authentifié (#3171)
+- Correction du scroll du menu latéral dans le module Admin (#3145)
+- Corrections diverses de la documentation
+- Ajout d'un action Github permettant de lancer les tests depuis des modules externes (#3232)
 - Lancement de `pytest` sans _benchmark_ ne nécessite plus l'ajout de `--benchmark-skip` (#3183)
-
-
 
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature : 
+- Si vous utilisez le module Monitoring, mettez le à jour en version 0.8.0 minimum en même temps que vous mettez à jour GeoNature
 - L'application TaxHub a été integrée dans le module Admin de GeoNature et accessible depuis le menu latéral :
-    - Les permissions basées sur les profils 1-6 ont été rapatriées et adaptées dans le modèle de permissions de GeoNature. 
-    TaxHub est désormais un "module" GeoNature et dispose des objets de permissions `TAXONS`, `THEMES`, `LISTES` et `ATTRIBUTS`. Les personnes ayant anciennement des droits 6 dans TaxHub ont toutes les permissions sur les objets pré-cités. Les personnes ayant des droits inférieurs à 6 et ayant un compte sur TaxHub ont maintenant des permissions sur l'objet `TAXON` (voir et éditer des taxons = ajouter des médias et des attributs)
-    - L'API de Taxhub est désormais disponible à l'URL `<URL_GEONATURE>/api/taxhub/api>` (le dernier /api est une rétrocompatibilité et sera enlevé de manière transparante dans les prochaines versions)
+    - Les permissions basées sur les profils 1-6 ont été rapatriées et adaptées au modèle de permissions de GeoNature. 
+    TaxHub est désormais un "module" GeoNature et dispose des objets de permissions `TAXONS`, `THEMES`, `LISTES` et `ATTRIBUTS`. Les utilisateurs ayant anciennement des droits 6 dans TaxHub ont toutes les permissions sur les objets pré-cités. Les personnes ayant des droits inférieurs à 6 et ayant un compte sur TaxHub ont maintenant des permissions sur l'objet `TAXON` (voir et éditer des taxons = ajouter des médias et des attributs)
+    - L'API de TaxHub est désormais disponible à l'URL `<URL_GEONATURE>/api/taxhub/api>` (le dernier /api est une rétrocompatibilité et sera enlevé de manière transparente dans les prochaines versions)
     - Le paramètre `API_TAXHUB` est désormais obsolète (déduit de `API_ENDPOINT`) et peut être retiré du fichier de configuration de GeoNature
     - Si vous utilisez Occtax-mobile, veillez à modifier le paramètre `taxhub_url` du fichier `/geonature/backend/media/mobile/occtax/settings.json`, pour mettre la valeur `<URL_GEONATURE>/api/taxhub>`
-    - Une redirection Apache automatique de l'URL de TaxHub et des médias est disponible à l'adresse suivante : XXXX
     - Les médias ont été déplacés du dossier `/static/medias/` vers `/media/taxhub/`.  
-    Les URL des images vont donc changer. Pour des questions de rétrocompatibilité avec d'autres outils (GeoNature-atlas ou GeoNature-citizen par exemple), vous pouvez définir des règles de redirection pour les médias dans le fichier de configuration Apache de TaxHub :
-    ```
-    # Cas où TaxHub et GeoNature sont sur le même sous-domaine
-    RewriteEngine on
-    RewriteRule   "^/taxhub/static/medias/(.+)" "/geonature/api/medias/taxhub/$1"  [R,L]
-    # Cas où TaxHub et GeoNature ont chacun un sous-domaine
-    RewriteEngine on
-    RewriteRule   "^/static/medias/(.+)" "https://geonature.<MON_DOMAINE.EXT>/api/medias/taxhub/$1"  [R,L]
-    ```
+      Les URL des images vont donc changer. Pour des questions de rétrocompatibilité avec d'autres outils (GeoNature-atlas ou GeoNature-citizen par exemple), vous pouvez définir des règles de redirection pour les médias dans le fichier de configuration Apache de TaxHub :
+      ```
+      # Cas où TaxHub et GeoNature sont sur le même sous-domaine
+      RewriteEngine on
+      RewriteRule   "^/taxhub/static/medias/(.+)" "/geonature/api/medias/taxhub/$1"  [R,L]
+      # Cas où TaxHub et GeoNature ont chacun un sous-domaine
+      RewriteEngine on
+      RewriteRule   "^/static/medias/(.+)" "https://geonature.<MON_DOMAINE.EXT>/api/medias/taxhub/$1"  [R,L]
+      ```
     - L'application TaxHub n'est plus nécessaire, si vous voulez utilisez TaxHub uniquement au travers de GeoNature, effectuer les actions suivantes : 
         - Suppression de la branche alembic taxhub : `geonature db downgrade taxhub-standalone@base`
 
-    - Les commandes de taxhub sont maintenant acessibles depuis la commande `geonature`
+    - Les commandes de TaxHub sont maintenant acessibles depuis la commande `geonature`
     ```shell
     geonature taxref info # avant flask taxref info
     geonature taxref enable-bdc-statut-text # avant flask taxref enable-bdc-statut-text
@@ -90,16 +99,26 @@ Si vous mettez à jour GeoNature :
     - **⚠️Important⚠️** ! Ajouter l'extension `ltree` à votre base de données : `sudo -n -u postgres -s psql -d <nom_basededonnee_de_votregeonature> -c "CREATE EXTENSION IF NOT EXISTS ltree;"`
 
 - Le module Import a été intégré dans le coeur de GeoNature
-   - Si vous aviez installé le module externe Import, l'ancienne version sera désinstallée lors de la migration.
-   - Si vous n'aviez pas installé le module externe Import, il sera disponible après la mise à jour vers cette nouvelle version de GeoNature. Vous pouvez configurer les permissions de vos utilisateurs si vous souhaitez qu'ils y accédent
+   - Si vous aviez installé le module externe Import, l'ancienne version sera désinstallée lors de la mise à jour de GeoNature.
+   - Si vous n'aviez pas installé le module externe Import, il sera disponible après la mise à jour vers cette nouvelle version de GeoNature. Vous pouvez configurer les permissions de vos utilisateurs si vous souhaitez qu'ils y accédent.
    - La gestion des permissions et des JDD associés aux module a évolué. La migration est gérée automatiquement lors de la mise à jour pour garantir un fonctionnement identique.
-   - Reporter la configuration IMPORT dans le fichier de configuration de GeoNature. (dans le bloc import, voir dans le fichier default toml)
+   - Reporter l'éventuelle configuration de votre module Import dans le fichier de configuration de GeoNature (dans le bloc import, voir dans le fichier default toml)
 - La synchronisation avec le service MTD de l'INPN n'est plus intégrée dans le code de GeoNature, elle a été déplacée dans un module externe : https://github.com/PnX-SI/mtd_sync
    - Si vous l'utilisiez, supprimer les variables de configuration suivantes du fichier `geonature_config.toml` : 
      - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
      - toutes les variables dans `[CAS_PUBLIC]`, `[CAS]`, `[CAS.CAS_USER_WS]`, `[MTD]`
      - `ID_USER_SOCLE_1` et `ID_USER_SOCLE_2` dans la section `BDD` 
 - Le champ `id_digitizer` des tables `gn_monitoring.t_base_sites`, `gn_monitoring.t_base_visits` est obligatoire. Assurez vous qu'ils soient peuplés avant la mise à jour.
+- Si vous souhaitez intégrer les nouvelles mailles INPN :
+  ```
+  geonature db upgrade ref_geo_inpn_grids_2@head  # Insertion des mailles 2x2km métropole, fournies par l’INPN
+  geonature db upgrade ref_geo_inpn_grids_20@head  # Insertion des mailles 20x20km métropole, fournies par l’INPN
+  geonature db upgrade ref_geo_inpn_grids_50@head # Insertion des mailles 50x50km métropole, fournies par l’INPN
+  ``` 
+
+**📝 Merci aux contributeurs**
+
+@amandine-sahl, @Pierre-Narcisi, @jacquesfize, @TheoLechemia, @bouttier, @andriacap, @edelclaux, @JulienCorny, @VincentCauchois, @CynthiaBorotPNV, @JeromeMaruejouls, @jbrieuclp, @blaisegeo, @lpofredc, @amillemonchicourt, @ch-cbna
 
 2.14.2 (2024-05-28)
 -------------------
