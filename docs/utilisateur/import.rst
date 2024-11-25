@@ -95,4 +95,30 @@ Supprimer un import
 
 Pour supprimer un import, il suffit de cliquer sur l'icone en forme de poubelle dans la colonne "Actions".
 
-:red:`!! Attention !!La suppression d'un import terminé implique la suppression des données dans la destination.`
+:red:`!! Attention !! La suppression d'un import terminé implique la suppression des données dans la destination.`
+
+
+
+Exemple de fichier CSV pour l'import Occhab
+"""""""""""""""""""""""""""""""""""""""""""
+
+Ci-dessous un exemple de fichier CSV avec les colonnes et le contenu attendu dans l'import de données vers Occhab.
+
++------------+--------------+------------------+----------+--------+---------------------------------------------------------------------------------------------------------------------+
+| id_origine | UUID_station | geometry_station | UUID_hab | cd_hab | STATUTS                                                                                                             |
++============+==============+==================+==========+========+=====================================================================================================================+
+| 5          |              | POINT (30 10)    |          | 27     | Ajout d’une station auquel on associe un habitat (UUIDs seront généré)                                              |
+| 5          |              | POINT (30 10)    |          | 32     | Ajout d’un habitat dans une station (l’UUID habitat sera généré)                                                    |
+|            | AAA          | POINT (15 10)    |          | 18     | Ajout d’une station auquel on associe un habitat (génération de l’UUID de l’habitat)                                |
+|            | CCC          | POINT (9 5)      |          | 11     | Ajout d’une station auquel on associe un habitat (génération de l’UUID de l’habitat)                                |
+|            | CCC          |                  |          | 15     | Ajout d’un habitat dans une station (répéter les informations d’une station déclarée dans le fichier est optionnel) |
+|            | XXX          |                  |          | 22     | Ajout d’un habitat dans une station existante (identifié par l’UUID XXX) dans la base de données                    |
+| 6          |              | POINT (9 4)      |          |        | Ajout d’une station                                                                                                 |
+| 6          |              | POINT (9 4)      |          |        | Ligne ignorée car doublon de la ligne 8                                                                             |
+|            | BBB          | POINT (9 4)      |          | 55     | Provoque une erreur car il y a une incohérence dans les données d’une station sur différentes lignes                |
+|            | BBB          | POINT (20 3)     |          | 58     | Provoque une erreur car il y a une incohérence dans les données d’une station sur différentes lignes                |
++------------+--------------+------------------+----------+--------+---------------------------------------------------------------------------------------------------------------------+
+
+
+
+Plus d'exemple sont disponibles dans le fichier ``valid_file.csv`` dans le dossier ``backend/geonature/tests/imports/files/occhab/valid_file.csv``.
