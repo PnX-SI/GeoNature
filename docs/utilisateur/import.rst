@@ -86,7 +86,7 @@ Modifier un import
 
 Pour modifier un import, rendez-vous dans la "Liste des imports", cliquez sur l'icone en forme de "crayon" dans la colonne "Actions".
 
-:red:`!! Attention !! La modification d'un import terminée provoquera la suppression des 
+:red:`!! Attention !! La modification d'un import terminé provoquera la suppression des 
 données importées dans la table temporaire et dans la destination.`
 
 
@@ -95,4 +95,4 @@ Supprimer un import
 
 Pour supprimer un import, il suffit de cliquer sur l'icone en forme de poubelle dans la colonne "Actions".
 
-:red:`!! Attention !!La suppression d'un import terminée implique la suppression des données dans la destination.`
+:red:`!! Attention !!La suppression d'un import terminé implique la suppression des données dans la destination.`
