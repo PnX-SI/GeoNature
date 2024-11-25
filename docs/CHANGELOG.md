@@ -41,7 +41,7 @@ CHANGELOG
 - [Métadonnées] Possibilité de supprimer un cadre d'acquisition vide (#1673)
 - [Occtax] Ajout du nom de lieu dans le détail d'un relevé (#3145)
 - [RefGeo] De nouvelles mailles INPN sur la France métropolitaine (2km, 20km, 50km) sont disponibles (https://github.com/PnX-SI/RefGeo/releases/tag/1.5.4)
-- [Monitoring] Ajout de la gestion de certaines tables directement dans GeoNature (#2824)
+- [Monitoring] Ajout de la gestion de la table `gn_monitoring.t_observations` directement dans GeoNature (#2824)
 
 **🐛 Corrections**
 
@@ -68,7 +68,7 @@ CHANGELOG
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature : 
-- Si vous utilisez le module Monitoring, mettez le à jour en version 0.8.0 minimum en même temps que vous mettez à jour GeoNature
+- Si vous utilisez le module Monitoring, mettez le à jour en version 1.0.0 minimum en même temps que vous mettez à jour GeoNature
 - L'application TaxHub a été integrée dans le module Admin de GeoNature et accessible depuis le menu latéral :
     - Les permissions basées sur les profils 1-6 ont été rapatriées et adaptées au modèle de permissions de GeoNature. 
     TaxHub est désormais un "module" GeoNature et dispose des objets de permissions `TAXONS`, `THEMES`, `LISTES` et `ATTRIBUTS`. Les utilisateurs ayant anciennement des droits 6 dans TaxHub ont toutes les permissions sur les objets pré-cités. Les personnes ayant des droits inférieurs à 6 et ayant un compte sur TaxHub ont maintenant des permissions sur l'objet `TAXON` (voir et éditer des taxons = ajouter des médias et des attributs)
@@ -108,7 +108,7 @@ Si vous mettez à jour GeoNature :
      - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
      - toutes les variables dans `[CAS_PUBLIC]`, `[CAS]`, `[CAS.CAS_USER_WS]`, `[MTD]`
      - `ID_USER_SOCLE_1` et `ID_USER_SOCLE_2` dans la section `BDD` 
-- Le champ `id_digitizer` des tables `gn_monitoring.t_base_sites`, `gn_monitoring.t_base_visits` est obligatoire. Assurez vous qu'ils soient peuplés avant la mise à jour.
+- Si vous utilisez le module Monitoring, les champs `id_digitizer` des tables `gn_monitoring.t_base_sites`, `gn_monitoring.t_base_visits` est désormais obligatoire. Assurez-vous qu'ils soient peuplés avant de lancer la mise à jour de GeoNature (`SELECT * FROM gn_monitoring.t_base_visits tbv WHERE id_digitiser IS NULL; SELECT * FROM gn_monitoring.t_base_sites tbs WHERE id_digitiser IS NULL;`).
 - Si vous souhaitez intégrer les nouvelles mailles INPN :
   ```
   geonature db upgrade ref_geo_inpn_grids_2@head  # Insertion des mailles 2x2km métropole, fournies par l’INPN
