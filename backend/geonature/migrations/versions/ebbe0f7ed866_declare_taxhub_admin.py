@@ -24,8 +24,8 @@ def upgrade():
         sa.text(
             """
             INSERT INTO gn_commons.t_modules
-            (module_code, module_label, module_picto, module_desc, module_target, module_external_url, active_frontend, active_backend)
-            VALUES('TAXHUB', 'TaxHub', 'fa-sitemap', 'Module TaxHub', '_blank', :module_url, false, false);
+            (module_code, module_label, module_picto, module_desc, module_target, active_frontend, active_backend)
+            VALUES('TAXHUB', 'TaxHub', 'fa-sitemap', 'Module TaxHub', '_blank', false, false);
 
             INSERT INTO gn_permissions.t_objects
             (code_object, description_object)
@@ -89,8 +89,7 @@ def upgrade():
                 gn_permissions.bib_actions a ON a.code_action = v.action_code
             WHERE m.module_code = 'TAXHUB'
         """
-        ),
-        module_url=f"{config['API_ENDPOINT']}/admin/taxons",
+        )
     )
     # rapatriement des permissions de l'application TaxHub
 
