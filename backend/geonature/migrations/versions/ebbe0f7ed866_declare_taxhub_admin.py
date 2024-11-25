@@ -24,8 +24,8 @@ def upgrade():
         sa.text(
             """
             INSERT INTO gn_commons.t_modules
-            (module_code, module_label, module_picto, module_desc, module_target, active_frontend, active_backend)
-            VALUES('TAXHUB', 'TaxHub', 'fa-sitemap', 'Module TaxHub', '_blank', false, false);
+            (module_code, module_label, module_picto, module_desc, module_target, module_external_url ,active_frontend, active_backend)
+            VALUES('TAXHUB', 'TaxHub', 'fa-sitemap', 'Module TaxHub', '_blank','', false, false);
 
             INSERT INTO gn_permissions.t_objects
             (code_object, description_object)
