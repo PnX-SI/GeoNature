@@ -4,6 +4,7 @@ import { MetadataService } from '../services/metadata.service';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { CommonService } from '@geonature_common/service/common.service';
 
 enum ButtonType {
   Toolbar = 'Toolbar',
@@ -32,7 +33,8 @@ export class ButtonDeleteAfComponent {
     private _dfs: DataFormService,
     private _mds: MetadataService,
     private _dialog: MatDialog,
-    private _router: Router
+    private _router: Router,
+    private _commonService: CommonService
   ) {}
 
   deleteAcquisitionFramework() {
@@ -52,6 +54,7 @@ export class ButtonDeleteAfComponent {
           if (this.redirectionUrl) {
             this._router.navigate([this.redirectionUrl]);
           }
+          this._commonService.translateToaster('success', 'MetaData.AFDeleted');
         });
       }
     });
