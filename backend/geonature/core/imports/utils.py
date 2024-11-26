@@ -4,7 +4,7 @@ import csv
 import json
 from enum import IntEnum
 from datetime import datetime, timedelta
-from typing import IO, Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import IO, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 from flask import current_app, render_template
 import sqlalchemy as sa
@@ -163,7 +163,9 @@ def detect_separator(file_: IO, encoding: str) -> Optional[str]:
     return dialect.delimiter
 
 
-def preprocess_value(dataframe: pd.DataFrame, field: BibFields, source_col: str) -> pd.Series:
+def preprocess_value(
+    dataframe: pd.DataFrame, field: BibFields, source_col: Union[str, List[str]], default_value: Any
+) -> pd.Series:
     """
     Preprocesses values in a DataFrame depending if the field contains multiple values (e.g. additional_data) or not.
 
@@ -184,8 +186,14 @@ def preprocess_value(dataframe: pd.DataFrame, field: BibFields, source_col: str)
     """
 
     def build_additional_data(columns: dict):
+        try:
+            default_values = json.loads(default_value)
+        except Exception:
+            default_values = {}
         result = {}
         for key, value in columns.items():
+            if value is None or value == "":
+                value = default_values.get(key, None)
             if value is None:
                 continue
             try:
@@ -198,9 +206,17 @@ def preprocess_value(dataframe: pd.DataFrame, field: BibFields, source_col: str)
 
     if field.multi:
         assert type(source_col) is list
+        for col in source_col:
+            if col not in dataframe.columns:
+                dataframe[col] = None
         col = dataframe[source_col].apply(build_additional_data, axis=1)
     else:
+        if source_col not in dataframe.columns:
+            dataframe[source_col] = None
         col = dataframe[source_col]
+        if default_value is not None:
+            col = col.replace({"": default_value, None: default_value})
+
     return col
 
 
@@ -244,8 +260,10 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
         }
         data.update(
             {
-                dest_field: preprocess_value(chunk, source_field["field"], source_field["value"])
-                for dest_field, source_field in fieldmapping.items()
+                dest_field: preprocess_value(
+                    chunk, mapping["field"], mapping["column_src"], mapping["default_value"]
+                )
+                for dest_field, mapping in fieldmapping.items()
             }
         )
         # XXX keep extra_fields in t_imports_synthese? or add config argument?
@@ -293,22 +311,25 @@ def build_fieldmapping(
 
     for field in fields:
         if field.name_field in imprt.fieldmapping:
-            column_src = imprt.fieldmapping[field.name_field].get("column_src", None)
+            mapping = imprt.fieldmapping[field.name_field]
+            column_src = mapping.get("column_src", None)
+            default_value = mapping.get("default_value", None)
             if field.multi:
                 correct = list(set(columns) & set(column_src))
                 if len(correct) > 0:
                     fieldmapping[field.source_column] = {
-                        "value": correct,
                         "field": field,
+                        "column_src": correct,
+                        "default_value": default_value,
                     }
                     used_columns.extend(correct)
             else:
-                if column_src in columns:
-                    fieldmapping[field.source_column] = {
-                        "value": column_src,
-                        "field": field,
-                    }
-                    used_columns.append(column_src)
+                fieldmapping[field.source_column] = {
+                    "field": field,
+                    "column_src": column_src,
+                    "default_value": default_value,
+                }
+                used_columns.append(column_src)
     return fieldmapping, used_columns
 
 

@@ -115,10 +115,17 @@ export class FieldsMappingStepComponent implements OnInit {
 
   getFieldMappingValues(): FieldMappingValues {
     let values: FieldMappingValues = {};
+    // TODO: Iterate over something else in order to remove the hacky code
     for (let [key, value] of Object.entries(this._fieldMappingService.mappingFormGroup.value)) {
-      if (value != null) {
+      // Here is the hack !
+      if (key.endsWith('_default_value')) {
+        continue;
+      }
+      const default_value = this._fieldMappingService.mappingFormGroup.value[key + '_default_value'];
+      if (value != null || default_value != null) {
         values[key] = {
-          column_src: Array.isArray(value) ? value : (value as string),
+          column_src: value == null ? undefined : Array.isArray(value) ? value : (value as string),
+          default_value: this._fieldMappingService.mappingFormGroup.value[key + '_default_value'],
         };
       }
     }

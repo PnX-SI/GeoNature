@@ -26,6 +26,7 @@ export interface Field {
 export interface FieldMappingValues {
   [propName: string]: {
     column_src: string | string[];
+    default_value?: string | number | any;
   };
 }
 
