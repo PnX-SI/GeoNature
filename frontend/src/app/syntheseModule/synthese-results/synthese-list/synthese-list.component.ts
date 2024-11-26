@@ -76,7 +76,10 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
     // get user cruved
     this.userCruved = currentModule.cruved;
-    const cruvedImport = this._cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
+    let cruvedImport: any = {};
+    if (this._cruvedStore.cruved.IMPORT) {
+      cruvedImport = this._cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
+    }
     const canCreateImport = cruvedImport.C > 0;
     const canCreateSynthese = this.userCruved.C > 0;
 

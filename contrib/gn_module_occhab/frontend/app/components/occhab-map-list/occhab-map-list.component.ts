@@ -47,8 +47,11 @@ export class OccHabMapListComponent implements OnInit {
     // get user cruved
     const currentModule = this._moduleService.currentModule;
     this.userCruved = currentModule.cruved;
-    const cruvedImport =
-      this.cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
+    let cruvedImport: any = {};
+    if (this.cruvedStore.cruved.IMPORT) {
+      cruvedImport =
+        this.cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
+    }
     const canCreateImport = cruvedImport.C > 0;
     const canCreateOcchab = this.userCruved.C > 0;
 
