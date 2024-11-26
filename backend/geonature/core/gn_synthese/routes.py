@@ -958,10 +958,10 @@ def general_stats(permissions):
     return data
 
 
-@routes.route("/taxon_stats/<int:cd_ref>", methods=["GET"])
+@routes.route("/taxon_stats/<int:cd_nom>", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @json_resp
-def taxon_stats(scope, cd_ref):
+def taxon_stats(scope, cd_nom):
     """Return stats for a specific taxon"""
 
     area_type = request.args.get("area_type")
@@ -986,7 +986,7 @@ def taxon_stats(scope, cd_ref):
         .where(BibAreasTypes.type_code == area_type)
         .alias("areas")
     )
-
+    cd_ref = db.session.scalar(select(Taxref.cd_ref).where(Taxref.cd_nom == cd_nom))
     taxref_cd_nom_list = db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
 
     # Main query to fetch stats
@@ -1021,7 +1021,7 @@ def taxon_stats(scope, cd_ref):
     synthese_stats = result.fetchone()
 
     data = {
-        "cd_ref": cd_ref,
+        "cd_ref": cd_nom,
         "observation_count": synthese_stats["observation_count"],
         "observer_count": synthese_stats["observer_count"],
         "area_count": synthese_stats["area_count"],
