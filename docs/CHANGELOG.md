@@ -16,7 +16,7 @@ CHANGELOG
 
 - [TaxHub] Intégration de TaxHub ([2.0.0 Release Note](https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0)) à GeoNature (#3150)
   - La gestion des taxons est maintenant intégrée dans le module Admin de GeoNature. 
-- [Import] Refonte et intégration du module Import dans GeoNature (#2833, #3070, #3067, #3039, #2862)
+- [Import] Refonte et intégration du module Import dans GeoNature (#3269)
   - Ajout d'une nouvelle destination : Occhab
   - Ajout de la possibilité d'étendre les destinations disponibles pour l'import de données. Suivre la [documentation](https://docs.geonature.fr/development.html#integrer-limport-de-donnees-dans-votre-module) dédiée à ce sujet
   - Ajout d'un bouton pour importer des données directement depuis le module de destination (Synthèse et Occhab actuellement)
@@ -61,6 +61,7 @@ CHANGELOG
 - Correction de la commande `geonature sensitivity info` (#3208)
 - Correction de la redirection vers la page d'authentification quand on accède au module Admin sans être authentifié (#3171)
 - Correction du scroll du menu latéral dans le module Admin (#3145)
+- Correction de l'aperçu des médias de type PDF (#3260)
 - Corrections diverses de la documentation
 - Ajout d'un action Github permettant de lancer les tests depuis des modules externes (#3232)
 - Lancement de `pytest` sans _benchmark_ ne nécessite plus l'ajout de `--benchmark-skip` (#3183)
