@@ -125,7 +125,8 @@ export class FieldsMappingStepComponent implements OnInit {
       if (value != null || default_value != null) {
         values[key] = {
           column_src: value == null ? undefined : Array.isArray(value) ? value : (value as string),
-          default_value: this._fieldMappingService.mappingFormGroup.value[key + '_default_value'],
+          // Using the nomenclature's label instead of the ID allows us to avoid modifying the content mapping step.
+          default_value: default_value?.id_nomenclature ? default_value.label_default : default_value,
         };
       }
     }

@@ -218,7 +218,7 @@ class SyntheseImportActions(ImportActions):
         do_nomenclatures_mapping(
             imprt,
             entity,
-            selected_fields,
+            {field_name: fields[field_name] for field_name, _ in imprt.fieldmapping.items()},
             fill_with_defaults=current_app.config["IMPORT"][
                 "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
             ],
@@ -344,7 +344,7 @@ class SyntheseImportActions(ImportActions):
                 if not set(column_src).isdisjoint(imprt.columns):
                     insert_fields |= {field}
             else:
-                if column_src in imprt.columns:
+                if column_src in imprt.columns or source_field.get('default_value', None) is not None:
                     insert_fields |= {field}
 
         insert_fields -= {fields["unique_dataset_id"]}  # Column only used for filling `id_dataset`

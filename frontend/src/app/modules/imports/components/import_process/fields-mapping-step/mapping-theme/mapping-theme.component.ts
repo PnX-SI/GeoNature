@@ -31,4 +31,14 @@ export class MappingThemeComponent implements OnInit {
       return this.themeData.fields.find((field) => field.name_field === label)?.fr_label;
     });
   }
+
+  public getDefaultValueWidget(field: any) {
+    if (field.mnemonique) {
+      return 'nomenclature';
+    } else if (field.multi) {
+      return 'textarea';
+    }
+
+    return 'text';
+  }
 }

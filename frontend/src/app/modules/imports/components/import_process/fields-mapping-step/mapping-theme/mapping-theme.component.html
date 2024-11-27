@@ -89,12 +89,25 @@
 
             <div>
               <small>Valeur par défaut :</small>
-              <input
-                type="text"
-                id="{{ field.name_field }}_default_value"
-                class="form-control form-control-sm"
-                formControlName="{{ field.name_field }}_default_value"
-              />
+              <ng-container [ngSwitch]="getDefaultValueWidget(field)">
+                <pnx-nomenclature
+                  *ngSwitchCase="'nomenclature'"
+                  [bindAllItem]="true"
+                  [codeNomenclatureType]="field.mnemonique"
+                  [parentFormControl]="_fm.mappingFormGroup.get(field.name_field + '_default_value')"
+                ></pnx-nomenclature>
+                <textarea
+                  *ngSwitchCase="'textarea'"
+                  class="form-control form-control-sm"
+                  formControlName="{{ field.name_field }}_default_value"
+                ></textarea>
+                <input
+                  *ngSwitchDefault
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="{{ field.name_field }}_default_value"
+                />
+              </ng-container>
             </div>
           </div>
           <div
