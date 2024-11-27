@@ -8,13 +8,14 @@ from geonature.core.imports.models import (
     Entity,
     EntityField,
     BibFields,
+    TImports,
 )
 
 
 __all__ = ["init_rows_validity", "check_orphan_rows"]
 
 
-def init_rows_validity(imprt):
+def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
     """
     Validity columns are three-states:
       - None: the row does not contains data for the given entity
@@ -46,16 +47,21 @@ def init_rows_validity(imprt):
             .where(BibFields.name_field.in_(selected_fields_names))
             .where(BibFields.entities.any(EntityField.entity == entity))
             .where(~BibFields.entities.any(EntityField.entity != entity))
+            .where(BibFields.name_field != dataset_name_field)
             .all()
         )
-        db.session.execute(
-            sa.update(transient_table)
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(
-                sa.or_(*[transient_table.c[field.source_column].isnot(None) for field in fields])
+
+        if fields:
+            db.session.execute(
+                sa.update(transient_table)
+                .where(transient_table.c.id_import == imprt.id_import)
+                .where(
+                    sa.or_(
+                        *[transient_table.c[field.source_column].isnot(None) for field in fields]
+                    )
+                )
+                .values({entity.validity_column: True})
             )
-            .values({entity.validity_column: True})
-        )
 
 
 def check_orphan_rows(imprt):
