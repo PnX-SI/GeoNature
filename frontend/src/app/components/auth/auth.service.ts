@@ -71,6 +71,10 @@ export class AuthService {
 
   manageUser(data): any {
     this.setSession(data);
+    if (!data.user.providers) {
+      // when using public login
+      data.user.providers = [];
+    }
     const userForFront = {
       user_login: data.user.identifiant,
       prenom_role: data.user.prenom_role,
