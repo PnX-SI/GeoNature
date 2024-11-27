@@ -642,15 +642,8 @@ def get_fields_of_an_entity(
         The BibFields associated with the given entity.
     """
     select_args = [BibFields]
-    query = (
-        sa.select(BibFields)
-        .where(BibFields.entities.any(EntityField.entity == entity))
-        .where(
-            sa.or_(
-                ~BibFields.entities.any(EntityField.entity != entity),
-                BibFields.name_field == entity.unique_column.name_field,
-            )
-        )
+    query = sa.select(BibFields).where(
+        BibFields.entities.any(EntityField.entity == entity),
     )
     if columns:
         select_args = [getattr(BibFields, col) for col in columns]
@@ -705,7 +698,13 @@ class FieldMapping(MappingTemplate):
             fields_of_ent = get_fields_of_an_entity(
                 entity,
                 columns=bib_fields_col,
-                optional_where_clause=BibFields.name_field.in_(field_mapping_json.keys()),
+                optional_where_clause=sa.and_(
+                    sa.or_(
+                        ~BibFields.entities.any(EntityField.entity != entity),
+                        BibFields.name_field == entity.unique_column.name_field,
+                    ),
+                    BibFields.name_field.in_(field_mapping_json.keys()),
+                ),
             )
 
             # if the only column corresponds to id_columns, we only do the validation on the latter
@@ -718,12 +717,10 @@ class FieldMapping(MappingTemplate):
                         entity,
                         columns=bib_fields_col,
                         optional_where_clause=sa.and_(
-                            BibFields.destination == g.destination,
-                            BibFields.display == True,
+                            BibFields.destination == g.destination, BibFields.display == True
                         ),
                     )
                 )
-        print(fields)
 
         schema = {
             "type": "object",
