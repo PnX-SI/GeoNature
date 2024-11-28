@@ -650,13 +650,16 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     nb_data = len(dataset_ids)
 
     # Add count of Synthese observations for each dataset
+    # WIP TODO: Using a single query like the one below is surprisingly much less efficient than having one query per dataset ...
+    dataset_counts = (
+        DB.session.query(Synthese.id_dataset, func.count(Synthese.id_synthese))
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .group_by(Synthese.id_dataset)
+        .all()
+    )
+    dataset_count_dict = {id: count for id, count in dataset_counts}
     for dataset in acquisition_framework["datasets"]:
-        dataset_count_query = (
-            select(func.count(Synthese.id_synthese))
-            .select_from(Synthese)
-            .where(Synthese.id_dataset == dataset["id_dataset"])
-        )
-        dataset["count_synthese_observations"] = DB.session.scalar(dataset_count_query)
+        dataset["count_synthese_observations"] = dataset_count_dict.get(dataset["id_dataset"], 0)
 
     query = (
         select(func.count(Synthese.cd_nom))
