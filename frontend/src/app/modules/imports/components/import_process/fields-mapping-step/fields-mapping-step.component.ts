@@ -114,22 +114,22 @@ export class FieldsMappingStepComponent implements OnInit {
   }
 
   getFieldMappingValues(): FieldMappingValues {
-    let values: FieldMappingValues = {};
-    // TODO: Iterate over something else in order to remove the hacky code
-    for (let [key, value] of Object.entries(this._fieldMappingService.mappingFormGroup.value)) {
-      // Here is the hack !
-      if (key.endsWith('_default_value')) {
-        continue;
-      }
-      const default_value = this._fieldMappingService.mappingFormGroup.value[key + '_default_value'];
-      if (value != null || default_value != null) {
-        values[key] = {
-          column_src: value == null ? undefined : Array.isArray(value) ? value : (value as string),
+    const values: FieldMappingValues = {};
+    this._fieldMappingService.flattenTargetFieldData(this.targetFields).forEach((field) => {
+      const column_src = this._fieldMappingService.mappingFormGroup.get(field.name_field)?.value;
+      const default_value = this._fieldMappingService.mappingFormGroup.get(
+        `${field.name_field}_default_value`
+      )?.value;
+      if (column_src || default_value) {
+        values[field.name_field] = {
+          column_src: column_src || undefined,
           // Using the nomenclature's label instead of the ID allows us to avoid modifying the content mapping step.
-          default_value: default_value?.id_nomenclature ? default_value.label_default : default_value,
+          default_value: default_value?.id_nomenclature
+            ? default_value.label_default
+            : (default_value ?? undefined),
         };
       }
-    }
+    });
     return values;
   }
 
