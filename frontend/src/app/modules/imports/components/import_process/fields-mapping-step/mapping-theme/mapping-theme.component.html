@@ -98,6 +98,7 @@
                 ></pnx-nomenclature>
                 <textarea
                   *ngSwitchCase="'textarea'"
+                  rows="4"
                   class="form-control form-control-sm"
                   formControlName="{{ field.name_field }}_default_value"
                 ></textarea>
@@ -108,6 +109,12 @@
                   formControlName="{{ field.name_field }}_default_value"
                 />
               </ng-container>
+              <div
+                *ngIf="_fm.mappingFormGroup.controls[field.name_field + '_default_value'].hasError('invalidJSON')"
+                class="invalid-feedback d-block"
+              >
+                JSON non valide
+              </div>
             </div>
           </div>
           <div
