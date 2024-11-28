@@ -556,7 +556,7 @@ $BODY$
         FROM NEW as updated_rows
         JOIN ref_geo.l_areas a
           ON public.ST_INTERSECTS(updated_rows.the_geom_local, a.geom)  
-        WHERE a.enable IS TRUE AND (ST_GeometryType(updated_rows.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
+        WHERE a.enable IS TRUE AND (public.ST_GeometryType(updated_rows.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
   RETURN NULL;
   END;
   $BODY$
