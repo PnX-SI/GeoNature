@@ -109,6 +109,7 @@ Si vous mettez à jour GeoNature :
      - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
      - toutes les variables dans `[CAS_PUBLIC]`, `[CAS]`, `[CAS.CAS_USER_WS]`, `[MTD]`
      - `ID_USER_SOCLE_1` et `ID_USER_SOCLE_2` dans la section `BDD` 
+- Si vous utilisez le module Monitoring, n'oubliez pas de mettre à jour ce dernier sur la version 1.0.
 - Si vous utilisez le module Monitoring, les champs `id_digitizer` des tables `gn_monitoring.t_base_sites`, `gn_monitoring.t_base_visits` est désormais obligatoire. Assurez-vous qu'ils soient peuplés avant de lancer la mise à jour de GeoNature (`SELECT * FROM gn_monitoring.t_base_visits tbv WHERE id_digitiser IS NULL; SELECT * FROM gn_monitoring.t_base_sites tbs WHERE id_digitiser IS NULL;`).
 - Si vous souhaitez intégrer les nouvelles mailles INPN :
   ```
