@@ -169,6 +169,8 @@ class TBaseVisits(DB.Model):
         foreign_keys=[id_dataset],
     )
 
+    id_import = DB.Column(DB.Integer, nullable=True)
+
 
 @serializable
 @geoserializable(geoCol="geom", idCol="id_base_site")
@@ -212,6 +214,8 @@ class TBaseSites(DB.Model):
         foreign_keys=[cor_site_module.c.id_base_site, cor_site_module.c.id_module],
     )
 
+    id_import = DB.Column(DB.Integer, nullable=True)
+
 
 @serializable
 class TObservations(DB.Model):
@@ -226,3 +230,4 @@ class TObservations(DB.Model):
     cd_nom = DB.Column(DB.Integer)
     comments = DB.Column(DB.String)
     uuid_observation = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    id_import = DB.Column(DB.Integer, nullable=True)
