@@ -182,11 +182,15 @@ def get_observations_for_web(permissions):
         columns += ["nom_vern_or_lb_nom", nom_vern_or_lb_nom]
         param_column_list.remove("nom_vern_or_lb_nom")
 
+    # Add additional field(s) to output
+    additional_fields = request.args.getlist("with_field")
+    param_column_list.update(additional_fields)
+    print(param_column_list)
     for column in param_column_list:
         columns += [column, getattr(VSyntheseForWebApp, column)]
 
     observations = func.json_build_object(*columns).label("obs_as_json")
-
+    print(observations)
     # Need to check if there are blurring permissions so that the blurring process
     # does not affect the performance if there is no blurring permissions
     blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)

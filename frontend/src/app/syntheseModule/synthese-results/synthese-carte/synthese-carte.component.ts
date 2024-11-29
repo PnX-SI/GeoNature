@@ -19,8 +19,21 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
+import { cpSync } from 'fs';
 
-export type EventToggle = 'grid' | 'point';
+
+export type EventDisplayCriteria = {
+  type: 'grid' | 'point',
+  name?: string,
+  field?: string,
+}
+
+type MapStyle = {
+  color: string,
+  weight?: number,
+  fill?: boolean,
+  fillOpacity?: number,
+}
 
 @Component({
   selector: 'pnx-synthese-carte',
@@ -37,27 +50,36 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
-  private areasEnable;
-  private areasLegend;
   private enableFitBounds = true;
+  private mapLegend;
+
+  private areasEnable;
   private areasLabelSwitchBtn;
+
+  private defaultCriteriaCode = 'default';
+  private areaAggregationCriteriaCode = 'area-aggregation';
+  // TODO: create full Typescript object
+  private selectedCriteria: { [key: string]: any } = {
+    code: this.defaultCriteriaCode,
+  }
+
   public selectedLayers: Array<L.Layer> = [];
   public layersDict: object = {};
 
-  private originDefaultStyle = {
+  private originDefaultStyle: MapStyle = {
     color: '#3388FF',
     weight: 3,
     fill: false,
   };
-  private selectedDefaultStyle = {
+  private selectedDefaultStyle: MapStyle = {
     color: '#FF0000',
   };
-  private originAreasStyle = {
+  private originAreasStyle: MapStyle = {
     color: '#FFFFFF',
     weight: 0.4,
     fillOpacity: 0.8,
   };
-  private selectedAreasStyle = {
+  private selectedAreasStyle: MapStyle = {
     color: '#FF0000',
     weight: 3,
   };
@@ -81,7 +103,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   });
 
   @Input() inputSyntheseData: GeoJSON;
-  @Output() onAreasToggle = new EventEmitter<EventToggle>();
+  @Output() onAreasToggle = new EventEmitter<EventDisplayCriteria>();
 
   constructor(
     public mapListService: MapListService,
@@ -143,12 +165,19 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // add the featureGroup to the map
     this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
 
-    // Handle areas button and legend
-    if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED) {
-      this.addAreasButton();
+    // Handle areas button, criteria list and legend
+    if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED || this.config.SYNTHESE.MAP_CRITERIA_LIST) {
+      if (this.config.SYNTHESE.MAP_CRITERIA_LIST) {
+        this.addCriteriaList()
+      } else {
+        this.addAreasButton();
+      }
       this.onLanguageChange();
+
       if (this.areasEnable) {
         this.addAreasLegend();
+      } else {
+        this.addCriteriaLegend();
       }
     }
   }
@@ -171,6 +200,153 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       });
   }
 
+  addCriteriaList() {
+    const DisplayCriteriaControl = L.Control.extend({
+      options: {
+        position: 'topright',
+      },
+      onAdd: (map) => {
+        let criteriaContainer = L.DomUtil.create(
+          'div',
+          'leaflet-bar leaflet-control-layers custom-control leaflet-control-custom synthese-map-criteria'
+        );
+        criteriaContainer.setAttribute('aria-haspopup', 'true');
+        L.DomEvent.disableClickPropagation(criteriaContainer);
+        L.DomEvent.disableScrollPropagation(criteriaContainer);
+
+        const collapseCriteriaList = (evt) => {
+          if (!evt || !(evt.type === 'pointerleave' && evt['pointerType'] === 'touch')) {
+            criteriaContainer.classList.remove('criteria-control-list-expanded');
+          }
+        };
+
+        const expandCriteriaList = () => {
+          criteriaContainer.classList.add('criteria-control-list-expanded');
+        };
+
+        L.DomEvent.on(criteriaContainer, {
+          pointerenter: expandCriteriaList,
+          pointerleave: collapseCriteriaList,
+        }, this);
+        map.on('click', collapseCriteriaList);
+
+        let criteriaBtn = L.DomUtil.create(
+          'a',
+          'criteria-control-toggle',
+          criteriaContainer
+        );
+        criteriaBtn.href = '#';
+        criteriaBtn.role = 'button';
+        L.DomEvent.disableClickPropagation(criteriaBtn);
+
+        let section = L.DomUtil.create(
+          'section',
+          'criteria-control-list',
+          criteriaContainer
+        );
+
+        // Add default display entry
+        let label = L.DomUtil.create('label', '', section);
+        let span = L.DomUtil.create('span', '', label);
+        let inputBtn = L.DomUtil.create('input', 'criteria-control-selector', span);
+        inputBtn.setAttribute('id',`criteria-radio-btn-${this.defaultCriteriaCode}`);
+        inputBtn.setAttribute('name','criteria-radio-btn');
+        inputBtn.setAttribute('type', 'radio');
+        inputBtn.onchange = () => {
+          if (inputBtn.checked) {
+            this.selectedCriteria = {
+              code: this.defaultCriteriaCode
+            }
+          }
+          this.activateMapDisplayCriteria();
+        };
+        inputBtn.checked = true;
+        this.selectedCriteria = {
+          code: this.defaultCriteriaCode
+        };
+        let textLabelSpan = L.DomUtil.create('span', '', span);
+        textLabelSpan.innerText = ' ' + this.translateService.instant(
+          `Synthese.Map.Criteria.${this.defaultCriteriaCode}`
+        );
+
+        // Add observations area aggregation display entry
+        if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED) {
+          let label = L.DomUtil.create('label', '', section);
+          let span = L.DomUtil.create('span', '', label);
+          let inputBtn = L.DomUtil.create('input', 'criteria-control-selector', span);
+          inputBtn.setAttribute('id',`criteria-radio-btn-${this.areaAggregationCriteriaCode}`);
+          inputBtn.setAttribute('name','criteria-radio-btn');
+          inputBtn.setAttribute('type', 'radio');
+          inputBtn.onchange = () => {
+            if (inputBtn.checked) {
+              this.selectedCriteria = {
+                code: this.areaAggregationCriteriaCode
+              };
+            }
+            console.log(`Criteria ${this.selectedCriteria.code} changed !`)
+            this.activateMapDisplayCriteria();
+          };
+          if (this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT === true) {
+            console.log(`Criteria ${this.selectedCriteria.code} default !`)
+            inputBtn.checked = this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
+            this.selectedCriteria = {
+                code: this.areaAggregationCriteriaCode
+              };
+          }
+          let textLabelSpan = L.DomUtil.create('span', '', span);
+          textLabelSpan.innerText = ' ' + this.translateService.instant(
+            `Synthese.Map.Criteria.${this.areaAggregationCriteriaCode}`
+          );
+        }
+
+        // Add criteria display list
+        if (this.config.SYNTHESE.MAP_CRITERIA_LIST) {
+          L.DomUtil.create('div', 'criteria-control-list-separator', section);
+
+          const criteriaList = JSON.parse(JSON.stringify(this.config.SYNTHESE.MAP_CRITERIA_LIST));
+          for (const criteriaCode in criteriaList) {
+            const criteria = criteriaList[criteriaCode];
+            criteria.code = criteriaCode;
+            if (criteria.activate === false) {
+              continue;
+            }
+
+            let label = L.DomUtil.create('label', '', section);
+            let span = L.DomUtil.create('span', '', label);
+            if (criteria.description) {
+              span.setAttribute('title', criteria.description);
+            }
+            let inputBtn = L.DomUtil.create('input', 'criteria-control-selector', span);
+            inputBtn.setAttribute('id', `criteria-radio-btn-${criteria.code}`);
+            inputBtn.setAttribute('name', 'criteria-radio-btn');
+            inputBtn.setAttribute('type', 'radio');
+            inputBtn.onchange = () => {
+              this.selectedCriteria = criteria;
+              console.log(`Criteria ${criteria.code} changed !`)
+              this.activateMapDisplayCriteria();
+            };
+            if (
+              criteria.default === true
+              && this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT !== true
+            ) {
+              inputBtn.checked = criteria.default;
+              this.selectedCriteria = criteria;
+              this.prepareMarkerStyles();
+              console.log(`Default ${criteria.code}!`)
+            }
+            let textLabelSpan = L.DomUtil.create('span', '', span);
+            textLabelSpan.innerText = ` ${criteria.label}`;
+          }
+        }
+
+        return criteriaContainer;
+      }
+    });
+
+    const map = this._ms.getMap();
+    map.addControl(new DisplayCriteriaControl());
+  }
+
   addAreasButton() {
     const LayerControl = L.Control.extend({
       options: {
@@ -185,23 +361,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         let switchBtn = L.DomUtil.create('input', 'custom-control-input', switchBtnContainer);
         switchBtn.id = 'toggle-areas-btn';
         switchBtn.type = 'checkbox';
-        switchBtn.checked = this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
         switchBtn.onclick = () => {
-          this.areasEnable = switchBtn.checked;
-          this.formService.selectors = this.formService.selectors.set(
-            'format',
-            switchBtn.checked ? 'grouped_geom_by_areas' : 'grouped_geom'
-          );
-          this.onAreasToggle.emit(switchBtn.checked ? 'grid' : 'point');
-
-          // Show areas legend if areas toggle button is enable
-          if (this.areasEnable) {
-            this.addAreasLegend();
-          } else {
-            this.removeAreasLegend();
-            this.enableFitBounds = false;
-          }
+          this.selectedCriteria = {
+            code: switchBtn.checked ? this.areaAggregationCriteriaCode : this.defaultCriteriaCode
+          };
+          this.activateMapDisplayCriteria();
         };
+        if (this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT === true) {
+          switchBtn.checked = this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
+        }
 
         this.areasLabelSwitchBtn = L.DomUtil.create(
           'label',
@@ -221,27 +389,218 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     map.addControl(new LayerControl());
   }
 
-  private addAreasLegend() {
-    this.areasLegend = new (L.Control.extend({
+  private activateMapDisplayCriteria() {
+    let format = 'grouped_geom';
+    let event: EventDisplayCriteria = {
+      type: 'point',
+      name: this.selectedCriteria.code,
+    };
+
+    if (this.selectedCriteria.code == this.areaAggregationCriteriaCode) {
+      format = 'grouped_geom_by_areas';
+      event.type = 'grid';
+    }
+    if (this.selectedCriteria.field) {
+      this.formService.selectors = this.formService.selectors.set(
+        'with_field',
+        this.selectedCriteria.field
+      );
+      event.field = this.selectedCriteria.field;
+    }
+    if (this.selectedCriteria.values) {
+      this.prepareMarkerStyles();
+    }
+
+    this.formService.selectors = this.formService.selectors.set('format', format);
+    this.onAreasToggle.emit(event);
+
+    this.addLegend();
+  }
+
+  private prepareMarkerStyles() {
+    this.prepareCriteriaValues();
+
+    let preparedMarkerStyles = {};
+    this.selectedCriteria.preparedValues.forEach(item => {
+      let valuesList = (Array.isArray(item.value)) ? item.value : [item.value];
+      valuesList.forEach(val => {
+        //delete item.value;
+        //delete item.color;
+        preparedMarkerStyles[val] = item;
+      });
+    });
+    this.selectedCriteria.preparedMarkerStyles = preparedMarkerStyles;
+    console.log('preparedMarkerStyles', preparedMarkerStyles)
+  }
+
+  private addLegend() {
+    this.removeLegend();
+
+    if (this.selectedCriteria.code == this.areaAggregationCriteriaCode) {
+      this.addAreasLegend();
+    } else if (this.selectedCriteria.code != this.defaultCriteriaCode) {
+      this.addCriteriaLegend();
+    }
+    // Do not display legend for default display
+  }
+
+  private removeLegend() {
+    const map = this._ms.getMap();
+    if (this.mapLegend) {
+      this.mapLegend.remove(map);
+    }
+    this.enableFitBounds = false;
+  }
+
+  private addCriteriaLegend() {
+    this.prepareCriteriaLegend();
+
+    this.mapLegend = new (L.Control.extend({
       options: { position: 'bottomright' },
     }))();
 
     const vm = this;
-    this.areasLegend.onAdd = (map) => {
+    this.mapLegend.onAdd = (map) => {
+      let div = L.DomUtil.create('div', 'info legend');
+
+      let labels = [`<strong> ${this.selectedCriteria.label} </strong>`];
+      // loop through our density intervals and generate a label with a colored square for each interval
+      for (var i = 0; i < this.selectedCriteria.preparedLegendStyles.length; i++) {
+        let grade = this.selectedCriteria.preparedLegendStyles[i];
+        if (grade.description) {
+          labels.push(
+            `<span title="${grade.description}">` +
+            `<i style="${grade.css.join(';')}"></i> ${grade.label}` +
+            '</span>');
+        } else {
+          labels.push(`<i style="${grade.css.join(';')}"></i> ${grade.label}`);
+        }
+      }
+      div.innerHTML = labels.join('<br>');
+
+      return div;
+    };
+
+    const map = this._ms.getMap();
+    this.mapLegend.addTo(map);
+  }
+
+  private prepareCriteriaLegend() {
+    this.prepareCriteriaValues();
+
+    let preparedLegendStyles = [];
+    this.selectedCriteria.preparedValues.forEach(item => {
+      let legendItem = {
+        label: item.label,
+        description: item.description,
+        css: [],
+      };
+
+      let styles = item.styles;
+
+      // Compute legend fill color
+      if (styles.fill && styles.fillOpacity != 0) {
+        let backgroundColor = styles.fillColor;
+        if (styles.fillOpacity < 1) {
+          backgroundColor = this.convertColorHexToRgbA(styles.fillColor, styles.fillOpacity);
+        }
+        legendItem.css.push(`background-color: ${backgroundColor}`);
+      }
+
+      // Compute legend border
+      if (styles.stroke && styles.opacity != 0 && styles.weight != 0) {
+        let borderColor = styles.color;
+        if (styles.opacity < 1) {
+          borderColor = this.convertColorHexToRgbA(styles.color, styles.opacity);
+        }
+        legendItem.css.push(`border: ${styles.weight}px solid ${borderColor}`);
+      }
+
+      preparedLegendStyles.push(legendItem);
+    });
+
+    this.selectedCriteria.preparedLegendStyles = preparedLegendStyles;
+    console.log('preparedLegendStyles', preparedLegendStyles)
+  }
+
+  private prepareCriteriaValues() {
+    if (this.selectedCriteria.preparedValues) {
+      return;
+    }
+
+    let defaultStyles = {
+      stroke: true,
+      color: '#3388ff',
+      weight: 3,
+      opacity: 1.0,
+      fill: true,
+      fillColor: '#3388ff',
+      fillOpacity: 0.2,
+    };
+    let defaultCriteriaStyles = (this.selectedCriteria.styles) ? this.selectedCriteria.styles : {};
+    let combinedStyles = { ...defaultStyles, ...this.getOriginDefaultStyle(), ...defaultCriteriaStyles };
+
+    // Add several values by geom entry
+    this.selectedCriteria.values.push({
+      value: '*',
+      label: this.translateService.instant('Synthese.Map.SeveralValues'),
+      color: '#ffffff',
+      styles: { weight: 1, color: "#a9a9a9", }
+    });
+
+    // Compute values
+    let preparedValues = [];
+    this.selectedCriteria.values.forEach(item => {
+      item.value = (Array.isArray(item.value)) ? item.value : [item.value];
+      item.styles = (item.styles) ? item.styles : {};
+
+      let forceFillStyles = {
+        fill: true,
+        fillColor: item.color,
+      };
+      item.styles = { ...combinedStyles, ...item.styles, ...forceFillStyles };
+
+      preparedValues.push(item);
+    });
+
+    this.selectedCriteria.preparedValues = preparedValues;
+    console.log('preparedValues', preparedValues)
+  }
+
+  private convertColorHexToRgbA(hex, opacity=1){
+    let c: any;
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+      c = hex.substring(1).split('');
+      if (c.length == 3){
+          c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+      }
+      c = '0x'+c.join('');
+      return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+`,${opacity})`;
+    }
+    throw new Error('Bad Hex');
+  }
+
+  private addAreasLegend() {
+    this.mapLegend = new (L.Control.extend({
+      options: { position: 'bottomright' },
+    }))();
+
+    const vm = this;
+    this.mapLegend.onAdd = (map) => {
       let div = L.DomUtil.create('div', 'info legend');
       let grades = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES']
         .map((legendClass) => legendClass.min)
         .reverse();
-      let labels = ["<strong> Nombre <br> d'observations </strong> <br>"];
+      let labels = ["<strong> Nombre <br> d'observations </strong>"];
 
       // loop through our density intervals and generate a label with a colored square for each interval
       for (var i = 0; i < grades.length; i++) {
         labels.push(
-          '<i style="background:' +
+          '<i style="border-radius: 2px; background:' +
             vm.getColor(grades[i] + 1) +
             '"></i> ' +
             grades[i] +
-            (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+')
+            (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+')
         );
       }
       div.innerHTML = labels.join('<br>');
@@ -250,76 +609,28 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     };
 
     const map = this._ms.getMap();
-    this.areasLegend.addTo(map);
-  }
-
-  private removeAreasLegend() {
-    const map = this._ms.getMap();
-    this.areasLegend.remove(map);
-  }
-
-  layerDictCache(idSyntheseList, layer) {
-    for (let id of idSyntheseList) {
-      id in this.layersDict ? this.layersDict[id].push(layer) : (this.layersDict[id] = [layer]);
-    }
-  }
-
-  layerEvent(feature, layer, idSyntheseIds) {
-    layer.on({
-      click: (e) => {
-        this.toggleStyleFromMap(feature, layer);
-        this.mapListService.mapSelected.next(idSyntheseIds);
-        if (this.areasEnable) {
-          this.bindAreasPopup(layer, idSyntheseIds);
-        }
-      },
-    });
-  }
-
-  onEachFeature(feature, layer) {
-    // make a cache a layers in a dict with id key
-    this.layerDictCache(feature.properties.observations.id_synthese, layer);
-    // set style
-    if (this.areasEnable) {
-      this.setAreasStyle(layer, feature.properties.observations.id_synthese.length);
-    }
-    this.layerEvent(feature, layer, feature.properties.observations.id_synthese);
-  }
-
-  /**
-   *
-   */
-  clusterCountOverrideFn(cluster) {
-    const obsChildCount = cluster
-      .getAllChildMarkers()
-      .map((layer) => {
-        return layer.nb_obs;
-      })
-      .reduce((previous, next) => previous + next);
-    const clusterSize = obsChildCount > 100 ? 'large' : obsChildCount > 10 ? 'medium' : 'small';
-    return L.divIcon({
-      html: `<div><span>${obsChildCount}</span></div>`,
-      className: `marker-cluster marker-cluster-${clusterSize}`,
-      iconSize: L.point(40, 40),
-    });
+    this.mapLegend.addTo(map);
   }
 
   ngOnChanges(change) {
-    // clear layerDict cache
+    // Clear layerDict cache
     this.layersDict = {};
-    // on change delete the previous layer and load the new ones from the geojson data send by the API
-    // here we don't use geojson component for performance reasons
+
+    // On change delete the previous layer and load the new ones from the geojson data send by the API.
+    // Here we don't use geojson component for performance reasons.
     if (this._ms.map) {
-      // remove the whole featureGroup to avoid iterate over all its layer
+      // Remove the whole featureGroup to avoid iterate over all its layer
       this._ms.map.removeLayer(this.cluserOrSimpleFeatureGroup);
     }
+
     if (change && change.inputSyntheseData.currentValue) {
-      // regenerate the featuregroup
+      // Regenerate the featuregroup
       this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup({
-            iconCreateFunction: this.clusterCountOverrideFn,
+            iconCreateFunction: this.overrideClusterCount,
           })
         : new L.FeatureGroup();
+
       const geojsonLayer = new L.GeoJSON(change.inputSyntheseData.currentValue, {
         pointToLayer: (feature, latlng) => {
           const circleMarker = L.circleMarker(latlng);
@@ -334,14 +645,16 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
           return circleMarker;
         },
+        style: this.styleFeature.bind(this),
         onEachFeature: this.onEachFeature.bind(this),
       });
       this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
-      // zoom on extend after first search
+
+      // Zoom on extend after first search
       if (change.inputSyntheseData.previousValue !== undefined) {
         try {
-          // try to fit bound on layer. catch error if no layer in feature group
+          // Try to fit bound on layer. catch error if no layer in feature group
           if (this.enableFitBounds) {
             this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
           } else {
@@ -352,10 +665,62 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  private setAreasStyle(layer, obsNbr) {
-    this.originAreasStyle['fillColor'] = this.getColor(obsNbr);
-    layer.setStyle(this.originAreasStyle);
-    delete this.originAreasStyle['fillColor'];
+  overrideClusterCount(cluster) {
+    const obsChildCount = cluster
+      .getAllChildMarkers()
+      .map((layer) => {
+        return layer.nb_obs;
+      })
+      .reduce((previous, next) => previous + next);
+    const clusterSize = obsChildCount > 100 ? 'large' : obsChildCount > 10 ? 'medium' : 'small';
+    return L.divIcon({
+      html: `<div><span>${obsChildCount}</span></div>`,
+      className: `marker-cluster marker-cluster-${clusterSize}`,
+      iconSize: L.point(40, 40),
+    });
+  }
+
+  onEachFeature(feature, layer) {
+    console.log("onEachFeature > feature", feature)
+    // make a cache a layers in a dict with id key
+    // TODO: change name, it's a observations cache used by synthese list and map !
+    this.layerDictCache(feature.properties.observations, layer);
+
+    this.layerEvent(layer, feature.properties.observations);
+  }
+
+  layerDictCache(observations, layer) {
+    for (let id of observations.id_synthese) {
+      id in this.layersDict
+        ? this.layersDict[id].push(layer)
+        : (this.layersDict[id] = [layer]);
+    }
+  }
+
+  layerEvent(layer, observations) {
+    layer.on({
+      click: (e) => {
+        this.toggleStyleFromMap(observations, layer);
+        const idSyntheseIds = observations.id_synthese;
+        this.mapListService.mapSelected.next(idSyntheseIds);
+        if (this.selectedCriteria.code == this.areaAggregationCriteriaCode) {
+          this.bindAreasPopup(layer, idSyntheseIds);
+        }
+      },
+    });
+  }
+
+  private styleFeature(feature) {
+    console.log("styleFeature", feature);
+    // set style
+    if (this.selectedCriteria.code == this.areaAggregationCriteriaCode) {
+      return {
+        ...this.originAreasStyle,
+        ...{ fillColor: this.getColor(feature.properties.observations.id_synthese.length) }
+      }
+    } else if (this.selectedCriteria.code != this.defaultCriteriaCode) {
+      return this.getCriteriaStyle(feature.properties.observations);
+    }
   }
 
   private getColor(obsNbr) {
@@ -373,37 +738,101 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  toggleStyleFromMap(feature, layer) {
-    // restore initial style
-    let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
-    let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
+  private getCriteriaStyle(observations) {
+    let criteriaStyle;
+    const type = this.selectedCriteria.type;
+    const values = this.getObservationsCriteriaValues(observations);
 
+    let featureCriteriaValue = (values.length > 1) ? '*' : values[0];
+    if (type == 'nomenclatures' || featureCriteriaValue == '*') {
+      criteriaStyle = this.selectedCriteria.preparedMarkerStyles[featureCriteriaValue];
+    } else if (['classes', 'dates'].includes(type)) {
+      const classes: string[] = Object.keys(this.selectedCriteria.preparedMarkerStyles);
+      classes.splice(classes.indexOf('*'), 1);
+
+      let sortedClasses: string[]|number[] = [];
+      if (type == 'classes') {
+        const numericClasses: number[] = classes.map(Number);
+        sortedClasses = numericClasses.sort((a, b) => b - a);
+        featureCriteriaValue = Number(featureCriteriaValue);
+      } else {
+        sortedClasses = classes.sort();
+      }
+
+
+      let classesNbr = sortedClasses.length;
+      let lastIndex = classesNbr - 1;
+      for (let i = 0; i < classesNbr; i++) {
+        let classeValue = sortedClasses[i];
+        if (i != lastIndex) {
+          if (featureCriteriaValue > classeValue) {
+            criteriaStyle = this.selectedCriteria.preparedMarkerStyles[classeValue];
+          }
+        } else {
+            criteriaStyle = this.selectedCriteria.preparedMarkerStyles[classeValue];
+        }
+      }
+    }
+    return criteriaStyle;
+  }
+
+  private getObservationsCriteriaValues(observations) {
+    const field = this.selectedCriteria.field;
+    const values = (observations[field]) ? observations[field] : [];
+    return values;
+  }
+
+  private toggleStyleFromMap(observations, layer) {
+    console.log("toggleStyleFromMap > layer", layer)
+    console.log("toggleStyleFromMap > observations", observations)
+
+    // Restore initial style
     if (this.selectedLayers.length > 0) {
       this.selectedLayers.forEach((layer) => {
-        (layer as L.GeoJSON).setStyle(originStyle);
+        (layer as L.GeoJSON).setStyle(this.getOriginStyle(layer));
       });
     }
-    // set selected style
 
-    layer.setStyle(selectedStyle);
+    // Set selected style
+    layer.setStyle(this.getSelectedStyle());
     this.selectedLayers = [layer];
   }
 
   private toggleStyleFromList(currentSelectedLayers) {
-    // restore inital style
-    let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
+    // Restore inital style
     if (this.selectedLayers.length > 0) {
       this.selectedLayers.forEach((layer) => {
-        (layer as L.GeoJSON).setStyle(originStyle);
+        (layer as L.GeoJSON).setStyle(this.getOriginStyle(layer));
       });
     }
     // Apply new selected layer
     this.selectedLayers = currentSelectedLayers;
 
-    let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
     this.selectedLayers.forEach((layer) => {
-      (layer as L.GeoJSON).setStyle(selectedStyle);
+      (layer as L.GeoJSON).setStyle(this.getSelectedStyle());
     });
+  }
+
+  private getOriginStyle(layer) {
+    let originStyle = this.getOriginDefaultStyle();
+
+    if (this.selectedCriteria.code != this.defaultCriteriaCode) {
+      originStyle = this.getCriteriaStyle(layer.feature.properties.observations);
+    }
+    return originStyle;
+  }
+
+  private getOriginDefaultStyle() {
+    return (this.selectedCriteria.code == this.areaAggregationCriteriaCode)
+      ? this.originAreasStyle
+      : this.originDefaultStyle;
+  }
+
+  private getSelectedStyle() {
+    let selectedStyle = (this.selectedCriteria.code == this.areaAggregationCriteriaCode)
+      ? this.selectedAreasStyle
+      : this.selectedDefaultStyle;
+    return selectedStyle;
   }
 
   private bindAreasPopup(layer, ids) {

@@ -240,7 +240,12 @@
     "ObsLifeStep": "Stade de vie",
     "DeterMeth": "Méthode de détermination",
     "Map": {
-      "AreasToggleBtn": "Mailles"
+      "AreasToggleBtn": "Mailles",
+      "SeveralValues": "Valeurs multiples",
+      "Criteria": {
+        "default": "Affichage par défaut",
+        "area-aggregation": "Densité d'observations"
+      }
     }
   },
   "Validation": {

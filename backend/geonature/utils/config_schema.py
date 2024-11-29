@@ -449,6 +449,8 @@ class Synthese(Schema):
     )
     # Activate the blurring of sensitive observations. Otherwise, exclude them
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
+    # List of display criteria for the Synthese map
+    MAP_CRITERIA_LIST = fields.Dict()
 
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET

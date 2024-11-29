@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import * as cloneDeep from 'lodash/cloneDeep';
-import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
+import { EventDisplayCriteria } from './synthese-results/synthese-carte/synthese-carte.component';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
@@ -95,12 +95,10 @@ export class SyntheseComponent implements OnInit {
 
     this.searchService.getSyntheseData(formParams, this._fs.selectors).subscribe(
       (data) => {
+        console.log("loadAndStoreData", this._syntheseStore.criteria)
         // mark the form pristine at each search in order to manage store data
-        if (this._fs.selectors.get('format') == 'grouped_geom_by_areas') {
-          this._syntheseStore.gridData = data;
-        } else {
-          this._syntheseStore.pointData = data;
-        }
+        this._syntheseStore.data[this._syntheseStore.criteria.name] = data;
+
         // Store the list of id_synthese for exports
         this._syntheseStore.idSyntheseList = this.extractSyntheseIds(data);
 
@@ -156,39 +154,29 @@ export class SyntheseComponent implements OnInit {
     });
   }
 
-  fetchOrRenderData(event: EventToggle) {
+  fetchOrRenderData(event: EventDisplayCriteria) {
+    this._syntheseStore.criteria = event;
+
     // if the form has change reload data
     // else load data from cache if already loaded
     if (this._fs.searchForm.dirty) {
       this.loadAndStoreData(this._fs.formatParams());
     } else {
-      if (event == 'point') {
-        if (this._syntheseStore.pointData) {
-          this._mapListService.geojsonData = this.simplifyGeoJson(
-            cloneDeep(this._syntheseStore.pointData)
-          );
-          this.formatDataForTable(this._syntheseStore.pointData);
-        } else {
-          this.loadAndStoreData(this._fs.formatParams());
-        }
+      if (this._syntheseStore.data[this._syntheseStore.criteria.name]) {
+        const cachedData = this._syntheseStore.data[this._syntheseStore.criteria.name];
+        this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(cachedData));
+        this.formatDataForTable(cachedData);
       } else {
-        if (this._syntheseStore.gridData) {
-          this._mapListService.geojsonData = this.simplifyGeoJson(
-            cloneDeep(this._syntheseStore.gridData)
-          );
-          this.formatDataForTable(this._syntheseStore.gridData);
-        } else {
-          this.loadAndStoreData(this._fs.formatParams());
-        }
+        this.loadAndStoreData(this._fs.formatParams());
       }
     }
   }
+
   onSearchEvent() {
     // remove limit
     this._fs.selectors = this._fs.selectors.delete('limit');
     // on search button click, clean cache and call loadAndStoreData
-    this._syntheseStore.gridData = null;
-    this._syntheseStore.pointData = null;
+    this._syntheseStore.data = {};
     this.loadAndStoreData(this._fs.formatParams());
   }
 
@@ -209,13 +197,31 @@ export class SyntheseComponent implements OnInit {
         noGeomMessage = true;
       }
 
+      // Extract id_synthese list and critierias values list
       let ids = [];
+      let criteriaValuesList = [];
+      console.log("simplifyGeoJson", feature.properties.observations)
       for (let obs of Object.values(feature.properties.observations)) {
         if (obs['id_synthese']) {
           ids.push(obs['id_synthese']);
         }
+
+        if (this._syntheseStore.criteria.field) {
+          const criteriaField = this._syntheseStore.criteria.field;
+          if (obs[criteriaField]) {
+            const criteriaValue = obs[criteriaField];
+            if (!criteriaValuesList.includes(criteriaValue)) {
+              criteriaValuesList.push(criteriaValue);
+            }
+          }
+        }
       }
+
       feature.properties.observations = { id_synthese: ids };
+      if (criteriaValuesList.length > 0) {
+        const criteriaField = this._syntheseStore.criteria.field;
+        feature.properties.observations[criteriaField] = criteriaValuesList;
+      }
     }
     if (noGeomMessage) {
       this._toasterService.warning(
