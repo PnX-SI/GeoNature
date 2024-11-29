@@ -344,8 +344,12 @@ def associate_actors(
                 #           - take a base value which is enough high to avoid conflicts with INPN users IDs
                 #           - start from the maximum or minimum value allowed by 'serial4' PostgreSQL type
                 #   - whether to add a new user or a new organism...
-                cd_nomenclature_actor_role_for_contact_principal = "1"
-                if cd_nomenclature_actor_role == cd_nomenclature_actor_role_for_contact_principal:
+                cd_nomenclature_actor_role_for_contact_principal_af = "1"
+                if (
+                    type_mtd == "AF"
+                    and cd_nomenclature_actor_role
+                    == cd_nomenclature_actor_role_for_contact_principal_af
+                ):
                     ### Alternative 0 (see TODO above):
                     ###   UNCOMMENT the folowing section if this alternative is eventually chosen
                     # # Get an integer that is equals to 1 less than the minimum of `utilisateurs.id_role` field in database
