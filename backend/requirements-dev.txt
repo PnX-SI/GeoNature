@@ -180,7 +180,9 @@ flask-wtf==1.2.2
     #   -r requirements-common.in
     #   usershub
 fonttools[woff]==4.55.0
-    # via weasyprint
+    # via
+    #   fonttools
+    #   weasyprint
 geoalchemy2==0.16.0
     # via utils-flask-sqlalchemy-geo
 geojson==3.1.0
