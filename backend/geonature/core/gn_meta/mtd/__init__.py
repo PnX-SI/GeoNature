@@ -1,7 +1,6 @@
 import logging
 import time
 from urllib.parse import urljoin
-
 from lxml import etree
 import requests
 
@@ -19,12 +18,18 @@ from pypnusershub.db.models import User
 from sqlalchemy import func, select
 
 from .mtd_utils import associate_actors, sync_af, sync_ds
-from .xml_parser import parse_acquisition_framework, parse_acquisition_framwork_xml, parse_jdd_xml
+from .xml_parser import (
+    parse_acquisition_framework,
+    parse_single_acquisition_framework_xml,
+    parse_jdd_xml,
+    parse_acquisition_frameworks_xml,
+)
 
 # create logger
 logger = logging.getLogger("MTD_SYNC")
+level_log_mtd_sync = config["MTD"]["SYNC_LOG_LEVEL"]
 # config logger
-logger.setLevel(config["MTD"]["SYNC_LOG_LEVEL"])
+logger.setLevel(level_log_mtd_sync)
 handler = logging.StreamHandler()
 formatter = logging.Formatter("%(asctime)s | %(levelname)s : %(message)s", "%Y-%m-%d %H:%M:%S")
 handler.setFormatter(formatter)
@@ -32,10 +37,14 @@ logger.addHandler(handler)
 # avoid logging output dupplication
 logger.propagate = False
 
+if level_log_mtd_sync == "DEBUG":
+    from sqlalchemy import exists
+    from geonature.core.gn_meta.models.datasets import TDatasets
 
 class MTDInstanceApi:
     af_path = "/mtd/cadre/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_path = "/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
+    # TODO: check if there are endpoints to retrieve metadata for a given user and instance, and not only a given user and whatever instance
     ds_user_path = "/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     af_user_path = "/mtd/cadre/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     single_af_path = "/mtd/cadre/export/xml/GetRecordById?id={ID_AF}"  # NOTE: `ID_AF` is actually an UUID and not an ID from the point of view of geonature database.
@@ -60,20 +69,14 @@ class MTDInstanceApi:
     def _get_af_xml(self):
         return self._get_xml(self.af_path)
 
-    def get_af_list(self):
+    def get_af_list(self) -> list:
         xml = self._get_af_xml()
-        _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
-        root = etree.fromstring(xml, parser=_xml_parser)
-        af_iter = root.iterfind(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
-        af_list = []
-        for af in af_iter:
-            af_list.append(parse_acquisition_framework(af))
-        return af_list
+        return parse_acquisition_frameworks_xml(xml)
 
     def _get_ds_xml(self):
         return self._get_xml(self.ds_path)
 
-    def get_ds_list(self):
+    def get_ds_list(self) -> list:
         xml = self._get_ds_xml()
         return parse_jdd_xml(xml)
 
@@ -119,10 +122,7 @@ class MTDInstanceApi:
                 warning_message = f"""{warning_message} > Probably no acquisition framework found for the user with ID '{self.id_role}'"""
             logger.warning(warning_message)
             return []
-        _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
-        root = etree.fromstring(xml, parser=_xml_parser)
-        af_iter = root.findall(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
-        af_list = [parse_acquisition_framework(af) for af in af_iter]
+        af_list = parse_acquisition_frameworks_xml(xml)
         return af_list
 
     def get_single_af(self, af_uuid):
@@ -142,7 +142,7 @@ class MTDInstanceApi:
         url = urljoin(self.api_endpoint, self.single_af_path)
         url = url.format(ID_AF=af_uuid)
         xml = self._get_xml_by_url(url)
-        return parse_acquisition_framwork_xml(xml)
+        return parse_single_acquisition_framework_xml(xml)
 
 
 class INPNCAS:
@@ -197,21 +197,50 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
     list_cd_nomenclature = db.session.scalars(
         select(TNomenclatures.cd_nomenclature).distinct()
     ).all()
+    # TODO: remove following line
     user_add_total_time = 0
     logger.debug("MTD - PROCESS AF LIST")
+    if level_log_mtd_sync == "DEBUG":
+        nb_af = len(af_list)
+        nb_ds = len(ds_list)
+        logger.debug(f"Number of AF to process : {nb_af}")
+        logger.debug(f"Number of DS to process : {nb_ds}")
+        nb_updated_af = 0
+        nb_updated_ds = 0
+        nb_retrieved_new_af = 0
+        nb_retrieved_new_ds = 0
     for af in af_list:
         actors = af.pop("actors")
         with db.session.begin_nested():
             start_add_user_time = time.time()
             add_unexisting_digitizer(af["id_digitizer"] if not id_role else id_role)
+            # TODO: remove following line
             user_add_total_time += time.time() - start_add_user_time
+        if level_log_mtd_sync == "DEBUG":
+            af_already_exists = db.session.scalar(
+                exists().where(TAcquisitionFramework.unique_acquisition_framework_id == af["unique_acquisition_framework_id"]).select()
+            )
         af = sync_af(af)
-        associate_actors(
-            actors,
-            CorAcquisitionFrameworkActor,
-            "id_acquisition_framework",
-            af.id_acquisition_framework,
-        )
+        # TODO: choose whether or not to commit retrieval of the AF before association of actors
+        #   and possibly retrieve an AF without any actor associated to it
+        # Commit here to retrieve the AF even if the association of actors that follows is to fail
+        db.session.commit()
+        # If the AF has not been retrieved, associated actors cannot be retrieved either
+        #   and thus we continue to the next AF
+        if af is not None:
+            if level_log_mtd_sync == "DEBUG":
+                if af_already_exists:
+                    nb_updated_af += 1
+                else:
+                    nb_retrieved_new_af += 1
+            associate_actors(
+                actors,
+                CorAcquisitionFrameworkActor,
+                "id_acquisition_framework",
+                af.id_acquisition_framework,
+                af.unique_acquisition_framework_id,
+            )
+        # TODO: check the following TODO:
         # TODO: remove actors removed from MTD
     db.session.commit()
     logger.debug("MTD - PROCESS DS LIST")
@@ -224,14 +253,43 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
                 add_unexisting_digitizer(ds["id_digitizer"])
             else:
                 add_unexisting_digitizer(id_role)
+            # TODO: remove following line
             user_add_total_time += time.time() - start_add_user_time
+        if level_log_mtd_sync == "DEBUG":
+            ds_already_exists = db.session.scalar(
+                exists()
+                .where(
+                    TDatasets.unique_dataset_id == ds["unique_dataset_id"],
+                )
+                .select()
+            )
         ds = sync_ds(ds, list_cd_nomenclature)
+        # TODO: choose whether or not to commit retrieval of the DS before association of actors
+        ##db.session.commit()
         if ds is not None:
-            associate_actors(actors, CorDatasetActor, "id_dataset", ds.id_dataset)
+            if level_log_mtd_sync == "DEBUG":
+                if ds_already_exists:
+                    nb_updated_ds += 1
+                else:
+                    nb_retrieved_new_ds += 1
+            associate_actors(
+                actors,
+                CorDatasetActor,
+                "id_dataset",
+                ds.id_dataset,
+                ds.unique_dataset_id,
+            )
 
+    # TODO: remove following line
     user_add_total_time = round(user_add_total_time, 2)
+
     db.session.commit()
 
+    if level_log_mtd_sync == "DEBUG":
+        nb_ds_not_retrieved_or_not_updated = nb_ds - nb_updated_ds - nb_retrieved_new_ds
+        logger.debug(f"{nb_ds} DS processed : {nb_updated_ds} DS updated (including no change made) + {nb_retrieved_new_ds} new DS retrieved + {nb_ds_not_retrieved_or_not_updated} DS not retrieved or not updated")
+        nb_af_not_retrieved_or_not_updated = nb_af - nb_updated_af - nb_retrieved_new_af
+        logger.debug(f"{nb_af} AF processed : {nb_updated_af} AF updated (including no change made) + {nb_retrieved_new_af} new AF retrieved + {nb_af_not_retrieved_or_not_updated} AF not retrieved or not updated")
 
 def sync_af_and_ds():
     """
@@ -253,9 +311,12 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
     """
     Method to trigger MTD sync on user authentication.
 
-    Args:
-        id_role (int): The ID of the role (group or user).
-        id_af (str, optional): The ID of the AF (Acquisition Framework). Defaults to None.
+    Parameters
+    -----------
+    id_role : int
+        The ID of the role (group or user).
+    id_af : str, optional
+        The ID of an AF (Acquisition Framework).
     """
 
     logger.info("MTD - SYNC USER : START")
@@ -270,19 +331,24 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
     ds_list = mtd_api.get_ds_user_list()
 
     if not id_af:
-        # Get the unique UUIDs of the acquisition frameworks for the user
-        set_user_af_uuids = {ds["uuid_acquisition_framework"] for ds in ds_list}
-        user_af_uuids = list(set_user_af_uuids)
-
-        # TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l'appel global des AF
-        # Ce code ne fonctionne pas pour cette raison -> AF manquants
-        # af_list = mtd_api.get_af_list()
-        # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
+        # TODO: check the following commented section
+        #   - Choose how to get the list of AF for the user, that will be retrieved
+        # # Get the unique UUIDs of the acquisition frameworks for the user
+        # set_user_af_uuids = {ds["uuid_acquisition_framework"] for ds in ds_list}
+        # user_af_uuids = list(set_user_af_uuids)
+        #
+        # # TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l'appel global des AF
+        # # Ce code ne fonctionne pas pour cette raison -> AF manquants
+        # # af_list = mtd_api.get_af_list()
+        # # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
 
         # Get the list of acquisition frameworks for the user
         # call INPN API for each AF to retrieve info
+        # TODO: check if there is any AF that is retrieved while not being associated to the current instance
+        #   this may theoretically happen as AF from the XML file are not yet filtered with the instance ID
         af_list = mtd_api.get_list_af_for_user()
     else:
+        # TODO: Check the following TODO
         # TODO: handle case where the AF ; corresponding to the provided `id_af` ; does not exist yet in the database
         #   this case should not happend from a user action because the only case where `id_af` is provided is for when the user click to unroll an AF in the module Metadata, in which case the AF already exists in the database.
         #   It would still be better to handle case where the AF does not exist in the database, and to first retrieve the AF from 'INPN Métadonnées' in this case
@@ -293,6 +359,10 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
         af_list = [mtd_api.get_single_af(uuid_af)]
 
         # Filter the datasets based on the specified UUID
+        # TODO: check if there could be a difference for the AF between :
+        #   - information displayed in the frontend page with the list of metadata
+        #   - information retrieved from INPN MTD sync and committed to the database meanwhile
+        #   If so, determine whether it is problematic ; and frontend content should be updated accordingly ; or not
         ds_list = [ds for ds in ds_list if ds["uuid_acquisition_framework"] == uuid_af]
 
     # Process the acquisition frameworks and datasets
