@@ -361,10 +361,6 @@ export class FieldMappingService {
 
     this.mappingFormGroup.reset();
     Object.entries(mappingvalues as FieldMappingValues).forEach(([target, source]) => {
-      // TO KEEP until we have migrated import templates
-      if (typeof source == 'string') {
-        source = { column_src: source };
-      }
       let control = this.mappingFormGroup.get(target);
       if (control) {
         if (typeof source.column_src === 'object') {
