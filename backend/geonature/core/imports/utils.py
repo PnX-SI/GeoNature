@@ -406,6 +406,8 @@ def update_transient_data_from_dataframe(
     updated_cols = ["id_import", "line_no"] + list(updated_cols)
     dataframe.replace({np.nan: None}, inplace=True)
     records = dataframe[updated_cols].to_dict(orient="records")
+    if not records:
+        return
     insert_stmt = pg_insert(transient_table)
     insert_stmt = insert_stmt.values(records).on_conflict_do_update(
         index_elements=updated_cols[:2],

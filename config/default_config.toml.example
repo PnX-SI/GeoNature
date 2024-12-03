@@ -145,7 +145,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     #Information de l'observation à mettre dans l'email
     DISPLAY_EMAIL_DISPLAY_INFO = ["NOM_VERN", "DATE", "COMMUNES", "MEDIAS"]
 
-    # Activer l'affichage des informations liées aux profils de taxons
+    # Activer l'affichage des informations liées aux profils de taxons (dans les modules Validation, Synthèse et Occtax)
     ENABLE_PROFILES = true
 
 # Configuration de l'affichage des cartes dans GeoNature
@@ -166,7 +166,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     ZOOM_ON_CLICK = 16
 
     # activation d'un boutton de géolocalisation sur la carte
-    GEOLOCATION = true
+    GEOLOCATION = false
 
     # Restreindre la recherche OpenStreetMap (sur la carte dans l'encart "Rechercher un lieu")
     # à certains pays. Les pays doivent être au format ISO_3166-1 :
@@ -443,9 +443,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     [SYNTHESE.TAXON_SHEET]
         # Options dédiées à la fiche taxon
-        # Permet d'activer ou non la section "Profile"
+        # Permet d'activer ou non l'onglet "Profil"
         ENABLE_PROFILE = true
-        # Permet d'activer ou non la section "Taxonomy"
+        # Permet d'activer ou non l'onglet "Taxonomie"
         ENABLE_TAXONOMY = true
 
 # Gestion des demandes d'inscription

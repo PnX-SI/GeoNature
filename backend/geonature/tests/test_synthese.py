@@ -1144,28 +1144,28 @@ class TestSynthese:
 
         # Missing area_type parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID),
+            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID),
         )
         assert response.status_code == 400
         assert response.json["description"] == "Missing area_type parameter"
 
         # Invalid area_type parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_INVALID),
+            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID, area_type=AREA_TYPE_INVALID),
         )
         assert response.status_code == 400
         assert response.json["description"] == "Invalid area_type"
 
         # Invalid cd_ref parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_INVALID, area_type=AREA_TYPE_VALID),
+            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_INVALID, area_type=AREA_TYPE_VALID),
         )
         assert response.status_code == 200
         assert response.get_json() == CD_REF_INVALID_STATS
 
         # Invalid cd_ref parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_VALID),
+            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID, area_type=AREA_TYPE_VALID),
         )
         response_json = response.get_json()
         assert response.status_code == 200

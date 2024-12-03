@@ -44,7 +44,7 @@ extensions = [
 ## AUTOAPI
 extensions.append("autoapi.extension")
 autoapi_dirs = ["../backend/geonature", "../backend/dependencies"]
-autoapi_ignore = ["*migrations*", "*tests*"]
+autoapi_ignore = ["*migrations*", "*tests*", "*celery_app.py"]
 autoapi_add_toctree_entry = False
 
 
@@ -54,7 +54,11 @@ templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-source_suffix = [".rst", ".md"]
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".txt": "markdown",
+    ".md": "markdown",
+}
 
 # The master toctree document.
 master_doc = "index"
@@ -97,25 +101,33 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "sphinx_book_theme"
 html_logo = "./images/LogoGeonature.jpg"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
-    "canonical_url": "",
-    "logo_only": False,
-    "display_version": True,
-    "prev_next_buttons_location": "bottom",
-    "style_external_links": False,
-    "style_nav_header_background": "white",
-    # Toc options
-    "collapse_navigation": True,
-    "sticky_navigation": True,
     "navigation_depth": 4,
-    "includehidden": True,
-    "titles_only": False,
+    "use_source_button": True,
+    "repository_provider": "github",
+    "repository_url": "https://github.com/PnX-SI/GeoNature",
+    "path_to_docs": "docs",
+    "repository_branch": "master",
+    "use_repository_button": True,
+    "collapse_navbar": True,
+    "icon_links": [
+        {
+            # Label for this link
+            "name": "GitHub",
+            # URL where the link will redirect
+            "url": "https://github.com/PnX-SI/GeoNature",  # required
+            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
+            "icon": "fa-brands fa-square-github",
+            # The type of image to be used (see below for details)
+            "type": "fontawesome",
+        }
+    ],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -128,7 +140,7 @@ html_static_path = ["_static"]
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-html_sidebars = {"**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"]}
+# html_sidebars = {"**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"]}
 # html_sidebars = {
 #     '**': [
 #         'relations.html',  # needs 'show_related': True theme option to display

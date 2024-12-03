@@ -189,6 +189,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   loadDrawfromGeoJson(geojson) {
     // load leaflet draw from an existing geojson
     // no refire events
+    if (!geojson) {
+      return;
+    }
     let layer;
     if (geojson.type === 'LineString' || geojson.type === 'MultiLineString') {
       const latLng = L.GeoJSON.coordsToLatLngs(
