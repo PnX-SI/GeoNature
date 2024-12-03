@@ -927,16 +927,20 @@ class TestImportsSynthese:
             .unique()
             .scalar_one()
         )
+        fieldmapping_values = fieldmapping.values.copy()
+        fieldmapping_values.update(
+            {"count_max": fieldmapping_values.get("count_max", {}) | {"default_value": 5}}
+        )
         r = self.client.post(
             url_for("import.set_import_field_mapping", import_id=imprt.id_import),
-            data=fieldmapping.values,
+            data=fieldmapping_values,
         )
         assert r.status_code == 200, r.data
         validate_json(
             r.json,
             {"definitions": jsonschema_definitions, "$ref": "#/definitions/import"},
         )
-        assert r.json["fieldmapping"] == fieldmapping.values
+        assert r.json["fieldmapping"] == fieldmapping_values
 
         # Loading step
         r = self.client.post(url_for("import.load_import", import_id=imprt.id_import))
