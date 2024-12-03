@@ -18,7 +18,7 @@ from sqlalchemy.orm.session import Session
 revision = "167d69b42d25"
 down_revision = "f305718b81d3"
 branch_labels = None
-depends_on = ("92f0083cf735",)
+depends_on = ("7b6a578eccd7",)
 
 
 def upgrade():

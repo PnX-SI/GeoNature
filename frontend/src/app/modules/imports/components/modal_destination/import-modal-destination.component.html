@@ -19,7 +19,7 @@
     data-qa="import-new-modal-destinations"
   >
     <pnx-destinations
-      label="{{ 'Import.Destinations' | translate }}"
+      label="{{ 'Import.Destination' | translate }}"
       displayAllowed="true"
       [parentFormControl]="selectDestinationForm"
     ></pnx-destinations>
@@ -52,7 +52,7 @@
 </ng-template>
 
 <button
-  [disabled]="cruvedStore.cruved?.IMPORT?.module_objects?.IMPORT?.cruved?.U == 0"
+  [disabled]="cruvedStore.cruved?.IMPORT?.module_objects?.IMPORT?.cruved?.C == 0"
   mat-fab
   color="primary"
   (click)="onOpenModal(content)"

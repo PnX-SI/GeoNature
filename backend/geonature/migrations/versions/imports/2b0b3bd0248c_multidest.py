@@ -376,7 +376,8 @@ def upgrade():
         f"""
         UPDATE gn_commons.cor_module_dataset
         SET id_module = {ID_MODULE_SYNTHESE}
-        WHERE id_module = {ID_MODULE_IMPORT};
+        WHERE id_module = {ID_MODULE_IMPORT} 
+        AND NOT EXISTS(select 1 from gn_commons.cor_module_dataset b  where b.id_dataset = id_dataset and b.id_module={ID_MODULE_SYNTHESE} );
         """
     )
 

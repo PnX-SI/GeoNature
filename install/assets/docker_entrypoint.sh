@@ -25,15 +25,6 @@ else
         fi
     fi
 
-    if [ "$taxhub" = true ];
-    then
-        geonature db upgrade taxhub@head
-        if [ "$taxhub_samples" = true ];
-        then
-            geonature db upgrade taxhub-admin@head
-        fi
-    fi
-
     geonature upgrade-modules-db
 fi
 

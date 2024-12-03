@@ -1,4 +1,4 @@
-MANUEL UTILISATEUR
+Manuel utilisateur
 ==================
 
 Authentification
@@ -593,3 +593,6 @@ Les permissions dont disposent le groupe ou l'utilisateur sont indiquées en ver
 Pour les utilisateurs sont listées les permissions qui lui sont attribués directement individuellement, mais aussi les permissions effectives qui s'appliquent à lui (selon les groupes auquel il appartient) : 
 
 .. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/75486b5c-a571-4c3a-9fd5-ff57328776c7
+
+
+.. include:: utilisateur/import.rst

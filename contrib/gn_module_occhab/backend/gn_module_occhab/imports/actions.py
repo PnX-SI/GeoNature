@@ -91,13 +91,14 @@ class OcchabImportActions(ImportActions):
             .where(BibFields.destination == imprt.destination)
             .where(BibFields.name_field == "date_max")
         ).scalar_one()
-        updated_cols |= concat_dates(
-            df,
-            datetime_min_col=date_min_field.source_field,
-            datetime_max_col=date_max_field.source_field,
-            date_min_col=date_min_field.source_field,
-            date_max_col=date_max_field.source_field,
-        )
+        if date_min_field.source_field in df and date_max_field.source_field in df:
+            updated_cols |= concat_dates(
+                df,
+                datetime_min_col=date_min_field.source_field,
+                datetime_max_col=date_max_field.source_field,
+                date_min_col=date_min_field.source_field,
+                date_max_col=date_max_field.source_field,
+            )
         return updated_cols
 
     @staticmethod

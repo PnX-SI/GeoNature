@@ -66,14 +66,16 @@ def upgrade():
 
     op.execute(
         """
-        alter table gn_imports.bib_fields
-        ADD CONSTRAINT mandatory_conditions_field_exists CHECK (gn_imports.isInNameFields(mandatory_conditions,id_destination));
+        ALTER TABLE gn_imports.bib_fields
+        ADD CONSTRAINT mandatory_conditions_field_exists CHECK (gn_imports.isInNameFields(mandatory_conditions,id_destination))
+        NOT VALID;
         """
     )
     op.execute(
         """
-        alter table gn_imports.bib_fields
-        ADD CONSTRAINT optional_conditions_field_exists CHECK (gn_imports.isInNameFields(optional_conditions,id_destination));
+        ALTER TABLE gn_imports.bib_fields
+        ADD CONSTRAINT optional_conditions_field_exists CHECK (gn_imports.isInNameFields(optional_conditions,id_destination))
+        NOT VALID;
         """
     )
     conn = op.get_bind()

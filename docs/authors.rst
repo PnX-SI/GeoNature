@@ -1,4 +1,4 @@
-AUTEURS
+Auteurs
 =======
 
 Parc national des Écrins
