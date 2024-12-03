@@ -665,14 +665,11 @@ class FieldMapping(MappingTemplate):
                                 {"type": "string"},
                                 {"type": "array"},
                             ]
-                        }
+                        },
                     },
                     "required": [],
                     "additionalProperties": False,
-                    "anyOf": [
-                        { "required": ["column_src"] },
-                        { "required": ["default_value"] }
-                    ]
+                    "anyOf": [{"required": ["column_src"]}, {"required": ["default_value"]}],
                 }
                 for field in fields
             },

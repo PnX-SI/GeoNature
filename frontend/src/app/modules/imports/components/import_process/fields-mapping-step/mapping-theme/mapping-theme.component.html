@@ -94,7 +94,9 @@
                   *ngSwitchCase="'nomenclature'"
                   [bindAllItem]="true"
                   [codeNomenclatureType]="field.mnemonique"
-                  [parentFormControl]="_fm.mappingFormGroup.get(field.name_field + '_default_value')"
+                  [parentFormControl]="
+                    _fm.mappingFormGroup.get(field.name_field + '_default_value')
+                  "
                 ></pnx-nomenclature>
                 <textarea
                   *ngSwitchCase="'textarea'"
@@ -110,7 +112,11 @@
                 />
               </ng-container>
               <div
-                *ngIf="_fm.mappingFormGroup.controls[field.name_field + '_default_value'].hasError('invalidJSON')"
+                *ngIf="
+                  _fm.mappingFormGroup.controls[field.name_field + '_default_value'].hasError(
+                    'invalidJSON'
+                  )
+                "
                 class="invalid-feedback d-block"
               >
                 JSON non valide

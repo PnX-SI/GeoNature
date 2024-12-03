@@ -88,7 +88,7 @@ class SyntheseImportActions(ImportActions):
         selected_fields = {
             field_name: fields[field_name]
             for field_name, source_field in imprt.fieldmapping.items()
-            if source_field.get('column_src', None) in imprt.columns
+            if source_field.get("column_src", None) in imprt.columns
         }
         init_rows_validity(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
@@ -339,12 +339,15 @@ class SyntheseImportActions(ImportActions):
             if field_name not in fields:  # not a destination field
                 continue
             field = fields[field_name]
-            column_src = source_field.get('column_src', None)
+            column_src = source_field.get("column_src", None)
             if field.multi:
                 if not set(column_src).isdisjoint(imprt.columns):
                     insert_fields |= {field}
             else:
-                if column_src in imprt.columns or source_field.get('default_value', None) is not None:
+                if (
+                    column_src in imprt.columns
+                    or source_field.get("default_value", None) is not None
+                ):
                     insert_fields |= {field}
 
         insert_fields -= {fields["unique_dataset_id"]}  # Column only used for filling `id_dataset`
