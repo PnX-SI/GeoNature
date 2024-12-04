@@ -218,7 +218,15 @@ class SyntheseImportActions(ImportActions):
         do_nomenclatures_mapping(
             imprt,
             entity,
-            {field_name: fields[field_name] for field_name, _ in imprt.fieldmapping.items()},
+            {
+                field_name: fields[field_name]
+                for field_name, mapping in imprt.fieldmapping.items()
+                if field_name in fields
+                and (
+                    mapping.get("column_src", None) in imprt.columns
+                    or mapping.get("default_value") is not None
+                )
+            },
             fill_with_defaults=current_app.config["IMPORT"][
                 "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
             ],

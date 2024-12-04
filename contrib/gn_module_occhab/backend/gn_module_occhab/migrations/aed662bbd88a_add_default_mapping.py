@@ -17,7 +17,7 @@ from sqlalchemy.ext.mutable import MutableDict
 revision = "aed662bbd88a"
 down_revision = "69494f900cab"
 branch_labels = None
-depends_on = None
+depends_on = "e43b01a18850"
 
 
 def get_models(conn):
@@ -52,26 +52,28 @@ def upgrade():
         sa.insert(FieldMapping).values(
             id=id_occhab_mapping,
             values={
-                "WKT": "geometry",
-                "altitude_max": "altitude_max",
-                "altitude_min": "altitude_min",
-                "area": "area",
-                "cd_hab": "cd_hab",
-                "comment": "comment",
-                "date_max": "date_fin",
-                "date_min": "date_debut",
-                "depth_max": "depth_max",
-                "depth_min": "depth_min",
-                "id_nomenclature_area_surface_calculation": "methode_calcul_surface",
-                "id_nomenclature_exposure": "exposition",
-                "id_nomenclature_geographic_object": "nature_objet_geo",
-                "id_station_source": "id_station",
-                "nom_cite": "nom_cite",
-                "observers_txt": "observateurs",
-                "technical_precision": "precision_technique",
-                "unique_dataset_id": "uuid_jdd",
-                "unique_id_sinp_habitat": "uuid_habitat",
-                "unique_id_sinp_station": "uuid_station",
+                "WKT": {"column_src": "geometry"},
+                "altitude_max": {"column_src": "altitude_max"},
+                "altitude_min": {"column_src": "altitude_min"},
+                "area": {"column_src": "area"},
+                "cd_hab": {"column_src": "cd_hab"},
+                "comment": {"column_src": "comment"},
+                "date_max": {"column_src": "date_fin"},
+                "date_min": {"column_src": "date_debut"},
+                "depth_max": {"column_src": "depth_max"},
+                "depth_min": {"column_src": "depth_min"},
+                "id_nomenclature_area_surface_calculation": {
+                    "column_src": "methode_calcul_surface"
+                },
+                "id_nomenclature_exposure": {"column_src": "exposition"},
+                "id_nomenclature_geographic_object": {"column_src": "nature_objet_geo"},
+                "id_station_source": {"column_src": "id_station"},
+                "nom_cite": {"column_src": "nom_cite"},
+                "observers_txt": {"column_src": "observateurs"},
+                "technical_precision": {"column_src": "precision_technique"},
+                "unique_dataset_id": {"column_src": "uuid_jdd"},
+                "unique_id_sinp_habitat": {"column_src": "uuid_habitat"},
+                "unique_id_sinp_station": {"column_src": "uuid_station"},
             },
         )
     )
@@ -92,39 +94,41 @@ def upgrade():
         sa.insert(FieldMapping).values(
             id=id_mapping_sinp,
             values={
-                "WKT": "WKT",
-                "altitude_max": "altMax",
-                "altitude_min": "altMin",
-                "area": "surf",
-                "cd_hab": "cdHab",
-                "comment": "comment",
-                "date_max": "dateFin",
-                "date_min": "dateDebut",
-                "depth_max": "profMax",
-                "depth_min": "profMin",
-                "determiner": "persDeterm",
-                "id_habitat": "idOrigine",
-                "id_nomenclature_abundance": "abondHab",
-                "id_nomenclature_area_surface_calculation": "methodeCalculSurface",
-                "id_nomenclature_collection_technique": "techCollec",
-                "id_nomenclature_community_interest": "habitatInteretCommunautaire ",
-                "id_nomenclature_determination_type": "typeDeterm",
-                "id_nomenclature_exposure": "exposition",
-                "id_nomenclature_geographic_object": "natObjGeo",
-                "id_nomenclature_sensitivity": "sensibiliteHab",
-                "id_station_source": "idOrigEvt",
-                "is_habitat_complex": "mosaique",
-                "nom_cite": "nomCite",
-                "numerization_scale": "echelleNumerisation",
-                "observers_txt": "observer",
-                "precision": "precisGeo",
-                "recovery_percentage": "recouv",
-                "station_name": "nomStation",
-                "technical_precision": "precisionTechnique",
-                "unique_dataset_id": "jddMetaId",
-                "unique_id_sinp_grp_phyto": "relevePhyto",
-                "unique_id_sinp_habitat": "idSinpHab",
-                "unique_id_sinp_station": "permId",
+                "WKT": {"column_src": "WKT"},
+                "altitude_max": {"column_src": "altMax"},
+                "altitude_min": {"column_src": "altMin"},
+                "area": {"column_src": "surf"},
+                "cd_hab": {"column_src": "cdHab"},
+                "comment": {"column_src": "comment"},
+                "date_max": {"column_src": "dateFin"},
+                "date_min": {"column_src": "dateDebut"},
+                "depth_max": {"column_src": "profMax"},
+                "depth_min": {"column_src": "profMin"},
+                "determiner": {"column_src": "persDeterm"},
+                "id_habitat": {"column_src": "idOrigine"},
+                "id_nomenclature_abundance": {"column_src": "abondHab"},
+                "id_nomenclature_area_surface_calculation": {"column_src": "methodeCalculSurface"},
+                "id_nomenclature_collection_technique": {"column_src": "techCollec"},
+                "id_nomenclature_community_interest": {
+                    "column_src": "habitatInteretCommunautaire "
+                },
+                "id_nomenclature_determination_type": {"column_src": "typeDeterm"},
+                "id_nomenclature_exposure": {"column_src": "exposition"},
+                "id_nomenclature_geographic_object": {"column_src": "natObjGeo"},
+                "id_nomenclature_sensitivity": {"column_src": "sensibiliteHab"},
+                "id_station_source": {"column_src": "idOrigEvt"},
+                "is_habitat_complex": {"column_src": "mosaique"},
+                "nom_cite": {"column_src": "nomCite"},
+                "numerization_scale": {"column_src": "echelleNumerisation"},
+                "observers_txt": {"column_src": "observer"},
+                "precision": {"column_src": "precisGeo"},
+                "recovery_percentage": {"column_src": "recouv"},
+                "station_name": {"column_src": "nomStation"},
+                "technical_precision": {"column_src": "precisionTechnique"},
+                "unique_dataset_id": {"column_src": "jddMetaId"},
+                "unique_id_sinp_grp_phyto": {"column_src": "relevePhyto"},
+                "unique_id_sinp_habitat": {"column_src": "idSinpHab"},
+                "unique_id_sinp_station": {"column_src": "permId"},
             },
         )
     )
@@ -138,7 +142,7 @@ def downgrade():
 
     cte = (
         sa.select(MappingTemplate.c.id)
-        .where(MappingTemplate.c.label.in_(["OccHab", "Occurrences d'habitats SINP"]))
+        .where(MappingTemplate.c.label.in_(["Occhab", "Occurrences d'habitats SINP"]))
         .cte("mapping_cte")
     )
     op.execute(sa.delete(FieldMapping).where(FieldMapping.c.id == cte.c.id))

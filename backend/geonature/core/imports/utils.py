@@ -464,8 +464,11 @@ def get_mapping_data(import_: TImports, entity: Entity):
     fields = {ef.field.name_field: ef.field for ef in entity.fields}
     selected_fields = {
         field_name: fields[field_name]
-        for field_name, source_field in import_.fieldmapping.items()
-        if source_field in import_.columns and field_name in fields
+        for field_name, mapping in import_.fieldmapping.items()
+        if (
+            mapping.get("column_src") in import_.columns or mapping.get("default_value") is not None
+        )
+        and field_name in fields
     }
     source_cols = set()
     for field in selected_fields.values():
