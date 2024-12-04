@@ -66,9 +66,10 @@ def convert_to_datetime(value_raw):
     return converted_date
 
 
-def convert_to_uuid(value, version=4):
+def convert_to_uuid(value):
     try:
-        return UUID(str(value), version=version).hex
+        UUID(str(value))
+        return str(value)
     except ValueError:
         return None
 
