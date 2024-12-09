@@ -5,14 +5,13 @@ on:
       - master
       - hotfixes
       - develop
-      - feat/import
-      - hotfix/geonature2_16_4
+      - feat/import-monitorings
   pull_request:
     branches:
       - master
       - hotfixes
       - develop
-      - feat/import
+      - feat/import-monitorings
 
 jobs:
   mount_app_and_run_cypress:
