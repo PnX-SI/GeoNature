@@ -39,20 +39,6 @@
     </div>
   </div>
   <div
-    class="panel panel-container panel-top"
-    *ngIf="isExistBlockToDisplay"
-  >
-    <mat-tab-group>
-      <mat-tab
-        *ngIf="config.HOME.DISPLAY_LATEST_DISCUSSIONS"
-        label="Discussions"
-      >
-        <pnx-home-discussions></pnx-home-discussions>
-      </mat-tab>
-      <!-- TODO: Autres onglets à ajouter (Dernière validations etc) -->
-    </mat-tab-group>
-  </div>
-  <div
     *ngIf="showGeneralStat"
     class="panel panel-container panel-top"
   >
@@ -128,6 +114,20 @@
         </small>
       </div>
     </div>
+  </div>
+  <div
+    class="panel panel-container panel-top"
+    *ngIf="isExistBlockToDisplay"
+  >
+    <mat-tab-group>
+      <mat-tab
+        *ngIf="config.HOME.DISPLAY_LATEST_DISCUSSIONS"
+        label="Discussions"
+      >
+        <pnx-home-discussions></pnx-home-discussions>
+      </mat-tab>
+      <!-- TODO: Autres onglets à ajouter (Dernière validations etc) -->
+    </mat-tab-group>
   </div>
 </div>
 
