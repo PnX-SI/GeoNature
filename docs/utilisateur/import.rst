@@ -34,7 +34,7 @@ Pour réaliser un import dans une des destinations de GeoNature, vous devez :
     champs remplis, cliquez sur le bouton "Suivant". 
 
 .. note:: 
-        Si aucun jeu de données n'apparait dans la liste déroulante, vérifier que le jeu de données souhaités est bien activé et associé à la destination souhaitée.
+        Si aucun jeu de données n'apparait dans la liste déroulante, vérifier que le jeu de données souhaité est bien activé et associé à la destination souhaitée.
 
 .. image:: images/import/import_steps/02_upload_file.png
 
@@ -56,7 +56,7 @@ paramètres seront automatiquement détectés par GeoNature. Une fois, les champ
 .. image:: images/import/import_steps/04_01_mapping_cols.png
 
 .. note::
-    Le module contient par défaut un mapping correspondant à un fichier exporté au format par défaut des modules Synthèse et Occhab.
+    Chaque destination contient un mapping par défaut. Ce dernier s'appuie sur les fichiers exportés par le module depuis l'interface de saisie.
 
     À la fin du formulaire, vous pouvez visualiser le nombre de correspondances effectuées
     et les colonnes du fichier source qui n'ont pas été utilisées.
@@ -96,7 +96,7 @@ Modifier un import
 Pour modifier un import, rendez-vous dans la "Liste des imports", cliquez sur l'icone en forme de "crayon" dans la colonne "Actions".
 
 .. danger::
-    La modification d'un import terminé provoquera la suppression des données importées dans la table temporaire et dans la destination.
+    La modification d'un import terminé provoquera la suppression des données importées dans la table temporaire et dans la table de destination.
 
 Supprimer un import
 """""""""""""""""""
@@ -104,14 +104,14 @@ Supprimer un import
 Pour supprimer un import, il suffit de cliquer sur l'icone en forme de poubelle dans la colonne "Actions".
 
 .. danger:: 
-    La suppression d'un import terminé entrainera la suppression des données dans la destination.
+    La suppression d'un import terminé entrainera la suppression des données dans la table de destination.
 
 Exemple de fichier CSV pour l'import Occhab
 """""""""""""""""""""""""""""""""""""""""""
 
 Ci-dessous un exemple de fichier CSV avec les colonnes et le contenu attendu dans l'import de données vers Occhab.
 
-L'import se fait dans un fichier tableur à plat mais permet d'importer des stations comprenant plusieurs habitats chacunes, mais aussi d'importer des habitats à associer à des stations existantes dans la BDD.
+Le fichier CSV pour un import Occhab représente un tableau à plat des données des stations et de leurs habitats. Par conséquent, les données d'une station doivent être répétées autant de fois que son nombre d'habitats.
 
 .. csv-table:: 
    :file: ../table/occhab-exemple.csv
