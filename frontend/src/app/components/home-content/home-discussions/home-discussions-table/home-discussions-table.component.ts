@@ -35,7 +35,7 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   readonly DEFAULT_PAGINATION: PaginationItem = {
     totalItems: 0,
     currentPage: 1,
-    perPage: 2,
+    perPage: 4,
   };
   readonly DEFAULT_SORTING: SortingItem = {
     sort: 'desc',
