@@ -113,19 +113,8 @@ Ci-dessous un exemple de fichier CSV avec les colonnes et le contenu attendu dan
 
 L'import se fait dans un fichier tableur à plat mais permet d'importer des stations comprenant plusieurs habitats chacunes, mais aussi d'importer des habitats à associer à des stations existantes dans la BDD.
 
-+------------+--------------+------------------+----------+--------+-----------------------------------------------------------------------------------------------------------------------+
-| id_origine | UUID_station | geometry_station | UUID_hab | cd_hab | STATUTS                                                                                                               |
-+============+==============+==================+==========+========+=======================================================================================================================+
-| 5          |              | POINT (30 10)    |          | 27     | Ajout d’une station à laquelle on associe un habitat (leurs UUIDs seront générés)                                     |
-| 5          |              | POINT (30 10)    |          | 32     | Ajout d’un second habitat dans la station précédemment créée (l’UUID habitat sera généré)                             |
-|            | AAA          | POINT (15 10)    |          | 18     | Ajout d’une station à l'aquelle on associe un habitat (génération de l’UUID de l’habitat)                             |
-|            | CCC          | POINT (9 5)      |          | 11     | Ajout d’une station à laquelle on associe un habitat (génération de l’UUID de l’habitat uniquement)                   |
-|            | CCC          |                  |          | 15     | Ajout d’un habitat dans cette station (répéter les informations d’une station déclarée dans le fichier est optionnel) |
-|            | XXX          |                  |          | 22     | Ajout d’un habitat dans une station existante dans la BDD (identifié par l’UUID XXX)                                  |
-| 6          |              | POINT (9 4)      |          |        | Ajout d’une station uniquement                                                                                        |
-| 6          |              | POINT (9 4)      |          |        | Ligne ignorée car doublon de la ligne 8                                                                               |
-|            | BBB          | POINT (9 4)      |          | 55     | Provoque une erreur car il y a une incohérence dans les données d’une station sur différentes lignes                  |
-|            | BBB          | POINT (20 3)     |          | 58     | Provoque une erreur car il y a une incohérence dans les données d’une station sur différentes lignes                  |
-+------------+--------------+------------------+----------+--------+-----------------------------------------------------------------------------------------------------------------------+
+.. csv-table:: 
+   :file: ../table/occhab-exemple.csv
+   :header-rows: 1
 
 Plus d'exemples sont disponibles dans le fichier ``valid_file.csv`` dans le dossier ``backend/geonature/tests/imports/files/occhab/valid_file.csv``.
