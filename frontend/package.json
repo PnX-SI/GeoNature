@@ -54,6 +54,7 @@
     "leaflet.markercluster": "^1.5.3",
     "lodash": "^4.17.21",
     "material-design-icons": "^3.0.1",
+    "material-symbols": "^0.27.2",
     "moment": "^2.30.1",
     "ng2-charts": "^4.1.1",
     "ng2-cookies": "^1.0.12",
