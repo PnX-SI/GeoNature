@@ -203,6 +203,7 @@ export class FormService {
     currentControl: AbstractControl
   ): boolean {
     let result = false;
+    if (referenceControlNames.length === 0) return true;
     referenceControlNames.forEach((referenceControlName) => {
       const referenceControl = currentControl.parent.get(referenceControlName);
 
