@@ -267,7 +267,7 @@ export class FieldMappingService {
             .setValidators(
               this._formservice.RequiredIfControlIsNotNullValidator(
                 mandatory_conditions,
-                this.fieldsByEntity.get(entity.label)
+                this.targetFieldsData.length > 1 ? this.fieldsByEntity.get(entity.label) : []
               )
             );
         }
@@ -277,14 +277,16 @@ export class FieldMappingService {
             .setValidators(
               this._formservice.NotRequiredIfControlIsNotNullValidator(
                 optional_conditions,
-                this.fieldsByEntity.get(entity.label)
+                this.targetFieldsData.length > 1 ? this.fieldsByEntity.get(entity.label) : []
               )
             );
         } else if (mandatory) {
           this.mappingFormGroup
             .get(name_field)
             .setValidators(
-              this._formservice.NotRequiredIfNoOther(this.fieldsByEntity.get(entity.label))
+              this._formservice.NotRequiredIfNoOther(
+                this.targetFieldsData.length > 1 ? this.fieldsByEntity.get(entity.label) : []
+              )
             );
         }
 
