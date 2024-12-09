@@ -2406,7 +2406,8 @@ Une observation sera validée automatiquement si elle rencontre les conditions s
 
 Si ces conditions sont remplies, alors le statut de validation de l'observation est mis à ``Probable``.
 
-**Notes** Si le comportement de validation automatique ne vous correspond pas, il est possible de définir soi-même ce dernier dans la base de données sous forme d'une fonction. Reportez-vous à la section `Modification de la fonction de validation automatique`_ pour plus d'informations.
+.. note::
+  Si le comportement de validation automatique ne vous correspond pas, il est possible de définir soi-même ce dernier dans la base de données sous forme d'une fonction. Reportez-vous à la section `Modification de la fonction de validation automatique`_ pour plus d'informations.
 
 Modification de la périodicité de la validation automatique
 ```````````````````````````````````````````````````````````
@@ -2446,4 +2447,4 @@ Les permissions du module TaxHub peuvent être reglées aux trois niveaux (objet
 - ATTRIBUTS : permet de voir / créer / modifier / supprimer des attributs de taxons
 
 
-.. include:: admin/import_admin.rst
+.. include:: admin/import-admin.rst

@@ -21,6 +21,7 @@ Pour qu’un utilisateur puisse mener au bout un import, il doit posséder à mi
 * Voir les imports (R)
 * Voir des mappings (R)
 * Droit de créer/saisir dans le module de destination (C dans OccHab par ex.)
+* Voir les méta-données (R)
 
 **Jeu de données.** Un import s’effectue dans un jeu de données, par conséquent, ce dernier doit :
 
@@ -115,6 +116,8 @@ Contrôles de données
 """"""""""""""""""""
 
 **Erreurs**
+
+Le tableau ci-dessous liste les codes d'erreur et leur description.
 
  =================================== ============================================================================================================================================================================================================================================================================================================== 
   Code Erreur                         Description                                                                                                                                                                                                                                                                                                   
