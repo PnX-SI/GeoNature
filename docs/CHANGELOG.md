@@ -14,7 +14,7 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-- [TaxHub] Intégration de TaxHub ([2.0.0 Release Note](https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0)) à GeoNature (#3150)
+- [TaxHub] Intégration de TaxHub ([2.0.0 Release Note](https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0)) à GeoNature (#3280)
   - La gestion des taxons est maintenant intégrée dans le module Admin de GeoNature. 
 - [Import] Refonte et intégration du module Import dans GeoNature (#3269)
   - Ajout d'une nouvelle destination : Occhab
@@ -70,7 +70,7 @@ CHANGELOG
 
 Si vous mettez à jour GeoNature : 
 - Si vous utilisez le module Monitoring, mettez le à jour en version 1.0.0 minimum en même temps que vous mettez à jour GeoNature
-- L'application TaxHub a été integrée dans le module Admin de GeoNature et accessible depuis le menu latéral :
+- L'application TaxHub a été integrée dans le module "Admin" de GeoNature :
     - Les permissions basées sur les profils 1-6 ont été rapatriées et adaptées au modèle de permissions de GeoNature. 
     TaxHub est désormais un "module" GeoNature et dispose des objets de permissions `TAXONS`, `THEMES`, `LISTES` et `ATTRIBUTS`. Les utilisateurs ayant anciennement des droits 6 dans TaxHub ont toutes les permissions sur les objets pré-cités. Les personnes ayant des droits inférieurs à 6 et ayant un compte sur TaxHub ont maintenant des permissions sur l'objet `TAXON` (voir et éditer des taxons = ajouter des médias et des attributs)
     - L'API de TaxHub est désormais disponible à l'URL `<URL_GEONATURE>/api/taxhub/api>` (le dernier /api est une rétrocompatibilité et sera enlevé de manière transparente dans les prochaines versions)
@@ -86,24 +86,22 @@ Si vous mettez à jour GeoNature :
       RewriteEngine on
       RewriteRule   "^/static/medias/(.+)" "https://geonature.<MON_DOMAINE.EXT>/api/medias/taxhub/$1"  [R,L]
       ```
-    - L'application TaxHub n'est plus nécessaire, si vous voulez utilisez TaxHub uniquement au travers de GeoNature, effectuer les actions suivantes : 
+    - L'application TaxHub indépendante n'est plus nécessaire, si vous voulez utilisez TaxHub uniquement au travers de GeoNature, effectuer les actions suivantes : 
         - Suppression de la branche alembic taxhub : `geonature db downgrade taxhub-standalone@base`
-
+        - Suppression du dossier spécifique de TaxHub qui n'est plus utile (à priori dans `/home/monuser/taxhub/`) XXXXX à faire après la MAJ de GN car on doit d'abord rapatrier les médias, la config ??? de TH et autres ????
     - Les commandes de TaxHub sont maintenant acessibles depuis la commande `geonature`
-    ```shell
-    geonature taxref info # avant flask taxref info
-    geonature taxref enable-bdc-statut-text # avant flask taxref enable-bdc-statut-text
-    geonature taxref migrate-to-v17 # flask taxref migrate-to-v17
-    ```
-
+      ```shell
+      geonature taxref info # avant flask taxref info
+      geonature taxref enable-bdc-statut-text # avant flask taxref enable-bdc-statut-text
+      geonature taxref migrate-to-v17 # flask taxref migrate-to-v17
+      ```
     - L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs de TH sont également centralisés dans le fichier de log de GeoNature
     - **⚠️Important⚠️** ! Ajouter l'extension `ltree` à votre base de données : `sudo -n -u postgres -s psql -d <nom_basededonnee_de_votregeonature> -c "CREATE EXTENSION IF NOT EXISTS ltree;"`
-
 - Le module Import a été intégré dans le coeur de GeoNature
    - Si vous aviez installé le module externe Import, l'ancienne version sera désinstallée lors de la mise à jour de GeoNature.
    - Si vous n'aviez pas installé le module externe Import, il sera disponible après la mise à jour vers cette nouvelle version de GeoNature. Vous pouvez configurer les permissions de vos utilisateurs si vous souhaitez qu'ils y accédent.
-   - La gestion des permissions et des JDD associés aux module a évolué. La migration est gérée automatiquement lors de la mise à jour pour garantir un fonctionnement identique.
-   - Reporter l'éventuelle configuration de votre module Import dans le fichier de configuration de GeoNature (dans le bloc import, voir dans le fichier default toml)
+   - La gestion des permissions et des JDD associés aux modules a évolué. La migration est gérée automatiquement lors de la mise à jour pour garantir un fonctionnement identique.
+   - Reporter l'éventuelle configuration de votre module Import dans le fichier de configuration de GeoNature (dans le bloc `[IMPORT]` du fichier `geonature_config.toml`, voir dans le fichier `default_config.toml.example`)
 - La synchronisation avec le service MTD de l'INPN n'est plus intégrée dans le code de GeoNature, elle a été déplacée dans un module externe : https://github.com/PnX-SI/mtd_sync
    - Si vous l'utilisiez, supprimer les variables de configuration suivantes du fichier `geonature_config.toml` : 
      - `XML_NAMESPACE`, `MTD_API_ENDPOINT`
