@@ -6,11 +6,13 @@ on:
       - master
       - hotfixes
       - develop
+      - feat/import-monitorings
   pull_request:
     branches:
       - master
       - hotfixes
       - develop
+      - feat/import-monitorings
 
 jobs:
   build:
