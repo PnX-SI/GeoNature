@@ -9,6 +9,7 @@ on:
       - master
       - hotfixes
       - develop
+      - feat/import-monitorings
   pull_request:
     paths:
       - "backend/**"
@@ -17,6 +18,7 @@ on:
       - master
       - hotfixes
       - develop
+      - feat/import-monitorings
 
 jobs:
   build:
