@@ -269,7 +269,7 @@ pandas==2.2.3
     # via
     #   -r requirements-common.in
     #   bokeh
-pillow==10.4.0
+pillow==9.5.0
     # via
     #   -r requirements-common.in
     #   bokeh
