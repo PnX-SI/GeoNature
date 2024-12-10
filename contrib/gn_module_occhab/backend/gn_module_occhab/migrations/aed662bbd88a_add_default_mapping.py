@@ -138,7 +138,7 @@ def downgrade():
 
     cte = (
         sa.select(MappingTemplate.c.id)
-        .where(MappingTemplate.c.label.in_(["OccHab", "Occurrences d'habitats SINP"]))
+        .where(MappingTemplate.c.label.in_(["Occhab", "Occurrences d'habitats SINP"]))
         .cte("mapping_cte")
     )
     op.execute(sa.delete(FieldMapping).where(FieldMapping.c.id == cte.c.id))
