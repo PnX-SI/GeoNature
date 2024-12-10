@@ -227,7 +227,7 @@ export class ImportListComponent implements OnInit {
 
   hasStatistics(row) {
     const statistics = this._getStatistics(row);
-    return statistics && Object.keys(statistics).length;
+    return statistics && Object.keys(statistics).length > 1;
   }
 
   /**
