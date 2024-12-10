@@ -1,0 +1,1078 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.checks.sql.extra &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/checks/sql/extra';</script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.checks.sql.extra</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.checks.errors</span> <span class="kn">import</span> <span class="n">ImportCodeError</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">TImports</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql.expression</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">column</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">aliased</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.imports.checks.sql.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_duplicates_query</span><span class="p">,</span>
+    <span class="n">report_erroneous_rows</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">apptax.taxonomie.models</span> <span class="kn">import</span> <span class="n">Taxref</span><span class="p">,</span> <span class="n">cor_nom_liste</span>
+<span class="kn">from</span> <span class="nn">pypn_habref_api.models</span> <span class="kn">import</span> <span class="n">Habref</span>
+
+
+<div class="viewcode-block" id="check_referential">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_referential">[docs]</a>
+<span class="k">def</span> <span class="nf">check_referential</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">reference_field</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">,</span>
+    <span class="n">error_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">reference_table</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">sa</span><span class="o">.</span><span class="n">Table</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the referential integrity of a column in the transient table.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    field : BibFields</span>
+<span class="sd">        The field to check.</span>
+<span class="sd">    reference_field : BibFields</span>
+<span class="sd">        The reference field to check.</span>
+<span class="sd">    error_type : str</span>
+<span class="sd">        The type of error encountered.</span>
+<span class="sd">    reference_table : Optional[sa.Table], optional</span>
+<span class="sd">        The reference table to check. If not provided, it will be inferred from the reference_field.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">dest_field</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">reference_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">reference_table</span> <span class="o">=</span> <span class="n">reference_field</span><span class="o">.</span><span class="n">class_</span>
+    <span class="c1"># We outerjoin the referential, and select rows where there is a value in synthese field</span>
+    <span class="c1"># but no value in referential, which means no value in the referential matched synthese field.</span>
+    <span class="n">cte</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span>
+            <span class="n">join</span><span class="p">(</span>
+                <span class="n">transient_table</span><span class="p">,</span>
+                <span class="n">reference_table</span><span class="p">,</span>
+                <span class="n">dest_field</span> <span class="o">==</span> <span class="n">reference_field</span><span class="p">,</span>
+                <span class="n">isouter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dest_field</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">reference_field</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">cte</span><span class="p">(</span><span class="s2">&quot;invalid_ref&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">error_type</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span> <span class="o">==</span> <span class="n">cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_cd_nom">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_cd_nom">[docs]</a>
+<span class="k">def</span> <span class="nf">check_cd_nom</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">list_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the existence of a cd_nom in the Taxref referential.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    field : BibFields</span>
+<span class="sd">        The field to check.</span>
+<span class="sd">    list_id : Optional[int], optional</span>
+<span class="sd">        The list to filter on, by default None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Filter out on a taxhub list if provided</span>
+    <span class="k">if</span> <span class="n">list_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">reference_table</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span>
+            <span class="n">Taxref</span><span class="p">,</span>
+            <span class="n">cor_nom_liste</span><span class="p">,</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="n">cor_nom_liste</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">list_id</span><span class="p">,</span> <span class="n">cor_nom_liste</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">cd_nom</span> <span class="o">==</span> <span class="n">Taxref</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">reference_table</span> <span class="o">=</span> <span class="n">Taxref</span>
+    <span class="n">check_referential</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">field</span><span class="p">,</span>
+        <span class="n">Taxref</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">,</span>
+        <span class="n">ImportCodeError</span><span class="o">.</span><span class="n">CD_NOM_NOT_FOUND</span><span class="p">,</span>
+        <span class="n">reference_table</span><span class="o">=</span><span class="n">reference_table</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_cd_hab">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_cd_hab">[docs]</a>
+<span class="k">def</span> <span class="nf">check_cd_hab</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the existence of a cd_hab in the Habref referential.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    field : BibFields</span>
+<span class="sd">        The field to check.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_referential</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">Habref</span><span class="o">.</span><span class="n">cd_hab</span><span class="p">,</span> <span class="n">ImportCodeError</span><span class="o">.</span><span class="n">CD_HAB_NOT_FOUND</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_altitudes">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.generate_altitudes">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_altitudes</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">geom_local_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">alt_min_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">alt_max_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate the altitudes based on geomatries, and given altitues in an import.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to generate altitudes for.</span>
+<span class="sd">    geom_local_field : BibFields</span>
+<span class="sd">        The field representing the geometry in the destination import&#39;s transient table.</span>
+<span class="sd">    alt_min_field : BibFields</span>
+<span class="sd">        The field representing the minimum altitude in the destination import&#39;s transient table.</span>
+<span class="sd">    alt_max_field : BibFields</span>
+<span class="sd">        The field representing the maximum altitude in the destination import&#39;s transient table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">geom_col</span> <span class="o">=</span> <span class="n">geom_local_field</span><span class="o">.</span><span class="n">dest_field</span>
+    <span class="n">altitudes</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span>
+            <span class="n">column</span><span class="p">(</span><span class="s2">&quot;altitude_min&quot;</span><span class="p">),</span>
+            <span class="n">column</span><span class="p">(</span><span class="s2">&quot;altitude_max&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ref_geo</span><span class="o">.</span><span class="n">fct_get_altitude_intersection</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">geom_col</span><span class="p">]))</span>
+        <span class="o">.</span><span class="n">lateral</span><span class="p">(</span><span class="s2">&quot;altitudes&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">cte</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">,</span>
+            <span class="n">altitudes</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">altitude_min</span><span class="p">,</span>
+            <span class="n">altitudes</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">altitude_max</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">geom_col</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alt_min_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alt_max_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">cte</span><span class="p">(</span><span class="s2">&quot;cte&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span> <span class="o">==</span> <span class="n">cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">values</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alt_min_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]:</span> <span class="n">sa</span><span class="o">.</span><span class="n">case</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alt_min_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">altitude_min</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">else_</span><span class="o">=</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alt_min_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">],</span>
+                <span class="p">),</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alt_max_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]:</span> <span class="n">sa</span><span class="o">.</span><span class="n">case</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alt_max_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">altitude_max</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">else_</span><span class="o">=</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alt_max_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">],</span>
+                <span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_duplicate_uuid">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_duplicate_uuid">[docs]</a>
+<span class="k">def</span> <span class="nf">check_duplicate_uuid</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">uuid_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if there is already a record with the same uuid in the transient table. Include an error in the report for each entry with a uuid dupplicated.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : Import</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    uuid_field : BibFields</span>
+<span class="sd">        The field to check.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">uuid_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="n">get_duplicates_query</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">uuid_col</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span><span class="o">.</span><span class="n">isnot</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+            <span class="n">uuid_col</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">DUPLICATE_UUID</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span> <span class="o">==</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">lines</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_existing_uuid">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_existing_uuid">[docs]</a>
+<span class="k">def</span> <span class="nf">check_existing_uuid</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">uuid_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">whereclause</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">true</span><span class="p">(),</span>
+    <span class="n">skip</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if there is already a record with the same uuid in the destination table.</span>
+<span class="sd">    Include an error in the report for each existing uuid in the destination table.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : Import</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    uuid_field : BibFields</span>
+<span class="sd">        The field to check.</span>
+<span class="sd">    whereclause : BooleanClause</span>
+<span class="sd">        The WHERE clause to apply to the check.</span>
+<span class="sd">    skip: Boolean</span>
+<span class="sd">        Raise SKIP_EXISTING_UUID instead of EXISTING_UUID and set row validity to None (do not import)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">dest_table</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_destination_table</span><span class="p">()</span>
+    <span class="n">error_type</span> <span class="o">=</span> <span class="s2">&quot;SKIP_EXISTING_UUID&quot;</span> <span class="k">if</span> <span class="n">skip</span> <span class="k">else</span> <span class="s2">&quot;EXISTING_UUID&quot;</span>
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">error_type</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="o">==</span> <span class="n">dest_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">],</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">whereclause</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">level_validity_mapping</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ERROR&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;WARNING&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_missing_uuid_for_id_origin">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.generate_missing_uuid_for_id_origin">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_missing_uuid_for_id_origin</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">uuid_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">id_origin_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update records in the transient table where the uuid is None</span>
+<span class="sd">    with a new UUID.</span>
+<span class="sd">    Generate UUID in transient table when there are no UUID yet, but</span>
+<span class="sd">    there are a id_origin.</span>
+<span class="sd">    Ensure rows with same id_origin get the same UUID.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    uuid_field : BibFields</span>
+<span class="sd">        The field to check.</span>
+<span class="sd">    id_origin_field : BibFields</span>
+<span class="sd">        Field used to generate the UUID</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">cte_generated_uuid</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">id_origin_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;id_source&quot;</span><span class="p">),</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">uuid_generate_v4</span><span class="p">()</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;uuid&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">id_origin_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">cte</span><span class="p">(</span><span class="s2">&quot;cte_generated_uuid&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">values</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]:</span> <span class="n">cte_generated_uuid</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">id_origin_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span> <span class="o">==</span> <span class="n">cte_generated_uuid</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_source</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_missing_uuid">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.generate_missing_uuid">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_missing_uuid</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">uuid_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">whereclause</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update records in the transient table where the UUID is None</span>
+<span class="sd">    with a new UUID.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    uuid_field : BibFields</span>
+<span class="sd">        The field to check.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">values</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]:</span> <span class="n">func</span><span class="o">.</span><span class="n">uuid_generate_v4</span><span class="p">(),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span><span class="o">.</span><span class="n">is_not</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">uuid_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">whereclause</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">whereclause</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_duplicate_source_pk">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_duplicate_source_pk">[docs]</a>
+<span class="k">def</span> <span class="nf">check_duplicate_source_pk</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check for duplicate source primary keys in the transient table of an import.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    field : BibFields</span>
+<span class="sd">        The field to check.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_column</span><span class="p">]</span>
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="n">get_duplicates_query</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">dest_col</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span><span class="o">.</span><span class="n">isnot</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+            <span class="n">dest_col</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">DUPLICATE_ENTITY_SOURCE_PK</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span> <span class="o">==</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">lines</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_dates">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_dates">[docs]</a>
+<span class="k">def</span> <span class="nf">check_dates</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">date_min_field</span><span class="p">:</span> <span class="n">BibFields</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">date_max_field</span><span class="p">:</span> <span class="n">BibFields</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the validity of dates in the transient table of an import.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : TEntity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    date_min_field : BibFields, optional</span>
+<span class="sd">        The field representing the minimum date.</span>
+<span class="sd">    date_max_field : BibFields, optional</span>
+<span class="sd">        The field representing the maximum date.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">today</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">date_min_field</span><span class="p">:</span>
+        <span class="n">date_min_dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">date_min_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">DATE_MIN_TOO_HIGH</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">date_min_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">date_min_dest_col</span> <span class="o">&gt;</span> <span class="n">today</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">DATE_MIN_TOO_LOW</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">date_min_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">date_min_dest_col</span> <span class="o">&lt;</span> <span class="n">date</span><span class="p">(</span><span class="mi">1900</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">date_max_field</span><span class="p">:</span>
+        <span class="n">date_max_dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">date_max_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">DATE_MAX_TOO_HIGH</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">date_max_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                <span class="n">date_max_dest_col</span> <span class="o">&gt;</span> <span class="n">today</span><span class="p">,</span>
+                <span class="n">date_min_dest_col</span> <span class="o">&lt;=</span> <span class="n">today</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">DATE_MAX_TOO_LOW</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">date_max_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">date_max_dest_col</span> <span class="o">&lt;</span> <span class="n">date</span><span class="p">(</span><span class="mi">1900</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">date_min_field</span> <span class="ow">and</span> <span class="n">date_max_field</span><span class="p">:</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">DATE_MIN_SUP_DATE_MAX</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">date_min_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">date_min_dest_col</span> <span class="o">&gt;</span> <span class="n">date_max_dest_col</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_altitudes">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_altitudes">[docs]</a>
+<span class="k">def</span> <span class="nf">check_altitudes</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">alti_min_field</span><span class="p">:</span> <span class="n">BibFields</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">alti_max_field</span><span class="p">:</span> <span class="n">BibFields</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the validity of altitudes in the transient table of an import.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : TEntity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    alti_min_field : BibFields, optional</span>
+<span class="sd">        The field representing the minimum altitude.</span>
+<span class="sd">    alti_max_field : BibFields, optional</span>
+<span class="sd">        The field representing the maximum altitude.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">alti_min_field</span><span class="p">:</span>
+        <span class="n">alti_min_name_field</span> <span class="o">=</span> <span class="n">alti_min_field</span><span class="o">.</span><span class="n">name_field</span>
+        <span class="n">alti_min_dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alti_min_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">alti_max_field</span><span class="p">:</span>
+        <span class="n">alti_max_dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">alti_max_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">alti_min_field</span> <span class="ow">and</span> <span class="n">alti_max_field</span><span class="p">:</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">ALTI_MIN_SUP_ALTI_MAX</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">alti_min_name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">alti_min_dest_col</span> <span class="o">&gt;</span> <span class="n">alti_max_dest_col</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_depths">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_depths">[docs]</a>
+<span class="k">def</span> <span class="nf">check_depths</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">depth_min_field</span><span class="p">:</span> <span class="n">BibFields</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">depth_max_field</span><span class="p">:</span> <span class="n">BibFields</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the validity of depths in the transient table of an import.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : TEntity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    depth_min_field : BibFields, optional</span>
+<span class="sd">        The field representing the minimum depth.</span>
+<span class="sd">    depth_max_field : BibFields, optional</span>
+<span class="sd">        The field representing the maximum depth.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">depth_min_field</span><span class="p">:</span>
+        <span class="n">depth_min_name_field</span> <span class="o">=</span> <span class="n">depth_min_field</span><span class="o">.</span><span class="n">name_field</span>
+        <span class="n">depth_min_dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">depth_min_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_INTEGER</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">depth_min_name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">depth_min_dest_col</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">depth_max_field</span><span class="p">:</span>
+        <span class="n">depth_max_name_field</span> <span class="o">=</span> <span class="n">depth_max_field</span><span class="o">.</span><span class="n">name_field</span>
+        <span class="n">depth_max_dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">depth_max_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_INTEGER</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">depth_max_name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">depth_max_dest_col</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">depth_min_field</span> <span class="ow">and</span> <span class="n">depth_max_field</span><span class="p">:</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">DEPTH_MIN_SUP_ALTI_MAX</span><span class="p">,</span>  <span class="c1"># Yes, there is a typo in db... Should be &quot;DEPTH_MIN_SUP_DEPTH_MAX&quot;</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">depth_min_name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">depth_min_dest_col</span> <span class="o">&gt;</span> <span class="n">depth_max_dest_col</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_digital_proof_urls">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_digital_proof_urls">[docs]</a>
+<span class="k">def</span> <span class="nf">check_digital_proof_urls</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">digital_proof_field</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks for valid URLs in a given column of a transient table.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : TEntity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    digital_proof_field : TField</span>
+<span class="sd">        The field containing the URLs to check.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">digital_proof_dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">digital_proof_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_URL_PROOF</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">digital_proof_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                <span class="n">digital_proof_dest_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">digital_proof_dest_col</span><span class="o">.</span><span class="n">op</span><span class="p">(</span><span class="s2">&quot;!~&quot;</span><span class="p">)(</span>
+                    <span class="sa">r</span><span class="s2">&quot;^(?:(?:https?|ftp):\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&amp;&#39;\(\)\*\+,;=.]+$&quot;</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_entity_data_consistency">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.check_entity_data_consistency">[docs]</a>
+<span class="k">def</span> <span class="nf">check_entity_data_consistency</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">grouping_field</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks for rows with the same uuid, but different contents,</span>
+<span class="sd">    in the same entity. Used mainely for parent entities.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    fields : BibFields</span>
+<span class="sd">        The fields to check.</span>
+<span class="sd">    grouping_field : BibFields</span>
+<span class="sd">        The field to group identical rows.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">grouping_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">grouping_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span>
+
+    <span class="c1"># get duplicates rows in the transient_table</span>
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="n">get_duplicates_query</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">grouping_col</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span><span class="o">.</span><span class="n">is_not</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+            <span class="n">grouping_col</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">source_field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+    <span class="c1"># hash the content of the entity to check for differences without</span>
+    <span class="c1"># comparing each columns</span>
+    <span class="n">hashedRows</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;lines&quot;</span><span class="p">),</span>
+            <span class="n">grouping_col</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;grouping_col&quot;</span><span class="p">),</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">))</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;hashed&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span> <span class="o">==</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">lines</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;hashedRows&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># get the rows with differences</span>
+
+    <span class="n">erroneous</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">hashedRows</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">grouping_col</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;grouping_col&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">hashedRows</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">grouping_col</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">having</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">hashedRows</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">hashed</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># note: rows are unidentified (None) instead of being marked as invalid (False) in order to avoid running checks</span>
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INCOHERENT_DATA</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">grouping_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>  <span class="c1"># FIXME</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="p">(</span><span class="n">grouping_col</span> <span class="o">==</span> <span class="n">erroneous</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">grouping_col</span><span class="p">),</span>
+        <span class="n">level_validity_mapping</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ERROR&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="disable_duplicated_rows">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.sql.extra.disable_duplicated_rows">[docs]</a>
+<span class="k">def</span> <span class="nf">disable_duplicated_rows</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">grouping_field</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    When several rows have the same value in grouping field (typically UUID) field,</span>
+<span class="sd">    first one is untouched but following rows have validity set to None (do not import).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">grouping_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">grouping_field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span>
+
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">row_number</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">partition_by</span><span class="o">=</span><span class="n">grouping_col</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;row_number&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">grouping_col</span><span class="o">.</span><span class="n">isnot</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">cte</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span> <span class="o">==</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">duplicates</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">row_number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># keep first row</span>
+        <span class="o">.</span><span class="n">values</span><span class="p">({</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

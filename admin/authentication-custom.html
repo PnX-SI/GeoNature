@@ -1,0 +1,567 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Se connecter à d’autres fournisseurs d’identités &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'admin/authentication-custom';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Dépôt source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/admin/authentication-custom.rst?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/admin/authentication-custom.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Télécharger le fichier source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimer au format PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Se connecter à d’autres fournisseurs d’identités</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenu </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ajouter-un-nouveau-fournisseur-d-identite">Ajouter un nouveau fournisseur d’identité</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#se-connecter-a-un-autre-geonature">Se connecter à un autre GeoNature</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creer-son-propre-module-de-connexion">Créer son propre module de connexion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#desactiver-l-authentification-par-defaut">Désactiver l’authentification par défaut</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="se-connecter-a-d-autres-fournisseurs-d-identites">
+<h1>Se connecter à d’autres fournisseurs d’identités<a class="headerlink" href="#se-connecter-a-d-autres-fournisseurs-d-identites" title="Lien vers cette rubrique">#</a></h1>
+<p>Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l’aide de fournisseurs d’identités externes (comme Google, GitHub ou INPN).
+Pour cela, il est nécessaire d’implémenter le protocole de connexion pour permettre à GeoNature de communiquer avec ces fournisseurs.
+Actuellement, GeoNature vient avec plusieurs protocoles de connexion implémentés, tels que :</p>
+<ul class="simple">
+<li><p>OpenID</p></li>
+<li><p>OpenIDConnect (OAuth2.0)</p></li>
+<li><p>GeoNature Externe</p></li>
+</ul>
+<section id="ajouter-un-nouveau-fournisseur-d-identite">
+<h2>Ajouter un nouveau fournisseur d’identité<a class="headerlink" href="#ajouter-un-nouveau-fournisseur-d-identite" title="Lien vers cette rubrique">#</a></h2>
+<p>Pour ajouter un nouveau fournisseur d’identités à votre instance de GeoNature, vous devez ajouter une section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> dans la partie <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION</span></code> de votre fichier de configuration.
+Chaque section doit comporter deux variables obligatoires: <code class="docutils literal notranslate"><span class="pre">module</span></code> et <code class="docutils literal notranslate"><span class="pre">id_provider</span></code>. La variable <code class="docutils literal notranslate"><span class="pre">module</span></code> indique le chemin vers la classe Python qui implémente le protocole de connexion, tandis que <code class="docutils literal notranslate"><span class="pre">id_provider</span></code> indique l’identifiant unique du fournisseur d’identité.
+Vous devez également ajouter les variables de configuration spécifiques au protocole de connexion correspondant.</p>
+<p>Dans l’exemple ci-dessous, on déclare deux fournisseurs d’identités : le premier est le fournisseur d’identité par défaut (local) et le deuxième permet de se connecter à l’INPN.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[AUTHENTICATION]</span>
+<span class="w">    </span><span class="n">DEFAULT_RECONCILIATION_GROUP_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">    </span><span class="k">[[AUTHENTICATION.PROVIDERS]]</span>
+<span class="w">        </span><span class="n">module</span><span class="o">=</span><span class="s2">&quot;pypnusershub.auth.providers.default.LocalProvider&quot;</span>
+<span class="w">        </span><span class="n">id_provider</span><span class="o">=</span><span class="s2">&quot;local_provider&quot;</span>
+
+<span class="w">    </span><span class="k">[[AUTHENTICATION.PROVIDERS]]</span>
+<span class="w">        </span><span class="n">module</span><span class="o">=</span><span class="s2">&quot;pypnusershub.auth.providers.cas_inpn_provider.AuthenficationCASINPN&quot;</span>
+<span class="w">        </span><span class="n">id_provider</span><span class="o">=</span><span class="s2">&quot;connexion_inpn_1&quot;</span>
+<span class="w">        </span><span class="n">WS_ID</span><span class="w"> </span><span class="o">=</span><span class="s2">&quot;secret&quot;</span>
+<span class="w">        </span><span class="n">WS_PASSWORD</span><span class="w"> </span><span class="o">=</span><span class="s2">&quot;secret&quot;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Les protocoles de connexion implémentés sont les suivants :</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.default.LocalProvider</span></code> : protocole de connexion par défaut dans GeoNature.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.cas_inpn_provider.AuthenficationCASINPN</span></code> : CAS de l’INPN.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.openid_provider.OpenIDConnectProvider</span></code> : OpenIDConnect.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.openid_provider.OpenIDProvider</span></code> : OpenID.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.usershub_provider.ExternalUsersHubAuthProvider</span></code> : Autre application utilisant <code class="docutils literal notranslate"><span class="pre">UsersHub-authentification-module</span></code> comme système d’authentification.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Vous pouvez consulter la documentation détaillée sur le <a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#param%C3%A8tres-de-configurations-des-protocoles-de-connexions-inclus">lien suivant</a> pour obtenir la liste et les descriptions des paramètres de configuration de chaque protocole de connexion.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Soyez prudent lors de la modification de la variable de configuration <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION.PROVIDERS</span></code>. Si vous n’indiquez pas le fournisseur d’identité par défaut, vous ne pourrez plus vous connecter à GeoNature avec l’authentification par défaut. Par conséquent, si vous souhaitez également utiliser l’authentification par défaut de GeoNature en plus d’un autre fournisseur d’identité, vous devez le redéclarer dans la configuration. (voir l’exemple ci-dessus)</p>
+</div>
+</section>
+<section id="se-connecter-a-un-autre-geonature">
+<h2>Se connecter à un autre GeoNature<a class="headerlink" href="#se-connecter-a-un-autre-geonature" title="Lien vers cette rubrique">#</a></h2>
+<p>Si vous souhaitez ajouter le moyen de se connecter à l’aide d’un autre GeoNature, nous avons crée un module décrivant le protocole de connexion nécessaire : <code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.usershub_provider.ExternalUsersHubAuthProvider</span></code>.</p>
+<p>Pour utiliser ce dernier, ajouter la section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> suivante dans la partie <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION</span></code> de la configuration :</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[AUTHENTICATION.PROVIDERS]]</span>
+<span class="w">    </span><span class="n">module</span><span class="o">=</span><span class="s2">&quot;pypnusershub.auth.providers.usershub_provider.ExternalUsersHubAuthProvider&quot;</span>
+<span class="w">    </span><span class="n">id_provider</span><span class="o">=</span><span class="s2">&quot;autre_geonature&quot;</span>
+<span class="w">    </span><span class="n">login_url</span><span class="o">=</span><span class="s2">&quot;&lt;UrlVersAPIdeVotreGeoNature&gt;/login&quot;</span>
+<span class="w">    </span><span class="n">logout_url</span><span class="o">=</span><span class="s2">&quot;&lt;UrlVersAPIdeVotreGeoNature&gt;/logout&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="creer-son-propre-module-de-connexion">
+<h2>Créer son propre module de connexion<a class="headerlink" href="#creer-son-propre-module-de-connexion" title="Lien vers cette rubrique">#</a></h2>
+<p>Si les protocoles de connexion que nous avons implémentés ne vous suffisent pas, vous pouvez ajouter votre propre protocole de connexion en utilisant la classe <code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.Authentication</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.auth</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">ProviderConfigurationSchema</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db</span> <span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Response</span>
+
+
+<span class="k">class</span> <span class="nc">NEW_PROVIDER</span><span class="p">(</span><span class="n">Authentication</span><span class="p">):</span>
+    <span class="n">is_external</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># si redirection vers un portail de connexion externe</span>
+
+    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Response</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="p">]:</span>
+        <span class="k">pass</span> <span class="c1"># doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d&#39;identités</span>
+
+    <span class="k">def</span> <span class="nf">authorize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># appeler par /auth/authorize si redirection d&#39;un portail de connexion externe</span>
+        <span class="k">pass</span> <span class="c1"># doit retourner un utilisateur</span>
+
+    <span class="k">def</span> <span class="nf">revoke</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span> <span class="c1"># si une action spécifique doit être faite lors de la déconnexion</span>
+
+    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="k">class</span> <span class="nc">SchemaConf</span><span class="p">(</span><span class="n">ProviderConfigurationSchema</span><span class="p">):</span>
+            <span class="n">VAR</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">configuration</span> <span class="o">=</span> <span class="n">SchemaConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="c1"># Si besoin d&#39;un processus de validation</span>
+        <span class="o">...</span><span class="c1"># Configuration du fournisseur d&#39;identités</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Plus de détails sur la classe <code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.Authentication</span></code> sont disponibles dans la documentation de l”<a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#ajouter-son-propre-protocole-de-connexion">API</a>.</p>
+</div>
+</section>
+<section id="desactiver-l-authentification-par-defaut">
+<h2>Désactiver l’authentification par défaut<a class="headerlink" href="#desactiver-l-authentification-par-defaut" title="Lien vers cette rubrique">#</a></h2>
+<p>Si vous souhaitez désactiver l’authentification par défaut au profit d’un ou plusieurs autres fournisseurs d’identités, il suffit de ne pas déclarer celui-ci dans la section <cite>[[AUTHENTICATION.PROVIDERS]]</cite> dans la partie <cite>AUTHENTICATION</cite> de la configuration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si un seul fournisseur d’identités (différent de l’authentification par défaut) est déclaré dans la section <cite>[[AUTHENTICATION.PROVIDERS]]</cite> de la configuration, l’utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.</p>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenu
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ajouter-un-nouveau-fournisseur-d-identite">Ajouter un nouveau fournisseur d’identité</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#se-connecter-a-un-autre-geonature">Se connecter à un autre GeoNature</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creer-son-propre-module-de-connexion">Créer son propre module de connexion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#desactiver-l-authentification-par-defaut">Désactiver l’authentification par défaut</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1146 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.routes.imports &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/routes/imports';</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.routes.imports</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">TextIOWrapper</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">unicodedata</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">stream_with_context</span><span class="p">,</span> <span class="n">send_file</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Conflict</span><span class="p">,</span> <span class="n">BadRequest</span><span class="p">,</span> <span class="n">Forbidden</span><span class="p">,</span> <span class="n">Gone</span><span class="p">,</span> <span class="n">NotFound</span>
+
+<span class="c1"># url_quote was deprecated in werkzeug 3.0 https://stackoverflow.com/a/77222063/5807438</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span> <span class="k">as</span> <span class="n">url_quote</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">or_</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">delete</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.inspection</span> <span class="kn">import</span> <span class="n">inspect</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span><span class="p">,</span> <span class="n">Load</span><span class="p">,</span> <span class="n">load_only</span><span class="p">,</span> <span class="n">undefer</span><span class="p">,</span> <span class="n">contains_eager</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm.attributes</span> <span class="kn">import</span> <span class="n">set_committed_value</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql.expression</span> <span class="kn">import</span> <span class="n">collate</span><span class="p">,</span> <span class="n">exists</span>
+
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.sentry</span> <span class="kn">import</span> <span class="n">start_sentry_child</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TModules</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions</span> <span class="kn">import</span> <span class="n">decorators</span> <span class="k">as</span> <span class="n">permissions</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.tools</span> <span class="kn">import</span> <span class="n">get_scopes_by_action</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="n">TDatasets</span>
+
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">TNomenclatures</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Destination</span><span class="p">,</span>
+    <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">EntityField</span><span class="p">,</span>
+    <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">ImportUserError</span><span class="p">,</span>
+    <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">FieldMapping</span><span class="p">,</span>
+    <span class="n">ContentMapping</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.blueprint</span> <span class="kn">import</span> <span class="n">blueprint</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ImportStep</span><span class="p">,</span>
+    <span class="n">detect_encoding</span><span class="p">,</span>
+    <span class="n">detect_separator</span><span class="p">,</span>
+    <span class="n">insert_import_data_in_transient_table</span><span class="p">,</span>
+    <span class="n">get_file_size</span><span class="p">,</span>
+    <span class="n">clean_import</span><span class="p">,</span>
+    <span class="n">generate_pdf_from_template</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.tasks</span> <span class="kn">import</span> <span class="n">do_import_checks</span><span class="p">,</span> <span class="n">do_import_in_destination</span>
+
+<div class="viewcode-block" id="IMPORTS_PER_PAGE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.IMPORTS_PER_PAGE">[docs]</a>
+<span class="n">IMPORTS_PER_PAGE</span> <span class="o">=</span> <span class="mi">15</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">url_value_preprocessor</span>
+<div class="viewcode-block" id="resolve_import">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.resolve_import">[docs]</a>
+<span class="k">def</span> <span class="nf">resolve_import</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">url_map</span><span class="o">.</span><span class="n">is_endpoint_expecting</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;import_id&quot;</span><span class="p">):</span>
+        <span class="n">import_id</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;import_id&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">import_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">imprt</span> <span class="o">=</span> <span class="n">TImports</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+                <span class="n">joinedload</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span><span class="o">.</span><span class="n">joinedload</span><span class="p">(</span><span class="n">Destination</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">import_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span> <span class="o">!=</span> <span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;destination&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">NotFound</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">imprt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">values</span><span class="p">[</span><span class="s2">&quot;imprt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imprt</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/imports/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_import_list">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.get_import_list">[docs]</a>
+<span class="k">def</span> <span class="nf">get_import_list</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import; Get all imports.</span>
+
+<span class="sd">    Get all imports to which logged-in user has access.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;page&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;limit&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">IMPORTS_PER_PAGE</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">sort</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;date_create_import&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">sort_dir</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort_dir&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;desc&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">search</span><span class="p">:</span>
+        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">full_file_name</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">search</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">))</span>
+        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">TImports</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">has</span><span class="p">(</span>
+                <span class="n">func</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">)</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">search</span><span class="p">)),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">TImports</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">any</span><span class="p">(</span>
+                <span class="n">or_</span><span class="p">(</span>
+                    <span class="n">User</span><span class="o">.</span><span class="n">prenom_role</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">search</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">),</span>
+                    <span class="n">User</span><span class="o">.</span><span class="n">nom_role</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">search</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">TImports</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">any</span><span class="p">(</span>
+                <span class="n">func</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">nom_role</span><span class="p">)</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">search</span><span class="p">)),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">order_by</span> <span class="o">=</span> <span class="n">get_foreign_key_attr</span><span class="p">(</span><span class="n">TImports</span><span class="p">,</span> <span class="n">sort</span><span class="p">)</span>
+        <span class="n">order_by</span> <span class="o">=</span> <span class="n">order_by</span><span class="p">()</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">order_by</span><span class="p">)</span> <span class="k">else</span> <span class="n">order_by</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Import field &#39;</span><span class="si">{</span><span class="n">sort</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sort_dir</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span><span class="p">:</span>
+        <span class="n">order_by</span> <span class="o">=</span> <span class="n">desc</span><span class="p">(</span><span class="n">order_by</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">TImports</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">contains_eager</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">dataset</span><span class="p">),</span>
+            <span class="n">contains_eager</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">authors</span><span class="p">),</span>
+            <span class="n">contains_eager</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span><span class="o">.</span><span class="n">contains_eager</span><span class="p">(</span><span class="n">Destination</span><span class="o">.</span><span class="n">module</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">isouter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">authors</span><span class="p">,</span> <span class="n">isouter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Destination</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">filter_by_scope</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">order_by</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">destination</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">destination</span> <span class="o">==</span> <span class="n">destination</span><span class="p">)</span>
+
+    <span class="n">imports</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">error_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_per_page</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;imports&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">imprt</span> <span class="ow">in</span> <span class="n">imports</span><span class="o">.</span><span class="n">items</span><span class="p">],</span>
+        <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">imports</span><span class="o">.</span><span class="n">total</span><span class="p">,</span>
+        <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+        <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_one_import">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.get_one_import">[docs]</a>
+<span class="k">def</span> <span class="nf">get_one_import</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import; Get an import.</span>
+
+<span class="sd">    Get an import.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that the user has read permission to this particular import instance:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/upload&quot;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;import_id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/upload&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="upload_file">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.upload_file">[docs]</a>
+<span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># destination is set when imprt is None</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import; Add an import or update an existing import.</span>
+
+<span class="sd">    Add an import or update an existing import.</span>
+
+<span class="sd">    :form file: file to import</span>
+<span class="sd">    :form int datasetId: dataset ID to which import data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">imprt</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">Forbidden</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+        <span class="n">destination</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">destination</span>
+    <span class="n">author</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">]</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">get_file_size</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="c1"># value in config file is in Mo</span>
+    <span class="n">max_file_size</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;MAX_FILE_SIZE&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_file_size</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;File too big (</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2">).&quot;</span>
+        <span class="p">)</span>  <span class="c1"># FIXME better error signaling?</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Impossible to upload empty files&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">imprt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dataset_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;datasetId&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;&#39;datasetId&#39; must be an integer.&quot;</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Dataset &#39;</span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
+        <span class="n">ds_scope</span> <span class="o">=</span> <span class="n">get_scopes_by_action</span><span class="p">(</span>
+            <span class="n">module_code</span><span class="o">=</span><span class="n">destination</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span>
+            <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;ALL&quot;</span><span class="p">,</span>  <span class="c1"># TODO object_code should be configurable by destination</span>
+        <span class="p">)[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">ds_scope</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Vous n’avez pas les permissions sur ce jeu de données.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+        <span class="n">imprt</span> <span class="o">=</span> <span class="n">TImports</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">destination</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">clean_import</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">UPLOAD</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;detect encoding&quot;</span><span class="p">):</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">detected_encoding</span> <span class="o">=</span> <span class="n">detect_encoding</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;detect separator&quot;</span><span class="p">):</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">detected_separator</span> <span class="o">=</span> <span class="n">detect_separator</span><span class="p">(</span>
+            <span class="n">f</span><span class="p">,</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">encoding</span> <span class="ow">or</span> <span class="n">imprt</span><span class="o">.</span><span class="n">detected_encoding</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">source_file</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">full_file_name</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">filename</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/decode&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="decode_file">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.decode_file">[docs]</a>
+<span class="k">def</span> <span class="nf">decode_file</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">source_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;A file must be first uploaded.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;encoding&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Missing encoding.&quot;</span><span class="p">)</span>
+    <span class="n">encoding</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;encoding&quot;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">codecs</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unknown encoding.&quot;</span><span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span>
+    <span class="k">if</span> <span class="s2">&quot;format&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Missing format.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TImports</span><span class="o">.</span><span class="n">AVAILABLE_FORMATS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unknown format.&quot;</span><span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">format_source_file</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;srid&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Missing srid.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">srid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;srid&quot;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;SRID must be an integer.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;separator&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Missing separator&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;separator&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TImports</span><span class="o">.</span><span class="n">AVAILABLE_SEPARATORS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unknown separator&quot;</span><span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;separator&quot;</span><span class="p">]</span>
+
+    <span class="n">clean_import</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">DECODE</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># commit parameters</span>
+
+    <span class="n">decode</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;decode&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">decode</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">decode</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;decode parameter must but an int&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">decode</span><span class="p">:</span>
+        <span class="n">csvfile</span> <span class="o">=</span> <span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">source_file</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="n">csvreader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">separator</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">csvreader</span><span class="p">)</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>  <span class="c1"># read full file to ensure that no encoding errors occur</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">csvreader</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">UnicodeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Erreur d’encodage lors de la lecture du fichier source. &quot;</span>
+                <span class="s2">&quot;Avez-vous sélectionné le bon encodage de votre fichier ?&quot;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">duplicates</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span> <span class="k">if</span> <span class="n">columns</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">duplicates</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicates column names: </span><span class="si">{</span><span class="n">duplicates</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/fieldmapping&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="set_import_field_mapping">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.set_import_field_mapping">[docs]</a>
+<span class="k">def</span> <span class="nf">set_import_field_mapping</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">FieldMapping</span><span class="o">.</span><span class="n">validate_values</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">clean_import</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">LOAD</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/load&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="load_import">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.load_import">[docs]</a>
+<span class="k">def</span> <span class="nf">load_import</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">source_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;A file must be first uploaded.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;File fields must be first mapped.&quot;</span><span class="p">)</span>
+    <span class="n">clean_import</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">LOAD</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;insert data in db&quot;</span><span class="p">):</span>
+        <span class="n">line_no</span> <span class="o">=</span> <span class="n">insert_import_data_in_transient_table</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">line_no</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="s2">&quot;File with 0 lines.&quot;</span><span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">source_count</span> <span class="o">=</span> <span class="n">line_no</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/columns&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_import_columns_name">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.get_import_columns_name">[docs]</a>
+<span class="k">def</span> <span class="nf">get_import_columns_name</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import;</span>
+
+<span class="sd">    Return all the columns of the file of an import</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Data have not been decoded.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/values&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_import_values">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.get_import_values">[docs]</a>
+<span class="k">def</span> <span class="nf">get_import_values</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import;</span>
+
+<span class="sd">    Return all values present in imported file for nomenclated fields</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that the user has read permission to this particular import instance:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">loaded</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Data have not been loaded&quot;</span><span class="p">)</span>
+    <span class="n">nomenclated_fields</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">BibFields</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">BibFields</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">BibFields</span><span class="o">.</span><span class="n">destination</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">joinedload</span><span class="p">(</span><span class="n">BibFields</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">BibFields</span><span class="o">.</span><span class="n">id_field</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="c1"># Note: response format is validated with jsonschema in tests</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">nomenclated_fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name_field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="p">:</span>
+            <span class="c1"># this nomenclated field is not mapped</span>
+            <span class="k">continue</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="c1"># the file do not contain this field expected by the mapping</span>
+            <span class="k">continue</span>
+        <span class="c1"># TODO: vérifier que l’on a pas trop de valeurs différentes ?</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">source_column</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">value</span>
+            <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="n">select</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
+                <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="n">set_committed_value</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclatures&quot;</span><span class="p">,</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">nomenclature_type</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span>
+                <span class="n">collate</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="o">.</span><span class="n">cd_nomenclature</span><span class="p">,</span> <span class="s2">&quot;fr_numeric&quot;</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">response</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;nomenclature_type&quot;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span>
+            <span class="s2">&quot;nomenclatures&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">nomenclatures</span><span class="p">],</span>
+            <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/contentmapping&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="set_import_content_mapping">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.set_import_content_mapping">[docs]</a>
+<span class="k">def</span> <span class="nf">set_import_content_mapping</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ContentMapping</span><span class="o">.</span><span class="n">validate_values</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">contentmapping</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">clean_import</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">PREPARE</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/prepare&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="prepare_import">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.prepare_import">[docs]</a>
+<span class="k">def</span> <span class="nf">prepare_import</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare data to be imported: apply all checks and transformations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check preconditions to execute this action</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">loaded</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="s2">&quot;Field data must have been loaded before executing this action.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Remove previous errors</span>
+    <span class="n">clean_import</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">PREPARE</span><span class="p">)</span>
+
+    <span class="c1"># Run background import checks</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">do_import_checks</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task_id</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">sig</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/preview_valid_data&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="preview_valid_data">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.preview_valid_data">[docs]</a>
+<span class="k">def</span> <span class="nf">preview_valid_data</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Preview valid data for a given import.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scope : int</span>
+<span class="sd">        The scope of the (C, &quot;IMPORT&quot;, &quot;IMPORT&quot;) permission for the current user.</span>
+<span class="sd">    imprt : geonature.core.imports.models.TImports</span>
+<span class="sd">        The import object.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    flask.wrappers.Response</span>
+<span class="sd">        A JSON response containing valid data, entities, columns, and data statistics.</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    Forbidden</span>
+<span class="sd">        If the current user has no sufficient permission given the scope and the import object.</span>
+<span class="sd">    Conflict</span>
+<span class="sd">        If the import is not processed, i.e. it has not been prepared yet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">processed</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="s2">&quot;Import must have been prepared before executing this action.&quot;</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;valid_bbox&quot;</span><span class="p">:</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">compute_bounding_box</span><span class="p">(</span><span class="n">imprt</span><span class="p">),</span>
+        <span class="s2">&quot;entities&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Retrieve data for each entity from entries in the transient table which are related to the import</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">Entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Entity</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+                <span class="n">select</span><span class="p">(</span><span class="n">BibFields</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">BibFields</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">EntityField</span><span class="o">.</span><span class="n">entity</span> <span class="o">==</span> <span class="n">entity</span><span class="p">),</span>
+                    <span class="n">BibFields</span><span class="o">.</span><span class="n">dest_field</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">BibFields</span><span class="o">.</span><span class="n">name_field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;prop&quot;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">dest_column</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">}</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+        <span class="n">columns_to_count_unique_entities</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_column</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span>
+        <span class="p">]</span>
+
+        <span class="n">valid_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="n">n_valid_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="o">*</span><span class="n">columns_to_count_unique_entities</span><span class="p">)))</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+
+        <span class="n">n_invalid_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="o">*</span><span class="n">columns_to_count_unique_entities</span><span class="p">)))</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;entity&quot;</span><span class="p">:</span> <span class="n">entity</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span>
+                <span class="s2">&quot;columns&quot;</span><span class="p">:</span> <span class="n">columns</span><span class="p">,</span>
+                <span class="s2">&quot;valid_data&quot;</span><span class="p">:</span> <span class="n">valid_data</span><span class="p">,</span>
+                <span class="s2">&quot;n_valid_data&quot;</span><span class="p">:</span> <span class="n">n_valid_data</span><span class="p">,</span>
+                <span class="s2">&quot;n_invalid_data&quot;</span><span class="p">:</span> <span class="n">n_invalid_data</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/errors&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_import_errors">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.get_import_errors">[docs]</a>
+<span class="k">def</span> <span class="nf">get_import_errors</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import; Get errors of an import.</span>
+
+<span class="sd">    Get errors of an import.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">([</span><span class="n">error</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;entity&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">errors</span><span class="p">])</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/source_file&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_import_source_file">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.get_import_source_file">[docs]</a>
+<span class="k">def</span> <span class="nf">get_import_source_file</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">source_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Gone</span>
+    <span class="k">return</span> <span class="n">send_file</span><span class="p">(</span>
+        <span class="n">BytesIO</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">source_file</span><span class="p">),</span>
+        <span class="n">download_name</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">full_file_name</span><span class="p">,</span>
+        <span class="n">as_attachment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">mimetype</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;text/csv; charset=</span><span class="si">{</span><span class="n">imprt</span><span class="o">.</span><span class="n">encoding</span><span class="si">}</span><span class="s2">; header=present&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/invalid_rows&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_import_invalid_rows_as_csv">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.get_import_invalid_rows_as_csv">[docs]</a>
+<span class="k">def</span> <span class="nf">get_import_invalid_rows_as_csv</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import; Get invalid rows of an import as CSV.</span>
+
+<span class="sd">    Export invalid data in CSV.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">processed</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="s2">&quot;Import must have been prepared before executing this action.&quot;</span><span class="p">)</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">full_file_name</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># remove extension</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">_errors.csv&quot;</span>
+
+    <span class="nd">@stream_with_context</span>
+    <span class="k">def</span> <span class="nf">generate_invalid_rows_csv</span><span class="p">():</span>
+        <span class="n">sourcefile</span> <span class="o">=</span> <span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">source_file</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="n">destfile</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="n">csvreader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">sourcefile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">separator</span><span class="p">)</span>
+        <span class="n">csvwriter</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">destfile</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="n">csvreader</span><span class="o">.</span><span class="n">dialect</span><span class="p">,</span> <span class="n">lineterminator</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">line_no</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csvreader</span><span class="p">:</span>
+            <span class="c1"># line_no == 1 → csv header</span>
+            <span class="k">if</span> <span class="n">line_no</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">line_no</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">erroneous_rows</span><span class="p">:</span>
+                <span class="n">csvwriter</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                <span class="n">destfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="n">destfile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+                <span class="n">destfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">destfile</span><span class="o">.</span><span class="n">truncate</span><span class="p">()</span>
+            <span class="n">line_no</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">response_class</span><span class="p">(</span>
+        <span class="n">generate_invalid_rows_csv</span><span class="p">(),</span>
+        <span class="n">mimetype</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;text/csv; charset=</span><span class="si">{</span><span class="n">imprt</span><span class="o">.</span><span class="n">encoding</span><span class="si">}</span><span class="s2">; header=present&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
+        <span class="n">simple</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">&quot;NFKD&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">simple</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+        <span class="n">quoted</span> <span class="o">=</span> <span class="n">url_quote</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">simple</span><span class="p">,</span> <span class="s2">&quot;filename*&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;UTF-8&#39;&#39;</span><span class="si">{</span><span class="n">quoted</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">filename</span><span class="p">}</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Content-Disposition&quot;</span><span class="p">,</span> <span class="s2">&quot;attachment&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">names</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/import&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="import_valid_data">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.import_valid_data">[docs]</a>
+<span class="k">def</span> <span class="nf">import_valid_data</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import; Import the valid data.</span>
+
+<span class="sd">    Import valid data in destination table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">processed</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;L’import n’a pas été préalablement vérifié.&quot;</span><span class="p">)</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span>
+            <span class="n">exists</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">validity_columns</span><span class="p">]))</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="s2">&quot;Not valid data to import&quot;</span><span class="p">)</span>
+
+    <span class="n">clean_import</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">IMPORT</span><span class="p">)</span>
+
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">do_import_in_destination</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task_id</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">sig</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/imports/&lt;int:import_id&gt;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="delete_import">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.delete_import">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_import</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. :quickref: Import; Delete an import.</span>
+
+<span class="sd">    Delete an import.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Le jeu de données est fermé.&quot;</span><span class="p">)</span>
+    <span class="n">ImportUserError</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">imprt</span><span class="o">=</span><span class="n">imprt</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">delete</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">remove_data_from_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/export_pdf/&lt;int:import_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="export_pdf">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.export_pdf">[docs]</a>
+<span class="k">def</span> <span class="nf">export_pdf</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Downloads the report in pdf format</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="n">ctx</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;map&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;map&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;undefined&quot;</span><span class="p">:</span>
+        <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;chart&quot;</span><span class="p">)</span>
+    <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+        <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MODULE_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;id_import&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;report&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span>
+
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;statistics_formated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">label_dict</span> <span class="ow">in</span> <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;destination&quot;</span><span class="p">][</span><span class="s2">&quot;statistics_labels&quot;</span><span class="p">]:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">label_dict</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">label_dict</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;statistics&quot;</span><span class="p">]:</span>
+            <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;statistics_formated&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;statistics&quot;</span><span class="p">][</span><span class="n">label_dict</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]]</span>
+
+    <span class="n">pdf_file</span> <span class="o">=</span> <span class="n">generate_pdf_from_template</span><span class="p">(</span><span class="s2">&quot;import_template_pdf.html&quot;</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">send_file</span><span class="p">(</span>
+        <span class="n">BytesIO</span><span class="p">(</span><span class="n">pdf_file</span><span class="p">),</span>
+        <span class="n">mimetype</span><span class="o">=</span><span class="s2">&quot;application/pdf&quot;</span><span class="p">,</span>
+        <span class="n">as_attachment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">download_name</span><span class="o">=</span><span class="s2">&quot;rapport.pdf&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_foreign_key_attr">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.get_foreign_key_attr">[docs]</a>
+<span class="k">def</span> <span class="nf">get_foreign_key_attr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Go through a object path to find the class to order on</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">elems</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">inspect</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">first_field</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">remaining_fields</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="n">get_foreign_key_attr</span><span class="p">(</span><span class="n">elems</span><span class="p">[</span><span class="n">first_field</span><span class="p">]</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">class_</span><span class="p">,</span> <span class="n">remaining_fields</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;destination&gt;/report_plot/&lt;int:import_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="report_plot">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/routes/imports/index.html#geonature.core.imports.routes.imports.report_plot">[docs]</a>
+<span class="k">def</span> <span class="nf">report_plot</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">imprt</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">report_plot</span><span class="p">(</span><span class="n">imprt</span><span class="p">))</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1062 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>geonature.core.imports.checks.errors &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/geonature/core/imports/checks/errors/index';</script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../../search.html" />
+    <link rel="next" title="geonature.core.imports.checks.sql" href="../sql/index.html" />
+    <link rel="prev" title="geonature.core.imports.checks.dataframe.utils" href="../dataframe/utils/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../../../../api-references.html">API REFERENCES</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../../../index.html">geonature</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../app/index.html">geonature.app</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../../../index.html">geonature.core</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../admin/index.html">geonature.core.admin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../command/index.html">geonature.core.command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../errors/index.html">geonature.core.errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../gn_commons/index.html">geonature.core.gn_commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../gn_meta/index.html">geonature.core.gn_meta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../gn_monitoring/index.html">geonature.core.gn_monitoring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../gn_permissions/index.html">geonature.core.gn_permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../gn_profiles/index.html">geonature.core.gn_profiles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../gn_synthese/index.html">geonature.core.gn_synthese</a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="../../index.html">geonature.core.imports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../notifications/index.html">geonature.core.notifications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../sensitivity/index.html">geonature.core.sensitivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../taxonomie/index.html">geonature.core.taxonomie</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../users/index.html">geonature.core.users</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../middlewares/index.html">geonature.middlewares</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tasks/index.html">geonature.tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../utils/index.html">geonature.utils</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Dépôt source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/autoapi/geonature/core/imports/checks/errors/index.rst?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../../../../_sources/autoapi/geonature/core/imports/checks/errors/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Télécharger le fichier source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimer au format PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>geonature.core.imports.checks.errors</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenu </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError"><code class="docutils literal notranslate"><span class="pre">ImportCodeError</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATASET_NOT_FOUND</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_AUTHORIZED"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATASET_NOT_AUTHORIZED</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_ACTIVE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATASET_NOT_ACTIVE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_CODE_ATTACHMENT"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.MULTIPLE_CODE_ATTACHMENT</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_DATE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_DATE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_UUID"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_UUID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_INTEGER"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_INTEGER</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NUMERIC"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_NUMERIC</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_WKT"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_WKT</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_GEOMETRY"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_GEOMETRY</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_BOOL"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_BOOL</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_ATTACHMENT_CODE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_ATTACHMENT_CODE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_CHAR_LENGTH"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_CHAR_LENGTH</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_HIGH"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MIN_TOO_HIGH</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_LOW"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MAX_TOO_LOW</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_HIGH"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MAX_TOO_HIGH</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_LOW"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MIN_TOO_LOW</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_SUP_DATE_MAX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MIN_SUP_DATE_MAX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ALTI_MIN_SUP_ALTI_MAX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ALTI_MIN_SUP_ALTI_MAX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ORPHAN_ROW"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ORPHAN_ROW</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ROWS"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DUPLICATE_ROWS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_UUID"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DUPLICATE_UUID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.EXISTING_UUID"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.EXISTING_UUID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.SKIP_EXISTING_UUID"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.SKIP_EXISTING_UUID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.MISSING_VALUE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.MISSING_VALUE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.MISSING_GEOM"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.MISSING_GEOM</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUTSIDE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.GEOMETRY_OUTSIDE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_GEOM"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.NO_GEOM</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUT_OF_BOX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.GEOMETRY_OUT_OF_BOX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ERRONEOUS_PARENT_ENTITY"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ERRONEOUS_PARENT_ENTITY</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_PARENT_ENTITY"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.NO_PARENT_ENTITY</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.COUNT_MIN_SUP_COUNT_MAX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.COUNT_MIN_SUP_COUNT_MAX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_NOMENCLATURE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_EXISTING_PROOF_VALUE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_EXISTING_PROOF_VALUE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE_WARNING"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_NOMENCLATURE_WARNING</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.UNKNOWN_ERROR"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.UNKNOWN_ERROR</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_STATUT_SOURCE_VALUE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_STATUT_SOURCE_VALUE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_INVALID_DATA"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.CONDITIONAL_INVALID_DATA</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_URL_PROOF"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_URL_PROOF</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_LESS_COLUMN"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ROW_HAVE_LESS_COLUMN</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.EMPTY_ROW"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.EMPTY_ROW</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.HEADER_SAME_COLUMN_NAME"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.HEADER_SAME_COLUMN_NAME</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.EMPTY_FILE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.EMPTY_FILE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_FILE_SENDED"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.NO_FILE_SENDED</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ERROR_WHILE_LOADING_FILE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ERROR_WHILE_LOADING_FILE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_FORMAT_ERROR"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_FORMAT_ERROR</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_EXTENSION_ERROR"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_EXTENSION_ERROR</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_OVERSIZE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_OVERSIZE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_NAME_TOO_LONG"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_NAME_TOO_LONG</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_WITH_NO_DATA"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_WITH_NO_DATA</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INCOHERENT_DATA"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INCOHERENT_DATA</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.CD_HAB_NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.CD_HAB_NOT_FOUND</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.CD_NOM_NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.CD_NOM_NOT_FOUND</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-geonature.core.imports.checks.errors">
+<span id="geonature-core-imports-checks-errors"></span><h1>geonature.core.imports.checks.errors<a class="headerlink" href="#module-geonature.core.imports.checks.errors" title="Lien vers cette rubrique">#</a></h1>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Lien vers cette rubrique">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.checks.errors.ImportCodeError" title="geonature.core.imports.checks.errors.ImportCodeError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportCodeError</span></code></a></p></td>
+<td><p>List of all the possible errors returned during the import process.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Lien vers cette rubrique">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.checks.errors.</span></span><span class="sig-name descname"><span class="pre">ImportCodeError</span></span><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError" title="Lien vers cette définition">#</a></dt>
+<dd><p>List of all the possible errors returned during the import process.</p>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>DATASET_NOT_FOUND<span class="classifier">str</span></dt><dd><p>The referenced dataset was not found</p>
+</dd>
+<dt>DATASET_NOT_AUTHORIZED<span class="classifier">str</span></dt><dd><p>The dataset is not authorized to the current user</p>
+</dd>
+<dt>DATASET_NOT_ACTIVE<span class="classifier">str</span></dt><dd><p>The dataset is inactive</p>
+</dd>
+<dt>MULTIPLE_ATTACHMENT_TYPE_CODE<span class="classifier">str</span></dt><dd><p>Multiple attachments of the same type are not allowed</p>
+</dd>
+<dt>MULTIPLE_CODE_ATTACHMENT<span class="classifier">str</span></dt><dd><p>Multiple attachments (commune, maille, departement) with the same code were given.</p>
+</dd>
+<dt>INVALID_DATE<span class="classifier">str</span></dt><dd><p>The date is not valid</p>
+</dd>
+<dt>INVALID_UUID<span class="classifier">str</span></dt><dd><p>The uuid is not valid</p>
+</dd>
+<dt>INVALID_INTEGER<span class="classifier">str</span></dt><dd><p>The integer is not valid</p>
+</dd>
+<dt>INVALID_NUMERIC<span class="classifier">str</span></dt><dd><p>The numeric is not valid</p>
+</dd>
+<dt>INVALID_WKT<span class="classifier">str</span></dt><dd><p>The WKT string is not valid</p>
+</dd>
+<dt>INVALID_GEOMETRY<span class="classifier">str</span></dt><dd><p>The geometry is not valid</p>
+</dd>
+<dt>INVALID_BOOL<span class="classifier">str</span></dt><dd><p>The boolean is not valid</p>
+</dd>
+<dt>INVALID_ATTACHMENT_CODE<span class="classifier">str</span></dt><dd><p>The code given does not exists in the desitination referential</p>
+</dd>
+<dt>INVALID_CHAR_LENGTH<span class="classifier">str</span></dt><dd><p>The character length is not valid</p>
+</dd>
+<dt>DATE_MIN_TOO_HIGH<span class="classifier">str</span></dt><dd><p>The date min is too high</p>
+</dd>
+<dt>DATE_MAX_TOO_LOW<span class="classifier">str</span></dt><dd><p>The date max is too low</p>
+</dd>
+<dt>DATE_MAX_TOO_HIGH<span class="classifier">str</span></dt><dd><p>The date max is too high</p>
+</dd>
+<dt>DATE_MIN_TOO_LOW<span class="classifier">str</span></dt><dd><p>The date min is too low</p>
+</dd>
+<dt>ALTI_MIN_SUP_ALTI_MAX<span class="classifier">str</span></dt><dd><p>The altitude min is superior to the altitude max</p>
+</dd>
+<dt>DATE_MIN_SUP_DATE_MAX<span class="classifier">str</span></dt><dd><p>The date min is superior to the date max</p>
+</dd>
+<dt>DEPTH_MIN_SUP_ALTI_MAX<span class="classifier">str</span></dt><dd><p>The depth min is superior to the altitude max</p>
+</dd>
+<dt>ORPHAN_ROW<span class="classifier">str</span></dt><dd><p>The row could not be attached to an other entity # FIXME: clarify</p>
+</dd>
+<dt>DUPLICATE_ROWS<span class="classifier">str</span></dt><dd><p>One rows appears more than once</p>
+</dd>
+<dt>DUPLICATE_UUID<span class="classifier">str</span></dt><dd><p>A uuid value is duplicated</p>
+</dd>
+<dt>EXISTING_UUID: str</dt><dd><p>A uuid value already exists in the destination table</p>
+</dd>
+<dt>SKIP_EXISTING_UUID: str</dt><dd><p>A uuid value already exists in the destination table and should be skipped</p>
+</dd>
+<dt>MISSING_VALUE<span class="classifier">str</span></dt><dd><p>A required value is missing (see <cite>mandatory</cite> column in <cite>gn_imports.bib_fields</cite> table)</p>
+</dd>
+<dt>MISSING_GEOM<span class="classifier">str</span></dt><dd><p>The geometry is missing</p>
+</dd>
+<dt>GEOMETRY_OUTSIDE<span class="classifier">str</span></dt><dd><p>The geometry is outside the polygon in the GeoNature configuration (<cite>INSTANCE_BOUNDING_BOX</cite>)</p>
+</dd>
+<dt>NO_GEOM<span class="classifier">str</span></dt><dd><p>No geometry given (wherever WKT or latitude/longitude)</p>
+</dd>
+<dt>GEOMETRY_OUT_OF_BOX<span class="classifier">str</span></dt><dd><p>The geometry is outside the perimeter of the instance geography # FIXME: clarify (confusion with GEOMETRY_OUTSIDE)</p>
+</dd>
+<dt>ERRONEOUS_PARENT_ENTITY<span class="classifier">str</span></dt><dd><p>The parent entity is not valid</p>
+</dd>
+<dt>NO_PARENT_ENTITY<span class="classifier">str</span></dt><dd><p>The parent entity is not found</p>
+</dd>
+<dt>DUPLICATE_ENTITY_SOURCE_PK<span class="classifier">str</span></dt><dd><p>The entity source primary key is duplicated</p>
+</dd>
+<dt>COUNT_MIN_SUP_COUNT_MAX<span class="classifier">str</span></dt><dd><p>The count min is superior to the count max</p>
+</dd>
+<dt>INVALID_NOMENCLATURE<span class="classifier">str</span></dt><dd><p>The nomenclature is invalid</p>
+</dd>
+<dt>INVALID_EXISTING_PROOF_VALUE<span class="classifier">str</span></dt><dd><p>The existing proof value is invalid</p>
+</dd>
+<dt>CONDITIONAL_MANDATORY_FIELD_ERROR<span class="classifier">str</span></dt><dd><p>Some conditional mandatory fields are missing #FIXME: clarify</p>
+</dd>
+<dt>INVALID_NOMENCLATURE_WARNING<span class="classifier">str</span></dt><dd><p>The nomenclature is invalid</p>
+</dd>
+<dt>UNKNOWN_ERROR<span class="classifier">str</span></dt><dd><p>An unknown error occurred</p>
+</dd>
+<dt>INVALID_STATUT_SOURCE_VALUE<span class="classifier">str</span></dt><dd><p>The statut source value is invalid</p>
+</dd>
+<dt>CONDITIONAL_INVALID_DATA<span class="classifier">str</span></dt><dd><p>The conditional data is invalid</p>
+</dd>
+<dt>INVALID_URL_PROOF<span class="classifier">str</span></dt><dd><p>The url proof is invalid</p>
+</dd>
+<dt>ROW_HAVE_TOO_MUCH_COLUMN<span class="classifier">str</span></dt><dd><p>A row have too much column</p>
+</dd>
+<dt>ROW_HAVE_LESS_COLUMN<span class="classifier">str</span></dt><dd><p>A row have less column</p>
+</dd>
+<dt>EMPTY_ROW<span class="classifier">str</span></dt><dd><p>A row is empty</p>
+</dd>
+<dt>HEADER_SAME_COLUMN_NAME<span class="classifier">str</span></dt><dd><p>The header have same column name</p>
+</dd>
+<dt>EMPTY_FILE<span class="classifier">str</span></dt><dd><p>The file is empty</p>
+</dd>
+<dt>NO_FILE_SENDED<span class="classifier">str</span></dt><dd><p>No file was sent</p>
+</dd>
+<dt>ERROR_WHILE_LOADING_FILE<span class="classifier">str</span></dt><dd><p>An error occurred while loading the file</p>
+</dd>
+<dt>FILE_FORMAT_ERROR<span class="classifier">str</span></dt><dd><p>The file format is not valid</p>
+</dd>
+<dt>FILE_EXTENSION_ERROR<span class="classifier">str</span></dt><dd><p>The file extension is not valid</p>
+</dd>
+<dt>FILE_OVERSIZE<span class="classifier">str</span></dt><dd><p>The file is too big</p>
+</dd>
+<dt>FILE_NAME_TOO_LONG<span class="classifier">str</span></dt><dd><p>The file name is too long</p>
+</dd>
+<dt>FILE_WITH_NO_DATA<span class="classifier">str</span></dt><dd><p>The file have no data</p>
+</dd>
+<dt>INCOHERENT_DATA<span class="classifier">str</span></dt><dd><p>An entity data is different in multiple rows</p>
+</dd>
+<dt>CD_HAB_NOT_FOUND<span class="classifier">str</span></dt><dd><p>The habitat code is not found</p>
+</dd>
+<dt>CD_NOM_NOT_FOUND<span class="classifier">str</span></dt><dd><p>The cd_nom is not found in the instance TaxRef</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_FOUND">
+<span class="sig-name descname"><span class="pre">DATASET_NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATASET_NOT_FOUND'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DATASET_NOT_FOUND"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_FOUND" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_AUTHORIZED">
+<span class="sig-name descname"><span class="pre">DATASET_NOT_AUTHORIZED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATASET_NOT_AUTHORIZED'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DATASET_NOT_AUTHORIZED"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_AUTHORIZED" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_ACTIVE">
+<span class="sig-name descname"><span class="pre">DATASET_NOT_ACTIVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATASET_NOT_ACTIVE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DATASET_NOT_ACTIVE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_ACTIVE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE">
+<span class="sig-name descname"><span class="pre">MULTIPLE_ATTACHMENT_TYPE_CODE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MULTIPLE_ATTACHMENT_TYPE_CODE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_CODE_ATTACHMENT">
+<span class="sig-name descname"><span class="pre">MULTIPLE_CODE_ATTACHMENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MULTIPLE_CODE_ATTACHMENT'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.MULTIPLE_CODE_ATTACHMENT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_CODE_ATTACHMENT" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_DATE">
+<span class="sig-name descname"><span class="pre">INVALID_DATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_DATE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_DATE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_DATE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_UUID">
+<span class="sig-name descname"><span class="pre">INVALID_UUID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_UUID'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_UUID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_UUID" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_INTEGER">
+<span class="sig-name descname"><span class="pre">INVALID_INTEGER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_INTEGER'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_INTEGER"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_INTEGER" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_NUMERIC">
+<span class="sig-name descname"><span class="pre">INVALID_NUMERIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_NUMERIC'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_NUMERIC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NUMERIC" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_WKT">
+<span class="sig-name descname"><span class="pre">INVALID_WKT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_WKT'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_WKT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_WKT" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_GEOMETRY">
+<span class="sig-name descname"><span class="pre">INVALID_GEOMETRY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_GEOMETRY'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_GEOMETRY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_GEOMETRY" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_BOOL">
+<span class="sig-name descname"><span class="pre">INVALID_BOOL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_BOOL'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_BOOL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_BOOL" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_ATTACHMENT_CODE">
+<span class="sig-name descname"><span class="pre">INVALID_ATTACHMENT_CODE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_ATTACHMENT_CODE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_ATTACHMENT_CODE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_ATTACHMENT_CODE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_CHAR_LENGTH">
+<span class="sig-name descname"><span class="pre">INVALID_CHAR_LENGTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_CHAR_LENGTH'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_CHAR_LENGTH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_CHAR_LENGTH" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_HIGH">
+<span class="sig-name descname"><span class="pre">DATE_MIN_TOO_HIGH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATE_MIN_TOO_HIGH'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DATE_MIN_TOO_HIGH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_HIGH" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_LOW">
+<span class="sig-name descname"><span class="pre">DATE_MAX_TOO_LOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATE_MAX_TOO_LOW'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DATE_MAX_TOO_LOW"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_LOW" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_HIGH">
+<span class="sig-name descname"><span class="pre">DATE_MAX_TOO_HIGH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATE_MAX_TOO_HIGH'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DATE_MAX_TOO_HIGH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_HIGH" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_LOW">
+<span class="sig-name descname"><span class="pre">DATE_MIN_TOO_LOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATE_MIN_TOO_LOW'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DATE_MIN_TOO_LOW"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_LOW" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_SUP_DATE_MAX">
+<span class="sig-name descname"><span class="pre">DATE_MIN_SUP_DATE_MAX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATE_MIN_SUP_DATE_MAX'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DATE_MIN_SUP_DATE_MAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_SUP_DATE_MAX" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX">
+<span class="sig-name descname"><span class="pre">DEPTH_MIN_SUP_ALTI_MAX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DEPTH_MIN_SUP_ALTI_MAX'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.ALTI_MIN_SUP_ALTI_MAX">
+<span class="sig-name descname"><span class="pre">ALTI_MIN_SUP_ALTI_MAX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ALTI_MIN_SUP_ALTI_MAX'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.ALTI_MIN_SUP_ALTI_MAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.ALTI_MIN_SUP_ALTI_MAX" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.ORPHAN_ROW">
+<span class="sig-name descname"><span class="pre">ORPHAN_ROW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ORPHAN_ROW'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.ORPHAN_ROW"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.ORPHAN_ROW" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ROWS">
+<span class="sig-name descname"><span class="pre">DUPLICATE_ROWS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DUPLICATE_ROWS'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DUPLICATE_ROWS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ROWS" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_UUID">
+<span class="sig-name descname"><span class="pre">DUPLICATE_UUID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DUPLICATE_UUID'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DUPLICATE_UUID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_UUID" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.EXISTING_UUID">
+<span class="sig-name descname"><span class="pre">EXISTING_UUID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EXISTING_UUID'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.EXISTING_UUID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.EXISTING_UUID" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.SKIP_EXISTING_UUID">
+<span class="sig-name descname"><span class="pre">SKIP_EXISTING_UUID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SKIP_EXISTING_UUID'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.SKIP_EXISTING_UUID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.SKIP_EXISTING_UUID" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.MISSING_VALUE">
+<span class="sig-name descname"><span class="pre">MISSING_VALUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MISSING_VALUE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.MISSING_VALUE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.MISSING_VALUE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.MISSING_GEOM">
+<span class="sig-name descname"><span class="pre">MISSING_GEOM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MISSING_GEOM'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.MISSING_GEOM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.MISSING_GEOM" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUTSIDE">
+<span class="sig-name descname"><span class="pre">GEOMETRY_OUTSIDE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GEOMETRY_OUTSIDE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.GEOMETRY_OUTSIDE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUTSIDE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.NO_GEOM">
+<span class="sig-name descname"><span class="pre">NO_GEOM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NO-GEOM'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.NO_GEOM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_GEOM" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUT_OF_BOX">
+<span class="sig-name descname"><span class="pre">GEOMETRY_OUT_OF_BOX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GEOMETRY_OUT_OF_BOX'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.GEOMETRY_OUT_OF_BOX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUT_OF_BOX" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.ERRONEOUS_PARENT_ENTITY">
+<span class="sig-name descname"><span class="pre">ERRONEOUS_PARENT_ENTITY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ERRONEOUS_PARENT_ENTITY'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.ERRONEOUS_PARENT_ENTITY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.ERRONEOUS_PARENT_ENTITY" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.NO_PARENT_ENTITY">
+<span class="sig-name descname"><span class="pre">NO_PARENT_ENTITY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NO_PARENT_ENTITY'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.NO_PARENT_ENTITY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_PARENT_ENTITY" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK">
+<span class="sig-name descname"><span class="pre">DUPLICATE_ENTITY_SOURCE_PK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DUPLICATE_ENTITY_SOURCE_PK'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.COUNT_MIN_SUP_COUNT_MAX">
+<span class="sig-name descname"><span class="pre">COUNT_MIN_SUP_COUNT_MAX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'COUNT_MIN_SUP_COUNT_MAX'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.COUNT_MIN_SUP_COUNT_MAX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.COUNT_MIN_SUP_COUNT_MAX" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE">
+<span class="sig-name descname"><span class="pre">INVALID_NOMENCLATURE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_NOMENCLATURE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_NOMENCLATURE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_EXISTING_PROOF_VALUE">
+<span class="sig-name descname"><span class="pre">INVALID_EXISTING_PROOF_VALUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_EXISTING_PROOF_VALUE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_EXISTING_PROOF_VALUE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_EXISTING_PROOF_VALUE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE_WARNING">
+<span class="sig-name descname"><span class="pre">INVALID_NOMENCLATURE_WARNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_NOMENCLATURE_WARNING'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_NOMENCLATURE_WARNING"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE_WARNING" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR">
+<span class="sig-name descname"><span class="pre">CONDITIONAL_MANDATORY_FIELD_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CONDITIONAL_MANDATORY_FIELD_ERROR'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.UNKNOWN_ERROR">
+<span class="sig-name descname"><span class="pre">UNKNOWN_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'UNKNOWN_ERROR'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.UNKNOWN_ERROR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.UNKNOWN_ERROR" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_STATUT_SOURCE_VALUE">
+<span class="sig-name descname"><span class="pre">INVALID_STATUT_SOURCE_VALUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_STATUT_SOURCE_VALUE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_STATUT_SOURCE_VALUE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_STATUT_SOURCE_VALUE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_INVALID_DATA">
+<span class="sig-name descname"><span class="pre">CONDITIONAL_INVALID_DATA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CONDITIONAL_INVALID_DATA'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.CONDITIONAL_INVALID_DATA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_INVALID_DATA" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INVALID_URL_PROOF">
+<span class="sig-name descname"><span class="pre">INVALID_URL_PROOF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_URL_PROOF'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INVALID_URL_PROOF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_URL_PROOF" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN">
+<span class="sig-name descname"><span class="pre">ROW_HAVE_TOO_MUCH_COLUMN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ROW_HAVE_TOO_MUCH_COLUMN'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_LESS_COLUMN">
+<span class="sig-name descname"><span class="pre">ROW_HAVE_LESS_COLUMN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ROW_HAVE_LESS_COLUMN'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.ROW_HAVE_LESS_COLUMN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_LESS_COLUMN" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.EMPTY_ROW">
+<span class="sig-name descname"><span class="pre">EMPTY_ROW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EMPTY_ROW'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.EMPTY_ROW"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.EMPTY_ROW" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.HEADER_SAME_COLUMN_NAME">
+<span class="sig-name descname"><span class="pre">HEADER_SAME_COLUMN_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HEADER_SAME_COLUMN_NAME'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.HEADER_SAME_COLUMN_NAME"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.HEADER_SAME_COLUMN_NAME" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.EMPTY_FILE">
+<span class="sig-name descname"><span class="pre">EMPTY_FILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EMPTY_FILE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.EMPTY_FILE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.EMPTY_FILE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.NO_FILE_SENDED">
+<span class="sig-name descname"><span class="pre">NO_FILE_SENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NO_FILE_SENDED'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.NO_FILE_SENDED"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_FILE_SENDED" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.ERROR_WHILE_LOADING_FILE">
+<span class="sig-name descname"><span class="pre">ERROR_WHILE_LOADING_FILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ERROR_WHILE_LOADING_FILE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.ERROR_WHILE_LOADING_FILE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.ERROR_WHILE_LOADING_FILE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.FILE_FORMAT_ERROR">
+<span class="sig-name descname"><span class="pre">FILE_FORMAT_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FILE_FORMAT_ERROR'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.FILE_FORMAT_ERROR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_FORMAT_ERROR" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.FILE_EXTENSION_ERROR">
+<span class="sig-name descname"><span class="pre">FILE_EXTENSION_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FILE_EXTENSION_ERROR'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.FILE_EXTENSION_ERROR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_EXTENSION_ERROR" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.FILE_OVERSIZE">
+<span class="sig-name descname"><span class="pre">FILE_OVERSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FILE_OVERSIZE'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.FILE_OVERSIZE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_OVERSIZE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.FILE_NAME_TOO_LONG">
+<span class="sig-name descname"><span class="pre">FILE_NAME_TOO_LONG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FILE_NAME_TOO_LONG'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.FILE_NAME_TOO_LONG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_NAME_TOO_LONG" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.FILE_WITH_NO_DATA">
+<span class="sig-name descname"><span class="pre">FILE_WITH_NO_DATA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FILE_WITH_NO_DATA'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.FILE_WITH_NO_DATA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_WITH_NO_DATA" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.INCOHERENT_DATA">
+<span class="sig-name descname"><span class="pre">INCOHERENT_DATA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INCOHERENT_DATA'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.INCOHERENT_DATA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.INCOHERENT_DATA" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.CD_HAB_NOT_FOUND">
+<span class="sig-name descname"><span class="pre">CD_HAB_NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CD_HAB_NOT_FOUND'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.CD_HAB_NOT_FOUND"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.CD_HAB_NOT_FOUND" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.errors.ImportCodeError.CD_NOM_NOT_FOUND">
+<span class="sig-name descname"><span class="pre">CD_NOM_NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CD_NOM_NOT_FOUND'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/imports/checks/errors.html#ImportCodeError.CD_NOM_NOT_FOUND"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.errors.ImportCodeError.CD_NOM_NOT_FOUND" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../dataframe/utils/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">précédent</p>
+        <p class="prev-next-title">geonature.core.imports.checks.dataframe.utils</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../sql/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">suivant</p>
+        <p class="prev-next-title">geonature.core.imports.checks.sql</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenu
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError"><code class="docutils literal notranslate"><span class="pre">ImportCodeError</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATASET_NOT_FOUND</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_AUTHORIZED"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATASET_NOT_AUTHORIZED</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_ACTIVE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATASET_NOT_ACTIVE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_CODE_ATTACHMENT"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.MULTIPLE_CODE_ATTACHMENT</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_DATE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_DATE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_UUID"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_UUID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_INTEGER"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_INTEGER</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NUMERIC"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_NUMERIC</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_WKT"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_WKT</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_GEOMETRY"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_GEOMETRY</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_BOOL"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_BOOL</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_ATTACHMENT_CODE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_ATTACHMENT_CODE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_CHAR_LENGTH"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_CHAR_LENGTH</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_HIGH"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MIN_TOO_HIGH</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_LOW"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MAX_TOO_LOW</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_HIGH"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MAX_TOO_HIGH</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_LOW"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MIN_TOO_LOW</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_SUP_DATE_MAX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DATE_MIN_SUP_DATE_MAX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ALTI_MIN_SUP_ALTI_MAX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ALTI_MIN_SUP_ALTI_MAX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ORPHAN_ROW"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ORPHAN_ROW</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ROWS"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DUPLICATE_ROWS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_UUID"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DUPLICATE_UUID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.EXISTING_UUID"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.EXISTING_UUID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.SKIP_EXISTING_UUID"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.SKIP_EXISTING_UUID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.MISSING_VALUE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.MISSING_VALUE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.MISSING_GEOM"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.MISSING_GEOM</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUTSIDE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.GEOMETRY_OUTSIDE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_GEOM"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.NO_GEOM</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUT_OF_BOX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.GEOMETRY_OUT_OF_BOX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ERRONEOUS_PARENT_ENTITY"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ERRONEOUS_PARENT_ENTITY</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_PARENT_ENTITY"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.NO_PARENT_ENTITY</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.COUNT_MIN_SUP_COUNT_MAX"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.COUNT_MIN_SUP_COUNT_MAX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_NOMENCLATURE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_EXISTING_PROOF_VALUE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_EXISTING_PROOF_VALUE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE_WARNING"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_NOMENCLATURE_WARNING</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.UNKNOWN_ERROR"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.UNKNOWN_ERROR</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_STATUT_SOURCE_VALUE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_STATUT_SOURCE_VALUE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_INVALID_DATA"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.CONDITIONAL_INVALID_DATA</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INVALID_URL_PROOF"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INVALID_URL_PROOF</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_LESS_COLUMN"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ROW_HAVE_LESS_COLUMN</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.EMPTY_ROW"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.EMPTY_ROW</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.HEADER_SAME_COLUMN_NAME"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.HEADER_SAME_COLUMN_NAME</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.EMPTY_FILE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.EMPTY_FILE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.NO_FILE_SENDED"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.NO_FILE_SENDED</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.ERROR_WHILE_LOADING_FILE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.ERROR_WHILE_LOADING_FILE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_FORMAT_ERROR"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_FORMAT_ERROR</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_EXTENSION_ERROR"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_EXTENSION_ERROR</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_OVERSIZE"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_OVERSIZE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_NAME_TOO_LONG"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_NAME_TOO_LONG</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.FILE_WITH_NO_DATA"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.FILE_WITH_NO_DATA</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.INCOHERENT_DATA"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.INCOHERENT_DATA</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.CD_HAB_NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.CD_HAB_NOT_FOUND</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.errors.ImportCodeError.CD_NOM_NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">ImportCodeError.CD_NOM_NOT_FOUND</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

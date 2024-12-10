@@ -1,0 +1,1179 @@
+geonature.core.gn_meta.models
+=============================
+
+.. py:module:: geonature.core.gn_meta.models
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/geonature/core/gn_meta/models/aframework/index
+   /autoapi/geonature/core/gn_meta/models/commons/index
+   /autoapi/geonature/core/gn_meta/models/datasets/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.models.cor_acquisition_framework_objectif
+   geonature.core.gn_meta.models.cor_acquisition_framework_voletsinp
+   geonature.core.gn_meta.models.cor_acquisition_framework_territory
+   geonature.core.gn_meta.models.cor_dataset_territory
+   geonature.core.gn_meta.models.cor_acquisition_framework_objectif
+   geonature.core.gn_meta.models.cor_acquisition_framework_voletsinp
+   geonature.core.gn_meta.models.cor_acquisition_framework_territory
+   geonature.core.gn_meta.models.cor_dataset_territory
+   geonature.core.gn_meta.models.cor_acquisition_framework_objectif
+   geonature.core.gn_meta.models.cor_acquisition_framework_voletsinp
+   geonature.core.gn_meta.models.cor_acquisition_framework_territory
+   geonature.core.gn_meta.models.cor_dataset_territory
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.models.TDatasets
+   geonature.core.gn_meta.models.TAcquisitionFramework
+   geonature.core.gn_meta.models.DateFilterSchema
+   geonature.core.gn_meta.models.MetadataFilterSchema
+   geonature.core.gn_meta.models.CorAcquisitionFrameworkActor
+   geonature.core.gn_meta.models.CorDatasetActor
+   geonature.core.gn_meta.models.CorDatasetProtocol
+   geonature.core.gn_meta.models.TBibliographicReference
+   geonature.core.gn_meta.models.TDatasets
+   geonature.core.gn_meta.models.DateFilterSchema
+   geonature.core.gn_meta.models.MetadataFilterSchema
+   geonature.core.gn_meta.models.CorAcquisitionFrameworkActor
+   geonature.core.gn_meta.models.CorDatasetActor
+   geonature.core.gn_meta.models.CorDatasetProtocol
+   geonature.core.gn_meta.models.TBibliographicReference
+   geonature.core.gn_meta.models.DateFilterSchema
+   geonature.core.gn_meta.models.MetadataFilterSchema
+   geonature.core.gn_meta.models.CorAcquisitionFrameworkActor
+   geonature.core.gn_meta.models.CorDatasetActor
+   geonature.core.gn_meta.models.CorDatasetProtocol
+   geonature.core.gn_meta.models.TBibliographicReference
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.models.get_scopes_by_action
+   geonature.core.gn_meta.models.get_scopes_by_action
+
+
+Package Contents
+----------------
+
+.. py:function:: get_scopes_by_action(id_role=None, module_code=None, object_code=None)
+
+   This function gets the scopes permissions for each one of the 6 actions in "CRUVED",
+   that match (id_role, module_code, object_code)
+
+   :returns : (dict) A dict of the scope for each one of the 6 actions (the char in "CRUVED")
+
+
+.. py:class:: TDatasets
+
+   Bases: :py:obj:`geonature.core.gn_meta.models.commons.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_datasets'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: unique_dataset_id
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: acquisition_framework
+
+
+   .. py:attribute:: dataset_name
+
+
+   .. py:attribute:: dataset_shortname
+
+
+   .. py:attribute:: dataset_desc
+
+
+   .. py:attribute:: id_nomenclature_data_type
+
+
+   .. py:attribute:: keywords
+
+
+   .. py:attribute:: marine_domain
+
+
+   .. py:attribute:: terrestrial_domain
+
+
+   .. py:attribute:: id_nomenclature_dataset_objectif
+
+
+   .. py:attribute:: bbox_west
+
+
+   .. py:attribute:: bbox_east
+
+
+   .. py:attribute:: bbox_south
+
+
+   .. py:attribute:: bbox_north
+
+
+   .. py:attribute:: id_nomenclature_collecting_method
+
+
+   .. py:attribute:: id_nomenclature_data_origin
+
+
+   .. py:attribute:: id_nomenclature_source_status
+
+
+   .. py:attribute:: id_nomenclature_resource_type
+
+
+   .. py:attribute:: meta_create_date
+
+
+   .. py:attribute:: meta_update_date
+
+
+   .. py:attribute:: active
+
+
+   .. py:attribute:: validable
+
+
+   .. py:attribute:: id_digitizer
+
+
+   .. py:attribute:: digitizer
+
+
+   .. py:attribute:: creator
+
+
+   .. py:attribute:: id_taxa_list
+
+
+   .. py:attribute:: modules
+
+
+   .. py:attribute:: nomenclature_data_type
+
+
+   .. py:attribute:: nomenclature_dataset_objectif
+
+
+   .. py:attribute:: nomenclature_collecting_method
+
+
+   .. py:attribute:: nomenclature_data_origin
+
+
+   .. py:attribute:: nomenclature_source_status
+
+
+   .. py:attribute:: nomenclature_resource_type
+
+
+   .. py:attribute:: cor_territories
+
+
+   .. py:attribute:: cor_dataset_actor
+
+
+   .. py:attribute:: additional_fields
+
+
+   .. py:method:: user_actors()
+
+
+   .. py:method:: organism_actors()
+
+
+   .. py:method:: is_deletable()
+
+
+   .. py:method:: has_instance_permission(scope, _through_af=True)
+
+      _through_af prevent infinite recursion
+
+
+
+   .. py:method:: __str__()
+
+
+   .. py:method:: get_id(uuid_dataset)
+      :staticmethod:
+
+
+
+   .. py:method:: get_uuid(id_dataset)
+      :staticmethod:
+
+
+
+   .. py:method:: _get_read_scope(user=None)
+      :classmethod:
+
+
+
+   .. py:method:: _get_create_scope(module_code, user=None, object_code=None)
+      :classmethod:
+
+
+
+   .. py:method:: filter_by_scope(scope, *, query, user=None)
+
+
+   .. py:method:: filter_by_params(params={}, *, _af_search=True, query=None)
+
+
+   .. py:method:: filter_by_readable(query, user=None)
+
+      Return the datasets where the user has autorization via its CRUVED
+
+
+
+   .. py:method:: filter_by_creatable(module_code, *, query, user=None, object_code=None)
+
+      Return all dataset where user have read rights minus those who user to not have
+      create rigth
+
+
+
+   .. py:method:: filter_by_areas(areas, *, query)
+
+
+.. py:class:: TAcquisitionFramework
+
+   Bases: :py:obj:`geonature.core.gn_meta.models.commons.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_acquisition_frameworks'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: unique_acquisition_framework_id
+
+
+   .. py:attribute:: acquisition_framework_name
+
+
+   .. py:attribute:: acquisition_framework_desc
+
+
+   .. py:attribute:: id_nomenclature_territorial_level
+
+
+   .. py:attribute:: territory_desc
+
+
+   .. py:attribute:: keywords
+
+
+   .. py:attribute:: id_nomenclature_financing_type
+
+
+   .. py:attribute:: target_description
+
+
+   .. py:attribute:: ecologic_or_geologic_target
+
+
+   .. py:attribute:: acquisition_framework_parent_id
+
+
+   .. py:attribute:: is_parent
+
+
+   .. py:attribute:: opened
+
+
+   .. py:attribute:: id_digitizer
+
+
+   .. py:attribute:: acquisition_framework_start_date
+
+
+   .. py:attribute:: acquisition_framework_end_date
+
+
+   .. py:attribute:: meta_create_date
+
+
+   .. py:attribute:: meta_update_date
+
+
+   .. py:attribute:: initial_closing_date
+
+
+   .. py:attribute:: creator
+
+
+   .. py:attribute:: nomenclature_territorial_level
+
+
+   .. py:attribute:: nomenclature_financing_type
+
+
+   .. py:attribute:: cor_af_actor
+
+
+   .. py:attribute:: cor_objectifs
+
+
+   .. py:attribute:: cor_volets_sinp
+
+
+   .. py:attribute:: cor_territories
+
+
+   .. py:attribute:: bibliographical_references
+
+
+   .. py:attribute:: t_datasets
+
+
+   .. py:attribute:: datasets
+
+
+   .. py:method:: user_actors()
+
+
+   .. py:method:: organism_actors()
+
+
+   .. py:method:: has_datasets()
+
+
+   .. py:method:: has_child_acquisition_framework()
+
+
+   .. py:method:: has_instance_permission(scope, _through_ds=True)
+
+
+   .. py:method:: get_id(uuid_af)
+      :staticmethod:
+
+
+      return the acquisition framework's id
+      from its UUID if exist or None
+
+
+
+   .. py:method:: get_user_af(user, only_query=False, only_user=False)
+      :staticmethod:
+
+
+      get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
+      param:
+        - user from TRole model
+        - only_query: boolean (return the query not the id_datasets allowed if true)
+        - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
+
+      return: a list of id_dataset or a query
+
+
+
+   .. py:method:: _get_read_scope(user=None)
+      :classmethod:
+
+
+
+   .. py:method:: filter_by_scope(scope, *, query, user=None)
+
+
+   .. py:method:: filter_by_readable(*, query, user=None)
+
+      Return the afs where the user has autorization via its CRUVED
+
+
+
+   .. py:method:: filter_by_areas(areas, *, query)
+
+      Filter meta by areas
+
+
+
+   .. py:method:: filter_by_params(params={}, *, _ds_search=True, query=None)
+
+
+.. py:class:: DateFilterSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: year
+
+
+   .. py:attribute:: month
+
+
+   .. py:attribute:: day
+
+
+.. py:class:: MetadataFilterSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: unknown
+
+
+
+   .. py:attribute:: uuid
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: date
+
+
+   .. py:attribute:: person
+
+
+   .. py:attribute:: organism
+
+
+   .. py:attribute:: areas
+
+
+   .. py:attribute:: search
+
+
+   .. py:method:: convert_date(data, **kwargs)
+
+
+.. py:data:: cor_acquisition_framework_objectif
+
+.. py:data:: cor_acquisition_framework_voletsinp
+
+.. py:data:: cor_acquisition_framework_territory
+
+.. py:class:: CorAcquisitionFrameworkActor
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_acquisition_framework_actor'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cafa
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: id_organism
+
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+
+   .. py:attribute:: nomenclature_actor_role
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: organism
+
+
+.. py:class:: CorDatasetActor
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_actor'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cda
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: id_organism
+
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+
+   .. py:attribute:: nomenclature_actor_role
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: organism
+
+
+   .. py:method:: actor()
+
+
+   .. py:method:: display()
+
+
+.. py:class:: CorDatasetProtocol
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_protocol'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cdp
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: id_protocol
+
+
+.. py:data:: cor_dataset_territory
+
+.. py:class:: TBibliographicReference
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_bibliographical_references'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_bibliographic_reference
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: publication_url
+
+
+   .. py:attribute:: publication_reference
+
+
+.. py:function:: get_scopes_by_action(id_role=None, module_code=None, object_code=None)
+
+   This function gets the scopes permissions for each one of the 6 actions in "CRUVED",
+   that match (id_role, module_code, object_code)
+
+   :returns : (dict) A dict of the scope for each one of the 6 actions (the char in "CRUVED")
+
+
+.. py:class:: TDatasets
+
+   Bases: :py:obj:`geonature.core.gn_meta.models.commons.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_datasets'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: unique_dataset_id
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: acquisition_framework
+
+
+   .. py:attribute:: dataset_name
+
+
+   .. py:attribute:: dataset_shortname
+
+
+   .. py:attribute:: dataset_desc
+
+
+   .. py:attribute:: id_nomenclature_data_type
+
+
+   .. py:attribute:: keywords
+
+
+   .. py:attribute:: marine_domain
+
+
+   .. py:attribute:: terrestrial_domain
+
+
+   .. py:attribute:: id_nomenclature_dataset_objectif
+
+
+   .. py:attribute:: bbox_west
+
+
+   .. py:attribute:: bbox_east
+
+
+   .. py:attribute:: bbox_south
+
+
+   .. py:attribute:: bbox_north
+
+
+   .. py:attribute:: id_nomenclature_collecting_method
+
+
+   .. py:attribute:: id_nomenclature_data_origin
+
+
+   .. py:attribute:: id_nomenclature_source_status
+
+
+   .. py:attribute:: id_nomenclature_resource_type
+
+
+   .. py:attribute:: meta_create_date
+
+
+   .. py:attribute:: meta_update_date
+
+
+   .. py:attribute:: active
+
+
+   .. py:attribute:: validable
+
+
+   .. py:attribute:: id_digitizer
+
+
+   .. py:attribute:: digitizer
+
+
+   .. py:attribute:: creator
+
+
+   .. py:attribute:: id_taxa_list
+
+
+   .. py:attribute:: modules
+
+
+   .. py:attribute:: nomenclature_data_type
+
+
+   .. py:attribute:: nomenclature_dataset_objectif
+
+
+   .. py:attribute:: nomenclature_collecting_method
+
+
+   .. py:attribute:: nomenclature_data_origin
+
+
+   .. py:attribute:: nomenclature_source_status
+
+
+   .. py:attribute:: nomenclature_resource_type
+
+
+   .. py:attribute:: cor_territories
+
+
+   .. py:attribute:: cor_dataset_actor
+
+
+   .. py:attribute:: additional_fields
+
+
+   .. py:method:: user_actors()
+
+
+   .. py:method:: organism_actors()
+
+
+   .. py:method:: is_deletable()
+
+
+   .. py:method:: has_instance_permission(scope, _through_af=True)
+
+      _through_af prevent infinite recursion
+
+
+
+   .. py:method:: __str__()
+
+
+   .. py:method:: get_id(uuid_dataset)
+      :staticmethod:
+
+
+
+   .. py:method:: get_uuid(id_dataset)
+      :staticmethod:
+
+
+
+   .. py:method:: _get_read_scope(user=None)
+      :classmethod:
+
+
+
+   .. py:method:: _get_create_scope(module_code, user=None, object_code=None)
+      :classmethod:
+
+
+
+   .. py:method:: filter_by_scope(scope, *, query, user=None)
+
+
+   .. py:method:: filter_by_params(params={}, *, _af_search=True, query=None)
+
+
+   .. py:method:: filter_by_readable(query, user=None)
+
+      Return the datasets where the user has autorization via its CRUVED
+
+
+
+   .. py:method:: filter_by_creatable(module_code, *, query, user=None, object_code=None)
+
+      Return all dataset where user have read rights minus those who user to not have
+      create rigth
+
+
+
+   .. py:method:: filter_by_areas(areas, *, query)
+
+
+.. py:class:: DateFilterSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: year
+
+
+   .. py:attribute:: month
+
+
+   .. py:attribute:: day
+
+
+.. py:class:: MetadataFilterSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: unknown
+
+
+
+   .. py:attribute:: uuid
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: date
+
+
+   .. py:attribute:: person
+
+
+   .. py:attribute:: organism
+
+
+   .. py:attribute:: areas
+
+
+   .. py:attribute:: search
+
+
+   .. py:method:: convert_date(data, **kwargs)
+
+
+.. py:data:: cor_acquisition_framework_objectif
+
+.. py:data:: cor_acquisition_framework_voletsinp
+
+.. py:data:: cor_acquisition_framework_territory
+
+.. py:class:: CorAcquisitionFrameworkActor
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_acquisition_framework_actor'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cafa
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: id_organism
+
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+
+   .. py:attribute:: nomenclature_actor_role
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: organism
+
+
+.. py:class:: CorDatasetActor
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_actor'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cda
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: id_organism
+
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+
+   .. py:attribute:: nomenclature_actor_role
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: organism
+
+
+   .. py:method:: actor()
+
+
+   .. py:method:: display()
+
+
+.. py:class:: CorDatasetProtocol
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_protocol'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cdp
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: id_protocol
+
+
+.. py:data:: cor_dataset_territory
+
+.. py:class:: TBibliographicReference
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_bibliographical_references'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_bibliographic_reference
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: publication_url
+
+
+   .. py:attribute:: publication_reference
+
+
+.. py:class:: DateFilterSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: year
+
+
+   .. py:attribute:: month
+
+
+   .. py:attribute:: day
+
+
+.. py:class:: MetadataFilterSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: unknown
+
+
+
+   .. py:attribute:: uuid
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: date
+
+
+   .. py:attribute:: person
+
+
+   .. py:attribute:: organism
+
+
+   .. py:attribute:: areas
+
+
+   .. py:attribute:: search
+
+
+   .. py:method:: convert_date(data, **kwargs)
+
+
+.. py:data:: cor_acquisition_framework_objectif
+
+.. py:data:: cor_acquisition_framework_voletsinp
+
+.. py:data:: cor_acquisition_framework_territory
+
+.. py:class:: CorAcquisitionFrameworkActor
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_acquisition_framework_actor'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cafa
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: id_organism
+
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+
+   .. py:attribute:: nomenclature_actor_role
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: organism
+
+
+.. py:class:: CorDatasetActor
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_actor'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cda
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: id_organism
+
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+
+   .. py:attribute:: nomenclature_actor_role
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: organism
+
+
+   .. py:method:: actor()
+
+
+   .. py:method:: display()
+
+
+.. py:class:: CorDatasetProtocol
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_protocol'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cdp
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: id_protocol
+
+
+.. py:data:: cor_dataset_territory
+
+.. py:class:: TBibliographicReference
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_bibliographical_references'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_bibliographic_reference
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: publication_url
+
+
+   .. py:attribute:: publication_reference
+
+

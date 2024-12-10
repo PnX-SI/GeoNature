@@ -1,6 +1,0 @@
-:py:mod:`pypn_habref_api.data`
-==============================
-
-.. py:module:: pypn_habref_api.data
-
-

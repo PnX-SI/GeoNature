@@ -1,396 +1,1018 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>geonature.core.gn_monitoring.models &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>geonature.core.gn_monitoring.models &#8212; Documentation GeoNature 2.0</title>
   
-        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
-        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
-    <script src="../../../../../_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/geonature/core/gn_monitoring/models/index';</script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Recherche" href="../../../../../search.html" />
     <link rel="next" title="geonature.core.gn_monitoring.routes" href="../routes/index.html" />
-    <link rel="prev" title="geonature.core.gn_monitoring" href="../index.html" /> 
-</head>
+    <link rel="prev" title="geonature.core.gn_monitoring" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
-          
-          
-          <a href="../../../../../index.html" class="icon icon-home">
-            GeoNature
-              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.0
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">Développement</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">Auteurs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../middlewares/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.middlewares</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../tasks/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.tasks</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.utils</span></code></a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../../index.html">geonature</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../app/index.html">geonature.app</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../../index.html">geonature.core</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../admin/index.html">geonature.core.admin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../command/index.html">geonature.core.command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../errors/index.html">geonature.core.errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_commons/index.html">geonature.core.gn_commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_meta/index.html">geonature.core.gn_meta</a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="../index.html">geonature.core.gn_monitoring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_permissions/index.html">geonature.core.gn_permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_profiles/index.html">geonature.core.gn_profiles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_synthese/index.html">geonature.core.gn_synthese</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../imports/index.html">geonature.core.imports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../notifications/index.html">geonature.core.notifications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sensitivity/index.html">geonature.core.sensitivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../taxonomie/index.html">geonature.core.taxonomie</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../users/index.html">geonature.core.users</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../index.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../middlewares/index.html">geonature.middlewares</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tasks/index.html">geonature.tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../utils/index.html">geonature.utils</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
+</details></li>
 </ul>
-</li>
+</details></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../../index.html">GeoNature</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../../../../api-references.html">API REFERENCES</a></li>
-          <li class="breadcrumb-item"><a href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
-          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_monitoring</span></code></a></li>
-      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_monitoring.models</span></code></li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../../../../../_sources/autoapi/geonature/core/gn_monitoring/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
-      </li>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Dépôt source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/autoapi/geonature/core/gn_monitoring/models/index.rst?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
   </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../../../_sources/autoapi/geonature/core/gn_monitoring/models/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Télécharger le fichier source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimer au format PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>geonature.core.gn_monitoring.models</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenu </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_visit_observer"><code class="docutils literal notranslate"><span class="pre">cor_visit_observer</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_site_module"><code class="docutils literal notranslate"><span class="pre">cor_site_module</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_site_area"><code class="docutils literal notranslate"><span class="pre">cor_site_area</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_module_type"><code class="docutils literal notranslate"><span class="pre">cor_module_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_site_type"><code class="docutils literal notranslate"><span class="pre">cor_site_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite"><code class="docutils literal notranslate"><span class="pre">BibTypeSite</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.__tablename__"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.__tablename__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.__table_args__"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.__table_args__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.id_nomenclature_type_site"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.id_nomenclature_type_site</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.config"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.config</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.nomenclature"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.nomenclature</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.sites"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.sites</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits"><code class="docutils literal notranslate"><span class="pre">TBaseVisits</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.__tablename__"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.__tablename__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.__table_args__"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.__table_args__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_base_visit"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_base_visit</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_base_site"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_base_site</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_digitiser"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_dataset"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_dataset</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_module"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_module</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_min"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.visit_date_min</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_max"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.visit_date_max</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_tech_collect_campanule"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_nomenclature_tech_collect_campanule</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_grp_typ"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_nomenclature_grp_typ</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.comments"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.comments</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.uuid_base_visit"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.uuid_base_visit</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.meta_create_date"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.meta_create_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.meta_update_date"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.meta_update_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.digitiser"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.observers"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.observers</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.observers_txt"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.observers_txt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.dataset"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.dataset</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites"><code class="docutils literal notranslate"><span class="pre">TBaseSites</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.__tablename__"><code class="docutils literal notranslate"><span class="pre">TBaseSites.__tablename__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.__table_args__"><code class="docutils literal notranslate"><span class="pre">TBaseSites.__table_args__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.id_base_site"><code class="docutils literal notranslate"><span class="pre">TBaseSites.id_base_site</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.id_inventor"><code class="docutils literal notranslate"><span class="pre">TBaseSites.id_inventor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.id_digitiser"><code class="docutils literal notranslate"><span class="pre">TBaseSites.id_digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_name"><code class="docutils literal notranslate"><span class="pre">TBaseSites.base_site_name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_description"><code class="docutils literal notranslate"><span class="pre">TBaseSites.base_site_description</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_code"><code class="docutils literal notranslate"><span class="pre">TBaseSites.base_site_code</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.first_use_date"><code class="docutils literal notranslate"><span class="pre">TBaseSites.first_use_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.geom"><code class="docutils literal notranslate"><span class="pre">TBaseSites.geom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.uuid_base_site"><code class="docutils literal notranslate"><span class="pre">TBaseSites.uuid_base_site</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.meta_create_date"><code class="docutils literal notranslate"><span class="pre">TBaseSites.meta_create_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.meta_update_date"><code class="docutils literal notranslate"><span class="pre">TBaseSites.meta_update_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.altitude_min"><code class="docutils literal notranslate"><span class="pre">TBaseSites.altitude_min</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.altitude_max"><code class="docutils literal notranslate"><span class="pre">TBaseSites.altitude_max</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.digitiser"><code class="docutils literal notranslate"><span class="pre">TBaseSites.digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.inventor"><code class="docutils literal notranslate"><span class="pre">TBaseSites.inventor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.t_base_visits"><code class="docutils literal notranslate"><span class="pre">TBaseSites.t_base_visits</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.modules"><code class="docutils literal notranslate"><span class="pre">TBaseSites.modules</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations"><code class="docutils literal notranslate"><span class="pre">TObservations</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.__tablename__"><code class="docutils literal notranslate"><span class="pre">TObservations.__tablename__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.__table_args__"><code class="docutils literal notranslate"><span class="pre">TObservations.__table_args__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.id_observation"><code class="docutils literal notranslate"><span class="pre">TObservations.id_observation</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.id_base_visit"><code class="docutils literal notranslate"><span class="pre">TObservations.id_base_visit</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.id_digitiser"><code class="docutils literal notranslate"><span class="pre">TObservations.id_digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.digitiser"><code class="docutils literal notranslate"><span class="pre">TObservations.digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.cd_nom"><code class="docutils literal notranslate"><span class="pre">TObservations.cd_nom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.comments"><code class="docutils literal notranslate"><span class="pre">TObservations.comments</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.uuid_observation"><code class="docutils literal notranslate"><span class="pre">TObservations.uuid_observation</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="module-geonature.core.gn_monitoring.models">
-<span id="geonature-core-gn-monitoring-models"></span><h1><a class="reference internal" href="#module-geonature.core.gn_monitoring.models" title="geonature.core.gn_monitoring.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_monitoring.models</span></code></a><a class="headerlink" href="#module-geonature.core.gn_monitoring.models" title="Link to this heading"></a></h1>
+<span id="geonature-core-gn-monitoring-models"></span><h1>geonature.core.gn_monitoring.models<a class="headerlink" href="#module-geonature.core.gn_monitoring.models" title="Lien vers cette rubrique">#</a></h1>
 <p>Modèles du schéma gn_monitoring
 Correspond a la centralisation des données de base</p>
 <blockquote>
 <div><p>relatifs aux protocoles de suivis</p>
 </div></blockquote>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
-<section id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
-<table class="autosummary longtable docutils align-default">
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Lien vers cette rubrique">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.TBaseVisits" title="geonature.core.gn_monitoring.models.TBaseVisits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TBaseVisits</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.cor_visit_observer" title="geonature.core.gn_monitoring.models.cor_visit_observer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_visit_observer</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.cor_site_module" title="geonature.core.gn_monitoring.models.cor_site_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_site_module</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.cor_site_area" title="geonature.core.gn_monitoring.models.cor_site_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_site_area</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.cor_module_type" title="geonature.core.gn_monitoring.models.cor_module_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_module_type</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.cor_site_type" title="geonature.core.gn_monitoring.models.cor_site_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_site_type</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Lien vers cette rubrique">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.BibTypeSite" title="geonature.core.gn_monitoring.models.BibTypeSite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibTypeSite</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.TBaseVisits" title="geonature.core.gn_monitoring.models.TBaseVisits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TBaseVisits</span></code></a></p></td>
 <td><p>Table de centralisation des visites liées à un site</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.TBaseSites" title="geonature.core.gn_monitoring.models.TBaseSites"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TBaseSites</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.TBaseSites" title="geonature.core.gn_monitoring.models.TBaseSites"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TBaseSites</span></code></a></p></td>
 <td><p>Table centralisant les données élémentaire des sites</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.TObservations" title="geonature.core.gn_monitoring.models.TObservations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TObservations</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 </tbody>
 </table>
+</div>
 </section>
-<section id="attributes">
-<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.corVisitObserver" title="geonature.core.gn_monitoring.models.corVisitObserver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">corVisitObserver</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.corSiteModule" title="geonature.core.gn_monitoring.models.corSiteModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">corSiteModule</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_monitoring.models.corSiteArea" title="geonature.core.gn_monitoring.models.corSiteArea"><code class="xref py py-obj docutils literal notranslate"><span class="pre">corSiteArea</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Lien vers cette rubrique">#</a></h2>
 <dl class="py data">
-<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.corVisitObserver">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">corVisitObserver</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#corVisitObserver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.corVisitObserver" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.cor_visit_observer">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">cor_visit_observer</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#cor_visit_observer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.cor_visit_observer" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.corSiteModule">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">corSiteModule</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#corSiteModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.corSiteModule" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.cor_site_module">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">cor_site_module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#cor_site_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.cor_site_module" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.corSiteArea">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">corSiteArea</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#corSiteArea"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.corSiteArea" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.cor_site_area">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">cor_site_area</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#cor_site_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.cor_site_area" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.cor_module_type">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">cor_module_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#cor_module_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.cor_module_type" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.cor_site_type">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">cor_site_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#cor_site_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.cor_site_type" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.BibTypeSite">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">BibTypeSite</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#BibTypeSite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.BibTypeSite" title="Lien vers cette définition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.BibTypeSite.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_type_site'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#BibTypeSite.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.BibTypeSite.__tablename__" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.BibTypeSite.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#BibTypeSite.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.BibTypeSite.__table_args__" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.BibTypeSite.id_nomenclature_type_site">
+<span class="sig-name descname"><span class="pre">id_nomenclature_type_site</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#BibTypeSite.id_nomenclature_type_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.BibTypeSite.id_nomenclature_type_site" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.BibTypeSite.config">
+<span class="sig-name descname"><span class="pre">config</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#BibTypeSite.config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.BibTypeSite.config" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.BibTypeSite.nomenclature">
+<span class="sig-name descname"><span class="pre">nomenclature</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#BibTypeSite.nomenclature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.BibTypeSite.nomenclature" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.BibTypeSite.sites">
+<span class="sig-name descname"><span class="pre">sites</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#BibTypeSite.sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.BibTypeSite.sites" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">TBaseVisits</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">TBaseVisits</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits" title="Lien vers cette définition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
 <p>Table de centralisation des visites liées à un site</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.__tablename__">
-<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_base_visits'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.__tablename__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_base_visits'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.__tablename__" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.__table_args__">
-<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.__table_args__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.__table_args__" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.id_base_visit">
-<span class="sig-name descname"><span class="pre">id_base_visit</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_base_visit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_base_visit" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_base_visit</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_base_visit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_base_visit" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.id_base_site">
-<span class="sig-name descname"><span class="pre">id_base_site</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_base_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_base_site" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_base_site</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_base_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_base_site" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.id_digitiser">
-<span class="sig-name descname"><span class="pre">id_digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_digitiser" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_digitiser" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.id_dataset">
-<span class="sig-name descname"><span class="pre">id_dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_dataset" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_dataset" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.id_module">
-<span class="sig-name descname"><span class="pre">id_module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_module" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_module" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.visit_date_min">
-<span class="sig-name descname"><span class="pre">visit_date_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.visit_date_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_min" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">visit_date_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.visit_date_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_min" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.visit_date_max">
-<span class="sig-name descname"><span class="pre">visit_date_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.visit_date_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_max" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">visit_date_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.visit_date_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_max" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_tech_collect_campanule">
-<span class="sig-name descname"><span class="pre">id_nomenclature_tech_collect_campanule</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_nomenclature_tech_collect_campanule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_tech_collect_campanule" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_nomenclature_tech_collect_campanule</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_nomenclature_tech_collect_campanule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_tech_collect_campanule" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_grp_typ">
-<span class="sig-name descname"><span class="pre">id_nomenclature_grp_typ</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_nomenclature_grp_typ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_grp_typ" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_nomenclature_grp_typ</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.id_nomenclature_grp_typ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_grp_typ" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.comments">
-<span class="sig-name descname"><span class="pre">comments</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.comments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.comments" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">comments</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.comments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.comments" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.uuid_base_visit">
-<span class="sig-name descname"><span class="pre">uuid_base_visit</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.uuid_base_visit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.uuid_base_visit" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">uuid_base_visit</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.uuid_base_visit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.uuid_base_visit" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.meta_create_date">
-<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.meta_create_date" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.meta_create_date" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.meta_update_date">
-<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.meta_update_date" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.meta_update_date" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.digitiser">
-<span class="sig-name descname"><span class="pre">digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.digitiser" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.digitiser" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.observers">
-<span class="sig-name descname"><span class="pre">observers</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.observers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.observers" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">observers</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.observers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.observers" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.observers_txt">
+<span class="sig-name descname"><span class="pre">observers_txt</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.observers_txt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.observers_txt" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseVisits.dataset">
-<span class="sig-name descname"><span class="pre">dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.dataset" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseVisits.dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseVisits.dataset" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">TBaseSites</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">TBaseSites</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites" title="Lien vers cette définition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
 <p>Table centralisant les données élémentaire des sites</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.__tablename__">
-<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_base_sites'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.__tablename__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_base_sites'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.__tablename__" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.__table_args__">
-<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.__table_args__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.__table_args__" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.id_base_site">
-<span class="sig-name descname"><span class="pre">id_base_site</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.id_base_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.id_base_site" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_base_site</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.id_base_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.id_base_site" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.id_inventor">
-<span class="sig-name descname"><span class="pre">id_inventor</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.id_inventor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.id_inventor" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_inventor</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.id_inventor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.id_inventor" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.id_digitiser">
-<span class="sig-name descname"><span class="pre">id_digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.id_digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.id_digitiser" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.id_nomenclature_type_site">
-<span class="sig-name descname"><span class="pre">id_nomenclature_type_site</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.id_nomenclature_type_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.id_nomenclature_type_site" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id_digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.id_digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.id_digitiser" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.base_site_name">
-<span class="sig-name descname"><span class="pre">base_site_name</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.base_site_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_name" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">base_site_name</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.base_site_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_name" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.base_site_description">
-<span class="sig-name descname"><span class="pre">base_site_description</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.base_site_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_description" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">base_site_description</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.base_site_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_description" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.base_site_code">
-<span class="sig-name descname"><span class="pre">base_site_code</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.base_site_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_code" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">base_site_code</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.base_site_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_code" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.first_use_date">
-<span class="sig-name descname"><span class="pre">first_use_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.first_use_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.first_use_date" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">first_use_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.first_use_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.first_use_date" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.geom">
-<span class="sig-name descname"><span class="pre">geom</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.geom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.geom" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">geom</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.geom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.geom" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.uuid_base_site">
-<span class="sig-name descname"><span class="pre">uuid_base_site</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.uuid_base_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.uuid_base_site" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">uuid_base_site</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.uuid_base_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.uuid_base_site" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.meta_create_date">
-<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.meta_create_date" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.meta_create_date" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.meta_update_date">
-<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.meta_update_date" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.meta_update_date" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.altitude_min">
-<span class="sig-name descname"><span class="pre">altitude_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.altitude_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.altitude_min" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">altitude_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.altitude_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.altitude_min" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.altitude_max">
-<span class="sig-name descname"><span class="pre">altitude_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.altitude_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.altitude_max" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">altitude_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.altitude_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.altitude_max" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.digitiser">
-<span class="sig-name descname"><span class="pre">digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.digitiser" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.digitiser" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.inventor">
-<span class="sig-name descname"><span class="pre">inventor</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.inventor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.inventor" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inventor</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.inventor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.inventor" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.t_base_visits">
-<span class="sig-name descname"><span class="pre">t_base_visits</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.t_base_visits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.t_base_visits" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t_base_visits</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.t_base_visits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.t_base_visits" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TBaseSites.modules">
-<span class="sig-name descname"><span class="pre">modules</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.modules" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">modules</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TBaseSites.modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TBaseSites.modules" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_monitoring.models.</span></span><span class="sig-name descname"><span class="pre">TObservations</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations" title="Lien vers cette définition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_observations'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.__tablename__" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.__table_args__" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.id_observation">
+<span class="sig-name descname"><span class="pre">id_observation</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.id_observation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.id_observation" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.id_base_visit">
+<span class="sig-name descname"><span class="pre">id_base_visit</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.id_base_visit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.id_base_visit" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.id_digitiser">
+<span class="sig-name descname"><span class="pre">id_digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.id_digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.id_digitiser" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.digitiser">
+<span class="sig-name descname"><span class="pre">digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.digitiser" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.cd_nom" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.comments">
+<span class="sig-name descname"><span class="pre">comments</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.comments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.comments" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_monitoring.models.TObservations.uuid_observation">
+<span class="sig-name descname"><span class="pre">uuid_observation</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_monitoring/models.html#TObservations.uuid_observation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_monitoring.models.TObservations.uuid_observation" title="Lien vers cette définition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </section>
 </section>
-</section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
-        <a href="../index.html" class="btn btn-neutral float-left" title="geonature.core.gn_monitoring" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
-        <a href="../routes/index.html" class="btn btn-neutral float-right" title="geonature.core.gn_monitoring.routes" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+                </article>
+              
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
-  </div>
-
-  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
-    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">précédent</p>
+        <p class="prev-next-title">geonature.core.gn_monitoring</p>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </a>
+    <a class="right-next"
+       href="../routes/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">suivant</p>
+        <p class="prev-next-title">geonature.core.gn_monitoring.routes</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-</body>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenu
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_visit_observer"><code class="docutils literal notranslate"><span class="pre">cor_visit_observer</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_site_module"><code class="docutils literal notranslate"><span class="pre">cor_site_module</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_site_area"><code class="docutils literal notranslate"><span class="pre">cor_site_area</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_module_type"><code class="docutils literal notranslate"><span class="pre">cor_module_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.cor_site_type"><code class="docutils literal notranslate"><span class="pre">cor_site_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite"><code class="docutils literal notranslate"><span class="pre">BibTypeSite</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.__tablename__"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.__tablename__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.__table_args__"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.__table_args__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.id_nomenclature_type_site"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.id_nomenclature_type_site</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.config"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.config</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.nomenclature"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.nomenclature</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.BibTypeSite.sites"><code class="docutils literal notranslate"><span class="pre">BibTypeSite.sites</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits"><code class="docutils literal notranslate"><span class="pre">TBaseVisits</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.__tablename__"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.__tablename__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.__table_args__"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.__table_args__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_base_visit"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_base_visit</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_base_site"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_base_site</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_digitiser"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_dataset"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_dataset</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_module"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_module</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_min"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.visit_date_min</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_max"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.visit_date_max</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_tech_collect_campanule"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_nomenclature_tech_collect_campanule</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_grp_typ"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.id_nomenclature_grp_typ</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.comments"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.comments</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.uuid_base_visit"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.uuid_base_visit</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.meta_create_date"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.meta_create_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.meta_update_date"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.meta_update_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.digitiser"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.observers"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.observers</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.observers_txt"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.observers_txt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseVisits.dataset"><code class="docutils literal notranslate"><span class="pre">TBaseVisits.dataset</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites"><code class="docutils literal notranslate"><span class="pre">TBaseSites</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.__tablename__"><code class="docutils literal notranslate"><span class="pre">TBaseSites.__tablename__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.__table_args__"><code class="docutils literal notranslate"><span class="pre">TBaseSites.__table_args__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.id_base_site"><code class="docutils literal notranslate"><span class="pre">TBaseSites.id_base_site</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.id_inventor"><code class="docutils literal notranslate"><span class="pre">TBaseSites.id_inventor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.id_digitiser"><code class="docutils literal notranslate"><span class="pre">TBaseSites.id_digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_name"><code class="docutils literal notranslate"><span class="pre">TBaseSites.base_site_name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_description"><code class="docutils literal notranslate"><span class="pre">TBaseSites.base_site_description</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.base_site_code"><code class="docutils literal notranslate"><span class="pre">TBaseSites.base_site_code</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.first_use_date"><code class="docutils literal notranslate"><span class="pre">TBaseSites.first_use_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.geom"><code class="docutils literal notranslate"><span class="pre">TBaseSites.geom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.uuid_base_site"><code class="docutils literal notranslate"><span class="pre">TBaseSites.uuid_base_site</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.meta_create_date"><code class="docutils literal notranslate"><span class="pre">TBaseSites.meta_create_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.meta_update_date"><code class="docutils literal notranslate"><span class="pre">TBaseSites.meta_update_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.altitude_min"><code class="docutils literal notranslate"><span class="pre">TBaseSites.altitude_min</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.altitude_max"><code class="docutils literal notranslate"><span class="pre">TBaseSites.altitude_max</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.digitiser"><code class="docutils literal notranslate"><span class="pre">TBaseSites.digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.inventor"><code class="docutils literal notranslate"><span class="pre">TBaseSites.inventor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.t_base_visits"><code class="docutils literal notranslate"><span class="pre">TBaseSites.t_base_visits</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TBaseSites.modules"><code class="docutils literal notranslate"><span class="pre">TBaseSites.modules</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations"><code class="docutils literal notranslate"><span class="pre">TObservations</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.__tablename__"><code class="docutils literal notranslate"><span class="pre">TObservations.__tablename__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.__table_args__"><code class="docutils literal notranslate"><span class="pre">TObservations.__table_args__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.id_observation"><code class="docutils literal notranslate"><span class="pre">TObservations.id_observation</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.id_base_visit"><code class="docutils literal notranslate"><span class="pre">TObservations.id_base_visit</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.id_digitiser"><code class="docutils literal notranslate"><span class="pre">TObservations.id_digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.digitiser"><code class="docutils literal notranslate"><span class="pre">TObservations.digitiser</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.cd_nom"><code class="docutils literal notranslate"><span class="pre">TObservations.cd_nom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.comments"><code class="docutils literal notranslate"><span class="pre">TObservations.comments</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.gn_monitoring.models.TObservations.uuid_observation"><code class="docutils literal notranslate"><span class="pre">TObservations.uuid_observation</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

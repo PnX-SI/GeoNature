@@ -1,0 +1,849 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.checks.dataframe.cast &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/checks/dataframe/cast';</script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.checks.dataframe.cast</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.imports.checks.errors</span> <span class="kn">import</span> <span class="n">ImportCodeError</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">sqltypes</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span> <span class="k">as</span> <span class="n">UUIDType</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">Entity</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">dataframe_check</span>
+
+
+<div class="viewcode-block" id="convert_to_datetime">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.convert_to_datetime">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_to_datetime</span><span class="p">(</span><span class="n">value_raw</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Try to convert a date string to a datetime object.</span>
+<span class="sd">    If the input string does not match any of compatible formats, it will return</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value_raw : str</span>
+<span class="sd">        The input string to convert</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    converted_date : datetime or None</span>
+<span class="sd">        The converted datetime object or None if the conversion failed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">converted_date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">value_raw</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[ ]+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[/.:]&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="n">date_formats</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">time_formats</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;%H&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;%H-%M&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;%H-%M-%S&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;%H-%M-%S-</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;%Hh&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;%Hh%M&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;%Hh%Mm&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;%Hh%Mm%Ss&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">date_format</span><span class="p">,</span> <span class="n">time_format</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">date_formats</span><span class="p">,</span> <span class="n">time_formats</span><span class="p">):</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span><span class="n">date_format</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">time_format</span><span class="p">)</span> <span class="k">if</span> <span class="n">time_format</span> <span class="k">else</span> <span class="n">date_format</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">converted_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+            <span class="k">break</span>  <span class="c1"># If successful conversion, will stop the loop</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">converted_date</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">converted_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value_raw</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">converted_date</span></div>
+
+
+
+<div class="viewcode-block" id="convert_to_uuid">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.convert_to_uuid">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_to_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">UUID</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="convert_to_integer">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.convert_to_integer">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_to_integer</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="check_datetime_field">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.check_datetime_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_datetime_field</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">source_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a column is a datetime and convert it to datetime type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe to check.</span>
+<span class="sd">    source_field : str</span>
+<span class="sd">        The name of the column to check.</span>
+<span class="sd">    target_field : str</span>
+<span class="sd">        The name of the column where to store the result.</span>
+<span class="sd">    required : bool</span>
+<span class="sd">        Whether the column is mandatory or not.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing an error code, the column name, and the invalid rows.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    set</span>
+<span class="sd">        Set containing the name of the target field.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The error codes are:</span>
+<span class="sd">        - INVALID_DATE: the value is not of datetime type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">datetime_col</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">convert_to_datetime</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">required</span><span class="p">:</span>
+        <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">datetime_col</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># invalid rows are NaN rows which were not already set to NaN</span>
+        <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">datetime_col</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">df</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">target_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime_col</span>
+    <span class="n">values_error</span> <span class="o">=</span> <span class="n">invalid_rows</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">error_code</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_DATE</span><span class="p">,</span>
+            <span class="n">invalid_rows</span><span class="o">=</span><span class="n">invalid_rows</span><span class="p">,</span>
+            <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;Les dates suivantes ne sont pas au bon format: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">values_error</span><span class="p">))</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">target_field</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="check_uuid_field">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.check_uuid_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_uuid_field</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">source_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a column is a UUID and convert it to UUID type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe to check.</span>
+<span class="sd">    source_field : str</span>
+<span class="sd">        The name of the column to check.</span>
+<span class="sd">    target_field : str</span>
+<span class="sd">        The name of the column where to store the result.</span>
+<span class="sd">    required : bool</span>
+<span class="sd">        Whether the column is mandatory or not.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing an error code, the column name, and the invalid rows.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    set</span>
+<span class="sd">        Set containing the name of the target field.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The error codes are:</span>
+<span class="sd">        - INVALID_UUID: the value is not a valid UUID.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uuid_col</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">convert_to_uuid</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">required</span><span class="p">:</span>
+        <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">uuid_col</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># invalid rows are NaN rows which were not already set to NaN</span>
+        <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">uuid_col</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">df</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">target_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">uuid_col</span>
+    <span class="n">values_error</span> <span class="o">=</span> <span class="n">invalid_rows</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">error_code</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_UUID</span><span class="p">,</span>
+            <span class="n">invalid_rows</span><span class="o">=</span><span class="n">invalid_rows</span><span class="p">,</span>
+            <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;Les UUID suivantes ne sont pas au bon format: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">values_error</span><span class="p">))</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">target_field</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="check_integer_field">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.check_integer_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_integer_field</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">source_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a column is an integer and convert it to integer type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe to check.</span>
+<span class="sd">    source_field : str</span>
+<span class="sd">        The name of the column to check.</span>
+<span class="sd">    target_field : str</span>
+<span class="sd">        The name of the column where to store the result.</span>
+<span class="sd">    required : bool</span>
+<span class="sd">        Whether the column is mandatory or not.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing an error code, the column name, and the invalid rows.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    set</span>
+<span class="sd">        Set containing the name of the target field.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The error codes are:</span>
+<span class="sd">        - INVALID_INTEGER: the value is not of integer type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">integer_col</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">convert_to_integer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">required</span><span class="p">:</span>
+        <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">integer_col</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># invalid rows are NaN rows which were not already set to NaN</span>
+        <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">integer_col</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">df</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">target_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">integer_col</span>
+    <span class="n">values_error</span> <span class="o">=</span> <span class="n">invalid_rows</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">error_code</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_INTEGER</span><span class="p">,</span>
+            <span class="n">invalid_rows</span><span class="o">=</span><span class="n">invalid_rows</span><span class="p">,</span>
+            <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;Les valeurs suivantes ne sont pas des entiers : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">values_error</span><span class="p">))</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">target_field</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="check_numeric_field">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.check_numeric_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_numeric_field</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">source_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if column string values are numerics and convert it to numeric type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe to check.</span>
+<span class="sd">    source_field : str</span>
+<span class="sd">        The name of the column to check.</span>
+<span class="sd">    target_field : str</span>
+<span class="sd">        The name of the column where to store the result.</span>
+<span class="sd">    required : bool</span>
+<span class="sd">        Whether the column is mandatory or not.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing an error code, the column name, and the invalid rows.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    set</span>
+<span class="sd">        Set containing the name of the target field.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The error codes are:</span>
+<span class="sd">        - INVALID_NUMERIC: the value is not of numeric type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">to_numeric</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">numeric_col</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">to_numeric</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">required</span><span class="p">:</span>
+        <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">numeric_col</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># invalid rows are NaN rows which were not already set to NaN</span>
+        <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">numeric_col</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">df</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">target_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">numeric_col</span>
+    <span class="n">values_error</span> <span class="o">=</span> <span class="n">invalid_rows</span><span class="p">[</span><span class="n">source_field</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">error_code</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_NUMERIC</span><span class="p">,</span>
+            <span class="n">invalid_rows</span><span class="o">=</span><span class="n">invalid_rows</span><span class="p">,</span>
+            <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;Les valeurs suivantes ne sont pas des nombres : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">values_error</span><span class="p">))</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">target_field</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="check_unicode_field">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.check_unicode_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_unicode_field</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if column values have the right length.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe to check.</span>
+<span class="sd">    field : str</span>
+<span class="sd">        The name of the column to check.</span>
+<span class="sd">    field_length : Optional[int]</span>
+<span class="sd">        The maximum length of the column.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing an error code, the column name, and the invalid rows.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The error codes are:</span>
+<span class="sd">        - INVALID_CHAR_LENGTH: the string is too long.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">field_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">length</span> <span class="o">&gt;</span> <span class="n">field_length</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">error_code</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_CHAR_LENGTH</span><span class="p">,</span>
+            <span class="n">invalid_rows</span><span class="o">=</span><span class="n">invalid_rows</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_boolean_field">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.check_boolean_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_boolean_field</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_col</span><span class="p">,</span> <span class="n">dest_col</span><span class="p">,</span> <span class="n">required</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check a boolean field in a dataframe.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe to check.</span>
+<span class="sd">    source_col : str</span>
+<span class="sd">        The name of the column to check.</span>
+<span class="sd">    dest_col : str</span>
+<span class="sd">        The name of the column where to store the result.</span>
+<span class="sd">    required : bool</span>
+<span class="sd">        Whether the column is mandatory or not.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing an error code and the rows with errors.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The error codes are:</span>
+<span class="sd">        - MISSING_VALUE: the value is mandatory but it&#39;s missing (null).</span>
+<span class="sd">        - INVALID_BOOL: the value is not a boolean.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">dest_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">required</span><span class="p">:</span>  <span class="c1"># FIXME: to remove as done in check_required_value</span>
+        <span class="n">invalid_mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">dest_col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">bool</span> <span class="ow">and</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">yield</span> <span class="nb">dict</span><span class="p">(</span><span class="n">error_code</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">MISSING_VALUE</span><span class="p">,</span> <span class="n">invalid_rows</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">invalid_mask</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">invalid_mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">dest_col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">bool</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">invalid_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="nb">dict</span><span class="p">(</span><span class="n">error_code</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_BOOL</span><span class="p">,</span> <span class="n">invalid_rows</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">invalid_mask</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">dest_col</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="check_anytype_field">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/cast/index.html#geonature.core.imports.checks.dataframe.cast.check_anytype_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_anytype_field</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">field_type</span><span class="p">:</span> <span class="n">sqltypes</span><span class="o">.</span><span class="n">TypeEngine</span><span class="p">,</span>
+    <span class="n">source_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">dest_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check a field in a dataframe according to its type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe to check.</span>
+<span class="sd">    field_type : sqlalchemy.TypeEngine</span>
+<span class="sd">        The type of the column to check.</span>
+<span class="sd">    source_col : str</span>
+<span class="sd">        The name of the column to check.</span>
+<span class="sd">    dest_col : str</span>
+<span class="sd">        The name of the column where to store the result.</span>
+<span class="sd">    required : bool</span>
+<span class="sd">        Whether the column is mandatory or not.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary containing an error code and the rows with errors.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    set</span>
+<span class="sd">        Set containing the name of columns updated in the dataframe.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">updated_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_type</span><span class="p">,</span> <span class="n">sqltypes</span><span class="o">.</span><span class="n">DateTime</span><span class="p">):</span>
+        <span class="n">updated_cols</span> <span class="o">|=</span> <span class="k">yield from</span> <span class="n">check_datetime_field</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_col</span><span class="p">,</span> <span class="n">dest_col</span><span class="p">,</span> <span class="n">required</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_type</span><span class="p">,</span> <span class="n">sqltypes</span><span class="o">.</span><span class="n">Integer</span><span class="p">):</span>
+        <span class="n">updated_cols</span> <span class="o">|=</span> <span class="k">yield from</span> <span class="n">check_integer_field</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_col</span><span class="p">,</span> <span class="n">dest_col</span><span class="p">,</span> <span class="n">required</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_type</span><span class="p">,</span> <span class="n">UUIDType</span><span class="p">):</span>
+        <span class="n">updated_cols</span> <span class="o">|=</span> <span class="k">yield from</span> <span class="n">check_uuid_field</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_col</span><span class="p">,</span> <span class="n">dest_col</span><span class="p">,</span> <span class="n">required</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_type</span><span class="p">,</span> <span class="n">sqltypes</span><span class="o">.</span><span class="n">String</span><span class="p">):</span>
+        <span class="k">yield from</span> <span class="n">check_unicode_field</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">dest_col</span><span class="p">,</span> <span class="n">field_length</span><span class="o">=</span><span class="n">field_type</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_type</span><span class="p">,</span> <span class="n">sqltypes</span><span class="o">.</span><span class="n">Boolean</span><span class="p">):</span>
+        <span class="n">updated_cols</span> <span class="o">|=</span> <span class="k">yield from</span> <span class="n">check_boolean_field</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_col</span><span class="p">,</span> <span class="n">dest_col</span><span class="p">,</span> <span class="n">required</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_type</span><span class="p">,</span> <span class="n">sqltypes</span><span class="o">.</span><span class="n">Numeric</span><span class="p">):</span>
+        <span class="n">updated_cols</span> <span class="o">|=</span> <span class="k">yield from</span> <span class="n">check_numeric_field</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_col</span><span class="p">,</span> <span class="n">dest_col</span><span class="p">,</span> <span class="n">required</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="s2">&quot;Unknown type </span><span class="si">{}</span><span class="s2"> for field </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">field_type</span><span class="p">),</span> <span class="n">dest_col</span><span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">return</span> <span class="n">updated_cols</span></div>
+
+
+
+<span class="nd">@dataframe_check</span>
+<div class="viewcode-block" id="check_types">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/index.html#geonature.core.imports.checks.dataframe.cast.check_types">[docs]</a>
+<span class="k">def</span> <span class="nf">check_types</span><span class="p">(</span><span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BibFields</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the types of columns in a dataframe based on the provided fields.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        The dataframe to check.</span>
+<span class="sd">    fields : Dict[str, BibFields]</span>
+<span class="sd">        A dictionary mapping column names to their corresponding BibFields.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Set[str]</span>
+<span class="sd">        Set containing the names of updated columns.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">updated_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">destination_table</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_destination_table</span><span class="p">()</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">source_column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">mnemonique</span><span class="p">:</span>  <span class="c1"># set from content mapping</span>
+            <span class="k">continue</span>
+        <span class="k">assert</span> <span class="n">entity</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ef</span><span class="o">.</span><span class="n">entity</span> <span class="k">for</span> <span class="n">ef</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">entities</span><span class="p">]</span>  <span class="c1"># FIXME</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">dest_field</span> <span class="ow">in</span> <span class="n">destination_table</span><span class="o">.</span><span class="n">c</span><span class="p">:</span>
+            <span class="n">field_type</span> <span class="o">=</span> <span class="n">destination_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># we may require to convert some columns unused in final destination</span>
+            <span class="n">field_type</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+        <span class="n">updated_cols</span> <span class="o">|=</span> <span class="k">yield from</span> <span class="nb">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">error</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">error</span><span class="p">},</span>
+            <span class="n">check_anytype_field</span><span class="p">(</span>
+                <span class="n">df</span><span class="p">,</span>
+                <span class="n">field_type</span><span class="o">=</span><span class="n">field_type</span><span class="p">,</span>
+                <span class="n">source_col</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">source_column</span><span class="p">,</span>
+                <span class="n">dest_col</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">,</span>
+                <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">updated_cols</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

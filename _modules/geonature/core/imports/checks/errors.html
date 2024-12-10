@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.checks.errors &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/checks/errors';</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.checks.errors</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="ImportCodeError">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/sql/index.html#geonature.core.imports.checks.errors.ImportCodeError">[docs]</a>
+<span></span><span class="k">class</span> <span class="nc">ImportCodeError</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all the possible errors returned during the import process.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    DATASET_NOT_FOUND : str</span>
+<span class="sd">        The referenced dataset was not found</span>
+<span class="sd">    DATASET_NOT_AUTHORIZED : str</span>
+<span class="sd">        The dataset is not authorized to the current user</span>
+<span class="sd">    DATASET_NOT_ACTIVE : str</span>
+<span class="sd">        The dataset is inactive</span>
+<span class="sd">    MULTIPLE_ATTACHMENT_TYPE_CODE : str</span>
+<span class="sd">        Multiple attachments of the same type are not allowed</span>
+<span class="sd">    MULTIPLE_CODE_ATTACHMENT : str</span>
+<span class="sd">        Multiple attachments (commune, maille, departement) with the same code were given.</span>
+<span class="sd">    INVALID_DATE : str</span>
+<span class="sd">        The date is not valid</span>
+<span class="sd">    INVALID_UUID : str</span>
+<span class="sd">        The uuid is not valid</span>
+<span class="sd">    INVALID_INTEGER : str</span>
+<span class="sd">        The integer is not valid</span>
+<span class="sd">    INVALID_NUMERIC : str</span>
+<span class="sd">        The numeric is not valid</span>
+<span class="sd">    INVALID_WKT : str</span>
+<span class="sd">        The WKT string is not valid</span>
+<span class="sd">    INVALID_GEOMETRY : str</span>
+<span class="sd">        The geometry is not valid</span>
+<span class="sd">    INVALID_BOOL : str</span>
+<span class="sd">        The boolean is not valid</span>
+<span class="sd">    INVALID_ATTACHMENT_CODE : str</span>
+<span class="sd">        The code given does not exists in the desitination referential</span>
+<span class="sd">    INVALID_CHAR_LENGTH : str</span>
+<span class="sd">        The character length is not valid</span>
+<span class="sd">    DATE_MIN_TOO_HIGH : str</span>
+<span class="sd">        The date min is too high</span>
+<span class="sd">    DATE_MAX_TOO_LOW : str</span>
+<span class="sd">        The date max is too low</span>
+<span class="sd">    DATE_MAX_TOO_HIGH : str</span>
+<span class="sd">        The date max is too high</span>
+<span class="sd">    DATE_MIN_TOO_LOW : str</span>
+<span class="sd">        The date min is too low</span>
+<span class="sd">    ALTI_MIN_SUP_ALTI_MAX : str</span>
+<span class="sd">        The altitude min is superior to the altitude max</span>
+<span class="sd">    DATE_MIN_SUP_DATE_MAX : str</span>
+<span class="sd">        The date min is superior to the date max</span>
+<span class="sd">    DEPTH_MIN_SUP_ALTI_MAX : str</span>
+<span class="sd">        The depth min is superior to the altitude max</span>
+<span class="sd">    ORPHAN_ROW : str</span>
+<span class="sd">        The row could not be attached to an other entity # FIXME: clarify</span>
+<span class="sd">    DUPLICATE_ROWS : str</span>
+<span class="sd">        One rows appears more than once</span>
+<span class="sd">    DUPLICATE_UUID : str</span>
+<span class="sd">        A uuid value is duplicated</span>
+<span class="sd">    EXISTING_UUID: str</span>
+<span class="sd">        A uuid value already exists in the destination table</span>
+<span class="sd">    SKIP_EXISTING_UUID: str</span>
+<span class="sd">        A uuid value already exists in the destination table and should be skipped</span>
+<span class="sd">    MISSING_VALUE : str</span>
+<span class="sd">        A required value is missing (see `mandatory` column in `gn_imports.bib_fields` table)</span>
+<span class="sd">    MISSING_GEOM : str</span>
+<span class="sd">        The geometry is missing</span>
+<span class="sd">    GEOMETRY_OUTSIDE : str</span>
+<span class="sd">        The geometry is outside the polygon in the GeoNature configuration (`INSTANCE_BOUNDING_BOX`)</span>
+<span class="sd">    NO_GEOM : str</span>
+<span class="sd">        No geometry given (wherever WKT or latitude/longitude)</span>
+<span class="sd">    GEOMETRY_OUT_OF_BOX : str</span>
+<span class="sd">        The geometry is outside the perimeter of the instance geography # FIXME: clarify (confusion with GEOMETRY_OUTSIDE)</span>
+<span class="sd">    ERRONEOUS_PARENT_ENTITY : str</span>
+<span class="sd">        The parent entity is not valid</span>
+<span class="sd">    NO_PARENT_ENTITY : str</span>
+<span class="sd">        The parent entity is not found</span>
+<span class="sd">    DUPLICATE_ENTITY_SOURCE_PK : str</span>
+<span class="sd">        The entity source primary key is duplicated</span>
+<span class="sd">    COUNT_MIN_SUP_COUNT_MAX : str</span>
+<span class="sd">        The count min is superior to the count max</span>
+<span class="sd">    INVALID_NOMENCLATURE : str</span>
+<span class="sd">        The nomenclature is invalid</span>
+<span class="sd">    INVALID_EXISTING_PROOF_VALUE : str</span>
+<span class="sd">        The existing proof value is invalid</span>
+<span class="sd">    CONDITIONAL_MANDATORY_FIELD_ERROR : str</span>
+<span class="sd">        Some conditional mandatory fields are missing #FIXME: clarify</span>
+<span class="sd">    INVALID_NOMENCLATURE_WARNING : str</span>
+<span class="sd">        The nomenclature is invalid</span>
+<span class="sd">    UNKNOWN_ERROR : str</span>
+<span class="sd">        An unknown error occurred</span>
+<span class="sd">    INVALID_STATUT_SOURCE_VALUE : str</span>
+<span class="sd">        The statut source value is invalid</span>
+<span class="sd">    CONDITIONAL_INVALID_DATA : str</span>
+<span class="sd">        The conditional data is invalid</span>
+<span class="sd">    INVALID_URL_PROOF : str</span>
+<span class="sd">        The url proof is invalid</span>
+<span class="sd">    ROW_HAVE_TOO_MUCH_COLUMN : str</span>
+<span class="sd">        A row have too much column</span>
+<span class="sd">    ROW_HAVE_LESS_COLUMN : str</span>
+<span class="sd">        A row have less column</span>
+<span class="sd">    EMPTY_ROW : str</span>
+<span class="sd">        A row is empty</span>
+<span class="sd">    HEADER_SAME_COLUMN_NAME : str</span>
+<span class="sd">        The header have same column name</span>
+<span class="sd">    EMPTY_FILE : str</span>
+<span class="sd">        The file is empty</span>
+<span class="sd">    NO_FILE_SENDED : str</span>
+<span class="sd">        No file was sent</span>
+<span class="sd">    ERROR_WHILE_LOADING_FILE : str</span>
+<span class="sd">        An error occurred while loading the file</span>
+<span class="sd">    FILE_FORMAT_ERROR : str</span>
+<span class="sd">        The file format is not valid</span>
+<span class="sd">    FILE_EXTENSION_ERROR : str</span>
+<span class="sd">        The file extension is not valid</span>
+<span class="sd">    FILE_OVERSIZE : str</span>
+<span class="sd">        The file is too big</span>
+<span class="sd">    FILE_NAME_TOO_LONG : str</span>
+<span class="sd">        The file name is too long</span>
+<span class="sd">    FILE_WITH_NO_DATA : str</span>
+<span class="sd">        The file have no data</span>
+<span class="sd">    INCOHERENT_DATA : str</span>
+<span class="sd">        An entity data is different in multiple rows</span>
+<span class="sd">    CD_HAB_NOT_FOUND : str</span>
+<span class="sd">        The habitat code is not found</span>
+<span class="sd">    CD_NOM_NOT_FOUND : str</span>
+<span class="sd">        The cd_nom is not found in the instance TaxRef</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Dataset error</span>
+<div class="viewcode-block" id="ImportCodeError.DATASET_NOT_FOUND">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_FOUND">[docs]</a>
+    <span class="n">DATASET_NOT_FOUND</span> <span class="o">=</span> <span class="s2">&quot;DATASET_NOT_FOUND&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DATASET_NOT_AUTHORIZED">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_AUTHORIZED">[docs]</a>
+    <span class="n">DATASET_NOT_AUTHORIZED</span> <span class="o">=</span> <span class="s2">&quot;DATASET_NOT_AUTHORIZED&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DATASET_NOT_ACTIVE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DATASET_NOT_ACTIVE">[docs]</a>
+    <span class="n">DATASET_NOT_ACTIVE</span> <span class="o">=</span> <span class="s2">&quot;DATASET_NOT_ACTIVE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE">[docs]</a>
+    <span class="n">MULTIPLE_ATTACHMENT_TYPE_CODE</span> <span class="o">=</span> <span class="s2">&quot;MULTIPLE_ATTACHMENT_TYPE_CODE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.MULTIPLE_CODE_ATTACHMENT">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.MULTIPLE_CODE_ATTACHMENT">[docs]</a>
+    <span class="n">MULTIPLE_CODE_ATTACHMENT</span> <span class="o">=</span> <span class="s2">&quot;MULTIPLE_CODE_ATTACHMENT&quot;</span></div>
+
+
+    <span class="c1"># Invalid type error</span>
+<div class="viewcode-block" id="ImportCodeError.INVALID_DATE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_DATE">[docs]</a>
+    <span class="n">INVALID_DATE</span> <span class="o">=</span> <span class="s2">&quot;INVALID_DATE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_UUID">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_UUID">[docs]</a>
+    <span class="n">INVALID_UUID</span> <span class="o">=</span> <span class="s2">&quot;INVALID_UUID&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_INTEGER">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_INTEGER">[docs]</a>
+    <span class="n">INVALID_INTEGER</span> <span class="o">=</span> <span class="s2">&quot;INVALID_INTEGER&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_NUMERIC">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NUMERIC">[docs]</a>
+    <span class="n">INVALID_NUMERIC</span> <span class="o">=</span> <span class="s2">&quot;INVALID_NUMERIC&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_WKT">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_WKT">[docs]</a>
+    <span class="n">INVALID_WKT</span> <span class="o">=</span> <span class="s2">&quot;INVALID_WKT&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_GEOMETRY">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_GEOMETRY">[docs]</a>
+    <span class="n">INVALID_GEOMETRY</span> <span class="o">=</span> <span class="s2">&quot;INVALID_GEOMETRY&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_BOOL">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_BOOL">[docs]</a>
+    <span class="n">INVALID_BOOL</span> <span class="o">=</span> <span class="s2">&quot;INVALID_BOOL&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_ATTACHMENT_CODE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_ATTACHMENT_CODE">[docs]</a>
+    <span class="n">INVALID_ATTACHMENT_CODE</span> <span class="o">=</span> <span class="s2">&quot;INVALID_ATTACHMENT_CODE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_CHAR_LENGTH">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_CHAR_LENGTH">[docs]</a>
+    <span class="n">INVALID_CHAR_LENGTH</span> <span class="o">=</span> <span class="s2">&quot;INVALID_CHAR_LENGTH&quot;</span></div>
+
+
+    <span class="c1"># Date error</span>
+<div class="viewcode-block" id="ImportCodeError.DATE_MIN_TOO_HIGH">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_HIGH">[docs]</a>
+    <span class="n">DATE_MIN_TOO_HIGH</span> <span class="o">=</span> <span class="s2">&quot;DATE_MIN_TOO_HIGH&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DATE_MAX_TOO_LOW">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_LOW">[docs]</a>
+    <span class="n">DATE_MAX_TOO_LOW</span> <span class="o">=</span> <span class="s2">&quot;DATE_MAX_TOO_LOW&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DATE_MAX_TOO_HIGH">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DATE_MAX_TOO_HIGH">[docs]</a>
+    <span class="n">DATE_MAX_TOO_HIGH</span> <span class="o">=</span> <span class="s2">&quot;DATE_MAX_TOO_HIGH&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DATE_MIN_TOO_LOW">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_TOO_LOW">[docs]</a>
+    <span class="n">DATE_MIN_TOO_LOW</span> <span class="o">=</span> <span class="s2">&quot;DATE_MIN_TOO_LOW&quot;</span></div>
+
+
+    <span class="c1"># Min value &gt; max value errors</span>
+<div class="viewcode-block" id="ImportCodeError.DATE_MIN_SUP_DATE_MAX">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DATE_MIN_SUP_DATE_MAX">[docs]</a>
+    <span class="n">DATE_MIN_SUP_DATE_MAX</span> <span class="o">=</span> <span class="s2">&quot;DATE_MIN_SUP_DATE_MAX&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DEPTH_MIN_SUP_ALTI_MAX">[docs]</a>
+    <span class="n">DEPTH_MIN_SUP_ALTI_MAX</span> <span class="o">=</span> <span class="s2">&quot;DEPTH_MIN_SUP_ALTI_MAX&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.ALTI_MIN_SUP_ALTI_MAX">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.ALTI_MIN_SUP_ALTI_MAX">[docs]</a>
+    <span class="n">ALTI_MIN_SUP_ALTI_MAX</span> <span class="o">=</span> <span class="s2">&quot;ALTI_MIN_SUP_ALTI_MAX&quot;</span></div>
+
+
+    <span class="c1"># Line with no child entity associated to a parent</span>
+<div class="viewcode-block" id="ImportCodeError.ORPHAN_ROW">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.ORPHAN_ROW">[docs]</a>
+    <span class="n">ORPHAN_ROW</span> <span class="o">=</span> <span class="s2">&quot;ORPHAN_ROW&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DUPLICATE_ROWS">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ROWS">[docs]</a>
+    <span class="n">DUPLICATE_ROWS</span> <span class="o">=</span> <span class="s2">&quot;DUPLICATE_ROWS&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DUPLICATE_UUID">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_UUID">[docs]</a>
+    <span class="n">DUPLICATE_UUID</span> <span class="o">=</span> <span class="s2">&quot;DUPLICATE_UUID&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.EXISTING_UUID">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.EXISTING_UUID">[docs]</a>
+    <span class="n">EXISTING_UUID</span> <span class="o">=</span> <span class="s2">&quot;EXISTING_UUID&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.SKIP_EXISTING_UUID">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.SKIP_EXISTING_UUID">[docs]</a>
+    <span class="n">SKIP_EXISTING_UUID</span> <span class="o">=</span> <span class="s2">&quot;SKIP_EXISTING_UUID&quot;</span></div>
+
+
+    <span class="c1"># Missing value when required</span>
+<div class="viewcode-block" id="ImportCodeError.MISSING_VALUE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.MISSING_VALUE">[docs]</a>
+    <span class="n">MISSING_VALUE</span> <span class="o">=</span> <span class="s2">&quot;MISSING_VALUE&quot;</span></div>
+
+
+    <span class="c1"># Geometry</span>
+<div class="viewcode-block" id="ImportCodeError.MISSING_GEOM">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.MISSING_GEOM">[docs]</a>
+    <span class="n">MISSING_GEOM</span> <span class="o">=</span> <span class="s2">&quot;MISSING_GEOM&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.GEOMETRY_OUTSIDE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUTSIDE">[docs]</a>
+    <span class="n">GEOMETRY_OUTSIDE</span> <span class="o">=</span> <span class="s2">&quot;GEOMETRY_OUTSIDE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.NO_GEOM">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.NO_GEOM">[docs]</a>
+    <span class="n">NO_GEOM</span> <span class="o">=</span> <span class="s2">&quot;NO-GEOM&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.GEOMETRY_OUT_OF_BOX">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.GEOMETRY_OUT_OF_BOX">[docs]</a>
+    <span class="n">GEOMETRY_OUT_OF_BOX</span> <span class="o">=</span> <span class="s2">&quot;GEOMETRY_OUT_OF_BOX&quot;</span></div>
+
+
+    <span class="c1"># Check between child and parent entities</span>
+<div class="viewcode-block" id="ImportCodeError.ERRONEOUS_PARENT_ENTITY">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.ERRONEOUS_PARENT_ENTITY">[docs]</a>
+    <span class="n">ERRONEOUS_PARENT_ENTITY</span> <span class="o">=</span> <span class="s2">&quot;ERRONEOUS_PARENT_ENTITY&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.NO_PARENT_ENTITY">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.NO_PARENT_ENTITY">[docs]</a>
+    <span class="n">NO_PARENT_ENTITY</span> <span class="o">=</span> <span class="s2">&quot;NO_PARENT_ENTITY&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.DUPLICATE_ENTITY_SOURCE_PK">[docs]</a>
+    <span class="n">DUPLICATE_ENTITY_SOURCE_PK</span> <span class="o">=</span> <span class="s2">&quot;DUPLICATE_ENTITY_SOURCE_PK&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.COUNT_MIN_SUP_COUNT_MAX">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.COUNT_MIN_SUP_COUNT_MAX">[docs]</a>
+    <span class="n">COUNT_MIN_SUP_COUNT_MAX</span> <span class="o">=</span> <span class="s2">&quot;COUNT_MIN_SUP_COUNT_MAX&quot;</span></div>
+
+
+    <span class="c1"># Nomenclature</span>
+<div class="viewcode-block" id="ImportCodeError.INVALID_NOMENCLATURE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE">[docs]</a>
+    <span class="n">INVALID_NOMENCLATURE</span> <span class="o">=</span> <span class="s2">&quot;INVALID_NOMENCLATURE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_EXISTING_PROOF_VALUE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_EXISTING_PROOF_VALUE">[docs]</a>
+    <span class="n">INVALID_EXISTING_PROOF_VALUE</span> <span class="o">=</span> <span class="s2">&quot;INVALID_EXISTING_PROOF_VALUE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_NOMENCLATURE_WARNING">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_NOMENCLATURE_WARNING">[docs]</a>
+    <span class="n">INVALID_NOMENCLATURE_WARNING</span> <span class="o">=</span> <span class="s2">&quot;INVALID_NOMENCLATURE_WARNING&quot;</span></div>
+
+
+<div class="viewcode-block" id="ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR">[docs]</a>
+    <span class="n">CONDITIONAL_MANDATORY_FIELD_ERROR</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;CONDITIONAL_MANDATORY_FIELD_ERROR&quot;</span>  <span class="c1"># FIXME : weird name and confusing where it is used</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImportCodeError.UNKNOWN_ERROR">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.UNKNOWN_ERROR">[docs]</a>
+    <span class="n">UNKNOWN_ERROR</span> <span class="o">=</span> <span class="s2">&quot;UNKNOWN_ERROR&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_STATUT_SOURCE_VALUE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_STATUT_SOURCE_VALUE">[docs]</a>
+    <span class="n">INVALID_STATUT_SOURCE_VALUE</span> <span class="o">=</span> <span class="s2">&quot;INVALID_STATUT_SOURCE_VALUE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.CONDITIONAL_INVALID_DATA">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.CONDITIONAL_INVALID_DATA">[docs]</a>
+    <span class="n">CONDITIONAL_INVALID_DATA</span> <span class="o">=</span> <span class="s2">&quot;CONDITIONAL_INVALID_DATA&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.INVALID_URL_PROOF">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INVALID_URL_PROOF">[docs]</a>
+    <span class="n">INVALID_URL_PROOF</span> <span class="o">=</span> <span class="s2">&quot;INVALID_URL_PROOF&quot;</span></div>
+
+
+    <span class="c1"># Source File related errors</span>
+<div class="viewcode-block" id="ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_TOO_MUCH_COLUMN">[docs]</a>
+    <span class="n">ROW_HAVE_TOO_MUCH_COLUMN</span> <span class="o">=</span> <span class="s2">&quot;ROW_HAVE_TOO_MUCH_COLUMN&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.ROW_HAVE_LESS_COLUMN">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.ROW_HAVE_LESS_COLUMN">[docs]</a>
+    <span class="n">ROW_HAVE_LESS_COLUMN</span> <span class="o">=</span> <span class="s2">&quot;ROW_HAVE_LESS_COLUMN&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.EMPTY_ROW">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.EMPTY_ROW">[docs]</a>
+    <span class="n">EMPTY_ROW</span> <span class="o">=</span> <span class="s2">&quot;EMPTY_ROW&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.HEADER_SAME_COLUMN_NAME">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.HEADER_SAME_COLUMN_NAME">[docs]</a>
+    <span class="n">HEADER_SAME_COLUMN_NAME</span> <span class="o">=</span> <span class="s2">&quot;HEADER_SAME_COLUMN_NAME&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.EMPTY_FILE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.EMPTY_FILE">[docs]</a>
+    <span class="n">EMPTY_FILE</span> <span class="o">=</span> <span class="s2">&quot;EMPTY_FILE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.NO_FILE_SENDED">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.NO_FILE_SENDED">[docs]</a>
+    <span class="n">NO_FILE_SENDED</span> <span class="o">=</span> <span class="s2">&quot;NO_FILE_SENDED&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.ERROR_WHILE_LOADING_FILE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.ERROR_WHILE_LOADING_FILE">[docs]</a>
+    <span class="n">ERROR_WHILE_LOADING_FILE</span> <span class="o">=</span> <span class="s2">&quot;ERROR_WHILE_LOADING_FILE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.FILE_FORMAT_ERROR">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.FILE_FORMAT_ERROR">[docs]</a>
+    <span class="n">FILE_FORMAT_ERROR</span> <span class="o">=</span> <span class="s2">&quot;FILE_FORMAT_ERROR&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.FILE_EXTENSION_ERROR">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.FILE_EXTENSION_ERROR">[docs]</a>
+    <span class="n">FILE_EXTENSION_ERROR</span> <span class="o">=</span> <span class="s2">&quot;FILE_EXTENSION_ERROR&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.FILE_OVERSIZE">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.FILE_OVERSIZE">[docs]</a>
+    <span class="n">FILE_OVERSIZE</span> <span class="o">=</span> <span class="s2">&quot;FILE_OVERSIZE&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.FILE_NAME_TOO_LONG">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.FILE_NAME_TOO_LONG">[docs]</a>
+    <span class="n">FILE_NAME_TOO_LONG</span> <span class="o">=</span> <span class="s2">&quot;FILE_NAME_TOO_LONG&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.FILE_WITH_NO_DATA">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.FILE_WITH_NO_DATA">[docs]</a>
+    <span class="n">FILE_WITH_NO_DATA</span> <span class="o">=</span> <span class="s2">&quot;FILE_WITH_NO_DATA&quot;</span></div>
+
+
+    <span class="c1"># Duplicate entry with different data error</span>
+<div class="viewcode-block" id="ImportCodeError.INCOHERENT_DATA">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.INCOHERENT_DATA">[docs]</a>
+    <span class="n">INCOHERENT_DATA</span> <span class="o">=</span> <span class="s2">&quot;INCOHERENT_DATA&quot;</span></div>
+
+
+    <span class="c1"># Referential error</span>
+<div class="viewcode-block" id="ImportCodeError.CD_HAB_NOT_FOUND">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.CD_HAB_NOT_FOUND">[docs]</a>
+    <span class="n">CD_HAB_NOT_FOUND</span> <span class="o">=</span> <span class="s2">&quot;CD_HAB_NOT_FOUND&quot;</span></div>
+
+<div class="viewcode-block" id="ImportCodeError.CD_NOM_NOT_FOUND">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/imports/checks/errors/index.html#geonature.core.imports.checks.errors.ImportCodeError.CD_NOM_NOT_FOUND">[docs]</a>
+    <span class="n">CD_NOM_NOT_FOUND</span> <span class="o">=</span> <span class="s2">&quot;CD_NOM_NOT_FOUND&quot;</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

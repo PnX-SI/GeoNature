@@ -1,0 +1,953 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>geonature.core.imports.utils &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/geonature/core/imports/utils/index';</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+    <link rel="next" title="geonature.core.notifications" href="../../notifications/index.html" />
+    <link rel="prev" title="geonature.core.imports.templates" href="../templates/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../../index.html">geonature</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../app/index.html">geonature.app</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../../index.html">geonature.core</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../admin/index.html">geonature.core.admin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../command/index.html">geonature.core.command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../errors/index.html">geonature.core.errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_commons/index.html">geonature.core.gn_commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_meta/index.html">geonature.core.gn_meta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_monitoring/index.html">geonature.core.gn_monitoring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_permissions/index.html">geonature.core.gn_permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_profiles/index.html">geonature.core.gn_profiles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../gn_synthese/index.html">geonature.core.gn_synthese</a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="../index.html">geonature.core.imports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../notifications/index.html">geonature.core.notifications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sensitivity/index.html">geonature.core.sensitivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../taxonomie/index.html">geonature.core.taxonomie</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../users/index.html">geonature.core.users</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../middlewares/index.html">geonature.middlewares</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tasks/index.html">geonature.tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../utils/index.html">geonature.utils</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Dépôt source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/autoapi/geonature/core/imports/utils/index.rst?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../../../_sources/autoapi/geonature/core/imports/utils/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Télécharger le fichier source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimer au format PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>geonature.core.imports.utils</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenu </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep"><code class="docutils literal notranslate"><span class="pre">ImportStep</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.UPLOAD"><code class="docutils literal notranslate"><span class="pre">ImportStep.UPLOAD</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.DECODE"><code class="docutils literal notranslate"><span class="pre">ImportStep.DECODE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.LOAD"><code class="docutils literal notranslate"><span class="pre">ImportStep.LOAD</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.PREPARE"><code class="docutils literal notranslate"><span class="pre">ImportStep.PREPARE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.IMPORT"><code class="docutils literal notranslate"><span class="pre">ImportStep.IMPORT</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.generated_fields"><code class="docutils literal notranslate"><span class="pre">generated_fields</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.clean_import"><code class="docutils literal notranslate"><span class="pre">clean_import()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.get_file_size"><code class="docutils literal notranslate"><span class="pre">get_file_size()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.detect_encoding"><code class="docutils literal notranslate"><span class="pre">detect_encoding()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.detect_separator"><code class="docutils literal notranslate"><span class="pre">detect_separator()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.preprocess_value"><code class="docutils literal notranslate"><span class="pre">preprocess_value()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.insert_import_data_in_transient_table"><code class="docutils literal notranslate"><span class="pre">insert_import_data_in_transient_table()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.build_fieldmapping"><code class="docutils literal notranslate"><span class="pre">build_fieldmapping()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.load_transient_data_in_dataframe"><code class="docutils literal notranslate"><span class="pre">load_transient_data_in_dataframe()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.update_transient_data_from_dataframe"><code class="docutils literal notranslate"><span class="pre">update_transient_data_from_dataframe()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.generate_pdf_from_template"><code class="docutils literal notranslate"><span class="pre">generate_pdf_from_template()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.get_mapping_data"><code class="docutils literal notranslate"><span class="pre">get_mapping_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.get_required"><code class="docutils literal notranslate"><span class="pre">get_required()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.compute_bounding_box"><code class="docutils literal notranslate"><span class="pre">compute_bounding_box()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-geonature.core.imports.utils">
+<span id="geonature-core-imports-utils"></span><h1>geonature.core.imports.utils<a class="headerlink" href="#module-geonature.core.imports.utils" title="Lien vers cette rubrique">#</a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Lien vers cette rubrique">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.generated_fields" title="geonature.core.imports.utils.generated_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generated_fields</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Lien vers cette rubrique">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.ImportStep" title="geonature.core.imports.utils.ImportStep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportStep</span></code></a></p></td>
+<td><p>Enum where members are also (and must be) ints</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Lien vers cette rubrique">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.clean_import" title="geonature.core.imports.utils.clean_import"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_import</span></code></a>(→ None)</p></td>
+<td><p>Clean an import at a specific step.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.utils.get_file_size" title="geonature.core.imports.utils.get_file_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_file_size</span></code></a>(→ int)</p></td>
+<td><p>Get the size of a file in bytes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.detect_encoding" title="geonature.core.imports.utils.detect_encoding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_encoding</span></code></a>(→ str)</p></td>
+<td><p>Detects the encoding of a file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.utils.detect_separator" title="geonature.core.imports.utils.detect_separator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_separator</span></code></a>(→ Optional[str])</p></td>
+<td><p>Detects the delimiter used in a CSV file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.preprocess_value" title="geonature.core.imports.utils.preprocess_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preprocess_value</span></code></a>(→ pandas.Series)</p></td>
+<td><p>Preprocesses values in a DataFrame depending if the field contains multiple values (e.g. additional_data) or not.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.utils.insert_import_data_in_transient_table" title="geonature.core.imports.utils.insert_import_data_in_transient_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_import_data_in_transient_table</span></code></a>(→ int)</p></td>
+<td><p>Insert the data from the import file into the transient table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.build_fieldmapping" title="geonature.core.imports.utils.build_fieldmapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_fieldmapping</span></code></a>(→ Tuple[Dict[str, Dict[str, Any]], ...)</p></td>
+<td><p>Build a dictionary that maps the source column names to the corresponding field and values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.utils.load_transient_data_in_dataframe" title="geonature.core.imports.utils.load_transient_data_in_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_transient_data_in_dataframe</span></code></a>(imprt, entity, ...[, ...])</p></td>
+<td><p>Load data from the transient table into a pandas dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.update_transient_data_from_dataframe" title="geonature.core.imports.utils.update_transient_data_from_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_transient_data_from_dataframe</span></code></a>(imprt, entity, ...)</p></td>
+<td><p>Update the transient table with the data from the dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.utils.generate_pdf_from_template" title="geonature.core.imports.utils.generate_pdf_from_template"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_pdf_from_template</span></code></a>(→ bytes)</p></td>
+<td><p>Generate a PDF document from a template.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.get_mapping_data" title="geonature.core.imports.utils.get_mapping_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mapping_data</span></code></a>(import_, entity)</p></td>
+<td><p>Get the mapping data for a given import and entity.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.utils.get_required" title="geonature.core.imports.utils.get_required"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_required</span></code></a>(import_, entity)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.utils.compute_bounding_box" title="geonature.core.imports.utils.compute_bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_bounding_box</span></code></a>(imprt, geom_entity_code, ...[, ...])</p></td>
+<td><p>Compute the bounding box of an entity with a geometry in the given import, based on its</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Lien vers cette rubrique">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.ImportStep">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">ImportStep</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#ImportStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.ImportStep" title="Lien vers cette définition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.IntEnum" title="(disponible dans Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></a></p>
+<p>Enum where members are also (and must be) ints</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.ImportStep.UPLOAD">
+<span class="sig-name descname"><span class="pre">UPLOAD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#ImportStep.UPLOAD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.ImportStep.UPLOAD" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.ImportStep.DECODE">
+<span class="sig-name descname"><span class="pre">DECODE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#ImportStep.DECODE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.ImportStep.DECODE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.ImportStep.LOAD">
+<span class="sig-name descname"><span class="pre">LOAD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#ImportStep.LOAD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.ImportStep.LOAD" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.ImportStep.PREPARE">
+<span class="sig-name descname"><span class="pre">PREPARE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#ImportStep.PREPARE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.ImportStep.PREPARE" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.ImportStep.IMPORT">
+<span class="sig-name descname"><span class="pre">IMPORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#ImportStep.IMPORT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.ImportStep.IMPORT" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.generated_fields">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">generated_fields</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#generated_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.generated_fields" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.clean_import">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">clean_import</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#geonature.core.imports.utils.ImportStep" title="geonature.core.imports.utils.ImportStep"><span class="pre">ImportStep</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#clean_import"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.clean_import" title="Lien vers cette définition">#</a></dt>
+<dd><p>Clean an import at a specific step.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to clean.</p>
+</dd>
+<dt>step<span class="classifier">ImportStep</span></dt><dd><p>The step at which to clean the import.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.get_file_size">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#get_file_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.get_file_size" title="Lien vers cette définition">#</a></dt>
+<dd><p>Get the size of a file in bytes.</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt><a href="#id21"><span class="problematic" id="id22">file_</span></a><span class="classifier">IO</span></dt><dd><p>The file to get the size of.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>The size of the file in bytes.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.detect_encoding">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">detect_encoding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#detect_encoding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.detect_encoding" title="Lien vers cette définition">#</a></dt>
+<dd><p>Detects the encoding of a file.</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt><a href="#id23"><span class="problematic" id="id24">file_</span></a><span class="classifier">IO</span></dt><dd><p>The file to detect the encoding of.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Returns<a class="headerlink" href="#id3" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>The detected encoding. If no encoding is detected, then « UTF-8 » is returned.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.detect_separator">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">detect_separator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#detect_separator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.detect_separator" title="Lien vers cette définition">#</a></dt>
+<dd><p>Detects the delimiter used in a CSV file.</p>
+<section id="id4">
+<h3>Parameters<a class="headerlink" href="#id4" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt><a href="#id25"><span class="problematic" id="id26">file_</span></a><span class="classifier">IO</span></dt><dd><p>The file object to detect the delimiter of.</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>The encoding of the file.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Returns<a class="headerlink" href="#id5" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>Optional[str]</dt><dd><p>The delimiter used in the file, or None if no delimiter is detected.</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h3>Raises<a class="headerlink" href="#raises" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>BadRequest</dt><dd><p>If the file starts with no column names.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.preprocess_value">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">preprocess_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.Series</span></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#preprocess_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.preprocess_value" title="Lien vers cette définition">#</a></dt>
+<dd><p>Preprocesses values in a DataFrame depending if the field contains multiple values (e.g. additional_data) or not.</p>
+<section id="id6">
+<h3>Parameters<a class="headerlink" href="#id6" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>dataframe<span class="classifier">pd.DataFrame</span></dt><dd><p>The DataFrame to preprocess the value of.</p>
+</dd>
+<dt>field<span class="classifier">BibFields</span></dt><dd><p>The field to preprocess.</p>
+</dd>
+<dt>source_col<span class="classifier">str</span></dt><dd><p>The column to preprocess.</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>pd.Series</dt><dd><p>The preprocessed value.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.insert_import_data_in_transient_table">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">insert_import_data_in_transient_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#insert_import_data_in_transient_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.insert_import_data_in_transient_table" title="Lien vers cette définition">#</a></dt>
+<dd><p>Insert the data from the import file into the transient table.</p>
+<section id="id8">
+<h3>Parameters<a class="headerlink" href="#id8" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>current import</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h3>Returns<a class="headerlink" href="#id9" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>The last line number of the import file that was inserted.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.build_fieldmapping">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">build_fieldmapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#build_fieldmapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.build_fieldmapping" title="Lien vers cette définition">#</a></dt>
+<dd><p>Build a dictionary that maps the source column names to the corresponding field and values.</p>
+<section id="id10">
+<h3>Parameters<a class="headerlink" href="#id10" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to check.</p>
+</dd>
+<dt>columns<span class="classifier">Iterable[Any]</span></dt><dd><p>The columns to map.</p>
+</dd>
+</dl>
+</section>
+<section id="id11">
+<h3>Returns<a class="headerlink" href="#id11" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing a dictionary that maps the source column names to the corresponding field and values,
+and a list of the used columns.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.load_transient_data_in_dataframe">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">load_transient_data_in_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(disponible dans Python v3.13)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#load_transient_data_in_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.load_transient_data_in_dataframe" title="Lien vers cette définition">#</a></dt>
+<dd><p>Load data from the transient table into a pandas dataframe.</p>
+<section id="id12">
+<h3>Parameters<a class="headerlink" href="#id12" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to load.</p>
+</dd>
+<dt>entity<span class="classifier">Entity</span></dt><dd><p>The entity to load.</p>
+</dd>
+<dt>source_cols<span class="classifier">list</span></dt><dd><p>The columns to load from the transient table.</p>
+</dd>
+<dt>offset<span class="classifier">int, optional</span></dt><dd><p>The number of rows to skip.</p>
+</dd>
+<dt>limit<span class="classifier">int, optional</span></dt><dd><p>The maximum number of rows to load.</p>
+</dd>
+</dl>
+</section>
+<section id="id13">
+<h3>Returns<a class="headerlink" href="#id13" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>pandas.DataFrame</dt><dd><p>The dataframe containing the loaded data.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.update_transient_data_from_dataframe">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">update_transient_data_from_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">updated_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#update_transient_data_from_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.update_transient_data_from_dataframe" title="Lien vers cette définition">#</a></dt>
+<dd><p>Update the transient table with the data from the dataframe.</p>
+<section id="id14">
+<h3>Parameters<a class="headerlink" href="#id14" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to update.</p>
+</dd>
+<dt>entity<span class="classifier">Entity</span></dt><dd><p>The entity to update.</p>
+</dd>
+<dt>updated_cols<span class="classifier">list</span></dt><dd><p>The columns to update.</p>
+</dd>
+<dt>df<span class="classifier">pandas.DataFrame</span></dt><dd><p>The dataframe to use for the update.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h3>Notes<a class="headerlink" href="#notes" title="Lien vers cette rubrique">#</a></h3>
+<p>The dataframe must have the columns “id_import” and “line_no”.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.generate_pdf_from_template">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">generate_pdf_from_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(disponible dans Python v3.13)"><span class="pre">bytes</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#generate_pdf_from_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.generate_pdf_from_template" title="Lien vers cette définition">#</a></dt>
+<dd><p>Generate a PDF document from a template.</p>
+<section id="id15">
+<h3>Parameters<a class="headerlink" href="#id15" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>template<span class="classifier">str</span></dt><dd><p>The name of the template file to use.</p>
+</dd>
+<dt>data<span class="classifier">Any</span></dt><dd><p>The data to pass to the template.</p>
+</dd>
+</dl>
+</section>
+<section id="id16">
+<h3>Returns<a class="headerlink" href="#id16" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>bytes</dt><dd><p>The PDF document as bytes.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.get_mapping_data">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">get_mapping_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">import_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#get_mapping_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.get_mapping_data" title="Lien vers cette définition">#</a></dt>
+<dd><p>Get the mapping data for a given import and entity.</p>
+<section id="id17">
+<h3>Parameters<a class="headerlink" href="#id17" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt><a href="#id27"><span class="problematic" id="id28">import_</span></a><span class="classifier">TImports</span></dt><dd><p>The import to get the mapping data for.</p>
+</dd>
+<dt>entity<span class="classifier">Entity</span></dt><dd><p>The entity to get the mapping data for.</p>
+</dd>
+</dl>
+</section>
+<section id="id18">
+<h3>Returns<a class="headerlink" href="#id18" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>fields<span class="classifier">dict</span></dt><dd><p>A dictionary with the all fields associated with an entity (check gn_imports.bib_fields). This dictionary is keyed by the name field and valued by the corresponding BibField object.</p>
+</dd>
+<dt>selected_fields<span class="classifier">dict</span></dt><dd><p>In the same format as fields, but only the fields contained in the mapping.</p>
+</dd>
+<dt>source_cols<span class="classifier">list</span></dt><dd><p>List of fields to load in dataframe, mainly source column of non-nomenclature fields</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.get_required">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">get_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">import_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#get_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.get_required" title="Lien vers cette définition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.utils.compute_bounding_box">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.utils.</span></span><span class="sig-name descname"><span class="pre">compute_bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_entity_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_4326_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">child_entity_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transient_where_clause</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_where_clause</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/utils.html#compute_bounding_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.utils.compute_bounding_box" title="Lien vers cette définition">#</a></dt>
+<dd><p>Compute the bounding box of an entity with a geometry in the given import, based on its
+entities tree (e.g. Station -&gt; Habitat; Site -&gt; Visite -&gt; Observation).</p>
+<section id="id19">
+<h3>Parameters<a class="headerlink" href="#id19" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to get the bounding box of.</p>
+</dd>
+<dt>geom_entity_code<span class="classifier">str</span></dt><dd><p>The code of the entity that contains the geometry.</p>
+</dd>
+<dt>geom_4326_field_name<span class="classifier">str</span></dt><dd><p>The name of the column in the geom entity table that contains the geometry.</p>
+</dd>
+<dt>child_entity_code<span class="classifier">str, optional</span></dt><dd><p>The code of the last child entity (of the geom entity) to consider when computing the bounding box. If not given,
+bounding-box will be computed only on the geom entity.</p>
+</dd>
+<dt>transient_where_clause<span class="classifier">sqlalchemy.sql.elements.BooleanClauseList, optional</span></dt><dd><p>A where clause to apply to the query when computing the bounding box of a processed import.</p>
+</dd>
+<dt>destination_where_clause<span class="classifier">sqlalchemy.sql.elements.BooleanClauseList, optional</span></dt><dd><p>A where clause to apply to the query when computing the bounding box of a finished import.</p>
+</dd>
+</dl>
+</section>
+<section id="id20">
+<h3>Returns<a class="headerlink" href="#id20" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>valid_bbox<span class="classifier">dict</span></dt><dd><p>The bounding box of all entities in the given import, in GeoJSON format.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../templates/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">précédent</p>
+        <p class="prev-next-title">geonature.core.imports.templates</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../notifications/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">suivant</p>
+        <p class="prev-next-title">geonature.core.notifications</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenu
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep"><code class="docutils literal notranslate"><span class="pre">ImportStep</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.UPLOAD"><code class="docutils literal notranslate"><span class="pre">ImportStep.UPLOAD</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.DECODE"><code class="docutils literal notranslate"><span class="pre">ImportStep.DECODE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.LOAD"><code class="docutils literal notranslate"><span class="pre">ImportStep.LOAD</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.PREPARE"><code class="docutils literal notranslate"><span class="pre">ImportStep.PREPARE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.ImportStep.IMPORT"><code class="docutils literal notranslate"><span class="pre">ImportStep.IMPORT</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.generated_fields"><code class="docutils literal notranslate"><span class="pre">generated_fields</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.clean_import"><code class="docutils literal notranslate"><span class="pre">clean_import()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.get_file_size"><code class="docutils literal notranslate"><span class="pre">get_file_size()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.detect_encoding"><code class="docutils literal notranslate"><span class="pre">detect_encoding()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.detect_separator"><code class="docutils literal notranslate"><span class="pre">detect_separator()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.preprocess_value"><code class="docutils literal notranslate"><span class="pre">preprocess_value()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.insert_import_data_in_transient_table"><code class="docutils literal notranslate"><span class="pre">insert_import_data_in_transient_table()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.build_fieldmapping"><code class="docutils literal notranslate"><span class="pre">build_fieldmapping()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.load_transient_data_in_dataframe"><code class="docutils literal notranslate"><span class="pre">load_transient_data_in_dataframe()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.update_transient_data_from_dataframe"><code class="docutils literal notranslate"><span class="pre">update_transient_data_from_dataframe()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.generate_pdf_from_template"><code class="docutils literal notranslate"><span class="pre">generate_pdf_from_template()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.get_mapping_data"><code class="docutils literal notranslate"><span class="pre">get_mapping_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.get_required"><code class="docutils literal notranslate"><span class="pre">get_required()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.utils.compute_bounding_box"><code class="docutils literal notranslate"><span class="pre">compute_bounding_box()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

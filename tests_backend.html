@@ -1,88 +1,390 @@
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tests backend &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+
+<html lang="fr" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Tests backend &#8212; Documentation GeoNature 2.0</title>
   
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=e8570148"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/translations.js?v=d99ca74e"></script>
-    <script src="_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=94f178cf"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tests_backend';</script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Recherche" href="search.html" /> 
-</head>
+    <link rel="search" title="Recherche" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
-          
-          
-          <a href="index.html" class="icon icon-home">
-            GeoNature
-              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.0
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Développement</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Auteurs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">GeoNature</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Tests backend</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/tests_backend.rst.txt" rel="nofollow"> Afficher la source de la page</a>
-      </li>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Dépôt source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/tests_backend.rst?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
   </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/tests_backend.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Télécharger le fichier source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimer au format PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Tests backend</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenu </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utilisation">Utilisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixtures">Fixtures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exemple">Exemple</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dans-github">Dans GitHub</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coverage">Coverage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dans-vscode">Dans VSCode</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande">Exécuter un ou plusieurs test(s) en ligne de commande</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluer-les-performances-du-backend">Evaluer les performances du backend</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lancement-des-tests-de-performances">Lancement des tests de performances</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ajouter-des-tests-de-performances">Ajouter des tests de performances</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="tests-backend">
-<h1>Tests backend<a class="headerlink" href="#tests-backend" title="Link to this heading"></a></h1>
+<h1>Tests backend<a class="headerlink" href="#tests-backend" title="Lien vers cette rubrique">#</a></h1>
 <p>Cette documentation a pour objectif d’expliquer comment écrire des tests pour
 le backend de GeoNature.</p>
 <p>Un test se décompose en général en 3 étapes :</p>
@@ -98,7 +400,7 @@ commentaire ou une séparation entre elles.</p>
 tester différentes configurations plutôt qu’un seul les testant toutes d’un
 coup. Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.</p>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Lien vers cette rubrique">#</a></h2>
 <p>Comme spécifié dans la partie Développement, la librairie Python PyTest est
 utilisée pour rédiger des tests. Elle permet de :</p>
 <ul class="simple">
@@ -111,7 +413,7 @@ l’instruction <code class="docutils literal notranslate"><span class="pre">ass
 </ul>
 </section>
 <section id="utilisation">
-<h2>Utilisation<a class="headerlink" href="#utilisation" title="Link to this heading"></a></h2>
+<h2>Utilisation<a class="headerlink" href="#utilisation" title="Lien vers cette rubrique">#</a></h2>
 <p>Les tests sont des fonctions pouvant être regroupées dans des classes. La
 nomenclature est la suivante :</p>
 <ul class="simple">
@@ -126,7 +428,7 @@ pouvoir être détecté automatiquement par PyTest</p></li>
 </ul>
 </section>
 <section id="fixtures">
-<h2>Fixtures<a class="headerlink" href="#fixtures" title="Link to this heading"></a></h2>
+<h2>Fixtures<a class="headerlink" href="#fixtures" title="Lien vers cette rubrique">#</a></h2>
 <p>Les fixtures de PyTest peuvent permettre de nombreuses choses comme expliqué
 dans la documentation PyTest sur <a class="reference external" href="https://docs.pytest.org/explanation/fixtures.html#about-fixtures">les fixtures</a>.</p>
 <p>Dans GeoNature elles sont, en général, utilisées pour définir des objets
@@ -176,7 +478,7 @@ Python du test. Elles sont définies comme suit :</p>
 </div>
 </section>
 <section id="exemple">
-<h2>Exemple<a class="headerlink" href="#exemple" title="Link to this heading"></a></h2>
+<h2>Exemple<a class="headerlink" href="#exemple" title="Lien vers cette rubrique">#</a></h2>
 <p>Voici un exemple de test qui a été fait dans GeoNature</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_get_consistancy_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="n">synthese_record</span> <span class="o">=</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -198,7 +500,7 @@ l’attribut <code class="docutils literal notranslate"><span class="pre">client
 notamment.</p>
 </section>
 <section id="dans-github">
-<h2>Dans GitHub<a class="headerlink" href="#dans-github" title="Link to this heading"></a></h2>
+<h2>Dans GitHub<a class="headerlink" href="#dans-github" title="Lien vers cette rubrique">#</a></h2>
 <p>Dans le dépôt de GeoNature sur GitHub, tous ces tests sont exécutés
 automatiquement pour chaque commit d’une pull request grâce à PyTest et à
 GitHub Actions. Ils permettent donc de vérifier que les modifications apportées
@@ -208,7 +510,7 @@ request. Un coverage est aussi exécuté pour s’assurer que les nouveaux
 développements sont bien testés.</p>
 </section>
 <section id="coverage">
-<h2>Coverage<a class="headerlink" href="#coverage" title="Link to this heading"></a></h2>
+<h2>Coverage<a class="headerlink" href="#coverage" title="Lien vers cette rubrique">#</a></h2>
 <p>Le coverage est un système permettant de quantifier les lignes de code
 exécutées par le test. Exemple rapide :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Définition d&#39;une fonction quelconque</span>
@@ -242,7 +544,7 @@ d’être plus confiant dans la modification/refactorisation de lignes de code e
 </div>
 </section>
 <section id="dans-vscode">
-<h2>Dans VSCode<a class="headerlink" href="#dans-vscode" title="Link to this heading"></a></h2>
+<h2>Dans VSCode<a class="headerlink" href="#dans-vscode" title="Lien vers cette rubrique">#</a></h2>
 <p>Il est possible d’installer <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">l’extension Python</a> pour facilement lancer et
 debugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de
 changer le fichier <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> dans le dossier <code class="docutils literal notranslate"><span class="pre">.vscode</span></code> de votre
@@ -256,9 +558,8 @@ projet avec le code suivant pour qu’il soit compatible avec GeoNature :</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
 <section id="executer-un-ou-plusieurs-test-s-en-ligne-de-commande">
-<h2>Exécuter un ou plusieurs test(s) en ligne de commande<a class="headerlink" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande" title="Link to this heading"></a></h2>
+<h3>Exécuter un ou plusieurs test(s) en ligne de commande<a class="headerlink" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande" title="Lien vers cette rubrique">#</a></h3>
 <p>Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est
 installé GeoNature et exécutez la commande suivante :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
@@ -284,20 +585,17 @@ ficher <code class="docutils literal notranslate"><span class="pre">test_gn_meta
 possible de générer le coverage au format html en remplaçant <code class="docutils literal notranslate"><span class="pre">xml</span></code> par
 <code class="docutils literal notranslate"><span class="pre">html</span></code>.</p>
 </section>
+</section>
 <section id="evaluer-les-performances-du-backend">
-<h2>Evaluer les performances du backend<a class="headerlink" href="#evaluer-les-performances-du-backend" title="Link to this heading"></a></h2>
+<h2>Evaluer les performances du backend<a class="headerlink" href="#evaluer-les-performances-du-backend" title="Lien vers cette rubrique">#</a></h2>
 <p>Les versions de GeoNature &gt;2.14.1 intègrent la possibilité d’évaluer les performances de routes connues pour leur temps de traitement important. Par exemple, l’appel de la route <code class="docutils literal notranslate"><span class="pre">gn_synthese.get_observations_for_web</span></code> avec une géographie non-présente dans le référentiel géographique.</p>
 <p>Cette fonctionnalité s’appuie sur <code class="docutils literal notranslate"><span class="pre">pytest</span></code> et son extension <a href="#id1"><span class="problematic" id="id2">``</span></a>pytest-benchmark``(<a class="reference external" href="https://pytest-benchmark.readthedocs.io/en/latest/">https://pytest-benchmark.readthedocs.io/en/latest/</a>).</p>
 <section id="lancement-des-tests-de-performances">
-<h3>Lancement des tests de performances<a class="headerlink" href="#lancement-des-tests-de-performances" title="Link to this heading"></a></h3>
-<p>Il existe différentes manières de lancer les tests de performances:</p>
-<ul class="simple">
-<li><p>La commande <code class="docutils literal notranslate"><span class="pre">pytest</span></code> sans arguments. Cette dernière lancera les tests de performances en plus des tests unitaires.</p></li>
-<li><p>La commande <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--benchmark-only</span></code> qui lancera uniquement les tests de performances.</p></li>
-</ul>
+<h3>Lancement des tests de performances<a class="headerlink" href="#lancement-des-tests-de-performances" title="Lien vers cette rubrique">#</a></h3>
+<p>Pour lancer les tests de performances, utiliser la commande suivante : <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--benchmark-only</span></code></p>
 </section>
 <section id="ajouter-des-tests-de-performances">
-<h3>Ajouter des tests de performances<a class="headerlink" href="#ajouter-des-tests-de-performances" title="Link to this heading"></a></h3>
+<h3>Ajouter des tests de performances<a class="headerlink" href="#ajouter-des-tests-de-performances" title="Lien vers cette rubrique">#</a></h3>
 <p>La création de tests de performance s’effectue à l’aide de la classe <code class="docutils literal notranslate"><span class="pre">geonature.tests.benchmarks.benchmark_generator.BenchmarkTest</span></code>.</p>
 <p>L’objet <code class="docutils literal notranslate"><span class="pre">BenchmarkTest</span></code> prend en argument :</p>
 <blockquote>
@@ -310,79 +608,125 @@ possible de générer le coverage au format html en remplaçant <code class="doc
 </div></blockquote>
 <p>Cette classe permet de générer une fonction de test utilisable dans le _framework_ existant de <code class="docutils literal notranslate"><span class="pre">pytest</span></code>. Pour cela, rien de plus simple ! Créer un fichier de test (de préférence dans le sous-dossier <code class="docutils literal notranslate"><span class="pre">backend/geonature/tests/benchmarks</span></code>).</p>
 <p>Import la classe BenchmarkTest dans le fichier de test.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">from</span> <span class="nn">geonature.tests.benchmarks</span> <span class="kn">import</span> <span class="n">BenchmarkTest</span>
-</pre></div>
-</div>
 <p>Ajouter un test de performance, ici le test <code class="docutils literal notranslate"><span class="pre">test_print</span></code> qui teste la fonction <code class="docutils literal notranslate"><span class="pre">print</span></code> de Python.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bench</span> <span class="o">=</span> <span class="n">BenchmarkTest</span><span class="p">(</span><span class="nb">print</span><span class="p">,</span><span class="s2">&quot;test_print&quot;</span><span class="p">,[</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span><span class="s2">&quot;World&quot;</span><span class="p">],{})</span>
 </pre></div>
 </div>
 <p>Ajouter la fonction générée dans <code class="docutils literal notranslate"><span class="pre">bench</span></code> dans une classe de test:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">benchmark</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s2">&quot;occhab&quot;</span><span class="p">)</span> <span class="c1"># Pas obligatoire mais permet de compartimenter les tests de performances</span>
-<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">usefixtures</span><span class="p">(</span><span class="s2">&quot;client_class&quot;</span><span class="p">,</span> <span class="s2">&quot;temporary_transaction&quot;</span><span class="p">)</span>
-    <span class="k">class</span> <span class="nc">TestBenchie</span><span class="p">:</span>
-        <span class="n">test_print</span> <span class="o">=</span> <span class="n">bench</span><span class="p">()</span>
-</pre></div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.benchmark</span></code> permet de configurer l’éxecution des tests de performances par <code class="docutils literal notranslate"><span class="pre">pytest-benchmark</span></code>. Dans l’exemple ci-dessus, on l’utilise pour regrouper les tests de performances
 déclarés dans la classe <code class="docutils literal notranslate"><span class="pre">TestBenchie</span></code> dans un groupe nommée <code class="docutils literal notranslate"><span class="pre">occhab</span></code>.</p>
 </div>
-<a class="reference internal image-reference" href="_images/benchmark_result.png"><img alt="Affichage des tests de performances" class="align-center" src="_images/benchmark_result.png" style="width: 60%;" /></a>
+<a class="reference internal image-reference" href="_images/benchmark_result.png"><img alt="Affichage des tests de performances" class="align-center" src="_images/benchmark_result.png" style="width: 60%;" />
+</a>
 <p>Si le test de performances doit accéder à des fonctions ou des variables uniquement accessibles dans le contexte
 de l’application flask, il faudra utiliser l’objet <code class="docutils literal notranslate"><span class="pre">geonature.tests.benchmarks.CLater</span></code>. Ce dernier permet
 de déclarer un expression python retournant un objet (fonction ou variable) dans une chaîne de caractère qui
 sera _évalué_ (voir la fonction <code class="docutils literal notranslate"><span class="pre">eval()</span></code> de Python) uniquement lors de l’exécution du benchmark.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_get_default_nomenclatures</span> <span class="o">=</span> <span class="n">BenchmarkTest</span><span class="p">(</span>
-      <span class="n">CLater</span><span class="p">(</span><span class="s2">&quot;self.client.get&quot;</span><span class="p">),</span>
-      <span class="p">[</span><span class="n">CLater</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;url_for(&quot;gn_synthese.getDefaultsNomenclatures&quot;)&quot;&quot;&quot;</span><span class="p">)],</span>
-      <span class="nb">dict</span><span class="p">(</span><span class="n">user_profile</span><span class="o">=</span><span class="s2">&quot;self_user&quot;</span><span class="p">),</span>
-  <span class="p">)()</span>
-</pre></div>
-</div>
 <p>L’exécution de certaines benchmark de routes doivent inclure l’engistrement d’utilisateur de tests. Pour cela,
 il suffit d’utiliser la clé <code class="docutils literal notranslate"><span class="pre">user_profile</span></code> dans l’argument <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> (Voir code ci-dessus).</p>
 <p>Si l’utilisation de _fixtures_ est nécessaire à votre test de performance, utilisé la clé <code class="docutils literal notranslate"><span class="pre">fixture</span></code>
 dans l’argument <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_get_station</span> <span class="o">=</span> <span class="n">BenchmarkTest</span><span class="p">(</span>
-      <span class="n">CLater</span><span class="p">(</span><span class="s2">&quot;self.client.get&quot;</span><span class="p">),</span>
-      <span class="p">[</span><span class="n">CLater</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;url_for(&quot;occhab.get_station&quot;, id_station=8)&quot;&quot;&quot;</span><span class="p">)],</span>
-      <span class="nb">dict</span><span class="p">(</span><span class="n">user_profile</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">fixtures</span><span class="o">=</span><span class="p">[</span><span class="n">stations</span><span class="p">]),</span>
-  <span class="p">)()</span>
-</pre></div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
 </div>
-</section>
-</section>
-</section>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-           </div>
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenu
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utilisation">Utilisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixtures">Fixtures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exemple">Exemple</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dans-github">Dans GitHub</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coverage">Coverage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dans-vscode">Dans VSCode</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande">Exécuter un ou plusieurs test(s) en ligne de commande</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluer-les-performances-du-backend">Evaluer les performances du backend</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lancement-des-tests-de-performances">Lancement des tests de performances</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ajouter-des-tests-de-performances">Ajouter des tests de performances</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
+  
+  <div class="footer-item">
+    
 
-  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
-    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
-   
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
 
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

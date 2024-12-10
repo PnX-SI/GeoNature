@@ -1,0 +1,192 @@
+geonature.core.imports.config_schema
+====================================
+
+.. py:module:: geonature.core.imports.config_schema
+
+.. autoapi-nested-parse::
+
+   Spécification du schéma toml des paramètres de configurations
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.imports.config_schema.DEFAULT_LIST_COLUMN
+   geonature.core.imports.config_schema.UPLOAD_DIRECTORY
+   geonature.core.imports.config_schema.IMPORTS_SCHEMA_NAME
+   geonature.core.imports.config_schema.PREFIX
+   geonature.core.imports.config_schema.SRID
+   geonature.core.imports.config_schema.ENCODAGE
+   geonature.core.imports.config_schema.MAX_FILE_SIZE
+   geonature.core.imports.config_schema.ALLOWED_EXTENSIONS
+   geonature.core.imports.config_schema.DEFAULT_COUNT_VALUE
+   geonature.core.imports.config_schema.ALLOW_VALUE_MAPPING
+   geonature.core.imports.config_schema.DEFAULT_VALUE_MAPPING_ID
+   geonature.core.imports.config_schema.INSTANCE_BOUNDING_BOX
+   geonature.core.imports.config_schema.ALLOW_FIELD_MAPPING
+   geonature.core.imports.config_schema.DEFAULT_FIELD_MAPPING_ID
+   geonature.core.imports.config_schema.DISPLAY_CHECK_BOX_MAPPED_FIELD
+   geonature.core.imports.config_schema.DEFAULT_RANK
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.imports.config_schema.ImportConfigSchema
+
+
+Module Contents
+---------------
+
+.. py:data:: DEFAULT_LIST_COLUMN
+
+.. py:data:: UPLOAD_DIRECTORY
+   :value: 'upload'
+
+
+.. py:data:: IMPORTS_SCHEMA_NAME
+   :value: 'gn_imports'
+
+
+.. py:data:: PREFIX
+   :value: 'gn_'
+
+
+.. py:data:: SRID
+
+.. py:data:: ENCODAGE
+   :value: ['UTF-8']
+
+
+.. py:data:: MAX_FILE_SIZE
+   :value: 1000
+
+
+.. py:data:: ALLOWED_EXTENSIONS
+   :value: ['.csv']
+
+
+.. py:data:: DEFAULT_COUNT_VALUE
+   :value: 1
+
+
+.. py:data:: ALLOW_VALUE_MAPPING
+   :value: True
+
+
+.. py:data:: DEFAULT_VALUE_MAPPING_ID
+   :value: 3
+
+
+.. py:data:: INSTANCE_BOUNDING_BOX
+
+.. py:data:: ALLOW_FIELD_MAPPING
+   :value: True
+
+
+.. py:data:: DEFAULT_FIELD_MAPPING_ID
+   :value: 1
+
+
+.. py:data:: DISPLAY_CHECK_BOX_MAPPED_FIELD
+   :value: True
+
+
+.. py:data:: DEFAULT_RANK
+   :value: 'regne'
+
+
+.. py:class:: ImportConfigSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: LIST_COLUMNS_FRONTEND
+
+
+   .. py:attribute:: PREFIX
+
+
+   .. py:attribute:: SRID
+
+
+   .. py:attribute:: ENCODAGE
+
+
+   .. py:attribute:: MAX_FILE_SIZE
+
+
+   .. py:attribute:: MAX_ENCODING_DETECTION_DURATION
+
+
+   .. py:attribute:: ALLOWED_EXTENSIONS
+
+
+   .. py:attribute:: DEFAULT_COUNT_VALUE
+
+
+   .. py:attribute:: ALLOW_VALUE_MAPPING
+
+
+   .. py:attribute:: DEFAULT_VALUE_MAPPING_ID
+
+
+   .. py:attribute:: FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE
+
+
+   .. py:attribute:: DISPLAY_MAPPED_VALUES
+
+
+   .. py:attribute:: INSTANCE_BOUNDING_BOX
+
+
+   .. py:attribute:: ENABLE_BOUNDING_BOX_CHECK
+
+
+   .. py:attribute:: PER_DATASET_UUID_CHECK
+
+
+   .. py:attribute:: ALLOW_FIELD_MAPPING
+
+
+   .. py:attribute:: DEFAULT_FIELD_MAPPING_ID
+
+
+   .. py:attribute:: DISPLAY_CHECK_BOX_MAPPED_FIELD
+
+
+   .. py:attribute:: CHECK_PRIVATE_JDD_BLURING
+
+
+   .. py:attribute:: CHECK_REF_BIBLIO_LITTERATURE
+
+
+   .. py:attribute:: CHECK_EXIST_PROOF
+
+
+   .. py:attribute:: DEFAULT_GENERATE_MISSING_UUID
+
+
+   .. py:attribute:: DEFAULT_RANK
+
+
+   .. py:attribute:: ID_AREA_RESTRICTION
+
+
+   .. py:attribute:: ID_LIST_TAXA_RESTRICTION
+
+
+   .. py:attribute:: MODULE_URL
+
+
+   .. py:attribute:: DATAFRAME_BATCH_SIZE
+
+
+   .. py:attribute:: EXPORT_REPORT_PDF_FILENAME
+
+

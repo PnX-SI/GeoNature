@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.commands &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/commands';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.commands</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">click</span>
+
+<span class="kn">from</span> <span class="nn">flask.cli</span> <span class="kn">import</span> <span class="n">with_appcontext</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">FieldMapping</span>
+
+
+<div class="viewcode-block" id="synthese_fieldmappings">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/commands/index.html#geonature.core.imports.commands.synthese_fieldmappings">[docs]</a>
+<span class="n">synthese_fieldmappings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">:</span> <span class="s2">&quot;uuid_perm_sinp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">:</span> <span class="s2">&quot;id_synthese&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unique_id_sinp_grp&quot;</span><span class="p">:</span> <span class="s2">&quot;uuid_perm_grp_sinp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unique_id_sinp_generate&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;meta_create_date&quot;</span><span class="p">:</span> <span class="s2">&quot;date_creation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;meta_v_taxref&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;meta_update_date&quot;</span><span class="p">:</span> <span class="s2">&quot;date_modification&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_min&quot;</span><span class="p">:</span> <span class="s2">&quot;date_debut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_max&quot;</span><span class="p">:</span> <span class="s2">&quot;date_fin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hour_min&quot;</span><span class="p">:</span> <span class="s2">&quot;heure_debut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hour_max&quot;</span><span class="p">:</span> <span class="s2">&quot;heure_fin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;altitude_min&quot;</span><span class="p">:</span> <span class="s2">&quot;alti_min&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;altitude_max&quot;</span><span class="p">:</span> <span class="s2">&quot;alti_max&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;depth_min&quot;</span><span class="p">:</span> <span class="s2">&quot;prof_min&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;depth_max&quot;</span><span class="p">:</span> <span class="s2">&quot;prof_max&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;altitudes_generate&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;observers&quot;</span><span class="p">:</span> <span class="s2">&quot;observateurs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;comment_description&quot;</span><span class="p">:</span> <span class="s2">&quot;comment_occurrence&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_info_geo_type&quot;</span><span class="p">:</span> <span class="s2">&quot;type_info_geo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_grp_typ&quot;</span><span class="p">:</span> <span class="s2">&quot;type_regroupement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;grp_method&quot;</span><span class="p">:</span> <span class="s2">&quot;methode_regroupement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_cite&quot;</span><span class="p">:</span> <span class="s2">&quot;nom_cite&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cd_nom&quot;</span><span class="p">:</span> <span class="s2">&quot;cd_nom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_obs_technique&quot;</span><span class="p">:</span> <span class="s2">&quot;technique_observation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_bio_status&quot;</span><span class="p">:</span> <span class="s2">&quot;biologique_statut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_bio_condition&quot;</span><span class="p">:</span> <span class="s2">&quot;etat_biologique&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_biogeo_status&quot;</span><span class="p">:</span> <span class="s2">&quot;biogeographique_statut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_behaviour&quot;</span><span class="p">:</span> <span class="s2">&quot;comportement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_naturalness&quot;</span><span class="p">:</span> <span class="s2">&quot;naturalite&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;comment_context&quot;</span><span class="p">:</span> <span class="s2">&quot;comment_releve&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_sensitivity&quot;</span><span class="p">:</span> <span class="s2">&quot;niveau_sensibilite&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_diffusion_level&quot;</span><span class="p">:</span> <span class="s2">&quot;niveau_precision_diffusion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_blurring&quot;</span><span class="p">:</span> <span class="s2">&quot;floutage_dee&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_life_stage&quot;</span><span class="p">:</span> <span class="s2">&quot;stade_vie&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_sex&quot;</span><span class="p">:</span> <span class="s2">&quot;sexe&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_type_count&quot;</span><span class="p">:</span> <span class="s2">&quot;type_denombrement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_obj_count&quot;</span><span class="p">:</span> <span class="s2">&quot;objet_denombrement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;count_min&quot;</span><span class="p">:</span> <span class="s2">&quot;nombre_min&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;count_max&quot;</span><span class="p">:</span> <span class="s2">&quot;nombre_max&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_determination_method&quot;</span><span class="p">:</span> <span class="s2">&quot;methode_determination&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;determiner&quot;</span><span class="p">:</span> <span class="s2">&quot;determinateur&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_digitiser&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_exist_proof&quot;</span><span class="p">:</span> <span class="s2">&quot;preuve_existante&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;digital_proof&quot;</span><span class="p">:</span> <span class="s2">&quot;preuve_numerique_url&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;non_digital_proof&quot;</span><span class="p">:</span> <span class="s2">&quot;preuve_non_numerique&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_valid_status&quot;</span><span class="p">:</span> <span class="s2">&quot;niveau_validation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;validator&quot;</span><span class="p">:</span> <span class="s2">&quot;validateur&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;meta_validation_date&quot;</span><span class="p">:</span> <span class="s2">&quot;date_validation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;validation_comment&quot;</span><span class="p">:</span> <span class="s2">&quot;comment_validation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_geo_object_nature&quot;</span><span class="p">:</span> <span class="s2">&quot;nature_objet_geo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_observation_status&quot;</span><span class="p">:</span> <span class="s2">&quot;statut_observation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_source_status&quot;</span><span class="p">:</span> <span class="s2">&quot;statut_source&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;reference_biblio&quot;</span><span class="p">:</span> <span class="s2">&quot;reference_biblio&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cd_hab&quot;</span><span class="p">:</span> <span class="s2">&quot;cd_habref&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WKT&quot;</span><span class="p">:</span> <span class="s2">&quot;geometrie_wkt_4326&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;place_name&quot;</span><span class="p">:</span> <span class="s2">&quot;nom_lieu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;precision&quot;</span><span class="p">:</span> <span class="s2">&quot;precision_geographique&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;the_geom_point&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;the_geom_local&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;the_geom_4326&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;codecommune&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;codemaille&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;codedepartement&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="dee_fieldmappings">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/commands/index.html#geonature.core.imports.commands.dee_fieldmappings">[docs]</a>
+<span class="n">dee_fieldmappings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;altitude_max&quot;</span><span class="p">:</span> <span class="s2">&quot;altmax&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;altitude_min&quot;</span><span class="p">:</span> <span class="s2">&quot;altmin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cd_nom&quot;</span><span class="p">:</span> <span class="s2">&quot;cdnom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;codecommune&quot;</span><span class="p">:</span> <span class="s2">&quot;cdcom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;codedepartement&quot;</span><span class="p">:</span> <span class="s2">&quot;cddept&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;codemaille&quot;</span><span class="p">:</span> <span class="s2">&quot;cdm10&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;count_max&quot;</span><span class="p">:</span> <span class="s2">&quot;denombrementmax&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;count_min&quot;</span><span class="p">:</span> <span class="s2">&quot;denombrementmin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WKT&quot;</span><span class="p">:</span> <span class="s2">&quot;geometrie&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">:</span> <span class="s2">&quot;permid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">:</span> <span class="s2">&quot;permid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unique_id_sinp_grp&quot;</span><span class="p">:</span> <span class="s2">&quot;permidgrp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_min&quot;</span><span class="p">:</span> <span class="s2">&quot;datedebut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_max&quot;</span><span class="p">:</span> <span class="s2">&quot;datefin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_geo_object_nature&quot;</span><span class="p">:</span> <span class="s2">&quot;natobjgeo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_cite&quot;</span><span class="p">:</span> <span class="s2">&quot;nomcite&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_obj_count&quot;</span><span class="p">:</span> <span class="s2">&quot;objdenbr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;comment_context&quot;</span><span class="p">:</span> <span class="s2">&quot;obsctx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;comment_description&quot;</span><span class="p">:</span> <span class="s2">&quot;obsdescr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_obs_meth&quot;</span><span class="p">:</span> <span class="s2">&quot;obsmeth&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_bio_condition&quot;</span><span class="p">:</span> <span class="s2">&quot;ocetatbio&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_determination_method&quot;</span><span class="p">:</span> <span class="s2">&quot;ocmethdet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_naturalness&quot;</span><span class="p">:</span> <span class="s2">&quot;ocnat&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_sex&quot;</span><span class="p">:</span> <span class="s2">&quot;ocsex&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_life_stage&quot;</span><span class="p">:</span> <span class="s2">&quot;ocstade&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_bio_status&quot;</span><span class="p">:</span> <span class="s2">&quot;ocstatbio&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_exist_proof&quot;</span><span class="p">:</span> <span class="s2">&quot;preuveoui&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;non_digital_proof&quot;</span><span class="p">:</span> <span class="s2">&quot;Preuvnonum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;digital_proof&quot;</span><span class="p">:</span> <span class="s2">&quot;Preuvnum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_observation_status&quot;</span><span class="p">:</span> <span class="s2">&quot;statobs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_source_status&quot;</span><span class="p">:</span> <span class="s2">&quot;statsource&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_type_count&quot;</span><span class="p">:</span> <span class="s2">&quot;typdenbr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_nomenclature_grp_typ&quot;</span><span class="p">:</span> <span class="s2">&quot;typgrp&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@with_appcontext</span>
+<div class="viewcode-block" id="fix_mappings">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/commands/index.html#geonature.core.imports.commands.fix_mappings">[docs]</a>
+<span class="k">def</span> <span class="nf">fix_mappings</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;Synthese GeoNature&quot;</span><span class="p">,</span> <span class="n">synthese_fieldmappings</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Format DEE (champs 10 char)&quot;</span><span class="p">,</span> <span class="n">dee_fieldmappings</span><span class="p">),</span>
+    <span class="p">]:</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">FieldMapping</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+        <span class="n">mapping</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

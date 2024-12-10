@@ -1,0 +1,641 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>geonature.core.imports.checks.sql.parent &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/geonature/core/imports/checks/sql/parent/index';</script>
+    <link rel="index" title="Index" href="../../../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../../../search.html" />
+    <link rel="next" title="geonature.core.imports.checks.sql.utils" href="../utils/index.html" />
+    <link rel="prev" title="geonature.core.imports.checks.sql.nomenclature" href="../nomenclature/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../../../../../api-references.html">API REFERENCES</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../../../../index.html">geonature</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../../app/index.html">geonature.app</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../../../../index.html">geonature.core</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../../admin/index.html">geonature.core.admin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../command/index.html">geonature.core.command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../errors/index.html">geonature.core.errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../gn_commons/index.html">geonature.core.gn_commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../gn_meta/index.html">geonature.core.gn_meta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../gn_monitoring/index.html">geonature.core.gn_monitoring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../gn_permissions/index.html">geonature.core.gn_permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../gn_profiles/index.html">geonature.core.gn_profiles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../gn_synthese/index.html">geonature.core.gn_synthese</a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="../../../index.html">geonature.core.imports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../notifications/index.html">geonature.core.notifications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sensitivity/index.html">geonature.core.sensitivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../taxonomie/index.html">geonature.core.taxonomie</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../users/index.html">geonature.core.users</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../middlewares/index.html">geonature.middlewares</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../tasks/index.html">geonature.tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../utils/index.html">geonature.utils</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Dépôt source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/autoapi/geonature/core/imports/checks/sql/parent/index.rst?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../../../../../_sources/autoapi/geonature/core/imports/checks/sql/parent/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Télécharger le fichier source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimer au format PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>geonature.core.imports.checks.sql.parent</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenu </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.sql.parent.set_id_parent_from_destination"><code class="docutils literal notranslate"><span class="pre">set_id_parent_from_destination()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.sql.parent.set_parent_line_no"><code class="docutils literal notranslate"><span class="pre">set_parent_line_no()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.sql.parent.check_no_parent_entity"><code class="docutils literal notranslate"><span class="pre">check_no_parent_entity()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.sql.parent.check_erroneous_parent_entities"><code class="docutils literal notranslate"><span class="pre">check_erroneous_parent_entities()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-geonature.core.imports.checks.sql.parent">
+<span id="geonature-core-imports-checks-sql-parent"></span><h1>geonature.core.imports.checks.sql.parent<a class="headerlink" href="#module-geonature.core.imports.checks.sql.parent" title="Lien vers cette rubrique">#</a></h1>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Lien vers cette rubrique">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.checks.sql.parent.set_id_parent_from_destination" title="geonature.core.imports.checks.sql.parent.set_id_parent_from_destination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_id_parent_from_destination</span></code></a>(→ None)</p></td>
+<td><p>Complete the id_parent column in the transient table of an import when the parent already exists in the destination table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.checks.sql.parent.set_parent_line_no" title="geonature.core.imports.checks.sql.parent.set_parent_line_no"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent_line_no</span></code></a>(→ None)</p></td>
+<td><p>Set parent_line_no on child entities when:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.checks.sql.parent.check_no_parent_entity" title="geonature.core.imports.checks.sql.parent.check_no_parent_entity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_no_parent_entity</span></code></a>(→ None)</p></td>
+<td><p>Station may be referenced:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.checks.sql.parent.check_erroneous_parent_entities" title="geonature.core.imports.checks.sql.parent.check_erroneous_parent_entities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_erroneous_parent_entities</span></code></a>(→ None)</p></td>
+<td><p>Check for erroneous (not valid) parent entities in the transient table of an import.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Lien vers cette rubrique">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.sql.parent.set_id_parent_from_destination">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.checks.sql.parent.</span></span><span class="sig-name descname"><span class="pre">set_id_parent_from_destination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">child_entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../../../../_modules/geonature/core/imports/checks/sql/parent.html#set_id_parent_from_destination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.sql.parent.set_id_parent_from_destination" title="Lien vers cette définition">#</a></dt>
+<dd><p>Complete the id_parent column in the transient table of an import when the parent already exists in the destination table.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to update.</p>
+</dd>
+<dt>parent_entity<span class="classifier">Entity</span></dt><dd><p>The entity of the parent.</p>
+</dd>
+<dt>child_entity<span class="classifier">Entity</span></dt><dd><p>The entity of the child.</p>
+</dd>
+<dt>id_field<span class="classifier">BibFields</span></dt><dd><p>The field containing the id of the parent.</p>
+</dd>
+<dt>fields<span class="classifier">List[BibFields]</span></dt><dd><p>The fields to use for matching the child with its parent in the destination table.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.sql.parent.set_parent_line_no">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.checks.sql.parent.</span></span><span class="sig-name descname"><span class="pre">set_parent_line_no</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">child_entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_line_no</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../../../../_modules/geonature/core/imports/checks/sql/parent.html#set_parent_line_no"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.sql.parent.set_parent_line_no" title="Lien vers cette définition">#</a></dt>
+<dd><p>Set parent_line_no on child entities when:
+- no parent entity on same line
+- parent entity is valid
+- looking for parent entity through each given field in fields</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to update.</p>
+</dd>
+<dt>parent_entity<span class="classifier">Entity</span></dt><dd><p>The entity of the parent.</p>
+</dd>
+<dt>child_entity<span class="classifier">Entity</span></dt><dd><p>The entity of the child.</p>
+</dd>
+<dt>id_parent<span class="classifier">BibFields</span></dt><dd><p>The field containing the id of the parent.</p>
+</dd>
+<dt>parent_line_no<span class="classifier">BibFields</span></dt><dd><p>The field containing the line number of the parent.</p>
+</dd>
+<dt>fields<span class="classifier">List[BibFields]</span></dt><dd><p>The fields to use for matching the child with its parent in the destination table.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.sql.parent.check_no_parent_entity">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.checks.sql.parent.</span></span><span class="sig-name descname"><span class="pre">check_no_parent_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">child_entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_line_no</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../../../../_modules/geonature/core/imports/checks/sql/parent.html#check_no_parent_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.sql.parent.check_no_parent_entity" title="Lien vers cette définition">#</a></dt>
+<dd><p>Station may be referenced:
+- on the same line (station_validity is not None)
+- by id_parent (parent already exists in destination)
+- by parent_line_no (new parent from another line of the imported file - see set_parent_line_no)</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to check.</p>
+</dd>
+<dt>parent_entity<span class="classifier">Entity</span></dt><dd><p>The entity of the parent.</p>
+</dd>
+<dt>child_entity<span class="classifier">Entity</span></dt><dd><p>The entity of the child.</p>
+</dd>
+<dt>id_parent<span class="classifier">BibFields</span></dt><dd><p>The field containing the id of the parent.</p>
+</dd>
+<dt>parent_line_no<span class="classifier">BibFields</span></dt><dd><p>The field containing the line number of the parent.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.checks.sql.parent.check_erroneous_parent_entities">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.checks.sql.parent.</span></span><span class="sig-name descname"><span class="pre">check_erroneous_parent_entities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">child_entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.Entity" title="geonature.core.imports.models.Entity"><span class="pre">geonature.core.imports.models.Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_line_no</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/index.html#geonature.core.imports.models.BibFields" title="geonature.core.imports.models.BibFields"><span class="pre">geonature.core.imports.models.BibFields</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../../../../_modules/geonature/core/imports/checks/sql/parent.html#check_erroneous_parent_entities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.checks.sql.parent.check_erroneous_parent_entities" title="Lien vers cette définition">#</a></dt>
+<dd><p>Check for erroneous (not valid) parent entities in the transient table of an import.</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Lien vers cette rubrique">#</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to check.</p>
+</dd>
+<dt>parent_entity<span class="classifier">Entity</span></dt><dd><p>The entity of the parent.</p>
+</dd>
+<dt>child_entity<span class="classifier">Entity</span></dt><dd><p>The entity of the child.</p>
+</dd>
+<dt>parent_line_no<span class="classifier">BibFields</span></dt><dd><p>The field containing the line number of the parent.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h3>Notes<a class="headerlink" href="#notes" title="Lien vers cette rubrique">#</a></h3>
+<p># Note: if child entity reference parent entity by id_parent, this means the parent
+# entity is already in destination table so obviously valid.</p>
+<dl class="simple">
+<dt>The error codes are:</dt><dd><ul class="simple">
+<li><p>ERRONEOUS_PARENT_ENTITY: the parent on the same line is not valid.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../nomenclature/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">précédent</p>
+        <p class="prev-next-title">geonature.core.imports.checks.sql.nomenclature</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../utils/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">suivant</p>
+        <p class="prev-next-title">geonature.core.imports.checks.sql.utils</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenu
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.sql.parent.set_id_parent_from_destination"><code class="docutils literal notranslate"><span class="pre">set_id_parent_from_destination()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.sql.parent.set_parent_line_no"><code class="docutils literal notranslate"><span class="pre">set_parent_line_no()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.sql.parent.check_no_parent_entity"><code class="docutils literal notranslate"><span class="pre">check_no_parent_entity()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geonature.core.imports.checks.sql.parent.check_erroneous_parent_entities"><code class="docutils literal notranslate"><span class="pre">check_erroneous_parent_entities()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

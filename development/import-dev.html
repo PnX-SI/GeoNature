@@ -1,0 +1,740 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Intégrer l’import de données dans votre module &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'development/import-dev';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Dépôt source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/development/import-dev.rst?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/development/import-dev.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Télécharger le fichier source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimer au format PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Intégrer l’import de données dans votre module</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenu </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modification-a-apporter-sur-la-base-de-donnees">Modification à apporter sur la base de données</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-requises">Permissions requises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creer-votre-destination-et-vos-entites">Créer votre destination et vos entités</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creer-votre-table-transitoire">Créer votre table transitoire</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#declarer-les-attributs-rendus-accessibles-a-limport-dans-bib-fields">Déclarer les attributs rendus accessibles à l’import dans <strong>bib_fields</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ajout-de-nouvelles-erreurs-de-controle-de-donnees">Ajout de nouvelles erreurs de contrôle de données</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methodes-a-implementer">Méthodes à implémenter</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="integrer-limport-de-donnees-dans-votre-module">
+<h1>Intégrer l’import de données dans votre module<a class="headerlink" href="#integrer-limport-de-donnees-dans-votre-module" title="Lien vers cette rubrique">#</a></h1>
+<p>A partir de la version 2.15, le module d’Import permet l’ajout de nouvelles destinations en plus de la Synthèse. Cela a été l’occasion d’ajouter la possibilité d’importer des données d’habitat dans le module Occhab.
+Cette section présente le processus d’ajout de l’import dans votre module GeoNature.</p>
+<section id="modification-a-apporter-sur-la-base-de-donnees">
+<h2>Modification à apporter sur la base de données<a class="headerlink" href="#modification-a-apporter-sur-la-base-de-donnees" title="Lien vers cette rubrique">#</a></h2>
+<p>Plusieurs points sont essentiels au bon fonctionnement de l’import dans votre module :</p>
+<ol class="arabic simple">
+<li><p>Avoir une permission C sur votre module de destination</p></li>
+<li><p>Créer un objet destination (<cite>bib_destinations</cite>) et autant d’entités (<cite>bib_entities</cite>) que vous avez d’objets dans votre module (e.g. habitat, station pour Occhab)</p></li>
+<li><p>Créer une table transitoire permettant d’effectuer la complétion et le contrôle des données avant l’import des données vers la table de destination finale.</p></li>
+<li><p>Pour chaque entité, déclarer les attributs rendus accessibles à l’import dans <cite>bib_fields</cite></p></li>
+<li><p>Si de nouvelles erreurs de contrôle de données doivent être déclarées, ajouter ces dernières dans <cite>bib_errors_type</cite></p></li>
+</ol>
+<p>N.B. Comme dans le reste de GeoNature, il est conseillé d’effectuer les modifications de base de données à l’aide de migrations Alembic.</p>
+<section id="permissions-requises">
+<h3>Permissions requises<a class="headerlink" href="#permissions-requises" title="Lien vers cette rubrique">#</a></h3>
+<p>Si ce n’est pas le déjà cas, ajouter la permission de création de données dans votre module. Le code ci-dessous donne un exemple fonctionnant dans une révision alembic.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">op</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    INSERT INTO</span>
+<span class="sd">        gn_permissions.t_permissions_available (id_module,id_object,id_action,label,scope_filter)</span>
+<span class="sd">    SELECT</span>
+<span class="sd">        m.id_module,o.id_object,a.id_action,v.label,v.scope_filter</span>
+<span class="sd">    FROM</span>
+<span class="sd">        (</span>
+<span class="sd">            VALUES</span>
+<span class="sd">                (&#39;[votreModuleCode&#39;, &#39;ALL&#39;, &#39;C&#39;, True, &#39;Créer [nomEntité]&#39;)</span>
+<span class="sd">        ) AS v (module_code, object_code, action_code, scope_filter, label)</span>
+<span class="sd">    JOIN</span>
+<span class="sd">        gn_commons.t_modules m ON m.module_code = v.module_code</span>
+<span class="sd">    JOIN</span>
+<span class="sd">        gn_permissions.t_objects o ON o.code_object = v.object_code</span>
+<span class="sd">    JOIN</span>
+<span class="sd">        gn_permissions.bib_actions a ON a.code_action = v.action_code</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="creer-votre-destination-et-vos-entites">
+<h3>Créer votre destination et vos entités<a class="headerlink" href="#creer-votre-destination-et-vos-entites" title="Lien vers cette rubrique">#</a></h3>
+<p>Dans un premier temps, il faut créer une « destination ». Pour cela, il faut enregistrer votre module dans <cite>bib_destinations</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Récupérer l&#39;identifiant de votre module</span>
+<span class="n">id_de_votre_module</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT id_module FROM gn_commons.t_modules WHERE module_code = &#39;CODE_DE_VOTRE_MODULE&#39;&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># Ajouter la destination</span>
+<span class="c1"># N.B. table_name correspond au nom de la future table transitoire</span>
+<span class="n">destination</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s2">&quot;bib_destinations&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">autoload</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span>
+<span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">values</span><span class="p">(</span>
+        <span class="n">id_module</span><span class="o">=</span><span class="n">id_de_votre_module</span><span class="p">,</span>
+        <span class="n">code</span><span class="o">=</span><span class="s2">&quot;votre_module_code&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;VotreModule&quot;</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;t_imports_votre_module&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Dans votre module, plusieurs objets sont manipulés et stockés chacun dans une table. Pour prendre l’exemple du module Occhab, on a deux entités les stations et les habitats.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">id_dest_module</span><span class="o">=</span> <span class="p">(</span>
+<span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span>
+<span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT id_destination FROM gn_imports.bib_destinations WHERE code = &#39;votre_module_code&#39;&quot;</span><span class="p">)</span>
+<span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">entity</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s2">&quot;bib_entities&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">autoload</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span>
+<span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">values</span><span class="p">(</span>
+        <span class="n">id_destination</span><span class="o">=</span><span class="n">id_dest_module</span><span class="p">,</span>
+        <span class="n">code</span><span class="o">=</span><span class="s2">&quot;code_entite1&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Entite1&quot;</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">validity_column</span><span class="o">=</span><span class="s2">&quot;entite1_valid&quot;</span><span class="p">,</span>
+        <span class="n">destination_table_schema</span><span class="o">=</span><span class="s2">&quot;votre_module_schema&quot;</span><span class="p">,</span>
+        <span class="n">destination_table_name</span><span class="o">=</span><span class="s2">&quot;entite1_table_name&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="creer-votre-table-transitoire">
+<h3>Créer votre table transitoire<a class="headerlink" href="#creer-votre-table-transitoire" title="Lien vers cette rubrique">#</a></h3>
+<p>Nécessaire pour le contrôle de données, il est important de créer une table transitoire permettant d’effectuer la complétion et le contrôle des données avant l’import des données vers la table de destination finale. La table transitoire doit contenir les colonnes suivantes :</p>
+<ul class="simple">
+<li><p>id_import : identifiant de l’import</p></li>
+<li><p>line_no : entier, numéro de la ligne dans le fichier source</p></li>
+<li><p>entityname_valid : booleen, indique si une entité est valide</p></li>
+<li><p>pour chaque champ de l’entité, il faudra une colonne VARCHAR contenant la donnée du fichier et une colonne du type du champ qui contiendra la données finales. La convention de nommage est la suivante: « src_nomchamp » pour colonne contenant la données du fichier source et « nomchamp » pour la colonne contenant les données finales. Il est conseillé que le nom de la colonne contenant les données finales soit identiques à celle du champs dans la table de destination.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">op</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span>
+    <span class="s2">&quot;t_imports_votremodule&quot;</span><span class="p">,</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_import&quot;</span><span class="p">,</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.t_imports.id_import&quot;</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;line_no&quot;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;entite1_valid&quot;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">()),</span>
+    <span class="c1"># Station fields</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;src_id_entite&quot;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_entite&quot;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;src_unique_dataset_id&quot;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;unique_dataset_id&quot;</span><span class="p">,</span> <span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="declarer-les-attributs-rendus-accessibles-a-limport-dans-bib-fields">
+<h3>Déclarer les attributs rendus accessibles à l’import dans <strong>bib_fields</strong><a class="headerlink" href="#declarer-les-attributs-rendus-accessibles-a-limport-dans-bib-fields" title="Lien vers cette rubrique">#</a></h3>
+<p>Pour chaque entité (e.g. une station dans Occhab), il faut déclarer les champs du modèles accessibles à l’import dans <cite>bib_fields</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">theme</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s2">&quot;bib_themes&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">autoload</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">)</span>
+
+<span class="n">id_theme_general</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">theme</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_theme</span><span class="p">])</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theme</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">name_theme</span> <span class="o">==</span> <span class="s2">&quot;general_info&quot;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+<span class="p">)</span>
+
+
+<span class="n">fields_entities</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name_field&quot;</span><span class="p">:</span> <span class="s2">&quot;id_entite1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fr_label&quot;</span><span class="p">:</span> <span class="s2">&quot;Identifiant entité1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mandatory&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># Obligatoire ou non</span>
+            <span class="s2">&quot;autogenerated&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># généré automatique (ex. UUID)</span>
+            <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># Afficher dans l&#39;UI</span>
+            <span class="s2">&quot;mnemonique&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;source_field&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;dest_field&quot;</span><span class="p">:</span> <span class="s2">&quot;id_entite1&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="n">id_entity1</span><span class="p">:</span> <span class="p">{</span> <span class="c1"># récupérer l&#39;id de l&#39;entité entité1 précédement inséré</span>
+                <span class="s2">&quot;id_theme&quot;</span><span class="p">:</span> <span class="n">id_theme_general</span><span class="p">,</span>
+                <span class="s2">&quot;order_field&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="c1"># Utilisé comme tooltip</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
+    <span class="o">...</span>
+<span class="p">]</span>
+
+<span class="n">field</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s2">&quot;bib_fields&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">autoload</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">)</span>
+<span class="n">id_fields</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">id_field</span>
+    <span class="k">for</span> <span class="n">id_field</span><span class="p">,</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">values</span><span class="p">([{</span><span class="s2">&quot;id_destination&quot;</span><span class="p">:</span> <span class="n">id_votre_dest</span><span class="p">,</span> <span class="o">**</span><span class="n">field</span><span class="p">}</span> <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">fields_entities</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_field</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="p">]</span>
+<span class="n">cor_entity_field</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s2">&quot;cor_entity_field&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">autoload</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">cor_entity_field</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;id_entity&quot;</span><span class="p">:</span> <span class="n">id_entity</span><span class="p">,</span> <span class="s2">&quot;id_field&quot;</span><span class="p">:</span> <span class="n">id_field</span><span class="p">,</span> <span class="o">**</span><span class="n">props</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">id_field</span><span class="p">,</span> <span class="n">field_entities</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">id_fields</span><span class="p">,</span> <span class="n">fields_entities</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">id_entity</span><span class="p">,</span> <span class="n">props</span> <span class="ow">in</span> <span class="n">field_entities</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="ajout-de-nouvelles-erreurs-de-controle-de-donnees">
+<h3>Ajout de nouvelles erreurs de contrôle de données<a class="headerlink" href="#ajout-de-nouvelles-erreurs-de-controle-de-donnees" title="Lien vers cette rubrique">#</a></h3>
+<p>Il est possible que votre module nécessite de déclarer de nouveaux contrôles de données. Ces contrôles
+peuvent provoquer de nouvelles erreurs que celle déclaré dans <cite>bib_errors_type</cite>. Il est possible d’en ajouter
+comme dans l’exemple suivant :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">error_type</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s2">&quot;bib_errors_types&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">,</span> <span class="n">autoload_with</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">())</span>
+<span class="n">op</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
+    <span class="n">error_type</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;error_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Erreur de format booléen&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;INVALID_BOOL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Le champ doit être renseigné avec une valeur binaire (0 ou 1, true ou false).&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;error_level&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;error_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Données incohérentes d&#39;une ou plusieurs entités&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;INCOHERENT_DATA&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Les données indiquées pour une ou plusieurs entités sont incohérentes sur différentes lignes.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;error_level&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="o">...</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Lien vers cette rubrique">#</a></h2>
+<p>Il faut d’abord créer une classe héritant de la classe <cite>ImportActions</cite></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">VotreModuleImportActions</span><span class="p">(</span><span class="n">ImportActions</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">statistics_labels</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">ImportStatisticsLabels</span><span class="p">]:</span>
+    <span class="c1"># Retourne un objet contenant les labels pour les statistiques</span>
+
+    <span class="k">def</span> <span class="nf">preprocess_transient_data</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+    <span class="c1"># Effectue un pré-traitement des données dans un dataframe</span>
+
+    <span class="k">def</span> <span class="nf">check_transient_data</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Effectue la validation des données</span>
+
+    <span class="k">def</span> <span class="nf">import_data_to_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Importe les données dans la table de destination</span>
+
+    <span class="k">def</span> <span class="nf">remove_data_from_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Supprime les données de la table de destination</span>
+
+    <span class="k">def</span> <span class="nf">report_plot</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StandaloneEmbedJson</span><span class="p">:</span>
+    <span class="c1"># Retourne des graphiques sur l&#39;import</span>
+
+    <span class="k">def</span> <span class="nf">compute_bounding_box</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Calcule la bounding box</span>
+</pre></div>
+</div>
+<p>Dans cette classe on retrouve toutes les fonctions obligatoires, à implementer pour pouvoir implementer l’import dans un module.</p>
+<section id="methodes-a-implementer">
+<h3>Méthodes à implémenter<a class="headerlink" href="#methodes-a-implementer" title="Lien vers cette rubrique">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">statistics_labels()</span></code></p>
+<p>Fonction qui renvoie un objet de la forme suivante :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;station_count&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Nombre de stations importées&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;habitat_count&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Nombre d’habitats importés&quot;</span><span class="p">},</span>
+</pre></div>
+</div>
+<p>Les statistiques sont calculées en amont, et ajoutés à l’objet import dans la section statistique.
+Les valeurs des clés permettent de définir les labels à afficher pour les statistique affichées dans la liste d’imports.</p>
+<p><code class="docutils literal notranslate"><span class="pre">preprocess_transient_data(imprt:</span> <span class="pre">TImports,</span> <span class="pre">df)</span></code></p>
+<p>Fonction qui permet de faire un pré-traitement sur les données de l’import, elle retourne un dataframe panda.</p>
+<p><code class="docutils literal notranslate"><span class="pre">check_transient_data(task,</span> <span class="pre">logger,</span> <span class="pre">imprt:</span> <span class="pre">TImports)</span></code></p>
+<p>Dans cette fonction est effectuée la validation et le traitement des données de l’import.</p>
+<p>La fonction <code class="docutils literal notranslate"><span class="pre">check_dates</span></code>, par exemple, utilisée dans l’import Occhab permet de valider tous les champs de type date présents dans l’import.
+Elle vérifie que le format est respecté.</p>
+<p>La fonction <code class="docutils literal notranslate"><span class="pre">check_transient_data</span></code> permet de génerer les uuid manquants dans l’import, elle permet notamment de générer un UUID commun à différentes lignes de l’import quand id_origin est le même.</p>
+<p><code class="docutils literal notranslate"><span class="pre">import_data_to_destination(imprt:</span> <span class="pre">TImports)</span></code></p>
+<p>Cette fonction permet d’implémenter l’import des données valides dans la table de destination une fois que toutes les vérifications ont été effectuées.</p>
+<p><code class="docutils literal notranslate"><span class="pre">remove_data_from_destination(imprt:</span> <span class="pre">TImports)</span></code></p>
+<p>Cette fonction permet de supprimer les données d’un import, lors de la suppression d’un import.
+C’est notamment pour pouvoir implémenter cette fonction que la colonne <code class="docutils literal notranslate"><span class="pre">id_import</span></code> est préconisée dans les tables de destination.</p>
+<p><code class="docutils literal notranslate"><span class="pre">report_plot(imprt:</span> <span class="pre">TImports)</span></code></p>
+<p>Cette fonction permet de créer les graphiques affichés dans le raport d’import.
+Pour créer ces graphiques on utilise la librairie bokeh (documentation : <a class="reference external" href="https://docs.bokeh.org/en/latest/">https://docs.bokeh.org/en/latest/</a>). Il y a des exemples de création de graphiques dans l’import Occhab.</p>
+<p><code class="docutils literal notranslate"><span class="pre">compute_bounding_box(imprt:</span> <span class="pre">TImports)</span></code></p>
+<p>Cette fonction sert à calculer la bounding box des données importées, c’est-à-dire le plus petit polygone dans lequel sont contenues toutes les données géographique importées.
+Cette bounding box est affichée dans le rapport d’import une fois toutes les données validées.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenu
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modification-a-apporter-sur-la-base-de-donnees">Modification à apporter sur la base de données</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-requises">Permissions requises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creer-votre-destination-et-vos-entites">Créer votre destination et vos entités</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creer-votre-table-transitoire">Créer votre table transitoire</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#declarer-les-attributs-rendus-accessibles-a-limport-dans-bib-fields">Déclarer les attributs rendus accessibles à l’import dans <strong>bib_fields</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ajout-de-nouvelles-erreurs-de-controle-de-donnees">Ajout de nouvelles erreurs de contrôle de données</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methodes-a-implementer">Méthodes à implémenter</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

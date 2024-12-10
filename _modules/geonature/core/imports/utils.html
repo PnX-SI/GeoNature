@@ -1,0 +1,1039 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.utils &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/utils';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">TextIOWrapper</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">IO</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">render_template</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">delete</span>
+<span class="kn">from</span> <span class="nn">chardet.universaldetector</span> <span class="kn">import</span> <span class="n">UniversalDetector</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql.expression</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">insert</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">insert</span> <span class="k">as</span> <span class="n">pg_insert</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">BadRequest</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">weasyprint</span> <span class="kn">import</span> <span class="n">HTML</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.sentry</span> <span class="kn">import</span> <span class="n">start_sentry_child</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">ImportUserError</span><span class="p">,</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">TImports</span>
+
+
+<div class="viewcode-block" id="ImportStep">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.ImportStep">[docs]</a>
+<span class="k">class</span> <span class="nc">ImportStep</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<div class="viewcode-block" id="ImportStep.UPLOAD">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.ImportStep.UPLOAD">[docs]</a>
+    <span class="n">UPLOAD</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="ImportStep.DECODE">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.ImportStep.DECODE">[docs]</a>
+    <span class="n">DECODE</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="ImportStep.LOAD">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.ImportStep.LOAD">[docs]</a>
+    <span class="n">LOAD</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+<div class="viewcode-block" id="ImportStep.PREPARE">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.ImportStep.PREPARE">[docs]</a>
+    <span class="n">PREPARE</span> <span class="o">=</span> <span class="mi">4</span></div>
+
+<div class="viewcode-block" id="ImportStep.IMPORT">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.ImportStep.IMPORT">[docs]</a>
+    <span class="n">IMPORT</span> <span class="o">=</span> <span class="mi">5</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="generated_fields">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.generated_fields">[docs]</a>
+<span class="n">generated_fields</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;datetime_min&quot;</span><span class="p">:</span> <span class="s2">&quot;date_min&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;datetime_max&quot;</span><span class="p">:</span> <span class="s2">&quot;date_max&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="clean_import">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.clean_import">[docs]</a>
+<span class="k">def</span> <span class="nf">clean_import</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">ImportStep</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clean an import at a specific step.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to clean.</span>
+<span class="sd">    step : ImportStep</span>
+<span class="sd">        The step at which to clean the import.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">UPLOAD</span><span class="p">:</span>
+        <span class="c1"># source_file will be necessary overwritten</span>
+        <span class="c1"># source_count will be necessary overwritten</span>
+        <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">DECODE</span><span class="p">:</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">LOAD</span><span class="p">:</span>
+        <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;clean transient data&quot;</span><span class="p">):</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">source_count</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">PREPARE</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;clean errors&quot;</span><span class="p">):</span>
+            <span class="n">ImportUserError</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ImportUserError</span><span class="o">.</span><span class="n">imprt</span> <span class="o">==</span> <span class="n">imprt</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">erroneous_rows</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">processed</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="n">ImportStep</span><span class="o">.</span><span class="n">IMPORT</span><span class="p">:</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">date_end_import</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">imprt</span><span class="o">.</span><span class="n">statistics</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;import_count&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">remove_data_from_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_file_size">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.get_file_size">[docs]</a>
+<span class="k">def</span> <span class="nf">get_file_size</span><span class="p">(</span><span class="n">file_</span><span class="p">:</span> <span class="n">IO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the size of a file in bytes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file_ : IO</span>
+<span class="sd">        The file to get the size of.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        The size of the file in bytes.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">current_position</span> <span class="o">=</span> <span class="n">file_</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+    <span class="n">file_</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">SEEK_END</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">file_</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+    <span class="n">file_</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">current_position</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">size</span></div>
+
+
+
+<div class="viewcode-block" id="detect_encoding">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.detect_encoding">[docs]</a>
+<span class="k">def</span> <span class="nf">detect_encoding</span><span class="p">(</span><span class="n">file_</span><span class="p">:</span> <span class="n">IO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detects the encoding of a file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file_ : IO</span>
+<span class="sd">        The file to detect the encoding of.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The detected encoding. If no encoding is detected, then &quot;UTF-8&quot; is returned.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">begin</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">max_duration</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span>
+        <span class="n">seconds</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;MAX_ENCODING_DETECTION_DURATION&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">file_</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+    <span class="n">file_</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">UniversalDetector</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">file_</span><span class="p">:</span>
+        <span class="n">detector</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">detector</span><span class="o">.</span><span class="n">done</span> <span class="ow">or</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">begin</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_duration</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">detector</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">file_</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">detector</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;encoding&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;UTF-8&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="detect_separator">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.detect_separator">[docs]</a>
+<span class="k">def</span> <span class="nf">detect_separator</span><span class="p">(</span><span class="n">file_</span><span class="p">:</span> <span class="n">IO</span><span class="p">,</span> <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detects the delimiter used in a CSV file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file_ : IO</span>
+<span class="sd">        The file object to detect the delimiter of.</span>
+<span class="sd">    encoding : str</span>
+<span class="sd">        The encoding of the file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Optional[str]</span>
+<span class="sd">        The delimiter used in the file, or None if no delimiter is detected.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    BadRequest</span>
+<span class="sd">        If the file starts with no column names.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">file_</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+    <span class="n">file_</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">file_</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+        <span class="c1"># encoding is likely to be detected encoding, so prompt to errors</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">sample</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">:</span>  <span class="c1"># files that do not start with column names</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="s2">&quot;File must start with columns&quot;</span><span class="p">)</span>
+    <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+    <span class="n">file_</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">delimiter</span></div>
+
+
+
+<div class="viewcode-block" id="preprocess_value">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.preprocess_value">[docs]</a>
+<span class="k">def</span> <span class="nf">preprocess_value</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">source_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Preprocesses values in a DataFrame depending if the field contains multiple values (e.g. additional_data) or not.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataframe : pd.DataFrame</span>
+<span class="sd">        The DataFrame to preprocess the value of.</span>
+<span class="sd">    field : BibFields</span>
+<span class="sd">        The field to preprocess.</span>
+<span class="sd">    source_col : str</span>
+<span class="sd">        The column to preprocess.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.Series</span>
+<span class="sd">        The preprocessed value.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">build_additional_data</span><span class="p">(</span><span class="n">columns</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">multi</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">source_col</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">build_additional_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">col</span></div>
+
+
+
+<div class="viewcode-block" id="insert_import_data_in_transient_table">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.insert_import_data_in_transient_table">[docs]</a>
+<span class="k">def</span> <span class="nf">insert_import_data_in_transient_table</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert the data from the import file into the transient table.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        current import</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        The last line number of the import file that was inserted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">fieldmapping</span><span class="p">,</span> <span class="n">used_columns</span> <span class="o">=</span> <span class="n">build_fieldmapping</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+    <span class="n">extra_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">used_columns</span><span class="p">)</span>
+
+    <span class="n">csvfile</span> <span class="o">=</span> <span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">source_file</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="n">csvfile</span><span class="p">,</span>
+        <span class="n">delimiter</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">separator</span><span class="p">,</span>
+        <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">names</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+        <span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;str&quot;</span><span class="p">,</span>
+        <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">iterator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="n">chunk</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id_import&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">),</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">),</span>
+            <span class="s2">&quot;line_no&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">chunk</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>  <span class="c1"># header + start line_no at 1 instead of 0</span>
+        <span class="p">}</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">dest_field</span><span class="p">:</span> <span class="n">preprocess_value</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">source_field</span><span class="p">[</span><span class="s2">&quot;field&quot;</span><span class="p">],</span> <span class="n">source_field</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">dest_field</span><span class="p">,</span> <span class="n">source_field</span> <span class="ow">in</span> <span class="n">fieldmapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="c1"># XXX keep extra_fields in t_imports_synthese? or add config argument?</span>
+        <span class="k">if</span> <span class="n">extra_columns</span> <span class="ow">and</span> <span class="s2">&quot;extra_fields&quot;</span> <span class="ow">in</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;extra_fields&quot;</span><span class="p">:</span> <span class="n">chunk</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">extra_columns</span><span class="p">)]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                        <span class="k">lambda</span> <span class="n">cols</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cols</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+                    <span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">preprocess_transient_data</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+
+        <span class="n">records</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">records</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">chunk</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># +1 because chunk.index start at 0</span></div>
+
+
+
+<div class="viewcode-block" id="build_fieldmapping">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.build_fieldmapping">[docs]</a>
+<span class="k">def</span> <span class="nf">build_fieldmapping</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build a dictionary that maps the source column names to the corresponding field and values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    columns : Iterable[Any]</span>
+<span class="sd">        The columns to map.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        A tuple containing a dictionary that maps the source column names to the corresponding field and values,</span>
+<span class="sd">        and a list of the used columns.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">BibFields</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">,</span> <span class="n">autogenerated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">fieldmapping</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">used_columns</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name_field</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">multi</span><span class="p">:</span>
+                <span class="n">correct</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">correct</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">fieldmapping</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">source_column</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">correct</span><span class="p">,</span>
+                        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                    <span class="p">}</span>
+                    <span class="n">used_columns</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">correct</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">]</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+                    <span class="n">fieldmapping</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">source_column</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">],</span>
+                        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                    <span class="p">}</span>
+                    <span class="n">used_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">fieldmapping</span><span class="p">,</span> <span class="n">used_columns</span></div>
+
+
+
+<div class="viewcode-block" id="load_transient_data_in_dataframe">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.load_transient_data_in_dataframe">[docs]</a>
+<span class="k">def</span> <span class="nf">load_transient_data_in_dataframe</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">source_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load data from the transient table into a pandas dataframe.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to load.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to load.</span>
+<span class="sd">    source_cols : list</span>
+<span class="sd">        The columns to load from the transient table.</span>
+<span class="sd">    offset : int, optional</span>
+<span class="sd">        The number of rows to skip.</span>
+<span class="sd">    limit : int, optional</span>
+<span class="sd">        The maximum number of rows to load.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        The dataframe containing the loaded data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">source_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id_import&quot;</span><span class="p">,</span> <span class="s2">&quot;line_no&quot;</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">+</span> <span class="n">source_cols</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">source_cols</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span><span class="o">.</span><span class="n">isnot</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+        <span class="n">records</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">source_cols</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+
+<div class="viewcode-block" id="update_transient_data_from_dataframe">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.update_transient_data_from_dataframe">[docs]</a>
+<span class="k">def</span> <span class="nf">update_transient_data_from_dataframe</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">updated_cols</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update the transient table with the data from the dataframe.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to update.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to update.</span>
+<span class="sd">    updated_cols : list</span>
+<span class="sd">        The columns to update.</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe to use for the update.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The dataframe must have the columns &#39;id_import&#39; and &#39;line_no&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">updated_cols</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">updated_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id_import&quot;</span><span class="p">,</span> <span class="s2">&quot;line_no&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">updated_cols</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">updated_cols</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">records</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">insert_stmt</span> <span class="o">=</span> <span class="n">pg_insert</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+    <span class="n">insert_stmt</span> <span class="o">=</span> <span class="n">insert_stmt</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">.</span><span class="n">on_conflict_do_update</span><span class="p">(</span>
+        <span class="n">index_elements</span><span class="o">=</span><span class="n">updated_cols</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>
+        <span class="n">set_</span><span class="o">=</span><span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">insert_stmt</span><span class="o">.</span><span class="n">excluded</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">updated_cols</span><span class="p">[</span><span class="mi">2</span><span class="p">:]},</span>
+    <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert_stmt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_pdf_from_template">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.generate_pdf_from_template">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_pdf_from_template</span><span class="p">(</span><span class="n">template</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a PDF document from a template.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    template : str</span>
+<span class="sd">        The name of the template file to use.</span>
+<span class="sd">    data : Any</span>
+<span class="sd">        The data to pass to the template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bytes</span>
+<span class="sd">        The PDF document as bytes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">template_rendered</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">html_file</span> <span class="o">=</span> <span class="n">HTML</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="n">template_rendered</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">],</span>
+        <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">html_file</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_mapping_data">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.get_mapping_data">[docs]</a>
+<span class="k">def</span> <span class="nf">get_mapping_data</span><span class="p">(</span><span class="n">import_</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the mapping data for a given import and entity.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    import_ : TImports</span>
+<span class="sd">        The import to get the mapping data for.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to get the mapping data for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fields : dict</span>
+<span class="sd">        A dictionary with the all fields associated with an entity (check gn_imports.bib_fields). This dictionary is keyed by the name field and valued by the corresponding BibField object.</span>
+<span class="sd">    selected_fields : dict</span>
+<span class="sd">        In the same format as fields, but only the fields contained in the mapping.</span>
+<span class="sd">    source_cols : list</span>
+<span class="sd">        List of fields to load in dataframe, mainly source column of non-nomenclature fields</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">ef</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">:</span> <span class="n">ef</span><span class="o">.</span><span class="n">field</span> <span class="k">for</span> <span class="n">ef</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
+    <span class="n">selected_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">field_name</span><span class="p">:</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">source_field</span> <span class="ow">in</span> <span class="n">import_</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">source_field</span> <span class="ow">in</span> <span class="n">import_</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">fields</span>
+    <span class="p">}</span>
+    <span class="n">source_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="c1"># load source col of all non-nomenclature fields</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">mnemonique</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">source_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">source_cols</span> <span class="o">|=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">source_field</span><span class="p">}</span>
+        <span class="c1"># load source col of all mandatory fields</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">mandatory</span><span class="p">:</span>
+            <span class="n">source_cols</span> <span class="o">|=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">source_field</span><span class="p">}</span>
+        <span class="c1"># load all selected field used in conditions</span>
+        <span class="n">conditions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">mandatory_conditions</span> <span class="ow">or</span> <span class="p">{})</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">optional_conditions</span> <span class="ow">or</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="n">conditions</span><span class="p">:</span>
+            <span class="n">source_cols</span> <span class="o">|=</span> <span class="nb">set</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">selected_fields</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">source_field</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">conditions</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">]</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">fields</span><span class="p">,</span> <span class="n">selected_fields</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">source_cols</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_required">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.get_required">[docs]</a>
+<span class="k">def</span> <span class="nf">get_required</span><span class="p">(</span><span class="n">import_</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">):</span>
+    <span class="n">fields</span><span class="p">,</span> <span class="n">selected_fields</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_mapping_data</span><span class="p">(</span><span class="n">import_</span><span class="p">,</span> <span class="n">entity</span><span class="p">)</span>
+    <span class="n">required_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
+    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">bib_field</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">bib_field</span><span class="o">.</span><span class="n">mandatory</span> <span class="ow">and</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">:</span>
+            <span class="n">required_columns</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">bib_field</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">field_name</span> <span class="ow">in</span> <span class="n">selected_fields</span> <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">bib_field</span><span class="o">.</span><span class="n">required_conditions</span><span class="p">]):</span>
+            <span class="n">required_columns</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">bib_field</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">field_name</span> <span class="ow">in</span> <span class="n">selected_fields</span> <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">bib_field</span><span class="o">.</span><span class="n">optional_conditions</span><span class="p">]):</span>
+            <span class="n">required_columns</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">required_columns</span></div>
+
+
+
+<div class="viewcode-block" id="compute_bounding_box">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/utils/index.html#geonature.core.imports.utils.compute_bounding_box">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_bounding_box</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">geom_entity_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">geom_4326_field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">child_entity_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">transient_where_clause</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">destination_where_clause</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the bounding box of an entity with a geometry in the given import, based on its</span>
+<span class="sd">    entities tree (e.g. Station -&gt; Habitat; Site -&gt; Visite -&gt; Observation).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to get the bounding box of.</span>
+<span class="sd">    geom_entity_code : str</span>
+<span class="sd">        The code of the entity that contains the geometry.</span>
+<span class="sd">    geom_4326_field_name : str</span>
+<span class="sd">        The name of the column in the geom entity table that contains the geometry.</span>
+<span class="sd">    child_entity_code : str, optional</span>
+<span class="sd">        The code of the last child entity (of the geom entity) to consider when computing the bounding box. If not given,</span>
+<span class="sd">        bounding-box will be computed only on the geom entity.</span>
+<span class="sd">    transient_where_clause : sqlalchemy.sql.elements.BooleanClauseList, optional</span>
+<span class="sd">        A where clause to apply to the query when computing the bounding box of a processed import.</span>
+<span class="sd">    destination_where_clause : sqlalchemy.sql.elements.BooleanClauseList, optional</span>
+<span class="sd">        A where clause to apply to the query when computing the bounding box of a finished import.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    valid_bbox : dict</span>
+<span class="sd">        The bounding box of all entities in the given import, in GeoJSON format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get_entities_hierarchy</span><span class="p">(</span><span class="n">parent_entity</span><span class="p">,</span> <span class="n">child_entity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Entity</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all entities between the parent_entity and the child_entity, in order from parent to child.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parent_entity : Entity</span>
+<span class="sd">            The parent entity.</span>
+<span class="sd">        child_entity : Entity</span>
+<span class="sd">            The child entity.</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        Entity</span>
+<span class="sd">            The entities between the parent and child entity, in order from parent to child.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">child_entity</span>
+        <span class="k">while</span> <span class="n">current</span> <span class="o">!=</span> <span class="n">parent_entity</span> <span class="ow">and</span> <span class="n">current</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">current</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">parent</span>
+
+    <span class="n">parent_entity</span><span class="p">:</span> <span class="n">Entity</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">geom_entity_code</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+    <span class="n">parent_table</span> <span class="o">=</span> <span class="n">parent_entity</span><span class="o">.</span><span class="n">get_destination_table</span><span class="p">()</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+
+    <span class="c1"># If only one entity in an import destination</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">child_entity_code</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">date_end_import</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">parent_table</span>
+        <span class="k">elif</span> <span class="n">imprt</span><span class="o">.</span><span class="n">processed</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">transient_table</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">assert</span> <span class="n">geom_4326_field_name</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_AsGeojson</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_Extent</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">geom_4326_field_name</span><span class="p">])))</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span>
+        <span class="p">)</span>
+        <span class="p">(</span><span class="n">valid_bbox</span><span class="p">,)</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">valid_bbox</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">valid_bbox</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">child_entity</span><span class="p">:</span> <span class="n">Entity</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">child_entity_code</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="c1"># When the import is finished</span>
+    <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">date_end_import</span><span class="p">:</span>
+        <span class="n">entities</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">get_entities_hierarchy</span><span class="p">(</span><span class="n">parent_entity</span><span class="p">,</span> <span class="n">child_entity</span><span class="p">))</span>
+        <span class="n">entities</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+        <span class="c1"># Geom entity linked to the current import based on their children (or grand-children, etc.)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">parent_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">geom_4326_field_name</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">))</span>
+        <span class="n">or_where_clause</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="n">ent_table</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_destination_table</span><span class="p">()</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ent_table</span><span class="p">)</span>
+            <span class="n">or_where_clause</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ent_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span><span class="o">*</span><span class="n">or_where_clause</span><span class="p">))</span>
+
+        <span class="c1"># Merge with geom entity with an id_import equal to the current import</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+            <span class="n">query</span><span class="p">,</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">parent_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">geom_4326_field_name</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">parent_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span>
+            <span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">subquery</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">destination_where_clause</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">destination_where_clause</span><span class="p">)</span>
+
+    <span class="c1"># When the import is processed (data are check and prepared but not loaded in the destination)</span>
+    <span class="k">elif</span> <span class="n">imprt</span><span class="o">.</span><span class="n">processed</span><span class="p">:</span>
+        <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+
+        <span class="c1"># query all existing entities&#39;geom</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">parent_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">geom_4326_field_name</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>  <span class="c1"># basic !</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>  <span class="c1"># Check that no parent entity is invalid</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">get_entities_hierarchy</span><span class="p">(</span><span class="n">parent_entity</span><span class="p">,</span> <span class="n">child_entity</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">parent_entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span>
+            <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Check that parent entity already exists in DB</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">parent_entity</span><span class="o">.</span><span class="n">unique_column</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+            <span class="o">==</span> <span class="n">parent_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">parent_entity</span><span class="o">.</span><span class="n">unique_column</span><span class="o">.</span><span class="n">dest_field</span><span class="p">],</span>  <span class="c1"># for join</span>
+        <span class="p">)</span>
+
+        <span class="c1"># UNION between existing geom in the DB and new entities&#39;geom in the transient table</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+            <span class="n">query</span><span class="p">,</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">geom_4326_field_name</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                    <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+                    <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">parent_entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">subquery</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">transient_where_clause</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_where_clause</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># Compute the bounding box using geom entities returned by the query</span>
+    <span class="n">statement</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_AsGeojson</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_Extent</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">geom</span><span class="p">)))</span>
+    <span class="p">(</span><span class="n">valid_bbox</span><span class="p">,)</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+
+    <span class="c1"># If a valid bbox is found, return it</span>
+    <span class="k">if</span> <span class="n">valid_bbox</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">valid_bbox</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

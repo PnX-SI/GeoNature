@@ -1,0 +1,530 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.checks.dataframe.utils &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/checks/dataframe/utils';</script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.checks.dataframe.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm.exc</span> <span class="kn">import</span> <span class="n">NoResultFound</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">insert</span> <span class="k">as</span> <span class="n">pg_insert</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="n">ImportUserError</span><span class="p">,</span> <span class="n">ImportUserErrorType</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.utils</span> <span class="kn">import</span> <span class="n">generated_fields</span>
+
+
+<div class="viewcode-block" id="dataframe_check">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/utils/index.html#geonature.core.imports.checks.dataframe.utils.dataframe_check">[docs]</a>
+<span class="k">def</span> <span class="nf">dataframe_check</span><span class="p">(</span><span class="n">check_function</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator for check functions.</span>
+<span class="sd">    Check functions must yield errors, and return updated_cols</span>
+<span class="sd">    (or None if no column have been modified).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">check_function</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+    <span class="n">pass_import</span> <span class="o">=</span> <span class="s2">&quot;imprt&quot;</span> <span class="ow">in</span> <span class="n">parameters</span>
+    <span class="n">pass_entity</span> <span class="o">=</span> <span class="s2">&quot;entity&quot;</span> <span class="ow">in</span> <span class="n">parameters</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">check_function</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">updated_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pass_import</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pass_entity</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="n">check_function</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+                <span class="n">updated_cols</span> <span class="o">|=</span> <span class="n">report_error</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">updated_cols</span> <span class="o">|=</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">updated_cols</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
+
+
+<div class="viewcode-block" id="error_replace">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/utils/index.html#geonature.core.imports.checks.dataframe.utils.error_replace">[docs]</a>
+<span class="k">def</span> <span class="nf">error_replace</span><span class="p">(</span><span class="n">old_code</span><span class="p">,</span> <span class="n">old_columns</span><span class="p">,</span> <span class="n">new_code</span><span class="p">,</span> <span class="n">new_column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For rows which trigger old_code error on all old_columns, these errors are replaced</span>
+<span class="sd">    by new_code error on new_column.</span>
+<span class="sd">    Usage example:</span>
+<span class="sd">        @dataframe_check</span>
+<span class="sd">        @error_replace(ImportCodeError.MISSING_VALUE, {&quot;WKT&quot;,&quot;latitude&quot;,&quot;longitude&quot;}, ImportCodeError.NO_GEOM, &quot;Champs géométriques&quot;)</span>
+<span class="sd">        def check_required_values:</span>
+<span class="sd">            …</span>
+<span class="sd">        =&gt; MISSING_VALUE on WKT, latitude and longitude are replaced by NO-GEOM on &quot;Champs géométrique&quot;</span>
+<span class="sd">    If new_code is None, error is deleted</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_error_replace</span><span class="p">(</span><span class="n">check_function</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">check_function</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">__error_replace</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">matching_errors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">errors_gen</span> <span class="o">=</span> <span class="n">check_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">error</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">errors_gen</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;error_code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">old_code</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">error</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;column&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">old_columns</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">error</span>
+                        <span class="k">continue</span>
+                    <span class="n">matching_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">matching_errors</span><span class="p">:</span>
+                    <span class="n">matching_indexes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                        <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s2">&quot;invalid_rows&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="n">matching_errors</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">commons_indexes</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">matching_indexes</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">commons_indexes</span> <span class="ow">and</span> <span class="n">new_code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># Yield replacing error</span>
+                        <span class="k">yield</span> <span class="p">{</span>
+                            <span class="s2">&quot;error_code&quot;</span><span class="p">:</span> <span class="n">new_code</span><span class="p">,</span>
+                            <span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="n">new_column</span><span class="p">,</span>
+                            <span class="s2">&quot;invalid_rows&quot;</span><span class="p">:</span> <span class="n">matching_errors</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;invalid_rows&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                                <span class="nb">list</span><span class="p">(</span><span class="n">commons_indexes</span><span class="p">)</span>
+                            <span class="p">],</span>
+                        <span class="p">}</span>
+                    <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">matching_errors</span><span class="p">:</span>
+                        <span class="n">indexes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">error</span><span class="p">[</span><span class="s2">&quot;invalid_rows&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">-</span> <span class="n">commons_indexes</span>
+                        <span class="k">if</span> <span class="n">indexes</span><span class="p">:</span>
+                            <span class="c1"># Yield old error but without rows where new error have been yield</span>
+                            <span class="k">yield</span> <span class="p">{</span>
+                                <span class="s2">&quot;error_code&quot;</span><span class="p">:</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;error_code&quot;</span><span class="p">],</span>
+                                <span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;column&quot;</span><span class="p">],</span>
+                                <span class="s2">&quot;invalid_rows&quot;</span><span class="p">:</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;invalid_rows&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">indexes</span><span class="p">)],</span>
+                            <span class="p">}</span>
+                <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">__error_replace</span>
+
+    <span class="k">return</span> <span class="n">_error_replace</span></div>
+
+
+
+<div class="viewcode-block" id="report_error">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/dataframe/utils/index.html#geonature.core.imports.checks.dataframe.utils.report_error">[docs]</a>
+<span class="k">def</span> <span class="nf">report_error</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reports an error found in the dataframe, updates the validity column and insert</span>
+<span class="sd">    the error in the `t_user_errors` table.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : Import</span>
+<span class="sd">        The import entity.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        The dataframe containing the data.</span>
+<span class="sd">    error : dict</span>
+<span class="sd">        The error to report. It should have the following keys:</span>
+<span class="sd">        - invalid_rows : DataFrame</span>
+<span class="sd">            The rows with errors.</span>
+<span class="sd">        - error_code : str</span>
+<span class="sd">            The name of the error code.</span>
+<span class="sd">        - column : str</span>
+<span class="sd">            The column with errors.</span>
+<span class="sd">        - comment : str, optional</span>
+<span class="sd">            A comment to add to the error.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    set</span>
+<span class="sd">        set containing the name of the entity validity column.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    Exception</span>
+<span class="sd">        If the error code is not found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;invalid_rows&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">error_type</span> <span class="o">=</span> <span class="n">ImportUserErrorType</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">error</span><span class="p">[</span><span class="s2">&quot;error_code&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">NoResultFound</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error code &#39;</span><span class="si">{</span><span class="n">error</span><span class="p">[</span><span class="s1">&#39;error_code&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; not found.&quot;</span><span class="p">)</span>
+    <span class="n">invalid_rows</span> <span class="o">=</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;invalid_rows&quot;</span><span class="p">]</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">invalid_rows</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># df[&#39;gn_invalid_reason&#39;][invalid_rows.index.intersection(df[&#39;gn_invalid_reason&#39;].isnull())] = \</span>
+    <span class="c1">#        f&#39;{error_type.name}&#39;  # FIXME comment</span>
+    <span class="n">ordered_invalid_rows</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">[</span><span class="s2">&quot;line_no&quot;</span><span class="p">])</span>
+    <span class="n">column</span> <span class="o">=</span> <span class="n">generated_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">error</span><span class="p">[</span><span class="s2">&quot;column&quot;</span><span class="p">],</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;column&quot;</span><span class="p">])</span>
+    <span class="n">column</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
+    <span class="c1"># If an error for same import, same column and of the same type already exists,</span>
+    <span class="c1"># we concat existing erroneous rows with current rows.</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="n">pg_insert</span><span class="p">(</span><span class="n">ImportUserError</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id_import&quot;</span><span class="p">:</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+            <span class="s2">&quot;id_error&quot;</span><span class="p">:</span> <span class="n">error_type</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
+            <span class="s2">&quot;id_entity&quot;</span><span class="p">:</span> <span class="n">entity</span><span class="o">.</span><span class="n">id_entity</span><span class="p">,</span>
+            <span class="s2">&quot;column_error&quot;</span><span class="p">:</span> <span class="n">column</span><span class="p">,</span>
+            <span class="s2">&quot;id_rows&quot;</span><span class="p">:</span> <span class="n">ordered_invalid_rows</span><span class="p">,</span>
+            <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="n">error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span><span class="o">.</span><span class="n">on_conflict_do_update</span><span class="p">(</span>
+        <span class="n">index_elements</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;id_import&quot;</span><span class="p">,</span> <span class="s2">&quot;id_entity&quot;</span><span class="p">,</span> <span class="s2">&quot;id_error&quot;</span><span class="p">,</span> <span class="s2">&quot;column_error&quot;</span><span class="p">),</span>
+        <span class="n">index_where</span><span class="o">=</span><span class="n">ImportUserError</span><span class="o">.</span><span class="n">id_entity</span><span class="o">.</span><span class="n">isnot</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+        <span class="n">set_</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;id_rows&quot;</span><span class="p">:</span> <span class="n">func</span><span class="o">.</span><span class="n">array_cat</span><span class="p">(</span><span class="n">ImportUserError</span><span class="o">.</span><span class="n">rows</span><span class="p">,</span> <span class="n">stmt</span><span class="o">.</span><span class="n">excluded</span><span class="p">[</span><span class="s2">&quot;id_rows&quot;</span><span class="p">]),</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">}</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

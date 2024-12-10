@@ -1,0 +1,1270 @@
+geonature.core.imports.checks.sql
+=================================
+
+.. py:module:: geonature.core.imports.checks.sql
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/geonature/core/imports/checks/sql/core/index
+   /autoapi/geonature/core/imports/checks/sql/extra/index
+   /autoapi/geonature/core/imports/checks/sql/geo/index
+   /autoapi/geonature/core/imports/checks/sql/nomenclature/index
+   /autoapi/geonature/core/imports/checks/sql/parent/index
+   /autoapi/geonature/core/imports/checks/sql/utils/index
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.imports.checks.sql.ImportCodeError
+   geonature.core.imports.checks.sql.BibFields
+   geonature.core.imports.checks.sql.Entity
+   geonature.core.imports.checks.sql.TImports
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.imports.checks.sql.init_rows_validity
+   geonature.core.imports.checks.sql.check_orphan_rows
+   geonature.core.imports.checks.sql.do_nomenclatures_mapping
+   geonature.core.imports.checks.sql.check_nomenclature_exist_proof
+   geonature.core.imports.checks.sql.check_nomenclature_blurring
+   geonature.core.imports.checks.sql.check_nomenclature_source_status
+   geonature.core.imports.checks.sql.check_nomenclature_technique_collect
+   geonature.core.imports.checks.sql.set_geom_point
+   geonature.core.imports.checks.sql.convert_geom_columns
+   geonature.core.imports.checks.sql.check_is_valid_geometry
+   geonature.core.imports.checks.sql.check_geometry_outside
+   geonature.core.imports.checks.sql.get_duplicates_query
+   geonature.core.imports.checks.sql.report_erroneous_rows
+   geonature.core.imports.checks.sql.check_referential
+   geonature.core.imports.checks.sql.check_cd_nom
+   geonature.core.imports.checks.sql.check_cd_hab
+   geonature.core.imports.checks.sql.generate_altitudes
+   geonature.core.imports.checks.sql.check_duplicate_uuid
+   geonature.core.imports.checks.sql.check_existing_uuid
+   geonature.core.imports.checks.sql.generate_missing_uuid_for_id_origin
+   geonature.core.imports.checks.sql.generate_missing_uuid
+   geonature.core.imports.checks.sql.check_duplicate_source_pk
+   geonature.core.imports.checks.sql.check_dates
+   geonature.core.imports.checks.sql.check_altitudes
+   geonature.core.imports.checks.sql.check_depths
+   geonature.core.imports.checks.sql.check_digital_proof_urls
+   geonature.core.imports.checks.sql.check_entity_data_consistency
+   geonature.core.imports.checks.sql.disable_duplicated_rows
+   geonature.core.imports.checks.sql.set_id_parent_from_destination
+   geonature.core.imports.checks.sql.set_parent_line_no
+   geonature.core.imports.checks.sql.check_no_parent_entity
+   geonature.core.imports.checks.sql.check_erroneous_parent_entities
+
+
+Package Contents
+----------------
+
+.. py:function:: init_rows_validity(imprt: geonature.core.imports.models.TImports, dataset_name_field: str = 'id_dataset')
+
+   Validity columns are three-states:
+     - None: the row does not contains data for the given entity
+     - False: the row contains data for the given entity, but data are erroneous
+     - True: the row contains data for the given entity, and data are valid
+
+
+.. py:function:: check_orphan_rows(imprt)
+
+.. py:function:: do_nomenclatures_mapping(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, fields: Mapping[str, geonature.core.imports.models.BibFields], fill_with_defaults: bool = False) -> None
+
+   Set nomenclatures using content mapping.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   fields : Mapping[str, BibFields]
+       Mapping of field names to BibFields objects.
+   fill_with_defaults : bool, optional
+       If True, fill empty user fields with default nomenclatures.
+
+   Notes
+   -----
+   See the following link for explanation on empty fields and default nomenclature handling:
+   https://github.com/PnX-SI/gn_module_import/issues/68#issuecomment-1384267087
+
+
+.. py:function:: check_nomenclature_exist_proof(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, nomenclature_field: geonature.core.imports.models.BibFields, digital_proof_field: Optional[geonature.core.imports.models.BibFields], non_digital_proof_field: Optional[geonature.core.imports.models.BibFields]) -> None
+
+   Check the existence of a nomenclature proof in the transient table.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   nomenclature_field : BibFields
+       The field representing the nomenclature to check.
+   digital_proof_field : Optional[BibFields]
+       The field for digital proof, if any.
+   non_digital_proof_field : Optional[BibFields]
+       The field for non-digital proof, if any.
+
+
+.. py:function:: check_nomenclature_blurring(imprt, entity, blurring_field, id_dataset_field, uuid_dataset_field)
+
+   Raise an error if blurring not set.
+   Required if the dataset is private.
+
+
+.. py:function:: check_nomenclature_source_status(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, source_status_field: geonature.core.imports.models.BibFields, ref_biblio_field: geonature.core.imports.models.BibFields) -> None
+
+   Check the nomenclature source status and raise an error if the status is "Lit" (Literature)
+   whereas the reference biblio field is empty.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   source_status_field : BibFields
+       The field representing the source status.
+   ref_biblio_field : BibFields
+       The field representing the reference bibliography.
+
+   Notes
+   -----
+   The error codes are:
+       - CONDITIONAL_MANDATORY_FIELD_ERROR: the field is mandatory and not set.
+
+
+.. py:function:: check_nomenclature_technique_collect(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, source_status_field: geonature.core.imports.models.BibFields, technical_precision_field: geonature.core.imports.models.BibFields) -> None
+
+   Check the nomenclature source status and raise an error if the status is "Autre, préciser"
+   whereas technical precision field is empty.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   source_status_field : BibFields
+       The field representing the source status.
+   technical_precision_field : BibFields
+       The field representing the technical precision.
+
+   Notes
+   -----
+   The error codes are:
+       - CONDITIONAL_MANDATORY_FIELD_ERROR: the field is mandatory and not set.
+
+
+.. py:function:: set_geom_point(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, geom_4326_field: geonature.core.imports.models.BibFields, geom_point_field: geonature.core.imports.models.BibFields) -> None
+
+   Set the_geom_point as the centroid of the geometry in the transient table of an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to update.
+   entity : Entity
+       The entity to update.
+   geom_4326_field : BibFields
+       Field containing the geometry in the transient table.
+   geom_point_field : BibFields
+       Field to store the centroid of the geometry in the transient table.
+
+   Returns
+   -------
+   None
+
+
+.. py:function:: convert_geom_columns(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, geom_4326_field: geonature.core.imports.models.BibFields, geom_local_field: geonature.core.imports.models.BibFields) -> None
+
+   Convert the geometry from the file SRID to the local SRID in the transient table of an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to update.
+   entity : Entity
+       The entity to update.
+   geom_4326_field : BibFields
+       Field representing the geometry in the transient table in SRID 4326.
+   geom_local_field : BibFields
+       Field representing the geometry in the transient table in the local SRID.
+
+
+.. py:function:: check_is_valid_geometry(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, wkt_field: geonature.core.imports.models.BibFields, geom_field: geonature.core.imports.models.BibFields) -> None
+
+   Check if the geometry is valid in the transient table of an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   wkt_field : BibFields
+       Field containing the source WKT of the geometry.
+   geom_field : BibFields
+       Field containing the geometry from the WKT in `wkt_field` to be validated.
+
+
+
+.. py:function:: check_geometry_outside(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, geom_local_field: geonature.core.imports.models.BibFields, id_area: int) -> None
+
+   For an import, check if one or more geometries in the transient table are outside a defined area.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   geom_local_field : BibFields
+       Field containing the geometry in the local SRID of the area.
+   id_area : int
+       The id of the area to check if the geometry is inside.
+
+
+
+.. py:class:: ImportCodeError
+
+   List of all the possible errors returned during the import process.
+
+   Attributes
+   ----------
+   DATASET_NOT_FOUND : str
+       The referenced dataset was not found
+   DATASET_NOT_AUTHORIZED : str
+       The dataset is not authorized to the current user
+   DATASET_NOT_ACTIVE : str
+       The dataset is inactive
+   MULTIPLE_ATTACHMENT_TYPE_CODE : str
+       Multiple attachments of the same type are not allowed
+   MULTIPLE_CODE_ATTACHMENT : str
+       Multiple attachments (commune, maille, departement) with the same code were given.
+   INVALID_DATE : str
+       The date is not valid
+   INVALID_UUID : str
+       The uuid is not valid
+   INVALID_INTEGER : str
+       The integer is not valid
+   INVALID_NUMERIC : str
+       The numeric is not valid
+   INVALID_WKT : str
+       The WKT string is not valid
+   INVALID_GEOMETRY : str
+       The geometry is not valid
+   INVALID_BOOL : str
+       The boolean is not valid
+   INVALID_ATTACHMENT_CODE : str
+       The code given does not exists in the desitination referential
+   INVALID_CHAR_LENGTH : str
+       The character length is not valid
+   DATE_MIN_TOO_HIGH : str
+       The date min is too high
+   DATE_MAX_TOO_LOW : str
+       The date max is too low
+   DATE_MAX_TOO_HIGH : str
+       The date max is too high
+   DATE_MIN_TOO_LOW : str
+       The date min is too low
+   ALTI_MIN_SUP_ALTI_MAX : str
+       The altitude min is superior to the altitude max
+   DATE_MIN_SUP_DATE_MAX : str
+       The date min is superior to the date max
+   DEPTH_MIN_SUP_ALTI_MAX : str
+       The depth min is superior to the altitude max
+   ORPHAN_ROW : str
+       The row could not be attached to an other entity # FIXME: clarify
+   DUPLICATE_ROWS : str
+       One rows appears more than once
+   DUPLICATE_UUID : str
+       A uuid value is duplicated
+   EXISTING_UUID: str
+       A uuid value already exists in the destination table
+   SKIP_EXISTING_UUID: str
+       A uuid value already exists in the destination table and should be skipped
+   MISSING_VALUE : str
+       A required value is missing (see `mandatory` column in `gn_imports.bib_fields` table)
+   MISSING_GEOM : str
+       The geometry is missing
+   GEOMETRY_OUTSIDE : str
+       The geometry is outside the polygon in the GeoNature configuration (`INSTANCE_BOUNDING_BOX`)
+   NO_GEOM : str
+       No geometry given (wherever WKT or latitude/longitude)
+   GEOMETRY_OUT_OF_BOX : str
+       The geometry is outside the perimeter of the instance geography # FIXME: clarify (confusion with GEOMETRY_OUTSIDE)
+   ERRONEOUS_PARENT_ENTITY : str
+       The parent entity is not valid
+   NO_PARENT_ENTITY : str
+       The parent entity is not found
+   DUPLICATE_ENTITY_SOURCE_PK : str
+       The entity source primary key is duplicated
+   COUNT_MIN_SUP_COUNT_MAX : str
+       The count min is superior to the count max
+   INVALID_NOMENCLATURE : str
+       The nomenclature is invalid
+   INVALID_EXISTING_PROOF_VALUE : str
+       The existing proof value is invalid
+   CONDITIONAL_MANDATORY_FIELD_ERROR : str
+       Some conditional mandatory fields are missing #FIXME: clarify
+   INVALID_NOMENCLATURE_WARNING : str
+       The nomenclature is invalid
+   UNKNOWN_ERROR : str
+       An unknown error occurred
+   INVALID_STATUT_SOURCE_VALUE : str
+       The statut source value is invalid
+   CONDITIONAL_INVALID_DATA : str
+       The conditional data is invalid
+   INVALID_URL_PROOF : str
+       The url proof is invalid
+   ROW_HAVE_TOO_MUCH_COLUMN : str
+       A row have too much column
+   ROW_HAVE_LESS_COLUMN : str
+       A row have less column
+   EMPTY_ROW : str
+       A row is empty
+   HEADER_SAME_COLUMN_NAME : str
+       The header have same column name
+   EMPTY_FILE : str
+       The file is empty
+   NO_FILE_SENDED : str
+       No file was sent
+   ERROR_WHILE_LOADING_FILE : str
+       An error occurred while loading the file
+   FILE_FORMAT_ERROR : str
+       The file format is not valid
+   FILE_EXTENSION_ERROR : str
+       The file extension is not valid
+   FILE_OVERSIZE : str
+       The file is too big
+   FILE_NAME_TOO_LONG : str
+       The file name is too long
+   FILE_WITH_NO_DATA : str
+       The file have no data
+   INCOHERENT_DATA : str
+       An entity data is different in multiple rows
+   CD_HAB_NOT_FOUND : str
+       The habitat code is not found
+   CD_NOM_NOT_FOUND : str
+       The cd_nom is not found in the instance TaxRef
+
+
+
+
+   .. py:attribute:: DATASET_NOT_FOUND
+      :value: 'DATASET_NOT_FOUND'
+
+
+
+   .. py:attribute:: DATASET_NOT_AUTHORIZED
+      :value: 'DATASET_NOT_AUTHORIZED'
+
+
+
+   .. py:attribute:: DATASET_NOT_ACTIVE
+      :value: 'DATASET_NOT_ACTIVE'
+
+
+
+   .. py:attribute:: MULTIPLE_ATTACHMENT_TYPE_CODE
+      :value: 'MULTIPLE_ATTACHMENT_TYPE_CODE'
+
+
+
+   .. py:attribute:: MULTIPLE_CODE_ATTACHMENT
+      :value: 'MULTIPLE_CODE_ATTACHMENT'
+
+
+
+   .. py:attribute:: INVALID_DATE
+      :value: 'INVALID_DATE'
+
+
+
+   .. py:attribute:: INVALID_UUID
+      :value: 'INVALID_UUID'
+
+
+
+   .. py:attribute:: INVALID_INTEGER
+      :value: 'INVALID_INTEGER'
+
+
+
+   .. py:attribute:: INVALID_NUMERIC
+      :value: 'INVALID_NUMERIC'
+
+
+
+   .. py:attribute:: INVALID_WKT
+      :value: 'INVALID_WKT'
+
+
+
+   .. py:attribute:: INVALID_GEOMETRY
+      :value: 'INVALID_GEOMETRY'
+
+
+
+   .. py:attribute:: INVALID_BOOL
+      :value: 'INVALID_BOOL'
+
+
+
+   .. py:attribute:: INVALID_ATTACHMENT_CODE
+      :value: 'INVALID_ATTACHMENT_CODE'
+
+
+
+   .. py:attribute:: INVALID_CHAR_LENGTH
+      :value: 'INVALID_CHAR_LENGTH'
+
+
+
+   .. py:attribute:: DATE_MIN_TOO_HIGH
+      :value: 'DATE_MIN_TOO_HIGH'
+
+
+
+   .. py:attribute:: DATE_MAX_TOO_LOW
+      :value: 'DATE_MAX_TOO_LOW'
+
+
+
+   .. py:attribute:: DATE_MAX_TOO_HIGH
+      :value: 'DATE_MAX_TOO_HIGH'
+
+
+
+   .. py:attribute:: DATE_MIN_TOO_LOW
+      :value: 'DATE_MIN_TOO_LOW'
+
+
+
+   .. py:attribute:: DATE_MIN_SUP_DATE_MAX
+      :value: 'DATE_MIN_SUP_DATE_MAX'
+
+
+
+   .. py:attribute:: DEPTH_MIN_SUP_ALTI_MAX
+      :value: 'DEPTH_MIN_SUP_ALTI_MAX'
+
+
+
+   .. py:attribute:: ALTI_MIN_SUP_ALTI_MAX
+      :value: 'ALTI_MIN_SUP_ALTI_MAX'
+
+
+
+   .. py:attribute:: ORPHAN_ROW
+      :value: 'ORPHAN_ROW'
+
+
+
+   .. py:attribute:: DUPLICATE_ROWS
+      :value: 'DUPLICATE_ROWS'
+
+
+
+   .. py:attribute:: DUPLICATE_UUID
+      :value: 'DUPLICATE_UUID'
+
+
+
+   .. py:attribute:: EXISTING_UUID
+      :value: 'EXISTING_UUID'
+
+
+
+   .. py:attribute:: SKIP_EXISTING_UUID
+      :value: 'SKIP_EXISTING_UUID'
+
+
+
+   .. py:attribute:: MISSING_VALUE
+      :value: 'MISSING_VALUE'
+
+
+
+   .. py:attribute:: MISSING_GEOM
+      :value: 'MISSING_GEOM'
+
+
+
+   .. py:attribute:: GEOMETRY_OUTSIDE
+      :value: 'GEOMETRY_OUTSIDE'
+
+
+
+   .. py:attribute:: NO_GEOM
+      :value: 'NO-GEOM'
+
+
+
+   .. py:attribute:: GEOMETRY_OUT_OF_BOX
+      :value: 'GEOMETRY_OUT_OF_BOX'
+
+
+
+   .. py:attribute:: ERRONEOUS_PARENT_ENTITY
+      :value: 'ERRONEOUS_PARENT_ENTITY'
+
+
+
+   .. py:attribute:: NO_PARENT_ENTITY
+      :value: 'NO_PARENT_ENTITY'
+
+
+
+   .. py:attribute:: DUPLICATE_ENTITY_SOURCE_PK
+      :value: 'DUPLICATE_ENTITY_SOURCE_PK'
+
+
+
+   .. py:attribute:: COUNT_MIN_SUP_COUNT_MAX
+      :value: 'COUNT_MIN_SUP_COUNT_MAX'
+
+
+
+   .. py:attribute:: INVALID_NOMENCLATURE
+      :value: 'INVALID_NOMENCLATURE'
+
+
+
+   .. py:attribute:: INVALID_EXISTING_PROOF_VALUE
+      :value: 'INVALID_EXISTING_PROOF_VALUE'
+
+
+
+   .. py:attribute:: INVALID_NOMENCLATURE_WARNING
+      :value: 'INVALID_NOMENCLATURE_WARNING'
+
+
+
+   .. py:attribute:: CONDITIONAL_MANDATORY_FIELD_ERROR
+      :value: 'CONDITIONAL_MANDATORY_FIELD_ERROR'
+
+
+
+   .. py:attribute:: UNKNOWN_ERROR
+      :value: 'UNKNOWN_ERROR'
+
+
+
+   .. py:attribute:: INVALID_STATUT_SOURCE_VALUE
+      :value: 'INVALID_STATUT_SOURCE_VALUE'
+
+
+
+   .. py:attribute:: CONDITIONAL_INVALID_DATA
+      :value: 'CONDITIONAL_INVALID_DATA'
+
+
+
+   .. py:attribute:: INVALID_URL_PROOF
+      :value: 'INVALID_URL_PROOF'
+
+
+
+   .. py:attribute:: ROW_HAVE_TOO_MUCH_COLUMN
+      :value: 'ROW_HAVE_TOO_MUCH_COLUMN'
+
+
+
+   .. py:attribute:: ROW_HAVE_LESS_COLUMN
+      :value: 'ROW_HAVE_LESS_COLUMN'
+
+
+
+   .. py:attribute:: EMPTY_ROW
+      :value: 'EMPTY_ROW'
+
+
+
+   .. py:attribute:: HEADER_SAME_COLUMN_NAME
+      :value: 'HEADER_SAME_COLUMN_NAME'
+
+
+
+   .. py:attribute:: EMPTY_FILE
+      :value: 'EMPTY_FILE'
+
+
+
+   .. py:attribute:: NO_FILE_SENDED
+      :value: 'NO_FILE_SENDED'
+
+
+
+   .. py:attribute:: ERROR_WHILE_LOADING_FILE
+      :value: 'ERROR_WHILE_LOADING_FILE'
+
+
+
+   .. py:attribute:: FILE_FORMAT_ERROR
+      :value: 'FILE_FORMAT_ERROR'
+
+
+
+   .. py:attribute:: FILE_EXTENSION_ERROR
+      :value: 'FILE_EXTENSION_ERROR'
+
+
+
+   .. py:attribute:: FILE_OVERSIZE
+      :value: 'FILE_OVERSIZE'
+
+
+
+   .. py:attribute:: FILE_NAME_TOO_LONG
+      :value: 'FILE_NAME_TOO_LONG'
+
+
+
+   .. py:attribute:: FILE_WITH_NO_DATA
+      :value: 'FILE_WITH_NO_DATA'
+
+
+
+   .. py:attribute:: INCOHERENT_DATA
+      :value: 'INCOHERENT_DATA'
+
+
+
+   .. py:attribute:: CD_HAB_NOT_FOUND
+      :value: 'CD_HAB_NOT_FOUND'
+
+
+
+   .. py:attribute:: CD_NOM_NOT_FOUND
+      :value: 'CD_NOM_NOT_FOUND'
+
+
+
+.. py:class:: BibFields
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_fields'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_field
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: destination
+
+
+   .. py:attribute:: name_field
+
+
+   .. py:attribute:: source_field
+
+
+   .. py:attribute:: dest_field
+
+
+   .. py:attribute:: fr_label
+
+
+   .. py:attribute:: eng_label
+
+
+   .. py:attribute:: type_field
+
+
+   .. py:attribute:: mandatory
+
+
+   .. py:attribute:: autogenerated
+
+
+   .. py:attribute:: mnemonique
+
+
+   .. py:attribute:: nomenclature_type
+
+
+   .. py:attribute:: display
+
+
+   .. py:attribute:: multi
+
+
+   .. py:attribute:: optional_conditions
+
+
+   .. py:attribute:: mandatory_conditions
+
+
+   .. py:attribute:: entities
+
+
+   .. py:property:: source_column
+
+
+   .. py:property:: dest_column
+
+
+   .. py:method:: __str__()
+
+
+.. py:class:: Entity
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_entities'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_entity
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: destination
+
+
+   .. py:attribute:: code
+
+
+   .. py:attribute:: label
+
+
+   .. py:attribute:: order
+
+
+   .. py:attribute:: validity_column
+
+
+   .. py:attribute:: destination_table_schema
+
+
+   .. py:attribute:: destination_table_name
+
+
+   .. py:attribute:: id_unique_column
+
+
+   .. py:attribute:: id_parent
+
+
+   .. py:attribute:: parent
+
+
+   .. py:attribute:: childs
+
+
+   .. py:attribute:: fields
+
+
+   .. py:attribute:: unique_column
+
+
+   .. py:method:: get_destination_table()
+
+
+.. py:class:: TImports
+
+   Bases: :py:obj:`InstancePermissionMixin`, :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_imports'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: AVAILABLE_ENCODINGS
+
+
+   .. py:attribute:: AVAILABLE_FORMATS
+      :value: ['csv', 'geojson']
+
+
+
+   .. py:attribute:: AVAILABLE_SEPARATORS
+      :value: [',', ';']
+
+
+
+   .. py:attribute:: id_import
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: destination
+
+
+   .. py:attribute:: format_source_file
+
+
+   .. py:attribute:: srid
+
+
+   .. py:attribute:: separator
+
+
+   .. py:attribute:: detected_separator
+
+
+   .. py:attribute:: encoding
+
+
+   .. py:attribute:: detected_encoding
+
+
+   .. py:attribute:: full_file_name
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: date_create_import
+
+
+   .. py:attribute:: date_update_import
+
+
+   .. py:attribute:: date_end_import
+
+
+   .. py:attribute:: source_count
+
+
+   .. py:attribute:: erroneous_rows
+
+
+   .. py:attribute:: statistics
+
+
+   .. py:attribute:: date_min_data
+
+
+   .. py:attribute:: date_max_data
+
+
+   .. py:attribute:: uuid_autogenerated
+
+
+   .. py:attribute:: altitude_autogenerated
+
+
+   .. py:attribute:: authors
+
+
+   .. py:attribute:: loaded
+
+
+   .. py:attribute:: processed
+
+
+   .. py:attribute:: dataset
+
+
+   .. py:attribute:: source_file
+
+
+   .. py:attribute:: columns
+
+
+   .. py:attribute:: fieldmapping
+
+
+   .. py:attribute:: contentmapping
+
+
+   .. py:attribute:: task_id
+
+
+   .. py:attribute:: errors
+
+
+   .. py:property:: cruved
+
+
+   .. py:attribute:: errors_count
+
+
+   .. py:property:: task_progress
+
+
+   .. py:method:: has_instance_permission(scope, user=None, action_code='C')
+
+
+   .. py:method:: filter_by_scope(scope, user=None, **kwargs)
+      :staticmethod:
+
+
+
+   .. py:method:: as_dict(import_as_dict)
+
+
+.. py:function:: get_duplicates_query(imprt, dest_field, whereclause=sa.true())
+
+.. py:function:: report_erroneous_rows(imprt, entity, error_type, error_column, whereclause, level_validity_mapping={'ERROR': False})
+
+   This function report errors where whereclause in true.
+   But the function also set validity column to False for errors with ERROR level.
+   Warning: level of error "ERROR", the entity must be defined
+
+   level_validity_mapping may be used to override default behavior:
+     - level does not exist in dict: row validity is untouched
+     - level exists in dict: row validity is set accordingly:
+       - False: row is marked as erroneous
+       - None: row is marked as should not be imported
+
+
+.. py:function:: check_referential(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, field: geonature.core.imports.models.BibFields, reference_field: sqlalchemy.Column, error_type: str, reference_table: Optional[sqlalchemy.Table] = None) -> None
+
+   Check the referential integrity of a column in the transient table.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   field : BibFields
+       The field to check.
+   reference_field : BibFields
+       The reference field to check.
+   error_type : str
+       The type of error encountered.
+   reference_table : Optional[sa.Table], optional
+       The reference table to check. If not provided, it will be inferred from the reference_field.
+
+
+.. py:function:: check_cd_nom(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, field: geonature.core.imports.models.BibFields, list_id: Optional[int] = None) -> None
+
+   Check the existence of a cd_nom in the Taxref referential.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   field : BibFields
+       The field to check.
+   list_id : Optional[int], optional
+       The list to filter on, by default None.
+
+
+
+.. py:function:: check_cd_hab(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, field: geonature.core.imports.models.BibFields) -> None
+
+   Check the existence of a cd_hab in the Habref referential.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   field : BibFields
+       The field to check.
+
+
+
+.. py:function:: generate_altitudes(imprt: geonature.core.imports.models.TImports, geom_local_field: geonature.core.imports.models.BibFields, alt_min_field: geonature.core.imports.models.BibFields, alt_max_field: geonature.core.imports.models.BibFields) -> None
+
+   Generate the altitudes based on geomatries, and given altitues in an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to generate altitudes for.
+   geom_local_field : BibFields
+       The field representing the geometry in the destination import's transient table.
+   alt_min_field : BibFields
+       The field representing the minimum altitude in the destination import's transient table.
+   alt_max_field : BibFields
+       The field representing the maximum altitude in the destination import's transient table.
+
+
+
+.. py:function:: check_duplicate_uuid(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, uuid_field: geonature.core.imports.models.BibFields)
+
+   Check if there is already a record with the same uuid in the transient table. Include an error in the report for each entry with a uuid dupplicated.
+
+   Parameters
+   ----------
+   imprt : Import
+       The import to check.
+   entity : Entity
+       The entity to check.
+   uuid_field : BibFields
+       The field to check.
+
+
+.. py:function:: check_existing_uuid(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, uuid_field: geonature.core.imports.models.BibFields, whereclause: Any = sa.true(), skip=False)
+
+   Check if there is already a record with the same uuid in the destination table.
+   Include an error in the report for each existing uuid in the destination table.
+   Parameters
+   ----------
+   imprt : Import
+       The import to check.
+   entity : Entity
+       The entity to check.
+   uuid_field : BibFields
+       The field to check.
+   whereclause : BooleanClause
+       The WHERE clause to apply to the check.
+   skip: Boolean
+       Raise SKIP_EXISTING_UUID instead of EXISTING_UUID and set row validity to None (do not import)
+
+
+.. py:function:: generate_missing_uuid_for_id_origin(imprt: geonature.core.imports.models.TImports, uuid_field: geonature.core.imports.models.BibFields, id_origin_field: geonature.core.imports.models.BibFields)
+
+   Update records in the transient table where the uuid is None
+   with a new UUID.
+   Generate UUID in transient table when there are no UUID yet, but
+   there are a id_origin.
+   Ensure rows with same id_origin get the same UUID.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   uuid_field : BibFields
+       The field to check.
+   id_origin_field : BibFields
+       Field used to generate the UUID
+
+
+.. py:function:: generate_missing_uuid(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, uuid_field: geonature.core.imports.models.BibFields, whereclause: Any = None)
+
+   Update records in the transient table where the UUID is None
+   with a new UUID.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   uuid_field : BibFields
+       The field to check.
+
+
+.. py:function:: check_duplicate_source_pk(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, field: geonature.core.imports.models.BibFields) -> None
+
+   Check for duplicate source primary keys in the transient table of an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   field : BibFields
+       The field to check.
+
+
+.. py:function:: check_dates(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, date_min_field: geonature.core.imports.models.BibFields = None, date_max_field: geonature.core.imports.models.BibFields = None) -> None
+
+   Check the validity of dates in the transient table of an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : TEntity
+       The entity to check.
+   date_min_field : BibFields, optional
+       The field representing the minimum date.
+   date_max_field : BibFields, optional
+       The field representing the maximum date.
+
+
+
+.. py:function:: check_altitudes(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, alti_min_field: geonature.core.imports.models.BibFields = None, alti_max_field: geonature.core.imports.models.BibFields = None) -> None
+
+   Check the validity of altitudes in the transient table of an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : TEntity
+       The entity to check.
+   alti_min_field : BibFields, optional
+       The field representing the minimum altitude.
+   alti_max_field : BibFields, optional
+       The field representing the maximum altitude.
+
+
+
+.. py:function:: check_depths(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, depth_min_field: geonature.core.imports.models.BibFields = None, depth_max_field: geonature.core.imports.models.BibFields = None) -> None
+
+   Check the validity of depths in the transient table of an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : TEntity
+       The entity to check.
+   depth_min_field : BibFields, optional
+       The field representing the minimum depth.
+   depth_max_field : BibFields, optional
+       The field representing the maximum depth.
+
+
+
+.. py:function:: check_digital_proof_urls(imprt, entity, digital_proof_field)
+
+   Checks for valid URLs in a given column of a transient table.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : TEntity
+       The entity to check.
+   digital_proof_field : TField
+       The field containing the URLs to check.
+
+
+.. py:function:: check_entity_data_consistency(imprt, entity, fields, grouping_field)
+
+   Checks for rows with the same uuid, but different contents,
+   in the same entity. Used mainely for parent entities.
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   entity : Entity
+       The entity to check.
+   fields : BibFields
+       The fields to check.
+   grouping_field : BibFields
+       The field to group identical rows.
+
+
+.. py:function:: disable_duplicated_rows(imprt, entity, fields, grouping_field)
+
+   When several rows have the same value in grouping field (typically UUID) field,
+   first one is untouched but following rows have validity set to None (do not import).
+
+
+.. py:function:: set_id_parent_from_destination(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_field: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
+
+   Complete the id_parent column in the transient table of an import when the parent already exists in the destination table.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to update.
+   parent_entity : Entity
+       The entity of the parent.
+   child_entity : Entity
+       The entity of the child.
+   id_field : BibFields
+       The field containing the id of the parent.
+   fields : List[BibFields]
+       The fields to use for matching the child with its parent in the destination table.
+
+
+.. py:function:: set_parent_line_no(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_parent: geonature.core.imports.models.BibFields, parent_line_no: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
+
+   Set parent_line_no on child entities when:
+   - no parent entity on same line
+   - parent entity is valid
+   - looking for parent entity through each given field in fields
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to update.
+   parent_entity : Entity
+       The entity of the parent.
+   child_entity : Entity
+       The entity of the child.
+   id_parent : BibFields
+       The field containing the id of the parent.
+   parent_line_no : BibFields
+       The field containing the line number of the parent.
+   fields : List[BibFields]
+       The fields to use for matching the child with its parent in the destination table.
+
+
+.. py:function:: check_no_parent_entity(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_parent: geonature.core.imports.models.BibFields, parent_line_no: geonature.core.imports.models.BibFields) -> None
+
+   Station may be referenced:
+   - on the same line (station_validity is not None)
+   - by id_parent (parent already exists in destination)
+   - by parent_line_no (new parent from another line of the imported file - see set_parent_line_no)
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   parent_entity : Entity
+       The entity of the parent.
+   child_entity : Entity
+       The entity of the child.
+   id_parent : BibFields
+       The field containing the id of the parent.
+   parent_line_no : BibFields
+       The field containing the line number of the parent.
+
+
+.. py:function:: check_erroneous_parent_entities(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, parent_line_no: geonature.core.imports.models.BibFields) -> None
+
+   Check for erroneous (not valid) parent entities in the transient table of an import.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import to check.
+   parent_entity : Entity
+       The entity of the parent.
+   child_entity : Entity
+       The entity of the child.
+   parent_line_no : BibFields
+       The field containing the line number of the parent.
+
+   Notes
+   -----
+   # Note: if child entity reference parent entity by id_parent, this means the parent
+   # entity is already in destination table so obviously valid.
+
+   The error codes are:
+       - ERRONEOUS_PARENT_ENTITY: the parent on the same line is not valid.
+
+

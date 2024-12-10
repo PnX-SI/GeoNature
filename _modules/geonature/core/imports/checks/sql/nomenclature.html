@@ -1,0 +1,666 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.checks.sql.nomenclature &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/checks/sql/nomenclature';</script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.checks.sql.nomenclature</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.checks.errors</span> <span class="kn">import</span> <span class="n">ImportCodeError</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql.expression</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">update</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">column</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="n">TDatasets</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">TImports</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.checks.sql.utils</span> <span class="kn">import</span> <span class="n">report_erroneous_rows</span>
+
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">TNomenclatures</span><span class="p">,</span> <span class="n">BibNomenclaturesTypes</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;do_nomenclatures_mapping&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;check_nomenclature_exist_proof&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;check_nomenclature_blurring&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;check_nomenclature_source_status&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;check_nomenclature_technique_collect&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="do_nomenclatures_mapping">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/nomenclature/index.html#geonature.core.imports.checks.sql.do_nomenclatures_mapping">[docs]</a>
+<span class="k">def</span> <span class="nf">do_nomenclatures_mapping</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">fields</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BibFields</span><span class="p">],</span>
+    <span class="n">fill_with_defaults</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set nomenclatures using content mapping.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    fields : Mapping[str, BibFields]</span>
+<span class="sd">        Mapping of field names to BibFields objects.</span>
+<span class="sd">    fill_with_defaults : bool, optional</span>
+<span class="sd">        If True, fill empty user fields with default nomenclatures.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    See the following link for explanation on empty fields and default nomenclature handling:</span>
+<span class="sd">    https://github.com/PnX-SI/gn_module_import/issues/68#issuecomment-1384267087</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="c1"># Set nomenclatures using content mapping</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">field</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fields</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="n">source_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">source_field</span><span class="p">]</span>
+        <span class="n">dest_col</span> <span class="o">=</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+        <span class="c1"># This CTE return the list of source value / cd_nomenclature for a given nomenclature type</span>
+        <span class="n">cte</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">nullif</span><span class="p">(</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;key&quot;</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">),</span>  <span class="c1"># replace &quot;&quot; by NULL</span>
+                <span class="n">column</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;cd_nomenclature&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">JSON_EACH_TEXT</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">contentmapping</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">mnemonique</span><span class="p">]))</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">cte</span><span class="p">(</span><span class="s2">&quot;cte&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># This statement join the cte results with nomenclatures</span>
+        <span class="c1"># in order to set the id_nomenclature</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">update</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+                <span class="n">source_col</span><span class="o">.</span><span class="n">isnot_distinct_from</span><span class="p">(</span><span class="n">cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>  <span class="c1"># to ensure NULL == NULL is True</span>
+                <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">cd_nomenclature</span> <span class="o">==</span> <span class="n">cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">cd_nomenclature</span><span class="p">,</span>
+                <span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="n">field</span><span class="o">.</span><span class="n">mnemonique</span><span class="p">,</span>
+                <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">id_type</span> <span class="o">==</span> <span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">id_type</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">values</span><span class="p">({</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">:</span> <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">})</span>
+        <span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        <span class="n">erroneous_conds</span> <span class="o">=</span> <span class="p">[</span><span class="n">dest_col</span> <span class="o">==</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">fill_with_defaults</span><span class="p">:</span>
+            <span class="c1"># Set default nomenclature for empty user fields</span>
+            <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">update</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+                    <span class="n">source_col</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">dest_col</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>  <span class="c1"># empty source_col may be have been completed by mapping</span>
+                <span class="o">.</span><span class="n">values</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span>
+                            <span class="n">sa</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">destination_table_schema</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">get_default_nomenclature_value</span><span class="p">(</span>
+                            <span class="n">field</span><span class="o">.</span><span class="n">mnemonique</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+            <span class="c1"># Do not report invalid nomenclature when source_col is NULL: if dest_col is NULL,</span>
+            <span class="c1"># it is because there are no default nomenclature. This is the same as server</span>
+            <span class="c1"># default value getting default nomenclature which may be NULL (unexisting).</span>
+            <span class="n">erroneous_conds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_col</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">report_erroneous_rows</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_NOMENCLATURE</span><span class="p">,</span>
+            <span class="n">error_column</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+            <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="o">*</span><span class="n">erroneous_conds</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_nomenclature_exist_proof">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/nomenclature/index.html#geonature.core.imports.checks.sql.check_nomenclature_exist_proof">[docs]</a>
+<span class="k">def</span> <span class="nf">check_nomenclature_exist_proof</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">nomenclature_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">digital_proof_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BibFields</span><span class="p">],</span>
+    <span class="n">non_digital_proof_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BibFields</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the existence of a nomenclature proof in the transient table.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    nomenclature_field : BibFields</span>
+<span class="sd">        The field representing the nomenclature to check.</span>
+<span class="sd">    digital_proof_field : Optional[BibFields]</span>
+<span class="sd">        The field for digital proof, if any.</span>
+<span class="sd">    non_digital_proof_field : Optional[BibFields]</span>
+<span class="sd">        The field for non-digital proof, if any.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">digital_proof_field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">non_digital_proof_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">oui_nomenclature</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="s2">&quot;Oui&quot;</span><span class="p">,</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">has</span><span class="p">(</span>
+                <span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="n">nomenclature_field</span><span class="o">.</span><span class="n">mnemonique</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="n">oui_filter</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">nomenclature_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="o">==</span> <span class="n">oui_nomenclature</span><span class="o">.</span><span class="n">id_nomenclature</span>
+    <span class="p">)</span>
+    <span class="n">proof_set_filters</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">digital_proof_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">proof_set_filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">digital_proof_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">non_digital_proof_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">proof_set_filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">non_digital_proof_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">proof_set_filter</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span><span class="o">*</span><span class="n">proof_set_filters</span><span class="p">)</span> <span class="k">if</span> <span class="n">proof_set_filters</span> <span class="k">else</span> <span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">()</span>
+
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">INVALID_EXISTING_PROOF_VALUE</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">nomenclature_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="n">oui_filter</span><span class="p">,</span> <span class="o">~</span><span class="n">proof_set_filter</span><span class="p">),</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="o">~</span><span class="n">oui_filter</span><span class="p">,</span> <span class="n">proof_set_filter</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_nomenclature_blurring">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/nomenclature/index.html#geonature.core.imports.checks.sql.check_nomenclature_blurring">[docs]</a>
+<span class="k">def</span> <span class="nf">check_nomenclature_blurring</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">blurring_field</span><span class="p">,</span> <span class="n">id_dataset_field</span><span class="p">,</span> <span class="n">uuid_dataset_field</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise an error if blurring not set.</span>
+<span class="sd">    Required if the dataset is private.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">id_nomenclature_private</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="s2">&quot;DS_PUBLIQUE&quot;</span><span class="p">),</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="s2">&quot;Privée&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">CONDITIONAL_MANDATORY_FIELD_ERROR</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">blurring_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">id_dataset_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">]</span> <span class="o">==</span> <span class="n">TDatasets</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">,</span>
+                <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">uuid_dataset_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">]</span> <span class="o">==</span> <span class="n">TDatasets</span><span class="o">.</span><span class="n">unique_dataset_id</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">TDatasets</span><span class="o">.</span><span class="n">id_nomenclature_data_origin</span> <span class="o">==</span> <span class="n">id_nomenclature_private</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">blurring_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_nomenclature_source_status">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/nomenclature/index.html#geonature.core.imports.checks.sql.check_nomenclature_source_status">[docs]</a>
+<span class="k">def</span> <span class="nf">check_nomenclature_source_status</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">source_status_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">ref_biblio_field</span><span class="p">:</span> <span class="n">BibFields</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the nomenclature source status and raise an error if the status is &quot;Lit&quot; (Literature)</span>
+<span class="sd">    whereas the reference biblio field is empty.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    source_status_field : BibFields</span>
+<span class="sd">        The field representing the source status.</span>
+<span class="sd">    ref_biblio_field : BibFields</span>
+<span class="sd">        The field representing the reference bibliography.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The error codes are:</span>
+<span class="sd">        - CONDITIONAL_MANDATORY_FIELD_ERROR: the field is mandatory and not set.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+
+    <span class="n">litterature_nomenclature</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">has</span><span class="p">(</span>
+                <span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="s2">&quot;STATUT_SOURCE&quot;</span>
+            <span class="p">),</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">cd_nomenclature</span> <span class="o">==</span> <span class="s2">&quot;Li&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">CONDITIONAL_MANDATORY_FIELD_ERROR</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">source_status_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">source_status_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span>
+            <span class="o">==</span> <span class="n">litterature_nomenclature</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">ref_biblio_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_nomenclature_technique_collect">
+<a class="viewcode-back" href="../../../../../../autoapi/geonature/core/imports/checks/sql/nomenclature/index.html#geonature.core.imports.checks.sql.check_nomenclature_technique_collect">[docs]</a>
+<span class="k">def</span> <span class="nf">check_nomenclature_technique_collect</span><span class="p">(</span>
+    <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Entity</span><span class="p">,</span>
+    <span class="n">source_status_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+    <span class="n">technical_precision_field</span><span class="p">:</span> <span class="n">BibFields</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the nomenclature source status and raise an error if the status is &quot;Autre, préciser&quot;</span>
+<span class="sd">    whereas technical precision field is empty.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import to check.</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to check.</span>
+<span class="sd">    source_status_field : BibFields</span>
+<span class="sd">        The field representing the source status.</span>
+<span class="sd">    technical_precision_field : BibFields</span>
+<span class="sd">        The field representing the technical precision.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The error codes are:</span>
+<span class="sd">        - CONDITIONAL_MANDATORY_FIELD_ERROR: the field is mandatory and not set.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">has</span><span class="p">(</span>
+                <span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="s2">&quot;TECHNIQUE_COLLECT_HAB&quot;</span>
+            <span class="p">),</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">cd_nomenclature</span> <span class="o">==</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="n">report_erroneous_rows</span><span class="p">(</span>
+        <span class="n">imprt</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">,</span>
+        <span class="n">error_type</span><span class="o">=</span><span class="n">ImportCodeError</span><span class="o">.</span><span class="n">CONDITIONAL_MANDATORY_FIELD_ERROR</span><span class="p">,</span>
+        <span class="n">error_column</span><span class="o">=</span><span class="n">source_status_field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+        <span class="n">whereclause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">source_status_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">technical_precision_field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

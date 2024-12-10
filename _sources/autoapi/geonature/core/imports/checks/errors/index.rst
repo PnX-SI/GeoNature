@@ -1,0 +1,433 @@
+geonature.core.imports.checks.errors
+====================================
+
+.. py:module:: geonature.core.imports.checks.errors
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.imports.checks.errors.ImportCodeError
+
+
+Module Contents
+---------------
+
+.. py:class:: ImportCodeError
+
+   List of all the possible errors returned during the import process.
+
+   Attributes
+   ----------
+   DATASET_NOT_FOUND : str
+       The referenced dataset was not found
+   DATASET_NOT_AUTHORIZED : str
+       The dataset is not authorized to the current user
+   DATASET_NOT_ACTIVE : str
+       The dataset is inactive
+   MULTIPLE_ATTACHMENT_TYPE_CODE : str
+       Multiple attachments of the same type are not allowed
+   MULTIPLE_CODE_ATTACHMENT : str
+       Multiple attachments (commune, maille, departement) with the same code were given.
+   INVALID_DATE : str
+       The date is not valid
+   INVALID_UUID : str
+       The uuid is not valid
+   INVALID_INTEGER : str
+       The integer is not valid
+   INVALID_NUMERIC : str
+       The numeric is not valid
+   INVALID_WKT : str
+       The WKT string is not valid
+   INVALID_GEOMETRY : str
+       The geometry is not valid
+   INVALID_BOOL : str
+       The boolean is not valid
+   INVALID_ATTACHMENT_CODE : str
+       The code given does not exists in the desitination referential
+   INVALID_CHAR_LENGTH : str
+       The character length is not valid
+   DATE_MIN_TOO_HIGH : str
+       The date min is too high
+   DATE_MAX_TOO_LOW : str
+       The date max is too low
+   DATE_MAX_TOO_HIGH : str
+       The date max is too high
+   DATE_MIN_TOO_LOW : str
+       The date min is too low
+   ALTI_MIN_SUP_ALTI_MAX : str
+       The altitude min is superior to the altitude max
+   DATE_MIN_SUP_DATE_MAX : str
+       The date min is superior to the date max
+   DEPTH_MIN_SUP_ALTI_MAX : str
+       The depth min is superior to the altitude max
+   ORPHAN_ROW : str
+       The row could not be attached to an other entity # FIXME: clarify
+   DUPLICATE_ROWS : str
+       One rows appears more than once
+   DUPLICATE_UUID : str
+       A uuid value is duplicated
+   EXISTING_UUID: str
+       A uuid value already exists in the destination table
+   SKIP_EXISTING_UUID: str
+       A uuid value already exists in the destination table and should be skipped
+   MISSING_VALUE : str
+       A required value is missing (see `mandatory` column in `gn_imports.bib_fields` table)
+   MISSING_GEOM : str
+       The geometry is missing
+   GEOMETRY_OUTSIDE : str
+       The geometry is outside the polygon in the GeoNature configuration (`INSTANCE_BOUNDING_BOX`)
+   NO_GEOM : str
+       No geometry given (wherever WKT or latitude/longitude)
+   GEOMETRY_OUT_OF_BOX : str
+       The geometry is outside the perimeter of the instance geography # FIXME: clarify (confusion with GEOMETRY_OUTSIDE)
+   ERRONEOUS_PARENT_ENTITY : str
+       The parent entity is not valid
+   NO_PARENT_ENTITY : str
+       The parent entity is not found
+   DUPLICATE_ENTITY_SOURCE_PK : str
+       The entity source primary key is duplicated
+   COUNT_MIN_SUP_COUNT_MAX : str
+       The count min is superior to the count max
+   INVALID_NOMENCLATURE : str
+       The nomenclature is invalid
+   INVALID_EXISTING_PROOF_VALUE : str
+       The existing proof value is invalid
+   CONDITIONAL_MANDATORY_FIELD_ERROR : str
+       Some conditional mandatory fields are missing #FIXME: clarify
+   INVALID_NOMENCLATURE_WARNING : str
+       The nomenclature is invalid
+   UNKNOWN_ERROR : str
+       An unknown error occurred
+   INVALID_STATUT_SOURCE_VALUE : str
+       The statut source value is invalid
+   CONDITIONAL_INVALID_DATA : str
+       The conditional data is invalid
+   INVALID_URL_PROOF : str
+       The url proof is invalid
+   ROW_HAVE_TOO_MUCH_COLUMN : str
+       A row have too much column
+   ROW_HAVE_LESS_COLUMN : str
+       A row have less column
+   EMPTY_ROW : str
+       A row is empty
+   HEADER_SAME_COLUMN_NAME : str
+       The header have same column name
+   EMPTY_FILE : str
+       The file is empty
+   NO_FILE_SENDED : str
+       No file was sent
+   ERROR_WHILE_LOADING_FILE : str
+       An error occurred while loading the file
+   FILE_FORMAT_ERROR : str
+       The file format is not valid
+   FILE_EXTENSION_ERROR : str
+       The file extension is not valid
+   FILE_OVERSIZE : str
+       The file is too big
+   FILE_NAME_TOO_LONG : str
+       The file name is too long
+   FILE_WITH_NO_DATA : str
+       The file have no data
+   INCOHERENT_DATA : str
+       An entity data is different in multiple rows
+   CD_HAB_NOT_FOUND : str
+       The habitat code is not found
+   CD_NOM_NOT_FOUND : str
+       The cd_nom is not found in the instance TaxRef
+
+
+
+
+   .. py:attribute:: DATASET_NOT_FOUND
+      :value: 'DATASET_NOT_FOUND'
+
+
+
+   .. py:attribute:: DATASET_NOT_AUTHORIZED
+      :value: 'DATASET_NOT_AUTHORIZED'
+
+
+
+   .. py:attribute:: DATASET_NOT_ACTIVE
+      :value: 'DATASET_NOT_ACTIVE'
+
+
+
+   .. py:attribute:: MULTIPLE_ATTACHMENT_TYPE_CODE
+      :value: 'MULTIPLE_ATTACHMENT_TYPE_CODE'
+
+
+
+   .. py:attribute:: MULTIPLE_CODE_ATTACHMENT
+      :value: 'MULTIPLE_CODE_ATTACHMENT'
+
+
+
+   .. py:attribute:: INVALID_DATE
+      :value: 'INVALID_DATE'
+
+
+
+   .. py:attribute:: INVALID_UUID
+      :value: 'INVALID_UUID'
+
+
+
+   .. py:attribute:: INVALID_INTEGER
+      :value: 'INVALID_INTEGER'
+
+
+
+   .. py:attribute:: INVALID_NUMERIC
+      :value: 'INVALID_NUMERIC'
+
+
+
+   .. py:attribute:: INVALID_WKT
+      :value: 'INVALID_WKT'
+
+
+
+   .. py:attribute:: INVALID_GEOMETRY
+      :value: 'INVALID_GEOMETRY'
+
+
+
+   .. py:attribute:: INVALID_BOOL
+      :value: 'INVALID_BOOL'
+
+
+
+   .. py:attribute:: INVALID_ATTACHMENT_CODE
+      :value: 'INVALID_ATTACHMENT_CODE'
+
+
+
+   .. py:attribute:: INVALID_CHAR_LENGTH
+      :value: 'INVALID_CHAR_LENGTH'
+
+
+
+   .. py:attribute:: DATE_MIN_TOO_HIGH
+      :value: 'DATE_MIN_TOO_HIGH'
+
+
+
+   .. py:attribute:: DATE_MAX_TOO_LOW
+      :value: 'DATE_MAX_TOO_LOW'
+
+
+
+   .. py:attribute:: DATE_MAX_TOO_HIGH
+      :value: 'DATE_MAX_TOO_HIGH'
+
+
+
+   .. py:attribute:: DATE_MIN_TOO_LOW
+      :value: 'DATE_MIN_TOO_LOW'
+
+
+
+   .. py:attribute:: DATE_MIN_SUP_DATE_MAX
+      :value: 'DATE_MIN_SUP_DATE_MAX'
+
+
+
+   .. py:attribute:: DEPTH_MIN_SUP_ALTI_MAX
+      :value: 'DEPTH_MIN_SUP_ALTI_MAX'
+
+
+
+   .. py:attribute:: ALTI_MIN_SUP_ALTI_MAX
+      :value: 'ALTI_MIN_SUP_ALTI_MAX'
+
+
+
+   .. py:attribute:: ORPHAN_ROW
+      :value: 'ORPHAN_ROW'
+
+
+
+   .. py:attribute:: DUPLICATE_ROWS
+      :value: 'DUPLICATE_ROWS'
+
+
+
+   .. py:attribute:: DUPLICATE_UUID
+      :value: 'DUPLICATE_UUID'
+
+
+
+   .. py:attribute:: EXISTING_UUID
+      :value: 'EXISTING_UUID'
+
+
+
+   .. py:attribute:: SKIP_EXISTING_UUID
+      :value: 'SKIP_EXISTING_UUID'
+
+
+
+   .. py:attribute:: MISSING_VALUE
+      :value: 'MISSING_VALUE'
+
+
+
+   .. py:attribute:: MISSING_GEOM
+      :value: 'MISSING_GEOM'
+
+
+
+   .. py:attribute:: GEOMETRY_OUTSIDE
+      :value: 'GEOMETRY_OUTSIDE'
+
+
+
+   .. py:attribute:: NO_GEOM
+      :value: 'NO-GEOM'
+
+
+
+   .. py:attribute:: GEOMETRY_OUT_OF_BOX
+      :value: 'GEOMETRY_OUT_OF_BOX'
+
+
+
+   .. py:attribute:: ERRONEOUS_PARENT_ENTITY
+      :value: 'ERRONEOUS_PARENT_ENTITY'
+
+
+
+   .. py:attribute:: NO_PARENT_ENTITY
+      :value: 'NO_PARENT_ENTITY'
+
+
+
+   .. py:attribute:: DUPLICATE_ENTITY_SOURCE_PK
+      :value: 'DUPLICATE_ENTITY_SOURCE_PK'
+
+
+
+   .. py:attribute:: COUNT_MIN_SUP_COUNT_MAX
+      :value: 'COUNT_MIN_SUP_COUNT_MAX'
+
+
+
+   .. py:attribute:: INVALID_NOMENCLATURE
+      :value: 'INVALID_NOMENCLATURE'
+
+
+
+   .. py:attribute:: INVALID_EXISTING_PROOF_VALUE
+      :value: 'INVALID_EXISTING_PROOF_VALUE'
+
+
+
+   .. py:attribute:: INVALID_NOMENCLATURE_WARNING
+      :value: 'INVALID_NOMENCLATURE_WARNING'
+
+
+
+   .. py:attribute:: CONDITIONAL_MANDATORY_FIELD_ERROR
+      :value: 'CONDITIONAL_MANDATORY_FIELD_ERROR'
+
+
+
+   .. py:attribute:: UNKNOWN_ERROR
+      :value: 'UNKNOWN_ERROR'
+
+
+
+   .. py:attribute:: INVALID_STATUT_SOURCE_VALUE
+      :value: 'INVALID_STATUT_SOURCE_VALUE'
+
+
+
+   .. py:attribute:: CONDITIONAL_INVALID_DATA
+      :value: 'CONDITIONAL_INVALID_DATA'
+
+
+
+   .. py:attribute:: INVALID_URL_PROOF
+      :value: 'INVALID_URL_PROOF'
+
+
+
+   .. py:attribute:: ROW_HAVE_TOO_MUCH_COLUMN
+      :value: 'ROW_HAVE_TOO_MUCH_COLUMN'
+
+
+
+   .. py:attribute:: ROW_HAVE_LESS_COLUMN
+      :value: 'ROW_HAVE_LESS_COLUMN'
+
+
+
+   .. py:attribute:: EMPTY_ROW
+      :value: 'EMPTY_ROW'
+
+
+
+   .. py:attribute:: HEADER_SAME_COLUMN_NAME
+      :value: 'HEADER_SAME_COLUMN_NAME'
+
+
+
+   .. py:attribute:: EMPTY_FILE
+      :value: 'EMPTY_FILE'
+
+
+
+   .. py:attribute:: NO_FILE_SENDED
+      :value: 'NO_FILE_SENDED'
+
+
+
+   .. py:attribute:: ERROR_WHILE_LOADING_FILE
+      :value: 'ERROR_WHILE_LOADING_FILE'
+
+
+
+   .. py:attribute:: FILE_FORMAT_ERROR
+      :value: 'FILE_FORMAT_ERROR'
+
+
+
+   .. py:attribute:: FILE_EXTENSION_ERROR
+      :value: 'FILE_EXTENSION_ERROR'
+
+
+
+   .. py:attribute:: FILE_OVERSIZE
+      :value: 'FILE_OVERSIZE'
+
+
+
+   .. py:attribute:: FILE_NAME_TOO_LONG
+      :value: 'FILE_NAME_TOO_LONG'
+
+
+
+   .. py:attribute:: FILE_WITH_NO_DATA
+      :value: 'FILE_WITH_NO_DATA'
+
+
+
+   .. py:attribute:: INCOHERENT_DATA
+      :value: 'INCOHERENT_DATA'
+
+
+
+   .. py:attribute:: CD_HAB_NOT_FOUND
+      :value: 'CD_HAB_NOT_FOUND'
+
+
+
+   .. py:attribute:: CD_NOM_NOT_FOUND
+      :value: 'CD_NOM_NOT_FOUND'
+
+
+

@@ -1,0 +1,1714 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.models &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/models';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">g</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span><span class="p">,</span> <span class="n">deferred</span><span class="p">,</span> <span class="n">joinedload</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.types</span> <span class="kn">import</span> <span class="n">ARRAY</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">JSON</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.mutable</span> <span class="kn">import</span> <span class="n">MutableDict</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">column_property</span>
+<span class="kn">from</span> <span class="nn">jsonschema.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">JSONValidationError</span>
+<span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">validate_json</span>
+<span class="kn">from</span> <span class="nn">celery.result</span> <span class="kn">import</span> <span class="n">AsyncResult</span>
+<span class="kn">import</span> <span class="nn">flask_sqlalchemy</span>
+
+<span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">flask_sqlalchemy</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">flask_sqlalchemy.query</span> <span class="kn">import</span> <span class="n">Query</span>
+<span class="k">else</span><span class="p">:</span>  <span class="c1"># retro-compatibility Flask-SQLAlchemy 2</span>
+    <span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">BaseQuery</span> <span class="k">as</span> <span class="n">Query</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.models</span> <span class="kn">import</span> <span class="n">qfilter</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.celery</span> <span class="kn">import</span> <span class="n">celery_app</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.tools</span> <span class="kn">import</span> <span class="n">get_scopes_by_action</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TModules</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="n">TDatasets</span>
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">BibNomenclaturesTypes</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+
+<div class="viewcode-block" id="ImportModule">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportModule">[docs]</a>
+<span class="k">class</span> <span class="nc">ImportModule</span><span class="p">(</span><span class="n">TModules</span><span class="p">):</span>
+<div class="viewcode-block" id="ImportModule.__mapper_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportModule.__mapper_args__">[docs]</a>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;polymorphic_identity&quot;</span><span class="p">:</span> <span class="s2">&quot;import&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ImportModule.generate_module_url_for_source">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportModule.generate_module_url_for_source">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_module_url_for_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+        <span class="n">id_import</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^Import\(id=(?P&lt;id&gt;\d+)\)$&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">name_source</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+        <span class="n">destination</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Destination</span><span class="o">.</span><span class="n">code</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Destination</span><span class="o">.</span><span class="n">id_destination</span> <span class="o">==</span> <span class="n">TImports</span><span class="o">.</span><span class="n">id_destination</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">id_import</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;/import/</span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">id_import</span><span class="si">}</span><span class="s2">/report&quot;</span></div>
+</div>
+
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Erreurs</span>
+<span class="sd">=======</span>
+
+<span class="sd">ImportErrorType = un type d’erreur, avec sa description</span>
+<span class="sd">ImportErrorType.category = la catégorie auquelle est rattaché ce type d’erreur</span>
+<span class="sd">  ex: le type d’erreur « date invalide » est rattaché à la catégorie « erreur de format »</span>
+<span class="sd">  note: c’est un champs texte libre, il n’y a pas de modèle ImportErrorCategory</span>
+<span class="sd">ImportError = occurance d’un genre d’erreur, associé à une ou plusieurs ligne d’un import précis</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="ImportUserErrorType">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType">[docs]</a>
+<span class="k">class</span> <span class="nc">ImportUserErrorType</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="ImportUserErrorType.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_errors_types&quot;</span></div>
+
+<div class="viewcode-block" id="ImportUserErrorType.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ImportUserErrorType.pk">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType.pk">[docs]</a>
+    <span class="n">pk</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_error&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserErrorType.category">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType.category">[docs]</a>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;error_type&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserErrorType.name">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType.name">[docs]</a>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserErrorType.description">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType.description">[docs]</a>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserErrorType.level">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType.level">[docs]</a>
+    <span class="n">level</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;error_level&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImportUserErrorType.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserErrorType.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;ImportErrorType </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="ImportUserError">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError">[docs]</a>
+<span class="k">class</span> <span class="nc">ImportUserError</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="ImportUserError.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_user_errors&quot;</span></div>
+
+<div class="viewcode-block" id="ImportUserError.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ImportUserError.pk">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.pk">[docs]</a>
+    <span class="n">pk</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_user_error&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserError.id_import">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.id_import">[docs]</a>
+    <span class="n">id_import</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.t_imports.id_import&quot;</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserError.imprt">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.imprt">[docs]</a>
+    <span class="n">imprt</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TImports&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;errors&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserError.id_type">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_error&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">ImportUserErrorType</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserError.type">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.type">[docs]</a>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;ImportUserErrorType&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserError.column">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.column">[docs]</a>
+    <span class="n">column</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;column_error&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserError.rows">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.rows">[docs]</a>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_rows&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ARRAY</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ImportUserError.comment">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.comment">[docs]</a>
+    <span class="n">comment</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">UnicodeText</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserError.id_entity">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.id_entity">[docs]</a>
+    <span class="n">id_entity</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.bib_entities.id_entity&quot;</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportUserError.entity">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.entity">[docs]</a>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Entity&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImportUserError.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ImportUserError.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;ImportError import=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id_import</span><span class="si">}</span><span class="s2">,type=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">,rows=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="Destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/routes/index.html#geonature.core.imports.checks.sql.Destination">[docs]</a>
+<span class="k">class</span> <span class="nc">Destination</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Destination.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_destinations&quot;</span></div>
+
+<div class="viewcode-block" id="Destination.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Destination.id_destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.id_destination">[docs]</a>
+    <span class="n">id_destination</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">autoincrement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Destination.id_module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.id_module">[docs]</a>
+    <span class="n">id_module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">TModules</span><span class="o">.</span><span class="n">id_module</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Destination.code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.code">[docs]</a>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Destination.label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Destination.table_name">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.table_name">[docs]</a>
+    <span class="n">table_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Destination.module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.module">[docs]</a>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">TModules</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;destination&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Destination.entities">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.entities">[docs]</a>
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Entity&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;destination&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Destination.get_transient_table">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/routes/index.html#geonature.core.imports.checks.sql.Destination.get_transient_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_transient_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Table</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">table_name</span><span class="p">,</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="n">autoload</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">autoload_with</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">connection</span><span class="p">(),</span>
+            <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Destination.validity_columns">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.validity_columns">[docs]</a>
+    <span class="k">def</span> <span class="nf">validity_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">]</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Destination.statistics_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.statistics_labels">[docs]</a>
+    <span class="k">def</span> <span class="nf">statistics_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">statistics_labels</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Destination.actions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Destination.actions">[docs]</a>
+    <span class="k">def</span> <span class="nf">actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">__import_actions__</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            This error is likely to occurs when you have some imports to a destination</span>
+<span class="sd">            for which the corresponding module is missing in the venv.</span>
+<span class="sd">            As a result, sqlalchemy fail to find the proper polymorphic identity,</span>
+<span class="sd">            and fallback on TModules which does not have __import_actions__ property.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is your module of type &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&#39; installed?&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Destination.allowed_destinations">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/routes/index.html#geonature.core.imports.checks.sql.Destination.allowed_destinations">[docs]</a>
+    <span class="k">def</span> <span class="nf">allowed_destinations</span><span class="p">(</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">action_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Destination&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of allowed destinations for a given user and an action.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        user : User, optional</span>
+<span class="sd">            The user to filter destinations for. If not provided, the current_user is used.</span>
+<span class="sd">        action : str</span>
+<span class="sd">            The action to filter destinations for. Possible values are &#39;C&#39;, &#39;R&#39;, &#39;U&#39;, &#39;V&#39;, &#39;E&#39;, &#39;D&#39;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        allowed_destination : List of Destination</span>
+<span class="sd">            List of allowed destinations for the given user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If no user is provided, use the current user</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+
+        <span class="c1"># Retrieve all destinations</span>
+        <span class="n">all_destination</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Destination</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">dest</span> <span class="k">for</span> <span class="n">dest</span> <span class="ow">in</span> <span class="n">all_destination</span> <span class="k">if</span> <span class="n">dest</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">action_code</span><span class="p">)]</span></div>
+
+
+    <span class="nd">@qfilter</span>
+<div class="viewcode-block" id="Destination.filter_by_role">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/routes/index.html#geonature.core.imports.checks.sql.Destination.filter_by_role">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_by_role</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">action_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filter Destination by role.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        user : User, optional</span>
+<span class="sd">            The user to filter destinations for. If not provided, the current_user is used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sqlalchemy.sql.elements.BinaryExpression</span>
+<span class="sd">            A filter criterion for the ``id_destination`` column of the ``Destination`` table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">allowed_destination</span> <span class="o">=</span> <span class="n">Destination</span><span class="o">.</span><span class="n">allowed_destinations</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="n">action_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Destination</span><span class="o">.</span><span class="n">id_destination</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">id_destination</span><span class="p">,</span> <span class="n">allowed_destination</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Destination.has_instance_permission">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/routes/index.html#geonature.core.imports.checks.sql.Destination.has_instance_permission">[docs]</a>
+    <span class="k">def</span> <span class="nf">has_instance_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">action_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if a user has the permissions to do an action on this destination.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        user : User, optional</span>
+<span class="sd">            The user to check the permission for. If not provided, the current_user is used.</span>
+<span class="sd">        action_code : str</span>
+<span class="sd">            The action to check the permission for. Possible values are &#39;C&#39;, &#39;R&#39;, &#39;U&#39;, &#39;V&#39;, &#39;E&#39;, &#39;D&#39;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the user has the right to do the action on this destination, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+
+        <span class="n">max_scope</span> <span class="o">=</span> <span class="n">get_scopes_by_action</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">)[</span>
+            <span class="n">action_code</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">max_scope</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibThemes">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes">[docs]</a>
+<span class="k">class</span> <span class="nc">BibThemes</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibThemes.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_themes&quot;</span></div>
+
+<div class="viewcode-block" id="BibThemes.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="BibThemes.id_theme">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes.id_theme">[docs]</a>
+    <span class="n">id_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.name_theme">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes.name_theme">[docs]</a>
+    <span class="n">name_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.fr_label_theme">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes.fr_label_theme">[docs]</a>
+    <span class="n">fr_label_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.eng_label_theme">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes.eng_label_theme">[docs]</a>
+    <span class="n">eng_label_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.desc_theme">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes.desc_theme">[docs]</a>
+    <span class="n">desc_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.order_theme">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibThemes.order_theme">[docs]</a>
+    <span class="n">order_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="EntityField">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField">[docs]</a>
+<span class="k">class</span> <span class="nc">EntityField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="EntityField.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_entity_field&quot;</span></div>
+
+<div class="viewcode-block" id="EntityField.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="EntityField.id_entity">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.id_entity">[docs]</a>
+    <span class="n">id_entity</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.bib_entities.id_entity&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntityField.entity">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.entity">[docs]</a>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Entity&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;fields&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntityField.id_field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.id_field">[docs]</a>
+    <span class="n">id_field</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.bib_fields.id_field&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntityField.field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.field">[docs]</a>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibFields&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;entities&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EntityField.desc_field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.desc_field">[docs]</a>
+    <span class="n">desc_field</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntityField.id_theme">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.id_theme">[docs]</a>
+    <span class="n">id_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">BibThemes</span><span class="o">.</span><span class="n">id_theme</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntityField.theme">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.theme">[docs]</a>
+    <span class="n">theme</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">BibThemes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntityField.order_field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.order_field">[docs]</a>
+    <span class="n">order_field</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntityField.comment">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.EntityField.comment">[docs]</a>
+    <span class="n">comment</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="Entity">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity">[docs]</a>
+<span class="k">class</span> <span class="nc">Entity</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Entity.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_entities&quot;</span></div>
+
+<div class="viewcode-block" id="Entity.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Entity.id_entity">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.id_entity">[docs]</a>
+    <span class="n">id_entity</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">autoincrement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Entity.id_destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.id_destination">[docs]</a>
+    <span class="n">id_destination</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Destination</span><span class="o">.</span><span class="n">id_destination</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Entity.destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.destination">[docs]</a>
+    <span class="n">destination</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Destination</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;entities&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Entity.code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.code">[docs]</a>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Entity.label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Entity.order">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.order">[docs]</a>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Entity.validity_column">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.validity_column">[docs]</a>
+    <span class="n">validity_column</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Entity.destination_table_schema">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.destination_table_schema">[docs]</a>
+    <span class="n">destination_table_schema</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">63</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Entity.destination_table_name">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.destination_table_name">[docs]</a>
+    <span class="n">destination_table_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">63</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Entity.id_unique_column">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.id_unique_column">[docs]</a>
+    <span class="n">id_unique_column</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.bib_fields.id_field&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Entity.id_parent">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.id_parent">[docs]</a>
+    <span class="n">id_parent</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.bib_entities.id_entity&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Entity.parent">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.parent">[docs]</a>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Entity&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;childs&quot;</span><span class="p">,</span> <span class="n">remote_side</span><span class="o">=</span><span class="p">[</span><span class="n">id_entity</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Entity.childs">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.childs">[docs]</a>
+    <span class="n">childs</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Entity&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;parent&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Entity.fields">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.fields">[docs]</a>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;EntityField&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;entity&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Entity.unique_column">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.unique_column">[docs]</a>
+    <span class="n">unique_column</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibFields&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Entity.get_destination_table">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.Entity.get_destination_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_destination_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Table</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">destination_table_name</span><span class="p">,</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="n">autoload</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">autoload_with</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">connection</span><span class="p">(),</span>
+            <span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">destination_table_schema</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="InstancePermissionMixin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.InstancePermissionMixin">[docs]</a>
+<span class="k">class</span> <span class="nc">InstancePermissionMixin</span><span class="p">:</span>
+<div class="viewcode-block" id="InstancePermissionMixin.get_instance_permissions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.InstancePermissionMixin.get_instance_permissions">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_instance_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scopes</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scopes</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">scopes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span> <span class="k">for</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">scopes</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_role_import">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.cor_role_import">[docs]</a>
+<span class="n">cor_role_import</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_role_import&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_import&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.t_imports.id_import&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@serializable</span><span class="p">(</span>
+    <span class="n">fields</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;authors.nom_complet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset.dataset_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset.active&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;destination.code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;destination.label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;destination.statistics_labels&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;destination.module&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="TImports">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports">[docs]</a>
+<span class="k">class</span> <span class="nc">TImports</span><span class="p">(</span><span class="n">InstancePermissionMixin</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TImports.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_imports&quot;</span></div>
+
+<div class="viewcode-block" id="TImports.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+    <span class="c1"># https://docs.python.org/3/library/codecs.html</span>
+    <span class="c1"># https://chardet.readthedocs.io/en/latest/supported-encodings.html</span>
+    <span class="c1"># TODO: move in configuration file</span>
+<div class="viewcode-block" id="TImports.AVAILABLE_ENCODINGS">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.AVAILABLE_ENCODINGS">[docs]</a>
+    <span class="n">AVAILABLE_ENCODINGS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;iso-8859-1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;iso-8859-15&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="TImports.AVAILABLE_FORMATS">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.AVAILABLE_FORMATS">[docs]</a>
+    <span class="n">AVAILABLE_FORMATS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="s2">&quot;geojson&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TImports.AVAILABLE_SEPARATORS">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.AVAILABLE_SEPARATORS">[docs]</a>
+    <span class="n">AVAILABLE_SEPARATORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;;&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="TImports.id_import">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.id_import">[docs]</a>
+    <span class="n">id_import</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">autoincrement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.id_destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.id_destination">[docs]</a>
+    <span class="n">id_destination</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Destination</span><span class="o">.</span><span class="n">id_destination</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TImports.destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.destination">[docs]</a>
+    <span class="n">destination</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Destination</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.format_source_file">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.format_source_file">[docs]</a>
+    <span class="n">format_source_file</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.srid">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.srid">[docs]</a>
+    <span class="n">srid</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.separator">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.separator">[docs]</a>
+    <span class="n">separator</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.detected_separator">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.detected_separator">[docs]</a>
+    <span class="n">detected_separator</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.encoding">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.encoding">[docs]</a>
+    <span class="n">encoding</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.detected_encoding">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.detected_encoding">[docs]</a>
+    <span class="n">detected_encoding</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># import_table = db.Column(db.Unicode, nullable=True)</span>
+<div class="viewcode-block" id="TImports.full_file_name">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.full_file_name">[docs]</a>
+    <span class="n">full_file_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.id_dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.id_dataset">[docs]</a>
+    <span class="n">id_dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_meta.t_datasets.id_dataset&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.date_create_import">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.date_create_import">[docs]</a>
+    <span class="n">date_create_import</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.date_update_import">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.date_update_import">[docs]</a>
+    <span class="n">date_update_import</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.date_end_import">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.date_end_import">[docs]</a>
+    <span class="n">date_end_import</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.source_count">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.source_count">[docs]</a>
+    <span class="n">source_count</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.erroneous_rows">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.erroneous_rows">[docs]</a>
+    <span class="n">erroneous_rows</span> <span class="o">=</span> <span class="n">deferred</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">ARRAY</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TImports.statistics">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.statistics">[docs]</a>
+    <span class="n">statistics</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">MutableDict</span><span class="o">.</span><span class="n">as_mutable</span><span class="p">(</span><span class="n">JSON</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39;::jsonb&quot;</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.date_min_data">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.date_min_data">[docs]</a>
+    <span class="n">date_min_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.date_max_data">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.date_max_data">[docs]</a>
+    <span class="n">date_max_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.uuid_autogenerated">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.uuid_autogenerated">[docs]</a>
+    <span class="n">uuid_autogenerated</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.altitude_autogenerated">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.altitude_autogenerated">[docs]</a>
+    <span class="n">altitude_autogenerated</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.authors">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.authors">[docs]</a>
+    <span class="n">authors</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span>
+        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">,</span>
+        <span class="n">secondary</span><span class="o">=</span><span class="n">cor_role_import</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.loaded">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.loaded">[docs]</a>
+    <span class="n">loaded</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.processed">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.processed">[docs]</a>
+    <span class="n">processed</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.dataset">[docs]</a>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TImports.source_file">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.source_file">[docs]</a>
+    <span class="n">source_file</span> <span class="o">=</span> <span class="n">deferred</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">LargeBinary</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TImports.columns">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.columns">[docs]</a>
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">ARRAY</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">))</span></div>
+
+    <span class="c1"># keys are target names, values are source names</span>
+<div class="viewcode-block" id="TImports.fieldmapping">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.fieldmapping">[docs]</a>
+    <span class="n">fieldmapping</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">MutableDict</span><span class="o">.</span><span class="n">as_mutable</span><span class="p">(</span><span class="n">JSON</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TImports.contentmapping">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.contentmapping">[docs]</a>
+    <span class="n">contentmapping</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">MutableDict</span><span class="o">.</span><span class="n">as_mutable</span><span class="p">(</span><span class="n">JSON</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TImports.task_id">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.task_id">[docs]</a>
+    <span class="n">task_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">155</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TImports.errors">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.errors">[docs]</a>
+    <span class="n">errors</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;ImportUserError&quot;</span><span class="p">,</span>
+        <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;imprt&quot;</span><span class="p">,</span>
+        <span class="n">order_by</span><span class="o">=</span><span class="s2">&quot;ImportUserError.id_type&quot;</span><span class="p">,</span>  <span class="c1"># TODO order by type.category</span>
+        <span class="n">cascade</span><span class="o">=</span><span class="s2">&quot;all, delete-orphan&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="TImports.cruved">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.cruved">[docs]</a>
+    <span class="k">def</span> <span class="nf">cruved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">scopes_by_action</span> <span class="o">=</span> <span class="n">get_scopes_by_action</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">action</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">action</span><span class="p">,</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">scopes_by_action</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="TImports.errors_count">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.errors_count">[docs]</a>
+    <span class="n">errors_count</span> <span class="o">=</span> <span class="n">column_property</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">array_length</span><span class="p">(</span><span class="n">erroneous_rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="TImports.task_progress">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.task_progress">[docs]</a>
+    <span class="k">def</span> <span class="nf">task_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">AsyncResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_id</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">celery_app</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;PENDING&quot;</span><span class="p">,</span> <span class="s2">&quot;STARTED&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="s2">&quot;PROGRESS&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;progress&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="s2">&quot;SUCCESS&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="TImports.has_instance_permission">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.has_instance_permission">[docs]</a>
+    <span class="k">def</span> <span class="nf">has_instance_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">action_code</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">action_code</span><span class="p">)</span> <span class="ow">and</span> <span class="n">action_code</span> <span class="o">!=</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pragma: no cover (should not happen as already checked by the decorator)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># self</span>
+            <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">id_role</span> <span class="ow">in</span> <span class="p">[</span><span class="n">author</span><span class="o">.</span><span class="n">id_role</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># organism</span>
+            <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">id_role</span> <span class="ow">in</span> <span class="p">[</span><span class="n">author</span><span class="o">.</span><span class="n">id_role</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">]</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">id_organisme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">id_organisme</span> <span class="ow">in</span> <span class="p">[</span><span class="n">author</span><span class="o">.</span><span class="n">id_organisme</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># all</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TImports.filter_by_scope">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.filter_by_scope">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_by_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+        <span class="k">if</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id_role</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">id_organisme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">filters</span> <span class="o">+=</span> <span class="p">[</span><span class="n">User</span><span class="o">.</span><span class="n">id_organisme</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id_organisme</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">TImports</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sa</span><span class="o">.</span><span class="n">true</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected scope </span><span class="si">{</span><span class="n">scope</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TImports.as_dict">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.as_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">import_as_dict</span><span class="p">):</span>
+        <span class="n">import_as_dict</span><span class="p">[</span><span class="s2">&quot;authors_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">author</span><span class="o">.</span><span class="n">nom_complet</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">detected_encoding</span><span class="p">:</span>
+            <span class="n">import_as_dict</span><span class="p">[</span><span class="s2">&quot;available_encodings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="n">TImports</span><span class="o">.</span><span class="n">AVAILABLE_ENCODINGS</span>
+                <span class="o">|</span> <span class="p">{</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">detected_encoding</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">import_as_dict</span><span class="p">[</span><span class="s2">&quot;available_encodings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">TImports</span><span class="o">.</span><span class="n">AVAILABLE_ENCODINGS</span><span class="p">)</span>
+        <span class="n">import_as_dict</span><span class="p">[</span><span class="s2">&quot;available_formats&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TImports</span><span class="o">.</span><span class="n">AVAILABLE_FORMATS</span>
+        <span class="n">import_as_dict</span><span class="p">[</span><span class="s2">&quot;available_separators&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TImports</span><span class="o">.</span><span class="n">AVAILABLE_SEPARATORS</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_file_name</span> <span class="ow">and</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_file_name</span><span class="p">:</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_file_name</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">extension</span> <span class="ow">in</span> <span class="n">TImports</span><span class="o">.</span><span class="n">AVAILABLE_FORMATS</span><span class="p">:</span>
+                <span class="n">import_as_dict</span><span class="p">[</span><span class="s2">&quot;detected_format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extension</span>
+        <span class="k">return</span> <span class="n">import_as_dict</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibFields">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields">[docs]</a>
+<span class="k">class</span> <span class="nc">BibFields</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibFields.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_fields&quot;</span></div>
+
+<div class="viewcode-block" id="BibFields.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="BibFields.id_field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.id_field">[docs]</a>
+    <span class="n">id_field</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.id_destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.id_destination">[docs]</a>
+    <span class="n">id_destination</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Destination</span><span class="o">.</span><span class="n">id_destination</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BibFields.destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.destination">[docs]</a>
+    <span class="n">destination</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Destination</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.name_field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.name_field">[docs]</a>
+    <span class="n">name_field</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.source_field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.source_field">[docs]</a>
+    <span class="n">source_field</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.dest_field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.dest_field">[docs]</a>
+    <span class="n">dest_field</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.fr_label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.fr_label">[docs]</a>
+    <span class="n">fr_label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.eng_label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.eng_label">[docs]</a>
+    <span class="n">eng_label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.type_field">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.type_field">[docs]</a>
+    <span class="n">type_field</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.mandatory">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.mandatory">[docs]</a>
+    <span class="n">mandatory</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.autogenerated">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.autogenerated">[docs]</a>
+    <span class="n">autogenerated</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.mnemonique">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.mnemonique">[docs]</a>
+    <span class="n">mnemonique</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">mnemonique</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BibFields.nomenclature_type">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.nomenclature_type">[docs]</a>
+    <span class="n">nomenclature_type</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibNomenclaturesTypes&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.display">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.display">[docs]</a>
+    <span class="n">display</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.multi">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.multi">[docs]</a>
+    <span class="n">multi</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.optional_conditions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.optional_conditions">[docs]</a>
+    <span class="n">optional_conditions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">ARRAY</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFields.mandatory_conditions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.mandatory_conditions">[docs]</a>
+    <span class="n">mandatory_conditions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">ARRAY</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibFields.entities">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.entities">[docs]</a>
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;EntityField&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;field&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BibFields.source_column">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.source_column">[docs]</a>
+    <span class="k">def</span> <span class="nf">source_column</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_field</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_field</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_field</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BibFields.dest_column">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.dest_column">[docs]</a>
+    <span class="k">def</span> <span class="nf">dest_column</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_field</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_field</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_field</span></div>
+
+
+<div class="viewcode-block" id="BibFields.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.BibFields.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fr_label</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_role_mapping">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.cor_role_mapping">[docs]</a>
+<span class="n">cor_role_mapping</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_role_mapping&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_mapping&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.t_mappings.id&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_imports&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MappingTemplate">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">MappingTemplate</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="MappingTemplate.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_mappings&quot;</span></div>
+
+<div class="viewcode-block" id="MappingTemplate.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="MappingTemplate.id">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.id">[docs]</a>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingTemplate.id_destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.id_destination">[docs]</a>
+    <span class="n">id_destination</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Destination</span><span class="o">.</span><span class="n">id_destination</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MappingTemplate.destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.destination">[docs]</a>
+    <span class="n">destination</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Destination</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingTemplate.label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingTemplate.type">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.type">[docs]</a>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingTemplate.active">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.active">[docs]</a>
+    <span class="n">active</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingTemplate.public">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.public">[docs]</a>
+    <span class="n">public</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="s2">&quot;false&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="MappingTemplate.cruved">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.cruved">[docs]</a>
+    <span class="k">def</span> <span class="nf">cruved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">scopes_by_action</span> <span class="o">=</span> <span class="n">get_scopes_by_action</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;MAPPING&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">action</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">action</span><span class="p">,</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">scopes_by_action</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="MappingTemplate.__mapper_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.__mapper_args__">[docs]</a>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;polymorphic_on&quot;</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="MappingTemplate.owners">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.owners">[docs]</a>
+    <span class="n">owners</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span>
+        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">,</span>
+        <span class="n">secondary</span><span class="o">=</span><span class="n">cor_role_mapping</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MappingTemplate.has_instance_permission">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.has_instance_permission">[docs]</a>
+    <span class="k">def</span> <span class="nf">has_instance_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+        <span class="k">if</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">owners</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">scope</span> <span class="o">==</span> <span class="mi">2</span>
+                <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">id_organisme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">id_organisme</span> <span class="ow">in</span> <span class="p">[</span><span class="n">owner</span><span class="o">.</span><span class="n">id_organisme</span> <span class="k">for</span> <span class="n">owner</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">owners</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MappingTemplate.filter_by_scope">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.MappingTemplate.filter_by_scope">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_by_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+        <span class="k">if</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">filters</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">MappingTemplate</span><span class="o">.</span><span class="n">public</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="n">MappingTemplate</span><span class="o">.</span><span class="n">owners</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">id_organisme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MappingTemplate</span><span class="o">.</span><span class="n">owners</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">id_organisme</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">id_organisme</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sa</span><span class="o">.</span><span class="n">true</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected scope </span><span class="si">{</span><span class="n">scope</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="optional_conditions_to_jsonschema">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.optional_conditions_to_jsonschema">[docs]</a>
+<span class="k">def</span> <span class="nf">optional_conditions_to_jsonschema</span><span class="p">(</span><span class="n">name_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">optional_conditions</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert optional conditions into a JSON schema.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name_field : str</span>
+<span class="sd">        The name of the field.</span>
+<span class="sd">    optional_conditions : Iterable[str]</span>
+<span class="sd">        The optional conditions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        The JSON schema.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The JSON schema is created to ensure that if any of the optional conditions is not provided,</span>
+<span class="sd">    the name_field is required.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optional_conditions</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">optional_conditions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;anyOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;if&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;not&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="n">field_opt</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span> <span class="k">for</span> <span class="n">field_opt</span> <span class="ow">in</span> <span class="n">optional_conditions</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;then&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">name_field</span><span class="p">]},</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span></div>
+
+
+
+<span class="c1"># TODO move to utils lib</span>
+<div class="viewcode-block" id="get_fields_of_an_entity">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.get_fields_of_an_entity">[docs]</a>
+<span class="k">def</span> <span class="nf">get_fields_of_an_entity</span><span class="p">(</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="s2">&quot;Entity&quot;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">optional_where_clause</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;BibFields&quot;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all BibFields associated with a given entity.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    entity : Entity</span>
+<span class="sd">        The entity to get the fields for.</span>
+<span class="sd">    columns : Optional[List[str]], optional</span>
+<span class="sd">        The columns to retrieve. If None, all columns are retrieved.</span>
+<span class="sd">    optional_where_clause : Optional[Any], optional</span>
+<span class="sd">        An optional where clause to apply to the query.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[BibFields]</span>
+<span class="sd">        The BibFields associated with the given entity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">select_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">BibFields</span><span class="p">]</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">BibFields</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">BibFields</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">EntityField</span><span class="o">.</span><span class="n">entity</span> <span class="o">==</span> <span class="n">entity</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">columns</span><span class="p">:</span>
+        <span class="n">select_args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">BibFields</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">with_only_columns</span><span class="p">(</span><span class="o">*</span><span class="n">select_args</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">optional_where_clause</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">optional_where_clause</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="FieldMapping">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.FieldMapping">[docs]</a>
+<span class="k">class</span> <span class="nc">FieldMapping</span><span class="p">(</span><span class="n">MappingTemplate</span><span class="p">):</span>
+<div class="viewcode-block" id="FieldMapping.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.FieldMapping.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_fieldmappings&quot;</span></div>
+
+<div class="viewcode-block" id="FieldMapping.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.FieldMapping.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="FieldMapping.id">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.FieldMapping.id">[docs]</a>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">MappingTemplate</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FieldMapping.values">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.FieldMapping.values">[docs]</a>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">MutableDict</span><span class="o">.</span><span class="n">as_mutable</span><span class="p">(</span><span class="n">JSON</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="FieldMapping.__mapper_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.FieldMapping.__mapper_args__">[docs]</a>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;polymorphic_identity&quot;</span><span class="p">:</span> <span class="s2">&quot;FIELD&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="FieldMapping.validate_values">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.FieldMapping.validate_values">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate_values</span><span class="p">(</span><span class="n">field_mapping_json</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the field mapping values returned by the client form.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        field_mapping_json : dict</span>
+<span class="sd">            The field mapping values.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the field mapping values are invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bib_fields_col</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;name_field&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;autogenerated&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mandatory&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multi&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;optional_conditions&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mandatory_conditions&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">entities_for_destination</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Entity</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="n">Entity</span><span class="o">.</span><span class="n">order</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities_for_destination</span><span class="p">:</span>
+            <span class="c1"># Get fields associated to this entity and exists in the given field mapping</span>
+            <span class="n">fields_of_ent</span> <span class="o">=</span> <span class="n">get_fields_of_an_entity</span><span class="p">(</span>
+                <span class="n">entity</span><span class="p">,</span>
+                <span class="n">columns</span><span class="o">=</span><span class="n">bib_fields_col</span><span class="p">,</span>
+                <span class="n">optional_where_clause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                    <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span>
+                        <span class="o">~</span><span class="n">BibFields</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">EntityField</span><span class="o">.</span><span class="n">entity</span> <span class="o">!=</span> <span class="n">entity</span><span class="p">),</span>
+                        <span class="n">BibFields</span><span class="o">.</span><span class="n">name_field</span> <span class="o">==</span> <span class="n">entity</span><span class="o">.</span><span class="n">unique_column</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">BibFields</span><span class="o">.</span><span class="n">name_field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">field_mapping_json</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="c1"># if the only column corresponds to id_columns, we only do the validation on the latter</span>
+            <span class="k">if</span> <span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">unique_column</span><span class="o">.</span><span class="n">name_field</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name_field</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields_of_ent</span><span class="p">]:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">fields_of_ent</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># if other columns than the id_columns are used, we need to check every fields of this entity</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="n">get_fields_of_an_entity</span><span class="p">(</span>
+                        <span class="n">entity</span><span class="p">,</span>
+                        <span class="n">columns</span><span class="o">=</span><span class="n">bib_fields_col</span><span class="p">,</span>
+                        <span class="n">optional_where_clause</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                            <span class="n">BibFields</span><span class="o">.</span><span class="n">destination</span> <span class="o">==</span> <span class="n">g</span><span class="o">.</span><span class="n">destination</span><span class="p">,</span> <span class="n">BibFields</span><span class="o">.</span><span class="n">display</span> <span class="o">==</span> <span class="kc">True</span>
+                        <span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="s2">&quot;boolean&quot;</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">autogenerated</span> <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;array&quot;</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">multi</span> <span class="k">else</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span>
+                    <span class="p">),</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">name_field</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span>
+                <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">mandatory</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">optional_conditions</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;dependentRequired&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">mandatory_conditions</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span>
+                <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">mandatory_conditions</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">optional_conditions</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">optional_conditions_to_jsonschema</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">optional_conditions</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">optional_conditions</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">optional_conditions</span><span class="p">:</span>
+            <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;allOf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">optional_conditions</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validate_json</span><span class="p">(</span><span class="n">field_mapping_json</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">JSONValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="ContentMapping">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ContentMapping">[docs]</a>
+<span class="k">class</span> <span class="nc">ContentMapping</span><span class="p">(</span><span class="n">MappingTemplate</span><span class="p">):</span>
+<div class="viewcode-block" id="ContentMapping.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ContentMapping.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_contentmappings&quot;</span></div>
+
+<div class="viewcode-block" id="ContentMapping.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ContentMapping.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ContentMapping.id">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ContentMapping.id">[docs]</a>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">MappingTemplate</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContentMapping.values">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ContentMapping.values">[docs]</a>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">MutableDict</span><span class="o">.</span><span class="n">as_mutable</span><span class="p">(</span><span class="n">JSON</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ContentMapping.__mapper_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ContentMapping.__mapper_args__">[docs]</a>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;polymorphic_identity&quot;</span><span class="p">:</span> <span class="s2">&quot;CONTENT&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContentMapping.validate_values">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.ContentMapping.validate_values">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+        <span class="n">nomenclature_fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">BibFields</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="n">BibFields</span><span class="o">.</span><span class="n">destination</span> <span class="o">==</span> <span class="n">g</span><span class="o">.</span><span class="n">destination</span><span class="p">,</span> <span class="n">BibFields</span><span class="o">.</span><span class="n">nomenclature_type</span> <span class="o">!=</span> <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">options</span><span class="p">(</span>
+                <span class="n">joinedload</span><span class="p">(</span><span class="n">BibFields</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="p">)</span><span class="o">.</span><span class="n">joinedload</span><span class="p">(</span>
+                    <span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">nomenclatures</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">nomenclature_field</span> <span class="ow">in</span> <span class="n">nomenclature_fields</span><span class="p">:</span>
+            <span class="n">cd_nomenclatures</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">nomenclature</span><span class="o">.</span><span class="n">cd_nomenclature</span>
+                <span class="k">for</span> <span class="n">nomenclature</span> <span class="ow">in</span> <span class="n">nomenclature_field</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">nomenclatures</span>
+            <span class="p">]</span>
+            <span class="n">properties</span><span class="p">[</span><span class="n">nomenclature_field</span><span class="o">.</span><span class="n">mnemonique</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;patternProperties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;^.*$&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;enum&quot;</span><span class="p">:</span> <span class="n">cd_nomenclatures</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="n">properties</span><span class="p">,</span>
+            <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validate_json</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">JSONValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

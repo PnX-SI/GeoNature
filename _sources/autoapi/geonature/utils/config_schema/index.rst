@@ -1,0 +1,710 @@
+geonature.utils.config_schema
+=============================
+
+.. py:module:: geonature.utils.config_schema
+
+.. autoapi-nested-parse::
+
+   Description des options de configuration
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.utils.config_schema.BASEMAP
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.utils.config_schema.EmailStrOrListOfEmailStrField
+   geonature.utils.config_schema.RightsSchemaConf
+   geonature.utils.config_schema.MailConfig
+   geonature.utils.config_schema.CeleryConfig
+   geonature.utils.config_schema.AccountManagement
+   geonature.utils.config_schema.UsersHubConfig
+   geonature.utils.config_schema.ServerConfig
+   geonature.utils.config_schema.MediasConfig
+   geonature.utils.config_schema.AlembicConfig
+   geonature.utils.config_schema.AdditionalFields
+   geonature.utils.config_schema.HomeConfig
+   geonature.utils.config_schema.MetadataConfig
+   geonature.utils.config_schema.AuthenticationConfig
+   geonature.utils.config_schema.GnPySchemaConf
+   geonature.utils.config_schema.GnFrontEndConf
+   geonature.utils.config_schema.ExportObservationSchema
+   geonature.utils.config_schema.TaxonSheet
+   geonature.utils.config_schema.Synthese
+   geonature.utils.config_schema.MapConfig
+   geonature.utils.config_schema.GnGeneralSchemaConf
+
+
+Module Contents
+---------------
+
+.. py:class:: EmailStrOrListOfEmailStrField
+
+   Bases: :py:obj:`marshmallow.fields.Field`
+
+
+   .. py:method:: _deserialize(value, attr, data, **kwargs)
+
+
+   .. py:method:: _check_email(value)
+
+
+.. py:class:: RightsSchemaConf
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: NOTHING
+
+
+   .. py:attribute:: MY_DATA
+
+
+   .. py:attribute:: MY_ORGANISM_DATA
+
+
+   .. py:attribute:: ALL_DATA
+
+
+.. py:class:: MailConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: MAIL_SERVER
+
+
+   .. py:attribute:: MAIL_PORT
+
+
+   .. py:attribute:: MAIL_USE_TLS
+
+
+   .. py:attribute:: MAIL_USE_SSL
+
+
+   .. py:attribute:: MAIL_USERNAME
+
+
+   .. py:attribute:: MAIL_PASSWORD
+
+
+   .. py:attribute:: MAIL_DEFAULT_SENDER
+
+
+   .. py:attribute:: MAIL_MAX_EMAILS
+
+
+   .. py:attribute:: MAIL_SUPPRESS_SEND
+
+
+   .. py:attribute:: MAIL_ASCII_ATTACHMENTS
+
+
+   .. py:attribute:: ERROR_MAIL_TO
+
+
+.. py:class:: CeleryConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: broker_url
+
+
+   .. py:attribute:: result_backend
+
+
+   .. py:attribute:: enable_utc
+
+
+   .. py:attribute:: timezone
+
+
+.. py:class:: AccountManagement
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: ENABLE_SIGN_UP
+
+
+   .. py:attribute:: ENABLE_USER_MANAGEMENT
+
+
+   .. py:attribute:: AUTO_ACCOUNT_CREATION
+
+
+   .. py:attribute:: AUTO_DATASET_CREATION
+
+
+   .. py:attribute:: VALIDATOR_EMAIL
+
+
+   .. py:attribute:: ACCOUNT_FORM
+
+
+   .. py:attribute:: ADDON_USER_EMAIL
+
+
+   .. py:attribute:: DATASET_MODULES_ASSOCIATION
+
+
+   .. py:attribute:: EXTERNAL_LINKS
+
+
+.. py:class:: UsersHubConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: ADMIN_APPLICATION_LOGIN
+
+
+   .. py:attribute:: ADMIN_APPLICATION_PASSWORD
+
+
+   .. py:attribute:: URL_USERSHUB
+
+
+.. py:class:: ServerConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: LOG_LEVEL
+
+
+.. py:class:: MediasConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: MEDIAS_SIZE_MAX
+
+
+   .. py:attribute:: THUMBNAIL_SIZES
+
+
+.. py:class:: AlembicConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: VERSION_LOCATIONS
+
+
+.. py:class:: AdditionalFields
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: IMPLEMENTED_MODULES
+
+
+   .. py:attribute:: IMPLEMENTED_OBJECTS
+
+
+.. py:class:: HomeConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: TITLE
+
+
+   .. py:attribute:: INTRODUCTION
+
+
+   .. py:attribute:: FOOTER
+
+
+   .. py:attribute:: DISPLAY_LATEST_DISCUSSIONS
+
+
+.. py:class:: MetadataConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: NB_AF_DISPLAYED
+
+
+   .. py:attribute:: ENABLE_CLOSE_AF
+
+
+   .. py:attribute:: AF_SHEET_CLOSED_LINK_NAME
+
+
+   .. py:attribute:: CLOSED_AF_TITLE
+
+
+   .. py:attribute:: AF_PDF_TITLE
+
+
+   .. py:attribute:: DS_PDF_TITLE
+
+
+   .. py:attribute:: MAIL_SUBJECT_AF_CLOSED_BASE
+
+
+   .. py:attribute:: MAIL_CONTENT_AF_CLOSED_ADDITION
+
+
+   .. py:attribute:: MAIL_CONTENT_AF_CLOSED_PDF
+
+
+   .. py:attribute:: MAIL_CONTENT_AF_CLOSED_URL
+
+
+   .. py:attribute:: MAIL_CONTENT_AF_CLOSED_GREETINGS
+
+
+   .. py:attribute:: CLOSED_MODAL_LABEL
+
+
+   .. py:attribute:: CLOSED_MODAL_CONTENT
+
+
+   .. py:attribute:: CD_NOMENCLATURE_ROLE_TYPE_DS
+
+
+   .. py:attribute:: CD_NOMENCLATURE_ROLE_TYPE_AF
+
+
+   .. py:attribute:: METADATA_AREA_FILTERS
+
+
+.. py:class:: AuthenticationConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: PROVIDERS
+
+
+   .. py:attribute:: DEFAULT_RECONCILIATION_GROUP_ID
+
+
+   .. py:method:: validate_provider(data, **kwargs)
+
+
+.. py:class:: GnPySchemaConf
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: SQLALCHEMY_DATABASE_URI
+
+
+   .. py:attribute:: SQLALCHEMY_TRACK_MODIFICATIONS
+
+
+   .. py:attribute:: SESSION_TYPE
+
+
+   .. py:attribute:: SECRET_KEY
+
+
+   .. py:attribute:: COOKIE_EXPIRATION
+
+
+   .. py:attribute:: COOKIE_AUTORENEW
+
+
+   .. py:attribute:: TRAP_ALL_EXCEPTIONS
+
+
+   .. py:attribute:: SENTRY_DSN
+
+
+   .. py:attribute:: ROOT_PATH
+
+
+   .. py:attribute:: STATIC_FOLDER
+
+
+   .. py:attribute:: CUSTOM_STATIC_FOLDER
+
+
+   .. py:attribute:: MEDIA_FOLDER
+
+
+   .. py:attribute:: MAIL_ON_ERROR
+
+
+   .. py:attribute:: MAIL_CONFIG
+
+
+   .. py:attribute:: CELERY
+
+
+   .. py:attribute:: METADATA
+
+
+   .. py:attribute:: ADMIN_APPLICATION_LOGIN
+
+
+   .. py:attribute:: ACCOUNT_MANAGEMENT
+
+
+   .. py:attribute:: BAD_LOGIN_STATUS_CODE
+
+
+   .. py:attribute:: USERSHUB
+
+
+   .. py:attribute:: SERVER
+
+
+   .. py:attribute:: MEDIAS
+
+
+   .. py:attribute:: ALEMBIC
+
+
+   .. py:method:: folders(data, **kwargs)
+
+
+   .. py:method:: unwrap_usershub(data, **kwargs)
+
+      On met la section [USERSHUB] à la racine de la conf
+      pour compatibilité et simplicité ave le sous-module d'authentif
+
+
+
+   .. py:method:: validate_enable_usershub_and_mail(data, **kwargs)
+
+
+.. py:class:: GnFrontEndConf
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: PROD_MOD
+
+
+   .. py:attribute:: DISPLAY_FOOTER
+
+
+   .. py:attribute:: DISPLAY_STAT_BLOC
+
+
+   .. py:attribute:: STAT_BLOC_TTL
+
+
+   .. py:attribute:: DISPLAY_MAP_LAST_OBS
+
+
+   .. py:attribute:: MULTILINGUAL
+
+
+   .. py:attribute:: ENABLE_PROFILES
+
+
+   .. py:attribute:: DISPLAY_EMAIL_INFO_OBS
+
+
+   .. py:attribute:: DISPLAY_EMAIL_DISPLAY_INFO
+
+
+.. py:class:: ExportObservationSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: label
+
+
+   .. py:attribute:: view_name
+
+
+   .. py:attribute:: geojson_4326_field
+
+
+   .. py:attribute:: geojson_local_field
+
+
+.. py:class:: TaxonSheet
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: ENABLE_PROFILE
+
+
+   .. py:attribute:: ENABLE_TAXONOMY
+
+
+.. py:class:: Synthese
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: AREA_FILTERS
+
+
+   .. py:attribute:: TAXON_RESULT_NUMBER
+
+
+   .. py:attribute:: DISPLAY_TAXON_TREE
+
+
+   .. py:attribute:: SEARCH_OBSERVER_WITH_LIST
+
+
+   .. py:attribute:: ID_SEARCH_OBSERVER_LIST
+
+
+   .. py:attribute:: STATUS_FILTERS
+
+
+   .. py:attribute:: RED_LISTS_FILTERS
+
+
+   .. py:attribute:: DEFAULT_FILTERS
+
+
+   .. py:attribute:: LIST_COLUMNS_FRONTEND
+
+
+   .. py:attribute:: ADDITIONAL_COLUMNS_FRONTEND
+
+
+   .. py:attribute:: EXPORT_COLUMNS
+
+
+   .. py:attribute:: EXPORT_OBSERVATIONS_CUSTOM_VIEWS
+
+
+   .. py:attribute:: EXPORT_ID_SYNTHESE_COL
+
+
+   .. py:attribute:: EXPORT_ID_DATASET_COL
+
+
+   .. py:attribute:: EXPORT_ID_DIGITISER_COL
+
+
+   .. py:attribute:: EXPORT_OBSERVERS_COL
+
+
+   .. py:attribute:: EXPORT_GEOJSON_4326_COL
+
+
+   .. py:attribute:: EXPORT_GEOJSON_LOCAL_COL
+
+
+   .. py:attribute:: EXPORT_METADATA_ID_DATASET_COL
+
+
+   .. py:attribute:: EXPORT_METADATA_ACTOR_COL
+
+
+   .. py:attribute:: EXPORT_FORMAT
+
+
+   .. py:attribute:: NB_MAX_OBS_EXPORT
+
+
+   .. py:attribute:: ID_ATTRIBUT_TAXHUB
+
+
+   .. py:attribute:: DISPLAY_EMAIL
+
+
+   .. py:attribute:: EXCLUDED_COLUMNS
+
+
+   .. py:attribute:: NB_MAX_OBS_MAP
+
+
+   .. py:attribute:: ENABLE_LEAFLET_CLUSTER
+
+
+   .. py:attribute:: NB_LAST_OBS
+
+
+   .. py:attribute:: DISCUSSION_MAX_LENGTH
+
+
+   .. py:attribute:: DISCUSSION_MODULES
+
+
+   .. py:attribute:: ALERT_MODULES
+
+
+   .. py:attribute:: PIN_MODULES
+
+
+   .. py:attribute:: AREA_AGGREGATION_ENABLED
+
+
+   .. py:attribute:: AREA_AGGREGATION_TYPE
+
+
+   .. py:attribute:: AREA_AGGREGATION_BY_DEFAULT
+
+
+   .. py:attribute:: AREA_AGGREGATION_LEGEND_CLASSES
+
+
+   .. py:attribute:: BLUR_SENSITIVE_OBSERVATIONS
+
+
+   .. py:attribute:: TAXON_SHEET
+
+
+   .. py:method:: warn_deprecated(data, **kwargs)
+
+
+.. py:data:: BASEMAP
+
+.. py:class:: MapConfig
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: BASEMAP
+
+
+   .. py:attribute:: CENTER
+
+
+   .. py:attribute:: ZOOM_LEVEL
+
+
+   .. py:attribute:: ZOOM_LEVEL_RELEVE
+
+
+   .. py:attribute:: GEOLOCATION
+
+
+   .. py:attribute:: ZOOM_ON_CLICK
+
+
+   .. py:attribute:: OSM_RESTRICT_COUNTRY_CODES
+
+
+   .. py:attribute:: REF_LAYERS
+
+
+   .. py:attribute:: REF_LAYERS_LEGEND
+
+
+.. py:class:: GnGeneralSchemaConf
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: appName
+
+
+   .. py:attribute:: GEONATURE_VERSION
+
+
+   .. py:attribute:: DEFAULT_LANGUAGE
+
+
+   .. py:attribute:: PASS_METHOD
+
+
+   .. py:attribute:: DEBUG
+
+
+   .. py:attribute:: URL_APPLICATION
+
+
+   .. py:attribute:: API_ENDPOINT
+
+
+   .. py:attribute:: API_TAXHUB
+
+
+   .. py:attribute:: CODE_APPLICATION
+
+
+   .. py:attribute:: DISABLED_MODULES
+
+
+   .. py:attribute:: RIGHTS
+
+
+   .. py:attribute:: FRONTEND
+
+
+   .. py:attribute:: SYNTHESE
+
+
+   .. py:attribute:: IMPORT
+
+
+   .. py:attribute:: MAPCONFIG
+
+
+   .. py:attribute:: ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS
+
+
+   .. py:attribute:: URL_USERSHUB
+
+
+   .. py:attribute:: ACCOUNT_MANAGEMENT
+
+
+   .. py:attribute:: MEDIAS
+
+
+   .. py:attribute:: STATIC_URL
+
+
+   .. py:attribute:: MEDIA_URL
+
+
+   .. py:attribute:: METADATA
+
+
+   .. py:attribute:: NB_MAX_DATA_SENSITIVITY_REPORT
+
+
+   .. py:attribute:: ADDITIONAL_FIELDS
+
+
+   .. py:attribute:: PUBLIC_ACCESS_USERNAME
+
+
+   .. py:attribute:: TAXHUB
+
+
+   .. py:attribute:: HOME
+
+
+   .. py:attribute:: NOTIFICATIONS_ENABLED
+
+
+   .. py:attribute:: PROFILES_REFRESH_CRONTAB
+
+
+   .. py:attribute:: MEDIA_CLEAN_CRONTAB
+
+
+   .. py:attribute:: AUTHENTICATION
+
+
+   .. py:method:: validate_account_autovalidation(data, **kwargs)
+
+
+   .. py:method:: _pre_load(data, **kwargs)
+
+
+   .. py:method:: insert_module_config(data, **kwargs)
+
+

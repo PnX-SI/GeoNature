@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.gn_synthese.imports.actions &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/gn_synthese/imports/actions';</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.gn_synthese.imports.actions</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">apptax.taxonomie.models</span> <span class="kn">import</span> <span class="n">Taxref</span>
+<span class="kn">from</span> <span class="nn">bokeh.embed.standalone</span> <span class="kn">import</span> <span class="n">StandaloneEmbedJson</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TModules</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.models</span> <span class="kn">import</span> <span class="n">Synthese</span><span class="p">,</span> <span class="n">TSources</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.actions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ImportActions</span><span class="p">,</span>
+    <span class="n">ImportInputUrl</span><span class="p">,</span>
+    <span class="n">ImportStatisticsLabels</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.checks.dataframe</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">check_counts</span><span class="p">,</span>
+    <span class="n">check_datasets</span><span class="p">,</span>
+    <span class="n">check_geometry</span><span class="p">,</span>
+    <span class="n">check_required_values</span><span class="p">,</span>
+    <span class="n">check_types</span><span class="p">,</span>
+    <span class="n">concat_dates</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.checks.sql</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">check_altitudes</span><span class="p">,</span>
+    <span class="n">check_cd_hab</span><span class="p">,</span>
+    <span class="n">check_cd_nom</span><span class="p">,</span>
+    <span class="n">check_dates</span><span class="p">,</span>
+    <span class="n">check_depths</span><span class="p">,</span>
+    <span class="n">check_digital_proof_urls</span><span class="p">,</span>
+    <span class="n">check_duplicate_source_pk</span><span class="p">,</span>
+    <span class="n">check_duplicate_uuid</span><span class="p">,</span>
+    <span class="n">check_existing_uuid</span><span class="p">,</span>
+    <span class="n">check_geometry_outside</span><span class="p">,</span>
+    <span class="n">check_is_valid_geometry</span><span class="p">,</span>
+    <span class="n">check_nomenclature_blurring</span><span class="p">,</span>
+    <span class="n">check_nomenclature_exist_proof</span><span class="p">,</span>
+    <span class="n">check_nomenclature_source_status</span><span class="p">,</span>
+    <span class="n">check_orphan_rows</span><span class="p">,</span>
+    <span class="n">convert_geom_columns</span><span class="p">,</span>
+    <span class="n">do_nomenclatures_mapping</span><span class="p">,</span>
+    <span class="n">generate_altitudes</span><span class="p">,</span>
+    <span class="n">generate_missing_uuid</span><span class="p">,</span>
+    <span class="n">init_rows_validity</span><span class="p">,</span>
+    <span class="n">set_geom_point</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">EntityField</span><span class="p">,</span> <span class="n">TImports</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">compute_bounding_box</span><span class="p">,</span>
+    <span class="n">load_transient_data_in_dataframe</span><span class="p">,</span>
+    <span class="n">update_transient_data_from_dataframe</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.sentry</span> <span class="kn">import</span> <span class="n">start_sentry_child</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">distinct</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">select</span>
+
+<span class="kn">from</span> <span class="nn">.geo</span> <span class="kn">import</span> <span class="n">set_geom_columns_from_area_codes</span>
+<span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">taxon_distribution_plot</span>
+
+
+<div class="viewcode-block" id="SyntheseImportActions">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/imports/actions/index.html#geonature.core.gn_synthese.imports.actions.SyntheseImportActions">[docs]</a>
+<span class="k">class</span> <span class="nc">SyntheseImportActions</span><span class="p">(</span><span class="n">ImportActions</span><span class="p">):</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SyntheseImportActions.statistics_labels">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/imports/actions/index.html#geonature.core.gn_synthese.imports.actions.SyntheseImportActions.statistics_labels">[docs]</a>
+    <span class="k">def</span> <span class="nf">statistics_labels</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">ImportStatisticsLabels</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;import_count&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Nombre d&#39;observations importées&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;taxa_count&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Nombre de taxons&quot;</span><span class="p">},</span>
+        <span class="p">]</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SyntheseImportActions.preprocess_transient_data">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/imports/actions/index.html#geonature.core.gn_synthese.imports.actions.SyntheseImportActions.preprocess_transient_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">preprocess_transient_data</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SyntheseImportActions.check_transient_data">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/imports/actions/index.html#geonature.core.gn_synthese.imports.actions.SyntheseImportActions.check_transient_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_transient_data</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">):</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">Entity</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Entity</span><span class="o">.</span><span class="n">destination</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>  <span class="c1"># Observation</span>
+
+        <span class="n">entity_bib_fields</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">BibFields</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">BibFields</span><span class="o">.</span><span class="n">destination</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">selectinload</span><span class="p">(</span><span class="n">BibFields</span><span class="o">.</span><span class="n">entities</span><span class="p">)</span><span class="o">.</span><span class="n">joinedload</span><span class="p">(</span><span class="n">EntityField</span><span class="o">.</span><span class="n">entity</span><span class="p">))</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">:</span> <span class="n">field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">entity_bib_fields</span><span class="p">}</span>
+        <span class="c1"># Note: multi fields are not selected here, and therefore, will be not loaded in dataframe or checked in SQL.</span>
+        <span class="c1"># Fix this code (see import function) if you want to operate on multi fields data.</span>
+        <span class="n">selected_fields</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">field_name</span><span class="p">:</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">source_field</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">source_field</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">}</span>
+        <span class="n">init_rows_validity</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
+        <span class="n">check_orphan_rows</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;DATAFRAME_BATCH_SIZE&quot;</span><span class="p">]</span>
+        <span class="n">batch_count</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">source_count</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="mf">0.1</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="mf">0.4</span>
+            <span class="n">step_count</span> <span class="o">=</span> <span class="mi">8</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="p">((</span><span class="n">batch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">batch_count</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">step</span> <span class="o">/</span> <span class="n">step_count</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="n">progress</span><span class="p">})</span>
+
+        <span class="n">source_cols</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">source_column</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">mandatory</span> <span class="ow">or</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">source_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">mnemonique</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_count</span><span class="p">):</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">batch</span> <span class="o">*</span> <span class="n">batch_size</span>
+            <span class="n">updated_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">batch_count</span><span class="si">}</span><span class="s2">] Loading import data in dataframe…&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;check.df&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;load dataframe&quot;</span><span class="p">):</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">load_transient_data_in_dataframe</span><span class="p">(</span>
+                    <span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">source_cols</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">batch_size</span>
+                <span class="p">)</span>
+            <span class="n">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">batch_count</span><span class="si">}</span><span class="s2">] Concat dates…&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;check.df&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;concat dates&quot;</span><span class="p">):</span>
+                <span class="n">updated_cols</span> <span class="o">|=</span> <span class="n">concat_dates</span><span class="p">(</span>
+                    <span class="n">df</span><span class="p">,</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;datetime_min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dest_field</span><span class="p">,</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;datetime_max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dest_field</span><span class="p">,</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;date_min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">source_field</span><span class="p">,</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;date_max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">source_field</span><span class="p">,</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;hour_min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">source_field</span><span class="p">,</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;hour_max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">source_field</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">batch_count</span><span class="si">}</span><span class="s2">] Check required values…&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;check.df&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;check required values&quot;</span><span class="p">):</span>
+                <span class="n">updated_cols</span> <span class="o">|=</span> <span class="n">check_required_values</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+            <span class="n">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">batch_count</span><span class="si">}</span><span class="s2">] Check types…&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;check.df&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;check types&quot;</span><span class="p">):</span>
+                <span class="n">updated_cols</span> <span class="o">|=</span> <span class="n">check_types</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+            <span class="n">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">batch_count</span><span class="si">}</span><span class="s2">] Check dataset rows&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;check.df&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;check datasets rows&quot;</span><span class="p">):</span>
+                <span class="n">updated_cols</span> <span class="o">|=</span> <span class="n">check_datasets</span><span class="p">(</span>
+                    <span class="n">imprt</span><span class="p">,</span>
+                    <span class="n">entity</span><span class="p">,</span>
+                    <span class="n">df</span><span class="p">,</span>
+                    <span class="n">uuid_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;unique_dataset_id&quot;</span><span class="p">],</span>
+                    <span class="n">id_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;id_dataset&quot;</span><span class="p">],</span>
+                    <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">batch_count</span><span class="si">}</span><span class="s2">] Check geography…&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;check.df&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;set geography&quot;</span><span class="p">):</span>
+                <span class="n">updated_cols</span> <span class="o">|=</span> <span class="n">check_geometry</span><span class="p">(</span>
+                    <span class="n">imprt</span><span class="p">,</span>
+                    <span class="n">entity</span><span class="p">,</span>
+                    <span class="n">df</span><span class="p">,</span>
+                    <span class="n">file_srid</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">srid</span><span class="p">,</span>
+                    <span class="n">geom_4326_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_4326&quot;</span><span class="p">],</span>
+                    <span class="n">geom_local_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_local&quot;</span><span class="p">],</span>
+                    <span class="n">wkt_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;WKT&quot;</span><span class="p">],</span>
+                    <span class="n">latitude_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">],</span>
+                    <span class="n">longitude_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">],</span>
+                    <span class="n">codecommune_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;codecommune&quot;</span><span class="p">],</span>
+                    <span class="n">codemaille_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;codemaille&quot;</span><span class="p">],</span>
+                    <span class="n">codedepartement_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;codedepartement&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="n">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">batch_count</span><span class="si">}</span><span class="s2">] Check counts…&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;check.df&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;check count&quot;</span><span class="p">):</span>
+                <span class="n">updated_cols</span> <span class="o">|=</span> <span class="n">check_counts</span><span class="p">(</span>
+                    <span class="n">imprt</span><span class="p">,</span>
+                    <span class="n">entity</span><span class="p">,</span>
+                    <span class="n">df</span><span class="p">,</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;count_min&quot;</span><span class="p">],</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;count_max&quot;</span><span class="p">],</span>
+                    <span class="n">default_count</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;DEFAULT_COUNT_VALUE&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="n">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">batch_count</span><span class="si">}</span><span class="s2">] Updating import data from dataframe…&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;check.df&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;save dataframe&quot;</span><span class="p">):</span>
+                <span class="n">update_transient_data_from_dataframe</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">updated_cols</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+            <span class="n">update_batch_progress</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+        <span class="c1"># Checks in SQL</span>
+        <span class="n">convert_geom_columns</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">geom_4326_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_4326&quot;</span><span class="p">],</span>
+            <span class="n">geom_local_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_local&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">set_geom_columns_from_area_codes</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">geom_4326_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_4326&quot;</span><span class="p">],</span>
+            <span class="n">geom_local_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_local&quot;</span><span class="p">],</span>
+            <span class="n">codecommune_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;codecommune&quot;</span><span class="p">],</span>
+            <span class="n">codemaille_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;codemaille&quot;</span><span class="p">],</span>
+            <span class="n">codedepartement_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;codedepartement&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">set_geom_point</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="o">=</span><span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span>
+            <span class="n">geom_4326_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_4326&quot;</span><span class="p">],</span>
+            <span class="n">geom_point_field</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_point&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="c1"># All valid rows should have a geom as verified in dataframe check &#39;check_geometry&#39;</span>
+
+        <span class="n">do_nomenclatures_mapping</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span>
+            <span class="n">entity</span><span class="p">,</span>
+            <span class="n">selected_fields</span><span class="p">,</span>
+            <span class="n">fill_with_defaults</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span>
+                <span class="s2">&quot;FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE&quot;</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;CHECK_EXIST_PROOF&quot;</span><span class="p">]:</span>
+            <span class="n">check_nomenclature_exist_proof</span><span class="p">(</span>
+                <span class="n">imprt</span><span class="p">,</span>
+                <span class="n">entity</span><span class="p">,</span>
+                <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;id_nomenclature_exist_proof&quot;</span><span class="p">],</span>
+                <span class="n">selected_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;digital_proof&quot;</span><span class="p">),</span>
+                <span class="n">selected_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;non_digital_proof&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;CHECK_PRIVATE_JDD_BLURING&quot;</span><span class="p">]:</span>
+            <span class="n">check_nomenclature_blurring</span><span class="p">(</span>
+                <span class="n">imprt</span><span class="p">,</span>
+                <span class="n">entity</span><span class="p">,</span>
+                <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;id_nomenclature_blurring&quot;</span><span class="p">],</span>
+                <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;id_dataset&quot;</span><span class="p">],</span>
+                <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;unique_dataset_id&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;CHECK_REF_BIBLIO_LITTERATURE&quot;</span><span class="p">]:</span>
+            <span class="n">check_nomenclature_source_status</span><span class="p">(</span>
+                <span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;id_nomenclature_source_status&quot;</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;reference_biblio&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;cd_nom&quot;</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">:</span>
+            <span class="n">check_cd_nom</span><span class="p">(</span>
+                <span class="n">imprt</span><span class="p">,</span>
+                <span class="n">entity</span><span class="p">,</span>
+                <span class="n">selected_fields</span><span class="p">[</span><span class="s2">&quot;cd_nom&quot;</span><span class="p">],</span>
+                <span class="n">list_id</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ID_LIST_TAXA_RESTRICTION&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;cd_hab&quot;</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">:</span>
+            <span class="n">check_cd_hab</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">selected_fields</span><span class="p">[</span><span class="s2">&quot;cd_hab&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;entity_source_pk_value&quot;</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">:</span>
+            <span class="n">check_duplicate_source_pk</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">selected_fields</span><span class="p">[</span><span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;altitudes_generate&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">generate_altitudes</span><span class="p">(</span>
+                <span class="n">imprt</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_local&quot;</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;altitude_min&quot;</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;altitude_max&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">check_altitudes</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">selected_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;altitude_min&quot;</span><span class="p">),</span> <span class="n">selected_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;altitude_max&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;unique_id_sinp&quot;</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">:</span>
+            <span class="n">check_duplicate_uuid</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">selected_fields</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;PER_DATASET_UUID_CHECK&quot;</span><span class="p">]:</span>
+                <span class="n">whereclause</span> <span class="o">=</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_dataset</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">whereclause</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">true</span><span class="p">()</span>
+            <span class="n">check_existing_uuid</span><span class="p">(</span>
+                <span class="n">imprt</span><span class="p">,</span>
+                <span class="n">entity</span><span class="p">,</span>
+                <span class="n">selected_fields</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">],</span>
+                <span class="n">whereclause</span><span class="o">=</span><span class="n">whereclause</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;unique_id_sinp_generate&quot;</span><span class="p">,</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;DEFAULT_GENERATE_MISSING_UUID&quot;</span><span class="p">],</span>
+        <span class="p">):</span>
+            <span class="n">generate_missing_uuid</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">])</span>
+        <span class="n">check_dates</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;datetime_min&quot;</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;datetime_max&quot;</span><span class="p">])</span>
+        <span class="n">check_depths</span><span class="p">(</span>
+            <span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">selected_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;depth_min&quot;</span><span class="p">),</span> <span class="n">selected_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;depth_max&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;digital_proof&quot;</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">:</span>
+            <span class="n">check_digital_proof_urls</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">selected_fields</span><span class="p">[</span><span class="s2">&quot;digital_proof&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s2">&quot;WKT&quot;</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">:</span>
+            <span class="n">check_is_valid_geometry</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">selected_fields</span><span class="p">[</span><span class="s2">&quot;WKT&quot;</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_4326&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;ID_AREA_RESTRICTION&quot;</span><span class="p">]:</span>
+            <span class="n">check_geometry_outside</span><span class="p">(</span>
+                <span class="n">imprt</span><span class="p">,</span>
+                <span class="n">entity</span><span class="p">,</span>
+                <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_local&quot;</span><span class="p">],</span>
+                <span class="n">id_area</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;ID_AREA_RESTRICTION&quot;</span><span class="p">],</span>
+            <span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SyntheseImportActions.import_data_to_destination">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/imports/actions/index.html#geonature.core.gn_synthese.imports.actions.SyntheseImportActions.import_data_to_destination">[docs]</a>
+    <span class="k">def</span> <span class="nf">import_data_to_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+        <span class="n">name_source</span> <span class="o">=</span> <span class="s2">&quot;Import&quot;</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TSources</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">name_source</span><span class="o">=</span><span class="n">name_source</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
+        <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+
+        <span class="n">destination_bib_fields</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">BibFields</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">BibFields</span><span class="o">.</span><span class="n">destination</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">,</span> <span class="n">BibFields</span><span class="o">.</span><span class="n">dest_field</span> <span class="o">!=</span> <span class="kc">None</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name_field</span><span class="p">:</span> <span class="n">field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">destination_bib_fields</span><span class="p">}</span>
+
+        <span class="c1"># Construct the exact list of required fields to copy from transient table to synthese</span>
+        <span class="c1"># This list contains generated fields, and selected fields (including multi fields).</span>
+        <span class="n">insert_fields</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;datetime_min&quot;</span><span class="p">],</span>
+            <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;datetime_max&quot;</span><span class="p">],</span>
+            <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_4326&quot;</span><span class="p">],</span>
+            <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_local&quot;</span><span class="p">],</span>
+            <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;the_geom_point&quot;</span><span class="p">],</span>
+            <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;id_area_attachment&quot;</span><span class="p">],</span>  <span class="c1"># XXX sure?</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;unique_id_sinp_generate&quot;</span><span class="p">,</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;IMPORT&quot;</span><span class="p">][</span><span class="s2">&quot;DEFAULT_GENERATE_MISSING_UUID&quot;</span><span class="p">],</span>
+        <span class="p">):</span>
+            <span class="n">insert_fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">]}</span>
+        <span class="k">if</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;altitudes_generate&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">insert_fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;altitude_min&quot;</span><span class="p">],</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;altitude_max&quot;</span><span class="p">]}</span>
+
+        <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">source_field</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>  <span class="c1"># not a destination field</span>
+                <span class="k">continue</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">multi</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">source_field</span><span class="p">)</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+                    <span class="n">insert_fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">field</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">source_field</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="n">insert_fields</span> <span class="o">|=</span> <span class="p">{</span><span class="n">field</span><span class="p">}</span>
+
+        <span class="n">insert_fields</span> <span class="o">-=</span> <span class="p">{</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;unique_dataset_id&quot;</span><span class="p">]}</span>  <span class="c1"># Column only used for filling `id_dataset`</span>
+
+        <span class="n">select_stmt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">[</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">insert_fields</span><span class="p">],</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">id_source</span><span class="p">),</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">id_module</span><span class="p">),</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">),</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">),</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">valid</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">insert_fields</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s2">&quot;id_source&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;id_module&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;id_dataset&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;id_import&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_action&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">insert_stmt</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span><span class="o">.</span><span class="n">from_select</span><span class="p">(</span>
+            <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">select_stmt</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert_stmt</span><span class="p">)</span>
+
+        <span class="c1"># TODO: Improve this</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">statistics</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;taxa_count&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span>
+                    <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">distinct</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">)))</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                        <span class="n">Synthese</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">}</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SyntheseImportActions.remove_data_from_destination">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/imports/actions/index.html#geonature.core.gn_synthese.imports.actions.SyntheseImportActions.remove_data_from_destination">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_data_from_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">start_sentry_child</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;clean imported data&quot;</span><span class="p">):</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">))</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SyntheseImportActions.report_plot">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/imports/actions/index.html#geonature.core.gn_synthese.imports.actions.SyntheseImportActions.report_plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">report_plot</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StandaloneEmbedJson</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">taxon_distribution_plot</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SyntheseImportActions.compute_bounding_box">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/imports/actions/index.html#geonature.core.gn_synthese.imports.actions.SyntheseImportActions.compute_bounding_box">[docs]</a>
+    <span class="k">def</span> <span class="nf">compute_bounding_box</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">compute_bounding_box</span><span class="p">(</span><span class="n">imprt</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">,</span> <span class="s2">&quot;the_geom_4326&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.admin &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/admin';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.admin</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
+
+<span class="kn">from</span> <span class="nn">markupsafe</span> <span class="kn">import</span> <span class="n">Markup</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla</span> <span class="kn">import</span> <span class="n">ModelView</span>
+<span class="kn">from</span> <span class="nn">flask_admin.form</span> <span class="kn">import</span> <span class="n">BaseForm</span>
+<span class="kn">from</span> <span class="nn">wtforms.validators</span> <span class="kn">import</span> <span class="n">StopValidation</span>
+<span class="kn">from</span> <span class="nn">jsonschema.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">JSONValidationError</span>
+<span class="kn">from</span> <span class="nn">wtforms.fields</span> <span class="kn">import</span> <span class="n">StringField</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.core.admin.admin</span> <span class="kn">import</span> <span class="n">admin</span> <span class="k">as</span> <span class="n">geonature_admin</span><span class="p">,</span> <span class="n">CruvedProtectedMixin</span>
+
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">TNomenclatures</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="n">FieldMapping</span><span class="p">,</span> <span class="n">ContentMapping</span>
+
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla.form</span> <span class="kn">import</span> <span class="n">AdminModelConverter</span>
+<span class="kn">from</span> <span class="nn">flask_admin.model.form</span> <span class="kn">import</span> <span class="n">converts</span>
+
+
+<div class="viewcode-block" id="MappingView">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView">[docs]</a>
+<span class="k">class</span> <span class="nc">MappingView</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">ModelView</span><span class="p">):</span>
+<div class="viewcode-block" id="MappingView.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;IMPORT&quot;</span></div>
+
+<div class="viewcode-block" id="MappingView.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;MAPPING&quot;</span></div>
+
+
+<div class="viewcode-block" id="MappingView.can_view_details">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.can_view_details">[docs]</a>
+    <span class="n">can_view_details</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="MappingView.column_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.column_list">[docs]</a>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;active&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;public&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingView.column_searchable_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.column_searchable_list">[docs]</a>
+    <span class="n">column_searchable_list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,)</span></div>
+
+<div class="viewcode-block" id="MappingView.column_filters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.column_filters">[docs]</a>
+    <span class="n">column_filters</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;active&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;public&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingView.form_columns">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.form_columns">[docs]</a>
+    <span class="n">form_columns</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;active&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;public&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;owners&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingView.column_details_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.column_details_list">[docs]</a>
+    <span class="n">column_details_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;active&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;public&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;owners&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingView.column_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.column_labels">[docs]</a>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="s2">&quot;Actif&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;owners&quot;</span><span class="p">:</span> <span class="s2">&quot;Propriétaires&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="s2">&quot;Correspondances&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="MappingView.column_export_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.MappingView.column_export_list">[docs]</a>
+    <span class="n">column_export_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FieldMappingValuesValidator">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.FieldMappingValuesValidator">[docs]</a>
+<span class="k">def</span> <span class="nf">FieldMappingValuesValidator</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">FieldMapping</span><span class="o">.</span><span class="n">validate_values</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">StopValidation</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ContentMappingValuesValidator">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.ContentMappingValuesValidator">[docs]</a>
+<span class="k">def</span> <span class="nf">ContentMappingValuesValidator</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ContentMapping</span><span class="o">.</span><span class="n">validate_values</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">StopValidation</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FieldMappingView">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.FieldMappingView">[docs]</a>
+<span class="k">class</span> <span class="nc">FieldMappingView</span><span class="p">(</span><span class="n">MappingView</span><span class="p">):</span>
+<div class="viewcode-block" id="FieldMappingView.form_args">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.FieldMappingView.form_args">[docs]</a>
+    <span class="n">form_args</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;validators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">FieldMappingValuesValidator</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="FieldMappingView.colmun_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.FieldMappingView.colmun_labels">[docs]</a>
+    <span class="n">colmun_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="s2">&quot;Association&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="FieldMappingView.column_formatters_detail">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.FieldMappingView.column_formatters_detail">[docs]</a>
+    <span class="n">column_formatters_detail</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">Markup</span><span class="p">(</span><span class="s2">&quot;&lt;pre&gt;</span><span class="si">%s</span><span class="s2">&lt;/pre&gt;&quot;</span> <span class="o">%</span> <span class="n">pformat</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">values</span><span class="p">)),</span>
+    <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ContentMappingView">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.ContentMappingView">[docs]</a>
+<span class="k">class</span> <span class="nc">ContentMappingView</span><span class="p">(</span><span class="n">MappingView</span><span class="p">):</span>
+<div class="viewcode-block" id="ContentMappingView.form_args">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.ContentMappingView.form_args">[docs]</a>
+    <span class="n">form_args</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;validators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ContentMappingValuesValidator</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="ContentMappingView.colmun_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.ContentMappingView.colmun_labels">[docs]</a>
+    <span class="n">colmun_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="s2">&quot;Association&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="ContentMappingView.column_formatters_detail">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/admin/index.html#geonature.core.imports.admin.ContentMappingView.column_formatters_detail">[docs]</a>
+    <span class="n">column_formatters_detail</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">Markup</span><span class="p">(</span><span class="s2">&quot;&lt;pre&gt;</span><span class="si">%s</span><span class="s2">&lt;/pre&gt;&quot;</span> <span class="o">%</span> <span class="n">pformat</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">values</span><span class="p">)),</span>
+    <span class="p">}</span></div>
+</div>
+
+
+
+<span class="n">geonature_admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">FieldMappingView</span><span class="p">(</span><span class="n">FieldMapping</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Champs&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Modèles d’import&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">geonature_admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">ContentMappingView</span><span class="p">(</span>
+        <span class="n">ContentMapping</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Nomenclatures&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Modèles d’import&quot;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

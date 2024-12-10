@@ -1,126 +1,415 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MANUEL UTILISATEUR &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Manuel utilisateur &#8212; Documentation GeoNature 2.0</title>
   
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=e8570148"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/translations.js?v=d99ca74e"></script>
-    <script src="_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=94f178cf"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user-manual';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
-    <link rel="next" title="MANUEL ADMINISTRATEUR" href="admin-manual.html" />
-    <link rel="prev" title="INSTALLATION" href="installation.html" /> 
-</head>
+    <link rel="next" title="Manuel administrateur" href="admin-manual.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
-          
-          
-          <a href="index.html" class="icon icon-home">
-            GeoNature
-              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.0
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">MANUEL UTILISATEUR</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#authentification">Authentification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#accueil">Accueil</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#metadonnees">Metadonnées</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#structure-des-metadonnees">Structure des métadonnées</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#utilisation-des-metadonnees-dans-geonature">Utilisation des métadonnées dans GeoNature</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fonctionnement-du-module-metadonnees">Fonctionnement du module Métadonnées</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#occtax">OccTax</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#afficher-un-releve">Afficher un relevé</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ajouter-un-releve">Ajouter un relevé</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#modifier-un-releve">Modifier un relevé</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#exports">Exports</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#synthese">Synthèse</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#acceder-a-la-synthese">Accéder à la synthèse</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#presentation-de-la-synthese">Présentation de la synthèse</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#detail-dune-observation">Détail d’une observation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rechercher-des-observations">Rechercher des observations</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#admin">Admin</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#gestion-des-permissions">Gestion des permissions</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html#tests-backend">Tests backend</a></li>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Développement</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Auteurs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">GeoNature</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">MANUEL UTILISATEUR</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/user-manual.rst.txt" rel="nofollow"> Afficher la source de la page</a>
-      </li>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Dépôt source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/user-manual.rst?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
   </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/user-manual.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Télécharger le fichier source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimer au format PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Manuel utilisateur</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenu </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#authentification">Authentification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accueil">Accueil</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metadonnees">Metadonnées</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#structure-des-metadonnees">Structure des métadonnées</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#utilisation-des-metadonnees-dans-geonature">Utilisation des métadonnées dans GeoNature</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fonctionnement-du-module-metadonnees">Fonctionnement du module Métadonnées</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#occtax">OccTax</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#afficher-un-releve">Afficher un relevé</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ajouter-un-releve">Ajouter un relevé</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modifier-un-releve">Modifier un relevé</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exports">Exports</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthese">Synthèse</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acceder-a-la-synthese">Accéder à la synthèse</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#presentation-de-la-synthese">Présentation de la synthèse</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#detail-dune-observation">Détail d’une observation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rechercher-des-observations">Rechercher des observations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#admin">Admin</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gestion-des-permissions">Gestion des permissions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import">Import</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creer-un-import">Créer un import</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modifier-un-import">Modifier un import</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supprimer-un-import">Supprimer un import</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exemple-de-fichier-csv-pour-l-import-occhab">Exemple de fichier CSV pour l’import Occhab</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="manuel-utilisateur">
-<h1>MANUEL UTILISATEUR<a class="headerlink" href="#manuel-utilisateur" title="Link to this heading"></a></h1>
+<h1>Manuel utilisateur<a class="headerlink" href="#manuel-utilisateur" title="Lien vers cette rubrique">#</a></h1>
 <section id="authentification">
-<h2>Authentification<a class="headerlink" href="#authentification" title="Link to this heading"></a></h2>
+<h2>Authentification<a class="headerlink" href="#authentification" title="Lien vers cette rubrique">#</a></h2>
 <p>Accéder à l’application de démonstration à l’adresse <a class="reference external" href="https://demo.geonature.fr/geonature">https://demo.geonature.fr/geonature</a>.</p>
 <p>Connectez-vous avec l’utilisateur <code class="docutils literal notranslate"><span class="pre">admin</span></code> et le mot de passe <code class="docutils literal notranslate"><span class="pre">admin</span></code>.</p>
 </section>
 <section id="accueil">
-<h2>Accueil<a class="headerlink" href="#accueil" title="Link to this heading"></a></h2>
+<h2>Accueil<a class="headerlink" href="#accueil" title="Lien vers cette rubrique">#</a></h2>
 <p>Vous accédez alors à la page d’accueil de l’application GeoNature.</p>
 <img alt="https://geonature.fr/docs/img/user-manual/01-home-MTES.jpg" src="https://geonature.fr/docs/img/user-manual/01-home-MTES.jpg" />
 <p>Le Menu de navigation à gauche permet d’accéder aux différents modules de l’application.</p>
@@ -131,13 +420,13 @@
 <img alt="https://geonature.fr/docs/img/user-manual/01-home-logout.jpg" src="https://geonature.fr/docs/img/user-manual/01-home-logout.jpg" />
 </section>
 <section id="metadonnees">
-<h2>Metadonnées<a class="headerlink" href="#metadonnees" title="Link to this heading"></a></h2>
+<h2>Metadonnées<a class="headerlink" href="#metadonnees" title="Lien vers cette rubrique">#</a></h2>
 <p>Ce module permet de gérer les métadonnées (Cadres d’acquisition et jeux de données) de votre instance GeoNature, basées sur le standard Métadonnées du SINP (<a class="reference external" href="https://standards-sinp.mnhn.fr/category/standards/metadonnees/">https://standards-sinp.mnhn.fr/category/standards/metadonnees/</a>).</p>
 <p>Ces métadonnées permettent de décrire et d’organiser les données (occurrences de taxons, d’habitats, données protocolées…) au sein de lots de données cohérents et documentés. Les métadonnées ainsi créées sont propres à chaque instance de GeoNature, mais leur format standard permet de les diffuser vers d’autres outils ou dans le cadre du SINP.</p>
 <p>Pour les utilisateurs disposant des droits suffisants, le module Métadonnées est accessible depuis le menu gauche de GeoNature.</p>
 <img alt="https://geonature.fr/docs/img/user-manual/mtd/mtd_00_Acceder_au_module.png" src="https://geonature.fr/docs/img/user-manual/mtd/mtd_00_Acceder_au_module.png" />
 <section id="structure-des-metadonnees">
-<h3>Structure des métadonnées<a class="headerlink" href="#structure-des-metadonnees" title="Link to this heading"></a></h3>
+<h3>Structure des métadonnées<a class="headerlink" href="#structure-des-metadonnees" title="Lien vers cette rubrique">#</a></h3>
 <p>Les métadonnées comprennent deux niveaux distincts, comportant chacun un ensemble d’informations descriptives :</p>
 <ul class="simple">
 <li><p>Le cadre d’acquisition, qui permet de décrire le contexte ou le projet dans lequel les données ont été produites</p></li>
@@ -153,7 +442,7 @@
 <img alt="https://geonature.fr/docs/img/user-manual/mtd/mtd_01_Imbrication_notions.png" src="https://geonature.fr/docs/img/user-manual/mtd/mtd_01_Imbrication_notions.png" />
 </section>
 <section id="utilisation-des-metadonnees-dans-geonature">
-<h3>Utilisation des métadonnées dans GeoNature<a class="headerlink" href="#utilisation-des-metadonnees-dans-geonature" title="Link to this heading"></a></h3>
+<h3>Utilisation des métadonnées dans GeoNature<a class="headerlink" href="#utilisation-des-metadonnees-dans-geonature" title="Lien vers cette rubrique">#</a></h3>
 <p>Les métadonnées jouent un rôle central dans GeoNature, et sont nécessaires dans les différents modules de saisie ou de consultation des données. <strong>La gestion des métadonnées est donc la première étape à effectuer, avant de pouvoir produire ou exploiter les données de biodiversité en elles-mêmes</strong>. La notion de jeux de données intervient notamment pour les fonctionnalités suivantes :</p>
 <p><strong>- Saisie ou import de données</strong></p>
 <p>Lors de sa création dans GeoNature, chaque donnée doit être obligatoirement associée à un jeu de données préalablement créé. Ainsi le module d’import et la majorité des modules de saisie (Occtax, OccHab…) nécessitent de sélectionner le jeu de données auquel seront rattachées la ou les données en cours de création.
@@ -175,7 +464,7 @@ Ainsi les acteurs associés à chaque jeu de données permettront de définir le
 <p>GeoNature permet de configurer des champs additionnels « personnalisés » (<a class="reference external" href="https://docs.geonature.fr/admin-manual.html#administration-des-champs-additionnels">https://docs.geonature.fr/admin-manual.html#administration-des-champs-additionnels</a>), qui viennent compléter les champs du standard du sinp (sexe, stade de vie etc). Ces champs additionnels sont implémentés dans le module de saisie Occtax notamment, et peuvent être rendus disponibles uniquement pour certains jeux de données. Il devient ainsi possible, pour un jeu de données en particulier, de recueillir une variable ou une information supplémentaire qui n’apparaitrait pas dans les champs « standards ».</p>
 </section>
 <section id="fonctionnement-du-module-metadonnees">
-<h3>Fonctionnement du module Métadonnées<a class="headerlink" href="#fonctionnement-du-module-metadonnees" title="Link to this heading"></a></h3>
+<h3>Fonctionnement du module Métadonnées<a class="headerlink" href="#fonctionnement-du-module-metadonnees" title="Lien vers cette rubrique">#</a></h3>
 <p>Le module Métadonnées de GeoNature permet de consulter, rechercher et gérer ses cadres d’acquisitions et jeux de données, nécessaires à la gestion des données.</p>
 <p><strong>Consulter, rechercher ou modifier ses métadonnées</strong></p>
 <p>L’accueil du module Métadonnées liste l’ensemble des Cadres d’acquisition disponibles dans l’instance GeoNature. Chaque cadre d’acquisition peut être « déplié » pour afficher les jeux de données qu’il contient.</p>
@@ -211,7 +500,7 @@ Ainsi les acteurs associés à chaque jeu de données permettront de définir le
 </section>
 </section>
 <section id="occtax">
-<h2>OccTax<a class="headerlink" href="#occtax" title="Link to this heading"></a></h2>
+<h2>OccTax<a class="headerlink" href="#occtax" title="Lien vers cette rubrique">#</a></h2>
 <p>Ce module permet de saisir des données selon le standard Occurrence de taxon du SINP
 (<a class="reference external" href="https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon">https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon</a>).</p>
 <img alt="https://geonature.fr/docs/img/user-manual/2018-09-geonature-occtax.gif" src="https://geonature.fr/docs/img/user-manual/2018-09-geonature-occtax.gif" />
@@ -244,7 +533,7 @@ préalable les jeux de données dans l’application Métadonnées (MTD) du SINP
 <img alt="https://geonature.fr/docs/img/user-manual/02-occtax-modify-columns.jpg" src="https://geonature.fr/docs/img/user-manual/02-occtax-modify-columns.jpg" />
 <img alt="https://geonature.fr/docs/img/user-manual/02-occtax-modify-columns-2.jpg" src="https://geonature.fr/docs/img/user-manual/02-occtax-modify-columns-2.jpg" />
 <section id="afficher-un-releve">
-<h3>Afficher un relevé<a class="headerlink" href="#afficher-un-releve" title="Link to this heading"></a></h3>
+<h3>Afficher un relevé<a class="headerlink" href="#afficher-un-releve" title="Lien vers cette rubrique">#</a></h3>
 <p>Si vous affichez un relevé, vous accéderez à sa fiche complète :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/03-occtax-detail.jpg" src="https://geonature.fr/docs/img/user-manual/03-occtax-detail.jpg" />
 <p>Si vous cliquez sur un des taxons observés dans ce relevé, cela affichera le détail de l’observation du taxon :</p>
@@ -258,7 +547,7 @@ préalable les jeux de données dans l’application Métadonnées (MTD) du SINP
 <img alt="https://geonature.fr/docs/img/user-manual/03-occtax-detail-edit.jpg" src="https://geonature.fr/docs/img/user-manual/03-occtax-detail-edit.jpg" />
 </section>
 <section id="ajouter-un-releve">
-<h3>Ajouter un relevé<a class="headerlink" href="#ajouter-un-releve" title="Link to this heading"></a></h3>
+<h3>Ajouter un relevé<a class="headerlink" href="#ajouter-un-releve" title="Lien vers cette rubrique">#</a></h3>
 <p>Depuis la liste des relevés, cliquer sur le bouton de création d’un relevé :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/05-occtax-create.jpg" src="https://geonature.fr/docs/img/user-manual/05-occtax-create.jpg" />
 <p>Vous accédez alors à un formulaire de saisie à compléter :</p>
@@ -309,7 +598,7 @@ du rang et du groupe du taxon selectionné :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-2.jpg" src="https://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-2.jpg" />
 </section>
 <section id="modifier-un-releve">
-<h3>Modifier un relevé<a class="headerlink" href="#modifier-un-releve" title="Link to this heading"></a></h3>
+<h3>Modifier un relevé<a class="headerlink" href="#modifier-un-releve" title="Lien vers cette rubrique">#</a></h3>
 <p>Si vous modifiez un relevé existant, vous accédez à sa fiche renseignée, sur laquelle vous pouvez modifier la localisation, les informations du relevé, les taxons observés et leurs dénombrements :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/04-occtax-edit.jpg" src="https://geonature.fr/docs/img/user-manual/04-occtax-edit.jpg" />
 <p>Vous pouvez ajouter un taxon au relevé en cliquant sur <code class="docutils literal notranslate"><span class="pre">Ajouter</span> <span class="pre">un</span> <span class="pre">taxon</span> <span class="pre">sur</span> <span class="pre">ce</span> <span class="pre">relevé</span></code> :</p>
@@ -319,7 +608,7 @@ du rang et du groupe du taxon selectionné :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon-2.jpg" src="https://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon-2.jpg" />
 </section>
 <section id="exports">
-<h3>Exports<a class="headerlink" href="#exports" title="Link to this heading"></a></h3>
+<h3>Exports<a class="headerlink" href="#exports" title="Lien vers cette rubrique">#</a></h3>
 <p>Une fois que vous avez saisi vos relevés et observations depuis le formulaire, vous pouvez exporter ces données en CSV selon le standard Occurrence de taxon du SINP.</p>
 <p>Deux méthodes sont possibles pour exporter les données :</p>
 <ul class="simple">
@@ -343,17 +632,17 @@ du rang et du groupe du taxon selectionné :</p>
 </section>
 </section>
 <section id="synthese">
-<h2>Synthèse<a class="headerlink" href="#synthese" title="Link to this heading"></a></h2>
+<h2>Synthèse<a class="headerlink" href="#synthese" title="Lien vers cette rubrique">#</a></h2>
 <p>Ce module permet de consulter, rechercher et exporter les données provenant des différentes sources et protocoles avec leur tronc commun, basé sur le standard Occurrences de taxon du SINP (<a class="reference external" href="https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon">https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon</a>).</p>
 <p>Il permet aussi d’afficher la fiche détaillée de chaque occurrence et de revenir à sa fiche source si elle a été saisie dans un module de GeoNature.</p>
 <img alt="https://geonature.fr/docs/img/user-manual/2018-09-geonature-synthese.gif" src="https://geonature.fr/docs/img/user-manual/2018-09-geonature-synthese.gif" />
 <section id="acceder-a-la-synthese">
-<h3>Accéder à la synthèse<a class="headerlink" href="#acceder-a-la-synthese" title="Link to this heading"></a></h3>
+<h3>Accéder à la synthèse<a class="headerlink" href="#acceder-a-la-synthese" title="Lien vers cette rubrique">#</a></h3>
 <p>Cliquez sur le module Synthèse, dans le menu de navigation :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/01-acces-synthese.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/01-acces-synthese.jpg" />
 </section>
 <section id="presentation-de-la-synthese">
-<h3>Présentation de la synthèse<a class="headerlink" href="#presentation-de-la-synthese" title="Link to this heading"></a></h3>
+<h3>Présentation de la synthèse<a class="headerlink" href="#presentation-de-la-synthese" title="Lien vers cette rubrique">#</a></h3>
 <p>La page principale de la synthèse est composée de 3 blocs :</p>
 <ul class="simple">
 <li><p>Rechercher dans les résultats</p></li>
@@ -364,7 +653,7 @@ du rang et du groupe du taxon selectionné :</p>
 <p>Par défaut, la synthèse affiche les 100 observations les plus récentes. Il est possible d’accéder aux données souhaitées en appliquant un ensemble de filtres.</p>
 </section>
 <section id="detail-dune-observation">
-<h3>Détail d’une observation<a class="headerlink" href="#detail-dune-observation" title="Link to this heading"></a></h3>
+<h3>Détail d’une observation<a class="headerlink" href="#detail-dune-observation" title="Lien vers cette rubrique">#</a></h3>
 <p>Il est possible d’accéder au détail d’une observation en cliquant sur le symbole (i) à gauche d’une observation. Le détail d’une observation correspond à l’ensemble des informations contenues dans la synthèse pour cette observation.</p>
 <p>Une observation au sens de la synthèse ne correspond pas tout à fait à la donnée saisie initialement. C’est une représentation simplifiée et unifiée des données qui repose sur le standard SINP et qui répond aux questions suivantes :</p>
 <ul class="simple">
@@ -378,7 +667,7 @@ du rang et du groupe du taxon selectionné :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/03-detail-synthese.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/03-detail-synthese.jpg" />
 </section>
 <section id="rechercher-des-observations">
-<h3>Rechercher des observations<a class="headerlink" href="#rechercher-des-observations" title="Link to this heading"></a></h3>
+<h3>Rechercher des observations<a class="headerlink" href="#rechercher-des-observations" title="Lien vers cette rubrique">#</a></h3>
 <p><strong>1. Filtrer les données géographiquement :</strong></p>
 <p>Il y a 3 façons de filtrer géographiquement les données :</p>
 <ul class="simple">
@@ -458,11 +747,11 @@ du rang et du groupe du taxon selectionné :</p>
 </section>
 </section>
 <section id="admin">
-<h2>Admin<a class="headerlink" href="#admin" title="Link to this heading"></a></h2>
+<h2>Admin<a class="headerlink" href="#admin" title="Lien vers cette rubrique">#</a></h2>
 <p>C’est le module « backoffice » de GeoNature.
 Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionnels.</p>
 <section id="gestion-des-permissions">
-<h3>Gestion des permissions<a class="headerlink" href="#gestion-des-permissions" title="Link to this heading"></a></h3>
+<h3>Gestion des permissions<a class="headerlink" href="#gestion-des-permissions" title="Lien vers cette rubrique">#</a></h3>
 <p>Depuis le version 2.13.0 de GeoNature, le système des permissions a été entièrement revu pour :
 - pouvoir leur associer d’autres types de filtres (sensibilité notamment),
 - les simplifier et clarifier en supprimant l’héritage et en définissant les permissions disponibles pour chaque module</p>
@@ -492,39 +781,327 @@ Une fois que l’on a sélectionné un groupe ou utilisateur, la liste des permi
 <hr class="docutils" />
 <p>Pour les utilisateurs sont listées les permissions qui lui sont attribués directement individuellement, mais aussi les permissions effectives qui s’appliquent à lui (selon les groupes auquel il appartient) :</p>
 <img alt="https://github.com/PnX-SI/GeoNature/assets/4418840/75486b5c-a571-4c3a-9fd5-ff57328776c7" src="https://github.com/PnX-SI/GeoNature/assets/4418840/75486b5c-a571-4c3a-9fd5-ff57328776c7" />
+<style> .red {color:red;font-weight:bold}img{margin-bottom:10px}</style></section>
+</section>
+<section id="import">
+<h2>Import<a class="headerlink" href="#import" title="Lien vers cette rubrique">#</a></h2>
+<p>Depuis sa version 2.15, le module Import a été intégré à GeoNature et il permet d’importer des données depuis un fichier CSV dans deux modules :</p>
+<ul class="simple">
+<li><p>Synthèse</p></li>
+<li><p>Occhab</p></li>
+</ul>
+<section id="creer-un-import">
+<h3>Créer un import<a class="headerlink" href="#creer-un-import" title="Lien vers cette rubrique">#</a></h3>
+<p>Pour réaliser un import dans une des destinations de GeoNature, vous devez :</p>
+<ol class="arabic simple">
+<li><p>Une fois connecté à GeoNature, accédez au module Import. L’accueil
+du module affiche la « liste des imports » en cours ou terminés, selon
+les permissions de l’utilisateur connecté. Vous pouvez alors finir un
+import en cours, commencer un nouvel import ou supprimer un import.</p></li>
+</ol>
+<img alt="_images/00_imports_list.png" src="_images/00_imports_list.png" />
+<ol class="arabic simple" start="2">
+<li><p>Pour commencer un nouvel import, cliquez sur le bouton « + » en bas de la liste des imports. Dans la fenêtre qui s’affiche, sélectionner la destination (e.g. Occhab, Synthèse) de votre import.</p></li>
+</ol>
+<img alt="_images/01_destination_choice.png" src="_images/01_destination_choice.png" />
+<ol class="arabic simple" start="3">
+<li><p>Une fois la destination choisie, vous serez redirigé vers une nouvelle page.
+Dans ce nouveau formulaire, choisissez le jeu de données qui sera associé aux données importées.
+Puis, téléverser le fichier contenant les données que vous souhaitez importer. À ce jour, seul le format de fichier CSV est accepté par GeoNature. Une fois les
+champs remplis, cliquez sur le bouton « Suivant ».</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si aucun jeu de données n’apparait dans la liste déroulante, vérifier que le jeu de données souhaité est bien activé et associé à la destination souhaitée.</p>
+</div>
+<img alt="_images/02_upload_file.png" src="_images/02_upload_file.png" />
+<p>4.  Dans ce nouveau formulaire, indiquez les paramètres de lecture de votre fichier. Plusieurs
+paramètres seront automatiquement détectés par GeoNature. Une fois, les champs remplis, cliquez sur le bouton « Suivant ».</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A partir de cette étape, il est possible d’enregistrer votre import et le reprendre plus tard depuis la liste d’import.</p>
+</div>
+<img alt="_images/03_parameter_selection.png" src="_images/03_parameter_selection.png" />
+<ol class="arabic simple" start="5">
+<li><p>Maintenant que le fichier est téléversé, il s’agit de faire correspondre les champs du fichier importé aux champs accessibles d’une (ou plusieurs) entité.s (e.g. Station).
+Pour vous aider dans la saisie, vous pouvez utiliser un mapping existant ou créer un nouveau. Lors de la validation du formulaire, il sera possible d’enregistrer votre mapping pour pouvoir le réutiliser plus tard.
+Une fois, la mise en correspondance terminée, cliquez sur le bouton « Suivant ».</p></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Dans le cas où la destination comporte plusieurs entités, les champs requis pour une entité ne seront affichés uniquement si un des champs de l’entité est remplie (hors identifiant UUID).</p>
+</div>
+<img alt="_images/04_01_mapping_cols.png" src="_images/04_01_mapping_cols.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Chaque destination contient un mapping par défaut. Ce dernier s’appuie sur les fichiers exportés par le module depuis l’interface de saisie.</p>
+<p>À la fin du formulaire, vous pouvez visualiser le nombre de correspondances effectuées
+et les colonnes du fichier source qui n’ont pas été utilisées.</p>
+<img alt="_images/04_02_mapping_cols_validate.png" src="_images/04_02_mapping_cols_validate.png" />
+</div>
+<ol class="arabic simple" start="6">
+<li><p>Si des champs de nomenclatures ont été mappés, chaque valeur distincte présente dans le fichier doit être mise en correspondance avec une nomenclature présente dans la base de données.
+Tout comme le mapping des colonnes, vous pouvez utiliser un mapping de valeur existant ou créer un nouveau.
+Une fois la correspondance terminée, cliquez sur le bouton « Suivant ».</p></li>
+</ol>
+<img alt="_images/05_mapping_value.png" src="_images/05_mapping_value.png" />
+<p>7. Pour pouvoir importer les données présentes dans le fichier source, il est nécessaire d”
+effectuer des contrôles sur les données : vérification des types, vérification des formats de données (dates),
+vérification de cohérence de données (date début &lt; date fin), etc. Pour lancer, le contrôle de données cliquez
+sur le bouton « Lancer la vérification ».</p>
+<img alt="_images/06_01_control_data.png" src="_images/06_01_control_data.png" />
+<ol class="arabic simple" start="8">
+<li><p>Une fois la vérification des données effectuée, un aperçu des données valides ainsi que leur emprise spatiale (<em>bounding box</em>) sont affichés.
+Si des erreurs sont présentes dans les données, un bouton « Rapport d’import/erreurs/avertissement » permet d’afficher les erreurs et d’ajuster votre fichier source ou les paramètres de l’import.
+De plus, il est possible de télécharge un fichier contenant unique les lignes contenant des erreurs.
+Si l’aperçu des données qui seront importées vous convient, cliquez sur le bouton « Importer les [n] entités valides ».</p></li>
+</ol>
+<img alt="_images/06_02_import_part1.png" src="_images/06_02_import_part1.png" />
+<p>9.  Une fois l’import terminé, un rapport récapitulatif est affiché avec les différents paramètres
+de l’import mais aussi plusieurs indicateurs statistiques sous forme de tableau et de graphique(s).
+Il est aussi possible d’exporter une version PDF de ce rapport.</p>
+<img alt="_images/07_report_part1.png" src="_images/07_report_part1.png" />
+</section>
+<section id="modifier-un-import">
+<h3>Modifier un import<a class="headerlink" href="#modifier-un-import" title="Lien vers cette rubrique">#</a></h3>
+<p>Pour modifier un import, rendez-vous dans la « Liste des imports », cliquez sur l’icone en forme de « crayon » dans la colonne « Actions ».</p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>La modification d’un import terminé provoquera la suppression des données importées dans la table temporaire et dans la table de destination.</p>
+</div>
+</section>
+<section id="supprimer-un-import">
+<h3>Supprimer un import<a class="headerlink" href="#supprimer-un-import" title="Lien vers cette rubrique">#</a></h3>
+<p>Pour supprimer un import, il suffit de cliquer sur l’icone en forme de poubelle dans la colonne « Actions ».</p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>La suppression d’un import terminé entrainera la suppression des données dans la table de destination.</p>
+</div>
+</section>
+<section id="exemple-de-fichier-csv-pour-l-import-occhab">
+<h3>Exemple de fichier CSV pour l’import Occhab<a class="headerlink" href="#exemple-de-fichier-csv-pour-l-import-occhab" title="Lien vers cette rubrique">#</a></h3>
+<p>Ci-dessous un exemple de fichier CSV avec les colonnes et le contenu attendu dans l’import de données vers Occhab.</p>
+<p>Le fichier CSV pour un import Occhab représente un tableau à plat des données des stations et de leurs habitats. Par conséquent, les données d’une station doivent être répétées autant de fois que son nombre d’habitats.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>id_origine</p></th>
+<th class="head"><p>UUID_station</p></th>
+<th class="head"><p>geometry_station</p></th>
+<th class="head"><p>UUID_hab</p></th>
+<th class="head"><p>cd_hab</p></th>
+<th class="head"><p>STATUTS</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>5</p></td>
+<td></td>
+<td><p>POINT (30 10)</p></td>
+<td></td>
+<td><p>27</p></td>
+<td><p>Ajout d’une station auquel on associe un habitat (UUIDs seront généré)</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td></td>
+<td><p>POINT (30 10)</p></td>
+<td></td>
+<td><p>32</p></td>
+<td><p>Ajout d’un habitat dans une station (l’UUID habitat sera généré)</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>AAA</p></td>
+<td><p>POINT (15 10)</p></td>
+<td></td>
+<td><p>18</p></td>
+<td><p>Ajout d’une station auquel on associe un habitat (génération de l’UUID de l’habitat)</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>CCC</p></td>
+<td><p>POINT (9 5)</p></td>
+<td></td>
+<td><p>11</p></td>
+<td><p>Ajout d’une station auquel on associe un habitat (génération de l’UUID de l’habitat)</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>CCC</p></td>
+<td></td>
+<td></td>
+<td><p>15</p></td>
+<td><p>Ajout d’un habitat dans une station (répéter les informations d’une station déclarée dans le fichier est optionnel)</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>XXX</p></td>
+<td></td>
+<td></td>
+<td><p>22</p></td>
+<td><p>Ajout d’un habitat dans une station existante (identifié par l’UUID XXX) dans la base de données</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td></td>
+<td><p>POINT (9 4)</p></td>
+<td></td>
+<td></td>
+<td><p>Ajout d’une station</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td></td>
+<td><p>POINT (9 4)</p></td>
+<td></td>
+<td></td>
+<td><p>Ligne ignorée car doublon de la ligne 8</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>BBB</p></td>
+<td><p>POINT (9 4)</p></td>
+<td></td>
+<td><p>55</p></td>
+<td><p>Provoque une erreur car il y a une incohérence dans les données d’une station sur différentes lignes</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>BBB</p></td>
+<td><p>POINT (20 3)</p></td>
+<td></td>
+<td><p>58</p></td>
+<td><p>Provoque une erreur car il y a une incohérence dans les données d’une station sur différentes lignes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Plus d’exemples sont disponibles dans le fichier <code class="docutils literal notranslate"><span class="pre">valid_file.csv</span></code> dans le dossier <code class="docutils literal notranslate"><span class="pre">backend/geonature/tests/imports/files/occhab/valid_file.csv</span></code>.</p>
 </section>
 </section>
 </section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
-        <a href="installation.html" class="btn btn-neutral float-left" title="INSTALLATION" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
-        <a href="admin-manual.html" class="btn btn-neutral float-right" title="MANUEL ADMINISTRATEUR" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+                </article>
+              
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
-  </div>
-
-  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
-    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="installation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">précédent</p>
+        <p class="prev-next-title">Installation</p>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </a>
+    <a class="right-next"
+       href="admin-manual.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">suivant</p>
+        <p class="prev-next-title">Manuel administrateur</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-</body>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenu
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#authentification">Authentification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accueil">Accueil</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metadonnees">Metadonnées</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#structure-des-metadonnees">Structure des métadonnées</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#utilisation-des-metadonnees-dans-geonature">Utilisation des métadonnées dans GeoNature</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fonctionnement-du-module-metadonnees">Fonctionnement du module Métadonnées</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#occtax">OccTax</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#afficher-un-releve">Afficher un relevé</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ajouter-un-releve">Ajouter un relevé</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modifier-un-releve">Modifier un relevé</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exports">Exports</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthese">Synthèse</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acceder-a-la-synthese">Accéder à la synthèse</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#presentation-de-la-synthese">Présentation de la synthèse</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#detail-dune-observation">Détail d’une observation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rechercher-des-observations">Rechercher des observations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#admin">Admin</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gestion-des-permissions">Gestion des permissions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import">Import</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creer-un-import">Créer un import</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modifier-un-import">Modifier un import</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supprimer-un-import">Supprimer un import</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exemple-de-fichier-csv-pour-l-import-occhab">Exemple de fichier CSV pour l’import Occhab</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

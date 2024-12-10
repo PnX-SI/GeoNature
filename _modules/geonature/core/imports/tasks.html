@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+
+
+<html lang="fr" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geonature.core.imports.tasks &#8212; Documentation GeoNature 2.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../_static/documentation_options.js?v=94f178cf"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../../_static/translations.js?v=041d0952"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/geonature/core/imports/tasks';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="fr"/>
+  <meta name="docsearch:version" content="2.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
+    <img src="../../../../_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Recherche</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">Manuel utilisateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">Manuel administrateur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">Développement</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Auteurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/PnX-SI/GeoNature" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Dépôt source"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Mode plein écran"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Code source de geonature.core.imports.tasks</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">delete</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">array_agg</span><span class="p">,</span> <span class="n">aggregate_order_by</span>
+<span class="kn">from</span> <span class="nn">celery.utils.log</span> <span class="kn">import</span> <span class="n">get_task_logger</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.celery</span> <span class="kn">import</span> <span class="n">celery_app</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.notifications.utils</span> <span class="kn">import</span> <span class="n">dispatch_notifications</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.imports.models</span> <span class="kn">import</span> <span class="n">BibFields</span><span class="p">,</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">EntityField</span><span class="p">,</span> <span class="n">TImports</span>
+<span class="kn">from</span> <span class="nn">geonature.core.imports.checks.sql</span> <span class="kn">import</span> <span class="n">init_rows_validity</span><span class="p">,</span> <span class="n">check_orphan_rows</span>
+
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/tasks/index.html#geonature.core.imports.tasks.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_task_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@celery_app</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="do_import_checks">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/tasks/index.html#geonature.core.imports.tasks.do_import_checks">[docs]</a>
+<span class="k">def</span> <span class="nf">do_import_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">import_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verify the import data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    import_id : int</span>
+<span class="sd">        The ID of the import to verify.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting verification of import </span><span class="si">{</span><span class="n">import_id</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">imprt</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TImports</span><span class="p">,</span> <span class="n">import_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">imprt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Task cancelled, doing nothing.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">check_transient_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">imprt</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+
+    <span class="n">imprt</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TImports</span><span class="p">,</span> <span class="n">import_id</span><span class="p">,</span> <span class="n">with_for_update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;of&quot;</span><span class="p">:</span> <span class="n">TImports</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">imprt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Task cancelled, rollback changes.&quot;</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;All done, committing…&quot;</span><span class="p">)</span>
+        <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">processed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span>
+                <span class="n">array_agg</span><span class="p">(</span><span class="n">aggregate_order_by</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">,</span> <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">line_no</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">validity_columns</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">imprt</span><span class="o">.</span><span class="n">erroneous_rows</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@celery_app</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="do_import_in_destination">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/tasks/index.html#geonature.core.imports.tasks.do_import_in_destination">[docs]</a>
+<span class="k">def</span> <span class="nf">do_import_in_destination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">import_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert valid transient data into the destination of an import.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    import_id : int</span>
+<span class="sd">        The ID of the import to insert data into the destination.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting insertion in destination of import </span><span class="si">{</span><span class="n">import_id</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">imprt</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TImports</span><span class="p">,</span> <span class="n">import_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">imprt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Task cancelled, doing nothing.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
+
+    <span class="c1"># Copy valid transient data to destination</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">import_data_to_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+
+    <span class="n">count_entities</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Entity</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">BibFields</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">BibFields</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">EntityField</span><span class="o">.</span><span class="n">entity</span> <span class="o">==</span> <span class="n">entity</span><span class="p">),</span>
+                <span class="n">BibFields</span><span class="o">.</span><span class="n">dest_field</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">BibFields</span><span class="o">.</span><span class="n">name_field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">columns_to_count_unique_entities</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_column</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span>
+        <span class="p">]</span>
+        <span class="n">n_valid_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="o">*</span><span class="n">columns_to_count_unique_entities</span><span class="p">)))</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+        <span class="n">count_entities</span> <span class="o">+=</span> <span class="n">n_valid_data</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">statistics</span><span class="p">[</span><span class="s2">&quot;import_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">count_entities</span>
+
+    <span class="c1"># COUNT VALID ROW in SOURCE FILE</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">statistics</span><span class="p">[</span><span class="s2">&quot;nb_line_valid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">]))</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+
+    <span class="c1"># Clear transient data</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">delete</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">imprt</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TImports</span><span class="p">,</span> <span class="n">import_id</span><span class="p">,</span> <span class="n">with_for_update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;of&quot;</span><span class="p">:</span> <span class="n">TImports</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">imprt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Task cancelled, rollback changes.&quot;</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;All done, committing…&quot;</span><span class="p">)</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">task_id</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">imprt</span><span class="o">.</span><span class="n">date_end_import</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="c1"># Send element to notification system</span>
+    <span class="n">notify_import_done</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># Send notification</span>
+<div class="viewcode-block" id="notify_import_done">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/tasks/index.html#geonature.core.imports.tasks.notify_import_done">[docs]</a>
+<span class="k">def</span> <span class="nf">notify_import_done</span><span class="p">(</span><span class="n">imprt</span><span class="p">:</span> <span class="n">TImports</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Notify the authors of an import that it has finished.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    imprt : TImports</span>
+<span class="sd">        The import that has finished.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">id_authors</span> <span class="o">=</span> <span class="p">[</span><span class="n">author</span><span class="o">.</span><span class="n">id_role</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">authors</span><span class="p">]</span>
+    <span class="n">dispatch_notifications</span><span class="p">(</span>
+        <span class="n">code_categories</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;IMPORT-DONE%&quot;</span><span class="p">],</span>
+        <span class="n">id_roles</span><span class="o">=</span><span class="n">id_authors</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Import terminé&quot;</span><span class="p">,</span>
+        <span class="n">url</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span>
+            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/#/import/</span><span class="si">{</span><span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="si">}</span><span class="s2">/report&quot;</span>
+        <span class="p">),</span>
+        <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="n">imprt</span><span class="p">,</span>
+            <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="p">,</span>
+            <span class="s2">&quot;url_notification_rules&quot;</span><span class="p">:</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span>
+            <span class="o">+</span> <span class="s2">&quot;/#/notification/rules&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Par PnE, PnC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
