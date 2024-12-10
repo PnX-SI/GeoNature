@@ -146,4 +146,8 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
         this.locale = langChangeEvent.lang;
       });
   }
+
+  public displayDiscussions() {
+    return this.config.SYNTHESE.DISCUSSION_MODULES.length > 0;
+  }
 }
