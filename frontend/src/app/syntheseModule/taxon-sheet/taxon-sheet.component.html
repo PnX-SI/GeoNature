@@ -2,10 +2,12 @@
   <div class="TaxonSheet">
     <infos class="TaxonSheet__infos" />
     <div class="TaxonSheet__indicators">
-      <indicator
-        *ngFor="let indicator of indicators"
-        [indicator]="indicator"
-      />
+      <ng-container *ngFor="let indicator of indicators">
+        <indicator
+          *ngIf="indicator.type != 'image' || indicator.value != '-'"
+          [indicator]="indicator"
+        />
+      </ng-container>
     </div>
     <div class="card AvancedInfos">
       <nav

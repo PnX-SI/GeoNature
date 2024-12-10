@@ -28,21 +28,6 @@ export class InfosComponent implements OnInit {
   ngOnInit() {
     this._tss.taxon.subscribe((taxon: Taxon | null) => {
       this.taxon = taxon;
-      if (!this.taxon) {
-        return;
-      }
-      this._ds
-        .getTaxonInfo(this.taxon.cd_ref, ['medias', 'cd_nom'])
-        .subscribe((taxonAttrAndMedias) => {
-          const media = taxonAttrAndMedias['medias'].find(
-            (m) => m.id_type == this._config.TAXHUB.ID_TYPE_MAIN_PHOTO
-          );
-          if (media) {
-            this.mediaUrl = `${this._ds.getTaxhubAPI()}/tmedias/thumbnail/${
-              media.id_media
-            }?h=300&w300`;
-          }
-        });
     });
   }
 }

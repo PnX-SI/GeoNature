@@ -2,9 +2,10 @@ export interface Indicator {
   name: string;
   matIcon: string;
   value: string | null;
+  type: IndicatorRawType;
 }
 
-type IndicatorRawType = 'number' | 'string' | 'date';
+type IndicatorRawType = 'number' | 'string' | 'date' | 'image';
 export interface IndicatorDescription {
   name: string;
   matIcon: string;
@@ -57,5 +58,6 @@ export function computeIndicatorFromDescription(
     name: indicatorDescription.name,
     matIcon: indicatorDescription.matIcon,
     value: value,
+    type: indicatorDescription.type,
   };
 }

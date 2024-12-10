@@ -8,6 +8,10 @@
   height: 9rem;
   width: auto;
   min-width: 12rem;
+  &__media {
+    height: 100%;
+    width: 100%;
+  }
   &__icon {
     $icon-size: 2rem;
     font-size: $icon-size;
