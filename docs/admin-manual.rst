@@ -2435,7 +2435,7 @@ Depuis la version 2.15 de GeoNature, TaxHub est integré comme un module de GeoN
 L'emplacement de stockage des médias est contrôlé par le paramètre `MEDIA_FOLDER`. Les médias de TaxHub seront à l'emplacement `<MEDIA_FOLDER>/taxhub`. Par défaut tous les médias de GeoNature sont stockés dans le répertoire de GeoNature : `<GEONATURE_DIR>/backend/media`. Via ce paramètre, il est possible de mettre un chemin absolu pour stocker les médias n'importe où ailleurs sur votre serveur.
 
 Gestion des permissions
-```````````````````````
+"""""""""""""""""""""""
 
 La gestion des permissions du module TaxHub est entierement gérée par le module de gestion de permissions de GeoNature. Dans le cas d'une installation standalone de TaxHub, se réferer à la documentation de TaxHub pour la gestion des permissions.
 
@@ -2445,6 +2445,18 @@ Les permissions du module TaxHub peuvent être reglées aux trois niveaux (objet
 - THEMES : permet de voir / créer / modifier / supprimer des thèmes. Les thèmes sont des groupes d'attributs
 - LISTES : permet de voir / créer / modifier / supprimer des listes de taxons
 - ATTRIBUTS : permet de voir / créer / modifier / supprimer des attributs de taxons
+
+Commandes TaxHub
+""""""""""""""""
+
+Depuis la version 2.15, les commandes de TaxHub sont maintenant acessibles depuis la commande `geonature`.
+      
+::
+  
+  geonature taxref info # avant flask taxref info
+  geonature taxref enable-bdc-statut-text # avant flask taxref enable-bdc-statut-text
+  geonature taxref migrate-to-v17 # flask taxref migrate-to-v17
+
 
 
 .. include:: admin/import-admin.rst
