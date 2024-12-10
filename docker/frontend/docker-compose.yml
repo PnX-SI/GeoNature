@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+
+  nginx:
+    restart: unless-stopped
+    image: ${DOCKER_IMAGE}
+    env_file:
+      - .env
+    volumes:
+      - "front-build:/data"
+    expose:
+      - "80"
+    networks:
+      web:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geonature-frontend${PLATEFORM_NAME}.priority=1"
+      - "traefik.http.routers.geonature-frontend${PLATEFORM_NAME}.entrypoints=web"
+      - "traefik.http.routers.geonature-frontend${PLATEFORM_NAME}.rule=Host(`${GEONATURE_HOST}`,`www.${GEONATURE_HOST}`) && PathPrefix(`${GEONATURE_PREFIX}`)"
+      - "traefik.http.middlewares.foo-strip-prefix${PLATEFORM_NAME}.stripprefix.prefixes=${GEONATURE_PREFIX}"
+        # Apply the middleware named `foo-strip-prefix` to the router named `geonature-frontend`
+      - "traefik.http.routers.geonature-frontend${PLATEFORM_NAME}.middlewares=foo-strip-prefix${PLATEFORM_NAME}@docker"
+networks:
+  databases:
+    external: true
+  web:
+    external: true
+
+volumes:
+  front-build:
+    external: true
