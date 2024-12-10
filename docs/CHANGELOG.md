@@ -6,7 +6,7 @@ CHANGELOG
 
 **⏩ En bref**
 
-- Nouvelle version de TaxHub (V2.0.0) intégrée à GeoNature
+- Nouvelle version de TaxHub (2.0.0) intégrée à GeoNature
 - Fiche de taxon enrichie intégrant l'actuel profil mais aussi une synthèse géographique, les informations taxonomiques ainsi qu'une liste des statuts de protection
 - Module Import intégré à GeoNature
 - Import de données vers le module Occhab
@@ -18,24 +18,23 @@ CHANGELOG
   - La gestion des taxons est maintenant intégrée dans le module Admin de GeoNature. 
 - [Import] Refonte et intégration du module Import dans GeoNature (#3269)
   - Ajout d'une nouvelle destination d'import de données : Occhab
-  - Ajout de la possibilité d'étendre les destinations disponibles pour l'import de données dans d'autres modules. [Documentation de développement](https://docs.geonature.fr/development.html#integrer-limport-de-donnees-dans-votre-module) dédiée à ce sujet
+  - Ajout de la possibilité d'étendre les destinations disponibles pour l'import de données vers d'autres modules. [Documentation de développement](https://docs.geonature.fr/development.html#integrer-limport-de-donnees-dans-votre-module) dédiée à ce sujet
   - Ajout d'un bouton pour importer des données directement depuis le module de destination (Synthèse et Occhab actuellement)
   - Evolution des permissions : la création d'un import dépend de l'action C sur le module Import et de l'action C dans le module de destination (Synthèse et/ou Occhab)
-  - Plusieurs améliorations : de nouveaux contrôles des données, un rapport d'import revu, intégration de nouveaux tests frontends ...
-  - Intégration et complément de la documentation du module dans la documentation de GeoNature (Admin, utilisateur, XXXXX URL)
+  - Plusieurs améliorations : de nouveaux contrôles des données, un rapport d'import revu et intégration de nouveaux tests frontends
+  - Intégration et complément de la documentation utilisateur et administrateur du module dans la documentation de GeoNature
 - [Authentification] Possibilité de se connecter à GeoNature avec d'autres fournisseurs d'identité (#3111)
   - Plusieurs protocoles de connexion intégrés activables et paramétrables : OAuth, CAS INPN, UserHub
   - Possibilité de se connecter sur d'autres instances GeoNature
-  - Voir la documentation pour plus de détails (XXXX ajouter lien)
 - [Synthèse] Enrichissement de la fiche taxon (#2981, #3131, #3187, #3175)
   - Affichage de la synthèse géographique d'un taxon
   - Affichage du statut de protection du taxon
   - Affichage des informations taxonomiques présentes dans Taxref
-  - Ajout d'un lien vers la fiche du taxon dans la liste des observations de la Synthèse (#2718)
+  - Ajout d'un lien vers la fiche du taxon depuis la liste des observations de la Synthèse (#2718)
 - [Synthèse] Possibilité de partager une URL de redirection vers un onglet (détails, taxonomie, discussion, validation, etc.) de la fiche d'une observation (#3169)
 - [Accueil] Ajout d'un bloc `Discussions` sur la page d'accueil, désactivable avec le paramètre `DISPLAY_LATEST_DISCUSSIONS` (#3138)
-  - Filtrable sur uniquement les discussions dans lesquels l'utilisateur authentifié a participé, ou associé à une des observations dont il est : soit l'observateur ou l'opérateur de la saisie (#3194)
-- [Occhab] Remplacement du champ `is_habitat_complex` par le nouveau champ `id_nomenclature_type_habitat` et intégration de la nomenclature SINP associée (voir MosaiqueValue dans la version 2 du standard SINP) (#3125)
+  - Filtrable sur les discussions dans lesquelles l'utilisateur authentifié a participé, ou associé à une des observations dont il est : soit l'observateur ou l'opérateur de la saisie (#3194)
+- [Occhab] Remplacement du champ `is_habitat_complex` par le nouveau champ `id_nomenclature_type_habitat` et intégration de la nomenclature SINP associée (voir MosaiqueValue dans la version 2 du standard Occurrences d'habitats du SINP) (#3125)
 - [Occhab] Affichage de l'UUID de la station dans sa fiche détail (#3247)
 - [Occhab] Amélioration de l'export des données en revoyant la vue `pr_occhab.v_export_sinp` (#3122)
 - [Métadonnées] Possibilité de supprimer un cadre d'acquisition vide (#1673)
