@@ -42,8 +42,7 @@ setuptools.setup(
         ],
         "doc": [
             "sphinx",
-            "sphinx_rtd_theme",
-            "sphinxcontrib-websupport",
+            "sphinx-book-theme",
             "myst-parser",
             "sphinx-autoapi",
         ],

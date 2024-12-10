@@ -1,4 +1,4 @@
-name: 'Build Sphinx Documentation'
+name: "Build Sphinx Documentation"
 
 on:
   release:
@@ -36,19 +36,10 @@ jobs:
         with:
           node-version: lts/iron
 
-      - name: Install JS librairies
-        working-directory: ./frontend
-        run: npm install
-
-      - name: Build JS documentation
-        working-directory: ./frontend
-        run: npm run docBuild
-
-      - name: Install python dependencies
-        run: pip install .[docs]
-
       - name: Build and Commit
         uses: sphinx-notes/pages@v2
+        with:
+          requirements_path: docs/requirements.txt
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
 

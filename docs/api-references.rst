@@ -6,4 +6,3 @@ API REFERENCES
     ../../autoapi/pypnusershub/index
     ../../autoapi/src/utils_flask_sqla/index
     ../../autoapi/src/utils_flask_sqla_geo/index
-    frontend
