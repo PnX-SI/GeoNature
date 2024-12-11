@@ -1496,8 +1496,8 @@ def list_all_reports(permissions):
     type_name = request.args.get("type")
     orderby = request.args.get("orderby", "creation_date")
     sort = request.args.get("sort")
-    page = int(request.args.get("page", 1))
-    per_page = int(request.args.get("per_page", 10))
+    page = request.args.get("page", 1, int)
+    per_page = request.args.get("per_page", 10, int)
     my_reports = request.args.get("my_reports", "false").lower() == "true"
 
     # Start query
@@ -1599,11 +1599,9 @@ def list_all_reports(permissions):
         result.append(report_dict)
 
     response = {
-        "total_filtered": paginated_results.total,
-        "total": total,
-        "pages": paginated_results.pages,
-        "current_page": page,
-        "per_page": per_page,
+        "total": paginated_results.total,
+        "page": paginated_results.page,
+        "per_page": paginated_results.per_page,
         "items": result,
     }
     return jsonify(response)
