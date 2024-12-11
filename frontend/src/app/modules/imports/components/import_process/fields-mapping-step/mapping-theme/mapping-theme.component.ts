@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Field } from '@geonature/modules/imports/models/mapping.model';
 import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
 
 @Component({
@@ -12,9 +10,13 @@ export class MappingThemeComponent implements OnInit {
   @Input() themeData;
   @Input() sourceFields: Array<string>;
 
+  defaultValueFormDefs: any = {};
+
   constructor(public _fm: FieldMappingService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.defaultValueFormDefs = this._fm.getDefaultValueFormDefs();
+  }
 
   isMapped(keySource: string) {
     return this._fm.checkTargetFieldStatus('mapped', keySource);
@@ -30,15 +32,5 @@ export class MappingThemeComponent implements OnInit {
     return labels.map((label) => {
       return this.themeData.fields.find((field) => field.name_field === label)?.fr_label;
     });
-  }
-
-  public getDefaultValueWidget(field: any) {
-    if (field.mnemonique) {
-      return 'nomenclature';
-    } else if (field.multi) {
-      return 'textarea';
-    }
-
-    return 'text';
   }
 }

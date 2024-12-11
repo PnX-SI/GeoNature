@@ -70,6 +70,8 @@ def get_fields(scope, destination):
                             fields=[
                                 "id_field",
                                 "name_field",
+                                "type_field",
+                                "type_field_params",
                                 "fr_label",
                                 "eng_label",
                                 "mnemonique",
