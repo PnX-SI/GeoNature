@@ -14,6 +14,7 @@ import {
   Indicator,
   IndicatorDescription,
 } from './indicator/indicator';
+import { TaxonImageComponent } from './infos/taxon-image/taxon-image.component';
 import { IndicatorComponent } from './indicator/indicator.component';
 import { CommonModule } from '@angular/common';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
@@ -69,6 +70,7 @@ const INDICATORS: Array<IndicatorDescription> = [
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
+    TaxonImageComponent,
   ],
   providers: [TaxonSheetService],
 })
