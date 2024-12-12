@@ -90,7 +90,9 @@ def upgrade():
         )
 
     id_mapping_sinp = session.execute(
-        sa.select(MappingTemplate.c.id).where(MappingTemplate.c.label == "Occurrences d'habitats SINP")
+        sa.select(MappingTemplate.c.id).where(
+            MappingTemplate.c.label == "Occurrences d'habitats SINP"
+        )
     ).scalar()
 
     if not id_mapping_sinp:
@@ -128,7 +130,9 @@ def upgrade():
                     "determiner": {"column_src": "persDeterm"},
                     "id_habitat": {"column_src": "idOrigine"},
                     "id_nomenclature_abundance": {"column_src": "abondHab"},
-                    "id_nomenclature_area_surface_calculation": {"column_src": "methodeCalculSurface"},
+                    "id_nomenclature_area_surface_calculation": {
+                        "column_src": "methodeCalculSurface"
+                    },
                     "id_nomenclature_collection_technique": {"column_src": "techCollec"},
                     "id_nomenclature_community_interest": {
                         "column_src": "habitatInteretCommunautaire "
@@ -153,7 +157,7 @@ def upgrade():
                 },
             )
         )
-        
+
     session.commit()
     session.close()
 
