@@ -36,7 +36,16 @@ jsonschema_definitions = {
                 ],
             },
             "type_field": {
-                "type": "string",
+                "type": [
+                    "string",
+                    "null",
+                ],
+            },
+            "type_field_params": {
+                "type": [
+                    "object",
+                    "null",
+                ],
             },
             "synthese_field": {
                 "type": "boolean",
