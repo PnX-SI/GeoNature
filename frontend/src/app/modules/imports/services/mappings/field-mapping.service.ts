@@ -483,7 +483,7 @@ export class FieldMappingService {
       return default_value?.cd_nom;
     }
     if (formDef.type_widget === 'date') {
-      return this._dateParser.format(default_value);
+      return this._dateParser.format(default_value) || undefined;
     }
 
     return default_value ?? undefined;
