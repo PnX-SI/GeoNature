@@ -155,10 +155,6 @@ export class ImportListComponent implements OnInit {
     this.importProcessService.continueProcess(data);
   }
 
-  onViewDataset(row: Import) {
-    this._router.navigate([`metadata/dataset_detail/${row.id_dataset}`]);
-  }
-
   downloadSourceFile(row: Import) {
     this._ds.setDestination(row.destination.code);
     this._ds.downloadSourceFile(row.id_import).subscribe((result) => {
@@ -204,8 +200,6 @@ export class ImportListComponent implements OnInit {
   getTooltip(row, tooltipType) {
     if (!row?.cruved?.U) {
       return "Vous n'avez pas les droits";
-    } else if (!row?.dataset?.active) {
-      return 'JDD clos';
     } else if (tooltipType === 'edit') {
       return "Modifier l'import";
     } else {
