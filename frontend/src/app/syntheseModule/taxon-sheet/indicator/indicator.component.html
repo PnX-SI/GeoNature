@@ -1,16 +1,5 @@
-<div
-  [className]="small ? 'card Indicator Indicator--small' : 'card Indicator'"
-  [style]="indicator.type == 'image' ? 'padding: 0' : 'padding: 1rem'"
->
-  <ng-container *ngIf="indicator.type != 'image'; else media">
-    <mat-icon class="Indicator__icon">{{ indicator.matIcon }}</mat-icon>
-    <span class="Indicator__value">{{ indicator.value }}</span>
-    <span class="Indicator__name text-secondary">{{ indicator.name }}</span>
-  </ng-container>
-  <ng-template #media>
-    <div
-      class="Indicator__media cover image"
-      [style.background-image]="'url(' + indicator.value + ')'"
-    ></div>
-  </ng-template>
+<div [className]="small ? 'card Indicator Indicator--small' : 'card Indicator'">
+  <mat-icon class="Indicator__icon">{{ indicator.matIcon }}</mat-icon>
+  <span class="Indicator__value">{{ indicator.value }}</span>
+  <span class="Indicator__name text-secondary">{{ indicator.name }}</span>
 </div>

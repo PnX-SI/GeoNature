@@ -14,22 +14,14 @@ import {
   Indicator,
   IndicatorDescription,
 } from './indicator/indicator';
+import { TaxonImageComponent } from './infos/taxon-image/taxon-image.component';
 import { IndicatorComponent } from './indicator/indicator.component';
 import { CommonModule } from '@angular/common';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonSheetService } from './taxon-sheet.service';
 import { RouteService } from './taxon-sheet.route.service';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ConfigService } from '@geonature/services/config.service';
 
 const INDICATORS: Array<IndicatorDescription> = [
-  {
-    name: 'Image',
-    matIcon: '',
-    type: 'image',
-    field: 'media',
-  },
   {
     name: 'observation(s)',
     matIcon: 'search',
@@ -78,12 +70,12 @@ const INDICATORS: Array<IndicatorDescription> = [
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
+    TaxonImageComponent,
   ],
   providers: [TaxonSheetService],
 })
 export class TaxonSheetComponent implements OnInit {
   readonly TAB_LINKS = [];
-  mediaUrl: string = null;
 
   indicators: Array<Indicator>;
 
@@ -92,9 +84,7 @@ export class TaxonSheetComponent implements OnInit {
     private _route: ActivatedRoute,
     private _tss: TaxonSheetService,
     private _syntheseDataService: SyntheseDataService,
-    private _routes: RouteService,
-    private _ds: DataFormService,
-    private _config: ConfigService
+    private _routes: RouteService
   ) {
     this.TAB_LINKS = this._routes.TAB_LINKS;
   }
@@ -102,19 +92,9 @@ export class TaxonSheetComponent implements OnInit {
     this._route.params.subscribe((params) => {
       const cd_ref = params['cd_ref'];
       if (cd_ref) {
-        this._ds.getTaxonInfo(cd_ref, ['medias', 'cd_nom']).subscribe((taxonAttrAndMedias) => {
-          const media = taxonAttrAndMedias['medias'].find(
-            (m) => m.id_type == this._config.TAXHUB.ID_TYPE_MAIN_PHOTO
-          );
-          let mediaUrl;
-          if (media) {
-            mediaUrl = `${this._ds.getTaxhubAPI()}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
-          }
-          this._tss.updateTaxonByCdRef(cd_ref);
-          this._syntheseDataService.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats) => {
-            stats['media'] = mediaUrl;
-            this.setIndicators(stats);
-          });
+        this._tss.updateTaxonByCdRef(cd_ref);
+        this._syntheseDataService.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats) => {
+          this.setIndicators(stats);
         });
       }
     });

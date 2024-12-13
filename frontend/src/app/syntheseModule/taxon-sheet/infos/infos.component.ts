@@ -16,14 +16,9 @@ import { TaxonomyComponent } from './taxonomy/taxonomy.component';
   imports: [CommonModule, StatusComponent, TaxonomyComponent],
 })
 export class InfosComponent implements OnInit {
-  mediaUrl: string;
   taxon: Taxon | null = null;
 
-  constructor(
-    private _config: ConfigService,
-    private _ds: DataFormService,
-    private _tss: TaxonSheetService
-  ) {}
+  constructor(private _tss: TaxonSheetService) {}
 
   ngOnInit() {
     this._tss.taxon.subscribe((taxon: Taxon | null) => {

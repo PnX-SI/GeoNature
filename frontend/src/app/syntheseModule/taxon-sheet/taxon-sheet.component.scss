@@ -13,6 +13,11 @@
     flex-flow: row wrap;
     justify-content: space-evenly;
     gap: 1rem;
+
+    indicator,
+    taxon-image {
+      height: 9rem;
+    }
   }
   .AvancedInfos {
     &__navBar {
