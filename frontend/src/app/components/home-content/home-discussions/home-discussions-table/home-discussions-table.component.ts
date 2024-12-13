@@ -51,6 +51,7 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   _myReportsOnly: boolean;
   @Input()
   set myReportsOnly(value: boolean) {
+    this.pagination = this.DEFAULT_PAGINATION;
     this._myReportsOnly = value;
     this._fetchDiscussions();
   }
@@ -120,7 +121,7 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
     this.discussions = this._transformDiscussions(data.items);
     this.pagination = {
       totalItems: data.total,
-      currentPage: data.current_page,
+      currentPage: data.page,
       perPage: data.per_page,
     };
   }
