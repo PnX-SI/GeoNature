@@ -249,55 +249,58 @@ export class FieldMappingService {
    */
   populateMappingForm() {
     // Populate the form group
-    this.flattenTargetFieldData(this.targetFieldsData).forEach(
-      ({ name_field, mandatory, multi }) => {
-        let column_src_control: AbstractControl;
-        let oldValue = null;
-        if (!(name_field in this.mappingFormGroup.controls)) {
-          column_src_control = new FormControl(null, mandatory ? [Validators.required] : []);
-          column_src_control.valueChanges.subscribe((vc) => {
-            if (Array.isArray(vc)) this.manageValueChangeMulti(oldValue, vc);
-            else this.onFieldMappingChange(vc, oldValue);
-            oldValue = vc;
-            column_src_control.setValue(vc, { emitEvent: false });
-          });
-        } else {
-          column_src_control = this.mappingFormGroup.controls[name_field];
-        }
+    this.flattenTargetFieldData(this.targetFieldsData).forEach(({ name_field, multi }) => {
+      let column_src_control: AbstractControl;
+      let oldValue = null;
+      if (!(name_field in this.mappingFormGroup.controls)) {
+        // Control validators will be set in the following iteration
+        column_src_control = new FormControl(null, []);
+        column_src_control.valueChanges.subscribe((vc) => {
+          if (Array.isArray(vc)) this.manageValueChangeMulti(oldValue, vc);
+          else this.onFieldMappingChange(vc, oldValue);
+          oldValue = vc;
+          column_src_control.setValue(vc, { emitEvent: false });
+        });
+      } else {
+        column_src_control = this.mappingFormGroup.controls[name_field];
+      }
 
-        let default_value_control: AbstractControl;
-        const name_field_default_value = `${name_field}_default_value`;
-        if (!(name_field_default_value in this.mappingFormGroup.controls)) {
-          default_value_control = new FormControl(null, [
-            (control: AbstractControl): ValidationErrors | null => {
-              if (!multi || control.value == null || control.value == '') {
-                return null;
-              }
+      let default_value_control: AbstractControl;
+      const name_field_default_value = `${name_field}_default_value`;
+      if (!(name_field_default_value in this.mappingFormGroup.controls)) {
+        default_value_control = new FormControl(null, [
+          (control: AbstractControl): ValidationErrors | null => {
+            if (!multi || control.value == null || control.value == '') {
+              return null;
+            }
 
-              let isError = false;
-              try {
-                const json = JSON.parse(control.value);
-                if (!isPlainObject(json)) {
-                  isError = true;
-                }
-              } catch (error) {
+            let isError = false;
+            try {
+              const json = JSON.parse(control.value);
+              if (!isPlainObject(json)) {
                 isError = true;
               }
+            } catch (error) {
+              isError = true;
+            }
 
-              return isError ? { invalidJSON: true } : null;
-            },
-          ]);
-        } else {
-          default_value_control = this.mappingFormGroup.controls[name_field_default_value];
-        }
-
-        // Reset the control in the form group
-        this.mappingFormGroup.addControl(name_field, column_src_control);
-        this.mappingFormGroup.addControl(name_field_default_value, default_value_control);
+            return isError ? { invalidJSON: true } : null;
+          },
+        ]);
+        default_value_control.valueChanges.subscribe((vc) => {
+          column_src_control.updateValueAndValidity();
+        });
+      } else {
+        default_value_control = this.mappingFormGroup.controls[name_field_default_value];
       }
-    );
+
+      // Reset the control in the form group
+      this.mappingFormGroup.addControl(name_field, column_src_control);
+      this.mappingFormGroup.addControl(name_field_default_value, default_value_control);
+    });
 
     // Deal with inter-field conditions
+    // TODO ? Move the content of this iteration in the previous iteration
     this.flattenTargetFieldData(this.targetFieldsData).forEach(
       ({ name_field, mandatory, mandatory_conditions, optional_conditions, entity }) => {
         if (mandatory_conditions !== null && !mandatory) {
