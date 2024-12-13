@@ -644,6 +644,18 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 altitude_3,
             ),
             (
+                "obs4",
+                212,
+                point3,
+                datasets["own_dataset"],
+                "obs3",
+                sources_modules[1],
+                date_2,
+                date_3,
+                altitude_2,
+                altitude_3,
+            ),
+            (
                 "p1_af1",
                 713776,
                 point1,

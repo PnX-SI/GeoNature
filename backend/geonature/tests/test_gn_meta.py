@@ -540,7 +540,7 @@ class TestGNMeta:
         # For each entry, take the max between count_min and count_max. And if
         # not provided: count_min and/or count_max is 1. Since one entry in
         # synthese is at least 1 taxon
-        assert data["nb_taxons"] == sum(max(s.count_min or 1, s.count_max or 1) for s in obs)
+        assert data["nb_taxons"] == len(set([s.cd_nom for s in obs]))
 
     def test_get_acquisition_framework_bbox(self, users, acquisition_frameworks, synthese_data):
         # this AF contains at least 2 obs at different locations
