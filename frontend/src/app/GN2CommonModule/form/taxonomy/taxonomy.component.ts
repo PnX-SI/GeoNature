@@ -108,8 +108,9 @@ export class TaxonomyComponent implements OnInit, OnChanges {
     if (!this.apiEndPoint) {
       this.setApiEndPoint(this.idList);
     }
+    // Use "!= null" instead of "!== null" to also match undefined values.
     this.parentFormControl.valueChanges
-      .pipe(filter((value) => value !== null && value.length === 0))
+      .pipe(filter((value) => value != null && value.length === 0))
       .subscribe((value) => {
         this.onDelete.emit();
       });
