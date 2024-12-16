@@ -3,13 +3,9 @@ import {
   AbstractControl,
   ValidatorFn,
   UntypedFormGroup,
-  UntypedFormControl,
-  FormControl,
   Validators,
   ValidationErrors,
 } from '@angular/forms';
-import { Subscription, Observable, forkJoin } from 'rxjs';
-import { distinctUntilChanged, map, filter, pairwise, tap, startWith } from 'rxjs/operators';
 
 @Injectable()
 export class FormService {
@@ -202,19 +198,36 @@ export class FormService {
     referenceControlNames: string[],
     currentControl: AbstractControl
   ): boolean {
-    let result = false;
-    if (referenceControlNames.length === 0) return true;
-    referenceControlNames.forEach((referenceControlName) => {
+    return referenceControlNames.some((referenceControlName) => {
       const referenceControl = currentControl.parent.get(referenceControlName);
 
       // Throw an error if the reference control is null or undefined
-      if (referenceControl == null) throw Error('Reference formControl is null or undefined');
+      if (referenceControl == null)
+        throw Error(`Reference formControl is null or undefined: ${referenceControlName}`);
 
-      if (referenceControl.value !== null && referenceControl.value !== undefined) {
-        result = true;
+      if (
+        (referenceControl.value !== null && referenceControl.value !== undefined) ||
+        this.hasDefaultValue(referenceControl)
+      ) {
+        return true;
       }
     });
-    return result;
+  }
+
+  hasDefaultValue(control: AbstractControl): boolean {
+    const controlName = Object.keys(control.parent.controls).find(
+      (name) => control.parent.get(name) == control
+    );
+    const defaultValueControlName = `${controlName}_default_value`;
+    const value = control.parent.get(defaultValueControlName)?.value;
+    return value != null && value !== '';
+  }
+
+  isRequiredOrHasDefaultValue(control: AbstractControl): ValidationErrors | null {
+    if (this.hasDefaultValue(control)) {
+      return null;
+    }
+    return Validators.required(control);
   }
 
   /**
@@ -232,7 +245,7 @@ export class FormService {
         return null;
       }
       return this.areAllRefControlsNotNull(referenceControlNames, currentControl)
-        ? Validators.required(currentControl)
+        ? this.isRequiredOrHasDefaultValue(currentControl)
         : null;
     };
   }
@@ -252,14 +265,14 @@ export class FormService {
       }
       return this.areAnyRefControlsNotNull(referenceControlNames, currentControl)
         ? null
-        : Validators.required(currentControl);
+        : this.isRequiredOrHasDefaultValue(currentControl);
     };
   }
 
   NotRequiredIfNoOther(entityControls: string[]): ValidatorFn {
     return (currentControl: AbstractControl): ValidationErrors | null => {
       return this.areAnyRefControlsNotNull(entityControls, currentControl)
-        ? Validators.required(currentControl)
+        ? this.isRequiredOrHasDefaultValue(currentControl)
         : null;
     };
   }
