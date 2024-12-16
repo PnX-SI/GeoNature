@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ImportDataService } from '../../../services/data.service';
 import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
-import { FieldMappingModalComponent } from './field-mapping-modal/field-mapping-modal.component';
 import { Cruved, toBooleanCruved } from '@geonature/modules/imports/models/cruved.model';
 import { Step } from '@geonature/modules/imports/models/enums.model';
 import { ActivatedRoute } from '@angular/router';
 import { ImportProcessService } from '../import-process.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { concatMap, finalize, first, flatMap, skip, take } from 'rxjs/operators';
-import { Observable, Subscription, of } from 'rxjs';
+import { concatMap, flatMap, skip, take } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Import } from '@geonature/modules/imports/models/import.model';
 import {
@@ -33,6 +32,7 @@ export class FieldsMappingStepComponent implements OnInit {
   public updateAvailable: boolean = false;
   public step: Step;
   public modalCreateMappingForm = new FormControl('');
+  public defaultValueFormDefs: any = {};
 
   constructor(
     public _fieldMappingService: FieldMappingService,
@@ -53,6 +53,7 @@ export class FieldsMappingStepComponent implements OnInit {
         if (!fieldMappings) return;
         this._fieldMappingService.parseData({ fieldMappings, targetFields, sourceFields });
         this.targetFields = this._fieldMappingService.getTargetFieldsData();
+        this.defaultValueFormDefs = this._fieldMappingService.getDefaultValueFormDefs();
         this.sourceFields = this._fieldMappingService.getSourceFieldsData();
         this._fieldMappingService.initForm();
         this._fieldMappingService.populateMappingForm();
@@ -114,12 +115,24 @@ export class FieldsMappingStepComponent implements OnInit {
   }
 
   getFieldMappingValues(): FieldMappingValues {
-    let values: FieldMappingValues = {};
-    for (let [key, value] of Object.entries(this._fieldMappingService.mappingFormGroup.value)) {
-      if (value != null) {
-        values[key] = Array.isArray(value) ? value : (value as string);
-      }
-    }
+    const values: FieldMappingValues = {};
+    this._fieldMappingService
+      .flattenTargetFieldData(this.targetFields)
+      .forEach(({ name_field }) => {
+        const column_src = this._fieldMappingService.mappingFormGroup.get(name_field)?.value;
+        const default_value = this._fieldMappingService.mappingFormGroup.get(
+          `${name_field}_default_value`
+        )?.value;
+        if (column_src || default_value) {
+          values[name_field] = {
+            column_src: column_src || undefined,
+            default_value: this._fieldMappingService.getFieldDefaultValue(
+              name_field,
+              default_value
+            ),
+          };
+        }
+      });
     return values;
   }
 

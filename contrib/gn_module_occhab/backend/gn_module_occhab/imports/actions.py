@@ -474,16 +474,20 @@ class OcchabImportActions(ImportActions):
                 ef.field.name_field: ef.field for ef in entity.fields if ef.field.dest_field != None
             }
             insert_fields = {fields["id_station"]}
-            for field_name, source_field in imprt.fieldmapping.items():
+            for field_name, mapping in imprt.fieldmapping.items():
                 if field_name not in fields:  # not a destination field
                     continue
                 field = fields[field_name]
+                column_src = mapping.get("column_src", None)
                 if field.multi:
                     # TODO@TestImportsOcchab.test_import_valid_file: add testcase
-                    if not set(source_field).isdisjoint(imprt.columns):
+                    if not set(column_src).isdisjoint(imprt.columns):
                         insert_fields |= {field}
                 else:
-                    if source_field in imprt.columns:
+                    if (
+                        column_src in imprt.columns
+                        or mapping.get("default_value", None) is not None
+                    ):
                         insert_fields |= {field}
             if entity.code == "station":
                 # unique_dataset_id is replaced with id_dataset
