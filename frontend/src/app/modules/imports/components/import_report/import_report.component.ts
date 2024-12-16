@@ -261,10 +261,12 @@ export class ImportReportComponent implements OnInit {
 
   mapField(listField: Field[], fieldMapping: FieldMappingValues): Array<CorrespondancesField> {
     const mappedFields: Array<CorrespondancesField> = listField.map((field) => {
+      const mapping = fieldMapping[field.name_field];
       return {
-        source: fieldMapping[field.name_field],
+        source: mapping?.column_src,
         description: field.comment,
         destination: field.name_field,
+        default_value: mapping?.default_value,
       };
     });
     return mappedFields;
