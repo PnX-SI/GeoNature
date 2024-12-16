@@ -131,6 +131,7 @@
                   <tr>
                     <th>Champ source</th>
                     <th>Champ cible</th>
+                    <th>Valeur par défaut</th>
                     <th>Description</th>
                   </tr>
                 </thead>
@@ -138,6 +139,7 @@
                   <tr *ngFor="let field of entity?.themes">
                     <td>{{ field.source }}</td>
                     <td>{{ field.destination }}</td>
+                    <td>{{ field.default_value }}</td>
                     <td>{{ field.description }}</td>
                   </tr>
                 </tbody>

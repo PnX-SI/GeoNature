@@ -64,7 +64,7 @@ def report_erroneous_rows(
     transient_table = imprt.destination.get_transient_table()
     error_type = ImportUserErrorType.query.filter_by(name=error_type).one()
     error_column = generated_fields.get(error_column, error_column)
-    error_column = imprt.fieldmapping.get(error_column, error_column)
+    error_column = imprt.fieldmapping.get(error_column, {}).get("column_src", error_column)
     if error_type.level in level_validity_mapping:
         assert entity is not None
         cte = (
