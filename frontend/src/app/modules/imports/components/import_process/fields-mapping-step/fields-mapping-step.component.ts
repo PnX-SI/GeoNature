@@ -17,6 +17,7 @@ import {
 } from '@geonature/modules/imports/models/mapping.model';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormControl } from '@angular/forms';
+import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Component({
   selector: 'pnx-fields-mapping-step',
@@ -41,7 +42,8 @@ export class FieldsMappingStepComponent implements OnInit {
     private _cruvedStore: CruvedStoreService,
     private _importDataService: ImportDataService,
     private _modalService: NgbModal,
-    private _configService: ConfigService
+    private _configService: ConfigService,
+    private _authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -94,11 +96,19 @@ export class FieldsMappingStepComponent implements OnInit {
     if (!this._fieldMappingService.mappingFormGroup?.valid) {
       return;
     }
+
+    // Mapping stored data
     let mappingValue = this._fieldMappingService.currentFieldMapping.value;
-    const update_mapping_right =
-      this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 2;
+    // is mapping update right for the current user is at admin level
+    const updateMappingRight = this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 2;
+    //
+    const currentUser = this._authService.getCurrentUser();
+    const intersectMappingOwnerUser = mappingValue['owners'].filter(
+      (x) => x.identifiant == currentUser.user_login
+    );
+
     if (this._fieldMappingService.mappingFormGroup.dirty && mappingValue && this.cruved.C) {
-      if (mappingValue.public && update_mapping_right) {
+      if (mappingValue.public && (updateMappingRight || intersectMappingOwnerUser)) {
         this.updateAvailable = true;
         this.modalCreateMappingForm.setValue(mappingValue.label);
       } else if (!mappingValue.public) {
