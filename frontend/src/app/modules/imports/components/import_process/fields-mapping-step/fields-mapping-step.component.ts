@@ -95,11 +95,13 @@ export class FieldsMappingStepComponent implements OnInit {
       return;
     }
     let mappingValue = this._fieldMappingService.currentFieldMapping.value;
-    if (
-      this._fieldMappingService.mappingFormGroup.dirty &&
-      (this.cruved.C || (mappingValue && mappingValue.cruved.U && !mappingValue.public)) //
-    ) {
-      if (mappingValue && !mappingValue.public) {
+    const update_mapping_right =
+      this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 2;
+    if (this._fieldMappingService.mappingFormGroup.dirty && mappingValue && this.cruved.C) {
+      if (mappingValue.public && update_mapping_right) {
+        this.updateAvailable = true;
+        this.modalCreateMappingForm.setValue(mappingValue.label);
+      } else if (!mappingValue.public) {
         this.updateAvailable = true;
         this.modalCreateMappingForm.setValue(mappingValue.label);
       } else {
@@ -108,7 +110,6 @@ export class FieldsMappingStepComponent implements OnInit {
       }
       this._modalService.open(this.saveMappingModal, { size: 'lg' });
     } else {
-      // this.spinner = true;
       this.processNextStep();
     }
   }

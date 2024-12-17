@@ -4,6 +4,7 @@ from marshmallow import EXCLUDE
 from utils_flask_sqla.schema import SmartRelationshipsMixin
 
 from geonature.core.imports.models import Destination, FieldMapping, MappingTemplate
+from pypnusershub.schemas import UserSchema
 from geonature.core.gn_commons.schemas import ModuleSchema
 from marshmallow import fields
 
@@ -27,3 +28,4 @@ class MappingSchema(ma.SQLAlchemyAutoSchema):
 
     cruved = fields.Dict()
     values = fields.Dict()
+    owners = fields.List(fields.Nested(UserSchema(only=["identifiant"])))
