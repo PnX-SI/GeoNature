@@ -11,7 +11,7 @@ import {
   SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS,
   SELECTOR_IMPORT_FIELDMAPPING_WKT,
   SELECTOR_IMPORT_FOOTER_DELETE,
-  SELECTOR_IMPORT_FOOTER_SAVE,
+  SELECTOR_IMPORT_FOOTER_SAVE
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////

@@ -5,14 +5,14 @@ import {
   SELECTOR_IMPORT_LIST_TABLE,
   getSelectorImportListTableRowEdit,
   getSelectorImportListTableRowDelete,
-  SELECTOR_IMPORT_MODAL_DELETE_VALIDATE,
+  SELECTOR_IMPORT_MODAL_DELETE_VALIDATE
 } from './constants/selectors';
 import { USERS } from './constants/users';
 import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
 
 import {
   FIELDS_CONTENT_STEP_UPLOAD,
-  FIELDS_CONTENT_STEP_FILE_DECODE,
+  FIELDS_CONTENT_STEP_FILE_DECODE
 } from './constants/fieldsContent';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -23,20 +23,20 @@ function getURLStepImport(destination_label, id_import) {
   const baseUrl = Cypress.env('urlApplication');
   const urlStepsImport = {
     step_1_upload: {
-      url: `${baseUrl}import/${destination_label}/process/${id_import}/upload`,
+      url: `${baseUrl}import/${destination_label}/process/${id_import}/upload`
     },
     step_2_decode_file: {
-      url: `${baseUrl}import/${destination_label}/process/${id_import}/decode`,
+      url: `${baseUrl}import/${destination_label}/process/${id_import}/decode`
     },
     step_3_fieldmapping: {
-      url: `${baseUrl}import/${destination_label}/process/${id_import}/fieldmapping`,
+      url: `${baseUrl}import/${destination_label}/process/${id_import}/fieldmapping`
     },
     step_4_contentmapping: {
-      url: `${baseUrl}import/${destination_label}/process/${id_import}/contentmapping`,
+      url: `${baseUrl}import/${destination_label}/process/${id_import}/contentmapping`
     },
     step_5_import_data: {
-      url: `${baseUrl}import/${destination_label}/process/${id_import}/import`,
-    },
+      url: `${baseUrl}import/${destination_label}/process/${id_import}/import`
+    }
   };
 
   return urlStepsImport;

@@ -186,7 +186,7 @@ describe('Tests gn_synthese', () => {
 
     cy.get('[data-qa="synthese-download-btn"]').click();
     cy.get('[data-qa="download-csv"]').click({
-      force: true,
+      force: true
     });
     cy.get('[data-qa="synthese-download-close-btn"]').click();
 

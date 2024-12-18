@@ -7,7 +7,7 @@ import {
   SELECTOR_IMPORT_LIST_TABLE,
   SELECTOR_IMPORT_LIST_TOOLBAR_DESTINATIONS,
   SELECTOR_IMPORT_LIST_TOOLBAR_SEARCH,
-  SELECTOR_IMPORT_MODAL_DESTINATION_START,
+  SELECTOR_IMPORT_MODAL_DESTINATION_START
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////

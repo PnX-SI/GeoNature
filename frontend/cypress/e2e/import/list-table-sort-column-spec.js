@@ -12,7 +12,7 @@ const COLUMNS = [
   { columnName: 'Auteur', sortable: false },
   { columnName: 'Debut import', sortable: true },
   { columnName: 'Destination', sortable: true },
-  { columnName: 'Fin import', sortable: true },
+  { columnName: 'Fin import', sortable: true }
 ];
 
 function getColumnIndexByName(columnName) {

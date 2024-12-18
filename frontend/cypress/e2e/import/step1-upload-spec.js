@@ -4,7 +4,7 @@ import { FILES } from './constants/files';
 import {
   SELECTOR_IMPORT_UPLOAD_DATASET,
   SELECTOR_IMPORT_UPLOAD_FILE,
-  SELECTOR_IMPORT_UPLOAD_VALIDATE,
+  SELECTOR_IMPORT_UPLOAD_VALIDATE
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////

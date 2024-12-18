@@ -43,7 +43,7 @@
     options: {
       layer: L.geoJson,
       layerOptions: {},
-      fileSizeLimit: 1024,
+      fileSizeLimit: 1024
     },
 
     initialize: function (map, options) {
@@ -54,7 +54,7 @@
         geojson: this._loadGeoJSON,
         json: this._loadGeoJSON,
         gpx: this._convertToGeoJSON,
-        kml: this._convertToGeoJSON,
+        kml: this._convertToGeoJSON
       };
     },
 
@@ -87,7 +87,7 @@
           this.fire('data:loaded', {
             layer: layer,
             filename: file.name,
-            format: parser.ext,
+            format: parser.ext
           });
         } catch (err) {
           this.fire('data:error', { error: err });
@@ -143,7 +143,7 @@
         this.fire('data:loaded', {
           layer: layer,
           filename: name,
-          format: parser.ext,
+          format: parser.ext
         });
       } catch (err) {
         this.fire('data:error', { error: err });
@@ -153,7 +153,7 @@
     _isParameterMissing: function (v, vname) {
       if (typeof v === 'undefined') {
         this.fire('data:error', {
-          error: new Error('Missing parameter: ' + vname),
+          error: new Error('Missing parameter: ' + vname)
         });
         return true;
       }
@@ -166,13 +166,13 @@
       parser = this._parsers[ext];
       if (!parser) {
         this.fire('data:error', {
-          error: new Error('Unsupported file type (' + ext + ')'),
+          error: new Error('Unsupported file type (' + ext + ')')
         });
         return undefined;
       }
       return {
         processor: parser,
-        ext: ext,
+        ext: ext
       };
     },
 
@@ -182,7 +182,7 @@
         this.fire('data:error', {
           error: new Error(
             'File size exceeds limit (' + fileSize + ' > ' + this.options.fileSizeLimit + 'kb)'
-          ),
+          )
         });
         return false;
       }
@@ -214,20 +214,20 @@
       }
       geojson = toGeoJSON[format](content);
       return this._loadGeoJSON(geojson);
-    },
+    }
   });
 
   var FileLayerLoad = L.Control.extend({
     statics: {
       TITLE: 'Load local file (GPX, KML, GeoJSON)',
-      LABEL: '&#8965;',
+      LABEL: '&#8965;'
     },
     options: {
       position: 'topleft',
       fitBounds: true,
       layerOptions: {},
       addToMap: true,
-      fileSizeLimit: 1024,
+      fileSizeLimit: 1024
     },
 
     initialize: function (options) {
@@ -280,7 +280,7 @@
 
           thisLoader.loadMultiple(e.dataTransfer.files);
           map.scrollWheelZoom.enable();
-        },
+        }
       };
       for (callbackName in callbacks) {
         if (callbacks.hasOwnProperty(callbackName)) {
@@ -330,7 +330,7 @@
         e.preventDefault();
       });
       return container;
-    },
+    }
   });
 
   L.FileLayer = {};

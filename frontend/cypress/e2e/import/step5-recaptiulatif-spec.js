@@ -3,7 +3,7 @@ import { VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
 import {
   SELECTOR_IMPORT_RECAPITULATIF,
-  SELECTOR_IMPORT_RECAPITULATIF_MAP,
+  SELECTOR_IMPORT_RECAPITULATIF_MAP
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////

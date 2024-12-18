@@ -11,12 +11,12 @@ describe('Testing metadata', () => {
     name: 'CA-created',
     // name:'Mon cadre d\'acquisition',
     description: "description de mon cadre d'acquisition",
-    startDate: '17/03/2022',
+    startDate: '17/03/2022'
   };
   const newJdd = {
     name: 'Mon jeu de données',
     shortname: 'Mon jdd',
-    description: 'description de mon jdd',
+    description: 'description de mon jdd'
   };
 
   beforeEach(() => {
@@ -175,7 +175,7 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-dataset-name-' + newJdd.name + '"] td > button').click({
       multiple: true,
-      force: true,
+      force: true
     });
   });
 

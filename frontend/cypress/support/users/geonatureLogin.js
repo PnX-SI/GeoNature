@@ -1,6 +1,6 @@
 const DEFAULT_LOGIN = {
   username: 'admin',
-  password: 'admin',
+  password: 'admin'
 };
 
 Cypress.Commands.add('geonatureLogin', (username, password) => {
@@ -13,8 +13,8 @@ Cypress.Commands.add('geonatureLogin', (username, password) => {
       url: `${Cypress.env('apiEndpoint')}auth/login`,
       body: {
         login: username,
-        password: password,
-      },
+        password: password
+      }
     })
       .its('body')
       .then((body) => {

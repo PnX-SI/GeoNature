@@ -5,7 +5,7 @@
   "tabWidth": 2,
   "semi": true,
   "bracketSpacing": true,
-  "trailingComma": "es5",
+  "trailingComma": "none",
   "singleAttributePerLine": true,
   "bracketSameLine": false,
   "htmlWhitespaceSensitivity": "ignore"

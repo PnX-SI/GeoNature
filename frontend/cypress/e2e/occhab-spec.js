@@ -23,7 +23,7 @@ describe('Testing occhab', () => {
       [300, 250],
       [300, 300],
       [250, 300],
-      [250, 250],
+      [250, 250]
     ];
     positions.forEach((pos) => {
       cy.get(canvas).click(pos[0], pos[1]);

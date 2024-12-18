@@ -7,7 +7,7 @@ import {
   SELECTOR_IMPORT_REPORT_DOWNLOAD_PDF,
   SELECTOR_IMPORT_REPORT_ERRORS_CSV,
   SELECTOR_IMPORT_REPORT_ERRORS_TITLE,
-  SELECTOR_IMPORT_REPORT_MAP,
+  SELECTOR_IMPORT_REPORT_MAP
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ describe('Import - Report step', () => {
 
       // Download a verify the error file
       cy.get(SELECTOR_IMPORT_REPORT_ERRORS_CSV).click({
-        force: true,
+        force: true
       });
       cy.verifyDownload(FILENAME_INVALID_DATA, DOWNLOADS_FOLDER).then(() => {
         cy.fixture('import/synthese/invalid_data.csv').then((fixtureFileContent) => {
@@ -76,7 +76,7 @@ describe('Import - Report step', () => {
 
         // PDF report
         cy.get(SELECTOR_IMPORT_REPORT_DOWNLOAD_PDF).click({
-          force: true,
+          force: true
         });
 
         cy.wait(TIMEOUT_WAIT);
