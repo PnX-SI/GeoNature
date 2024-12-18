@@ -8,5 +8,13 @@
   "trailingComma": "es5",
   "singleAttributePerLine": true,
   "bracketSameLine": false,
-  "htmlWhitespaceSensitivity": "ignore"
+  "htmlWhitespaceSensitivity": "ignore",
+  "overrides": [
+    {
+      "files": ["*.html"],
+      "options": {
+        "trailingComma": "none"
+      }
+    }
+  ]
 }
