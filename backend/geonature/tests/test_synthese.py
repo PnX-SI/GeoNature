@@ -395,7 +395,7 @@ class TestSynthese:
 
     @pytest.mark.parametrize(
         "module_label_to_filter,expected_length",
-        [(["MODULE_TEST_1"], 2), (["MODULE_TEST_2"], 4), (["MODULE_TEST_1", "MODULE_TEST_2"], 6)],
+        [(["MODULE_TEST_1"], 2), (["MODULE_TEST_2"], 5), (["MODULE_TEST_1", "MODULE_TEST_2"], 7)],
     )
     def test_get_observations_for_web_filter_source_by_id_module(
         self,

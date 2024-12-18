@@ -863,7 +863,9 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     nb_datasets = len(dataset_ids)
 
     nb_taxons = db.session.execute(
-        select(func.count(Synthese.cd_nom)).where(Synthese.id_dataset.in_(dataset_ids)).distinct()
+        select(func.count(func.distinct(Synthese.cd_nom))).where(
+            Synthese.id_dataset.in_(dataset_ids)
+        )
     ).scalar_one()
 
     nb_observations = db.session.execute(
