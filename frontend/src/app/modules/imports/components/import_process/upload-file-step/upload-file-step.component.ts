@@ -50,9 +50,15 @@ export class UploadFileStepComponent implements OnInit {
     this.setupDatasetSelect();
     this.step = this.route.snapshot.data.step;
     this.importData = this.importProcessService.getImportData();
+
     if (this.importData) {
       this.uploadForm.patchValue({ dataset: this.importData.id_dataset });
       this.fileName = this.importData.full_file_name;
+    } else {
+      const idDatasetQueryParams = this.route.snapshot.queryParamMap.get('datasetId');
+      if (idDatasetQueryParams) {
+        this.uploadForm.patchValue({ dataset: parseInt(idDatasetQueryParams) });
+      }
     }
   }
 
