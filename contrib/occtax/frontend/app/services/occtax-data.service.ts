@@ -8,12 +8,16 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class OcctaxDataService {
   private currentModule;
+  public taxRefVersion: string;
   constructor(
     private _api: HttpClient,
     private _moduleService: ModuleService,
     public config: ConfigService
   ) {
     this.currentModule = this._moduleService.currentModule;
+    this.getTaxRefVersion().subscribe((dataTaxref) => {
+      this.taxRefVersion = dataTaxref.version;
+    });
   }
 
   getOneReleve(id) {
@@ -73,5 +77,9 @@ export class OcctaxDataService {
     return this._api.delete(
       `${this.config.API_ENDPOINT}/occtax/${this.currentModule.module_code}/occurrence/${id}`
     );
+  }
+
+  getTaxRefVersion() {
+    return this._api.get<any>(`${this.config.API_TAXHUB}/taxref/version`);
   }
 }

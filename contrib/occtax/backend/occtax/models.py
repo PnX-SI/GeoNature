@@ -9,7 +9,7 @@ from flask import g
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from pypn_habref_api.models import Habref
-from apptax.taxonomie.models import Taxref
+from apptax.taxonomie.models import Taxref, TMetaTaxref
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
@@ -104,10 +104,6 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_behaviour = DB.Column(DB.Integer, server_default=FetchedValue())
     cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
     nom_cite = DB.Column(DB.Unicode)
-    meta_v_taxref = DB.Column(
-        DB.Unicode,
-        default=select(func.gn_commons.get_default_parameter("taxref_version")),
-    )
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
     non_digital_proof = DB.Column(DB.Unicode)
