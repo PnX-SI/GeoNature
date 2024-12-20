@@ -307,6 +307,9 @@ jsonschema_definitions = {
             "values": {
                 "type": ["null", "object"],
             },
+            "owners": {
+                "type": ["null", "array"],
+            },
         },
         "minProperties": 7,
         "additionalProperties": False,
