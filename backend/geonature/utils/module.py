@@ -42,9 +42,17 @@ def get_module_config_path(module_code):
 
 def get_module_config(module_dist):
     module_code = module_dist.entry_points["code"].load()
-    config_schema = module_dist.entry_points["config_schema"].load()
-    config = {"MODULE_CODE": module_code, "MODULE_URL": f"/{module_code.lower()}"}
-    config.update(load_and_validate_toml(get_module_config_path(module_code), config_schema))
+    config = {
+        "MODULE_CODE": module_code,
+        "MODULE_URL": f"/{module_code.lower()}",  # path to the module in the frontend
+        "MODULE_API": f"/{module_code.lower()}",  # path to the module API
+    }
+    try:
+        config_schema = module_dist.entry_points["config_schema"].load()
+    except KeyError:
+        pass  # this module does not have any config
+    else:
+        config.update(load_and_validate_toml(get_module_config_path(module_code), config_schema))
     return config
 
 
@@ -103,6 +111,10 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
     if module is None:
         # add module to database
         try:
+            module_label = module_dist.entry_points["label"].load()
+        except KeyError:
+            module_label = module_code.capitalize()
+        try:
             module_picto = module_dist.entry_points["picto"].load()
         except KeyError:
             module_picto = "fa-puzzle-piece"
@@ -117,7 +129,7 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
         module = TModules(
             type=module_type,
             module_code=module_code,
-            module_label=module_code.capitalize(),
+            module_label=module_label,
             module_path=module_code.lower(),
             module_target="_self",
             module_picto=module_picto,

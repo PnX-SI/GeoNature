@@ -85,7 +85,7 @@ class PathMock(Path):
         return SequenceMock()
 
     def resolve(self):
-        return True
+        return self
 
 
 def patch_monkeypatch(monkeypatch):
