@@ -278,12 +278,12 @@ class TDatasets(db.Model):
             if search.isdigit():
                 ors = [
                     func.unaccent(cls.dataset_name).ilike(func.unaccent(f"%{search}%")),
-                    sa.cast(cls.id_dataset, sa.String) == search
+                    sa.cast(cls.id_dataset, sa.String) == search,
                 ]
             else:
             #sinon découpe sur les espaces pour rechercher dans le nom
                 ands = [];
-                for term in search.split(' '):
+                for term in search.split(" "):
                     if len(term) > 0:
                        ands.append(func.unaccent(cls.dataset_name).ilike(func.unaccent(f"%{term}%"))) 
                 ors = [sa.and_(*ands)]

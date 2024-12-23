@@ -321,7 +321,7 @@ class TAcquisitionFramework(db.Model):
             else:
             #sinon découpe sur les espaces pour rechercher dans le nom
                 ands = [];
-                for term in search.split(' '):
+                for term in search.split(" "):
                     if len(term) > 0:
                        ands.append(func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(func.unaccent(f"%{term}%"))) 
                 ors = [sa.and_(*ands)]
