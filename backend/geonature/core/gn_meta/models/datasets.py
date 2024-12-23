@@ -282,12 +282,12 @@ class TDatasets(db.Model):
                 ]
             else:
                 # sinon découpe sur les espaces pour rechercher dans le nom
-                ands = [];
+                ands = []
                 for term in search.split(" "):
                     if len(term) > 0:
                         ands.append(
                             func.unaccent(cls.dataset_name).ilike(func.unaccent(f"%{term}%"))
-                        ) 
+                        )
                 ors = [sa.and_(*ands)]
             # enable uuid search only with at least 5 characters
             if len(search) >= 5:
