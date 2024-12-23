@@ -1,12 +1,13 @@
 import datetime
 
 import sqlalchemy as sa
+import re
 from flask import g
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.utils.env import DB, db
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
-from sqlalchemy import ForeignKey, or_
+from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -311,15 +312,24 @@ class TAcquisitionFramework(db.Model):
 
         search = params.get("search")
         if search:
-            ors = [
-                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
-                sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
-            ]
+            #si uniquement des chiffres (chercher dans ID ou name)
+            if search.isdigit():
+                ors = [
+                    func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(func.unaccent(f"%{search}%")),
+                    sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
+                ]
+            else:
+            #sinon découpe sur les espaces pour rechercher dans le nom
+                ands = [];
+                for term in search.split(' '):
+                    if len(term) > 0:
+                       ands.append(func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(func.unaccent(f"%{term}%"))) 
+                ors = [sa.and_(*ands)]
             # enable uuid search only with at least 5 characters
             if len(search) >= 5:
                 ors.append(
-                    sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
-                        f"{search}%"
+                    sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).ilike(
+                        f"%{search}%"
                     )
                 )
             try:
@@ -335,4 +345,5 @@ class TAcquisitionFramework(db.Model):
                     ),
                 )
             query = query.where(sa.or_(*ors))
+
         return query

@@ -2,7 +2,7 @@ import datetime
 
 from flask import g
 import sqlalchemy as sa
-from sqlalchemy import ForeignKey, or_
+from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
@@ -274,13 +274,22 @@ class TDatasets(db.Model):
 
         search = params.get("search")
         if search:
-            ors = [
-                cls.dataset_name.ilike(f"%{search}%"),
-                sa.cast(cls.id_dataset, sa.String) == search,
-            ]
+            #si uniquement des chiffres (chercher dans ID ou name)
+            if search.isdigit():
+                ors = [
+                    func.unaccent(cls.dataset_name).ilike(func.unaccent(f"%{search}%")),
+                    sa.cast(cls.id_dataset, sa.String) == search
+                ]
+            else:
+            #sinon découpe sur les espaces pour rechercher dans le nom
+                ands = [];
+                for term in search.split(' '):
+                    if len(term) > 0:
+                       ands.append(func.unaccent(cls.dataset_name).ilike(func.unaccent(f"%{term}%"))) 
+                ors = [sa.and_(*ands)]
             # enable uuid search only with at least 5 characters
             if len(search) >= 5:
-                ors.append(sa.cast(cls.unique_dataset_id, sa.String).like(f"{search}%"))
+                ors.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"%{search}%"))
             try:
                 date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
             except ValueError:
