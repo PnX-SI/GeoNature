@@ -329,7 +329,7 @@ class TAcquisitionFramework(db.Model):
                             func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(
                                 func.unaccent(f"%{term}%")
                             )
-                        ) 
+                        )
                 ors = [sa.and_(*ands)]
             # enable uuid search only with at least 5 characters
             if len(search) >= 5:
