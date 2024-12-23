@@ -4,7 +4,7 @@ import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, combineLatest } from 'rxjs';
-import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { map, distinctUntilChanged, debounceTime, tap, switchMap, startWith } from 'rxjs/operators';
 import { omitBy } from 'lodash';
 
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
@@ -82,18 +82,22 @@ export class MetadataComponent implements OnInit {
     // rapid search event
     //combinaison de la zone de recherche et du chargement des données
     this.rapidSearchControl.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((term) => {
-        if (term !== null) {
-          if (term === '') {
-            delete this.searchTerms.search;
-          } else {
-            this.searchTerms = { ...this.searchTerms, search: this.rapidSearchControl.value };
+      .pipe(
+        startWith(''),
+        debounceTime(500), 
+        distinctUntilChanged(),
+        tap((term) => {
+          if (term !== null) {
+            if (term === '') {
+              delete this.searchTerms.search;
+            } else {
+              this.searchTerms = { ...this.searchTerms, search: this.rapidSearchControl.value };
+            }
           }
-          this.metadataService.search(this.searchTerms);
-          this.metadataService.pageIndex.next(0);
-        }
-      });
+        }),
+        switchMap(() => this.metadataService.search(this.searchTerms))
+      )
+      .subscribe(() => {return;});
 
     // format areas filter
     this.areaFilters = this.config.METADATA.METADATA_AREA_FILTERS.map((area) => {
