@@ -312,18 +312,20 @@ class TAcquisitionFramework(db.Model):
 
         search = params.get("search")
         if search:
-            #si uniquement des chiffres (chercher dans ID ou name)
+            # si uniquement des chiffres (chercher dans ID ou name)
             if search.isdigit():
                 ors = [
                     func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(func.unaccent(f"%{search}%")),
                     sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
                 ]
             else:
-            #sinon découpe sur les espaces pour rechercher dans le nom
+                # sinon découpe sur les espaces pour rechercher dans le nom
                 ands = [];
                 for term in search.split(" "):
                     if len(term) > 0:
-                       ands.append(func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(func.unaccent(f"%{term}%"))) 
+                        ands.append(
+                            func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(func.unaccent(f"%{term}%"))
+                        ) 
                 ors = [sa.and_(*ands)]
             # enable uuid search only with at least 5 characters
             if len(search) >= 5:
