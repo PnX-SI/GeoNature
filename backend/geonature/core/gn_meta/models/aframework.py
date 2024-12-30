@@ -312,35 +312,38 @@ class TAcquisitionFramework(db.Model):
 
         search = params.get("search")
         if search:
-            # Représentation brute pour gérer "unnest(string_to_array(:search_query, ' '))"*            name_col = TAcquisitionFramework.acquisition_framework_name
-            search_words_af_cte = select(
-                func.unnest(func.string_to_array(search, " ")).label("word")
-            ).cte("search_words_cte")
 
-            where_clause = []
+            # Where clauses to include other matching possibilities (id, uuid, date)
+            where_clauses = []
             if search.isdigit():  # ID AF match
-                where_clause.append(TAcquisitionFramework.id_acquisition_framework == int(search))
+                where_clauses.append(TAcquisitionFramework.id_acquisition_framework == int(search))
 
             if len(search) > 5:  # UUID and date match
-                where_clause.append(
+                where_clauses.append(
                     sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).ilike(
                         f"%{search}%"
                     )
                 )
                 try:
                     date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
-                    where_clause.append(
+                    where_clauses.append(
                         TAcquisitionFramework.acquisition_framework_start_date == date
                     )
                 except ValueError:
                     pass
+
+            # If name search includes dataset
             if _ds_search:
-                where_clause.append(
+                where_clauses.append(
                     TAcquisitionFramework.datasets.any(
                         TDatasets.filter_by_params({"search": search}, _af_search=False).whereclause
                     ),
                 )
 
+            # Acquisition Framework name matching
+            search_words_af_cte = select(
+                func.unnest(func.string_to_array(search, " ")).label("word")
+            ).cte("search_words_cte")
             matched_words_af_cte = (
                 select(
                     TAcquisitionFramework.id_acquisition_framework,
@@ -352,7 +355,7 @@ class TAcquisitionFramework(db.Model):
                         TAcquisitionFramework.acquisition_framework_name.ilike(
                             func.concat("%", search_words_af_cte.c.word, "%")
                         ),
-                        *where_clause,
+                        *where_clauses,
                     ),
                 )
                 .group_by(

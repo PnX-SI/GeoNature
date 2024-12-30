@@ -274,18 +274,18 @@ class TDatasets(db.Model):
 
         search = params.get("search")
         if search:
-            search_words_dataset_cte = select(
-                func.unnest(func.string_to_array(search, " ")).label("word")
-            ).cte("search_words_dataset_cte")
 
-            where_clause = []
+            # Where clauses to include other matching possibilities (id, uuid)
+            where_clauses = []
             if search.isdigit():  # ID AF match
-                where_clause.append(cls.id_dataset == int(search))
+                where_clauses.append(cls.id_dataset == int(search))
 
             if len(search) > 5:  # UUID match
-                where_clause.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"%{search}%"))
+                where_clauses.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"%{search}%"))
+
+            # if name search include acquisition framework
             if _af_search:
-                where_clause.append(
+                where_clauses.append(
                     cls.acquisition_framework.has(
                         TAcquisitionFramework.filter_by_params(
                             {"search": search},
@@ -293,6 +293,11 @@ class TDatasets(db.Model):
                         ).whereclause
                     ),
                 )
+
+            # Dataset name matching
+            search_words_dataset_cte = select(
+                func.unnest(func.string_to_array(search, " ")).label("word")
+            ).cte("search_words_dataset_cte")
             matched_words_dataset_cte = (
                 select(
                     cls.id_dataset,
@@ -304,7 +309,7 @@ class TDatasets(db.Model):
                         cls.dataset_name.ilike(
                             func.concat("%", search_words_dataset_cte.c.word, "%")
                         ),
-                        *where_clause,
+                        *where_clauses,
                     ),
                 )
                 .group_by(
