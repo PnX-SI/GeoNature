@@ -312,44 +312,61 @@ class TAcquisitionFramework(db.Model):
 
         search = params.get("search")
         if search:
-            # si uniquement des chiffres (chercher dans ID ou name)
-            if search.isdigit():
-                ors = [
-                    func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(
-                        func.unaccent(f"%{search}%")
-                    ),
-                    sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
-                ]
-            else:
-                # sinon découpe sur les espaces pour rechercher dans le nom
-                ands = []
-                for term in search.split(" "):
-                    if len(term) > 0:
-                        ands.append(
-                            func.unaccent(TAcquisitionFramework.acquisition_framework_name).ilike(
-                                func.unaccent(f"%{term}%")
-                            )
-                        )
-                ors = [sa.and_(*ands)]
-            # enable uuid search only with at least 5 characters
-            if len(search) >= 5:
-                ors.append(
+            # Représentation brute pour gérer "unnest(string_to_array(:search_query, ' '))"*            name_col = TAcquisitionFramework.acquisition_framework_name
+            search_words_af_cte = select(
+                func.unnest(func.string_to_array(search, " ")).label("word")
+            ).cte("search_words_cte")
+
+            where_clause = []
+            if search.isdigit():  # ID AF match
+                where_clause.append(TAcquisitionFramework.id_acquisition_framework == int(search))
+
+            if len(search) > 5:  # UUID and date match
+                where_clause.append(
                     sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).ilike(
                         f"%{search}%"
                     )
                 )
-            try:
-                date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
-                ors.append(TAcquisitionFramework.acquisition_framework_start_date == date)
-            except ValueError:
-                pass
-
+                try:
+                    date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
+                    where_clause.append(
+                        TAcquisitionFramework.acquisition_framework_start_date == date
+                    )
+                except ValueError:
+                    pass
             if _ds_search:
-                ors.append(
+                where_clause.append(
                     TAcquisitionFramework.datasets.any(
                         TDatasets.filter_by_params({"search": search}, _af_search=False).whereclause
                     ),
                 )
-            query = query.where(sa.or_(*ors))
+
+            matched_words_af_cte = (
+                select(
+                    TAcquisitionFramework.id_acquisition_framework,
+                    func.count().label("match_count"),
+                )
+                .join(
+                    search_words_af_cte,
+                    sa.or_(
+                        TAcquisitionFramework.acquisition_framework_name.ilike(
+                            func.concat("%", search_words_af_cte.c.word, "%")
+                        ),
+                        *where_clause,
+                    ),
+                )
+                .group_by(
+                    TAcquisitionFramework.id_acquisition_framework,
+                )
+            ).cte("matched_words_af_cte")
+
+            query = (
+                select(TAcquisitionFramework)
+                .where(
+                    matched_words_af_cte.c.id_acquisition_framework
+                    == TAcquisitionFramework.id_acquisition_framework
+                )
+                .order_by(matched_words_af_cte.c.match_count.desc())
+            )
 
         return query

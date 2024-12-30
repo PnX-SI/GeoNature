@@ -274,40 +274,48 @@ class TDatasets(db.Model):
 
         search = params.get("search")
         if search:
-            # si uniquement des chiffres (chercher dans ID ou name)
-            if search.isdigit():
-                ors = [
-                    func.unaccent(cls.dataset_name).ilike(func.unaccent(f"%{search}%")),
-                    sa.cast(cls.id_dataset, sa.String) == search,
-                ]
-            else:
-                # sinon découpe sur les espaces pour rechercher dans le nom
-                ands = []
-                for term in search.split(" "):
-                    if len(term) > 0:
-                        ands.append(
-                            func.unaccent(cls.dataset_name).ilike(func.unaccent(f"%{term}%"))
-                        )
-                ors = [sa.and_(*ands)]
-            # enable uuid search only with at least 5 characters
-            if len(search) >= 5:
-                ors.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"%{search}%"))
-            try:
-                date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
-            except ValueError:
-                pass
-            else:
-                ors.append(sa.cast(cls.meta_create_date, sa.DATE) == date)
+            search_words_dataset_cte = select(
+                func.unnest(func.string_to_array(search, " ")).label("word")
+            ).cte("search_words_dataset_cte")
+
+            where_clause = []
+            if search.isdigit():  # ID AF match
+                where_clause.append(cls.id_dataset == int(search))
+
+            if len(search) > 5:  # UUID match
+                where_clause.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"%{search}%"))
             if _af_search:
-                ors.append(
+                where_clause.append(
                     cls.acquisition_framework.has(
                         TAcquisitionFramework.filter_by_params(
                             {"search": search},
                             _ds_search=False,
                         ).whereclause
-                    )
+                    ),
                 )
-            query = query.where(or_(*ors))
+            matched_words_dataset_cte = (
+                select(
+                    cls.id_dataset,
+                    func.count().label("match_count"),
+                )
+                .join(
+                    search_words_dataset_cte,
+                    sa.or_(
+                        cls.dataset_name.ilike(
+                            func.concat("%", search_words_dataset_cte.c.word, "%")
+                        ),
+                        *where_clause,
+                    ),
+                )
+                .group_by(
+                    cls.id_dataset,
+                )
+            ).cte("matched_words_dataset_cte")
+
+            query = query.where(cls.id_dataset == matched_words_dataset_cte.c.id_dataset).order_by(
+                matched_words_dataset_cte.c.match_count.desc()
+            )
+
         return query
 
     @qfilter(query=True)
