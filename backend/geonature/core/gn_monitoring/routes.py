@@ -5,7 +5,6 @@ from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.sql import func, select
 from sqlalchemy.orm import raiseload, joinedload
 from geojson import FeatureCollection
-from geonature.core.gn_monitoring.models import TBaseSites, cor_site_area, cor_site_module
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 
 from geonature.core.gn_commons.models import TModules
@@ -17,8 +16,8 @@ from sqlalchemy.sql import func
 from geonature.core.gn_monitoring.models import (
     TBaseSites,
     TIndividuals,
-    corSiteArea,
-    corSiteModule,
+    cor_site_area,
+    cor_site_module,
 )
 
 from utils_flask_sqla.response import json_resp
