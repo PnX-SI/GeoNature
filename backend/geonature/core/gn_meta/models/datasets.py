@@ -2,7 +2,7 @@ import datetime
 
 from flask import g
 import sqlalchemy as sa
-from sqlalchemy import ForeignKey, or_
+from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
@@ -274,29 +274,53 @@ class TDatasets(db.Model):
 
         search = params.get("search")
         if search:
-            ors = [
-                cls.dataset_name.ilike(f"%{search}%"),
-                sa.cast(cls.id_dataset, sa.String) == search,
-            ]
-            # enable uuid search only with at least 5 characters
-            if len(search) >= 5:
-                ors.append(sa.cast(cls.unique_dataset_id, sa.String).like(f"{search}%"))
-            try:
-                date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
-            except ValueError:
-                pass
-            else:
-                ors.append(sa.cast(cls.meta_create_date, sa.DATE) == date)
+            search = search.strip()
+            # Where clauses to include other matching possibilities (id, uuid)
+            where_clauses = []
+            if search.isdigit():  # ID AF match
+                where_clauses.append(cls.id_dataset == int(search))
+
+            if len(search) >= MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING:  # UUID match
+                where_clauses.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"{search}%"))
+
+            # if name search include acquisition framework
             if _af_search:
-                ors.append(
+                where_clauses.append(
                     cls.acquisition_framework.has(
                         TAcquisitionFramework.filter_by_params(
                             {"search": search},
                             _ds_search=False,
                         ).whereclause
-                    )
+                    ),
                 )
-            query = query.where(or_(*ors))
+
+            # Dataset name matching
+            search_words_dataset_cte = select(
+                func.unnest(func.string_to_array(search, " ")).label("word")
+            ).cte("search_words_dataset_cte")
+            matched_words_dataset_cte = (
+                select(
+                    cls.id_dataset,
+                    func.count().label("match_count"),
+                )
+                .join(
+                    search_words_dataset_cte,
+                    sa.or_(
+                        cls.dataset_name.ilike(
+                            func.concat("%", search_words_dataset_cte.c.word, "%")
+                        ),
+                        *where_clauses,
+                    ),
+                )
+                .group_by(
+                    cls.id_dataset,
+                )
+            ).cte("matched_words_dataset_cte")
+
+            query = query.where(cls.id_dataset == matched_words_dataset_cte.c.id_dataset).order_by(
+                matched_words_dataset_cte.c.match_count.desc()
+            )
+
         return query
 
     @qfilter(query=True)

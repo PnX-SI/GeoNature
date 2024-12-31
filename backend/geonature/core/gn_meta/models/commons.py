@@ -11,6 +11,8 @@ from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB, db
 
+MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING = 5
+
 
 class DateFilterSchema(ma.Schema):
     year = ma.fields.Integer()

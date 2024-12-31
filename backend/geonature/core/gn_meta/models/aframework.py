@@ -1,12 +1,13 @@
 import datetime
 
 import sqlalchemy as sa
+import re
 from flask import g
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.utils.env import DB, db
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
-from sqlalchemy import ForeignKey, or_
+from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -311,28 +312,59 @@ class TAcquisitionFramework(db.Model):
 
         search = params.get("search")
         if search:
-            ors = [
-                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
-                sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
-            ]
-            # enable uuid search only with at least 5 characters
-            if len(search) >= 5:
-                ors.append(
+            search = search.strip()
+            # Where clauses to include other matching possibilities (id, uuid, date)
+            where_clauses = []
+            if search.isdigit():  # ID AF match
+                where_clauses.append(TAcquisitionFramework.id_acquisition_framework == int(search))
+
+            if len(search) >= MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING:  # UUID and date match
+                where_clauses.append(
                     sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
                         f"{search}%"
                     )
                 )
-            try:
-                date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
-                ors.append(TAcquisitionFramework.acquisition_framework_start_date == date)
-            except ValueError:
-                pass
+                try:
+                    date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
+                    where_clauses.append(
+                        TAcquisitionFramework.acquisition_framework_start_date == date
+                    )
+                except ValueError:
+                    pass
 
+            # If name search includes dataset
             if _ds_search:
-                ors.append(
+                where_clauses.append(
                     TAcquisitionFramework.datasets.any(
                         TDatasets.filter_by_params({"search": search}, _af_search=False).whereclause
                     ),
                 )
-            query = query.where(sa.or_(*ors))
+
+            # Acquisition Framework name matching
+            search_words_af_cte = select(
+                func.unnest(func.string_to_array(search, " ")).label("word")
+            ).cte("search_words_cte")
+            matched_words_af_cte = (
+                select(
+                    TAcquisitionFramework.id_acquisition_framework,
+                    func.count().label("match_count"),
+                )
+                .join(
+                    search_words_af_cte,
+                    sa.or_(
+                        TAcquisitionFramework.acquisition_framework_name.ilike(
+                            func.concat("%", search_words_af_cte.c.word, "%")
+                        ),
+                        *where_clauses,
+                    ),
+                )
+                .group_by(
+                    TAcquisitionFramework.id_acquisition_framework,
+                )
+            ).cte("matched_words_af_cte")
+            query = query.where(
+                matched_words_af_cte.c.id_acquisition_framework
+                == TAcquisitionFramework.id_acquisition_framework
+            ).order_by(matched_words_af_cte.c.match_count.desc())
+
         return query

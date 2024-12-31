@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
@@ -46,8 +46,6 @@ export class MetadataService {
       person: null,
     });
 
-    this.getMetadata();
-
     this.config.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'].toLowerCase();
       this.form.addControl(control_name, new UntypedFormControl(new Array()));
@@ -59,11 +57,11 @@ export class MetadataService {
 
   // FIXME: remove any!!!
   search(formValue: any) {
-    return this.getMetadataObservable(formValue).subscribe(
-      (afs) => {
+    return this.getMetadataObservable(formValue).pipe(
+      tap((afs) => {
         this.acquisitionFrameworks.next(afs);
-      },
-      (err) => (this.isLoading = false)
+        this.pageIndex.next(0);
+      })
     );
   }
   //recuperation cadres d'acquisition
@@ -74,7 +72,10 @@ export class MetadataService {
     //forkJoin pour lancer les 2 requetes simultanément
     return this.dataFormService
       .getAcquisitionFrameworksList(selectors, params)
-      .pipe(tap(() => (this.isLoading = false)));
+      .pipe(
+        catchError(() => of([])),
+        tap(() => (this.isLoading = false)),
+      );
   }
 
   getMetadata(params = {}, selectors = SELECTORS) {
