@@ -6,11 +6,13 @@
 
 - Amélioration de la recherche libre des métadonnées en cherchant chaque mot indépendamment (#3295, par @jbrieuclp)
 - Amélioration de l'affichage de la photo du taxon sur les fiches taxon (#3287, par @edelclaux)
+- Améliorations de la commande d’installation des modules (#3261 par @bouttier)
 
 **🐛 Corrections**
 
 - Correction de la pagination quand on filtre les discussions de la page d'accueil sur "Mes discussions" (#3288, par @edelclaux)
 - Correction du nombre de taxons sur les fiches des cadres d'acquisition (#3228, par @jacquesfize)
+
 
 ## 2.15.0 - Pavo cristatus 🦚 (2025-12-11)
 
