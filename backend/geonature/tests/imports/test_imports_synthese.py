@@ -219,7 +219,10 @@ def fieldmapping(import_file_name, autogenerate, import_dataset):
             }
             for field in bib_fields
         }
-    fieldmapping["unique_dataset_id"] = {"default_value": str(import_dataset.unique_dataset_id)}
+    fieldmapping["unique_dataset_id"] = {
+        # "column_src": "jdd_uuid",
+        "default_value": str(import_dataset.unique_dataset_id),
+    }
 
     return fieldmapping
 

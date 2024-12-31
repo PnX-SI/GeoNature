@@ -234,9 +234,10 @@ def check_datasets(
 
     datasets = {
         str(ds.unique_dataset_id): ds
-        for ds in TDatasets.query.filter(TDatasets.unique_dataset_id.in_(uuid))
-        .options(sa.orm.joinedload(TDatasets.nomenclature_data_origin))
-        .options(sa.orm.raiseload("*"))
+        for ds in TDatasets.query.filter(TDatasets.unique_dataset_id.in_(uuid)).options(
+            sa.orm.joinedload(TDatasets.nomenclature_data_origin)
+        )
+        # .options(sa.orm.raiseload("*"))
         .all()
     }
     valid_ds_mask = df[uuid_col].isin(datasets.keys())
@@ -258,21 +259,21 @@ def check_datasets(
         }
 
     # Warning: we check only permissions of first author, but currently there it only one author per import.
-
     authorized_datasets = {
         str(ds.unique_dataset_id): ds
         for ds in db.session.execute(
+            # sa.select(TDatasets)
             TDatasets.filter_by_creatable(
                 user=imprt.authors[0], module_code=module_code, object_code=object_code
             )
-            # .where(TDatasets.unique_dataset_id.in_(uuid))
+            .where(TDatasets.unique_dataset_id.in_(uuid))
             .options(sa.orm.raiseload("*"))
-        )
-        .scalars()
+        ).scalars()
+        # .unique()
         .all()
     }
-    authorized_ds_mask = df[uuid_col].isin(authorized_datasets.keys())
-    unauthorized_ds_mask = valid_ds_mask & ~authorized_ds_mask
+    authorized_ds_mask = valid_ds_mask & df[uuid_col].isin(authorized_datasets.keys())
+    unauthorized_ds_mask = ~authorized_ds_mask
     if unauthorized_ds_mask.any():
         yield {
             "error_code": ImportCodeError.DATASET_NOT_AUTHORIZED,

@@ -19,7 +19,6 @@ from geonature.utils.env import DB, db
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
 
-from ref_geo.models import LAreas
 from .commons import *
 
 
@@ -202,21 +201,21 @@ class TDatasets(db.Model):
         elif scope in (1, 2):
             ors = [
                 cls.id_digitizer == user.id_role,
-                cls.cor_dataset_actor.any(id_role=user.id_role),
-                cls.acquisition_framework.has(id_digitizer=user.id_role),
-                cls.acquisition_framework.has(
-                    TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
-                ),
+                # cls.cor_dataset_actor.any(id_role=user.id_role),
+                # cls.acquisition_framework.has(id_digitizer=user.id_role),
+                # cls.acquisition_framework.has(
+                #     TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
+                # ),
             ]
             # if organism is None => do not filter on id_organism even if level = 2
-            if scope == 2 and user.id_organisme is not None:
-                ors += [
-                    cls.cor_dataset_actor.any(id_organism=user.id_organisme),
-                    cls.acquisition_framework.has(
-                        TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
-                    ),
-                ]
-            whereclause = or_(*ors)
+            # if scope == 2 and user.id_organisme is not None:
+            #     ors += [
+            #         cls.cor_dataset_actor.any(id_organism=user.id_organisme),
+            #         cls.acquisition_framework.has(
+            #             TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
+            #         ),
+            #     ]
+            # whereclause = or_(*ors)
         return query.where(whereclause)
 
     @qfilter(query=True)
@@ -322,6 +321,7 @@ class TDatasets(db.Model):
     @qfilter(query=True)
     def filter_by_areas(cls, areas, *, query):
         from geonature.core.gn_synthese.models import Synthese
+        from ref_geo.models import LAreas
 
         areaFilter = []
         for id_area in areas:
