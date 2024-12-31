@@ -3,7 +3,7 @@
     Correspond a la centralisation des données de base
         relatifs aux protocoles de suivis
 """
-
+from flask import g
 from datetime import datetime
 
 from geoalchemy2 import Geometry
@@ -12,6 +12,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import select, func
 from sqlalchemy.schema import FetchedValue
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 from pypnnomenclature.models import TNomenclatures
@@ -20,7 +21,6 @@ from ref_geo.models import LAreas
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
-from pypnnomenclature.models import TNomenclatures
 from geonature.core.gn_commons.models import TModules, TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
@@ -285,9 +285,32 @@ class TMarkingEvent(DB.Model):
 
     operator = DB.relationship(User, lazy="joined", foreign_keys=[id_operator])
 
+    digitiser = DB.relationship(User, lazy="joined", foreign_keys=[id_digitiser])
+
+    @hybrid_property
+    def organism_actors(self):
+        # return self.digitiser.id_organisme
+        actors_organism_list = []
+        if isinstance(self.digitiser, User):
+            actors_organism_list.append(self.digitiser.id_organisme)
+        if isinstance(self.operator, User):
+            actors_organism_list.append(self.operator.id_organisme)
+        return actors_organism_list
+
     def has_instance_permission(self, scope):
-        # TODO
-        return True
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if (
+                g.current_user.id_role == self.id_digitiser
+                or g.current_user.id_role == self.id_operator
+            ):
+                return True
+            if scope == 2 and g.current_user.id_organisme in self.organism_actors:
+                return True
+        elif scope == 3:
+            return True
+        return False
 
 
 @serializable
@@ -368,6 +391,23 @@ class TIndividuals(DB.Model):
             query = query.where(or_(*ors))
         return query
 
+    @hybrid_property
+    def organism_actors(self):
+        # return self.digitiser.id_organisme
+        actors_organism_list = []
+        if isinstance(self.digitiser, User):
+            actors_organism_list.append(self.digitiser.id_organisme)
+
+        return actors_organism_list
+
     def has_instance_permission(self, scope):
-        # TODO
-        return True
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if g.current_user.id_role == self.id_digitiser:
+                return True
+            if scope == 2 and g.current_user.id_organisme in self.organism_actors:
+                return True
+        elif scope == 3:
+            return True
+        return False
