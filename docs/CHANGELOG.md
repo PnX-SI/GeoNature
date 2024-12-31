@@ -2,9 +2,15 @@
 
 ## 2.15.1 (unreleased)
 
+**🚀 Nouveautés**
+
+- Amélioration de la recherche libre des métadonnées en cherchant chaque mot indépendamment (#3295, par @jbrieuclp)
+- Amélioration de l'affichage de la photo du taxon sur les fiches taxon (#3287, par @edelclaux)
+
 **🐛 Corrections**
 
-- Amélioration de la recherche des métadonnées: ajout d'une recherche par mot-clés. (#3295 par @jbrieuclp)
+- Correction de la pagination quand on filtre les discussions de la page d'accueil sur "Mes discussions" (#3288, par @edelclaux)
+- Correction du nombre de taxons sur les fiches des cadres d'acquisition (#3228, par @jacquesfize)
 
 ## 2.15.0 - Pavo cristatus 🦚 (2025-12-11)
 
