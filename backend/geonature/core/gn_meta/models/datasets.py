@@ -274,13 +274,13 @@ class TDatasets(db.Model):
 
         search = params.get("search")
         if search:
-
+            search = search.strip()
             # Where clauses to include other matching possibilities (id, uuid)
             where_clauses = []
             if search.isdigit():  # ID AF match
                 where_clauses.append(cls.id_dataset == int(search))
 
-            if len(search) > 5:  # UUID match
+            if len(search) >= MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING:  # UUID match
                 where_clauses.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"%{search}%"))
 
             # if name search include acquisition framework

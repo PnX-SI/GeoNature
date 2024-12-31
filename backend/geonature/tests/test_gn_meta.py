@@ -3,6 +3,7 @@ import uuid
 from io import StringIO
 from unittest.mock import patch
 
+
 import pytest
 from flask import url_for
 from geoalchemy2.shape import to_shape
@@ -824,7 +825,6 @@ class TestGNMeta:
     def test_get_dataset_search_uuid(self, users, datasets):
         ds = datasets["own_dataset"]
         set_logged_user(self.client, users["admin_user"])
-
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
             json={"search": str(ds.unique_dataset_id)[:5]},

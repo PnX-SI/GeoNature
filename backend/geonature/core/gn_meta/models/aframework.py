@@ -312,15 +312,15 @@ class TAcquisitionFramework(db.Model):
 
         search = params.get("search")
         if search:
-
+            search = search.strip()
             # Where clauses to include other matching possibilities (id, uuid, date)
             where_clauses = []
             if search.isdigit():  # ID AF match
                 where_clauses.append(TAcquisitionFramework.id_acquisition_framework == int(search))
 
-            if len(search) > 5:  # UUID and date match
+            if len(search) >= MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING:  # UUID and date match
                 where_clauses.append(
-                    sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).ilike(
+                    sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
                         f"%{search}%"
                     )
                 )
@@ -362,14 +362,9 @@ class TAcquisitionFramework(db.Model):
                     TAcquisitionFramework.id_acquisition_framework,
                 )
             ).cte("matched_words_af_cte")
-
-            query = (
-                select(TAcquisitionFramework)
-                .where(
-                    matched_words_af_cte.c.id_acquisition_framework
-                    == TAcquisitionFramework.id_acquisition_framework
-                )
-                .order_by(matched_words_af_cte.c.match_count.desc())
-            )
+            query = query.where(
+                matched_words_af_cte.c.id_acquisition_framework
+                == TAcquisitionFramework.id_acquisition_framework
+            ).order_by(matched_words_af_cte.c.match_count.desc())
 
         return query
