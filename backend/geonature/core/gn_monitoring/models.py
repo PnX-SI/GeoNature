@@ -3,6 +3,7 @@
     Correspond a la centralisation des données de base
         relatifs aux protocoles de suivis
 """
+
 from datetime import datetime
 
 from geoalchemy2 import Geometry
@@ -20,7 +21,7 @@ from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from pypnnomenclature.models import TNomenclatures
-from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_commons.models import TModules, TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
 
@@ -235,6 +236,23 @@ corIndividualModule = DB.Table(
 
 
 @serializable
+class TObservations(DB.Model):
+    __tablename__ = "t_observations"
+    __table_args__ = {"schema": "gn_monitoring"}
+    id_observation = DB.Column(DB.Integer, primary_key=True, nullable=False, unique=True)
+    id_base_visit = DB.Column(DB.ForeignKey("gn_monitoring.t_base_visits.id_base_visit"))
+    id_digitiser = DB.Column(DB.Integer, DB.ForeignKey("utilisateurs.t_roles.id_role"))
+    digitiser = DB.relationship(
+        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+    )
+    cd_nom = DB.Column(DB.Integer)
+    comments = DB.Column(DB.String)
+    uuid_observation = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+
+    id_individual = DB.Column(DB.ForeignKey("gn_monitoring.t_individuals.id_individual"))
+
+
+@serializable
 class TMarkingEvent(DB.Model):
     __tablename__ = "t_marking_events"
     __table_args__ = {"schema": "gn_monitoring"}
@@ -267,20 +285,9 @@ class TMarkingEvent(DB.Model):
 
     operator = DB.relationship(User, lazy="joined", foreign_keys=[id_operator])
 
-
-@serializable
-class TObservations(DB.Model):
-    __tablename__ = "t_observations"
-    __table_args__ = {"schema": "gn_monitoring"}
-    id_observation = DB.Column(DB.Integer, primary_key=True, nullable=False, unique=True)
-    id_base_visit = DB.Column(DB.ForeignKey("gn_monitoring.t_base_visits.id_base_visit"))
-    id_digitiser = DB.Column(DB.Integer, DB.ForeignKey("utilisateurs.t_roles.id_role"))
-    digitiser = DB.relationship(
-        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
-    )
-    cd_nom = DB.Column(DB.Integer)
-    comments = DB.Column(DB.String)
-    uuid_observation = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    def has_instance_permission(self, scope):
+        # TODO
+        return True
 
 
 @serializable
@@ -290,7 +297,7 @@ class TIndividuals(DB.Model):
     id_individual = DB.Column(DB.Integer, primary_key=True)
     uuid_individual = DB.Column(UUID, nullable=False, server_default=DB.text("uuid_generate_v4()"))
     individual_name = DB.Column(DB.Unicode(255), nullable=False)
-    cd_nom = DB.Column(DB.ForeignKey("taxonomie.taxref.cd_nom"), nullable=False)
+    cd_nom = DB.Column(DB.Integer, DB.ForeignKey("taxonomie.taxref.cd_nom"), nullable=False)
     id_nomenclature_sex = DB.Column(
         DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         server_default=DB.text(
@@ -339,6 +346,14 @@ class TIndividuals(DB.Model):
         primaryjoin=(id_individual == TMarkingEvent.id_individual),
     )
 
+    medias = DB.relationship(
+        TMedias,
+        lazy="joined",
+        primaryjoin=(TMedias.uuid_attached_row == uuid_individual),
+        foreign_keys=[TMedias.uuid_attached_row],
+        overlaps="medias",
+    )
+
     @classmethod
     def filter_by_scope(cls, query, scope, user):
         if scope == 0:
@@ -352,3 +367,7 @@ class TIndividuals(DB.Model):
                 ors.append(cls.digitiser.has(id_organisme=user.id_organisme))
             query = query.where(or_(*ors))
         return query
+
+    def has_instance_permission(self, scope):
+        # TODO
+        return True
