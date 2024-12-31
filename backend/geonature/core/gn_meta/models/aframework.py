@@ -321,7 +321,7 @@ class TAcquisitionFramework(db.Model):
             if len(search) >= MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING:  # UUID and date match
                 where_clauses.append(
                     sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
-                        f"%{search}%"
+                        f"{search}%"
                     )
                 )
                 try:

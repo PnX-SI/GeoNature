@@ -281,7 +281,7 @@ class TDatasets(db.Model):
                 where_clauses.append(cls.id_dataset == int(search))
 
             if len(search) >= MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING:  # UUID match
-                where_clauses.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"%{search}%"))
+                where_clauses.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"{search}%"))
 
             # if name search include acquisition framework
             if _af_search:
