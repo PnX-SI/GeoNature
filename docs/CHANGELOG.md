@@ -256,9 +256,7 @@ Si vous mettez à jour GeoNature :
 - [Occtax] Tri alphabétique de la liste des "Mes lieux" (#2805, par @DonovanMaillard)
 - [Documentation] Corrections et compléments de la documentation d'administrateur (#2812, par @marie-laure-cen)
 
-  2.13.3 (2023-10-17)
-
----
+## 2.13.3 (2023-10-17)
 
 **🐛 Corrections**
 
