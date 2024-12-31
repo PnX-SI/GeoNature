@@ -296,7 +296,7 @@
       "SourceFieldsAllMapped": "L'ensemble des {{ sourceFieldsLength }} champs du fichier d’import ont été associés à un champs cible.",
       "SourceFieldsUnmapped": "{{ unmappedFieldsLength }} champs du fichier d’import ne sont actuellement associés à aucun champs cible et seront donc ignorés.",
       "SaveMapping": "Enregistrement du modèle",
-      "MappingCreate?": "Souhaitez sauvegarder vos correspondances dans un modèle pour les réutiliser lors d’un futur import ?",
+      "MappingCreate?": "Souhaitez-vous sauvegarder vos correspondances dans un modèle pour les réutiliser lors d’un futur import ?",
       "MappingChanged?": "Le modèle de correspondance a été modifié ; souhaitez-vous mettre à jour le modèle existant ou créer un nouveau modèle ?",
       "MappingName": "Nom du modèle",
       "MappingNameWarning": "Un nom doit être renseigné pour pouvoir créer un modèle",
