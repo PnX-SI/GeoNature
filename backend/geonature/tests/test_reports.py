@@ -49,7 +49,7 @@ def self_user_notification_rule(users):
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestReports:
     def test_create_report(self, synthese_data, users):
-        url = "gn_synthese.create_report"
+        url = "gn_synthese.reports.create_report"
         id_synthese = db.session.scalars(select(Synthese).limit(1)).first().id_synthese
         data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
         # TEST - NO AUTHENT
@@ -85,7 +85,7 @@ class TestReports:
 
     def test_delete_report(self, reports_data, users):
         # NO AUTHENT
-        url = "gn_synthese.delete_report"
+        url = "gn_synthese.reports.delete_report"
         id_report_ko = db.session.execute(select(func.max(TReport.id_report))).scalar_one() + 1
         # get id type for discussion type
         discussionIdType = (
@@ -144,7 +144,7 @@ class TestReports:
         assert not db.session.scalar(exists().where(TReport.id_report == alertReportId).select())
 
     def test_list_reports(self, reports_data, synthese_data, users):
-        url = "gn_synthese.list_reports"
+        url = "gn_synthese.reports.list_reports"
         ids = [s.id_synthese for s in synthese_data.values()]
 
         # User: noright_user
@@ -210,7 +210,7 @@ class TestReports:
     def test_list_all_reports(
         self, sort, orderby, expected_error, reports_data, synthese_data, users
     ):
-        url = "gn_synthese.list_all_reports"
+        url = "gn_synthese.reports.list_all_reports"
         set_logged_user(self.client, users["admin_user"])
         # TEST GET WITHOUT REQUIRED ID SYNTHESE
         response = self.client.get(url_for(url, type="discussion"))
@@ -275,7 +275,7 @@ class TestReportsNotifications:
     def post_comment(self, synthese, user):
         """Post a comment on a synthese row as a user"""
         set_logged_user(self.client, user)
-        url = "gn_synthese.create_report"
+        url = "gn_synthese.reports.create_report"
         id_synthese = synthese.id_synthese
         data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
         return self.client.post(url_for(url), data=data)
