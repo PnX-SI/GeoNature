@@ -15,6 +15,7 @@ from werkzeug.exceptions import BadRequest
 
 statistics_routes = Blueprint("synthese_statistics", __name__)
 
+
 @statistics_routes.route("/taxa_count", methods=["GET"])
 @login_required
 @json_resp

@@ -10,6 +10,7 @@ from werkzeug.exceptions import NotFound
 
 other_routes = Blueprint("synthese_other_routes", __name__)
 
+
 @other_routes.route("/sources", methods=["GET"])
 @login_required
 @json_resp

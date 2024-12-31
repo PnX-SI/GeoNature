@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_synthese.models import Synthese, SyntheseLogEntry
-from geonature.utils.env import  db
+from geonature.utils.env import db
 
 from sqlalchemy import func
 from sqlalchemy.orm import load_only
@@ -26,6 +26,7 @@ routes.register_blueprint(statistics_routes, url_prefix="/")
 routes.register_blueprint(taxon_info_routes, url_prefix="/")
 routes.register_blueprint(other_routes, url_prefix="/")
 routes.register_blueprint(export_routes, url_prefix="/")
+
 
 @routes.route("/log", methods=["get"])
 @login_required
