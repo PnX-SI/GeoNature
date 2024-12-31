@@ -1,4 +1,4 @@
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 
 <!-- <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
     <div [matTooltip]="item[keyLabel]">
@@ -17,8 +17,7 @@
       [clearable]="false"
       [virtualScroll]="true"
       [formControl]="parentFormControl"
-    >
-    </ng-select>
+    ></ng-select>
   </div>
   <div class="col-3">
     <button
@@ -32,12 +31,16 @@
   </div>
 </div>
 
-<ng-template #content let-c="close" let-d="dismiss">
+<ng-template
+  #content
+  let-c="close"
+  let-d="dismiss"
+>
   <pnx-individuals-create
     [idModule]="idModule"
     [idList]="idList"
     [cdNom]="cdNom"
     (individualEvent)="individualCreated($event)"
     (cancelEvent)="closeModal()"
-  ></pnx-individuals-create
-></ng-template>
+  ></pnx-individuals-create>
+</ng-template>
