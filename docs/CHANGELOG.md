@@ -5,6 +5,7 @@
 **🐛 Corrections**
 
 - Amélioration de la recherche des métadonnées: ajout d'une recherche par mot-clés. (#3295 par @jbrieuclp)
+- Améliorations de la commande d’installation des modules (#3261 par @bouttier)
 
 ## 2.15.0 - Pavo cristatus 🦚 (2025-12-11)
 
