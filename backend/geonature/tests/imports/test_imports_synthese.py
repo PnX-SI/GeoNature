@@ -138,12 +138,11 @@ def import_dataset(datasets, import_file_name):
 
 
 @pytest.fixture()
-def new_import(synthese_destination, users, import_dataset):
+def new_import(synthese_destination, users):
     with db.session.begin_nested():
         imprt = TImports(
             destination=synthese_destination,
             authors=[users["user"]],
-            id_dataset=import_dataset.id_dataset,
         )
         db.session.add(imprt)
     return imprt
@@ -197,9 +196,10 @@ def decoded_import(client, uploaded_import):
 
 
 @pytest.fixture()
-def fieldmapping(import_file_name, autogenerate):
+def fieldmapping(import_file_name, autogenerate, import_dataset):
+    fieldmapping = {}
     if import_file_name in ["valid_file.csv", "jdd_to_import_file.csv"]:
-        return (
+        fieldmapping = (
             db.session.execute(sa.select(FieldMapping).filter_by(label="Synthese GeoNature"))
             .unique()
             .scalar_one()
@@ -207,7 +207,7 @@ def fieldmapping(import_file_name, autogenerate):
         )
     else:
         bib_fields = db.session.scalars(sa.select(BibFields).filter_by(display=True)).unique().all()
-        return {
+        fieldmapping = {
             field.name_field: {
                 "column_src": (
                     autogenerate
@@ -219,6 +219,9 @@ def fieldmapping(import_file_name, autogenerate):
             }
             for field in bib_fields
         }
+    fieldmapping["unique_dataset_id"] = {"default_value": str(import_dataset.unique_dataset_id)}
+
+    return fieldmapping
 
 
 @pytest.fixture()
@@ -460,16 +463,6 @@ class TestImportsSynthese:
         import_ids_asc = [imprt["id_import"] for imprt in r_asc.get_json()["imports"]]
         assert import_ids_des == import_ids_asc[-1::-1]
 
-    def test_order_import_foreign(self, users, imports, uploaded_import):
-        set_logged_user(self.client, users["user"])
-        response = self.client.get(url_for("import.get_import_list") + "?sort=dataset.dataset_name")
-        assert response.status_code == 200, response.data
-        imports = response.get_json()["imports"]
-        for a, b in zip(imports[:1], imports[1:]):
-            assert (a["dataset"] is None) or (
-                a["dataset"]["dataset_name"] <= b["dataset"]["dataset_name"]
-            )
-
     def test_get_import(self, users, imports):
         def get(import_name):
             return self.client.get(
@@ -515,7 +508,6 @@ class TestImportsSynthese:
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
             data = {
                 "file": (f, "simple_file.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
             }
             r = self.client.post(
                 url_for("import.upload_file"),
@@ -528,7 +520,6 @@ class TestImportsSynthese:
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
             data = {
                 "file": (f, "simple_file.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
             }
             r = self.client.post(
                 url_for("import.upload_file"),
@@ -539,39 +530,8 @@ class TestImportsSynthese:
             assert "has no permissions to C in IMPORT" in r.json["description"]
 
         set_logged_user(self.client, users["user"])
-
-        unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
-            data = {
-                "file": (f, "simple_file.csv"),
-                "datasetId": unexisting_id,
-            }
-            r = self.client.post(
-                url_for("import.upload_file"),
-                data=data,
-                headers=Headers({"Content-Type": "multipart/form-data"}),
-            )
-            assert r.status_code == BadRequest.code, r.data
-            assert r.json["description"] == f"Dataset '{unexisting_id}' does not exist."
-
-        with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
-            data = {
-                "file": (f, "simple_file.csv"),
-                "datasetId": datasets["stranger_dataset"].id_dataset,
-            }
-            r = self.client.post(
-                url_for("import.upload_file"),
-                data=data,
-                headers=Headers({"Content-Type": "multipart/form-data"}),
-            )
-            assert r.status_code == Forbidden.code, r.data
-            assert "jeu de données" in r.json["description"]  # this is a DS issue
-
-        with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
-            data = {
-                "file": (f, "simple_file.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
-            }
+            data = {"file": (f, "simple_file.csv")}
             r = self.client.post(
                 url_for("import.upload_file"),
                 data=data,
@@ -586,10 +546,7 @@ class TestImportsSynthese:
     def test_import_error(self, users, datasets):
         set_logged_user(self.client, users["user"])
         with open(tests_path / "files" / "synthese" / "empty.csv", "rb") as f:
-            data = {
-                "file": (f, "empty.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
-            }
+            data = {"file": (f, "empty.csv")}
             r = self.client.post(
                 url_for("import.upload_file"),
                 data=data,
@@ -597,11 +554,9 @@ class TestImportsSynthese:
             )
             assert r.status_code == 400, r.data
             assert r.json["description"] == "Impossible to upload empty files"
+
         with open(tests_path / "files" / "synthese" / "starts_with_empty_line.csv", "rb") as f:
-            data = {
-                "file": (f, "starts_with_empty_line.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
-            }
+            data = {"file": (f, "starts_with_empty_line.csv")}
             r = self.client.post(
                 url_for("import.upload_file"),
                 data=data,
@@ -618,7 +573,6 @@ class TestImportsSynthese:
         with open(tests_path / "files" / "synthese" / "utf8_file.csv", "rb") as f:
             data = {
                 "file": (f, "utf8_file.csv"),
-                "datasetId": imprt.id_dataset,
             }
             r = self.client.put(
                 url_for("import.upload_file", import_id=imprt.id_import),

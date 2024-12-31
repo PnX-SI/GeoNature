@@ -258,13 +258,14 @@ def check_datasets(
         }
 
     # Warning: we check only permissions of first author, but currently there it only one author per import.
+
     authorized_datasets = {
         str(ds.unique_dataset_id): ds
         for ds in db.session.execute(
             TDatasets.filter_by_creatable(
                 user=imprt.authors[0], module_code=module_code, object_code=object_code
             )
-            .where(TDatasets.unique_dataset_id.in_(uuid))
+            # .where(TDatasets.unique_dataset_id.in_(uuid))
             .options(sa.orm.raiseload("*"))
         )
         .scalars()
