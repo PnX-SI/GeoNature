@@ -2,7 +2,7 @@ import { USERS } from './constants/users';
 import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
 import {
   getSelectorImportListTableRowFile,
-  SELECTOR_IMPORT_LIST_TABLE,
+  SELECTOR_IMPORT_LIST_TABLE
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -49,8 +49,8 @@ describe('File Upload and POST Request Test', () => {
               )}import/${DESTINATION_CODE}/imports/${JDD_ID}/upload`,
               body: formData,
               headers: {
-                'Content-Type': 'multipart/form-data',
-              },
+                'Content-Type': 'multipart/form-data'
+              }
             }).then((response) => {
               // Assert the response status or body
               expect(response.status).to.equal(200);

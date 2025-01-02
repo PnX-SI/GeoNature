@@ -5,7 +5,7 @@ import {
   getSelectorImportListTableRowDelete,
   getSelectorImportListTableRowEdit,
   SELECTOR_IMPORT_LIST_TABLE,
-  SELECTOR_IMPORT_MODAL_DELETE,
+  SELECTOR_IMPORT_MODAL_DELETE
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -17,13 +17,13 @@ const JDD_LIST = [
   {
     jdd_name: 'JDD-TEST-IMPORT-ADMIN',
     jdd_is_active: true,
-    url_on_click_edit: Cypress.env('urlApplication') + 'import/occhab/process/1001',
+    url_on_click_edit: Cypress.env('urlApplication') + 'import/occhab/process/1001'
   },
   {
     jdd_name: 'JDD-TEST-IMPORT-INACTIF',
     jdd_is_active: false,
-    url_on_click_edit: Cypress.env('urlApplication') + 'import',
-  },
+    url_on_click_edit: Cypress.env('urlApplication') + 'import'
+  }
 ];
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ describe('Tests actions on active/inactive list JDD ', () => {
             .should('not.be.disabled');
 
           cy.request('PATCH', `${Cypress.env('apiEndpoint')}meta/dataset/${user.datasetId}`, {
-            active: false,
+            active: false
           });
 
           cy.reload();
@@ -86,7 +86,7 @@ describe('Tests actions on active/inactive list JDD ', () => {
             .should('be.disabled');
 
           cy.request('PATCH', `${Cypress.env('apiEndpoint')}meta/dataset/${user.datasetId}`, {
-            active: true,
+            active: true
           });
 
           cy.reload();

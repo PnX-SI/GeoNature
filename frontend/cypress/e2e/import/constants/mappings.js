@@ -2,5 +2,5 @@ export const DEFAULT_FIELDMAPPINGS = ['Synthese GeoNature', 'Format DEE (champs 
 
 export const DEFAULT_CONTENTMAPPINGS = [
   'Nomenclatures SINP (labels)',
-  'Nomenclatures SINP (codes)',
+  'Nomenclatures SINP (codes)'
 ];

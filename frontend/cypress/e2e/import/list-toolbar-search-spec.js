@@ -3,7 +3,7 @@ import { VIEWPORTS } from './constants/common';
 import { FILTERS_TABLE } from './constants/filters';
 import {
   SELECTOR_IMPORT_LIST_TABLE,
-  SELECTOR_IMPORT_LIST_TOOLBAR_SEARCH,
+  SELECTOR_IMPORT_LIST_TOOLBAR_SEARCH
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ describe('Tests list import columns and rows content', () => {
           cy.geonatureLogin(user.login.username, user.login.password);
           cy.visitImport();
           cy.intercept(Cypress.env('apiEndpoint') + 'import/imports/?page=1&search=', {
-            fixture: 'import/synthese/liste_import.json',
+            fixture: 'import/synthese/liste_import.json'
           });
         });
 

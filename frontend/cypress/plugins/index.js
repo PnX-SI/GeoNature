@@ -22,7 +22,7 @@ module.exports = (on, config) => {
       }
       const filenames = fs.readdirSync(downloadsDirPath);
       return filenames[0];
-    },
+    }
   });
   return config;
 };

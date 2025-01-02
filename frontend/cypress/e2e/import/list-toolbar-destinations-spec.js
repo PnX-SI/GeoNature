@@ -3,7 +3,7 @@ import { VIEWPORTS } from './constants/common';
 import {
   SELECTOR_DESTINATIONS,
   SELECTOR_IMPORT_LIST_TOOLBAR,
-  SELECTOR_IMPORT_LIST_TOOLBAR_DESTINATIONS,
+  SELECTOR_IMPORT_LIST_TOOLBAR_DESTINATIONS
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////

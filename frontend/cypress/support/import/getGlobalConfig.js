@@ -9,13 +9,13 @@ Cypress.Commands.add('getGlobalConfig', () => {
         'Auteur',
         'Debut import',
         'Destination',
-        'Fin import',
+        'Fin import'
       ];
       const columns = columnsImport
         .filter((column) => columnNames.includes(column.name))
         .map((column) => ({
           name: column.name,
-          sortable: column.filter,
+          sortable: column.filter
         }));
       return columns;
     })
