@@ -3,7 +3,6 @@ from geonature.core.gn_monitoring.schema import TIndividualsSchema
 from geonature.core.gn_permissions.tools import get_scope
 from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.sql import func, select
-from sqlalchemy.orm import raiseload, joinedload
 from geojson import FeatureCollection
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 

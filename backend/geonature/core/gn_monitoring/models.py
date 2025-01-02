@@ -21,7 +21,6 @@ from ref_geo.models import LAreas
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
-from pypnnomenclature.models import TNomenclatures
 from geonature.core.gn_commons.models import TModules, TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
