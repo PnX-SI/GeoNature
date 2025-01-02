@@ -3,6 +3,7 @@
     Correspond a la centralisation des données de base
         relatifs aux protocoles de suivis
 """
+
 from flask import g
 from datetime import datetime
 
