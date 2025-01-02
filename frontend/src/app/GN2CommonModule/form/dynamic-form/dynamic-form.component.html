@@ -50,7 +50,7 @@
       [formControl]="form.get(formDefComp['attribut_name'])"
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="text"
-      data-qa="field-text-{{ formDefComp['attribut_name'] }}_{{ rand }}"
+      [attr.data-qa]="'field-text' + '-' + formDefComp['attribut_name'] + '_' + rand"
     />
     <div
       *ngIf="
@@ -67,7 +67,7 @@
       [formControl]="form.get(formDefComp['attribut_name'])"
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="time"
-      [attr.data-qa]="'field-time' + formDefComp['attribut_name'] + '_' + rand"
+      [attr.data-qa]="'field-time' + '-' + formDefComp['attribut_name'] + '_' + rand"
     />
 
     <input
