@@ -3,7 +3,7 @@
     Correspond a la centralisation des données de base
         relatifs aux protocoles de suivis
 """
-
+from flask import g
 from datetime import datetime
 
 from geoalchemy2 import Geometry
@@ -310,7 +310,7 @@ class TMarkingEvent(DB.Model):
                 return True
         elif scope == 3:
             return True
-        return True
+        return False
 
 
 @serializable
@@ -410,4 +410,4 @@ class TIndividuals(DB.Model):
                 return True
         elif scope == 3:
             return True
-        return True
+        return False

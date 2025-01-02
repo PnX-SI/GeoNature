@@ -3,10 +3,12 @@ import pytest
 from werkzeug.exceptions import Forbidden
 from sqlalchemy import select
 from apptax.taxonomie.models import Taxref
-from geonature.core.gn_monitoring.models import TIndividuals
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
+from geonature.core.gn_monitoring.models import TIndividuals, TMarkingEvent
 from geonature.utils.env import db
 from geonature.core.gn_permissions.models import PermAction, PermObject, Permission
-from pypnusershub.tests.utils import set_logged_user_cookie
+from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
+
 
 from .fixtures import *
 
@@ -29,6 +31,51 @@ def individuals(users, module):
         individuals[0].modules = [module]
 
     return individuals
+
+
+@pytest.fixture
+def nomenclature_type_markings():
+    typ_marquage = db.session.scalar(
+        select(BibNomenclaturesTypes).where(
+            BibNomenclaturesTypes.mnemonique == "TYP_MARQUAGE",
+        )
+    )
+    nomenclature = TNomenclatures(
+        id_type=typ_marquage.id_type,
+        cd_nomenclature="MARQUAGE PEINTURE",
+        label_default="MARQUAGE PEINTURE",
+        label_fr="MARQUAGE PEINTURE",
+        active=True,
+    )
+    with db.session.begin_nested():
+        db.session.add(nomenclature)
+
+    return nomenclature
+
+
+@pytest.fixture
+def markings(users, module, individuals, nomenclature_type_markings):
+    user = users["self_user"]
+    markings = []
+    for individual in individuals:
+        markings.append(
+            TMarkingEvent(
+                id_individual=individual.id_individual,
+                id_module=module.id_module,
+                digitiser=user,
+                operator=user,
+                marking_date="2025-01-01",
+                marking_location="Là bas",
+                marking_code="0007",
+                marking_details="Super super",
+                id_nomenclature_marking_type=nomenclature_type_markings.id_nomenclature,
+            )
+        )
+
+    with db.session.begin_nested():
+        db.session.add_all(markings)
+
+    return markings
 
 
 @pytest.fixture
@@ -155,3 +202,77 @@ class TestMonitoring:
         json_resp = response.json
         assert json_resp["cd_nom"] == CD_NOM
         assert json_resp["individual_name"] == individual_name
+
+    def test_model_individual_has_instance_permission(
+        self, app, users, individuals, module, monitoring_individual_perm_object
+    ):
+        set_logged_user_cookie(self.client, users["self_user"])
+        set_permissions(
+            module=module,
+            role=users["self_user"],
+            scope_value=1,
+            action="R",
+            object=monitoring_individual_perm_object,
+        )
+
+        individual = individuals[0]
+        # Scope 0 => toujours Faux
+        assert individual.has_instance_permission(0) == False
+        # Scope 1 => toujours vrai
+        assert individual.has_instance_permission(3) == True
+
+        # Test avec l'utilisateur numérisateur : toujours vrai
+        with app.test_request_context(headers=logged_user_headers(users["self_user"])):
+            app.preprocess_request()
+            assert individual.has_instance_permission(1) == True
+            assert individual.has_instance_permission(2) == True
+
+        # Test avec un utilisateur de la même structure que le numérisateur
+        #   scope 1 => Faux; scope 2 : vrai
+        with app.test_request_context(headers=logged_user_headers(users["associate_user"])):
+            app.preprocess_request()
+            assert individual.has_instance_permission(1) == False
+            assert individual.has_instance_permission(2) == True
+
+        # Test avec un utilisateur d'une autre structure que le numérisateur : toujours faux
+        with app.test_request_context(headers=logged_user_headers(users["stranger_user"])):
+            app.preprocess_request()
+            assert individual.has_instance_permission(1) == False
+            assert individual.has_instance_permission(2) == False
+
+    def test_model_marking_has_instance_permission(
+        self, app, users, markings, module, monitoring_individual_perm_object
+    ):
+        set_logged_user_cookie(self.client, users["self_user"])
+        set_permissions(
+            module=module,
+            role=users["self_user"],
+            scope_value=1,
+            action="R",
+            object=monitoring_individual_perm_object,
+        )
+
+        marking = markings[0]
+        # Scope 0 => toujours Faux
+        assert marking.has_instance_permission(0) == False
+        # Scope 1 => toujours vrai
+        assert marking.has_instance_permission(3) == True
+
+        # Test avec l'utilisateur numérisateur : toujours vrai
+        with app.test_request_context(headers=logged_user_headers(users["self_user"])):
+            app.preprocess_request()
+            assert marking.has_instance_permission(1) == True
+            assert marking.has_instance_permission(2) == True
+
+        # Test avec un utilisateur de la même structure que le numérisateur
+        #   scope 1 => Faux; scope 2 : vrai
+        with app.test_request_context(headers=logged_user_headers(users["associate_user"])):
+            app.preprocess_request()
+            assert marking.has_instance_permission(1) == False
+            assert marking.has_instance_permission(2) == True
+
+        # Test avec un utilisateur d'une autre structure que le numérisateur : toujours faux
+        with app.test_request_context(headers=logged_user_headers(users["stranger_user"])):
+            app.preprocess_request()
+            assert marking.has_instance_permission(1) == False
+            assert marking.has_instance_permission(2) == False
