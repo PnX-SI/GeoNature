@@ -137,41 +137,59 @@ def import_dataset(datasets, import_file_name):
         ds.nomenclature_data_origin = previous_data_origin
 
 
-@pytest.fixture()
-def new_import(synthese_destination, users):
-    with db.session.begin_nested():
-        imprt = TImports(
-            destination=synthese_destination,
-            authors=[users["user"]],
-        )
-        db.session.add(imprt)
-    return imprt
+# @pytest.fixture()
+# def new_import(synthese_destination, users):
+#     # admin_user = User.query.filter(User.identifiant == "admin").one()
+#     with db.session.begin_nested():
+#         imprt = TImports(
+#             destination=synthese_destination,
+#             authors=[users["user"]],
+#         )
+#         db.session.add(imprt)
+#     return imprt
+
+
+# @pytest.fixture()
+# def uploaded_import(new_import, datasets, import_file_name):
+#     with db.session.begin_nested():
+#         with open(tests_path / "files" / "synthese" / import_file_name, "rb") as f:
+#             f.seek(0)
+#             content = f.read()
+#             if import_file_name == "jdd_to_import_file.csv":
+#                 content = content.replace(
+#                     b"VALID_DATASET_UUID",
+#                     datasets["own_dataset"].unique_dataset_id.hex.encode("ascii"),
+#                 )
+#                 content = content.replace(
+#                     b"FORBIDDEN_DATASET_UUID",
+#                     datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
+#                 )
+#                 content = content.replace(
+#                     b"PRIVATE_DATASET_UUID",
+#                     datasets["private"].unique_dataset_id.hex.encode("ascii"),
+#                 )
+#                 new_import.full_file_name = "jdd_to_import_file.csv"
+#             else:
+#                 new_import.full_file_name = "valid_file.csv"
+#             new_import.source_file = content
+#     return new_import
 
 
 @pytest.fixture()
-def uploaded_import(new_import, datasets, import_file_name):
-    with db.session.begin_nested():
-        with open(tests_path / "files" / "synthese" / import_file_name, "rb") as f:
-            f.seek(0)
-            content = f.read()
-            if import_file_name == "jdd_to_import_file.csv":
-                content = content.replace(
-                    b"VALID_DATASET_UUID",
-                    datasets["own_dataset"].unique_dataset_id.hex.encode("ascii"),
-                )
-                content = content.replace(
-                    b"FORBIDDEN_DATASET_UUID",
-                    datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
-                )
-                content = content.replace(
-                    b"PRIVATE_DATASET_UUID",
-                    datasets["private"].unique_dataset_id.hex.encode("ascii"),
-                )
-                new_import.full_file_name = "jdd_to_import_file.csv"
-            else:
-                new_import.full_file_name = "valid_file.csv"
-            new_import.source_file = content
-    return new_import
+def uploaded_import(client, users):
+    set_logged_user(client, users["user"])
+
+    filename = "valid_file.csv"
+    file = (open(tests_path / "files" / "synthese" / filename, "rb"), filename)
+
+    r = client.post(
+        url_for("import.upload_file", destination="synthese"),
+        data={"file": file},
+    )
+    assert r.status_code == 200, r.data
+    unset_logged_user(client)
+    # db.session.refresh(uploaded_import)
+    # return uploaded_import
 
 
 @pytest.fixture()
@@ -489,7 +507,7 @@ class TestImportsSynthese:
         assert r.status_code == 200, r.data
         assert r.json["id_import"] == imports["own_import"].id_import
 
-    def test_delete_import(self, users, imported_import):
+    def test_delete_import(self, g_permissions, users, imported_import):
         imprt = imported_import
         transient_table = imprt.destination.get_transient_table()
         r = self.client.delete(url_for("import.delete_import", import_id=imprt.id_import))

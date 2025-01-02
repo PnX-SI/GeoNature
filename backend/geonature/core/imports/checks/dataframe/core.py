@@ -262,14 +262,13 @@ def check_datasets(
     authorized_datasets = {
         str(ds.unique_dataset_id): ds
         for ds in db.session.execute(
-            # sa.select(TDatasets)
             TDatasets.filter_by_creatable(
                 user=imprt.authors[0], module_code=module_code, object_code=object_code
             )
-            .where(TDatasets.unique_dataset_id.in_(uuid))
-            .options(sa.orm.raiseload("*"))
-        ).scalars()
-        # .unique()
+            # .where(TDatasets.unique_dataset_id.in_(uuid))
+            # .options(sa.orm.raiseload("*"))
+        )
+        .scalars()
         .all()
     }
     authorized_ds_mask = valid_ds_mask & df[uuid_col].isin(authorized_datasets.keys())
