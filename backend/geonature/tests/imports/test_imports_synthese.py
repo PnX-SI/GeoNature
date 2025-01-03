@@ -4,6 +4,7 @@ from functools import partial
 from operator import or_
 from functools import reduce
 import csv
+import json
 
 from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
@@ -582,6 +583,26 @@ class TestImportsSynthese:
         imprt = db.session.get(TImports, r.json["id_import"])
         assert imprt.source_file is not None
         assert imprt.full_file_name == "simple_file.csv"
+
+        with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
+            fields_to_map = {
+                "nom_cite": {"column_src": "nom_cite", "default_value": "test_nomcite"},
+                "altitude_max": {"column_src": "altitude_max", "default_value": 10},
+            }
+            data = {
+                "file": (f, "simple_file.csv"),
+                "datasetId": datasets["own_dataset"].id_dataset,
+                "fieldsToMap": json.dumps(fields_to_map),
+            }
+            r = self.client.post(
+                url_for("import.upload_file"),
+                data=data,
+                headers=Headers({"Content-Type": "multipart/form-data"}),
+            )
+            assert r.status_code == 200, r.data
+
+        imprt = db.session.get(TImports, r.json["id_import"])
+        assert imprt.fieldmapping == fields_to_map
 
     def test_import_error(self, users, datasets):
         set_logged_user(self.client, users["user"])
