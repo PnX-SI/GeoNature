@@ -17,7 +17,7 @@ from sqlalchemy.schema import Table, MetaData
 revision = "e43f039b5ff1"
 down_revision = "650f1d749b3b"
 branch_labels = None
-depends_on = None
+depends_on = ("a94bea44ab56",)
 
 
 def upgrade():
