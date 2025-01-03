@@ -25,6 +25,7 @@
                 class="entity-tab-label"
                 [matBadge]="invalidEntityControls(entitythemes.entity.label)"
                 [matBadgeHidden]="invalidEntityControls(entitythemes.entity.label) < 1"
+                [attr.data-qa]="'import-entity-tab-' + entitythemes.entity.label"
               >
                 {{ entitythemes.entity.label }}
               </span>
@@ -146,7 +147,10 @@
         </span>
       </ng-template>
       <form>
-        <div class="form-group">
+        <div
+          class="form-group"
+          [attr.data-qa]="'import-fieldmapping-' + '-' + Import.FieldMapping.MappingName"
+        >
           <label
             for="mappingName"
             *ngIf="this.updateAvailable"
