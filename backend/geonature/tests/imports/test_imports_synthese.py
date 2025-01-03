@@ -4,6 +4,7 @@ from functools import partial
 from operator import or_
 from functools import reduce
 import csv
+import json
 
 from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
