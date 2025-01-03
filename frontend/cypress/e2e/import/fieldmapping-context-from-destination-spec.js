@@ -57,7 +57,7 @@ const paramsByDestination = [
         entityLabel: 'Habitat',
         expectedValue: 'Inconnu',
       },
-      // TODO: some fields seems to be not handled to be directly added as default value 
+      // TODO: some fields seems to be not handled to be directly added as default value
       // {
       //   paramsName: 'nom_cite',
       //   paramsValue: 'test_nomcite',
@@ -102,9 +102,7 @@ describe('Import - Upload step', () => {
 
             if (destination === 'occhab' && entityLabel) {
               const dataQaEntity = `[data-qa="import-entity-tab-${entityLabel}"]`;
-              cy.get(dataQaEntity, { timeout: 30000 })
-                .should('be.visible') 
-                .click();
+              cy.get(dataQaEntity, { timeout: 30000 }).should('be.visible').click();
             }
 
             handleFieldValidation(dataQa, paramsName, expectedValue, fieldType);
@@ -112,7 +110,6 @@ describe('Import - Upload step', () => {
           cy.visitImport();
           cy.removeFirstImportInList();
         });
-
       });
     });
   });
