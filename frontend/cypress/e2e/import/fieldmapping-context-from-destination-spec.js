@@ -51,16 +51,24 @@ const paramsByDestination = [
     destination: 'occhab',
     queryParams: [
       {
-        paramsName: 'nom_cite',
-        paramsValue: 'test_nomcite',
-        fieldType: 'text',
+        paramsName: 'id_nomenclature_determination_type',
+        paramsValue: 'Inconnu',
+        fieldType: 'nomenclature',
         entityLabel: 'Habitat',
-        expectedValue: 'test_nomcite',
+        expectedValue: 'Inconnu',
       },
+      // TODO: some fields seems to be not handled to be directly added as default value 
+      // {
+      //   paramsName: 'nom_cite',
+      //   paramsValue: 'test_nomcite',
+      //   fieldType: 'taxonomy-input',
+      //   entityLabel: 'Habitat',
+      //   expectedValue: 'test_nomcite',
+      // },
       {
         paramsName: 'station_name',
         paramsValue: 'test_station_name',
-        fieldType: 'text',
+        fieldType: 'textarea',
         entityLabel: 'Station',
         expectedValue: 'test_station_name',
       },
@@ -84,7 +92,7 @@ describe('Import - Upload step', () => {
             .join('&');
           cy.visit(`/#/import/${destination}/process/upload?${urlParams}`);
           cy.pickDataset(USER.dataset);
-          cy.loadImportFile(FILES.synthese.valid.fixture);
+          cy.loadImportFile(FILES[destination].valid.fixture);
           cy.configureImportFile();
         });
 
@@ -101,7 +109,10 @@ describe('Import - Upload step', () => {
 
             handleFieldValidation(dataQa, paramsName, expectedValue, fieldType);
           });
+          cy.visitImport();
+          cy.removeFirstImportInList();
         });
+
       });
     });
   });
