@@ -70,6 +70,9 @@ def upgrade():
         "t_marking_events",
         sa.Column("id_marking", sa.Integer, primary_key=True),
         sa.Column(
+            "uuid_marking", UUID, nullable=False, server_default=sa.text("uuid_generate_v4()")
+        ),
+        sa.Column(
             "id_module",
             sa.Integer,
             sa.ForeignKey("gn_commons.t_modules.id_module", ondelete="CASCADE"),
@@ -129,11 +132,51 @@ def upgrade():
         ),
         schema=SCHEMA,
     )
-    # TODO: add constraint to id_nomenclature_marking_type to check
+
+    op.execute(
+        """
+        ALTER TABLE gn_monitoring.t_marking_events
+        ADD CONSTRAINT check_marking_type 
+        CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(
+            id_nomenclature_marking_type, 'TYP_MARQUAGE'::character varying)
+        ) NOT VALID;
+        """
+    )
+
+    op.execute(
+        """
+        INSERT INTO gn_commons.bib_tables_location (
+        table_desc, schema_name, table_name,
+        pk_field, uuid_field_name
+        )
+        VALUES 
+            ('Table centralisant les individus faisant l''objet de protocole de suivis', 
+            'gn_monitoring','t_individuals','id_individual','uuid_individual'),
+            ('Table centralisant les marquages réalisés sur les individus dans le cadre 
+            de protocoles de suivis',
+            'gn_monitoring','t_marking_events','id_marking_event','uuid_marking');
+        """
+    )
 
 
 def downgrade():
     op.drop_table("cor_individual_module", schema=SCHEMA)
+    op.execute(
+        """
+        DELETE FROM gn_commons.t_medias m
+        WHERE id_table_location IN (
+            SELECT id_table_location FROM gn_commons.bib_tables_location
+            WHERE table_name IN ('t_individuals', 't_marking_events')
+            );
+        """
+    )
+    op.execute(
+        """
+        DELETE FROM gn_commons.bib_tables_location
+        WHERE table_name IN ('t_individuals', 't_marking_events')
+        AND schema_name='gn_monitoring';
+        """
+    )
     op.drop_table("t_marking_events", schema=SCHEMA)
     op.execute(
         """
