@@ -83,7 +83,7 @@ def upgrade():
             sa.ForeignKey(f"{SCHEMA}.t_individuals.id_individual", ondelete="CASCADE"),
             nullable=False,
         ),
-        sa.Column("marking_date", sa.DateTime(timezone=False), nullable=False),
+        sa.Column("marking_date", sa.Date, nullable=False),
         sa.Column(
             "id_operator",
             sa.Integer,
