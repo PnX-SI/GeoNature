@@ -129,6 +129,8 @@ install_extra:
 	source backend/venv/bin/activate && geonature install-gn-module "${MODULE_EXPORT_DIRECTORY}" --upgrade-db=${UPGRADE_DB_EXTRA}  --build=false
 	source backend/venv/bin/activate && geonature install-gn-module "${MODULE_DASHBOARD_DIRECTORY}" --upgrade-db=${UPGRADE_DB_EXTRA}  --build=false
 
+install_modules: install_contrib install_extra
+
 reset_install: install_backend install_db install_modules
 
 ##############################
