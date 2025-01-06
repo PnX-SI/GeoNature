@@ -155,3 +155,4 @@ install_all/install_all.log
 /docs/CHANGELOG.html
 
 /contrib/*/frontend/node_modules
+Makefile.local
