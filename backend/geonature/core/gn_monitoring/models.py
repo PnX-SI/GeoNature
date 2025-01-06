@@ -259,6 +259,7 @@ class TMarkingEvent(DB.Model):
     __table_args__ = {"schema": "gn_monitoring"}
 
     id_marking = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
+    uuid_marking = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
     id_individual = DB.Column(
         DB.ForeignKey(f"gn_monitoring.t_individuals.id_individual", ondelete="CASCADE"),
         nullable=False,
@@ -287,6 +288,14 @@ class TMarkingEvent(DB.Model):
     operator = DB.relationship(User, lazy="joined", foreign_keys=[id_operator])
 
     digitiser = DB.relationship(User, lazy="joined", foreign_keys=[id_digitiser])
+
+    medias = DB.relationship(
+        TMedias,
+        lazy="joined",
+        primaryjoin=(TMedias.uuid_attached_row == uuid_marking),
+        foreign_keys=[TMedias.uuid_attached_row],
+        overlaps="medias,medias",
+    )
 
     @hybrid_property
     def organism_actors(self):
