@@ -106,11 +106,11 @@ export class FieldsMappingStepComponent implements OnInit {
       this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 0;
     //
     const currentUser = this._authService.getCurrentUser();
-    const intersectMappingOwnerUser = mappingValue['owners'].filter((x) =>
-      x.identifiant == currentUser.user_login ? mappingValue['owners'] : false
-    );
 
     if (this._fieldMappingService.mappingFormGroup.dirty && mappingValue && this.cruved.C) {
+      const intersectMappingOwnerUser = mappingValue['owners'].filter((x) =>
+        x.identifiant == currentUser.user_login ? mappingValue['owners'] : false
+      );
       if (
         mappingValue.public &&
         (hasAdminUpdateMappingRight || (hasOwnMappingUpdateRight && intersectMappingOwnerUser))
