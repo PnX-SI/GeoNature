@@ -45,6 +45,7 @@ setuptools.setup(
             "sphinx-book-theme",
             "myst-parser",
             "sphinx-autoapi",
+            "sphinx-copybutton",
         ],
     },
     classifiers=[

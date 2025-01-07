@@ -9,9 +9,9 @@ Installation des dépendances
 
 Installer les paquets suivants :
 
-::  
+.. code:: shell  
     
-  $ sudo apt install unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
+  sudo apt install unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
 
 
 Récupération de l'application
@@ -21,30 +21,30 @@ Récupération de l'application
 
 * Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_).
 
-  ::
+  .. code:: shell 
 
-    $ wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
+    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
 
 * Dézipper l'archive de l'application
 
-  ::
+  .. code:: shell 
 
-    $ unzip X.Y.Z.zip
-    $ rm X.Y.Z.zip
+    unzip X.Y.Z.zip
+    rm X.Y.Z.zip
 
 * Renommer le répertoire de l'application puis placez-vous dedans : 
 
-  ::
+  .. code:: shell 
 
-    $ mv GeoNature-X.Y.Z /home/`whoami`/geonature/
-    $ cd geonature
+    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
+    cd geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
 
-  ::
+  .. code:: shell 
 
-    $ cp config/settings.ini.sample config/settings.ini
-    $ nano config/settings.ini
+    cp config/settings.ini.sample config/settings.ini
+    nano config/settings.ini
 
 
 Installation de l'application
