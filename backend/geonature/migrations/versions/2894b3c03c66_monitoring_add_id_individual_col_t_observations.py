@@ -24,9 +24,6 @@ foreign_schema = monitorings_schema
 foreign_table = "t_individuals"
 foreign_key = column_name
 
-constraint_name = f"check_{table}_cd_nom_or_id_individual_not_null"
-cd_nom_column_name = "cd_nom"
-
 
 def upgrade():
     op.add_column(
@@ -42,15 +39,6 @@ def upgrade():
         ),
         schema=monitorings_schema,
     )
-    op.alter_column(
-        table_name=table, column_name=cd_nom_column_name, nullable=True, schema=monitorings_schema
-    )
-    op.create_check_constraint(
-        table_name=table,
-        constraint_name=constraint_name,
-        condition=sa.or_(column(cd_nom_column_name).isnot(None), column(column_name).isnot(None)),
-        schema=monitorings_schema,
-    )
 
 
 def downgrade():
@@ -62,7 +50,3 @@ def downgrade():
     """
     )
     op.drop_column(table_name=table, column_name=column_name, schema=monitorings_schema)
-    op.alter_column(
-        table_name=table, column_name=cd_nom_column_name, nullable=False, schema=monitorings_schema
-    )
-    # constraint automatically dropped with drop_column above
