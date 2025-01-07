@@ -246,7 +246,7 @@ class TObservations(DB.Model):
     digitiser = DB.relationship(
         User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
     )
-    cd_nom = DB.Column(DB.Integer)
+    cd_nom = DB.Column(DB.Integer, DB.ForeignKey("taxonomie.taxref.cd_nom"))
     comments = DB.Column(DB.String)
     uuid_observation = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
 
