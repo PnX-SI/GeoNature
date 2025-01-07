@@ -108,7 +108,7 @@ html_logo = "./images/LogoGeonature.jpg"
 # documentation.
 #
 html_theme_options = {
-    "navigation_depth": 4,
+    "navigation_depth": 2,
     "use_source_button": True,
     "repository_provider": "github",
     "repository_url": "https://github.com/PnX-SI/GeoNature",
