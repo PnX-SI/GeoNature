@@ -1407,19 +1407,10 @@ Il peut s'agir de données partenaires, de données historiques ou de données s
 
 2 possibilités s'offrent à vous :
 
-* Créer un schéma dédié aux données pour les intégrer de manière complète et en extraire les DEE dans la Synthèse
-* N'intégrer que les DEE dans la Synthèse
+* Utiliser le module Import intégré à GeoNature
+* Importer les données manuellement directement dans la BDD, dans la Synthèse ou dans les tables d'un module de saisie
 
-Nous présenterons ici la première solution qui est privilégiée pour disposer des données brutes mais aussi les avoir dans la Synthèse.
-
-* Créer un JDD dédié (``gn_meta.t_datasets``) ou utilisez-en un existant. Eventuellement un CA si elles ne s'intègrent pas dans un CA déjà existant.
-* Ajouter une Source de données dans ``gn_synthese.t_sources`` ou utilisez en une existante.
-* Créer le schéma dédié à accueillir les données brutes.
-* Créer les tables nécessaires à accueillir les données brutes.
-* Intégrer les données dans ces tables (avec les fonctions de ``gn_imports``, avec QGIS ou pgAdmin).
-* Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers (en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
-
-Pour des exemples plus précis, illustrées et commentées, vous pouvez consulter les 2 exemples d'import dans cette documentation (Import niveau et Import niveau 2).
+Pour des exemples d'imports manuels précis, illustrés et commentés, vous pouvez consulter ceux partagés dans l'espace de ressources techniques : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/V2.
 
 Vous pouvez aussi vous inspirer des exemples avancés de migration des données de GeoNature V1 vers GeoNature V2 : https://github.com/PnX-SI/GeoNature/tree/master/data/migrations/v1tov2
 
@@ -1427,12 +1418,6 @@ Vous pouvez aussi vous inspirer des exemples avancés de migration des données 
 * Import depuis SERENA : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena
 * Import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 * Import d'un CSV historique (Flavia) : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql
-
-
-.. include:: import-level-1.rst
-
-.. include:: import-level-2.rst
-
 
 Authentification
 --------------------
