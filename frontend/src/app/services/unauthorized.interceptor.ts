@@ -10,6 +10,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/empty';
+import { replace } from '@librairies/cypress/types/lodash';
 
 @Injectable()
 export class UnauthorizedInterceptor implements HttpInterceptor {
@@ -20,10 +21,11 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
       if (err instanceof HttpErrorResponse && err.status === 401) {
         // Do not redirect if the url contain login
         // recovery password and inscriptio nare under 'login' prefix
-        if (!document.location.href.split('/').includes('login')) {
+        if (!document.location.href.includes('/login')) {
           this.router.navigate(['/login'], {
-            // TODO: put in config!
-            queryParams: { route: this.router.url },
+            queryParams: { next: document.location.href },
+            replaceUrl: true,
+            queryParamsHandling: 'merge',
           });
         }
       }
