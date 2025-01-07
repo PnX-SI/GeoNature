@@ -34,10 +34,10 @@ NB_CONCURRENT_WORKER_CELERY?=1
 UPGRADE_DB_EXTRA?=false
 
 GEONATURE_DEFAULT_CONFIG_FILE = config/geonature_config.toml.sample
-GEONATURE_LOCAL_CONFIG_FILE = config/geonature_config.toml_t
+GEONATURE_LOCAL_CONFIG_FILE = config/geonature_config.toml
 
 GEONATURE_DEFAULT_SETTING_FILE = config/settings.ini.sample
-GEONATURE_LOCAL_SETTING_FILE = config/settings.ini_t
+GEONATURE_LOCAL_SETTING_FILE = config/settings.ini
 GEONATURE_APP_SECRET_KEY ?= '8551a7a-64a4-4216-bda4-9a919fcc7a27'
 
 default: help
