@@ -1,6 +1,6 @@
 from marshmallow import fields
 
-from geonature.core.gn_commons.schemas import ModuleSchema
+from geonature.core.gn_commons.schemas import ModuleSchema, MediaSchema
 from geonature.utils.env import MA
 from geonature.core.gn_monitoring.models import TIndividuals, TMarkingEvent
 from pypnnomenclature.schemas import NomenclatureSchema
@@ -14,6 +14,7 @@ class TMarkingEventSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     operator = MA.Nested(UserSchema, dump_only=True)
+    medias = MA.Nested(MediaSchema, many=True)
 
 
 class TIndividualsSchema(MA.SQLAlchemyAutoSchema):
@@ -26,3 +27,4 @@ class TIndividualsSchema(MA.SQLAlchemyAutoSchema):
     digitiser = MA.Nested(UserSchema, dump_only=True)
     modules = fields.List(MA.Nested(ModuleSchema, dump_only=True))
     markings = fields.List(MA.Nested(TMarkingEventSchema, dump_only=True))
+    medias = MA.Nested(MediaSchema, many=True)
