@@ -302,6 +302,10 @@
                             {% if dataset['count_synthese_observations']: %}
                             Nombre d'observations dans la Synthèse : {{ dataset['count_synthese_observations'] }}
                             {% endif %}
+                            <br>
+                            {% if dataset['count_habitats']: %}
+                            Nombre d'habitats dans occhab : {{ dataset['count_habitats'] }}
+                            {% endif %}
                         </p>
                     </div>
                     {%- endfor %}

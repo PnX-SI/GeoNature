@@ -620,12 +620,19 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
 
     # Add count of Synthese observations for each dataset
     for dataset in acquisition_framework["datasets"]:
-        dataset_count_query = (
+        dataset_obs_count_query = (
             select(func.count(Synthese.id_synthese))
             .select_from(Synthese)
             .where(Synthese.id_dataset == dataset["id_dataset"])
         )
-        dataset["count_synthese_observations"] = DB.session.scalar(dataset_count_query)
+        dataset_hab_count_query = (
+            select(func.count(OccurenceHabitat.id_habitat))
+            .select_from(OccurenceHabitat)
+            .where(Station.id_station == OccurenceHabitat.id_station)
+            .where(Station.id_dataset == dataset["id_dataset"])
+        )
+        dataset["count_synthese_observations"] = DB.session.scalar(dataset_obs_count_query)
+        dataset["count_habitats"] = DB.session.scalar(dataset_hab_count_query)
 
     query = (
         select(func.count(Synthese.cd_nom))
