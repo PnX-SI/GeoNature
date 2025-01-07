@@ -70,39 +70,39 @@ Configuration Apache
 
 * Créez la configuration du vhost, incluant la configuration par défaut créée précédemment :
 
-  .. code:: console
+  .. code:: shell
 
-    $ sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf # Copier le vhost
-    $ sudo nano /etc/apache2/sites-available/geonature.conf # Modifier la variable ``${DOMAIN_NAME}``
+    sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf # Copier le vhost
+    sudo nano /etc/apache2/sites-available/geonature.conf # Modifier la variable ``${DOMAIN_NAME}``
 
 * Activez la nouvelle configuration :
 
-  .. code:: console
+  .. code:: shell
 
-    $ sudo a2ensite geonature.conf
+    sudo a2ensite geonature.conf
 
 * et redémarrez Apache :
 
-  .. code:: console
+  .. code:: shell
 
-    $ sudo systemctl reload apache2
+    sudo systemctl reload apache2
 
 * L'application est disponible à l'adresse suivante : http://monurl.fr/geonature
 
 Une page HTML de maintenance et un vhost dédié sont aussi disponibles. Pour les mettre en place :
 
-  .. code:: console
-
-    $ sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf # Copier le vhost
-    $ sudo nano /etc/apache2/sites-available/geonature_maintenance.conf # Modifier la variable ``${DOMAIN_NAME}``
-    $ sudo cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
+.. code:: shell
+  
+  sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf # Copier le vhost
+  sudo nano /etc/apache2/sites-available/geonature_maintenance.conf # Modifier la variable ``${DOMAIN_NAME}``
+  sudo cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
 
 Pour passer votre GeoNature en maintenance, vous pouvez alors désactiver le vhost de GeoNature et activer celui de la page de maintenance : 
 
-  .. code:: console
+.. code:: shell
 
-    $ sudo a2dissite geonature.conf
-    $ sudo a2ensite geonature_maintenance.conf
+  sudo a2dissite geonature.conf
+  sudo a2ensite geonature_maintenance.conf
 
 Dépendances
 -----------

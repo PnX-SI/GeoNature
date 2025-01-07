@@ -41,7 +41,7 @@ Vous pouvez obtenir la liste des routes de GeoNature avec la commande suivante :
 
 .. code-block:: bash
 
-    $ geonature routes
+    geonature routes
 
 
 Documentation des routes
@@ -80,7 +80,7 @@ Backend
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
 - La longueur maximale pour une ligne de code est 100 caractères. Pour VSCODE copier ces lignes le fichier ``settings.json`` :
 
-::
+.. code:: python
 
     "python.formatting.blackArgs": [
       "--line-length",
@@ -138,7 +138,7 @@ HTML
 - Revenir à la ligne avant et après le contenue d'une balise.
 - Lorsqu'il y a plus d'un attribut sur une balise, revenir à la ligne, aligner les attributs et aller a la ligne pour fermer la balise :
 
-::
+.. code:: html
 
       <button 
         mat-raised-button
@@ -218,9 +218,9 @@ Il est nécessaire d’installer les dépendances (sous-modules Git présent dan
 
 .. code-block:: console
 
-  $ cd backend
-  $ source venv/bin/activate
-  $ pip install -e .. -r requirements-dev.txt
+  cd backend
+  source venv/bin/activate
+  pip install -e .. -r requirements-dev.txt
 
 
 Configuration des URLs de développement
@@ -228,7 +228,7 @@ Configuration des URLs de développement
 
 Il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
 
-.. code-block:: bash
+.. code-block:: toml
 
   URL_APPLICATION = 'http://127.0.0.1:4200'
   API_ENDPOINT = 'http://127.0.0.1:8000'
@@ -263,7 +263,8 @@ La commande ``geonature`` fournit la sous-commande ``dev-back`` pour lancer un s
 
 .. code:: console
 
-    (venv)$ geonature dev-back
+    source <GEONATURE_DIR>backend/venv/bin/activate
+    geonature dev-back
 
 
 L’API est alors accessible à l’adresse http://127.0.0.1:8000.
@@ -278,14 +279,14 @@ Celle-ci fournit un objet ``db`` à importer comme ceci : ``from geonature.utils
 
 Cet objet permet d’accéder à la session SQLAlchemy ainsi :
 
-::
+.. code:: python
 
     from geonature.utils.env import db
     obj = db.session.query(MyModel).get(1)
 
 Mais il fournit une base déclarative ``db.Model`` permettant d’interroger encore plus simplement les modèles via leur attribut ``query`` :
 
-::
+.. code:: python
 
     from geonature.utils.env import db
     class MyModel(db.Model):
@@ -295,7 +296,7 @@ Mais il fournit une base déclarative ``db.Model`` permettant d’interroger enc
 
 L’attribut ``query`` fournit `plusieurs fonctions <https://flask-sqlalchemy.palletsprojects.com/en/2.x/api/#flask_sqlalchemy.BaseQuery>`_ très utiles dont la fonction ``get_or_404`` :
 
-::
+.. code:: python
 
     obj = MyModel.query.get_or_404(1)
 
@@ -309,7 +310,7 @@ L’attribut ``query`` est une instance de la classe ``flask_sqlalchemy.BaseQuer
 
 On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur a accès, ou encore pour implémenter des filtres de recherche.
 
-::
+.. code:: python
 
     from flask import g
     import sqlalchemy as sa
@@ -383,7 +384,6 @@ Attention, la sérialisation d’un objet avec un tel schéma va provoquer une r
 Il est donc nécessaire de restreindre les champs à inclure dans la sérialisation lors de la création du schéma :
 
 - avec l’argument ``only`` :
-
     .. code:: python
 
         parent_schema = ParentModelSchema(only=['pk', 'childs.pk'])
@@ -392,11 +392,11 @@ Il est donc nécessaire de restreindre les champs à inclure dans la sérialisat
     De plus, l’ajout d’une nouvelle colonne au modèle nécessite de la rajouter partout où le schéma est utilisé.
 
 - avec l’argument ``exclude`` :
-
     .. code:: python
 
         parent_schema = ParentModelSchema(exclude=['childs.parent'])
 
+    
     Cependant, l’utilisation de ``exclude`` est hautement problématique !
     En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
 
@@ -700,12 +700,12 @@ Exemple d’une relation vers des modèles enfants, qui sont rattaché à un uni
 Serialisation des modèles avec le décorateur ``@serializable``
 **************************************************************
 
-.. Note::
+.. note::
   L’utilisation des schémas Marshmallow est probablement plus performante.
 
 La bibliothèque maison `Utils-Flask-SQLAlchemy <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy>`_ fournit le décorateur ``@serializable`` qui ajoute une méthode ``as_dict`` sur les modèles décorés :
 
-::
+.. code:: python
 
     from utils_flask_sqla.serializers import serializable
 
@@ -726,7 +726,7 @@ Les relations que l’on souhaite voir sérialisées doivent être explicitement
 
 L’argument ``fields`` supporte la « notation à point » permettant de préciser les champs d’un modèle en relation :
 
-::
+.. code:: python
 
     child.as_dict(fields=['parent.pk'])
 
@@ -750,16 +750,16 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/U
   retourne un dictionnaire serialisable sous forme de Feature geojson.
 
 
-  Fichier définition modèle ::
+  Fichier définition modèle 
+    .. code:: python
+        from geonature.utils.env import DB
+        from utils_flask_sqla_geo.serializers import geoserializable
 
-    from geonature.utils.env import DB
-    from utils_flask_sqla_geo.serializers import geoserializable
 
-
-    @geoserializable
-    class MyModel(DB.Model):
-        __tablename__ = 'bla'
-        ...
+        @geoserializable
+        class MyModel(DB.Model):
+            __tablename__ = 'bla'
+            ...
 
 
   Fichier utilisation modèle ::
@@ -774,21 +774,21 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/U
   - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
   - Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre
 
-  Fichier définition modèle ::
+  Fichier définition modèle
+    .. code:: python
+        from geonature.utils.env import DB
+        from utils_flask_sqla_geo.serializers import shapeserializable
 
-    from geonature.utils.env import DB
-    from utils_flask_sqla_geo.serializers import shapeserializable
 
-
-    @shapeserializable
-    class MyModel(DB.Model):
-        __tablename__ = 'bla'
-        ...
+        @shapeserializable
+        class MyModel(DB.Model):
+            __tablename__ = 'bla'
+            ...
 
 
   Fichier utilisation modèle :
 
-  .. code-block::
+  .. code:: python
   
       # utilisation de as_shape()
       data = DB.session.query(MyShapeserializableClass).all()
@@ -1422,7 +1422,7 @@ service :
 
   Exemple : afficher les 10 premiers relevés du cd_nom 212 :
 
-  ::
+  .. code:: javascript
 
         mapListService.getData('occtax/releve',
         [{'param': 'limit', 'value': 10'},
@@ -1433,13 +1433,15 @@ service :
   L'API doit nécessairement renvoyer un objet comportant un
   GeoJson. La structure du l'objet doit être la suivante :
 
-  ::
+  .. code:: json
 
-        'total': nombre d'élément total,
-        'total_filtered': nombre d'élément filtré,
-        'page': numéro de page de la liste,
-        'limit': limite d'élément renvoyé,
-        'items': le GeoJson
+    {
+        "total": "nombre d'élément total",
+        "total_filtered": "nombre d'élément filtré",
+        "page": "numéro de page de la liste",
+        "limit": "limite d'élément renvoyé",
+        "items": "le GeoJson"
+    }
 
   Pour une liste simple sans pagination, seule la propriété 'items'
   est obligatoire.
@@ -1451,25 +1453,25 @@ service :
 
   Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2 :
 
-  ::
+  .. code:: javascript
 
       mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])
 
   puis :
 
-  ::
+  .. code:: javascript
     
       refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])
 
   Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
     
-  ::
+  .. code:: javascript
     
       mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])
 
   puis :
     
-  ::
+  .. code:: javascript
     
       mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])
 
@@ -1495,7 +1497,7 @@ Le service contient également deux propriétés publiques ``geoJsonData`` (le g
 
 Exemple d'utilisation avec une liste simple :
         
-.. code-block::
+.. code:: html
 
     <pnx-map-list
             idName="id_releve_occtax"
@@ -1516,7 +1518,7 @@ Gestion des erreurs
 GeoNature utilise un intercepteur générique afin d’afficher un toaster en cas d’erreur lors d’une requête HTTP.
 Si vous souhaitez traiter l’erreur vous-même, et empêcher le toaster par défaut de s’afficher, vous pouvez définir un header ``not-to-handle`` à votre requête :
 
-.. code-block:: typescript
+.. code:: typescript
 
     this._http.get('/url', { headers: { "not-to-handle": 'true' } })
 

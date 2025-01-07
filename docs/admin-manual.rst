@@ -63,7 +63,7 @@ Celui-ci fonctionne grâce à des fichiers de migration qui sont appliqués de m
 Les fichiers de migrations de GeoNature se trouve dans le dossier ``backend/geonature/migrations/versions/``.
 Il est possible pour n’importe quelle dépendance ou module GeoNature de fournir également des fichiers de migrations. Pour que ceux-ci soient détectés par Alembic, il suffira de définir un point d’entrée dans le ``setup.py`` de la dépendance ou du module concerné :
 
-.. code-block::
+.. code:: python
 
     setuptools.setup(
         …,
@@ -77,7 +77,7 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
 
 Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellement pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :
 
-.. code-block::
+.. code:: toml
 
     [ALEMBIC]
     VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
@@ -91,9 +91,9 @@ Chaque fichier de migration est caractérisé par :
 
 Les commandes Alembic sont disponibles grâce à la sous-commande ``db`` de la commande ``geonature`` :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db --help
+    geonature db --help
 
 Les deux sous-commandes ``status`` et ``autoupgrade`` sont spécifiques à GeoNature afin d’aider à l’utilisation d’Alembic.
 
@@ -101,7 +101,7 @@ La commande ``status`` permet de visualiser les branches et l’ensemble de leur
 Pour chaque révision est indiqué si celle-ci est appliquée à la base de données.
 Si une branche a au moins sa première révision d’appliquée, alors un petit symbole indique si cette branche est à jour, c’est-à-dire si toutes les révisions de la branche ont été appliquées (``✓``) ou si la branche est en retard, c’est-à-dire que celle-ci contient des révisions qui ne sont pas encore appliquées à la base de données (``×``).
 
-.. code-block::
+.. code:: shell
 
     [geonature ✓]
       [x] ┰ f06cc80cc8ba geonature schemas 2.7.5
@@ -214,9 +214,9 @@ Elle accepte également les paramètres ``-x`` qui sont alors fournis à la comm
 
 La commande ``heads`` permet de lister l’ensemble des branches disponibles, ainsi que la dernière révision disponible pour chaque branche :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db heads
+    geonature db heads
     e0ac4c9f5c0a (ref_geo) (effective head)
     7077aa76da3d (geonature) (head)
     586613e2faeb (ref_geo_inpn_grids_1) (head)
@@ -245,9 +245,9 @@ La commande ``heads`` permet de lister l’ensemble des branches disponibles, ai
 
 La commande ``history`` permet de lister l’ensemble de fichier de révisions. Il est également possible de lister les révisions devant être appliquées pour passer d’un état à un autre. Par exemple, voici la liste des révisions à appliquer pour passer d’une base de données vierge (``base``) à une base avec la branche ``nomenclatures_inpn_data`` à jour (``head``) :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db history -r base:nomenclatures_inpn_data@head
+    geonature db history -r base:nomenclatures_inpn_data@head
     <base> (6015397d686a) -> 96a713739fdd (nomenclatures_inpn_data) (effective head), insert inpn data in ref_nomenclatures
     <base> (fa35dfe5ff27, 3842a6d800a0) -> 6015397d686a (nomenclatures) (effective head), create ref_nomenclature schema 1.3.9
     <base> -> 3842a6d800a0 (sql_utils) (effective head), Add public shared functions
@@ -255,18 +255,18 @@ La commande ``history`` permet de lister l’ensemble de fichier de révisions. 
 
 Si vous avez déjà une base de données existante correspondant à une installation de GeoNature en version 2.7.5 et que vous passez à Alembic, vous pouvez l’indiquer grâce à la commande suivante :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db stamp f06cc80cc8ba
+    geonature db stamp f06cc80cc8ba
 
 Il est possible que votre base de données contienne quelques données supplémentaires (référentiel géographique des communes, …), qu’il faut donc indiquer à Alembic aussi.
 Reportez-vous aux notes de versions de la release 2.8.0 de GeoNature afin de consulter la liste des révisions à éventuellement « `stamper` ».
 
 Vous pouvez demander à Alembic dans quel état se trouve votre base de données avec la commande ``current`` :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db current
+    geonature db current
     62e63cd6135d (effective head)
     f06cc80cc8ba
     3842a6d800a0 (effective head)
@@ -286,9 +286,9 @@ Notons toutefois que Alembic ne stocke pas l’ensemble de cette liste dans la t
 
 Il est possible de n’afficher que les informations liées à une révision avec la commande ``show`` :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db show f06cc80cc8ba
+    geonature db show f06cc80cc8ba
     Rev: f06cc80cc8ba
     Parent: <base>
     Also depends on: 72f227e37bdf, a763fb554ff2, 46e91e738845, 6afe74833ed0
@@ -303,15 +303,15 @@ Il est possible de n’afficher que les informations liées à une révision ave
 L’absence de l’indication ``(head)`` à côté du numéro de révision indique qu’il ne s’agit pas de la dernière révision disponible pour la branche ``geonature``.
 Vous pouvez alors mettre à jour cette branche avec la commande ``upgrade`` :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db upgrade geonature@head
+    geonature db upgrade geonature@head
 
 Il est possible de monter des branches optionnelles pour, par exemple, bénéficier des mailles 10×10 dans son référentiel géographique :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db upgrade ref_geo_inpn_grids_10@head -x data-directory=./tmp_geo
+    geonature db upgrade ref_geo_inpn_grids_10@head -x data-directory=./tmp_geo
 
 L’ensemble des branches disponibles est décrit dans la sous-section ci-après.
 
@@ -319,9 +319,9 @@ L’argument ``-x`` permet de fournir des variables à usage des fichiers de mig
 
 Pour supprimer les mailles 10×10 de son référentiel géographique, on utilisera :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db downgrade ref_geo_inpn_grids_10@base
+    geonature db downgrade ref_geo_inpn_grids_10@base
 
 Dans le cas d’une branche contenant plusieurs migrations, on pourra appliquer ou désappliquer chaque migration individuellement avec ``upgrade branch@+1`` ou ``downgrade branch@-1``. Il est également possible de référencer directement un numéro de migration.
 
@@ -329,10 +329,10 @@ Si l’on souhaite appliquer une migration manuellement, ou si l’on souhaite l
 
 Pour créer un nouveau fichier de migration afin d’y placer ses évolutions de la base de données, on utilisera la commande suivante :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db revision -m "add table gn_commons.t_foo" --head geonature@head
-      Generating […]/backend/geonature/migrations/versions/31250092bce3_add_table_gn_commons_t_foo.py ...  done
+    geonature db revision -m "add table gn_commons.t_foo" --head geonature@head
+    Generating […]/backend/geonature/migrations/versions/31250092bce3_add_table_gn_commons_t_foo.py ...  done
 
 La `documentation d’Alembic <https://alembic.sqlalchemy.org/en/latest/ops.html>`_ liste les opérations prises en charge.
 Certaines opérations complexes telles que la création de trigger ne sont pas prévues, mais il reste toujours possible d’exécuter du SQL directement avec l’opérateur ``op.execute``.
@@ -374,9 +374,9 @@ Les branches ci-après sont totalement optionnelles :
 
 Note : pour plusieurs fichiers de révision, notamment liés au référentiel géographique ou nécessitant des données INPN, il est nécessaire de télécharger des ressources externes. Il est possible d’enregistrer les données téléchargées (et ne pas les re-télécharger si elles sont déjà présentes) avec ``-x data-directory=…`` :
 
-.. code-block::
+.. code:: shell
 
-    $ geonature db upgrade …@head -x data-directory=./data/
+    geonature db upgrade …@head -x data-directory=./data/
 
 
 Gestion des droits
@@ -575,7 +575,7 @@ A terme, d'autres variables pourront compléter ces profils : habitats (habref) 
 
 Il est possible de désactiver l'ensemble des fonctionnalités liées aux profils dans l'interface, en utilisant le paramètre suivant dans le fichier ``geonature/config/geonature_config.toml``
 
-::
+.. code:: toml
 
     [FRONTEND]
       ENABLE_PROFILES = true/false
@@ -1051,26 +1051,26 @@ Paramètres Gunicorn
 
 Voici les paramètres de Gunicorn par défaut :
 
-  * ``GUNICORN_PROC_NAME=geonature``
-  * ``GUNICORN_NUM_WORKERS=4``
-  * ``GUNICORN_HOST=127.0.0.1``
-  * ``GUNICORN_PORT=8000``
-  * ``GUNICORN_TIMEOUT=30``
+* ``GUNICORN_PROC_NAME=geonature``
+* ``GUNICORN_NUM_WORKERS=4``
+* ``GUNICORN_HOST=127.0.0.1``
+* ``GUNICORN_PORT=8000``
+* ``GUNICORN_TIMEOUT=30``
 
 Pour modifier une de ces variables, créer un fichier ``environ`` à la racine de votre dossier GeoNature, et indiquer la variable d’environnement avec sa valeur modifiée.
 
 Si vous souhaitez modifier de manière plus avancée la ligne de commande ``gunicorn``, surcouchez le service systemd :
 
-  * Lancez ``sudo systemctl edit geonature`` ce qui va créer le fichier ``/etc/systemd/system/geonature.service.d/override.conf`` et ouvrir un éditeur pour vous permettre de le modifier
-  * Indiquez :
-  
-    .. code::
+* Lancez ``sudo systemctl edit geonature`` ce qui va créer le fichier ``/etc/systemd/system/geonature.service.d/override.conf`` et ouvrir un éditeur pour vous permettre de le modifier
+* Indiquez :
 
-      [Service]
-      ExecStart=
-      ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
+  .. code:: conf
 
-    Note : le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
+    [Service]
+    ExecStart=
+    ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
+
+  Note : le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
     
 
 Sauvegarde et restauration
@@ -1083,18 +1083,18 @@ Sauvegarde
 
 Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commencer par créer un répertoire et lui donner des droits sur le répertoire où seront faites les sauvegardes.
 
-.. code-block:: console
+.. code-block:: shell
 
-    $ # Créer le répertoire pour stocker les sauvegardes
-    $ mkdir /home/`whoami`/backup
-    $ # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
-    $ sudo adduser postgres `whoami`
-    $ # ajout de droit aux groupes de l'utilisateur courant sur le répertoire `backup`
-    $ chmod g+rwx /home/`whoami`/backup
+    # Créer le répertoire pour stocker les sauvegardes
+    mkdir /home/`whoami`/backup
+    # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
+    sudo adduser postgres `whoami`
+    # ajout de droit aux groupes de l'utilisateur courant sur le répertoire `backup`
+    chmod g+rwx /home/`whoami`/backup
 
 Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde de la BDD :
 
-.. code-block:: console
+.. code-block:: shell
 
     sudo su postgres
     pg_dump -Fc geonature2db  > /home/`whoami`/backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
@@ -1106,7 +1106,7 @@ Opération à faire régulièrement grâce à une tâche cron.
 
 * Sauvegarde des fichiers de configuration :
 
-  .. code-block:: console
+  .. code-block:: shell
 
     cd /home/`whoami`/geonature/config
     tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
@@ -1115,7 +1115,7 @@ Opération à faire à chaque modification d'un paramètre de configuration.
 
 * Sauvegarde des fichiers de customisation :
 
-  .. code-block:: console
+  .. code-block:: shell
 
     cd /home/`whoami`/geonature/custom
     tar -zcvf /home/`whoami`/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
@@ -1124,7 +1124,7 @@ Opération à faire à chaque modification de la customisation de l'application.
 
 * Sauvegarde des modules externes :
 
-  .. code-block:: console
+  .. code-block:: shell
 
     cd /home/`whoami`/geonature/external_modules
     tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
@@ -1136,7 +1136,7 @@ Restauration
 
   - Créer une base de données vierge (on part du principe que la base de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
 
-    .. code-block:: console
+    .. code-block:: shell
 
         sudo -n -u postgres -s createdb -O <MON_USER> geonature2db
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "postgis";'
@@ -1149,7 +1149,7 @@ Restauration
 
   - Restaurer la BDD à partir du backup
 
-    .. code-block:: console
+    .. code-block:: shell
 
         sudo su postgres
         pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
@@ -1158,7 +1158,7 @@ Restauration
 
   - Décompresser les fichiers précédemment sauvegardés pour les remettre au bon emplacement :
 
-    .. code-block:: console
+    .. code-block:: shell
 
         sudo rm <GEONATURE_DIRECTORY>/config/*
         cd <GEONATURE_DIRECTORY>/config
@@ -1318,6 +1318,7 @@ GeoNature est fourni avec des données géographiques de base sur la métropole 
 * Videz le contenu des tables ``ref_geo.dem`` et éventuellement ``ref_geo.dem_vector``
 * Uploadez le(s) fichier(s) du MNT sur le serveur
 * Suivez la procédure de chargement du MNT en l'adaptant :
+
   * https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/migrations/versions/1715cf31a75d_insert_ign_250m_bd_alti_in_dem.py
   * https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/migrations/versions/87651375c2e8_vectorize_ign_bd_alti.py
 
@@ -1376,7 +1377,7 @@ Affichage des référentiels géographiques dans GeoNature
 
 Il est possible de choisir les éléments des référentiels géographiques pouvant s'afficher sur les cartes. Par exemple si on souhaite modifier l'affichage des communes : 
 
-::
+.. code:: toml
 
         # Configuration par défaut :
         [[MAPCONFIG.REF_LAYERS]]
@@ -1387,7 +1388,7 @@ Il est possible de choisir les éléments des référentiels géographiques pouv
             style = { color = "grey", fill = false, fillOpacity = "0.0", weight = 2 }
             params = {limit = 2000} # nombre d'éléments maximum pouvant être affichés
 
-::
+.. code:: toml
 
         # Configuration modifiée
         [[MAPCONFIG.REF_LAYERS]]
@@ -1444,7 +1445,7 @@ Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisa
 Pour des raisons de sécurité, l'API de création de compte est réservée aux utilisateurs "admin" grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu'administrateur à UsersHub pour éxecuter les requêtes d'administration de compte.
 Renseigner les paramètres suivants dans le fichier de configuration (``geonature_config.toml``). L'utilisateur doit avoir des droits 6 dans UsersHub
 
-::
+.. code:: toml
 
     [USERSHUB]
         URL_USERSHUB = 'http://mon_adresse_usershub.fr' # sans slash final
@@ -1454,7 +1455,7 @@ Renseigner les paramètres suivants dans le fichier de configuration (``geonatur
 
 Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour vérifier l'identité des demandeurs de compte. Il est donc nécessaire d'avoir un serveur SMTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration. La description détaillées des paramètres de configuration d'envoie des emails est disponible dans `la documentation de Flask-Mail <https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail>`_. Exemple :
 
-::
+.. code:: toml
 
     [MAIL_CONFIG]
         MAIL_SERVER = 'mail.espaces-naturels.fr'
@@ -1470,14 +1471,14 @@ Pour activer cette fonctionnalité (qui est par défaut désactivée), modifier 
 
 NB : tous les paramètres décrits ci-dessous doivent être dans la rubrique ``[ACCOUNT_MANAGEMENT]``
 
-::
+.. code:: toml
 
     [ACCOUNT_MANAGEMENT]
         ENABLE_SIGN_UP = true
 
 Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accepté et un compte lui est créé après une confirmation de son email, soit un mail est envoyé à un administrateur pour confirmer la demande. Le compte ne sera crée qu'après validation par l'administrateur. Le paramètre ``AUTO_ACCOUNT_CREATION`` contrôle ce comportement (par défaut le compte créé sans validation par un administrateur: true). Dans le mode "création de compte validé par administrateur", il est indispensable de renseigner un email où seront envoyés les emails de validation (paramètre ``VALIDATOR_EMAIL``)
 
-::
+.. code:: toml
 
     # automatique
     [ACCOUNT_MANAGEMENT]
@@ -1496,7 +1497,7 @@ Dans le mode "création de compte validé par administrateur", lorsque l'inscrip
 Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l'aide du paramètre ``ADDON_USER_EMAIL`` (toujours à ajouter à la rubrique ``[ACCOUNT_MANAGEMENT]``).
 Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 
-::
+.. code:: toml
 
     [ACCOUNT_MANAGEMENT]
         ADDON_USER_EMAIL = """<p>
@@ -1506,7 +1507,7 @@ Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 
 Il est également possible de créer automatiquement un jeu de données et un cadre d'acquisition "personnel" à l'utilisateur afin qu'il puisse saisir des données dès sa création de compte via le paramètre ``AUTO_DATASET_CREATION``. Par la suite l'administrateur pourra rattacher l'utilisateur à des JDD et CA via son organisme.
 
-::
+.. code:: toml
 
     [ACCOUNT_MANAGEMENT]
         AUTO_ACCOUNT_CREATION = true
@@ -1525,7 +1526,7 @@ Il est possible d'ajouter des champs au formulaire grâce à un générateur con
 
 L'exemple ci-dessous permet de créer un champs de type "checkbox" obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type "select", non obligatoire. (voir le fichier ``config/geonature_config.toml.example`` pour un exemple plus exhaustif).
 
-::
+.. code:: toml
 
         [ACCOUNT_MANAGEMENT]
         [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
@@ -1553,7 +1554,7 @@ Un espace "utilisateur" est accessible lorsque l'on est connecté, permettant de
 
 Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par défaut, il est désactivé.
 
-::
+.. code:: toml
 
         [ACCOUNT_MANAGEMENT]
         AUTO_ACCOUNT_CREATION = true
@@ -1649,7 +1650,7 @@ Pour plus de souplesse et afin de répondre aux besoins de chacun, l'ensemble de
 
 En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser le formulaire :
 
-::
+.. code:: toml
 
     [form_fields]
         date_min = true
@@ -1771,8 +1772,7 @@ La liste des champs affichés par défaut dans le tableau peut être modifiée a
 
 Par défaut :
 
-::
-
+.. code:: toml
 
     default_maplist_columns = [
         { prop = "taxons", name = "Taxon" },
@@ -1886,7 +1886,7 @@ Dans l'exemple ci-dessous, remplacez ``<MODULE_PATH>`` par le contenu de la colo
 
 Bien que le module soit une copie d'Occtax, il est tout de même nécessaire de définir les permissions disponibles pour ce module (ce sont les mêmes qu'Occtax). Jouez le scrit SQL suivant en remplacant :MODULE_CODE par le code du module que vous venez de créer.
 
-::
+.. code:: sql
 
     INSERT INTO
         gn_permissions.t_permissions_available (
@@ -1929,7 +1929,7 @@ Ajouter le nouveau module dans la liste des modules implémentés
 
 Dans le fichier de configuration de GeoNature (geonature_config.toml) ajoutez une section `ADDITIONAL_FIELDS` qui contient tableau `IMPLEMENTED_MODULES` listant les modules qui implémentent les champs additionnels (Occtax doit y figurer en plus du nouveau module)
 
-::
+.. code::toml
 
     [ADDITIONAL_FIELDS]
       IMPLEMENTED_MODULES = ["OCCTAX", "FLORE_STATION"]
@@ -1981,9 +1981,9 @@ Exemples :
 
 - Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API (non porté sur Occtax-mobile). Dans le champ "attributs additionnels", renseignez les éléments suivants : 
 
-::
+.. code:: json
 
-    ``{"api": "url_vers_la_ressource", "keyValue": "champ à stocker en base", "keyLabel": "champ à afficher en interface"}
+    {"api": "url_vers_la_ressource", "keyValue": "champ à stocker en base", "keyLabel": "champ à afficher en interface"}
 
 Configuration avancée des champs
 ````````````````````````````````
@@ -2010,7 +2010,7 @@ Le module OCCHAB fait partie du coeur de GeoNature. Son installation est au choi
 
 Pour l'installer, lancer les commandes suivantes :
 
-.. code-block:: console
+.. code-block:: shell
 
     cd backend
     source venv/bin/activate
@@ -2046,7 +2046,7 @@ Formulaire
 
 - L'ensemble des champs du formulaire son masquables. Pour en masquer certains, passer à ``false`` les variables suivantes :
 
-::
+.. code:: toml
 
     [formConfig]
       date_min = true
@@ -2085,7 +2085,7 @@ L'ensemble des paramètres de configuration du module se trouve dans le fichier 
 Editer la variable ``AREA_FILTERS`` en y ajoutant le label et le code du type d'entité géographique que vous souhaitez rajouter. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1 (``code_type = "ZNIEFF1"``). Attention, dans ce cas les entités géographiques correspondantes au type `ZNIEFF1`, doivent également être présentes dans la table ``ref_geo.l_areas``.
 Attention : Si des données sont déjà présentes dans la synthèse et que l'on ajoute de nouvelles entités géographiques à ``ref_geo.l_areas``, il faut également recalculer les valeurs de la table ``gn_synthese.cor_area_synthese`` qui assure la correspondance entre les données de la synthèse et les entités géographiques.
 
-::
+.. code:: toml
 
     [SYNTHESE]
         # Liste des entités géographiques sur lesquels les filtres
@@ -2109,7 +2109,7 @@ Il est possible de ne pas intégrer certains champs présents dans cette vue d'e
 
 Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans l'export au format shapefile.
 
-::
+.. code::toml
 
     [SYNTHESE]
         EXPORT_COLUMNS   = [
@@ -2190,13 +2190,13 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
           "date_modification"
         ]
 
-:Note:
+.. note::
 
     L'entête ``[SYNTHESE]`` au dessus ``EXPORT_COLUMNS`` indique simplement que cette variable appartient au bloc de configuration de la synthese. Ne pas rajouter l'entête à chaque paramètre de la synthese mais une seule fois au dessus de toutes les variables de configuration du module.
 
 Il est également possible de personnaliser ses exports en créant vos propres vues personnalisées et en remplissant le paramètre suivant avec une ou plusieurs vues d'export spécifiques : 
 
-::
+.. code:: toml
 
     [SYNTHESE]
       ...
@@ -2233,7 +2233,7 @@ Ces seuils sont modifiables respectivement par les variables ``NB_MAX_OBS_MAP`` 
 
 Le mode cluster activé par défaut peut être désactivé via le paramètre ``ENABLE_LEAFLET_CLUSTER``. Dans ce cas, il est conseillé de repasser le paramètre `NB_MAX_OBS_MAP` à 10000.
 
-::
+.. code:: toml
 
     [SYNTHESE]
         # Nombre d'observation maximum à afficher sur la carte après une recherche
@@ -2247,7 +2247,7 @@ L'interface de recherche de la synthèse permet de filtrer sur l'ensemble des no
 
 Modifiez la variable ``EXCLUDED_COLUMNS``
 
-::
+.. code:: toml
 
     [SYNTHESE]
         EXCLUDED_COLUMNS = ['non_digital_proof'] # pour enlever le filtre 'preuve non numérique'
@@ -2265,7 +2265,7 @@ Ces paramètres se présentent sous la forme d'une liste de dictionnaires. Il es
 
 Voici un exemple :
 
-::
+.. code:: toml
 
     [SYNTHESE]
         RED_LISTS_FILTERS = [
@@ -2293,7 +2293,7 @@ Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de 
 
 Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` pour désactiver les textes des DOM-TOM : :
 
-::
+.. code:: sql
 
   UPDATE taxonomie.bdc_statut_text SET enable = false 
   WHERE cd_sig IN ('TER971', 'TER972', 'TER973', 'TER971', 'TER974' )
@@ -2301,7 +2301,7 @@ Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` po
 
 Une commande dans TaxHub permet de désactiver automatiquement les textes en dehors d'une liste de départements (en passant leur ``area_code``) : 
 
-::
+.. code:: bash
 
   source ~/geonature/backend/venv/bin/activate
   geonature taxref enable-bdc-statut-text -d <MON_DEP_1> -d <MON_DEP_2> --clean
@@ -2315,7 +2315,7 @@ Il faut fournir le code des nomenclature par défaut (liste de chaîne de caract
 
 Exemple de filtres par défaut :
 
-::
+.. code::toml
 
   [SYNTHESE]
   ...
@@ -2357,7 +2357,7 @@ Liste des champs visibles
 
 Gestion de l'affichage des colonnes de la liste via le paramètre ``COLUMN_LIST`` :
 
-::
+.. code:: toml
 
     [[COLUMN_LIST]]
     column_label = "nomenclature_life_stage.label_default" # Champs de la synthèse, éventuellement en suivant des relationships
@@ -2392,7 +2392,7 @@ Activation
 
 L'activation de la validation automatique s'effectue en ajoutant la ligne suivante dans le fichier de configuration du module de validation ``config/validation_config.toml`` :
 
-::
+.. code:: toml
 
     AUTO_VALIDATION_ENABLED = true
 
@@ -2401,8 +2401,8 @@ Conditions de validation automatique
 
 Une observation sera validée automatiquement si elle rencontre les conditions suivantes :
 
- * Son statut de validation est ``En attente de validation``
- * Si le score calculé à partir du profil de taxons est de 3. Se référer à la section `Profils de taxons`_ pour plus d'informations.
+* Son statut de validation est ``En attente de validation``
+* Si le score calculé à partir du profil de taxons est de 3. Se référer à la section `Profils de taxons`_ pour plus d'informations.
 
 Si ces conditions sont remplies, alors le statut de validation de l'observation est mis à ``Probable``.
 
@@ -2414,7 +2414,7 @@ Modification de la périodicité de la validation automatique
 
 Le processus de validation automatique est exécuté à une fréquence définie, par défaut toutes les heures. Si toutefois, vous souhaitez diminuer ou augmenter la durée entre chaque validation automatique, définissez cette dernière dans le fichier de configuration (``config/validation_config.toml``) dans la variable ``AUTO_VALIDATION_CRONTAB``. 
 
-::
+.. code::toml
   
      AUTO_VALIDATION_CRONTAB ="*/1 * * * *"
 

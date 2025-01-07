@@ -33,16 +33,16 @@ https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-
 
 Cette action doit être faite par un superuser PostgreSQL.
 
-:notes:
+.. note::
 
     * Le fichier CSV doit être présent localement sur le serveur hébergeant la base de données.
     * Il fichier doit être encodé en UTF-8 et la première ligne doit comporter le nom des champs.
     * Le séparateur de champs doit être le point-virgule.
     * La fonction utilise la fonction ``COPY`` capable de lire le système de fichier du serveur. Pour des raisons de sécurité, cette fonction ``COPY`` n'est accessible qu'aux superutilisateurs. Vous devez donc disposer d'un accès superutilisateur PostgreSQL pour utiliser cette fonction d'import. Si l'utilisateur connecté à la base dans pgAdmin n'est pas superuser, on peut le faire dans psql.
 
-DANS UN TERMINAL : 
+Dans un terminal
 
-.. code:: sh
+.. code:: shell
 
     sudo su postgres
     psql -d geonature2db
@@ -54,7 +54,7 @@ Dans les 2 cas, copier-coller les 2 commandes ci-dessous en adaptant les chemins
     SELECT gn_imports.load_csv_file('/home/myuser/imports/observations.csv', 'gn_imports.testimport');
     ALTER TABLE gn_imports.testimport OWNER TO geonatuser;
 
-:notes:
+.. note::
 
     * Attention : si la table existe, elle est supprimée et recréée à partir du CSV fourni.
     * La fonction créé la table et sa structure dans le schéma et la table fournie en paramètre.
@@ -98,7 +98,7 @@ Il est nécessaire de rattacher les données importées à un jeu de données qu
 
 Le jeu de données doit être rattaché à un protocole décrivant la manière dont les données ont été collectées.
 
-:notes:
+.. note::
 
     Noter les ID retournés lors des insertions.
     
@@ -119,13 +119,13 @@ Il est également nécessaire, pour la synthese, de lui indiquer où sont stock�
     INSERT INTO gn_synthese.t_sources(name_source, desc_source)
     VALUES('ATBI', 'Données d''inventaire ATBI') returning id_source;
 
-:notes:
+.. note::
 
     * D'autres valeurs sont attendues mais pour l'exercice, le fichier source utilise des valeurs insérée à titre d'exemple lors de la création de la base GeoNature.
     * ``id_role`` 3 et 4 dans ``utilisateurs.t_roles``
     * ``id_organisme`` 1 dans ``utilisateurs.bib_organismes``
 
-:notes:
+.. note::
 
     Il est possible d'utiliser ce mécanisme générique pour insérer des données de n'importe quelle table vers n'importe quelle autre, à partir du moment où il est possible d'établir un mapping cohérent entre les champs et notamment que les types puissent correspondre ou soient "transtypables".
 
@@ -159,7 +159,7 @@ OU si besoin d'écraser un mapping des champs existants
 
 IL FAUT ICI METTRE A JOUR LA TABLE ``gn_imports_matching_fields`` pour établir manuellement la correspondance des champs entre la table source et la table cible (voir le mapping final pour le fichier CSV fourni en exemple à la fin de cette page).
 
-:notes:
+.. note::
 
     * Au moins un des 2 champs ``source_field`` ou ``source_default_value`` doit être renseigné.
     * Si le champ ``source_field`` est renseigné, le champ ``source_default_value`` est ignoré.
@@ -179,10 +179,10 @@ Attention, pgAdmin va tronquer le résultat. Pour obtenir l'ensemble de la requ�
     SELECT gn_imports.fct_generate_import_query('gn_imports.testimport', 'gn_synthese.synthese');
     SELECT gn_imports.fct_generate_import_query('gn_imports.testimport', 'gn_synthese.cor_observer_synthese');
 
-:notes:
-
-    UTILISER LE BOUTON D'EXPORT DU RESULTAT DE LA REQUETE DE PGADMIN ou utiliser psql.
-    IL EST NECESSAIRE D'ADAPTER LA REQUETE SI BESOIN DE FAIRE DES JOIN POUR RECUPERER DES VALEURS DANS D'AUTRES TABLES
+.. note::
+    
+    Utiliser le bouton d'export du resultat de la requete de pgadmin ou utiliser psql.
+    Il est necessaire d'adapter la requête si besoin de faire des jointures pour récupérer des valeurs dans d'autres tables
 
 
 6 - Chargement des données dans la table de destination (synthese ici)
@@ -202,7 +202,7 @@ On peut si on le souhaite déplacer la table vers une destination d'archivage
 
 On peut la mettre dans le schéma gn_exports pour l'exercice afin de tester mais ce n'est pas sa vocation.
 
-RESULTAT FINAL
+Résultat Final
 ``````````````
 
 .. code:: sql

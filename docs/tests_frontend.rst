@@ -29,7 +29,7 @@ Afin d'améliorer la lisibilité des fichiers de test si un module contient beau
 Exemple
 """""""
 
-.. code-block:: bash
+.. code:: bash
 
     e2e
     ├── import
@@ -46,7 +46,7 @@ Dans chaque fichier la structure des tests est de la forme
 Exemple
 """""""
 
-.. code-block:: js
+.. code-block:: javascript
 
     describe("description général de la partie testée", () => {
 
@@ -65,7 +65,7 @@ Afin d'homogénéiser les descriptions des tests il est établi que l'on nomme u
 Exemple
 """""""
 
-.. code-block:: js
+.. code:: javascript
 
     it('should change the state',() => ... 
 
@@ -85,7 +85,7 @@ Il est recommandé d'utiliser un nom explicite pour éviter toutes confusions.
 Exemple
 """""""
 
-.. code-block:: HTML
+.. code:: HTML
 
     <button data-qa="import-list-new">New</button>
 
@@ -97,12 +97,12 @@ Lancement
 
 Pour lancer Cypress et executer les tests à la main il faut exécuter la commande (nécessite qu'une instance GeoNature fonctionne (backend+frontend)):
 
-.. code-block:: bash
+.. code:: bash
 
-    $ npm run cypress:open
+    npm run cypress:open
 
 Pour lancer les test en mode automatique, il faut exécuter la commande (utilisée dans l'intégration continue (GitHub Action)):
 
-.. code-block:: bash
+.. code:: bash
 
-    $ npm run e2e:ci && npm run e2e:coverage
+    npm run e2e:ci && npm run e2e:coverage
