@@ -299,12 +299,12 @@
                             {{ dataset['dataset_name'] }}
                             {% endif %}
                             <br>
-                            {% if dataset['count_synthese_observations']: %}
-                            Nombre d'observations dans la Synthèse : {{ dataset['count_synthese_observations'] }}
+                            {% if dataset['obs_count'] > 0: %}
+                            Nombre d'observations dans la Synthèse : {{ dataset['obs_count'] }}
                             {% endif %}
                             <br>
-                            {% if dataset['count_habitats']: %}
-                            Nombre d'habitats dans occhab : {{ dataset['count_habitats'] }}
+                            {% if dataset['hab_count'] > 0: %}
+                            Nombre d'habitats dans occhab : {{ dataset['hab_count'] }}
                             {% endif %}
                         </p>
                     </div>

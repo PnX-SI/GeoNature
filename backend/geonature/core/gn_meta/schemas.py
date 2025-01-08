@@ -67,6 +67,8 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
+    obs_count = fields.Int(dump_only=True)
+    hab_count = fields.Int(dump_only=True)
 
     @post_dump(pass_many=False, pass_original=True)
     def module_input(self, item, original, many, **kwargs):
