@@ -107,22 +107,28 @@ export class FieldsMappingStepComponent implements OnInit {
     //
     const currentUser = this._authService.getCurrentUser();
 
-    if (this._fieldMappingService.mappingFormGroup.dirty && mappingValue && this.cruved.C) {
-      const intersectMappingOwnerUser = mappingValue['owners'].filter((x) =>
-        x.identifiant == currentUser.user_login ? mappingValue['owners'] : false
-      );
-      if (
-        mappingValue.public &&
-        (hasAdminUpdateMappingRight || (hasOwnMappingUpdateRight && intersectMappingOwnerUser))
-      ) {
-        this.updateAvailable = true;
-        this.modalCreateMappingForm.setValue(mappingValue.label);
-      } else if (!mappingValue.public) {
-        this.updateAvailable = true;
-        this.modalCreateMappingForm.setValue(mappingValue.label);
+    if (this._fieldMappingService.mappingFormGroup.dirty && this.cruved.C) {
+      if (mappingValue) {
+        const intersectMappingOwnerUser = mappingValue['owners'].filter((x) =>
+          x.identifiant == currentUser.user_login ? mappingValue['owners'] : false
+        );
+
+        if (
+          mappingValue.public &&
+          (hasAdminUpdateMappingRight ||
+            (hasOwnMappingUpdateRight && intersectMappingOwnerUser.length > 0))
+        ) {
+          this.updateAvailable = true;
+          this.modalCreateMappingForm.setValue(mappingValue.label);
+        } else if (!mappingValue.public) {
+          this.updateAvailable = true;
+          this.modalCreateMappingForm.setValue(mappingValue.label);
+        } else {
+          this.updateAvailable = false;
+        }
       } else {
+        console.log(4);
         this.updateAvailable = false;
-        this.modalCreateMappingForm.setValue('');
       }
       this._modalService.open(this.saveMappingModal, { size: 'lg' });
     } else {
