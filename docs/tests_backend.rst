@@ -70,7 +70,7 @@ inséré/supprimé/modifié dans la base de données pendant le test.
 Enfin, les fixtures peuvent aussi être définies directement dans le fichier
 Python du test. Elles sont définies comme suit :
 
-.. code-block:: python
+.. code:: python
 
     # Obligatoire pour accéder au décorateur
     import pytest
@@ -82,7 +82,7 @@ Python du test. Elles sont définies comme suit :
 
 Et s'utilisent comme suit :
 
-.. code-block:: python
+.. code:: python
 
     # On passe directement la fixture en argument du test. Il est
     # nécessaire de l'importer si elle n'est pas définie dans le même fichier
@@ -95,7 +95,7 @@ Et s'utilisent comme suit :
 
 Il est aussi possible de définir un ``scope`` d'une fixture comme ceci :
 
-.. code-block:: python
+.. code:: python
 
     # Définit une fixture qui renverra 2 mais qui sera exécutée qu'une
     # seule fois par classe (une classe regroupe plusieurs tests) au
@@ -110,7 +110,7 @@ Exemple
 
 Voici un exemple de test qui a été fait dans GeoNature
 
-.. code-block:: python
+.. code:: python
 
     def test_get_consistancy_data(self):
         synthese_record = Synthese.query.first()
@@ -148,7 +148,7 @@ Coverage
 Le coverage est un système permettant de quantifier les lignes de code 
 exécutées par le test. Exemple rapide :
 
-.. code-block:: python
+.. code:: python
     
     # Définition d'une fonction quelconque
     def ma_fonction_a_tester(verbose=False):
@@ -204,20 +204,20 @@ Exécuter un ou plusieurs test(s) en ligne de commande
 Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est 
 installé GeoNature et exécutez la commande suivante : 
 
-.. code-block::
+.. code:: shell
 
     pytest
 
 Assurez vous d'avoir bien installé les librairies de développement avant 
 (en étant toujours placé à la racine de l'installation de GeoNature) :
 
-.. code-block::
+.. code:: shell
 
     pip install -e .[tests]
 
 Pour exécuter un seul test l'option ``-k`` est très utile : 
 
-.. code-block::
+.. code:: shell
 
     pytest -k 'test_uuid_report_with_dataset_id'
 
@@ -226,7 +226,7 @@ ficher ``test_gn_meta.py``).
 
 Enfin, pour générer le coverage en même temps que les tests :
 
-.. code-block::
+.. code:: shell
 
     pytest --cov --cov-report xml
 
@@ -259,17 +259,18 @@ La création de tests de performance s'effectue à l'aide de la classe ``geonatu
 
 L'objet ``BenchmarkTest`` prend en argument :
 
- - La fonction dont on souhaite mesurer la performance
- - Le nom du test
- - Les ``args`` de la fonction
- - les ``kwargs`` de la fonction
+- La fonction dont on souhaite mesurer la performance
+- Le nom du test
+- Les ``args`` de la fonction
+- les ``kwargs`` de la fonction
 
 
 Cette classe permet de générer une fonction de test utilisable dans le _framework_ existant de ``pytest``. Pour cela, rien de plus simple ! Créer un fichier de test (de préférence dans le sous-dossier ``backend/geonature/tests/benchmarks``). 
 
 Import la classe BenchmarkTest dans le fichier de test.
 
-.. code-block::
+.. code:: python
+
     import pytest
     from geonature.tests.benchmarks import BenchmarkTest
 
@@ -277,14 +278,15 @@ Import la classe BenchmarkTest dans le fichier de test.
 Ajouter un test de performance, ici le test ``test_print`` qui teste la fonction ``print`` de Python.
 
 
-.. code-block::
+.. code:: python
     
     bench = BenchmarkTest(print,"test_print",["Hello","World"],{})
 
 
 Ajouter la fonction générée dans ``bench`` dans une classe de test:
 
-.. code-block::
+.. code:: python
+
     @pytest.mark.benchmark(group="occhab") # Pas obligatoire mais permet de compartimenter les tests de performances
     @pytest.mark.usefixtures("client_class", "temporary_transaction")
         class TestBenchie:
@@ -307,7 +309,8 @@ de l'application flask, il faudra utiliser l'objet ``geonature.tests.benchmarks.
 de déclarer un expression python retournant un objet (fonction ou variable) dans une chaîne de caractère qui
 sera _évalué_ (voir la fonction ``eval()`` de Python) uniquement lors de l'exécution du benchmark.
 
-.. code-block::
+.. code:: python
+
   test_get_default_nomenclatures = BenchmarkTest(
         CLater("self.client.get"),
         [CLater("""url_for("gn_synthese.getDefaultsNomenclatures")""")],
@@ -320,7 +323,8 @@ il suffit d'utiliser la clé ``user_profile`` dans l'argument ``kwargs`` (Voir c
 Si l'utilisation de _fixtures_ est nécessaire à votre test de performance, utilisé la clé ``fixture`` 
 dans l'argument ``kwargs``: 
 
-.. code-block::
+.. code:: python
+
   test_get_station = BenchmarkTest(
         CLater("self.client.get"),
         [CLater("""url_for("occhab.get_station", id_station=8)""")],

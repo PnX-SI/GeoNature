@@ -14,7 +14,7 @@ from geonature.core.admin.admin import admin as geonature_admin, CruvedProtected
 
 from pypnnomenclature.models import TNomenclatures
 
-from geonature.core.imports.models import FieldMapping, ContentMapping
+from geonature.core.imports.models import Destination, FieldMapping, ContentMapping
 
 from flask_admin.contrib.sqla.form import AdminModelConverter
 from flask_admin.model.form import converts
@@ -25,35 +25,21 @@ class MappingView(CruvedProtectedMixin, ModelView):
     object_code = "MAPPING"
 
     can_view_details = True
-    column_list = (
-        "label",
-        "active",
-        "public",
-    )
+    column_list = ("label", "active", "public", "destination")
     column_searchable_list = ("label",)
     column_filters = (
         "active",
         "public",
     )
-    form_columns = (
-        "label",
-        "active",
-        "public",
-        "owners",
-        "values",
-    )
-    column_details_list = (
-        "label",
-        "active",
-        "public",
-        "owners",
-        "values",
-    )
+    form_columns = ("label", "active", "public", "owners", "values", "destination")
+    column_details_list = ("label", "active", "public", "owners", "values", "destination")
     column_labels = {
         "active": "Actif",
         "owners": "Propriétaires",
         "values": "Correspondances",
+        "destination": "Destinations",
     }
+    column_formatters = {"destination": lambda v, c, m, p: m.destination.label}
     column_export_list = (
         "label",
         "values",
@@ -61,15 +47,21 @@ class MappingView(CruvedProtectedMixin, ModelView):
 
 
 def FieldMappingValuesValidator(form, field):
+    destination = db.session.execute(
+        db.select(Destination).where(Destination.id_destination == form.destination.raw_data[0])
+    ).scalar_one_or_none()
     try:
-        FieldMapping.validate_values(field.data)
+        FieldMapping.validate_values(field.data, destination)
     except ValueError as e:
         raise StopValidation(*e.args)
 
 
 def ContentMappingValuesValidator(form, field):
+    destination = db.session.execute(
+        db.select(Destination).where(Destination.id_destination == form.destination.raw_data[0])
+    ).scalar_one_or_none()
     try:
-        ContentMapping.validate_values(field.data)
+        ContentMapping.validate_values(field.data, destination)
     except ValueError as e:
         raise StopValidation(*e.args)
 
