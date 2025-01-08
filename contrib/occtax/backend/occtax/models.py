@@ -79,6 +79,7 @@ class CorCountingOccurrence(DB.Model):
         foreign_keys=[TMedias.uuid_attached_row],
         cascade="all",
         lazy="select",
+        overlaps="medias",
     )
 
 
