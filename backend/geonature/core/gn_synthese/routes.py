@@ -22,7 +22,7 @@ from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case, or_
-from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
+from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager, raiseload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 from sqlalchemy.orm import load_only, aliased, Load, with_expression
@@ -1546,8 +1546,8 @@ def list_all_reports(permissions):
     synthese_query = select(Synthese.id_synthese).select_from(Synthese)
     synthese_query_obj = SyntheseQuery(Synthese, synthese_query, {})
     synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
-    ids_synthese = db.session.scalars(synthese_query_obj.query).all()
-    query = query.where(TReport.id_synthese.in_(ids_synthese))
+    cte_synthese = synthese_query_obj.query.cte("cte_synthese")
+    query = query.where(TReport.id_synthese == cte_synthese.c.id_synthese)
 
     SORT_COLUMNS = {
         "user.nom_complet": User.nom_complet,
@@ -1566,11 +1566,6 @@ def list_all_reports(permissions):
         raise BadRequest("Bad orderby")
 
     # Pagination
-    total = db.session.scalar(
-        select(func.count("*"))
-        .select_from(TReport)
-        .where(TReport.report_type.has(BibReportsTypes.type == type_name))
-    )
     paginated_results = db.paginate(query, page=page, per_page=per_page)
 
     result = []
