@@ -1,5 +1,5 @@
 Tests backend
-=============
+-------------
 
 Cette documentation a pour objectif d'expliquer comment écrire des tests pour
 le backend de GeoNature.
@@ -19,7 +19,7 @@ tester différentes configurations plutôt qu'un seul les testant toutes d'un
 coup. Cela permet d'identifier plus précisément le test qui n'a pas fonctionné.
 
 Introduction
-------------
+************
 
 Comme spécifié dans la partie Développement, la librairie Python PyTest est 
 utilisée pour rédiger des tests. Elle permet de : 
@@ -32,7 +32,7 @@ utilisée pour rédiger des tests. Elle permet de :
   `documentation PyTest <https://docs.pytest.org/>`_ 
 
 Utilisation
------------
+***********
 
 Les tests sont des fonctions pouvant être regroupées dans des classes. La 
 nomenclature est la suivante : 
@@ -47,7 +47,7 @@ nomenclature est la suivante :
   pouvoir être détecté automatiquement par PyTest
 
 Fixtures
---------
+********
 
 Les fixtures de PyTest peuvent permettre de nombreuses choses comme expliqué 
 dans la documentation PyTest sur `les fixtures <https://docs.pytest.org/explanation/fixtures.html#about-fixtures>`_.
@@ -106,7 +106,7 @@ Il est aussi possible de définir un ``scope`` d'une fixture comme ceci :
       return 2
 
 Exemple
--------
+*******
 
 Voici un exemple de test qui a été fait dans GeoNature
 
@@ -132,7 +132,7 @@ l'attribut ``client`` de la classe, utile pour faire des requêtes http
 notamment. 
 
 Dans GitHub
------------
+***********
 
 Dans le dépôt de GeoNature sur GitHub, tous ces tests sont exécutés 
 automatiquement pour chaque commit d'une pull request grâce à PyTest et à 
@@ -143,7 +143,7 @@ request. Un coverage est aussi exécuté pour s'assurer que les nouveaux
 développements sont bien testés.
 
 Coverage
---------
+********
 
 Le coverage est un système permettant de quantifier les lignes de code 
 exécutées par le test. Exemple rapide :
@@ -181,7 +181,7 @@ obtenir 100% de coverage sur la fonction ``ma_fonction_a_tester()``.
 
 
 Dans VSCode
------------
+***********
 
 Il est possible d'installer `l'extension Python <https://marketplace.visualstudio.com/items?itemName=ms-python.python>`_ pour facilement lancer et 
 debugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de 
@@ -238,9 +238,8 @@ possible de générer le coverage au format html en remplaçant ``xml`` par
 ``html``.
 
 
-
 Evaluer les performances du backend
------------------------------------
+***********************************
 
 Les versions de GeoNature >2.14.1 intègrent la possibilité d'évaluer les performances de routes connues pour leur temps de traitement important. Par exemple, l'appel de la route ``gn_synthese.get_observations_for_web`` avec une géographie non-présente dans le référentiel géographique.
 
