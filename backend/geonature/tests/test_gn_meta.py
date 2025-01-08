@@ -508,6 +508,19 @@ class TestGNMeta:
 
         assert response.status_code == 200
 
+    def test_get_export_pdf_acquisition_frameworks_with_data(
+        self, users, acquisition_frameworks, datasets
+    ):
+        af_id = acquisition_frameworks["af_1"].id_acquisition_framework
+
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.post(
+            url_for("gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id)
+        )
+
+        assert response.status_code == 200
+
     def test_get_export_pdf_acquisition_frameworks_unauthorized(self, acquisition_frameworks):
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 
