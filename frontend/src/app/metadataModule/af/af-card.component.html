@@ -421,6 +421,12 @@
                 <div>
                   <small>{{ dataset.unique_dataset_id }}</small>
                 </div>
+                <div *ngIf="dataset['obs_count'] > 0">
+                  <small>Nombre d'observations dans la Synthèse : {{ dataset['obs_count'] }}</small>
+                </div>
+                <div *ngIf="dataset['hab_count']">
+                  <small>Nombre d'habitats dans occhab : {{ dataset['hab_count'] }}</small>
+                </div>
               </td>
             </tr>
           </table>
