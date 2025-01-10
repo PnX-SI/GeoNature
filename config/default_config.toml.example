@@ -441,6 +441,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Seulement les données de présence
         cd_nomenclature_observation_status = ['Pr']
 
+    # Activer l'affichage des informations liées à la fiche taxon dans la synthèse
+    ENABLE_TAXON_SHEETS = true
     [SYNTHESE.TAXON_SHEET]
         # Options dédiées à la fiche taxon
         # Permet d'activer ou non l'onglet "Profil"

@@ -439,6 +439,7 @@ class Synthese(Schema):
 
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
+    ENABLE_TAXON_SHEETS = fields.Boolean(load_default=True)
     TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
 
     @pre_load
