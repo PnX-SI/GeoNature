@@ -46,6 +46,15 @@ def get_synthese_data(scope):
     """
 
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
+
+    # Déplacer les fields en param de la route
+    # Conserver la config
+    # Non renseigné: comportement actuel
+    # Fields renseigné: remplace (pas par défault)
+
+    # Retour avec ou sans géométrie:
+    # mettre un paramètre de format (par défault geojson) (possible json)
+
     fields = {
         "id_synthese",
         "unique_id_sinp",
@@ -136,7 +145,9 @@ def get_synthese_data(scope):
         query = query.outerjoin(alias, sa.true())
 
     query = query.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
-
+    # The `query` variable is being used to construct a SQLAlchemy query to retrieve data from
+    # the database. Here is a breakdown of how `query` is being used in the provided code
+    # snippet
     # filter with profile
     if enable_profile:
         score = filters.pop("score", None)
@@ -169,7 +180,8 @@ def get_synthese_data(scope):
             filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
         )
         .filter_query_all_filters(g.current_user, scope)
-        .limit(result_limit)
+        .limit(1)
+        .offset(2)
     )
 
     # Step 3: Construct Synthese model from query result
@@ -193,9 +205,15 @@ def get_synthese_data(scope):
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
 
+    # Paginer avant ici
     query = syntheseModelQuery.from_statement(query)
 
     # The raise option ensure that we have correctly retrived relationships data at step 3
+    #
+    # 3 serializeQuery(db.session.execute(query).all(), query.column_descriptions)
+    # 2 Sinon: schema à la volée get_marshmallow_schema
+    # 1 préférence pour as_dict
+
     return jsonify(query.as_geofeaturecollection(fields=fields))
 
 
