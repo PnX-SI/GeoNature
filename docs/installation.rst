@@ -49,10 +49,10 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Mettre à jour de la liste des dépôts Linux :
 
-  .. code:: console
+  .. code:: shell
 
-    # apt update
-    # apt upgrade
+    apt update
+    apt upgrade
 
 * Configuration de la locale du serveur
 
@@ -83,15 +83,15 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Installer l’utilitaire ``sudo`` :
 
-  .. code:: console
+  .. code:: shell
 
-    # apt install sudo
+    apt install sudo
 
 * Créer un utilisateur Linux dédié (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` :
 
-  .. code:: console
+  .. code:: shell
 
-    # adduser geonatureadmin
+    adduser geonatureadmin
 
 * Lui donner ensuite les droits administrateur en l’ajoutant au groupe ``sudo`` :
 
@@ -104,9 +104,9 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
           
         Il doit être en ``7XX`` soit ``drwxr-xr-x``. Si ce n'est pas le cas, exécuter la commande suivante :
         
-        .. code:: console
+        .. code:: shell
       
-          # chmod 755 /home/geonatureadmin
+          chmod 755 /home/geonatureadmin
 * Pour la suite du processus d’installation, on utilisera l'utilisateur non privilégié nouvellement créé. Si besoin d'éxecuter des commandes avec les droits d'administrateur, on les précèdera de ``sudo``.
 
   Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ``root``. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.

@@ -526,8 +526,8 @@ Ces profils sont déclinés sur :
 - Le module Occtax permet d'alerter les utilisateurs lors de la saisie de données qui sortent du "cadre" déjà connu pour un taxon considéré
 - Le processus de validation automatique permet de valider automatiquement les observations respectant le profil de taxons (non activé par défaut).
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/validation.png
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/contexte_donnee.png
+.. image:: https://media.githubusercontent.com/media/PnX-SI/GeoNature/refs/heads/master/docs/images/validation.png
+.. image:: https://media.githubusercontent.com/media/PnX-SI/GeoNature/refs/heads/master/docs/images/contexte_donnee.png
 
 Plusieurs fonctions permettent de vérifier si une donnée de la synthèse est cohérente au regard du profil du taxon en question :
 
