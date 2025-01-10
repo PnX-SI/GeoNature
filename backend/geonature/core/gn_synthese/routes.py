@@ -958,6 +958,7 @@ def general_stats(permissions):
     }
     return data
 
+
 ## ############################################################################
 ## TAXON SHEET ROUTES
 ## ############################################################################
@@ -993,7 +994,9 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
             .alias("areas")
         )
         cd_ref = db.session.scalar(select(Taxref.cd_ref).where(Taxref.cd_nom == cd_nom))
-        taxref_cd_nom_list = db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
+        taxref_cd_nom_list = db.session.scalars(
+            select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref)
+        )
 
         # Main query to fetch stats
         query = (

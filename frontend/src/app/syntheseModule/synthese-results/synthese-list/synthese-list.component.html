@@ -93,7 +93,10 @@
           <a
             class="Link"
             [routerLink]="['taxon/' + row.cd_nom]"
-            *ngIf="config.SYNTHESE.ENABLE_TAXON_SHEETS && row.hasOwnProperty('cd_nom'); else cellDefault"
+            *ngIf="
+              config.SYNTHESE.ENABLE_TAXON_SHEETS && row.hasOwnProperty('cd_nom');
+              else cellDefault
+            "
             matTooltip="Afficher la fiche du taxon"
           >
             <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
