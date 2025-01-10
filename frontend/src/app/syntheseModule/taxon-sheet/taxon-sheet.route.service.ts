@@ -29,13 +29,13 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   {
     label: 'Taxonomie',
     path: 'taxonomy',
-    configEnabledField: 'ENABLE_TAXONOMY',
+    configEnabledField: 'ENABLE_TAB_TAXONOMY',
     component: TabTaxonomyComponent,
   },
   {
     label: 'Profil',
     path: 'profile',
-    configEnabledField: 'ENABLE_PROFILE',
+    configEnabledField: 'ENABLE_TAB_PROFILES',
     component: TabProfileComponent,
   },
 ];

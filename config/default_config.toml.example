@@ -446,9 +446,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     [SYNTHESE.TAXON_SHEET]
         # Options dédiées à la fiche taxon
         # Permet d'activer ou non l'onglet "Profil"
-        ENABLE_PROFILE = true
+        ENABLE_TAB_PROFILES = true
         # Permet d'activer ou non l'onglet "Taxonomie"
-        ENABLE_TAXONOMY = true
+        ENABLE_TAB_TAXONOMY = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
