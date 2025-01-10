@@ -1,0 +1,116 @@
+geonature.core.imports.admin
+============================
+
+.. py:module:: geonature.core.imports.admin
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.imports.admin.MappingView
+   geonature.core.imports.admin.FieldMappingView
+   geonature.core.imports.admin.ContentMappingView
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.imports.admin.FieldMappingValuesValidator
+   geonature.core.imports.admin.ContentMappingValuesValidator
+
+
+Module Contents
+---------------
+
+.. py:class:: MappingView
+
+   Bases: :py:obj:`geonature.core.admin.admin.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+
+   .. py:attribute:: module_code
+      :value: 'IMPORT'
+
+
+
+   .. py:attribute:: object_code
+      :value: 'MAPPING'
+
+
+
+   .. py:attribute:: can_view_details
+      :value: True
+
+
+
+   .. py:attribute:: column_list
+      :value: ('label', 'active', 'public', 'destination')
+
+
+
+   .. py:attribute:: column_searchable_list
+      :value: ('label',)
+
+
+
+   .. py:attribute:: column_filters
+      :value: ('active', 'public')
+
+
+
+   .. py:attribute:: form_columns
+      :value: ('label', 'active', 'public', 'owners', 'values', 'destination')
+
+
+
+   .. py:attribute:: column_details_list
+      :value: ('label', 'active', 'public', 'owners', 'values', 'destination')
+
+
+
+   .. py:attribute:: column_labels
+
+
+   .. py:attribute:: column_formatters
+
+
+   .. py:attribute:: column_export_list
+      :value: ('label', 'values')
+
+
+
+.. py:function:: FieldMappingValuesValidator(form, field)
+
+.. py:function:: ContentMappingValuesValidator(form, field)
+
+.. py:class:: FieldMappingView
+
+   Bases: :py:obj:`MappingView`
+
+
+   .. py:attribute:: form_args
+
+
+   .. py:attribute:: colmun_labels
+
+
+   .. py:attribute:: column_formatters_detail
+
+
+.. py:class:: ContentMappingView
+
+   Bases: :py:obj:`MappingView`
+
+
+   .. py:attribute:: form_args
+
+
+   .. py:attribute:: colmun_labels
+
+
+   .. py:attribute:: column_formatters_detail
+
+

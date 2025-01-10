@@ -1,0 +1,78 @@
+geonature.core.imports.schemas
+==============================
+
+.. py:module:: geonature.core.imports.schemas
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.imports.schemas.DestinationSchema
+   geonature.core.imports.schemas.MappingSchema
+
+
+Module Contents
+---------------
+
+.. py:class:: DestinationSchema
+
+   Bases: :py:obj:`utils_flask_sqla.schema.SmartRelationshipsMixin`, :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
+      .. py:attribute:: load_instance
+         :value: True
+
+
+
+      .. py:attribute:: sqla_session
+
+
+
+   .. py:attribute:: module
+
+
+.. py:class:: MappingSchema
+
+   Bases: :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
+      .. py:attribute:: load_instance
+         :value: True
+
+
+
+      .. py:attribute:: sqla_session
+
+
+
+   .. py:attribute:: cruved
+
+
+   .. py:attribute:: values
+
+
+   .. py:attribute:: owners
+
+

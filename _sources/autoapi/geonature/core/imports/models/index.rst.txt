@@ -1,0 +1,753 @@
+geonature.core.imports.models
+=============================
+
+.. py:module:: geonature.core.imports.models
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.imports.models.cor_role_import
+   geonature.core.imports.models.cor_role_mapping
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.imports.models.ImportModule
+   geonature.core.imports.models.ImportUserErrorType
+   geonature.core.imports.models.ImportUserError
+   geonature.core.imports.models.Destination
+   geonature.core.imports.models.BibThemes
+   geonature.core.imports.models.EntityField
+   geonature.core.imports.models.Entity
+   geonature.core.imports.models.InstancePermissionMixin
+   geonature.core.imports.models.TImports
+   geonature.core.imports.models.BibFields
+   geonature.core.imports.models.MappingTemplate
+   geonature.core.imports.models.FieldMapping
+   geonature.core.imports.models.ContentMapping
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.imports.models.optional_conditions_to_jsonschema
+   geonature.core.imports.models.get_fields_of_an_entity
+
+
+Module Contents
+---------------
+
+.. py:class:: ImportModule
+
+   Bases: :py:obj:`geonature.core.gn_commons.models.TModules`
+
+
+   .. py:attribute:: __mapper_args__
+
+
+   .. py:method:: generate_module_url_for_source(source)
+
+
+.. py:class:: ImportUserErrorType
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_errors_types'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: pk
+
+
+   .. py:attribute:: category
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: description
+
+
+   .. py:attribute:: level
+
+
+   .. py:method:: __str__()
+
+
+.. py:class:: ImportUserError
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_user_errors'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: pk
+
+
+   .. py:attribute:: id_import
+
+
+   .. py:attribute:: imprt
+
+
+   .. py:attribute:: id_type
+
+
+   .. py:attribute:: type
+
+
+   .. py:attribute:: column
+
+
+   .. py:attribute:: rows
+
+
+   .. py:attribute:: comment
+
+
+   .. py:attribute:: id_entity
+
+
+   .. py:attribute:: entity
+
+
+   .. py:method:: __str__()
+
+
+.. py:class:: Destination
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_destinations'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: id_module
+
+
+   .. py:attribute:: code
+
+
+   .. py:attribute:: label
+
+
+   .. py:attribute:: table_name
+
+
+   .. py:attribute:: module
+
+
+   .. py:attribute:: entities
+
+
+   .. py:method:: get_transient_table()
+
+
+   .. py:property:: validity_columns
+
+
+   .. py:property:: statistics_labels
+
+
+   .. py:property:: actions
+
+
+   .. py:method:: allowed_destinations(user: Optional[pypnusershub.db.models.User] = None, action_code: str = 'C') -> List[Destination]
+      :staticmethod:
+
+
+      Return a list of allowed destinations for a given user and an action.
+
+      Parameters
+      ----------
+      user : User, optional
+          The user to filter destinations for. If not provided, the current_user is used.
+      action : str
+          The action to filter destinations for. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
+
+      Returns
+      -------
+      allowed_destination : List of Destination
+          List of allowed destinations for the given user.
+
+
+
+   .. py:method:: filter_by_role(user: Optional[pypnusershub.db.models.User] = None, action_code: str = 'C', **kwargs)
+
+      Filter Destination by role.
+
+      Parameters
+      ----------
+      user : User, optional
+          The user to filter destinations for. If not provided, the current_user is used.
+
+      Returns
+      -------
+      sqlalchemy.sql.elements.BinaryExpression
+          A filter criterion for the ``id_destination`` column of the ``Destination`` table.
+
+
+
+   .. py:method:: has_instance_permission(user: Optional[pypnusershub.db.models.User] = None, action_code: str = 'C')
+
+      Check if a user has the permissions to do an action on this destination.
+
+      Parameters
+      ----------
+      user : User, optional
+          The user to check the permission for. If not provided, the current_user is used.
+      action_code : str
+          The action to check the permission for. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
+
+      Returns
+      -------
+      bool
+          True if the user has the right to do the action on this destination, False otherwise.
+
+
+
+   .. py:method:: __repr__()
+
+
+.. py:class:: BibThemes
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_themes'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_theme
+
+
+   .. py:attribute:: name_theme
+
+
+   .. py:attribute:: fr_label_theme
+
+
+   .. py:attribute:: eng_label_theme
+
+
+   .. py:attribute:: desc_theme
+
+
+   .. py:attribute:: order_theme
+
+
+.. py:class:: EntityField
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_entity_field'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_entity
+
+
+   .. py:attribute:: entity
+
+
+   .. py:attribute:: id_field
+
+
+   .. py:attribute:: field
+
+
+   .. py:attribute:: desc_field
+
+
+   .. py:attribute:: id_theme
+
+
+   .. py:attribute:: theme
+
+
+   .. py:attribute:: order_field
+
+
+   .. py:attribute:: comment
+
+
+.. py:class:: Entity
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_entities'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_entity
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: destination
+
+
+   .. py:attribute:: code
+
+
+   .. py:attribute:: label
+
+
+   .. py:attribute:: order
+
+
+   .. py:attribute:: validity_column
+
+
+   .. py:attribute:: destination_table_schema
+
+
+   .. py:attribute:: destination_table_name
+
+
+   .. py:attribute:: id_unique_column
+
+
+   .. py:attribute:: id_parent
+
+
+   .. py:attribute:: parent
+
+
+   .. py:attribute:: childs
+
+
+   .. py:attribute:: fields
+
+
+   .. py:attribute:: unique_column
+
+
+   .. py:method:: get_destination_table()
+
+
+.. py:class:: InstancePermissionMixin
+
+   .. py:method:: get_instance_permissions(scopes, user=None)
+
+
+.. py:data:: cor_role_import
+
+.. py:class:: TImports
+
+   Bases: :py:obj:`InstancePermissionMixin`, :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_imports'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: AVAILABLE_ENCODINGS
+
+
+   .. py:attribute:: AVAILABLE_FORMATS
+      :value: ['csv', 'geojson']
+
+
+
+   .. py:attribute:: AVAILABLE_SEPARATORS
+      :value: [',', ';']
+
+
+
+   .. py:attribute:: id_import
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: destination
+
+
+   .. py:attribute:: format_source_file
+
+
+   .. py:attribute:: srid
+
+
+   .. py:attribute:: separator
+
+
+   .. py:attribute:: detected_separator
+
+
+   .. py:attribute:: encoding
+
+
+   .. py:attribute:: detected_encoding
+
+
+   .. py:attribute:: full_file_name
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: date_create_import
+
+
+   .. py:attribute:: date_update_import
+
+
+   .. py:attribute:: date_end_import
+
+
+   .. py:attribute:: source_count
+
+
+   .. py:attribute:: erroneous_rows
+
+
+   .. py:attribute:: statistics
+
+
+   .. py:attribute:: date_min_data
+
+
+   .. py:attribute:: date_max_data
+
+
+   .. py:attribute:: uuid_autogenerated
+
+
+   .. py:attribute:: altitude_autogenerated
+
+
+   .. py:attribute:: authors
+
+
+   .. py:attribute:: loaded
+
+
+   .. py:attribute:: processed
+
+
+   .. py:attribute:: dataset
+
+
+   .. py:attribute:: source_file
+
+
+   .. py:attribute:: columns
+
+
+   .. py:attribute:: fieldmapping
+
+
+   .. py:attribute:: contentmapping
+
+
+   .. py:attribute:: task_id
+
+
+   .. py:attribute:: errors
+
+
+   .. py:property:: cruved
+
+
+   .. py:attribute:: errors_count
+
+
+   .. py:property:: task_progress
+
+
+   .. py:method:: has_instance_permission(scope, user=None, action_code='C')
+
+
+   .. py:method:: filter_by_scope(scope, user=None, **kwargs)
+      :staticmethod:
+
+
+
+   .. py:method:: as_dict(import_as_dict)
+
+
+.. py:class:: BibFields
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_fields'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_field
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: destination
+
+
+   .. py:attribute:: name_field
+
+
+   .. py:attribute:: source_field
+
+
+   .. py:attribute:: dest_field
+
+
+   .. py:attribute:: fr_label
+
+
+   .. py:attribute:: eng_label
+
+
+   .. py:attribute:: type_field
+
+
+   .. py:attribute:: mandatory
+
+
+   .. py:attribute:: autogenerated
+
+
+   .. py:attribute:: mnemonique
+
+
+   .. py:attribute:: nomenclature_type
+
+
+   .. py:attribute:: display
+
+
+   .. py:attribute:: multi
+
+
+   .. py:attribute:: optional_conditions
+
+
+   .. py:attribute:: mandatory_conditions
+
+
+   .. py:attribute:: entities
+
+
+   .. py:property:: source_column
+
+
+   .. py:property:: dest_column
+
+
+   .. py:method:: __str__()
+
+
+.. py:data:: cor_role_mapping
+
+.. py:class:: MappingTemplate
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_mappings'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: destination
+
+
+   .. py:attribute:: label
+
+
+   .. py:attribute:: type
+
+
+   .. py:attribute:: active
+
+
+   .. py:attribute:: public
+
+
+   .. py:property:: cruved
+
+
+   .. py:attribute:: __mapper_args__
+
+
+   .. py:attribute:: owners
+
+
+   .. py:method:: has_instance_permission(scope: int, user=None)
+
+
+   .. py:method:: filter_by_scope(scope, user=None)
+      :staticmethod:
+
+
+
+.. py:function:: optional_conditions_to_jsonschema(name_field: str, optional_conditions: Iterable[str]) -> dict
+
+   Convert optional conditions into a JSON schema.
+
+   Parameters
+   ----------
+   name_field : str
+       The name of the field.
+   optional_conditions : Iterable[str]
+       The optional conditions.
+
+   Returns
+   -------
+   dict
+       The JSON schema.
+
+   Notes
+   -----
+   The JSON schema is created to ensure that if any of the optional conditions is not provided,
+   the name_field is required.
+
+
+.. py:function:: get_fields_of_an_entity(entity: Entity, columns: Optional[List[str]] = None, optional_where_clause: Optional[Any] = None) -> List[BibFields]
+
+   Get all BibFields associated with a given entity.
+
+   Parameters
+   ----------
+   entity : Entity
+       The entity to get the fields for.
+   columns : Optional[List[str]], optional
+       The columns to retrieve. If None, all columns are retrieved.
+   optional_where_clause : Optional[Any], optional
+       An optional where clause to apply to the query.
+
+   Returns
+   -------
+   List[BibFields]
+       The BibFields associated with the given entity.
+
+
+.. py:class:: FieldMapping
+
+   Bases: :py:obj:`MappingTemplate`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_fieldmappings'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id
+
+
+   .. py:attribute:: values
+
+
+   .. py:attribute:: __mapper_args__
+
+
+   .. py:method:: validate_values(field_mapping_json, destination=None)
+      :staticmethod:
+
+
+      Validate the field mapping values returned by the client form.
+
+      Parameters
+      ----------
+      field_mapping_json : dict
+          The field mapping values.
+
+      Raises
+      ------
+      ValueError
+          If the field mapping values are invalid.
+
+
+
+.. py:class:: ContentMapping
+
+   Bases: :py:obj:`MappingTemplate`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_contentmappings'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id
+
+
+   .. py:attribute:: values
+
+
+   .. py:attribute:: __mapper_args__
+
+
+   .. py:method:: validate_values(values, destination=None)
+      :staticmethod:
+
+
+

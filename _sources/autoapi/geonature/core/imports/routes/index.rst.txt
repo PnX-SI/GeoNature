@@ -1,0 +1,196 @@
+geonature.core.imports.routes
+=============================
+
+.. py:module:: geonature.core.imports.routes
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/geonature/core/imports/routes/fields/index
+   /autoapi/geonature/core/imports/routes/imports/index
+   /autoapi/geonature/core/imports/routes/mappings/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.imports.routes.blueprint
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.imports.routes.Destination
+   geonature.core.imports.routes.DestinationSchema
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.imports.routes.list_all_destinations
+   geonature.core.imports.routes.get_destination
+
+
+Package Contents
+----------------
+
+.. py:class:: Destination
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_destinations'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_destination
+
+
+   .. py:attribute:: id_module
+
+
+   .. py:attribute:: code
+
+
+   .. py:attribute:: label
+
+
+   .. py:attribute:: table_name
+
+
+   .. py:attribute:: module
+
+
+   .. py:attribute:: entities
+
+
+   .. py:method:: get_transient_table()
+
+
+   .. py:property:: validity_columns
+
+
+   .. py:property:: statistics_labels
+
+
+   .. py:property:: actions
+
+
+   .. py:method:: allowed_destinations(user: Optional[pypnusershub.db.models.User] = None, action_code: str = 'C') -> List[Destination]
+      :staticmethod:
+
+
+      Return a list of allowed destinations for a given user and an action.
+
+      Parameters
+      ----------
+      user : User, optional
+          The user to filter destinations for. If not provided, the current_user is used.
+      action : str
+          The action to filter destinations for. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
+
+      Returns
+      -------
+      allowed_destination : List of Destination
+          List of allowed destinations for the given user.
+
+
+
+   .. py:method:: filter_by_role(user: Optional[pypnusershub.db.models.User] = None, action_code: str = 'C', **kwargs)
+
+      Filter Destination by role.
+
+      Parameters
+      ----------
+      user : User, optional
+          The user to filter destinations for. If not provided, the current_user is used.
+
+      Returns
+      -------
+      sqlalchemy.sql.elements.BinaryExpression
+          A filter criterion for the ``id_destination`` column of the ``Destination`` table.
+
+
+
+   .. py:method:: has_instance_permission(user: Optional[pypnusershub.db.models.User] = None, action_code: str = 'C')
+
+      Check if a user has the permissions to do an action on this destination.
+
+      Parameters
+      ----------
+      user : User, optional
+          The user to check the permission for. If not provided, the current_user is used.
+      action_code : str
+          The action to check the permission for. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
+
+      Returns
+      -------
+      bool
+          True if the user has the right to do the action on this destination, False otherwise.
+
+
+
+   .. py:method:: __repr__()
+
+
+.. py:class:: DestinationSchema
+
+   Bases: :py:obj:`utils_flask_sqla.schema.SmartRelationshipsMixin`, :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
+      .. py:attribute:: load_instance
+         :value: True
+
+
+
+      .. py:attribute:: sqla_session
+
+
+
+   .. py:attribute:: module
+
+
+.. py:data:: blueprint
+
+.. py:function:: list_all_destinations(action_code)
+
+   Return the list of all destinations. If an action code is provided, only the destinations
+   that the user has permission (based on the action_code) to access are returned.
+
+   Parameters:
+   ----------
+   action_code : str
+       The action code to filter destinations. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
+
+   Returns:
+   -------
+   destinations : List of Destination
+       List of all destinations.
+
+
+.. py:function:: get_destination(destinationCode)
+

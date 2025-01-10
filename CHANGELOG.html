@@ -1,443 +1,467 @@
+<!doctype html>
+<html class="no-js" lang="fr" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="API REFERENCES" href="api-references.html" /><link rel="prev" title="Auteurs" href="authors.html" />
 
-<!DOCTYPE html>
-
-
-<html lang="fr" data-content_root="./" >
-
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <title>CHANGELOG &#8212; Documentation GeoNature 2.0</title>
-  
-  
-  
-  <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
-  </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
-  
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+        <title>CHANGELOG - Documentation GeoNature 2.15.1</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
-  
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
-
-    <script src="_static/documentation_options.js?v=94f178cf"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script src="_static/translations.js?v=041d0952"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'CHANGELOG';</script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Recherche" href="search.html" />
-    <link rel="next" title="API REFERENCES" href="api-references.html" />
-    <link rel="prev" title="Auteurs" href="authors.html" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="fr"/>
-  <meta name="docsearch:version" content="2.0" />
-  </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
-  
-  
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
-  
-  <dialog id="pst-search-dialog">
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
-<form class="bd-search d-flex align-items-center"
-      action="search.html"
-      method="get">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search"
-         class="form-control"
-         name="q"
-         placeholder="Search..."
-         aria-label="Search..."
-         autocomplete="off"
-         autocorrect="off"
-         autocapitalize="off"
-         spellcheck="false"/>
-  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+    
 
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
 
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
-    </header>
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
   
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
 
-  <div class="bd-container">
-    <div class="bd-container__inner bd-page-width">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.1</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
       
-      
-      
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
-        
-
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <div class="sidebar-header-items sidebar-primary__section">
-    
-    
-    
-    
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.1</span>
   
-    
-  
-
-<a class="navbar-brand logo" href="index.html">
-  
-  
-  
-  
-  
-    
-    
-      
-    
-    
-    <img src="_static/LogoGeonature.jpg" class="logo__image only-light" alt="Documentation GeoNature 2.0 - Home"/>
-    <img src="_static/LogoGeonature.jpg" class="logo__image only-dark pst-js-only" alt="Documentation GeoNature 2.0 - Home"/>
-  
-  
-</a></div>
-        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
-    aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/PnX-SI/GeoNature" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
-        </li>
-</ul></div>
-        <div class="sidebar-primary-item">
-
-<button class="btn search-button-field search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Recherche</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
-        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item navbar-nav active">
-        <ul class="current nav bd-sidenav">
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">Manuel utilisateur</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">Manuel administrateur</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Développement</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Auteurs</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">CHANGELOG</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">CHANGELOG</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api-references.html">API REFERENCES</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API REFERENCES</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/geonature/index.html">geonature</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of geonature</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/geonature/app/index.html">geonature.app</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/geonature/core/index.html">geonature.core</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of geonature.core</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/admin/index.html">geonature.core.admin</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of geonature.core.admin</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/admin/admin/index.html">geonature.core.admin.admin</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/admin/utils/index.html">geonature.core.admin.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/command/index.html">geonature.core.command</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of geonature.core.command</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/command/__main__/index.html">geonature.core.command.__main__</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/command/create_gn_module/index.html">geonature.core.command.create_gn_module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/command/main/index.html">geonature.core.command.main</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/core/errors/index.html">geonature.core.errors</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_commons/index.html">geonature.core.gn_commons</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of geonature.core.gn_commons</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_commons/admin/index.html">geonature.core.gn_commons.admin</a></li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_commons/medias/index.html">geonature.core.gn_commons.medias</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of geonature.core.gn_commons.medias</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_commons/medias/routes/index.html">geonature.core.gn_commons.medias.routes</a></li>
+</ul>
+</li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_commons/models/index.html">geonature.core.gn_commons.models</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of geonature.core.gn_commons.models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_commons/models/additional_fields/index.html">geonature.core.gn_commons.models.additional_fields</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_commons/models/base/index.html">geonature.core.gn_commons.models.base</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_commons/repositories/index.html">geonature.core.gn_commons.repositories</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_commons/routes/index.html">geonature.core.gn_commons.routes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_commons/schemas/index.html">geonature.core.gn_commons.schemas</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_commons/tasks/index.html">geonature.core.gn_commons.tasks</a></li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_commons/validation/index.html">geonature.core.gn_commons.validation</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of geonature.core.gn_commons.validation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_commons/validation/routes/index.html">geonature.core.gn_commons.validation.routes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_meta/index.html">geonature.core.gn_meta</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of geonature.core.gn_meta</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_meta/models/index.html">geonature.core.gn_meta.models</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of geonature.core.gn_meta.models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_meta/models/aframework/index.html">geonature.core.gn_meta.models.aframework</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_meta/models/commons/index.html">geonature.core.gn_meta.models.commons</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_meta/models/datasets/index.html">geonature.core.gn_meta.models.datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_meta/repositories/index.html">geonature.core.gn_meta.repositories</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_meta/routes/index.html">geonature.core.gn_meta.routes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_meta/schemas/index.html">geonature.core.gn_meta.schemas</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_monitoring/index.html">geonature.core.gn_monitoring</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of geonature.core.gn_monitoring</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_monitoring/models/index.html">geonature.core.gn_monitoring.models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_monitoring/routes/index.html">geonature.core.gn_monitoring.routes</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_permissions/index.html">geonature.core.gn_permissions</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of geonature.core.gn_permissions</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_permissions/admin/index.html">geonature.core.gn_permissions.admin</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_permissions/commands/index.html">geonature.core.gn_permissions.commands</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_permissions/decorators/index.html">geonature.core.gn_permissions.decorators</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_permissions/models/index.html">geonature.core.gn_permissions.models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_permissions/routes/index.html">geonature.core.gn_permissions.routes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_permissions/schemas/index.html">geonature.core.gn_permissions.schemas</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_permissions/tools/index.html">geonature.core.gn_permissions.tools</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_profiles/index.html">geonature.core.gn_profiles</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of geonature.core.gn_profiles</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_profiles/models/index.html">geonature.core.gn_profiles.models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_profiles/routes/index.html">geonature.core.gn_profiles.routes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_profiles/tasks/index.html">geonature.core.gn_profiles.tasks</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/index.html">geonature.core.gn_synthese</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of geonature.core.gn_synthese</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/imports/index.html">geonature.core.gn_synthese.imports</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle navigation of geonature.core.gn_synthese.imports</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/imports/actions/index.html">geonature.core.gn_synthese.imports.actions</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/imports/geo/index.html">geonature.core.gn_synthese.imports.geo</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/imports/plot/index.html">geonature.core.gn_synthese.imports.plot</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/models/index.html">geonature.core.gn_synthese.models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/module/index.html">geonature.core.gn_synthese.module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/routes/index.html">geonature.core.gn_synthese.routes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/schemas/index.html">geonature.core.gn_synthese.schemas</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/synthese_config/index.html">geonature.core.gn_synthese.synthese_config</a></li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/utils/index.html">geonature.core.gn_synthese.utils</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of geonature.core.gn_synthese.utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/utils/blurring/index.html">geonature.core.gn_synthese.utils.blurring</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/utils/orm/index.html">geonature.core.gn_synthese.utils.orm</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/utils/process/index.html">geonature.core.gn_synthese.utils.process</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/gn_synthese/utils/query_select_sqla/index.html">geonature.core.gn_synthese.utils.query_select_sqla</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/imports/index.html">geonature.core.imports</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle navigation of geonature.core.imports</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/actions/index.html">geonature.core.imports.actions</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/admin/index.html">geonature.core.imports.admin</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/blueprint/index.html">geonature.core.imports.blueprint</a></li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/geonature/core/imports/checks/index.html">geonature.core.imports.checks</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle navigation of geonature.core.imports.checks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6 has-children"><a class="reference internal" href="autoapi/geonature/core/imports/checks/dataframe/index.html">geonature.core.imports.checks.dataframe</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle navigation of geonature.core.imports.checks.dataframe</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/dataframe/cast/index.html">geonature.core.imports.checks.dataframe.cast</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/dataframe/core/index.html">geonature.core.imports.checks.dataframe.core</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/dataframe/dates/index.html">geonature.core.imports.checks.dataframe.dates</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/dataframe/geometry/index.html">geonature.core.imports.checks.dataframe.geometry</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/dataframe/utils/index.html">geonature.core.imports.checks.dataframe.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/imports/checks/errors/index.html">geonature.core.imports.checks.errors</a></li>
+<li class="toctree-l6 has-children"><a class="reference internal" href="autoapi/geonature/core/imports/checks/sql/index.html">geonature.core.imports.checks.sql</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle navigation of geonature.core.imports.checks.sql</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/sql/core/index.html">geonature.core.imports.checks.sql.core</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/sql/extra/index.html">geonature.core.imports.checks.sql.extra</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/sql/geo/index.html">geonature.core.imports.checks.sql.geo</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/sql/nomenclature/index.html">geonature.core.imports.checks.sql.nomenclature</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/sql/parent/index.html">geonature.core.imports.checks.sql.parent</a></li>
+<li class="toctree-l7"><a class="reference internal" href="autoapi/geonature/core/imports/checks/sql/utils/index.html">geonature.core.imports.checks.sql.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/commands/index.html">geonature.core.imports.commands</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/config_schema/index.html">geonature.core.imports.config_schema</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/logs/index.html">geonature.core.imports.logs</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/models/index.html">geonature.core.imports.models</a></li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/geonature/core/imports/routes/index.html">geonature.core.imports.routes</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle navigation of geonature.core.imports.routes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/imports/routes/fields/index.html">geonature.core.imports.routes.fields</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/imports/routes/imports/index.html">geonature.core.imports.routes.imports</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/geonature/core/imports/routes/mappings/index.html">geonature.core.imports.routes.mappings</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/schemas/index.html">geonature.core.imports.schemas</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/tasks/index.html">geonature.core.imports.tasks</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/templates/index.html">geonature.core.imports.templates</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/imports/utils/index.html">geonature.core.imports.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/notifications/index.html">geonature.core.notifications</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of geonature.core.notifications</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/notifications/admin/index.html">geonature.core.notifications.admin</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/notifications/models/index.html">geonature.core.notifications.models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/notifications/routes/index.html">geonature.core.notifications.routes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/notifications/tasks/index.html">geonature.core.notifications.tasks</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/notifications/utils/index.html">geonature.core.notifications.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/sensitivity/index.html">geonature.core.sensitivity</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle navigation of geonature.core.sensitivity</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/sensitivity/models/index.html">geonature.core.sensitivity.models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/sensitivity/routes/index.html">geonature.core.sensitivity.routes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/sensitivity/utils/index.html">geonature.core.sensitivity.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/taxonomie/index.html">geonature.core.taxonomie</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of geonature.core.taxonomie</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/taxonomie/admin/index.html">geonature.core.taxonomie.admin</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/taxonomie/schemas/index.html">geonature.core.taxonomie.schemas</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/geonature/core/users/index.html">geonature.core.users</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle navigation of geonature.core.users</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/users/models/index.html">geonature.core.users.models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/users/register_post_actions/index.html">geonature.core.users.register_post_actions</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/geonature/core/users/routes/index.html">geonature.core.users.routes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/geonature/middlewares/index.html">geonature.middlewares</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/geonature/tasks/index.html">geonature.tasks</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/geonature/utils/index.html">geonature.utils</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of geonature.utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/celery/index.html">geonature.utils.celery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/command/index.html">geonature.utils.command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/config/index.html">geonature.utils.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/config_schema/index.html">geonature.utils.config_schema</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/env/index.html">geonature.utils.env</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/errors/index.html">geonature.utils.errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/filemanager/index.html">geonature.utils.filemanager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/logs/index.html">geonature.utils.logs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/metaclass_utils/index.html">geonature.utils.metaclass_utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/module/index.html">geonature.utils.module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/schema/index.html">geonature.utils.schema</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/sentry/index.html">geonature.utils.sentry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/utilsgeometrytools/index.html">geonature.utils.utilsgeometrytools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/utilsmails/index.html">geonature.utils.utilsmails</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/utilsrequests/index.html">geonature.utils.utilsrequests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/geonature/utils/utilstoml/index.html">geonature.utils.utilstoml</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
-    </div>
-</nav></div>
-    </div>
-  
-  
-  <div class="sidebar-primary-items__end sidebar-primary__section">
-  </div>
-  
-  <div id="rtd-footer-container"></div>
-
+</div>
+</div>
 
       </div>
       
-      <main id="main-content" class="bd-main" role="main">
-        
-        
-
-<div class="sbt-scroll-pixel-helper"></div>
-
-          <div class="bd-content">
-            <div class="bd-article-container">
-              
-              <div class="bd-header-article d-print-none">
-<div class="header-article-items header-article__inner">
-  
-    <div class="header-article-items__start">
-      
-        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <span class="fa-solid fa-bars"></span>
-</button></div>
-      
     </div>
-  
-  
-    <div class="header-article-items__end">
-      
-        <div class="header-article-item">
-
-<div class="article-header-buttons">
-
-
-
-
-
-<div class="dropdown dropdown-source-buttons">
-  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
-    <i class="fab fa-github"></i>
-  </button>
-  <ul class="dropdown-menu">
-      
-      
-      
-      <li><a href="https://github.com/PnX-SI/GeoNature" target="_blank"
-   class="btn btn-sm btn-source-repository-button dropdown-item"
-   title="Dépôt source"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="btn__text-container">Repository</span>
-</a>
-</li>
-      
-      
-      
-      
-      <li><a href="https://github.com/PnX-SI/GeoNature/blob/master/docs/CHANGELOG.md?plain=1" target="_blank"
-   class="btn btn-sm btn-source-file-button dropdown-item"
-   title="Show source"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-code"></i>
-  </span>
-<span class="btn__text-container">Show source</span>
-</a>
-</li>
-      
-  </ul>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/CHANGELOG.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
 </div>
-
-
-
-
-
-
-<div class="dropdown dropdown-download-buttons">
-  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Téléchargez cette page">
-    <i class="fas fa-download"></i>
-  </button>
-  <ul class="dropdown-menu">
-      
-      
-      
-      <li><a href="_sources/CHANGELOG.md" target="_blank"
-   class="btn btn-sm btn-download-source-button dropdown-item"
-   title="Télécharger le fichier source"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="btn__text-container">.md</span>
-</a>
-</li>
-      
-      
-      
-      
-      <li>
-<button onclick="window.print()"
-  class="btn btn-sm btn-download-pdf-button dropdown-item"
-  title="Imprimer au format PDF"
-  data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="btn__text-container">.pdf</span>
-</button>
-</li>
-      
-  </ul>
-</div>
-
-
-
-
-<button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button"
-  title="Mode plein écran"
-  data-bs-placement="bottom" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-
-
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
-
-
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Recherche" aria-label="Recherche" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
-</div></div>
-      
-    </div>
-  
-</div>
-</div>
-              
-              
-
-<div id="jb-print-docs-body" class="onlyprint">
-    <h1>CHANGELOG</h1>
-    <!-- Table of contents -->
-    <div id="print-main-content">
-        <div id="jb-print-toc">
-            
-            <div>
-                <h2> Contenu </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pavo-cristatus-2025-12-11">2.15.0 - Pavo cristatus 🦚 (2025-12-11)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.14.2 (2024-05-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.14.1 (2024-04-29)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#talpa-europaea-2024-02-28">2.14.0 - Talpa europaea 👓 (2024-02-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.13.4 (2023-12-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2.13.3 (2023-10-17)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2.13.2 (2023-09-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2.13.1 (2023-09-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carpodacus-erythrinus-2023-08-23">2.13.0 - Carpodacus erythrinus 🐤 (2023-08-23)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">2.12.3 (2023-05-09)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">2.12.2 (2023-04-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">2.12.1 (2023-04-11)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cyathea-borbonica-2023-03-27">2.12.0 - Cyathea borbonica 🌴 (2023-03-27)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">2.11.2 (2023-01-19)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">2.11.1 (2023-01-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ilex-aquifolium-2022-12-21">2.11.0 - Ilex aquifolium 🎄 (2022-12-21)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">2.10.4 (2022-11-30)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">2.10.3 (2022-11-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">2.10.2 (2022-11-09)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">2.10.1 (2022-11-08)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alouatta-macconnelli-2022-11-02">2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">2.9.2 (2022-02-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">2.9.1 (2022-01-27)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#actias-luna-2022-01-13">2.9.0 - Actias luna 🦋 (2022-01-13)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">2.8.1 (2021-10-17)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vaccinium-myrtillus-2021-10-18">2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">2.7.5 (2021-07-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">2.7.4 (2021-07-23)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">2.7.3 (2021-07-22)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">2.7.2 (2021-07-05)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">2.7.1 (2021-07-02)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#androsace-delphinensis-2021-06-30">2.7.0 - Androsace delphinensis 🌼 (2021-06-30)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">2.6.2 (2021-02-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">2.6.1 (2021-02-11)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saxifraga-2021-02-04">2.6.0 - Saxifraga 🌸 (2021-02-04)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">2.5.5 (2020-11-19)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">2.5.4 (2020-11-17)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">2.5.3 (2020-11-04)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">2.5.2 (2020-10-13)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">2.5.1 (2020-10-06)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manidae-2020-09-30">2.5.0 - Manidae (2020-09-30)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">2.4.1 (2020-06-25)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fiches-de-metadonnees-2020-06-22">2.4.0 - Fiches de métadonnées (2020-06-22)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">2.3.2 (2020-02-24)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">2.3.1 (2020-02-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#occhab-de-noel-2019-12-27">2.3.0 - Occhab de Noël (2019-12-27)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">2.2.1 (2019-10-09)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-utilisateurs-2019-09-18">2.2.0 - Module utilisateurs (2019-09-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id35">2.1.2 (2019-07-25)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id36">2.1.1 (2019-07-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-validation-2019-06-01">2.1.0 - Module validation (2019-06-01)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id37">2.0.1 (2019-03-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-refonte-2019-02-28">2.0.0 - La refonte (2019-02-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-4-2-2019-01-23">2.0.0-rc.4.2 (2019-01-23)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-4-1-2019-01-21">2.0.0-rc.4.1 (2019-01-21)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-4-2019-01-15">2.0.0-rc.4 (2019-01-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-3-1-2018-10-21">2.0.0-rc.3.1 (2018-10-21)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-3-2018-10-18">2.0.0-rc.3 (2018-10-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-2-2018-09-24">2.0.0-rc.2 (2018-09-24)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-1-2018-09-21">2.0.0-rc.1 (2018-09-21)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta5-2018-07-16">2.0.0.beta5 (2018-07-16)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta4-2018-05-25">2.0.0.beta4 (2018-05-25)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta3-2018-03-28">2.0.0.beta3 (2018-03-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta2-2018-03-16">2.0.0.beta2 (2018-03-16)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta1-2018-02-16">2.0.0.beta1 (2018-02-16)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#versions-1-2014-2018">Versions 1 (2014-2018)</a></li>
-</ul>
-            </nav>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
         </div>
-    </div>
-</div>
-
-              
-                
-<div id="searchbox"></div>
-                <article class="bd-article">
-                  
-  <section id="changelog">
-<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Lien vers cette rubrique">#</a></h1>
+        <article role="main" id="furo-main-content">
+          <section id="changelog">
+<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Lien vers cette rubrique">¶</a></h1>
+<section id="id1">
+<h2>2.15.1 (2025-01-10)<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h2>
+<p><strong>🚀 Nouveautés</strong></p>
+<ul class="simple">
+<li><p>[Métadonnées]Amélioration de la recherche libre des métadonnées en cherchant chaque mot indépendamment (#3295, par &#64;jbrieuclp)</p></li>
+<li><p>[FicheTaxon] Amélioration de l’affichage de la photo du taxon sur les fiches taxon (#3287, par &#64;edelclaux)</p></li>
+<li><p>[Documentation] Conversion du changelog en format markdown (#3297, par &#64;jacquesfize)</p></li>
+<li><p>[Documentation] Complément et mise en forme de la documentation et publication sur Readthedocs (#3306, par &#64;jacquesfize)</p></li>
+<li><p>[Dévelopement] Ajout d’un fichier <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> pour faciliter l’usage des commandes de développement (#3300, par &#64;jacquesfize &amp; &#64;edelclaux)</p></li>
+<li><p>[Installation] Ajout des nouvelles mailles INPN lors de l’installation de GeoNature (#3293, par &#64;jacquesfize)</p></li>
+</ul>
+<p><strong>🐛 Corrections</strong></p>
+<ul class="simple">
+<li><p>[Discussions] Correction de la pagination quand on filtre les discussions de la page d’accueil sur « Mes discussions » (#3288, par &#64;edelclaux)</p></li>
+<li><p>[Discussions] Correction des performances de la requête de récupération des discussions (#3307, par &#64;jacquesfize)</p></li>
+<li><p>[Métadonnées] Correction du nombre de taxons sur les fiches des cadres d’acquisition (#3228, par &#64;jacquesfize)</p></li>
+<li><p>[Authentification] Correction des redirections lors de l’authentification (#3305, par &#64;jacquesfize)</p></li>
+<li><p>[Import] Correction de la selection automatique du JDD lors de l’import depuis la fiche d’un JDD (#3293, par &#64;jacquesfize)</p></li>
+<li><p>[Import] Correction de la mise à jour des mappings publics (#3293, par &#64;jacquesfize)</p></li>
+<li><p>[Import] Correction de la sauvegarde des checkbox dans le mapping des champs (#3293, par &#64;Pierre-Narcisi)</p></li>
+<li><p>[Import] Correction de la sélection des champs <code class="docutils literal notranslate"><span class="pre">auto_generate</span></code> (#3293, par &#64;Pierre-Narcisi)</p></li>
+<li><p>[Import] Correction du template des notifications d’un import terminé (#3310 par &#64;jacquesfize)</p></li>
+</ul>
+</section>
 <section id="pavo-cristatus-2025-12-11">
-<h2>2.15.0 - Pavo cristatus 🦚 (2025-12-11)<a class="headerlink" href="#pavo-cristatus-2025-12-11" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.15.0 - Pavo cristatus 🦚 (2025-12-11)<a class="headerlink" href="#pavo-cristatus-2025-12-11" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>⏩ En bref</strong></p>
 <ul class="simple">
 <li><p>Nouvelle version de TaxHub (2.0.0) intégrée à GeoNature</p></li>
@@ -570,8 +594,8 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 <p><strong>📝 Merci aux contributeurs</strong></p>
 <p>&#64;amandine-sahl, &#64;Pierre-Narcisi, &#64;jacquesfize, &#64;TheoLechemia, &#64;bouttier, &#64;andriacap, &#64;edelclaux, &#64;JulienCorny, &#64;VincentCauchois, &#64;CynthiaBorotPNV, &#64;JeromeMaruejouls, &#64;jbrieuclp, &#64;blaisegeo, &#64;lpofredc, &#64;amillemonchicourt, &#64;ch-cbna</p>
 </section>
-<section id="id1">
-<h2>2.14.2 (2024-05-28)<a class="headerlink" href="#id1" title="Lien vers cette rubrique">#</a></h2>
+<section id="id2">
+<h2>2.14.2 (2024-05-28)<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise à jour de dépendances critiques (#3054)</p></li>
@@ -587,8 +611,8 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 <li><p>[RefGeo] Correction du filtre <code class="docutils literal notranslate"><span class="pre">type_code</span></code> de la route <code class="docutils literal notranslate"><span class="pre">/geo/areas</span></code> (#3057, PnX-SI/RefGeo#26)</p></li>
 </ul>
 </section>
-<section id="id2">
-<h2>2.14.1 (2024-04-29)<a class="headerlink" href="#id2" title="Lien vers cette rubrique">#</a></h2>
+<section id="id3">
+<h2>2.14.1 (2024-04-29)<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>[Synthèse] Possibilité d’ajouter des colonnes supplémentaires à la liste de résultats via le paramètre <code class="docutils literal notranslate"><span class="pre">ADDITIONAL_COLUMNS_FRONTEND</span></code>. Ces champs sont masqués par défaut et controlables depuis l’interface (#2946)</p></li>
@@ -631,7 +655,7 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 </ul>
 </section>
 <section id="talpa-europaea-2024-02-28">
-<h2>2.14.0 - Talpa europaea 👓 (2024-02-28)<a class="headerlink" href="#talpa-europaea-2024-02-28" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.14.0 - Talpa europaea 👓 (2024-02-28)<a class="headerlink" href="#talpa-europaea-2024-02-28" title="Lien vers cette rubrique">¶</a></h2>
 <p>Cette nouvelle version de GeoNature propose de nouvelles fonctionnalités comme le floutage de données sensibles dans le module Synthèse ainsi qu’un système de validation automatique des données basé sur les profils de taxons.<br />
 Elle intégre aussi plusieurs mises à jour des versions des librairies python utilisées comme Flask (3.0) et SQLAlchemy (1.4).</p>
 <p><strong>⚠️ Notes de version</strong></p>
@@ -693,8 +717,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <p><strong>📝 Merci aux contributeurs</strong></p>
 <p>&#64;amandine-sahl, &#64;Pierre-Narcisi, &#64;jacquesfize, &#64;TheoLechemia, &#64;bouttier, &#64;mvergez, &#64;andriacap, &#64;edelclaux, &#64;VincentCauchois, &#64;MoulinZ, &#64;pierre56, &#64;camillemonchicourt</p>
 </section>
-<section id="id3">
-<h2>2.13.4 (2023-12-15)<a class="headerlink" href="#id3" title="Lien vers cette rubrique">#</a></h2>
+<section id="id4">
+<h2>2.13.4 (2023-12-15)<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>[Synthèse] Ajout des colonnes <code class="docutils literal notranslate"><span class="pre">group[1,2,3]_inpn</span></code> à la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code> (#2798, par &#64;andriacap)</p></li>
@@ -713,8 +737,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <li><p>[Documentation] Corrections et compléments de la documentation d’administrateur (#2812, par &#64;marie-laure-cen)</p></li>
 </ul>
 </section>
-<section id="id4">
-<h2>2.13.3 (2023-10-17)<a class="headerlink" href="#id4" title="Lien vers cette rubrique">#</a></h2>
+<section id="id5">
+<h2>2.13.3 (2023-10-17)<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>[Métadonnées] Correction de l’affichage des descriptions dans les fiches des cadres d’acquisition (#2716, par &#64;mvergez)</p></li>
@@ -729,8 +753,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <li><p>Prise en compte du paramètre <code class="docutils literal notranslate"><span class="pre">creatableInModule</span></code> du composant <code class="docutils literal notranslate"><span class="pre">dataset</span></code> dans les dynamic forms (#2736, par &#64;amandine-sahl)</p></li>
 </ul>
 </section>
-<section id="id5">
-<h2>2.13.2 (2023-09-28)<a class="headerlink" href="#id5" title="Lien vers cette rubrique">#</a></h2>
+<section id="id6">
+<h2>2.13.2 (2023-09-28)<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>[Synthèse] Ajout d’un filtre par module de provenance (#2670, par &#64;andriacap)</p></li>
@@ -757,8 +781,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <li><p>Mise à jour de la documentation suite aux évolutions des permissions dans la 2.13.0 (par &#64;camillemonchicourt)</p></li>
 </ul>
 </section>
-<section id="id6">
-<h2>2.13.1 (2023-09-15)<a class="headerlink" href="#id6" title="Lien vers cette rubrique">#</a></h2>
+<section id="id7">
+<h2>2.13.1 (2023-09-15)<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h2>
 <p>L’installation de GeoNature (ainsi que ses 4 modules externes principaux, TaxHub et UsersHub) avec Docker est désormais complet et fonctionnel. Voir la documentation sur https://docs.geonature.fr/installation.html#docker.<br />
 C’est la manière la plus simple de déployer GeoNature avec ses 4 modules externes principaux (Import, Export, Dashboard, Monitoring) mais aussi de les mettre à jour, avec seulement quelques lignes de commandes, à partir des images construites automatiquement et du fichier <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> global, fourni dans le dépôt <a class="reference external" href="https://github.com/PnX-SI/GeoNature-Docker-services">GeoNature-Docker-services</a>.</p>
 <p><strong>🚀 Nouveautés</strong></p>
@@ -788,7 +812,7 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 </ul>
 </section>
 <section id="carpodacus-erythrinus-2023-08-23">
-<h2>2.13.0 - <a class="reference external" href="https://www.ecrins-parcnational.fr/breve/roselin-gondouins">Carpodacus erythrinus</a> 🐤 (2023-08-23)<a class="headerlink" href="#carpodacus-erythrinus-2023-08-23" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.13.0 - <a class="reference external" href="https://www.ecrins-parcnational.fr/breve/roselin-gondouins">Carpodacus erythrinus</a> 🐤 (2023-08-23)<a class="headerlink" href="#carpodacus-erythrinus-2023-08-23" title="Lien vers cette rubrique">¶</a></h2>
 <ul class="simple">
 <li><p>Révision globale des permissions pour pouvoir leur associer d’autres types de filtres (sensibilité notamment), les simplifier et clarifier en supprimant l’héritage et en définissant les permissions disponibles pour chaque module.</p></li>
 <li><p>Possibilité de filtrer les données dans la Synthèse selon leur sensibilité, mais sans floutage pour le moment (à venir), en affichant ou non les données sensibles selon les permissions de l’utilisateur.</p></li>
@@ -806,7 +830,7 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Définition des permissions disponibles dans chaque module dans la nouvelle table <code class="docutils literal notranslate"><span class="pre">gn_permissions.t_permissions_available</span></code>, pour ne proposer que des permissions qui ont un usage quand on ajoute ou modifie les permissions d’un utilisateur (#2489)</p></li>
 <li><p>Refonte de l’interface d’administration des permissions (Flask-admin) ne proposant que les permissions disponibles, affichant les permissions explicites d’un utilisateur et calculant celles effectives provenant d’un groupe auquel il appartient (#2605)</p></li>
 <li><p>Optimisation et agrégation des permissions</p></li>
-<li><p>[Synthèse] Ajout d’un filtre sur la sensibilité des données, permettant de les afficher et de les exporter ou non à un groupe ou utilisateurs (pas de floutage pour le moment)  (#2504 / #2584)</p></li>
+<li><p>[Synthèse] Ajout d’un filtre sur la sensibilité des données, permettant de les afficher et de les exporter ou non à un groupe ou utilisateurs (pas de floutage pour le moment) (#2504 / #2584)</p></li>
 <li><p>Ajout de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">permissions</span> <span class="pre">supergrant</span></code> permettant d’ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)</p></li>
 <li><p>Ajout de la vérification des permissions manquantes sur différentes routes (#2542 / #1863)</p></li>
 </ul>
@@ -865,8 +889,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <p><strong>📝 Merci aux contributeurs</strong></p>
 <p>&#64;bouttier / &#64;TheoLechemia / &#64;VincentCauchois / &#64;Pierre-Narcisi / &#64;joelclems / &#64;andriacap / &#64;mvergez / &#64;JulienCorny / &#64;MathRdt / &#64;DonovanMaillard / &#64;camillemonchicourt</p>
 </section>
-<section id="id7">
-<h2>2.12.3 (2023-05-09)<a class="headerlink" href="#id7" title="Lien vers cette rubrique">#</a></h2>
+<section id="id8">
+<h2>2.12.3 (2023-05-09)<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>[Synthèse] Correction du filtre des observations épinglées pour ne remonter que celles de l’utilisateur connecté (#2507 par &#64;mvergez)</p></li>
@@ -887,8 +911,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <p>Si vous utilisez la page de maintenance, celle-ci a été revue, <a class="reference external" href="https://docs.geonature.fr/installation.html#configuration-apache">référez vous à la documentation</a> afin de la mettre à jour.</p>
 <p>Si vous utilisiez des champs additionnels avec des checkbox, lors de leur changement de type (recommandé dans les notes de version de la 2.12.0) il est important que les valeurs du champ <code class="docutils literal notranslate"><span class="pre">field_values</span></code> continue à avoir des « string » dans la clé values : [{« label »: « Un », « value »: « 1 »}] sans quoi il y aura des problème à l’édition. Pour les nouveaux champs additionnels, il est cependant bien possible de mettre des entiers dans la clé <code class="docutils literal notranslate"><span class="pre">value</span></code> [{« label »: « Un », « value »: 1}]</p>
 </section>
-<section id="id8">
-<h2>2.12.2 (2023-04-18)<a class="headerlink" href="#id8" title="Lien vers cette rubrique">#</a></h2>
+<section id="id9">
+<h2>2.12.2 (2023-04-18)<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Synthèse : ajout d’un filtre sur les observations avec ou sans commentaire (#2469, par &#64;mvergez)</p></li>
@@ -916,8 +940,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Login : désactivation du spinner après une tentative de login échouée</p></li>
 </ul>
 </section>
-<section id="id9">
-<h2>2.12.1 (2023-04-11)<a class="headerlink" href="#id9" title="Lien vers cette rubrique">#</a></h2>
+<section id="id10">
+<h2>2.12.1 (2023-04-11)<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise à jour de quelques dépendances python (#2438, par &#64;MathRdt)</p></li>
@@ -935,7 +959,7 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 </ul>
 </section>
 <section id="cyathea-borbonica-2023-03-27">
-<h2>2.12.0 - Cyathea borbonica 🌴 (2023-03-27)<a class="headerlink" href="#cyathea-borbonica-2023-03-27" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.12.0 - Cyathea borbonica 🌴 (2023-03-27)<a class="headerlink" href="#cyathea-borbonica-2023-03-27" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>⏩ En bref</strong></p>
 <ul class="simple">
 <li><p>Affichage agrégé des observations dans la Synthèse (performances et lisibilité) (#1847 et #1878)</p></li>
@@ -1133,16 +1157,16 @@ Module de référence pour les développements et documentation associée (#2331
 <p><strong>📝 Merci aux contributeurs</strong></p>
 <p>&#64;ch-cbna / &#64;bouttier / &#64;TheoLechemia / &#64;jpm-cbna / &#64;bastyen / &#64;Gaetanbrl / &#64;VincentCauchois / &#64;joelclems / &#64;amandine-sahl / &#64;andriacap / &#64;mvergez / &#64;DonovanMaillard / &#64;dece / &#64;lpofredc / &#64;MathRdt / &#64;gildeluermoz / &#64;maximetoma / &#64;pierre56 / &#64;cecchi-a / &#64;jbrieuclp / &#64;camillemonchicourt</p>
 </section>
-<section id="id10">
-<h2>2.11.2 (2023-01-19)<a class="headerlink" href="#id10" title="Lien vers cette rubrique">#</a></h2>
+<section id="id11">
+<h2>2.11.2 (2023-01-19)<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction d’un import manquant dans un fichier de migration des données d’exemple d’Occtax (#2285)</p></li>
 <li><p>Correction d’un problème de l’installation globale en mode développement</p></li>
 </ul>
 </section>
-<section id="id11">
-<h2>2.11.1 (2023-01-18)<a class="headerlink" href="#id11" title="Lien vers cette rubrique">#</a></h2>
+<section id="id12">
+<h2>2.11.1 (2023-01-18)<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction de la documentation de la sensibilité (#2234)</p></li>
@@ -1152,7 +1176,7 @@ Module de référence pour les développements et documentation associée (#2331
 </ul>
 </section>
 <section id="ilex-aquifolium-2022-12-21">
-<h2>2.11.0 - Ilex aquifolium 🎄 (2022-12-21)<a class="headerlink" href="#ilex-aquifolium-2022-12-21" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.11.0 - Ilex aquifolium 🎄 (2022-12-21)<a class="headerlink" href="#ilex-aquifolium-2022-12-21" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>⏩ En bref</strong></p>
 <ul class="simple">
 <li><p>Utilisation de la BDC statuts dans la Synthèse pour les filtres et infos sur les statuts des espèces</p></li>
@@ -1328,8 +1352,8 @@ Il n’est pas nécessaire de lancer cette commande manuellement pour les module
 <p><strong>📝 Merci aux contributeurs</strong></p>
 <p>&#64;jpm-cbna / &#64;pierrejego / &#64;Gaetanbrl / &#64;amandine-sahl / &#64;VincentCauchois / &#64;antoinececchimnhn / &#64;metourneau / &#64;bouttier / &#64;TheoLechemia / &#64;camillemonchicourt</p>
 </section>
-<section id="id12">
-<h2>2.10.4 (2022-11-30)<a class="headerlink" href="#id12" title="Lien vers cette rubrique">#</a></h2>
+<section id="id13">
+<h2>2.10.4 (2022-11-30)<a class="headerlink" href="#id13" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Mise à jour du RefGeo en version 1.2.1 afin de corriger une
@@ -1345,8 +1369,8 @@ corriger un problème aléatoire lors du passage des migrations
 (#2178)</p></li>
 </ul>
 </section>
-<section id="id13">
-<h2>2.10.3 (2022-11-15)<a class="headerlink" href="#id13" title="Lien vers cette rubrique">#</a></h2>
+<section id="id14">
+<h2>2.10.3 (2022-11-15)<a class="headerlink" href="#id14" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Optimisation d’une migration Occtax particulièrement lente en
@@ -1360,8 +1384,8 @@ désactivant temporairement les triggers (#2138)</p></li>
 (#2136)</p></li>
 </ul>
 </section>
-<section id="id14">
-<h2>2.10.2 (2022-11-09)<a class="headerlink" href="#id14" title="Lien vers cette rubrique">#</a></h2>
+<section id="id15">
+<h2>2.10.2 (2022-11-09)<a class="headerlink" href="#id15" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Documentation de la fonctionnalité de duplication d’Occtax</p></li>
@@ -1374,8 +1398,8 @@ frontend des modules</p></li>
 bonne source</p></li>
 </ul>
 </section>
-<section id="id15">
-<h2>2.10.1 (2022-11-08)<a class="headerlink" href="#id15" title="Lien vers cette rubrique">#</a></h2>
+<section id="id16">
+<h2>2.10.1 (2022-11-08)<a class="headerlink" href="#id16" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout du paramètre de configuration <code class="docutils literal notranslate"><span class="pre">DISABLED_MODULES</span></code></p></li>
@@ -1403,7 +1427,7 @@ suivant les notes de version de la 2.10.0, en vous aidant
 </ul>
 </section>
 <section id="alouatta-macconnelli-2022-11-02">
-<h2>2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)<a class="headerlink" href="#alouatta-macconnelli-2022-11-02" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)<a class="headerlink" href="#alouatta-macconnelli-2022-11-02" title="Lien vers cette rubrique">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Angular 12, tests automatisés frontend et backend</strong></p></li>
 <li><p><strong>Discussions, signalement, partage, épinglage d’une occurrence</strong></p></li>
@@ -1523,7 +1547,7 @@ dans la table <code class="docutils literal notranslate"><span class="pre">gn_pr
 défaut définies au niveau du règne dans la table
 <code class="docutils literal notranslate"><span class="pre">gn_profiles.cor_taxons_parameters</span></code></p></li>
 <li><p>Ajout d’une couche d’objets linéaires dans le référentiel
-géographique (<a class="github reference external" href="https://github.com/PnX-SI/RefGeo/pull/4">PnX-SI/RefGeo#4</a>)</p></li>
+géographique (<a class="reference external" href="https://github.com/PnX-SI/RefGeo/pull/4">https://github.com/PnX-SI/RefGeo/pull/4</a>)</p></li>
 <li><p>Installation de la version 15 de Taxref par défaut lors des
 nouvelles installations</p></li>
 <li><p>Possibilité de limiter la recherche de lieux à un ou plusieurs pays
@@ -1660,8 +1684,8 @@ de l’import du module <code class="docutils literal notranslate"><span class="
 &#64;jbrieuclp / &#64;amandine-sahl / &#64;joelclems / &#64;metourneau /
 &#64;gildeluermoz / &#64;camillemonchicourt</p>
 </section>
-<section id="id16">
-<h2>2.9.2 (2022-02-15)<a class="headerlink" href="#id16" title="Lien vers cette rubrique">#</a></h2>
+<section id="id17">
+<h2>2.9.2 (2022-02-15)<a class="headerlink" href="#id17" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Optimisation du nombre d’informations renvoyées par l’API pour les
@@ -1725,8 +1749,8 @@ sensibilité ; vous pouvez éviter ceci avec
 </li>
 </ul>
 </section>
-<section id="id17">
-<h2>2.9.1 (2022-01-27)<a class="headerlink" href="#id17" title="Lien vers cette rubrique">#</a></h2>
+<section id="id18">
+<h2>2.9.1 (2022-01-27)<a class="headerlink" href="#id18" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Utilisation du paramètre <code class="docutils literal notranslate"><span class="pre">page</span></code> de Flask à la place du paramètre
@@ -1758,7 +1782,7 @@ TaxHub lorsque celui-ci est mal configuré (#1438, #1616)</p></li>
 </ul>
 </section>
 <section id="actias-luna-2022-01-13">
-<h2>2.9.0 - Actias luna 🦋 (2022-01-13)<a class="headerlink" href="#actias-luna-2022-01-13" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.9.0 - Actias luna 🦋 (2022-01-13)<a class="headerlink" href="#actias-luna-2022-01-13" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Profils de taxons</strong></p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -1772,7 +1796,7 @@ observation, nombre de données valides, phénologie) (#917 par
 <li><p>Création d’un schéma <code class="docutils literal notranslate"><span class="pre">gn_profiles</span></code> dans la BDD contenant les
 tables, les vues, les fonctions et les paramètres de calcul des
 profils de taxons
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/data/core/profiles.sql">PnX-SI/GeoNature</a>)
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/data/core/profiles.sql">https://github.com/PnX-SI/GeoNature/blob/develop/data/core/profiles.sql</a>)
 (#1103)</p></li>
 <li><p>Mise en place de l’API des profils de taxons (#1104)</p></li>
 <li><p>Affichage des scores de chaque observation par rapport au profil
@@ -1870,7 +1894,7 @@ des formulaires (#616 / #1285 par &#64;jbrieuclp)</p></li>
 automatiquement les tests backend et leur couverture de code avec
 GitHub Actions, à chaque commit ou pull request dans les branches
 <code class="docutils literal notranslate"><span class="pre">develop</span></code> ou <code class="docutils literal notranslate"><span class="pre">master</span></code> (#1568,
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/actions">PnX-SI/GeoNature</a>)</p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/actions">https://github.com/PnX-SI/GeoNature/actions</a>)</p></li>
 <li><p>[VALIDATION] Suppression des vues SQL et optimisation des routes</p></li>
 <li><p>Génération automatique et aléatoire du paramètre <code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code></p></li>
 <li><p>[SYNTHESE] Remplacement de <code class="docutils literal notranslate"><span class="pre">as_literal</span></code> par <code class="docutils literal notranslate"><span class="pre">json.loads</span></code>, plus
@@ -1963,8 +1987,8 @@ Monitoring dans leurs dernières versions compatibles avec le version
 2.9.0 de GeoNature</p></li>
 </ul>
 </section>
-<section id="id18">
-<h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id18" title="Lien vers cette rubrique">#</a></h2>
+<section id="id19">
+<h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id19" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout de l’indication du département au formulaire des communes
@@ -1980,7 +2004,7 @@ nomenclatures (#1481)</p></li>
 </ul>
 </section>
 <section id="vaccinium-myrtillus-2021-10-18">
-<h2>2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)<a class="headerlink" href="#vaccinium-myrtillus-2021-10-18" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)<a class="headerlink" href="#vaccinium-myrtillus-2021-10-18" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Gestion de la base de données avec Alembic</strong></p>
 <p>⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous
 utilisez disposent d’une version compatible avec la 2.8.0, suite au
@@ -2168,8 +2192,8 @@ GeoNature</a>.</p>
 </li>
 </ul>
 </section>
-<section id="id19">
-<h2>2.7.5 (2021-07-28)<a class="headerlink" href="#id19" title="Lien vers cette rubrique">#</a></h2>
+<section id="id20">
+<h2>2.7.5 (2021-07-28)<a class="headerlink" href="#id20" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Compatibilité avec Occtax-mobile 1.3. Possibilité d’ajouter la
@@ -2183,8 +2207,8 @@ champs renvoyés par l’API</p></li>
 notes des versions intermédiaires</p></li>
 </ul>
 </section>
-<section id="id20">
-<h2>2.7.4 (2021-07-23)<a class="headerlink" href="#id20" title="Lien vers cette rubrique">#</a></h2>
+<section id="id21">
+<h2>2.7.4 (2021-07-23)<a class="headerlink" href="#id21" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction d’un import manquant entrainant un problème de
@@ -2197,8 +2221,8 @@ compilation du frontend (#1424)</p></li>
 notes des versions intermédiaires</p></li>
 </ul>
 </section>
-<section id="id21">
-<h2>2.7.3 (2021-07-22)<a class="headerlink" href="#id21" title="Lien vers cette rubrique">#</a></h2>
+<section id="id22">
+<h2>2.7.3 (2021-07-22)<a class="headerlink" href="#id22" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Métadonnées : ajout des paramètres <code class="docutils literal notranslate"><span class="pre">CD_NOMENCLATURE_ROLE_TYPE_DS</span></code> et
@@ -2228,8 +2252,8 @@ production)</p></li>
 notes des versions intermédiaires</p></li>
 </ul>
 </section>
-<section id="id22">
-<h2>2.7.2 (2021-07-05)<a class="headerlink" href="#id22" title="Lien vers cette rubrique">#</a></h2>
+<section id="id23">
+<h2>2.7.2 (2021-07-05)<a class="headerlink" href="#id23" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>OCCTAX : correction de la vérification du CRUVED (#1413)</p></li>
@@ -2246,11 +2270,11 @@ n’étaient pas supportés</p></li>
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
 notes des versions intermédiaires</p></li>
 <li><p>Exécuter le script SQL de mise à jour de la BDD de GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.7.1to2.7.2.sql">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.7.1to2.7.2.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.7.1to2.7.2.sql</a>)</p></li>
 </ul>
 </section>
-<section id="id23">
-<h2>2.7.1 (2021-07-02)<a class="headerlink" href="#id23" title="Lien vers cette rubrique">#</a></h2>
+<section id="id24">
+<h2>2.7.1 (2021-07-02)<a class="headerlink" href="#id24" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Installation des dépendances javascript des modules lors de la
@@ -2268,7 +2292,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="androsace-delphinensis-2021-06-30">
-<h2>2.7.0 - Androsace delphinensis 🌼 (2021-06-30)<a class="headerlink" href="#androsace-delphinensis-2021-06-30" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.7.0 - Androsace delphinensis 🌼 (2021-06-30)<a class="headerlink" href="#androsace-delphinensis-2021-06-30" title="Lien vers cette rubrique">¶</a></h2>
 <p>Nécessite la version 1.8.x de TaxHub.</p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -2414,7 +2438,7 @@ table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_
 <p>Si vous mettez à jour GeoNature :</p>
 <ul>
 <li><p>Mettez à jour TaxHub 1.8.x avant d’effectuer la mise à jour de
-GeoNature : <a class="github reference external" href="https://github.com/PnX-SI/TaxHub/releases">PnX-SI/TaxHub</a></p></li>
+GeoNature : <a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases">https://github.com/PnX-SI/TaxHub/releases</a></p></li>
 <li><p>Si vous utilisez le module Monitoring, mettez le à jour en version
 0.2.4 minimum avant de mettre à jour GeoNature</p></li>
 <li><p>Si vous n’aviez pas renseigné de valeur pour le paramètre
@@ -2427,7 +2451,7 @@ dans la configuration du module</p></li>
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
 notes des versions intermédiaires</p></li>
 <li><p>Exécuter le script SQL de mise à jour de la BDD de GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.7.0.sql">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.7.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.7.0.sql</a>)</p></li>
 <li><p>Le script SQL de mise à jour va supprimer et recréer les vues
 <code class="docutils literal notranslate"><span class="pre">pr_occtax.v_export_occtax</span></code> et <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_export</span></code>
 pour y intégrer les champs additionnels. Si vous aviez modifié ces
@@ -2460,8 +2484,8 @@ sudo<span class="w"> </span>supervisorctl<span class="w"> </span>reload
 </li>
 </ul>
 </section>
-<section id="id24">
-<h2>2.6.2 (2021-02-15)<a class="headerlink" href="#id24" title="Lien vers cette rubrique">#</a></h2>
+<section id="id25">
+<h2>2.6.2 (2021-02-15)<a class="headerlink" href="#id25" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Metadonnées : correction d’un bug sur la fiche JDD si le module
@@ -2472,8 +2496,8 @@ fiche des cadres d’acquisition</p></li>
 casse</p></li>
 </ul>
 </section>
-<section id="id25">
-<h2>2.6.1 (2021-02-11)<a class="headerlink" href="#id25" title="Lien vers cette rubrique">#</a></h2>
+<section id="id26">
+<h2>2.6.1 (2021-02-11)<a class="headerlink" href="#id26" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction de la fonction
@@ -2504,7 +2528,7 @@ https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to
 </ul>
 </section>
 <section id="saxifraga-2021-02-04">
-<h2>2.6.0 - Saxifraga 🌸 (2021-02-04)<a class="headerlink" href="#saxifraga-2021-02-04" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.6.0 - Saxifraga 🌸 (2021-02-04)<a class="headerlink" href="#saxifraga-2021-02-04" title="Lien vers cette rubrique">¶</a></h2>
 <p>Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10
 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les
 triggers déclenchés « on each statement », plus performants.</p>
@@ -2645,7 +2669,7 @@ la table <code class="docutils literal notranslate"><span class="pre">gn_synthes
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
 notes des versions intermédiaires</p></li>
 <li><p>Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0.sql">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0.sql</a>)</p></li>
 <li><p>Toutes les nouvelles données intégrées dans le Synthèse auront leur
 niveau de sensibilité et de diffusion calculés automatiquement. Vous
 pouvez ajouter ou désactiver des règles de sensibilité dans la table
@@ -2654,14 +2678,14 @@ pouvez ajouter ou désactiver des règles de sensibilité dans la table
 le niveau de sensibilité et de diffusion de toutes les données déjà
 présentes dans la Synthèse, éventuellement en l’adaptant à votre
 contexte :
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0-update-sensitivity.sql">PnX-SI/GeoNature</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0-update-sensitivity.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0-update-sensitivity.sql</a></p></li>
 <li><p>Mettez à jour de la longueur du champs
 <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese.reference_biblio</span></code> à 5000 charactères. Exécutez
 la commande suivante dans la console :
 <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">-u</span> <span class="pre">postgres</span> <span class="pre">psql</span> <span class="pre">-d</span> <span class="pre">geonature2db</span> <span class="pre">-c</span> <span class="pre">&quot;UPDATE</span> <span class="pre">pg_attribute</span> <span class="pre">SET</span> <span class="pre">atttypmod</span> <span class="pre">=</span> <span class="pre">5004</span> <span class="pre">WHERE</span> <span class="pre">attrelid</span> <span class="pre">=</span> <span class="pre">'gn_synthese.synthese'::regclass</span> <span class="pre">AND</span> <span class="pre">attname</span> <span class="pre">=</span> <span class="pre">'reference_biblio';&quot;</span></code></p></li>
 <li><p>Exécuter le script de mise à jour de la BDD du sous-module de
 nomenclature :
-<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql">PnX-SI/Nomenclature-api-module</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql</a></p></li>
 <li><p>Suivez la procédure classique de mise à jour de GeoNature
 (<a class="reference external" href="http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application">http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application</a>)</p></li>
 <li><p>Si vous utilisez Occtax-mobile, vous pouvez modifier la valeur du
@@ -2672,8 +2696,8 @@ les unités géographiques (mailles de 5km par défaut)</p></li>
 version 1.1.1</p></li>
 </ul>
 </section>
-<section id="id26">
-<h2>2.5.5 (2020-11-19)<a class="headerlink" href="#id26" title="Lien vers cette rubrique">#</a></h2>
+<section id="id27">
+<h2>2.5.5 (2020-11-19)<a class="headerlink" href="#id27" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un composant fil d’ariane (#1143)</p></li>
@@ -2693,8 +2717,8 @@ dans le script <code class="docutils literal notranslate"><span class="pre">migr
 lorsqu’on est connecté via le CAS INPN</p></li>
 </ul>
 </section>
-<section id="id27">
-<h2>2.5.4 (2020-11-17)<a class="headerlink" href="#id27" title="Lien vers cette rubrique">#</a></h2>
+<section id="id28">
+<h2>2.5.4 (2020-11-17)<a class="headerlink" href="#id28" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout de scripts <code class="docutils literal notranslate"><span class="pre">sql</span></code> et <code class="docutils literal notranslate"><span class="pre">sh</span></code> de restauration des medias dans
@@ -2730,8 +2754,8 @@ supprimant le préfixe <code class="docutils literal notranslate"><span class="p
 </li>
 </ul>
 </section>
-<section id="id28">
-<h2>2.5.3 (2020-11-04)<a class="headerlink" href="#id28" title="Lien vers cette rubrique">#</a></h2>
+<section id="id29">
+<h2>2.5.3 (2020-11-04)<a class="headerlink" href="#id29" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise en place de l’héritage du CRUVED au niveau des objets des
@@ -2808,7 +2832,7 @@ aviez mis des droits R=0 pour un groupe au module ’ADMIN’, les
 utilisateurs de ce groupe ne pourront pas accéder aux sous-modules
 ’permissions’ et ’nomenclatures’.</p></li>
 <li><p>Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql">PnX-SI/GeoNature</a>).
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql</a>).
 Attention, si vous avez customisé les vues des exports Occtax et
 Synthèse, elles seront supprimées et recrées automatiquement par le
 script SQL de mise à jour de la BDD de GeoNature pour intégrer leurs
@@ -2826,8 +2850,8 @@ paramètre <code class="docutils literal notranslate"><span class="pre">EXPORT_C
 de Taxref (11.0 ou 13.0).</p></li>
 </ul>
 </section>
-<section id="id29">
-<h2>2.5.2 (2020-10-13)<a class="headerlink" href="#id29" title="Lien vers cette rubrique">#</a></h2>
+<section id="id30">
+<h2>2.5.2 (2020-10-13)<a class="headerlink" href="#id30" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Occtax : correction du problème d’installation du module dans le
@@ -2842,11 +2866,11 @@ fichier <code class="docutils literal notranslate"><span class="pre">schemas.py<
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
 notes des versions intermédiaires</p></li>
 <li><p>Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.1to2.5.2.sql">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.1to2.5.2.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.1to2.5.2.sql</a>)</p></li>
 </ul>
 </section>
-<section id="id30">
-<h2>2.5.1 (2020-10-06)<a class="headerlink" href="#id30" title="Lien vers cette rubrique">#</a></h2>
+<section id="id31">
+<h2>2.5.1 (2020-10-06)<a class="headerlink" href="#id31" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un paramètre <code class="docutils literal notranslate"><span class="pre">DISPLAY_EMAIL_INFO_OBS</span></code> définissant si les
@@ -2876,7 +2900,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="manidae-2020-09-30">
-<h2>2.5.0 - Manidae (2020-09-30)<a class="headerlink" href="#manidae-2020-09-30" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.5.0 - Manidae (2020-09-30)<a class="headerlink" href="#manidae-2020-09-30" title="Lien vers cette rubrique">¶</a></h2>
 <p>Occtax v2 et médias</p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -3034,9 +3058,9 @@ la récupération des critères de sensibilité au niveau de la fonction
 <ul class="simple">
 <li><p>Nomenclatures : Commencer par exécuter le script SQL de mise à jour
 du schéma <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures</span></code> de la BDD
-(<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql">PnX-SI/Nomenclature-api-module</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql</a>)</p></li>
 <li><p>Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql">PnX-SI/GeoNature</a>).
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql</a>).
 Attention, si vous avez customisé les vues des exports Occtax et
 Synthèse, elles seront supprimées et recrées automatiquement par le
 script SQL de mise à jour de la BDD de GeoNature pour s’adapter aux
@@ -3058,7 +3082,7 @@ n’est plus supportée. Seules les versions 3.6 et + le sont. Si vous
 êtes encore sur Debian 9 (fourni par défaut avec Python 3.5),
 veuillez suivre les instructions de mise à jour de Python sur cette
 version
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9">PnX-SI/GeoNature</a>).
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9">https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9</a>).
 Il est cependant plutôt conseillé de passer sur Debian 10 pour
 rester à jour sur des versions maintenues</p></li>
 <li><p>Suivez la procédure classique de mise à jour de GeoNature
@@ -3076,8 +3100,8 @@ version 1.1.0 minimum d’Occtax-mobile (du fait de la mise du
 standard Occurrence de taxons)</p></li>
 </ul>
 </section>
-<section id="id31">
-<h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id31" title="Lien vers cette rubrique">#</a></h2>
+<section id="id32">
+<h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id32" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Occurrences sans géométrie précise : Ajout d’un champs
@@ -3107,18 +3131,18 @@ des commandes d’un module</p></li>
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
 notes des versions intermédiaires</p></li>
 <li><p>Exécuter le script SQL de mise à jour de la BDD de GeoNature :
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1.sql">PnX-SI/GeoNature</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1.sql</a></p></li>
 <li><p>Suivez la procédure classique de mise à jour de GeoNature
 (<a class="reference external" href="http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application">http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application</a>)</p></li>
 <li><p>Vous pouvez alors lancer le script d’insertion des départements de
 France métropole dans le réferentiel géographique (optionnel) :
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh">PnX-SI/GeoNature</a>.
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh</a>.
 Vérifier le déroulement de l’import dans le fichier
 <code class="docutils literal notranslate"><span class="pre">var/log/insert_departements.log</span></code></p></li>
 </ul>
 </section>
 <section id="fiches-de-metadonnees-2020-06-22">
-<h2>2.4.0 - Fiches de métadonnées (2020-06-22)<a class="headerlink" href="#fiches-de-metadonnees-2020-06-22" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.4.0 - Fiches de métadonnées (2020-06-22)<a class="headerlink" href="#fiches-de-metadonnees-2020-06-22" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Métadonnées : Ajout d’une fiche pour chaque jeu de données et
@@ -3235,16 +3259,16 @@ par &#64;jbrieuclp)</p></li>
 version 13. Il est aussi possible de le faire en différé, plus tard</p></li>
 <li><p>Vous pouvez mettre à jour UsersHub en version 2.1.2</p></li>
 <li><p>Exécuter le script SQL de mise à jour des nomenclatures
-(<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql">PnX-SI/Nomenclature-api-module</a>).</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql</a>).</p></li>
 <li><p>Si vous avez mis à jour Taxref en version 13, répercutez les
 évolutions au niveau des nomenclatures avec le script SQL
-<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql">PnX-SI/Nomenclature-api-module</a>.
+<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql</a>.
 Sinon vous devrez l’exécuter plus tard, après avoir mis à jour
 Taxref en version 13. Après avoir mis à jour Taxref en version 13,
 pensez à mettre à jour le paramètre <code class="docutils literal notranslate"><span class="pre">taxref_version</span></code> dans la table
 <code class="docutils literal notranslate"><span class="pre">gn_commons.t_parameters</span></code>.</p></li>
 <li><p>Exécuter le script SQL de mise à jour de la BDD de GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql</a>)</p></li>
 <li><p>Installer les dépendances de la librairie Python WeasyPrint :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libcairo2
 sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libpango-1.0-0
@@ -3282,8 +3306,8 @@ d’observations sans géométrie (#719) :</p>
 (<a class="reference external" href="http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application">http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application</a>)</p></li>
 </ul>
 </section>
-<section id="id32">
-<h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id32" title="Lien vers cette rubrique">#</a></h2>
+<section id="id33">
+<h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id33" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Possibilité de charger les commandes d’un module dans les commandes
@@ -3299,16 +3323,16 @@ d’accueil en leur appliquant le CRUVED (#752)</p></li>
 compatibilité avec la version 1.0.0 du module d’export</p></li>
 </ul>
 </section>
-<section id="id33">
-<h2>2.3.1 (2020-02-18)<a class="headerlink" href="#id33" title="Lien vers cette rubrique">#</a></h2>
+<section id="id34">
+<h2>2.3.1 (2020-02-18)<a class="headerlink" href="#id34" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Installation globale : Compatibilité Debian 10 (PostgreSQL 11,
 PostGIS 2.5)</p></li>
 <li><p>Installation globale : Passage à Taxhub 1.6.4 et UsersHub 2.1.1</p></li>
 <li><p>Utilisation généralisée des nouvelles librairies externalisées de
-sérialisation (<a class="github reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy">PnX-SI/Utils-Flask-SQLAlchemy</a> et
-<a class="github reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo">PnX-SI/Utils-Flask-SQLAlchemy-Geo</a>)</p></li>
+sérialisation (<a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy">https://github.com/PnX-SI/Utils-Flask-SQLAlchemy</a> et
+<a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo">https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo</a>)</p></li>
 <li><p>Possibilité de régler le timeout de Gunicorn pour éviter le plantage
 lors de requêtes longues</p></li>
 <li><p>Ne pas zoomer sur les observations au premier chargement de la carte
@@ -3352,7 +3376,7 @@ augmenter, si vous avez déjà rencontré des problèmes de timeout.</p></li>
 </ul>
 </section>
 <section id="occhab-de-noel-2019-12-27">
-<h2>2.3.0 - Occhab de Noël (2019-12-27)<a class="headerlink" href="#occhab-de-noel-2019-12-27" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.3.0 - Occhab de Noël (2019-12-27)<a class="headerlink" href="#occhab-de-noel-2019-12-27" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Développement du module Occhab (Occurrences d’habitats) basé sur
@@ -3383,7 +3407,7 @@ organisme)</p></li>
 </ul>
 </li>
 <li><p>Création d’un sous-module autonome ou intégré pour gérer l’API
-d’Habref (<a class="github reference external" href="https://github.com/PnX-SI/Habref-api-module">PnX-SI/Habref-api-module</a>) pour :</p>
+d’Habref (<a class="reference external" href="https://github.com/PnX-SI/Habref-api-module">https://github.com/PnX-SI/Habref-api-module</a>) pour :</p>
 <ul>
 <li><p>Rechercher un habitat dans Habref (avec usage du trigramme pour
 la pertinence du résultat)</p></li>
@@ -3396,7 +3420,7 @@ d’habitats)</p></li>
 </ul>
 </li>
 <li><p>Mise à jour du module des nomenclatures
-(<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">PnX-SI/Nomenclature-api-module</a>) en version
+(<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">https://github.com/PnX-SI/Nomenclature-api-module</a>) en version
 1.3.2 incluant notamment :</p>
 <ul>
 <li><p>Ajout de nomenclatures SINP concernant les habitats</p></li>
@@ -3418,8 +3442,8 @@ et ajout d’index dans Occtax (par &#64;gildeluermoz) (#560)</p></li>
 <li><p>Partage de scripts de sauvegarde de l’application et de la BDD dans
 <code class="docutils literal notranslate"><span class="pre">data/scripts/backup/</span></code> (par &#64;gildeluermoz)</p></li>
 <li><p>Externalisation des librairies d’outils Flask et SQLAlchemy
-(<a class="github reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy">PnX-SI/Utils-Flask-SQLAlchemy</a> et
-<a class="github reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo">PnX-SI/Utils-Flask-SQLAlchemy-Geo</a>) pour pouvoir
+(<a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy">https://github.com/PnX-SI/Utils-Flask-SQLAlchemy</a> et
+<a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo">https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo</a>) pour pouvoir
 les factoriser et les utiliser dans d’autres applications. Cela
 améliore aussi les performances des jointures.</p></li>
 <li><p>SYNTHESE : Ajout d’un export de la liste des espèces (#805)</p></li>
@@ -3528,13 +3552,13 @@ deactivate
 </li>
 <li><p>Lors de la migration (<code class="docutils literal notranslate"><span class="pre">/data/migrations/2.2.1to2.3.0.sql</span></code>), tous les
 JDD actifs sont associés par défaut au module Occtax
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22">PnX-SI/GeoNature</a>).
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22</a>).
 A chacun d’adapter si besoin, en en retirant certains. Pour
 utiliser le module Occhab, vous devez y associer au moins un JDD.</p></li>
 </ul>
 </section>
-<section id="id34">
-<h2>2.2.1 (2019-10-09)<a class="headerlink" href="#id34" title="Lien vers cette rubrique">#</a></h2>
+<section id="id35">
+<h2>2.2.1 (2019-10-09)<a class="headerlink" href="#id35" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>La route de changement de mot de passe était désactivée par le
@@ -3550,7 +3574,7 @@ pas de JDD pour des raisons de droit (#743)</p></li>
 </ul>
 </section>
 <section id="module-utilisateurs-2019-09-18">
-<h2>2.2.0 - Module utilisateurs (2019-09-18)<a class="headerlink" href="#module-utilisateurs-2019-09-18" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.2.0 - Module utilisateurs (2019-09-18)<a class="headerlink" href="#module-utilisateurs-2019-09-18" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’interfaces et de paramètres de création de compte, de
@@ -3603,7 +3627,7 @@ des listes de taxons et de sauvegarde et restauration de la BDD
 <p><strong>⚠️ Notes de version</strong></p>
 <ul class="simple">
 <li><p>Passer le script de migration suivant:
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.1.2to2.2.0.sql">PnX-SI/GeoNature</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.1.2to2.2.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.1.2to2.2.0.sql</a></p></li>
 <li><p>Suivez ensuite la procédure classique de mise à jour de GeoNature
 (<a class="reference external" href="http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application">http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application</a>)</p></li>
 <li><p>Si vous souhaitez activer les fonctionnalités de création de compte,
@@ -3614,8 +3638,8 @@ installé. Voir sa <a class="reference external" href="https://github.com/PnX-SI
 version</a>.</p></li>
 </ul>
 </section>
-<section id="id35">
-<h2>2.1.2 (2019-07-25)<a class="headerlink" href="#id35" title="Lien vers cette rubrique">#</a></h2>
+<section id="id36">
+<h2>2.1.2 (2019-07-25)<a class="headerlink" href="#id36" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>SYNTHESE : Correction d’une URL en dur pour la recherche de rangs
@@ -3635,8 +3659,8 @@ suppression d’un paramètre inutile</p></li>
 passez directement à cette version en suivant les notes de version de la
 2.1.1.</p>
 </section>
-<section id="id36">
-<h2>2.1.1 (2019-07-18)<a class="headerlink" href="#id36" title="Lien vers cette rubrique">#</a></h2>
+<section id="id37">
+<h2>2.1.1 (2019-07-18)<a class="headerlink" href="#id37" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>SYNTHESE: Factorisation du formulaire de recherche (utilisé dans le
@@ -3657,10 +3681,10 @@ Travis et désormais accessible à l’adresse
 <li><p>Amélioration de la documentation (triggers, installation, module
 validation)</p></li>
 <li><p>Suppression du module d’exemple, remplacé par un template de module
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_template">PnX-SI/gn_module_template</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_template">https://github.com/PnX-SI/gn_module_template</a>)</p></li>
 <li><p>Ajout d’un champ <code class="docutils literal notranslate"><span class="pre">validable</span></code> sur la table <code class="docutils literal notranslate"><span class="pre">gn_meta.t_datasets</span></code>
 controlant les données présentes dans le module VALIDATION
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/31">PnX-SI/gn_module_validation#31</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/31">https://github.com/PnX-SI/gn_module_validation/issues/31</a>)</p></li>
 <li><p>VALIDATION: Lister toutes les données de la synthèse ayant un
 <code class="docutils literal notranslate"><span class="pre">uuid_sinp</span></code> dans le module validation, et plus seulement celles qui
 ont un enregistrement dans <code class="docutils literal notranslate"><span class="pre">gn_commons.t_validations</span></code></p></li>
@@ -3668,7 +3692,7 @@ ont un enregistrement dans <code class="docutils literal notranslate"><span clas
 validation à utiliser, dans la configuration du module. Mais on
 utilise toutes les nomenclatures activées du type de nomenclature
 <code class="docutils literal notranslate"><span class="pre">STATUT_VALID</span></code>.
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/30">PnX-SI/gn_module_validation#30</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/30">https://github.com/PnX-SI/gn_module_validation/issues/30</a>)</p></li>
 <li><p>Ajout de tests sur les ajouts de JDD et CA</p></li>
 <li><p>Ajout d’une fonctionnalité d’envoie d’email via Flask-Mail dans
 le coeur de GeoNature</p></li>
@@ -3717,7 +3741,7 @@ nouveau module export</p></li>
 <p><strong>⚠️ Notes de version</strong></p>
 <ul class="simple">
 <li><p>Passer TaxHub en version 1.6.3
-(<a class="github reference external" href="https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3">PnX-SI/TaxHub</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3">https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3</a>)</p></li>
 <li><p>Passer le script de migration <code class="docutils literal notranslate"><span class="pre">data/2.1.0to2.1.1.sql</span></code></p></li>
 <li><p>Si vous aviez modifier les <code class="docutils literal notranslate"><span class="pre">id_nomenclature</span></code> dans la surcouche de la
 configuration du module validation, supprimer les car on se base
@@ -3728,7 +3752,7 @@ maintenant sur les <code class="docutils literal notranslate"><span class="pre">
 </ul>
 </section>
 <section id="module-validation-2019-06-01">
-<h2>2.1.0 - Module validation (2019-06-01)<a class="headerlink" href="#module-validation-2019-06-01" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.1.0 - Module validation (2019-06-01)<a class="headerlink" href="#module-validation-2019-06-01" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Intégration du module Validation dans GeoNature (développé par
@@ -3809,8 +3833,8 @@ deactivate
 </li>
 </ul>
 </section>
-<section id="id37">
-<h2>2.0.1 (2019-03-18)<a class="headerlink" href="#id37" title="Lien vers cette rubrique">#</a></h2>
+<section id="id38">
+<h2>2.0.1 (2019-03-18)<a class="headerlink" href="#id38" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Développement : ajout d’une fonction de génération dynamique de
@@ -3852,15 +3876,15 @@ d’acquisition imbriqués</p></li>
 <li><p>Vous pouvez passer directement à cette version, mais en suivant les
 notes des versions intermédiaires</p></li>
 <li><p>Exécuter le script de migration SQL du sous-module Nomenclatures
-(<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.4/data/update1.2.3to1.2.4.sql">PnX-SI/Nomenclature-api-module</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.4/data/update1.2.3to1.2.4.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.4/data/update1.2.3to1.2.4.sql</a>)</p></li>
 <li><p>Exécuter le script de migration SQL de GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.0to2.0.1.sql">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.0to2.0.1.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.0to2.0.1.sql</a>)</p></li>
 <li><p>Suivez ensuite la procédure classique de mise à jour de GeoNature
 (<a class="reference external" href="http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application">http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application</a>)</p></li>
 </ul>
 </section>
 <section id="la-refonte-2019-02-28">
-<h2>2.0.0 - La refonte (2019-02-28)<a class="headerlink" href="#la-refonte-2019-02-28" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0 - La refonte (2019-02-28)<a class="headerlink" href="#la-refonte-2019-02-28" title="Lien vers cette rubrique">¶</a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à
@@ -3963,13 +3987,13 @@ notes des versions intermédiaires.</p></li>
 <li><p>Les personnes ayant configuré leur fichier <code class="docutils literal notranslate"><span class="pre">map.config.ts</span></code> devront
 le répercuter dans <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>, suite à la
 centralisation de la configuration cartographique (voir
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example">PnX-SI/GeoNature</a>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example">https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example</a>
 section <code class="docutils literal notranslate"><span class="pre">[MAPCONFIG]</span></code>).</p></li>
 <li><p>La configuration des exports du module synthèse a été modifiée (voir
 <a class="reference external" href="http://docs.geonature.fr/user-manual.html#synthese">http://docs.geonature.fr/user-manual.html#synthese</a>). Supprimer la
 variable<code class="docutils literal notranslate"><span class="pre">[SYNTHESE.EXPORT_COLUMNS]</span></code> dans le fichier
 <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>. Voir l’exemple dans le fichier (voir
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example">PnX-SI/GeoNature</a>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example">https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example</a>
 section) pour configurer les exports.</p></li>
 <li><p>Supprimer la variable <code class="docutils literal notranslate"><span class="pre">COLUMNS_API_SYNTHESE_WEB_APP</span></code> si elle a été
 ajoutée dans le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>.</p></li>
@@ -3980,7 +4004,7 @@ a été modifié (la carte des 100 dernière observations n’y figure
 plus). Veuillez supprimer tout ce qui se situe à partir de la ligne
 21 (<code class="docutils literal notranslate"><span class="pre">&lt;div</span> <span class="pre">class=&quot;row</span> <span class="pre">row-0&quot;&gt;</span></code>) dans ce fichier.</p></li>
 <li><p>Exécuter le script de migration SQL:
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/2.0.0/data/migrations/2.0.0rc4.2to2.0.0.sql">PnX-SI/GeoNature</a>.</p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/2.0.0/data/migrations/2.0.0rc4.2to2.0.0.sql">https://github.com/PnX-SI/GeoNature/blob/2.0.0/data/migrations/2.0.0rc4.2to2.0.0.sql</a>.</p></li>
 <li><p>Le backoffice de gestion des métadonnées est dorénavant un module
 GeoNature à part. Le script migration précédemment lancé prévoit de
 mettre un CRUVED au groupe_admin et groupe_en_poste pour le
@@ -3994,7 +4018,7 @@ pour le nouveau module METADATA via le backoffice des permissions.</p></li>
 </ul>
 </section>
 <section id="rc-4-2-2019-01-23">
-<h2>2.0.0-rc.4.2 (2019-01-23)<a class="headerlink" href="#rc-4-2-2019-01-23" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0-rc.4.2 (2019-01-23)<a class="headerlink" href="#rc-4-2-2019-01-23" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise en place de logs rotatifs pour éviter de surcharger le serveur</p></li>
@@ -4014,7 +4038,7 @@ GeoNature</p></li>
 de développement</p></li>
 <li><p>Ajout d’une documentation de migration de données Serena vers
 GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena">PnX-SI/Ressources-techniques</a>)
+(<a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena">https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena</a>)
 par &#64;xavyeah39</p></li>
 </ul>
 <p><strong>Note de version</strong></p>
@@ -4062,7 +4086,7 @@ compress
 </ul>
 </section>
 <section id="rc-4-1-2019-01-21">
-<h2>2.0.0-rc.4.1 (2019-01-21)<a class="headerlink" href="#rc-4-1-2019-01-21" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0-rc.4.1 (2019-01-21)<a class="headerlink" href="#rc-4-1-2019-01-21" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>Mise à jour des paquets du frontend (#538)</p></li>
@@ -4073,15 +4097,15 @@ compress
 <p><strong>Note de version</strong></p>
 <ul class="simple">
 <li><p>Sortie de versions correctives de UsersHub (2.0.2 -
-<a class="github reference external" href="https://github.com/PnX-SI/UsersHub/releases">PnX-SI/UsersHub</a>) et TaxHub (1.6.1 -
-<a class="github reference external" href="https://github.com/PnX-SI/TaxHub/releases">PnX-SI/TaxHub</a>) à appliquer aussi</p></li>
+<a class="reference external" href="https://github.com/PnX-SI/UsersHub/releases">https://github.com/PnX-SI/UsersHub/releases</a>) et TaxHub (1.6.1 -
+<a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases">https://github.com/PnX-SI/TaxHub/releases</a>) à appliquer aussi</p></li>
 <li><p>Vous pouvez vous référer à la documentation globale de mise à jour
 de GeoNature RC3 vers RC4 par &#64;DonovanMaillard
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/update-all-RC3-to-RC4.rst">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/update-all-RC3-to-RC4.rst">https://github.com/PnX-SI/GeoNature/blob/master/docs/update-all-RC3-to-RC4.rst</a>)</p></li>
 </ul>
 </section>
 <section id="rc-4-2019-01-15">
-<h2>2.0.0-rc.4 (2019-01-15)<a class="headerlink" href="#rc-4-2019-01-15" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0-rc.4 (2019-01-15)<a class="headerlink" href="#rc-4-2019-01-15" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Intégration de la gestion des permissions (CRUVED) dans la BDD de
@@ -4104,7 +4128,7 @@ utilisant l’algorithme des trigrammes
 fonctionnel aussi dans les autres modules si vous mettez à jour
 TaxHub en version 1.6.0.</p></li>
 <li><p>Nouvel exemple d’import de données historiques vers GeoNature V2 :
-<a class="github reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql">PnX-SI/Ressources-techniques</a>
+<a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql">https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql</a>
 (par &#64;DonovanMaillard)</p></li>
 <li><p>Complément de la documentation HTTPS et ajout d’une documentation
 Apache (par &#64;DonovanMaillard, &#64;RomainBaghi et &#64;lpofredc)</p></li>
@@ -4157,7 +4181,7 @@ l’instance <code class="docutils literal notranslate"><span class="pre">DB</sp
 <li><p>Installation : utilisation d’un répertoire <code class="docutils literal notranslate"><span class="pre">tmp</span></code> local et non plus
 au niveau système pour limiter les problèmes de droits (#503)</p></li>
 <li><p>Evolution du template d’exemple de module GeoNature
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/tree/master/contrib/module_example">PnX-SI/GeoNature</a>)
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/tree/master/contrib/module_example">https://github.com/PnX-SI/GeoNature/tree/master/contrib/module_example</a>)
 pour utiliser l’instance DB et utiliser les nouveaux décorateurs de
 permissions (CRUVED)</p></li>
 </ul>
@@ -4166,7 +4190,7 @@ permissions (CRUVED)</p></li>
 <li><p>Si vous effectuez une migration de GeoNature RC3 vers cette nouvelle
 version, il est nécessaire d’avoir installé UsersHub version 2.x au
 préalable. Suivez donc sa documentation
-(<a class="github reference external" href="https://github.com/PnX-SI/UsersHub/releases">PnX-SI/UsersHub</a>) avant de procéder à
+(<a class="reference external" href="https://github.com/PnX-SI/UsersHub/releases">https://github.com/PnX-SI/UsersHub/releases</a>) avant de procéder à
 la montée de version de GeoNature.</p></li>
 <li><p>Exécuter la commande suivante pour ajouter l’extension <code class="docutils literal notranslate"><span class="pre">pg_trgm</span></code>,
 en remplaçant la variable <code class="docutils literal notranslate"><span class="pre">$db_name</span></code> par le nom de votre BDD :
@@ -4193,7 +4217,7 @@ dans la doc pour récupérer le CRUVED.</p></li>
 </ul>
 </section>
 <section id="rc-3-1-2018-10-21">
-<h2>2.0.0-rc.3.1 (2018-10-21)<a class="headerlink" href="#rc-3-1-2018-10-21" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0-rc.3.1 (2018-10-21)<a class="headerlink" href="#rc-3-1-2018-10-21" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction du script <code class="docutils literal notranslate"><span class="pre">ìnstall_all.sh</span></code> au niveau de la génération de
@@ -4217,7 +4241,7 @@ correctement</p></li>
 </ul>
 </section>
 <section id="rc-3-2018-10-18">
-<h2>2.0.0-rc.3 (2018-10-18)<a class="headerlink" href="#rc-3-2018-10-18" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0-rc.3 (2018-10-18)<a class="headerlink" href="#rc-3-2018-10-18" title="Lien vers cette rubrique">¶</a></h2>
 <ul class="simple">
 <li><p>Possibilité d’utiliser le MNT en raster ou en vecteur dans la BDD
 (+ doc MNT) #439 (merci &#64;mathieubossaert)</p></li>
@@ -4286,29 +4310,29 @@ du relevé (#469 et #471)</p></li>
 d’import des médias depuis API INPN Taxref et remise à zéro des
 séquences)</p></li>
 <li><p>Script de migration des données SICEN (ObsOcc) vers GeoNature :
-<a class="github reference external" href="https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen">PnX-SI/Ressources-techniques</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen">https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen</a></p></li>
 <li><p>Script d’import continu depuis une BDD externe vivante (avec
 exemple SICEN) :
-<a class="github reference external" href="https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic">PnX-SI/Ressources-techniques</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic">https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic</a></p></li>
 <li><p>Module Suivi Flore Territoire fonctionnel et installable
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_suivi_flore_territoire">PnX-SI/gn_module_suivi_flore_territoire</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_suivi_flore_territoire">https://github.com/PnX-SI/gn_module_suivi_flore_territoire</a>)</p></li>
 <li><p>Module Suivi Chiro fonctionnel et installable
-(<a class="github reference external" href="https://github.com/PnCevennes/gn_module_suivi_chiro">PnCevennes/gn_module_suivi_chiro</a>) ainsi que
+(<a class="reference external" href="https://github.com/PnCevennes/gn_module_suivi_chiro">https://github.com/PnCevennes/gn_module_suivi_chiro</a>) ainsi que
 son Frontend générique pour les protocoles de suivi
-(<a class="github reference external" href="https://github.com/PnCevennes/projet_suivis_frontend/">PnCevennes/projet_suivis_frontend</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnCevennes/projet_suivis_frontend/">https://github.com/PnCevennes/projet_suivis_frontend/</a>)</p></li>
 <li><p>Ebauche d’un module pour les protocoles CMR
 (Capture-Marquage-Recapture) :
-<a class="github reference external" href="https://github.com/PnX-SI/gn_module_cmr">PnX-SI/gn_module_cmr</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/gn_module_cmr">https://github.com/PnX-SI/gn_module_cmr</a></p></li>
 <li><p>MCD du module Suivi Habitat Territoire
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_suivi_habitat_territoire">PnX-SI/gn_module_suivi_habitat_territoire</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_suivi_habitat_territoire">https://github.com/PnX-SI/gn_module_suivi_habitat_territoire</a>)</p></li>
 <li><p>MCD du module Flore Prioritaire
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_flore_prioritaire">PnX-SI/gn_module_flore_prioritaire</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_flore_prioritaire">https://github.com/PnX-SI/gn_module_flore_prioritaire</a>)</p></li>
 <li><p>Consolidation du backend et premiers développements du frontend de
-GeoNature-citizen (<a class="github reference external" href="https://github.com/PnX-SI/GeoNature-citizen">PnX-SI/GeoNature-citizen</a>)</p></li>
+GeoNature-citizen (<a class="reference external" href="https://github.com/PnX-SI/GeoNature-citizen">https://github.com/PnX-SI/GeoNature-citizen</a>)</p></li>
 <li><p>Création d’un script expérimental d’installation de
 GeoNature-atlas compatible avec GeoNature V2 dt pouvant utiliser son
 schéma <code class="docutils literal notranslate"><span class="pre">ref_geo</span></code> pour les communes, le territoire et les mailles
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature-atlas/blob/develop/install_db_gn2.sh">PnX-SI/GeoNature-atlas</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature-atlas/blob/develop/install_db_gn2.sh">https://github.com/PnX-SI/GeoNature-atlas/blob/develop/install_db_gn2.sh</a>)</p></li>
 </ul>
 <p><strong>Notes de version</strong></p>
 <ul class="simple">
@@ -4317,21 +4341,21 @@ schéma <code class="docutils literal notranslate"><span class="pre">ref_geo</sp
 <li><p>Exécutez l’update de la BDD GeoNature
 (<code class="docutils literal notranslate"><span class="pre">data/migrations/2.0.0rc2-to-2.0.0rc3.sql</span></code>)</p></li>
 <li><p>Il est aussi conseillé de mettre à jour TaxHub en 1.5.1
-(<a class="github reference external" href="https://github.com/PnX-SI/TaxHub/releases">PnX-SI/TaxHub</a>) ainsi que sa
+(<a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases">https://github.com/PnX-SI/TaxHub/releases</a>) ainsi que sa
 configuration pour qu’il fonctionne sans <code class="docutils literal notranslate"><span class="pre">/</span></code> à la fin de son URL</p></li>
 <li><p>Attention, si vous installez cette version avec le script global
 <code class="docutils literal notranslate"><span class="pre">install_all.sh</span></code>, il créé un problème dans la configuration Apache
 de UserHub (<code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/usershub.conf</span></code>) et
 supprime tous les <code class="docutils literal notranslate"><span class="pre">/</span></code>. Les ajouter sur la page de la documentation
 de UsersHub
-(<a class="github reference external" href="https://github.com/PnX-SI/UsersHub/blob/master/docs/installation.rst#configuration-apache">PnX-SI/UsersHub</a>)
+(<a class="reference external" href="https://github.com/PnX-SI/UsersHub/blob/master/docs/installation.rst#configuration-apache">https://github.com/PnX-SI/UsersHub/blob/master/docs/installation.rst#configuration-apache</a>)
 puis relancer Apache
 (<code class="docutils literal notranslate"><span class="pre">https://github.com/PnX-SI/GeoNature-atlas/blob/develop/docs/installation.rst</span></code>).
 Il est conseillé d’installer plutôt la version corrective.</p></li>
 </ul>
 </section>
 <section id="rc-2-2018-09-24">
-<h2>2.0.0-rc.2 (2018-09-24)<a class="headerlink" href="#rc-2-2018-09-24" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0-rc.2 (2018-09-24)<a class="headerlink" href="#rc-2-2018-09-24" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Script <code class="docutils literal notranslate"><span class="pre">install_all.sh</span></code> compatible Ubuntu (16 et 18)</p></li>
@@ -4369,7 +4393,7 @@ relevés mal copiés dans la Synthèse</p></li>
 </ul>
 </section>
 <section id="rc-1-2018-09-21">
-<h2>2.0.0-rc.1 (2018-09-21)<a class="headerlink" href="#rc-1-2018-09-21" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0-rc.1 (2018-09-21)<a class="headerlink" href="#rc-1-2018-09-21" title="Lien vers cette rubrique">¶</a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à
@@ -4381,7 +4405,7 @@ générique et modulaire</p></li>
 <li><p>Refonte ergonomique pour moderniser l’application</p></li>
 </ul>
 <p>Présentation et suivi des développements :
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/issues/168">PnX-SI/GeoNature#168</a></p>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/168">https://github.com/PnX-SI/GeoNature/issues/168</a></p>
 <p><strong>Accueil</strong></p>
 <ul class="simple">
 <li><p>Message d’introduction customisable</p></li>
@@ -4454,7 +4478,7 @@ Synthèse</p></li>
 <li><p>Mise en place temporaire d’un export unique, basé sur une vue
 s’appuyant sur les données de Occtax, par jeu de données</p></li>
 <li><p>A remplacer par le module générique
-<a class="github reference external" href="https://github.com/PnX-SI/gn_module_export">PnX-SI/gn_module_export</a> (en cours de
+<a class="reference external" href="https://github.com/PnX-SI/gn_module_export">https://github.com/PnX-SI/gn_module_export</a> (en cours de
 développement) permettant de générer des exports à volonté en créant
 des vues et en les affectant à des utilisateurs ou des groupes.
 Chaque export sera accompagné de son API standardisée et documentée</p></li>
@@ -4473,17 +4497,17 @@ Update / Validate / Export / Delete) sur 3 portées possibles (Mes
 données / Les données de mon organisme / Toutes les données)</p></li>
 <li><p>Ces évolutions ont été intégrées au niveau du schéma <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code>
 de la base de données de UsersHub, de son module
-(<a class="github reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module">PnX-SI/UsersHub-authentification-module</a>), des
+(<a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module">https://github.com/PnX-SI/UsersHub-authentification-module</a>), des
 routes de l’API GeoNature et des interfaces</p></li>
 </ul>
 <p><strong>Bases de données</strong></p>
 <ul class="simple">
 <li><p>Développement d’un module et d’une API générique et autonome pour
 la gestion des nomenclatures
-(<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">PnX-SI/Nomenclature-api-module</a>). Il permet
+(<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">https://github.com/PnX-SI/Nomenclature-api-module</a>). Il permet
 d’avoir un mécanisme générique de centralisation des listes de
 valeurs (nomenclatures) pour ne pas créer des tables pour chaque
-liste : <a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">PnX-SI/Nomenclature-api-module</a>. Les
+liste : <a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">https://github.com/PnX-SI/Nomenclature-api-module</a>. Les
 valeurs de chaque nomenclature s’adaptent en fonction des regnes et
 groupe 2 INPN des taxons.</p></li>
 <li><p>Mise en place de tables de stockage verticales (historique, médias
@@ -4536,7 +4560,7 @@ permettant de renvoyer des informations sur les observations
 existantes d’un taxon (étendue des observations, date min et max,
 altitude min et max, nombre d’observations) pour orienter la
 validation et la saisie
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/5">PnX-SI/gn_module_validation#5</a>).
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/5">https://github.com/PnX-SI/gn_module_validation/issues/5</a>).
 Désactivée pour le moment.</p></li>
 <li><p>Ajout d’un trigger générique pour calculer la géométrie dans la
 projection locale à partir de la géométrie 4326 (#370)</p></li>
@@ -4602,33 +4626,33 @@ dans GeoNature</p></li>
 vue non mappée</p></li>
 <li><p>Mise en place d’un script pour la customisation de la plateforme
 nationale
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh">https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh</a>)</p></li>
 </ul>
 <p><strong>Autres modules</strong></p>
 <ul class="simple">
 <li><p>Module Export en cours de développement
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_export">PnX-SI/gn_module_export</a>). Chaque export
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_export">https://github.com/PnX-SI/gn_module_export</a>). Chaque export
 s’appuie sur une vue. Il sera possible aux administrateurs d’une
 GeoNature d’ajouter autant de vues que nécessaires dans son
 GeoNature.</p></li>
 <li><p>Module de validation des données en cours de développement
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/4">PnX-SI/gn_module_validation#4</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/4">https://github.com/PnX-SI/gn_module_validation/issues/4</a>)</p></li>
 <li><p>Module Suivi Flore territoire en cours de développement
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_suivi_flore_territoire">PnX-SI/gn_module_suivi_flore_territoire</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_suivi_flore_territoire">https://github.com/PnX-SI/gn_module_suivi_flore_territoire</a>)</p></li>
 <li><p>Module Suivi Habitat en cours de développement
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_suivi_habitat_territoire/issues/1">PnX-SI/gn_module_suivi_habitat_territoire#1</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_suivi_habitat_territoire/issues/1">https://github.com/PnX-SI/gn_module_suivi_habitat_territoire/issues/1</a>)</p></li>
 <li><p>gn_module_suivi_chiro refondu pour devenir un module de GeoNature
-V2 (<a class="github reference external" href="https://github.com/PnCevennes/gn_module_suivi_chiro">PnCevennes/gn_module_suivi_chiro</a>)</p></li>
+V2 (<a class="reference external" href="https://github.com/PnCevennes/gn_module_suivi_chiro">https://github.com/PnCevennes/gn_module_suivi_chiro</a>)</p></li>
 <li><p>Projet suivi utilisé comme Frontend générique et autonome pour le
-Suivi chiro (<a class="github reference external" href="https://github.com/PnCevennes/projet_suivis_frontend">PnCevennes/projet_suivis_frontend</a>)</p></li>
+Suivi chiro (<a class="reference external" href="https://github.com/PnCevennes/projet_suivis_frontend">https://github.com/PnCevennes/projet_suivis_frontend</a>)</p></li>
 <li><p>GeoNature-citizen en cours de développement
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature-citizen/issues/2">PnX-SI/GeoNature-citizen#2</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature-citizen/issues/2">https://github.com/PnX-SI/GeoNature-citizen/issues/2</a>)</p></li>
 <li><p>GeoNature-mobile en cours de refonte pour compatibilité avec
 GeoNature V2
-(<a class="github reference external" href="https://github.com/PnEcrins/GeoNature-mobile/issues/19">PnEcrins/GeoNature-mobile#19</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnEcrins/GeoNature-mobile/issues/19">https://github.com/PnEcrins/GeoNature-mobile/issues/19</a>)</p></li>
 <li><p>GeoNature-atlas en cours d’ajustements pour compatibilité avec
 GeoNature V2
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature-atlas/issues/162">PnX-SI/GeoNature-atlas#162</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature-atlas/issues/162">https://github.com/PnX-SI/GeoNature-atlas/issues/162</a>)</p></li>
 </ul>
 <p><strong>Notes de version</strong></p>
 <p><strong>1.</strong> Pour les utilisateurs utilisant la version 1 de GeoNature :</p>
@@ -4649,7 +4673,7 @@ RC1 (#430)</p></li>
 <li><p>Exécuter l’update de la BDD GeoNature
 (<code class="docutils literal notranslate"><span class="pre">data/migrations/2.0.0beta5-to-2.0.0rc1.sql</span></code>) ainsi que celui du
 sous-module Nomenclature
-(<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql">PnX-SI/Nomenclature-api-module</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql</a>)</p></li>
 <li><p>Suivre la procédure habituelle de mise à jour</p></li>
 <li><p>Exécuter les commandes suivantes :</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd geonature/backend
@@ -4662,7 +4686,7 @@ geonature frontend_build
 </ul>
 </section>
 <section id="beta5-2018-07-16">
-<h2>2.0.0.beta5 (2018-07-16)<a class="headerlink" href="#beta5-2018-07-16" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0.beta5 (2018-07-16)<a class="headerlink" href="#beta5-2018-07-16" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un message d’erreur si l’utilisateur n’a pas de JDD ou
@@ -4673,7 +4697,7 @@ permettant de renvoyer des informations sur les observations
 existantes d’un taxon (étendue des observations, date min et max,
 altitude min et max, nombre d’observations) pour orienter la
 validation et la saisie
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/5">PnX-SI/gn_module_validation#5</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_validation/issues/5">https://github.com/PnX-SI/gn_module_validation/issues/5</a>)</p></li>
 <li><p>L’export OccTax est désormais basé sur une vue qu’il est possible
 d’adapter</p></li>
 <li><p>Ajouts de nouveaux tests automatisés du code et mise en place de
@@ -4706,7 +4730,7 @@ module</p></li>
 <li><p>Gestion des conflits de nomenclatures en n’utilisant plus leur
 <code class="docutils literal notranslate"><span class="pre">id_type</span></code> ni leur <code class="docutils literal notranslate"><span class="pre">id_nomenclature</span></code> (#384)</p></li>
 <li><p>Migration du SQL de <code class="docutils literal notranslate"><span class="pre">ref_nomenclautres</span></code> dans le dépôt du sous-module
-(<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">PnX-SI/Nomenclature-api-module</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">https://github.com/PnX-SI/Nomenclature-api-module</a>)</p></li>
 <li><p>Début de mise en place d’un backoffice (métadonnées et
 nomenclatures)</p></li>
 </ul>
@@ -4745,13 +4769,13 @@ depuis la racine de votre GeoNature :</p>
 modules et appliquer les changements de la BDD.</p>
 <ul class="simple">
 <li><p>Si vous avez développé des modules externes, voir
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/issues/375">PnX-SI/GeoNature#375</a>, en ajoutant un
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/375">https://github.com/PnX-SI/GeoNature/issues/375</a>, en ajoutant un
 lien symbolique depuis le répertoire <code class="docutils literal notranslate"><span class="pre">external_modules</span></code> et en
 réintégrant la configuration du module dans son répertoire <code class="docutils literal notranslate"><span class="pre">config</span></code></p></li>
 </ul>
 </section>
 <section id="beta4-2018-05-25">
-<h2>2.0.0.beta4 (2018-05-25)<a class="headerlink" href="#beta4-2018-05-25" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0.beta4 (2018-05-25)<a class="headerlink" href="#beta4-2018-05-25" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Synthèse : début de mise en place du backend, de l’API et du
@@ -4784,22 +4808,22 @@ de validation des données mises en place sur le module Occtax. #339</p></li>
 <li><p>Mise en place d’un export CSV, SHP, GeoJSON paramétrable dans
 OccTax. #363 et #366</p></li>
 <li><p>Amélioration du module générique <code class="docutils literal notranslate"><span class="pre">gn_monitoring</span></code> et de ses
-sous-modules <a class="github reference external" href="https://github.com/PnCevennes/gn_module_suivi_chiro">PnCevennes/gn_module_suivi_chiro</a>
-et <a class="github reference external" href="https://github.com/PnCevennes/projet_suivis_frontend">PnCevennes/projet_suivis_frontend</a></p></li>
+sous-modules <a class="reference external" href="https://github.com/PnCevennes/gn_module_suivi_chiro">https://github.com/PnCevennes/gn_module_suivi_chiro</a>
+et <a class="reference external" href="https://github.com/PnCevennes/projet_suivis_frontend">https://github.com/PnCevennes/projet_suivis_frontend</a></p></li>
 <li><p>Amélioration et compléments des scripts d’installation</p></li>
 <li><p>Mise en place d’un script pour la customisation de la plateforme
 nationale
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh">https://github.com/PnX-SI/GeoNature/blob/develop/install_all/configuration_mtes.sh</a>)</p></li>
 </ul>
 <p><strong>Documentation</strong></p>
 <ul class="simple">
 <li><p>Complément des différentes documentations</p></li>
 <li><p>Ajout d’une documentation d’administration d’OccTax
-(<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax">PnX-SI/GeoNature</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax">https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax</a>)</p></li>
 </ul>
 </section>
 <section id="beta3-2018-03-28">
-<h2>2.0.0.beta3 (2018-03-28)<a class="headerlink" href="#beta3-2018-03-28" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0.beta3 (2018-03-28)<a class="headerlink" href="#beta3-2018-03-28" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Travail sur le module générique de Suivi intégré à GeoNature
@@ -4837,19 +4861,19 @@ avec le CAS</p></li>
 <p><strong>Modules annexes</strong></p>
 <ul class="simple">
 <li><p>Début de refonte du module Suivi chiro
-(<a class="github reference external" href="https://github.com/PnCevennes/gn_module_suivi_chiro">PnCevennes/gn_module_suivi_chiro</a>) connecté au
+(<a class="reference external" href="https://github.com/PnCevennes/gn_module_suivi_chiro">https://github.com/PnCevennes/gn_module_suivi_chiro</a>) connecté au
 module générique de suivi de GeoNature, dont le front sera externe à
-GeoNature (<a class="github reference external" href="https://github.com/PnCevennes/projet_suivi">PnCevennes/projet_suivi</a>)</p></li>
+GeoNature (<a class="reference external" href="https://github.com/PnCevennes/projet_suivi">https://github.com/PnCevennes/projet_suivi</a>)</p></li>
 <li><p>Maquettage et avancée sur le module Validation
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_validation">PnX-SI/gn_module_validation</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_validation">https://github.com/PnX-SI/gn_module_validation</a>)</p></li>
 <li><p>Définition du module Suivi Habitat Territoire
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_suivi_habitat_territoire">PnX-SI/gn_module_suivi_habitat_territoire</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_suivi_habitat_territoire">https://github.com/PnX-SI/gn_module_suivi_habitat_territoire</a>)</p></li>
 <li><p>Piste de définition du module Interopérabilité
-(<a class="github reference external" href="https://github.com/PnX-SI/gn_module_interoperabilite">PnX-SI/gn_module_interoperabilite</a>)</p></li>
+(<a class="reference external" href="https://github.com/PnX-SI/gn_module_interoperabilite">https://github.com/PnX-SI/gn_module_interoperabilite</a>)</p></li>
 </ul>
 </section>
 <section id="beta2-2018-03-16">
-<h2>2.0.0.beta2 (2018-03-16)<a class="headerlink" href="#beta2-2018-03-16" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0.beta2 (2018-03-16)<a class="headerlink" href="#beta2-2018-03-16" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Compléments de la documentation (schéma architecture,
@@ -4875,7 +4899,7 @@ des modules de suivi (sites et visites centralisés)</p></li>
 </ul>
 </section>
 <section id="beta1-2018-02-16">
-<h2>2.0.0.beta1 (2018-02-16)<a class="headerlink" href="#beta1-2018-02-16" title="Lien vers cette rubrique">#</a></h2>
+<h2>2.0.0.beta1 (2018-02-16)<a class="headerlink" href="#beta1-2018-02-16" title="Lien vers cette rubrique">¶</a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à
@@ -4887,7 +4911,7 @@ générique et modulaire</p></li>
 <li><p>Refonte ergonomique pour moderniser l’application</p></li>
 </ul>
 <p>Présentation et suivi du projet :
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/issues/168">PnX-SI/GeoNature#168</a></p>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/168">https://github.com/PnX-SI/GeoNature/issues/168</a></p>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Refonte de la base de données du module Contact, renommé en OccTax,
@@ -4897,10 +4921,10 @@ Fonge et Mortalité (avec formulaire de consultation et de saisie des
 données)</p></li>
 <li><p>Développement d’un module et d’une API générique et autonome pour
 la gestion des nomenclatures
-(<a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">PnX-SI/Nomenclature-api-module</a>). Il permet
+(<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">https://github.com/PnX-SI/Nomenclature-api-module</a>). Il permet
 d’avoir un mécanisme générique de centralisation des listes de
 valeurs (nomenclatures) pour ne pas créer des tables pour chaque
-liste : <a class="github reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">PnX-SI/Nomenclature-api-module</a>. Les
+liste : <a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module">https://github.com/PnX-SI/Nomenclature-api-module</a>. Les
 valeurs de chaque nomenclature s’adaptent en fonction des regnes et
 groupe 2 INPN des taxons.</p></li>
 <li><p>Découpage de l’application en backend / API / Frontend</p></li>
@@ -4958,15 +4982,15 @@ modules dans GeoNature (#306)</p></li>
 <p><strong>Documentation</strong></p>
 <ul class="simple">
 <li><p>Installation globale de GeoNature (avec TaxHub et UsersHub) /
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst">PnX-SI/GeoNature</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst">https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst</a></p></li>
 <li><p>Installation autonome de GeoNature /
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst">PnX-SI/GeoNature</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst">https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst</a></p></li>
 <li><p>Manuel utilisateur /
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/user-manual.rst">PnX-SI/GeoNature</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/user-manual.rst">https://github.com/PnX-SI/GeoNature/blob/develop/docs/user-manual.rst</a></p></li>
 <li><p>Manuel administrateur /
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst">PnX-SI/GeoNature</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst">https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst</a></p></li>
 <li><p>Développement (API, modules et composants) /
-<a class="github reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst">PnX-SI/GeoNature</a></p></li>
+<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst">https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst</a></p></li>
 </ul>
 <p>Documentation complète disponible sur
 <a class="reference external" href="http://geonature.fr/docs/2-0-0-beta1">http://geonature.fr/docs/2-0-0-beta1</a></p>
@@ -4986,175 +5010,149 @@ générique des sites et visites de suivi</p></li>
 </ul>
 </section>
 <section id="versions-1-2014-2018">
-<h2>Versions 1 (2014-2018)<a class="headerlink" href="#versions-1-2014-2018" title="Lien vers cette rubrique">#</a></h2>
+<h2>Versions 1 (2014-2018)<a class="headerlink" href="#versions-1-2014-2018" title="Lien vers cette rubrique">¶</a></h2>
 <p>Pour consulter les notes des versions 1 de GeoNature, elles sont disponibles dans la branche dédiée : https://github.com/PnX-SI/GeoNature/blob/v1/docs/changelog.rst</p>
 </section>
 </section>
 
-
-                </article>
-              
-
-              
-              
-              
-              
-                <footer class="prev-next-footer d-print-none">
-                  
-<div class="prev-next-area">
-    <a class="left-prev"
-       href="authors.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">précédent</p>
-        <p class="prev-next-title">Auteurs</p>
+        </article>
       </div>
-    </a>
-    <a class="right-next"
-       href="api-references.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">suivant</p>
-        <p class="prev-next-title">API REFERENCES</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
-</div>
-                </footer>
-              
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="api-references.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">API REFERENCES</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="authors.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Auteurs</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018-2024, Parc National des Écrins, Parc National des Cévennes
             </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
-            
-              
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contenu
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pavo-cristatus-2025-12-11">2.15.0 - Pavo cristatus 🦚 (2025-12-11)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.14.2 (2024-05-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.14.1 (2024-04-29)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#talpa-europaea-2024-02-28">2.14.0 - Talpa europaea 👓 (2024-02-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.13.4 (2023-12-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2.13.3 (2023-10-17)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2.13.2 (2023-09-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2.13.1 (2023-09-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carpodacus-erythrinus-2023-08-23">2.13.0 - Carpodacus erythrinus 🐤 (2023-08-23)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">2.12.3 (2023-05-09)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">2.12.2 (2023-04-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">2.12.1 (2023-04-11)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cyathea-borbonica-2023-03-27">2.12.0 - Cyathea borbonica 🌴 (2023-03-27)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">2.11.2 (2023-01-19)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">2.11.1 (2023-01-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ilex-aquifolium-2022-12-21">2.11.0 - Ilex aquifolium 🎄 (2022-12-21)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">2.10.4 (2022-11-30)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">2.10.3 (2022-11-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">2.10.2 (2022-11-09)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">2.10.1 (2022-11-08)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alouatta-macconnelli-2022-11-02">2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">2.9.2 (2022-02-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">2.9.1 (2022-01-27)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#actias-luna-2022-01-13">2.9.0 - Actias luna 🦋 (2022-01-13)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">2.8.1 (2021-10-17)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vaccinium-myrtillus-2021-10-18">2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">2.7.5 (2021-07-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">2.7.4 (2021-07-23)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">2.7.3 (2021-07-22)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">2.7.2 (2021-07-05)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">2.7.1 (2021-07-02)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#androsace-delphinensis-2021-06-30">2.7.0 - Androsace delphinensis 🌼 (2021-06-30)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">2.6.2 (2021-02-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">2.6.1 (2021-02-11)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saxifraga-2021-02-04">2.6.0 - Saxifraga 🌸 (2021-02-04)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">2.5.5 (2020-11-19)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">2.5.4 (2020-11-17)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">2.5.3 (2020-11-04)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">2.5.2 (2020-10-13)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">2.5.1 (2020-10-06)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manidae-2020-09-30">2.5.0 - Manidae (2020-09-30)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">2.4.1 (2020-06-25)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fiches-de-metadonnees-2020-06-22">2.4.0 - Fiches de métadonnées (2020-06-22)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">2.3.2 (2020-02-24)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">2.3.1 (2020-02-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#occhab-de-noel-2019-12-27">2.3.0 - Occhab de Noël (2019-12-27)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">2.2.1 (2019-10-09)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-utilisateurs-2019-09-18">2.2.0 - Module utilisateurs (2019-09-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id35">2.1.2 (2019-07-25)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id36">2.1.1 (2019-07-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-validation-2019-06-01">2.1.0 - Module validation (2019-06-01)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id37">2.0.1 (2019-03-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-refonte-2019-02-28">2.0.0 - La refonte (2019-02-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-4-2-2019-01-23">2.0.0-rc.4.2 (2019-01-23)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-4-1-2019-01-21">2.0.0-rc.4.1 (2019-01-21)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-4-2019-01-15">2.0.0-rc.4 (2019-01-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-3-1-2018-10-21">2.0.0-rc.3.1 (2018-10-21)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-3-2018-10-18">2.0.0-rc.3 (2018-10-18)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-2-2018-09-24">2.0.0-rc.2 (2018-09-24)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc-1-2018-09-21">2.0.0-rc.1 (2018-09-21)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta5-2018-07-16">2.0.0.beta5 (2018-07-16)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta4-2018-05-25">2.0.0.beta4 (2018-05-25)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta3-2018-03-28">2.0.0.beta3 (2018-03-28)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta2-2018-03-16">2.0.0.beta2 (2018-03-16)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beta1-2018-02-16">2.0.0.beta1 (2018-02-16)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#versions-1-2014-2018">Versions 1 (2014-2018)</a></li>
-</ul>
-  </nav></div>
-
-</div></div>
-              
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
             
           </div>
-          <footer class="bd-footer-content">
+          <div class="right-details">
             
-<div class="bd-footer-content__inner container">
-  
-  <div class="footer-item">
-    
-<p class="component-author">
-Par PnE, PnC
-</p>
-
-  </div>
-  
-  <div class="footer-item">
-    
-
-  <p class="copyright">
-    
-      © Copyright 2018-2024, Parc National des Écrins, Parc National des Cévennes.
-      <br/>
-    
-  </p>
-
-  </div>
-  
-  <div class="footer-item">
-    
-  </div>
-  
-  <div class="footer-item">
-    
-  </div>
-  
-</div>
-          </footer>
+          </div>
+        </div>
         
-
-      </main>
+      </footer>
     </div>
-  </div>
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#id1">2.15.1 (2025-01-10)</a></li>
+<li><a class="reference internal" href="#pavo-cristatus-2025-12-11">2.15.0 - Pavo cristatus 🦚 (2025-12-11)</a></li>
+<li><a class="reference internal" href="#id2">2.14.2 (2024-05-28)</a></li>
+<li><a class="reference internal" href="#id3">2.14.1 (2024-04-29)</a></li>
+<li><a class="reference internal" href="#talpa-europaea-2024-02-28">2.14.0 - Talpa europaea 👓 (2024-02-28)</a></li>
+<li><a class="reference internal" href="#id4">2.13.4 (2023-12-15)</a></li>
+<li><a class="reference internal" href="#id5">2.13.3 (2023-10-17)</a></li>
+<li><a class="reference internal" href="#id6">2.13.2 (2023-09-28)</a></li>
+<li><a class="reference internal" href="#id7">2.13.1 (2023-09-15)</a></li>
+<li><a class="reference internal" href="#carpodacus-erythrinus-2023-08-23">2.13.0 - Carpodacus erythrinus 🐤 (2023-08-23)</a></li>
+<li><a class="reference internal" href="#id8">2.12.3 (2023-05-09)</a></li>
+<li><a class="reference internal" href="#id9">2.12.2 (2023-04-18)</a></li>
+<li><a class="reference internal" href="#id10">2.12.1 (2023-04-11)</a></li>
+<li><a class="reference internal" href="#cyathea-borbonica-2023-03-27">2.12.0 - Cyathea borbonica 🌴 (2023-03-27)</a></li>
+<li><a class="reference internal" href="#id11">2.11.2 (2023-01-19)</a></li>
+<li><a class="reference internal" href="#id12">2.11.1 (2023-01-18)</a></li>
+<li><a class="reference internal" href="#ilex-aquifolium-2022-12-21">2.11.0 - Ilex aquifolium 🎄 (2022-12-21)</a></li>
+<li><a class="reference internal" href="#id13">2.10.4 (2022-11-30)</a></li>
+<li><a class="reference internal" href="#id14">2.10.3 (2022-11-15)</a></li>
+<li><a class="reference internal" href="#id15">2.10.2 (2022-11-09)</a></li>
+<li><a class="reference internal" href="#id16">2.10.1 (2022-11-08)</a></li>
+<li><a class="reference internal" href="#alouatta-macconnelli-2022-11-02">2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)</a></li>
+<li><a class="reference internal" href="#id17">2.9.2 (2022-02-15)</a></li>
+<li><a class="reference internal" href="#id18">2.9.1 (2022-01-27)</a></li>
+<li><a class="reference internal" href="#actias-luna-2022-01-13">2.9.0 - Actias luna 🦋 (2022-01-13)</a></li>
+<li><a class="reference internal" href="#id19">2.8.1 (2021-10-17)</a></li>
+<li><a class="reference internal" href="#vaccinium-myrtillus-2021-10-18">2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)</a></li>
+<li><a class="reference internal" href="#id20">2.7.5 (2021-07-28)</a></li>
+<li><a class="reference internal" href="#id21">2.7.4 (2021-07-23)</a></li>
+<li><a class="reference internal" href="#id22">2.7.3 (2021-07-22)</a></li>
+<li><a class="reference internal" href="#id23">2.7.2 (2021-07-05)</a></li>
+<li><a class="reference internal" href="#id24">2.7.1 (2021-07-02)</a></li>
+<li><a class="reference internal" href="#androsace-delphinensis-2021-06-30">2.7.0 - Androsace delphinensis 🌼 (2021-06-30)</a></li>
+<li><a class="reference internal" href="#id25">2.6.2 (2021-02-15)</a></li>
+<li><a class="reference internal" href="#id26">2.6.1 (2021-02-11)</a></li>
+<li><a class="reference internal" href="#saxifraga-2021-02-04">2.6.0 - Saxifraga 🌸 (2021-02-04)</a></li>
+<li><a class="reference internal" href="#id27">2.5.5 (2020-11-19)</a></li>
+<li><a class="reference internal" href="#id28">2.5.4 (2020-11-17)</a></li>
+<li><a class="reference internal" href="#id29">2.5.3 (2020-11-04)</a></li>
+<li><a class="reference internal" href="#id30">2.5.2 (2020-10-13)</a></li>
+<li><a class="reference internal" href="#id31">2.5.1 (2020-10-06)</a></li>
+<li><a class="reference internal" href="#manidae-2020-09-30">2.5.0 - Manidae (2020-09-30)</a></li>
+<li><a class="reference internal" href="#id32">2.4.1 (2020-06-25)</a></li>
+<li><a class="reference internal" href="#fiches-de-metadonnees-2020-06-22">2.4.0 - Fiches de métadonnées (2020-06-22)</a></li>
+<li><a class="reference internal" href="#id33">2.3.2 (2020-02-24)</a></li>
+<li><a class="reference internal" href="#id34">2.3.1 (2020-02-18)</a></li>
+<li><a class="reference internal" href="#occhab-de-noel-2019-12-27">2.3.0 - Occhab de Noël (2019-12-27)</a></li>
+<li><a class="reference internal" href="#id35">2.2.1 (2019-10-09)</a></li>
+<li><a class="reference internal" href="#module-utilisateurs-2019-09-18">2.2.0 - Module utilisateurs (2019-09-18)</a></li>
+<li><a class="reference internal" href="#id36">2.1.2 (2019-07-25)</a></li>
+<li><a class="reference internal" href="#id37">2.1.1 (2019-07-18)</a></li>
+<li><a class="reference internal" href="#module-validation-2019-06-01">2.1.0 - Module validation (2019-06-01)</a></li>
+<li><a class="reference internal" href="#id38">2.0.1 (2019-03-18)</a></li>
+<li><a class="reference internal" href="#la-refonte-2019-02-28">2.0.0 - La refonte (2019-02-28)</a></li>
+<li><a class="reference internal" href="#rc-4-2-2019-01-23">2.0.0-rc.4.2 (2019-01-23)</a></li>
+<li><a class="reference internal" href="#rc-4-1-2019-01-21">2.0.0-rc.4.1 (2019-01-21)</a></li>
+<li><a class="reference internal" href="#rc-4-2019-01-15">2.0.0-rc.4 (2019-01-15)</a></li>
+<li><a class="reference internal" href="#rc-3-1-2018-10-21">2.0.0-rc.3.1 (2018-10-21)</a></li>
+<li><a class="reference internal" href="#rc-3-2018-10-18">2.0.0-rc.3 (2018-10-18)</a></li>
+<li><a class="reference internal" href="#rc-2-2018-09-24">2.0.0-rc.2 (2018-09-24)</a></li>
+<li><a class="reference internal" href="#rc-1-2018-09-21">2.0.0-rc.1 (2018-09-21)</a></li>
+<li><a class="reference internal" href="#beta5-2018-07-16">2.0.0.beta5 (2018-07-16)</a></li>
+<li><a class="reference internal" href="#beta4-2018-05-25">2.0.0.beta4 (2018-05-25)</a></li>
+<li><a class="reference internal" href="#beta3-2018-03-28">2.0.0.beta3 (2018-03-28)</a></li>
+<li><a class="reference internal" href="#beta2-2018-03-16">2.0.0.beta2 (2018-03-16)</a></li>
+<li><a class="reference internal" href="#beta1-2018-02-16">2.0.0.beta1 (2018-02-16)</a></li>
+<li><a class="reference internal" href="#versions-1-2014-2018">Versions 1 (2014-2018)</a></li>
+</ul>
+</li>
+</ul>
 
-  <footer class="bd-footer">
-  </footer>
-  </body>
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=26970751"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/translations.js?v=041d0952"></script>
+    </body>
 </html>

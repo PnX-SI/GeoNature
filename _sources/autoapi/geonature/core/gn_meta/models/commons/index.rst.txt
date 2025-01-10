@@ -1,0 +1,222 @@
+geonature.core.gn_meta.models.commons
+=====================================
+
+.. py:module:: geonature.core.gn_meta.models.commons
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.models.commons.MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING
+   geonature.core.gn_meta.models.commons.cor_acquisition_framework_objectif
+   geonature.core.gn_meta.models.commons.cor_acquisition_framework_voletsinp
+   geonature.core.gn_meta.models.commons.cor_acquisition_framework_territory
+   geonature.core.gn_meta.models.commons.cor_dataset_territory
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.models.commons.DateFilterSchema
+   geonature.core.gn_meta.models.commons.MetadataFilterSchema
+   geonature.core.gn_meta.models.commons.CorAcquisitionFrameworkActor
+   geonature.core.gn_meta.models.commons.CorDatasetActor
+   geonature.core.gn_meta.models.commons.CorDatasetProtocol
+   geonature.core.gn_meta.models.commons.TBibliographicReference
+
+
+Module Contents
+---------------
+
+.. py:data:: MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING
+   :value: 5
+
+
+.. py:class:: DateFilterSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: year
+
+
+   .. py:attribute:: month
+
+
+   .. py:attribute:: day
+
+
+.. py:class:: MetadataFilterSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: unknown
+
+
+
+   .. py:attribute:: uuid
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: date
+
+
+   .. py:attribute:: person
+
+
+   .. py:attribute:: organism
+
+
+   .. py:attribute:: areas
+
+
+   .. py:attribute:: search
+
+
+   .. py:method:: convert_date(data, **kwargs)
+
+
+.. py:data:: cor_acquisition_framework_objectif
+
+.. py:data:: cor_acquisition_framework_voletsinp
+
+.. py:data:: cor_acquisition_framework_territory
+
+.. py:class:: CorAcquisitionFrameworkActor
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_acquisition_framework_actor'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cafa
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: id_organism
+
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+
+   .. py:attribute:: nomenclature_actor_role
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: organism
+
+
+.. py:class:: CorDatasetActor
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_actor'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cda
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: id_organism
+
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+
+   .. py:attribute:: nomenclature_actor_role
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: organism
+
+
+   .. py:method:: actor()
+
+
+   .. py:method:: display()
+
+
+.. py:class:: CorDatasetProtocol
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_protocol'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_cdp
+
+
+   .. py:attribute:: id_dataset
+
+
+   .. py:attribute:: id_protocol
+
+
+.. py:data:: cor_dataset_territory
+
+.. py:class:: TBibliographicReference
+
+   Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_bibliographical_references'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id_bibliographic_reference
+
+
+   .. py:attribute:: id_acquisition_framework
+
+
+   .. py:attribute:: publication_url
+
+
+   .. py:attribute:: publication_reference
+
+
