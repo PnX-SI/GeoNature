@@ -35,7 +35,7 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   {
     label: 'Profil',
     path: 'profile',
-    configEnabledField: 'ENABLE_TAB_PROFILES',
+    configEnabledField: 'ENABLE_TAB_PROFILE',
     component: TabProfileComponent,
   },
 ];

@@ -446,7 +446,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     [SYNTHESE.TAXON_SHEET]
         # Options dédiées à la fiche taxon
         # Permet d'activer ou non l'onglet "Profil"
-        ENABLE_TAB_PROFILES = true
+        ENABLE_TAB_PROFILE = true
         # Permet d'activer ou non l'onglet "Taxonomie"
         ENABLE_TAB_TAXONOMY = true
 
@@ -625,8 +625,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Encodage des fichiers importés autorisées
     ENCODAGE = ["UTF-8"]
 
-    # Bounding box des données de l'instance. 
-    # Utilisé pour lever des warning lorsque les données sont en dehors. 
+    # Bounding box des données de l'instance.
+    # Utilisé pour lever des warning lorsque les données sont en dehors.
     # Format: [XMIN, YMIN, XMAX, YMAX]
     # Par défaut: France métropolitaine incluant la Corse
     INSTANCE_BOUNDING_BOX = [-5.0, 41.0, 10.0, 51.15]
@@ -645,7 +645,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # SRID autorisés pour les fichiers en entrée
     SRID = [
-    {name = "WGS84", code = 4326}, 
+    {name = "WGS84", code = 4326},
     {name = "Lambert93", code = 2154}
     ]
     # Extensions autorisées (seul le csv est accepté actuellement)
@@ -657,7 +657,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Si le mapping des valeurs est désactivé, specifier l'identifiant du mapping qui doit être utilisé
     DEFAULT_VALUE_MAPPING_ID = 3
 
-    # rempli les valeurs de nomenclature erroné par la valeur par defaut 
+    # rempli les valeurs de nomenclature erroné par la valeur par defaut
     # Leve un warning et non une erreur sur les lignes concernées
     FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE = false
 
@@ -678,7 +678,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # Customiser le nom du fichier de rapport de l'import
     # Pour indiquer des données liés à l'import dans le nom du fichier ajouter le nom de la variable
-    # contenant cette dernière. Les variables suivantes sont accessibles : 
+    # contenant cette dernière. Les variables suivantes sont accessibles :
     # - date_create_import -> date de création de l'import
     # - dataset.dataset_name -> nom du jeu de données de destination
     # - dataset.active -> Si le jeu de données de destination est actif
@@ -705,7 +705,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
 
     # Id d'une liste de taxons permettant de restreindre l'import d'observations de taxons comprises dans cette dernière
-    # Lève une exception si un taxon n'appartenant pas à liste indiquée apparaît dans les donnés importées. 
+    # Lève une exception si un taxon n'appartenant pas à liste indiquée apparaît dans les donnés importées.
     ID_LIST_TAXA_RESTRICTION = fields.Integer(load_default=None)
 
     # URL d'accès au module d'import
