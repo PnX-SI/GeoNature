@@ -9,8 +9,9 @@ from collections import ChainMap
 import toml
 import click
 from flask.cli import run_command
+from pathlib import Path
 
-from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.env import GEONATURE_VERSION, ROOT_DIR
 from geonature.utils.module import iter_modules_dist
 from geonature import create_app
 from geonature.utils.config import config
@@ -61,7 +62,7 @@ def dev_back(ctx, host, port):
         run_command,
         host=host,
         port=port,
-        extra_files=["config/geonature_config.toml"],
+        extra_files=[Path(ROOT_DIR) / "config/geonature_config.toml"],
     )
 
 
