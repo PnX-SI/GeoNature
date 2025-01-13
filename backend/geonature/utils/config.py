@@ -33,8 +33,6 @@ try:
 except ValidationError as e:
     raise ConfigError(CONFIG_FILE, e.messages)
 
-# Handle consistency inside the frontend config
-
 config_default = {
     # disable cache for downloaded files (PDF file stat for ex)
     # TODO: use Flask.get_send_file_max_age(filename) to return 0 only for generated PDF files
