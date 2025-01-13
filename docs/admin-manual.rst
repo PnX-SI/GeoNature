@@ -2318,11 +2318,11 @@ D'autres élements sont paramètrables dans le module Synthese. La liste complè
 Module VALIDATION
 -----------------
 
-Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s'appuyant sur les données présentes dans la SYNTHESE. Le module s'appuie sur le `standard Validation <http://www.naturefrance.fr/la-reunion/protocole-de-validation>`_ du SINP et sur ses `nomenclatures officiels <http://standards-sinp.mnhn.fr/nomenclature/80-niveaux-de-validation-validation-manuelle-ou-combinee-2018-05-14/>`_.
+Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s'appuyant sur les données présentes dans la SYNTHESE. Le module s'appuie sur le `standard Validation <http://www.naturefrance.fr/la-reunion/protocole-de-validation>`_ du SINP et sur ses `nomenclatures officielles <http://standards-sinp.mnhn.fr/nomenclature/80-niveaux-de-validation-validation-manuelle-ou-combinee-2018-05-14/>`_.
 
-Afin de valider une occurrence, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale ``gn_commons.t_validations``  (`voir doc <admin-manual.html#tables-transversales>`_ ) qui impose la présence de cet UUID.
+Afin de valider une occurrence de taxons, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale ``gn_commons.t_validations``  (`voir doc <admin-manual.html#tables-transversales>`_ ) qui impose la présence de cet UUID.
 
-La table ``gn_commons.t_validations`` contient l'ensemble de l'historique de validation des occurrences. Pour une même occurrence (identifiée par un UUID unique) on peut donc retrouver plusieurs lignes dans la table correspondant au différents statuts de validation attribués à cet occurrence dans le temps.
+La table ``gn_commons.t_validations`` contient l'ensemble de l'historique de validation des occurrences de taxons. Pour une même occurrence (identifiée par un UUID unique) on peut donc retrouver plusieurs lignes dans la table correspondant aux différents statuts de validation attribués à cette occurrence dans le temps.
 
 La vue ``gn_commons.v_latest_validation`` permet de récupérer le dernier statut de validation d'une occurrence.
 
@@ -2353,10 +2353,10 @@ Gestion de l'affichage des colonnes de la liste via le paramètre ``COLUMN_LIST`
 E-mail
 ``````
 
-Il est possible de personnaliser le message du mail envoyé aux observateurs.
+Il est possible de personnaliser le message de l'email envoyé aux observateurs d'une observation quand on clique sur le bouton dédié à cela depuis la fiche détail d'une observation.
 Pour ce faire il faut modifier les  paramètres ``MAIL_BODY`` et ``MAIL_SUBJECT``
 
-Pour afficher dans le mail des données relatives à l'observation ou au taxon il faut respecter la syntaxe suivante:
+Pour afficher dans l'email des données relatives à l'observation ou au taxon il faut respecter la syntaxe suivante :
 ``${ d.NOM_PROPRIETE }``
 
 Liste des propriétés disponibles :
