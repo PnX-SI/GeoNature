@@ -939,21 +939,29 @@ def general_stats(permissions):
         .select_from(TDatasets)
         .where(TDatasets.filter_by_readable().whereclause)
     )
-    query = select(
-        func.count(Synthese.id_synthese),
-        func.count(func.distinct(Synthese.cd_nom)),
-        func.count(func.distinct(Synthese.observers)),
-    )
-    synthese_query_obj = SyntheseQuery(Synthese, query, {})
-    synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
-    result = DB.session.execute(synthese_query_obj.query)
-    synthese_counts = result.fetchone()
+    results = {"nb_allowed_datasets": nb_allowed_datasets}
+
+    queries = {
+        "nb_obs": select(
+            func.count(Synthese.id_synthese),
+        ),
+        "nb_distinct_species": select(
+            func.count(func.distinct(Synthese.cd_nom)),
+        ),
+        "nb_distinct_observer": select(
+            func.count(func.distinct(Synthese.observers)),
+        ),
+    }
+    for key, query in queries.items():
+        synthese_query = SyntheseQuery(Synthese, query, {})
+        synthese_query.filter_query_with_cruved(g.current_user, permissions)
+        results[key] = db.session.scalar(synthese_query.query)
 
     data = {
-        "nb_data": synthese_counts[0],
-        "nb_species": synthese_counts[1],
-        "nb_observers": synthese_counts[2],
-        "nb_dataset": nb_allowed_datasets,
+        "nb_data": results["nb_obs"],
+        "nb_species": results["nb_distinct_species"],
+        "nb_observers": results["nb_distinct_observer"],
+        "nb_dataset": results["nb_allowed_datasets"],
     }
     return data
 
