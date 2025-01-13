@@ -10,7 +10,7 @@ import toml
 import click
 from flask.cli import run_command
 
-from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.env import GEONATURE_VERSION, ROOT_DIR
 from geonature.utils.module import iter_modules_dist
 from geonature import create_app
 from geonature.utils.config import config
@@ -19,6 +19,8 @@ from geonature.utils.command import (
     create_frontend_module_config,
     build_frontend,
 )
+from os.path import join
+import glob
 
 from flask.cli import FlaskGroup
 
@@ -57,7 +59,13 @@ def dev_back(ctx, host, port):
     """
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
-    ctx.invoke(run_command, host=host, port=port)
+
+    ctx.invoke(
+        run_command,
+        host=host,
+        port=port,
+        extra_files=[file for file in glob.glob(join(ROOT_DIR, "config", "*.toml"))],
+    )
 
 
 @main.command()
