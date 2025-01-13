@@ -572,6 +572,7 @@ class GnGeneralSchemaConf(Schema):
     MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
+    MTD_SYNC_CRONTAB = fields.String(load_default="0 1 * * *")
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
