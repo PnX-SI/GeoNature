@@ -131,4 +131,8 @@ def insert_sensitivity_referential(source, csvfile):
 
 
 def remove_sensitivity_referential(source):
-    return db.session.execute(sa.delete(SensitivityRule).where(SensitivityRule.source == source))
+    count_source = db.session.scalar(
+        sa.select(sa.func.count(SensitivityRule.source)).where(SensitivityRule.source == source)
+    )
+    db.session.execute(sa.delete(SensitivityRule).where(SensitivityRule.source == source))
+    return count_source
