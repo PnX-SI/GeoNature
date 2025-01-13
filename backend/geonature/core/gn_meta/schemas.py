@@ -47,6 +47,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         model = TDatasets
         load_instance = True
         include_fk = True
+        exclude = ["obs_count", "hab_count"]
 
     __module_code__ = "METADATA"
 

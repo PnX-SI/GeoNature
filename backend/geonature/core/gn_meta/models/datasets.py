@@ -23,7 +23,7 @@ from ref_geo.models import LAreas
 from .commons import *
 
 
-@serializable(exclude=["user_actors", "organism_actors"])
+@serializable(exclude=["user_actors", "organism_actors", "obs_count", "hab_count"])
 class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
