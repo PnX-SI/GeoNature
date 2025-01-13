@@ -613,3 +613,13 @@ class GnGeneralSchemaConf(Schema):
                 continue
             data[module_code] = get_module_config(dist)
         return data
+
+    @post_load
+    def profile_display_coherence(self, data, **kwargs):
+        if (
+            data["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"]
+            and not data["FRONTEND"]["ENABLE_PROFILES"]
+        ):
+            data["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"] = False
+
+        return data

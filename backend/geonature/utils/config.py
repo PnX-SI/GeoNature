@@ -35,12 +35,6 @@ except ValidationError as e:
 
 # Handle consistency inside the frontend config
 
-if (
-    config_frontend["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILES"]
-    and not config_frontend["FRONTEND"]["ENABLE_PROFILES"]
-):
-    config_frontend["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILES"] = False
-
 config_default = {
     # disable cache for downloaded files (PDF file stat for ex)
     # TODO: use Flask.get_send_file_max_age(filename) to return 0 only for generated PDF files
