@@ -57,7 +57,12 @@ def dev_back(ctx, host, port):
     """
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
-    ctx.invoke(run_command, host=host, port=port)
+    ctx.invoke(
+        run_command,
+        host=host,
+        port=port,
+        extra_files=["config/geonature_config.toml"],
+    )
 
 
 @main.command()
