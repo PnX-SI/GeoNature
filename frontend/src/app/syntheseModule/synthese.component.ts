@@ -85,7 +85,6 @@ export class SyntheseComponent implements OnInit {
           this._changeDetector.detectChanges();
 
           this.loadAndStoreData(this._fs.formatParams());
-          this._fs.processedDefaultFilters['id_import'] = null;
         });
     });
   }
