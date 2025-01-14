@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { Taxon } from '@geonature_common/form/taxonomy/taxon';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable()

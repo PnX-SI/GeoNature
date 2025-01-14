@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { Taxon } from '@geonature_common/form/taxonomy/taxon';
 @Component({
   standalone: true,
   selector: 'taxonomy',

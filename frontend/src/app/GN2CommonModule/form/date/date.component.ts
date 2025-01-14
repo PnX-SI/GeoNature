@@ -11,12 +11,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { NgbDateFRParserFormatter } from './ngb-date-custom-parser-formatter';
-
-export interface DateStruc {
-  day: number;
-  month: number;
-  year: number;
-}
+import { DateStruc } from './dateStruc';
 /**
  * Ce composant permet de créer un input de type "datepicker".
  * Créé à parti de https://github.com/ng-bootstrap/ng-bootstrap

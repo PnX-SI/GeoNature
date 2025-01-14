@@ -6,12 +6,11 @@ import {
   HttpErrorResponse,
   HttpEvent,
 } from '@angular/common/http';
-import { Taxon } from './taxonomy/taxonomy.component';
 import { Observable } from 'rxjs';
 import { isArray } from 'rxjs/internal-compatibility';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
-
+import { Taxon } from './taxonomy/taxon';
 /** Interface for queryString parameters*/
 export interface ParamsDict {
   [key: string]: any;

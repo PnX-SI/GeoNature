@@ -53,6 +53,7 @@ export class MapService {
     private _commonService: CommonService,
     public config: ConfigService
   ) {
+    console.log('aa');
     this.fileLayerFeatureGroup = new L.FeatureGroup();
   }
 

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TaxonSheetService } from '@geonature/syntheseModule/taxon-sheet/taxon-sheet.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { Taxon } from '@geonature_common/form/taxonomy/taxon';
 import { BadgeSymbology } from '@geonature_common/others/badge/badge.component';
 
 interface Status {

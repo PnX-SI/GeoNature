@@ -2,7 +2,7 @@
 
 import { Injectable } from '@angular/core';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { DateStruc } from './date.component';
+import { DateStruc } from './dateStruc';
 
 function padNumber(value: number) {
   if (isNumber(value)) {

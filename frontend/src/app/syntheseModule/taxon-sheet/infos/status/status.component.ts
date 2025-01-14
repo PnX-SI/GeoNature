@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { Taxon } from '@geonature_common/form/taxonomy/taxon';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
 @Component({

@@ -13,32 +13,7 @@ import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { DataFormService } from '../data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
-
-export interface Taxon {
-  search_name?: string;
-  nom_valide?: string;
-  group2_inpn?: string;
-  regne?: string;
-  lb_nom?: string;
-  cd_nom?: number;
-  cd_ref?: number;
-  cd_sup?: number;
-  cd_taxsup?: number;
-  classe?: string;
-  famille?: string;
-  group1_inpn?: string;
-  id_rang?: string;
-  nom_complet?: string;
-  nom_habitat?: string;
-  nom_rang?: string;
-  nom_statut?: string;
-  nom_vern?: string;
-  ordre?: string;
-  phylum?: string;
-  status?: any[];
-  synonymes?: any[];
-}
-
+import { Taxon } from './taxon';
 /**
  * Ce composant permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et ``taxonomie.cor_nom_listes``.
  *

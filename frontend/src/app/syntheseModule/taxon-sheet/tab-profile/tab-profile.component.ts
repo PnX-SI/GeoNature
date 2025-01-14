@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { DataFormService, Profile } from '@geonature_common/form/data-form.service';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { Taxon } from '@geonature_common/form/taxonomy/taxon';
 import { CommonService } from '@geonature_common/service/common.service';
 import {
   computeIndicatorFromDescription,

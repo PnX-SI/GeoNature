@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ConfigService } from '@geonature/services/config.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { Taxon } from '@geonature_common/form/taxonomy/taxon';
 import { TaxonSheetService } from '../../taxon-sheet.service';
 
 @Component({
