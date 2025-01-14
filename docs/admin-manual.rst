@@ -2318,7 +2318,7 @@ D'autres élements sont paramètrables dans le module Synthese. La liste complè
 Module VALIDATION
 -----------------
 
-Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s'appuyant sur les données présentes dans la SYNTHESE. Le module s'appuie sur le `standard Validation <http://www.naturefrance.fr/la-reunion/protocole-de-validation>`_ du SINP et sur ses `nomenclatures officielles <http://standards-sinp.mnhn.fr/nomenclature/80-niveaux-de-validation-validation-manuelle-ou-combinee-2018-05-14/>`_.
+Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s'appuyant sur les données présentes dans la SYNTHESE. Le module s'appuie sur le standard Validation du SINP et sur ses `nomenclatures officielles <https://inpn.mnhn.fr/programme/donnees-observations-especes/references/validation>`_.
 
 Afin de valider une occurrence de taxons, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale ``gn_commons.t_validations``  (`voir doc <admin-manual.html#tables-transversales>`_ ) qui impose la présence de cet UUID.
 
