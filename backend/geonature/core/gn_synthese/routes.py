@@ -965,65 +965,70 @@ def general_stats(permissions):
     return data
 
 
-@routes.route("/taxon_stats/<int:cd_ref>", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-@json_resp
-def taxon_stats(scope, cd_ref):
-    """Return stats for a specific taxon"""
+## ############################################################################
+## TAXON SHEET ROUTES
+## ############################################################################
 
-    area_type = request.args.get("area_type")
+if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
-    if not area_type:
-        raise BadRequest("Missing area_type parameter")
+    @routes.route("/taxon_stats/<int:cd_ref>", methods=["GET"])
+    @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+    @json_resp
+    def taxon_stats(scope, cd_ref):
+        """Return stats for a specific taxon"""
 
-    if not TaxonSheetUtils.is_valid_area_type(area_type):
-        raise BadRequest("Invalid area_type parameter")
+        area_type = request.args.get("area_type")
+        if not area_type:
+            raise BadRequest("Missing area_type parameter")
 
-    areas_subquery = TaxonSheetUtils.get_area_subquery(area_type)
-    taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+        if not TaxonSheetUtils.is_valid_area_type(area_type):
+            raise BadRequest("Invalid area_type parameter")
 
-    # Main query to fetch stats
-    query = (
-        select(
-            [
-                func.count(distinct(Synthese.id_synthese)).label("observation_count"),
-                func.count(distinct(Synthese.observers)).label("observer_count"),
-                func.count(distinct(areas_subquery.c.id_area)).label("area_count"),
-                func.min(Synthese.altitude_min).label("altitude_min"),
-                func.max(Synthese.altitude_max).label("altitude_max"),
-                func.min(Synthese.date_min).label("date_min"),
-                func.max(Synthese.date_max).label("date_max"),
-            ]
-        )
-        .select_from(
-            sa.join(
-                Synthese,
-                CorAreaSynthese,
-                Synthese.id_synthese == CorAreaSynthese.id_synthese,
+        areas_subquery = TaxonSheetUtils.get_area_subquery(area_type)
+        taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+
+        # Main query to fetch stats
+        query = (
+            select(
+                [
+                    func.count(distinct(Synthese.id_synthese)).label("observation_count"),
+                    func.count(distinct(Synthese.observers)).label("observer_count"),
+                    func.count(distinct(areas_subquery.c.id_area)).label("area_count"),
+                    func.min(Synthese.altitude_min).label("altitude_min"),
+                    func.max(Synthese.altitude_max).label("altitude_max"),
+                    func.min(Synthese.date_min).label("date_min"),
+                    func.max(Synthese.date_max).label("date_max"),
+                ]
             )
-            .join(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area)
-            .join(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
-            .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
+            .select_from(
+                sa.join(
+                    Synthese,
+                    CorAreaSynthese,
+                    Synthese.id_synthese == CorAreaSynthese.id_synthese,
+                )
+                .join(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area)
+                .join(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
+                .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
+            )
+            .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
         )
-        .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
-    )
 
-    synthese_query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
-    result = DB.session.execute(synthese_query)
-    synthese_stats = result.fetchone()
+        synthese_query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+        result = DB.session.execute(synthese_query)
+        synthese_stats = result.fetchone()
 
-    data = {
-        "cd_ref": cd_ref,
-        "observation_count": synthese_stats["observation_count"],
-        "observer_count": synthese_stats["observer_count"],
-        "area_count": synthese_stats["area_count"],
-        "altitude_min": synthese_stats["altitude_min"],
-        "altitude_max": synthese_stats["altitude_max"],
-        "date_min": synthese_stats["date_min"],
-        "date_max": synthese_stats["date_max"],
-    }
+        data = {
+            "cd_ref": cd_ref,
+            "observation_count": synthese_stats["observation_count"],
+            "observer_count": synthese_stats["observer_count"],
+            "area_count": synthese_stats["area_count"],
+            "altitude_min": synthese_stats["altitude_min"],
+            "altitude_max": synthese_stats["altitude_max"],
+            "date_min": synthese_stats["date_min"],
+            "date_max": synthese_stats["date_max"],
+        }
 
-    return data
+        return data
 
 
 if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:

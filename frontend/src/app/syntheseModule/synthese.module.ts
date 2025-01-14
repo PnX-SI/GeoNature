@@ -41,6 +41,7 @@ const routes: Routes = [
   {
     path: 'taxon/:cd_ref',
     component: TaxonSheetComponent,
+    canActivate: [RouteService],
     canActivateChild: [RouteService],
     children: [
       {

@@ -279,9 +279,9 @@ class ExportObservationSchema(Schema):
 class TaxonSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
-    ENABLE_PROFILE = fields.Boolean(load_default=True)
-    ENABLE_TAXONOMY = fields.Boolean(load_default=True)
     ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
+    ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
+    ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
@@ -440,6 +440,7 @@ class Synthese(Schema):
 
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
+    ENABLE_TAXON_SHEETS = fields.Boolean(load_default=True)
     TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
 
     FIELD_OBSERVERS_SEPARATOR = fields.String(load_default=",")
@@ -614,4 +615,14 @@ class GnGeneralSchemaConf(Schema):
             if module_code in data["DISABLED_MODULES"]:
                 continue
             data[module_code] = get_module_config(dist)
+        return data
+
+    @post_load
+    def profile_display_coherence(self, data, **kwargs):
+        if (
+            data["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"]
+            and not data["FRONTEND"]["ENABLE_PROFILES"]
+        ):
+            data["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"] = False
+
         return data

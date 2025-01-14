@@ -191,7 +191,7 @@
       <a
         color="primary"
         class="btn btn-xs align-self-start mr-2 link-infos"
-        *ngIf="selectedObsTaxonDetail && config.FRONTEND['ENABLE_PROFILES']"
+        *ngIf="selectedObsTaxonDetail && config.SYNTHESE.ENABLE_TAXON_SHEETS"
         [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
         target="_blank"
         mat-stroked-button
