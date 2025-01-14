@@ -988,9 +988,8 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
         # Subquery to fetch areas based on area_type
         areas_subquery = (
-            select([LAreas.id_area])
-            .where(LAreas.id_type == BibAreasTypes.id_type)
-            .where(BibAreasTypes.type_code == area_type)
+            select(LAreas.id_area)
+            .where(LAreas.id_type == BibAreasTypes.id_type, BibAreasTypes.type_code == area_type)
             .alias("areas")
         )
         cd_ref = db.session.scalar(select(Taxref.cd_ref).where(Taxref.cd_nom == cd_nom))
