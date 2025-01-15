@@ -104,7 +104,7 @@ cligj==0.7.2
     # via fiona
 contourpy==1.3.0
     # via bokeh
-cryptography==44.0.0
+cryptography==43.0.3
     # via authlib
 cssselect2==0.7.0
     # via weasyprint
@@ -180,7 +180,9 @@ flask-wtf==1.2.2
     #   -r requirements-common.in
     #   usershub
 fonttools[woff]==4.55.3
-    # via weasyprint
+    # via
+    #   fonttools
+    #   weasyprint
 geoalchemy2==0.16.0
     # via utils-flask-sqlalchemy-geo
 geojson==3.2.0
