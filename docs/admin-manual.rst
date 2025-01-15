@@ -521,7 +521,7 @@ Pour chaque taxon (cd_ref) disposant de données dans la vue ``gn_profiles.v_syn
 
 Ces profils sont déclinés sur :
 
-- Le module de validation permet d'attirer l'attention des validateurs sur les données qui sortent du "cadre" déjà connu pour le taxon considéré, et d'apporter des éléments de contexte en complément de la donnée en cours de validation
+- Le module Validation permet d'attirer l'attention des validateurs sur les données qui sortent du "cadre" déjà connu pour le taxon considéré, et d'apporter des éléments de contexte en complément de la donnée en cours de validation
 - Le module Synthèse (fiche d'information, onglet validation) permet d'apporter des éléments de contexte en complément des données brutes consultées
 - Le module Occtax permet d'alerter les utilisateurs lors de la saisie de données qui sortent du "cadre" déjà connu pour un taxon considéré
 - Le processus de validation automatique permet de valider automatiquement les observations respectant le profil de taxons (non activé par défaut).
@@ -2318,7 +2318,7 @@ D'autres élements sont paramètrables dans le module Synthese. La liste complè
 Module VALIDATION
 -----------------
 
-Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s'appuyant sur les données présentes dans la SYNTHESE. Le module s'appuie sur le standard Validation du SINP et sur ses `nomenclatures officielles <https://inpn.mnhn.fr/programme/donnees-observations-especes/references/validation>`_.
+Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature (mais optionnel) permet de valider des occurrences de taxon en s'appuyant sur les données présentes dans la SYNTHESE. Le module s'appuie sur le standard Validation du SINP et sur ses `nomenclatures officielles <https://inpn.mnhn.fr/programme/donnees-observations-especes/references/validation>`_.
 
 Afin de valider une occurrence de taxons, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale ``gn_commons.t_validations``  (`voir doc <admin-manual.html#tables-transversales>`_ ) qui impose la présence de cet UUID.
 
@@ -2366,6 +2366,8 @@ Liste des propriétés disponibles :
 - data_link : lien vers l'observation dans son module de saisie
 - tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)
 - tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)
+
+Il est aussi possible de modifier la structure du message de notification envoyé automatiquement à un observateur quand une de ses observations voit son statut de validation modifié, dans la table `gn_notifications.bib_notifications_templates`.
 
 Validation automatique
 """"""""""""""""""""""
