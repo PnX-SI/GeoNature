@@ -1041,7 +1041,6 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
 
     @routes.route("/taxon_observers/<int:cd_ref>", methods=["GET"])
     @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-    @json_resp
     def taxon_observers(scope, cd_ref):
         per_page = request.args.get("per_page", 10, int)
         page = request.args.get("page", 1, int)
