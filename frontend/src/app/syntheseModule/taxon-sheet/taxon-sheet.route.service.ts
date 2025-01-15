@@ -4,6 +4,7 @@ import {
   RouterStateSnapshot,
   Router,
   CanActivateChild,
+  CanActivate
 } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
 import { Observable } from 'rxjs';
@@ -28,13 +29,13 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   {
     label: 'Taxonomie',
     path: 'taxonomy',
-    configEnabledField: 'ENABLE_TAXONOMY',
+    configEnabledField: 'ENABLE_TAB_TAXONOMY',
     component: TabTaxonomyComponent,
   },
   {
     label: 'Profil',
     path: 'profile',
-    configEnabledField: 'ENABLE_PROFILE',
+    configEnabledField: 'ENABLE_TAB_PROFILE',
     component: TabProfileComponent,
   },
 ];
@@ -42,7 +43,7 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
 @Injectable({
   providedIn: 'root',
 })
-export class RouteService implements CanActivateChild {
+export class RouteService implements CanActivate, CanActivateChild {
   readonly TAB_LINKS = [];
   constructor(
     private _config: ConfigService,
@@ -55,11 +56,19 @@ export class RouteService implements CanActivateChild {
       );
     }
   }
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean  {
+    if(!this._config.SYNTHESE.ENABLE_TAXON_SHEETS){
+      this._router.navigate(['/404'], { skipLocationChange: true });
+      return false;
+    }
+
+    return true;
+  }
 
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
+  ): boolean {
     const targetedPath = childRoute.routeConfig.path;
     if (this.TAB_LINKS.map((tab) => tab.path).includes(targetedPath)) {
       return true;
