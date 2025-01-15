@@ -6,17 +6,11 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HomeDiscussionsService } from '../home-discussions.service';
-
-interface PaginationItem {
-  totalItems: number;
-  currentPage: number;
-  perPage: number;
-}
-
-interface SortingItem {
-  sort: 'asc' | 'desc';
-  orderby: string;
-}
+import { SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import {
+  SORT_ORDER,
+  SyntheseDataSortItem,
+} from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 
 @Component({
   standalone: true,
@@ -32,19 +26,19 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   readonly PROP_CONTENT = 'content';
   readonly PROP_OBSERVATION = 'observation';
 
-  readonly DEFAULT_PAGINATION: PaginationItem = {
+  readonly DEFAULT_PAGINATION: SyntheseDataPaginationItem = {
     totalItems: 0,
     currentPage: 1,
     perPage: 4,
   };
-  readonly DEFAULT_SORTING: SortingItem = {
-    sort: 'desc',
-    orderby: this.PROP_CREATION_DATE,
+  readonly DEFAULT_SORTING: SyntheseDataSortItem = {
+    sortOrder: SORT_ORDER.DESC,
+    sortBy: this.PROP_CREATION_DATE,
   };
 
   discussions = [];
-  pagination: PaginationItem = this.DEFAULT_PAGINATION;
-  sort: SortingItem = this.DEFAULT_SORTING;
+  pagination: SyntheseDataPaginationItem = this.DEFAULT_PAGINATION;
+  sort: SyntheseDataSortItem = this.DEFAULT_SORTING;
 
   private destroy$ = new Subject<void>();
 
@@ -78,8 +72,8 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
 
   onColumnSort(event: any) {
     this.sort = {
-      sort: event.newValue,
-      orderby: event.column.prop,
+      sortBy: event.newValue,
+      sortOrder: event.column.prop,
     };
     this.pagination.currentPage = 1;
     this._fetchDiscussions();
@@ -106,8 +100,8 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   private _buildQueryParams(): URLSearchParams {
     const params = new URLSearchParams();
     params.set('type', 'discussion');
-    params.set('sort', this.sort.sort);
-    params.set('orderby', this.sort.orderby);
+    params.set('sort', this.sort.sortOrder);
+    params.set('orderby', this.sort.sortBy);
     params.set('page', this.pagination.currentPage.toString());
     params.set('per_page', this.pagination.perPage.toString());
     params.set('my_reports', this._myReportsOnly.toString());
