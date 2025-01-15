@@ -378,10 +378,6 @@ export class FieldMappingService {
   }
 
   onFieldMappingChange(value: any, oldValue: any) {
-    console.log('test1');
-    console.log(value);
-    console.log(oldValue);
-    console.log('test2');
     if (value) {
       this.fieldMappingStatus.mapped.add(value);
       this.fieldMappingStatus.unmapped.delete(value);
