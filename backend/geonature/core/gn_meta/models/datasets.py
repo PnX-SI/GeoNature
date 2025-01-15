@@ -23,7 +23,7 @@ from ref_geo.models import LAreas
 from .commons import *
 
 
-@serializable(exclude=["user_actors", "organism_actors", "obs_count", "hab_count"])
+@serializable(exclude=["user_actors", "organism_actors"])
 class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
@@ -138,27 +138,6 @@ class TDatasets(db.Model):
     @hybrid_property
     def organism_actors(self):
         return [actor.organism for actor in self.cor_dataset_actor if actor.organism is not None]
-
-    @hybrid_property
-    def obs_count(self):
-        from geonature.core.gn_synthese.models import Synthese
-
-        return db.session.scalar(
-            select(func.count(Synthese.id_synthese))
-            .select_from(Synthese)
-            .where(Synthese.id_dataset == self.id_dataset)
-        )
-
-    @hybrid_property
-    def hab_count(self):
-        from gn_module_occhab.models import OccurenceHabitat, Station
-
-        return db.session.scalar(
-            select(func.count(OccurenceHabitat.id_habitat))
-            .select_from(OccurenceHabitat)
-            .where(Station.id_station == OccurenceHabitat.id_station)
-            .where(Station.id_dataset == self.id_dataset)
-        )
 
     def is_deletable(self):
         return not DB.session.execute(self.synthese_records.exists().select()).scalar()

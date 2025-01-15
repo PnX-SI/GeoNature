@@ -21,6 +21,7 @@ import { ConfigService } from '@geonature/services/config.service';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 
+console.log('HAAAAAAAAAAAAAAAAAA');
 @Injectable()
 export class NominatimService {
   PARAMS = null;

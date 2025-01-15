@@ -6,6 +6,7 @@ from marshmallow_sqlalchemy.fields import Nested
 
 from geonature.utils.env import db, ma
 from geonature.utils.schema import CruvedSchemaMixin
+
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 

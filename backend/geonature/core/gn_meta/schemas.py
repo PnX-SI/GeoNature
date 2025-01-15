@@ -1,3 +1,4 @@
+from geonature.utils.config import config
 from sqlalchemy import inspect
 from marshmallow import pre_load, post_dump, fields, EXCLUDE
 from flask import g
@@ -47,7 +48,6 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         model = TDatasets
         load_instance = True
         include_fk = True
-        exclude = ["obs_count", "hab_count"]
 
     __module_code__ = "METADATA"
 
@@ -68,8 +68,6 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
-    obs_count = fields.Int(dump_only=True)
-    hab_count = fields.Int(dump_only=True)
 
     @post_dump(pass_many=False, pass_original=True)
     def module_input(self, item, original, many, **kwargs):

@@ -1,16 +1,16 @@
 from datetime import datetime
 
+from geonature.core.gn_meta.models.datasets import TDatasets as Dataset
+from geonature.core.gn_meta.schemas import DatasetSchema
 import sqlalchemy as sa
 from flask import g
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, synonym, deferred
+from sqlalchemy.orm import relationship, synonym, deferred, column_property
 from sqlalchemy.schema import FetchedValue, UniqueConstraint
 from sqlalchemy.sql import func, select
 
-
-from geonature.core.gn_meta.models import TDatasets as Dataset
 from geonature.core.imports.models import TImports as Import
 from geonature.utils.env import db
 from pypnnomenclature.models import TNomenclatures as Nomenclature
@@ -241,3 +241,18 @@ class DefaultNomenclatureValue(db.Model):
     mnemonique_type = db.Column(db.Integer, primary_key=True)
     id_organism = db.Column(db.Integer, primary_key=True)
     id_nomenclature = db.Column(db.Integer, primary_key=True)
+
+
+Dataset.occhab_records_count = column_property(
+    select(func.count(OccurenceHabitat.id_habitat))
+    .select_from(OccurenceHabitat)
+    .where(Station.id_station == OccurenceHabitat.id_station)
+    .where(Station.id_dataset == Dataset.id_dataset)
+    .scalar_subquery()
+    .label("occhab_records_count"),
+    deferred=True,
+)
+
+
+class DatasetSchema(DatasetSchema):
+    pass
