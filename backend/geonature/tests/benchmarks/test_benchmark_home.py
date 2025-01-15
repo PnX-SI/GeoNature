@@ -20,5 +20,11 @@ class TestBenchmarkHome:
     test_general_stats = BenchmarkTest(
         CLIENT_GET,
         [CLater("""url_for("gn_synthese.general_stats")""")],
+        dict(user_profile="user", fixtures=[]),
+    )()
+
+    test_general_stats_admin = BenchmarkTest(
+        CLIENT_GET,
+        [CLater("""url_for("gn_synthese.general_stats")""")],
         dict(user_profile="admin_user", fixtures=[]),
     )()

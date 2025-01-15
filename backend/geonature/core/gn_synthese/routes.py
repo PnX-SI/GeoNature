@@ -947,16 +947,17 @@ def general_stats(permissions):
             func.count(Synthese.id_synthese),
         ),
         "nb_distinct_species": select(
-            func.count(func.distinct(Synthese.cd_nom)),
+            func.distinct(Synthese.cd_nom),
         ),
-        "nb_distinct_observer": select(
-            func.count(func.distinct(Synthese.observers)),
-        ),
+        "nb_distinct_observer": select(func.distinct(Synthese.observers)),
     }
+
     for key, query in queries.items():
         synthese_query = SyntheseQuery(Synthese, query, {})
-        synthese_query.filter_query_with_cruved(g.current_user, permissions)
-        results[key] = db.session.scalar(synthese_query.query)
+        synthese_query.filter_query_with_permissions(g.current_user, permissions)
+        results[key] = db.session.scalar(
+            sa.select(func.count("*")).select_from(synthese_query.query)
+        )
 
     data = {
         "nb_data": results["nb_obs"],
@@ -1561,7 +1562,7 @@ def list_all_reports(permissions):
     # On vérifie les permissions en lecture sur la synthese
     synthese_query = select(Synthese.id_synthese).select_from(Synthese)
     synthese_query_obj = SyntheseQuery(Synthese, synthese_query, {})
-    synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
+    synthese_query_obj.filter_query_with_permissions(g.current_user, permissions)
     cte_synthese = synthese_query_obj.query.cte("cte_synthese")
     query = query.where(TReport.id_synthese == cte_synthese.c.id_synthese)
 
