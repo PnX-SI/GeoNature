@@ -204,10 +204,11 @@ class SyntheseQuery:
         where_clause = self.build_permissions_filter(user=user, permissions=permissions)
         self.query = self.query.where(where_clause)
 
-    def filter_query_with_cruved(self, user, scope):
+    def filter_query_with_cruved(self, user, scope: int):
         """
         Filter the query with the cruved authorization of a user
         """
+        assert isinstance(scope, int)
         if scope in (1, 2):
             # get id synthese where user is observer
             subquery_observers = (

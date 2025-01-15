@@ -89,7 +89,6 @@ from apptax.taxonomie.models import (
 
 from geonature import app
 
-
 routes = Blueprint("gn_synthese", __name__)
 
 
@@ -946,21 +945,28 @@ def general_stats(permissions):
         .select_from(TDatasets)
         .where(TDatasets.filter_by_readable().whereclause)
     )
-    query = select(
-        func.count(Synthese.id_synthese),
-        func.count(func.distinct(Synthese.cd_nom)),
-        func.count(func.distinct(Synthese.observers)),
-    )
-    synthese_query_obj = SyntheseQuery(Synthese, query, {})
-    synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
-    result = DB.session.execute(synthese_query_obj.query)
-    synthese_counts = result.fetchone()
+    results = {"nb_allowed_datasets": nb_allowed_datasets}
+
+    queries = {
+        "nb_obs": select(Synthese.id_synthese),
+        "nb_distinct_species": select(
+            func.distinct(Synthese.cd_nom),
+        ),
+        "nb_distinct_observer": select(func.distinct(Synthese.observers)),
+    }
+
+    for key, query in queries.items():
+        synthese_query = SyntheseQuery(Synthese, query, {})
+        synthese_query.filter_query_with_permissions(g.current_user, permissions)
+        results[key] = db.session.scalar(
+            sa.select(func.count("*")).select_from(synthese_query.query)
+        )
 
     data = {
-        "nb_data": synthese_counts[0],
-        "nb_species": synthese_counts[1],
-        "nb_observers": synthese_counts[2],
-        "nb_dataset": nb_allowed_datasets,
+        "nb_data": results["nb_obs"],
+        "nb_species": results["nb_distinct_species"],
+        "nb_observers": results["nb_distinct_observer"],
+        "nb_dataset": results["nb_allowed_datasets"],
     }
     return data
 
@@ -1035,7 +1041,7 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
 
     @routes.route("/taxon_observers/<int:cd_ref>", methods=["GET"])
     @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-    # @json_resp
+    @json_resp
     def taxon_observers(scope, cd_ref):
         per_page = request.args.get("per_page", 10, int)
         page = request.args.get("page", 1, int)
@@ -1590,7 +1596,7 @@ def list_all_reports(permissions):
     # On vérifie les permissions en lecture sur la synthese
     synthese_query = select(Synthese.id_synthese).select_from(Synthese)
     synthese_query_obj = SyntheseQuery(Synthese, synthese_query, {})
-    synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
+    synthese_query_obj.filter_query_with_permissions(g.current_user, permissions)
     cte_synthese = synthese_query_obj.query.cte("cte_synthese")
     query = query.where(TReport.id_synthese == cte_synthese.c.id_synthese)
 

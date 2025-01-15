@@ -298,14 +298,6 @@
                             {% if dataset['dataset_name']: %}
                             {{ dataset['dataset_name'] }}
                             {% endif %}
-                            <br>
-                            {% if dataset['obs_count'] > 0: %}
-                            Nombre d'observations dans la Synthèse : {{ dataset['obs_count'] }}
-                            {% endif %}
-                            <br>
-                            {% if dataset['hab_count'] > 0: %}
-                            Nombre d'habitats dans occhab : {{ dataset['hab_count'] }}
-                            {% endif %}
                         </p>
                     </div>
                     {%- endfor %}

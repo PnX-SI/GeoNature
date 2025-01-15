@@ -1,27 +1,45 @@
 # CHANGELOG
 
-## 2.15.1 (unreleased)
+## 2.15.2 (2025-01-15)
 
 **🚀 Nouveautés**
 
-- Amélioration de la recherche libre des métadonnées en cherchant chaque mot indépendamment (#3295, par @jbrieuclp)
-- Amélioration de l'affichage de la photo du taxon sur les fiches taxon (#3287, par @edelclaux)
-- Conversion du changelog en format markdown (#3297, par @jacquesfize)
-- Ajout d'un fichier `Makefile` pour faciliter l'usage des commandes de développement (#3300, par @jacquesfize & @edelclaux)
-- Complément et mise en forme de la documentation et publication sur Readthedocs (#3306, par @jacquesfize)
-- Ajout des nouvelles mailles INPN lors de l'installation de GeoNature (#3293, par @jacquesfize)
+- [Accueil] Optimisation du calcul des statistiques (#3309, par @dba-sig-sfepm et @jacquesfize)
+- [Profils de taxon] Amélioration, homogénéisation et mise en cohérence des paramètres d'activation ou non des profils de taxons (#3311, par @edelclaux)
+- [TaxHub] Mise à jour de TaxHub en version 2.1.1 (#3321, par @amandine-sahl et @jacquesfize)
+- [Documentation] Compléments de la documentation du module Validation et de la sensibilité (#3317, par @camillemonchicourt)
+- [Développement] Redémarrage automatique du backend quand un fichier de configuration `.toml` est modifié (#3316, par @jacquesfize)
 
 **🐛 Corrections**
 
-- Correction de la pagination quand on filtre les discussions de la page d'accueil sur "Mes discussions" (#3288, par @edelclaux)
-- Correction du nombre de taxons sur les fiches des cadres d'acquisition (#3228, par @jacquesfize)
-- Correction de la redirection de l'authentification (#3305, par @jacquesfize)
-- Correction des performances de la requête de récupération des discussions (#3307, par @jacquesfize)
-- [Import] Correction de l'export des rapports d'import Occhab (#3293, par @jacquesfize)
-- [Import] Correction de la selection automatique du JDD lors de l'import depuis la fiche d'un JDD (#3293, par @jacquesfize)
+- [Accueil] Correction de la prise en compte de la portée des permissions dans le calcul des statistiques (#3166, par @jacquesfize et @edelclaux)
+- [Sensibilité] Correction du comptage du nombre de règles supprimées dans la commande `geonature sensitivity remove-referential` (#3323, par @jacquesfize)
+- [Synthèse] Correction de la disparition du filtre par `id_import` après l'affichage d'une fiche observation (par @jacquesfize)
+- [Authentification] Correction des redirections du module Admin lors de l'authentification (#3322, par @jacquesfize)
+- Correction d'une régression de performances de la récupération des JDD, introduite dans la 2.15.1 (#3320, par @Pierre-Narcisi)
+
+## 2.15.1 (2025-01-10)
+
+**🚀 Nouveautés**
+
+- [Métadonnées] Amélioration de la recherche libre des métadonnées en cherchant chaque mot indépendamment (#3295, par @jbrieuclp)
+- [FicheTaxon] Amélioration de l'affichage de la photo du taxon sur les fiches taxon (#3287, par @edelclaux)
+- [Documentation] Conversion du changelog en format markdown (#3297, par @jacquesfize)
+- [Documentation] Complément et mise en forme de la documentation et publication sur Readthedocs (#3306, par @jacquesfize)
+- [Développement] Ajout d'un fichier `Makefile` pour faciliter l'usage des commandes de développement (#3300, par @jacquesfize & @edelclaux)
+- [Installation] Ajout des nouvelles mailles INPN lors de l'installation de GeoNature (#3293, par @jacquesfize)
+
+**🐛 Corrections**
+
+- [Discussions] Correction de la pagination quand on filtre les discussions de la page d'accueil sur "Mes discussions" (#3288, par @edelclaux)
+- [Discussions] Correction des performances de la requête de récupération des discussions (#3307, par @jacquesfize)
+- [Métadonnées] Correction du nombre de taxons sur les fiches des cadres d'acquisition (#3228, par @jacquesfize)
+- [Authentification] Correction des redirections lors de l'authentification (#3305, par @jacquesfize)
+- [Import] Correction de la sélection automatique du JDD lors de l'import depuis la fiche d'un JDD (#3293, par @jacquesfize)
 - [Import] Correction de la mise à jour des mappings publics (#3293, par @jacquesfize)
 - [Import] Correction de la sauvegarde des checkbox dans le mapping des champs (#3293, par @Pierre-Narcisi)
 - [Import] Correction de la sélection des champs `auto_generate` (#3293, par @Pierre-Narcisi)
+- [Import] Correction du template des notifications d'un import terminé (#3310 par @jacquesfize)
 
 ## 2.15.0 - Pavo cristatus 🦚 (2025-12-11)
 

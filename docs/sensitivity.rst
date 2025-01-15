@@ -73,8 +73,10 @@ que l’un des critères ou l’une des zones correspond à l’observation.
 Si des règles de sensibilité sont définies avec des conditions de critères 
 sur une nomenclature (Statut biologique ou Comportement), 
 alors ces règles sont appliquées aussi si la nomenclature n'est pas renseignée 
-(par principe de précaution), en dupliquant les règles pour les valeurs de 
-nomenclature "Non renseigné", "Ne sait pas", "Indéterminé",... (https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54).
+(par principe de précaution), en associant aussi des critères à ces règles 
+(dans la table `gn_sensitivity.cor_sensitivity_criteria`) pour les valeurs 
+de nomenclature "Non renseigné", "Ne sait pas", "Indéterminé",... 
+(https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54).
 
 Certaines règles sont définies non pas pour une espèce donnée mais pour un
 rang supérieur. Ces règles sont artificiellement dupliquées pour chaques espèces
