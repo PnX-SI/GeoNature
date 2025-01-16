@@ -292,6 +292,7 @@ class ExportObservationSchema(Schema):
 class TaxonSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
+    ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
     ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
     ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
 
@@ -454,6 +455,8 @@ class Synthese(Schema):
     # SYNTHESE - TAXON_SHEET
     ENABLE_TAXON_SHEETS = fields.Boolean(load_default=True)
     TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
+
+    FIELD_OBSERVERS_SEPARATOR = fields.String(load_default=",")
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):

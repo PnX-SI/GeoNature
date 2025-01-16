@@ -1144,28 +1144,28 @@ class TestSynthese:
 
         # Missing area_type parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID),
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID),
         )
         assert response.status_code == 400
         assert response.json["description"] == "Missing area_type parameter"
 
         # Invalid area_type parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID, area_type=AREA_TYPE_INVALID),
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_INVALID),
         )
         assert response.status_code == 400
-        assert response.json["description"] == "Invalid area_type"
+        assert response.json["description"] == "Invalid area_type parameter"
 
         # Invalid cd_ref parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_INVALID, area_type=AREA_TYPE_VALID),
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_INVALID, area_type=AREA_TYPE_VALID),
         )
         assert response.status_code == 200
         assert response.get_json() == CD_REF_INVALID_STATS
 
         # Invalid cd_ref parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID, area_type=AREA_TYPE_VALID),
+            url_for("gn_synthese.taxon_stats", cd_ref=CD_REF_VALID, area_type=AREA_TYPE_VALID),
         )
         response_json = response.get_json()
         assert response.status_code == 200
@@ -1224,6 +1224,126 @@ class TestSynthese:
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == Forbidden.code
+
+    def test_taxon_observer(self, synthese_data, users):
+        set_logged_user(self.client, users["stranger_user"])
+
+        ## Test Data
+
+        SORT_ORDER_UNDEFINED = "sort-order-undefined"
+        SORT_ORDER_ASC = "asc"
+        SORT_ORDER_DESC = "desc"
+        PER_PAGE = 2
+        SORT_BY_UNDEFINED = "sort-by-undefined"
+
+        CD_REF = 2497
+        CD_REF_OBSERVERS_ASC = {
+            "items": [
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "Administrateur Test",
+                },
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "Bob Bobby",
+                },
+            ],
+            "page": 1,
+            "per_page": 2,
+            "total": 2,
+        }
+        CD_REF_OBSERVERS_DESC = {
+            "items": [
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "Bob Bobby",
+                },
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "Administrateur Test",
+                },
+            ],
+            "page": 1,
+            "per_page": 2,
+            "total": 2,
+        }
+
+        ## sort_order
+
+        # Unknow sort_order parameters: shoudl fallback in asc
+        response = self.client.get(
+            url_for(
+                "gn_synthese.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+                sort_order=SORT_ORDER_UNDEFINED,
+            ),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS_ASC
+
+        # sort order ASC
+        response = self.client.get(
+            url_for(
+                "gn_synthese.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+                sort_order=SORT_ORDER_ASC,
+            ),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS_ASC
+
+        # sort order DESC
+        response = self.client.get(
+            url_for(
+                "gn_synthese.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+                sort_order=SORT_ORDER_DESC,
+            ),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS_DESC
+
+        ## sort_by
+        response = self.client.get(
+            url_for(
+                "gn_synthese.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+                sort_order=SORT_ORDER_ASC,
+                sort_by=SORT_BY_UNDEFINED,
+            ),
+        )
+        assert response.status_code == BadRequest.code
+        assert (
+            response.json["description"] == f"The sort_by column {SORT_BY_UNDEFINED} is not defined"
+        )
+
+        # Ok
+        response = self.client.get(
+            url_for(
+                "gn_synthese.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+            )
+        )
+
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS_ASC
 
     def test_color_taxon(self, synthese_data, users):
         # Note: require grids 5×5!
