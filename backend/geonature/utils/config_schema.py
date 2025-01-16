@@ -177,6 +177,16 @@ class AuthenticationConfig(Schema):
             ProviderConfigurationSchema().load(provider, unknown=INCLUDE)
 
 
+class AuthenticationFrontendConfig(AuthenticationConfig):
+
+    @post_load
+    def post_load(self, data, **kwargs):
+        data["PROVIDERS"] = [
+            {"id_provider": provider["id_provider"]} for provider in data["PROVIDERS"]
+        ]
+        return data
+
+
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
@@ -208,6 +218,9 @@ class GnPySchemaConf(Schema):
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
+    AUTHENTICATION = fields.Nested(
+        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
+    )
 
     @post_load()
     def folders(self, data, **kwargs):
@@ -579,7 +592,9 @@ class GnGeneralSchemaConf(Schema):
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
     AUTHENTICATION = fields.Nested(
-        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
+        AuthenticationFrontendConfig,
+        load_default=AuthenticationFrontendConfig().load({}),
+        unknown=INCLUDE,
     )
 
     @validates_schema
