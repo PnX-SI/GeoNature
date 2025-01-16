@@ -181,10 +181,9 @@ class AuthenticationFrontendConfig(AuthenticationConfig):
 
     @post_load
     def post_load(self, data, **kwargs):
-        new_providers_list = []
-        for provider in data["PROVIDERS"]:
-            new_providers_list.append({"id_provider": provider["id_provider"]})
-        data["PROVIDERS"] = new_providers_list
+        data["PROVIDERS"] = [
+            {"id_provider": provider["id_provider"]} for provider in data["PROVIDERS"]
+        ]
         return data
 
 

@@ -16,7 +16,8 @@
 - [Sensibilité] Correction du comptage du nombre de règles supprimées dans la commande `geonature sensitivity remove-referential` (#3323, par @jacquesfize)
 - [Synthèse] Correction de la disparition du filtre par `id_import` après l'affichage d'une fiche observation (par @jacquesfize)
 - [Authentification] Correction des redirections du module Admin lors de l'authentification (#3322, par @jacquesfize)
-- Correction d'une régression de performances de la récupération des JDD, introduite dans la 2.15.1 (#3320, par @Pierre-Narcisi)
+- [Métadonnées] Correction d'une régression de performances de la récupération des JDD, introduite dans la 2.15.1 (#3320, par @Pierre-Narcisi)
+- [Authentification] La configuration des providers n'est plus accessible depuis la route `gn_commons/config` (#3330 par @jacquesfize)
 
 ## 2.15.1 (2025-01-10)
 
