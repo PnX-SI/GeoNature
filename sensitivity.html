@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Gestion de la sensibilité - Documentation GeoNature 2.15.1</title>
+        <title>Gestion de la sensibilité - Documentation GeoNature 2.15.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.1</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -504,8 +504,10 @@ que l’un des critères ou l’une des zones correspond à l’observation.</p>
 <p>Si des règles de sensibilité sont définies avec des conditions de critères
 sur une nomenclature (Statut biologique ou Comportement),
 alors ces règles sont appliquées aussi si la nomenclature n’est pas renseignée
-(par principe de précaution), en dupliquant les règles pour les valeurs de
-nomenclature « Non renseigné », « Ne sait pas », « Indéterminé »,… (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54">https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54</a>).</p>
+(par principe de précaution), en associant aussi des critères à ces règles
+(dans la table <cite>gn_sensitivity.cor_sensitivity_criteria</cite>) pour les valeurs
+de nomenclature « Non renseigné », « Ne sait pas », « Indéterminé »,…
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54">https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54</a>).</p>
 <p>Certaines règles sont définies non pas pour une espèce donnée mais pour un
 rang supérieur. Ces règles sont artificiellement dupliquées pour chaques espèces
 sous-jacentes dans la vue matérialisée <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules_cd_ref</span></code>.
@@ -760,7 +762,7 @@ que l’observation est floutée au département par exemple.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=26970751"></script>
+</div><script src="_static/documentation_options.js?v=116f8d3b"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

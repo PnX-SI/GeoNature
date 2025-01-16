@@ -128,12 +128,6 @@ Module Contents
    .. py:attribute:: sources
 
 
-   .. py:attribute:: obs_count
-
-
-   .. py:attribute:: hab_count
-
-
    .. py:method:: module_input(item, original, many, **kwargs)
 
 

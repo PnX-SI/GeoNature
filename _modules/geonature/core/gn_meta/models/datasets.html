@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_meta.models.datasets - Documentation GeoNature 2.15.1</title>
+        <title>geonature.core.gn_meta.models.datasets - Documentation GeoNature 2.15.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.15.1</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -697,33 +697,6 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">actor</span><span class="o">.</span><span class="n">organism</span> <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cor_dataset_actor</span> <span class="k">if</span> <span class="n">actor</span><span class="o">.</span><span class="n">organism</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
 
 
-    <span class="nd">@hybrid_property</span>
-<div class="viewcode-block" id="TDatasets.obs_count">
-<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/models/index.html#geonature.core.gn_commons.models.TDatasets.obs_count">[docs]</a>
-    <span class="k">def</span> <span class="nf">obs_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.models</span> <span class="kn">import</span> <span class="n">Synthese</span>
-
-        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span>
-            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">))</span>
-            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">)</span>
-        <span class="p">)</span></div>
-
-
-    <span class="nd">@hybrid_property</span>
-<div class="viewcode-block" id="TDatasets.hab_count">
-<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/models/index.html#geonature.core.gn_commons.models.TDatasets.hab_count">[docs]</a>
-    <span class="k">def</span> <span class="nf">hab_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">gn_module_occhab.models</span> <span class="kn">import</span> <span class="n">OccurenceHabitat</span><span class="p">,</span> <span class="n">Station</span>
-
-        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span>
-            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">OccurenceHabitat</span><span class="o">.</span><span class="n">id_habitat</span><span class="p">))</span>
-            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">OccurenceHabitat</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Station</span><span class="o">.</span><span class="n">id_station</span> <span class="o">==</span> <span class="n">OccurenceHabitat</span><span class="o">.</span><span class="n">id_station</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Station</span><span class="o">.</span><span class="n">id_dataset</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">)</span>
-        <span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="TDatasets.is_deletable">
 <a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/models/index.html#geonature.core.gn_commons.models.TDatasets.is_deletable">[docs]</a>
     <span class="k">def</span> <span class="nf">is_deletable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1005,7 +978,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=26970751"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=116f8d3b"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

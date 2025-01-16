@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Développement" href="development.html" /><link rel="prev" title="Manuel utilisateur" href="user-manual.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Manuel administrateur - Documentation GeoNature 2.15.1</title>
+        <title>Manuel administrateur - Documentation GeoNature 2.15.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.1</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -895,7 +895,7 @@ geonature<span class="w"> </span>permissions<span class="w"> </span>supergrant<s
 <p>Pour chaque taxon (cd_ref) disposant de données dans la vue <code class="docutils literal notranslate"><span class="pre">gn_profiles.v_synthese_for_profiles</span></code> (vue filtrée basée sur la synthèse de l’instance), un profil est généré. Il comporte l’aire d’occurrence, les limites altitudinales et les combinaisons phénologiques jugées cohérentes sur la base des données disponibles.</p>
 <p>Ces profils sont déclinés sur :</p>
 <ul class="simple">
-<li><p>Le module de validation permet d’attirer l’attention des validateurs sur les données qui sortent du « cadre » déjà connu pour le taxon considéré, et d’apporter des éléments de contexte en complément de la donnée en cours de validation</p></li>
+<li><p>Le module Validation permet d’attirer l’attention des validateurs sur les données qui sortent du « cadre » déjà connu pour le taxon considéré, et d’apporter des éléments de contexte en complément de la donnée en cours de validation</p></li>
 <li><p>Le module Synthèse (fiche d’information, onglet validation) permet d’apporter des éléments de contexte en complément des données brutes consultées</p></li>
 <li><p>Le module Occtax permet d’alerter les utilisateurs lors de la saisie de données qui sortent du « cadre » déjà connu pour un taxon considéré</p></li>
 <li><p>Le processus de validation automatique permet de valider automatiquement les observations respectant le profil de taxons (non activé par défaut).</p></li>
@@ -1918,8 +1918,10 @@ que l’un des critères ou l’une des zones correspond à l’observation.</p>
 <p>Si des règles de sensibilité sont définies avec des conditions de critères
 sur une nomenclature (Statut biologique ou Comportement),
 alors ces règles sont appliquées aussi si la nomenclature n’est pas renseignée
-(par principe de précaution), en dupliquant les règles pour les valeurs de
-nomenclature « Non renseigné », « Ne sait pas », « Indéterminé »,… (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54">https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54</a>).</p>
+(par principe de précaution), en associant aussi des critères à ces règles
+(dans la table <cite>gn_sensitivity.cor_sensitivity_criteria</cite>) pour les valeurs
+de nomenclature « Non renseigné », « Ne sait pas », « Indéterminé »,…
+(<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54">https://github.com/PnX-SI/GeoNature/blob/30c27266495b4affc635f79748c9984feb81a6d7/backend/geonature/core/sensitivity/utils.py#L37-L54</a>).</p>
 <p>Certaines règles sont définies non pas pour une espèce donnée mais pour un
 rang supérieur. Ces règles sont artificiellement dupliquées pour chaques espèces
 sous-jacentes dans la vue matérialisée <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules_cd_ref</span></code>.
@@ -2596,9 +2598,9 @@ Il faut fournir le code des nomenclature par défaut (liste de chaîne de caract
 </section>
 <section id="module-validation">
 <h2>Module VALIDATION<a class="headerlink" href="#module-validation" title="Lien vers cette rubrique">¶</a></h2>
-<p>Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s’appuyant sur les données présentes dans la SYNTHESE. Le module s’appuie sur le <a class="reference external" href="http://www.naturefrance.fr/la-reunion/protocole-de-validation">standard Validation</a> du SINP et sur ses <a class="reference external" href="http://standards-sinp.mnhn.fr/nomenclature/80-niveaux-de-validation-validation-manuelle-ou-combinee-2018-05-14/">nomenclatures officiels</a>.</p>
-<p>Afin de valider une occurrence, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale <code class="docutils literal notranslate"><span class="pre">gn_commons.t_validations</span></code>  (<a class="reference external" href="admin-manual.html#tables-transversales">voir doc</a> ) qui impose la présence de cet UUID.</p>
-<p>La table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_validations</span></code> contient l’ensemble de l’historique de validation des occurrences. Pour une même occurrence (identifiée par un UUID unique) on peut donc retrouver plusieurs lignes dans la table correspondant au différents statuts de validation attribués à cet occurrence dans le temps.</p>
+<p>Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature (mais optionnel) permet de valider des occurrences de taxon en s’appuyant sur les données présentes dans la SYNTHESE. Le module s’appuie sur le standard Validation du SINP et sur ses <a class="reference external" href="https://inpn.mnhn.fr/programme/donnees-observations-especes/references/validation">nomenclatures officielles</a>.</p>
+<p>Afin de valider une occurrence de taxons, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale <code class="docutils literal notranslate"><span class="pre">gn_commons.t_validations</span></code>  (<a class="reference external" href="admin-manual.html#tables-transversales">voir doc</a> ) qui impose la présence de cet UUID.</p>
+<p>La table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_validations</span></code> contient l’ensemble de l’historique de validation des occurrences de taxons. Pour une même occurrence (identifiée par un UUID unique) on peut donc retrouver plusieurs lignes dans la table correspondant aux différents statuts de validation attribués à cette occurrence dans le temps.</p>
 <p>La vue <code class="docutils literal notranslate"><span class="pre">gn_commons.v_latest_validation</span></code> permet de récupérer le dernier statut de validation d’une occurrence.</p>
 <p>NB : une donnée non présente dans la SYNTHESE, ne remontera pas dans l’interface du module VALIDATION. Cependant rien n’empêche un administrateur avancé d’utiliser la table de validation et son mécanisme pour des données qui ne seraient pas en SYNTHESE (du moment que les données disposent d’un UUID).</p>
 <p>Au niveau de l’interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>, rubrique SYNTHESE.</p>
@@ -2619,9 +2621,9 @@ Reportez vous à la section <a class="reference internal" href="#configuration-d
 </section>
 <section id="e-mail">
 <h4>E-mail<a class="headerlink" href="#e-mail" title="Lien vers cette rubrique">¶</a></h4>
-<p>Il est possible de personnaliser le message du mail envoyé aux observateurs.
+<p>Il est possible de personnaliser le message de l’email envoyé aux observateurs d’une observation quand on clique sur le bouton dédié à cela depuis la fiche détail d’une observation.
 Pour ce faire il faut modifier les  paramètres <code class="docutils literal notranslate"><span class="pre">MAIL_BODY</span></code> et <code class="docutils literal notranslate"><span class="pre">MAIL_SUBJECT</span></code></p>
-<p>Pour afficher dans le mail des données relatives à l’observation ou au taxon il faut respecter la syntaxe suivante:
+<p>Pour afficher dans l’email des données relatives à l’observation ou au taxon il faut respecter la syntaxe suivante :
 <code class="docutils literal notranslate"><span class="pre">${</span> <span class="pre">d.NOM_PROPRIETE</span> <span class="pre">}</span></code></p>
 <p>Liste des propriétés disponibles :</p>
 <ul class="simple">
@@ -2631,6 +2633,7 @@ Pour ce faire il faut modifier les  paramètres <code class="docutils literal no
 <li><p>tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)</p></li>
 <li><p>tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)</p></li>
 </ul>
+<p>Il est aussi possible de modifier la structure du message de notification envoyé automatiquement à un observateur quand une de ses observations voit son statut de validation modifié, dans la table <cite>gn_notifications.bib_notifications_templates</cite>.</p>
 </section>
 </section>
 <section id="validation-automatique">
@@ -3385,7 +3388,7 @@ De manière générale, nous séparons les contrôles de données en deux catég
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=26970751"></script>
+</div><script src="_static/documentation_options.js?v=116f8d3b"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

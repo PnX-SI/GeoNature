@@ -85,7 +85,7 @@ Module Contents
 
 
 
-   .. py:method:: filter_query_with_cruved(user, scope)
+   .. py:method:: filter_query_with_cruved(user, scope: int)
 
       Filter the query with the cruved authorization of a user
 

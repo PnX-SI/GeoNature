@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Recherche" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.utils.config_schema - Documentation GeoNature 2.15.1</title>
+        <title>geonature.utils.config_schema - Documentation GeoNature 2.15.2</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Documentation GeoNature 2.15.1</div></a>
+      <a href="../../../index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -832,6 +832,22 @@
 
 
 
+<div class="viewcode-block" id="AuthenticationFrontendConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AuthenticationFrontendConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">AuthenticationFrontendConfig</span><span class="p">(</span><span class="n">AuthenticationConfig</span><span class="p">):</span>
+
+    <span class="nd">@post_load</span>
+<div class="viewcode-block" id="AuthenticationFrontendConfig.post_load">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AuthenticationFrontendConfig.post_load">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;PROVIDERS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;id_provider&quot;</span><span class="p">:</span> <span class="n">provider</span><span class="p">[</span><span class="s2">&quot;id_provider&quot;</span><span class="p">]}</span> <span class="k">for</span> <span class="n">provider</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;PROVIDERS&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="GnPySchemaConf">
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf">[docs]</a>
 <span class="k">class</span> <span class="nc">GnPySchemaConf</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
@@ -933,6 +949,12 @@
 <div class="viewcode-block" id="GnPySchemaConf.ALEMBIC">
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.ALEMBIC">[docs]</a>
     <span class="n">ALEMBIC</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">AlembicConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">AlembicConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.AUTHENTICATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.AUTHENTICATION">[docs]</a>
+    <span class="n">AUTHENTICATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span>
+        <span class="n">AuthenticationConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">AuthenticationConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}),</span> <span class="n">unknown</span><span class="o">=</span><span class="n">INCLUDE</span>
+    <span class="p">)</span></div>
 
 
     <span class="nd">@post_load</span><span class="p">()</span>
@@ -1062,13 +1084,13 @@
 <span class="k">class</span> <span class="nc">TaxonSheet</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
     <span class="c1"># --------------------------------------------------------------------</span>
     <span class="c1"># SYNTHESE - TAXON_SHEET</span>
-<div class="viewcode-block" id="TaxonSheet.ENABLE_PROFILE">
-<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.TaxonSheet.ENABLE_PROFILE">[docs]</a>
-    <span class="n">ENABLE_PROFILE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+<div class="viewcode-block" id="TaxonSheet.ENABLE_TAB_PROFILE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.TaxonSheet.ENABLE_TAB_PROFILE">[docs]</a>
+    <span class="n">ENABLE_TAB_PROFILE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TaxonSheet.ENABLE_TAXONOMY">
-<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.TaxonSheet.ENABLE_TAXONOMY">[docs]</a>
-    <span class="n">ENABLE_TAXONOMY</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+<div class="viewcode-block" id="TaxonSheet.ENABLE_TAB_TAXONOMY">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.TaxonSheet.ENABLE_TAB_TAXONOMY">[docs]</a>
+    <span class="n">ENABLE_TAB_TAXONOMY</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 </div>
 
 
@@ -1342,6 +1364,10 @@
 
     <span class="c1"># --------------------------------------------------------------------</span>
     <span class="c1"># SYNTHESE - TAXON_SHEET</span>
+<div class="viewcode-block" id="Synthese.ENABLE_TAXON_SHEETS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.ENABLE_TAXON_SHEETS">[docs]</a>
+    <span class="n">ENABLE_TAXON_SHEETS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Synthese.TAXON_SHEET">
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.TAXON_SHEET">[docs]</a>
     <span class="n">TAXON_SHEET</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">TaxonSheet</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">TaxonSheet</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
@@ -1615,7 +1641,9 @@
 <div class="viewcode-block" id="GnGeneralSchemaConf.AUTHENTICATION">
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.AUTHENTICATION">[docs]</a>
     <span class="n">AUTHENTICATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span>
-        <span class="n">AuthenticationConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">AuthenticationConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}),</span> <span class="n">unknown</span><span class="o">=</span><span class="n">INCLUDE</span>
+        <span class="n">AuthenticationFrontendConfig</span><span class="p">,</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="n">AuthenticationFrontendConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}),</span>
+        <span class="n">unknown</span><span class="o">=</span><span class="n">INCLUDE</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -1658,6 +1686,19 @@
                 <span class="k">continue</span>
             <span class="n">data</span><span class="p">[</span><span class="n">module_code</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_module_config</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="nd">@post_load</span>
+<div class="viewcode-block" id="GnGeneralSchemaConf.profile_display_coherence">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.profile_display_coherence">[docs]</a>
+    <span class="k">def</span> <span class="nf">profile_display_coherence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">][</span><span class="s2">&quot;TAXON_SHEET&quot;</span><span class="p">][</span><span class="s2">&quot;ENABLE_TAB_PROFILE&quot;</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;FRONTEND&quot;</span><span class="p">][</span><span class="s2">&quot;ENABLE_PROFILES&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">][</span><span class="s2">&quot;TAXON_SHEET&quot;</span><span class="p">][</span><span class="s2">&quot;ENABLE_TAB_PROFILE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
 </div>
 
 </pre></div>
@@ -1692,7 +1733,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=26970751"></script>
+</div><script src="../../../_static/documentation_options.js?v=116f8d3b"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

@@ -218,12 +218,6 @@ Package Contents
    .. py:method:: organism_actors()
 
 
-   .. py:method:: obs_count()
-
-
-   .. py:method:: hab_count()
-
-
    .. py:method:: is_deletable()
 
 
@@ -766,12 +760,6 @@ Package Contents
 
 
    .. py:method:: organism_actors()
-
-
-   .. py:method:: obs_count()
-
-
-   .. py:method:: hab_count()
 
 
    .. py:method:: is_deletable()

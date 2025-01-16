@@ -35,6 +35,7 @@ Classes
    geonature.utils.config_schema.HomeConfig
    geonature.utils.config_schema.MetadataConfig
    geonature.utils.config_schema.AuthenticationConfig
+   geonature.utils.config_schema.AuthenticationFrontendConfig
    geonature.utils.config_schema.GnPySchemaConf
    geonature.utils.config_schema.GnFrontEndConf
    geonature.utils.config_schema.ExportObservationSchema
@@ -298,6 +299,14 @@ Module Contents
    .. py:method:: validate_provider(data, **kwargs)
 
 
+.. py:class:: AuthenticationFrontendConfig
+
+   Bases: :py:obj:`AuthenticationConfig`
+
+
+   .. py:method:: post_load(data, **kwargs)
+
+
 .. py:class:: GnPySchemaConf
 
    Bases: :py:obj:`marshmallow.Schema`
@@ -372,6 +381,9 @@ Module Contents
    .. py:attribute:: ALEMBIC
 
 
+   .. py:attribute:: AUTHENTICATION
+
+
    .. py:method:: folders(data, **kwargs)
 
 
@@ -439,10 +451,10 @@ Module Contents
    Bases: :py:obj:`marshmallow.Schema`
 
 
-   .. py:attribute:: ENABLE_PROFILE
+   .. py:attribute:: ENABLE_TAB_PROFILE
 
 
-   .. py:attribute:: ENABLE_TAXONOMY
+   .. py:attribute:: ENABLE_TAB_TAXONOMY
 
 
 .. py:class:: Synthese
@@ -559,6 +571,9 @@ Module Contents
 
 
    .. py:attribute:: BLUR_SENSITIVE_OBSERVATIONS
+
+
+   .. py:attribute:: ENABLE_TAXON_SHEETS
 
 
    .. py:attribute:: TAXON_SHEET
@@ -706,5 +721,8 @@ Module Contents
 
 
    .. py:method:: insert_module_config(data, **kwargs)
+
+
+   .. py:method:: profile_display_coherence(data, **kwargs)
 
 
