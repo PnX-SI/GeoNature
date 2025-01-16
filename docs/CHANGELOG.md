@@ -18,6 +18,7 @@
 - [Authentification] Correction des redirections du module Admin lors de l'authentification (#3322, par @jacquesfize)
 - [Métadonnées] Correction d'une régression de performances de la récupération des JDD, introduite dans la 2.15.1 (#3320, par @Pierre-Narcisi)
 - [Authentification] La configuration des providers n'est plus accessible depuis la route `gn_commons/config` (#3330 par @jacquesfize)
+- [Import] Correction d'erreurs dans l'interface de correspondance des champs (#3329, par @Pierre-Narcisi)
 
 ## 2.15.1 (2025-01-10)
 
