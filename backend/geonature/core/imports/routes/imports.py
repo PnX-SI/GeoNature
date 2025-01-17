@@ -497,7 +497,8 @@ def preview_valid_data(scope, imprt):
         id_field = entity.unique_column.dest_field
         data_fields_query = [transient_table.c[field.dest_field] for field in fields]
         count_fields_query = "*"
-        if entity.unique_column:
+        # if multiple entities and the entity has a unique column we base the count on the unique column
+        if entity.unique_column and len(entities) > 1:
             count_fields_query = func.distinct(transient_table.c[id_field])
 
         query = select(*data_fields_query).where(
@@ -526,6 +527,7 @@ def preview_valid_data(scope, imprt):
                 "n_invalid_data": n_invalid_data,
             }
         )
+
     return jsonify(data)
 
 
