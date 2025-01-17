@@ -34,16 +34,20 @@ export class TaxonomyComponent {
       field: 'famille',
     },
     {
-      label: 'cd nom',
-      field: 'cd_nom',
-    },
-    {
       label: 'lb nom',
       field: 'lb_nom',
     },
     {
+      label: 'cd nom',
+      field: 'cd_nom',
+    },
+    {
       label: 'cd ref',
       field: 'cd_ref',
+    },
+    {
+      label: 'Nom valide',
+      field: 'nom_valide',
     },
     {
       label: 'Nom cite',
