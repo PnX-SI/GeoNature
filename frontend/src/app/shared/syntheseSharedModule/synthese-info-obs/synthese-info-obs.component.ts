@@ -12,6 +12,7 @@ import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -31,7 +32,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   public selectedObs: any;
   public validationHistory: Array<any> = [];
-  public selectedObsTaxonDetail: any;
+  public selectedObsTaxonDetail: Taxon;
   @ViewChild('tabGroup') tabGroup;
   public selectedGeom;
   // public chartType = 'line';
