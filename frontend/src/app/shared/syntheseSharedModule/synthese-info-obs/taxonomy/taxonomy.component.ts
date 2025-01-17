@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { ObservedTaxon } from '../synthese-info-obs.component';
 
 interface TaxonInformation {
   label: string;
-  field: keyof Taxon;
+  field: keyof ObservedTaxon;
 }
 
 @Component({
@@ -13,7 +13,7 @@ interface TaxonInformation {
 })
 export class TaxonomyComponent {
   @Input()
-  taxon: Taxon | null = null;
+  taxon: ObservedTaxon | null = null;
 
   @Input()
   hideLocalAttributesOnEmpty: boolean = false;
@@ -47,7 +47,11 @@ export class TaxonomyComponent {
     },
     {
       label: 'Nom cite',
-      field: 'nom_complet',
+      field: 'nom_cite',
     },
   ];
+
+  get informationsFiltered() {
+    return this.INFORMATIONS.filter((information) => this.taxon[information.field]);
+  }
 }
