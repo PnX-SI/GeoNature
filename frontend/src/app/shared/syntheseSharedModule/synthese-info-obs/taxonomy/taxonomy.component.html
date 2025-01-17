@@ -5,11 +5,13 @@
     class="Classification font-xs table table-striped table-sm"
   >
     <tbody>
-      <tr *ngFor="let information of INFORMATIONS">
-        <td class="Classification__name">{{ information.label }}</td>
+      <tr *ngFor="let information of informationsFiltered">
+        <td class="Classification__name">
+          {{ information.label }}
+        </td>
         <td
           class="Classification__value"
-          [data-qa]="'synthese-obs-detail-taxo-' + taxon.field"
+          [attr.data-qa]="'taxonomy-detail-taxo-' + information.field"
         >
           {{ taxon[information.field] }}
         </td>
