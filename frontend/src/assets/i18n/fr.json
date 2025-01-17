@@ -273,7 +273,8 @@
     "previous": "Voir le média précédent"
   },
   "FicheTaxon": {
-    "MessageProfil": "* Ce profil est calculé sur les observations considérées valides présentes dans la Synthèse. Il permet de faciliter la validation de nouvelles observations en les comparant à la répartition spatiale, altitudinale et phénologique des observations valides."
+    "MessageProfil": "* Ce profil est calculé sur les observations considérées valides présentes dans la Synthèse. Il permet de faciliter la validation de nouvelles observations en les comparant à la répartition spatiale, altitudinale et phénologique des observations valides.",
+    "MessageNoProfil": "Aucune donnée de profile pour ce taxon"
   },
   "Import": {
     "DestinationLabel": "Destination",
