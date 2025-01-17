@@ -37,6 +37,7 @@ export interface Taxon {
   phylum?: string;
   status?: any[];
   synonymes?: any[];
+  attributs?: any[];
 }
 
 /**

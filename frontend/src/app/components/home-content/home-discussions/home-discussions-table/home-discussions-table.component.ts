@@ -134,6 +134,7 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   }
 
   private _formatObservation(synthese: any): string {
+    console.log(synthese);
     return `
       <strong>Nom Cité:</strong> ${synthese.nom_cite || 'N/A'}<br>
       <strong>Observateurs:</strong> ${synthese.observers || 'N/A'}<br>
