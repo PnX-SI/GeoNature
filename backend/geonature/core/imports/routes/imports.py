@@ -476,7 +476,7 @@ def preview_valid_data(scope, imprt):
 
     # Retrieve data for each entity from entries in the transient table which are related to the import
     transient_table = imprt.destination.get_transient_table()
-    entities = db.session.scalars(
+    entities: list[Entity] = db.session.scalars(
         select(Entity).filter_by(destination=imprt.destination).order_by(Entity.order)
     ).all()
 
@@ -493,37 +493,30 @@ def preview_valid_data(scope, imprt):
             .all()
         )
         columns = [{"prop": field.dest_column, "name": field.name_field} for field in fields]
-        columns_to_count_unique_entities = [
-            transient_table.c[field.dest_column] for field in fields
-        ]
 
-        valid_data = db.session.execute(
-            select(*[transient_table.c[field.dest_field] for field in fields])
-            .distinct()
-            .where(
-                transient_table.c.id_import == imprt.id_import,
-                transient_table.c[entity.validity_column] == True,
-            )
-            .limit(100)
-        ).all()
+        id_field = entity.unique_column.dest_field
+        data_fields_query = [transient_table.c[field.dest_field] for field in fields]
+        count_fields_query = "*"
+        if entity.unique_column:
+            count_fields_query = func.distinct(transient_table.c[id_field])
 
-        n_valid_data = db.session.execute(
-            select(func.count(func.distinct(*columns_to_count_unique_entities)))
-            .select_from(transient_table)
-            .where(
-                transient_table.c.id_import == imprt.id_import,
-                transient_table.c[entity.validity_column] == True,
-            )
-        ).scalar()
+        query = select(*data_fields_query).where(
+            transient_table.c.id_import == imprt.id_import,
+            transient_table.c[entity.validity_column] == True,
+        )
 
-        n_invalid_data = db.session.execute(
-            select(func.count(func.distinct(*columns_to_count_unique_entities)))
-            .select_from(transient_table)
-            .where(
-                transient_table.c.id_import == imprt.id_import,
-                transient_table.c[entity.validity_column] == False,
+        valid_data = db.session.execute(query.limit(100)).all()
+
+        n_valid_data = db.session.scalar(select(func.count(count_fields_query)).select_from(query))
+
+        n_invalid_data = db.session.scalar(
+            select(func.count(count_fields_query)).select_from(
+                select(data_fields_query).where(
+                    transient_table.c.id_import == imprt.id_import,
+                    transient_table.c[entity.validity_column] == False,
+                )
             )
-        ).scalar()
+        )
         data["entities"].append(
             {
                 "entity": entity.as_dict(),
