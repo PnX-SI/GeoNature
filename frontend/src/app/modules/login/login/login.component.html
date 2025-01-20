@@ -1,10 +1,11 @@
 <div
-  *ngIf="!this.config.AUTHENTICATION.ONLY_PROVIDER"
+  
   id="login-body"
   style="background: url({{ this.config.API_ENDPOINT }}{{
     this.config.STATIC_URL
   }}/images/login_background.jpg) center 10% no-repeat;"
 >
+  <ng-container *ngIf="this.authProviders.length > 0; else noProvider">
   <div class="container">
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
@@ -198,4 +199,17 @@
       </div>
     </div>
   </div>
+</ng-container>
 </div>
+
+
+
+<ng-template #noProvider>
+  <div class="container">
+    <div class="d-flex justify-content-center">
+      <div class="alert alert-info text-center" role="alert">
+        <h1>Aucun fournisseur d'identités n'a était configuré.</h1>
+      </div>
+    </div>
+  </div>
+</ng-template>
