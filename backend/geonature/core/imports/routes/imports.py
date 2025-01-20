@@ -496,35 +496,46 @@ def preview_valid_data(scope, imprt):
 
         id_field = entity.unique_column.dest_field
         data_fields_query = [transient_table.c[field.dest_field] for field in fields]
-        count_fields_query = "*"
-        # if multiple entities and the entity has a unique column we base the count on the unique column
-        if entity.unique_column and len(entities) > 1:
-            count_fields_query = func.distinct(transient_table.c[id_field])
 
         query = select(*data_fields_query).where(
             transient_table.c.id_import == imprt.id_import,
             transient_table.c[entity.validity_column] == True,
         )
-
         valid_data = db.session.execute(query.limit(100)).all()
 
-        n_valid_data = db.session.scalar(select(func.count(count_fields_query)).select_from(query))
+        def count_select(query_cte):
+            count_ = "*"
+            # if multiple entities and the entity has a unique column we base the count on the unique column
+
+            if entity.unique_column and len(entities) > 1:
+                count_ = func.distinct(query_cte.c[id_field])
+            return count_
+
+        valid_data_cte = query.cte()
+        n_valid_data = db.session.scalar(
+            select(func.count(count_select(valid_data_cte))).select_from(valid_data_cte)
+        )
+
+        invalid_data_cte = (
+            select(data_fields_query)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column] == False,
+            )
+            .cte()
+        )
 
         n_invalid_data = db.session.scalar(
-            select(func.count(count_fields_query)).select_from(
-                select(data_fields_query).where(
-                    transient_table.c.id_import == imprt.id_import,
-                    transient_table.c[entity.validity_column] == False,
-                )
-            )
+            select(func.count(count_select(invalid_data_cte))).select_from(invalid_data_cte)
         )
+
         data["entities"].append(
             {
                 "entity": entity.as_dict(),
                 "columns": columns,
                 "valid_data": valid_data,
                 "n_valid_data": n_valid_data,
-                "n_invalid_data": n_invalid_data,
+                "n_invalid_data": n_invalid_data,  # NOTE: Not used in the frontend ...
             }
         )
 
