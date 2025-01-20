@@ -1598,7 +1598,7 @@ Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
 
 
 
-.. include:: admin/authentication_custom.rst
+.. include:: admin/authentication-custom.rst
 
 
 
