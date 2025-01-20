@@ -609,11 +609,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 [AUTHENTICATION]
 	DEFAULT_RECONCILIATION_GROUP_ID = 2
     [[AUTHENTICATION.PROVIDERS]]
-        module="pypnusershub.auth.providers.default.DefaultConfiguration"
+        module="pypnusershub.auth.providers.default.LocalProvider"
 		id_provider="local_provider"
 
     [[AUTHENTICATION.PROVIDERS]]
-        module="pypnusershub.auth.providers.openid_provider.OpenIDConnectProvider"
+        module="pypnusershub.auth.providers.openid_provider.OpenIDProvider"
 		id_provider = "google"
 		logo = "<i class='fa fa-google' aria-hidden='true'></i>"
 		label = "Google"
