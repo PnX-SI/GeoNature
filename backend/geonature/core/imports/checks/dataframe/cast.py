@@ -74,6 +74,14 @@ def convert_to_uuid(value):
         return None
 
 
+def is_valid_uuid(value):
+    try:
+        uuid_obj = UUID(value)
+    except Exception as e:
+        return False
+    return str(uuid_obj) == value
+
+
 def convert_to_integer(value):
     try:
         return int(value)

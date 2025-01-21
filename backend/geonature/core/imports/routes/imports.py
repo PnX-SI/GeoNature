@@ -23,7 +23,6 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action
-from geonature.core.gn_meta.models import TDatasets
 
 from pypnnomenclature.models import TNomenclatures
 
@@ -86,11 +85,6 @@ def get_import_list(scope, destination=None):
     if search:
         filters.append(TImports.full_file_name.ilike(f"%{search}%"))
         filters.append(
-            TImports.dataset.has(
-                func.lower(TDatasets.dataset_name).contains(func.lower(search)),
-            )
-        )
-        filters.append(
             TImports.authors.any(
                 or_(
                     User.prenom_role.ilike(f"%{search}%"),
@@ -114,11 +108,9 @@ def get_import_list(scope, destination=None):
     query = (
         select(TImports)
         .options(
-            contains_eager(TImports.dataset),
             contains_eager(TImports.authors),
             contains_eager(TImports.destination).contains_eager(Destination.module),
         )
-        .join(TImports.dataset, isouter=True)
         .join(TImports.authors, isouter=True)
         .join(Destination)
         .join(TModules)
@@ -165,13 +157,10 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
     Add an import or update an existing import.
 
     :form file: file to import
-    :form int datasetId: dataset ID to which import data
     """
     if imprt:
         if not imprt.has_instance_permission(scope, action_code="C"):
             raise Forbidden
-        if not imprt.dataset.active:
-            raise Forbidden("Le jeu de données est fermé.")
         destination = imprt.destination
     else:
         assert destination
@@ -187,22 +176,7 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
     if size == 0:
         raise BadRequest(description="Impossible to upload empty files")
     if imprt is None:
-        try:
-            dataset_id = int(request.form["datasetId"])
-        except ValueError:
-            raise BadRequest(description="'datasetId' must be an integer.")
-        dataset = db.session.get(TDatasets, dataset_id)
-        if dataset is None:
-            raise BadRequest(description=f"Dataset '{dataset_id}' does not exist.")
-        ds_scope = get_scopes_by_action(
-            module_code=destination.module.module_code,
-            object_code="ALL",  # TODO object_code should be configurable by destination
-        )["C"]
-        if not dataset.has_instance_permission(ds_scope):
-            raise Forbidden(description="Vous n’avez pas les permissions sur ce jeu de données.")
-        if not dataset.active:
-            raise Forbidden("Le jeu de données est fermé.")
-        imprt = TImports(destination=destination, dataset=dataset)
+        imprt = TImports(destination=destination)
         imprt.authors.append(author)
         db.session.add(imprt)
     else:
@@ -226,8 +200,6 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
 def decode_file(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     if imprt.source_file is None:
         raise BadRequest(description="A file must be first uploaded.")
     if "encoding" not in request.json:
@@ -292,8 +264,6 @@ def decode_file(scope, imprt):
 def set_import_field_mapping(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     try:
         FieldMapping.validate_values(request.json)
     except ValueError as e:
@@ -309,8 +279,6 @@ def set_import_field_mapping(scope, imprt):
 def load_import(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     if imprt.source_file is None:
         raise BadRequest(description="A file must be first uploaded.")
     if imprt.fieldmapping is None:
@@ -404,8 +372,6 @@ def get_import_values(scope, imprt):
 def set_import_content_mapping(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     try:
         ContentMapping.validate_values(request.json)
     except ValueError as e:
@@ -424,8 +390,6 @@ def prepare_import(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
 
     # Check preconditions to execute this action
     if not imprt.loaded:
@@ -635,8 +599,6 @@ def import_valid_data(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     if not imprt.processed:
         raise Forbidden("L’import n’a pas été préalablement vérifié.")
     transient_table = imprt.destination.get_transient_table()
@@ -670,8 +632,6 @@ def delete_import(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     ImportUserError.query.filter_by(imprt=imprt).delete()
     transient_table = imprt.destination.get_transient_table()
     db.session.execute(

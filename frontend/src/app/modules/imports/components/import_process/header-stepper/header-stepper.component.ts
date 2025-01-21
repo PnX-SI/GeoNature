@@ -5,7 +5,6 @@ import { ImportProcessService } from '../import-process.service';
 
 interface ImportInfoBoxData {
   destinationName: string;
-  destinationDatasetName?: string;
   fileName: string;
 }
 
@@ -23,32 +22,30 @@ export class HeaderStepperComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.updateDestinationDataset();
+    this.updateImportInfo();
   }
 
   ngOnInit() {
     this._route.params.subscribe((params) => {
       this._importProcessService.importDataUpdated.subscribe(() => {
-        this.updateDestinationDataset();
+        this.updateImportInfo();
       });
-      this.updateDestinationDataset(params);
+      this.updateImportInfo(params);
     });
   }
 
   /**
-   * Updates the destination dataset based on the import data.
+   * Updates import infos.
    *
-   * This function retrieves the import data from the import process service and uses it to fetch the dataset from the import data service.
-   *  If a dataset is found, its name is assigned to the destinationDataset property.
+   * This function retrieves the import data from the import process service and uses it to update the info.
    *
    * @return {void}
    */
-  updateDestinationDataset(params?: any) {
+  updateImportInfo(params?: any) {
     const importData = this._importProcessService.getImportData();
     if (!importData && params) {
       this._importDataService.getDestination(params['destination']).subscribe((dest) => {
         this.infoBox = {
-          destinationDatasetName: undefined,
           destinationName: dest.label,
           fileName: undefined,
         };
@@ -56,9 +53,8 @@ export class HeaderStepperComponent implements OnInit, OnChanges {
       return;
     }
     if (!importData) return;
-    const { dataset, destination, full_file_name } = importData;
+    const { destination, full_file_name } = importData;
     this.infoBox = {
-      destinationDatasetName: dataset?.dataset_name,
       destinationName: destination.label,
       fileName: full_file_name,
     };
