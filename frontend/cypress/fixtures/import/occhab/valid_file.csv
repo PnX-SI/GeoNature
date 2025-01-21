@@ -1,6 +1,6 @@
-Erreur station;Erreur habitat;id_station_source;unique_id_sinp_station;unique_dataset_id;date_min;date_max;observers_txt;id_nomenclature_area_surface_calculation;WKT;id_nomenclature_geographic_object;unique_id_sinp_habitat;nom_cite;cd_hab;technical_precision
-OK !;OK !;;afa81c29-c75d-408d-bf48-53cce02d5561;VALID_DATASET_UUID;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;4ee53579-b09b-408f-aa1f-d62495a66667;prairie;24;
-OK !;OK !;;74be5e79-72e7-42a8-ba2e-d5e27c9caddb;;17/11/2023;;;;POINT(3.634 44.399);St;d91496e9-d904-45a8-9e18-cb8acbbb6ea6;prairie;24;
+Erreur station;Erreur habitat;id_station;unique_id_sinp_station;unique_dataset_id;date_debut;date_fin;observateurs;methode_calcul_surface;geometry;nature_objet_geo;unique_id_sinp_habitat;nom_cite;cd_hab;precision_technique
+OK !;OK !;;afa81c29-c75d-408d-bf48-53cce02d5561;VALID_DATASET_UUID;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;4ee53579-b09b-408f-aa1f-d62495a66667;prairie;24;
+OK !;OK !;;74be5e79-72e7-42a8-ba2e-d5e27c9caddb;;17/11/2023;;;;POINT(3.634 44.399);St;d91496e9-d904-45a8-9e18-cb8acbbb6ea6;prairie;24;
 DUPLICATE_UUID(unique_id_sinp_station);ERRONEOUS_PARENT_ENTITY;;462d385f-489a-436b-babb-8cca5fc62e1d;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;e5e7a184-3e92-4adb-a721-5bd004b3397f;forêt;24;
 DUPLICATE_UUID(unique_id_sinp_station);ERRONEOUS_PARENT_ENTITY;;462d385f-489a-436b-babb-8cca5fc62e1d;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;8f52f122-b9ae-45b3-b947-2c9f7934b823;prairie;24;
 DATASET_NOT_FOUND(unique_dataset_id);ERRONEOUS_PARENT_ENTITY;;bdc3346d-0fc3-40fa-b787-be927e4dd82e;050d613c-543f-47fd-800a-13931b2721c7;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;2ff4867d-6943-45d8-873d-187fbc6d67a7;prairie;24;
@@ -13,9 +13,9 @@ ORPHAN_ROW(unique_id_sinp_station);ORPHAN_ROW(unique_id_sinp_station);;258a2478-
 ORPHAN_ROW(id_station_source);ORPHAN_ROW(id_station_source);Station 0;;;;;;;;;;;;
 DUPLICATE_SOURCE_ENTITY_PK(id_station_source);ERRONEOUS_PARENT_ENTITY;Station 1;;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;;prairie;24;
 DUPLICATE_SOURCE_ENTITY_PK(id_station_source);ERRONEOUS_PARENT_ENTITY;Station 1;;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;;prairie;24;
-OK !;OK !;Station 2;;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;;prairie;24;
-Pas de station;OK !;Station 2;;;;;;;;;;prairie;24;
-Pas de station;OK !;;74be5e79-72e7-42a8-ba2e-d5e27c9caddb;;;;;;;;;prairie;24;
+OK !;OK !;Station 2;;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;;prairie;24;
+Pas de station;OK !;Station 2;;;;;;;;;;prairie;24;
+Pas de station;OK !;;74be5e79-72e7-42a8-ba2e-d5e27c9caddb;;;;;;;;;prairie;24;
 Pas de station;ERRONEOUS_PARENT_ENTITY;;bdc3346d-0fc3-40fa-b787-be927e4dd82e;;;;;;;;;prairie;24;
 INVALID_UUID(unique_id_sinp_station);INVALID_UUID(unique_id_sinp_station),ERRONEOUS_PARENT_ENTITY;;erroneous;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;6c02ef80-2e78-4c2c-b8b5-1c75e2349fc2;prairie;24;
 Pas de station;INVALID_UUID(unique_id_sinp_station);;erroneous;;;;;;;;;prairie;24;

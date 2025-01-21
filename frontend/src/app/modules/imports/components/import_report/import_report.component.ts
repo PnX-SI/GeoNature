@@ -57,7 +57,6 @@ export class ImportReportComponent implements OnInit {
   public importErrors: Array<ImportError> = [];
   public importWarnings: Array<ImportError> = [];
   public nbTotalErrors: number = 0;
-  public datasetName: string = '';
   public rank: string = null;
   public loadingChart: boolean;
   public options: any = {
@@ -94,7 +93,6 @@ export class ImportReportComponent implements OnInit {
     this.importData = this.importProcessService.getImportData();
     // Load additionnal data if imported data
     this.loadValidData(this.importData);
-    this.loadDatasetName();
     // Add property to show errors lines. Need to do this to
     // show line per line...
     this.loadErrors();
@@ -127,14 +125,6 @@ export class ImportReportComponent implements OnInit {
           this.validBbox = data.valid_bbox;
         });
       }
-    }
-  }
-
-  loadDatasetName() {
-    if (this.importData) {
-      this._dataService.getDatasetFromId(this.importData.id_dataset).subscribe((data) => {
-        this.datasetName = data.dataset_name;
-      });
     }
   }
 

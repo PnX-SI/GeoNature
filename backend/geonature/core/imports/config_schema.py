@@ -19,12 +19,6 @@ DEFAULT_LIST_COLUMN = [
         "filter": True,
     },
     {
-        "prop": "dataset.dataset_name",
-        "name": "Jeu de données",
-        "show": True,
-        "filter": False,
-    },
-    {
         "prop": "statistics_rows",
         "name": "Lignes importées",
         "show": True,
