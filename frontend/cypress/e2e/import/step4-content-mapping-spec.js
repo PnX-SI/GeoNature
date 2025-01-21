@@ -19,6 +19,16 @@ import {
   SELECTOR_IMPORT_CONTENTMAPPING_SELECTION_TEXT,
   SELECTOR_IMPORT_CONTENTMAPPING_VALIDATE,
   SELECTOR_IMPORT_NEW_VERIFICATION_START,
+  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATASET,
+  SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN,
+  SELECTOR_IMPORT_FIELDMAPPING_WKT,
+  SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE,
+  SELECTOR_IMPORT_FIELDMAPPING_CD_HAB,
+  SELECTOR_IMPORT_FIELDMAPPING_VALIDATE,
+  SELECTOR_IMPORT_FIELDMAPPING_MODAL_CLOSE,
+  SELECTOR_IMPORT_FIELDMAPPING_MODAL_NAME,
+  SELECTOR_IMPORT_FIELDMAPPING_MODAL_NEW_OK,
+  SELECTOR_IMPORT_FIELDMAPPING_MODAL_OK,
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -114,28 +124,27 @@ function runTheProcess(user) {
   cy.visitImport();
   cy.startImport();
   cy.pickDestination();
-  cy.pickDataset(user.dataset);
   cy.loadImportFile(FILES.synthese.valid.fixture);
   cy.configureImportFile();
-  cy.configureImportFieldMapping();
+  cy.configureImportFieldMapping(user.dataset);
 }
 
 function runTheProcessForOcchab(user) {
   cy.visitImport();
   cy.startImport();
   cy.pickDestination('Occhab');
-  cy.pickDataset(user.dataset);
   cy.loadImportFile(FILES.synthese.valid.fixture);
   cy.configureImportFile();
-  // cy.configureImportFieldMapping();
-  selectFieldMappingField('import-fieldmapping-theme-date_min', 'error');
-  selectFieldMappingField('import-fieldmapping-theme-WKT', 'error');
+  // cy.configureImportFieldMapping(user.dataset);
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'error');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'error');
   cy.get('#mat-tab-label-0-1').click();
-  selectFieldMappingField('import-fieldmapping-theme-nom_cite', 'error');
-  selectFieldMappingField('import-fieldmapping-theme-cd_hab', 'error');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'error');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_CD_HAB, 'error');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATASET, 'error');
 
-  cy.get('[data-qa="import-new-fieldmapping-model-validate"]').click();
-  cy.get('[data-qa="import-fieldmapping-saving-modal-cancel"]', { force: true }).click();
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).click();
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL_CANCEL, { force: true }).click();
 }
 
 function restartTheProcess(user) {
