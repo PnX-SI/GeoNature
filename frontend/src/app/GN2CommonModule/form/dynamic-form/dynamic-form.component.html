@@ -11,7 +11,7 @@
         'number',
         'file',
         'medias',
-        'bool_radio'
+        'bool_radio',
       ].includes(formDefComp['type_widget'])
     "
   >
@@ -308,6 +308,7 @@
       [multiSelect]="formDef.multi_select"
       [moduleCode]="formDef.module_code"
       [creatableInModule]="formDef.creatable_in_module"
+      [bindValue]="formDef.bind_value"
     ></pnx-datasets>
 
     <pnx-observers

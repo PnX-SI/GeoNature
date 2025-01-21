@@ -42,24 +42,11 @@ export class UploadFileStepComponent implements OnInit {
     this.uploadForm = this.fb.group({
       file: [null, Validators.required],
       fileName: [null, [Validators.required, Validators.maxLength(this.maxFileNameLength)]],
-      dataset: [null, Validators.required],
     });
   }
 
   ngOnInit() {
     this.setupDatasetSelect();
-    this.step = this.route.snapshot.data.step;
-    this.importData = this.importProcessService.getImportData();
-
-    if (this.importData) {
-      this.uploadForm.patchValue({ dataset: this.importData.id_dataset });
-      this.fileName = this.importData.full_file_name;
-    } else {
-      const idDatasetQueryParams = this.route.snapshot.queryParamMap.get('datasetId');
-      if (idDatasetQueryParams) {
-        this.uploadForm.patchValue({ dataset: parseInt(idDatasetQueryParams) });
-      }
-    }
   }
 
   setupDatasetSelect() {
@@ -68,6 +55,11 @@ export class UploadFileStepComponent implements OnInit {
         this.destination = dest;
       });
     });
+    this.step = this.route.snapshot.data.step;
+    this.importData = this.importProcessService.getImportData();
+    if (this.importData) {
+      this.fileName = this.importData.full_file_name;
+    }
   }
 
   isNextStepAvailable() {
@@ -99,7 +91,7 @@ export class UploadFileStepComponent implements OnInit {
     if (this.importData) {
       return this.ds.updateFile(this.importData.id_import, this.file);
     } else {
-      return this.ds.addFile(this.uploadForm.get('dataset').value, this.file);
+      return this.ds.addFile(this.file);
     }
   }
   onNextStep() {

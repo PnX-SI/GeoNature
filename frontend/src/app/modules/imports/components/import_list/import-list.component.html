@@ -89,14 +89,6 @@
                 "
               >
                 <ng-container [ngSwitch]="col.prop">
-                  <ng-container *ngSwitchCase="'dataset.dataset_name'">
-                    <a
-                      routerLink="/metadata/dataset_detail/{{ row.id_dataset }}"
-                      matTooltip="Voir la fiche du jeu de données"
-                    >
-                      {{ row.dataset ? row.dataset.dataset_name : '' }}
-                    </a>
-                  </ng-container>
                   <ng-container *ngSwitchCase="'date_create_import'">
                     {{ row.date_create_import | date: 'dd-MM-yyyy' }}
                   </ng-container>
@@ -202,7 +194,7 @@
               ngx-datatable-cell-template
             >
               <button
-                [disabled]="row.processing || !row?.cruved?.U || !row?.dataset?.active"
+                [disabled]="row.processing || !row?.cruved?.U"
                 [matTooltip]="getTooltip(row, 'edit')"
                 mat-icon-button
                 color="primary"
@@ -237,7 +229,7 @@
                 ></i>
               </button>
               <button
-                [disabled]="!row?.cruved?.D || !row?.dataset?.active"
+                [disabled]="!row?.cruved?.D"
                 mat-icon-button
                 color="warn"
                 class="Datatable__button"
