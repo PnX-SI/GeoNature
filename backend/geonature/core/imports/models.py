@@ -29,7 +29,6 @@ from geonature.utils.env import db
 from geonature.utils.celery import celery_app
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import TDatasets
 from pypnnomenclature.models import BibNomenclaturesTypes
 from pypnusershub.db.models import User
 
@@ -319,8 +318,6 @@ cor_role_import = db.Table(
 @serializable(
     fields=[
         "authors.nom_complet",
-        "dataset.dataset_name",
-        "dataset.active",
         "destination.code",
         "destination.label",
         "destination.statistics_labels",
@@ -352,7 +349,6 @@ class TImports(InstancePermissionMixin, db.Model):
     detected_encoding = db.Column(db.Unicode, nullable=True)
     # import_table = db.Column(db.Unicode, nullable=True)
     full_file_name = db.Column(db.Unicode, nullable=True)
-    id_dataset = db.Column(db.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), nullable=True)
     date_create_import = db.Column(db.DateTime, default=datetime.now)
     date_update_import = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     date_end_import = db.Column(db.DateTime, nullable=True)
@@ -372,7 +368,6 @@ class TImports(InstancePermissionMixin, db.Model):
     )
     loaded = db.Column(db.Boolean, nullable=False, default=False)
     processed = db.Column(db.Boolean, nullable=False, default=False)
-    dataset = db.relationship(TDatasets, lazy="joined")
     source_file = deferred(db.Column(db.LargeBinary))
     columns = db.Column(ARRAY(db.Unicode))
     # keys are target names, values are source names

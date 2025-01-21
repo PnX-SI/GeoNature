@@ -164,7 +164,7 @@ def downgrade():
     op.execute(
         """
        DELETE FROM gn_permissions.t_permissions
-    WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'agent-test-import');
+        WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'agent-test-import');
     """
     )
 
@@ -182,6 +182,23 @@ def downgrade():
             DELETE FROM gn_notifications.t_notifications
             WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'agent-test-import');
         """
+    )
+
+    ## Clean Rol Provider
+    # admin-test-import
+    op.execute(
+        """
+        DELETE FROM utilisateurs.cor_role_provider
+        WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'admin-test-import');
+    """
+    )
+
+    # agent-test-import
+    op.execute(
+        """
+        DELETE FROM utilisateurs.cor_role_provider
+        WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'agent-test-import');
+    """
     )
 
     #  Delete the  roles

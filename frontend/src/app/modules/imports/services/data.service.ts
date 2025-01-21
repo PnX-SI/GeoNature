@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
-  Dataset,
   Import,
   ImportError,
   ImportValues,
@@ -55,10 +54,9 @@ export class ImportDataService {
     return this._http.get<Import>(`${this.getUrlApiForADestination()}/imports/${id_import}/`);
   }
 
-  addFile(datasetId: number, file: File): Observable<Import> {
-    let fd = new FormData();
+  addFile(file: File): Observable<Import> {
+    const fd = new FormData();
     fd.append('file', file, file.name);
-    fd.append('datasetId', String(datasetId));
     const url = `${this.getUrlApiForADestination()}/imports/upload`;
     return this._http.post<Import>(url, fd);
   }
@@ -286,10 +284,6 @@ export class ImportDataService {
         },
       }
     );
-  }
-
-  getDatasetFromId(datasetId: number) {
-    return this._http.get<Dataset>(`${this.config.API_ENDPOINT}/meta/dataset/${datasetId}`);
   }
 
   getPdf(importId, mapImg, chartImg) {

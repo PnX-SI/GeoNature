@@ -326,7 +326,8 @@ class OcchabImportActions(ImportActions):
             geom_4326_field=fields["geom_4326"],
             geom_local_field=fields["geom_local"],
         )
-        if imprt.fieldmapping.get("altitudes_generate", False):
+        autogenerate_field = imprt.fieldmapping.get("altitudes_generate", False)
+        if autogenerate_field and autogenerate_field["column_src"]:
             # TODO@TestImportsOcchab.test_import_valid_file: add testcase
             generate_altitudes(
                 imprt,
@@ -492,7 +493,7 @@ class OcchabImportActions(ImportActions):
                         insert_fields |= {field}
             if entity.code == "station":
                 # unique_dataset_id is replaced with id_dataset
-                insert_fields -= {fields["unique_dataset_id"]}
+                # insert_fields -= {fields["unique_dataset_id"]}
                 insert_fields |= {fields["id_dataset"]}
                 insert_fields |= {fields["geom_4326"], fields["geom_local"]}
                 # TODO@TestImportsOcchab.test_import_valid_file: add testcase

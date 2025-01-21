@@ -14,14 +14,14 @@ from geonature.core.imports.models import (
 from .jsonschema_definitions import jsonschema_definitions
 
 
-@pytest.fixture()
-def dest():
-    return Destination.query.filter(
-        Destination.module.has(TModules.module_code == "SYNTHESE")
-    ).one()
+@pytest.fixture(scope="class")
+def module_code():
+    return "SYNTHESE"
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "default_synthese_destination")
+@pytest.mark.usefixtures(
+    "client_class", "temporary_transaction", "default_import_destination", "module_code"
+)
 class TestFields:
     def test_fields(self, users):
         assert self.client.get(url_for("import.get_fields")).status_code == Unauthorized.code
