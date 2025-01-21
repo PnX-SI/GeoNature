@@ -12,7 +12,7 @@ from geonature.core.gn_meta.models import TDatasets
 from geonature.core.imports.models import BibFields, TImports
 
 from .utils import dataframe_check, error_replace
-
+from .cast import is_valid_uuid
 
 __all__ = ["check_required_values", "check_counts", "check_datasets"]
 
@@ -194,7 +194,7 @@ def check_datasets(
 ) -> Set[str]:
     """
     Check if datasets exist and are authorized for the user and import.
-
+    It also fill the id_field based on the content of uuid_field
     Parameters
     ----------
     imprt : TImports
@@ -222,72 +222,92 @@ def check_datasets(
 
     """
     updated_cols = set()
-    uuid_col = uuid_field.dest_field
-    id_col = id_field.dest_field
+    uuid_col = uuid_field.source_column
 
-    if uuid_col in df:
-        has_uuid_mask = df[uuid_col].notnull()
-        uuid = df.loc[has_uuid_mask, uuid_col].unique().tolist()
+    if uuid_col not in df:
+        yield {
+            "error_code": ImportCodeError.MISSING_VALUE,
+            "column": uuid_field.name_field,
+        }
+    uuid = df[uuid_col].unique().tolist()
 
-        datasets = {
-            ds.unique_dataset_id.hex: ds
-            for ds in TDatasets.query.filter(TDatasets.unique_dataset_id.in_(uuid))
-            .options(sa.orm.joinedload(TDatasets.nomenclature_data_origin))
+    # check uuid format
+    valid_uuid_mask = df[uuid_col].apply(lambda x: is_valid_uuid(x))
+    invalid_uuid_mask = ~valid_uuid_mask
+    if invalid_uuid_mask.any():
+        yield {
+            "error_code": ImportCodeError.INVALID_UUID,
+            "column": uuid_field.name_field,
+            "invalid_rows": df[invalid_uuid_mask],
+        }
+
+    filtered_ds_mask = valid_uuid_mask
+    uuid = df[filtered_ds_mask][uuid_col].unique().tolist()
+
+    # check dataset existance
+    datasets = {
+        str(ds.unique_dataset_id): ds
+        for ds in TDatasets.query.filter(TDatasets.unique_dataset_id.in_(uuid))
+        .options(sa.orm.joinedload(TDatasets.nomenclature_data_origin))
+        .options(sa.orm.raiseload("*"))
+        .all()
+    }
+    valid_ds_mask = df[uuid_col].isin(datasets.keys())
+    invalid_ds_mask = ~valid_ds_mask & filtered_ds_mask
+    if invalid_ds_mask.any():
+        yield {
+            "error_code": ImportCodeError.DATASET_NOT_FOUND,
+            "column": uuid_field.name_field,
+            "invalid_rows": df[invalid_ds_mask],
+        }
+
+    filtered_ds_mask = filtered_ds_mask & valid_ds_mask
+    uuid = df[filtered_ds_mask][uuid_col].unique().tolist()
+
+    # check dataset active status
+    active_ds = [uuid for uuid, ds in datasets.items() if ds.active]
+    active_ds_mask = df[uuid_col].isin(active_ds)
+    inactive_ds_mask = ~active_ds_mask & filtered_ds_mask
+
+    if inactive_ds_mask.any():
+        yield {
+            "error_code": ImportCodeError.DATASET_NOT_ACTIVE,
+            "column": uuid_field.name_field,
+            "invalid_rows": df[inactive_ds_mask],
+        }
+    filtered_ds_mask = filtered_ds_mask & active_ds_mask
+    uuid = df[filtered_ds_mask][uuid_col].unique().tolist()
+
+    # check dataset authorized
+    # Warning: we check only permissions of first author, but currently there it only one author per import.
+    authorized_datasets = {
+        str(ds.unique_dataset_id): ds
+        for ds in db.session.execute(
+            TDatasets.filter_by_creatable(
+                user=imprt.authors[0], module_code=module_code, object_code=object_code
+            )
+            .where(TDatasets.unique_dataset_id.in_(uuid))
             .options(sa.orm.raiseload("*"))
-            .all()
+        )
+        .scalars()
+        .all()
+    }
+    authorized_ds_mask = active_ds_mask & df[uuid_col].isin(authorized_datasets.keys())
+    unauthorized_ds_mask = ~authorized_ds_mask & filtered_ds_mask
+    if unauthorized_ds_mask.any():
+        yield {
+            "error_code": ImportCodeError.DATASET_NOT_AUTHORIZED,
+            "column": uuid_field.name_field,
+            "invalid_rows": df[unauthorized_ds_mask],
         }
-        valid_ds_mask = df[uuid_col].isin(datasets.keys())
-        invalid_ds_mask = has_uuid_mask & ~valid_ds_mask
-        if invalid_ds_mask.any():
-            yield {
-                "error_code": ImportCodeError.DATASET_NOT_FOUND,
-                "column": uuid_field.name_field,
-                "invalid_rows": df[invalid_ds_mask],
-            }
+    filtered_ds_mask = filtered_ds_mask & authorized_ds_mask
 
-        inactive_dataset = [uuid for uuid, ds in datasets.items() if not ds.active]
-        inactive_dataset_mask = df[uuid_col].isin(inactive_dataset)
-        if inactive_dataset_mask.any():
-            yield {
-                "error_code": ImportCodeError.DATASET_NOT_ACTIVE,
-                "column": uuid_field.name_field,
-                "invalid_rows": df[inactive_dataset_mask],
-            }
-
-        # Warning: we check only permissions of first author, but currently there it only one author per import.
-        authorized_datasets = {
-            ds.unique_dataset_id.hex: ds
-            for ds in db.session.execute(
-                TDatasets.filter_by_creatable(
-                    user=imprt.authors[0], module_code=module_code, object_code=object_code
-                )
-                .where(TDatasets.unique_dataset_id.in_(uuid))
-                .options(sa.orm.raiseload("*"))
-            )
-            .scalars()
-            .all()
-        }
-        authorized_ds_mask = df[uuid_col].isin(authorized_datasets.keys())
-        unauthorized_ds_mask = valid_ds_mask & ~authorized_ds_mask
-        if unauthorized_ds_mask.any():
-            yield {
-                "error_code": ImportCodeError.DATASET_NOT_AUTHORIZED,
-                "column": uuid_field.name_field,
-                "invalid_rows": df[unauthorized_ds_mask],
-            }
-
-        if authorized_ds_mask.any():
-            df.loc[authorized_ds_mask, id_col] = df[authorized_ds_mask][uuid_col].apply(
-                lambda uuid: authorized_datasets[uuid].id_dataset
-            )
-            updated_cols = {id_col}
-
-    else:
-        has_uuid_mask = pd.Series(False, index=df.index)
-
-    if (~has_uuid_mask).any():
-        # Set id_dataset from import for empty cells:
-        df.loc[~has_uuid_mask, id_col] = imprt.id_dataset
+    # compute id_col based on uuid_col
+    if filtered_ds_mask.any():
+        id_col = id_field.dest_field
+        df.loc[filtered_ds_mask, id_col] = df[filtered_ds_mask][uuid_col].apply(
+            lambda uuid: authorized_datasets[uuid].id_dataset
+        )
         updated_cols = {id_col}
 
     return updated_cols
