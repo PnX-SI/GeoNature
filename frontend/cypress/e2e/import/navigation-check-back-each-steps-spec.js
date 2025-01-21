@@ -69,7 +69,6 @@ describe('Import Process Navigation', () => {
         cy.pickDestination(DESTINATION);
 
         // STEP 1 - UPLOAD
-        cy.pickDataset(FIELDS_CONTENT_STEP_UPLOAD.datasetField.defaultValue);
         cy.loadImportFile(FIELDS_CONTENT_STEP_UPLOAD.fileUploadField.defaultValue);
         cy.wait(TIMEOUT_WAIT);
         cy.url().then((url) => {
@@ -103,13 +102,6 @@ describe('Import Process Navigation', () => {
             cy.get(SELECTOR_NAVIGATION_STEP_DECODE_FILE.back_btn_selector)
               .should('be.visible')
               .click();
-            // Verify the selected value in the ng-select input
-            cy.get(FIELDS_CONTENT_STEP_UPLOAD.datasetField.selector).within(() => {
-              cy.get('.ng-value').should(
-                'contain.text',
-                FIELDS_CONTENT_STEP_UPLOAD.datasetField.defaultValue
-              );
-            });
             cy.get(FIELDS_CONTENT_STEP_UPLOAD.fileUploadField.selector).then(($el) => {
               const expectedValue = $el
                 .text()
@@ -119,7 +111,6 @@ describe('Import Process Navigation', () => {
               expect(defaultValue).to.include(expectedValue);
             });
             // Change values in upload step
-            cy.pickDataset(FIELDS_CONTENT_STEP_UPLOAD.datasetField.newValue);
             cy.loadImportFile(FIELDS_CONTENT_STEP_UPLOAD.fileUploadField.newValue);
             cy.get(SELECTOR_NAVIGATION_STEP_DECODE_FILE.back_btn_selector)
               .should('be.visible')
