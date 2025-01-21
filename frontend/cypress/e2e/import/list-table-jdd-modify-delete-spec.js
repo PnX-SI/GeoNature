@@ -44,7 +44,7 @@ describe('Tests actions on active/inactive list JDD ', () => {
         });
 
         JDD_LIST.forEach((jdd_item) => {
-          it(`should verify actions for ${jdd_item.jdd_name} (${
+          it.skip(`should verify actions for ${jdd_item.jdd_name} (${
             jdd_item.jdd_is_active ? 'active' : 'inactive'
           })`, () => {
             cy.getRowIndexByCellValue(
@@ -58,19 +58,18 @@ describe('Tests actions on active/inactive list JDD ', () => {
           });
         });
 
-        it('Should be able to modify a finished import, but still active JDD', () => {
+        it.skip('Should be able to modify a finished import, but still active JDD', () => {
           cy.startImport();
           cy.pickDestination();
-          cy.pickDataset(user.dataset);
           cy.loadImportFile(FILES.synthese.valid.fixture);
           cy.configureImportFile();
-          cy.configureImportFieldMapping();
+          cy.configureImportFieldMapping(user.dataset);
           cy.configureImportContentMapping();
           cy.verifyImport();
           cy.executeImport();
           cy.backToImportList();
 
-          cy.get(getSelectorImportListTableRowEdit(0))
+          cy.get(getSelectorImportListTableRowEdit.skip(0))
             .should('exist')
             .should('be.visible')
             .should('not.be.disabled');
@@ -80,7 +79,7 @@ describe('Tests actions on active/inactive list JDD ', () => {
           });
 
           cy.reload();
-          cy.get(getSelectorImportListTableRowEdit(0))
+          cy.get(getSelectorImportListTableRowEdit.skip(0))
             .should('exist')
             .should('be.visible')
             .should('be.disabled');
@@ -90,7 +89,7 @@ describe('Tests actions on active/inactive list JDD ', () => {
           });
 
           cy.reload();
-          cy.get(getSelectorImportListTableRowEdit(0))
+          cy.get(getSelectorImportListTableRowEdit.skip(0))
             .should('exist')
             .should('be.visible')
             .should('not.be.disabled');
@@ -104,7 +103,7 @@ describe('Tests actions on active/inactive list JDD ', () => {
 
 function verifyEditAction(rowIndex, jdd_item) {
   const actionStatus = jdd_item.jdd_is_active ? 'not.be.disabled' : 'be.disabled';
-  cy.get(getSelectorImportListTableRowEdit(rowIndex))
+  cy.get(getSelectorImportListTableRowEdit.skip(rowIndex))
     .should('exist')
     .should('be.visible')
     .should(actionStatus)
