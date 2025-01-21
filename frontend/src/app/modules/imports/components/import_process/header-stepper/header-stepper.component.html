@@ -2,13 +2,6 @@
   <h5 class="HeaderStepper">
     <span id="destination">{{ infoBox.destinationName }}</span>
   </h5>
-  <h5
-    *ngIf="infoBox.destinationDatasetName"
-    class="HeaderStepper"
-  >
-    <span>{{ 'Import.DestinatinationDatasetLabel' | translate }}:</span>
-    <span id="dataset">{{ infoBox.destinationDatasetName }}</span>
-  </h5>
 
   <h5
     *ngIf="infoBox.fileName"

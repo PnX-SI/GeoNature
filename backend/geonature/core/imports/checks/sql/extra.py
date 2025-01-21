@@ -241,7 +241,7 @@ def check_existing_uuid(
     imprt: TImports,
     entity: Entity,
     uuid_field: BibFields,
-    whereclause: Any = sa.true(),
+    id_dataset_field: BibFields = None,
     skip=False,
 ):
     """
@@ -254,25 +254,34 @@ def check_existing_uuid(
     entity : Entity
         The entity to check.
     uuid_field : BibFields
-        The field to check.
-    whereclause : BooleanClause
-        The WHERE clause to apply to the check.
+        The field to check
+    id_dataset_field : BibFields
+        if defnied, the uuid existence is checked for the given dataset. Otherwise, it is checked globally
+
     skip: Boolean
         Raise SKIP_EXISTING_UUID instead of EXISTING_UUID and set row validity to None (do not import)
     """
     transient_table = imprt.destination.get_transient_table()
     dest_table = entity.get_destination_table()
     error_type = "SKIP_EXISTING_UUID" if skip else "EXISTING_UUID"
+
+    whereclause = sa.and_(
+        transient_table.c[uuid_field.dest_field] == dest_table.c[uuid_field.dest_field],
+        transient_table.c[entity.validity_column].is_(True),
+    )
+
+    if id_dataset_field:
+        whereclause = (
+            whereclause & transient_table.c[id_dataset_field.dest_field]
+            == dest_table.c[id_dataset_field.dest_field]
+        )
+
     report_erroneous_rows(
         imprt,
         entity,
         error_type=error_type,
         error_column=uuid_field.name_field,
-        whereclause=sa.and_(
-            transient_table.c[uuid_field.dest_field] == dest_table.c[uuid_field.dest_field],
-            transient_table.c[entity.validity_column].is_(True),
-            whereclause,
-        ),
+        whereclause=whereclause,
         level_validity_mapping={"ERROR": False, "WARNING": None},
     )
 
