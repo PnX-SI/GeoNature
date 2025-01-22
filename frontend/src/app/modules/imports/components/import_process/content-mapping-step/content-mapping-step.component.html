@@ -264,7 +264,7 @@
         <button
           class="btn btn-success box-shadow d-flex justify-content-center align-content-between"
           [disabled]="!isNextStepAvailable()"
-          (click)="onNextStep()"
+          (click)="checkBeforeNextStep()"
           mat-raised-button
           color="primary"
           data-qa="import-contentmapping-model-validate"
@@ -455,4 +455,18 @@
       Supprimer le modèle
     </button>
   </div>
+</ng-template>
+<ng-template
+  #editModal
+  let-c="close"
+  let-d="dismiss"
+  data-qa="import-list-modal-edit"
+>
+  <import-action-modal
+    [modalData]="modalData"
+    [data]="importData"
+    [actionType]="'edit'"
+    [c]="c"
+    (onAction)="handleModalAction($event)"
+  ></import-action-modal>
 </ng-template>
