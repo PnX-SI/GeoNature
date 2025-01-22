@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Validators } from '@angular/forms';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
@@ -18,6 +18,7 @@ import { Step } from '../../../models/enums.model';
 import { Import, ImportValues, Nomenclature } from '../../../models/import.model';
 import { ImportProcessService } from '../import-process.service';
 import _ from 'lodash';
+import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
 
 @Component({
   selector: 'content-mapping-step',
@@ -41,11 +42,12 @@ export class ContentMappingStepComponent implements OnInit {
   public renameMappingFormVisible: boolean = false;
   public mappedFields: Set<string> = new Set<string>(); // TODO
   public unmappedFields: Set<string> = new Set<string>(); // TODO
+  public modalData:ModalData;
 
   @ViewChild('modalConfirm') modalConfirm: any;
   @ViewChild('modalRedir') modalRedir: any;
   @ViewChild('deleteConfirmModal') deleteConfirmModal: any;
-
+  @ViewChild('editModal') editModal: TemplateRef<any>;
   constructor(
     //private stepService: StepsService,
     private _fb: FormBuilder,
@@ -57,7 +59,8 @@ export class ContentMappingStepComponent implements OnInit {
     private _route: ActivatedRoute,
     private _modalService: NgbModal,
     public cruvedStore: CruvedStoreService,
-    private importProcessService: ImportProcessService
+    private importProcessService: ImportProcessService,
+
   ) {}
 
   ngOnInit() {
@@ -307,4 +310,36 @@ export class ContentMappingStepComponent implements OnInit {
     }
     return values;
   }
+
+    checkBeforeNextStep(){
+      if (this.importData?.contentmapping) {
+         this.openModal(this.editModal);
+          return;
+        }
+        else{
+          this.onNextStep();
+        }
+    }
+    
+    openModal(editModal: TemplateRef<any>) {
+      this.modalData = {
+        title: 'Modification',
+        bodyMessage:'Des modifications ont été apportées à la correspondances des nomenclatures. L\'ancienne correspondance des nomenclatures sera supprimé.',
+        additionalMessage: 'Etes-vous sur de continuer ?',
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Confirmer',
+        confirmButtonColor: 'warn',
+        headerDataQa: 'import-modal-edit',
+        confirmButtonDataQa: 'modal-edit-validate',
+      };  
+      this._modalService.open(editModal);
+    }
+  
+    handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
+      if (event.confirmed) {
+        if (event.actionType === 'edit') {
+          this.onNextStep();
+        }
+      }
+    }
 }
