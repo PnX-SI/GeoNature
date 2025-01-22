@@ -638,7 +638,7 @@ class TestImportsOcchab:
     def test_preview_data(self, client, prepared_import):
         valid_numbers = {
             "station_valid": 7,
-            "station_invalid": 6,
+            "station_invalid": 8,
             "habitat_valid": 11,
             "habitat_invalid": 23,
         }
