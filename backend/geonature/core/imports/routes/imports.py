@@ -494,7 +494,9 @@ def preview_valid_data(scope, imprt):
         )
         columns = [{"prop": field.dest_column, "name": field.name_field} for field in fields]
 
-        id_field = entity.unique_column.dest_field
+        id_field = (
+            entity.unique_column.dest_field if entity.unique_column.dest_field in fields else None
+        )
         data_fields_query = [transient_table.c[field.dest_field] for field in fields]
 
         query = select(*data_fields_query).where(
@@ -507,7 +509,7 @@ def preview_valid_data(scope, imprt):
             count_ = "*"
             # if multiple entities and the entity has a unique column we base the count on the unique column
 
-            if entity.unique_column and len(entities) > 1:
+            if entity.unique_column and len(entities) > 1 and id_field:
                 count_ = func.distinct(query_cte.c[id_field])
             return count_
 
