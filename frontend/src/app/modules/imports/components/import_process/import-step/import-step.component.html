@@ -111,7 +111,7 @@
           label="{{ entityPreview.entity.label }}"
         >
           <ngx-datatable
-            *ngIf="tableReady"
+            *ngIf="tableReady && entityPreview.valid_data.length > 0"
             #table
             class="material striped"
             [rows]="entityPreview.valid_data"
@@ -124,6 +124,15 @@
             [limit]="15"
             [selectionType]="single"
           ></ngx-datatable>
+          <ng-container *ngIf="entityPreview.valid_data.length === 0">
+            <div
+              class="alert alert-info mt-3"
+              role="alert"
+            >
+              Aucun(e) {{ entityPreview.entity.label.toLowerCase() }}
+              valide n'a été trouvée
+            </div>
+          </ng-container>
         </mat-tab>
       </mat-tab-group>
 
