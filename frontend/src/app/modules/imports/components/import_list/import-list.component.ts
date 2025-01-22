@@ -182,7 +182,7 @@ export class ImportListComponent implements OnInit {
       // Prépare les données de la modale en fonction de l'action
       if (actionType === 'edit') {
         let additionalMessage:string;
-        if(!!this.selectedRow.date_end_import) {
+        if(this.importProcessService.checkImportDone(this.selectedRow)) {
           additionalMessage = 'Attention : Vous vous apprêtez à modifier un import terminé. Toute modification entraînera la suppression des données importées.'
         } else {
           additionalMessage = 'Attention : à chaque confirmation de chaque étape de cet import en cours , les données seront écrasées.'
