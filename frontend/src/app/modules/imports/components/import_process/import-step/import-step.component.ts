@@ -199,7 +199,7 @@ export class ImportStepComponent implements OnInit {
   }
 
   checkBeforeNextStep(){
-        if (!!this.importData?.date_end_import) {
+        if (this.importProcessService.isImportCompleted) {
            this.openModal(this.editModal);
             return;
           }
