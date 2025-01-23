@@ -26,6 +26,15 @@ describe(`Should be able to acces the import module`, () => {
             cy.visitImport();
             cy.checkCurrentPageIsImport();
           });
+
+          it('Should be able to visit synthese upload', () => {
+            cy.visit('/#/import/synthese/process/upload');
+          });
+
+          it('Should not be able to visit bad-destination upload', () => {
+            cy.visit('/#/import/bad-destination/process/upload');
+            cy.checkCurrentPageIsImport();
+          });
         });
       });
     });
