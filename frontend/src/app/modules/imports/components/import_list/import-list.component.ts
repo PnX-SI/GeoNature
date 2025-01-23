@@ -189,19 +189,19 @@ export class ImportListComponent implements OnInit {
         }
         this.editModalData = {
           title: 'Modification',
-          bodyMessage: `Modifier cet import associé au JDD "${this.selectedRow.dataset.dataset_name}" et commencé le ${this.selectedRow.date_create_import}?`,
+          bodyMessage: `Modifier cet import commencé le ${this.selectedRow.date_create_import}?`,
           additionalMessage: additionalMessage,
           cancelButtonText: 'Annuler',
           confirmButtonText: 'Confirmer',
           confirmButtonColor: 'warn',
           headerDataQa: 'import-modal-edit',
           confirmButtonDataQa: 'modal-edit-validate',
-        };  
+        };
       } else if (actionType === 'delete') {
         this._ds.setDestination(this.selectedRow.destination.code);
         this.deleteModalData = {
           title: 'Suppression',
-          bodyMessage: `Supprimer cet import associé au JDD "${row.dataset.dataset_name}" et commencé le ${row.date_create_import}?`,
+          bodyMessage: `Supprimer cet import commencé le ${row.date_create_import}?`,
           additionalMessage: this.selectedRow.date_end_import
             ? 'Attention : cela supprimera aussi les données importées.'
             : '',
