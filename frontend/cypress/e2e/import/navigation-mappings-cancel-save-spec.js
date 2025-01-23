@@ -49,7 +49,7 @@ function checkImportIsNotFirstInList(importId) {
 
 function clickOnFirstLineEdit() {
   cy.get(getSelectorImportListTableRowEdit(0)).click();
-  cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click()
+  cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
   cy.wait(TIMEOUT_WAIT);
 }
 

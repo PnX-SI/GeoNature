@@ -93,8 +93,7 @@ describe('Import Process Navigation', () => {
             // Navigation from list to upload by using Edit action
             cy.get('@rowIndex').then((rowIndex) => {
               cy.get(getSelectorImportListTableRowEdit(rowIndex)).should('be.enabled').click();
-              cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click()
-
+              cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
             });
             cy.wait(TIMEOUT_WAIT);
             // Should go on last step edited  --> decode file
@@ -165,7 +164,7 @@ describe('Import Process Navigation', () => {
             // Navigation from list to upload by using Edit action
             cy.get('@rowIndex').then((rowIndex) => {
               cy.get(getSelectorImportListTableRowEdit(rowIndex)).should('be.enabled').click();
-              cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click()
+              cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
             });
             cy.wait(TIMEOUT_WAIT);
             // Should go on last step edited  --> decode file
