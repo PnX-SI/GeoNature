@@ -69,12 +69,8 @@ ALLOW_VALUE_MAPPING = True
 # If VALUE MAPPING is not allowed, you must specify the DEFAULT_VALUE_MAPPING_ID
 DEFAULT_VALUE_MAPPING_ID = 3
 
-INSTANCE_BOUNDING_BOX = [-5.0, 41, 10, 51.15]
-
 ALLOW_FIELD_MAPPING = True
 DEFAULT_FIELD_MAPPING_ID = 1
-# Parameter to define if the checkbox allowing to change display mode is displayed or not.
-DISPLAY_CHECK_BOX_MAPPED_FIELD = True
 
 # Parameter to define the rank shown in the doughnut chart in the import report
 # must be in ['regne', 'phylum', 'classe', 'ordre', 'famille', 'sous_famille', 'tribu', 'group1_inpn', 'group2_inpn']
@@ -96,20 +92,12 @@ class ImportConfigSchema(Schema):
     )  # FIXME: unused
     FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE = fields.Boolean(load_default=True)
     DISPLAY_MAPPED_VALUES = fields.Boolean(load_default=True)  # FIXME: unused
-    INSTANCE_BOUNDING_BOX = fields.List(
-        fields.Float, load_default=INSTANCE_BOUNDING_BOX
-    )  # FIXME: unused
-    ENABLE_BOUNDING_BOX_CHECK = fields.Boolean(load_default=True)  # FIXME : unused
     # When setting PER_DATASET_UUID_CHECK=True (used for import in synthese):
     # - Replace the unicity constraint on unique_id_sinp with an unicity constraint on (unique_id_sinp,id_dataset).
     # - Disable per-row dataset import by setting display=False in gn_imports.bib_fields
     #   for the id_dataset field belonging to synthese destination.
     PER_DATASET_UUID_CHECK = fields.Boolean(load_default=False)
-    ALLOW_FIELD_MAPPING = fields.Boolean(load_default=ALLOW_FIELD_MAPPING)  # FIXME: unused
-    DEFAULT_FIELD_MAPPING_ID = fields.Integer(
-        load_default=DEFAULT_FIELD_MAPPING_ID
-    )  # FIXME: unused
-    DISPLAY_CHECK_BOX_MAPPED_FIELD = fields.Boolean(load_default=True)
+
     CHECK_PRIVATE_JDD_BLURING = fields.Boolean(load_default=True)
     CHECK_REF_BIBLIO_LITTERATURE = fields.Boolean(load_default=True)
     CHECK_EXIST_PROOF = fields.Boolean(load_default=True)
