@@ -79,12 +79,20 @@ describe('Import - Report step', () => {
           force: true,
         });
 
-        cy.wait(TIMEOUT_WAIT);
         // https://github.com/cypress-io/cypress/issues/25443
-        cy.task('getLastDownloadFileName', DOWNLOADS_FOLDER).then((filename) => {
-          cy.verifyDownload(filename, DOWNLOADS_FOLDER);
-          cy.deleteFile(filename, DOWNLOADS_FOLDER);
-        });
+        cy.intercept(
+          {
+            method: 'POST',
+            url: `${Cypress.env('apiEndpoint')}/import/${destination}/export_pdf/${importID}`,
+          },
+          (req) => {
+            cy.wait(TIMEOUT_WAIT);
+            cy.task('getLastDownloadFileName', DOWNLOADS_FOLDER).then((filename) => {
+              cy.verifyDownload(filename, DOWNLOADS_FOLDER);
+              cy.deleteFile(filename, DOWNLOADS_FOLDER);
+            });
+          }
+        );
       });
     });
 
