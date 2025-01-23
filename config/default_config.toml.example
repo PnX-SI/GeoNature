@@ -625,7 +625,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Encodage des fichiers importés autorisées
     ENCODAGE = ["UTF-8"]
 
-
     # Taille maximale du fichier chargé (en Mo)
     MAX_FILE_SIZE=500
 
