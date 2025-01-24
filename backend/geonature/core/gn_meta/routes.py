@@ -61,6 +61,7 @@ import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
 from geonature.utils.errors import GeonatureApiError
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
+import geonature.core.gn_meta.tasks  # noqa: F401
 
 from ref_geo.models import LAreas
 
