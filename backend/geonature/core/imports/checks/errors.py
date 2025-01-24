@@ -61,7 +61,7 @@ class ImportCodeError:
     MISSING_GEOM : str
         The geometry is missing
     GEOMETRY_OUTSIDE : str
-        The geometry is outside the polygon
+        The geometry is outside the polygon defined by ID_AREA_RESTRICTION in the configuration
     NO_GEOM : str
         No geometry given (wherever WKT or latitude/longitude)
     GEOMETRY_OUT_OF_BOX : str

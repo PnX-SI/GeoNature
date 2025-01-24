@@ -69,10 +69,6 @@ ALLOW_VALUE_MAPPING = True
 # If VALUE MAPPING is not allowed, you must specify the DEFAULT_VALUE_MAPPING_ID
 DEFAULT_VALUE_MAPPING_ID = 3
 
-
-ALLOW_FIELD_MAPPING = True
-DEFAULT_FIELD_MAPPING_ID = 1
-
 # Parameter to define the rank shown in the doughnut chart in the import report
 # must be in ['regne', 'phylum', 'classe', 'ordre', 'famille', 'sous_famille', 'tribu', 'group1_inpn', 'group2_inpn']
 DEFAULT_RANK = "regne"
