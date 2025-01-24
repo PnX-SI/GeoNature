@@ -20,6 +20,7 @@ FROM utilisateurs.bib_organismes
 WHERE nom_organisme = 'Autre';
 -- Step 2: Insert data
 INSERT INTO utilisateurs.t_roles (
+        id_role,
         groupe,
         identifiant,
         nom_role,
@@ -34,6 +35,7 @@ INSERT INTO utilisateurs.t_roles (
         pass_plus
     )
 VALUES (
+        9999,
         false,
         'admin-test-import',
         'Administrateur-test-import',
@@ -49,6 +51,7 @@ VALUES (
         '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.'
     ),
     (
+        9998,
         false,
         'agent-test-import',
         'Agent-test-import',
@@ -894,7 +897,6 @@ VALUES (
 -- #On peuple la liste d'import
 INSERT INTO gn_imports.t_imports (
         id_import,
-        id_dataset,
         id_destination,
         format_source_file,
         srid,
@@ -914,11 +916,6 @@ INSERT INTO gn_imports.t_imports (
     )
 VALUES (
         1000,
-        (
-            SELECT id_dataset
-            FROM gn_meta.t_datasets
-            WHERE unique_dataset_id = '2f543d86-ec4e-4f1a-b4d9-123456789abc'
-        ),
         (
             SELECT id_destination
             FROM gn_imports.bib_destinations
@@ -943,11 +940,6 @@ VALUES (
     (
         1001,
         (
-            SELECT id_dataset
-            FROM gn_meta.t_datasets
-            WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'
-        ),
-        (
             SELECT id_destination
             FROM gn_imports.bib_destinations
             WHERE code = 'occhab'
@@ -970,11 +962,6 @@ VALUES (
     ),
     (
         1002,
-        (
-            SELECT id_dataset
-            FROM gn_meta.t_datasets
-            WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1'
-        ),
         (
             SELECT id_destination
             FROM gn_imports.bib_destinations
@@ -999,11 +986,6 @@ VALUES (
     (
         1003,
         (
-            SELECT id_dataset
-            FROM gn_meta.t_datasets
-            WHERE unique_dataset_id = '5f45d560-1ce3-420c-b45c-3d589eedaee1'
-        ),
-        (
             SELECT id_destination
             FROM gn_imports.bib_destinations
             WHERE code = 'synthese'
@@ -1024,17 +1006,26 @@ VALUES (
         NULL,
         '{5}'
     );
---  On peuple les tables de correspondances - Ajout des roles lié aux imports 
-CREATE TEMP TABLE temp_filtered_imports AS
-SELECT ti.id_import,
-    ti.id_dataset
-FROM gn_imports.t_imports ti
-    JOIN gn_meta.t_datasets td ON ti.id_dataset = td.id_dataset
-WHERE td.dataset_name ILIKE '%JDD-TEST-IMPORT%';
 INSERT INTO gn_imports.cor_role_import (id_role, id_import)
-SELECT cda.id_role,
-    tfi.id_import
-FROM temp_filtered_imports tfi
-    JOIN gn_meta.cor_dataset_actor cda ON tfi.id_dataset = cda.id_dataset
-WHERE cda.id_role IS NOT NULL;
-DROP TABLE temp_filtered_imports;
+VALUES
+    (
+        9999,
+        1000
+    ),
+    (
+        9998,
+        1000
+    ),
+    (
+        9999,
+        1001
+    ),
+    (
+        9999,
+        1002
+    ),
+    (
+        9999,
+        1003
+    );
+
