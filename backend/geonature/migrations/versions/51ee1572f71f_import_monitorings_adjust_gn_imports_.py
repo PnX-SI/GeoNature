@@ -1,8 +1,8 @@
-"""[monitorings] Adjust gn.imports bib_fields id_dataset and unique_id_dataset values
+"""[import.monitorings] Adjust gn.imports bib_fields id_dataset and unique_id_dataset values
 
-Revision ID: a43842db7ac1
-Revises: 2b0b3bd0248c
-Create Date: 2024-12-17 11:18:07.806852
+Revision ID: 51ee1572f71f
+Revises: df277299fdda
+Create Date: 2025-01-24 16:38:46.007151
 
 """
 
@@ -11,8 +11,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "a43842db7ac1"
-down_revision = "2b0b3bd0248c"
+revision = "51ee1572f71f"
+down_revision = "df277299fdda"
 branch_labels = None
 depends_on = None
 
