@@ -67,11 +67,10 @@ describe('Import - Report step', () => {
         cy.deleteFile(FILENAME_INVALID_DATA, DOWNLOADS_FOLDER);
       });
 
-      cy.url().then((url) => {
-        // Extract the ID using string manipulation
-        const parts = url.split('/');
-        const importID = parts[parts.length - 2]; // Get the penultimate element
-        const destination = parts[parts.length - 3];
+      // PDF report
+      cy.get(SELECTOR_IMPORT_REPORT_DOWNLOAD_PDF).click({
+        force: true,
+      });
 
         // PDF report
         cy.get(SELECTOR_IMPORT_REPORT_DOWNLOAD_PDF).click({
