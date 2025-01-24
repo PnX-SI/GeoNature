@@ -19,16 +19,13 @@ import {
   SELECTOR_IMPORT_CONTENTMAPPING_SELECTION_TEXT,
   SELECTOR_IMPORT_CONTENTMAPPING_VALIDATE,
   SELECTOR_IMPORT_NEW_VERIFICATION_START,
-  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATASET,
+  SELECTOR_IMPORT_FIELDMAPPING_DATASET,
   SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN,
   SELECTOR_IMPORT_FIELDMAPPING_WKT,
   SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE,
   SELECTOR_IMPORT_FIELDMAPPING_CD_HAB,
   SELECTOR_IMPORT_FIELDMAPPING_VALIDATE,
-  SELECTOR_IMPORT_FIELDMAPPING_MODAL_CLOSE,
-  SELECTOR_IMPORT_FIELDMAPPING_MODAL_NAME,
-  SELECTOR_IMPORT_FIELDMAPPING_MODAL_NEW_OK,
-  SELECTOR_IMPORT_FIELDMAPPING_MODAL_OK,
+  SELECTOR_IMPORT_FIELDMAPPING_MODAL_CANCEL,
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -133,15 +130,14 @@ function runTheProcessForOcchab(user) {
   cy.visitImport();
   cy.startImport();
   cy.pickDestination('Occhab');
-  cy.loadImportFile(FILES.synthese.valid.fixture);
+  cy.loadImportFile(FILES.occhab.valid.fixture);
   cy.configureImportFile();
-  // cy.configureImportFieldMapping(user.dataset);
-  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'error');
-  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'error');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_debut');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_debut');
   cy.get('#mat-tab-label-0-1').click();
-  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'error');
-  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_CD_HAB, 'error');
-  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATASET, 'error');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_CD_HAB, 'date_debut');
 
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).click();
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL_CANCEL, { force: true }).click();
@@ -155,7 +151,7 @@ function restartTheProcess(user) {
 
 // Occhab dedicated
 function selectFieldMappingField(dataQa, value) {
-  cy.get(`[data-qa="${dataQa}"]`)
+  cy.get(dataQa)
     .should('exist')
     .click()
     .get('ng-dropdown-panel >')
