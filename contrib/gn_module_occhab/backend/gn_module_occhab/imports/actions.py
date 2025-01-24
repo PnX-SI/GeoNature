@@ -491,7 +491,6 @@ class OcchabImportActions(ImportActions):
                     ):
                         insert_fields |= {field}
             if entity.code == "station":
-                # insert_fields -= {fields["unique_dataset_id"]}
                 insert_fields |= {fields["id_dataset"]}
                 insert_fields |= {fields["geom_4326"], fields["geom_local"]}
                 # TODO@TestImportsOcchab.test_import_valid_file: add testcase
