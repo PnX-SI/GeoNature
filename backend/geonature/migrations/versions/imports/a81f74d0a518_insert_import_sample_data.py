@@ -125,10 +125,9 @@ def downgrade():
         """
     )
 
-
     # Delete the relevant records from cor_role_import
     op.execute(
-    """
+        """
     DELETE FROM gn_imports.cor_role_import cri
     WHERE cri.id_import in (1000, 1001, 1002, 1003);
     """
