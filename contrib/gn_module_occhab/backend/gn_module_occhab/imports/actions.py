@@ -492,9 +492,6 @@ class OcchabImportActions(ImportActions):
                     ):
                         insert_fields |= {field}
             if entity.code == "station":
-                # unique_dataset_id is replaced with id_dataset
-                if "unique_dataset_id" in fields and fields["unique_dataset_id"] in insert_fields:
-                    insert_fields -= {fields["unique_dataset_id"]}
                 # insert_fields -= {fields["unique_dataset_id"]}
                 insert_fields |= {fields["id_dataset"]}
                 insert_fields |= {fields["geom_4326"], fields["geom_local"]}
