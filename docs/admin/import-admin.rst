@@ -65,6 +65,7 @@ Vous pouvez surcoucher ces différents paramètres en les ajoutant directement d
   DEFAULT_VALUE_MAPPING_ID                       Si le mapping des valeurs est désactivé, specifier l'identifiant du mapping qui doit être utilisé                                                                           
   FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE   Rempli les valeurs de nomenclature erronées par la valeur par défaut                                                                                                          
   CHECK_PRIVATE_JDD_BLURING                      Active la vérification de l'existence du champs "floutage" si le JDD est privé                                                                                              
+  CHECK_REF_BIBLIO_LITTERATURE                   Active la vérification de la référence bibliographique fournie si la valeur du champs source = "litterature"
   CHECK_EXIST_PROOF                              Active la vérification qu'une preuve d'existence est fournie si preuve existence = "oui"                                                                                    
   EXPORT_REPORT_PDF_FILENAME                     Customiser le nom du fichier de rapport de l'import                                                                                                                         
   DEFAULT_RANK                                   Paramètre pour définir le rang utilisé pour le diagramme camembert du rapport d'import.                                                                                     
