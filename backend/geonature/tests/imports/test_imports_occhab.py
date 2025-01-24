@@ -60,7 +60,7 @@ def fieldmapping(occhab_destination):
         .unique()
         .all()
     )
-    return {field.name_field: field.name_field for field in fields}
+    return {field.name_field: {"column_src": field.name_field} for field in fields}
 
 
 @pytest.fixture()
