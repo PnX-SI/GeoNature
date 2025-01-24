@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { ImportDataService } from '../../../services/data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -8,6 +8,9 @@ import { Step } from '../../../models/enums.model';
 import { Destination, Import } from '../../../models/import.model';
 import { ImportProcessService } from '../import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { switchMap } from 'rxjs/operators';
+import { FieldMappingValues } from '@geonature/modules/imports/models/mapping.model';
+import { formatQueryParams } from '@geonature/modules/imports/utils/format-to-fieldsmapping';
 
 @Component({
   selector: 'upload-file-step',
@@ -27,6 +30,7 @@ export class UploadFileStepComponent implements OnInit {
   public maxFileNameLength: number = 255;
   public acceptedExtensions: string = null;
   public destination: Destination = null;
+  public paramsFieldMapping: FieldMappingValues;
 
   constructor(
     private ds: ImportDataService,
@@ -63,11 +67,20 @@ export class UploadFileStepComponent implements OnInit {
   }
 
   setupDatasetSelect() {
-    this.route.parent.params.subscribe((params) => {
-      this.ds.getDestination(params['destination']).subscribe((dest) => {
-        this.destination = dest;
+    combineLatest([
+      this.route.parent.queryParams,
+      this.route.parent?.params || [],
+    ])
+      .pipe(
+        switchMap(([queryParams, parentParams]) => {
+          this.paramsFieldMapping = formatQueryParams(queryParams);
+          const destinationLabel = parentParams['destination'];
+          return this.ds.getDestination(destinationLabel);
+        })
+      )
+      .subscribe((destination) => {
+        this.destination = destination;
       });
-    });
   }
 
   isNextStepAvailable() {
@@ -97,9 +110,9 @@ export class UploadFileStepComponent implements OnInit {
   }
   onSaveData(): Observable<Import> {
     if (this.importData) {
-      return this.ds.updateFile(this.importData.id_import, this.file);
+      return this.ds.updateFile(this.importData.id_import, this.file, this.paramsFieldMapping);
     } else {
-      return this.ds.addFile(this.uploadForm.get('dataset').value, this.file);
+      return this.ds.addFile(this.uploadForm.get('dataset').value, this.file, this.paramsFieldMapping);
     }
   }
   onNextStep() {
