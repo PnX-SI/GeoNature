@@ -19,7 +19,7 @@ from geonature.utils.env import DB, db
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
 
-from ref_geo.models import LAreas
+
 from .commons import *
 
 
@@ -345,6 +345,7 @@ class TDatasets(db.Model):
 
     @qfilter(query=True)
     def filter_by_areas(cls, areas, *, query):
+        from ref_geo.models import LAreas
         from geonature.core.gn_synthese.models import Synthese
 
         areaFilter = []
