@@ -1,8 +1,8 @@
-"""[import.monitorings] Adjust gn.imports bib_fields id_dataset and unique_id_dataset values for syntehse destination
+"""Adjust occhab to datasate management modification in import
 
-Revision ID: 51ee1572f71f
-Revises: df277299fdda
-Create Date: 2025-01-24 16:38:46.007151
+Revision ID: 65f77e9d4c6f
+Revises: e43f039b5ff1
+Create Date: 2025-01-28 11:28:51.311696
 
 """
 
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 from geonature.core.imports.models import BibFields, Destination
 
 # revision identifiers, used by Alembic.
-revision = "51ee1572f71f"
-down_revision = "df277299fdda"
+revision = "65f77e9d4c6f"
+down_revision = "e43f039b5ff1"
 branch_labels = None
 depends_on = None
 
@@ -24,7 +24,7 @@ def upgrade():
         .where(
             BibFields.name_field == "unique_dataset_id",
             BibFields.id_destination == Destination.id_destination,
-            Destination.code == "synthese",
+            Destination.code == "occhab",
         )
         .values(
             dict(
@@ -43,7 +43,7 @@ def upgrade():
         .where(
             BibFields.name_field == "id_dataset",
             BibFields.id_destination == Destination.id_destination,
-            Destination.code == "synthese",
+            Destination.code == "occhab",
         )
         .values(
             dict(
@@ -56,23 +56,6 @@ def upgrade():
         )
     )
 
-    op.execute(
-        """
-        DO $$
-        BEGIN
-            -- Vérifier si la colonne existe dans la table
-            IF EXISTS (SELECT 1
-                    FROM information_schema.columns
-                    WHERE
-                    table_name = 't_imports'
-                    AND column_name = 'id_dataset') THEN
-                -- Supprimer la colonne si elle existe
-                ALTER TABLE gn_imports.t_imports DROP COLUMN id_dataset;
-            END IF;
-        END $$;
-        """
-    )
-
 
 def downgrade():
     op.execute(
@@ -80,7 +63,7 @@ def downgrade():
         .where(
             BibFields.name_field == "unique_dataset_id",
             BibFields.id_destination == Destination.id_destination,
-            Destination.code == "synthese",
+            Destination.code == "occhab",
         )
         .values(
             dict(
@@ -99,12 +82,7 @@ def downgrade():
         .where(
             BibFields.name_field == "id_dataset",
             BibFields.id_destination == Destination.id_destination,
-            Destination.code == "synthese",
+            Destination.code == "occhab",
         )
         .values(dict(dest_field=None))
-    )
-    op.add_column(
-        schema="gn_imports",
-        table_name="t_imports",
-        column=sa.Column("id_dataset", sa.INTEGER),
     )
