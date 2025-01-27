@@ -387,6 +387,8 @@ class Synthese(Schema):
             {"min": 0, "color": "#FFEDA0"},
         ],
     )
+    # List of display criteria for the Synthese map
+    MAP_CRITERIA_LIST = fields.Dict()
 
 class DataBlurringManagement(Schema):
     # Configuration parameters for blurring geo data based on diffusion_level, sensitivity

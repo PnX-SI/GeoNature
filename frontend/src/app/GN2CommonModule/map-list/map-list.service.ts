@@ -69,14 +69,18 @@ export class MapListService {
   onTableClick(map: Map): void {
     // On table click, change style layer and zoom
     this.onTableClick$.subscribe(id => {
+      console.log(`In onTableClick, id: ${id}`);
       const selectedLayer = this.layerDict[id];
       this.toggleStyle(selectedLayer);
       this.zoomOnSelectedLayer(map, selectedLayer);
+      selectedLayer.bringToFront();
     });
   }
 
   onMapClick(): void {
+    console.log("onMapClick");
     this.onMapClik$.subscribe(id => {
+      console.log(`In onMapClick, id: ${id}`);
       this.selectedRow = []; // clear selected list
 
       const integerId = parseInt(id);
@@ -94,6 +98,7 @@ export class MapListService {
 
   enableMapListConnexion(map: Map): void {
     // do the connexion between map and list
+    console.log('do the connexion between map and list');
     this.onTableClick(map);
     this.onMapClick();
   }
@@ -299,7 +304,7 @@ export class MapListService {
         }
       });
     }
-    //this.tableData = [...this.tableData];
+    this.tableData = [...this.tableData];
   }
 }
 

@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
-import { AppConfig } from '@geonature_config/app.config';
+
 import { stringify as toWKT } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
 import { isArray } from 'util';
+
+import { AppConfig } from '@geonature_config/app.config';
+
 
 @Injectable()
 export class SyntheseFormService {
@@ -34,20 +37,20 @@ export class SyntheseFormService {
       radius: null,
       taxonomy_lr: null,
       taxonomy_id_hab: null,
-      taxonomy_group2_inpn: null
+      taxonomy_group2_inpn: null,
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
 
-    AppConfig.SYNTHESE.AREA_FILTERS.forEach(area => {
-      const control_name = 'area_' + area["type_code"];
+    AppConfig.SYNTHESE.AREA_FILTERS.forEach((area) => {
+      const control_name = 'area_' + area['type_code'];
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
     });
     // init the dynamic form with the user parameters
     // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
-    this.dynamycFormDef = DYNAMIC_FORM_DEF.filter(formDef => {
+    this.dynamycFormDef = DYNAMIC_FORM_DEF.filter((formDef) => {
       return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
     this.formBuilded = true;
@@ -81,7 +84,7 @@ export class SyntheseFormService {
         const wktArray = [];
         // if geointersection is an array of geojson (from filelayer) convert each one in WKT
         if (isArray(params['geoIntersection'])) {
-          params['geoIntersection'].forEach(geojson => {
+          params['geoIntersection'].forEach((geojson) => {
             wktArray.push(toWKT(geojson));
           });
           updatedParams['geoIntersection'] = wktArray;
@@ -99,7 +102,7 @@ export class SyntheseFormService {
       }
     }
     if (this.selectedtaxonFromComponent.length > 0) {
-      updatedParams['cd_ref'] = this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref);
+      updatedParams['cd_ref'] = this.selectedtaxonFromComponent.map((taxon) => taxon.cd_ref);
     }
     if (this.selectedCdRefFromTree.length > 0) {
       updatedParams['cd_ref_parent'] = this.selectedCdRefFromTree;
@@ -113,7 +116,7 @@ export class SyntheseFormService {
       const periodEnd = formGroup.controls.period_end.value;
       if ((perioStart && !periodEnd) || (!perioStart && periodEnd)) {
         return {
-          invalidPeriod: true
+          invalidPeriod: true,
         };
       }
       return null;

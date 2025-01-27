@@ -27,15 +27,18 @@ export class MapListComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     // set the idName in the service
     this.mapListService.idName = this.idName;
+    console.log('In MapListComponent > ngOnInit');
   }
 
   ngAfterViewInit() {
     // event from the list
+    console.log('In MapListComponent > ngAfterViewInit');
     this.mapListService.enableMapListConnexion(this._ms.getMap());
   }
 
   onEachFeature(feature, layer) {
     // event from the map
+    console.log('In MapListComponent > onEachFeature');
     this.mapListService.layerDict[feature.id] = layer;
     layer.setStyle(this.mapListService.originStyle);
     layer.on({

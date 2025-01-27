@@ -407,25 +407,106 @@ MAIL_ON_ERROR = false
     ]
 
     # Autorise la visualisation des observations en mode zonage
-    ENABLE_AREA_AGGREGATION = fields.Boolean(load_default=True)
+    ENABLE_AREA_AGGREGATION = true
     # Choisir la taille du zonage. Attention, si vous utilisez le floutage (DATA_BLURRING),
     # il est nécessaire d'utiliser un type de zonage qui puisse s'imbriquer dans ceux du floutage.
     # Exemple : type de zonage M5 avec un floutage M5, M10, M75
     # OU type de zonage COM avecun floutage COM, DEP.
-    AREA_AGGREGATION_TYPE = fields.String(load_default="M10")
+    AREA_AGGREGATION_TYPE = "M10"
     # Activer le zonage par défaut
-    AREA_AGGREGATION_BY_DEFAULT = fields.Boolean(load_default=False)
+    AREA_AGGREGATION_BY_DEFAULT = false
     # Classes de la légende à utiliser
-    AREA_AGGREGATION_LEGEND_CLASSES = fields.List(fields.Dict(), load_default=[
-        {"min": 100, "color": "#800026"},
-        {"min": 50, "color": "#BD0026"},
-        {"min": 20, "color": "#E31A1C"},
-        {"min": 10, "color": "#FC4E2A"},
-        {"min": 5, "color": "#FD8D3C"},
-        {"min": 2, "color": "#FEB24C"},
-        {"min": 1, "color": "#FED976"},
-        {"min": 0, "color": "#FFEDA0"},
-    ])
+    AREA_AGGREGATION_LEGEND_CLASSES = [
+        { min = 100, color = "#800026" },
+        { min = 50, color = "#BD0026" },
+        { min = 20, color = "#E31A1C" },
+        { min = 10, color = "#FC4E2A" },
+        { min = 5, color = "#FD8D3C" },
+        { min = 2, color = "#FEB24C" },
+        { min = 1, color = "#FED976" },
+        { min = 0, color = "#FFEDA0" }
+    ]
+    # Liste des critères d'affichage des observations sur la carte de la Synthese
+    # Choix des couleurs pour la carto : https://colorbrewer2.org/
+    # ⚠🛑⚠ : mettre la documentation définitive de ce paramètre ici
+    # Ex.:
+    # Add display criteria
+    [SYNTHESE.MAP_CRITERIA_LIST.valid_status]
+        label = "Status de validation"
+        type = "nomenclatures"
+        field = "id_nomenclature_valid_status"
+        activate = true
+        default = false
+        styles = { stroke = true, color = "#000000", weight = 1, opacity = 0.5, fillOpacity = 0.5 }
+        [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+            value = ["1", "2"]
+            label = "Probable"
+            decription = "Certain à probable"
+            color = "#44ce1b"
+            icon = "fa-check-square"
+            styles = { stroke = false, weight = 3, opacity = 1.0, fillOpacity = 0.80 }
+        [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+            value = "3"
+            label = "Douteux"
+            color = "#f2a134"
+            icon = "fa-exclamation-triangle"
+            styles = { stroke = false, weight = 2, opacity = 0.8, fillOpacity = 0.65 }
+        [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+            value = "4"
+            label =  "Invalide"
+            color = "#e51f1f"
+            icon = "fa-minus-circle"
+            styles = { stroke = false, opacity = 0.6 }
+        [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+            value = ["5", "6", "0"]
+            label = "Indéterminé"
+            description = "Non réalisable, Inconnu ou en attente de validation"
+            color = "#f3f6f4"
+            icon = "fa-question-circle"
+    [SYNTHESE.MAP_CRITERIA_LIST.observation_status]
+        label = "Statut de l'observation"
+        type = "nomenclatures"
+        field = "id_nomenclature_observation_status"
+        activate = true
+        default = false
+        styles = { weight = 0, opacity = 0 }
+        [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+            value = "Pr"
+            label = "Présent"
+            color = "#44ce1b"
+        [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+            value = "No"
+            label = "Non observé"
+            color = "#e51f1f"
+        [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+            value = "NSP"
+            label = "Non renseigné"
+            color = "#f3f6f4"
+    [SYNTHESE.MAP_CRITERIA_LIST.precision]
+        label = "Précision localisation"
+        type = "classes"
+        field = "precision"
+        activate = true
+        default = false
+        styles = { stroke = false, color = "#000000", weight = 2, opacity = 1.0, fillOpacity = 1.0 }
+        [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+            value = 250
+            label = "Supérieur à 250m"
+            decription = "Observations dont la précision est supérieure ou égale à 250m."
+            color = "#cbc9e2"
+            icon = "target"
+        [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+            value = 25
+            label = "Entre 25 et 250m"
+            decription = "Observations dont la précision est supérieure ou égale à 25m et inférieure à 250m."
+            color = "#9e9ac8"
+            icon  = "adjust"
+        [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+            value = 0
+            label = "Inférieur à 25m"
+            decription = "Observations dont la précision est supérieure ou égale à 0m et inférieure à 25m."
+            color = "#6a51a3"
+            icon = "point_scan"
 
 # Configuration de l'accès sans authentication
 [PUBLIC_ACCESS]

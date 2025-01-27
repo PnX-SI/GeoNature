@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
+import { HttpParams } from '@angular/common/http';
 
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -11,6 +12,7 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 @Injectable()
 export class SyntheseFormService {
   public searchForm: FormGroup;
+  public selectors = new HttpParams();
   public formBuilded = false;
   public selectedtaxonFromComponent = [];
   public selectedCdRefFromTree = [];
@@ -53,14 +55,13 @@ export class SyntheseFormService {
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
       taxon_rank: null,
-      with_areas: null,
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
 
     // Add protection status filters defined in configuration parameters
     this.statusFilters = Object.assign([], this.cfg.SYNTHESE.STATUS_FILTERS);
-    this.statusFilters.forEach(status => {
+    this.statusFilters.forEach((status) => {
       const control_name = `${status.id}_protection_status`;
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       status['control_name'] = control_name;
@@ -69,7 +70,7 @@ export class SyntheseFormService {
 
     // Add red lists filters defined in configuration parameters
     this.redListsFilters = Object.assign([], this.cfg.SYNTHESE.RED_LISTS_FILTERS);
-    this.redListsFilters.forEach(redList => {
+    this.redListsFilters.forEach((redList) => {
       const control_name = `${redList.id}_red_lists`;
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       redList['control'] = this.searchForm.controls[control_name];
@@ -77,7 +78,7 @@ export class SyntheseFormService {
 
     // Add areas filters defined in configuration parameters
     this.areasFilters = Object.assign([], this.cfg.SYNTHESE.AREA_FILTERS);
-    this.areasFilters.forEach(area => {
+    this.areasFilters.forEach((area) => {
       const control_name = 'area_' + area['type_code'];
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       area['control'] = this.searchForm.controls[control_name];
@@ -85,7 +86,7 @@ export class SyntheseFormService {
 
     // Init the dynamic form with the user parameters
     // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
-    this.dynamycFormDef = DYNAMIC_FORM_DEF.filter(formDef => {
+    this.dynamycFormDef = DYNAMIC_FORM_DEF.filter((formDef) => {
       return this.cfg.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
     this.formBuilded = true;
@@ -126,7 +127,7 @@ export class SyntheseFormService {
         // stringify accepte uniquement les geojson simple (pas les feature collection)
         // on boucle sur les feature pour les transformer en WKT
         if (Array.isArray(params['geoIntersection'])) {
-          updatedParams['geoIntersection'] = params['geoIntersection'].map(geojson => {
+          updatedParams['geoIntersection'] = params['geoIntersection'].map((geojson) => {
             return stringify(geojson);
           });
         } else {
@@ -145,12 +146,12 @@ export class SyntheseFormService {
     }
 
     if (this.selectedtaxonFromComponent.length > 0) {
-      updatedParams['cd_ref'] = this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref);
+      updatedParams['cd_ref'] = this.selectedtaxonFromComponent.map((taxon) => taxon.cd_ref);
     }
     if (this.selectedCdRefFromTree.length > 0 || this.selectedTaxonFromRankInput.length > 0) {
       updatedParams['cd_ref_parent'] = [
-        ...this.selectedTaxonFromRankInput.map(el => el.cd_ref),
-        ...this.selectedCdRefFromTree
+        ...this.selectedTaxonFromRankInput.map((el) => el.cd_ref),
+        ...this.selectedCdRefFromTree,
       ];
     }
     return updatedParams;
@@ -162,7 +163,7 @@ export class SyntheseFormService {
       const periodEnd = formGroup.controls.period_end.value;
       if ((perioStart && !periodEnd) || (!perioStart && periodEnd)) {
         return {
-          invalidPeriod: true
+          invalidPeriod: true,
         };
       }
       return null;
@@ -180,8 +181,10 @@ export class SyntheseFormService {
       return true;
     } else if (this.selectedTaxRefAttributs.length > 0) {
       return true;
-    } else if ( this.searchForm.controls.taxonomy_group2_inpn.value != null
-      && this.searchForm.controls.taxonomy_group2_inpn.value != '')
+    } else if (
+      this.searchForm.controls.taxonomy_group2_inpn.value != null &&
+      this.searchForm.controls.taxonomy_group2_inpn.value != ''
+    )
       return true;
     else {
       return false;
@@ -191,7 +194,9 @@ export class SyntheseFormService {
   getSelectedTaxonsSummary(): String {
     let summary = [];
     if (this.selectedTaxonFromRankInput.length > 0) {
-      summary.push('Rangs : ' + this.selectedTaxonFromRankInput.map(e => e.lb_nom).join(', ') + '.');
+      summary.push(
+        'Rangs : ' + this.selectedTaxonFromRankInput.map((e) => e.lb_nom).join(', ') + '.'
+      );
     }
     if (this.selectedCdRefFromTree.length > 0) {
       summary.push('Arbre taxo : ' + this.selectedCdRefFromTree.length + ' taxons.');
