@@ -280,7 +280,7 @@ class SyntheseImportActions(ImportActions):
                     imprt,
                     entity,
                     selected_fields["unique_id_sinp"],
-                    id_dataset_field=selected_fields["id_dataset"],
+                    id_dataset_field=fields["id_dataset"],
                 )
             else:
                 check_existing_uuid(
