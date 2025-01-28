@@ -271,8 +271,8 @@ def check_existing_uuid(
     )
 
     if id_dataset_field:
-        whereclause = (
-            whereclause & transient_table.c[id_dataset_field.dest_field]
+        whereclause = whereclause & (
+            transient_table.c[id_dataset_field.dest_field]
             == dest_table.c[id_dataset_field.dest_field]
         )
 
