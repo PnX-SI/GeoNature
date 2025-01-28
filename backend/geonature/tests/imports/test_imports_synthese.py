@@ -100,6 +100,11 @@ def override_in_importfile(import_datasets):
     }
 
 
+@pytest.fixture()
+def per_dataset_uuid_check(monkeypatch):
+    monkeypatch.setitem(current_app.config["IMPORT"], "PER_DATASET_UUID_CHECK", True)
+
+
 # ######################################################################################
 # Tests -- imports
 # ######################################################################################
@@ -894,6 +899,25 @@ class TestImportsSynthese:
                 (None, None),
             ]
             assert altitudes == expected_altitudes
+
+    @pytest.mark.parametrize("import_file_name,fieldmapping_preset_name", [("uuid_file.csv", None)])
+    def test_import_uuid_file_per_dataset_uuid(
+        self, per_dataset_uuid_check, import_datasets, synthese_data, prepared_import
+    ):
+        assert_import_errors(
+            prepared_import,
+            {
+                (ImportCodeError.DUPLICATE_UUID, "unique_id_sinp", frozenset([3, 4])),
+                (ImportCodeError.INVALID_UUID, "unique_id_sinp", frozenset([6])),
+            },
+        )
+        transient_table = prepared_import.destination.get_transient_table()
+        unique_id_sinp = db.session.execute(
+            select([transient_table.c.unique_id_sinp])
+            .where(transient_table.c.id_import == prepared_import.id_import)
+            .where(transient_table.c.line_no == 7)
+        ).scalar()
+        assert unique_id_sinp != None
 
     @pytest.mark.parametrize("import_file_name,fieldmapping_preset_name", [("uuid_file.csv", None)])
     def test_import_uuid_file(self, import_datasets, synthese_data, prepared_import):
