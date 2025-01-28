@@ -31,11 +31,8 @@ def downgrade():
     op.execute(
         """
         DELETE FROM gn_imports.t_imports
-        WHERE id_dataset IN (
-            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1'),
-            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f'),
-            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '2f543d86-ec4e-4f1a-b4d9-123456789abc'),
-            (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '5f45d560-1ce3-420c-b45c-3d589eedaee1')
+        WHERE id_import IN (
+            1000,1001,1002,1003
         );
         """
     )
@@ -128,28 +125,13 @@ def downgrade():
         """
     )
 
-    # Step 1: Create a temporary table to hold the filtered imports
-    op.execute(
-        """
-    CREATE TEMP TABLE temp_filtered_imports AS
-    SELECT ti.id_import
-    FROM gn_imports.t_imports ti
-    JOIN gn_meta.t_datasets td ON ti.id_dataset = td.id_dataset
-    WHERE td.dataset_name ILIKE '%JDD-TEST-IMPORT%';
-    """
-    )
-
-    # Step 2: Delete the relevant records from cor_role_import
+    # Delete the relevant records from cor_role_import
     op.execute(
         """
     DELETE FROM gn_imports.cor_role_import cri
-    USING temp_filtered_imports tfi
-    WHERE cri.id_import in (tfi.id_import);
+    WHERE cri.id_import in (1000, 1001, 1002, 1003);
     """
     )
-
-    # Clean up temporary table
-    op.execute("DROP TABLE temp_filtered_imports;")
 
     ## Clean users test
     # Delete permissions for admin-test-import
@@ -164,7 +146,7 @@ def downgrade():
     op.execute(
         """
        DELETE FROM gn_permissions.t_permissions
-    WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'agent-test-import');
+        WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'agent-test-import');
     """
     )
 
@@ -182,6 +164,23 @@ def downgrade():
             DELETE FROM gn_notifications.t_notifications
             WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'agent-test-import');
         """
+    )
+
+    ## Clean Rol Provider
+    # admin-test-import
+    op.execute(
+        """
+        DELETE FROM utilisateurs.cor_role_provider
+        WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'admin-test-import');
+    """
+    )
+
+    # agent-test-import
+    op.execute(
+        """
+        DELETE FROM utilisateurs.cor_role_provider
+        WHERE id_role = (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant = 'agent-test-import');
+    """
     )
 
     #  Delete the  roles

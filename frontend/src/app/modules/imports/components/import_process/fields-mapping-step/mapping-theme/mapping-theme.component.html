@@ -91,6 +91,7 @@
               class="d-block mt-2"
               [formDef]="defaultValueFormDefs[field.name_field]"
               [form]="_fm.mappingFormGroup"
+              [attr.data-qa]="'import-fieldmapping-theme-default-' + field.name_field"
             ></pnx-dynamic-form>
           </div>
           <div

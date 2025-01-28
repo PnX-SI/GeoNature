@@ -176,9 +176,7 @@ def check_nomenclature_exist_proof(
     )
 
 
-def check_nomenclature_blurring(
-    imprt, entity, blurring_field, id_dataset_field, uuid_dataset_field
-):
+def check_nomenclature_blurring(imprt, entity, blurring_field, id_dataset_field):
     """
     Raise an error if blurring not set.
     Required if the dataset is private.
@@ -196,10 +194,7 @@ def check_nomenclature_blurring(
         error_type=ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
         error_column=blurring_field.name_field,
         whereclause=sa.and_(
-            sa.or_(
-                transient_table.c[id_dataset_field.name_field] == TDatasets.id_dataset,
-                transient_table.c[uuid_dataset_field.name_field] == TDatasets.unique_dataset_id,
-            ),
+            transient_table.c[id_dataset_field.name_field] == TDatasets.id_dataset,
             TDatasets.id_nomenclature_data_origin == id_nomenclature_private,
             transient_table.c[blurring_field.dest_field] == None,
         ),

@@ -510,6 +510,10 @@ export class FieldMappingService {
         type_widget: 'textarea',
       };
     }
+    if(field.type_field == 'dataset'){
+      const module_code = this._importProcessService.getImportData().destination?.module.module_code;
+      def.creatable_in_module = module_code;
+    }
 
     return {
       ...def,

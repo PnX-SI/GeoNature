@@ -612,6 +612,10 @@ class TestGNMeta:
             )
             assert set(sc(dsc.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
+                    # The code is attempting to access a dataset named "own_dataset" from a dictionary or list
+                    # named "datasets" in Python. However, the code snippet provided is incomplete and lacks
+                    # context, so it is difficult to determine the exact functionality or purpose of this code
+                    # without additional information.
                     datasets["own_dataset"],
                     datasets["own_dataset_not_activated"],
                     datasets["associate_dataset"],

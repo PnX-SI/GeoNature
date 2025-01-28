@@ -17,10 +17,9 @@ function runTheProcess(user) {
   cy.visitImport();
   cy.startImport();
   cy.pickDestination();
-  cy.pickDataset(user.dataset);
   cy.loadImportFile(FILES.synthese.valid.fixture);
   cy.configureImportFile();
-  cy.configureImportFieldMapping();
+  cy.configureImportFieldMapping(user.dataset);
   cy.configureImportContentMapping();
   cy.triggerImportVerification();
 }

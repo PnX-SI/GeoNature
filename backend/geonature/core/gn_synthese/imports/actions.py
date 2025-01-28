@@ -89,6 +89,7 @@ class SyntheseImportActions(ImportActions):
             field_name: fields[field_name]
             for field_name, source_field in imprt.fieldmapping.items()
             if source_field.get("column_src", None) in imprt.columns
+            or source_field.get("default_value", None) is not None
         }
         init_rows_validity(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
@@ -246,7 +247,6 @@ class SyntheseImportActions(ImportActions):
                 entity,
                 fields["id_nomenclature_blurring"],
                 fields["id_dataset"],
-                fields["unique_dataset_id"],
             )
         if current_app.config["IMPORT"]["CHECK_REF_BIBLIO_LITTERATURE"]:
             check_nomenclature_source_status(
@@ -276,15 +276,18 @@ class SyntheseImportActions(ImportActions):
         if "unique_id_sinp" in selected_fields:
             check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp"])
             if current_app.config["IMPORT"]["PER_DATASET_UUID_CHECK"]:
-                whereclause = Synthese.id_dataset == imprt.id_dataset
+                check_existing_uuid(
+                    imprt,
+                    entity,
+                    selected_fields["unique_id_sinp"],
+                    id_dataset_field=selected_fields["id_dataset"],
+                )
             else:
-                whereclause = sa.true()
-            check_existing_uuid(
-                imprt,
-                entity,
-                selected_fields["unique_id_sinp"],
-                whereclause=whereclause,
-            )
+                check_existing_uuid(
+                    imprt,
+                    entity,
+                    selected_fields["unique_id_sinp"],
+                )
         if imprt.fieldmapping.get(
             "unique_id_sinp_generate",
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
@@ -358,14 +361,11 @@ class SyntheseImportActions(ImportActions):
                 ):
                     insert_fields |= {field}
 
-        insert_fields -= {fields["unique_dataset_id"]}  # Column only used for filling `id_dataset`
-
         select_stmt = (
             sa.select(
                 *[transient_table.c[field.dest_field] for field in insert_fields],
                 sa.literal(source.id_source),
                 sa.literal(source.module.id_module),
-                sa.literal(imprt.id_dataset),
                 sa.literal(imprt.id_import),
                 sa.literal("I"),
             )
@@ -375,7 +375,6 @@ class SyntheseImportActions(ImportActions):
         names = [field.dest_field for field in insert_fields] + [
             "id_source",
             "id_module",
-            "id_dataset",
             "id_import",
             "last_action",
         ]
