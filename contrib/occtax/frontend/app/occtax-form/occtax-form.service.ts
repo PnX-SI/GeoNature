@@ -122,17 +122,16 @@ export class OcctaxFormService {
   }
 
   addOccurrenceData(occurrence): void {
-    let occtaxData = this.occtaxData.getValue();
+    const occtaxData = this.occtaxData.getValue();
 
     if (!occtaxData.releve.properties.t_occurrences_occtax) {
       occtaxData.releve.properties.t_occurrences_occtax = [];
     }
     occtaxData.releve.properties.t_occurrences_occtax.push(occurrence);
-    this.occtaxData.next(occtaxData);
   }
 
   removeOccurrenceData(id_occurrence): void {
-    let occtaxData = this.occtaxData.getValue();
+    const occtaxData = this.occtaxData.getValue();
     if (occtaxData.releve.properties.t_occurrences_occtax) {
       for (let i = 0; i < occtaxData.releve.properties.t_occurrences_occtax.length; i++) {
         if (
@@ -144,7 +143,6 @@ export class OcctaxFormService {
         }
       }
     }
-    this.occtaxData.next(occtaxData);
   }
 
   replaceOccurrenceData(occurrence): void {
