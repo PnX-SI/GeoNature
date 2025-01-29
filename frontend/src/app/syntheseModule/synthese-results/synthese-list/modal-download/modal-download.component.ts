@@ -13,7 +13,7 @@ export class SyntheseModalDownloadComponent {
   public syntheseConfig = null;
 
   @Input() tooManyObs = false;
-
+  @Input() tooManyObsForExport = false;
   constructor(
     public activeModal: NgbActiveModal,
     public _dataService: SyntheseDataService,

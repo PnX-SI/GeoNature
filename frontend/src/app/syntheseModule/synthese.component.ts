@@ -107,6 +107,8 @@ export class SyntheseComponent implements OnInit {
           });
           modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formParams);
           modalRef.componentInstance.tooManyObs = true;
+          modalRef.componentInstance.tooManyObsForExport =
+            this._syntheseStore.idSyntheseList.length > this.config.SYNTHESE.NB_MAX_OBS_EXPORT;
         }
 
         // Store geojson
