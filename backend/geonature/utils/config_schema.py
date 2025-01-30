@@ -443,6 +443,8 @@ class Synthese(Schema):
     NB_MAX_OBS_MAP = fields.Integer(load_default=50000)
     # Clusteriser les layers sur la carte
     ENABLE_LEAFLET_CLUSTER = fields.Boolean(load_default=True)
+    # Disable Leaflet cluster on map at this zoom level
+    LEALET_CLUSTER_DISABLE_ZOOM = fields.Integer(load_default=None)
     # Nombre des "dernières observations" affichées à l'arrivée sur la synthese
     NB_LAST_OBS = fields.Integer(load_default=100)
 
