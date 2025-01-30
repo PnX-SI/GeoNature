@@ -35,7 +35,9 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   public SYNTHESE_CONFIG = this.config.SYNTHESE;
   // set a new featureGroup - cluster or not depending of the synthese config
   public clusterOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
-    ? (L as any).markerClusterGroup()
+    ? (L as any).markerClusterGroup({
+        disableClusteringAtZoom: this.getDisableClusterZoom(),
+      })
     : new L.FeatureGroup();
 
   public criteriaActivatedSubscription;
@@ -162,6 +164,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       this.clusterOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup({
             iconCreateFunction: this.overrideClusterCount,
+            disableClusteringAtZoom: this.getDisableClusterZoom(),
           })
         : new L.FeatureGroup();
 
@@ -199,6 +202,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         }
       }
     }
+  }
+
+  private getDisableClusterZoom() {
+    let output_zoom: number | null = null;
+    const config_zoom = this.config.SYNTHESE.LEALET_CLUSTER_DISABLE_ZOOM;
+    if (config_zoom && config_zoom === parseInt(config_zoom, 10)) {
+      output_zoom = this.config.SYNTHESE.LEALET_CLUSTER_DISABLE_ZOOM;
+    }
+    return output_zoom;
   }
 
   overrideClusterCount(cluster) {
