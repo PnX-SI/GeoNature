@@ -1,7 +1,36 @@
-<pnx-map height="100%">
-  <pnx-geojson
-    [geojson]="observations"
-    [zoomOnFirstTime]="true"
-    [style]="styleTabGeoJson"
-  ></pnx-geojson>
-</pnx-map>
+<div class="TabGeographic">
+  <pnx-map
+    class="TabGeographic__map"
+    height="100%"
+  >
+    <pnx-geojson
+      [geojson]="observations"
+      [zoomOnFirstTime]="true"
+      [style]="styleTabGeoJson"
+    ></pnx-geojson>
+  </pnx-map>
+  <div class="TabGeographic__side">
+    <div class="TabGeographic__sideItem">
+      <mat-label>Plage d'observations: {{ yearInterval.min }} -> {{ yearInterval.max }}</mat-label>
+      <mat-slider
+        class="DateSlider"
+        [displayWith]="formatLabel"
+        [min]="YEAR_INTERVAL.min"
+        [max]="YEAR_INTERVAL.max"
+        step="1"
+        discrete
+      >
+        <input
+          (change)="updateTabGeographic()"
+          [(ngModel)]="yearInterval.min"
+          matSliderStartThumb
+        />
+        <input
+          (change)="updateTabGeographic()"
+          [(ngModel)]="yearInterval.max"
+          matSliderEndThumb
+        />
+      </mat-slider>
+    </div>
+  </div>
+</div>

@@ -37,3 +37,25 @@
 ::ng-deep .legend:hover {
   opacity: 1;
 }
+
+.TabGeographic {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+  height: 100%;
+  &__map {
+    width: 70%;
+  }
+  &__side {
+    width: 30%;
+    &Item {
+      display: flex;
+      flex-flow: column;
+      justify-content: flex-start;
+      max-width: 100%;
+      .DateSlider {
+        width: inherit;
+      }
+    }
+  }
+}

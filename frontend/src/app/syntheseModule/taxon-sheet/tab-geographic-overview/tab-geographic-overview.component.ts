@@ -11,6 +11,7 @@ import * as L from 'leaflet';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MapService } from '@geonature_common/map/map.service';
+import { MatSliderModule } from '@angular/material/slider';
 
 interface MapAreasStyle {
   color: string;
@@ -19,19 +20,31 @@ interface MapAreasStyle {
   fillColor?: string;
 }
 
+interface YearInterval {
+  min: number;
+  max: number;
+}
+
 @Component({
   standalone: true,
   selector: 'tab-geographic-overview',
   templateUrl: 'tab-geographic-overview.component.html',
   styleUrls: ['tab-geographic-overview.component.scss'],
-  imports: [GN2CommonModule, CommonModule],
+  imports: [GN2CommonModule, CommonModule, MatSliderModule],
 })
 export class TabGeographicOverviewComponent implements OnInit {
   observations: FeatureCollection | null = null;
   areasEnable: boolean;
   areasLegend: any;
+  taxon: Taxon | null = null;
   private _areasLabelSwitchBtn;
   styleTabGeoJson: {};
+
+  readonly YEAR_INTERVAL: YearInterval = {
+    min: 1970,
+    max: 2025,
+  };
+  yearInterval: YearInterval = { ...this.YEAR_INTERVAL };
 
   mapAreasStyle: MapAreasStyle = {
     color: '#FFFFFF',
@@ -59,29 +72,39 @@ export class TabGeographicOverviewComponent implements OnInit {
       this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
   }
 
+  formatLabel(value: number): string {
+    return `${value}`;
+  }
+
   ngOnInit() {
     this._tss.taxon.subscribe((taxon: Taxon | null) => {
+      this.taxon = taxon;
       if (!taxon) {
         this.observations = null;
         return;
       }
-      const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
-      this.updateTabGeographic(taxon, format);
+      this.updateTabGeographic();
     });
     this.initializeFormWithMapParams();
   }
 
-  updateTabGeographic(taxon: Taxon, format: string) {
+  updateTabGeographic() {
+    const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
+    const date_min = `${this.yearInterval.min}-01-01`;
+    const date_max = `${this.yearInterval.max}-12-31`;
+
     this._syntheseDataService
       .getSyntheseData(
         {
-          cd_ref: [taxon.cd_ref],
+          cd_ref: [this.taxon.cd_ref],
+          date_min: date_min,
+          date_max: date_max,
         },
         { format }
       )
       .subscribe((data) => {
         this.observations = data;
-
+        console.log(this.observations);
         this.styleTabGeoJson = undefined;
 
         const map = this._ms.getMap();
@@ -105,7 +128,6 @@ export class TabGeographicOverviewComponent implements OnInit {
         }
       });
   }
-
   private initializeFormWithMapParams() {
     this.formService.searchForm.patchValue({
       format: this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom',
@@ -137,13 +159,7 @@ export class TabGeographicOverviewComponent implements OnInit {
 
         switchBtn.onclick = () => {
           this.areasEnable = switchBtn.checked;
-          const format = switchBtn.checked ? 'grouped_geom_by_areas' : 'grouped_geom';
-
-          this._tss.taxon.subscribe((taxon: Taxon | null) => {
-            if (taxon) {
-              this.updateTabGeographic(taxon, format);
-            }
-          });
+          this.updateTabGeographic();
 
           if (this.areasEnable) {
             this.addAreasLegend();
