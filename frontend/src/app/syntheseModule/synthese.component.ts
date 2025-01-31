@@ -25,6 +25,10 @@ export class SyntheseComponent implements OnInit {
   public firstLoad = true;
   public CONFIG = AppConfig;
 
+  private idsByFeature: Set<number>;
+  private criteriaByFeature: Set<any>;
+  private noGeomMessage: boolean;
+
   constructor(
     public searchService: SyntheseDataService,
     public _mapListService: MapListService,
@@ -72,23 +76,11 @@ export class SyntheseComponent implements OnInit {
       (data) => {
         this._syntheseStore.data[this.criteriaService.getCurrentCode()] = data;
 
-        // Store the list of id_synthese for exports
-        this._syntheseStore.idSyntheseList = this.extractSyntheseIds(data);
-
-        // Check if synthese observations limit is reach
-        if (this._syntheseStore.idSyntheseList.length >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
-          const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
-            size: 'lg'
-          });
-          modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formParams);
-          modalRef.componentInstance.tooManyObs = true;
-        }
-
-        // Store geojson
-        this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(data));
-        this.formatDataForTable(data);
-
         this._mapListService.idName = 'id';
+        this.parseGeoJson(data);
+
+        this.displayMessageLimitNumberObservationsReached(formParams);
+
         this.searchService.dataLoaded = true;
       },
       () => {
@@ -97,103 +89,126 @@ export class SyntheseComponent implements OnInit {
     );
 
     if (this.firstLoad && this._fs.selectors.get('limit')) {
-      //toaster
       let limit = this._fs.selectors.get('limit');
       this._toasterService.info(`Les ${limit} dernières observations de la synthèse`, '');
     }
     this.firstLoad = false;
   }
 
-  private extractSyntheseIds(geojson) {
-    let ids = [];
-    for (let feature of geojson.features) {
-      for (let obs of Object.values(feature.properties.observations)) {
-        ids.push(obs['id']);
-      }
-    }
-    return ids;
+  private parseGeoJson(rawGeojson) {
+    let geojson = cloneDeep(rawGeojson);
+    this.initializeStores();
+
+    geojson.features.forEach((feature) => {
+      this.idsByFeature = new Set();
+      this.criteriaByFeature = new Set();
+      this.checkGeomAbsence(feature);
+
+      feature.properties.observations.forEach((obs) => {
+        this.extractIds(obs);
+        this.extractCriteria(obs);
+        this.addObservationToDataTable(cloneDeep(obs));
+      });
+
+      // WARNING: needs to return the updated object here !
+      feature.properties.observations = this.simplifyGeoJsonProperties(
+        feature.properties.observations
+      );
+    });
+
+    this.displayMessageGeomAbsence();
+    this.orderDataTableByDates();
+    this._mapListService.geojsonData = geojson;
   }
 
-  private simplifyGeoJson(geojson) {
-    let noGeomMessage = false;
-    for (let feature of geojson.features) {
-      if (!feature.geometry) {
-        noGeomMessage = true;
+  private initializeStores() {
+    this._syntheseStore.idSyntheseList = new Set();
+    this._mapListService.tableData = [];
+    this.noGeomMessage = false;
+  }
+
+  private extractIds(observation) {
+    if (observation['id']) {
+      const id = observation['id'];
+      if (this._syntheseStore.idSyntheseList.has(id) === false) {
+        this._syntheseStore.idSyntheseList.add(id);
       }
 
-      // Extract id_synthese list and critierias values list
-      let ids = [];
-      let criteriaValuesList = [];
-      for (let obs of Object.values(feature.properties.observations)) {
-        if (obs['id']) {
-          ids.push(obs['id']);
-        }
-
-        // Extract map display criteria values list
-        if (this.criteriaService.isCriteriaDisplay()) {
-          const criteriaField = this.criteriaService.getCurrentField();
-          if (obs[criteriaField]) {
-            const criteriaValue = obs[criteriaField];
-            if (!criteriaValuesList.includes(criteriaValue)) {
-              criteriaValuesList.push(criteriaValue);
-            }
-          }
-        }
-      }
-
-      feature.properties.observations = { id: ids };
-
-      // Store map display criteria values
-      if (criteriaValuesList.length > 0) {
-        const criteriaField = this.criteriaService.getCurrentField();
-        feature.properties.observations[criteriaField] = criteriaValuesList;
+      if (this.idsByFeature.has(id) === false) {
+        this.idsByFeature.add(id);
       }
     }
+  }
 
-    if (noGeomMessage) {
+  private addObservationToDataTable(observation) {
+    if (observation['id']) {
+      if (this._mapListService.tableData.includes(observation.id) === false) {
+        this._mapListService.tableData.push(observation);
+      }
+    }
+  }
+
+  private extractCriteria(observation) {
+    if (this.criteriaService.isCriteriaDisplay()) {
+      const criteriaField = this.criteriaService.getCurrentField();
+      if (observation[criteriaField]) {
+        const criteriaValue = observation[criteriaField];
+        if (this.criteriaByFeature.has(criteriaValue) === false) {
+          this.criteriaByFeature.add(criteriaValue);
+        }
+      }
+    }
+  }
+
+  private checkGeomAbsence(feature) {
+    if (!feature.geometry) {
+      this.noGeomMessage = true;
+    }
+  }
+
+  private simplifyGeoJsonProperties(observations) {
+    observations = { id: Array.from(this.idsByFeature) };
+
+    // Store map display criteria value
+    if (this.criteriaByFeature.size > 0) {
+      const criteriaField = this.criteriaService.getCurrentField();
+      observations[criteriaField] = Array.from(this.criteriaByFeature);
+    }
+
+    return observations;
+  }
+
+  private displayMessageGeomAbsence() {
+    if (this.noGeomMessage) {
       this._toasterService.warning(
         "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible"
       );
     }
-
-    return geojson;
   }
 
-  /** table data expect an array obs observation
-   * the geojson get from API is a list of features whith an observation list
-   */
-  // TODO: [IMPROVE][PAGINATE] data in datable is formated here
-  formatDataForTable(geojson) {
-    this._mapListService.tableData = [];
-    const idSynthese = new Set();
-    geojson.features.forEach((feature) => {
-      feature.properties.observations.forEach((obs) => {
-        if (!idSynthese.has(obs.id)) {
-          this._mapListService.tableData.push(obs);
-          idSynthese.add(obs.id);
-        }
-      });
-    });
-
-    // Order by date
+  private orderDataTableByDates() {
     this._mapListService.tableData = this._mapListService.tableData.sort((a, b) => {
       return (new Date(b.date_min).valueOf() as any) - new Date(a.date_min).valueOf();
     });
   }
 
+  private displayMessageLimitNumberObservationsReached(formParams) {
+    if (this._syntheseStore.idSyntheseList.size >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
+      const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
+        size: 'lg',
+      });
+      modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formParams);
+      modalRef.componentInstance.tooManyObs = true;
+    }
+  }
+
   fetchOrRenderData(event: EventDisplayCriteria) {
     // if the form has change reload data
     // else load data from cache if already loaded
-    if (this._fs.searchForm.dirty) {
+    if (this._fs.searchForm.dirty || this._syntheseStore.data.hasOwnProperty(event.name) === false) {
       this.loadAndStoreData(this._fs.formatParams());
     } else {
-      if (this._syntheseStore.data[event.name]) {
-        const cachedData = this._syntheseStore.data[event.name];
-        this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(cachedData));
-        this.formatDataForTable(cachedData);
-      } else {
-        this.loadAndStoreData(this._fs.formatParams());
-      }
+      this.parseGeoJson(this._syntheseStore.data[event.name]);
     }
   }
 

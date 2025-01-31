@@ -22,11 +22,11 @@ export class SyntheseModalDownloadComponent {
   ) {}
 
   downloadObservations(format) {
-    this._dataService.downloadObservations(this._storeService.idSyntheseList, format);
+    this._dataService.downloadObservations(Array.from(this._storeService.idSyntheseList), format);
   }
 
   downloadTaxons(format, filename) {
-    this._dataService.downloadTaxons(this._storeService.idSyntheseList, format, filename);
+    this._dataService.downloadTaxons(Array.from(this._storeService.idSyntheseList), format, filename);
   }
 
   downloadStatusOrMetadata(url, filename) {
