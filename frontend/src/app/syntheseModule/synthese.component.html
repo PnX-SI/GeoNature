@@ -15,43 +15,40 @@
   data-qa="pnx-synthese"
 >
   <nav
-    [(ngbCollapse)]="isCollapseSyntheseNavBar"
-    #navBar
     id="sidebar"
+    #navBar
+    [(ngbCollapse)]="isSearchBarReduced"
   >
     <pnx-synthese-search (searchClicked)="onSearchEvent()"></pnx-synthese-search>
   </nav>
 
   <div class="row row-sm page-content">
     <button
-      (click)="isCollapseSyntheseNavBar = !isCollapseSyntheseNavBar"
-      [attr.aria-expanded]="!isCollapseSyntheseNavBar"
-      #buttonToggle
-      [style.left.px]="marginButton"
-      (click)="mooveButton()"
-      type="button"
       id="sidebarCollapse"
       class="btn btn-toogle-sidenav box-shadow"
+      type="button"
+      (click)="isSearchBarReduced = !isSearchBarReduced"
+      [attr.aria-expanded]="!isSearchBarReduced"
     >
       <i
-        [hidden]="searchBarHidden"
+        [hidden]="isSearchBarReduced"
         class="fa fa-caret-left"
       ></i>
       <i
-        [hidden]="!searchBarHidden"
+        [hidden]="!isSearchBarReduced"
         class="fa fa-caret-right"
       ></i>
     </button>
     <div class="col-sm-12 col-md-7 padding-sm">
       <pnx-synthese-carte
         (onAreasToggle)="fetchOrRenderData($event)"
-        [inputSyntheseData]="_mapListService.geojsonData"
+        [inputSyntheseData]="mapListService.geojsonData"
       ></pnx-synthese-carte>
     </div>
     <div class="col-sm-12 col-md-5 padding-sm">
       <pnx-synthese-list
-        [inputSyntheseData]="_mapListService.tableData"
-        [searchBarHidden]="searchBarHidden"
+        [inputSyntheseData]="mapListService.tableData"
+        [searchBarHidden]="isSearchBarReduced"
         data-qa="pnx-synthese-list"
       ></pnx-synthese-list>
     </div>
