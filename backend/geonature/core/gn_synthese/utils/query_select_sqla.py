@@ -610,7 +610,7 @@ class SyntheseQuery:
             == (len(protection_status_value) + len(red_list_filters))
         )
 
-        bdc_status_cte = bdc_status_cte.cte(name="status")
+        bdc_status_cte = bdc_status_cte.cte()
 
         # Jointure sur le taxon
         # et vérification que l'ensemble des textes
