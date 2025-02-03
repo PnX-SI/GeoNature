@@ -531,11 +531,6 @@ class OcchabImportActions(ImportActions):
                 )
                 db.session.execute(insert_stmt)
                 yield (batch + 1) / batch_count
-            insert_stmt = sa.insert(destination_table).from_select(
-                names=names,
-                select=select_stmt,
-            )
-            r = db.session.execute(insert_stmt)
             imprt.statistics.update({f"{entity.code}_count": r.rowcount})
 
     @staticmethod
