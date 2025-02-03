@@ -27,6 +27,15 @@ export class ImportProcessResolver implements Resolve<Import> {
     let step: Step = route.data.step;
     let destination: string = route.params['destination'];
 
+    // Check that import in this destination is authorized
+    const fetchDestination = this.ds.getDestinations('C');
+    fetchDestination.subscribe((destinations) => {
+      if(!destinations.find(item => item?.code == destination)){
+        this.router.navigate([this.config.IMPORT.MODULE_URL]);
+        return EMPTY;
+      }
+    });
+
     this.ds.setDestination(destination);
     if (step == Step.Upload && route.params.id_import === undefined) {
       // creating new import
