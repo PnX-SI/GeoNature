@@ -24,10 +24,13 @@ Téléchargement
  
   .. code:: console
 
-    $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
-    $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
+    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
+    wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 
-*Attention* : l'installation globale fonctionne uniquement si les scripts sont placés à la racine du ``home`` de l'utilisateur courant.	
+.. warning::
+  
+  L'installation globale fonctionne uniquement si les scripts sont placés à la racine du ``home`` de l'utilisateur courant.
+	
 
 Configuration
 ^^^^^^^^^^^^^
@@ -36,7 +39,7 @@ Configuration
  
   .. code:: console
     
-    $ nano install_all.ini
+    nano install_all.ini
 
 * Renseignez à minima :
 
@@ -55,17 +58,17 @@ Pour l'installation d'une instance de production ou de test ``mode=prod``, pour 
 Installation
 ^^^^^^^^^^^^^
 
-* Lancer l'installation :
+Lancer l'installation à l'aide des commandes suivantes :
  
-  .. code:: shell
+.. code:: shell
 
-    touch install_all.log
-    chmod +x install_all.sh
-    ./install_all.sh 2>&1 | tee install_all.log
+  touch install_all.log
+  chmod +x install_all.sh
+  ./install_all.sh 2>&1 | tee install_all.log
 
 Une fois l'installation terminée, lancez la commande suivante:
 
-  .. code:: shell
+.. code:: shell
 
     exec bash
 
