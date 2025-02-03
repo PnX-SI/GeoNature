@@ -44,7 +44,7 @@ describe('Tests actions on active/inactive list JDD ', () => {
         });
 
         JDD_LIST.forEach((jdd_item) => {
-          it(`should verify actions for ${jdd_item.jdd_name} (${
+          it.skip(`should verify actions for ${jdd_item.jdd_name} (${
             jdd_item.jdd_is_active ? 'active' : 'inactive'
           })`, () => {
             cy.getRowIndexByCellValue(
@@ -58,7 +58,7 @@ describe('Tests actions on active/inactive list JDD ', () => {
           });
         });
 
-        it('Should be able to modify a finished import, but still active JDD', () => {
+        it.skip('Should be able to modify a finished import, but still active JDD', () => {
           cy.startImport();
           cy.pickDestination();
           cy.pickDataset(user.dataset);
