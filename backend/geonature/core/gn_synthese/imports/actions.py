@@ -102,7 +102,7 @@ class SyntheseImportActions(ImportActions):
             start = 0.1
             end = 0.4
             step_count = 8
-            progress = start + ((batch + 1) / batch_count) * (step / step_count) * (end - start)
+            progress = start + ((batch + step / step_count) / batch_count) * (end - start)
             task.update_state(state="PROGRESS", meta={"progress": progress})
 
         source_cols = [
@@ -367,11 +367,24 @@ class SyntheseImportActions(ImportActions):
             "id_import",
             "last_action",
         ]
+        batch_size = current_app.config["IMPORT"]["INSERT_BATCH_SIZE"]
+        batch_count = ceil(imprt.source_count / batch_size)
+        for batch in range(batch_count):
+            min_line_no = batch * batch_size
+            max_line_no = (batch + 1) * batch_size
+            insert_stmt = sa.insert(Synthese).from_select(
+                names=names,
+                select=select_stmt.filter(
+                    transient_table.c["line_no"] >= min_line_no,
+                    transient_table.c["line_no"] < max_line_no,
+                ),
+            )
+            db.session.execute(insert_stmt)
+            yield (batch + 1) / batch_count
         insert_stmt = sa.insert(Synthese).from_select(
             names=names,
             select=select_stmt,
         )
-        db.session.execute(insert_stmt)
 
         # TODO: Improve this
         imprt.statistics = {
