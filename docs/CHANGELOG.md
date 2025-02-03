@@ -6,16 +6,18 @@
 
 - [Synthese] Affichage du `cdNom`, `cdRef` et du `nomCite` dans la fiche d'observation (#3334 par @edelclaux).
 - [Documentation] La compilation de documentation est effectuée à chaque merge dans la branche principale (`master`) (#3338 par @jacquesfize)
-- [Import] Ajout de l'avancement de l'import dans Occhab (#2928 par @Pierre-Narcisi)
+- [Import] Ajout d'une barre de progression dans l'import Occhab (#2928 par @Pierre-Narcisi)
 
 **🐛 Corrections**
 
 - [Import] Correction du nombre d'entités valides lors de la phase précédent l'import finales de données (#3336 par @jacquesfize)
 - [Import] Suppression des variables de configurations inutiles dans la nouvelle version (#3341 par @jacquesfize)
-- [Import] Ré-activer la barre de progression pour l’import dans la synthèse (#2928 par @Pierre-Narcisi)
-- [Authentification] Corriger les valeurs dans defaut_config.toml.sample (#3339 par @jacquesfize)
-- [Documentation] Re-rendre accessible la documentation sur l'authentification avec un fournisseur d'identité externe (#3338 par @jacquesfize)
+- [Import] Correction la barre de progression pour l’import dans la synthèse (#2928 par @Pierre-Narcisi)
+- [Authentification] Correction des valeurs dans defaut_config.toml.sample (#3339 par @jacquesfize)
+- [Documentation] Réintégration de la documentation sur l'authentification avec un fournisseur d'identité externe (#3338 par @jacquesfize)
 - [Développement] Correction des modèles SQLAlchemy pour pouvoir utiliser le mode debug (#3346 par @jacquesfize)
+- [Synthèse] Correction de l'ordre d'affichage des observations sensibles (#3354 par @VincentCauchois et @Christophe-Ramet; #3249).
+- [Synthèse] Correction de larecherche dans la Synthese avec un ou plusieurs filtre parmi "Listes rouges" (#3351 par @VincentCauchois et @Christophe-Ramet).
 
 ## 2.15.2 (2025-01-16)
 
