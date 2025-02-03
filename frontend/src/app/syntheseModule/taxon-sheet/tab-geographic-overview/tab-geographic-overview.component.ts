@@ -42,7 +42,7 @@ export class TabGeographicOverviewComponent implements OnInit {
 
   readonly YEAR_INTERVAL: YearInterval = {
     min: 1970,
-    max: 2025,
+    max: new Date().getFullYear(),
   };
   yearInterval: YearInterval = { ...this.YEAR_INTERVAL };
 
