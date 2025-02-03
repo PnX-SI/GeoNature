@@ -9,4 +9,22 @@
     font-size: 1.5rem;
     font-weight: bold;
   }
+  &__breadcrumb {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 10px;
+    a {
+      color: inherit;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+      &.active {
+        font-weight: bold;
+      }
+    }
+    span {
+      margin: 0 0 0 5px;
+    }
+  }
 }
