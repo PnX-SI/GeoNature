@@ -1,6 +1,7 @@
 import './backToImportList';
 import './checkCellValueExistsInColumn';
 import './checkCurrentPageIsImport';
+import './checkCurrentPageIsImportUpload';
 import './checkImportListSize';
 import './configureImportContentMapping';
 import './configureImportFieldMapping';
