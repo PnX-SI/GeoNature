@@ -55,7 +55,7 @@ export class TabGeographicOverviewComponent implements OnInit {
   mapAreasStyleActive: MapAreasStyle = {
     color: '#FFFFFF',
     weight: 0.4,
-    fillOpacity: 0,
+    fillOpacity: 0.3,
   };
 
   constructor(
@@ -80,7 +80,6 @@ export class TabGeographicOverviewComponent implements OnInit {
     this._tss.taxon.subscribe((taxon: Taxon | null) => {
       this.taxon = taxon;
       if (!taxon) {
-        this.observations = null;
         return;
       }
       this.updateTabGeographic();
@@ -103,11 +102,8 @@ export class TabGeographicOverviewComponent implements OnInit {
         { format }
       )
       .subscribe((data) => {
-        this.observations = data;
-        console.log(this.observations);
         this.styleTabGeoJson = undefined;
-
-        const map = this._ms.getMap();
+        const map = this._ms.map;
 
         map.eachLayer((layer) => {
           if (!(layer instanceof L.TileLayer)) {
@@ -115,19 +111,51 @@ export class TabGeographicOverviewComponent implements OnInit {
           }
         });
 
-        if (this.observations && this.areasEnable) {
-          L.geoJSON(this.observations, {
-            onEachFeature: (feature, layer) => {
-              const observations = feature.properties.observations;
-              if (observations && observations.length > 0) {
-                const obsCount = observations.length;
-                this.setAreasStyle(layer as L.Path, obsCount);
-              }
+        if (data) {
+          const geoJSON = L.geoJSON(data, {
+            pointToLayer: (feature, latlng) => {
+              const circleMarker = L.circleMarker(latlng, {
+                radius: 10,
+              });
+              return circleMarker;
             },
-          }).addTo(map);
+            onEachFeature: this.onEachFeature.bind(this),
+          });
+
+          this._ms.map.addLayer(geoJSON);
+          this._ms.map.fitBounds(geoJSON.getBounds());
         }
       });
   }
+
+  onEachFeature(feature, layer) {
+    const observations = feature.properties.observations;
+    let popupContent = '';
+
+    if (observations && observations.length > 0) {
+      if (this.areasEnable && feature.geometry.type === 'MultiPolygon') {
+        const obsCount = observations.length;
+        this.setAreasStyle(layer as L.Path, obsCount);
+        popupContent = `
+          <b>Nombre d'observations:</b> ${obsCount}<br>
+          <b>Zone:</b> ${feature.properties.area_name || 'Non définie'}<br>
+        `;
+      } else if (feature.geometry.type === 'Point') {
+        popupContent = `
+          ${observations[0].nom_vern_or_lb_nom || ''}<br>
+          <b>Observé le:</b> ${observations[0].date_min || 'Non défini'}<br>
+          <b>Par:</b> ${observations[0].observers || 'Non défini'}
+        `;
+      }
+
+      layer.bindPopup(popupContent);
+
+      layer.on('click', function () {
+        this.openPopup();
+      });
+    }
+  }
+
   private initializeFormWithMapParams() {
     this.formService.searchForm.patchValue({
       format: this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom',
@@ -225,11 +253,13 @@ export class TabGeographicOverviewComponent implements OnInit {
     }
   }
 
-  private setAreasStyle(layer: L.Path, obsNbr: number) {
-    this.mapAreasStyle['fillColor'] = this.getColor(obsNbr);
-    layer.setStyle(this.mapAreasStyle);
-    delete this.mapAreasStyle['fillColor'];
-    this.styleTabGeoJson = this.mapAreasStyleActive;
+  private setAreasStyle(layer: L.Layer, obsNbr: number) {
+    if (layer instanceof L.Path) {
+      this.mapAreasStyle['fillColor'] = this.getColor(obsNbr);
+      layer.setStyle(this.mapAreasStyle);
+      delete this.mapAreasStyle['fillColor'];
+      this.styleTabGeoJson = this.mapAreasStyleActive;
+    }
   }
 
   private getColor(obsNbr: number) {
