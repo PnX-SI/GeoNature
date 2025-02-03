@@ -519,6 +519,7 @@ class OcchabImportActions(ImportActions):
             destination_table = entity.get_destination_table()
             batch_size = current_app.config["IMPORT"]["INSERT_BATCH_SIZE"]
             batch_count = ceil(imprt.source_count / batch_size)
+            row_count = 0
             for batch in range(batch_count):
                 min_line_no = batch * batch_size
                 max_line_no = (batch + 1) * batch_size
@@ -529,9 +530,9 @@ class OcchabImportActions(ImportActions):
                         transient_table.c["line_no"] < max_line_no,
                     ),
                 )
-                db.session.execute(insert_stmt)
+                row_count += db.session.execute(insert_stmt).rowcount
                 yield (batch + 1) / batch_count
-            imprt.statistics.update({f"{entity.code}_count": r.rowcount})
+            imprt.statistics.update({f"{entity.code}_count": row_count})
 
     @staticmethod
     def remove_data_from_destination(imprt: TImports) -> None:
