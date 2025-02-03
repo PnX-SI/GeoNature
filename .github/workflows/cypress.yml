@@ -111,7 +111,7 @@ jobs:
           cp ./config/settings.ini.sample ./config/settings.ini 
           ./install/05_install_frontend.sh --ci
         env:
-          GEONATURE_CONFIG_FILE: '${{ github.workspace }}/config/test_config.toml'
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Install core modules
         run: |
           geonature install-gn-module contrib/occtax OCCTAX --build=false

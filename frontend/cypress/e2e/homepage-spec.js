@@ -25,6 +25,7 @@ describe('Testing homepage', () => {
 
   it('disconnect', () => {
     cy.get('[data-qa="pnx-home-content-exit-button"]').click({ force: true });
+    cy.wait(1000);
     cy.get('[data-qa="gn-connection-button"]');
   });
 });

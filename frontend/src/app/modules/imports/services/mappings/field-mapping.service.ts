@@ -300,6 +300,7 @@ export class FieldMappingService {
 
     this.currentFieldMappingSubscription = this.currentFieldMapping.subscribe((fieldMapping) => {
       this.fieldMappingStatus.unmapped = new Set(this.sourceFields);
+      this.fieldMappingStatus.mapped = new Set();
 
       if (fieldMapping === null) {
         this.mappingFormGroup.reset();
@@ -381,7 +382,8 @@ export class FieldMappingService {
     if (value) {
       this.fieldMappingStatus.mapped.add(value);
       this.fieldMappingStatus.unmapped.delete(value);
-    } else if (oldValue != null) {
+    }
+    if (oldValue != null) {
       this.fieldMappingStatus.mapped.delete(oldValue);
       this.fieldMappingStatus.unmapped.add(oldValue);
     }

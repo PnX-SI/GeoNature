@@ -1,7 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-import { CommonModule } from '@angular/common';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { ObservedTaxon } from '../synthese-info-obs.component';
+
+interface TaxonInformation {
+  label: string;
+  field: keyof ObservedTaxon;
+}
 
 @Component({
   selector: 'pnx-synthese-taxonomy',
@@ -10,6 +13,49 @@ import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 })
 export class TaxonomyComponent {
   @Input()
-  taxon: Taxon | null = null;
+  taxon: ObservedTaxon | null = null;
+
+  @Input()
+  hideLocalAttributesOnEmpty: boolean = false;
+
   constructor() {}
+
+  readonly INFORMATIONS: Array<TaxonInformation> = [
+    {
+      label: 'Groupe taxonomique',
+      field: 'classe',
+    },
+    {
+      label: 'Ordre',
+      field: 'ordre',
+    },
+    {
+      label: 'Famille',
+      field: 'famille',
+    },
+    {
+      label: 'lb nom',
+      field: 'lb_nom',
+    },
+    {
+      label: 'cd nom',
+      field: 'cd_nom',
+    },
+    {
+      label: 'cd ref',
+      field: 'cd_ref',
+    },
+    {
+      label: 'Nom valide',
+      field: 'nom_valide',
+    },
+    {
+      label: 'Nom cite',
+      field: 'nom_cite',
+    },
+  ];
+
+  get informationsFiltered() {
+    return this.INFORMATIONS.filter((information) => this.taxon[information.field]);
+  }
 }

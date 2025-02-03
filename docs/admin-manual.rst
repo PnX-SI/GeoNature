@@ -1145,6 +1145,7 @@ Restauration
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "pg_trgm";'
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "unaccent";'
+        sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "ltree";'
         
 
   - Restaurer la BDD à partir du backup
@@ -1201,7 +1202,7 @@ Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNat
         INTRODUCTION = ""
         FOOTER = ""
 
-Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
+Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (``"""<b>Hello</b>"""``).
 
 Customiser la page de connexion
 """""""""""""""""""""""""""""""
@@ -1209,12 +1210,27 @@ Customiser la page de connexion
 Il est possible d'ajouter des liens vers des ressources externes sur la page de connexion de GeoNature. Pour cela,
 remplissez un (ou plusieurs) item(s) ``ACCOUNT_MANAGEMENT.EXTERNAL_LINKS`` dans la configuration. 
 Dans cette variable, le lien est indiqué dans la propriété ``url`` et le texte affiché de ce dernier doit être renseigné dans le
-propriété ``label``. Un exemple est disponible ci-dessous.
+propriété ``label``. Plusieurs exemples sont disponible ci-dessous.
 
-.. code-block:: toml
-    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
-        label = "Mot de passe oublié ?"
-        url = "https://mon.formulaire.de.motdepasse"
+
+
+**Ajoutez un lien de contact**
+
+.. code:: toml
+  
+  [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+      label = "Un problème de connexion ?"
+      url = "mailto:anne.onnyme@example.com"
+
+
+**Ajoutez un lien vers un formulaire de contact**
+
+.. code:: toml
+  
+  [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+      label = "Formulaire de contact"
+      url = "https://siteorganisme.fr/contact"
+
 
 
 Customiser l'aspect esthétique
@@ -1597,7 +1613,7 @@ Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
 
 
 
-.. include:: admin/authentication_custom.rst
+.. include:: admin/authentication-custom.rst
 
 
 

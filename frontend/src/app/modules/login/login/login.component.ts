@@ -51,9 +51,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.config.AUTHENTICATION.ONLY_PROVIDER) {
-      window.location.href = this.getProviderLoginUrl(this.config.AUTHENTICATION.ONLY_PROVIDER);
-    }
+
     this._authService.getAuthProviders().subscribe((providers) => {
       this.authProviders = providers;
       this.isOtherProviders = this.authProviders.length > 1;

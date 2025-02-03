@@ -633,3 +633,27 @@ class TestImportsOcchab:
                 ]
             ],
         }
+
+    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
+    def test_preview_data(self, client, prepared_import):
+        valid_numbers = {
+            "station_valid": 7,
+            "station_invalid": 8,
+            "habitat_valid": 11,
+            "habitat_invalid": 23,
+        }
+        imprt = prepared_import
+        with logged_user(client, imprt.authors[0]):
+            response = client.get(url_for("import.preview_valid_data", import_id=imprt.id_import))
+        assert response.status_code == 200
+        data = response.json
+
+        index_data_station = 0 if data["entities"][0]["entity"]["code"] == "station" else 1
+        data_station = data["entities"][index_data_station]
+        data_habitat = data["entities"][0 if index_data_station == 1 else 1]
+
+        assert data_station["n_valid_data"] == valid_numbers["station_valid"]
+        assert data_station["n_invalid_data"] == valid_numbers["station_invalid"]
+
+        assert data_habitat["n_valid_data"] == valid_numbers["habitat_valid"]
+        assert data_habitat["n_invalid_data"] == valid_numbers["habitat_invalid"]
