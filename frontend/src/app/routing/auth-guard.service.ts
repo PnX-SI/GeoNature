@@ -6,6 +6,8 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { Injectable, Injector } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
@@ -15,7 +17,10 @@ import { RoutingService } from './routing.service';
 export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(
     private _router: Router,
-    private _injector: Injector
+    private _injector: Injector,
+    private _httpclient: HttpClient,
+    private config: ConfigService,
+    private _authService: AuthService
   ) {}
 
   async redirectAuth(route, state) {
@@ -38,12 +43,20 @@ export class AuthGuard implements CanActivate, CanActivateChild {
             return false;
           });
         if (data) {
-          await authService.manageUser(data).toPromise();
+          authService.manageUser(data);
           const modules = await moduleService.loadModules().toPromise();
-          routingService.loadRoutes(modules, route._routerState.url);
+          routingService.loadRoutes(modules, route._routerState.url.replace('access=public', ''));
         } else {
           return false;
         }
+      } else if (configService.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+        const url_redirection_cas = `${configService.CAS_PUBLIC.CAS_URL_LOGIN}?service=${configService.API_ENDPOINT}/gn_auth/login_cas`;
+        document.location.href = url_redirection_cas;
+        let data = await this._httpclient
+          .get(`${this.config.API_ENDPOINT}/auth/get_current_user`)
+          .toPromise();
+        data = { ...data };
+        this._authService.manageUser(data);
       } else {
         this._router.navigate(['/login'], {
           queryParams: { ...route.queryParams, ...{ route: state.url.split('?')[0] } },

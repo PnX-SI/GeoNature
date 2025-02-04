@@ -48,12 +48,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-      // if token not here here, redirection to CAS login page
-      const url_redirection_cas = `${this.config.CAS_PUBLIC.CAS_URL_LOGIN}?service=${this.config.API_ENDPOINT}/gn_auth/login_cas`;
-      if (!this._authService.isLoggedIn()) {
-        document.location.href = url_redirection_cas;
-      }
+    if (this.casLogin) {
+      // Try to navigate to the home page, and may then be redirected to the CAS login page by the AuthGuard in a second step
+      //  this is done because the route 'login', associated to the current component LoginComponent, is not protected by any guard
+      //  while the route '' is well protected, by the AuthGuard
+      this.router.navigate(['']);
     }
   }
 
