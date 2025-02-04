@@ -54,6 +54,11 @@
       justify-content: flex-start;
       max-width: 100%;
       .DateSlider {
+        --mdc-slider-handle-width: 15px;
+        --mdc-slider-handle-height: 15px;
+        --mdc-slider-inactive-track-height: 3px;
+        --mdc-slider-active-track-height: var(--mdc-slider-inactive-track-height);
+
         width: inherit;
       }
     }

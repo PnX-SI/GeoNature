@@ -11,7 +11,14 @@
   </pnx-map>
   <div class="TabGeographic__side">
     <div class="TabGeographic__sideItem">
-      <mat-label>Plage d'observations: {{ yearInterval.min }} -> {{ yearInterval.max }}</mat-label>
+      <div class="text-muted">
+        Plage d'observations:
+        <b class="text">
+          {{ yearInterval.min }}
+        </b>
+        -
+        <b class="text">{{ yearInterval.max }}</b>
+      </div>
       <mat-slider
         class="DateSlider"
         [displayWith]="formatLabel"
