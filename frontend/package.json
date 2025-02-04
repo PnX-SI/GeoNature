@@ -50,6 +50,7 @@
     "leaflet.locatecontrol": "^0.79.0",
     "leaflet.markercluster": "^1.5.3",
     "lodash": "^4.17.21",
+    "luxon": "^3.5.0",
     "moment": "^2.29.4",
     "ng2-charts": "^4.1.1",
     "ng2-cookies": "^1.0.12",
@@ -62,6 +63,7 @@
   "devDependencies": {
     "@angular-devkit/core": "^15.1.2",
     "@angular/compiler-cli": "15.1.1",
+    "@types/luxon": "^3.4.2",
     "@types/node": "^18.0.0",
     "cypress": "^13.4.0",
     "cypress-promise": "^1.1.0",
