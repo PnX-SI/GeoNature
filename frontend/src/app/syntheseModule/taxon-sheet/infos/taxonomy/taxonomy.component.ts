@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { RouterModule } from '@librairies/@angular/router';
@@ -11,40 +11,41 @@ import { RouterModule } from '@librairies/@angular/router';
   styleUrls: ['taxonomy.component.scss'],
   imports: [CommonModule, RouterModule],
 })
-export class TaxonomyComponent implements OnChanges {
+export class TaxonomyComponent {
   @Input()
-  taxon: Taxon | null = null;
+  set taxon(taxon: Taxon | null) {
+    this.updateBreadcrumb(taxon);
+  }
   breadcrumb: any[] = [];
 
   constructor(private _ds: DataFormService) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.taxon && changes.taxon.currentValue) {
-      this.buildBreadCrumb(this.taxon);
-    }
-  }
-
-  async buildBreadCrumb(taxon: Taxon) {
+  updateBreadcrumb(taxon: Taxon) {
     const breadcrumb = [];
-    let currentTaxon = taxon;
     const allowedRanks = ['KD', 'PH', 'CL', 'OR', 'FM', 'GN', 'ES'];
 
-    while (currentTaxon) {
-      if (allowedRanks.includes(currentTaxon.id_rang)) {
-        breadcrumb.unshift({
-          cd_ref: currentTaxon.cd_ref,
-          name: currentTaxon.nom_complet,
-          lb_nom: currentTaxon.lb_nom,
-          rank: currentTaxon.id_rang,
-        });
-      }
-      if (currentTaxon.cd_sup) {
-        const parentTaxon = await this._ds.getTaxonInfo(currentTaxon.cd_sup).toPromise();
-        currentTaxon = parentTaxon;
-      } else {
-        currentTaxon = null;
-      }
+    if (!taxon) {
+      return;
     }
-    this.breadcrumb = breadcrumb;
+
+    this._ds
+      .getTaxonInfo(taxon.cd_ref, ['cd_ref', 'id_rang', 'lb_nom', 'tree'])
+      .subscribe((data: Taxon) => {
+        if (!data.tree || !data.tree.parents) {
+          return;
+        }
+
+        data.tree.parents
+          .filter((parent) => allowedRanks.includes(parent.id_rang))
+          .forEach((parent) => {
+            breadcrumb.push({ cd_ref: parent.cd_ref, lb_nom: parent.lb_nom });
+          });
+
+        breadcrumb.sort(
+          (a, b) => allowedRanks.indexOf(a.id_rang) - allowedRanks.indexOf(b.id_rang)
+        );
+
+        this.breadcrumb = breadcrumb;
+      });
   }
 }
