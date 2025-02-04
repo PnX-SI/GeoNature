@@ -122,3 +122,4 @@ class ImportConfigSchema(Schema):
     EXPORT_REPORT_PDF_FILENAME = fields.String(
         load_default="import_{id_import}_{date_create_import}_report.pdf"
     )
+    INSERT_BATCH_SIZE = fields.Integer(load_default=1000)

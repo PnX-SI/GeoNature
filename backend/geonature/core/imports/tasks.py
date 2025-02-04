@@ -78,7 +78,8 @@ def do_import_in_destination(self, import_id):
     transient_table = imprt.destination.get_transient_table()
 
     # Copy valid transient data to destination
-    imprt.destination.actions.import_data_to_destination(imprt)
+    for progress in imprt.destination.actions.import_data_to_destination(imprt):
+        self.update_state(state="PROGRESS", meta={"progress": progress})
 
     count_entities = 0
     entities = db.session.scalars(
