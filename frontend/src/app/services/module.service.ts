@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, Injector } from '@angular/core';
+import { AuthService } from '@geonature/components/auth/auth.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -29,12 +29,20 @@ export class ModuleService {
 
   constructor(
     private _api: DataFormService,
-    private _router: Router
+    private _injector: Injector
   ) {}
 
   loadModules(): Observable<any[]> {
     return this._api.getModulesList([]).pipe(
-      catchError((err) => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
+      catchError((err) => {
+        // Handling 401 UNAUTHORIZED error which means one is not logged in server-side
+        //  and thus should be ensured one is correctly logged out client-side
+        if (err.status === 401) {
+          const authService = this._injector.get(AuthService);
+          authService.logout();
+        }
+        return of([]); // TODO: error MUST be handled in case we are logged! (typically, api down)
+      }),
       tap((modules) => {
         this.modules = modules;
         this.shouldLoadModules = false;
