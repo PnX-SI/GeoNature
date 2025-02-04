@@ -25,7 +25,7 @@
           <mat-expansion-panel-header>
             <mat-panel-title>
               <div style="display: block; width: 100%">
-                <div>
+                <div class="Medias__title">
                   <mat-icon
                     *ngIf="!media.valid() && !media.bLoading"
                     [matTooltip]="'Veuillez compléter le formulaire.'"
@@ -48,14 +48,13 @@
                   >
                     settings
                   </mat-icon>
-                  <pnx-display-medias
+                  <pnx-media-item
+                    class="MediaItem"
                     *ngIf="media.sent"
-                    [medias]="[parentFormControl.value[i]]"
-                    index="0"
-                    display="mini"
-                  ></pnx-display-medias>
-
-                  <span class="media-title">
+                    [inputMedia]="parentFormControl.value[i]"
+                    display="icon"
+                  ></pnx-media-item>
+                  <span>
                     Titre: {{ media.title_fr }}
                     <i>
                       ({{ ms.typeMedia(media) }}

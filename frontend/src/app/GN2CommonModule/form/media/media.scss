@@ -46,16 +46,8 @@
   color: orange;
 }
 
-.media-title {
-  margin-left: 50px;
-}
-
 .media-diapo-link {
   cursor: pointer;
-}
-
-.media-diaporama {
-  width: 100%;
 }
 
 .media-mini {
@@ -67,6 +59,15 @@
 
 .media-icon {
   background-color: white;
+}
+
+.DisplayMedias {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+  gap: 0.2rem;
 }
 
 .media-center {
@@ -86,9 +87,20 @@
   margin-top: 5px;
 }
 
-.mat-expansion-panel {
-  margin-left: 45px !important;
-  margin-right: 50px !important;
+mat-expansion-panel-header {
+  height: 55px !important;
+  padding: 0.5rem;
+  overflow: hidden;
+  .Medias__title {
+    margin: 0;
+    padding: 0;
+    height: 55px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.2rem;
+  }
 }
 
 .mat-accordeon {
@@ -96,39 +108,47 @@
 }
 
 .media-dialog {
-  position: relative;
-  padding: 30px;
-}
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  max-height: 95vh;
+  &__card {
+    max-height: 80vh;
+    height: 80vh;
+  }
+  &--fade-in,
+  &--fade-out {
+    transition-property: opacity;
+    transition-duration: 0.2s;
+  }
+  &--fade-in {
+    opacity: 1;
+  }
+  &--fade-out {
+    opacity: 0;
+  }
 
-.media-dialog-arrow {
-  position: absolute;
-  bottom: 50%;
-  opacity: 0.4;
-  background-color: lightgray;
-}
+  &__arrow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    opacity: 0.4;
+    background-color: lightgray;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
 
-.media-dialog-arrow:hover {
-  opacity: 0.8;
-}
+    &:hover {
+      opacity: 0.8;
+    }
 
-.left-arrow {
-  left: -20px;
-}
-
-.right-arrow {
-  right: -20px;
-}
-
-.media-dialog-fade-in {
-  opacity: 1;
-  transition-property: opacity;
-  transition-duration: 0.2s;
-}
-
-.media-dialog-fade-out {
-  opacity: 0;
-  transition-property: opacity;
-  transition-duration: 0.2s;
+    &--left {
+      left: 0;
+    }
+    &--right {
+      right: 0;
+    }
+  }
 }
 
 ::ng-deep .cdk-overlay-container {

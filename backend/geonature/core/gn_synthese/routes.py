@@ -15,6 +15,7 @@ from flask import (
     jsonify,
     g,
 )
+from geonature.core.gn_commons.schemas import TMedias
 from geonature.core.gn_synthese.schemas import ReportSchema, SyntheseSchema
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from pypnusershub.db.models import User
@@ -1480,6 +1481,28 @@ def notify_new_report_change(synthese, user, id_roles, content):
         ),
         context={"synthese": synthese, "user": user, "content": content},
     )
+
+
+@routes.route("/taxon_medias/<int:cd_ref>", methods=["GET"])
+@login_required
+@permissions.check_cruved_scope("R", module_code="SYNTHESE")
+@json_resp
+def taxon_medias(cd_ref):
+    per_page = request.args.get("per_page", 10, int)
+    page = request.args.get("page", 1, int)
+
+    query = select(TMedias).join(Synthese.medias).order_by(TMedias.meta_create_date.desc())
+
+    taxref_cd_nom_list = db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
+    query = query.where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+
+    pagination = DB.paginate(query, page=page, per_page=per_page)
+    return {
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "items": [media.as_dict() for media in pagination.items],
+    }
 
 
 @routes.route("/reports/<int:id_report>", methods=["PUT"])

@@ -1,0 +1,25 @@
+<mat-card class="MediaCard">
+  <mat-card-title class="MediaCard__title">
+    {{ media.title_fr }}
+  </mat-card-title>
+  <mat-card-content class="MediaCard__content">
+    <pnx-media-item
+      [inputMedia]="media"
+      [diaporamaMedia]="diaporamaMedia"
+    ></pnx-media-item>
+  </mat-card-content>
+  <mat-card-footer class="MediaCard__footer">
+    <div>
+      <a
+        *ngIf="href"
+        target="_blank"
+        class="link-media float-right"
+        [href]="href"
+      >
+        <mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
+      </a>
+      {{ media.description_fr }}
+    </div>
+    <div>({{ type }}, {{ media.author }})</div>
+  </mat-card-footer>
+</mat-card>
