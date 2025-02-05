@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 from typing import Union
 
 from flask import current_app
@@ -12,6 +13,9 @@ from geonature.core.gn_meta.models import TAcquisitionFramework
 namespace = config["XML_NAMESPACE"]
 
 _xml_parser = ET.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+
+# Get the logger instance "MTD_SYNC"
+logger = logging.getLogger("MTD_SYNC")
 
 
 def get_tag_content(parent, tag_name, default_value=None):
@@ -85,10 +89,12 @@ def parse_acquisition_frameworks_xml(xml: str) -> list:
     root = ET.fromstring(xml, parser=_xml_parser)
     af_iter = root.iterfind(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
     af_list = []
+    id_instance_filter = current_app.config["MTD"]["ID_INSTANCE_FILTER"]
     for af in af_iter:
-        # TODO: IMPORTANT - filter the list of acquisition frameworks with `ID_INSTANCE_FILTER` as made for the datasets in `parse_jdd_xml`
-        #   - Determine it is right to do so: is it possible that no ID_INSTANCE is set for an AF in the XML but still the AF is associated to the instance ?
-        af_list.append(parse_acquisition_framework(af))
+        current_af, id_instance = parse_acquisition_framework(af)
+        # Filter with id_instance
+        if not id_instance_filter or id_instance_filter and id_instance == str(id_instance_filter):
+            af_list.append(current_af)
     return af_list
 
 
@@ -100,7 +106,8 @@ def parse_single_acquisition_framework_xml(xml):
     """
     root = ET.fromstring(xml, parser=_xml_parser)
     ca = root.find(".//" + namespace + "CadreAcquisition")
-    return parse_acquisition_framework(ca)
+    parsed_af, _ = parse_acquisition_framework(ca)
+    return parsed_af
 
 
 def parse_acquisition_framework(ca):
@@ -119,12 +126,20 @@ def parse_acquisition_framework(ca):
     )
     ca_end_date = get_tag_content(date_info, "dateCloture")
     ca_id_digitizer = None
+    id_instance = None
     attributs_additionnels_node = ca.find(namespace + "attributsAdditionnels")
-
-    # We extract the ID of the user to assign it the JDD as an id_digitizer
     for attr in attributs_additionnels_node:
+        # We extract the ID of the user to assign it the JDD as an id_digitizer
         if get_tag_content(attr, "nomAttribut") == "ID_CREATEUR":
             ca_id_digitizer = get_tag_content(attr, "valeurAttribut")
+        # We extract the ID of the instance, to possibly further filter it if not associated to the configured instance
+        if get_tag_content(attr, "nomAttribut") == "ID_INSTANCE":
+            id_instance = get_tag_content(attr, "valeurAttribut")
+    # Log a warning message if no ID_INSTANCE is found
+    if id_instance is None:
+        logger.warning(
+            f"MTD - No ID_INSTANCE found for the AF with UUID '{ca_uuid}' and name '{ca_name}' - this AF will not be retrieved if an ID_INSTANCE_FILTER is configured"
+        )
 
     # We search for all the Contact nodes :
     # - Main contact in acteurPrincipal node
@@ -149,7 +164,7 @@ def parse_acquisition_framework(ca):
         "meta_update_date": ca_update_date,
         "id_digitizer": ca_id_digitizer,
         "actors": all_actors,
-    }
+    }, id_instance
 
 
 def parse_jdd_xml(xml):
