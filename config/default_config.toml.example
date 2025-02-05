@@ -752,3 +752,9 @@ MAIL_ON_ERROR = false
             {level = "2", area = "M10"},# Maille
             {level = "3", area = "M10"},# Département
         ]
+    # Nom de la colonne du fichier d'export de la Synthese contenant les informations
+    # de la nomenclature DEE_FLOU. Par défaut: "floutage_dee".
+    # La présence de cette colonne n'est pas obligatoire.
+    # Si présente, sa valeur est forcée a OUI si la donnée a été floutée par le niveau de
+    # sensibilité.
+    EXPORT_FIELD_BLURRING = "floutage_dee"

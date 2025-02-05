@@ -29,6 +29,7 @@ class DataBlurring:
                 "area_field": "geojson_4326",
             },
         ],
+        blurring_field=None,
         data_table=VSyntheseForWebApp,
     ):
         # get the root logger
@@ -36,6 +37,7 @@ class DataBlurring:
         self.permissions = permissions
         self.sensitivity_column = sensitivity_column
         self.diffusion_column = diffusion_column
+        self.blurring_field = blurring_field
         self.result_to_dict = result_to_dict
         self.fields_to_erase = fields_to_erase
         self.geom_fields = geom_fields
@@ -74,12 +76,22 @@ class DataBlurring:
                 synthese_id = getattr(result, "id_synthese")
                 # Blurre/Erase geometry fields if necessary
                 if synthese_id in geojson_by_synthese_ids:
+                    blurred_data = geojson_by_synthese_ids[synthese_id]
+
                     # Transform RowProxy to dictionary for update values
                     result = dict(result)
+
+                    result = self._replace_blurring_field(
+                        result, blurred_data["is_blurred_by_sensitivity"]
+                    )
+
                     result = self._erase_fields(result)
+
+                    # Replace geom fields values
                     for col in self.geom_fields:
-                        blurred_geometry = geojson_by_synthese_ids[synthese_id][col["output_field"]]
+                        blurred_geometry = blurred_data[col["output_field"]]
                         result[col["output_field"]] = blurred_geometry
+
                     # Re-convert to RowProxy object
                     if not self.result_to_dict:
                         result = namedtuple("RowProxy", result.keys())(*result.values())
@@ -416,10 +428,17 @@ class DataBlurring:
 
             # Build blurred geom by id_synthese query
             geom_columns = self._prepare_geom_columns(object_cte)
-            blurred_obs_query = (
-                select([object_cte.c.priority, object_cte.c.id_synthese, *geom_columns])
-                .select_from(object_cte)
+            is_blurred_by_sensitivity = (
+                True if object_type == "SENSITIVE_OBSERVATION" else False
             )
+            blurred_obs_query = select(
+                [
+                    object_cte.c.priority,
+                    object_cte.c.id_synthese,
+                    *geom_columns,
+                    literal(is_blurred_by_sensitivity).label("is_blurred_by_sensitivity"),
+                ]
+            ).select_from(object_cte)
 
             # Build permissions conditions
             if object_type in exact_filters and exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
@@ -460,7 +479,12 @@ class DataBlurring:
         geom_columns = self._prepare_geom_columns(obs_subquery)
         query = (
             select(
-                [obs_subquery.c.id_synthese, obs_subquery.c.priority, *geom_columns],
+                [
+                    obs_subquery.c.id_synthese,
+                    obs_subquery.c.priority,
+                    *geom_columns,
+                    obs_subquery.c.is_blurred_by_sensitivity,
+                ],
                 distinct=obs_subquery.c.id_synthese,
             )
             .select_from(obs_subquery)
@@ -662,6 +686,12 @@ class DataBlurring:
                     setattr(record, field, None)
         return record
 
+    def _replace_blurring_field(self, record, is_blurred):
+        if self.blurring_field in record.keys():
+            current_value = record[self.blurring_field]
+            new_value = "OUI" if is_blurred else current_value
+            record[self.blurring_field] = new_value
+        return record
 
     def blurOneObsAreas(self, obs):
         # Get area blurred types

@@ -521,6 +521,7 @@ def export_observations_web(auth, permissions):
                     "compute": "y",
                 },
             ],
+            blurring_field=current_app.config["DATA_BLURRING"]["EXPORT_FIELD_BLURRING"],
         )
         results = data_blurring.blurSeveralObs(results)
 

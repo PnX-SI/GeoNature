@@ -509,6 +509,12 @@ class DataBlurringManagement(Schema):
         "x_centroid_4326", "y_centroid_4326",
         "geojson_4326", "geojson_local",
     ])
+    # Nom de la colonne du fichier d'export de la Synthese contenant les informations
+    # de la nomenclature DEE_FLOU. Par défaut: "floutage_dee".
+    # La présence de cette colonne n'est pas obligatoire.
+    # Si présente, sa valeur est forcée a OUI si la donnée a été floutée par le niveau de
+    # sensibilité.
+    EXPORT_FIELD_BLURRING = fields.String(load_default="floutage_dee")
 
 # Map configuration
 BASEMAP = [
