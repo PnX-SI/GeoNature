@@ -345,8 +345,6 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
 
         # Get the list of acquisition frameworks for the user
         # call INPN API for each AF to retrieve info
-        # TODO: check if there is any AF that is retrieved while not being associated to the current instance
-        #   this may theoretically happen as AF from the XML file are not yet filtered with the instance ID
         af_list = mtd_api.get_list_af_for_user()
     else:
         # TODO: Check the following TODO
