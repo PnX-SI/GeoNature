@@ -19,7 +19,6 @@ from sqlalchemy import func, select
 
 from .mtd_utils import associate_actors, sync_af, sync_ds
 from .xml_parser import (
-    parse_acquisition_framework,
     parse_single_acquisition_framework_xml,
     parse_jdd_xml,
     parse_acquisition_frameworks_xml,
@@ -198,8 +197,6 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
     list_cd_nomenclature = db.session.scalars(
         select(TNomenclatures.cd_nomenclature).distinct()
     ).all()
-    # TODO: remove following line
-    user_add_total_time = 0
     logger.debug("MTD - PROCESS AF LIST")
     if level_log_mtd_sync == "DEBUG":
         nb_af = len(af_list)
@@ -215,8 +212,6 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
         with db.session.begin_nested():
             start_add_user_time = time.time()
             add_unexisting_digitizer(af["id_digitizer"] if not id_role else id_role)
-            # TODO: remove following line
-            user_add_total_time += time.time() - start_add_user_time
         if level_log_mtd_sync == "DEBUG":
             af_already_exists = db.session.scalar(
                 exists()
@@ -259,8 +254,6 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
                 add_unexisting_digitizer(ds["id_digitizer"])
             else:
                 add_unexisting_digitizer(id_role)
-            # TODO: remove following line
-            user_add_total_time += time.time() - start_add_user_time
         if level_log_mtd_sync == "DEBUG":
             ds_already_exists = db.session.scalar(
                 exists()
@@ -285,9 +278,6 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
                 ds.id_dataset,
                 ds.unique_dataset_id,
             )
-
-    # TODO: remove following line
-    user_add_total_time = round(user_add_total_time, 2)
 
     db.session.commit()
 
