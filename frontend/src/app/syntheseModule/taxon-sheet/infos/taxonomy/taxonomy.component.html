@@ -6,7 +6,7 @@
     <span *ngFor="let item of taxon.linnaean_parents">
       <a
         class="Link"
-        [routerLink]="['/synthese/taxon', item.cd_ref, 'geographic_overview']"
+        (click)="navigateToCDRef(item.cd_ref)"
       >
         {{ item.lb_nom }}
       </a>

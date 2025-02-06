@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { RouterModule } from '@librairies/@angular/router';
+import { RouteService } from '../../taxon-sheet.route.service';
 
 @Component({
   standalone: true,
@@ -15,6 +16,8 @@ export class TaxonomyComponent {
   @Input()
   taxon: Taxon | null = null;
 
+  constructor(private _rs: RouteService) {}
+
   get nomComplet(): string {
     for (const attributePath of TaxonomyComponent.PRIORITY) {
       if (this.taxon[attributePath]) {
@@ -23,5 +26,9 @@ export class TaxonomyComponent {
     }
 
     return '';
+  }
+
+  navigateToCDRef(cd_ref: number) {
+    this._rs.navigateToCDRef(cd_ref);
   }
 }
