@@ -197,7 +197,6 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
     list_cd_nomenclature = db.session.scalars(
         select(TNomenclatures.cd_nomenclature).distinct()
     ).all()
-    logger.debug("MTD - PROCESS AF LIST")
     nb_af = len(af_list)
     nb_ds = len(ds_list)
     logger.info(f"Number of AF to process : {nb_af}")
@@ -207,6 +206,7 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
         nb_updated_ds = 0
         nb_retrieved_new_af = 0
         nb_retrieved_new_ds = 0
+    logger.debug("MTD - PROCESS AF LIST")
     for af in af_list:
         actors = af.pop("actors")
         with db.session.begin_nested():
