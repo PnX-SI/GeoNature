@@ -24,6 +24,7 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormArray, FormControl } from '@angular/forms';
+import { SyntheseStoreService } from '@geonature/syntheseModule/services/store.service';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -53,7 +54,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _syntheseStore: SyntheseStoreService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
   }
@@ -167,9 +169,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   }
 
   openDownloadModal() {
-    this.ngbModal.open(SyntheseModalDownloadComponent, {
+    const modalRef = this.ngbModal.open(SyntheseModalDownloadComponent, {
       size: 'lg',
     });
+    modalRef.componentInstance.tooManyObsForExport =
+      this._syntheseStore.idSyntheseList.length > this.config.SYNTHESE.NB_MAX_OBS_EXPORT;
   }
 
   getRowClass() {
