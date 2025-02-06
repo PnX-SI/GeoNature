@@ -16,12 +16,16 @@
     a {
       color: inherit;
       text-decoration: none;
-      &:hover {
-        text-decoration: underline;
+      &:not(.active) {
+        color: var(--purple);
+        &:hover:not(.active) {
+          text-decoration: underline;
+        }
       }
       &.active {
         font-weight: bold;
       }
+      filter: brightness(70%);
     }
     span {
       margin: 0 0 0 5px;
