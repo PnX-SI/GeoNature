@@ -17,7 +17,7 @@ import {
 import { TaxonImageComponent } from './infos/taxon-image/taxon-image.component';
 import { IndicatorComponent } from './indicator/indicator.component';
 import { CommonModule } from '@angular/common';
-import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { TaxonStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonSheetService } from './taxon-sheet.service';
 import { RouteService } from './taxon-sheet.route.service';
 
@@ -83,7 +83,6 @@ export class TaxonSheetComponent implements OnInit {
     private _router: Router,
     private _route: ActivatedRoute,
     private _tss: TaxonSheetService,
-    private _syntheseDataService: SyntheseDataService,
     private _routes: RouteService
   ) {
     this.TAB_LINKS = this._routes.TAB_LINKS;
@@ -93,14 +92,14 @@ export class TaxonSheetComponent implements OnInit {
       const cd_ref = params['cd_ref'];
       if (cd_ref) {
         this._tss.updateTaxonByCdRef(cd_ref);
-        this._syntheseDataService.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats) => {
-          this.setIndicators(stats);
-        });
       }
+    });
+    this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
+      this.setIndicators(stats);
     });
   }
 
-  setIndicators(stats: any) {
+  setIndicators(stats: TaxonStats) {
     this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
       computeIndicatorFromDescription(indicatorConfig, stats)
     );
