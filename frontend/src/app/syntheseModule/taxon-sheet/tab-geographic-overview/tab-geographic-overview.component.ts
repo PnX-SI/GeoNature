@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import {
+  SyntheseDataService,
+  TaxonStats,
+} from '@geonature_common/form/synthese-form/synthese-data.service';
 import { FeatureCollection } from 'geojson';
 import { TaxonSheetService } from '../taxon-sheet.service';
 import { ConfigService } from '@geonature/services/config.service';
@@ -40,11 +43,8 @@ export class TabGeographicOverviewComponent implements OnInit {
   private _areasLabelSwitchBtn;
   styleTabGeoJson: {};
 
-  readonly YEAR_INTERVAL: YearInterval = {
-    min: 1970,
-    max: new Date().getFullYear(),
-  };
-  yearInterval: YearInterval = { ...this.YEAR_INTERVAL };
+  yearIntervalBoundaries: YearInterval | null = null;
+  yearInterval: YearInterval | null = null;
 
   mapAreasStyle: MapAreasStyle = {
     color: '#FFFFFF',
@@ -84,48 +84,67 @@ export class TabGeographicOverviewComponent implements OnInit {
       }
       this.updateTabGeographic();
     });
+
+    this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
+      this.updateTaxonStats(stats);
+    });
     this.initializeFormWithMapParams();
+  }
+
+  updateTaxonStats(stats: TaxonStats | null) {
+    if (!stats) {
+      this.yearIntervalBoundaries = null;
+      this.yearInterval = null;
+      return;
+    }
+    this.yearIntervalBoundaries = {
+      min: new Date(stats.date_min).getFullYear(),
+      max: new Date(stats.date_max).getFullYear(),
+    };
+
+    this.yearInterval = { ...this.yearIntervalBoundaries };
   }
 
   updateTabGeographic() {
     const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
-    const date_min = `${this.yearInterval.min}-01-01`;
-    const date_max = `${this.yearInterval.max}-12-31`;
 
-    this._syntheseDataService
-      .getSyntheseData(
-        {
-          cd_ref: [this.taxon.cd_ref],
-          date_min: date_min,
-          date_max: date_max,
-        },
-        { format }
-      )
-      .subscribe((data) => {
-        this.styleTabGeoJson = undefined;
-        const map = this._ms.map;
+    const filter: {
+      cd_ref: number[];
+      date_min?: string;
+      date_max?: string;
+    } = {
+      cd_ref: [this.taxon.cd_ref],
+    };
+    if (this.yearInterval) {
+      filter.date_min = `${this.yearInterval.min}-01-01`;
+      filter.date_max = `${this.yearInterval.max}-12-31`;
+    }
 
-        map.eachLayer((layer) => {
-          if (!(layer instanceof L.TileLayer)) {
-            map.removeLayer(layer);
-          }
-        });
+    this._syntheseDataService.getSyntheseData(filter, { format }).subscribe((data) => {
+      this.styleTabGeoJson = undefined;
+      const map = this._ms.map;
 
-        if (data) {
-          const geoJSON = L.geoJSON(data, {
-            pointToLayer: (feature, latlng) => {
-              const circleMarker = L.circleMarker(latlng, {
-                radius: 10,
-              });
-              return circleMarker;
-            },
-            onEachFeature: this.onEachFeature.bind(this),
-          });
-
-          this._ms.map.addLayer(geoJSON);
-          this._ms.map.fitBounds(geoJSON.getBounds());
+      map.eachLayer((layer) => {
+        if (!(layer instanceof L.TileLayer)) {
+          map.removeLayer(layer);
         }
       });
+
+      if (data) {
+        const geoJSON = L.geoJSON(data, {
+          pointToLayer: (feature, latlng) => {
+            const circleMarker = L.circleMarker(latlng, {
+              radius: 10,
+            });
+            return circleMarker;
+          },
+          onEachFeature: this.onEachFeature.bind(this),
+        });
+
+        this._ms.map.addLayer(geoJSON);
+        this._ms.map.fitBounds(geoJSON.getBounds());
+      }
+    });
   }
 
   onEachFeature(feature, layer) {
