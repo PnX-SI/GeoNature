@@ -29,7 +29,7 @@ import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 import { LoginModule } from './modules/login/login.module';
-import { CustomLoader } from './shared/translate/custom-loader';
+import { CustomTranslateLoader } from './shared/translate/custom-loader';
 
 // Custom component (footer, presentation etc...)
 import { FooterComponent } from '../custom/components/footer/footer.component';
@@ -84,9 +84,11 @@ export function get_modules(moduleService: ModuleService) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useClass: CustomLoader,
+        useClass: CustomTranslateLoader,
         deps: [HttpClient],
       },
+      isolate: false,
+      extend: true,
     }),
     LoginModule,
   ],
