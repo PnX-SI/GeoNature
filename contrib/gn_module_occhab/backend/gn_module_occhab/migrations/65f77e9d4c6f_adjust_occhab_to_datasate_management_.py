@@ -10,6 +10,7 @@ from alembic import op
 import sqlalchemy as sa
 
 from geonature.core.imports.models import BibFields, Destination
+from sqlalchemy.dialects.postgresql import UUID
 
 # revision identifiers, used by Alembic.
 revision = "65f77e9d4c6f"
@@ -19,6 +20,10 @@ depends_on = None
 
 
 def upgrade():
+    op.drop_column(
+        schema="gn_imports", table_name="t_imports_occhab", column_name="unique_dataset_id"
+    )
+
     op.execute(
         sa.update(BibFields)
         .where(
@@ -85,4 +90,10 @@ def downgrade():
             Destination.code == "occhab",
         )
         .values(dict(dest_field=None))
+    )
+
+    op.add_column(
+        schema="gn_imports",
+        table_name="t_imports_occhab",
+        column=sa.Column("unique_dataset_id", UUID(as_uuid=True)),
     )
