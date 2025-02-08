@@ -337,6 +337,7 @@ class SyntheseImportActions(ImportActions):
             fields["the_geom_local"],
             fields["the_geom_point"],
             fields["id_area_attachment"],  # XXX sure?
+            fields["id_dataset"],
         }
         if imprt.fieldmapping.get(
             "unique_id_sinp_generate",

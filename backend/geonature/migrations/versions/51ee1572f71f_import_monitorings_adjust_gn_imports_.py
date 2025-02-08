@@ -1,4 +1,4 @@
-"""[import.monitorings] Adjust gn.imports bib_fields id_dataset and unique_id_dataset values for syntehse destination
+"""[import.monitorings] Adjust gn.imports bib_fields id_dataset and unique_id_dataset values for synthese destination
 
 Revision ID: 51ee1572f71f
 Revises: df277299fdda
@@ -10,6 +10,7 @@ from alembic import op
 import sqlalchemy as sa
 
 from geonature.core.imports.models import BibFields, Destination
+from sqlalchemy.dialects.postgresql import UUID
 
 # revision identifiers, used by Alembic.
 revision = "51ee1572f71f"
@@ -19,6 +20,10 @@ depends_on = None
 
 
 def upgrade():
+    op.drop_column(
+        schema="gn_imports", table_name="t_imports_synthese", column_name="unique_dataset_id"
+    )
+
     op.execute(
         sa.update(BibFields)
         .where(
@@ -103,8 +108,15 @@ def downgrade():
         )
         .values(dict(dest_field=None))
     )
+
     op.add_column(
         schema="gn_imports",
         table_name="t_imports",
         column=sa.Column("id_dataset", sa.INTEGER),
+    )
+
+    op.add_column(
+        schema="gn_imports",
+        table_name="t_imports_synthese",
+        column=sa.Column("unique_dataset_id", UUID(as_uuid=True)),
     )
