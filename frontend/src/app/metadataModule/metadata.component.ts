@@ -84,7 +84,7 @@ export class MetadataComponent implements OnInit {
     this.rapidSearchControl.valueChanges
       .pipe(
         startWith(''),
-        debounceTime(500), 
+        debounceTime(500),
         distinctUntilChanged(),
         tap((term) => {
           if (term !== null) {
@@ -97,7 +97,9 @@ export class MetadataComponent implements OnInit {
         }),
         switchMap(() => this.metadataService.search(this.searchTerms))
       )
-      .subscribe(() => {return;});
+      .subscribe(() => {
+        return;
+      });
 
     // format areas filter
     this.areaFilters = this.config.METADATA.METADATA_AREA_FILTERS.map((area) => {
@@ -116,6 +118,7 @@ export class MetadataComponent implements OnInit {
 
   refreshFilters() {
     this.metadataService.resetForm();
+    this.rapidSearchControl.reset();
     this.advancedSearch();
     this.metadataService.expandAccordions = false;
   }
