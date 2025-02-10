@@ -1,0 +1,7 @@
+<div class="p-3">
+  <pnx-home-validations-toggle
+    [isChecked]="myReportsOnly"
+    (toggle)="toggleMyReports($event)"
+  ></pnx-home-validations-toggle>
+</div>
+<pnx-home-validations-table [myReportsOnly]="myReportsOnly"></pnx-home-validations-table>
