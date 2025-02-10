@@ -40,6 +40,8 @@ GEONATURE_DEFAULT_SETTING_FILE = config/settings.ini.sample
 GEONATURE_LOCAL_SETTING_FILE = config/settings.ini
 GEONATURE_APP_SECRET_KEY ?= '8551a7a-64a4-4216-bda4-9a919fcc7a27'
 
+SUPERGRANT_GROUP ?= "Grp_admin"
+
 default: help
 
 help:
@@ -141,7 +143,7 @@ back:
 	source backend/venv/bin/activate && geonature dev-back --port ${PORT_GN_BACKEND}
 
 front:
-	. ${NVM_DIR}/nvm.sh && cd frontend; nvm use; npm run start -- --port ${PORT_GN_FRONTEND}
+	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run start -- --port ${PORT_GN_FRONTEND}
 
 celery:
 	source backend/venv/bin/activate && celery -A geonature.celery_app:app worker -c ${NB_CONCURRENT_WORKER_CELERY}
@@ -161,6 +163,8 @@ lint_frontend:
 lint_backend:
 	source backend/venv/bin/activate && black .
 
+supergrant:
+	source backend/venv/bin/activate && geonature permissions supergrant --group --nom ${SUPERGRANT_GROUP} --yes
 
 # Add other targets in a Makefile.local file if you wish to extend the make file
 -include Makefile.local
