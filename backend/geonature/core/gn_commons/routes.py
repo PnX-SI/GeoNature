@@ -1,6 +1,7 @@
 import json
 from operator import or_
 from pathlib import Path
+from urllib.parse import urljoin
 
 from flask import Blueprint, request, current_app, g, url_for
 from flask.json import jsonify
@@ -93,6 +94,11 @@ def list_modules():
             "" if module.active_frontend else module.module_external_url
         )
         module_dict["module_url"] = module.module_path if module.active_frontend else ""
+
+        # Setup manually TAXHUB URL
+        if module_dict["module_code"] == "TAXHUB":
+            module_dict["module_external_url"] = urljoin(config["API_ENDPOINT"], "/admin")
+
         module_dict["module_objects"] = {}
         # get cruved for each object
         for obj_dict in module_dict["objects"]:
