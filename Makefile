@@ -154,9 +154,6 @@ db_status:
 autoupgrade:
 	source backend/venv/bin/activate && geonature db autoupgrade
 
-supergrant:
-	source backend/venv/bin/activate && geonature permissions supergrant --group --nom "Grp_admin" --yes
-
 compile_requirements:
 	source backend/venv/bin/activate && cd backend && piptools compile requirements.in
 	source backend/venv/bin/activate && cd backend && piptools compile requirements-dev.in
