@@ -5,13 +5,11 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { HomeValidationsService } from '../home-validations.service';
-
-interface PaginationItem {
-  totalItems: number;
-  currentPage: number;
-  perPage: number;
-}
+import {
+  HomeValidationsService,
+  Pagination,
+  ValidationCollection,
+} from '../home-validations.service';
 
 interface SortingItem {
   sort: 'asc' | 'desc';
@@ -29,13 +27,14 @@ interface SortingItem {
 export class HomeValidationsTableComponent implements OnInit, OnDestroy {
   readonly PROP_CREATION_DATE = 'creation_date';
   readonly PROP_USER = 'user.nom_complet';
-  readonly PROP_CONTENT = 'content';
+  readonly PROP_VALIDATION_STATUS = 'validation_status';
+  readonly PROP_VALIDATION_MESSAGE = 'validation_message';
   readonly PROP_OBSERVATION = 'observation';
 
-  readonly DEFAULT_PAGINATION: PaginationItem = {
-    totalItems: 0,
-    currentPage: 1,
-    perPage: 4,
+  readonly DEFAULT_PAGINATION: Pagination = {
+    total: 0,
+    page: 1,
+    per_page: 4,
   };
   readonly DEFAULT_SORTING: SortingItem = {
     sort: 'desc',
@@ -43,26 +42,29 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
   };
 
   validations = [];
-  pagination: PaginationItem = this.DEFAULT_PAGINATION;
+  pagination: Pagination = this.DEFAULT_PAGINATION;
   sort: SortingItem = this.DEFAULT_SORTING;
 
   private destroy$ = new Subject<void>();
 
-  _myReportsOnly: boolean;
+  _myValidationsOnly: boolean = false;
   @Input()
   set myReportsOnly(value: boolean) {
     this.pagination = this.DEFAULT_PAGINATION;
-    this._myReportsOnly = value;
+    this._myValidationsOnly = value;
     this._fetchValidations();
   }
 
   constructor(
     private _router: Router,
-    private _syntheseApi: SyntheseDataService,
+    // private _syntheseApi: SyntheseDataService
     private _homeValidations: HomeValidationsService
-  ) {}
+  ) {
+    console.log('fetccccch');
+  }
 
   ngOnInit() {
+    console.log('fetching validations');
     this._fetchValidations();
   }
 
@@ -72,7 +74,7 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
   }
 
   onChangePage(event: any) {
-    this.pagination.currentPage = event.offset + 1;
+    this.pagination.page = event.offset + 1;
     this._fetchValidations();
   }
 
@@ -81,13 +83,13 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
       sort: event.newValue,
       orderby: event.column.prop,
     };
-    this.pagination.currentPage = 1;
+    this.pagination.page = 1;
     this._fetchValidations();
   }
 
-  navigateToDiscussion(id_synthese: number) {
-    this._router.navigate(this._homeValidations.computeValidationsRedirectionUrl(id_synthese));
-  }
+  // navigateToValidations(id_synthese: number) {
+  //   this._router.navigate(this._homeValidations.computeValidationsRedirectionUrl(id_synthese));
+  // }
 
   renderDate(date: string): string {
     return new Date(date).toLocaleDateString();
@@ -95,34 +97,36 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
 
   private _fetchValidations() {
     const params = this._buildQueryParams();
-    this._syntheseApi
-      .getReports(params.toString())
+    this._homeValidations
+      .fetchValidations(params)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((response) => {
-        this._setValidations(response);
+      .subscribe((validations: ValidationCollection) => {
+        this._setValidations(validations);
       });
   }
 
   private _buildQueryParams(): URLSearchParams {
     const params = new URLSearchParams();
-    params.set('type', 'discussion');
-    params.set('sort', this.sort.sort);
-    params.set('orderby', this.sort.orderby);
-    params.set('page', this.pagination.currentPage.toString());
-    params.set('per_page', this.pagination.perPage.toString());
-    params.set('my_reports', this._myReportsOnly.toString());
+    // params.set('type', 'discussion');
+    // params.set('sort', this.sort.sort);
+    // params.set('orderby', this.sort.orderby);
+    // params.set('page', this.pagination.currentPage.toString());
+    // params.set('per_page', this.pagination.perPage.toString());
+    // params.set('my_validations', this._myValidationsOnly.toString());
     return params;
   }
 
   // //////////////////////////////////////////////////////
-  // Discussion process
+  // Validation process
   // //////////////////////////////////////////////////////
-  private _setValidations(data: any) {
-    this.validations = this._transformValidations(data.items);
+
+  private _setValidations(validations: ValidationCollection) {
+    console.log(validations);
+    this.validations = this._transformValidations(validations.items);
     this.pagination = {
-      totalItems: data.total,
-      currentPage: data.page,
-      perPage: data.per_page,
+      total: validations.total,
+      per_page: validations.per_page,
+      page: validations.page,
     };
   }
 

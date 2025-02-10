@@ -10,8 +10,8 @@ import { HomeValidationsToggleComponent } from './home-validations-toggle/home-v
   imports: [HomeValidationsTableComponent, HomeValidationsToggleComponent],
 })
 export class HomeValidationsComponent {
-  myReportsOnly = false;
-  toggleMyReports(isMyReports: boolean) {
-    this.myReportsOnly = isMyReports;
-  }
+  // myReportsOnly = false;
+  // toggleMyReports(isMyReports: boolean) {
+  //   this.myReportsOnly = isMyReports;
+  // }
 }

@@ -6,14 +6,14 @@
   footerHeight="50"
   rowHeight="100"
   [externalPaging]="true"
-  [limit]="pagination.perPage"
-  [count]="pagination.totalItems"
+  [limit]="pagination.per_page"
+  [count]="pagination.total"
   (page)="onChangePage($event)"
   [externalSorting]="true"
   [sorts]="[{ prop: sort.sort, dir: sort.orderby }]"
   (sort)="onColumnSort($event)"
 >
-  <ngx-datatable-column
+  <!-- <ngx-datatable-column
     [maxWidth]="5"
     [resizeable]="false"
     [sortable]="false"
@@ -26,7 +26,7 @@
     >
       <button
         class="btn btn-outline-shadow btn-no-padding btn-ghost"
-        (click)="navigateToDiscussion(row.id_synthese)"
+        (click)="navigateToValidations(row.id_synthese)"
       >
         <i
           #iElement
@@ -36,7 +36,7 @@
         ></i>
       </button>
     </ng-template>
-  </ngx-datatable-column>
+  </ngx-datatable-column> -->
   <ngx-datatable-column
     width="150"
     [prop]="PROP_CREATION_DATE"
@@ -68,10 +68,25 @@
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
-    [prop]="PROP_CONTENT"
+    [prop]="PROP_VALIDATION_STATUS"
+    width="150"
+    name="Statut de validation"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      {{ row[PROP_VALIDATION_STATUS] }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    [prop]="PROP_VALIDATION_STATUS"
     width="600"
     height="100"
-    name="Contenu"
+    name="Message de validation"
     [sortable]="true"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -82,11 +97,12 @@
     >
       <div class="TextContentContainer">
         <div class="TextContent">
-          {{ row[PROP_CONTENT] }}
+          {{ row[PROP_VALIDATION_MESSAGE] }}
         </div>
       </div>
     </ng-template>
   </ngx-datatable-column>
+
   <ngx-datatable-column
     width="600"
     [prop]="PROP_OBSERVATION"

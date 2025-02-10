@@ -37,7 +37,7 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     private translateService: TranslateService,
     public config: ConfigService,
     private _discussionsService: HomeDiscussionsService,
-    private _validationssService: HomeValidationsService
+    private _validationsService: HomeValidationsService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -88,7 +88,7 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   }
 
   get displayValidations(): boolean {
-    return this._validationssService.isAvailable;
+    return this._validationsService.isAvailable;
   }
 
   private computeMapBloc() {
