@@ -202,7 +202,13 @@
   "Synthese": {
     "DeleteObs": "Delete this observation",
     "Map": {
-      "AreasToggleBtn": "Areas"
+      "AreasToggleBtn": "Areas",
+      "SeveralValues": "Several values",
+      "UnknownValue": "Other value",
+      "Criteria": {
+        "default": "Default display",
+        "area-aggregation": "Density of observations"
+      }
     }
   },
   "MyAccount": "My account",

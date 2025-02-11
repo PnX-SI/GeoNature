@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
-import { AppConfig } from '@geonature_config/app.config';
+
 import { stringify as toWKT } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
 import { isArray } from 'util';
+
+import { AppConfig } from '@geonature_config/app.config';
+
 
 @Injectable()
 export class SyntheseFormService {

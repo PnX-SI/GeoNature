@@ -250,6 +250,26 @@ class GnFrontEndConf(Schema):
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
 
 
+class MapCriteriaIcon(Schema):
+    name = fields.String(required=True)
+    font = fields.String(required=True)
+    color = fields.String(load_default="white")
+
+class MapCriteriaValue(Schema):
+    value = fields.Raw(required=True)
+    label = fields.String(required=True)
+    description = fields.String(load_default=None)
+    color = fields.String(required=True)
+    icon = fields.Nested(MapCriteriaIcon, load_default=None)
+
+class MapCriteria(Schema):
+    label = fields.String(required=True)
+    type = fields.String(required=True, validate=OneOf(["nomenclatures", "classes", "dates"]))
+    field = fields.String(required=True)
+    default = fields.Boolean(load_default=False)
+    values = fields.List(fields.Nested(MapCriteriaValue), required=True)
+
+
 class Synthese(Schema):
     #--------------------------------------------------------------------
     # SYNTHESE - SEARCH FORM
@@ -386,6 +406,10 @@ class Synthese(Schema):
             {"min": 1, "color": "#FED976"},
             {"min": 0, "color": "#FFEDA0"},
         ],
+    )
+    # List of display criteria for the Synthese map
+    MAP_CRITERIA_LIST = fields.Dict(
+        keys=fields.String(), values=fields.Nested(MapCriteria), load_default=None
     )
 
 class DataBlurringManagement(Schema):

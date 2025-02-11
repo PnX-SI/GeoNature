@@ -43,9 +43,10 @@ export class SyntheseDataService {
     return queryUrl;
   }
 
-
-  getSyntheseData(params) {
-    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, params);
+  getSyntheseData(filters, selectors) {
+    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, filters, {
+      params: selectors,
+    });
   }
 
   getSyntheseGeneralStat() {
@@ -75,7 +76,6 @@ export class SyntheseDataService {
     }
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observations_bbox`, {params: queryString});
   }
-
 
   getObsCountByColumn(column) {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count_per_column/${column}`);

@@ -55,7 +55,7 @@ export class HomeContentComponent implements OnInit {
     this.appConfig = AppConfig;
 
     if (this.showLastObsMap) {
-      this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
+      this._syntheseApi.getSyntheseData({}, { limit: 100 }).subscribe(result => {
         this.lastObs = result.data;
       });
     }

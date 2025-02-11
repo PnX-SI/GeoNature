@@ -6,7 +6,7 @@ import { SyntheseComponent } from './synthese.component';
 import { SyntheseListComponent } from './synthese-results/synthese-list/synthese-list.component';
 import { SyntheseCarteComponent } from './synthese-results/synthese-carte/synthese-carte.component';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
-import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synthese-store.service';
+import { SyntheseStoreService } from '@geonature/syntheseModule/services/store.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
@@ -15,6 +15,8 @@ import { SharedSyntheseModule } from '@geonature/shared/syntheseSharedModule/syn
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
+import { SyntheseCriteriaService } from './services/criteria.service';
+
 const routes: Routes = [
   { path: '', component: SyntheseComponent },
   { path: 'taxon/:cd_nom', component: TaxonSheetComponent },
@@ -41,7 +43,8 @@ const routes: Routes = [
     DynamicFormService,
     TaxonAdvancedStoreService,
     SyntheseStoreService,
-    SyntheseFormService
+    SyntheseFormService,
+    SyntheseCriteriaService,
   ]
 })
 export class SyntheseModule {}

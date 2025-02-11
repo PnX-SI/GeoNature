@@ -141,16 +141,24 @@ def get_observations_for_web(auth, permissions):
     else:
         filters = {key: request.args.get(key) for key, value in request.args.items()}
 
+    # Limit parameter
+    if "limit" in request.args:
+        filters["limit"] = request.args.get("limit")
+
     result_limit = (
         int(filters.pop("limit"))
         if "limit" in filters
         else current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
     )
 
+    # With areas parameter
+    if "with_areas" in request.args:
+        filters["with_areas"] = request.args.get("with_areas")
+
     with_areas = (
         True
         if "with_areas" in filters
-        and (filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True)
+            and (filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True)
         else False
     )
 
@@ -190,6 +198,12 @@ def get_observations_for_web(auth, permissions):
         "count_min_max",
         count_min_max,
     ]
+
+    # Add additional field(s) to output
+    additional_fields = request.args.getlist("with_field")
+    for column in additional_fields:
+        columns += [column, getattr(VSyntheseForWebApp, column)]
+
     observations = func.json_build_object(*columns).label("obs_as_json")
 
     geojson = (

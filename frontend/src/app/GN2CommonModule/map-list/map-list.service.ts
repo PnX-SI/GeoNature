@@ -72,6 +72,7 @@ export class MapListService {
       const selectedLayer = this.layerDict[id];
       this.toggleStyle(selectedLayer);
       this.zoomOnSelectedLayer(map, selectedLayer);
+      selectedLayer.bringToFront();
     });
   }
 
@@ -299,7 +300,7 @@ export class MapListService {
         }
       });
     }
-    //this.tableData = [...this.tableData];
+    this.tableData = [...this.tableData];
   }
 }
 

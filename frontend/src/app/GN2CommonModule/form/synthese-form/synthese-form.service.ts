@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
+import { HttpParams } from '@angular/common/http';
 
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -11,6 +12,7 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 @Injectable()
 export class SyntheseFormService {
   public searchForm: FormGroup;
+  public selectors = new HttpParams();
   public formBuilded = false;
   public selectedtaxonFromComponent = [];
   public selectedCdRefFromTree = [];
@@ -53,7 +55,6 @@ export class SyntheseFormService {
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
       taxon_rank: null,
-      with_areas: null,
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
