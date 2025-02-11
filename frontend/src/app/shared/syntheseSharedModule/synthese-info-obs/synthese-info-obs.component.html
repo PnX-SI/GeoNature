@@ -8,7 +8,33 @@
   *ngIf="header"
   class="modal-header padding-md-all"
 >
+    <span
+      *ngIf="criteriaService.isCriteriaDisplay() && criteriaInfos"
+      [ngbTooltip]="criteriaService.buildCriteriaTxt(criteriaInfos)"
+      class="map-criteria-badge"
+      style="
+        background-color: {{criteriaInfos.color}};
+        color: {{criteriaInfos?.icon?.color}} !important;
+      "
+      aria-hidden="false"
+      [aria-label]="criteriaInfos.label"
+  >
+    	<i
+        *ngIf="criteriaInfos?.icon?.font.startsWith('material')"
+        class="{{criteriaInfos?.icon?.font}}"
+      >
+        {{criteriaInfos?.icon?.name}}
+      </i>
+      <i
+        *ngIf="criteriaInfos?.icon?.font.startsWith('fa')"
+        class="{{criteriaInfos?.icon?.font}} {{criteriaInfos?.icon?.name}}"
+        aria-hidden="false"
+        [aria-label]="criteriaInfos.label"
+      ></i>
+  </span>
+
   <h5 class="my-3 ml-3">{{'Synthese.ModalTitle' | translate }}</h5>
+
   <button
     type="button"
     class="close"
@@ -86,12 +112,12 @@
         {{selectedObs?.observers}}
       </span>
       <br>
-      <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
-        <b> {{'Synthese.Date' | translate}} : </b><span>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}</span>
+      <span *ngIf="selectedObs?.date_min_fr != selectedObs?.date_max_fr; else elseBlock">
+        <b> {{'Synthese.Date' | translate}} : </b><span>{{selectedObs?.date_min_fr}} -> {{selectedObs?.date_max_fr}}</span>
       </span>
       <ng-template #elseBlock>
         <b> {{'Synthese.Date' | translate}} : </b><span
-          data-qa="synthese-info-obs-date">{{selectedObs?.date_min}}</span>
+          data-qa="synthese-info-obs-date">{{selectedObs?.date_min_fr}}</span>
       </ng-template>
       <br>
       <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
