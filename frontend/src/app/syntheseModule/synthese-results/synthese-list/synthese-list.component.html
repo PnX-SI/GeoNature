@@ -20,9 +20,36 @@
 >
   <ngx-datatable-column [maxWidth]="5">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(row);">
-        <i #iElement matTooltip="{{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true "></i>
-      </button>
+      <ng-container *ngIf="criteriaService.isCriteriaDisplay(); else defaultInfoBtn">
+        <ng-template #infoBtnWithCriteria
+          [ngTemplateOutlet]="infoBtnWithCriteria"
+          let-criteria
+          [ngTemplateOutletContext]="{ $implicit: criteriaService.getCriteriaStyle(row) }"
+        >
+          <button
+            (click)="openInfoModal(row);"
+            [matTooltip]="
+              criteriaService.buildCriteriaTxt(criteria) + '\n' +
+              'Id : ' + row[mapListService.idName]
+            "
+            class="btn btn-outline-shadow btn-no-padding btn-map-criteria"
+            style="
+              background-color: {{criteria.color}};
+              color: {{criteria.icon?.color}} !important;
+            "
+            aria-hidden="false"
+            [aria-label]="criteria.label"
+          >
+            <i class="fa fa-info" aria-hidden="true "></i>
+          </button>
+        </ng-template>
+      </ng-container>
+
+      <ng-template #defaultInfoBtn>
+        <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(row);">
+          <i matTooltip="{{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true "></i>
+        </button>
+      </ng-template>
     </ng-template>
   </ngx-datatable-column>
 
