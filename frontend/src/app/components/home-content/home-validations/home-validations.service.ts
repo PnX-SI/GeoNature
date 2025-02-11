@@ -4,10 +4,16 @@ import { ModuleService } from '@geonature/services/module.service';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from '@librairies/rxjs';
+import { Router } from '@librairies/@angular/router';
 
 enum ValidationsModule {
   SYNTHESE = 'SYNTHESE',
   VALIDATION = 'VALIDATION',
+}
+
+export interface SortingItem {
+  sort: 'asc' | 'desc';
+  order_by: string;
 }
 
 export interface Pagination {
@@ -15,19 +21,44 @@ export interface Pagination {
   page: number;
   per_page: number;
 }
-export type ValidationItem = any;
+export interface ValidationItem {
+  id_synthese: number;
+  date_max: string;
+  date_min: string;
+  observers: string;
+  nomenclature_valid_status: { label_default: string; [key: string]: string };
+  validator: string;
+  last_validation: {
+    id_validation: number;
+    validation_comment: string;
+    validation_date: string;
+  };
+}
 
 export interface ValidationCollection extends Pagination {
   items: ValidationItem[];
 }
 @Injectable()
 export class HomeValidationsService {
+  static readonly DEFAULT_PAGINATION: Pagination = {
+    total: 0,
+    page: 1,
+    per_page: 4,
+  };
+  static readonly DEFAULT_SORTING: SortingItem = {
+    sort: 'desc',
+    order_by: 'id_validation',
+  };
   readonly MODULES_PREVALENCE = [ValidationsModule.SYNTHESE, ValidationsModule.VALIDATION];
   constructor(
     private _http: HttpClient,
     private _config: ConfigService,
     private _moduleService: ModuleService
   ) {}
+
+  // //////////////////////////////////////////////////////////////////////////
+  // Modules and authorization
+  // //////////////////////////////////////////////////////////////////////////
 
   private _isValidationsAllowedInModule(module: ValidationsModule): boolean {
     return this._moduleService.getModule(module)?.cruved['R'] != undefined;
@@ -39,12 +70,24 @@ export class HomeValidationsService {
     }
     for (const module of this.MODULES_PREVALENCE) {
       if (this._isValidationsAllowedInModule(module)) {
-          return true;
+        return true;
       }
     }
     return false;
   }
 
+  // //////////////////////////////////////////////////////////////////////////
+  // Redirection to module
+  // //////////////////////////////////////////////////////////////////////////
+
+  computeValidationsRedirectionUrl(id_synthese: number): Array<string> {
+    for (const module of this.MODULES_PREVALENCE) {
+      if (this._isValidationsAllowedInModule(module)) {
+        return this._getUrl(module, id_synthese);
+      }
+    }
+    return [];
+  }
   private _getUrl(module: ValidationsModule, id_synthese: number): Array<string> {
     switch (module) {
       case ValidationsModule.SYNTHESE:
@@ -54,18 +97,24 @@ export class HomeValidationsService {
     }
   }
 
-  computeValidationsRedirectionUrl(id_synthese: number): Array<string> {
-    for (const module of this.MODULES_PREVALENCE) {
-      if (this._isValidationsAllowedInModule(module)) {
-          return this._getUrl(module, id_synthese);
-      }
-    }
-    return [];
-  }
+  // //////////////////////////////////////////////////////////////////////////
+  // Fetch validations
+  // //////////////////////////////////////////////////////////////////////////
 
-  public fetchValidations(params: Record<string, string>): any {
+  public fetchValidations(
+    pagination: Pagination,
+    sort: SortingItem
+  ): Observable<ValidationCollection> {
     return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation`, {
-      params: params,
+      params: {
+        page: pagination.page.toString(),
+        per_page: pagination.per_page.toString(),
+        sort: sort.sort,
+        order_by: sort.order_by,
+        fields:
+          'id_synthese,nom_cite,observers,date_min,date_max,last_validation,nomenclature_valid_status,validator',
+        format: 'json',
+      },
     });
   }
 }

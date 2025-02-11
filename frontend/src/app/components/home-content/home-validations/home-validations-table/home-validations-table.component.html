@@ -2,6 +2,8 @@
   #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="validations"
+  columnMode="force"
+  [draggable]="false"
   headerHeight="50"
   footerHeight="50"
   rowHeight="100"
@@ -10,7 +12,7 @@
   [count]="pagination.total"
   (page)="onChangePage($event)"
   [externalSorting]="true"
-  [sorts]="[{ prop: sort.sort, dir: sort.orderby }]"
+  [sorts]="[{ prop: sort.sort, dir: sort.order_by }]"
   (sort)="onColumnSort($event)"
 >
   <ngx-datatable-column
@@ -39,23 +41,20 @@
   </ngx-datatable-column>
   <ngx-datatable-column
     width="150"
-    [prop]="PROP_CREATION_DATE"
-    name="Date commentaire"
-    [sortable]="true"
-    [resizeable]="true"
-    [canAutoResize]="true"
+    name="Date"
+    [prop]="PROP_VALIDATION_DATE"
   >
     <ng-template
       ngx-datatable-cell-template
       let-row="row"
     >
-      {{ renderDate(row[PROP_CREATION_DATE]) }}
+      {{ renderDate(row[PROP_VALIDATION_DATE]) }}
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
     width="150"
-    [prop]="PROP_USER"
-    name="Auteur"
+    [prop]="PROP_VALIDATOR"
+    name="Validateur"
     [sortable]="true"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -64,7 +63,7 @@
       ngx-datatable-cell-template
       let-row="row"
     >
-      {{ row[PROP_USER] }}
+      {{ row[PROP_VALIDATOR] }}
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
@@ -83,7 +82,7 @@
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
-    [prop]="PROP_VALIDATION_STATUS"
+    [prop]="PROP_VALIDATION_MESSAGE"
     width="500"
     height="100"
     name="Message de validation"

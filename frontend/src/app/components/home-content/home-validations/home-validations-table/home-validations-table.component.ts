@@ -7,33 +7,19 @@ import { takeUntil } from 'rxjs/operators';
 import {
   HomeValidationsService,
   Pagination,
+  SortingItem,
   ValidationCollection,
+  ValidationItem,
 } from '../home-validations.service';
 
-interface SortingItem {
-  sort: 'asc' | 'desc';
-  orderby: string;
-}
 
-interface ValidationItemRaw {
+interface ValidationItemEnhanced {
   id_synthese: number;
-  date_max: string;
-  date_min: string;
-  observers: string;
-  nomenclature_valid_status: { label_default: string; [key: string]: string };
-  validations: {
-    id_validation: number;
-    validation_comment: string;
-    validation_date: string;
-  }[];
-}
-interface ValidationItem {
-  id_synthese: number;
+  'last_validation.validation_date': string;
+  'nomenclature_valid_status.label_default': string;
+  'last_validation.validation_comment': string;
+  validator: string;
   observation: string;
-  id_validation: number;
-  validation_label: string;
-  validation_comment: string;
-  validation_date: string;
 }
 
 @Component({
@@ -45,40 +31,23 @@ interface ValidationItem {
   providers: [HomeValidationsService],
 })
 export class HomeValidationsTableComponent implements OnInit, OnDestroy {
-  readonly PROP_CREATION_DATE = 'validation_date';
-  readonly PROP_USER = 'id_synthese';
-  readonly PROP_VALIDATION_STATUS = 'validation_label';
-  readonly PROP_VALIDATION_MESSAGE = 'validation_comment';
+  readonly PROP_VALIDATOR = 'validator';
+  readonly PROP_VALIDATION_DATE = 'last_validation.validation_date';
+  readonly PROP_VALIDATION_STATUS = 'nomenclature_valid_status.label_default';
+  readonly PROP_VALIDATION_MESSAGE = 'last_validation.validation_comment';
   readonly PROP_OBSERVATION = 'observation';
 
-  readonly DEFAULT_PAGINATION: Pagination = {
-    total: 0,
-    page: 1,
-    per_page: 4,
-  };
-  readonly DEFAULT_SORTING: SortingItem = {
-    sort: 'desc',
-    orderby: this.PROP_CREATION_DATE,
-  };
-
-  validations: ValidationItem[] = [];
+  validations: ValidationItemEnhanced[] = [];
   // TODO: update this
-  pagination: Pagination = this.DEFAULT_PAGINATION;
-  sort: SortingItem = this.DEFAULT_SORTING;
+  pagination: Pagination = HomeValidationsService.DEFAULT_PAGINATION;
+  sort: SortingItem = {
+    sort: 'desc',
+    order_by: this.PROP_VALIDATION_DATE,
+  };
 
   private destroy$ = new Subject<void>();
-
-  _myValidationsOnly: boolean = false;
-  @Input()
-  set myReportsOnly(value: boolean) {
-    this.pagination = this.DEFAULT_PAGINATION;
-    this._myValidationsOnly = value;
-    this._fetchValidations();
-  }
-
   constructor(
     private _router: Router,
-    // private _syntheseApi: SyntheseDataService
     private _homeValidations: HomeValidationsService
   ) {}
 
@@ -99,30 +68,22 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
   onColumnSort(event: any) {
     this.sort = {
       sort: event.newValue,
-      orderby: event.column.prop,
+      order_by: event.column.prop,
     };
     this.pagination.page = 1;
     this._fetchValidations();
   }
 
-  navigateToValidations(validation: ValidationItem) {
-    this._router.navigate(
-      this._homeValidations.computeValidationsRedirectionUrl(validation.id_synthese)
-    );
+  navigateToValidations(row: ValidationItem) {
+    this._router.navigate(this._homeValidations.computeValidationsRedirectionUrl(row.id_synthese));
   }
-
   renderDate(date: string): string {
-    return new Date(date).toLocaleDateString();
+    return new Date(date).toLocaleString();
   }
 
   private _fetchValidations() {
-    const params = {
-      fields:
-        'id_synthese,nom_cite,observers,date_min,date_max,validations,last_validation,nomenclature_valid_status',
-      format: 'json',
-    };
     this._homeValidations
-      .fetchValidations(params)
+      .fetchValidations(this.pagination, this.sort)
       .pipe(takeUntil(this.destroy$))
       .subscribe((validations: ValidationCollection) => {
         this._setValidations(validations);
@@ -141,13 +102,13 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
     };
   }
 
-  private _transformValidations(validations: ValidationItemRaw[]): ValidationItem[] {
-    return validations.map((validation: ValidationItemRaw) => ({
+  private _transformValidations(validations: ValidationItem[]): ValidationItemEnhanced[] {
+    return validations.map((validation: ValidationItem) => ({
       id_synthese: validation.id_synthese,
-      validation_label: validation.nomenclature_valid_status.label_default ?? '',
-      validation_comment: validation.validations[0].validation_comment ?? '',
-      id_validation: validation.validations[0].id_validation,
-      validation_date: validation.validations[0].validation_date,
+      'last_validation.validation_date': validation.last_validation.validation_date,
+      'nomenclature_valid_status.label_default': validation.nomenclature_valid_status.label_default,
+      'last_validation.validation_comment': validation.last_validation.validation_comment,
+      validator: validation.validator ?? 'Auto',
       observation: this._formatObservation(validation),
     }));
   }

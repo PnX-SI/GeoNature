@@ -46,25 +46,28 @@ def get_synthese_data(scope):
     -------
     FeatureCollection
     """
-
-    # Déplacer les fields en param de la route
-    # - Conserver la config
-    # - Non renseigné: comportement actuel
-    # - Fields renseigné: remplace (pas par défault)
-
-    # Retour avec ou sans géométrie:
-    # mettre un paramètre de format (par défault geojson) (possible json)
-
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
 
+    # Sorting parameter
+    sort = request.args.get("sort", "desc", str)
+    order_by = sa.text(
+        request.args.get("order_by", "last_validation.validation_date", str)
+    )
+    sorting_active = sort != '' and order_by != ''
+
     # Pagination parameter
-    limit = request.args.get("limit", 1, int)
-    page = request.args.get("page", 2, int)
+    page = request.args.get("page", -1, int)
+    per_page = request.args.get("per_page", -5, int)
+    pagination_active = page > 0 and per_page > 0
 
     # Format: output format
     format = request.args.get("format", "geojson")
     if format not in ["json", "geojson"]:
         raise BadRequest("Invalid format parameter")
+
+    # Check pagination is active for json
+    if format == "json" and not pagination_active:
+        raise BadRequest("Pagination must be active when requesting json object")
 
     # Fields: Setup fields as route parameters with default behavior
     fields_as_str = request.args.get("fields", None)
@@ -162,7 +165,10 @@ def get_synthese_data(scope):
     for alias in lateral_join.keys():
         query = query.outerjoin(alias, sa.true())
 
-    query = query.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
+    # geometry required only for geojson
+    if format == "geojson":
+        query = query.where(Synthese.the_geom_4326.isnot(None))
+
     # The `query` variable is being used to construct a SQLAlchemy query to retrieve data from
     # the database. Here is a breakdown of how `query` is being used in the provided code
     # snippet
@@ -191,19 +197,17 @@ def get_synthese_data(scope):
     # Step 2: give SyntheseQuery the Core selectable from ORM query
     assert len(query.selectable.get_final_froms()) == 1
 
-    query = (
+    selectable = (
         SyntheseQuery(
             Synthese,
             query.selectable,
             filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
         )
         .filter_query_all_filters(g.current_user, scope)
-        .limit(limit)
-        .offset(page)
     )
 
     # Step 3: Construct Synthese model from query result
-    syntheseModelQuery = Synthese.query.options(
+    syntheseQueryStatement = Synthese.query.options(
         *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
     ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
 
@@ -219,29 +223,33 @@ def get_synthese_data(scope):
     )
     if alertActivate or pinActivate:
         fields |= {"reports.report_type.type"}
-        syntheseModelQuery = syntheseModelQuery.options(
+        syntheseQueryStatement = syntheseQueryStatement.options(
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
 
-    # Paginer avant ici
-    query = syntheseModelQuery.from_statement(query)
+    if sorting_active:
+        if sort == "asc":
+            selectable = selectable.order_by(sa.asc(order_by))
+        else:
+            selectable = selectable.order_by(sa.desc(order_by))
 
-    # The raise option ensure that we have correctly retrived relationships data at step 3
-    #
-    # 3 serializeQuery(db.session.execute(query).all(), query.column_descriptions)
-    # 2 Sinon: schema à la volée get_marshmallow_schema
-    # 1 préférence pour as_dict
+    # Paginer avant ici
+    if pagination_active:
+        query = syntheseQueryStatement.from_statement(selectable.limit(per_page).offset(page))
+    else:
+        query = syntheseQueryStatement.from_statement(selectable)
+
     if format == "geojson":
         return jsonify(query.as_geofeaturecollection(fields=fields))
     elif format == "json":
+        count = db.session.execute(
+            selectable.with_only_columns([sa.func.count()]).order_by(None)
+        ).scalar()
         return jsonify(
             {
-                "items": [
-                    item.as_dict(fields=fields)
-                    for item in db.session.execute(query).scalars().all()
-                ],
-                "total": 8,
-                "limit": limit,
+                "items": [item.as_dict(fields=fields) for item in query.all()],
+                "total": count,
+                "per_page": per_page,
                 "page": page,
             }
         )
