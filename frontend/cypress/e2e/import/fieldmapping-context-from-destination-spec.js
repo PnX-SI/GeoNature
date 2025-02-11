@@ -91,7 +91,6 @@ describe('Import - Upload step', () => {
             .map((param) => `${param.paramsName}=${param.paramsValue}`)
             .join('&');
           cy.visit(`/#/import/${destination}/process/upload?${urlParams}`);
-          cy.pickDataset(USER.dataset);
           cy.loadImportFile(FILES[destination].valid.fixture);
           cy.configureImportFile();
         });
