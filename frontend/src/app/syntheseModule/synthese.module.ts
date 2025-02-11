@@ -6,6 +6,7 @@ import { SyntheseComponent } from './synthese.component';
 import { SyntheseListComponent } from './synthese-results/synthese-list/synthese-list.component';
 import { SyntheseCarteComponent } from './synthese-results/synthese-carte/synthese-carte.component';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
+import { SyntheseStoreService } from '@geonature/syntheseModule/services/store.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
@@ -29,6 +30,7 @@ import {
 import { ObserverSheetComponent } from './observer-sheet/observer-sheet.component';
 import { ObserverSheetService } from './observer-sheet/observer-sheet.service';
 import { ObservationsFiltersService } from './sheets/observations/observations-filters.service';
+import { SyntheseCriteriaService } from './services/criteria.service';
 
 const routes: Routes = [
   {
@@ -110,5 +112,9 @@ const routes: Routes = [
     ObserverSheetRouteService,
     TaxonSheetRouteService,
   ],
+    RouteService,
+    SyntheseStoreService,
+    SyntheseCriteriaService,
+  ]
 })
 export class SyntheseModule {}
