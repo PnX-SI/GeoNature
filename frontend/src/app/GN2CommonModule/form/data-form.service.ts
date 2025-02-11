@@ -146,10 +146,18 @@ export class DataFormService {
     });
   }
 
-  getTaxonInfo(cd_nom: number, fields?: Array<string>, areasStatus?: Array<string>) {
+  getTaxonInfo(
+    cd_nom: number,
+    fields?: Array<string>,
+    areasStatus?: Array<string>,
+    linnaeanParents?: boolean
+  ) {
     let query_string = new HttpParams();
     if (areasStatus) {
       query_string = query_string.append('areas_status', areasStatus.join(','));
+    }
+    if (linnaeanParents) {
+      query_string = query_string.append('linnaean_parents', true);
     }
     if (fields) {
       query_string = query_string.append('fields', fields.join(','));

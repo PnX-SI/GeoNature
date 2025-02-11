@@ -14,7 +14,7 @@ export class TaxonSheetService {
     if (taxon && taxon.cd_ref == cd_ref) {
       return;
     }
-    this._ds.getTaxonInfo(cd_ref).subscribe((taxon) => {
+    this._ds.getTaxonInfo(cd_ref, undefined, undefined, true).subscribe((taxon) => {
       this.taxon.next(taxon);
     });
   }

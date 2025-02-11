@@ -1,8 +1,27 @@
-<div class="Taxonomy">
+<div
+  class="Taxonomy"
+  *ngIf="taxon"
+>
+  <div class="Taxonomy__breadcrumb">
+    <span *ngFor="let item of taxon.linnaean_parents">
+      <a
+        class="Link"
+        (click)="navigateToCDRef(item.cd_ref)"
+      >
+        {{ item.lb_nom }}
+      </a>
+      <span>/</span>
+    </span>
+    <span>
+      <a class="active">
+        {{ taxon.lb_nom }}
+      </a>
+    </span>
+  </div>
   <div class="Taxonomy__completeName">
     {{ taxon?.nom_complet }}
   </div>
   <div class="Taxonomy__vernacularName">
-    {{ taxon?.nom_vern }}
+    {{ nomComplet }}
   </div>
 </div>

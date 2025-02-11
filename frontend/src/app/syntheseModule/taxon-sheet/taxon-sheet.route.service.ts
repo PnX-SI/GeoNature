@@ -4,7 +4,7 @@ import {
   RouterStateSnapshot,
   Router,
   CanActivateChild,
-  CanActivate
+  CanActivate,
 } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
 import { Observable } from 'rxjs';
@@ -56,8 +56,8 @@ export class RouteService implements CanActivate, CanActivateChild {
       );
     }
   }
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean  {
-    if(!this._config.SYNTHESE.ENABLE_TAXON_SHEETS){
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    if (!this._config.SYNTHESE.ENABLE_TAXON_SHEETS) {
       this._router.navigate(['/404'], { skipLocationChange: true });
       return false;
     }
@@ -65,10 +65,7 @@ export class RouteService implements CanActivate, CanActivateChild {
     return true;
   }
 
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean {
+  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const targetedPath = childRoute.routeConfig.path;
     if (this.TAB_LINKS.map((tab) => tab.path).includes(targetedPath)) {
       return true;
@@ -76,5 +73,14 @@ export class RouteService implements CanActivate, CanActivateChild {
 
     this._router.navigate(['/404'], { skipLocationChange: true });
     return false;
+  }
+
+  navigateToCDRef(cd_ref: number) {
+    const url = this._router.url;
+    let new_url = `/synthese/taxon/${cd_ref}`;
+    if (this._router.url.startsWith('/synthese/taxon/')) {
+      new_url = `${new_url}/${url.split('/').pop()}`;
+    }
+    this._router.navigate([new_url]);
   }
 }
