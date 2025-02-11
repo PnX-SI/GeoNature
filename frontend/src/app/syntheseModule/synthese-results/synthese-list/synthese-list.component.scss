@@ -29,6 +29,18 @@ ngx-datatable {
   font-size: 12px;
 }
 
+:host ::ng-deep .datatable-body-cell .btn-map-criteria {
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  text-align: center;
+  vertical-align: baseline;
+}
+
+:host ::ng-deep .datatable-body-cell .btn-map-criteria i {
+  vertical-align: text-top;
+}
+
 :host ::ng-deep .datatable-body {
   overflow-x: scroll;
 }

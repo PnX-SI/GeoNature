@@ -21,6 +21,7 @@ import { SyntheseModalDownloadComponent } from './modal-download/modal-download.
 import { ColumnMode, DatatableComponent } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
+import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
 
 
 @Component({
@@ -52,7 +53,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     private _fs: SyntheseFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
-    public _cruvedStore: CruvedStoreService
+    public _cruvedStore: CruvedStoreService,
+    public criteriaService: SyntheseCriteriaService,
   ) {}
 
   ngOnInit() {
