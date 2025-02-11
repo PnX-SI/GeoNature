@@ -18,6 +18,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
 import { constants } from 'crypto';
+import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -59,14 +60,18 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     '5': '#BDBDBD',
     '6': '#FFFFFF'
   };
+
+  public criteriaInfos;
+
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
     private _commonService: CommonService,
-    private _mapService: MapService
-  ) { }
+    private _mapService: MapService,
+    public criteriaService: SyntheseCriteriaService
+  ) {}
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
@@ -104,10 +109,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
+        // TODO: use pipe inside template to translate date to FR/EN/CZ ...
         const date_min = new Date(this.selectedObs.date_min);
-        this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
+        this.selectedObs.date_min_fr = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);
-        this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
+        this.selectedObs.date_max_fr = date_max.toLocaleDateString('fr-FR');
 
         const areaDict = {};
         // for each area type we want all the areas: we build an dict of array
@@ -148,11 +154,19 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             this.profile = profile;
           });
         });
+
+        this.extractCriteriaInfos();
       });
 
     this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe(dataChecks => {
       this.profileDataChecks = dataChecks;
     });
+  }
+
+  private extractCriteriaInfos() {
+    if (this.criteriaService.isCriteriaDisplay()) {
+      this.criteriaInfos = this.criteriaService.getCriteriaStyle(this.selectedObs);
+    }
   }
 
   sendMail() {
