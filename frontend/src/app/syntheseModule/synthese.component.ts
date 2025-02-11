@@ -10,7 +10,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 
-import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
+import { EventDisplayCriteria, SyntheseCriteriaService } from './services/criteria.service';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
@@ -27,6 +27,7 @@ export class SyntheseComponent implements OnInit {
   private noGeomMessage: boolean;
 
   public isSearchBarReduced = false;
+  private criteriaByFeature: Set<any>;
 
   constructor(
     public config: ConfigService,
@@ -39,19 +40,15 @@ export class SyntheseComponent implements OnInit {
     private route: ActivatedRoute,
     private ngModal: NgbModal,
     private changeDetector: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private criteriaService: SyntheseCriteriaService
   ) {}
 
   ngOnInit() {
-    this.formService.selectors = this.formService.selectors
-      .set('limit', this.config.SYNTHESE.NB_LAST_OBS)
-      .set(
-        'format',
-        this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
-          this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
-          ? 'grouped_geom_by_areas'
-          : 'grouped_geom'
-      );
+    this.formService.selectors = this.formService.selectors.set(
+      'limit',
+      this.config.SYNTHESE.NB_LAST_OBS
+    );
 
     this.route.queryParamMap.subscribe((params) => {
       if (params.get('id_dataset')) {
@@ -106,6 +103,7 @@ export class SyntheseComponent implements OnInit {
 
     this.searchService.getSyntheseData(formParams, this.formService.selectors).subscribe(
       (data) => {
+        this.syntheseStore.setData(this.getCurrentStoreType(), data);
         this.parseGeoJson(data);
         this.displayMessageLimitNumberObservationsReached(formParams);
         this.searchService.dataLoaded = true;
@@ -119,7 +117,7 @@ export class SyntheseComponent implements OnInit {
   }
 
   private parseGeoJson(rawGeojson) {
-    this.initializeStores(rawGeojson);
+    this.initializeStores();
 
     let geojson = cloneDeep(rawGeojson);
     geojson.features.forEach((feature) => {
@@ -128,11 +126,15 @@ export class SyntheseComponent implements OnInit {
 
       feature.properties.observations.forEach((obs) => {
         this.extractIds(obs);
+        this.extractCriteria(obs);
         this.addObservationToDataTable(cloneDeep(obs));
       });
 
       // WARNING: needs to return the updated object here !
       feature.properties.observations = this.buildObservationsProperty();
+
+      // Store map display criteria values
+      this.storeCriteriaValues(feature);
     });
 
     this.displayMessageGeomAbsence();
@@ -140,16 +142,15 @@ export class SyntheseComponent implements OnInit {
     this.mapListService.geojsonData = geojson;
   }
 
-  private initializeStores(rawGeojson) {
-    this.syntheseStore.clearData();
-    this.syntheseStore.setData(this.getCurrentStoreType(), rawGeojson);
+  private initializeStores() {
     this.mapListService.idName = 'id_synthese';
     this.mapListService.tableData = [];
     this.noGeomMessage = false;
+    this.criteriaByFeature = new Set();
   }
 
   private getCurrentStoreType() {
-    return this.formService.selectors.get('format') == 'grouped_geom_by_areas' ? 'grid' : 'point';
+    return this.criteriaService.getCurrentCode();
   }
 
   private extractIds(observation) {
@@ -165,11 +166,30 @@ export class SyntheseComponent implements OnInit {
     }
   }
 
+  private extractCriteria(observation) {
+    if (this.criteriaService.isCriteriaDisplay()) {
+      const criteriaField = this.criteriaService.getCurrentField();
+      if (observation[criteriaField]) {
+        const criteriaValue = observation[criteriaField];
+        if (this.criteriaByFeature && this.criteriaByFeature.has(criteriaValue) === false) {
+          this.criteriaByFeature.add(criteriaValue);
+        }
+      }
+    }
+  }
+
   private addObservationToDataTable(observation) {
     if (observation['id_synthese']) {
       if (this.mapListService.tableData.includes(observation.id_synthese) === false) {
         this.mapListService.tableData.push(observation);
       }
+    }
+  }
+
+  private storeCriteriaValues(feature) {
+    if (this.criteriaByFeature && this.criteriaByFeature.size > 0) {
+      const criteriaField = this.criteriaService.getCurrentField();
+      feature.properties.observations[criteriaField] = Array.from(this.criteriaByFeature);
     }
   }
 
@@ -215,12 +235,13 @@ export class SyntheseComponent implements OnInit {
     });
   }
 
-  fetchOrRenderData(mapDisplayType: EventToggle) {
-    // If the form has change reload data else load data from cache if already loaded
-    if (this.formService.searchForm.dirty || this.syntheseStore.hasData(mapDisplayType) === false) {
+  fetchOrRenderData(event: EventDisplayCriteria) {
+    // if the form has change reload data
+    // else load data from cache if already loaded
+    if (this.formService.searchForm.dirty || this.syntheseStore.hasData(event.name) === false) {
       this.loadData();
     } else {
-      let storedData = this.syntheseStore.getData(mapDisplayType);
+      let storedData = this.syntheseStore.getData(event.name);
       this.parseGeoJson(storedData);
     }
   }
@@ -228,7 +249,7 @@ export class SyntheseComponent implements OnInit {
   onSearchEvent() {
     // Remove limit
     this.formService.selectors = this.formService.selectors.delete('limit');
-    // On search button click, clean cache and call loadAndStoreData
+    // By clicking the search button, clean the cache and call the data loading
     this.syntheseStore.clearData();
     this.loadData();
   }

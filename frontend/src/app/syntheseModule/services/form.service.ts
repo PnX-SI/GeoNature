@@ -11,6 +11,7 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
 import { ConfigService } from '@geonature/services/config.service';
 
+
 @Injectable()
 export class SyntheseFormService {
   public searchForm: UntypedFormGroup;
