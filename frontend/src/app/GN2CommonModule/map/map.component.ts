@@ -155,7 +155,7 @@ export class MapComponent implements OnInit {
     L.control.zoom({ position: 'topright' }).addTo(this.map);
 
     // SCALE
-    L.control.scale().addTo(this.map);
+    L.control.scale({imperial: false}).addTo(this.map);
 
     //  GEOLOCATION
     if (this.geolocation && this.config.MAPCONFIG.GEOLOCATION) {
