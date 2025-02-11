@@ -130,7 +130,15 @@ export class MapComponent implements OnInit {
     this.map = map;
     (map as any)._onResize();
 
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    // --- MAP CONTROLS
+    // ZOOM CONTROL
+    L.control.zoom({ position: 'topright' }).addTo(this.map);
+
+    // SCALE
+    L.control.scale({imperial: false}).addTo(this.map);
+
+    // --- LAYERS CONTROL
+    // Baselayers
     const baseControl = {};
     const BASEMAP = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.BASEMAP));
 
@@ -153,7 +161,6 @@ export class MapComponent implements OnInit {
     });
     this.mapService.layerControl = L.control.layers(baseControl);
     this.mapService.layerControl.addTo(map);
-    L.control.scale().addTo(map);
 
     this.mapService.setMap(map);
     this.mapService.initializeLeafletDrawFeatureGroup();

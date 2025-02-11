@@ -64,13 +64,14 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.mapListService.onMapClik$.subscribe((id) => {
       this.resetSorting();
 
-      this.mapListService.tableData.map((e) => {
-        if (e.selected && !id.includes(e.id)) {
-          e.selected = false;
-        } else if (id.includes(e.id)) {
-          e.selected = true;
+      this.mapListService.tableData.map((row) => {
+        // mandatory to sort (each row must have a selected attr)
+        row.selected = false;
+        if (id.includes(row.id)) {
+          row.selected = true;
         }
       });
+
       let observations = this.mapListService.tableData.filter((e) => {
         return id.includes(e.id);
       });
