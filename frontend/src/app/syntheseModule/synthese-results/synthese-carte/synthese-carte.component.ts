@@ -3,24 +3,23 @@ import {
   OnInit,
   Input,
   AfterViewInit,
-  EventEmitter,
   OnChanges,
+  EventEmitter,
   Output,
   OnDestroy,
 } from '@angular/core';
+
 import { GeoJSON } from 'leaflet';
+import * as L from 'leaflet';
+
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import * as L from 'leaflet';
-import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 
-export type EventToggle = 'grid' | 'point';
+import { EventDisplayCriteria, SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
 
 @Component({
   selector: 'pnx-synthese-carte',
@@ -33,34 +32,14 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   public currentLeafletDrawCoord: any;
   public firstFileLayerMessage = true;
   public SYNTHESE_CONFIG = null;
-  public cluserOrSimpleFeatureGroup = null;
+  public clusterOrSimpleFeatureGroup = null;
 
-  private destroy$: Subject<boolean> = new Subject<boolean>();
-
-  private areasEnable;
-  private areasLegend;
+  public criteriaActivatedSubscription;
+  private mapLegend;
   private enableFitBounds = true;
-  private areasLabelSwitchBtn;
+
   public selectedLayers: Array<L.Layer> = [];
   public layersDict: object = {};
-
-  private originDefaultStyle = {
-    color: '#3388FF',
-    weight: 3,
-    fill: false,
-  };
-  private selectedDefaultStyle = {
-    color: '#FF0000',
-  };
-  private originAreasStyle = {
-    color: '#FFFFFF',
-    weight: 0.4,
-    fillOpacity: 0.8,
-  };
-  private selectedAreasStyle = {
-    color: '#FF0000',
-    weight: 3,
-  };
 
   private defaultIcon = new L.Icon({
     iconUrl: 'assets/images/default_marker.png',
@@ -81,24 +60,21 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   });
 
   @Input() inputSyntheseData: GeoJSON;
-  @Output() onAreasToggle = new EventEmitter<EventToggle>();
+  @Output() onAreasToggle = new EventEmitter<EventDisplayCriteria>();
 
   constructor(
     public mapListService: MapListService,
     private _ms: MapService,
     public formService: SyntheseFormService,
     private _commonService: CommonService,
-    private translateService: TranslateService,
-    public config: ConfigService
+    public config: ConfigService,
+    private criteriaService: SyntheseCriteriaService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
     // set a new featureGroup - cluster or not depending of the synthese config
-    this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+    this.clusterOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
       ? (L as any).markerClusterGroup()
       : new L.FeatureGroup();
-    this.areasEnable =
-      this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
-      this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
   }
 
   ngOnInit() {
@@ -106,18 +82,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.leafletDrawOptions.draw.circle = true;
     this.leafletDrawOptions.draw.polyline = false;
     this.leafletDrawOptions.edit.remove = true;
-    this.initializeFormWithMapParams();
-  }
-
-  private initializeFormWithMapParams() {
-    this.formService.searchForm.patchValue({
-      format: this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom',
-    });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -140,186 +104,87 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       }
     });
 
-    // add the featureGroup to the map
-    this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
+    // Add the featureGroup to the map
+    this.clusterOrSimpleFeatureGroup.addTo(this._ms.map);
 
-    // Handle areas button and legend
-    if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED) {
-      this.addAreasButton();
-      this.onLanguageChange();
-      if (this.areasEnable) {
-        this.addAreasLegend();
-      }
-    }
+    // Handle areas button, criteria list and legend
+    this.addCriteriaSelectionControl();
+    this.addCriteriaMapLegend();
+    this.subscribeToCriteriaActivated();
   }
 
-  private onLanguageChange() {
-    // don't forget to unsubscribe!
-    this.translateService.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((langChangeEvent: LangChangeEvent) => {
-        this.defineI18nMessages();
+  ngOnDestroy(): void {
+    this.criteriaActivatedSubscription.unsubscribe();
+  }
+
+  private addCriteriaSelectionControl() {
+    const onAddFunc = this.criteriaService.buildSelectionControl();
+
+    if (onAddFunc) {
+      const SelectionControl = L.Control.extend({
+        options: {
+          position: 'topright',
+        },
+        onAdd: onAddFunc,
       });
+
+      const map = this._ms.getMap();
+      map.addControl(new SelectionControl());
+    }
   }
 
-  private defineI18nMessages() {
-    // Define default messages for datatable
-    this.translateService
-      .get('Synthese.Map.AreasToggleBtn')
-      .subscribe((translatedTxt: string[]) => {
-        this.areasLabelSwitchBtn.innerText = translatedTxt;
+  private addCriteriaMapLegend() {
+    this.removeCriteriaMapLegend()
+    const onAddFunc = this.criteriaService.buildLegendControl();
+
+    if (onAddFunc) {
+      const LegendControl = L.Control.extend({
+        options: {
+          position: 'bottomright',
+        },
+        onAdd: onAddFunc,
       });
+
+      const map = this._ms.getMap();
+      this.mapLegend = new LegendControl();
+      this.mapLegend.addTo(map);
+    }
   }
 
-  addAreasButton() {
-    const LayerControl = L.Control.extend({
-      options: {
-        position: 'topright',
-      },
-      onAdd: (map) => {
-        let switchBtnContainer = L.DomUtil.create(
-          'div',
-          'leaflet-bar custom-control custom-switch leaflet-control-custom synthese-map-areas'
-        );
-
-        let switchBtn = L.DomUtil.create('input', 'custom-control-input', switchBtnContainer);
-        switchBtn.id = 'toggle-areas-btn';
-        switchBtn.type = 'checkbox';
-        switchBtn.checked = this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
-        switchBtn.onclick = () => {
-          this.areasEnable = switchBtn.checked;
-          this.formService.selectors = this.formService.selectors.set(
-            'format',
-            switchBtn.checked ? 'grouped_geom_by_areas' : 'grouped_geom'
-          );
-          this.onAreasToggle.emit(switchBtn.checked ? 'grid' : 'point');
-
-          // Show areas legend if areas toggle button is enable
-          if (this.areasEnable) {
-            this.addAreasLegend();
-          } else {
-            this.removeAreasLegend();
-            this.enableFitBounds = false;
-          }
-        };
-
-        this.areasLabelSwitchBtn = L.DomUtil.create(
-          'label',
-          'custom-control-label',
-          switchBtnContainer
-        );
-        this.areasLabelSwitchBtn.setAttribute('for', 'toggle-areas-btn');
-        this.areasLabelSwitchBtn.innerText = this.translateService.instant(
-          'Synthese.Map.AreasToggleBtn'
-        );
-
-        return switchBtnContainer;
-      },
-    });
-
-    const map = this._ms.getMap();
-    map.addControl(new LayerControl());
+  private removeCriteriaMapLegend() {
+    if (this.mapLegend) {
+      this.mapLegend.remove();
+    }
   }
 
-  private addAreasLegend() {
-    this.areasLegend = new (L.Control.extend({
-      options: { position: 'bottomright' },
-    }))();
-
-    const vm = this;
-    this.areasLegend.onAdd = (map) => {
-      let div = L.DomUtil.create('div', 'info legend');
-      let grades = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES']
-        .map((legendClass) => legendClass.min)
-        .reverse();
-      let labels = ["<strong> Nombre <br> d'observations </strong> <br>"];
-
-      // loop through our density intervals and generate a label with a colored square for each interval
-      for (var i = 0; i < grades.length; i++) {
-        labels.push(
-          '<i style="background:' +
-            vm.getColor(grades[i] + 1) +
-            '"></i> ' +
-            grades[i] +
-            (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+')
-        );
+  private subscribeToCriteriaActivated() {
+    this.criteriaActivatedSubscription = this.criteriaService.onCriteriaActivated.subscribe(
+      (displayCriteriaEvent) => {
+        this.onAreasToggle.emit(displayCriteriaEvent);
+        this.addCriteriaMapLegend();
       }
-      div.innerHTML = labels.join('<br>');
-
-      return div;
-    };
-
-    const map = this._ms.getMap();
-    this.areasLegend.addTo(map);
-  }
-
-  private removeAreasLegend() {
-    const map = this._ms.getMap();
-    this.areasLegend.remove(map);
-  }
-
-  layerDictCache(idSyntheseList, layer) {
-    for (let id of idSyntheseList) {
-      id in this.layersDict ? this.layersDict[id].push(layer) : (this.layersDict[id] = [layer]);
-    }
-  }
-
-  layerEvent(feature, layer, idSyntheseIds) {
-    layer.on({
-      click: (e) => {
-        this.toggleStyleFromMap(feature, layer);
-        this.mapListService.mapSelected.next(idSyntheseIds);
-        if (this.areasEnable) {
-          this.bindAreasPopup(layer, idSyntheseIds);
-        }
-      },
-    });
-  }
-
-  onEachFeature(feature, layer) {
-    // make a cache a layers in a dict with id key
-    this.layerDictCache(feature.properties.observations.id_synthese, layer);
-    // set style
-    if (this.areasEnable) {
-      this.setAreasStyle(layer, feature.properties.observations.id_synthese.length);
-    }
-    this.layerEvent(feature, layer, feature.properties.observations.id_synthese);
-  }
-
-  /**
-   *
-   */
-  clusterCountOverrideFn(cluster) {
-    const obsChildCount = cluster
-      .getAllChildMarkers()
-      .map((layer) => {
-        return layer.nb_obs;
-      })
-      .reduce((previous, next) => previous + next);
-    const clusterSize = obsChildCount > 100 ? 'large' : obsChildCount > 10 ? 'medium' : 'small';
-    return L.divIcon({
-      html: `<div><span>${obsChildCount}</span></div>`,
-      className: `marker-cluster marker-cluster-${clusterSize}`,
-      iconSize: L.point(40, 40),
-    });
+    );
   }
 
   ngOnChanges(change) {
-    // clear layerDict cache
+    // Clear layerDict cache
     this.layersDict = {};
-    // on change delete the previous layer and load the new ones from the geojson data send by the API
-    // here we don't use geojson component for performance reasons
+
+    // On change delete the previous layer and load the new ones from the geojson data send by the API.
+    // Here we don't use geojson component for performance reasons.
     if (this._ms.map) {
-      // remove the whole featureGroup to avoid iterate over all its layer
-      this._ms.map.removeLayer(this.cluserOrSimpleFeatureGroup);
+      // Remove the whole featureGroup to avoid iterate over all its layer
+      this._ms.map.removeLayer(this.clusterOrSimpleFeatureGroup);
     }
+
     if (change && change.inputSyntheseData.currentValue) {
-      // regenerate the featuregroup
-      this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+      // Regenerate the featuregroup
+      this.clusterOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup({
-            iconCreateFunction: this.clusterCountOverrideFn,
+            iconCreateFunction: this.overrideClusterCount,
           })
         : new L.FeatureGroup();
+
       const geojsonLayer = new L.GeoJSON(change.inputSyntheseData.currentValue, {
         pointToLayer: (feature, latlng) => {
           const circleMarker = L.circleMarker(latlng);
@@ -334,16 +199,18 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
           return circleMarker;
         },
+        style: this.styleFeature.bind(this),
         onEachFeature: this.onEachFeature.bind(this),
       });
-      this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
-      this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
-      // zoom on extend after first search
+      this.clusterOrSimpleFeatureGroup.addLayer(geojsonLayer);
+      this._ms.map.addLayer(this.clusterOrSimpleFeatureGroup);
+
+      // Zoom on extend after first search
       if (change.inputSyntheseData.previousValue !== undefined) {
         try {
-          // try to fit bound on layer. catch error if no layer in feature group
+          // Try to fit bound on layer. catch error if no layer in feature group
           if (this.enableFitBounds) {
-            this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+            this._ms.map.fitBounds(this.clusterOrSimpleFeatureGroup.getBounds());
           } else {
             this.enableFitBounds = true;
           }
@@ -352,57 +219,90 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  private setAreasStyle(layer, obsNbr) {
-    this.originAreasStyle['fillColor'] = this.getColor(obsNbr);
-    layer.setStyle(this.originAreasStyle);
-    delete this.originAreasStyle['fillColor'];
+  overrideClusterCount(cluster) {
+    const obsChildCount = cluster
+      .getAllChildMarkers()
+      .map((layer) => {
+        return layer.nb_obs;
+      })
+      .reduce((previous, next) => previous + next);
+    const clusterSize = obsChildCount > 100 ? 'large' : obsChildCount > 10 ? 'medium' : 'small';
+    return L.divIcon({
+      html: `<div><span>${obsChildCount}</span></div>`,
+      className: `marker-cluster marker-cluster-${clusterSize}`,
+      iconSize: L.point(40, 40),
+    });
   }
 
-  private getColor(obsNbr) {
-    let classesNbr = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES'].length;
-    let lastIndex = classesNbr - 1;
-    for (let i = 0; i < classesNbr; i++) {
-      let legendClass = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES'][i];
-      if (i != lastIndex) {
-        if (obsNbr > legendClass.min) {
-          return legendClass.color;
-        }
-      } else {
-        return legendClass.color;
-      }
+  onEachFeature(feature, layer) {
+    // make a cache a layers in a dict with id key
+    // TODO: change name, it's a observations cache used by synthese list and map !
+    this.layerDictCache(feature.properties.observations, layer);
+
+    this.layerEvent(layer, feature.properties.observations);
+  }
+
+  layerDictCache(observations, layer) {
+    for (let id of observations.id_synthese) {
+      id in this.layersDict ? this.layersDict[id].push(layer) : (this.layersDict[id] = [layer]);
     }
   }
 
-  toggleStyleFromMap(feature, layer) {
-    // restore initial style
-    let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
-    let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
+  layerEvent(layer, observations) {
+    layer.on({
+      click: (e) => {
+        this.toggleStyleFromMap(observations, layer);
+        const idSyntheseIds = observations.id_synthese;
+        this.mapListService.mapSelected.next(idSyntheseIds);
+        if (this.criteriaService.isAreasAggDisplay()) {
+          this.bindAreasPopup(layer, idSyntheseIds);
+        }
+      },
+    });
+  }
 
+  private styleFeature(feature) {
+    // set style
+    if (this.criteriaService.isAreasAggDisplay()) {
+      return {
+        ...this.criteriaService.originAreasStyle,
+        ...{
+          fillColor: this.criteriaService.getColor(
+            feature.properties.observations.id_synthese.length
+          ),
+        },
+      };
+    } else if (this.criteriaService.isDefaultDisplay() === false) {
+      return this.criteriaService.getCriteriaStyle(feature.properties.observations);
+    }
+  }
+
+  private toggleStyleFromMap(observations, layer) {
+    // Restore initial style
     if (this.selectedLayers.length > 0) {
       this.selectedLayers.forEach((layer) => {
-        (layer as L.GeoJSON).setStyle(originStyle);
+        (layer as L.GeoJSON).setStyle(this.criteriaService.getOriginStyle(layer));
       });
     }
-    // set selected style
 
-    layer.setStyle(selectedStyle);
+    // Set selected style
+    layer.setStyle(this.criteriaService.getSelectedStyle());
     this.selectedLayers = [layer];
   }
 
   private toggleStyleFromList(currentSelectedLayers) {
-    // restore inital style
-    let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
+    // Restore inital style
     if (this.selectedLayers.length > 0) {
       this.selectedLayers.forEach((layer) => {
-        (layer as L.GeoJSON).setStyle(originStyle);
+        (layer as L.GeoJSON).setStyle(this.criteriaService.getOriginStyle(layer));
       });
     }
+
     // Apply new selected layer
     this.selectedLayers = currentSelectedLayers;
 
-    let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
     this.selectedLayers.forEach((layer) => {
-      (layer as L.GeoJSON).setStyle(selectedStyle);
+      (layer as L.GeoJSON).setStyle(this.criteriaService.getSelectedStyle());
     });
   }
 
