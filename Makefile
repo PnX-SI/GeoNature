@@ -162,7 +162,7 @@ test_frontend:
 	cd frontend && source ~/.nvm/nvm.sh && nvm use && npm run cypress:run
 
 lint_frontend:
-	cd frontend && source ~/.nvm/nvm.sh && nvm use && npm run format
+	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run format
 
 lint_backend:
 	source backend/venv/bin/activate && black .
