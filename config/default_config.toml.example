@@ -21,7 +21,7 @@ SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monpor
 SQLALCHEMY_TRACK_MODIFICATIONS = true
 
 # Ce paramètre permet de configurer la connexion de SQLAlchemy avec la base de données
-# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine` 
+# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine`
 # de SQLAlchemy : https://docs.sqlalchemy.org/en/14/core/engines.html#sqlalchemy.create_engine
 SQLALCHEMY_ENGINE_OPTIONS = {}
 
@@ -438,6 +438,111 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         { min = 1, color = "#FED976" },
         { min = 0, color = "#FFEDA0" }
     ]
+    # Liste des critères d'affichage des observations sur la carte de la Synthese
+    # Choix des couleurs pour la carto : https://colorbrewer2.org/
+    # Ex.:
+    # Add display criteria
+    [SYNTHESE.MAP_CRITERIA_LIST.precision]
+        label = "Précision localisation"
+        type = "classes"
+        field = "precision"
+        default = false
+        [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+            value = 250
+            label = "Supérieur à 250m"
+            description = "Observations dont la précision est supérieure ou égale à 250m."
+            color = "#ff8faa"
+            icon = { name="radio_button_unchecked", color="white", font="material-symbols-outlined" }
+        [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+            value = 25
+            label = "Entre 25 et 250m"
+            description = "Observations dont la précision est supérieure ou égale à 25m et inférieure à 250m."
+            color = "#f95e9c"
+            icon = { name="radio_button_checked", color="white", font="material-symbols-outlined" }
+        [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+            value = 0
+            label = "Inférieur à 25m"
+            description = "Observations dont la précision est supérieure ou égale à 0m et inférieure à 25m."
+            color = "#b000bb"
+            icon = { name="gps_fixed", color="white", font="material-symbols-outlined" }
+        [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+            value = "*"
+            description = "Observations sur une même géométrie avec des précisions différentes."
+            color = "#e6dc36"
+        [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+            value = "?"
+            description = "Observations dont la valeur de précision n'est pas reconnue."
+            color = "#dd102bcc"
+    [SYNTHESE.MAP_CRITERIA_LIST.period]
+        label = "Périodes"
+        type = "dates"
+        field = "date_max"
+        default = false
+        [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
+            value = "1999-12-31T00:00:00"
+            label = "Après 2000"
+            description = "Observations dont la date de fin est égale ou supérieure au 1er janvier 2000."
+            color = "#225ea8"
+            icon = { name="fa-angle-double-right", color="white", font="fa" }
+        [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
+            value = "0000-01-01T00:00:00"
+            label = "Avant 2000"
+            description = "Observations dont la date de fin est avant le 1er janvier 2000."
+            color = "#2ca25f"
+            icon = { name="fa-angle-double-left", color="white", font="fa" }
+        [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
+            value = "*"
+            description = "Observations sur une même géométrie avec des périodes de dates d'observation différentes."
+            color = "#e6dc36"
+    [SYNTHESE.MAP_CRITERIA_LIST.valid_status]
+        label = "Status de validation"
+        type = "nomenclatures"
+        field = "id_nomenclature_valid_status"
+        mnemonic = "STATUT_VALID"
+        # Disable temporary this criterion with "activate" field:
+        activate = false
+        default = false
+        [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+            value = ["1", "2"]
+            label = "Probable"
+            description = "Certain à probable"
+            color = "#44ce1b"
+            icon = { name = "fa-check-square", font = "fa", color = "white" }
+        [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+            value = "3"
+            label = "Douteux"
+            color = "#f2a134"
+            icon = { name = "fa-exclamation-triangle", font = "fa" }
+        [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+            value = "4"
+            label =  "Invalide"
+            color = "#e51f1f"
+            icon = { name = "fa-minus-circle", font = "fa", color = "#FFFFFF" }
+        [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+            value = ["5", "6", "0"]
+            label = "Indéterminé"
+            description = "Non réalisable, Inconnu ou en attente de validation"
+            color = "#f3f6f4"
+            icon = { name = "fa-question-circle", font = "fa", color = "white" }
+    [SYNTHESE.MAP_CRITERIA_LIST.observation_status]
+        label = "Statut de l'observation"
+        type = "nomenclatures"
+        mnemonic = "STATUT_OBS"
+        field = "id_nomenclature_observation_status"
+        default = true
+        [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+            value = "Pr"
+            label = "Présent"
+            color = "#44ce1b"
+        [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+            value = "No"
+            label = "Non observé"
+            color = "#e51f1f"
+        [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+            value = "NSP"
+            label = "Non renseigné"
+            color = "#f3f6f4"
+
 
     [SYNTHESE.DEFAULT_FILTERS]
         # Tous les statuts de validation sauf invalide '4'

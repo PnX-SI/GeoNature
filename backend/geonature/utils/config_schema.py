@@ -3,7 +3,7 @@ Global GeoNature settings definitions and default values.
 Never edit this file, but you can override some settings in you own config/default_config.toml file.
 """
 
-import os
+import os, random, colorsys
 import warnings
 
 from warnings import warn
@@ -299,6 +299,89 @@ class TaxonSheet(Schema):
     ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
 
 
+class MapCriteriaIcon(Schema):
+    name = fields.String(required=True)
+    font = fields.String(required=True)
+    color = fields.String(load_default="white")
+
+
+class MapCriteriaValue(Schema):
+    value = fields.Raw(required=True)
+    label = fields.String()
+    description = fields.String()
+    color = fields.String()
+    icon = fields.Nested(MapCriteriaIcon)
+
+
+class MapCriteria(Schema):
+    label = fields.String(required=True)
+    type = fields.String(required=True, validate=OneOf(["nomenclatures", "classes", "dates"]))
+    field = fields.String(required=True)
+    mnemonic = fields.String()
+    activate = fields.Boolean(load_default=True)
+    default = fields.Boolean(load_default=False)
+    values = fields.List(fields.Nested(MapCriteriaValue), required=True)
+
+    @post_load()
+    def add_default_values(self, data, **kwargs):
+        """
+        Complete unknown and several values, plus add default color and label if not set.
+        """
+        has_value_several = False
+        default_item_several = {
+            "value": "*",
+            "label": "",  # Left blank to be replaced by i18n value in frontend
+            "color": "#8c8c8c",  # Grey
+            "icon": {"name": "fa-asterisk", "font": "fa", "color": " white"},
+        }
+
+        has_value_unknown = False
+        default_item_unknown = {
+            "value": "?",
+            "label": "",  # Left blank to be replaced by i18n value in frontend
+            "color": "#ec4300",  # Orange
+            "icon": {"name": "fa-question", "font": "fa", "color": " white"},
+        }
+
+        for idx, item in enumerate(data["values"]):
+            if item["value"] == "*":
+                has_value_several = True
+                default_item = default_item_several
+            elif item["value"] == "?":
+                has_value_unknown = True
+                default_item = default_item_unknown
+            else:
+                default_item = {
+                    "label": str(item["value"]),
+                    "description": None,
+                    "color": self.get_random_color(idx, len(data["values"])),
+                    "icon": None,
+                }
+            data["values"][idx] = {**default_item, **item}
+
+        if has_value_several == False:
+            data["values"].append(default_item_several)
+
+        if has_value_unknown == False:
+            data["values"].append(default_item_unknown)
+
+        return data
+
+    def get_random_color(self, idx, nbr):
+        # Use HLS to obtain human eyes distinct colors.
+        # Distribute (idx) each color proportionally (nbr) around the color wheel between 0 and 360°.
+        # Avoid "orange" color used by "Other values" entry => auto add +40°.
+        step = int((360 - 40) / nbr)
+        start = (step * idx) + 40
+        end = step * (idx + 1) + 40
+        h = random.randrange(start, end) / 360
+        l = random.randrange(40, 60) / 100
+        s = random.randrange(90, 100) / 100
+        (r, g, b) = colorsys.hls_to_rgb(h, l, s)
+        hex = "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
+        return hex
+
+
 class Synthese(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - SEARCH FORM
@@ -452,6 +535,10 @@ class Synthese(Schema):
     )
     # Activate the blurring of sensitive observations. Otherwise, exclude them
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
+    # List of display criteria for the Synthese map
+    MAP_CRITERIA_LIST = fields.Dict(
+        keys=fields.String(), values=fields.Nested(MapCriteria), load_default=None
+    )
 
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET

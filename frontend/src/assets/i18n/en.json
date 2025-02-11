@@ -381,7 +381,13 @@
       }
     },
     "Map": {
-      "AreasToggleBtn": "Grid cells"
+      "AreasToggleBtn": "Grid cells",
+      "SeveralValues": "Several values",
+      "UnknownValue": "Other values",
+      "Criteria": {
+        "default": "Default display",
+        "area-aggregation": "Density of observations"
+      }
     }
   },
   "Media": {
