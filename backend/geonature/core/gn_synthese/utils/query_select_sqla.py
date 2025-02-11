@@ -19,6 +19,7 @@ from sqlalchemy.orm import aliased
 from werkzeug.exceptions import BadRequest
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
+
 from geonature.utils.env import DB
 
 from geonature.core.gn_commons.models import TModules
@@ -101,21 +102,14 @@ class SyntheseQuery:
                     e=e, model=model
                 )
             )
-        if geom_column:
-            try:
-                schema = model.__table__.schema
-                table_name = model.__tablename__
-                self.srid = DB.session.scalar(
-                    select(
-                        func.Find_SRID(
-                            schema,
-                            table_name,
-                            self.geom_column,
-                        )
-                    )
+
+        self.srid = DB.session.scalar(
+            select(
+                func.Find_SRID(
+                    self.geom_column.table.schema, self.geom_column.table.name, self.geom_column.key
                 )
-            except:
-                self.srid = 4326
+            )
+        )
 
     def add_join(self, right_table, right_column, left_column, join_type="right"):
         if self.first:
