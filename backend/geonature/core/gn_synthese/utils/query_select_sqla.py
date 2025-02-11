@@ -103,6 +103,14 @@ class SyntheseQuery:
                 )
             )
 
+        self.srid = DB.session.scalar(
+            select(
+                func.Find_SRID(
+                    self.geom_column.table.schema, self.geom_column.table.name, self.geom_column.key
+                )
+            )
+        )
+
     def add_join(self, right_table, right_column, left_column, join_type="right"):
         if self.first:
             if join_type == "right":
@@ -437,12 +445,18 @@ class SyntheseQuery:
             geo_filters = []
             for feature in features:
                 geom_wkb = from_shape(shape(feature["geometry"]), srid=4326)
+                if self.srid != 4326:
+                    geom_wkb = func.ST_Transform(
+                        func.ST_GeogFromWKB(geom_wkb),
+                        self.srid,
+                    )
+                geom_wkb = func.ST_GeogFromWKB(geom_wkb)
                 # if the geom is a circle
                 if "radius" in feature["properties"]:
                     radius = feature["properties"]["radius"]
                     geo_filter = func.ST_DWithin(
                         func.ST_GeogFromWKB(self.geom_column),
-                        func.ST_GeogFromWKB(geom_wkb),
+                        geom_wkb,
                         radius,
                     )
                 else:
@@ -479,9 +493,31 @@ class SyntheseQuery:
             if colname.startswith("area"):
                 if self.geom_column.class_ != self.model:
                     l_areas_cte = LAreas.query.filter(LAreas.id_area.in_(value)).cte("area_filter")
-                    self.query = self.query.where(
-                        func.ST_Intersects(self.geom_column, l_areas_cte.c.geom)
-                    )
+                    if self.srid != 4326:
+                        srid_l_areas = DB.session.scalar(
+                            select(
+                                func.Find_SRID(
+                                    LAreas.__table__.schema, LAreas.__table__.name, "geom"
+                                )
+                            )
+                        )
+                        if self.srid != srid_l_areas:
+                            self.query = self.query.where(
+                                func.ST_Intersects(
+                                    self.geom_column,
+                                    func.ST_Transform(l_areas_cte.c.geom, self.srid),
+                                )
+                            )
+
+                        else:
+                            self.query = self.query.where(
+                                func.ST_Intersects(self.geom_column, l_areas_cte.c.geom)
+                            )
+
+                    else:
+                        self.query = self.query.where(
+                            func.ST_Intersects(self.geom_column, l_areas_cte.c.geom_4326)
+                        )
                 else:
                     cor_area_synthese_alias = aliased(CorAreaSynthese)
                     self.add_join(
