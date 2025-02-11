@@ -13,7 +13,7 @@
   [sorts]="[{ prop: sort.sort, dir: sort.orderby }]"
   (sort)="onColumnSort($event)"
 >
-  <!-- <ngx-datatable-column
+  <ngx-datatable-column
     [maxWidth]="5"
     [resizeable]="false"
     [sortable]="false"
@@ -26,17 +26,17 @@
     >
       <button
         class="btn btn-outline-shadow btn-no-padding btn-ghost"
-        (click)="navigateToValidations(row.id_synthese)"
+        (click)="navigateToValidations(row)"
       >
         <i
           #iElement
-          [matTooltip]="'Voir le fil de discussion lié à la synthese id : ' + row.id_synthese"
+          [matTooltip]="'Voir les informations de validations liées à l\'observation : ' + row.id_synthese"
           class="fa fa-info-circle"
           aria-hidden="true "
         ></i>
       </button>
     </ng-template>
-  </ngx-datatable-column> -->
+  </ngx-datatable-column>
   <ngx-datatable-column
     width="150"
     [prop]="PROP_CREATION_DATE"
@@ -69,7 +69,7 @@
   </ngx-datatable-column>
   <ngx-datatable-column
     [prop]="PROP_VALIDATION_STATUS"
-    width="150"
+    width="300"
     name="Statut de validation"
     [sortable]="true"
     [resizeable]="true"
@@ -84,7 +84,7 @@
   </ngx-datatable-column>
   <ngx-datatable-column
     [prop]="PROP_VALIDATION_STATUS"
-    width="600"
+    width="500"
     height="100"
     name="Message de validation"
     [sortable]="true"
@@ -104,7 +104,7 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    width="600"
+    width="500"
     [prop]="PROP_OBSERVATION"
     name="Observation"
     [sortable]="false"

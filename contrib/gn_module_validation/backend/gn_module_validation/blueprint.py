@@ -36,53 +36,71 @@ def get_synthese_data(scope):
     Params must have same synthese fields names
 
     .. :quickref: Validation;
-
     Parameters:
     ------------
-
+    :query fields: Permet de récupérer des champs suplémentaires de la
+        table "gn_synthese.synthese" dans la réponse. Séparer les noms des champs par
+        des virgules.
+    :query str format: str<'json', 'geojson'>
     Returns
     -------
     FeatureCollection
     """
 
-    enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
-
     # Déplacer les fields en param de la route
-    # Conserver la config
-    # Non renseigné: comportement actuel
-    # Fields renseigné: remplace (pas par défault)
+    # - Conserver la config
+    # - Non renseigné: comportement actuel
+    # - Fields renseigné: remplace (pas par défault)
 
     # Retour avec ou sans géométrie:
     # mettre un paramètre de format (par défault geojson) (possible json)
 
-    fields = {
-        "id_synthese",
-        "unique_id_sinp",
-        "entity_source_pk_value",
-        "meta_update_date",
-        "id_nomenclature_valid_status",
-        "nomenclature_valid_status.cd_nomenclature",
-        "nomenclature_valid_status.mnemonique",
-        "nomenclature_valid_status.label_default",
-        "last_validation.validation_date",
-        "last_validation.validation_auto",
-        "taxref.cd_nom",
-        "taxref.nom_vern",
-        "taxref.lb_nom",
-        "taxref.nom_vern_or_lb_nom",
-        "dataset.validable",
-    }
+    enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
 
-    if enable_profile:
-        fields |= {
-            "profile.score",
-            "profile.valid_phenology",
-            "profile.valid_altitude",
-            "profile.valid_distribution",
-        }
+    # Pagination parameter
+    limit = request.args.get("limit", 1, int)
+    page = request.args.get("page", 2, int)
 
-    fields |= {col["column_name"] for col in blueprint.config["COLUMN_LIST"]}
+    # Format: output format
+    format = request.args.get("format", "geojson")
+    if format not in ["json", "geojson"]:
+        raise BadRequest("Invalid format parameter")
 
+    # Fields: Setup fields as route parameters with default behavior
+    fields_as_str = request.args.get("fields", None)
+    fields = set()
+    if fields_as_str:
+        fields.update({field for field in fields_as_str.split(",")})
+    else:
+        fields.update({
+            "id_synthese",
+            "unique_id_sinp",
+            "entity_source_pk_value",
+            "meta_update_date",
+            "id_nomenclature_valid_status",
+            "nomenclature_valid_status.cd_nomenclature",
+            "nomenclature_valid_status.mnemonique",
+            "nomenclature_valid_status.label_default",
+            "last_validation.validation_date",
+            "last_validation.validation_auto",
+            "taxref.cd_nom",
+            "taxref.nom_vern",
+            "taxref.lb_nom",
+            "taxref.nom_vern_or_lb_nom",
+            "dataset.validable",
+        })
+        if enable_profile:
+            fields.update({
+                "profile.score",
+                "profile.valid_phenology",
+                "profile.valid_altitude",
+                "profile.valid_distribution",
+            })
+
+    # Fields: add config parameters
+    fields.update({col["column_name"] for col in blueprint.config["COLUMN_LIST"]})
+
+    # filters
     filters = (request.json if request.is_json else None) or {}
 
     result_limit = filters.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
@@ -180,8 +198,8 @@ def get_synthese_data(scope):
             filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
         )
         .filter_query_all_filters(g.current_user, scope)
-        .limit(1)
-        .offset(2)
+        .limit(limit)
+        .offset(page)
     )
 
     # Step 3: Construct Synthese model from query result
@@ -213,8 +231,20 @@ def get_synthese_data(scope):
     # 3 serializeQuery(db.session.execute(query).all(), query.column_descriptions)
     # 2 Sinon: schema à la volée get_marshmallow_schema
     # 1 préférence pour as_dict
-
-    return jsonify(query.as_geofeaturecollection(fields=fields))
+    if format == "geojson":
+        return jsonify(query.as_geofeaturecollection(fields=fields))
+    elif format == "json":
+        return jsonify(
+            {
+                "items": [
+                    item.as_dict(fields=fields)
+                    for item in db.session.execute(query).scalars().all()
+                ],
+                "total": 8,
+                "limit": limit,
+                "page": page,
+            }
+        )
 
 
 @blueprint.route("/statusNames", methods=["GET"])

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -16,6 +15,27 @@ interface SortingItem {
   orderby: string;
 }
 
+interface ValidationItemRaw {
+  id_synthese: number;
+  date_max: string;
+  date_min: string;
+  observers: string;
+  nomenclature_valid_status: { label_default: string; [key: string]: string };
+  validations: {
+    id_validation: number;
+    validation_comment: string;
+    validation_date: string;
+  }[];
+}
+interface ValidationItem {
+  id_synthese: number;
+  observation: string;
+  id_validation: number;
+  validation_label: string;
+  validation_comment: string;
+  validation_date: string;
+}
+
 @Component({
   standalone: true,
   selector: 'pnx-home-validations-table',
@@ -25,10 +45,10 @@ interface SortingItem {
   providers: [HomeValidationsService],
 })
 export class HomeValidationsTableComponent implements OnInit, OnDestroy {
-  readonly PROP_CREATION_DATE = 'creation_date';
-  readonly PROP_USER = 'user.nom_complet';
-  readonly PROP_VALIDATION_STATUS = 'validation_status';
-  readonly PROP_VALIDATION_MESSAGE = 'validation_message';
+  readonly PROP_CREATION_DATE = 'validation_date';
+  readonly PROP_USER = 'id_synthese';
+  readonly PROP_VALIDATION_STATUS = 'validation_label';
+  readonly PROP_VALIDATION_MESSAGE = 'validation_comment';
   readonly PROP_OBSERVATION = 'observation';
 
   readonly DEFAULT_PAGINATION: Pagination = {
@@ -41,7 +61,8 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
     orderby: this.PROP_CREATION_DATE,
   };
 
-  validations = [];
+  validations: ValidationItem[] = [];
+  // TODO: update this
   pagination: Pagination = this.DEFAULT_PAGINATION;
   sort: SortingItem = this.DEFAULT_SORTING;
 
@@ -59,12 +80,9 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
     private _router: Router,
     // private _syntheseApi: SyntheseDataService
     private _homeValidations: HomeValidationsService
-  ) {
-    console.log('fetccccch');
-  }
+  ) {}
 
   ngOnInit() {
-    console.log('fetching validations');
     this._fetchValidations();
   }
 
@@ -87,16 +105,22 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
     this._fetchValidations();
   }
 
-  // navigateToValidations(id_synthese: number) {
-  //   this._router.navigate(this._homeValidations.computeValidationsRedirectionUrl(id_synthese));
-  // }
+  navigateToValidations(validation: ValidationItem) {
+    this._router.navigate(
+      this._homeValidations.computeValidationsRedirectionUrl(validation.id_synthese)
+    );
+  }
 
   renderDate(date: string): string {
     return new Date(date).toLocaleDateString();
   }
 
   private _fetchValidations() {
-    const params = this._buildQueryParams();
+    const params = {
+      fields:
+        'id_synthese,nom_cite,observers,date_min,date_max,validations,last_validation,nomenclature_valid_status',
+      format: 'json',
+    };
     this._homeValidations
       .fetchValidations(params)
       .pipe(takeUntil(this.destroy$))
@@ -104,24 +128,11 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
         this._setValidations(validations);
       });
   }
-
-  private _buildQueryParams(): URLSearchParams {
-    const params = new URLSearchParams();
-    // params.set('type', 'discussion');
-    // params.set('sort', this.sort.sort);
-    // params.set('orderby', this.sort.orderby);
-    // params.set('page', this.pagination.currentPage.toString());
-    // params.set('per_page', this.pagination.perPage.toString());
-    // params.set('my_validations', this._myValidationsOnly.toString());
-    return params;
-  }
-
   // //////////////////////////////////////////////////////
   // Validation process
   // //////////////////////////////////////////////////////
 
   private _setValidations(validations: ValidationCollection) {
-    console.log(validations);
     this.validations = this._transformValidations(validations.items);
     this.pagination = {
       total: validations.total,
@@ -130,19 +141,23 @@ export class HomeValidationsTableComponent implements OnInit, OnDestroy {
     };
   }
 
-  private _transformValidations(items: any[]): any[] {
-    return items.map((item) => ({
-      ...item,
-      observation: this._formatObservation(item.synthese),
+  private _transformValidations(validations: ValidationItemRaw[]): ValidationItem[] {
+    return validations.map((validation: ValidationItemRaw) => ({
+      id_synthese: validation.id_synthese,
+      validation_label: validation.nomenclature_valid_status.label_default ?? '',
+      validation_comment: validation.validations[0].validation_comment ?? '',
+      id_validation: validation.validations[0].id_validation,
+      validation_date: validation.validations[0].validation_date,
+      observation: this._formatObservation(validation),
     }));
   }
 
-  private _formatObservation(synthese: any): string {
+  private _formatObservation(validation: any): string {
     return `
-      <strong>Nom Cité:</strong> ${synthese.nom_cite || 'N/A'}<br>
-      <strong>Observateurs:</strong> ${synthese.observers || 'N/A'}<br>
+      <strong>Nom Cité:</strong> ${validation.nom_cite || 'N/A'}<br>
+      <strong>Observateurs:</strong> ${validation.observers || 'N/A'}<br>
       <strong>Date Observation:</strong> ${
-        this._formatDateRange(synthese.date_min, synthese.date_max) || 'N/A'
+        this._formatDateRange(validation.date_min, validation.date_max) || 'N/A'
       }
     `;
   }

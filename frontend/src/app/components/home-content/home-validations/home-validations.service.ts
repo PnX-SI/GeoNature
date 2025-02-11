@@ -9,6 +9,7 @@ enum ValidationsModule {
   SYNTHESE = 'SYNTHESE',
   VALIDATION = 'VALIDATION',
 }
+
 export interface Pagination {
   total: number;
   page: number;
@@ -31,9 +32,6 @@ export class HomeValidationsService {
   private _isValidationsAllowedInModule(module: ValidationsModule): boolean {
     return this._moduleService.getModule(module)?.cruved['R'] != undefined;
   }
-  private _isValidationsAvailableInModule(module: ValidationsModule): boolean {
-    return this._config.SYNTHESE.DISCUSSION_MODULES.includes(module);
-  }
 
   get isAvailable(): boolean {
     if (!this._config.HOME.DISPLAY_LATEST_VALIDATIONS) {
@@ -41,35 +39,33 @@ export class HomeValidationsService {
     }
     for (const module of this.MODULES_PREVALENCE) {
       if (this._isValidationsAllowedInModule(module)) {
-        if (this._isValidationsAvailableInModule(module)) {
           return true;
-        }
       }
     }
     return false;
   }
-  // private _getUrl(module: ValidationsModule, id: number): Array<string> {
-  //   switch (module) {
-  //     case ValidationsModule.SYNTHESE:
-  //       return ['/synthese', 'occurrence', id.toString(), 'discussion'];
-  //     case ValidationsModule.VALIDATION:
-  //       return ['/validation', 'occurrence', id.toString(), 'discussion'];
-  //   }
-  // }
 
-  // computeValidationsRedirectionUrl(id: number): Array<string> {
-  //   for (const module of this.MODULES_PREVALENCE) {
-  //     if (this._isValidationsAllowedInModule(module)) {
-  //       if (this._isValidationsAvailableInModule(module)) {
-  //         return this._getUrl(module, id);
-  //       }
-  //     }
-  //   }
-  //   return [];
-  // }
+  private _getUrl(module: ValidationsModule, id_synthese: number): Array<string> {
+    switch (module) {
+      case ValidationsModule.SYNTHESE:
+        return ['/synthese', 'occurrence', id_synthese.toString(), 'validation'];
+      case ValidationsModule.VALIDATION:
+        return ['/validation', 'occurrence', id_synthese.toString(), 'validation'];
+    }
+  }
 
-  public fetchValidations(params: any): any {
-    console.log('fetccccch');
-    return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation`, params);
+  computeValidationsRedirectionUrl(id_synthese: number): Array<string> {
+    for (const module of this.MODULES_PREVALENCE) {
+      if (this._isValidationsAllowedInModule(module)) {
+          return this._getUrl(module, id_synthese);
+      }
+    }
+    return [];
+  }
+
+  public fetchValidations(params: Record<string, string>): any {
+    return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation`, {
+      params: params,
+    });
   }
 }
