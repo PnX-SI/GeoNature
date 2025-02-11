@@ -65,4 +65,18 @@
 .Link {
   color: var(--purple);
   filter: brightness(70%);
+.map-criteria-badge {
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 40px;
+  font-size: 40px;
+}
+.map-criteria-badge i[class^='material'] {
+  vertical-align: baseline;
+}
+.map-criteria-badge i[class^='fa'] {
+  vertical-align: middle;
 }
