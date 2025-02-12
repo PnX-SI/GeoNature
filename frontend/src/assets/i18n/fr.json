@@ -240,7 +240,9 @@
         "default": "Affichage par défaut",
         "area-aggregation": "Densité d'observations"
       }
-    }
+    },
+    "NoGeomMessage": "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible",
+    "BlurredSensitiveObsMessage": "<strong>Avertissement</strong> : les résultats de votre requête contiennent des données floutées par la sensibilité. Leur localisation sera dégradée si vous n’avez pas sollicité un accès à ces données.<br/><br/>Dans ce cas, dans le fichier téléchargeable des observations, la localisation de ces données sera indiquée comme “approximative” (champs <i>{{blurringField}}</i>)<br/><br/>Pour demander un accès à ces données, remplissez <a href=\"{{requestAccessUrl}}\">le formulaire disponible de demande d'accès</a> (les conditions nécessaires pour demander un accès sont rappelées sur le formulaire)."
   },
   "Validation": {
     "noData": "Aucune données à afficher",

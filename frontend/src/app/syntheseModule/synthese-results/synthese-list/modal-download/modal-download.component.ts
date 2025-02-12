@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
@@ -11,8 +11,6 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 })
 export class SyntheseModalDownloadComponent {
   public syntheseConfig = AppConfig.SYNTHESE;
-
-  @Input() tooManyObs = false;
 
   constructor(
     public activeModal: NgbActiveModal,

@@ -102,8 +102,7 @@ class DataBlurring:
 
         return output
 
-
-    def blurObservationsQuery(self, obs_query, geojson, json_obs, with_areas):
+    def blurObservationsQuery(self, obs_query, geojson, obs_columns, with_areas):
         (exact_filters, see_all) = self._compute_exact_filters()
         ignored_object = self._get_ignored_object(see_all)
 
@@ -139,7 +138,7 @@ class DataBlurring:
             output_query = self._add_blurred_cte_queries(
                 obs_query.cte("OBSERVATIONS"),
                 exact_filters,
-                json_obs,
+                obs_columns,
                 blurring_types,
                 areas_sizes,
                 with_areas,
@@ -147,7 +146,7 @@ class DataBlurring:
             return output_query
 
     def _add_blurred_cte_queries(
-        self, observations_query, exact_filters, json_obs, blurring_types, areas_sizes, with_areas
+        self, observations_query, exact_filters, obs_columns, blurring_types, areas_sizes, with_areas
     ):
         diffusion_level_ids = self._get_diffusion_levels_area_types()
         sensitivity_ids = self._get_sensitivity_area_types()
@@ -171,11 +170,13 @@ class DataBlurring:
             ), nomenclature_ids_list in sorted_nomenclature_ids.items():
                 # Build obs queries giving id_synthese and area geojson dispatched by object type
                 priority = int(areas_sizes[area_type_code])
+                is_blurred = True if (object_type == "SENSITIVE_OBSERVATION") else False
                 obs_geo_query = select(
                     [
                         literal(priority).label("priority"),
                         observations_query.c.id_synthese,
                         LAreas.geojson_4326.label("geojson"),
+                        literal(is_blurred).label("is_blurred"),
                     ],
                     distinct=observations_query.c.id_synthese,
                 ).select_from(
@@ -206,7 +207,12 @@ class DataBlurring:
 
             # Build blurred geom by id_synthese query
             blurred_obs_query = select(
-                [object_cte.c.priority, object_cte.c.id_synthese, object_cte.c.geojson]
+                [
+                    object_cte.c.priority,
+                    object_cte.c.id_synthese,
+                    object_cte.c.geojson,
+                    object_cte.c.is_blurred,
+                ]
             ).select_from(object_cte)
 
             # Build permissions conditions
@@ -244,7 +250,11 @@ class DataBlurring:
             blurred_obs_queries.append(blurred_obs_query)
 
         # Add observations with size hierarchy 0 or areas aggregation size hierarchy
-        columns = [observations_query.c.id_synthese, observations_query.c.geojson]
+        columns = [
+            observations_query.c.id_synthese,
+            observations_query.c.geojson,
+            literal(False).label("is_blurred"),
+        ]
         if with_areas:
             columns.insert(0, observations_query.c.priority)
         else:
@@ -293,6 +303,9 @@ class DataBlurring:
             ).outerjoin(pick_one_agg_area, obs_subquery.c.priority > size_area)
 
         # Final query => Aggregate all observation infos inside JSON
+        obs_columns = self._add_is_blurred_column(obs_columns, obs_subquery)
+        json_obs = func.json_build_object(*obs_columns).label("obs_as_json")
+
         all_obs_query = (
             select(
                 [obs_subquery.c.id_synthese, obs_subquery.c.priority, geom_column, json_obs],
@@ -304,6 +317,11 @@ class DataBlurring:
         )
 
         return all_obs_query
+
+    def _add_is_blurred_column(self, obs_columns, obs_subquery):
+        blurred_idx = obs_columns.index("is_blurred") + 1
+        obs_columns[blurred_idx] = obs_subquery.c.is_blurred
+        return obs_columns
 
     def _get_blurring_types(self, areas_sizes):
         blurring_types = []
@@ -338,8 +356,6 @@ class DataBlurring:
             blurring_types.append("PRIVATE_OBSERVATION")
 
         return blurring_types
-
-
 
     def _compute_exact_filters(self):
         see_all = {
@@ -492,9 +508,9 @@ class DataBlurring:
         )
 
         # DEBUG QUERY:
-        from sqlalchemy.dialects import postgresql
-        print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
-        #exit()
+        # from sqlalchemy.dialects import postgresql
+        # print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+        # exit()
 
         results = DB.session.execute(query)
         geojson_by_synthese_ids = {}
@@ -778,8 +794,8 @@ class DataBlurring:
             )
 
             # DEBUG QUERY:
-            #from sqlalchemy.dialects import postgresql
-            #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+            # from sqlalchemy.dialects import postgresql
+            # print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
 
             results = DB.session.execute(query)
             if results.first() is not None:
@@ -815,8 +831,8 @@ class DataBlurring:
             )
 
             # DEBUG QUERY:
-            #from sqlalchemy.dialects import postgresql
-            #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+            # from sqlalchemy.dialects import postgresql
+            # print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
 
             results = DB.session.execute(query)
             if results.first() is not None:

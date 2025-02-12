@@ -209,7 +209,9 @@
         "default": "Default display",
         "area-aggregation": "Density of observations"
       }
-    }
+    },
+    "NoGeomMessage": "Some observation(s) could not be displayed on the map because their aggregation mesh is not available.",
+    "BlurredSensitiveObsMessage": "<strong>Warning</strong>: the results of your query contain data blurred by sensitivity. Their location will be degraded if you have not requested access to this data.<br/><br/>In this case, in the downloadable observations file, the location of this data will be indicated as “approximate” (fields <i>floutage_dee</i>).<br/></br>To request access to this data, complete <a href=\"{{requestAccessUrl}}\">the available access request form</a> (the conditions required to request access are recalled on the form)."
   },
   "MyAccount": "My account",
   "CreateAccount": "Create an account",
