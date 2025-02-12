@@ -44,6 +44,9 @@
   <ngx-datatable-column
     width="150"
     name="Date"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
     [prop]="PROP_VALIDATION_DATE"
   >
     <ng-template
@@ -72,7 +75,7 @@
     [prop]="PROP_VALIDATION_STATUS"
     width="300"
     name="Statut de validation"
-    [sortable]="true"
+    [sortable]="false"
     [resizeable]="true"
     [canAutoResize]="true"
   >
