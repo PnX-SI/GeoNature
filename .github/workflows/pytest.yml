@@ -86,11 +86,6 @@ jobs:
             -e ..[tests] \
             -r requirements-dev.txt
         working-directory: ./backend
-      - name: Show database branches and dependencies
-        run: |
-          geonature db status --dependencies
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
 
       - name: Install core modules backend
         run: |
