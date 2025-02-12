@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -6,12 +6,12 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { SyntheseStoreService } from '@geonature/syntheseModule/services/store.service';
-import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { AppConfig } from '@geonature_config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import * as cloneDeep from 'lodash/cloneDeep';
 import { EventDisplayCriteria, SyntheseCriteriaService } from './services/criteria.service';
+import { SyntheseModalMessagesComponent } from './synthese-results/modal-messages/modal-messages.component';
 
 @Component({
   selector: 'pnx-synthese',
@@ -27,7 +27,9 @@ export class SyntheseComponent implements OnInit {
 
   private idsByFeature: Set<number>;
   private criteriaByFeature: Set<any>;
-  private noGeomMessage: boolean;
+  private hasNoGeom: boolean;
+  private hasBlurredSensitiveObs: boolean;
+  private newSearch: boolean;
 
   constructor(
     public searchService: SyntheseDataService,
@@ -38,6 +40,7 @@ export class SyntheseComponent implements OnInit {
     private _toasterService: ToastrService,
     private _route: ActivatedRoute,
     private criteriaService: SyntheseCriteriaService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -79,8 +82,8 @@ export class SyntheseComponent implements OnInit {
         this._mapListService.idName = 'id';
         this.parseGeoJson(data);
 
-        this.displayMessageLimitNumberObservationsReached(formParams);
-
+        this.displayMessages();
+        this.newSearch = false;
         this.searchService.dataLoaded = true;
       },
       () => {
@@ -108,6 +111,7 @@ export class SyntheseComponent implements OnInit {
         this.extractIds(obs);
         this.extractCriteria(obs);
         this.addObservationToDataTable(cloneDeep(obs));
+        this.checkBlurredGeom(obs);
       });
 
       // WARNING: needs to return the updated object here !
@@ -124,7 +128,8 @@ export class SyntheseComponent implements OnInit {
   private initializeStores() {
     this._syntheseStore.idSyntheseList = new Set();
     this._mapListService.tableData = [];
-    this.noGeomMessage = false;
+    this.hasNoGeom = false;
+    this.hasBlurredSensitiveObs = false;
   }
 
   private extractIds(observation) {
@@ -162,7 +167,13 @@ export class SyntheseComponent implements OnInit {
 
   private checkGeomAbsence(feature) {
     if (!feature.geometry) {
-      this.noGeomMessage = true;
+      this.hasNoGeom = true;
+    }
+  }
+
+  private checkBlurredGeom(obs) {
+    if (obs['is_blurred'] && obs.is_blurred === true) {
+      this.hasBlurredSensitiveObs = true;
     }
   }
 
@@ -179,10 +190,8 @@ export class SyntheseComponent implements OnInit {
   }
 
   private displayMessageGeomAbsence() {
-    if (this.noGeomMessage) {
-      this._toasterService.warning(
-        "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible"
-      );
+    if (this.hasNoGeom) {
+      this.commonService.translateToaster('warning', 'Synthese.NoGeomMessage');
     }
   }
 
@@ -192,13 +201,16 @@ export class SyntheseComponent implements OnInit {
     });
   }
 
-  private displayMessageLimitNumberObservationsReached(formParams) {
-    if (this._syntheseStore.idSyntheseList.size >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
-      const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
+  private displayMessages() {
+    let hasTooManyObs =
+      this._syntheseStore.idSyntheseList.size >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP ? true : false;
+
+    if (this.newSearch && (hasTooManyObs || this.hasBlurredSensitiveObs)) {
+      const modalRef = this._modalService.open(SyntheseModalMessagesComponent, {
         size: 'lg',
       });
-      modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formParams);
-      modalRef.componentInstance.tooManyObs = true;
+      modalRef.componentInstance.hasTooManyObs = hasTooManyObs;
+      modalRef.componentInstance.hasBlurredSensitiveObs = this.hasBlurredSensitiveObs;
     }
   }
 
@@ -213,6 +225,7 @@ export class SyntheseComponent implements OnInit {
   }
 
   onSearchEvent() {
+    this.newSearch = true
     // Remove limit
     this._fs.selectors = this._fs.selectors.delete('limit');
     // On search button click, clean cache and call loadAndStoreData

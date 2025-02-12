@@ -197,6 +197,8 @@ def get_observations_for_web(auth, permissions):
         nom_vern_or_lb_nom,
         "count_min_max",
         count_min_max,
+        "is_blurred",
+        False,
     ]
 
     # Add additional field(s) to output
@@ -234,7 +236,7 @@ def get_observations_for_web(auth, permissions):
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
         data_blurring = DataBlurring(permissions)
         obs_query = data_blurring.blurObservationsQuery(
-            obs_query, geojson, observations, with_areas
+            obs_query, geojson, columns, with_areas
         )
     else:
         obs_query = obs_query.cte("OBSERVATIONS")
@@ -246,6 +248,9 @@ def get_observations_for_web(auth, permissions):
 
     # Group geometries with main query
     query = select([obs_query.c.geojson, properties]).group_by(obs_query.c.geojson)
+    # DEBUG QUERY:
+    # from sqlalchemy.dialects import postgresql
+    # print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
     results = DB.session.execute(query)
 
     # Build final GeoJson

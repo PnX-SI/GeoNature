@@ -16,6 +16,7 @@ import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
 import { SyntheseCriteriaService } from './services/criteria.service';
+import { SyntheseModalMessagesComponent } from './synthese-results/modal-messages/modal-messages.component';
 
 const routes: Routes = [
   { path: '', component: SyntheseComponent },
@@ -28,16 +29,21 @@ const routes: Routes = [
     GN2CommonModule,
     SharedSyntheseModule,
     CommonModule,
-    TreeModule
+    TreeModule,
   ],
   declarations: [
     SyntheseComponent,
     SyntheseListComponent,
     SyntheseCarteComponent,
     SyntheseModalDownloadComponent,
-    TaxonSheetComponent
+    SyntheseModalMessagesComponent,
+    TaxonSheetComponent,
   ],
-  entryComponents: [SyntheseInfoObsComponent, SyntheseModalDownloadComponent],
+  entryComponents: [
+    SyntheseInfoObsComponent,
+    SyntheseModalDownloadComponent,
+    SyntheseModalMessagesComponent,
+  ],
   providers: [
     MapService,
     DynamicFormService,
@@ -45,6 +51,6 @@ const routes: Routes = [
     SyntheseStoreService,
     SyntheseFormService,
     SyntheseCriteriaService,
-  ]
+  ],
 })
 export class SyntheseModule {}
