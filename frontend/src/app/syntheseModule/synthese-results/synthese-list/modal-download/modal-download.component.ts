@@ -12,8 +12,6 @@ import { ConfigService } from '@geonature/services/config.service';
 export class SyntheseModalDownloadComponent {
   public syntheseConfig = null;
 
-  @Input() tooManyObs = false;
-
   constructor(
     public activeModal: NgbActiveModal,
     public _dataService: SyntheseDataService,

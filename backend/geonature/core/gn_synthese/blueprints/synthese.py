@@ -8,7 +8,7 @@ from flask import (
     g,
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest
-from sqlalchemy import func, select, case, join, and_
+from sqlalchemy import func, select, case, join, and_, literal
 from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 
@@ -139,15 +139,18 @@ def get_observations_for_web(permissions):
     for column in param_column_list:
         columns += [column, getattr(VSyntheseForWebApp, column)]
 
-    observations = func.json_build_object(*columns).label("obs_as_json")
-
     # Need to check if there are blurring permissions so that the blurring process
     # does not affect the performance if there is no blurring permissions
     blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
     if not blurring_permissions:
+        columns += [
+            "is_blurred",
+            literal(False).label("is_blurred"),
+        ]
+
         # No need to apply blurring => same path as before blurring feature
         obs_query = (
-            select(observations)
+            select(build_observations(columns))
             .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
             .order_by(VSyntheseForWebApp.date_min.desc())
             .limit(result_limit)
@@ -178,8 +181,13 @@ def get_observations_for_web(permissions):
             limit=result_limit,
         )
 
+        columns += [
+            "is_blurred",
+            allowed_geom_cte.c.is_blurred,
+        ]
+
         obs_query = build_synthese_obs_query(
-            observations=observations,
+            observations=build_observations(columns),
             allowed_geom_cte=allowed_geom_cte,
             limit=result_limit,
         )
@@ -209,6 +217,7 @@ def get_observations_for_web(permissions):
             # It means that we do not aggregate obs that have a blurring geometry greater in
             # size than the aggregation area
             agg_areas = agg_areas.where(obs_query.c.size_hierarchy <= BibAreasTypes.size_hierarchy)
+
         agg_areas = agg_areas.lateral("agg_areas")
         obs_query = (
             select(func.ST_AsGeoJSON(LAreas.geom_4326).label("geojson"), obs_query.c.obs_as_json)
@@ -243,6 +252,10 @@ def get_observations_for_web(permissions):
             )
         )
     return jsonify(FeatureCollection(geojson_features))
+
+
+def build_observations(columns):
+    return func.json_build_object(*columns).label("obs_as_json")
 
 
 @synthese_routes.route("/vsynthese/<id_synthese>", methods=["GET"])
