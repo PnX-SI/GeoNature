@@ -33,7 +33,7 @@ jobs:
 
     services:
       postgres:
-        image: ghcr.io/jacquesfize/geonature-db:2.15.1
+        image: ghcr.io/jacquesfize/geonature-db:2.15.2
         env:
           POSTGRES_DB: geonature2db
           POSTGRES_PASSWORD: geonatpasswd
@@ -86,11 +86,6 @@ jobs:
             -e ..[tests] \
             -r requirements-dev.txt
         working-directory: ./backend
-      - name: Show database branches and dependencies
-        run: |
-          geonature db status --dependencies
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
 
       - name: Install core modules backend
         run: |
@@ -101,6 +96,7 @@ jobs:
         run: |
           geonature db autoupgrade
           geonature upgrade-modules-db
+          geonature db downgrade ref_geo_inpn_grids_50@base
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Show database status
