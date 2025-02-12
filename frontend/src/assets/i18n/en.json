@@ -332,16 +332,22 @@
     },
     "Messages": {
       "Copied": "Copied to clipboard!",
-      "DeleteSuccess": "Observation deleted successfully"
+      "DeleteSuccess": "Observation deleted successfully",
+      "NoGeomTxt": "Some observation(s) could not be displayed on the map because their aggregation mesh is not available.",
+      "ModalWindowTitle": "Information on displayed observations",
+      "BlurredSensitiveObsTitle": "Presence of blurred sensitive observations",
+      "BlurredSensitiveObsTxt": "<strong>Warning</strong>: the results of your query contain data blurred by sensitivity. Their location is degraded because you do not have the necessary permissions.",
+      "LimitTitle": "Display limit reached!",
+      "LimitIntro": "<b>Warning!</b> Your query contains too many observations to be displayed on the map.",
+      "LimitTxt": "By closing this window you can view <b>only</b> the latest {{nbMaxObsMap}} observations matching your query.<br /> If you wish to access data prior to the latest {{nbMaxObsMap}} observations, please refine your search using the “When?” date filter.",
+      "LimitExport": "You can nevertheless export the data, up to a limit of <b>{{nbMaxObsExport}}</b> observations, by clicking on the ”Download” button."
     },
     "Errors": {
       "PeriodCompleteness": "The 'start period' and 'end period' fields must be filled if you want to search by period"
     },
-
     "Commented": "commented on",
     "ChangeStatus": "changed the status on",
     "ModalTitle": "Observation information",
-
     "LocationName": "Location name",
     "Accuracy": "Pointing accuracy",
     "Owner": "Observation by",

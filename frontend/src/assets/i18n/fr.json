@@ -332,16 +332,22 @@
     },
     "Messages": {
       "Copied": "Copié dans le presse-papier !",
-      "DeleteSuccess": "Observation supprimée avec succès"
+      "DeleteSuccess": "Observation supprimée avec succès",
+      "NoGeomTxt": "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible",
+      "ModalWindowTitle": "Informations sur les observations affichées",
+      "BlurredSensitiveObsTitle": "Présence d'observations sensibles floutées",
+      "BlurredSensitiveObsTxt": "<strong>Avertissement</strong> : les résultats de votre requête contiennent des données floutées par la sensibilité. Leur localisation est dégradée car vous n'avez pas les permissions nécessaires.",
+      "LimitTitle": "Limite d'affichage atteinte !",
+      "LimitIntro": "<b>Attention !</b> Votre requête comporte un nombre trop important d'observations pour que celles-ci soient affichées sur la carte.",
+      "LimitTxt": "En fermant cette fenêtre vous pouvez visualiser <b>seulement</b> les {{nbMaxObsMap}} dernières observations correspondant à votre requête.<br /> Si vous souhaitez accéder aux données antérieures aux {{nbMaxObsMap}} dernières observations, veuillez préciser votre recherche en utilisant le filtre par date « Quand ? ».",
+      "LimitExport": "Vous pouvez néanmoins exporter les données, dans une limite de <b>{{nbMaxObsExport}}</b> observations en cliquant sur le bouton «&nbsp;Télécharger&nbsp;»."
     },
     "Errors": {
       "PeriodCompleteness": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
     },
-
     "Commented": "a commenté le",
     "ChangeStatus": "a modifié le statut le",
     "ModalTitle": "Information sur l'observation",
-
     "LocationName": "Nom du lieux",
     "Accuracy": "Précision du pointage",
     "Owner": "Observation de",
