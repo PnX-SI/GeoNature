@@ -11,7 +11,7 @@ export class CommonService {
 
   private current: any = {};
 
-  translateToaster(messageType: string, messageValue: string): void {
+  translateToaster(messageType: string, messageValue: string, options: Object = null): void {
 
     // si toaster contenant le message est en cours on ne fait rien
     if(this.current[messageValue]) {
@@ -22,15 +22,17 @@ export class CommonService {
 
     this.translate
       .get(messageValue, { value: messageValue })
-      .subscribe(res => this.toastrService[messageType](res, ''));
+      .subscribe((res) => this.toastrService[messageType](res, '', options));
 
     // on supprime le message de current au bout de 5s
-    setTimeout(() => { delete this.current[messageValue] }, 5000);
-
+    const deleteAfterTime = (options['timeout'] ? options['timeout'] : 5000)
+    setTimeout(() => {
+      delete this.current[messageValue];
+    }, deleteAfterTime);
   }
 
-  regularToaster(messageType: string, messageValue: string): void {
-    this.toastrService[messageType](messageValue, '');
+  regularToaster(messageType: string, messageValue: string, options: Object = null): void {
+    this.toastrService[messageType](messageValue, '', options);
   }
 
   /**Calculate the height of th main card
