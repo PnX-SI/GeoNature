@@ -96,6 +96,7 @@ jobs:
         run: |
           geonature db autoupgrade
           geonature upgrade-modules-db
+          geonature db upgrade occtax-samples@head
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Show database status
