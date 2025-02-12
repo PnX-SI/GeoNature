@@ -96,7 +96,7 @@ jobs:
         run: |
           geonature db autoupgrade
           geonature upgrade-modules-db
-          geonature db upgrade occtax-samples@head
+          geonature db downgrade ref_geo_inpn_grids_50@base
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Show database status
