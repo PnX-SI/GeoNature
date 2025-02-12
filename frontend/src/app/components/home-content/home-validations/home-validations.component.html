@@ -13,6 +13,9 @@
   (page)="onChangePage($event)"
   [externalSorting]="true"
   (sort)="onColumnSort($event)"
+  [sorts]="[
+    { prop: DEFAULT_SORTING.order_by, dir: DEFAULT_SORTING.sort}
+  ]"
 >
   <ngx-datatable-column
     [maxWidth]="5"

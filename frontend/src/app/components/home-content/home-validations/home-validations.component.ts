@@ -35,14 +35,14 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   readonly PROP_VALIDATION_STATUS = 'nomenclature_valid_status.label_default';
   readonly PROP_VALIDATION_MESSAGE = 'last_validation.validation_comment';
   readonly PROP_OBSERVATION = 'observation';
-
-  validations: ValidationItemEnhanced[] = [];
-  // TODO: update this
-  pagination: Pagination = HomeValidationsService.DEFAULT_PAGINATION;
-  sort: SortingItem = {
+  readonly DEFAULT_SORTING: SortingItem = {
     sort: 'desc',
     order_by: this.PROP_VALIDATION_DATE,
   };
+  validations: ValidationItemEnhanced[] = [];
+  // TODO: update this
+  pagination: Pagination = HomeValidationsService.DEFAULT_PAGINATION;
+  sort: SortingItem = this.DEFAULT_SORTING;
 
   private destroy$ = new Subject<void>();
   constructor(
@@ -69,8 +69,6 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
       sort: event.newValue,
       order_by: event.column.prop,
     };
-    console.log(event);
-    console.log(this.sort);
     this.pagination.page = 1;
     this._fetchValidations();
   }
@@ -83,7 +81,6 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   }
 
   private _fetchValidations() {
-    console.log(this.sort);
     this._homeValidations
       .fetchValidations(this.pagination, this.sort)
       .pipe(takeUntil(this.destroy$))

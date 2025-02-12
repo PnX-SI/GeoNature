@@ -45,10 +45,6 @@ export class HomeValidationsService {
     page: 1,
     per_page: 4,
   };
-  static readonly DEFAULT_SORTING: SortingItem = {
-    sort: 'desc',
-    order_by: 'id_validation',
-  };
   readonly MODULES_PREVALENCE = [ValidationsModule.SYNTHESE, ValidationsModule.VALIDATION];
   constructor(
     private _http: HttpClient,
