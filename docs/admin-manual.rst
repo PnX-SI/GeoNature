@@ -735,11 +735,12 @@ La base de données contient de nombreuses fonctions.
 
 .. code:: sql
 
-  gn_profiles.get_profiles_parameters(mycdnom integer)
-  RETURNS TABLE (cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean,  distance smallint)
-  -- fonction permettant de récupérer les paramètres les plus adaptés (définis au plus proche du taxon) pour calculer le profil d'un taxon donné
-  -- par exemple, s'il existe des paramètres pour les "Animalia" des paramètres pour le renard, les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce
-
+  gn_profiles.get_parameters(mycdnom integer)
+  RETURNS TABLE(cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean, distance smallint)
+  -- fonction permettant de récupérer les paramètres les plus adaptés
+  -- (définis au plus proche du taxon) pour calculer le profil d'un taxon donné
+  -- par exemple, s'il existe des paramètres pour les "Animalia" des paramètres pour le renard,
+  -- les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce
 
 .. code:: sql
 
