@@ -10,3 +10,8 @@
     text-overflow: ellipsis;
   }
 }
+
+.ValidationStatus{
+  font-weight: 700;
+  color: var(--status-color);
+}

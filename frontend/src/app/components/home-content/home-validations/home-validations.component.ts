@@ -11,6 +11,7 @@ import {
   ValidationCollection,
   ValidationItem,
 } from './home-validations.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 interface ValidationItemEnhanced {
   id_synthese: number;
@@ -32,7 +33,8 @@ interface ValidationItemEnhanced {
 export class HomeValidationsComponent implements OnInit, OnDestroy {
   readonly PROP_VALIDATOR = 'validator';
   readonly PROP_VALIDATION_DATE = 'last_validation.validation_date';
-  readonly PROP_VALIDATION_STATUS = 'nomenclature_valid_status.label_default';
+  readonly PROP_VALIDATION_STATUS = 'nomenclature_valid_status.mnemonique';
+  readonly PROP_VALIDATION_CODE = 'nomenclature_valid_status.cd_nomenclature';
   readonly PROP_VALIDATION_MESSAGE = 'last_validation.validation_comment';
   readonly PROP_OBSERVATION = 'observation';
   readonly DEFAULT_SORTING: SortingItem = {
@@ -46,6 +48,7 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   constructor(
+    private _config: ConfigService,
     private _router: Router,
     private _homeValidations: HomeValidationsService
   ) {}
@@ -86,6 +89,7 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((validations: ValidationCollection) => {
         this._setValidations(validations);
+        console.log(this.validations);
       });
   }
   // //////////////////////////////////////////////////////
@@ -93,6 +97,7 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   // //////////////////////////////////////////////////////
 
   private _setValidations(validations: ValidationCollection) {
+    console.log(validations);
     this.validations = this._transformValidations(validations.items);
     this.pagination = {
       total: validations.total,
@@ -105,6 +110,10 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
     return validations.map((validation: ValidationItem) => ({
       id_synthese: validation.id_synthese,
       'last_validation.validation_date': validation.last_validation?.validation_date,
+      'last_validation.validation_auto': validation.last_validation?.validation_auto,
+      'nomenclature_valid_status.cd_nomenclature':
+        validation.nomenclature_valid_status.cd_nomenclature,
+      'nomenclature_valid_status.mnemonique': validation.nomenclature_valid_status.mnemonique,
       'nomenclature_valid_status.label_default': validation.nomenclature_valid_status.label_default,
       'last_validation.validation_comment': validation.last_validation?.validation_comment,
       validator: validation.validator ?? 'Auto',
@@ -132,5 +141,10 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
       return formattedDateMin || 'N/A';
     }
     return `${formattedDateMin} - ${formattedDateMax}`;
+  }
+
+  getValidationStatusColor(cd_nomenclature: number) {
+    return this._config.VALIDATION.STATUS_INFO[cd_nomenclature]?.color;
+
   }
 }

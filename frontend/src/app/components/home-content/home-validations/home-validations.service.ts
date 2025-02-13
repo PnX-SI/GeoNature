@@ -32,6 +32,7 @@ export interface ValidationItem {
     id_validation: number;
     validation_comment: string;
     validation_date: string;
+    validation_auto: string;
   };
 }
 
@@ -108,9 +109,10 @@ export class HomeValidationsService {
         sort: sort.sort,
         order_by: sort.order_by,
         fields:
-          'id_synthese,nom_cite,observers,date_min,date_max,last_validation,nomenclature_valid_status,validator',
+          'id_synthese,nom_cite,observers,date_min,date_max,last_validation,nomenclature_valid_status.cd_nomenclature,nomenclature_valid_status.mnemonique,nomenclature_valid_status.label_default,validator',
         format: 'json',
       },
     });
   }
 }
+
