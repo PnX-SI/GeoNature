@@ -104,9 +104,9 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   private _transformValidations(validations: ValidationItem[]): ValidationItemEnhanced[] {
     return validations.map((validation: ValidationItem) => ({
       id_synthese: validation.id_synthese,
-      'last_validation.validation_date': validation.last_validation.validation_date,
+      'last_validation.validation_date': validation.last_validation?.validation_date,
       'nomenclature_valid_status.label_default': validation.nomenclature_valid_status.label_default,
-      'last_validation.validation_comment': validation.last_validation.validation_comment,
+      'last_validation.validation_comment': validation.last_validation?.validation_comment,
       validator: validation.validator ?? 'Auto',
       observation: this._formatObservation(validation),
     }));

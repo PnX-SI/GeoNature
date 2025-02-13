@@ -56,8 +56,8 @@ def get_synthese_data(scope):
     sorting_active = sort != '' and order_by != ''
 
     # Pagination parameter
-    page = request.args.get("page", -1, int)
-    per_page = request.args.get("per_page", -5, int)
+    page = request.args.get("page", 0, int)
+    per_page = request.args.get("per_page", 0, int)
     pagination_active = page > 0 and per_page > 0
 
     # Format: output format
@@ -227,15 +227,17 @@ def get_synthese_data(scope):
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
 
+    # Sort
     if sorting_active:
         if sort == "asc":
             selectable = selectable.order_by(sa.asc(order_by))
         else:
             selectable = selectable.order_by(sa.desc(order_by))
 
-    # Paginer avant ici
+    # Paginer
     if pagination_active:
-        query = syntheseQueryStatement.from_statement(selectable.limit(per_page).offset(page))
+        offset = (page - 1) * per_page
+        query = syntheseQueryStatement.from_statement(selectable.limit(per_page).offset(offset))
     else:
         query = syntheseQueryStatement.from_statement(selectable)
 
