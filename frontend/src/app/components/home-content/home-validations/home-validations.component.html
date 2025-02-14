@@ -83,10 +83,13 @@
       ngx-datatable-cell-template
       let-row="row"
     >
-      <gn-badge
-          [text]="row[PROP_VALIDATION_STATUS]"
-          [symbology]="{color: getValidationStatusColor(row[PROP_VALIDATION_CODE])}"
-      ></gn-badge>
+      <div class="BadgeContainer">
+        <gn-badge
+            [text]="row[PROP_VALIDATION_STATUS]"
+            [symbology]="{color: getValidationStatusColor(row[PROP_VALIDATION_CODE])}"
+        ></gn-badge>
+        <div class="BadgeContainer__spacer"></div>
+      </div>
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
