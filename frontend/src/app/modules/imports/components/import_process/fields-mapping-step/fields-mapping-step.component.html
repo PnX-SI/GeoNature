@@ -9,7 +9,7 @@
     <div class="card-body">
       <pnx-mapping-selection></pnx-mapping-selection>
       <ng-container
-        *ngIf="isReady"
+        *ngIf="isReady; else loadingBlock"
         class=""
       >
         <mat-tab-group
@@ -217,3 +217,14 @@
     </div>
   </ng-template>
 </div>
+
+<ng-template #loadingBlock>
+  <div class="row justify-content-center">
+    <mat-spinner
+      class="upload-spinner"
+      [color]="color"
+      [diameter]="150"
+      [strokeWidth]="12"
+    ></mat-spinner>
+  </div>
+</ng-template>
