@@ -112,12 +112,8 @@ class SyntheseQuery:
             )
         )
         self.srid_l_areas = DB.session.scalar(
-                            select(
-                                func.Find_SRID(
-                                    LAreas.__table__.schema, LAreas.__table__.name, "geom"
-                                )
-                            )
-                        )
+            select(func.Find_SRID(LAreas.__table__.schema, LAreas.__table__.name, "geom"))
+        )
 
     def add_join(self, right_table, right_column, left_column, join_type="right"):
         if self.first:
@@ -451,7 +447,7 @@ class SyntheseQuery:
             else:
                 raise BadRequest("Unsupported geoIntersection type")
             geo_filters = []
-            
+
             for feature in features:
                 geom_wkb = from_shape(shape(feature["geometry"]), srid=4326)
                 geometry = func.ST_GeomFromWKB(geom_wkb)
@@ -465,8 +461,12 @@ class SyntheseQuery:
                 if "radius" in feature["properties"]:
                     radius = feature["properties"]["radius"]
                     geo_filter = func.ST_DWithin(
-                        sa.cast(self.geom_column,Geography) if isinstance(self.geom_column.type, Geometry) else self.geom_column,
-                        sa.cast(geometry,Geography),
+                        (
+                            sa.cast(self.geom_column, Geography)
+                            if isinstance(self.geom_column.type, Geometry)
+                            else self.geom_column
+                        ),
+                        sa.cast(geometry, Geography),
                         radius,
                     )
                 else:
@@ -504,7 +504,7 @@ class SyntheseQuery:
                 if self.geom_column.class_ != self.model:
                     l_areas_cte = LAreas.query.filter(LAreas.id_area.in_(value)).cte("area_filter")
                     if self.srid != 4326:
-                        
+
                         if self.srid != self.srid_l_areas:
                             self.query = self.query.where(
                                 func.ST_Intersects(
