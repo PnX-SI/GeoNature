@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Développement" href="development.html" /><link rel="prev" title="Manuel utilisateur" href="user-manual.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Manuel administrateur - Documentation GeoNature 2.15.2</title>
+        <title>Manuel administrateur - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -1082,10 +1082,12 @@ d’une observation avec tous les zonages</p></td>
 </pre></div>
 </div>
 <p><strong>gn_profiles</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">get_profiles_parameters</span><span class="p">(</span><span class="n">mycdnom</span><span class="w"> </span><span class="nb">integer</span><span class="p">)</span>
-<span class="k">RETURNS</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="p">(</span><span class="n">cd_ref</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">spatial_precision</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">temporal_precision_days</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">active_life_stage</span><span class="w"> </span><span class="nb">boolean</span><span class="p">,</span><span class="w">  </span><span class="n">distance</span><span class="w"> </span><span class="nb">smallint</span><span class="p">)</span>
-<span class="c1">-- fonction permettant de récupérer les paramètres les plus adaptés (définis au plus proche du taxon) pour calculer le profil d&#39;un taxon donné</span>
-<span class="c1">-- par exemple, s&#39;il existe des paramètres pour les &quot;Animalia&quot; des paramètres pour le renard, les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">get_parameters</span><span class="p">(</span><span class="n">mycdnom</span><span class="w"> </span><span class="nb">integer</span><span class="p">)</span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="k">TABLE</span><span class="p">(</span><span class="n">cd_ref</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">spatial_precision</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">temporal_precision_days</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">active_life_stage</span><span class="w"> </span><span class="nb">boolean</span><span class="p">,</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="nb">smallint</span><span class="p">)</span>
+<span class="c1">-- fonction permettant de récupérer les paramètres les plus adaptés</span>
+<span class="c1">-- (définis au plus proche du taxon) pour calculer le profil d&#39;un taxon donné</span>
+<span class="c1">-- par exemple, s&#39;il existe des paramètres pour les &quot;Animalia&quot; des paramètres pour le renard,</span>
+<span class="c1">-- les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce</span>
 </pre></div>
 </div>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">check_profile_distribution</span><span class="p">(</span>
@@ -1276,22 +1278,22 @@ Vous pouvez compléter votre configuration en vous inspirant des paramètres par
 <p>De plus, à chaque modification du fichier de configuration de GeoNature ou d’un de ses modules, le backend est rechargé automatiquement.</p>
 <p>Cependant, si vous faites une erreur dans un des fichiers de configuration, le chargement automatique va entrainer un plantage de GeoNature. Dans ce cas, mme si l’erreur d’un des fichiers de configuration est corrigée, il faut redémarrer manuellement GeoNature avec la commande <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code>.</p>
 <p>Pour les versions précédentes de GeoNature, à chaque modification du fichier de configuration, vous devez :</p>
-<ul class="simple">
+<ul>
 <li><p>relancer le backend : <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code></p></li>
-<li><p>regénérer le fichier de configuration du frontend :</p></li>
-</ul>
+<li><p>regénérer le fichier de configuration du frontend :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>backend/venv/bin/activate
 geonature<span class="w"> </span>generate-frontend-config
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>rebuilder le frontend :</p></li>
-</ul>
+</li>
+<li><p>rebuilder le frontend :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>frontend
 nvm<span class="w"> </span>use
 npm<span class="w"> </span>run<span class="w"> </span>build
 </pre></div>
 </div>
+</li>
+</ul>
 <p>Vous pouvez également lancer la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">update-configuration</span></code> qui génèrera la configuration frontend de GeoNature ainsi que de l’ensemble des modules installés avant de lancer le build du frontend.</p>
 </section>
 <section id="configuration-d-un-gn-module">
@@ -1466,6 +1468,7 @@ sudo<span class="w"> </span>-n<span class="w"> </span>-u<span class="w"> </span>
 sudo<span class="w"> </span>-n<span class="w"> </span>-u<span class="w"> </span>postgres<span class="w"> </span>-s<span class="w"> </span>psql<span class="w"> </span>-d<span class="w"> </span>geonature2db<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;CREATE EXTENSION IF NOT EXISTS &quot;uuid-ossp&quot;;&#39;</span>
 sudo<span class="w"> </span>-n<span class="w"> </span>-u<span class="w"> </span>postgres<span class="w"> </span>-s<span class="w"> </span>psql<span class="w"> </span>-d<span class="w"> </span>geonature2db<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;CREATE EXTENSION IF NOT EXISTS &quot;pg_trgm&quot;;&#39;</span>
 sudo<span class="w"> </span>-n<span class="w"> </span>-u<span class="w"> </span>postgres<span class="w"> </span>-s<span class="w"> </span>psql<span class="w"> </span>-d<span class="w"> </span>geonature2db<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;CREATE EXTENSION IF NOT EXISTS &quot;unaccent&quot;;&#39;</span>
+sudo<span class="w"> </span>-n<span class="w"> </span>-u<span class="w"> </span>postgres<span class="w"> </span>-s<span class="w"> </span>psql<span class="w"> </span>-d<span class="w"> </span>geonature2db<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;CREATE EXTENSION IF NOT EXISTS &quot;ltree&quot;;&#39;</span>
 </pre></div>
 </div>
 </li>
@@ -1520,14 +1523,26 @@ tar<span class="w"> </span>-zxvf<span class="w"> </span>&lt;MY_BACKUP_DIRECTORY&
 <span class="w">    </span><span class="n">FOOTER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
 </pre></div>
 </div>
-<p>Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (<cite>« «  »&lt;b&gt;Hello&lt;/b&gt; » » »</cite>).</p>
+<p>Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (<code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;&lt;b&gt;Hello&lt;/b&gt;&quot;&quot;&quot;</span></code>).</p>
 </section>
 <section id="customiser-la-page-de-connexion">
 <h3>Customiser la page de connexion<a class="headerlink" href="#customiser-la-page-de-connexion" title="Lien vers cette rubrique">¶</a></h3>
 <p>Il est possible d’ajouter des liens vers des ressources externes sur la page de connexion de GeoNature. Pour cela,
 remplissez un (ou plusieurs) item(s) <code class="docutils literal notranslate"><span class="pre">ACCOUNT_MANAGEMENT.EXTERNAL_LINKS</span></code> dans la configuration.
 Dans cette variable, le lien est indiqué dans la propriété <code class="docutils literal notranslate"><span class="pre">url</span></code> et le texte affiché de ce dernier doit être renseigné dans le
-propriété <code class="docutils literal notranslate"><span class="pre">label</span></code>. Un exemple est disponible ci-dessous.</p>
+propriété <code class="docutils literal notranslate"><span class="pre">label</span></code>. Plusieurs exemples sont disponible ci-dessous.</p>
+<p><strong>Ajoutez un lien de contact</strong></p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]</span>
+<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Un problème de connexion ?&quot;</span>
+<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;mailto:anne.onnyme@example.com&quot;</span>
+</pre></div>
+</div>
+<p><strong>Ajoutez un lien vers un formulaire de contact</strong></p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]</span>
+<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Formulaire de contact&quot;</span>
+<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://siteorganisme.fr/contact&quot;</span>
+</pre></div>
+</div>
 </section>
 <section id="customiser-l-aspect-esthetique">
 <h3>Customiser l’aspect esthétique<a class="headerlink" href="#customiser-l-aspect-esthetique" title="Lien vers cette rubrique">¶</a></h3>
@@ -1620,7 +1635,10 @@ propriété <code class="docutils literal notranslate"><span class="pre">label</
 </ul>
 </li>
 </ul>
-<p><em>TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235</em></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Procédure à améliorer et simplifier : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/235">https://github.com/PnX-SI/GeoNature/issues/235</a></p>
+</div>
 <p>Si vous n’avez pas choisi d’intégrer le raster MNT national à 250m fourni par défaut lors de l’installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.</p>
 <p>Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME).</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo -n -u postgres -s psql -d MYDBNAME -c &quot;TRUNCATE TABLE ref_geo.dem;&quot;</span>
@@ -1745,7 +1763,11 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
 <span class="w">    </span><span class="n">VALIDATOR_EMAIL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;email@validateur.io&#39;</span>
 </pre></div>
 </div>
-<p>L’utilisateur qui demande la création de compte est automatiquement mis dans un « groupe » UsersHub (par défaut, il s’agit du groupe « En poste »). Ce groupe est paramétrable depuis la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>. (La ligne où <code class="docutils literal notranslate"><span class="pre">is_default_group_for_app</span> <span class="pre">=</span> <span class="pre">true</span></code> sera utilisée comme groupe par défaut pour GeoNature). Il n’est pas en paramètre de GeoNature pusqu’il serait falsifiable via l’API. ⚠️ <strong>Attention</strong>, si vous effectuez une migration depuis une version de GeoNature &lt; 2.2.0, aucun groupe par défaut n’est défini, vous devez définir à la main le groupe par défaut pour l’application GeoNature dans la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>.</p>
+<p>L’utilisateur qui demande la création de compte est automatiquement mis dans un « groupe » UsersHub (par défaut, il s’agit du groupe « En poste »). Ce groupe est paramétrable depuis la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>. (La ligne où <code class="docutils literal notranslate"><span class="pre">is_default_group_for_app</span> <span class="pre">=</span> <span class="pre">true</span></code> sera utilisée comme groupe par défaut pour GeoNature). Il n’est pas en paramètre de GeoNature pusqu’il serait falsifiable via l’API.</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Si vous effectuez une migration depuis une version de GeoNature &lt; 2.2.0, aucun groupe par défaut n’est défini, vous devez définir à la main le groupe par défaut pour l’application GeoNature dans la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>.</p>
+</div>
 <p>Dans le mode « création de compte validé par administrateur », lorsque l’inscription est validée par un administrateur, un email est envoyé à l’utilisateur pour lui indiquer la confirmation de son inscription.
 Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l’aide du paramètre <code class="docutils literal notranslate"><span class="pre">ADDON_USER_EMAIL</span></code> (toujours à ajouter à la rubrique <code class="docutils literal notranslate"><span class="pre">[ACCOUNT_MANAGEMENT]</span></code>).
 Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.</p>
@@ -1805,7 +1827,7 @@ Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 <p>Cette section de la documentation concerne l’implémentation d’un utilisateur générique et public accédant à votre instance GeoNature sans authentification.
 Cela ajoute sur la page d’authentification de GeoNature, un bouton « Accès public » donnant accès à GeoNature sans authentification.</p>
 <p>Etapes :</p>
-<dl class="simple">
+<dl>
 <dt>1/ UsersHub :</dt><dd><ul class="simple">
 <li><p>Aller dans la section <cite>Utilisateurs</cite></p></li>
 <li><p>Créer un utilisateur</p></li>
@@ -1818,33 +1840,136 @@ Cela ajoute sur la page d’authentification de GeoNature, un bouton « Accès 
 <li><p>Attribuer le rôle 1, “Lecteur”</p></li>
 </ul>
 </dd>
-</dl>
-<p>2/ Configuration GeoNature :</p>
-<blockquote>
-<div><ul class="simple">
+<dt>2/ Configuration GeoNature :</dt><dd><ul class="simple">
 <li><p>Dans le fichier de configuration de GeoNature (<code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>), spécifier le nom d’utilisateur pour l’accès public via le paramètre <code class="docutils literal notranslate"><span class="pre">PUBLIC_ACCESS_USERNAME</span></code> :</p></li>
 </ul>
-</div></blockquote>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">PUBLIC_ACCESS_USERNAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;public&#39;</span>
 </pre></div>
 </div>
+</dd>
+</dl>
 <p><a class="reference internal" href="#post-config-change"><span class="std std-ref">Exécuter les actions post-modification de la configuration</span></a>.</p>
 <p>A ce moment-là, cet utilisateur n’a aucune permission dans GeoNature.
 Il s’agit maintenant de gérer ses permissions dans GeoNature.</p>
-<p>3/ GeoNature</p>
-<blockquote>
-<div><ul class="simple">
+<dl class="simple">
+<dt>3/ GeoNature</dt><dd><ul class="simple">
 <li><p>Se connecter à GeoNature avec un utilisateur administrateur</p></li>
 <li><p>Aller dans le module Admin</p></li>
 <li><p>Cliquer sur “Backoffice”, puis « Permissions » / « Par utilisateurs »</p></li>
 <li><p>Choisissez l’utilisateur sélectionné</p></li>
 <li><p>Ajouter des permissions pour chacun des modules de l’instance auquel vous souhaitez que l’utilisateur public accède</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <section id="acces-public-automatique">
 <h4>Accès public automatique<a class="headerlink" href="#acces-public-automatique" title="Lien vers cette rubrique">¶</a></h4>
 <p>Un lien GeoNature peut déclencher automatiquement une connexion avec l’utilisateur public en lui rajoutant les paramètres <code class="docutils literal notranslate"><span class="pre">access=public</span></code>.</p>
 <p>Exemple : <a class="reference external" href="https://demo.geonature.fr/geonature/#/synthese?access=public">https://demo.geonature.fr/geonature/#/synthese?access=public</a></p>
+</section>
+</section>
+<section id="se-connecter-a-d-autres-fournisseurs-d-identites">
+<h3>Se connecter à d’autres fournisseurs d’identités<a class="headerlink" href="#se-connecter-a-d-autres-fournisseurs-d-identites" title="Lien vers cette rubrique">¶</a></h3>
+<p>Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l’aide de fournisseurs d’identités externes (comme Google, GitHub ou INPN).
+Pour cela, il est nécessaire d’implémenter le protocole de connexion pour permettre à GeoNature de communiquer avec ces fournisseurs.
+Actuellement, GeoNature vient avec plusieurs protocoles de connexion implémentés, tels que :</p>
+<ul class="simple">
+<li><p>OpenID</p></li>
+<li><p>OpenIDConnect (OAuth2.0)</p></li>
+<li><p>GeoNature Externe</p></li>
+</ul>
+<section id="ajouter-un-nouveau-fournisseur-d-identite">
+<h4>Ajouter un nouveau fournisseur d’identité<a class="headerlink" href="#ajouter-un-nouveau-fournisseur-d-identite" title="Lien vers cette rubrique">¶</a></h4>
+<p>Pour ajouter un nouveau fournisseur d’identités à votre instance de GeoNature, vous devez ajouter une section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> dans la partie <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION</span></code> de votre fichier de configuration.
+Chaque section doit comporter deux variables obligatoires: <code class="docutils literal notranslate"><span class="pre">module</span></code> et <code class="docutils literal notranslate"><span class="pre">id_provider</span></code>. La variable <code class="docutils literal notranslate"><span class="pre">module</span></code> indique le chemin vers la classe Python qui implémente le protocole de connexion, tandis que <code class="docutils literal notranslate"><span class="pre">id_provider</span></code> indique l’identifiant unique du fournisseur d’identité.
+Vous devez également ajouter les variables de configuration spécifiques au protocole de connexion correspondant.</p>
+<p>Dans l’exemple ci-dessous, on déclare deux fournisseurs d’identités : le premier est le fournisseur d’identité par défaut (local) et le deuxième permet de se connecter à l’INPN.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[AUTHENTICATION]</span>
+<span class="w">    </span><span class="n">DEFAULT_RECONCILIATION_GROUP_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">    </span><span class="k">[[AUTHENTICATION.PROVIDERS]]</span>
+<span class="w">        </span><span class="n">module</span><span class="o">=</span><span class="s2">&quot;pypnusershub.auth.providers.default.LocalProvider&quot;</span>
+<span class="w">        </span><span class="n">id_provider</span><span class="o">=</span><span class="s2">&quot;local_provider&quot;</span>
+
+<span class="w">    </span><span class="k">[[AUTHENTICATION.PROVIDERS]]</span>
+<span class="w">        </span><span class="n">module</span><span class="o">=</span><span class="s2">&quot;pypnusershub.auth.providers.cas_inpn_provider.AuthenficationCASINPN&quot;</span>
+<span class="w">        </span><span class="n">id_provider</span><span class="o">=</span><span class="s2">&quot;connexion_inpn_1&quot;</span>
+<span class="w">        </span><span class="n">WS_ID</span><span class="w"> </span><span class="o">=</span><span class="s2">&quot;secret&quot;</span>
+<span class="w">        </span><span class="n">WS_PASSWORD</span><span class="w"> </span><span class="o">=</span><span class="s2">&quot;secret&quot;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Les protocoles de connexion implémentés sont les suivants :</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.default.LocalProvider</span></code> : protocole de connexion par défaut dans GeoNature.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.cas_inpn_provider.AuthenficationCASINPN</span></code> : CAS de l’INPN.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.openid_provider.OpenIDConnectProvider</span></code> : OpenIDConnect.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.openid_provider.OpenIDProvider</span></code> : OpenID.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.usershub_provider.ExternalUsersHubAuthProvider</span></code> : Autre application utilisant <code class="docutils literal notranslate"><span class="pre">UsersHub-authentification-module</span></code> comme système d’authentification.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Vous pouvez consulter la documentation détaillée sur le <a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#param%C3%A8tres-de-configurations-des-protocoles-de-connexions-inclus">lien suivant</a> pour obtenir la liste et les descriptions des paramètres de configuration de chaque protocole de connexion.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Soyez prudent lors de la modification de la variable de configuration <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION.PROVIDERS</span></code>. Si vous n’indiquez pas le fournisseur d’identité par défaut, vous ne pourrez plus vous connecter à GeoNature avec l’authentification par défaut. Par conséquent, si vous souhaitez également utiliser l’authentification par défaut de GeoNature en plus d’un autre fournisseur d’identité, vous devez le redéclarer dans la configuration. (voir l’exemple ci-dessus)</p>
+</div>
+</section>
+<section id="se-connecter-a-un-autre-geonature">
+<h4>Se connecter à un autre GeoNature<a class="headerlink" href="#se-connecter-a-un-autre-geonature" title="Lien vers cette rubrique">¶</a></h4>
+<p>Si vous souhaitez ajouter le moyen de se connecter à l’aide d’un autre GeoNature, nous avons crée un module décrivant le protocole de connexion nécessaire : <code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.providers.usershub_provider.ExternalUsersHubAuthProvider</span></code>.</p>
+<p>Pour utiliser ce dernier, ajouter la section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> suivante dans la partie <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION</span></code> de la configuration :</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[AUTHENTICATION.PROVIDERS]]</span>
+<span class="w">    </span><span class="n">module</span><span class="o">=</span><span class="s2">&quot;pypnusershub.auth.providers.usershub_provider.ExternalUsersHubAuthProvider&quot;</span>
+<span class="w">    </span><span class="n">id_provider</span><span class="o">=</span><span class="s2">&quot;autre_geonature&quot;</span>
+<span class="w">    </span><span class="n">login_url</span><span class="o">=</span><span class="s2">&quot;&lt;UrlVersAPIdeVotreGeoNature&gt;/login&quot;</span>
+<span class="w">    </span><span class="n">logout_url</span><span class="o">=</span><span class="s2">&quot;&lt;UrlVersAPIdeVotreGeoNature&gt;/logout&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="creer-son-propre-module-de-connexion">
+<h4>Créer son propre module de connexion<a class="headerlink" href="#creer-son-propre-module-de-connexion" title="Lien vers cette rubrique">¶</a></h4>
+<p>Si les protocoles de connexion que nous avons implémentés ne vous suffisent pas, vous pouvez ajouter votre propre protocole de connexion en utilisant la classe <code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.Authentication</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.auth</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">ProviderConfigurationSchema</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db</span> <span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Response</span>
+
+
+<span class="k">class</span> <span class="nc">NEW_PROVIDER</span><span class="p">(</span><span class="n">Authentication</span><span class="p">):</span>
+    <span class="n">is_external</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># si redirection vers un portail de connexion externe</span>
+
+    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Response</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="p">]:</span>
+        <span class="k">pass</span> <span class="c1"># doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d&#39;identités</span>
+
+    <span class="k">def</span> <span class="nf">authorize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># appeler par /auth/authorize si redirection d&#39;un portail de connexion externe</span>
+        <span class="k">pass</span> <span class="c1"># doit retourner un utilisateur</span>
+
+    <span class="k">def</span> <span class="nf">revoke</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span> <span class="c1"># si une action spécifique doit être faite lors de la déconnexion</span>
+
+    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="k">class</span> <span class="nc">SchemaConf</span><span class="p">(</span><span class="n">ProviderConfigurationSchema</span><span class="p">):</span>
+            <span class="n">VAR</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">configuration</span> <span class="o">=</span> <span class="n">SchemaConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="c1"># Si besoin d&#39;un processus de validation</span>
+        <span class="o">...</span><span class="c1"># Configuration du fournisseur d&#39;identités</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Plus de détails sur la classe <code class="docutils literal notranslate"><span class="pre">pypnusershub.auth.Authentication</span></code> sont disponibles dans la documentation de l”<a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#ajouter-son-propre-protocole-de-connexion">API</a>.</p>
+</div>
+</section>
+<section id="desactiver-l-authentification-par-defaut">
+<h4>Désactiver l’authentification par défaut<a class="headerlink" href="#desactiver-l-authentification-par-defaut" title="Lien vers cette rubrique">¶</a></h4>
+<p>Si vous souhaitez désactiver l’authentification par défaut au profit d’un ou plusieurs autres fournisseurs d’identités, il suffit de ne pas déclarer celui-ci dans la section <cite>[[AUTHENTICATION.PROVIDERS]]</cite> dans la partie <cite>AUTHENTICATION</cite> de la configuration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si un seul fournisseur d’identités (différent de l’authentification par défaut) est déclaré dans la section <cite>[[AUTHENTICATION.PROVIDERS]]</cite> de la configuration, l’utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.</p>
+</div>
 </section>
 </section>
 </section>
@@ -1952,42 +2077,44 @@ de sensibilité :</p>
 <p>Le référentiel de sensibilité fourni par le SINP est normalement intégré
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré ou mis à jour avec l’une ou l’autre des commandes suivantes (selon votre version de Taxref) :</p>
-<p>Taxref v17 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v17 20240325&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_17.csv<span class="w">  </span><span class="se">\</span>
-<span class="w">        </span>--encoding<span class="o">=</span>utf-8
+<dl>
+<dt>Taxref v17 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v17 20240325&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibilite_17.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>utf-8
 </pre></div>
 </div>
-<p>Taxref v16 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibiliteV16_20230203/RefSensibilite_16.csv<span class="w">  </span><span class="se">\</span>
-<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
+</dd>
+<dt>Taxref v16 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibiliteV16_20230203/RefSensibilite_16.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>Taxref v15 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401875<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV15_20220331.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_V15_31032022/RefSensibilite_15.csv<span class="w">  </span><span class="se">\</span>
-<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
+</dd>
+<dt>Taxref v15 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401875<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV15_20220331.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibilite_V15_31032022/RefSensibilite_15.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>Taxref v14 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401876<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV14_20220331.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_V14_31032022/RefSensibilite_14.csv<span class="w">  </span><span class="se">\</span>
-<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
+</dd>
+<dt>Taxref v14 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401876<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV14_20220331.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibilite_V14_31032022/RefSensibilite_14.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
+</dd>
+</dl>
 <p>Le jeu de règles est fourni pour chaque version précise de Taxref, certaines
 espèces sensibles pouvant voir leur <em>cd_nom</em> changer d’une version à l’autre.</p>
 <p>Si vous mettez à jour votre version du référentiel de sensibilité, il faut ensuite relancer
@@ -2305,14 +2432,14 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
 <li><p>les champs <code class="docutils literal notranslate"><span class="pre">active_frontend=true</span></code>, <code class="docutils literal notranslate"><span class="pre">active_backend=false</span></code>, <code class="docutils literal notranslate"><span class="pre">ng_module=occtax</span></code> et le champs <code class="docutils literal notranslate"><span class="pre">module_path</span></code> pour l’URL derrière lequel le module sera servi (<code class="docutils literal notranslate"><span class="pre">/florestation</span></code> par exemple)</p></li>
 </ul>
 <p>Exemple :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">gn_commons</span><span class="o">.</span><span class="n">t_modules</span> <span class="p">(</span><span class="n">module_code</span><span class="p">,</span> <span class="n">module_label</span><span class="p">,</span> <span class="n">module_picto</span><span class="p">,</span> <span class="n">module_desc</span><span class="p">,</span> <span class="n">module_path</span><span class="p">,</span><span class="n">active_frontend</span><span class="p">,</span> <span class="n">active_backend</span><span class="p">,</span> <span class="n">ng_module</span><span class="p">)</span> <span class="n">VALUES</span>
-     <span class="p">(</span><span class="s1">&#39;FLORE_STATION&#39;</span><span class="p">,</span><span class="s1">&#39;Flore station v2&#39;</span><span class="p">,</span><span class="s1">&#39;fa-leaf&#39;</span><span class="p">,</span><span class="s1">&#39;Module de saisie Flore station (sous module Occtax)&#39;</span><span class="p">,</span><span class="s1">&#39;flore_station&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">,</span><span class="n">false</span><span class="p">,</span><span class="s1">&#39;occtax&#39;</span><span class="p">);</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="p">(</span><span class="n">module_code</span><span class="p">,</span><span class="w"> </span><span class="n">module_label</span><span class="p">,</span><span class="w"> </span><span class="n">module_picto</span><span class="p">,</span><span class="w"> </span><span class="n">module_desc</span><span class="p">,</span><span class="w"> </span><span class="n">module_path</span><span class="p">,</span><span class="n">active_frontend</span><span class="p">,</span><span class="w"> </span><span class="n">active_backend</span><span class="p">,</span><span class="w"> </span><span class="n">ng_module</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">     </span><span class="p">(</span><span class="s1">&#39;FLORE_STATION&#39;</span><span class="p">,</span><span class="s1">&#39;Flore station v2&#39;</span><span class="p">,</span><span class="s1">&#39;fa-leaf&#39;</span><span class="p">,</span><span class="s1">&#39;Module de saisie Flore station (sous module Occtax)&#39;</span><span class="p">,</span><span class="s1">&#39;flore_station&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">,</span><span class="k">false</span><span class="p">,</span><span class="s1">&#39;occtax&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Ajoutez ensuite une « source » dans la synthese (<code class="docutils literal notranslate"><span class="pre">gn_synthese.t_sources</span></code>) pour ce nouveau module.</p>
 <p>Dans l’exemple ci-dessous, remplacez <code class="docutils literal notranslate"><span class="pre">&lt;MODULE_PATH&gt;</span></code> par le contenu de la colonne <code class="docutils literal notranslate"><span class="pre">module_path</span></code> ainsi que <code class="docutils literal notranslate"><span class="pre">&lt;ID_MODULE&gt;</span></code> par l’id du module que vous venez de créer.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">gn_synthese</span><span class="o">.</span><span class="n">t_sources</span> <span class="p">(</span><span class="n">name_source</span><span class="p">,</span><span class="n">desc_source</span><span class="p">,</span><span class="n">entity_source_pk_field</span><span class="p">,</span><span class="n">url_source</span><span class="p">,,</span><span class="n">id_module</span><span class="p">)</span> <span class="n">VALUES</span>
-<span class="p">(</span><span class="s1">&#39;Flore station (sous-module Occtax)&#39;</span><span class="p">,</span><span class="s1">&#39;Données issues du protocole Flore station&#39;</span><span class="p">,</span><span class="s1">&#39;pr_occtax.cor_counting_occtax.id_counting_occtax&#39;</span><span class="p">,</span><span class="s1">&#39;#/&lt;MODULE_PATH&gt;/info/id_counting&#39;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">ID_MODULE</span><span class="o">&gt;</span><span class="p">);</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">t_sources</span><span class="w"> </span><span class="p">(</span><span class="n">name_source</span><span class="p">,</span><span class="n">desc_source</span><span class="p">,</span><span class="n">entity_source_pk_field</span><span class="p">,</span><span class="n">url_source</span><span class="p">,,</span><span class="n">id_module</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;Flore station (sous-module Occtax)&#39;</span><span class="p">,</span><span class="s1">&#39;Données issues du protocole Flore station&#39;</span><span class="p">,</span><span class="s1">&#39;pr_occtax.cor_counting_occtax.id_counting_occtax&#39;</span><span class="p">,</span><span class="s1">&#39;#/&lt;MODULE_PATH&gt;/info/id_counting&#39;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="n">ID_MODULE</span><span class="o">&gt;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Bien que le module soit une copie d’Occtax, il est tout de même nécessaire de définir les permissions disponibles pour ce module (ce sont les mêmes qu’Occtax). Jouez le scrit SQL suivant en remplacant :MODULE_CODE par le code du module que vous venez de créer.</p>
@@ -2576,7 +2703,7 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 </ul>
 <p>Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.
 Pour cela, il suffit de mettre une valeur <code class="docutils literal notranslate"><span class="pre">false</span></code> dans le champ <code class="docutils literal notranslate"><span class="pre">enable</span></code> de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bdc_statut_text</span></code> pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d’observations, cette étape est fortement recommandée !</p>
-<p>Exemple de requête de mise à jour de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bdc_statut_text</span></code> pour désactiver les textes des DOM-TOM : :</p>
+<p>Exemple de requête de mise à jour de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bdc_statut_text</span></code> pour désactiver les textes des DOM-TOM :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">bdc_statut_text</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span>
 <span class="k">WHERE</span><span class="w"> </span><span class="n">cd_sig</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;TER971&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;TER972&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;TER973&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;TER971&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;TER974&#39;</span><span class="w"> </span><span class="p">)</span>
 <span class="p">;</span>
@@ -2739,8 +2866,7 @@ Une fois les données importées, les données sont supprimées de la table temp
 <section id="configuration-du-module-dimport">
 <h3>Configuration du module d’import<a class="headerlink" href="#configuration-du-module-dimport" title="Lien vers cette rubrique">¶</a></h3>
 <p>Vous pouvez surcoucher ces différents paramètres en les ajoutant directement dans le fichier de configuration principal de GeoNature (<code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>).</p>
-<blockquote>
-<div><div class="table-wrapper docutils container">
+<div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Variable</p></th>
@@ -2754,35 +2880,23 @@ Une fois les données importées, les données sont supprimées de la table temp
 <tr class="row-odd"><td><p>acceptés</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>INSTANCE_BOUNDING_BOX</p></td>
-<td><p>Zone rectangulaire dans laquelle les données doivent être localisées</p></td>
-</tr>
-<tr class="row-odd"><td><p>ENABLE_BOUNDING_BOX_CHECK</p></td>
-<td><p>Activer la vérification de l’appartenance des données importées à la bounding box définie dans INSTANCE_BOUNDING_BOX</p></td>
-</tr>
-<tr class="row-even"><td><p>ENABLE_SYNTHESE_UUID_CHECK</p></td>
-<td><p>Activer la vérification des UUID dans les données importées avec ceux de la Synthèse</p></td>
-</tr>
-<tr class="row-odd"><td><p>MAX_FILE_SIZE</p></td>
+<tr class="row-even"><td><p>MAX_FILE_SIZE</p></td>
 <td><p>Taille maximale du fichier chargé (en Mo)</p></td>
 </tr>
-<tr class="row-even"><td><p>SRID</p></td>
+<tr class="row-odd"><td><p>SRID</p></td>
 <td><p>SRID autorisés pour les fichiers en entrée</p></td>
 </tr>
-<tr class="row-odd"><td><p>ALLOWED_EXTENSIONS</p></td>
+<tr class="row-even"><td><p>ALLOWED_EXTENSIONS</p></td>
 <td><p>Extensions autorisées (seul le format CSV est accepté actuellement)</p></td>
 </tr>
-<tr class="row-even"><td><p>ALLOW_VALUE_MAPPING</p></td>
+<tr class="row-odd"><td><p>ALLOW_VALUE_MAPPING</p></td>
 <td><p>Activer ou non l’étape du mapping des valeurs</p></td>
 </tr>
-<tr class="row-odd"><td><p>DEFAULT_VALUE_MAPPING_ID</p></td>
+<tr class="row-even"><td><p>DEFAULT_VALUE_MAPPING_ID</p></td>
 <td><p>Si le mapping des valeurs est désactivé, specifier l’identifiant du mapping qui doit être utilisé</p></td>
 </tr>
-<tr class="row-even"><td><p>FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE</p></td>
+<tr class="row-odd"><td><p>FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE</p></td>
 <td><p>Rempli les valeurs de nomenclature erronées par la valeur par défaut</p></td>
-</tr>
-<tr class="row-odd"><td><p>DISPLAY_CHECK_BOX_MAPPED_FIELD</p></td>
-<td><p>Afficher le bouton pour afficher/masquer les champs déjà mappés</p></td>
 </tr>
 <tr class="row-even"><td><p>CHECK_PRIVATE_JDD_BLURING</p></td>
 <td><p>Active la vérification de l’existence du champs « floutage » si le JDD est privé</p></td>
@@ -2817,7 +2931,6 @@ Une fois les données importées, les données sont supprimées de la table temp
 </tbody>
 </table>
 </div>
-</div></blockquote>
 </section>
 <section id="permissions-de-limport">
 <h3>Permissions de l’import<a class="headerlink" href="#permissions-de-limport" title="Lien vers cette rubrique">¶</a></h3>
@@ -2847,8 +2960,7 @@ A noter! La liste des jeux de données disponibles s’appuie bien sur les permi
 <h3>Contrôles de données<a class="headerlink" href="#controles-de-donnees" title="Lien vers cette rubrique">¶</a></h3>
 <p><strong>Erreurs</strong></p>
 <p>Le tableau ci-dessous liste les codes d’erreur et leur description.</p>
-<blockquote>
-<div><div class="table-wrapper docutils container">
+<div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Code Erreur</p></th>
@@ -3033,7 +3145,6 @@ A noter! La liste des jeux de données disponibles s’appuie bien sur les permi
 </tbody>
 </table>
 </div>
-</div></blockquote>
 <p><strong>Format de dates autorisées</strong></p>
 <p>Date :</p>
 <ul class="simple">
@@ -3279,6 +3390,13 @@ De manière générale, nous séparons les contrôles de données en deux catég
 <li><a class="reference internal" href="#acces-public-automatique">Accès public automatique</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#se-connecter-a-d-autres-fournisseurs-d-identites">Se connecter à d’autres fournisseurs d’identités</a><ul>
+<li><a class="reference internal" href="#ajouter-un-nouveau-fournisseur-d-identite">Ajouter un nouveau fournisseur d’identité</a></li>
+<li><a class="reference internal" href="#se-connecter-a-un-autre-geonature">Se connecter à un autre GeoNature</a></li>
+<li><a class="reference internal" href="#creer-son-propre-module-de-connexion">Créer son propre module de connexion</a></li>
+<li><a class="reference internal" href="#desactiver-l-authentification-par-defaut">Désactiver l’authentification par défaut</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#gestion-de-la-sensibilite">Gestion de la sensibilité</a><ul>
@@ -3388,7 +3506,7 @@ De manière générale, nous séparons les contrôles de données en deux catég
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="_static/documentation_options.js?v=b5170922"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

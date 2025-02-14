@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_commons.routes - Documentation GeoNature 2.15.2</title>
+        <title>geonature.core.gn_commons.routes - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -531,6 +531,11 @@
             <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">active_frontend</span> <span class="k">else</span> <span class="n">module</span><span class="o">.</span><span class="n">module_external_url</span>
         <span class="p">)</span>
         <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">module_path</span> <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">active_frontend</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Setup manually TAXHUB URL</span>
+        <span class="k">if</span> <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;TAXHUB&quot;</span><span class="p">:</span>
+            <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_external_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;API_ENDPOINT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/admin&quot;</span>
+
         <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_objects&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># get cruved for each object</span>
         <span class="k">for</span> <span class="n">obj_dict</span> <span class="ow">in</span> <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;objects&quot;</span><span class="p">]:</span>
@@ -802,7 +807,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="../../../../_static/documentation_options.js?v=b5170922"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

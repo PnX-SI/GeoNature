@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.imports.config_schema - Documentation GeoNature 2.15.2</title>
+        <title>geonature.core.imports.config_schema - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -532,25 +532,6 @@
 <span class="n">DEFAULT_VALUE_MAPPING_ID</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 
-<div class="viewcode-block" id="INSTANCE_BOUNDING_BOX">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.INSTANCE_BOUNDING_BOX">[docs]</a>
-<span class="n">INSTANCE_BOUNDING_BOX</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">51.15</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="ALLOW_FIELD_MAPPING">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ALLOW_FIELD_MAPPING">[docs]</a>
-<span class="n">ALLOW_FIELD_MAPPING</span> <span class="o">=</span> <span class="kc">True</span></div>
-
-<div class="viewcode-block" id="DEFAULT_FIELD_MAPPING_ID">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.DEFAULT_FIELD_MAPPING_ID">[docs]</a>
-<span class="n">DEFAULT_FIELD_MAPPING_ID</span> <span class="o">=</span> <span class="mi">1</span></div>
-
-<span class="c1"># Parameter to define if the checkbox allowing to change display mode is displayed or not.</span>
-<div class="viewcode-block" id="DISPLAY_CHECK_BOX_MAPPED_FIELD">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.DISPLAY_CHECK_BOX_MAPPED_FIELD">[docs]</a>
-<span class="n">DISPLAY_CHECK_BOX_MAPPED_FIELD</span> <span class="o">=</span> <span class="kc">True</span></div>
-
-
 <span class="c1"># Parameter to define the rank shown in the doughnut chart in the import report</span>
 <span class="c1"># must be in [&#39;regne&#39;, &#39;phylum&#39;, &#39;classe&#39;, &#39;ordre&#39;, &#39;famille&#39;, &#39;sous_famille&#39;, &#39;tribu&#39;, &#39;group1_inpn&#39;, &#39;group2_inpn&#39;]</span>
 <div class="viewcode-block" id="DEFAULT_RANK">
@@ -612,16 +593,6 @@
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.DISPLAY_MAPPED_VALUES">[docs]</a>
     <span class="n">DISPLAY_MAPPED_VALUES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># FIXME: unused</span></div>
 
-<div class="viewcode-block" id="ImportConfigSchema.INSTANCE_BOUNDING_BOX">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.INSTANCE_BOUNDING_BOX">[docs]</a>
-    <span class="n">INSTANCE_BOUNDING_BOX</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">INSTANCE_BOUNDING_BOX</span>
-    <span class="p">)</span>  <span class="c1"># FIXME: unused</span></div>
-
-<div class="viewcode-block" id="ImportConfigSchema.ENABLE_BOUNDING_BOX_CHECK">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.ENABLE_BOUNDING_BOX_CHECK">[docs]</a>
-    <span class="n">ENABLE_BOUNDING_BOX_CHECK</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># FIXME : unused</span></div>
-
     <span class="c1"># When setting PER_DATASET_UUID_CHECK=True (used for import in synthese):</span>
     <span class="c1"># - Replace the unicity constraint on unique_id_sinp with an unicity constraint on (unique_id_sinp,id_dataset).</span>
     <span class="c1"># - Disable per-row dataset import by setting display=False in gn_imports.bib_fields</span>
@@ -630,19 +601,6 @@
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.PER_DATASET_UUID_CHECK">[docs]</a>
     <span class="n">PER_DATASET_UUID_CHECK</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ImportConfigSchema.ALLOW_FIELD_MAPPING">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.ALLOW_FIELD_MAPPING">[docs]</a>
-    <span class="n">ALLOW_FIELD_MAPPING</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="n">ALLOW_FIELD_MAPPING</span><span class="p">)</span>  <span class="c1"># FIXME: unused</span></div>
-
-<div class="viewcode-block" id="ImportConfigSchema.DEFAULT_FIELD_MAPPING_ID">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.DEFAULT_FIELD_MAPPING_ID">[docs]</a>
-    <span class="n">DEFAULT_FIELD_MAPPING_ID</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span>
-        <span class="n">load_default</span><span class="o">=</span><span class="n">DEFAULT_FIELD_MAPPING_ID</span>
-    <span class="p">)</span>  <span class="c1"># FIXME: unused</span></div>
-
-<div class="viewcode-block" id="ImportConfigSchema.DISPLAY_CHECK_BOX_MAPPED_FIELD">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.DISPLAY_CHECK_BOX_MAPPED_FIELD">[docs]</a>
-    <span class="n">DISPLAY_CHECK_BOX_MAPPED_FIELD</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ImportConfigSchema.CHECK_PRIVATE_JDD_BLURING">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.CHECK_PRIVATE_JDD_BLURING">[docs]</a>
@@ -700,6 +658,10 @@
     <span class="n">EXPORT_REPORT_PDF_FILENAME</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span>
         <span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;import_</span><span class="si">{id_import}</span><span class="s2">_</span><span class="si">{date_create_import}</span><span class="s2">_report.pdf&quot;</span>
     <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImportConfigSchema.INSERT_BATCH_SIZE">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/config_schema/index.html#geonature.core.imports.config_schema.ImportConfigSchema.INSERT_BATCH_SIZE">[docs]</a>
+    <span class="n">INSERT_BATCH_SIZE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -734,7 +696,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="../../../../_static/documentation_options.js?v=b5170922"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

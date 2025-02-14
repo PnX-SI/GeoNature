@@ -25,10 +25,6 @@ Attributes
    geonature.core.imports.config_schema.DEFAULT_COUNT_VALUE
    geonature.core.imports.config_schema.ALLOW_VALUE_MAPPING
    geonature.core.imports.config_schema.DEFAULT_VALUE_MAPPING_ID
-   geonature.core.imports.config_schema.INSTANCE_BOUNDING_BOX
-   geonature.core.imports.config_schema.ALLOW_FIELD_MAPPING
-   geonature.core.imports.config_schema.DEFAULT_FIELD_MAPPING_ID
-   geonature.core.imports.config_schema.DISPLAY_CHECK_BOX_MAPPED_FIELD
    geonature.core.imports.config_schema.DEFAULT_RANK
 
 
@@ -83,20 +79,6 @@ Module Contents
    :value: 3
 
 
-.. py:data:: INSTANCE_BOUNDING_BOX
-
-.. py:data:: ALLOW_FIELD_MAPPING
-   :value: True
-
-
-.. py:data:: DEFAULT_FIELD_MAPPING_ID
-   :value: 1
-
-
-.. py:data:: DISPLAY_CHECK_BOX_MAPPED_FIELD
-   :value: True
-
-
 .. py:data:: DEFAULT_RANK
    :value: 'regne'
 
@@ -142,22 +124,7 @@ Module Contents
    .. py:attribute:: DISPLAY_MAPPED_VALUES
 
 
-   .. py:attribute:: INSTANCE_BOUNDING_BOX
-
-
-   .. py:attribute:: ENABLE_BOUNDING_BOX_CHECK
-
-
    .. py:attribute:: PER_DATASET_UUID_CHECK
-
-
-   .. py:attribute:: ALLOW_FIELD_MAPPING
-
-
-   .. py:attribute:: DEFAULT_FIELD_MAPPING_ID
-
-
-   .. py:attribute:: DISPLAY_CHECK_BOX_MAPPED_FIELD
 
 
    .. py:attribute:: CHECK_PRIVATE_JDD_BLURING
@@ -188,5 +155,8 @@ Module Contents
 
 
    .. py:attribute:: EXPORT_REPORT_PDF_FILENAME
+
+
+   .. py:attribute:: INSERT_BATCH_SIZE
 
 

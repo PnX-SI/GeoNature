@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../../search.html" /><link rel="next" title="geonature.core.imports" href="../../../imports/index.html" /><link rel="prev" title="geonature.core.gn_synthese.utils.process" href="../process/index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_synthese.utils.query_select_sqla - Documentation GeoNature 2.15.2</title>
+        <title>geonature.core.gn_synthese.utils.query_select_sqla - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../../index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="../../../../../../index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -514,6 +514,16 @@ query_joins = SQLA Join object</p>
 <span class="sig-name descname"><span class="pre">geom_column</span></span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#SyntheseQuery.geom_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.geom_column" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.srid">
+<span class="sig-name descname"><span class="pre">srid</span></span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#SyntheseQuery.srid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.srid" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.srid_l_areas">
+<span class="sig-name descname"><span class="pre">srid_l_areas</span></span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#SyntheseQuery.srid_l_areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.srid_l_areas" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.add_join">
 <span class="sig-name descname"><span class="pre">add_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">join_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#SyntheseQuery.add_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.add_join" title="Lien vers cette définition">¶</a></dt>
@@ -689,6 +699,8 @@ aggrégée de façon à tester le nombre puis jointer sur le département de la 
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery._already_joined_table"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery._already_joined_table</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.query_joins"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.query_joins</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.geom_column"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.geom_column</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.srid"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.srid</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.srid_l_areas"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.srid_l_areas</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.add_join"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.add_join()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.add_join_multiple_cond"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.add_join_multiple_cond()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.build_permissions_filter"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.build_permissions_filter()</span></code></a></li>
@@ -716,7 +728,7 @@ aggrégée de façon à tester le nombre puis jointer sur le département de la 
       
     </aside>
   </div>
-</div><script src="../../../../../../_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="../../../../../../_static/documentation_options.js?v=b5170922"></script>
     <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

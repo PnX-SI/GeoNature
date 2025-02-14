@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.imports.tasks - Documentation GeoNature 2.15.2</title>
+        <title>geonature.core.imports.tasks - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -516,7 +516,8 @@
     <span class="n">transient_table</span> <span class="o">=</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">get_transient_table</span><span class="p">()</span>
 
     <span class="c1"># Copy valid transient data to destination</span>
-    <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">import_data_to_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">progress</span> <span class="ow">in</span> <span class="n">imprt</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">import_data_to_destination</span><span class="p">(</span><span class="n">imprt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="n">progress</span><span class="p">})</span>
 
     <span class="n">count_entities</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">entities</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
@@ -530,15 +531,29 @@
                 <span class="n">BibFields</span><span class="o">.</span><span class="n">name_field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">imprt</span><span class="o">.</span><span class="n">fieldmapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
             <span class="p">)</span>
         <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-        <span class="n">columns_to_count_unique_entities</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_column</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span>
-        <span class="p">]</span>
-        <span class="n">n_valid_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="o">*</span><span class="n">columns_to_count_unique_entities</span><span class="p">)))</span>
-            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">transient_table</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+
+        <span class="n">id_field</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">entity</span><span class="o">.</span><span class="n">unique_column</span><span class="o">.</span><span class="n">dest_field</span> <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">unique_column</span><span class="o">.</span><span class="n">dest_field</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">data_fields_query</span> <span class="o">=</span> <span class="p">[</span><span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dest_field</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">data_fields_query</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="n">imprt</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+            <span class="n">transient_table</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">validity_column</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">count_select</span><span class="p">(</span><span class="n">query_cte</span><span class="p">):</span>
+            <span class="n">count_</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
+            <span class="c1"># if multiple entities and the entity has a unique column we base the count on the unique column</span>
+
+            <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">unique_column</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">id_field</span><span class="p">:</span>
+                <span class="n">count_</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">query_cte</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">id_field</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">count_</span>
+
+        <span class="n">valid_data_cte</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">cte</span><span class="p">()</span>
+        <span class="n">n_valid_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">count_select</span><span class="p">(</span><span class="n">valid_data_cte</span><span class="p">)))</span><span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">valid_data_cte</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">count_entities</span> <span class="o">+=</span> <span class="n">n_valid_data</span>
     <span class="n">imprt</span><span class="o">.</span><span class="n">statistics</span><span class="p">[</span><span class="s2">&quot;import_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">count_entities</span>
 
@@ -635,7 +650,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="../../../../_static/documentation_options.js?v=b5170922"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

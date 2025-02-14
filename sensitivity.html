@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Gestion de la sensibilité - Documentation GeoNature 2.15.2</title>
+        <title>Gestion de la sensibilité - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -538,42 +538,44 @@ de sensibilité :</p>
 <p>Le référentiel de sensibilité fourni par le SINP est normalement intégré
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré ou mis à jour avec l’une ou l’autre des commandes suivantes (selon votre version de Taxref) :</p>
-<p>Taxref v17 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v17 20240325&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_17.csv<span class="w">  </span><span class="se">\</span>
-<span class="w">        </span>--encoding<span class="o">=</span>utf-8
+<dl>
+<dt>Taxref v17 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v17 20240325&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibilite_17.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>utf-8
 </pre></div>
 </div>
-<p>Taxref v16 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibiliteV16_20230203/RefSensibilite_16.csv<span class="w">  </span><span class="se">\</span>
-<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
+</dd>
+<dt>Taxref v16 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibiliteV16_20230203/RefSensibilite_16.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>Taxref v15 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401875<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV15_20220331.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_V15_31032022/RefSensibilite_15.csv<span class="w">  </span><span class="se">\</span>
-<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
+</dd>
+<dt>Taxref v15 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401875<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV15_20220331.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibilite_V15_31032022/RefSensibilite_15.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>Taxref v14 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401876<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV14_20220331.zip<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_V14_31032022/RefSensibilite_14.csv<span class="w">  </span><span class="se">\</span>
-<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
+</dd>
+<dt>Taxref v14 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401876<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV14_20220331.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibilite_V14_31032022/RefSensibilite_14.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
+</dd>
+</dl>
 <p>Le jeu de règles est fourni pour chaque version précise de Taxref, certaines
 espèces sensibles pouvant voir leur <em>cd_nom</em> changer d’une version à l’autre.</p>
 <p>Si vous mettez à jour votre version du référentiel de sensibilité, il faut ensuite relancer
@@ -762,7 +764,7 @@ que l’observation est floutée au département par exemple.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="_static/documentation_options.js?v=b5170922"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

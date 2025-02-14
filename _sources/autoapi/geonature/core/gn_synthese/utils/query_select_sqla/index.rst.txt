@@ -67,6 +67,12 @@ Module Contents
    .. py:attribute:: geom_column
 
 
+   .. py:attribute:: srid
+
+
+   .. py:attribute:: srid_l_areas
+
+
    .. py:method:: add_join(right_table, right_column, left_column, join_type='right')
 
 

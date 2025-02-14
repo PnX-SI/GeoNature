@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="FAQ" href="FAQ.html" /><link rel="prev" title="Manuel administrateur" href="admin-manual.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Développement - Documentation GeoNature 2.15.2</title>
+        <title>Développement - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -898,8 +898,8 @@ vous pouvez devoir créer votre propre convertisseur de modèle héritant à la 
 </pre></div>
 </div>
 </section>
-<section id="modeles-a-permission">
-<h4>Modèles à permission<a class="headerlink" href="#modeles-a-permission" title="Lien vers cette rubrique">¶</a></h4>
+<section id="modeles-de-permission">
+<h4>Modèles de permission<a class="headerlink" href="#modeles-de-permission" title="Lien vers cette rubrique">¶</a></h4>
 <p>Le mixin <code class="docutils literal notranslate"><span class="pre">CruvedSchemaMixin</span></code> permet d’ajouter un champs <code class="docutils literal notranslate"><span class="pre">cruved</span></code> à la sérialisation qui contiendra un dictionnaire avec en clé les actions du cruved et en valeur des booléens indiquant si l’action est disponible.</p>
 <p>Pour l’utiliser, il faut :</p>
 <ul class="simple">
@@ -907,7 +907,7 @@ vous pouvez devoir créer votre propre convertisseur de modèle héritant à la 
 Ces propriétés sont passées en argument à la fonction <code class="docutils literal notranslate"><span class="pre">get_scopes_by_action</span></code>.</p></li>
 <li><p>Le <strong>modèle</strong> doit définir une fonction <code class="docutils literal notranslate"><span class="pre">has_instance_permission(scope)</span></code> prenant en argument une portée (0, 1, 2 ou 3) et renvoyant un booléen.</p></li>
 </ul>
-<p>Par défaut, pour des raisons de performance, le cruved est exclu de la sérialisation.
+<p>Par défaut, le CRUVED est exclu de la sérialisation pour des raisons de performance.
 Il faut donc demander sa sérialisation lors de la création du schéma avec <code class="docutils literal notranslate"><span class="pre">only=[&quot;+cruved&quot;]</span></code>.
 Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span></code> permet de spécifier que l’on souhaite rajouter le cruved aux champs à sérialiser (et non que l’on souhaite sérialiser uniquement le cruved).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.schema</span> <span class="kn">import</span> <span class="n">CruvedSchemaMixin</span>
@@ -1091,28 +1091,46 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 <h4>Modèles géographiques<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h4>
 <p>La bibliothèque maison <a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo">Utils-Flask-SQLAlchemy-Geo</a> fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.serializers.geoserializable</span></code></p>
-<p>Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.serializers.geoserializable</span></code></dt><dd><p>Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
 retourne un dictionnaire serialisable sous forme de Feature geojson.</p>
-<dl class="simple">
-<dt>Fichier définition modèle</dt><dd></dd>
-</dl>
+<p>Fichier définition modèle</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="kn">import</span> <span class="n">geoserializable</span>
+
+
+<span class="nd">@geoserializable</span>
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;bla&#39;</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
 <p>Fichier utilisation modèle</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">instance</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">instance</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">as_geofeature</span><span class="p">()</span>
 </pre></div>
 </div>
+</dd>
+</dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.serializers.shapeserializable</span></code></p>
-<p>Décorateur pour les modèles SQLA :</p>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.serializers.shapeserializable</span></code></dt><dd><p>Décorateur pour les modèles SQLA :</p>
 <ul class="simple">
 <li><p>Ajoute une méthode <code class="docutils literal notranslate"><span class="pre">as_list</span></code> qui retourne l’objet sous forme de tableau (utilisé pour créer des shapefiles)</p></li>
 <li><p>Ajoute une méthode de classe <code class="docutils literal notranslate"><span class="pre">to_shape</span></code> qui crée des shapefiles à partir des données passées en paramètre</p></li>
 </ul>
-<dl class="simple">
-<dt>Fichier définition modèle</dt><dd></dd>
-</dl>
-<p>Fichier utilisation modèle :</p>
+<p>Fichier définition modèle</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="kn">import</span> <span class="n">shapeserializable</span>
+
+
+<span class="nd">@shapeserializable</span>
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;bla&#39;</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Fichier utilisation modèle</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># utilisation de as_shape()</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyShapeserializableClass</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 <span class="n">MyShapeserializableClass</span><span class="o">.</span><span class="n">as_shape</span><span class="p">(</span>
@@ -1124,19 +1142,26 @@ retourne un dictionnaire serialisable sous forme de Feature geojson.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
+</dd>
+</dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.utilsgeometry.FionaShapeService</span></code></p>
-<p>Classe utilitaire pour créer des shapefiles.</p>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.utilsgeometry.FionaShapeService</span></code></dt><dd><p>Classe utilitaire pour créer des shapefiles.</p>
 <p>La classe contient 3 méthodes de classe :</p>
-</li>
-<li><p>FionaShapeService.create_shapes_struct() : crée la structure de 3 shapefiles
-(point, ligne, polygone) à partir des colonens et de la geométrie passée
-en paramètre</p></li>
-<li><p>FionaShapeService.create_feature() : ajoute un enregistrement
-aux shapefiles</p></li>
-<li><p>FionaShapeService.save_and_zip_shapefiles() : sauvegarde et zip les
-shapefiles qui ont au moins un enregistrement:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MySQLAModel</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FionaShapeService.create_shapes_struct()</span></code> : crée la structure de 3 shapefiles</p></li>
+</ul>
+<p>(point, ligne, polygone) à partir des colonens et de la geométrie passée
+en paramètre</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FionaShapeService.create_feature()</span></code> : ajoute un enregistrement</p></li>
+</ul>
+<p>aux shapefiles</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FionaShapeService.save_and_zip_shapefiles()</span></code> : sauvegarde et zip les</p></li>
+</ul>
+<p>shapefiles qui ont au moins un enregistrement</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MySQLAModel</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
         <span class="n">FionaShapeService</span><span class="o">.</span><span class="n">create_shapes_struct</span><span class="p">(</span>
@@ -1150,6 +1175,8 @@ shapefiles qui ont au moins un enregistrement:</p>
         <span class="n">FionaShapeService</span><span class="o">.</span><span class="n">save_and_zip_shapefiles</span><span class="p">()</span>
 </pre></div>
 </div>
+</dd>
+</dl>
 </li>
 </ul>
 </section>
@@ -1157,10 +1184,9 @@ shapefiles qui ont au moins un enregistrement:</p>
 <section id="reponses">
 <h3>Réponses<a class="headerlink" href="#reponses" title="Lien vers cette rubrique">¶</a></h3>
 <p>Voici quelques conseils sur l’envoi de réponse dans vos routes.</p>
-<ul class="simple">
-<li><p>Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.</p></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_foo</span><span class="p">(</span><span class="n">pk</span><span class="p">):</span>
+<ul>
+<li><dl>
+<dt>Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_foo</span><span class="p">(</span><span class="n">pk</span><span class="p">):</span>
     <span class="n">foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=...</span><span class="p">))</span>
 
@@ -1177,31 +1203,34 @@ shapefiles qui ont au moins un enregistrement:</p>
     <span class="k">return</span> <span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=...</span><span class="p">)</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Pour les listes vides, ne pas renvoyer le code d’erreur 404 mais une liste vide !</p></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">jsonify</span><span class="p">([])</span>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Pour les listes vides, ne pas renvoyer le code d’erreur 404 mais une liste vide !</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">jsonify</span><span class="p">([])</span>
 </pre></div>
 </div>
-<ul class="simple">
+</dd>
+</dl>
+</li>
 <li><p>Renvoyer une liste et sa longueur dans une structure de données non conventionnelle est strictement inutile, il est très simple d’accéder à la longueur de la liste en javascript via l’attribut <code class="docutils literal notranslate"><span class="pre">length</span></code>.</p></li>
-<li><p>Traitement des erreurs : utiliser <a class="reference external" href="https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/">les exceptions prévues à cet effet</a> :</p></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Fobridden</span><span class="p">,</span> <span class="n">Badrequest</span><span class="p">,</span> <span class="n">NotFound</span>
+<li><dl>
+<dt>Traitement des erreurs<span class="classifier">utiliser <a class="reference external" href="https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/">les exceptions prévues à cet effet</a> :</span></dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Fobridden</span><span class="p">,</span> <span class="n">Badrequest</span><span class="p">,</span> <span class="n">NotFound</span>
 
 <span class="k">def</span> <span class="nf">restricted_action</span><span class="p">(</span><span class="n">pk</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_allowed</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">Forbidden</span>
 </pre></div>
 </div>
-<ul>
+</dd>
+</dl>
+</li>
 <li><p>Penser à utiliser <code class="docutils literal notranslate"><span class="pre">get_or_404</span></code> plutôt que de lancer une exception <code class="docutils literal notranslate"><span class="pre">NotFound</span></code></p></li>
 <li><p>Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception <code class="docutils literal notranslate"><span class="pre">Forbidden</span></code> (code HTTP 403), et non l’exception <code class="docutils literal notranslate"><span class="pre">Unauthorized</span></code> (code HTTP 401), cette dernière étant réservée aux utilisateurs non authentifiés.</p></li>
-<li><p>Vérifier la validité des données fournies par l’utilisateur (<code class="docutils literal notranslate"><span class="pre">request.json</span></code> ou <code class="docutils literal notranslate"><span class="pre">request.args</span></code>) et lever une exception <code class="docutils literal notranslate"><span class="pre">BadRequest</span></code> si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).</p>
-<blockquote>
-<div><ul>
-<li><p>Marshmallow peut servir à cela</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">ValidationError</span>
+<li><dl>
+<dt>Vérifier la validité des données fournies par l’utilisateur (<code class="docutils literal notranslate"><span class="pre">request.json</span></code> ou <code class="docutils literal notranslate"><span class="pre">request.args</span></code>) et lever une exception <code class="docutils literal notranslate"><span class="pre">BadRequest</span></code> si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).</dt><dd><ul>
+<li><dl>
+<dt>Marshmallow peut servir à cela</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">ValidationError</span>
 <span class="k">def</span> <span class="nf">my_route</span><span class="p">():</span>
     <span class="k">class</span> <span class="nc">RequestSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Float</span><span class="p">()</span>
@@ -1211,10 +1240,11 @@ shapefiles qui ont au moins un enregistrement:</p>
         <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd>
+</dl>
 </li>
-<li><p>Cela peut être fait avec <em>jsonschema</em> :</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">from</span> <span class="n">jsonschema</span> <span class="kn">import</span> <span class="nn">validate</span> <span class="k">as</span> <span class="nn">validate_json</span><span class="o">,</span> <span class="nn">ValidationError</span>
+<li><dl>
+<dt>Cela peut être fait avec <em>jsonschema</em> :</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">from</span> <span class="n">jsonschema</span> <span class="kn">import</span> <span class="nn">validate</span> <span class="k">as</span> <span class="nn">validate_json</span><span class="o">,</span> <span class="nn">ValidationError</span>
 
 <span class="k">def</span> <span class="nf">my_route</span><span class="p">():</span>
     <span class="n">request_schema</span> <span class="o">=</span> <span class="p">{</span>
@@ -1231,12 +1261,19 @@ shapefiles qui ont au moins un enregistrement:</p>
         <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 </div>
-</div></blockquote>
+</dd>
+</dl>
 </li>
-<li><p>Pour les réponses vides (exemple : route de type delete), on pourra utiliser le code de retour 204 :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">204</span>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Pour les réponses vides (exemple<span class="classifier">route de type delete), on pourra utiliser le code de retour 204 :</span></dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">204</span>
 </pre></div>
 </div>
+</dd>
+</dl>
 <p>Lorsque par exemple une action est traitée mais aucun résultat n’est à renvoyer, inutile d’envoyer une réponse « OK ». C’est l’envoi d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenu d’une réponse non normalisée.</p>
 </li>
 </ul>
@@ -1297,18 +1334,20 @@ données).</p>
 <p>Pour cela, plusieurs solutions :</p>
 <ul>
 <li><p>Le spécifier dans la relationship :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AcquisitionFramework</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AcquisitionFramework</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">)</span>
     <span class="n">datasets</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationships</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">uselist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s1">&#39;joined&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Cependant, cette stratégie s’appliquera (sauf contre-ordre) dans tous les cas, même lorsque les DS ne sont pas nécessaires, alourdissant potentiellement certaines requêtes qui n’en ont pas usage.</p>
 </li>
-<li><p>Le spécifier au moment où la requête est effectuée :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span>
+<li><dl>
+<dt>Le spécifier au moment où la requête est effectuée :</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span>
 
 <span class="n">af_list</span> <span class="o">=</span> <span class="n">AcquisitionFramework</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">joinedload</span><span class="p">(</span><span class="s1">&#39;datasets&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 </div>
+</dd>
+</dl>
 </li>
 </ul>
 <p>Il est également possible de joindre les relations d’une relation, par exemple le créateur des jeux de données :</p>
@@ -2616,7 +2655,7 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
 <li><a class="reference internal" href="#modeles-avec-nomenclatures">Modèles avec nomenclatures</a></li>
 <li><a class="reference internal" href="#modeles-geographiques">Modèles géographiques</a></li>
 <li><a class="reference internal" href="#modeles-geographiques-avec-nomenclatures">Modèles géographiques avec nomenclatures</a></li>
-<li><a class="reference internal" href="#modeles-a-permission">Modèles à permission</a></li>
+<li><a class="reference internal" href="#modeles-de-permission">Modèles de permission</a></li>
 <li><a class="reference internal" href="#creation-dun-objet">Création d’un objet</a><ul>
 <li><a class="reference internal" href="#id3">Gestion des relationships</a><ul>
 <li><a class="reference internal" href="#many-to-one">Many-to-One</a></li>
@@ -2732,7 +2771,7 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="_static/documentation_options.js?v=b5170922"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Installation globale - Documentation GeoNature 2.15.2</title>
+        <title>Installation globale - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -451,19 +451,22 @@
 <h3>Téléchargement<a class="headerlink" href="#telechargement" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p>Se placer à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur puis récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature (incluant TaxHub) et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget<span class="w"> </span>https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
-<span class="gp">$ </span>wget<span class="w"> </span>https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini</span>
+<span class="go">wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh</span>
 </pre></div>
 </div>
 </li>
 </ul>
-<p><em>Attention</em> : l’installation globale fonctionne uniquement si les scripts sont placés à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur courant.</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>L’installation globale fonctionne uniquement si les scripts sont placés à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur courant.</p>
+</div>
 </section>
 <section id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p>Configurez votre installation en adaptant le fichier <code class="docutils literal notranslate"><span class="pre">install_all.ini</span></code> :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nano<span class="w"> </span>install_all.ini
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nano install_all.ini</span>
 </pre></div>
 </div>
 </li>
@@ -482,21 +485,16 @@
 </section>
 <section id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Lien vers cette rubrique">¶</a></h3>
-<ul>
-<li><p>Lancer l’installation :</p>
+<p>Lancer l’installation à l’aide des commandes suivantes :</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>touch<span class="w"> </span>install_all.log
 chmod<span class="w"> </span>+x<span class="w"> </span>install_all.sh
 ./install_all.sh<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>install_all.log
 </pre></div>
 </div>
-</li>
-</ul>
 <p>Une fois l’installation terminée, lancez la commande suivante:</p>
-<blockquote>
-<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">exec</span><span class="w"> </span>bash
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">exec</span><span class="w"> </span>bash
 </pre></div>
 </div>
-</div></blockquote>
 <p>Les applications sont disponibles aux adresses suivantes :</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://monip.com/geonature/">http://monip.com/geonature/</a></p></li>
@@ -597,7 +595,7 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class=
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="_static/documentation_options.js?v=b5170922"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

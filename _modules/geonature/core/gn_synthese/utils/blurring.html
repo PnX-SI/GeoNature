@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_synthese.utils.blurring - Documentation GeoNature 2.15.2</title>
+        <title>geonature.core.gn_synthese.utils.blurring - Documentation GeoNature 2.15.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.15.2</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.15.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.15.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.15.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -500,7 +500,7 @@
         <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;size_hierarchy&quot;</span><span class="p">))</span>
     <span class="n">precise_geom_query</span> <span class="o">=</span> <span class="n">SyntheseQuery</span><span class="p">(</span>
         <span class="n">Synthese</span><span class="p">,</span>
-        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="o">*</span><span class="n">where_clauses</span><span class="p">))</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="o">.</span><span class="n">desc</span><span class="p">()),</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="o">*</span><span class="n">where_clauses</span><span class="p">))</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">date_min</span><span class="o">.</span><span class="n">desc</span><span class="p">()),</span>
         <span class="n">filters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">filters</span><span class="p">),</span>  <span class="c1"># not to edit the actual filter object</span>
     <span class="p">)</span>
 
@@ -514,8 +514,8 @@
     <span class="n">CorAreaSyntheseAlias</span> <span class="o">=</span> <span class="n">aliased</span><span class="p">(</span><span class="n">CorAreaSynthese</span><span class="p">)</span>
     <span class="n">LAreasAlias</span> <span class="o">=</span> <span class="n">aliased</span><span class="p">(</span><span class="n">LAreas</span><span class="p">)</span>
     <span class="n">BibAreasTypesAlias</span> <span class="o">=</span> <span class="n">aliased</span><span class="p">(</span><span class="n">BibAreasTypes</span><span class="p">)</span>
-    <span class="c1"># TODO@LAreas.geom_4326</span>
-    <span class="n">geom</span> <span class="o">=</span> <span class="n">LAreasAlias</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">st_transform</span><span class="p">(</span><span class="mi">4326</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">)</span>
+
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">LAreasAlias</span><span class="o">.</span><span class="n">geom_4326</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">)</span>
     <span class="c1"># In SyntheseQuery below :</span>
     <span class="c1"># - query_joins parameter is needed to bypass</span>
     <span class="c1">#   &quot;self.query_joins is not None&quot; condition in the build_query() method below</span>
@@ -538,7 +538,7 @@
             <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span>
         <span class="p">)</span>
         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="o">*</span><span class="n">where_clauses</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="o">.</span><span class="n">desc</span><span class="p">()),</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">date_min</span><span class="o">.</span><span class="n">desc</span><span class="p">()),</span>
         <span class="n">filters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">filters</span><span class="p">),</span>
         <span class="n">query_joins</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">Synthese</span><span class="p">,</span>
@@ -626,8 +626,12 @@
                 <span class="n">allowed_geom_cte</span><span class="p">,</span> <span class="n">allowed_geom_cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_synthese</span> <span class="o">==</span> <span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">id_synthese</span>
             <span class="p">)</span>
         <span class="p">)</span>
-        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">,</span> <span class="n">allowed_geom_cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">priority</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span>
+            <span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">date_min</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span>
+            <span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">id_synthese</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span>
+            <span class="n">allowed_geom_cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">priority</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">date_min</span><span class="p">,</span> <span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">)</span>
         <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">obs_query</span></div>
@@ -664,7 +668,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=116f8d3b"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=b5170922"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

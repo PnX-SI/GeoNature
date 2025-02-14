@@ -735,11 +735,12 @@ La base de données contient de nombreuses fonctions.
 
 .. code:: sql
 
-  gn_profiles.get_profiles_parameters(mycdnom integer)
-  RETURNS TABLE (cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean,  distance smallint)
-  -- fonction permettant de récupérer les paramètres les plus adaptés (définis au plus proche du taxon) pour calculer le profil d'un taxon donné
-  -- par exemple, s'il existe des paramètres pour les "Animalia" des paramètres pour le renard, les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce
-
+  gn_profiles.get_parameters(mycdnom integer)
+  RETURNS TABLE(cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean, distance smallint)
+  -- fonction permettant de récupérer les paramètres les plus adaptés
+  -- (définis au plus proche du taxon) pour calculer le profil d'un taxon donné
+  -- par exemple, s'il existe des paramètres pour les "Animalia" des paramètres pour le renard,
+  -- les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce
 
 .. code:: sql
 
@@ -940,19 +941,19 @@ Pour les versions précédentes de GeoNature, à chaque modification du fichier 
 - relancer le backend : ``sudo systemctl restart geonature``
 - regénérer le fichier de configuration du frontend :
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    source backend/venv/bin/activate
-    geonature generate-frontend-config
+      source backend/venv/bin/activate
+      geonature generate-frontend-config
 
 
 - rebuilder le frontend :
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    cd frontend
-    nvm use
-    npm run build
+      cd frontend
+      nvm use
+      npm run build
 
 Vous pouvez également lancer la commande ``geonature update-configuration`` qui génèrera la configuration frontend de GeoNature ainsi que de l’ensemble des modules installés avant de lancer le build du frontend.
 
@@ -1145,6 +1146,7 @@ Restauration
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "pg_trgm";'
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "unaccent";'
+        sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "ltree";'
         
 
   - Restaurer la BDD à partir du backup
@@ -1201,7 +1203,7 @@ Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNat
         INTRODUCTION = ""
         FOOTER = ""
 
-Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
+Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (``"""<b>Hello</b>"""``).
 
 Customiser la page de connexion
 """""""""""""""""""""""""""""""
@@ -1209,12 +1211,27 @@ Customiser la page de connexion
 Il est possible d'ajouter des liens vers des ressources externes sur la page de connexion de GeoNature. Pour cela,
 remplissez un (ou plusieurs) item(s) ``ACCOUNT_MANAGEMENT.EXTERNAL_LINKS`` dans la configuration. 
 Dans cette variable, le lien est indiqué dans la propriété ``url`` et le texte affiché de ce dernier doit être renseigné dans le
-propriété ``label``. Un exemple est disponible ci-dessous.
+propriété ``label``. Plusieurs exemples sont disponible ci-dessous.
 
-.. code-block:: toml
-    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
-        label = "Mot de passe oublié ?"
-        url = "https://mon.formulaire.de.motdepasse"
+
+
+**Ajoutez un lien de contact**
+
+.. code:: toml
+  
+  [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+      label = "Un problème de connexion ?"
+      url = "mailto:anne.onnyme@example.com"
+
+
+**Ajoutez un lien vers un formulaire de contact**
+
+.. code:: toml
+  
+  [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+      label = "Formulaire de contact"
+      url = "https://siteorganisme.fr/contact"
+
 
 
 Customiser l'aspect esthétique
@@ -1322,7 +1339,9 @@ GeoNature est fourni avec des données géographiques de base sur la métropole 
   * https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/migrations/versions/1715cf31a75d_insert_ign_250m_bd_alti_in_dem.py
   * https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/migrations/versions/87651375c2e8_vectorize_ign_bd_alti.py
 
-*TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235*
+.. note::
+  
+  Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235
 
 Si vous n'avez pas choisi d'intégrer le raster MNT national à 250m fourni par défaut lors de l'installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.
 
@@ -1476,7 +1495,11 @@ Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accept
         AUTO_ACCOUNT_CREATION = false
         VALIDATOR_EMAIL = 'email@validateur.io'
 
-L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API. ⚠️ **Attention**, si vous effectuez une migration depuis une version de GeoNature < 2.2.0, aucun groupe par défaut n'est défini, vous devez définir à la main le groupe par défaut pour l'application GeoNature dans la table ``utilisateurs.cor_role_app_profil``.
+L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API. 
+
+.. warning::
+
+  Si vous effectuez une migration depuis une version de GeoNature < 2.2.0, aucun groupe par défaut n'est défini, vous devez définir à la main le groupe par défaut pour l'application GeoNature dans la table ``utilisateurs.cor_role_app_profil``.
 
 Dans le mode "création de compte validé par administrateur", lorsque l'inscription est validée par un administrateur, un email est envoyé à l'utilisateur pour lui indiquer la confirmation de son inscription.
 Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l'aide du paramètre ``ADDON_USER_EMAIL`` (toujours à ajouter à la rubrique ``[ACCOUNT_MANAGEMENT]``).
@@ -1556,21 +1579,20 @@ Cela ajoute sur la page d'authentification de GeoNature, un bouton "Accès publi
 Etapes :
 
 1/ UsersHub :
-   - Aller dans la section `Utilisateurs` 
-   - Créer un utilisateur 
-   - Définir un identifiant et un mot de passe (par exemple utilisateur 'public' et mot de passe 'public')
-   - S’assurer qu’il ne soit dans aucun groupe
-   - Aller ensuite dans la section `Applications`
-   - Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
-   - Cliquer sur ajouter un rôle 
-   - Choisir l'utilisateur juste créé
-   - Attribuer le rôle 1, 'Lecteur' 
+  - Aller dans la section `Utilisateurs` 
+  - Créer un utilisateur 
+  - Définir un identifiant et un mot de passe (par exemple utilisateur 'public' et mot de passe 'public')
+  - S’assurer qu’il ne soit dans aucun groupe
+  - Aller ensuite dans la section `Applications`
+  - Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
+  - Cliquer sur ajouter un rôle 
+  - Choisir l'utilisateur juste créé
+  - Attribuer le rôle 1, 'Lecteur' 
 
 2/ Configuration GeoNature : 
-
   - Dans le fichier de configuration de GeoNature (``config/geonature_config.toml``), spécifier le nom d'utilisateur pour l'accès public via le paramètre ``PUBLIC_ACCESS_USERNAME`` :
 
-.. code-block:: ini
+  .. code-block:: ini
 
     PUBLIC_ACCESS_USERNAME = 'public'
 
@@ -1581,12 +1603,11 @@ A ce moment-là, cet utilisateur n’a aucune permission dans GeoNature.
 Il s'agit maintenant de gérer ses permissions dans GeoNature.
 
 3/ GeoNature 
-
-   - Se connecter à GeoNature avec un utilisateur administrateur
-   - Aller dans le module Admin
-   - Cliquer sur 'Backoffice', puis "Permissions" / "Par utilisateurs"
-   - Choisissez l'utilisateur sélectionné 
-   - Ajouter des permissions pour chacun des modules de l'instance auquel vous souhaitez que l'utilisateur public accède
+  - Se connecter à GeoNature avec un utilisateur administrateur
+  - Aller dans le module Admin
+  - Cliquer sur 'Backoffice', puis "Permissions" / "Par utilisateurs"
+  - Choisissez l'utilisateur sélectionné 
+  - Ajouter des permissions pour chacun des modules de l'instance auquel vous souhaitez que l'utilisateur public accède
 
 Accès public automatique
 ````````````````````````
@@ -1597,7 +1618,7 @@ Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
 
 
 
-.. include:: admin/authentication_custom.rst
+.. include:: admin/authentication-custom.rst
 
 
 
@@ -1855,7 +1876,7 @@ La ligne doit contenir les informations suivantes :
 
 Exemple :
 
-::
+.. code:: sql
 
     INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path,active_frontend, active_backend, ng_module) VALUES
 	 ('FLORE_STATION','Flore station v2','fa-leaf','Module de saisie Flore station (sous module Occtax)','flore_station',true,false,'occtax');
@@ -1864,7 +1885,7 @@ Ajoutez ensuite une "source" dans la synthese (``gn_synthese.t_sources``) pour c
 
 Dans l'exemple ci-dessous, remplacez ``<MODULE_PATH>`` par le contenu de la colonne ``module_path`` ainsi que ``<ID_MODULE>`` par l'id du module que vous venez de créer.
 
-::
+.. code:: sql
 
     INSERT INTO gn_synthese.t_sources (name_source,desc_source,entity_source_pk_field,url_source,,id_module) VALUES
     ('Flore station (sous-module Occtax)','Données issues du protocole Flore station','pr_occtax.cor_counting_occtax.id_counting_occtax','#/<MODULE_PATH>/info/id_counting', <ID_MODULE>);
@@ -2276,7 +2297,7 @@ Pour chaque dictionnaire, voici le détail des champs (ils sont tous obligatoire
 Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.  
 Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_text`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
 
-Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` pour désactiver les textes des DOM-TOM : :
+Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` pour désactiver les textes des DOM-TOM :
 
 .. code:: sql
 
