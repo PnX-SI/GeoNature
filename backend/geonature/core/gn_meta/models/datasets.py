@@ -23,7 +23,7 @@ from geonature.core.gn_commons.models import cor_field_dataset, cor_module_datas
 from .commons import *
 
 
-@serializable(exclude=["user_actors", "organism_actors"])
+@serializable(exclude=["user_actors", "organism_actors", "obs_count", "hab_count"])
 class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
