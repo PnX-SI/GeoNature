@@ -646,7 +646,9 @@ class SyntheseQuery:
             )
 
         bdc_status_by_type_cte = bdc_status_by_type_cte.where(or_(*bdc_status_filters))
-        bdc_status_by_type_cte = bdc_status_by_type_cte.cte(name="status_by_type")
+        bdc_status_by_type_cte = bdc_status_by_type_cte.cte(
+            name="bdc_status_by_type_" + str(uuid.uuid4())[:4]
+        )
 
         # group by de façon à ne selectionner que les taxons
         #   qui ont l'ensemble des textes selectionnés par l'utilisateur
