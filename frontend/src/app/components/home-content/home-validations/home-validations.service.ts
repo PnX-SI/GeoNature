@@ -108,9 +108,10 @@ export class HomeValidationsService {
         per_page: pagination.per_page.toString(),
         sort: sort.sort,
         order_by: sort.order_by,
+        format: 'json',
         fields:
           'id_synthese,nom_cite,observers,date_min,date_max,last_validation,nomenclature_valid_status.cd_nomenclature,nomenclature_valid_status.mnemonique,nomenclature_valid_status.label_default,validator',
-        format: 'json',
+        no_auto: true,
       },
     });
   }
