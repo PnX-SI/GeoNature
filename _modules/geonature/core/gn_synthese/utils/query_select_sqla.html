@@ -570,12 +570,8 @@
 <div class="viewcode-block" id="SyntheseQuery.srid_l_areas">
 <a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/utils/query_select_sqla/index.html#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.srid_l_areas">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">srid_l_areas</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span>
-                            <span class="n">select</span><span class="p">(</span>
-                                <span class="n">func</span><span class="o">.</span><span class="n">Find_SRID</span><span class="p">(</span>
-                                    <span class="n">LAreas</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;geom&quot;</span>
-                                <span class="p">)</span>
-                            <span class="p">)</span>
-                        <span class="p">)</span></div>
+            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">Find_SRID</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;geom&quot;</span><span class="p">))</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SyntheseQuery.add_join">
@@ -930,7 +926,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="s2">&quot;Unsupported geoIntersection type&quot;</span><span class="p">)</span>
             <span class="n">geo_filters</span> <span class="o">=</span> <span class="p">[]</span>
-            
+
             <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
                 <span class="n">geom_wkb</span> <span class="o">=</span> <span class="n">from_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]),</span> <span class="n">srid</span><span class="o">=</span><span class="mi">4326</span><span class="p">)</span>
                 <span class="n">geometry</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">ST_GeomFromWKB</span><span class="p">(</span><span class="n">geom_wkb</span><span class="p">)</span>
@@ -944,8 +940,12 @@
                 <span class="k">if</span> <span class="s2">&quot;radius&quot;</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]:</span>
                     <span class="n">radius</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">][</span><span class="s2">&quot;radius&quot;</span><span class="p">]</span>
                     <span class="n">geo_filter</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">ST_DWithin</span><span class="p">(</span>
-                        <span class="n">sa</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geom_column</span><span class="p">,</span><span class="n">Geography</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geom_column</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">geom_column</span><span class="p">,</span>
-                        <span class="n">sa</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span><span class="n">Geography</span><span class="p">),</span>
+                        <span class="p">(</span>
+                            <span class="n">sa</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geom_column</span><span class="p">,</span> <span class="n">Geography</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geom_column</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">)</span>
+                            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">geom_column</span>
+                        <span class="p">),</span>
+                        <span class="n">sa</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">Geography</span><span class="p">),</span>
                         <span class="n">radius</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -983,7 +983,7 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geom_column</span><span class="o">.</span><span class="n">class_</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
                     <span class="n">l_areas_cte</span> <span class="o">=</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">id_area</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="o">.</span><span class="n">cte</span><span class="p">(</span><span class="s2">&quot;area_filter&quot;</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">srid</span> <span class="o">!=</span> <span class="mi">4326</span><span class="p">:</span>
-                        
+
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">srid</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">srid_l_areas</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                                 <span class="n">func</span><span class="o">.</span><span class="n">ST_Intersects</span><span class="p">(</span>
