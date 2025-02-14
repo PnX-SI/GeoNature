@@ -10,7 +10,7 @@
   [count]="pagination.totalItems"
   (page)="onChangePage($event)"
   [externalSorting]="true"
-  [sorts]="[{ prop: sort.sort, dir: sort.orderby }]"
+  [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
   (sort)="onColumnSort($event)"
 >
   <ngx-datatable-column

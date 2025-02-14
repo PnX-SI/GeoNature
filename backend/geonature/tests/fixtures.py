@@ -330,12 +330,12 @@ def users(app):
     db.session.add(organisme)
 
     users_to_create = [
-        (("noright_user", organisme, 0), {}),
-        (("stranger_user", None, 2), {}),
-        (("associate_user", organisme, 2), {}),
-        (("self_user", organisme, 1), {}),
+        (("noright_user", organisme, 0), {"nom_role": "User", "prenom_role": "NoRight"}),
+        (("stranger_user", None, 2), {"nom_role": "User", "prenom_role": "Stranger"}),
+        (("associate_user", organisme, 2), {"nom_role": "User", "prenom_role": "Associate"}),
+        (("self_user", organisme, 1), {"nom_role": "User", "prenom_role": "Self"}),
         (("user", organisme, 2), {"nom_role": "Bob", "prenom_role": "Bobby"}),
-        (("admin_user", organisme, 3), {}),
+        (("admin_user", organisme, 3), {"nom_role": "Administrateur", "prenom_role": "Test"}),
         (("associate_user_2_exclude_sensitive", organisme, 2, True), {}),
         (
             (
@@ -546,6 +546,7 @@ def create_synthese(
     source,
     uuid=func.uuid_generate_v4(),
     cor_observers=[],
+    observers=[],
     date_min="",
     date_max="",
     altitude_min=800,
@@ -574,6 +575,7 @@ def create_synthese(
         altitude_min=altitude_min,
         altitude_max=altitude_max,
         cor_observers=cor_observers,
+        observers=observers,
         **kwargs,
     )
 
@@ -743,6 +745,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 source_m,
                 unique_id_sinp,
                 [users["admin_user"], users["user"]],
+                ["Administrative Test", "Bobby Bob"],
                 date_min,
                 date_max,
                 altitude_min,
