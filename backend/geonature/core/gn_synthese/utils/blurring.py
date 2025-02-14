@@ -76,8 +76,8 @@ def build_blurred_precise_geom_queries(
     CorAreaSyntheseAlias = aliased(CorAreaSynthese)
     LAreasAlias = aliased(LAreas)
     BibAreasTypesAlias = aliased(BibAreasTypes)
-    # TODO@LAreas.geom_4326
-    geom = LAreasAlias.geom.st_transform(4326).label("geom")
+
+    geom = LAreasAlias.geom_4326.label("geom")
     # In SyntheseQuery below :
     # - query_joins parameter is needed to bypass
     #   "self.query_joins is not None" condition in the build_query() method below
@@ -107,7 +107,7 @@ def build_blurred_precise_geom_queries(
             CorAreaSyntheseAlias,
             CorAreaSyntheseAlias.id_synthese == Synthese.id_synthese,
         ),
-        geom_column=LAreas.geom,
+        geom_column=LAreas.geom_4326,
     )
     # Joins here are needed to retrieve the blurred geometry
     blurred_geom_query.add_join(LAreasAlias, LAreasAlias.id_area, CorAreaSyntheseAlias.id_area)
