@@ -1,23 +1,30 @@
 # CHANGELOG
 
-## 2.15.3 (2025-02-04)
+## 2.15.3 (2025-02-14)
 
 **🚀 Nouveautés**
 
 - [Synthese] Affichage du `cdNom`, `cdRef` et du `nomCite` dans la fiche d'observation (#3334 par @edelclaux).
 - [Documentation] La compilation de documentation est effectuée à chaque merge dans la branche principale (`master`) (#3338 par @jacquesfize)
 - [Import] Ajout d'une barre de progression dans l'import Occhab (#2928 par @Pierre-Narcisi)
+- [TaxHub] Mise à jour de TaxHub en version 2.1.2
+- [Authentification] Mise à jour UsersHub-autentification-module en 3.0.2.
 
 **🐛 Corrections**
 
-- [Import] Correction du nombre d'entités valides lors de la phase précédent l'import finales de données (#3336 par @jacquesfize)
+- [Import] Correction du nombre d'entités valides des données importées (#3336, #3355 par @jacquesfize)
 - [Import] Suppression des variables de configurations inutiles dans la nouvelle version (#3341 par @jacquesfize)
 - [Import] Correction la barre de progression pour l’import dans la synthèse (#2928 par @Pierre-Narcisi)
 - [Authentification] Correction des valeurs dans defaut_config.toml.sample (#3339 par @jacquesfize)
 - [Documentation] Réintégration de la documentation sur l'authentification avec un fournisseur d'identité externe (#3338 par @jacquesfize)
 - [Développement] Correction des modèles SQLAlchemy pour pouvoir utiliser le mode debug (#3346 par @jacquesfize)
 - [Synthèse] Correction de l'ordre d'affichage des observations sensibles (#3354 par @VincentCauchois et @Christophe-Ramet; #3249).
-- [Synthèse] Correction de larecherche dans la Synthese avec un ou plusieurs filtre parmi "Listes rouges" (#3351 par @VincentCauchois et @Christophe-Ramet).
+- [Synthèse] Correction de la recherche dans la Synthese avec un ou plusieurs filtre parmi "Listes rouges" (#3351 par @VincentCauchois et @Christophe-Ramet).
+- [TaxHub] Correction de la synchonisation avec Occtax-mobile (https://github.com/PnX-SI/TaxHub/pull/599 par @amandine-sahl)
+- [Synthèse] Correction de la recherche avec filtre par géométrie avec des SRIDs différents (#3372 par @jacquesfize)
+- [Métadonnées] Correction du rafraichissement du formulaire de recherche (#3365 par @jacquesfize)
+- [TaxHub] Ajout d'un bouton TaxHub dans le menu latéral (#3355 par @jacquesfize)
+- [Authentification] Correction du lien de l'accès public (#3353 par @VincentCauchois)
 
 ## 2.15.2 (2025-01-16)
 
