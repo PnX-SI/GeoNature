@@ -1,0 +1,130 @@
+<ngx-datatable
+  #table
+  class="material striped margin-top-xs table-size expandable"
+  [rows]="validations"
+  columnMode="force"
+  [draggable]="false"
+  headerHeight="50"
+  footerHeight="50"
+  rowHeight="100"
+  [externalPaging]="true"
+  [limit]="pagination.per_page"
+  [count]="pagination.total"
+  (page)="onChangePage($event)"
+  [externalSorting]="true"
+  (sort)="onColumnSort($event)"
+  [sorts]="[{ prop: DEFAULT_SORTING.order_by, dir: DEFAULT_SORTING.sort }]"
+>
+  <ngx-datatable-column
+    [maxWidth]="5"
+    [resizeable]="false"
+    [sortable]="false"
+    [draggable]="false"
+    [canAutoResize]="false"
+  >
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <button
+        class="btn btn-outline-shadow btn-no-padding btn-ghost"
+        (click)="navigateToValidations(row)"
+      >
+        <i
+          #iElement
+          [matTooltip]="
+            'Voir les informations de validations liées à l\'observation : ' + row.id_synthese
+          "
+          class="fa fa-info-circle"
+          aria-hidden="true "
+        ></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    width="150"
+    name="Date"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+    [prop]="PROP_VALIDATION_DATE"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      {{ renderDate(row[PROP_VALIDATION_DATE]) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    width="150"
+    [prop]="PROP_VALIDATOR"
+    name="Validateur"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      {{ row[PROP_VALIDATOR] }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    [prop]="PROP_VALIDATION_STATUS"
+    width="300"
+    name="Statut de validation"
+    [sortable]="false"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      <div class="BadgeContainer">
+        <gn-badge
+          [text]="row[PROP_VALIDATION_STATUS]"
+          [symbology]="{ color: getValidationStatusColor(row[PROP_VALIDATION_CODE]) }"
+        ></gn-badge>
+        <div class="BadgeContainer__spacer"></div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    [prop]="PROP_VALIDATION_MESSAGE"
+    width="500"
+    height="100"
+    name="Message de validation"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      <div class="TextContentContainer">
+        <div class="TextContent">
+          {{ row[PROP_VALIDATION_MESSAGE] }}
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
+    width="500"
+    [prop]="PROP_OBSERVATION"
+    name="Observation"
+    [sortable]="false"
+    [resizeable]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      <span [innerHTML]="row.observation"></span>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>

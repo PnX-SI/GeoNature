@@ -35,7 +35,7 @@ export class HomeDiscussionsService {
     for (const module of this.MODULES_PREVALENCE) {
       if (this._isDiscussionsAllowedInModule(module)) {
         if (this._isDiscussionsAvailableInModule(module)) {
-          return true;
+          return this._config.HOME.DISPLAY_LATEST_DISCUSSIONS;
         }
       }
     }

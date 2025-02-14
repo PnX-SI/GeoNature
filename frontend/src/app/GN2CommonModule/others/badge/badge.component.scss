@@ -1,15 +1,17 @@
 .badge {
-  --bgColor: #ffffff; // Default value
+  --badgeColor: #ffffff; // Default value
   --textColor: #444; // Default value
 
+  cursor: default;
   display: flex;
   flex-flow: row nowrap;
-  white-space: nowrap;
+  justify-content: center;
+  white-space: pre-line;
   gap: 0.25rem;
   text-transform: uppercase;
   font-weight: bold;
 
-  background-color: var(--bgColor);
-  border: 2px solid color-mix(in srgb, var(--bgColor) 80%, black);
+  background-color: color-mix(in srgb, var(--badgeColor) 70%, white);
+  border: 2px solid color-mix(in srgb, var(--badgeColor) 80%, black);
   color: var(--textColor);
 }

@@ -128,6 +128,7 @@ class HomeConfig(Schema):
     )
     FOOTER = fields.String(load_default="")
     DISPLAY_LATEST_DISCUSSIONS = fields.Boolean(load_default=True)
+    DISPLAY_LATEST_VALIDATIONS = fields.Boolean(load_default=True)
 
 
 class MetadataConfig(Schema):
