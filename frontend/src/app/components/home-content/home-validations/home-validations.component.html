@@ -13,9 +13,7 @@
   (page)="onChangePage($event)"
   [externalSorting]="true"
   (sort)="onColumnSort($event)"
-  [sorts]="[
-    { prop: DEFAULT_SORTING.order_by, dir: DEFAULT_SORTING.sort}
-  ]"
+  [sorts]="[{ prop: DEFAULT_SORTING.order_by, dir: DEFAULT_SORTING.sort }]"
 >
   <ngx-datatable-column
     [maxWidth]="5"
@@ -34,7 +32,9 @@
       >
         <i
           #iElement
-          [matTooltip]="'Voir les informations de validations liées à l\'observation : ' + row.id_synthese"
+          [matTooltip]="
+            'Voir les informations de validations liées à l\'observation : ' + row.id_synthese
+          "
           class="fa fa-info-circle"
           aria-hidden="true "
         ></i>
@@ -85,8 +85,8 @@
     >
       <div class="BadgeContainer">
         <gn-badge
-            [text]="row[PROP_VALIDATION_STATUS]"
-            [symbology]="{color: getValidationStatusColor(row[PROP_VALIDATION_CODE])}"
+          [text]="row[PROP_VALIDATION_STATUS]"
+          [symbology]="{ color: getValidationStatusColor(row[PROP_VALIDATION_CODE]) }"
         ></gn-badge>
         <div class="BadgeContainer__spacer"></div>
       </div>

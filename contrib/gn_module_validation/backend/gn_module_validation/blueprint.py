@@ -50,10 +50,8 @@ def get_synthese_data(scope):
 
     # Sorting parameter
     sort = request.args.get("sort", "desc", str)
-    order_by = sa.text(
-        request.args.get("order_by", "last_validation.validation_date", str)
-    )
-    sorting_active = sort != '' and order_by != ''
+    order_by = sa.text(request.args.get("order_by", "last_validation.validation_date", str))
+    sorting_active = sort != "" and order_by != ""
 
     # Pagination parameter
     page = request.args.get("page", 0, int)
@@ -82,30 +80,34 @@ def get_synthese_data(scope):
     if fields_as_str:
         fields.update({field for field in fields_as_str.split(",")})
     else:
-        fields.update({
-            "id_synthese",
-            "unique_id_sinp",
-            "entity_source_pk_value",
-            "meta_update_date",
-            "id_nomenclature_valid_status",
-            "nomenclature_valid_status.cd_nomenclature",
-            "nomenclature_valid_status.mnemonique",
-            "nomenclature_valid_status.label_default",
-            "last_validation.validation_date",
-            "last_validation.validation_auto",
-            "taxref.cd_nom",
-            "taxref.nom_vern",
-            "taxref.lb_nom",
-            "taxref.nom_vern_or_lb_nom",
-            "dataset.validable",
-        })
+        fields.update(
+            {
+                "id_synthese",
+                "unique_id_sinp",
+                "entity_source_pk_value",
+                "meta_update_date",
+                "id_nomenclature_valid_status",
+                "nomenclature_valid_status.cd_nomenclature",
+                "nomenclature_valid_status.mnemonique",
+                "nomenclature_valid_status.label_default",
+                "last_validation.validation_date",
+                "last_validation.validation_auto",
+                "taxref.cd_nom",
+                "taxref.nom_vern",
+                "taxref.lb_nom",
+                "taxref.nom_vern_or_lb_nom",
+                "dataset.validable",
+            }
+        )
         if enable_profile:
-            fields.update({
-                "profile.score",
-                "profile.valid_phenology",
-                "profile.valid_altitude",
-                "profile.valid_distribution",
-            })
+            fields.update(
+                {
+                    "profile.score",
+                    "profile.valid_phenology",
+                    "profile.valid_altitude",
+                    "profile.valid_distribution",
+                }
+            )
 
     # Fields: add config parameters
     fields.update({col["column_name"] for col in blueprint.config["COLUMN_LIST"]})
@@ -207,14 +209,11 @@ def get_synthese_data(scope):
     # Step 2: give SyntheseQuery the Core selectable from ORM query
     assert len(query.selectable.get_final_froms()) == 1
 
-    selectable = (
-        SyntheseQuery(
-            Synthese,
-            query.selectable,
-            filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
-        )
-        .filter_query_all_filters(g.current_user, scope)
-    )
+    selectable = SyntheseQuery(
+        Synthese,
+        query.selectable,
+        filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
+    ).filter_query_all_filters(g.current_user, scope)
 
     # Step 3: Construct Synthese model from query result
     syntheseQueryStatement = Synthese.query.options(
