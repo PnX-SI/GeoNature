@@ -69,6 +69,12 @@ def get_synthese_data(scope):
     if format == "json" and not pagination_active:
         raise BadRequest("Pagination must be active when requesting json object")
 
+    # if format == "geojson" and pagination_active:
+    #     raise BadRequest("Pagination can't be active when requesting geojson object")
+
+    # # modifiy_only
+    # modified_status_only = request.args.get("modified_status_only", bool, False)
+
     # Fields: Setup fields as route parameters with default behavior
     fields_as_str = request.args.get("fields", None)
     fields = set()
@@ -189,6 +195,9 @@ def get_synthese_data(scope):
 
     if filters.pop("modif_since_validation", None):
         query = query.where(Synthese.meta_update_date > last_validation.validation_date)
+
+    # if filters.pop("skip_undefined", None):
+    #     query = query.where(Synthese.meta_update_date > last_validation.validation_date)
 
     # Filter only validable dataset
 

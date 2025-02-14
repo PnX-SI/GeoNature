@@ -22,7 +22,7 @@ function computeContrastColor(backgroundColor: string) {
 }
 
 function colorToCSS(color: string) {
-  return `--bgColor: ${color}; --textColor: ${computeContrastColor(color)};`;
+  return `--badgeColor: ${color}; --textColor: ${computeContrastColor(color)};`;
 }
 
 // ////////////////////////////////////////////////////////////////////////////
