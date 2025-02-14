@@ -159,7 +159,7 @@ compile_requirements:
 	source backend/venv/bin/activate && cd backend && piptools compile requirements-dev.in
 
 test_frontend:
-	cd frontend && source ~/.nvm/nvm.sh && nvm use && npm run cypress:run
+	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use && npm run cypress:run
 
 lint_frontend:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run format
