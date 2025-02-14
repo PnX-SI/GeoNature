@@ -255,7 +255,7 @@ pypn-ref-geo==1.5.4
     #   taxhub
 pypnnomenclature==1.6.4
     # via -r requirements-dependencies.in
-pypnusershub==3.0.1
+pypnusershub==3.0.2
     # via
     #   -r requirements-dependencies.in
     #   taxhub
