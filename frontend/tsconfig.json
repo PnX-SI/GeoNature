@@ -4,6 +4,7 @@
     "importHelpers": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "esModuleInterop": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
