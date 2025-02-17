@@ -15,7 +15,7 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { UntypedFormGroup } from '@angular/forms';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 import { MediaService } from '@geonature_common/service/media.service';
 import { OcctaxMapListService } from './occtax-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
@@ -235,10 +235,10 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
    */
   displayDateTooltip(element): string {
     return element.date_min == element.date_max
-      ? moment(element.date_min).format('DD-MM-YYYY')
-      : `Du ${moment(element.date_min).format('DD-MM-YYYY')} au ${moment(element.date_max).format(
-          'DD-MM-YYYY'
-        )}`;
+      ? DateTime(element.date_min).format('DD-MM-YYYY')
+      : `Du ${DateTime(element.date_min).format('DD-MM-YYYY')} au ${DateTime(
+          element.date_max
+        ).format('DD-MM-YYYY')}`;
   }
 
   /**

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { DynamicFormService } from './dynamic-form.service';
-import * as equal from 'fast-deep-equal/es6';
+import { deepEqual } from 'fast-equals';
 import { filter } from 'rxjs/operators';
 
 /**
@@ -134,7 +134,7 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
    * on teste s'il y a un changement entre this.myFormGroup.value et valueSaved;
    */
   hasValueChanged(newValue) {
-    return !equal(newValue, this.oldValue);
+    return !deepEqual(newValue, this.oldValue);
   }
 
   setForms() {

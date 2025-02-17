@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpParams,
-  HttpEventType,
-  HttpErrorResponse,
-  HttpEvent,
-} from '@angular/common/http';
+import { HttpClient, HttpParams, HttpEventType, HttpErrorResponse, HttpEvent } from '@angular/common/http';
 import { Taxon } from './taxonomy/taxonomy.component';
 import { Observable } from 'rxjs';
 import { isArray } from 'rxjs/internal-compatibility';
