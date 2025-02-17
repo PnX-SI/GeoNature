@@ -75,14 +75,6 @@ const routes: Routes = [
     SyntheseCarteComponent,
     SyntheseModalDownloadComponent,
   ],
-  entryComponents: [
-    SyntheseComponent,
-    SyntheseInfoObsComponent,
-    SyntheseModalDownloadComponent,
-    DiscussionCardComponent,
-    AlertInfoComponent,
-    SyntheseObsModalWrapperComponent,
-  ],
   providers: [
     MapService,
     DynamicFormService,

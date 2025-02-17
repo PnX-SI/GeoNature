@@ -1,11 +1,11 @@
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModuleService } from '../services/module.service';
 import { CommonService } from '@geonature_common/service/common.service';
 
 @Injectable()
-export class ModuleGuardService implements CanActivate {
+export class ModuleGuardService  {
   constructor(
     private _router: Router,
     private _commonService: CommonService,
