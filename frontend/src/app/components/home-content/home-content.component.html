@@ -121,7 +121,7 @@
   >
     <mat-tab-group>
       <mat-tab
-        *ngIf="config.HOME.DISPLAY_LATEST_DISCUSSIONS && displayDiscussions()"
+        *ngIf="displayDiscussions"
         label="Discussions"
       >
         <pnx-home-discussions></pnx-home-discussions>
