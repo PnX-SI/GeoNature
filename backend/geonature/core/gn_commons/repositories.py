@@ -357,7 +357,7 @@ class TMediumRepository:
         """
 
         # delete media temp > 24h
-        res_medias_temp = DB.session.scalars(
+        id_medias_temp = DB.session.scalars(
             select(TMedias.id_media).where(
                 and_(
                     TMedias.meta_update_date
@@ -366,8 +366,6 @@ class TMediumRepository:
                 )
             )
         ).all()
-
-        id_medias_temp = [res.id_media for res in res_medias_temp]
 
         if id_medias_temp:
             print("sync media remove temp media with ids : ", id_medias_temp)
