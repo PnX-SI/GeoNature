@@ -52,6 +52,7 @@
     "leaflet.locatecontrol": "^0.79.0",
     "leaflet.markercluster": "^1.5.3",
     "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "luxon": "^3.5.0",
     "material-design-icons": "^3.0.1",
     "material-symbols": "^0.27.2",

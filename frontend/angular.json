@@ -29,9 +29,7 @@
             },
             "index": "src/index.html",
             "tsConfig": "src/tsconfig.app.json",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts", "@angular/localize/init"],
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/assets",
