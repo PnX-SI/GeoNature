@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "@angular-devkit/core": "^18.2.14",
+    "@angular-devkit/build-angular": "^18.2.14",
     "@angular/build": "^18.2.14",
     "@angular/compiler-cli": "18.2.13",
     "@compodoc/compodoc": "^1.1.26",

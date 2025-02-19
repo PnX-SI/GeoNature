@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -7,18 +7,26 @@ import {
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
-} from '@angular/forms';
-import { BehaviorSubject, Observable, of, forkJoin, combineLatest } from 'rxjs';
-import { map, filter, switchMap, tap, pairwise, retry, catchError } from 'rxjs/operators';
-import * as cloneDeep from 'lodash/cloneDeep';
-import { CommonService } from '@geonature_common/service/common.service';
-import { OcctaxFormService } from '../occtax-form.service';
-import { OcctaxFormCountingsService } from '../counting/countings.service';
-import { OcctaxDataService } from '../../services/occtax-data.service';
-import { OcctaxFormParamService } from '../form-param/form-param.service';
-import { OcctaxTaxaListService } from '../taxa-list/taxa-list.service';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { ConfigService } from '@geonature/services/config.service';
+} from "@angular/forms";
+import { BehaviorSubject, Observable, of, forkJoin, combineLatest } from "rxjs";
+import {
+  map,
+  filter,
+  switchMap,
+  tap,
+  pairwise,
+  retry,
+  catchError,
+} from "rxjs/operators";
+import { cloneDeep } from "lodash-es";
+import { CommonService } from "@geonature_common/service/common.service";
+import { OcctaxFormService } from "../occtax-form.service";
+import { OcctaxFormCountingsService } from "../counting/countings.service";
+import { OcctaxDataService } from "../../services/occtax-data.service";
+import { OcctaxFormParamService } from "../form-param/form-param.service";
+import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
+import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
+import { ConfigService } from "@geonature/services/config.service";
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -89,13 +97,15 @@ export class OcctaxFormOccurrenceService {
         return occurrence ? this.occurrence : this.defaultValues;
       }),
       tap(
-        (occurrence) => (this.occtaxFormCountingsService.countings = occurrence.cor_counting_occtax)
+        (occurrence) =>
+          (this.occtaxFormCountingsService.countings =
+            occurrence.cor_counting_occtax)
       ),
       //get additional global fields from occurrence, datasaet fields are taken by occtax-form.service > occtaxData observable
       switchMap((occurrence): Observable<any[]> => {
         //observable : get occurrence & countinf filed in same array, explode for separate into double array (occ array & couting array)
         const $_globalFieldsObservable = this.occtaxFormService
-          .getAdditionnalFields(['OCCTAX_OCCURENCE'])
+          .getAdditionnalFields(["OCCTAX_OCCURENCE"])
           .pipe(catchError(() => of([])));
 
         return forkJoin(of(occurrence), $_globalFieldsObservable);
@@ -110,7 +120,7 @@ export class OcctaxFormOccurrenceService {
       filter((id_dataset) => id_dataset !== undefined && id_dataset !== null),
       switchMap((id_dataset): Observable<any[]> => {
         return this.occtaxFormService
-          .getAdditionnalFields(['OCCTAX_OCCURENCE'], id_dataset)
+          .getAdditionnalFields(["OCCTAX_OCCURENCE"], id_dataset)
           .pipe(catchError(() => of([])));
       })
     );
@@ -118,17 +128,28 @@ export class OcctaxFormOccurrenceService {
     //observ global and dataset additional fields to set additionalFieldsForm only one time on each change (optimise memory usage)
     combineLatest($_occurrenceSub, $_datasetSub)
       .pipe(
-        map(([[occurrence, global_additional_fields], dataset_additional_fields]) => {
-          const additional_fields = [].concat(global_additional_fields, dataset_additional_fields);
-          return [occurrence, additional_fields];
-        }),
+        map(
+          ([
+            [occurrence, global_additional_fields],
+            dataset_additional_fields,
+          ]) => {
+            const additional_fields = [].concat(
+              global_additional_fields,
+              dataset_additional_fields
+            );
+            return [occurrence, additional_fields];
+          }
+        ),
         tap(([occurrence, additional_fields]) => {
           //manage occ_additional_f
           additional_fields.forEach((field) => {
             //Formattage des dates
-            if (field.type_widget == 'date') {
+            if (field.type_widget == "date") {
               //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-              if (typeof occurrence.additional_fields[field.attribut_name] !== 'object') {
+              if (
+                typeof occurrence.additional_fields[field.attribut_name] !==
+                "object"
+              ) {
                 occurrence.additional_fields[field.attribut_name] =
                   this.occtaxFormService.formatDate(
                     occurrence.additional_fields[field.attribut_name]
@@ -137,7 +158,9 @@ export class OcctaxFormOccurrenceService {
             }
 
             //set value of field (eq patchValue)
-            if (occurrence.additional_fields[field.attribut_name] !== undefined) {
+            if (
+              occurrence.additional_fields[field.attribut_name] !== undefined
+            ) {
               field.value = occurrence.additional_fields[field.attribut_name];
             }
           });
@@ -154,36 +177,41 @@ export class OcctaxFormOccurrenceService {
 
     //Gestion des erreurs pour les preuves d'existence
     this.form
-      .get('id_nomenclature_exist_proof')
+      .get("id_nomenclature_exist_proof")
       .valueChanges.pipe(
         map((id_nomenclature: number): string => {
-          return this.getCdNomenclatureById(id_nomenclature, this.existProof_DATA);
+          return this.getCdNomenclatureById(
+            id_nomenclature,
+            this.existProof_DATA
+          );
         })
       )
       .subscribe((cd_nomenclature: string) => {
-        if (cd_nomenclature == '1') {
+        if (cd_nomenclature == "1") {
           this.form.setValidators(proofRequiredValidator);
           this.form
-            .get('digital_proof')
+            .get("digital_proof")
             .setValidators(
               this.config.OCCTAX.digital_proof_validator
-                ? Validators.pattern('^(http://|https://|ftp://){1}.+$')
+                ? Validators.pattern("^(http://|https://|ftp://){1}.+$")
                 : []
             );
-          this.form.get('non_digital_proof').setValidators([]);
+          this.form.get("non_digital_proof").setValidators([]);
         } else {
           this.form.setValidators([]);
-          this.form.get('digital_proof').setValidators(proofNotNullValidator);
-          this.form.get('non_digital_proof').setValidators(proofNotNullValidator);
+          this.form.get("digital_proof").setValidators(proofNotNullValidator);
+          this.form
+            .get("non_digital_proof")
+            .setValidators(proofNotNullValidator);
         }
         this.form.updateValueAndValidity();
-        this.form.get('digital_proof').updateValueAndValidity();
-        this.form.get('non_digital_proof').updateValueAndValidity();
+        this.form.get("digital_proof").updateValueAndValidity();
+        this.form.get("non_digital_proof").updateValueAndValidity();
       });
 
     //reset digital_proof à null si texte vide : ''
     this.form
-      .get('digital_proof')
+      .get("digital_proof")
       .valueChanges.pipe(
         filter((val) => val !== null), //filtre la valeur null
         pairwise(),
@@ -192,11 +220,11 @@ export class OcctaxFormOccurrenceService {
           return next.length > 0 ? next : null;
         })
       )
-      .subscribe((val) => this.form.get('digital_proof').setValue(val));
+      .subscribe((val) => this.form.get("digital_proof").setValue(val));
 
     //reset non_digital_proof à null si texte vide : ''
     this.form
-      .get('non_digital_proof')
+      .get("non_digital_proof")
       .valueChanges.pipe(
         filter((val) => val !== null), //filtre la valeur null
         pairwise(),
@@ -205,7 +233,7 @@ export class OcctaxFormOccurrenceService {
           return next.length > 0 ? next : null;
         })
       )
-      .subscribe((val) => this.form.get('non_digital_proof').setValue(val));
+      .subscribe((val) => this.form.get("non_digital_proof").setValue(val));
   }
 
   private get defaultValues(): Observable<any> {
@@ -215,37 +243,51 @@ export class OcctaxFormOccurrenceService {
         map((DATA) => {
           return {
             determiner:
-              this.occtaxParamS.get('occurrence.determiner') ||
+              this.occtaxParamS.get("occurrence.determiner") ||
               this.occtaxFormService.currentUser.nom_complet,
-            sample_number_proof: this.occtaxParamS.get('occurrence.sample_number_proof'),
-            digital_proof: this.occtaxParamS.get('occurrence.digital_proof'),
-            non_digital_proof: this.occtaxParamS.get('occurrence.non_digital_proof'),
-            comment: this.occtaxParamS.get('occurrence.comment'),
+            sample_number_proof: this.occtaxParamS.get(
+              "occurrence.sample_number_proof"
+            ),
+            digital_proof: this.occtaxParamS.get("occurrence.digital_proof"),
+            non_digital_proof: this.occtaxParamS.get(
+              "occurrence.non_digital_proof"
+            ),
+            comment: this.occtaxParamS.get("occurrence.comment"),
             id_nomenclature_bio_condition:
-              this.occtaxParamS.get('occurrence.id_nomenclature_bio_condition') || DATA['ETA_BIO'],
+              this.occtaxParamS.get(
+                "occurrence.id_nomenclature_bio_condition"
+              ) || DATA["ETA_BIO"],
             id_nomenclature_naturalness:
-              this.occtaxParamS.get('occurrence.id_nomenclature_naturalness') || DATA['NATURALITE'],
+              this.occtaxParamS.get("occurrence.id_nomenclature_naturalness") ||
+              DATA["NATURALITE"],
             id_nomenclature_obs_technique:
-              this.occtaxParamS.get('occurrence.id_nomenclature_obs_technique') || DATA['METH_OBS'],
+              this.occtaxParamS.get(
+                "occurrence.id_nomenclature_obs_technique"
+              ) || DATA["METH_OBS"],
             id_nomenclature_bio_status:
-              this.occtaxParamS.get('occurrence.id_nomenclature_bio_status') || DATA['STATUT_BIO'],
+              this.occtaxParamS.get("occurrence.id_nomenclature_bio_status") ||
+              DATA["STATUT_BIO"],
             id_nomenclature_exist_proof:
-              this.occtaxParamS.get('occurrence.id_nomenclature_exist_proof') ||
-              DATA['PREUVE_EXIST'],
+              this.occtaxParamS.get("occurrence.id_nomenclature_exist_proof") ||
+              DATA["PREUVE_EXIST"],
             id_nomenclature_determination_method:
-              this.occtaxParamS.get('occurrence.id_nomenclature_determination_method') ||
-              DATA['METH_DETERMIN'],
+              this.occtaxParamS.get(
+                "occurrence.id_nomenclature_determination_method"
+              ) || DATA["METH_DETERMIN"],
             id_nomenclature_observation_status:
-              this.occtaxParamS.get('occurrence.id_nomenclature_observation_status') ||
-              DATA['STATUT_OBS'],
+              this.occtaxParamS.get(
+                "occurrence.id_nomenclature_observation_status"
+              ) || DATA["STATUT_OBS"],
             id_nomenclature_blurring:
-              this.occtaxParamS.get('occurrence.id_nomenclature_blurring') || DATA['DEE_FLOU'],
+              this.occtaxParamS.get("occurrence.id_nomenclature_blurring") ||
+              DATA["DEE_FLOU"],
             id_nomenclature_source_status:
-              this.occtaxParamS.get('occurrence.id_nomenclature_source_status') ||
-              DATA['STATUT_SOURCE'],
+              this.occtaxParamS.get(
+                "occurrence.id_nomenclature_source_status"
+              ) || DATA["STATUT_SOURCE"],
             id_nomenclature_behaviour:
-              this.occtaxParamS.get('occurrence.id_nomenclature_behaviour') ||
-              DATA['OCC_COMPORTEMENT'],
+              this.occtaxParamS.get("occurrence.id_nomenclature_behaviour") ||
+              DATA["OCC_COMPORTEMENT"],
             additional_fields: {},
             cor_counting_occtax: [{}],
           };
@@ -254,7 +296,7 @@ export class OcctaxFormOccurrenceService {
   }
 
   addCountingForm(form: UntypedFormGroup): void {
-    (this.form.get('cor_counting_occtax') as UntypedFormArray).push(form);
+    (this.form.get("cor_counting_occtax") as UntypedFormArray).push(form);
   }
 
   getCdNomenclatureById(IdNomenclature, DATA) {
@@ -286,14 +328,20 @@ export class OcctaxFormOccurrenceService {
 
     let api: Observable<any>;
 
-    if (this.occurrence.getValue() && this.occurrence.getValue().id_occurrence_occtax) {
+    if (
+      this.occurrence.getValue() &&
+      this.occurrence.getValue().id_occurrence_occtax
+    ) {
       //update
       api = this.occtaxDataService
-        .updateOccurrence(this.occurrence.getValue().id_occurrence_occtax, this.form.value)
+        .updateOccurrence(
+          this.occurrence.getValue().id_occurrence_occtax,
+          this.form.value
+        )
         .pipe(
           retry(3),
           tap((occurrence) => {
-            this.commonService.translateToaster('info', 'Taxon.UpdateDone');
+            this.commonService.translateToaster("info", "Taxon.UpdateDone");
             this.occtaxFormService.replaceOccurrenceData(occurrence);
           })
         );
@@ -301,7 +349,7 @@ export class OcctaxFormOccurrenceService {
       //create
       api = this.occtaxDataService.createOccurrence(id_releve, formValue).pipe(
         tap((occurrence) => {
-          this.commonService.translateToaster('info', 'Taxon.CreateDone');
+          this.commonService.translateToaster("info", "Taxon.CreateDone");
           this.occtaxFormService.addOccurrenceData(occurrence);
         })
       );
@@ -309,11 +357,15 @@ export class OcctaxFormOccurrenceService {
 
     api.subscribe(
       (occurrence) => {
-        this.occtaxTaxaListService.removeOccurrenceInProgress(TEMP_ID_OCCURRENCE);
+        this.occtaxTaxaListService.removeOccurrenceInProgress(
+          TEMP_ID_OCCURRENCE
+        );
       },
       (error) => {
-        this.commonService.translateToaster('error', 'ErrorMessage');
-        this.occtaxTaxaListService.errorOccurrenceInProgress(TEMP_ID_OCCURRENCE);
+        this.commonService.translateToaster("error", "ErrorMessage");
+        this.occtaxTaxaListService.errorOccurrenceInProgress(
+          TEMP_ID_OCCURRENCE
+        );
       }
     );
 
@@ -322,15 +374,19 @@ export class OcctaxFormOccurrenceService {
   }
 
   deleteOccurrence(occurrence) {
-    this.occtaxDataService.deleteOccurrence(occurrence.id_occurrence_occtax).subscribe(
-      (confirm: boolean) => {
-        this.occtaxFormService.removeOccurrenceData(occurrence.id_occurrence_occtax);
-        this.commonService.translateToaster('info', 'Taxon.DeleteDone');
-      },
-      (error) => {
-        this.commonService.translateToaster('error', 'ErrorMessage');
-      }
-    );
+    this.occtaxDataService
+      .deleteOccurrence(occurrence.id_occurrence_occtax)
+      .subscribe(
+        (confirm: boolean) => {
+          this.occtaxFormService.removeOccurrenceData(
+            occurrence.id_occurrence_occtax
+          );
+          this.commonService.translateToaster("info", "Taxon.DeleteDone");
+        },
+        (error) => {
+          this.commonService.translateToaster("error", "ErrorMessage");
+        }
+      );
   }
 
   occurrenceFormValue() {
@@ -338,10 +394,11 @@ export class OcctaxFormOccurrenceService {
 
     /* Champs additionnels - formatter les dates et les nomenclatures */
     this.additionalFieldsForm.forEach((fieldForm: any) => {
-      if (fieldForm.type_widget == 'date') {
-        value.properties.additional_fields[fieldForm.attribut_name] = this.dateParser.format(
-          value.properties.additional_fields[fieldForm.attribut_name]
-        );
+      if (fieldForm.type_widget == "date") {
+        value.properties.additional_fields[fieldForm.attribut_name] =
+          this.dateParser.format(
+            value.properties.additional_fields[fieldForm.attribut_name]
+          );
       }
     });
 
@@ -361,19 +418,22 @@ export class OcctaxFormOccurrenceService {
   }
 
   private uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
   }
 }
 
 export const proofRequiredValidator: ValidatorFn = (
   control: UntypedFormGroup
 ): ValidationErrors | null => {
-  const digital_proof = control.get('digital_proof');
-  const non_digital_proof = control.get('non_digital_proof');
+  const digital_proof = control.get("digital_proof");
+  const non_digital_proof = control.get("non_digital_proof");
 
   if (
     digital_proof &&
@@ -387,7 +447,9 @@ export const proofRequiredValidator: ValidatorFn = (
   return null;
 };
 
-export function proofNotNullValidator(control: AbstractControl): { [key: string]: boolean } | null {
+export function proofNotNullValidator(
+  control: AbstractControl
+): { [key: string]: boolean } | null {
   if (control.value !== null) {
     return { proofNotNull: true };
   }
