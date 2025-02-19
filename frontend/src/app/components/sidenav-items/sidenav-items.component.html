@@ -1,7 +1,4 @@
-<mat-card
-  class="logo"
-  data-qa="gn-sidenav-mat-card"
->
+<div class="logo">
   <a
     routerLink="/"
     routerLinkActive="active"
@@ -11,7 +8,7 @@
       src="{{ this.config.API_ENDPOINT }}{{ this.config.STATIC_URL }}/images/logo_sidebar.jpg"
     />
   </a>
-</mat-card>
+</div>
 <mat-nav-list class="appnav">
   <a href="#{{ home_page.module_url }}">
     <mat-list-item
@@ -66,6 +63,7 @@
 </mat-nav-list>
 
 <div class="navbar-footer">
+  <mat-divider></mat-divider>
   <p class="p-small">
     Réalisé avec
     <a

@@ -92,7 +92,7 @@ tr:nth-child(even) {
 .entities-tab {
   border: silver solid 1px;
   border-radius: 4px;
-
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   mat-tab-header {
     border-bottom: 1px solid #673ab722;
   }

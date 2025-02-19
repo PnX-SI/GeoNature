@@ -17,6 +17,7 @@
   border: 1px solid transparent !important;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
 .link-infos.mat-button-disabled {
   color: white;
   background-color: rgba(104, 58, 183, 0.226);

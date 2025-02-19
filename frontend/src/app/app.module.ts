@@ -60,6 +60,8 @@ import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatButtonModule } from '@angular/material/button';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -117,6 +119,7 @@ export function initApp(injector) {
     }),
     LoginModule,
     HomeDiscussionsComponent,
+    MatButtonModule,
   ],
   providers: [
     AuthService,
@@ -142,6 +145,7 @@ export function initApp(injector) {
       multi: true,
     },
     provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
   ],
 })
 export class AppModule {}

@@ -22,7 +22,7 @@
       <mat-error *ngIf="!this.alertForm.valid">Veuillez saisir un commentaire</mat-error>
     </mat-form-field>
   </form>
-  <mat-card *ngIf="alert?.content">{{ alert?.content }}</mat-card>
+  <mat-card appearance="outlined" *ngIf="alert?.content">{{ alert?.content }}</mat-card>
   <div class="mt-4">
     <button
       id="cancelAlertBtn"
