@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@use "m3-theme.scss";
+@use 'm3-theme.scss';
 
 @import 'conf/names_variables.scss';
 @import 'material-symbols';
@@ -7,8 +7,7 @@
 @include mat.core();
 
 html {
-  @include mat.all-component-themes(m3-theme.$light-theme);
-
+  @include mat.all-component-themes(m3-theme.$dark-theme);
 }
 
 html,
