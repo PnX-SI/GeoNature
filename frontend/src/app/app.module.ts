@@ -2,7 +2,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 
-import { HttpClient, HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HttpClient,
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 
 // For Angular Dependencies
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -56,6 +61,8 @@ import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatButtonModule } from '@angular/material/button';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -80,58 +87,66 @@ export function initApp(injector) {
   };
 }
 
-@NgModule({ declarations: [
-        AppComponent,
-        HomeContentComponent,
-        SidenavItemsComponent,
-        PageNotFoundComponent,
-        NavHomeComponent,
-        FooterComponent,
-        IntroductionComponent,
-        NotificationComponent,
-        RulesComponent,
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        routing,
-        NgChartsModule,
-        ToastrModule.forRoot({
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 3000,
-        }),
-        GN2CommonModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: createTranslateLoader,
-                deps: [HttpClient],
-            },
-        }),
-        LoginModule,
-        HomeDiscussionsComponent], providers: [
-        AuthService,
-        AuthGuard,
-        ModuleService,
-        ToastrService,
-        GlobalSubService,
-        CookieService,
-        HttpClient,
-        ModuleGuardService,
-        UserPublicGuard,
-        SideNavService,
-        CruvedStoreService,
-        UserDataService,
-        NotificationDataService,
-        ConfigService,
-        { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
-        {
-            provide: APP_INITIALIZER,
-            useFactory: initApp,
-            deps: [Injector],
-            multi: true,
-        },
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeContentComponent,
+    SidenavItemsComponent,
+    PageNotFoundComponent,
+    NavHomeComponent,
+    FooterComponent,
+    IntroductionComponent,
+    NotificationComponent,
+    RulesComponent,
+  ],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    routing,
+    NgChartsModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-center',
+      tapToDismiss: true,
+      timeOut: 3000,
+    }),
+    GN2CommonModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient],
+      },
+    }),
+    LoginModule,
+    HomeDiscussionsComponent,
+    MatButtonModule,
+  ],
+  providers: [
+    AuthService,
+    AuthGuard,
+    ModuleService,
+    ToastrService,
+    GlobalSubService,
+    CookieService,
+    HttpClient,
+    ModuleGuardService,
+    UserPublicGuard,
+    SideNavService,
+    CruvedStoreService,
+    UserDataService,
+    NotificationDataService,
+    ConfigService,
+    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initApp,
+      deps: [Injector],
+      multi: true,
+    },
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
+  ],
+})
 export class AppModule {}

@@ -10,6 +10,7 @@
 </div>
 <div class="containerCards">
   <mat-card
+    appearance="outlined"
     class="cardNotification"
     *ngFor="let notificationData of obs | async"
     (click)="notificationData.url != null && OnMatCardClickEvent(notificationData)"

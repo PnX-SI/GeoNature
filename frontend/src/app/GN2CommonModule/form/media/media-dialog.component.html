@@ -3,7 +3,7 @@
   class="media-dialog"
   [ngClass]="{ 'media-dialog-fade-in': bDisplay, 'media-dialog-fade-out': !bDisplay }"
 >
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-title>
       <span *ngIf="medias.length > 1">{{ curIndex + 1 }}/{{ medias.length }} :</span>
       {{ media.title_fr }}

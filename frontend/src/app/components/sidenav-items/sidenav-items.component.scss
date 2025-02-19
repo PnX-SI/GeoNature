@@ -7,14 +7,17 @@
 .logo {
   margin-bottom: 0px;
   padding: 10px;
-}
 
+}
+.logo img {
+  width: 100%;
+}
 .navbar-footer {
   padding: 5px;
   position: absolute;
   bottom: 0px;
   font-size: 11px;
-  background-color: white;
+
 }
 
 .picto {
@@ -27,10 +30,11 @@
   margin-top: 3px;
 }
 
-.mat-card-image {
+.mat-mdc-card-image {
   margin-bottom: 0px;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
 mat-card {
   a {
     img {
