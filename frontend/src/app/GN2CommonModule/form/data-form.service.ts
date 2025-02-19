@@ -6,7 +6,7 @@ import {
   HttpErrorResponse,
   HttpEvent,
 } from '@angular/common/http';
-import { Taxon } from './taxonomy/taxonomy.component';
+import { Taxon, TaxonParents } from './taxonomy/taxonomy.component';
 import { Observable } from 'rxjs';
 import { isArray } from 'rxjs/internal-compatibility';
 import { map } from 'rxjs/operators';
@@ -164,6 +164,12 @@ export class DataFormService {
     }
     return this._http.get<Taxon>(`${this.getTaxhubAPI()}/taxref/${cd_nom}`, {
       params: query_string,
+    });
+  }
+
+  getTaxonLinnaeanParents(taxon: Taxon): Observable<TaxonParents> {
+    return this._http.get<TaxonParents>(`${this.getTaxhubAPI()}/taxref/${taxon.cd_nom}/parents`, {
+      params: { linnaean: true },
     });
   }
 

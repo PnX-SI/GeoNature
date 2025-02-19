@@ -3,7 +3,7 @@
   *ngIf="taxon"
 >
   <div class="Taxonomy__breadcrumb">
-    <span *ngFor="let item of taxon.linnaean_parents">
+    <span *ngFor="let item of linnaeanParents">
       <a
         class="Link"
         (click)="navigateToCDRef(item.cd_ref)"

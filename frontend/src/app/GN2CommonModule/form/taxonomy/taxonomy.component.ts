@@ -14,11 +14,13 @@ import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 
 import { DataFormService } from '../data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 
-export type LinnaeanParents = Array<{
+export interface TaxonParent {
   cd_ref: number;
   lb_nom: string;
   id_rang: string;
-}>;
+}
+
+export type TaxonParents = Array<TaxonParent>;
 
 export interface Taxon {
   search_name?: string;
@@ -44,7 +46,6 @@ export interface Taxon {
   status?: any[];
   synonymes?: any[];
   attributs?: any[];
-  linnaean_parents: LinnaeanParents;
 }
 
 /**
