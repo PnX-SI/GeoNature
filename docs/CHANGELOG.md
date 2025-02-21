@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.15.4 (2025-02-xx)
+
+**🐛 Corrections**
+
+- [Synthese] Correction de la prise en compte de `size_hierarchy` dans le mode maille de la synthèse (#3380 par @Pierre-Narcisi)
+-
+
 ## 2.15.3 (2025-02-14)
 
 **🚀 Nouveautés**
