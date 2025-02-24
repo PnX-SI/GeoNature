@@ -41,7 +41,7 @@
   <h5 class="Taxonomy__subtitle">Statuts</h5>
   <table
     class="font-xs table table-sm"
-    *ngIf="taxon?.status && taxon.status.length > 0; else noStatus"
+    *ngIf="taxon?.status && !isStatusEmpty; else noStatus"
   >
     <ng-container *ngFor="let status of taxon.status | keyvalue">
       <tr class="table-primary">
