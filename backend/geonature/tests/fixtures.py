@@ -776,47 +776,24 @@ def synthese_sensitive_data(app, users, datasets, source):
         fixture
     """
     data = {}
-    id_nomenclature_not_sensitive = get_id_nomenclature(
-        nomenclature_type_mnemonique="SENSIBILITE", cd_nomenclature="0"
-    )
-    id_nomenclature_sensitive = get_id_nomenclature(
-        nomenclature_type_mnemonique="SENSIBILITE", cd_nomenclature="2"
-    )
-    # Add a criteria to the sensitivity rule if needed
-    id_type_nomenclature_bio_status = db.session.scalar(
-        sa.select(BibNomenclaturesTypes.id_type).where(
-            BibNomenclaturesTypes.mnemonique == "STATUT_BIO"
-        )
-    )
-    id_type_nomenclature_behaviour = db.session.scalar(
-        sa.select(BibNomenclaturesTypes.id_type).where(
-            BibNomenclaturesTypes.mnemonique == "OCC_COMPORTEMENT"
-        )
-    )
 
     # Retrieve a cd_nom and point that fit both a sensitivity rule and a protection status
     sensitivity_rule = db.session.execute(
         sa.select(SensitivityRule)
+        .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
         .join(
             CorSensitivityCriteria, SensitivityRule.id == CorSensitivityCriteria.id_sensitivity_rule
         )
-        .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
         .join(LAreas, cor_sensitivity_area.c.id_area == LAreas.id_area)
-        .where(
-            SensitivityRule.active == True,
-            SensitivityRule.id_nomenclature_sensitivity == id_nomenclature_sensitive,
-            CorSensitivityCriteria.id_nomenclature_type.in_(
-                [id_type_nomenclature_behaviour, id_type_nomenclature_bio_status]
-            ),
-        )
+        .where(SensitivityRule.active == True)
         .limit(1)
     ).scalar_one()
 
     sensitive_cd_nom, sensitive_id_area = sensitivity_rule.cd_nom, sensitivity_rule.areas[0].id_area
 
-    sensitive_protected_area = db.session.execute(
-        select(LAreas).where(LAreas.id_area == sensitive_id_area)
-    ).scalar_one()
+    sensitive_protected_area = db.session.scalars(
+        select(LAreas).where(LAreas.id_area == sensitive_id_area).limit(1)
+    ).first()
 
     # Get one point inside the area : the centroid (assuming the area is convex)
     sensitive_protected_point = db.session.scalar(
@@ -825,33 +802,44 @@ def synthese_sensitive_data(app, users, datasets, source):
         ).limit(1)
     )
 
+    # Add a criteria to the sensitivity rule if needed
     id_nomenclature_bio_status = None
+    id_type_nomenclature_bio_status = db.session.scalar(
+        sa.select(BibNomenclaturesTypes.id_type).where(
+            BibNomenclaturesTypes.mnemonique == "STATUT_BIO"
+        )
+    )
     id_nomenclature_behaviour = None
+    id_type_nomenclature_behaviour = db.session.scalar(
+        sa.select(BibNomenclaturesTypes.id_type).where(
+            BibNomenclaturesTypes.mnemonique == "OCC_COMPORTEMENT"
+        )
+    )
 
     # Get one criteria for the sensitivity rule if needed
-    for criterion in sensitivity_rule.criterias:
-        id_type_criteria_for_sensitive_rule = criterion.id_type
-        if id_type_criteria_for_sensitive_rule == id_type_nomenclature_bio_status:
-            id_nomenclature_bio_status = criterion.id_nomenclature
-            break
-        elif id_type_criteria_for_sensitive_rule == id_type_nomenclature_behaviour:
-            id_nomenclature_behaviour = criterion.id_nomenclature
-            break
+    one_criteria_for_sensitive_rule = sensitivity_rule.criterias[0]
+    id_type_criteria_for_sensitive_rule = one_criteria_for_sensitive_rule.id_type
+    if id_type_criteria_for_sensitive_rule == id_type_nomenclature_bio_status:
+        id_nomenclature_bio_status = one_criteria_for_sensitive_rule.id_nomenclature
+    elif id_type_criteria_for_sensitive_rule == id_type_nomenclature_behaviour:
+        id_nomenclature_behaviour = one_criteria_for_sensitive_rule.id_nomenclature
+
+    id_nomenclature_not_sensitive = get_id_nomenclature(
+        nomenclature_type_mnemonique="SENSIBILITE", cd_nomenclature="0"
+    )
+    id_nomenclature_sensitive = get_id_nomenclature(
+        nomenclature_type_mnemonique="SENSIBILITE", cd_nomenclature="2"
+    )
 
     unsensitive_area_centroid = db.session.scalars(
-        sa.select(func.ST_Centroid(LAreas.geom_4326))
-        .where(
+        sa.select(func.ST_Centroid(LAreas.geom_4326)).where(
             LAreas.area_type.has(BibAreasTypes.type_code == "DEP"),
-            LAreas.id_area.notin_([area.id_area for area in sensitivity_rule.areas]),
+            LAreas.area_code == "01",
         )
-        .limit(1)
     ).one()
 
     unsensitive_taxon = db.session.execute(
-        select(Taxref.cd_nom)
-        .filter(Taxref.cd_nom.notin_(db.session.scalars(select(SensitivityRule.cd_nom))))
-        .order_by(Taxref.cd_nom)
-        .limit(1)
+        select(Taxref.cd_nom).filter_by(cd_nom=64357)
     ).scalar_one()
 
     with db.session.begin_nested():
