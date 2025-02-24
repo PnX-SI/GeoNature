@@ -51,14 +51,27 @@ def upgrade():
             gn_commons.t_validations for each row execute function gn_commons.fct_trg_update_synthese_validation_status()
         """
     )
-    conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
-    synthese = sa.Table("synthese", metadata, schema="gn_synthese", autoload_with=conn)
-    t_validations = sa.Table("t_validations", metadata, schema="gn_commons", autoload_with=conn)
+
     op.execute(
-        sa.update(synthese)
-        .where(synthese.c.unique_id_sinp == t_validations.c.uuid_attached_row)
-        .values(meta_validation_date=t_validations.c.validation_date)
+        """
+        WITH cte_max_date AS (
+            SELECT
+                uuid_attached_row,
+                MAX(validation_date) AS validation_date
+            FROM
+                gn_commons.t_validations
+            GROUP BY
+                uuid_attached_row
+        )
+        UPDATE
+            gn_synthese.synthese
+        SET
+            meta_validation_date = cte_max_date.validation_date
+        FROM
+            cte_max_date
+        WHERE
+            gn_synthese.synthese.unique_id_sinp = cte_max_date.uuid_attached_row;
+        """
     )
 
     op.alter_column(
