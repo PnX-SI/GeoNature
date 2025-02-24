@@ -33,6 +33,10 @@
 - [Documentation] Réintégration de la documentation sur l'authentification avec un fournisseur d'identité externe (#3338 par @jacquesfize)
 - [Développement] Correction des modèles SQLAlchemy pour pouvoir utiliser le mode debug (#3346 par @jacquesfize)
 
+**⚠️ Notes de version**
+
+Enlever les paramètres `INSTANCE_BOUNDING_BOX`, `ENABLE_BOUNDING_BOX_CHECK`, `ALLOW_FIELD_MAPPING`, `DEFAULT_FIELD_MAPPING_ID`, `DISPLAY_CHECK_BOX_MAPPED_FIELD` de votre fichier de configuration. Ces derniers ne sont plus pris en compte depuis la 2.15.x.
+
 ## 2.15.2 (2025-01-16)
 
 **🚀 Nouveautés**

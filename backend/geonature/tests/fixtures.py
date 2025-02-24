@@ -839,11 +839,12 @@ def synthese_sensitive_data(app, users, datasets, source):
             break
 
     unsensitive_area_centroid = db.session.scalars(
-        sa.select(func.ST_Centroid(LAreas.geom_4326)).where(
+        sa.select(func.ST_Centroid(LAreas.geom_4326))
+        .where(
             LAreas.area_type.has(BibAreasTypes.type_code == "DEP"),
-            LAreas.area_code == "01",
             LAreas.id_area.notin_([area.id_area for area in sensitivity_rule.areas]),
         )
+        .limit(1)
     ).one()
 
     unsensitive_taxon = db.session.execute(
