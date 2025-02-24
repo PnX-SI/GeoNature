@@ -38,19 +38,6 @@ def upgrade():
         COST 100;
     """
     )
-    op.execute(
-        """
-        DROP TRIGGER IF EXISTS tri_insert_synthese_update_validation_status ON gn_commons.t_validations
-        """
-    )
-    op.execute(
-        """
-        create trigger tri_insert_synthese_update_validation_status 
-        AFTER INSERT
-            on
-            gn_commons.t_validations for each row execute function gn_commons.fct_trg_update_synthese_validation_status()
-        """
-    )
 
     op.execute(
         """
@@ -84,8 +71,10 @@ def upgrade():
 
 def downgrade():
     op.alter_column(
-        table_name="gn_commons.t_validations",
+        table_name="t_validations",
         column_name="validation_date",
+        server_default=sa.null(),
+        schema="gn_commons",
     )
 
     op.execute(
@@ -106,17 +95,4 @@ def downgrade():
         LANGUAGE plpgsql VOLATILE
         COST 100;
     """
-    )
-    op.execute(
-        """
-        DROP TRIGGER IF EXISTS tri_insert_synthese_update_validation_status ON gn_commons.t_validations
-        """
-    )
-    op.execute(
-        """
-        create trigger tri_insert_synthese_update_validation_status 
-        AFTER INSERT
-            on
-            gn_commons.t_validations for each row execute function gn_commons.fct_trg_update_synthese_validation_status()
-        """
     )
