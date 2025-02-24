@@ -7,6 +7,7 @@ from geonature.core.gn_synthese.models import Synthese
 from .utils import activate_profiling_sql
 
 from .benchmark_generator import BenchmarkTest, CLater
+from geonature.tests.fixtures import users
 
 
 logging.basicConfig()
@@ -105,4 +106,4 @@ for url, label in [
             ),
         )
 
-add_bluring_to_benchmark_test_class(TestBenchmarkSynthese)
+add_bluring_to_benchmark_test_class(TestBenchmarkSynthese, "user_with_blurring")
