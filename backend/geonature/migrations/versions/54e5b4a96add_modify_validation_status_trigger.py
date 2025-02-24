@@ -1,4 +1,4 @@
-"""modifiy validation status trigger
+"""modify validation status trigger
 
 Revision ID: 54e5b4a96add
 Revises: 5cf0ce9e669c
