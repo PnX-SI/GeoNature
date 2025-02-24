@@ -1671,14 +1671,6 @@ class TestSyntheseBlurring:
         ]
         # If an observation is blurred and the AREA_AGGREGATION_TYPE is smaller in
         # size than the blurred observation then the observation should not appear
-        pouet = [
-            feature["geometry"] is None
-            for feature in json_resp["features"]
-            if all(
-                observation["id_synthese"] in sensitive_synthese_ids
-                for observation in feature["properties"]["observations"]
-            )
-        ]
         assert all(
             feature["geometry"] is None
             for feature in json_resp["features"]
