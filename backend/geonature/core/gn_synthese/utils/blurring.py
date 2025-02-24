@@ -91,7 +91,7 @@ def build_blurred_precise_geom_queries(
     ]
     # size hierarchy is the size of the joined blurring area
     if select_size_hierarchy:
-        columns.append(BibAreasTypes.size_hierarchy.label("size_hierarchy"))
+        columns.append(BibAreasTypesAlias.size_hierarchy.label("size_hierarchy"))
     blurred_geom_query = SyntheseQuery(
         Synthese,
         sa.select(*columns)

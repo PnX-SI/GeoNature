@@ -1643,7 +1643,7 @@ class TestSyntheseBlurring:
         # So that all burred geoms will not appear on the aggregated areas
         monkeypatch.setitem(current_app.config["SYNTHESE"], "AREA_AGGREGATION_TYPE", "M1")
 
-        current_user = users["stranger_user"]
+        current_user = users["noright_user"]
         set_logged_user(self.client, current_user)
         # None is 3
         synthese_read_permissions(current_user, None, sensitivity_filter=True)
@@ -1669,7 +1669,6 @@ class TestSyntheseBlurring:
                 synthese_sensitive_data["obs_sensitive_2"],
             )
         ]
-
         # If an observation is blurred and the AREA_AGGREGATION_TYPE is smaller in
         # size than the blurred observation then the observation should not appear
         assert all(
