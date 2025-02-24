@@ -229,7 +229,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.filterTabs();
         this.selectedTab = this.selectedTab ? this.selectedTab : this.defaultTab;
         this.selectTab(this.selectedTab);
-        console.log(this.selectedObs);
       });
 
     this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe((dataChecks) => {

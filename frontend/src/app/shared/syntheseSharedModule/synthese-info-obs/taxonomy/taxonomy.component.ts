@@ -11,14 +11,23 @@ interface TaxonInformation {
   templateUrl: 'taxonomy.component.html',
   styleUrls: ['taxonomy.component.scss'],
 })
-export class TaxonomyComponent {
+export class TaxonomyComponent implements OnInit {
   @Input()
   taxon: ObservedTaxon | null = null;
+  isStatusEmpty: boolean = false;
 
   @Input()
   hideLocalAttributesOnEmpty: boolean = false;
 
-  constructor() {}
+  checkStatus() {
+    this.isStatusEmpty = Object.keys(this.taxon?.status || {}).length === 0;
+  }
+  ngOnInit() {
+    this.checkStatus();
+  }
+  ngOnChanges() {
+    this.checkStatus();
+  }
 
   readonly INFORMATIONS: Array<TaxonInformation> = [
     {
