@@ -82,6 +82,14 @@ class TestBenchmarkSynthese:
             json=benchmark_synthese_with_tree_taxon,
         ),
     )
+    test_benchmark_synthese_regulation = BenchmarkTest(
+        CLIENT_POST,
+        [CLater(SYNTHESE_GET_OBS_URL)],
+        dict(
+            user_profile="admin_user",
+            json=benchmark_synthese_regulation,
+        ),
+    )
 
 
 # EXPORT TESTING
