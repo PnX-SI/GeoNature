@@ -2,7 +2,7 @@ import pytest
 from flask import g
 import sqlalchemy as sa
 from pathlib import Path
-
+import json
 from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import db
 
@@ -425,12 +425,22 @@ def imports(import_destination, users):
 
 
 @pytest.fixture()
-def uploaded_import(client, import_file_name, override_in_importfile, users, testfiles_folder):
+def preset_fieldmapping():
+    return None
+
+
+@pytest.fixture()
+def uploaded_import(
+    client, import_file_name, override_in_importfile, users, testfiles_folder, preset_fieldmapping
+):
     set_logged_user(client, users["user"])
 
     with open(tests_path / "files" / testfiles_folder / import_file_name, "rb") as f:
         f.seek(0)
         data = {"file": (f, import_file_name)}
+        if preset_fieldmapping:
+            data["fieldsToMap"] = json.dumps(preset_fieldmapping)
+
         r = client.post(
             url_for("import.upload_file"),
             data=data,

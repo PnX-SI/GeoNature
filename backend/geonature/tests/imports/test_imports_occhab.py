@@ -510,3 +510,18 @@ class TestImportsOcchab:
                 ]
             ],
         }
+
+    @pytest.mark.parametrize(
+        "preset_fieldmapping",
+        [
+            {
+                "id_nomenclature_determination_type": {
+                    "column_src": "",
+                    "default_value": "Inconnu",
+                },
+                "station_name": {"column_src": "", "default_value": "test_station_name"},
+            }
+        ],
+    )
+    def test_import_upload_preset(self, uploaded_import, preset_fieldmapping):
+        assert uploaded_import.fieldmapping == preset_fieldmapping
