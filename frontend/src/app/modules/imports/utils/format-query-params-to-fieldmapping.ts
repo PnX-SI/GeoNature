@@ -1,6 +1,8 @@
 import { FieldMappingValues } from '../models/mapping.model';
 
-export function formatQueryParams(queryParams: { [key: string]: string }): FieldMappingValues {
+export function formatQueryParamsToFieldMapping(queryParams: {
+  [key: string]: string;
+}): FieldMappingValues {
   const formattedParams: FieldMappingValues = {};
 
   Object.keys(queryParams).forEach((key) => {

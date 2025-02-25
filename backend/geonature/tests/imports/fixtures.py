@@ -439,7 +439,7 @@ def uploaded_import(
         f.seek(0)
         data = {"file": (f, import_file_name)}
         if preset_fieldmapping:
-            data["fieldsToMap"] = json.dumps(preset_fieldmapping)
+            data["fieldmapping"] = json.dumps(preset_fieldmapping)
 
         r = client.post(
             url_for("import.upload_file"),
