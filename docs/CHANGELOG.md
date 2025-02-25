@@ -4,14 +4,14 @@
 
 **🚀 Nouveautés**
 
-- [Import] Accélération du temps de suppression d'un import avec l'ajout d'un index sur les colonnes `id_import` de `pr_occhab.t_stations`, `pr_occhab.t_habitats` et `gn_synthese.synthese` (#3390 par @jacquesfize et @dba-sig-sfepm).
-- [Synthese] La mise à jour de la date de validation dans la synthèse est effective (#3387 par @jacquesfize)
-- [Import] Le paramètre `CHECK_PRIVATE_JDD_BLURRING` est maintenant désactivé par défaut
+- [Import] Accélération du temps de suppression d'un import avec l'ajout d'un index sur les colonnes `id_import` des tables `pr_occhab.t_stations`, `pr_occhab.t_habitats` et `gn_synthese.synthese` (#3390 par @jacquesfize et @dba-sig-sfepm).
+- [Synthese] La mise à jour de la date de validation dans la synthèse est effective (#3371, #1040 par @jacquesfize)
+- [Import] Le paramètre `CHECK_PRIVATE_JDD_BLURING` est maintenant désactivé par défaut (#3391 par @camillemonchicourt)
 
 **🐛 Corrections**
 
-- [Synthese] Correction de la prise en compte de `size_hierarchy` dans le mode maille de la synthèse lorsque le floutage est activé (#3380 par @Pierre-Narcisi)
-- [Benchmark] Correction des _fixtures_ de benchmark des routes de la synthèse avec floutage (#3381 par @jacquesfize)
+- [Synthese] Correction de la prise en compte de `size_hierarchy` dans le mode maille de la Synthèse lorsque le floutage est activé (#3380 par @Pierre-Narcisi)
+- [Benchmark] Correction des _fixtures_ de benchmark des routes de la Synthèse avec floutage (#3381 par @jacquesfize)
 - [Synthese] Correction de l'affichage des statuts dans la fiche d'observation et dans la fiche de taxon (#3384 par @jacquesfize et #3394 par @edelclaux)
 - [Import] Correction du nom de fichier dans le template du rapport d'import (`images/logo_structure.jpg` -> `images/logo_structure.png`) (#3389 par @jacquesfize)
 
@@ -43,7 +43,7 @@
 
 **⚠️ Notes de version**
 
-Enlever les paramètres `INSTANCE_BOUNDING_BOX`, `ENABLE_BOUNDING_BOX_CHECK`, `ALLOW_FIELD_MAPPING`, `DEFAULT_FIELD_MAPPING_ID`, `DISPLAY_CHECK_BOX_MAPPED_FIELD` de votre fichier de configuration. Ces derniers ne sont plus pris en compte depuis la 2.15.x.
+Si vous les aviez défini, enlevez les paramètres `INSTANCE_BOUNDING_BOX`, `ENABLE_BOUNDING_BOX_CHECK`, `ALLOW_FIELD_MAPPING`, `DEFAULT_FIELD_MAPPING_ID`, `DISPLAY_CHECK_BOX_MAPPED_FIELD` de votre fichier de configuration `geonature_config.toml`. Ces derniers ne sont plus pris en compte depuis la version 2.15.x.
 
 ## 2.15.2 (2025-01-16)
 
