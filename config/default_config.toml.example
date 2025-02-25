@@ -647,7 +647,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE = false
 
     # Active la vérification de l'existence du champs "floutage" si le JDD est privé
-    CHECK_PRIVATE_JDD_BLURING = true
+    CHECK_PRIVATE_JDD_BLURING = false
 
     # Active la vérification qu'une ref biblio est fournie si la valeur du champs source = "litterature"
     CHECK_REF_BIBLIO_LITTERATURE = true
