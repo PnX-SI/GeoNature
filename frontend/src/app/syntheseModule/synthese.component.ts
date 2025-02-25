@@ -9,7 +9,7 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
-import * as cloneDeep from 'lodash/cloneDeep';
+import { cloneDeep } from 'lodash-es';
 import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
 import { ConfigService } from '@geonature/services/config.service';
 

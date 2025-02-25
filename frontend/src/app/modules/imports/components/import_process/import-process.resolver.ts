@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Observable, EMPTY, of } from 'rxjs';
@@ -14,7 +14,7 @@ import { ImportDataService } from '../../services/data.service';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
-export class ImportProcessResolver implements Resolve<Import> {
+export class ImportProcessResolver  {
   constructor(
     private router: Router,
     private ds: ImportDataService,

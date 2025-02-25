@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
 import { CommonService } from '@geonature_common/service/common.service';
@@ -8,7 +8,7 @@ import { StationFeature } from '../models';
 import { OccHabDataService } from '../services/data.service';
 
 @Injectable({ providedIn: 'root' })
-export class StationResolver implements Resolve<StationFeature> {
+export class StationResolver  {
   constructor(
     private service: OccHabDataService,
     private commonService: CommonService,

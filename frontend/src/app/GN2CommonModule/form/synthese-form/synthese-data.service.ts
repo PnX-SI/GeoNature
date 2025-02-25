@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpParams,
-  HttpHeaders,
-  HttpEventType,
-  HttpErrorResponse,
-  HttpEvent,
-} from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders, HttpEventType, HttpErrorResponse, HttpEvent } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';

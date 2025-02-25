@@ -12,13 +12,15 @@ export class RoutingService {
 
     modules.forEach((module) => {
       if (module.ng_module) {
+        console.log(module);
         const moduleConfig = {
           path: module.module_path,
-          loadChildren: () =>
-            import(
-              /* webpackInclude: /\/external_modules\/[^/]*\// */
-              '../../../external_modules/' + module.ng_module + '/app/gnModule.module'
-            ).then((m) => m.GeonatureModule),
+          loadChildren: async () => {
+            return import(
+              /* @nowarn */
+              `../../../external_modules/${module.ng_module}/app/gnModule.module`
+            ).then((m) => m.GeonatureModule);
+          },
           canActivate: [ModuleGuardService],
           data: {
             module_code: module.module_code,

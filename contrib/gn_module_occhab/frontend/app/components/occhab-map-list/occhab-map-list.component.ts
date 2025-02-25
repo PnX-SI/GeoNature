@@ -6,7 +6,7 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { OccHabModalDownloadComponent } from "./modal-download.component";
 import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
-import * as moment from "moment";
+import { DateTime } from "luxon";
 import { ConfigService } from "@geonature/services/config.service";
 import { OccHabMapListService } from "../../services/occhab-map-list.service";
 import { ModuleService } from "@geonature/services/module.service";
@@ -178,10 +178,10 @@ export class OccHabMapListComponent implements OnInit {
 
   displayDateTooltip(element): string {
     return element.date_min == element.date_max
-      ? moment(element.date_min).format("DD-MM-YYYY")
-      : `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(
-          element.date_max
-        ).format("DD-MM-YYYY")}`;
+      ? DateTime.fromISO(element.date_min).format("DD-MM-YYYY")
+      : `Du ${DateTime.fromISO(element.date_min).format(
+          "DD-MM-YYYY"
+        )} au ${DateTime.fromISO(element.date_max).format("DD-MM-YYYY")}`;
   }
 
   displayLeafletPopupCallback(feature): any {

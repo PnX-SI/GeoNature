@@ -11,7 +11,7 @@ import { MapService } from '../map.service';
 import { Map } from 'leaflet';
 import * as L from 'leaflet';
 import * as ToGeojson from '@tmcw/togeojson';
-import * as FileLayer from '@geonature/utils/filelayer';
+import FileLayer from '@geonature/utils/filelayer';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

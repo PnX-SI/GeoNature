@@ -126,7 +126,7 @@ const routes: Routes = [
     MatCheckboxModule,
     NgbModule,
   ],
-  entryComponents: [ModalDeleteImport],
+
   providers: [
     ImportDataService,
     ImportProcessService,
