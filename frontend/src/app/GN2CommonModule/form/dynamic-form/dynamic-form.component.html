@@ -50,7 +50,7 @@
       [formControl]="form.get(formDefComp['attribut_name'])"
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="text"
-      [attr.data-qa]="'field-text' + '-' + formDefComp['attribut_name'] + '_' + rand"
+      [attr.data-qa]="'field-text' + '-' + formDefComp['attribut_name']"
     />
     <div
       *ngIf="
@@ -67,7 +67,7 @@
       [formControl]="form.get(formDefComp['attribut_name'])"
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="time"
-      [attr.data-qa]="'field-time' + '-' + formDefComp['attribut_name'] + '_' + rand"
+      [attr.data-qa]="'field-time' + '-' + formDefComp['attribut_name']"
     />
 
     <input
@@ -78,7 +78,7 @@
       type="number"
       min="{{ formDefComp['min'] }}"
       max="{{ formDefComp['max'] }}"
-      [attr.data-qa]="'field-number' + '-' + formDefComp['attribut_name'] + '_' + rand"
+      [attr.data-qa]="'field-number' + '-' + formDefComp['attribut_name']"
     />
 
     <textarea
@@ -88,7 +88,7 @@
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="textarea"
       rows="{{ formDefComp['rows'] }}"
-      [attr.data-qa]="'field-textarea' + '-' + formDefComp['attribut_name'] + '_' + rand"
+      [attr.data-qa]="'field-textarea' + '-' + formDefComp['attribut_name']"
     ></textarea>
 
     <span *ngSwitchCase="'select'">
@@ -97,7 +97,7 @@
         class="form-control form-control-sm"
         id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
         [formControl]="form.get(formDefComp['attribut_name'])"
-        [attr.data-qa]="'field-select-' + '-' + formDefComp['attribut_name'] + '_' + rand"
+        [attr.data-qa]="'field-select-' + '-' + formDefComp['attribut_name']"
       >
         <option
           [ngValue]="null"

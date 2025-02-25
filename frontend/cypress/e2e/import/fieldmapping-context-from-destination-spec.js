@@ -1,19 +1,25 @@
 import { USERS } from './constants/users';
 import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
+import {
+  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_ALTITUDE_MAX,
+  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATE_MIN,
+  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOMENCLATURE_DETERMINATION_TYPE,
+  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOMENCLATURE_GEO_OBJECT_NATURE,
+  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOM_CITE,
+  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_STATION_NAME,
+} from './constants/selectors';
 
 const USER = USERS[0];
 const VIEWPORT = VIEWPORTS[0];
 
-function handleFieldValidation(dataQa, paramsName, expectedValue, fieldType) {
-  if (['textarea', 'text', 'number'].includes(fieldType)) {
-    cy.get(dataQa)
-      .find(`[data-qa^="field-${fieldType}-${paramsName}_default_value_"]`)
-      .should('have.value', expectedValue);
-  } else if (fieldType === 'date') {
-    cy.get(dataQa).find('[data-qa="input-date"]').should('have.value', expectedValue);
-  } else if (fieldType === 'nomenclature') {
-    cy.get(`${dataQa} .ng-value-container .ng-value-label`).should('have.text', expectedValue);
+function handleFieldValidation(dataQa, expectedValue, isNgSelect) {
+  if (isNgSelect) {
+    cy.get(dataQa).within(() => {
+      cy.get('.ng-value-label').should('have.text', expectedValue);
+    });
+  } else {
+    cy.get(dataQa).should('have.value', expectedValue);
   }
 }
 
@@ -24,26 +30,30 @@ const paramsByDestination = [
       {
         paramsName: 'nom_cite',
         paramsValue: 'test_nomcite',
-        fieldType: 'textarea',
+        isNgSelect: false,
         expectedValue: 'test_nomcite',
+        defaultDataQA: SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOM_CITE,
       },
       {
         paramsName: 'altitude_max',
         paramsValue: 10,
-        fieldType: 'number',
+        isNgSelect: false,
         expectedValue: 10,
+        defaultDataQA: SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_ALTITUDE_MAX,
       },
       {
         paramsName: 'date_min',
         paramsValue: '2024-12-12',
-        fieldType: 'date',
+        isNgSelect: false,
         expectedValue: '12/12/2024',
+        defaultDataQA: SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATE_MIN,
       },
       {
         paramsName: 'id_nomenclature_geo_object_nature',
         paramsValue: 'Inventoriel',
-        fieldType: 'nomenclature',
+        isNgSelect: true,
         expectedValue: 'Inventoriel',
+        defaultDataQA: SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOMENCLATURE_GEO_OBJECT_NATURE,
       },
     ],
   },
@@ -53,9 +63,10 @@ const paramsByDestination = [
       {
         paramsName: 'id_nomenclature_determination_type',
         paramsValue: 'Inconnu',
-        fieldType: 'nomenclature',
+        isNgSelect: true,
         entityLabel: 'Habitat',
         expectedValue: 'Inconnu',
+        defaultDataQA: SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOMENCLATURE_DETERMINATION_TYPE,
       },
       // TODO: some fields seems to be not handled to be directly added as default value
       // {
@@ -68,9 +79,10 @@ const paramsByDestination = [
       {
         paramsName: 'station_name',
         paramsValue: 'test_station_name',
-        fieldType: 'textarea',
+        isNgSelect: false,
         entityLabel: 'Station',
         expectedValue: 'test_station_name',
+        defaultDataQA: SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_STATION_NAME,
       },
     ],
   },
@@ -96,15 +108,13 @@ describe('Import - Upload step', () => {
         });
 
         it(`Validates fields for destination: ${destination}`, () => {
-          queryParams.forEach(({ paramsName, expectedValue, fieldType, entityLabel }) => {
-            let dataQa = `[data-qa="import-fieldmapping-theme-${paramsName}"]`;
-
-            if (destination === 'occhab' && entityLabel) {
+          queryParams.forEach(({ expectedValue, isNgSelect, entityLabel, defaultDataQA }) => {
+            if (entityLabel) {
               const dataQaEntity = `[data-qa="import-entity-tab-${entityLabel}"]`;
               cy.get(dataQaEntity, { timeout: 30000 }).should('be.visible').click();
             }
 
-            handleFieldValidation(dataQa, paramsName, expectedValue, fieldType);
+            handleFieldValidation(defaultDataQA, expectedValue, isNgSelect);
           });
           cy.visitImport();
           cy.removeFirstImportInList();
