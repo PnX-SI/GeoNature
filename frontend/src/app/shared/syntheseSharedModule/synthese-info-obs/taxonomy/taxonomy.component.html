@@ -1,7 +1,7 @@
 <div class="Taxonomy">
   <h5 class="Taxonomy__subtitle">Classification</h5>
   <table
-    *ngIf="taxon; else noClassification"
+    *ngIf="observedTaxon; else noClassification"
     class="Classification font-xs table table-striped table-sm"
   >
     <tbody>
@@ -13,27 +13,27 @@
           class="Classification__value"
           [attr.data-qa]="'taxonomy-detail-taxo-' + information.field"
         >
-          {{ taxon[information.field] }}
+          {{ observedTaxon[information.field] }}
         </td>
       </tr>
     </tbody>
   </table>
   <ng-template #noClassification><p>Aucune</p></ng-template>
 
-  <div *ngIf="taxon?.attributs && (taxon.status.length || !hideLocalAttributesOnEmpty)">
+  <div *ngIf="!isAttributesEmpty || !hideLocalAttributesOnEmpty">
     <h5 class="Taxonomy__subtitle">Attribut(s) Taxonomique(s) locaux</h5>
     <table
-      *ngIf="taxon?.attributs && taxon.status.length; else noLocalAttributes"
+      *ngIf="!isAttributesEmpty; else noLocalAttributes"
       class="font-xs table table-striped table-sm"
     >
       <tr
         class="font-xs"
-        *ngFor="let attr of taxon?.attributs"
+        *ngFor="let attr of observedTaxon?.attributs"
       >
         <td>
-          <b>{{ attr.label_attribut }}</b>
+          <b>{{ attr?.bib_attribut?.label_attribut }}</b>
         </td>
-        <td>{{ attr.valeur_attribut }}</td>
+        <td style="width: 100%">{{ attr.valeur_attribut }}</td>
       </tr>
     </table>
     <ng-template #noLocalAttributes><p>Aucun</p></ng-template>
@@ -41,9 +41,9 @@
   <h5 class="Taxonomy__subtitle">Statuts</h5>
   <table
     class="font-xs table table-sm"
-    *ngIf="taxon?.status && !isStatusEmpty; else noStatus"
+    *ngIf="!isStatusEmpty; else noStatus"
   >
-    <ng-container *ngFor="let status of taxon.status | keyvalue">
+    <ng-container *ngFor="let status of observedTaxon.status | keyvalue">
       <tr class="table-primary">
         <th>{{ status.value.display }}</th>
       </tr>

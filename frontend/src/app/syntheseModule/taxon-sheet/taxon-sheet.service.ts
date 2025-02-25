@@ -14,7 +14,8 @@ export class TaxonSheetService {
     if (taxon && taxon.cd_ref == cd_ref) {
       return;
     }
-    this._ds.getTaxonInfo(cd_ref).subscribe((taxon) => {
+    const taxhubFields = ['attributs', 'attributs.bib_attribut.label_attribut', 'status'];
+    this._ds.getTaxonInfo(cd_ref, taxhubFields).subscribe((taxon) => {
       this.taxon.next(taxon);
     });
   }
