@@ -10,7 +10,7 @@ import { ImportProcessService } from '../import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { switchMap } from 'rxjs/operators';
 import { FieldMappingValues } from '@geonature/modules/imports/models/mapping.model';
-import { formatQueryParams } from '@geonature/modules/imports/utils/format-to-fieldsmapping';
+import { formatQueryParamsToFieldMapping } from '@geonature/modules/imports/utils/format-query-params-to-fieldmapping';
 
 @Component({
   selector: 'upload-file-step',
@@ -57,7 +57,7 @@ export class UploadFileStepComponent implements OnInit {
     combineLatest([this.route.parent.queryParams, this.route.parent?.params || []])
       .pipe(
         switchMap(([queryParams, parentParams]) => {
-          this.paramsFieldMapping = formatQueryParams(queryParams);
+          this.paramsFieldMapping = formatQueryParamsToFieldMapping(queryParams);
           const destinationLabel = parentParams['destination'];
           return this.ds.getDestination(destinationLabel);
         })
