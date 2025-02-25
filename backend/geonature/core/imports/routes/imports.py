@@ -166,6 +166,16 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
         assert destination
     author = g.current_user
     f = request.files["file"]
+    fieldmapping_str = request.form.get("fieldmapping")
+    fieldmapping = None
+    if fieldmapping_str:
+        fieldmapping = json.loads(fieldmapping_str)
+        # NOTES: Pas possible d'utiliser le validate value ici
+        # try:
+        #     FieldMapping.validate_values(fields_to_map)
+        # except ValueError as e:
+        #     raise BadRequest(*e.args)
+
     size = get_file_size(f)
     # value in config file is in Mo
     max_file_size = current_app.config["IMPORT"]["MAX_FILE_SIZE"] * 1024 * 1024
@@ -177,6 +187,8 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
         raise BadRequest(description="Impossible to upload empty files")
     if imprt is None:
         imprt = TImports(destination=destination)
+        if fieldmapping:
+            imprt.fieldmapping = fieldmapping
         imprt.authors.append(author)
         db.session.add(imprt)
     else:

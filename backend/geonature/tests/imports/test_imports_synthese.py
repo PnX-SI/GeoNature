@@ -4,6 +4,7 @@ from functools import partial
 from operator import or_
 from functools import reduce
 import csv
+import json
 
 from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
@@ -1214,3 +1215,19 @@ class TestImportsSynthese:
                 ),
             },
         )
+
+    @pytest.mark.parametrize(
+        "preset_fieldmapping",
+        [
+            {
+                "nom_cite": {"column_src": "", "default_value": "test_nomcite"},
+                "altitude_max": {"column_src": "", "default_value": 10},
+                "id_nomenclature_geo_object_nature": {
+                    "column_src": "",
+                    "default_value": "Inventoriel",
+                },
+            }
+        ],
+    )
+    def test_import_upload_preset(self, uploaded_import, preset_fieldmapping):
+        assert uploaded_import.fieldmapping == preset_fieldmapping

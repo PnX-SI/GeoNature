@@ -50,6 +50,7 @@
       [formControl]="form.get(formDefComp['attribut_name'])"
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="text"
+      [attr.data-qa]="'field-text' + '-' + formDefComp['attribut_name']"
     />
     <div
       *ngIf="
@@ -66,6 +67,7 @@
       [formControl]="form.get(formDefComp['attribut_name'])"
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="time"
+      [attr.data-qa]="'field-time' + '-' + formDefComp['attribut_name']"
     />
 
     <input
@@ -76,6 +78,7 @@
       type="number"
       min="{{ formDefComp['min'] }}"
       max="{{ formDefComp['max'] }}"
+      [attr.data-qa]="'field-number' + '-' + formDefComp['attribut_name']"
     />
 
     <textarea
@@ -85,6 +88,7 @@
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="textarea"
       rows="{{ formDefComp['rows'] }}"
+      [attr.data-qa]="'field-textarea' + '-' + formDefComp['attribut_name']"
     ></textarea>
 
     <span *ngSwitchCase="'select'">
@@ -93,6 +97,7 @@
         class="form-control form-control-sm"
         id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
         [formControl]="form.get(formDefComp['attribut_name'])"
+        [attr.data-qa]="'field-select-' + '-' + formDefComp['attribut_name']"
       >
         <option
           [ngValue]="null"
@@ -224,6 +229,7 @@
             name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
             [value]="item.value"
             [formControl]="form.get(formDefComp['attribut_name'])"
+            [attr.data-qa]="'field-radio' + formDefComp['attribut_name'] + '_' + rand"
           />
           <label
             class="custom-control-label"
@@ -290,6 +296,7 @@
       [regne]="formDefComp['regne']"
       [group2Inpn]="formDefComp['group2Inpn']"
       [bindAllItem]="formDefComp['bind_all_item']"
+      [attr.data-qa]="'field-nomenclature' + '-' + formDefComp['attribut_name']"
     ></pnx-nomenclature>
 
     <pnx-taxonomy
@@ -299,6 +306,7 @@
       [idList]="formDefComp['id_list']"
       [charNumber]="3"
       [listLength]="20"
+      [attr.data-qa]="'field-taxonomy' + '-' + formDefComp['attribut_name']"
     ></pnx-taxonomy>
 
     <pnx-datasets
@@ -309,6 +317,7 @@
       [moduleCode]="formDef.module_code"
       [creatableInModule]="formDef.creatable_in_module"
       [bindValue]="formDef.bind_value"
+      [attr.data-qa]="'field-dataset' + '-' + formDefComp['attribut_name']"
     ></pnx-datasets>
 
     <pnx-observers
@@ -319,18 +328,21 @@
       [idList]="formDefComp['id_list']"
       [codeList]="formDefComp['code_list']"
       [multiSelect]="formDefComp['multi_select']"
+      [attr.data-qa]="'field-observers' + '-' + formDefComp['attribut_name']"
     ></pnx-observers>
 
     <pnx-observers-text
       *ngSwitchCase="'observers-text'"
       [label]="formDefComp['attribut_label']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
+      [attr.data-qa]="'field-observers-txt' + '-' + formDefComp['attribut_name']"
     ></pnx-observers-text>
 
     <pnx-date
       *ngSwitchCase="'date'"
       [label]="formDefComp['attribut_label']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
+      [attr.data-qa]="'field-date' + '-' + formDefComp['attribut_name']"
     ></pnx-date>
 
     <pnx-areas
@@ -339,6 +351,7 @@
       [parentFormControl]="form.get(formDefComp.attribut_name)"
       [valueFieldName]="formDefComp.value_field_name"
       [typeCodes]="formDefComp.type_codes"
+      [attr.data-qa]="'field-areas' + '-' + formDefComp['attribut_name']"
     ></pnx-areas>
 
     <pnx-municipalities
@@ -346,6 +359,7 @@
       [label]="formDefComp['attribut_label']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
       [valueFieldName]="formDefComp['value_field_name']"
+      [attr.data-qa]="'field-municipalities' + '-' + formDefComp['attribut_name']"
     ></pnx-municipalities>
 
     <pnx-multiselect
@@ -357,6 +371,7 @@
       [label]="formDefComp['attribut_label']"
       [searchBar]="false"
       [disabled]="form.get(formDefComp['attribut_name'])?.disabled"
+      [attr.data-qa]="'field-multiselect' + '-' + formDefComp['attribut_name']"
     ></pnx-multiselect>
     <pnx-datalist
       *ngSwitchCase="'datalist'"
@@ -378,6 +393,9 @@
       [filters]="formDefComp['filters']"
       [default]="formDefComp['default']"
       [nullDefault]="formDefComp['nullDefault']"
+      [attr.data-qa]="
+        'field-datalist' + '-' + formDefComp['attribut_label'] + '-' + formDefComp['attribut_name']
+      "
     ></pnx-datalist>
 
     <small class="form-text text-muted">{{ formDefComp['help'] }}</small>
