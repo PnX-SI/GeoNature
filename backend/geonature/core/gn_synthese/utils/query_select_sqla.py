@@ -38,6 +38,7 @@ from geonature.core.gn_meta.models import (
 from geonature.utils.errors import GeonatureApiError
 from apptax.taxonomie.models import (
     Taxref,
+    TaxrefTree,
     CorTaxonAttribut,
     TaxrefBdcStatutTaxon,
     bdc_statut_cor_text_area,
@@ -159,7 +160,7 @@ class SyntheseQuery:
         permissions_filters = []
         excluded_sensitivity = None
         for perm in permissions:
-            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY", "GEOGRAPHIC", "TAXONOMIC"):
                 continue
             perm_filters = []
             if perm.sensitivity_filter:
@@ -200,6 +201,21 @@ class SyntheseQuery:
                     ),  # user is dataset (or parent af) actor
                 ]
                 perm_filters.append(or_(*scope_filters))
+            if perm.areas_filter:
+                where_clause = self.model.areas.any(
+                    LAreas.id_area.in_([a.id_area for a in perm.areas_filter])
+                )
+                perm_filters.append(where_clause)
+            if perm.taxons_filter:
+                # Does obs taxon path is an descendant of any path of taxons_filter?
+                where_clause = self.model.taxref_tree.has(
+                    TaxrefTree.path.op("<@")(
+                        sa.select(sa.func.array_agg(TaxrefTree.path)).where(
+                            TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter])
+                        )
+                    )
+                )
+                perm_filters.append(where_clause)
             if perm_filters:
                 permissions_filters.append(and_(*perm_filters))
             else:
