@@ -1,11 +1,19 @@
 # CHANGELOG
 
-## 2.15.4 (2025-02-xx)
+## 2.15.4 (2025-02-25)
+
+**🚀 Nouveautés**
+
+- [Import] Accélération du temps de suppression d'un import avec l'ajout d'un index sur les colonnes `id_import` de `pr_occhab.t_stations`, `pr_occhab.t_habitats` et `gn_synthese.synthese` (#3390 par @jacquesfize et @dba-sig-sfepm).
+- [Synthese] La mise à jour de la date de validation dans la synthèse est effective (#3387 par @jacquesfize)
+- [Import] Le paramètre `CHECK_PRIVATE_JDD_BLURRING` est maintenant désactivé par défaut
 
 **🐛 Corrections**
 
-- [Synthese] Correction de la prise en compte de `size_hierarchy` dans le mode maille de la synthèse (#3380 par @Pierre-Narcisi)
--
+- [Synthese] Correction de la prise en compte de `size_hierarchy` dans le mode maille de la synthèse lorsque le floutage est activé (#3380 par @Pierre-Narcisi)
+- [Benchmark] Correction des _fixtures_ de benchmark des routes de la synthèse avec floutage (#3381 par @jacquesfize)
+- [Synthese] Correction de l'affichage des statuts dans la fiche d'observation et dans la fiche de taxon (#3384 par @jacquesfize et #3394 par @edelclaux)
+- [Import] Correction du nom de fichier dans le template du rapport d'import (`images/logo_structure.jpg` -> `images/logo_structure.png`) (#3389 par @jacquesfize)
 
 ## 2.15.3 (2025-02-14)
 
