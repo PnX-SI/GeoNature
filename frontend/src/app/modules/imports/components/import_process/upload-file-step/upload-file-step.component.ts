@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ImportDataService } from '../../../services/data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -10,7 +10,6 @@ import { ImportProcessService } from '../import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { NgbModal } from '@librairies/@ng-bootstrap/ng-bootstrap';
 import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
-import { switchMap } from 'rxjs/operators';
 import { FieldMappingValues } from '@geonature/modules/imports/models/mapping.model';
 import { FieldMappingPresetUtils } from '@geonature/modules/imports/utils/fieldmapping-preset-utils';
 
