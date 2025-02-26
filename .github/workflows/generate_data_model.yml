@@ -67,7 +67,17 @@ jobs:
       - name: Run generate_dump.sh
         working-directory: docs/data_model
         run: ./generate_dump.sh
-
+      - name: status git
+        run: git status
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git add .
+          git commit -m "Automated dump generation" || echo "No changes to commit"
+          git push origin HEAD:${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions"
@@ -75,4 +85,4 @@ jobs:
           git add .
           git commit -m "Automated dump generation"
           git push origin enable-database-history
-        working-directory: docs/data_model
+                working-directory: docs/data_model
