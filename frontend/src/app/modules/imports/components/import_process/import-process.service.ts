@@ -98,4 +98,17 @@ export class ImportProcessService {
     this.importData = importData;
     this.navigateToStep(this.getLastAvailableStep());
   }
+
+
+  checkImportDone(importData: Import): boolean {
+    return !!importData?.date_end_import;
+  }
+
+
+  get isImportCompleted(): boolean {
+    return this.importData ? this.checkImportDone(this.importData) : false;
+  }
+
+
+
 }
