@@ -13,6 +13,7 @@ import {
   SELECTOR_IMPORT_FIELDMAPPING_WKT,
   SELECTOR_IMPORT_FOOTER_DELETE,
   SELECTOR_IMPORT_FOOTER_SAVE,
+  SELECTOR_IMPORT_MODAL_EDIT_VALIDATE,
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -48,6 +49,7 @@ function checkImportIsNotFirstInList(importId) {
 
 function clickOnFirstLineEdit() {
   cy.get(getSelectorImportListTableRowEdit(0)).click();
+  cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
   cy.wait(TIMEOUT_WAIT);
 }
 
