@@ -75,3 +75,4 @@ jobs:
           git add .
           git commit -m "Automated dump generation"
           git push origin enable-database-history
+        working-directory: docs/data_model
