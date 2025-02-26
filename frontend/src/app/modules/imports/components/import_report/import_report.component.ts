@@ -116,7 +116,7 @@ export class ImportReportComponent implements OnInit {
    */
   loadValidData(importData: Import | null) {
     if (importData) {
-      if (importData.date_end_import && importData.id_source) {
+      if (this.importProcessService.isImportCompleted && importData.id_source) {
         this._dataService.getBbox(importData.id_source).subscribe((data) => {
           this.validBbox = data;
         });
@@ -214,7 +214,7 @@ export class ImportReportComponent implements OnInit {
     if (this.importData?.task_progress === -1) {
       this.importStatus = 'EN ERREUR';
       this.importStatusClass = 'inerror';
-    } else if (this.importData?.date_end_import) {
+    } else if (this.importProcessService.isImportCompleted) {
       this.importStatus = 'TERMINE';
       this.importStatusClass = 'importdone';
     }

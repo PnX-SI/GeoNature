@@ -49,6 +49,9 @@ export const getSelectorsForStep = (stepName) => {
 export const SELECTOR_IMPORT_MODAL_DELETE = '[data-qa=import-modal-delete]';
 export const SELECTOR_IMPORT_MODAL_DELETE_VALIDATE = '[data-qa=modal-delete-validate]';
 
+export const SELECTOR_IMPORT_MODAL_EDIT = '[data-qa=import-modal-edit]';
+export const SELECTOR_IMPORT_MODAL_EDIT_VALIDATE = '[data-qa=modal-edit-validate]';
+
 export const SELECTOR_IMPORT_MODAL_DESTINATION_START = '[data-qa=import-modal-destination-start]';
 export const SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN = '[data-qa=import-fieldmapping-theme-date_min]';
 export const SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS =

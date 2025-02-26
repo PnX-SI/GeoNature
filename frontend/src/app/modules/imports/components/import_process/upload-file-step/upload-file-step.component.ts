@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ImportDataService } from '../../../services/data.service';
@@ -8,6 +8,8 @@ import { Step } from '../../../models/enums.model';
 import { Destination, Import } from '../../../models/import.model';
 import { ImportProcessService } from '../import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { NgbModal } from '@librairies/@ng-bootstrap/ng-bootstrap';
+import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
 
 @Component({
   selector: 'upload-file-step',
@@ -15,6 +17,8 @@ import { ConfigService } from '@geonature/services/config.service';
   templateUrl: 'upload-file-step.component.html',
 })
 export class UploadFileStepComponent implements OnInit {
+ 
+  @ViewChild('editModal') editModal!: TemplateRef<any>;
   public step: Step;
   public importData: Import;
   public uploadForm: FormGroup;
@@ -27,6 +31,7 @@ export class UploadFileStepComponent implements OnInit {
   public maxFileNameLength: number = 255;
   public acceptedExtensions: string = null;
   public destination: Destination = null;
+  public modalData:ModalData;
 
   constructor(
     private ds: ImportDataService,
@@ -34,7 +39,8 @@ export class UploadFileStepComponent implements OnInit {
     private fb: FormBuilder,
     private importProcessService: ImportProcessService,
     private route: ActivatedRoute,
-    public config: ConfigService
+    public config: ConfigService,
+    private modal: NgbModal
   ) {
     this.acceptedExtensions = this.config.IMPORT.ALLOWED_EXTENSIONS.toString();
     this.maxFileSize = this.config.IMPORT.MAX_FILE_SIZE;
@@ -94,6 +100,7 @@ export class UploadFileStepComponent implements OnInit {
       return this.ds.addFile(this.file);
     }
   }
+  
   onNextStep() {
     if (this.uploadForm.pristine) {
       this.importProcessService.navigateToNextStep(this.step);
@@ -120,4 +127,37 @@ export class UploadFileStepComponent implements OnInit {
       }
     );
   }
+
+  checkBeforeNextStep(){
+    if (this.importData?.fieldmapping) {
+       this.openModal(this.editModal);
+        return;
+      }
+      else{
+        this.onNextStep();
+      }
+  }
+  
+  openModal(editModal: TemplateRef<any>) {
+    this.modalData = {
+      title: 'Modification',
+      bodyMessage:'Le fichier existant en base de données sera supprimé !',
+      additionalMessage: 'Êtes-vous sûr de continuer ?',
+      cancelButtonText: 'Annuler',
+      confirmButtonText: 'Confirmer',
+      confirmButtonColor: 'warn',
+      headerDataQa: 'import-modal-edit',
+      confirmButtonDataQa: 'modal-edit-validate',
+    };  
+    this.modal.open(editModal);
+  }
+
+  handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
+    if (event.confirmed) {
+      if (event.actionType === 'edit') {
+        this.onNextStep();
+      }
+    }
+  }
+
 }

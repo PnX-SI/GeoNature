@@ -101,7 +101,7 @@
             mat-raised-button
             color="primary"
             [disabled]="!isNextStepAvailable()"
-            (click)="onNextStep()"
+            (click)="checkBeforeNextStep()"
             data-qa="import-new-fieldmapping-model-validate"
           >
             {{ 'Next' | translate }}
@@ -215,6 +215,21 @@
         {{ 'Import.Mapping.Actions.Save' | translate }}
       </button>
     </div>
+  </ng-template>
+
+  <ng-template
+    #editModal
+    let-c="close"
+    let-d="dismiss"
+    data-qa="import-list-modal-edit"
+  >
+    <import-action-modal
+      [modalData]="modalData"
+      [data]="importData"
+      [actionType]="'edit'"
+      [c]="c"
+      (onAction)="handleModalAction($event)"
+    ></import-action-modal>
   </ng-template>
 </div>
 

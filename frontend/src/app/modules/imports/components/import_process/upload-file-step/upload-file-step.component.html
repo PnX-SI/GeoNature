@@ -64,7 +64,7 @@
         mat-raised-button
         color="primary"
         [disabled]="!isNextStepAvailable()"
-        (click)="onNextStep()"
+        (click)="checkBeforeNextStep()"
         id="validate"
         data-qa="import-new-upload-validate"
       >
@@ -86,3 +86,17 @@
     [strokeWidth]="12"
   ></mat-spinner>
 </div>
+<ng-template
+  #editModal
+  let-c="close"
+  let-d="dismiss"
+  data-qa="import-list-modal-edit"
+>
+  <import-action-modal
+    [modalData]="modalData"
+    [data]="importData"
+    [actionType]="'edit'"
+    [c]="c"
+    (onAction)="handleModalAction($event)"
+  ></import-action-modal>
+</ng-template>

@@ -9,7 +9,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgChartsModule } from 'ng2-charts';
 
 import { ImportModalDestinationComponent } from './components/modal_destination/import-modal-destination.component';
-import { ModalDeleteImport } from './components/delete-modal/delete-modal.component';
 import { ImportDataService } from './services/data.service';
 import { CsvExportService } from './services/csv-export.service';
 import { FieldMappingService } from './services/mappings/field-mapping.service';
@@ -35,6 +34,7 @@ import { Step } from './models/enums.model';
 import { ImportReportComponent } from './components/import_report/import_report.component';
 import { DestinationsComponent } from './components/destinations/destinations.component';
 import { FieldMappingModalComponent } from './components/import_process/fields-mapping-step/field-mapping-modal/field-mapping-modal.component';
+import { ModalActionImport } from './components/action-modal/action-modal.component';
 
 const routes: Routes = [
   { path: '', component: ImportListComponent },
@@ -97,7 +97,7 @@ const routes: Routes = [
     ImportListComponent,
     ImportErrorsComponent,
     ImportModalDestinationComponent,
-    ModalDeleteImport,
+    ModalActionImport,
     UploadFileStepComponent,
     DecodeFileStepComponent,
     FieldsMappingStepComponent,
@@ -126,7 +126,7 @@ const routes: Routes = [
     MatCheckboxModule,
     NgbModule,
   ],
-  entryComponents: [ModalDeleteImport],
+  entryComponents: [ModalActionImport],
   providers: [
     ImportDataService,
     ImportProcessService,

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ImportDataService } from '../../../services/data.service';
 import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
 import { Cruved, toBooleanCruved } from '@geonature/modules/imports/models/cruved.model';
@@ -17,6 +17,7 @@ import {
 import { ConfigService } from '@geonature/services/config.service';
 import { FormControl } from '@angular/forms';
 import { AuthService } from '@geonature/components/auth/auth.service';
+import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
 
 @Component({
   selector: 'pnx-fields-mapping-step',
@@ -25,6 +26,7 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 })
 export class FieldsMappingStepComponent implements OnInit {
   @ViewChild('saveMappingModal') saveMappingModal;
+  @ViewChild('editModal') editModal: TemplateRef<any>;
   public targetFields;
   public sourceFields: Array<string> = [];
   public isReady: boolean = false;
@@ -34,7 +36,7 @@ export class FieldsMappingStepComponent implements OnInit {
   public step: Step;
   public modalCreateMappingForm = new FormControl('');
   public defaultValueFormDefs: any = {};
-
+  public modalData:ModalData;
   constructor(
     public _fieldMappingService: FieldMappingService,
     private _route: ActivatedRoute,
@@ -276,4 +278,37 @@ export class FieldsMappingStepComponent implements OnInit {
   getUnmappedFields() {
     return this._fieldMappingService.getUnmappedFields();
   }
+
+  checkBeforeNextStep(){
+      if (this.importData?.fieldmapping) {
+         this.openModal(this.editModal);
+          return;
+        }
+        else{
+          this.onNextStep();
+        }
+    }
+
+    openModal(editModal: TemplateRef<any>) {
+      this.modalData = {
+        title: 'Modification',
+        bodyMessage: 'Des modifications ont été apportées à la correspondances des champs. L\'ancienne correspondance des champs sera supprimée',
+        additionalMessage: 'Êtes-vous sûr de continuer ?',
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Confirmer',
+        confirmButtonColor: 'warn',
+        headerDataQa: 'import-modal-edit',
+        confirmButtonDataQa: 'modal-edit-validate',
+      };  
+      this._modalService.open(editModal);
+    }
+
+    handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
+      if (event.confirmed) {
+        if (event.actionType === 'edit') {
+          this.onNextStep();
+        }
+      }
+    }
+  
 }
