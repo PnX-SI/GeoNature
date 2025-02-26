@@ -224,6 +224,7 @@ def fieldmapping(
     import_dataset,
     fieldmapping_unique_dataset_id,
     fieldmapping_preset_name,
+    preset_fieldmapping,
 ):
     fieldmapping = {}
     if fieldmapping_preset_name:
@@ -254,6 +255,9 @@ def fieldmapping(
 
     if fieldmapping_unique_dataset_id:
         fieldmapping["unique_dataset_id"] = fieldmapping_unique_dataset_id
+
+    if preset_fieldmapping:
+        fieldmapping.update(preset_fieldmapping["__preset__"])
 
     return fieldmapping
 
@@ -479,7 +483,7 @@ def decoded_import(client, uploaded_import):
 
 
 @pytest.fixture()
-def field_mapped_import(client, decoded_import, fieldmapping):
+def field_mapped_import(client, decoded_import, fieldmapping, fieldmapping_preset_name):
     with db.session.begin_nested():
         decoded_import.fieldmapping = fieldmapping
     return decoded_import

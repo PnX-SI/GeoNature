@@ -515,13 +515,16 @@ class TestImportsOcchab:
         "preset_fieldmapping",
         [
             {
-                "id_nomenclature_determination_type": {
-                    "column_src": "",
-                    "default_value": "Inconnu",
-                },
-                "station_name": {"column_src": "", "default_value": "test_station_name"},
+                "__preset__": {
+                    "id_nomenclature_determination_type": {
+                        "column_src": "",
+                        "default_value": "Inconnu",
+                    },
+                    "station_name": {"column_src": "", "default_value": "test_station_name"},
+                }
             }
         ],
     )
-    def test_import_upload_preset(self, uploaded_import, preset_fieldmapping):
-        assert uploaded_import.fieldmapping == preset_fieldmapping
+    def test_import_upload_preset(self, field_mapped_import, preset_fieldmapping):
+        for key, value in preset_fieldmapping["__preset__"].items():
+            assert field_mapped_import.fieldmapping[key] == value

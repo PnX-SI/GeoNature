@@ -349,6 +349,17 @@ class TestImportsSynthese:
             assert "has no permissions to C in IMPORT" in r.json["description"]
 
         set_logged_user(self.client, users["user"])
+
+        # test missing file
+        with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
+            data = {}
+            r = self.client.post(
+                url_for("import.upload_file"),
+                data=data,
+                headers=Headers({"Content-Type": "multipart/form-data"}),
+            )
+            assert r.status_code == BadRequest.code, r.data
+
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
             data = {"file": (f, "simple_file.csv")}
             r = self.client.post(
@@ -1220,14 +1231,17 @@ class TestImportsSynthese:
         "preset_fieldmapping",
         [
             {
-                "nom_cite": {"column_src": "", "default_value": "test_nomcite"},
-                "altitude_max": {"column_src": "", "default_value": 10},
-                "id_nomenclature_geo_object_nature": {
-                    "column_src": "",
-                    "default_value": "Inventoriel",
-                },
+                "__preset__": {
+                    "nom_cite": {"column_src": "", "default_value": "test_nomcite"},
+                    "altitude_max": {"column_src": "", "default_value": 10},
+                    "id_nomenclature_geo_object_nature": {
+                        "column_src": "",
+                        "default_value": "Inventoriel",
+                    },
+                }
             }
         ],
     )
-    def test_import_upload_preset(self, uploaded_import, preset_fieldmapping):
-        assert uploaded_import.fieldmapping == preset_fieldmapping
+    def test_import_upload_preset(self, field_mapped_import, preset_fieldmapping):
+        for key, value in preset_fieldmapping["__preset__"].items():
+            assert field_mapped_import.fieldmapping[key] == value
