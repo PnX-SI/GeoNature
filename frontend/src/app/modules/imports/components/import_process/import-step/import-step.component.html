@@ -156,7 +156,7 @@
         <button
           *ngIf="nValidData > 0 && !importDone && errorIsNotImport"
           class="d-flex justify-content-center align-content-between button-success"
-          (click)="onImport()"
+          (click)="checkBeforeNextStep()"
           mat-raised-button
           data-qa="import-new-execute-start"
         >
@@ -255,4 +255,18 @@
       OK
     </button>
   </div>
+</ng-template>
+<ng-template
+  #editModal
+  let-c="close"
+  let-d="dismiss"
+  data-qa="import-list-modal-edit"
+>
+  <import-action-modal
+    [modalData]="modalData"
+    [data]="importData"
+    [actionType]="'edit'"
+    [c]="c"
+    (onAction)="handleModalAction($event)"
+  ></import-action-modal>
 </ng-template>
