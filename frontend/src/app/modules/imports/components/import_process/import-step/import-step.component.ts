@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ImportProcessService } from '../import-process.service';
 import { ImportDataService } from '../../../services/data.service';
@@ -8,6 +8,8 @@ import { Import, ImportPreview } from '../../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
 import { CsvExportService } from '../../../services/csv-export.service';
 import { ImportStepComponentsError } from './import-step.component-errors';
+import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
+import { NgbModal } from '@librairies/@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'import-step',
@@ -31,9 +33,10 @@ export class ImportStepComponent implements OnInit {
   public errorStatus: ImportStepComponentsError = ImportStepComponentsError.NONE;
   private timeout: number = 100;
   private runningTimeout: any;
+  public modalData:ModalData; 
 
   @ViewChild('modalRedir') modalRedir: any;
-
+  @ViewChild('editModal') editModal: TemplateRef<any>;
   constructor(
     private importProcessService: ImportProcessService,
     private _router: Router,
@@ -41,7 +44,8 @@ export class ImportStepComponent implements OnInit {
     private _ds: ImportDataService,
     private _commonService: CommonService,
     public _csvExport: CsvExportService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _modalService: NgbModal,
   ) {}
 
   //
@@ -192,5 +196,37 @@ export class ImportStepComponent implements OnInit {
 
   onRedirect() {
     this._router.navigate([this.config.IMPORT.MODULE_URL]);
+  }
+
+  checkBeforeNextStep(){
+        if (this.importProcessService.isImportCompleted) {
+           this.openModal(this.editModal);
+            return;
+          }
+          else{
+            this.onImport();
+          }
+  }
+  
+  openModal(editModal: TemplateRef<any>) {
+        this.modalData = {
+          title: 'Modification',
+          bodyMessage: 'Des données ont déjà été importées. Si vous continuez ces dernières seront supprimées.',
+          additionalMessage: 'Êtes-vous sûr de continuer ?',
+          cancelButtonText: 'Annuler',
+          confirmButtonText: 'Confirmer',
+          confirmButtonColor: 'warn',
+          headerDataQa: 'import-modal-edit',
+          confirmButtonDataQa: 'modal-edit-validate',
+        };  
+        this._modalService.open(editModal);
+  }
+  
+  handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
+        if (event.confirmed) {
+          if (event.actionType === 'edit') {
+            this.onImport();
+          }
+        }
   }
 }
