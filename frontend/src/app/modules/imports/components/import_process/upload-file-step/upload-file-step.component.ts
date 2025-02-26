@@ -12,7 +12,7 @@ import { NgbModal } from '@librairies/@ng-bootstrap/ng-bootstrap';
 import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
 import { switchMap } from 'rxjs/operators';
 import { FieldMappingValues } from '@geonature/modules/imports/models/mapping.model';
-import { formatQueryParamsToFieldMapping } from '@geonature/modules/imports/utils/format-query-params-to-fieldmapping';
+import { FieldMappingPresetUtils } from '@geonature/modules/imports/utils/fieldmapping-preset-utils';
 
 @Component({
   selector: 'upload-file-step',
@@ -55,22 +55,26 @@ export class UploadFileStepComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setupDatasetSelect();
+    this.processRouteInformations();
   }
 
-  setupDatasetSelect() {
-    combineLatest([this.route.parent.queryParams, this.route.parent?.params || []])
-      .pipe(
-        switchMap(([queryParams, parentParams]) => {
-          this.paramsFieldMapping = formatQueryParamsToFieldMapping(queryParams);
-          const destinationLabel = parentParams['destination'];
-          return this.ds.getDestination(destinationLabel);
-        })
-      )
-      .subscribe((destination) => {
+  processRouteInformations() {
+    // Process destination
+    this.route.parent?.params.subscribe((params) => {
+      this.ds.getDestination(params['destination']).subscribe((destination) => {
         this.destination = destination;
       });
+    });
+
+    // Process fieldmapping preset in query params
+    this.route.parent?.queryParams.subscribe((queryParams) => {
+      this.paramsFieldMapping = Object.keys(queryParams).length
+        ? FieldMappingPresetUtils.formatQueryParamsToFieldMapping(queryParams)
+        : null;
+    });
+
     this.step = this.route.snapshot.data.step;
+
     this.importData = this.importProcessService.getImportData();
     if (this.importData) {
       this.fileName = this.importData.full_file_name;
@@ -110,8 +114,22 @@ export class UploadFileStepComponent implements OnInit {
     }
   }
 
+  get isFileModified(): boolean {
+    return !this.uploadForm.pristine;
+  }
+
+  get isFieldMappingPresetModified(): boolean {
+    return !(
+      this.importData &&
+      this.paramsFieldMapping &&
+      this.importData.fieldmapping != this.paramsFieldMapping
+    );
+  }
+
   onNextStep() {
-    if (this.uploadForm.pristine) {
+    // At this stage, both form and preset can be modified
+
+    if (!this.isFileModified && !this.isFieldMappingPresetModified) {
       this.importProcessService.navigateToNextStep(this.step);
       return;
     }

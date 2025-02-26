@@ -363,12 +363,27 @@ export class FieldMappingService {
   }
 
   /**
+   * Apply preset if exists
+   */
+  patchMappingValuesWithImportDataPreset(mappingValues: FieldMappingValues): FieldMappingValues {
+    const importFieldMappingPreset =
+      this._importProcessService.getImportData().fieldmapping['__preset__'];
+    // Replace input mapping entries if a preset is set in "importFieldMapping"
+    if (importFieldMappingPreset) {
+      for (const presetKey in importFieldMappingPreset) {
+        mappingValues[presetKey] = importFieldMappingPreset[presetKey];
+      }
+    }
+    return mappingValues;
+  }
+  /**
    * Fill the field form with the value define in the given mapping
    * @param mapping : id of the mapping
+   * This method also apply the __preset__ values from the importData above the mappingValues.
    */
   fillFormWithMapping(mappingvalues: FieldMappingValues, fromMapping = false) {
     // Retrieve fields for this mapping
-
+    mappingvalues = this.patchMappingValuesWithImportDataPreset(mappingvalues);
     this.mappingFormGroup.reset();
     Object.entries(mappingvalues as FieldMappingValues).forEach(async ([target, source]) => {
       let control = this.mappingFormGroup.get(target);
@@ -510,8 +525,9 @@ export class FieldMappingService {
         type_widget: 'textarea',
       };
     }
-    if(field.type_field == 'dataset'){
-      const module_code = this._importProcessService.getImportData().destination?.module.module_code;
+    if (field.type_field == 'dataset') {
+      const module_code =
+        this._importProcessService.getImportData().destination?.module.module_code;
       def.creatable_in_module = module_code;
     }
 

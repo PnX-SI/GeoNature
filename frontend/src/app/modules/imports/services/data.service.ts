@@ -57,15 +57,21 @@ export class ImportDataService {
   addFile(file: File, fieldmapping: FieldMappingValues): Observable<Import> {
     const fd = new FormData();
     fd.append('file', file, file.name);
-    fd.append('fieldmapping', JSON.stringify(fieldmapping));
+    if (fieldmapping) {
+      fd.append('fieldmapping', JSON.stringify(fieldmapping));
+    }
     const url = `${this.getUrlApiForADestination()}/imports/upload`;
     return this._http.post<Import>(url, fd);
   }
 
   updateFile(importId: number, file: File, fieldmapping: FieldMappingValues): Observable<Import> {
     let fd = new FormData();
-    fd.append('file', file, file.name);
-    fd.append('fieldmapping', JSON.stringify(fieldmapping));
+    if (file) {
+      fd.append('file', file, file.name);
+    }
+    if (fieldmapping) {
+      fd.append('fieldmapping', JSON.stringify(fieldmapping));
+    }
     const url = `${this.getUrlApiForADestination()}/imports/${importId}/upload`;
     return this._http.put<Import>(url, fd);
   }

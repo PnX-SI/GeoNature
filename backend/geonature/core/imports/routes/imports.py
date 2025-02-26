@@ -164,46 +164,60 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
         destination = imprt.destination
     else:
         assert destination
-    author = g.current_user
-    f = request.files["file"]
-    fieldmapping_str = request.form.get("fieldmapping")
-    fieldmapping = None
-    if fieldmapping_str:
-        fieldmapping = json.loads(fieldmapping_str)
+
+    input_file = request.files.get("file", None)
+    input_fieldmapping_preset = request.form.get("fieldmapping", None)
+
+    # file must be set only when new import. otherwise, it's optional. it can also be a request to update the fieldmapping preset
+    if imprt is None and input_file is None:
+        raise BadRequest("File parameter is missig")
+
+    # Process destination
+    if imprt is None:
+        imprt = TImports(destination=destination)
+        author = g.current_user
+        imprt.authors.append(author)
+        db.session.add(imprt)
+
+    # Process field mapping
+    if input_fieldmapping_preset:
+        fieldmapping_preset = json.loads(input_fieldmapping_preset)
         # NOTES: Pas possible d'utiliser le validate value ici
         # try:
         #     FieldMapping.validate_values(fields_to_map)
         # except ValueError as e:
         #     raise BadRequest(*e.args)
+        if imprt.fieldmapping is None:
+            imprt.fieldmapping = {}
+        imprt.fieldmapping.update(fieldmapping_preset)
 
-    size = get_file_size(f)
-    # value in config file is in Mo
-    max_file_size = current_app.config["IMPORT"]["MAX_FILE_SIZE"] * 1024 * 1024
-    if size > max_file_size:
-        raise BadRequest(
-            description=f"File too big ({size} > {max_file_size})."
-        )  # FIXME better error signaling?
-    if size == 0:
-        raise BadRequest(description="Impossible to upload empty files")
-    if imprt is None:
-        imprt = TImports(destination=destination)
-        if fieldmapping:
-            imprt.fieldmapping = fieldmapping
-        imprt.authors.append(author)
-        db.session.add(imprt)
-    else:
-        clean_import(imprt, ImportStep.UPLOAD)
-    with start_sentry_child(op="task", description="detect encoding"):
-        imprt.detected_encoding = detect_encoding(f)
-    with start_sentry_child(op="task", description="detect separator"):
-        imprt.detected_separator = detect_separator(
-            f,
-            encoding=imprt.encoding or imprt.detected_encoding,
-        )
-    imprt.source_file = f.read()
-    imprt.full_file_name = f.filename
+    # Process file
+    if input_file:
+        size = get_file_size(input_file)
+        # value in config file is in Mo
+        max_file_size = current_app.config["IMPORT"]["MAX_FILE_SIZE"] * 1024 * 1024
+        if size > max_file_size:
+            raise BadRequest(
+                description=f"File too big ({size} > {max_file_size})."
+            )  # FIXME better error signaling?
+        if size == 0:
+            raise BadRequest(description="Impossible to upload empty files")
 
+        else:
+            clean_import(imprt, ImportStep.UPLOAD)
+        with start_sentry_child(op="task", description="detect encoding"):
+            imprt.detected_encoding = detect_encoding(input_file)
+        with start_sentry_child(op="task", description="detect separator"):
+            imprt.detected_separator = detect_separator(
+                input_file,
+                encoding=imprt.encoding or imprt.detected_encoding,
+            )
+        imprt.source_file = input_file.read()
+        imprt.full_file_name = input_file.filename
+
+    # commùit changes
     db.session.commit()
+
     return jsonify(imprt.as_dict())
 
 
