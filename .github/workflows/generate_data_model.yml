@@ -32,6 +32,11 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -56,6 +61,8 @@ jobs:
       - name: Install core modules database
         run: |
           geonature upgrade-modules-db
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
 
       - name: Run generate_dump.sh
         working-directory: docs/data_model
