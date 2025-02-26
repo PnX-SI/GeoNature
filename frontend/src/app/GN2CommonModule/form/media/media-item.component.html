@@ -1,0 +1,80 @@
+<div class="MediaItemContainer">
+  <div *ngIf="isIcon; then media_as_icon; else media_as_thumbnail">here is ignored</div>
+  <ng-template #media_as_icon>
+    <div
+      class="MediaItem MediaItem--icon"
+      [ngSwitch]="type"
+    >
+      <img
+        *ngSwitchCase="MediaType.PHOTO"
+        class="MediaItem__photo MediaItem__photo--icon"
+        [ngClass]="{
+          'MediaItem__photo--clickable': !!hasDiaporama,
+          '': !!isIcon
+        }"
+        [src]="href"
+        alt="{{ media.title_fr }}"
+        (click)="hasDiaporama && openDiaporamaDialog()"
+      />
+      <div
+        *ngSwitchDefault
+        class="MediaItem__icon"
+      >
+        <mat-icon>{{ ms.icon(media) }}</mat-icon>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #media_as_thumbnail>
+    <div
+      class="MediaItem"
+      [ngSwitch]="type"
+    >
+      <embed
+        class="MediaItem__pdf"
+        *ngSwitchCase="MediaType.PDF"
+        [src]="safeEmbedUrl"
+        type="application/pdf"
+      />
+      <iframe
+        class="MediaItem__videoEmbedded"
+        *ngSwitchCase="isEmbeddableVideoMediaType() ? type : ''"
+        [src]="safeEmbedUrl"
+        allowfullscreen
+      ></iframe>
+      <div
+        class="MediaItem__pageWeb"
+        *ngSwitchCase="MediaType.PAGE_WEB"
+      >
+        <a
+          [href]="href"
+          target="_blank"
+        >
+          {{ href }}
+        </a>
+      </div>
+      <video
+        class="MediaItem__videoFile"
+        *ngSwitchCase="MediaType.VIDEO_FICHIER"
+        controls
+        [src]="href"
+      ></video>
+      <audio
+        class="MediaItem__audio"
+        *ngSwitchCase="MediaType.AUDIO"
+        controls
+        [src]="href"
+      ></audio>
+      <img
+        *ngSwitchCase="MediaType.PHOTO"
+        class="MediaItem__photo"
+        [ngClass]="{
+          'MediaItem__photo--clickable': !!hasDiaporama,
+          'MediaItem__photo--medium': !!isMedium
+        }"
+        [src]="href"
+        alt="{{ media.title_fr }}"
+        (click)="hasDiaporama && openDiaporamaDialog()"
+      />
+    </div>
+  </ng-template>
+</div>

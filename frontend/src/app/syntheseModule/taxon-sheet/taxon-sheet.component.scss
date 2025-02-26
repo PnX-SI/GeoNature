@@ -4,6 +4,7 @@
   justify-content: flex-start;
   padding: 1.25rem;
   row-gap: 1.25rem;
+  height: 100%;
 
   &__indicators {
     align-self: center;
@@ -30,6 +31,9 @@
     }
 
     &__content {
+      max-height: 54vh;
+      height: 54vh;
+      overflow: auto;
       padding: 1rem;
     }
   }

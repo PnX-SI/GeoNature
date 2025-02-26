@@ -417,12 +417,11 @@
             </tr>
             <tr>
               <td colspan="2">
-                <pnx-display-medias
-                  diaporama="true"
-                  [medias]="selectedObs?.medias"
-                  [index]="i"
+                <pnx-media-item
+                  [inputMedia]="selectedObs?.medias[i]"
+                  [diaporamaMedia]="selectedObs?.medias"
                   display="medium"
-                ></pnx-display-medias>
+                ></pnx-media-item>
               </td>
             </tr>
           </ng-container>

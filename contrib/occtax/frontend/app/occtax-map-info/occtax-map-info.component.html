@@ -415,12 +415,11 @@
                             </div>
                           </div>
                           <div>
-                            <pnx-display-medias
-                              [medias]="counting.medias"
-                              [index]="i"
-                              display="medium"
-                              diaporama="true"
-                            ></pnx-display-medias>
+                            <pnx-media-item
+                              [inputMedia]="counting.medias[i]"
+                              [diaporamaMedia]="counting.medias"
+                              display="icon"
+                            />
                           </div>
                         </ng-container>
                         <mat-divider></mat-divider>

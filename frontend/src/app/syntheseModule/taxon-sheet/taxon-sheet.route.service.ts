@@ -4,13 +4,14 @@ import {
   RouterStateSnapshot,
   Router,
   CanActivateChild,
-  CanActivate
+  CanActivate,
 } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
 import { Observable } from 'rxjs';
 import { TabGeographicOverviewComponent } from './tab-geographic-overview/tab-geographic-overview.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
 import { TabTaxonomyComponent } from './tab-taxonomy/tab-taxonomy.component';
+import { TabMediaComponent } from './tab-media/tab-media.component';
 
 interface Tab {
   label: string;
@@ -31,6 +32,12 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
     path: 'taxonomy',
     configEnabledField: 'ENABLE_TAB_TAXONOMY',
     component: TabTaxonomyComponent,
+  },
+  {
+    label: 'Médias',
+    path: 'media',
+    configEnabledField: 'ENABLE_TAB_MEDIA',
+    component: TabMediaComponent,
   },
   {
     label: 'Profil',
@@ -56,8 +63,8 @@ export class RouteService implements CanActivate, CanActivateChild {
       );
     }
   }
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean  {
-    if(!this._config.SYNTHESE.ENABLE_TAXON_SHEETS){
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    if (!this._config.SYNTHESE.ENABLE_TAXON_SHEETS) {
       this._router.navigate(['/404'], { skipLocationChange: true });
       return false;
     }
@@ -65,10 +72,7 @@ export class RouteService implements CanActivate, CanActivateChild {
     return true;
   }
 
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean {
+  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const targetedPath = childRoute.routeConfig.path;
     if (this.TAB_LINKS.map((tab) => tab.path).includes(targetedPath)) {
       return true;

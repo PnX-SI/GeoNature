@@ -437,13 +437,12 @@
                         <i>({{ ms.typeMedia(media) }}, {{ media.author }})</i>
                         <span *ngIf="media.description_fr">{{ media.description_fr }}</span>
                       </div>
-                      <div>
-                        <pnx-display-medias
-                          [medias]="counting.medias"
-                          [index]="i"
+                      <div class="MediaItems">
+                        <pnx-media-item
+                          [diaporamaMedia]="counting.medias"
+                          [inputMedia]="counting.medias[i]"
                           display="medium"
-                          diaporama="true"
-                        ></pnx-display-medias>
+                        ></pnx-media-item>
                       </div>
                     </ng-container>
                   </ng-container>
