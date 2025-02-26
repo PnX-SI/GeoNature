@@ -41,7 +41,6 @@ jobs:
           python-version: "3.9"
 
       - name: Install dependencies
-        if: github.base_ref == 'master'
         run: |
           echo 'Installation des requirements de prod'
           python -m pip install --upgrade pip
