@@ -605,6 +605,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     FOOTER = ""
     DISPLAY_LATEST_DISCUSSIONS = true
+    DISPLAY_LATEST_VALIDATIONS = true
 
 [AUTHENTICATION]
 	DEFAULT_RECONCILIATION_GROUP_ID = 2

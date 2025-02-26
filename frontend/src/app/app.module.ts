@@ -17,9 +17,8 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { AppComponent } from './app.component';
 import { routing } from './routing/app-routing.module'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
-import { HomeDiscussionsTableComponent } from './components/home-content/home-discussions/home-discussions-table/home-discussions-table.component';
 import { HomeDiscussionsComponent } from './components/home-content/home-discussions/home-discussions.component';
-import { HomeDiscussionsToggleComponent } from './components/home-content/home-discussions/home-discussions-toggle/home-discussions-toggle.component';
+import { HomeValidationsComponent } from './components/home-content/home-validations/home-validations.component';
 
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -102,6 +101,7 @@ export function initApp(injector) {
     }),
     LoginModule,
     HomeDiscussionsComponent,
+    HomeValidationsComponent,
   ],
   declarations: [
     AppComponent,

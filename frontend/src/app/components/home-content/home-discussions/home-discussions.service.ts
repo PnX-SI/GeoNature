@@ -15,7 +15,7 @@ export class HomeDiscussionsService {
     private _moduleService: ModuleService
   ) {}
 
-  private _isDiscussionsAllowedInModule(module: DiscussionsModule): boolean {
+  private _isReadGrantedInModule(module: DiscussionsModule): boolean {
     return this._moduleService.getModule(module)?.cruved['R'] != undefined;
   }
   private _isDiscussionsAvailableInModule(module: DiscussionsModule): boolean {
@@ -32,19 +32,18 @@ export class HomeDiscussionsService {
   }
 
   get isAvailable(): boolean {
-    for (const module of this.MODULES_PREVALENCE) {
-      if (this._isDiscussionsAllowedInModule(module)) {
-        if (this._isDiscussionsAvailableInModule(module)) {
-          return true;
-        }
-      }
+    if (!this._config.HOME.DISPLAY_LATEST_DISCUSSIONS) {
+      return false;
     }
-    return false;
+
+    return this.MODULES_PREVALENCE.some(module =>
+      this._isReadGrantedInModule(module) && this._isDiscussionsAvailableInModule(module)
+    )
   }
 
   computeDiscussionsRedirectionUrl(id: number): Array<string> {
     for (const module of this.MODULES_PREVALENCE) {
-      if (this._isDiscussionsAllowedInModule(module)) {
+      if (this._isReadGrantedInModule(module)) {
         if (this._isDiscussionsAvailableInModule(module)) {
           return this._getUrl(module, id);
         }
