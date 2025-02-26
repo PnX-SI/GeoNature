@@ -91,11 +91,11 @@ jobs:
           GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Install core modules
         run: |
-          geonature install-gn-module contrib/occtax OCCTAX --build=false
-          geonature db upgrade occtax-samples-test@head
-          geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false
+          geonature install-gn-module contrib/occtax OCCTAX --build=false --upgrade-db=false
+          geonature db upgrade occtax-samples-test@head 
+          geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false --upgrade-db=false
           geonature db upgrade occhab-samples@head
-          geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
+          geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false --upgrade-db=false
           geonature permissions supergrant --group --nom "Grp_admin" --yes
           geonature db upgrade import-samples@head
         env:
