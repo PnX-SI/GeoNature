@@ -107,6 +107,8 @@ jobs:
           pip install -e contrib/occtax
           pip install -e contrib/gn_module_occhab
           pip install -e contrib/gn_module_validation
+          geonature db autoupgrade
+          geonature upgrade-modules-db
           geonature db upgrade occtax-samples-test@head
           geonature db upgrade occhab-samples@head
           geonature db upgrade import-samples@head
