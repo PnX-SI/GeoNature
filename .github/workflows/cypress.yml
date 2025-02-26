@@ -83,7 +83,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
+      - name: generate frontend config
+        run: |
+          cp ./config/settings.ini.sample ./config/settings.ini 
+          ./install/05_install_frontend.sh --ci
+        env:
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Install core modules
         run: |
           pip install -e contrib/occtax
@@ -97,12 +102,6 @@ jobs:
           geonature permissions supergrant --group --nom "Grp_admin" --yes
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: generate frontend config
-        run: |
-          cp ./config/settings.ini.sample ./config/settings.ini 
-          ./install/05_install_frontend.sh --ci
-        env:
-          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Run GeoNature backend
         run: geonature dev_back &
         env:
