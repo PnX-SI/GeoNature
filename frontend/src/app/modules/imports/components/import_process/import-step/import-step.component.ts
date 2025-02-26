@@ -212,7 +212,7 @@ export class ImportStepComponent implements OnInit {
         this.modalData = {
           title: 'Modification',
           bodyMessage: 'Des données ont déjà été importées. Si vous continuez ces dernières seront supprimées.',
-          additionalMessage: 'Etes-vous sur de continuer ?',
+          additionalMessage: 'Êtes-vous sûr de continuer ?',
           cancelButtonText: 'Annuler',
           confirmButtonText: 'Confirmer',
           confirmButtonColor: 'warn',

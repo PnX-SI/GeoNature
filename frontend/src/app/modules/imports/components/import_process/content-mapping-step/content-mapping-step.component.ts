@@ -325,7 +325,7 @@ export class ContentMappingStepComponent implements OnInit {
       this.modalData = {
         title: 'Modification',
         bodyMessage:'Des modifications ont été apportées à la correspondances des nomenclatures. L\'ancienne correspondance des nomenclatures sera supprimé.',
-        additionalMessage: 'Etes-vous sur de continuer ?',
+        additionalMessage: 'Êtes-vous sûr de continuer ?',
         cancelButtonText: 'Annuler',
         confirmButtonText: 'Confirmer',
         confirmButtonColor: 'warn',

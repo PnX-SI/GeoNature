@@ -293,7 +293,7 @@ export class FieldsMappingStepComponent implements OnInit {
       this.modalData = {
         title: 'Modification',
         bodyMessage: 'Des modifications ont été apportées à la correspondances des champs. L\'ancienne correspondance des champs sera supprimée',
-        additionalMessage: 'Etes-vous sur de continuer ?',
+        additionalMessage: 'Êtes-vous sûr de continuer ?',
         cancelButtonText: 'Annuler',
         confirmButtonText: 'Confirmer',
         confirmButtonColor: 'warn',

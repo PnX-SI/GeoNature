@@ -142,7 +142,7 @@ export class UploadFileStepComponent implements OnInit {
     this.modalData = {
       title: 'Modification',
       bodyMessage:'Le fichier existant en base de données sera supprimé !',
-      additionalMessage: 'Etes-vous sur de continuer ?',
+      additionalMessage: 'Êtes-vous sûr de continuer ?',
       cancelButtonText: 'Annuler',
       confirmButtonText: 'Confirmer',
       confirmButtonColor: 'warn',
