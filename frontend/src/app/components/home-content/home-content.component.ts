@@ -12,12 +12,13 @@ import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { ConfigService } from '@geonature/services/config.service';
 import { HomeDiscussionsService } from './home-discussions/home-discussions.service';
+import { HomeValidationsService } from './home-validations/home-validations.service';
 
 @Component({
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, SyntheseDataService, HomeDiscussionsService],
+  providers: [MapService, SyntheseDataService, HomeDiscussionsService, HomeValidationsService],
 })
 export class HomeContentComponent implements OnInit, AfterViewInit {
   public showLastObsMap: boolean = false;
@@ -35,7 +36,8 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     private _moduleService: ModuleService,
     private translateService: TranslateService,
     public config: ConfigService,
-    private _discussionsService: HomeDiscussionsService
+    private _discussionsService: HomeDiscussionsService,
+    private _validationsService: HomeValidationsService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -78,7 +80,15 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   }
 
   get isExistBlockToDisplay(): boolean {
-    return this._discussionsService.isAvailable; // NOTES [projet ARB]: ajouter les autres config à afficher ici || this.config.HOME.DISPLAY_LATEST_VALIDATIONS ..;
+    return this.displayDiscussions || this.displayValidations;
+  }
+
+  get displayDiscussions(): boolean {
+    return this._discussionsService.isAvailable;
+  }
+
+  get displayValidations(): boolean {
+    return this._validationsService.isAvailable;
   }
 
   private computeMapBloc() {
@@ -145,9 +155,5 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
       });
-  }
-
-  public displayDiscussions() {
-    return this.config.SYNTHESE.DISCUSSION_MODULES.length > 0;
   }
 }

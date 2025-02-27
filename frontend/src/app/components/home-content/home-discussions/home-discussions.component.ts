@@ -10,7 +10,7 @@ import { HomeDiscussionsToggleComponent } from './home-discussions-toggle/home-d
   imports: [HomeDiscussionsTableComponent, HomeDiscussionsToggleComponent],
 })
 export class HomeDiscussionsComponent {
-  myReportsOnly = false;
+  myReportsOnly = HomeDiscussionsTableComponent.DEFAULT_MY_REPORTS_ONLY;
   toggleMyReports(isMyReports: boolean) {
     this.myReportsOnly = isMyReports;
   }
