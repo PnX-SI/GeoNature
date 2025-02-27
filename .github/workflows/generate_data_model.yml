@@ -3,7 +3,7 @@ name: Generate Dump and Push
 on:
   push:
     branches:
-      - enable-database-history
+      - master
 
 jobs:
   generate-dump:
