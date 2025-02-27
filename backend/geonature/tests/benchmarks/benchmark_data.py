@@ -89,6 +89,11 @@ benchmark_synthese_intersection_data_test_complex_polygon = {
     },
 }
 
+benchmark_synthese_regulation = {
+    "modif_since_validation": False,
+    "regulations_protection_status": ["REGL"],
+}
+
 
 def benchmark_synthese_intersection_data_test_commune():
     return {
