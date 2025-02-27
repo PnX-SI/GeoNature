@@ -23,4 +23,21 @@ export class FieldMappingPresetUtils {
       [FieldMappingPresetUtils.PRESET_KEY]: formattedParams,
     };
   }
+
+  /**
+   * Apply preset if exists
+   */
+  static patchMappingValuesWithPreset(
+    mappingValues: FieldMappingValues,
+    preset: FieldMappingValues | null
+  ): FieldMappingValues {
+    // Replace input mapping entries if a preset is set in "importFieldMapping"
+    const presetValues = preset?.__preset__;
+    if (presetValues) {
+      for (const presetKey in presetValues) {
+        mappingValues[presetKey] = preset[presetKey];
+      }
+    }
+    return mappingValues;
+  }
 }
