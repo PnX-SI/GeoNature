@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - compat-other-architecture
   release:
     types: [published]
 
