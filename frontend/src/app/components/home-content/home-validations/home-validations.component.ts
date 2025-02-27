@@ -122,8 +122,8 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   private _formatObservation(validation: any): string {
     return `
       <strong>Nom Cité :</strong> ${validation.nom_cite || 'N/A'}<br>
-      <strong>Observateurs:</strong> ${validation.observers || 'N/A'}<br>
-      <strong>Date Observation:</strong> ${
+      <strong>Observateurs :</strong> ${validation.observers || 'N/A'}<br>
+      <strong>Date Observation :</strong> ${
         this._formatDateRange(validation.date_min, validation.date_max) || 'N/A'
       }
     `;
