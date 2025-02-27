@@ -1,7 +1,7 @@
 """Add taxonomie info to v_synthese_for_web_app
 
 Revision ID: d73f74e7b662
-Revises: 5cf0ce9e669c
+Revises: 22cb0ffdff6d
 Create Date: 2025-02-12 17:08:12.043627
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "d73f74e7b662"
-down_revision = "5cf0ce9e669c"
+down_revision = "22cb0ffdff6d"
 branch_labels = None
 depends_on = None
 
