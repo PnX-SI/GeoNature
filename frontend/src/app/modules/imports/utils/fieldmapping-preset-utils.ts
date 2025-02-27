@@ -35,7 +35,7 @@ export class FieldMappingPresetUtils {
     const presetValues = preset?.__preset__;
     if (presetValues) {
       for (const presetKey in presetValues) {
-        mappingValues[presetKey] = preset[presetKey];
+        mappingValues[presetKey] = presetValues[presetKey];
       }
     }
     return mappingValues;
