@@ -68,7 +68,6 @@ export class OcctaxFormOccurrenceService {
       id_nomenclature_determination_method: null,
       nom_cite: [null, Validators.required],
       cd_nom: [null, Validators.required],
-      meta_v_taxref: null,
       sample_number_proof: null,
       digital_proof: null,
       non_digital_proof: null,
