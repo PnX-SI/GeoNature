@@ -78,28 +78,33 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
             raise ClickException(
                 f"Impossible de détecter le code du module, essayez de le spécifier."
             )
-    # symlink module in exernal module directory
+
     module_frontend_path = (module_path / "frontend").resolve()
-    module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
-    if os.path.exists(module_symlink):
-        if module_frontend_path != os.readlink(module_symlink):
-            click.echo(f"Correction du lien symbolique {module_symlink} → {module_frontend_path}")
-            os.unlink(module_symlink)
+    if module_frontend_path.exists():  # check that the module provides a frontend
+        # symlink module in exernal module directory
+        module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
+        if os.path.exists(module_symlink):
+            if module_frontend_path != os.readlink(module_symlink):
+                click.echo(
+                    f"Correction du lien symbolique {module_symlink} → {module_frontend_path}"
+                )
+                os.unlink(module_symlink)
+                os.symlink(module_frontend_path, module_symlink)
+        else:
+            click.echo(f"Création du lien symbolique {module_symlink} → {module_frontend_path}")
             os.symlink(module_frontend_path, module_symlink)
-    else:
-        click.echo(f"Création du lien symbolique {module_symlink} → {module_frontend_path}")
-        os.symlink(module_frontend_path, module_symlink)
-    if (Path(module_path) / "frontend" / "package-lock.json").is_file():
-        click.echo("Installation des dépendances frontend…")
-        install_frontend_dependencies(module_frontend_path)
+        if (Path(module_path) / "frontend" / "package-lock.json").is_file():
+            click.echo("Installation des dépendances frontend…")
+            install_frontend_dependencies(module_frontend_path)
 
-    click.echo("Création de la configuration frontend…")
-    create_frontend_module_config(module_code)
+        click.echo("Création de la configuration frontend…")
+        create_frontend_module_config(module_code)
 
-    if build:
-        click.echo("Rebuild du frontend …")
-        build_frontend()
-        click.secho("Rebuild du frontend terminé.", fg="green")
+        if build:
+            click.echo("Rebuild du frontend …")
+            build_frontend()
+            click.secho("Rebuild du frontend terminé.", fg="green")
+
     if upgrade_db:
         click.echo("Installation / mise à jour de la base de données…")
         if not module_db_upgrade(module_dist, x_arg=x_arg):
