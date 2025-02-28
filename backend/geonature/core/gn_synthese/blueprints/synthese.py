@@ -8,7 +8,7 @@ from flask import (
     g,
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest
-from sqlalchemy import func, select, case
+from sqlalchemy import func, select, case, join, and_
 from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 
