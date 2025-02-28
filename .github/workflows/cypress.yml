@@ -91,6 +91,11 @@ jobs:
           GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Install core modules
         run: |
+          pip install -e contrib/occtax
+          pip install -e contrib/gn_module_occhab
+          pip install -e contrib/gn_module_validation
+          geonature db autoupgrade
+          geonature upgrade-modules-db
           geonature db upgrade occtax-samples-test@head 
           geonature db upgrade occhab-samples@head
           geonature permissions supergrant --group --nom "Grp_admin" --yes
