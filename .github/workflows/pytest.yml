@@ -18,22 +18,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        debian-version: ['11', '12']
+        debian-version: ["11", "12"]
         include:
-          - debian-version: '11'
-            python-version: '3.9'
-            postgres-version: '13'
-            postgis-version: '3.2'
-          - debian-version: '12'
-            python-version: '3.11'
-            postgres-version: '15'
-            postgis-version: '3.3'
+          - debian-version: "11"
+            python-version: "3.9"
+            postgres-version: "13"
+            postgis-version: "3.2"
+          - debian-version: "12"
+            python-version: "3.11"
+            postgres-version: "15"
+            postgis-version: "3.3"
 
     name: Debian ${{ matrix.debian-version }}
 
     services:
       postgres:
-        image: postgis/postgis:${{ matrix.postgres-version }}-${{ matrix.postgis-version }}
+        image: ghcr.io/pnx-si/geonature-db:2.15.4
         env:
           POSTGRES_DB: geonature2db
           POSTGRES_PASSWORD: geonatpasswd
@@ -59,16 +59,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Add database extensions
-        run: |
-          psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
-        env:
-          PGPASSWORD: geonatpasswd
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
+          cache: "pip"
       - name: Install GDAL
         run: |
           sudo apt update
@@ -91,29 +86,7 @@ jobs:
             -e ..[tests] \
             -r requirements-dev.txt
         working-directory: ./backend
-      - name: Show database branches and dependencies
-        run: |
-          geonature db status --dependencies
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Install database
-        run: |
-          install/03b_populate_db.sh
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
-          srid_local: 2154
-          install_bdc_statuts: true
-          taxref_region: fr
-          add_sample_data: true
-          install_sig_layers: true
-          install_grid_layer_5: true
-          install_grid_layer_10: true
-          install_ref_sensitivity: true
-      - name: Show database status
-        run: |
-          geonature db status
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
+
       - name: Install core modules backend
         run: |
           pip install -e contrib/occtax
@@ -121,7 +94,9 @@ jobs:
           pip install -e contrib/gn_module_validation
       - name: Install core modules database
         run: |
+          geonature db autoupgrade
           geonature upgrade-modules-db
+          geonature db downgrade ref_geo_inpn_grids_50@base
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Show database status
