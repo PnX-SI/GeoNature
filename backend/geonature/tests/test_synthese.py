@@ -1148,7 +1148,7 @@ class TestSynthese:
 
         # Missing area_type parameter
         response = self.client.get(
-            url_for("gn_synthese.synthese_taxon_info.taxon_stats", cd_nom=CD_REF_VALID),
+            url_for("gn_synthese.synthese_taxon_info.taxon_stats", cd_ref=CD_REF_VALID),
         )
         assert response.status_code == 400
         assert response.json["description"] == "Missing area_type parameter"
@@ -1157,7 +1157,7 @@ class TestSynthese:
         response = self.client.get(
             url_for(
                 "gn_synthese.synthese_taxon_info.taxon_stats",
-                cd_nom=CD_REF_VALID,
+                cd_ref=CD_REF_VALID,
                 area_type=AREA_TYPE_INVALID,
             ),
         )
@@ -1168,7 +1168,7 @@ class TestSynthese:
         response = self.client.get(
             url_for(
                 "gn_synthese.synthese_taxon_info.taxon_stats",
-                cd_nom=CD_REF_INVALID,
+                cd_ref=CD_REF_INVALID,
                 area_type=AREA_TYPE_VALID,
             ),
         )
@@ -1179,7 +1179,7 @@ class TestSynthese:
         response = self.client.get(
             url_for(
                 "gn_synthese.synthese_taxon_info.taxon_stats",
-                cd_nom=CD_REF_VALID,
+                cd_ref=CD_REF_VALID,
                 area_type=AREA_TYPE_VALID,
             ),
         )
@@ -1322,7 +1322,7 @@ class TestSynthese:
         # Unknow sort_order parameters: shoudl fallback in asc
         response = self.client.get(
             url_for(
-                "gn_synthese.taxon_observers",
+                "gn_synthese.synthese_taxon_info.taxon_observers",
                 cd_ref=CD_REF,
                 per_page=PER_PAGE,
                 sort_order=SORT_ORDER_UNDEFINED,
@@ -1334,7 +1334,7 @@ class TestSynthese:
         # sort order ASC
         response = self.client.get(
             url_for(
-                "gn_synthese.taxon_observers",
+                "gn_synthese.synthese_taxon_info.taxon_observers",
                 cd_ref=CD_REF,
                 per_page=PER_PAGE,
                 sort_order=SORT_ORDER_ASC,
@@ -1346,7 +1346,7 @@ class TestSynthese:
         # sort order DESC
         response = self.client.get(
             url_for(
-                "gn_synthese.taxon_observers",
+                "gn_synthese.synthese_taxon_info.taxon_observers",
                 cd_ref=CD_REF,
                 per_page=PER_PAGE,
                 sort_order=SORT_ORDER_DESC,
@@ -1358,7 +1358,7 @@ class TestSynthese:
         ## sort_by
         response = self.client.get(
             url_for(
-                "gn_synthese.taxon_observers",
+                "gn_synthese.synthese_taxon_info.taxon_observers",
                 cd_ref=CD_REF,
                 per_page=PER_PAGE,
                 sort_order=SORT_ORDER_ASC,
@@ -1373,7 +1373,7 @@ class TestSynthese:
         # Ok
         response = self.client.get(
             url_for(
-                "gn_synthese.taxon_observers",
+                "gn_synthese.synthese_taxon_info.taxon_observers",
                 cd_ref=CD_REF,
                 per_page=PER_PAGE,
             )
