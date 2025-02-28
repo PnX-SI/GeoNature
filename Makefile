@@ -40,32 +40,38 @@ GEONATURE_DEFAULT_SETTING_FILE = config/settings.ini.sample
 GEONATURE_LOCAL_SETTING_FILE = config/settings.ini
 GEONATURE_APP_SECRET_KEY ?= 'yoursecretkey'
 
-SUPERGRANT_GROUP ?= "Grp_admin"
+SUPERGRANT_NOM_ROLE ?= "Grp_admin"
+SUPERGRANT_ISGROUP ?= true
 
 default: help
 
 help:
 	@echo "Available targets:"
-	@echo "  init_config_toml   - Initialize GeoNature configuration"
-	@echo "  init_setting_init  - Initialize GeoNature settings"
-	@echo "  activate_drop_db   - Activate the drop_db options in the settings.ini"
-	@echo "  deactivate_drop_db - Deactivate the drop_db options in the settings.ini"
-	@echo "  update_settings    - Update settings and config files"
-	@echo "  install_nvm        - Install Node Version Manager (NVM)"
-	@echo "  install_backend    - Install backend components"
-	@echo "  install_frontend   - Install frontend components"
-	@echo "  install_db         - Create and set up the database"
-	@echo "  install_contrib    - Install GeoNature modules"
-	@echo "  install_extra      - Install extra GeoNature modules"
-	@echo "  reset_install      - Reset installation"
-	@echo "  back               - Start backend"
-	@echo "  front              - Start frontend"
-	@echo "  celery             - Start celery worker"
-	@echo "  db_status          - Show database status"
-	@echo "  autoupgrade        - Upgrade the database"
-	@echo "  test_frontend      - Run frontend tests"
-	@echo "  lint_frontend      - Lint frontend code"
-	@echo "  lint_backend       - Lint backend code"
+	@echo "  init_config_toml       - Initialize GeoNature configuration"
+	@echo "  init_setting_init      - Initialize GeoNature settings"
+	@echo "  activate_drop_db       - Activate the drop_db options in settings.ini"
+	@echo "  deactivate_drop_db     - Deactivate the drop_db options in settings.ini"
+	@echo "  update_settings        - Update settings and config files"
+	@echo "  install_nvm            - Install Node Version Manager (NVM)"
+	@echo "  install_backend        - Install backend components"
+	@echo "  install_frontend       - Install frontend components"
+	@echo "  install_db             - Create and set up the database"
+	@echo "  install_contrib        - Install GeoNature modules"
+	@echo "  install_extra          - Install extra GeoNature modules"
+	@echo "  reset_install          - Reset installation"
+	@echo "  back                   - Start backend"
+	@echo "  front                  - Start frontend"
+	@echo "  celery                 - Start celery worker"
+	@echo "  db_status              - Show database status"
+	@echo "  autoupgrade            - Upgrade the database"
+	@echo "  test_frontend          - Run frontend tests"
+	@echo "  test_backend           - Run backend tests"
+	@echo "  lint_frontend          - Lint frontend code"
+	@echo "  lint_backend           - Lint backend code"
+	@echo "  compile_requirements   - Compile requirements"
+	@echo "  supergrant             - Apply a supergrant to a user by its `nom_role`. By default, the supergrant is applied to the group `Grp_admin`. Check `SUPERGRANT_NOM_ROLE` and `SUPERGRANT_ISGROUP` to override the user and if it is a group or not."
+	@echo "  benchmark              - Run benchmark"
+	@echo "  docker_db              - Start populated database with docker (use it for dev and test only!)"
 
 ##############################
 #### CONFIGURATION FILES ####
@@ -151,6 +157,12 @@ celery:
 db_status:
 	source backend/venv/bin/activate && geonature db status
 
+docker_db:
+	docker run -d \
+    --rm -p 5432:5432 \
+    --name geonature-db \
+    ghcr.io/pnx-si/geonature-db:latest
+
 autoupgrade:
 	source backend/venv/bin/activate && geonature db autoupgrade
 
@@ -161,6 +173,12 @@ compile_requirements:
 test_frontend:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use && npm run cypress:run
 
+test_backend:
+	source backend/venv/bin/activate && pytest
+
+benchmark:
+	source backend/venv/bin/activate && pytest --benchmark-only
+
 lint_frontend:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run format
 
@@ -168,7 +186,8 @@ lint_backend:
 	source backend/venv/bin/activate && black .
 
 supergrant:
-	source backend/venv/bin/activate && geonature permissions supergrant --group --nom ${SUPERGRANT_GROUP} --yes
+	if [ "${SUPERGRANT_ISGROUP}" = true ]; then source backend/venv/bin/activate && geonature permissions supergrant --group --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
+	if [ "${SUPERGRANT_ISGROUP}" = false ]; then source backend/venv/bin/activate && geonature permissions supergrant --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
 
 # Add other targets in a Makefile.local file if you wish to extend the make file
 -include Makefile.local
