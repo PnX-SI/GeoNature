@@ -14,6 +14,13 @@
   </ng-template>
 
   <ng-template
+    #cellNameTemplate
+    let-value="value"
+  >
+    {{ value | titlecase }}
+  </ng-template>
+
+  <ng-template
     #cellDefaultTemplate
     let-value="value"
   >
@@ -46,7 +53,7 @@
         let-row="row"
       >
         <ng-template
-          *ngTemplateOutlet="cellDefaultTemplate; context: { value: row[PROP_OBSERVER] }"
+          *ngTemplateOutlet="cellNameTemplate; context: { value: row[PROP_OBSERVER] }"
         ></ng-template>
       </ng-template>
     </ngx-datatable-column>

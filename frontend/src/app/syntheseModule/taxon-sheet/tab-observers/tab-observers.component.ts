@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { ConfigService } from '@geonature/services/config.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { TaxonSheetService } from '../taxon-sheet.service';
