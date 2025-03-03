@@ -43,16 +43,19 @@
         justify-content: center;
 
         .Media {
-          width: 5rem;
-          height: 5rem;
           color: rgba(0, 0, 0, 0.87);
           display: flex;
           justify-content: center;
           align-items: center;
           border: 3px solid rgba(0, 0, 0, 0.125);
           border-radius: 8px;
+          --size: 7rem;
+          height: var(--size);
+          width: var(--size);
+          mat-icon{
+            transform: scale(1.2);
+          }
           &--thumbnail {
-            height: 7rem;
             width: auto;
             border-color: rgba(0, 0, 0, 0);
           }
