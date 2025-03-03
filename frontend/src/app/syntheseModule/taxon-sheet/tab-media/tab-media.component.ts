@@ -6,23 +6,12 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-
-export interface Pagination {
-  totalItems: number;
-  currentPage: number;
-  perPage: number;
-}
+import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 
 enum Direction {
   BACKWARD,
   FORWARD,
 }
-
-export const DEFAULT_PAGINATION: Pagination = {
-  totalItems: 0,
-  currentPage: 0,
-  perPage: 10,
-};
 
 @Component({
   standalone: true,
@@ -35,13 +24,14 @@ export class TabMediaComponent implements OnInit {
   public medias: any[] = [];
   public selectedMedia: any = {};
   taxon: Taxon | null = null;
-  pagination: Pagination = DEFAULT_PAGINATION;
+  pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION;
 
   constructor(
     public ms: MediaService,
     private _tss: TaxonSheetService,
     private _syntheseDataService: SyntheseDataService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this._tss.taxon.subscribe((taxon) => {
