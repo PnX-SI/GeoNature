@@ -1,4 +1,4 @@
-""" 
+"""
 Ce script importe les informations des JDD et des CA à partir du webservice MTD. A la difference du script run_import_mtd, il trouve les CA correspondant aux JDD à partir du XML d'un JDD. Il n'est pas necessaire d'avoir une liste de CA
 """
 

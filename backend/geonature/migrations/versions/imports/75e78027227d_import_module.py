@@ -1,7 +1,7 @@
 """add import module
 
 Revision ID: 75e78027227d
-Revises: 
+Revises:
 Create Date: 2023-12-18
 
 """
