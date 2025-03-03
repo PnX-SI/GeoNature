@@ -269,8 +269,10 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
 
         query = (
             db.session.query(
-                func.trim(
-                    func.unnest(func.string_to_array(Synthese.observers, field_separator))
+                func.lower(
+                    func.trim(
+                        func.unnest(func.string_to_array(Synthese.observers, field_separator))
+                    )
                 ).label("observer"),
                 func.min(Synthese.date_min).label("date_min"),
                 func.max(Synthese.date_max).label("date_max"),
