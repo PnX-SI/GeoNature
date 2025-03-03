@@ -9,7 +9,15 @@ from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_synthese.models import CorAreaSynthese, Synthese, VColorAreaTaxon
+from geonature.core.gn_synthese.models import (
+    CorAreaSynthese,
+    Synthese,
+    VColorAreaTaxon,
+    CorObserverSynthese,
+)
+from geonature.core.gn_commons.models import TMedias
+from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils, SortOrder
+from pypnusershub.db import User
 from geonature.core.gn_synthese.utils.orm import is_already_joined
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from apptax.taxonomie.models import Taxref, VMTaxrefListForautocomplete
@@ -19,6 +27,7 @@ from utils_flask_sqla.response import json_resp
 
 
 from sqlalchemy import desc, distinct, func, select, join, exists
+from sqlalchemy.orm import Query
 from werkzeug.exceptions import BadRequest
 
 taxon_info_routes = Blueprint("synthese_taxon_info", __name__)
@@ -192,7 +201,7 @@ def taxon_medias(cd_ref):
     query = select(TMedias).join(Synthese.medias).order_by(TMedias.meta_create_date.desc())
 
     # Use taxon_sheet_utils
-    taxref_cd_nom_list = db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
+    taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
     query = query.where(Synthese.cd_nom.in_(taxref_cd_nom_list))
 
     pagination = db.paginate(query, page=page, per_page=per_page)
@@ -203,12 +212,13 @@ def taxon_medias(cd_ref):
         "items": [media.as_dict() for media in pagination.items],
     }
 
+
 if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
-    @taxon_info_routes.route("/taxon_stats/<int:cd_nom>", methods=["GET"])
+    @taxon_info_routes.route("/taxon_stats/<int:cd_ref>", methods=["GET"])
     @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
     @json_resp
-    def taxon_stats(scope, cd_nom):
+    def taxon_stats(scope, cd_ref):
         """Return stats for a specific taxon"""
 
         area_type = request.args.get("area_type")
@@ -216,26 +226,11 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
         if not area_type:
             raise BadRequest("Missing area_type parameter")
 
-        # Ensure area_type is valid
-        valid_area_types = db.session.scalar(
-            exists(BibAreasTypes).where(BibAreasTypes.type_code == area_type).select()
-        )
-        if not valid_area_types:
-            raise BadRequest("Invalid area_type")
+        if not TaxonSheetUtils.is_valid_area_type(area_type):
+            raise BadRequest("Invalid area_type parameter")
 
-        # Subquery to fetch areas based on area_type
-        areas_subquery = (
-            select(LAreas.id_area)
-            .where(
-                LAreas.id_type == BibAreasTypes.id_type,
-                BibAreasTypes.type_code == area_type,
-            )
-            .alias("areas")
-        )
-        cd_ref = db.session.scalar(select(Taxref.cd_ref).where(Taxref.cd_nom == cd_nom))
-        taxref_cd_nom_list = db.session.scalars(
-            select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref)
-        )
+        areas_subquery = TaxonSheetUtils.get_area_subquery(area_type)
+        taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
 
         # Main query to fetch stats
         query = (
@@ -261,13 +256,12 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
             .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
         )
 
-        synthese_query_obj = SyntheseQuery(Synthese, query, {})
-        synthese_query_obj.filter_query_with_cruved(g.current_user, scope)
-        result = db.session.execute(synthese_query_obj.query)
+        synthese_query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+        result = db.session.execute(synthese_query)
         synthese_stats = result.fetchone()
 
         data = {
-            "cd_ref": cd_nom,
+            "cd_ref": cd_ref,
             "observation_count": synthese_stats["observation_count"],
             "observer_count": synthese_stats["observer_count"],
             "area_count": synthese_stats["area_count"],
@@ -278,3 +272,53 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
         }
 
         return data
+
+
+if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
+
+    @taxon_info_routes.route("/taxon_observers/<int:cd_ref>", methods=["GET"])
+    @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+    def taxon_observers(scope, cd_ref):
+        per_page = request.args.get("per_page", 10, int)
+        page = request.args.get("page", 1, int)
+        sort_by = request.args.get("sort_by", "observer")
+        sort_order = request.args.get("sort_order", SortOrder.ASC, SortOrder)
+        field_separators = request.args.get(
+            "field_separators", app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"]
+        )
+        # Handle sorting
+        if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:
+            raise BadRequest(f"The sort_by column {sort_by} is not defined")
+
+        taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+
+        field_separators_as_regexp = rf"[{''.join(field_separators)}]+"
+
+        query = (
+            db.session.query(
+                func.lower(
+                    func.trim(
+                        func.regexp_split_to_table(Synthese.observers, field_separators_as_regexp)
+                    )
+                ).label("observer"),
+                func.min(Synthese.date_min).label("date_min"),
+                func.max(Synthese.date_max).label("date_max"),
+                func.count(Synthese.id_synthese).label("observation_count"),
+                func.count(TMedias.id_media).label("media_count"),
+            )
+            .group_by("observer")
+            .outerjoin(Synthese.medias)
+            .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+        )
+        query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
+        query = TaxonSheetUtils.update_query_with_sorting(query, sort_by, sort_order)
+        results = TaxonSheetUtils.paginate(query, page, per_page)
+
+        return jsonify(
+            {
+                "items": results.items,
+                "total": results.total,
+                "per_page": per_page,
+                "page": page,
+            }
+        )

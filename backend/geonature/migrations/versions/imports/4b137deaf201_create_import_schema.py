@@ -1,7 +1,7 @@
 """create_import_schema
 
 Revision ID: 4b137deaf201
-Revises: 
+Revises:
 Create Date: 2021-03-29 18:38:24.512562
 
 """
