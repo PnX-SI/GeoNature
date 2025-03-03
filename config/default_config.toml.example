@@ -453,6 +453,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Permet d'activer ou non la section "Observers"
         ENABLE_TAB_OBSERVERS = true
 
+    # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
+    FIELD_OBSERVERS_SEPARATORS =  [","]
+
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
     # Activer l'affichage du lien vers le formulaire d'inscription

@@ -257,21 +257,22 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
         page = request.args.get("page", 1, int)
         sort_by = request.args.get("sort_by", "observer")
         sort_order = request.args.get("sort_order", SortOrder.ASC, SortOrder)
-        field_separator = request.args.get(
-            "field_separator", app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATOR"]
+        field_separators = request.args.get(
+            "field_separators", app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"]
         )
-
         # Handle sorting
         if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:
             raise BadRequest(f"The sort_by column {sort_by} is not defined")
 
         taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
 
+        field_separators_as_regexp = rf"[{''.join(field_separators)}]+"
+
         query = (
             db.session.query(
                 func.lower(
                     func.trim(
-                        func.unnest(func.string_to_array(Synthese.observers, field_separator))
+                        func.regexp_split_to_table(Synthese.observers, field_separators_as_regexp)
                     )
                 ).label("observer"),
                 func.min(Synthese.date_min).label("date_min"),

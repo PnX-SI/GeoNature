@@ -458,7 +458,8 @@ class Synthese(Schema):
     ENABLE_TAXON_SHEETS = fields.Boolean(load_default=True)
     TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
 
-    FIELD_OBSERVERS_SEPARATOR = fields.String(load_default=",")
+    # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
+    FIELD_OBSERVERS_SEPARATORS = fields.List(fields.String(), load_default=[","])
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):
