@@ -58,7 +58,7 @@ bcrypt==4.2.1
     # via pypnusershub
 billiard==4.2.1
     # via celery
-black==24.10.0
+black==25.1.0
     # via -r requirements-dev.in
 blinker==1.9.0
     # via
