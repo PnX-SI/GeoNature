@@ -113,48 +113,44 @@ Le référentiel de sensibilité fourni par le SINP est normalement intégré
 intégré ou mis à jour avec l’une ou l’autre des commandes suivantes (selon votre version de Taxref) :
 
 Taxref v17 :
+   .. code-block:: bash
 
-.. code-block:: bash
-
-    geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v17 20240325" \
-            --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip \
-            --zipfile RefSensibiliteV17_20240325.zip \
-            --csvfile RefSensibilite_17.csv  \
-            --encoding=utf-8
+      geonature sensitivity add-referential \
+               --source-name "Référentiel sensibilité TAXREF v17 20240325" \
+               --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip \
+               --zipfile RefSensibiliteV17_20240325.zip \
+               --csvfile RefSensibilite_17.csv  \
+               --encoding=utf-8
 
 Taxref v16 :
+   .. code-block:: bash
 
-.. code-block:: bash
-
-    geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v16 20230203" \
-            --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip \
-            --zipfile RefSensibiliteV16_20230203.zip \
-            --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  \
-            --encoding=iso-8859-15
+      geonature sensitivity add-referential \
+               --source-name "Référentiel sensibilité TAXREF v16 20230203" \
+               --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip \
+               --zipfile RefSensibiliteV16_20230203.zip \
+               --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  \
+               --encoding=iso-8859-15
 
 Taxref v15 :
+   .. code-block:: bash
 
-.. code-block:: bash
-
-    geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v15 20220331" \
-            --url https://inpn.mnhn.fr/docs-web/docs/download/401875 \
-            --zipfile RefSensibiliteV15_20220331.zip \
-            --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  \
-            --encoding=iso-8859-15
+      geonature sensitivity add-referential \
+               --source-name "Référentiel sensibilité TAXREF v15 20220331" \
+               --url https://inpn.mnhn.fr/docs-web/docs/download/401875 \
+               --zipfile RefSensibiliteV15_20220331.zip \
+               --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  \
+               --encoding=iso-8859-15
 
 Taxref v14 :
+   .. code-block:: bash
 
-.. code-block:: bash
-
-    geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v14 20220331" \
-            --url https://inpn.mnhn.fr/docs-web/docs/download/401876 \
-            --zipfile RefSensibiliteV14_20220331.zip \
-            --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  \
-            --encoding=iso-8859-15
+      geonature sensitivity add-referential \
+               --source-name "Référentiel sensibilité TAXREF v14 20220331" \
+               --url https://inpn.mnhn.fr/docs-web/docs/download/401876 \
+               --zipfile RefSensibiliteV14_20220331.zip \
+               --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  \
+               --encoding=iso-8859-15
 
 Le jeu de règles est fourni pour chaque version précise de Taxref, certaines
 espèces sensibles pouvant voir leur *cd_nom* changer d’une version à l’autre.

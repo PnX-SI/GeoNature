@@ -7,6 +7,7 @@ from geonature.core.gn_synthese.models import Synthese
 from .utils import activate_profiling_sql
 
 from .benchmark_generator import BenchmarkTest, CLater
+from geonature.tests.fixtures import users
 
 
 logging.basicConfig()
@@ -81,6 +82,14 @@ class TestBenchmarkSynthese:
             json=benchmark_synthese_with_tree_taxon,
         ),
     )
+    test_benchmark_synthese_regulation = BenchmarkTest(
+        CLIENT_POST,
+        [CLater(SYNTHESE_GET_OBS_URL)],
+        dict(
+            user_profile="admin_user",
+            json=benchmark_synthese_regulation,
+        ),
+    )
 
 
 # EXPORT TESTING
@@ -105,4 +114,4 @@ for url, label in [
             ),
         )
 
-add_bluring_to_benchmark_test_class(TestBenchmarkSynthese)
+add_bluring_to_benchmark_test_class(TestBenchmarkSynthese, "user_with_blurring")

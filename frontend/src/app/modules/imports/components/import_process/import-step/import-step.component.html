@@ -26,10 +26,7 @@
       <div class="d-flex justify-content-center align-items-center">
         <div class="text-controls d-flex align-items-center flex-column pb-2">
           <p>Contrôles en cours sur les données</p>
-          <mat-progress-bar
-            class="progress-bar"
-            [value]="progress"
-          ></mat-progress-bar>
+          <mat-progress-bar [value]="progress"></mat-progress-bar>
         </div>
       </div>
     </div>
@@ -142,11 +139,7 @@
         class="d-flex flex-column justify-content-center align-items-center w-100 mb-3"
       >
         <p>Import des données en cours</p>
-        <mat-spinner
-          [color]="color"
-          [diameter]="50"
-          class="upload-spinner"
-        ></mat-spinner>
+        <mat-progress-bar [value]="progress"></mat-progress-bar>
       </div>
 
       <div

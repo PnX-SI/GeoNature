@@ -95,7 +95,7 @@ class ImportConfigSchema(Schema):
     #   for the id_dataset field belonging to synthese destination.
     PER_DATASET_UUID_CHECK = fields.Boolean(load_default=False)
 
-    CHECK_PRIVATE_JDD_BLURING = fields.Boolean(load_default=True)
+    CHECK_PRIVATE_JDD_BLURING = fields.Boolean(load_default=False)
     CHECK_REF_BIBLIO_LITTERATURE = fields.Boolean(load_default=True)
     CHECK_EXIST_PROOF = fields.Boolean(load_default=True)
     DEFAULT_GENERATE_MISSING_UUID = fields.Boolean(load_default=True)
@@ -122,3 +122,4 @@ class ImportConfigSchema(Schema):
     EXPORT_REPORT_PDF_FILENAME = fields.String(
         load_default="import_{id_import}_{date_create_import}_report.pdf"
     )
+    INSERT_BATCH_SIZE = fields.Integer(load_default=1000)

@@ -11,6 +11,7 @@ from .benchmark_generator import CLater, BenchmarkTest
 from geonature.tests.test_synthese import blur_sensitive_observations
 import traceback
 from geonature.tests.fixtures import app
+from pypnusershub.db.models import User
 
 logging.basicConfig()
 logger = logging.getLogger("logger-name")
@@ -62,7 +63,7 @@ def activate_profiling_sql(sqllogfilename: pytest.FixtureDef, app: pytest.Fixtur
     event.listen(db.engine, "after_cursor_execute", after_cursor_execute)
 
 
-def add_bluring_to_benchmark_test_class(benchmark_cls: type):
+def add_bluring_to_benchmark_test_class(benchmark_cls: type, different_user: str = None):
     """
     Add the blurring enabling fixture to all benchmark tests declared in the given class.
 
@@ -86,6 +87,8 @@ def add_bluring_to_benchmark_test_class(benchmark_cls: type):
                 if "fixtures" in kwargs
                 else [blur_sensitive_observations]
             )
+            if different_user:
+                kwargs["user_profile"] = different_user
             # Recreate BenchmarkTest object including the blurring enabling fixture
             setattr(
                 benchmark_cls,

@@ -128,6 +128,7 @@ class HomeConfig(Schema):
     )
     FOOTER = fields.String(load_default="")
     DISPLAY_LATEST_DISCUSSIONS = fields.Boolean(load_default=True)
+    DISPLAY_LATEST_VALIDATIONS = fields.Boolean(load_default=True)
 
 
 class MetadataConfig(Schema):
@@ -295,6 +296,7 @@ class TaxonSheet(Schema):
     ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
     ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
     ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
+    ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):

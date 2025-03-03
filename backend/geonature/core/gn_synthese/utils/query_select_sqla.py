@@ -19,6 +19,7 @@ from sqlalchemy.orm import aliased
 from werkzeug.exceptions import BadRequest
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
+from geoalchemy2.types import Geography, Geometry
 
 from geonature.utils.env import DB
 
@@ -102,6 +103,17 @@ class SyntheseQuery:
                     e=e, model=model
                 )
             )
+
+        self.srid = DB.session.scalar(
+            select(
+                func.Find_SRID(
+                    self.geom_column.table.schema, self.geom_column.table.name, self.geom_column.key
+                )
+            )
+        )
+        self.srid_l_areas = DB.session.scalar(
+            select(func.Find_SRID(LAreas.__table__.schema, LAreas.__table__.name, "geom"))
+        )
 
     def add_join(self, right_table, right_column, left_column, join_type="right"):
         if self.first:
@@ -435,18 +447,30 @@ class SyntheseQuery:
             else:
                 raise BadRequest("Unsupported geoIntersection type")
             geo_filters = []
+
             for feature in features:
                 geom_wkb = from_shape(shape(feature["geometry"]), srid=4326)
+                geometry = func.ST_GeomFromWKB(geom_wkb)
+                if self.srid != 4326:
+                    geometry = func.ST_Transform(
+                        geometry,
+                        self.srid,
+                    )
+
                 # if the geom is a circle
                 if "radius" in feature["properties"]:
                     radius = feature["properties"]["radius"]
                     geo_filter = func.ST_DWithin(
-                        func.ST_GeogFromWKB(self.geom_column),
-                        func.ST_GeogFromWKB(geom_wkb),
+                        (
+                            sa.cast(self.geom_column, Geography)
+                            if isinstance(self.geom_column.type, Geometry)
+                            else self.geom_column
+                        ),
+                        sa.cast(geometry, Geography),
                         radius,
                     )
                 else:
-                    geo_filter = self.geom_column.ST_Intersects(geom_wkb)
+                    geo_filter = self.geom_column.ST_Intersects(geometry)
                 geo_filters.append(geo_filter)
             self.query = self.query.where(or_(*geo_filters))
             self.filters.pop("geoIntersection")
@@ -479,9 +503,25 @@ class SyntheseQuery:
             if colname.startswith("area"):
                 if self.geom_column.class_ != self.model:
                     l_areas_cte = LAreas.query.filter(LAreas.id_area.in_(value)).cte("area_filter")
-                    self.query = self.query.where(
-                        func.ST_Intersects(self.geom_column, l_areas_cte.c.geom)
-                    )
+                    if self.srid != 4326:
+
+                        if self.srid != self.srid_l_areas:
+                            self.query = self.query.where(
+                                func.ST_Intersects(
+                                    self.geom_column,
+                                    func.ST_Transform(l_areas_cte.c.geom, self.srid),
+                                )
+                            )
+
+                        else:
+                            self.query = self.query.where(
+                                func.ST_Intersects(self.geom_column, l_areas_cte.c.geom)
+                            )
+
+                    else:
+                        self.query = self.query.where(
+                            func.ST_Intersects(self.geom_column, l_areas_cte.c.geom_4326)
+                        )
                 else:
                     cor_area_synthese_alias = aliased(CorAreaSynthese)
                     self.add_join(
@@ -610,7 +650,9 @@ class SyntheseQuery:
             )
 
         bdc_status_by_type_cte = bdc_status_by_type_cte.where(or_(*bdc_status_filters))
-        bdc_status_by_type_cte = bdc_status_by_type_cte.cte(name="status_by_type")
+        bdc_status_by_type_cte = bdc_status_by_type_cte.cte(
+            name="bdc_status_by_type_" + str(uuid.uuid4())[:4]
+        )
 
         # group by de façon à ne selectionner que les taxons
         #   qui ont l'ensemble des textes selectionnés par l'utilisateur
@@ -623,7 +665,8 @@ class SyntheseQuery:
             func.count(distinct(bdc_status_by_type_cte.c.cd_type_statut))
             == (len(protection_status_value) + len(red_list_filters))
         )
-        bdc_status_cte = bdc_status_cte.cte(name="status")
+
+        bdc_status_cte = bdc_status_cte.cte()
 
         # Jointure sur le taxon
         # et vérification que l'ensemble des textes

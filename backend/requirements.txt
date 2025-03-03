@@ -255,7 +255,7 @@ pypn-ref-geo==1.5.4
     #   taxhub
 pypnnomenclature==1.6.4
     # via -r requirements-dependencies.in
-pypnusershub==3.0.1
+pypnusershub==3.0.2
     # via
     #   -r requirements-dependencies.in
     #   taxhub
@@ -314,7 +314,7 @@ sqlalchemy==1.4.54
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==2.1.1
+taxhub==2.1.2
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -381,6 +381,7 @@ wtforms==3.1.2
     #   -r requirements-common.in
     #   flask-admin
     #   flask-wtf
+    #   taxhub
     #   wtforms-sqlalchemy
 wtforms-sqlalchemy==0.4.2
     # via -r requirements-common.in

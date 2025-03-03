@@ -40,9 +40,9 @@ export class AuthGuard implements CanActivate, CanActivateChild {
             return false;
           });
         if (data) {
-          await authService.manageUser(data).toPromise();
+          authService.manageUser(data);
           const modules = await moduleService.loadModules().toPromise();
-          routingService.loadRoutes(modules, route._routerState.url);
+          routingService.loadRoutes(modules, route._routerState.url.replace('access=public', ''));
         } else {
           return false;
         }

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 
-
 SERVICES=("geonature" "geonature-worker" "usershub")
 
 newdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd )"
@@ -303,6 +302,11 @@ if [ ! -d "${newdir}/backend/media/taxhub" ];then
     if [ -d "${TAXHUB_DIR}"/static/medias ]; then
         cp -r "${TAXHUB_DIR}"/static/medias/* "${newdir}"/backend/media/taxhub/
     fi
+fi
+
+# after 2.15 - Suppression du dossier de module d'import
+if [ -d "${olddir}"/../gn_module_import ];then
+    rm -rf "${olddir}"/../gn_module_import
 fi
 
 

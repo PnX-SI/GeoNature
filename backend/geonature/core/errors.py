@@ -26,7 +26,10 @@ def handle_unauthenticated_request(e):
     else:
         base_url = current_app.config["URL_APPLICATION"]
         login_path = "/#/login"  # FIXME: move in config
-        query_string = urlencode({"next": request.url})
+        query_string = ""
+        if not request.url.endswith("/auth/logout"):  # TODO : remove this hack
+            query_string = urlencode({"next": request.url})
+
         return redirect(f"{base_url}{login_path}?{query_string}")
 
 

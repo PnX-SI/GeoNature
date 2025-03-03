@@ -78,7 +78,8 @@ def do_import_in_destination(self, import_id):
     transient_table = imprt.destination.get_transient_table()
 
     # Copy valid transient data to destination
-    imprt.destination.actions.import_data_to_destination(imprt)
+    for progress in imprt.destination.actions.import_data_to_destination(imprt):
+        self.update_state(state="PROGRESS", meta={"progress": progress})
 
     count_entities = 0
     entities = db.session.scalars(
@@ -92,15 +93,29 @@ def do_import_in_destination(self, import_id):
                 BibFields.name_field.in_(imprt.fieldmapping.keys()),
             )
         ).all()
-        columns_to_count_unique_entities = [
-            transient_table.c[field.dest_column] for field in fields
-        ]
-        n_valid_data = db.session.execute(
-            select(func.count(func.distinct(*columns_to_count_unique_entities)))
-            .select_from(transient_table)
-            .where(transient_table.c.id_import == imprt.id_import)
-            .where(transient_table.c[entity.validity_column] == True)
-        ).scalar()
+
+        id_field = (
+            entity.unique_column.dest_field if entity.unique_column.dest_field in fields else None
+        )
+        data_fields_query = [transient_table.c[field.dest_field] for field in fields]
+
+        query = select(*data_fields_query).where(
+            transient_table.c.id_import == imprt.id_import,
+            transient_table.c[entity.validity_column] == True,
+        )
+
+        def count_select(query_cte):
+            count_ = "*"
+            # if multiple entities and the entity has a unique column we base the count on the unique column
+
+            if entity.unique_column and len(entities) > 1 and id_field:
+                count_ = func.distinct(query_cte.c[id_field])
+            return count_
+
+        valid_data_cte = query.cte()
+        n_valid_data = db.session.scalar(
+            select(func.count(count_select(valid_data_cte))).select_from(valid_data_cte)
+        )
         count_entities += n_valid_data
     imprt.statistics["import_count"] = count_entities
 

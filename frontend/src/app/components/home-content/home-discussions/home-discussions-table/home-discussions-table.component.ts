@@ -36,15 +36,20 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
     sortBy: this.PROP_CREATION_DATE,
   };
 
+  static readonly DEFAULT_MY_REPORTS_ONLY: boolean = false;
+
   discussions = [];
   pagination: SyntheseDataPaginationItem = this.DEFAULT_PAGINATION;
   sort: SyntheseDataSortItem = this.DEFAULT_SORTING;
 
   private destroy$ = new Subject<void>();
 
-  _myReportsOnly: boolean;
+  _myReportsOnly: boolean = HomeDiscussionsTableComponent.DEFAULT_MY_REPORTS_ONLY;
   @Input()
   set myReportsOnly(value: boolean) {
+    if (this._myReportsOnly == value) {
+      return;
+    }
     this.pagination = this.DEFAULT_PAGINATION;
     this._myReportsOnly = value;
     this._fetchDiscussions();
