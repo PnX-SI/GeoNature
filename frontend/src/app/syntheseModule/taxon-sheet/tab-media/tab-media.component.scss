@@ -13,7 +13,7 @@
 
   &__view,
   &__list {
-    width: 50%;
+    width: 49%;
     max-height: 100%;
   }
 
@@ -28,6 +28,7 @@
     flex-direction: column;
     justify-content: space-between;
     min-width: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.125);
 
     .List {
       overflow: auto;
