@@ -1,5 +1,5 @@
 """
-    Entry point for the command line 'geonature'
+Entry point for the command line 'geonature'
 """
 
 import logging

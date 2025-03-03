@@ -1,5 +1,5 @@
 """
-    Routes for gn_meta
+Routes for gn_meta
 """
 
 import datetime as dt
