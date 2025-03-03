@@ -49,14 +49,14 @@ export class TabMediaComponent implements OnInit {
   loadMedias(selectedMediaIndex: number = 0) {
     this._syntheseDataService
       .getTaxonMedias(this.taxon.cd_ref, {
-        page: this.pagination.currentPage + 1,
+        page: this.pagination.currentPage,
         per_page: this.pagination.perPage,
       })
       .subscribe((response) => {
         this.medias = response.items;
         this.pagination = {
           totalItems: response.total,
-          currentPage: response.page - 1,
+          currentPage: response.page,
           perPage: response.per_page,
         };
         if (!this.medias.some((media) => media.id_media == this.selectedMedia.id_media)) {
@@ -70,7 +70,7 @@ export class TabMediaComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    this.pagination.currentPage = event.pageIndex;
+    this.pagination.currentPage = event.pageIndex + 1;
     this.pagination.perPage = event.pageSize;
     this.loadMedias();
   }
@@ -96,7 +96,7 @@ export class TabMediaComponent implements OnInit {
     if (nextIndex > this.medias.length - 1) {
       // Check if not last page
       if (
-        this.pagination.perPage * (this.pagination.currentPage + 1) <
+        this.pagination.perPage * (this.pagination.currentPage) <
         this.pagination.totalItems
       ) {
         this.pagination.currentPage++;
@@ -110,7 +110,7 @@ export class TabMediaComponent implements OnInit {
     // Backward
     if (nextIndex < 0) {
       // Check if not first
-      if (this.pagination.currentPage > 0) {
+      if (this.pagination.currentPage > 1) {
         this.pagination.currentPage--;
         this.loadMedias(this.pagination.perPage - 1);
         return;
