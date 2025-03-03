@@ -12,13 +12,29 @@ interface TaxonInformation {
   styleUrls: ['taxonomy.component.scss'],
 })
 export class TaxonomyComponent {
+  observedTaxon: ObservedTaxon | null = null;
+  isStatusEmpty: boolean = true;
+  isAttributesEmpty: boolean = true;
+  informationsFiltered: TaxonInformation[] = [];
+
   @Input()
-  taxon: ObservedTaxon | null = null;
+  set taxon(taxon: ObservedTaxon | null) {
+    this.observedTaxon = taxon;
+    if (!this.observedTaxon) {
+      this.isStatusEmpty = true;
+      this.isAttributesEmpty = true;
+      this.informationsFiltered = [];
+      return;
+    }
+    this.isStatusEmpty = Object.keys(this.observedTaxon.status).length == 0;
+    this.isAttributesEmpty = this.observedTaxon.attributs.length == 0;
+    this.informationsFiltered = this.INFORMATIONS.filter(
+      (information) => this.observedTaxon[information.field]
+    );
+  }
 
   @Input()
   hideLocalAttributesOnEmpty: boolean = false;
-
-  constructor() {}
 
   readonly INFORMATIONS: Array<TaxonInformation> = [
     {
@@ -54,8 +70,4 @@ export class TaxonomyComponent {
       field: 'nom_cite',
     },
   ];
-
-  get informationsFiltered() {
-    return this.INFORMATIONS.filter((information) => this.taxon[information.field]);
-  }
 }

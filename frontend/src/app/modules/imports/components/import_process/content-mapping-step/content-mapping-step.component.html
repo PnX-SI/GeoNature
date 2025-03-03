@@ -4,14 +4,14 @@
   data-qa="import-contentmapping-form"
 >
   <div class="card-header">
-    <h5 class="card-title mb-0">Correspondance des nomenclatures</h5>
+    <h5 class="card-title mb-0">{{ 'Import.ContentMapping.Title' | translate }}</h5>
   </div>
   <div class="card-body">
     <!-- Choix de la liste des nomenclatures -->
     <form class="was-validated">
       <fieldset>
         <div *ngIf="cruvedStore?.cruved?.IMPORT.module_objects.MAPPING.cruved.R != '0'">
-          <legend class="px-1">Choix du modèle d'import</legend>
+          <legend class="px-1">{{ 'Import.Mapping.ChooseMapping' | translate }}</legend>
           <div class="form-group">
             <select
               class="form-control form-control-sm"
@@ -31,29 +31,31 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col">
+        <div class="d-flex flex-row justify-content-center">
+          <div class="d-flex justify-content-center align-content-between row w-100">
             <button
+              id="renameMapping"
               *ngIf="cruvedStore?.cruved?.IMPORT.module_objects.MAPPING.cruved.U != '0'"
-              class="btn-sm mb-3 ml-1"
+              class="btn-sm col-4"
               mat-raised-button
               color="primary"
               (click)="showRenameMappingForm()"
               [disabled]="!deleteMappingEnabled()"
               data-qa="import-contentmapping-selection-button-rename"
             >
-              Renommer le modèle d'import
+              {{ 'Import.Mapping.RenameMapping' | translate }}
             </button>
             <button
+              id="deleteMapping"
               *ngIf="cruvedStore?.cruved?.IMPORT.module_objects.MAPPING.cruved.D != '0'"
-              class="btn-sm mb-3 ml-1"
+              class="btn-sm col-4"
               mat-raised-button
               color="warn"
               (click)="openDeleteModal()"
               [disabled]="!deleteMappingEnabled()"
               data-qa="import-contentmapping-selection-button-delete"
             >
-              Supprimer le modèle d'import
+              {{ 'Import.Mapping.DeleteMapping' | translate }}
             </button>
           </div>
           <!--<div
@@ -110,31 +112,34 @@
             *ngIf="unmappedFields.size == 0"
             class="alert alert-success mat-alert"
           >
+            {{ 'Import.ContentMapping.NomenclatureValuesAllMapped' | translate }}
             L'ensemble des valeurs du fichier a été automatiquement associé aux nomenclatures.
           </div>
           <div
             *ngIf="unmappedFields.size == 1"
             class="alert alert-success mat-alert"
           >
-            Une seule valeur du fichier a été automatiquement associée aux valeurs des
-            nomenclatures.
+            {{ 'Import.ContentMapping.OneNomenclatureValueMapped' | translate }}
             <br />
-            {{ unmappedFields.size }} restent à associer manuellement.
+            {{ 'Import.ContentMapping.RestToMapped' | translate: { number: unmappedFields.size } }}
           </div>
           <div
             *ngIf="unmappedFields.size > 1"
             class="alert alert-success mat-alert"
           >
-            {{ mappedFields.size }} champs du fichier ont été automatiquement associés aux champs du
-            modèle d'import.
+            {{
+              'Import.ContentMapping.NumberOfNomenclatureValueAutoMapped'
+                | translate: { number: mappedFields.size }
+            }}
+
             <br />
-            {{ unmappedFields.size }} restent à associer manuellement.
+            {{ 'Import.ContentMapping.RestToMapped' | translate: { number: unmappedFields.size } }}
           </div>
           <div
             *ngIf="mappedFields.size == 0"
             class="alert alert-danger"
           >
-            Aucune valeur du fichier n'a pu être associée aux valeurs des nomenclatures.
+            {{ 'Import.ContentMapping.NoNomenclatureValueCouldBeMapped' | translate }}
           </div>
         </div>
         <div
@@ -259,7 +264,7 @@
           data-qa="import-contentmapping-back-btn"
         >
           <mat-icon>navigate_before</mat-icon>
-          Précédent
+          {{ 'Previous' | translate }}
         </button>
         <button
           class="btn btn-success box-shadow d-flex justify-content-center align-content-between"
@@ -269,7 +274,7 @@
           color="primary"
           data-qa="import-contentmapping-model-validate"
         >
-          Suivant
+          {{ 'Next' | translate }}
           <mat-icon>navigate_next</mat-icon>
         </button>
       </div>
@@ -315,13 +320,11 @@
   </div>
   <div class="modal-body">
     <span *ngIf="!this.updateAvailable; else elseBlock">
-      Souhaitez sauvegarder vos correspondances dans un modèle pour les réutiliser lors d’un futur
-      import ?
+      {{ 'Import.ContentMapping.SaveMappingMessage?' | translate }}
     </span>
     <ng-template #elseBlock>
       <span>
-        Le modèle de correspondance a été modifié ; souhaitez-vous mettre à jour le modèle existant
-        ou créer un nouveau modèle ?
+        {{ 'Import.ContentMapping.CreateOrUpdateMappingModel?' | translate }}
       </span>
     </ng-template>
     <form>
@@ -330,7 +333,7 @@
           for="mappingName"
           *ngIf="this.updateAvailable"
         >
-          Nom du modèle
+          {{ 'Import.ContentMapping.MappingNameLabel' | translate }}
         </label>
         <input
           [formControl]="modalCreateMappingForm"
@@ -343,7 +346,7 @@
           *ngIf="!modalCreateMappingForm.value"
           class="text-warning"
         >
-          Un nom doit être renseigné pour pouvoir créer un modèle
+          {{ 'Import.ContentMapping.MissingMappingNameWarning' | translate }}
         </span>
         <span
           *ngIf="
@@ -352,7 +355,7 @@
           "
           class="text-warning"
         >
-          Changer de nom pour pouvoir créer un modèle
+          {{ 'Import.ContentMapping.ChangeMappingNameWarning' | translate }}
         </span>
       </div>
     </form>
@@ -365,7 +368,7 @@
       (click)="processNextStep(); modal.close()"
       data-qa="import-contentmapping-saving-modal-cancel"
     >
-      Ne pas enregistrer
+      {{ 'Import.Mapping.NoSaveMapping' | translate }}
     </button>
     <button
       *ngIf="updateAvailable"
@@ -375,7 +378,7 @@
       (click)="updateMapping(); modal.close()"
       data-qa="import-contentmapping-saving-modal-ok"
     >
-      Mettre à jour le modèle d'import
+      {{ 'Import.Mapping.UpdateMapping' | translate }}
     </button>
     <button
       type="button"
@@ -389,7 +392,7 @@
       "
       data-qa="import-contentmapping-saving-modal-new-ok"
     >
-      Enregistrer un nouveau modèle d'import
+      {{ 'Import.Mapping.SaveNewMapping' | translate }}
     </button>
   </div>
 </ng-template>
@@ -403,7 +406,7 @@
       class="modal-title"
       id="modal-basic-title"
     >
-      Contrôle du fichier en cours...
+      {{ 'Import.ContentMapping.ControlInProgress' | translate }}
     </h4>
     <button
       type="button"
@@ -415,8 +418,7 @@
     </button>
   </div>
   <div class="modal-body">
-    Les contrôles sur votre fichier de {{ nbLignes }} lignes ont bien été lancés ... Un mail de
-    notification vous sera envoyé à la fin du traitement.
+    {{ 'Import.ContentMapping.ControlNotifications' | translate: { nbLignes: nbLignes } }}
   </div>
   <div class="modal-footer">
     <button
@@ -434,7 +436,7 @@
   data-qa="import-contentmapping-selection-modal-delete"
 >
   <div class="modal-header">Confirmation</div>
-  <div class="modal-body">Voulez vous supprimer le modèle ?</div>
+  <div class="modal-body">{{ 'Import.Mapping.DeleteMapping?' | translate }}</div>
   <div class="modal-footer">
     <button
       type="button"
@@ -443,7 +445,7 @@
       (click)="modalDelete.close()"
       data-qa="import-contentmapping-selection-modal-delete-cancel"
     >
-      Annuler
+      {{ 'Cancel' | translate }}
     </button>
     <button
       type="button"
@@ -452,7 +454,7 @@
       (click)="modalDelete.close(); deleteMapping()"
       data-qa="import-contentmapping-selection-modal-delete-ok"
     >
-      Supprimer le modèle
+      {{ 'Import.Mapping.DeleteMapping' | translate }}
     </button>
   </div>
 </ng-template>

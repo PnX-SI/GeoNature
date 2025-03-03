@@ -396,7 +396,7 @@ Il est donc nécessaire de restreindre les champs à inclure dans la sérialisat
 
         parent_schema = ParentModelSchema(exclude=['childs.parent'])
 
-    
+
     Cependant, l’utilisation de ``exclude`` est hautement problématique !
     En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
 
@@ -530,8 +530,8 @@ vous pouvez devoir créer votre propre convertisseur de modèle héritant à la 
             model_converter = NomenclaturesGeoModelConverter
 
 
-Modèles à permission
-""""""""""""""""""""
+Modèles de permission
+"""""""""""""""""""""
 
 Le mixin ``CruvedSchemaMixin`` permet d’ajouter un champs ``cruved`` à la sérialisation qui contiendra un dictionnaire avec en clé les actions du cruved et en valeur des booléens indiquant si l’action est disponible.
 
@@ -541,7 +541,7 @@ Pour l’utiliser, il faut :
   Ces propriétés sont passées en argument à la fonction ``get_scopes_by_action``.
 - Le **modèle** doit définir une fonction ``has_instance_permission(scope)`` prenant en argument une portée (0, 1, 2 ou 3) et renvoyant un booléen.
 
-Par défaut, pour des raisons de performance, le cruved est exclu de la sérialisation.
+Par défaut, le CRUVED est exclu de la sérialisation pour des raisons de performance.
 Il faut donc demander sa sérialisation lors de la création du schéma avec ``only=["+cruved"]``.
 Le préfixe ``+`` permet de spécifier que l’on souhaite rajouter le cruved aux champs à sérialiser (et non que l’on souhaite sérialiser uniquement le cruved).
 
@@ -744,14 +744,14 @@ Modèles géographiques
 La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo>`_ fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.
 
 - ``utils_flask_sqla_geo.serializers.geoserializable``
+    Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
+    retourne un dictionnaire serialisable sous forme de Feature geojson.
 
 
-  Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
-  retourne un dictionnaire serialisable sous forme de Feature geojson.
+    Fichier définition modèle 
 
-
-  Fichier définition modèle 
     .. code:: python
+
         from geonature.utils.env import DB
         from utils_flask_sqla_geo.serializers import geoserializable
 
@@ -762,20 +762,23 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/U
             ...
 
 
-  Fichier utilisation modèle ::
+    Fichier utilisation modèle 
 
-    instance = DB.session.query(MyModel).get(1)
-    result = instance.as_geofeature()
+    .. code:: python
+
+        instance = DB.session.query(MyModel).get(1)
+        result = instance.as_geofeature()
 
 - ``utils_flask_sqla_geo.serializers.shapeserializable``
+    Décorateur pour les modèles SQLA :
 
-  Décorateur pour les modèles SQLA :
+    - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
+    - Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre
 
-  - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
-  - Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre
+    Fichier définition modèle
 
-  Fichier définition modèle
     .. code:: python
+
         from geonature.utils.env import DB
         from utils_flask_sqla_geo.serializers import shapeserializable
 
@@ -786,37 +789,38 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/U
             ...
 
 
-  Fichier utilisation modèle :
+    Fichier utilisation modèle
 
-  .. code:: python
-  
-      # utilisation de as_shape()
-      data = DB.session.query(MyShapeserializableClass).all()
-      MyShapeserializableClass.as_shape(
-          geom_col='geom_4326',
-          srid=4326,
-          data=data,
-          dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
-          file_name=file_name,
-      )
+    .. code:: python
+
+        # utilisation de as_shape()
+        data = DB.session.query(MyShapeserializableClass).all()
+        MyShapeserializableClass.as_shape(
+            geom_col='geom_4326',
+            srid=4326,
+            data=data,
+            dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
+            file_name=file_name,
+        )
 
 
 
 - ``utils_flask_sqla_geo.utilsgeometry.FionaShapeService``
+    Classe utilitaire pour créer des shapefiles.
 
-  Classe utilitaire pour créer des shapefiles.
+    La classe contient 3 méthodes de classe :
 
-  La classe contient 3 méthodes de classe :
+    - ``FionaShapeService.create_shapes_struct()`` : crée la structure de 3 shapefiles
+    (point, ligne, polygone) à partir des colonens et de la geométrie passée
+    en paramètre
 
-- FionaShapeService.create_shapes_struct() : crée la structure de 3 shapefiles
-  (point, ligne, polygone) à partir des colonens et de la geométrie passée
-  en paramètre
+    - ``FionaShapeService.create_feature()`` : ajoute un enregistrement
+    aux shapefiles
 
-- FionaShapeService.create_feature() : ajoute un enregistrement
-  aux shapefiles
+    - ``FionaShapeService.save_and_zip_shapefiles()`` : sauvegarde et zip les
+    shapefiles qui ont au moins un enregistrement
 
-- FionaShapeService.save_and_zip_shapefiles() : sauvegarde et zip les
-  shapefiles qui ont au moins un enregistrement::
+    .. code:: python
 
         data = DB.session.query(MySQLAModel).all()
 
@@ -838,84 +842,79 @@ Réponses
 Voici quelques conseils sur l’envoi de réponse dans vos routes.
 
 - Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.
+    .. code-block:: python
 
-.. code-block:: python
+        def get_foo(pk):
+            foo = Foo.query.get_or_404(pk)
+            return jsonify(foo.as_dict(fields=...))
 
-    def get_foo(pk):
-        foo = Foo.query.get_or_404(pk)
-        return jsonify(foo.as_dict(fields=...))
+        def get_foo(pk):
+            foo = Foo.query.get_or_404(pk)
+            return FooSchema(only=...).jsonify(foo)
 
-    def get_foo(pk):
-        foo = Foo.query.get_or_404(pk)
-        return FooSchema(only=...).jsonify(foo)
+        def list_foo():
+            q = Foo.query.filter(...)
+            return jsonify([foo.as_dict(fields=...) for foo in q.all()])
 
-    def list_foo():
-        q = Foo.query.filter(...)
-        return jsonify([foo.as_dict(fields=...) for foo in q.all()])
-
-    def list_foo():
-        q = Foo.query.filter(...)
-        return FooSchema(only=...).jsonify(q.all(), many=True)
+        def list_foo():
+            q = Foo.query.filter(...)
+            return FooSchema(only=...).jsonify(q.all(), many=True)
 
 - Pour les listes vides, ne pas renvoyer le code d’erreur 404 mais une liste vide !
+    .. code-block:: python
 
-.. code-block:: python
-
-    return jsonify([])
+        return jsonify([])
 
 - Renvoyer une liste et sa longueur dans une structure de données non conventionnelle est strictement inutile, il est très simple d’accéder à la longueur de la liste en javascript via l’attribut ``length``.
 
 - Traitement des erreurs : utiliser `les exceptions prévues à cet effet <https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/>`_ :
+    .. code-block:: python
 
-.. code-block:: python
+        from werkzeug.exceptions import Fobridden, Badrequest, NotFound
 
-    from werkzeug.exceptions import Fobridden, Badrequest, NotFound
-
-    def restricted_action(pk):
-        if not is_allowed():
-            raise Forbidden
+        def restricted_action(pk):
+            if not is_allowed():
+                raise Forbidden
 
     
 - Penser à utiliser ``get_or_404`` plutôt que de lancer une exception ``NotFound``
 - Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservée aux utilisateurs non authentifiés.
 - Vérifier la validité des données fournies par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
-
-    - Marshmallow peut servir à cela ::
-
-        from marshmallow import Schema, fields, ValidationError
-        def my_route():
-            class RequestSchema(Schema):
-                value = fields.Float()
-            try:
-                data = RequestSchema().load(request.json)
-            except ValidationError as error:
-                raise BadRequest(error.messages)
+    - Marshmallow peut servir à cela
+        .. code:: python
+        
+            from marshmallow import Schema, fields, ValidationError
+            def my_route():
+                class RequestSchema(Schema):
+                    value = fields.Float()
+                try:
+                    data = RequestSchema().load(request.json)
+                except ValidationError as error:
+                    raise BadRequest(error.messages)
 
     - Cela peut être fait avec *jsonschema* :
+        .. code:: python
+        
+            from from jsonschema import validate as validate_json, ValidationError
 
-    ::
-
-        from from jsonschema import validate as validate_json, ValidationError
-
-        def my_route():
-            request_schema = {
-                "type": "object",
-                "properties": {
-                    "value": { "type": "number", },
-                },
-                "minProperties": 1,
-                "additionalProperties": False,
-            }
-            try:
-                validate_json(request.json, request_schema)
-            except ValidationError as err:
-                raise BadRequest(err.message)
+            def my_route():
+                request_schema = {
+                    "type": "object",
+                    "properties": {
+                        "value": { "type": "number", },
+                    },
+                    "minProperties": 1,
+                    "additionalProperties": False,
+                }
+                try:
+                    validate_json(request.json, request_schema)
+                except ValidationError as err:
+                    raise BadRequest(err.message)
     
 - Pour les réponses vides (exemple : route de type delete), on pourra utiliser le code de retour 204 :
+    .. code-block:: python
 
-  ::
-
-    return '', 204
+        return '', 204
 
   Lorsque par exemple une action est traitée mais aucun résultat n'est à renvoyer, inutile d’envoyer une réponse « OK ». C’est l’envoi d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenu d’une réponse non normalisée.
 
@@ -989,7 +988,7 @@ Pour cela, plusieurs solutions :
 
 - Le spécifier dans la relationship :
 
-  ::
+  .. code:: python
 
     class AcquisitionFramework(db.Model)
         datasets = db.relationships(Dataset, uselist=True, lazy='joined')
@@ -997,12 +996,11 @@ Pour cela, plusieurs solutions :
   Cependant, cette stratégie s’appliquera (sauf contre-ordre) dans tous les cas, même lorsque les DS ne sont pas nécessaires, alourdissant potentiellement certaines requêtes qui n’en ont pas usage.
 
 - Le spécifier au moment où la requête est effectuée :
+    .. code:: python
 
-  ::
+        from sqlalchemy.orm import joinedload
 
-    from sqlalchemy.orm import joinedload
-
-    af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
+        af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
 
 Il est également possible de joindre les relations d’une relation, par exemple le créateur des jeux de données :
 

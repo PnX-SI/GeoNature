@@ -1,0 +1,13 @@
+.mappingButton {
+  margin-bottom: 1em;
+  margin-left: 1em;
+  width: 40%;
+}
+
+#renameMapping {
+  @extend .mappingButton;
+}
+#deleteMapping {
+  @extend .mappingButton;
+  margin-left: 3em;
+}

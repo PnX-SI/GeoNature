@@ -58,6 +58,8 @@ bcrypt==4.2.1
     # via pypnusershub
 billiard==4.2.1
     # via celery
+black==24.10.0
+    # via -r requirements-dev.in
 blinker==1.9.0
     # via
     #   flask
@@ -84,6 +86,7 @@ charset-normalizer==3.4.1
 click==8.1.8
     # via
     #   -r requirements-common.in
+    #   black
     #   celery
     #   click-didyoumean
     #   click-plugins
@@ -252,6 +255,8 @@ marshmallow-sqlalchemy==1.1.1
     #   taxhub
     #   usershub
     #   utils-flask-sqlalchemy-geo
+mypy-extensions==1.0.0
+    # via black
 numpy==2.0.2
     # via
     #   bokeh
@@ -261,6 +266,7 @@ numpy==2.0.2
 packaging==24.2
     # via
     #   -r requirements-common.in
+    #   black
     #   bokeh
     #   geoalchemy2
     #   gunicorn
@@ -269,12 +275,16 @@ pandas==2.2.3
     # via
     #   -r requirements-common.in
     #   bokeh
+pathspec==0.12.1
+    # via black
 pillow==9.5.0
     # via
     #   -r requirements-common.in
     #   bokeh
     #   taxhub
     #   weasyprint
+platformdirs==4.3.6
+    # via black
 prompt-toolkit==3.0.48
     # via click-repl
 psycopg2==2.9.10
@@ -359,11 +369,14 @@ toml==0.10.2
     # via
     #   -r requirements-common.in
     #   taxhub
+tomli==2.2.1
+    # via black
 tornado==6.4.2
     # via bokeh
 typing-extensions==4.12.2
     # via
     #   alembic
+    #   black
     #   kombu
 tzdata==2024.2
     # via
@@ -401,6 +414,7 @@ wtforms==3.1.2
     #   -r requirements-common.in
     #   flask-admin
     #   flask-wtf
+    #   taxhub
     #   usershub
     #   wtforms-components
     #   wtforms-sqlalchemy

@@ -1,5 +1,50 @@
 # CHANGELOG
 
+## 2.15.4 (2025-02-25)
+
+**🚀 Nouveautés**
+
+- [Import] Accélération du temps de suppression d'un import avec l'ajout d'un index sur les colonnes `id_import` des tables `pr_occhab.t_stations`, `pr_occhab.t_habitats` et `gn_synthese.synthese` (#3390 par @jacquesfize et @dba-sig-sfepm).
+- [Synthese] La mise à jour de la date de validation dans la synthèse est effective (#3371, #1040 par @jacquesfize)
+- [Import] Le paramètre `CHECK_PRIVATE_JDD_BLURING` est maintenant désactivé par défaut (#3391 par @camillemonchicourt)
+
+**🐛 Corrections**
+
+- [Synthese] Correction de la prise en compte de `size_hierarchy` dans le mode maille de la Synthèse lorsque le floutage est activé (#3380 par @Pierre-Narcisi)
+- [Benchmark] Correction des _fixtures_ de benchmark des routes de la Synthèse avec floutage (#3381 par @jacquesfize)
+- [Synthese] Correction de l'affichage des statuts dans la fiche d'observation et dans la fiche de taxon (#3384 par @jacquesfize et #3394 par @edelclaux)
+- [Import] Correction du nom de fichier dans le template du rapport d'import (`images/logo_structure.jpg` -> `images/logo_structure.png`) (#3389 par @jacquesfize)
+
+## 2.15.3 (2025-02-14)
+
+**🚀 Nouveautés**
+
+- [Synthese] Affichage des `cd_nom`, `cd_ref` et du `nom_cite` dans les fiches d'observation et les fiches taxon (#3334 par @edelclaux).
+- [Documentation] La compilation de documentation est effectuée à chaque merge dans la branche principale (`master`) (#3338 par @jacquesfize)
+- [Import] Ajout d'une barre de progression dans l'import Occhab (#2928 par @Pierre-Narcisi)
+- [TaxHub] Mise à jour de TaxHub en version 2.1.2
+- [Authentification] Mise à jour UsersHub-autentification-module en version 3.0.2
+
+**🐛 Corrections**
+
+- [TaxHub] Correction de la synchonisation avec Occtax-mobile (https://github.com/PnX-SI/TaxHub/pull/599 par @amandine-sahl)
+- [TaxHub] Ajout d'un bouton TaxHub dans le menu latéral (#3368 par @jacquesfize)
+- [Import] Correction du nombre d'entités valides des données importées (#3336, #3355 par @jacquesfize)
+- [Import] Suppression des paramètres de configuration inutiles dans la nouvelle version (#3341 par @jacquesfize)
+- [Import] Correction la barre de progression pour l’import dans la synthèse (#2928 par @Pierre-Narcisi)
+- [Authentification] Correction des valeurs dans `defaut_config.toml.sample` (#3339 par @jacquesfize)
+- [Authentification] Correction du lien de l'accès public (#3353 par @VincentCauchois)
+- [Synthèse] Correction de l'ordre d'affichage des observations sensibles (#3354 par @VincentCauchois et @Christophe-Ramet; #3249).
+- [Synthèse] Correction de la recherche dans la Synthese avec un ou plusieurs filtres parmi "Listes rouges" (#3351 par @VincentCauchois et @Christophe-Ramet).
+- [Synthèse] Correction de la recherche avec filtre par géométrie avec des SRID différents (#3324 par @jbrieuclp et @jacquesfize)
+- [Métadonnées] Correction du rafraichissement du formulaire de recherche (#3365 par @jacquesfize)
+- [Documentation] Réintégration de la documentation sur l'authentification avec un fournisseur d'identité externe (#3338 par @jacquesfize)
+- [Développement] Correction des modèles SQLAlchemy pour pouvoir utiliser le mode debug (#3346 par @jacquesfize)
+
+**⚠️ Notes de version**
+
+Si vous les aviez défini, enlevez les paramètres `INSTANCE_BOUNDING_BOX`, `ENABLE_BOUNDING_BOX_CHECK`, `ALLOW_FIELD_MAPPING`, `DEFAULT_FIELD_MAPPING_ID`, `DISPLAY_CHECK_BOX_MAPPED_FIELD` de votre fichier de configuration `geonature_config.toml`. Ces derniers ne sont plus pris en compte depuis la version 2.15.x.
+
 ## 2.15.2 (2025-01-16)
 
 **🚀 Nouveautés**
