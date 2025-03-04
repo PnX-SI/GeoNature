@@ -2014,7 +2014,9 @@ class TestMediaTaxon:
 
         cd_ref = db.session.scalar(select(Taxref.cd_ref))
 
-        response = self.client.get(url_for("gn_synthese.taxon_medias", cd_ref=cd_ref))
+        response = self.client.get(
+            url_for("gn_synthese.synthese_taxon_info.taxon_medias", cd_ref=cd_ref)
+        )
 
         assert response.status_code == 200
         assert isinstance(response.json["items"], list)
