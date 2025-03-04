@@ -4,6 +4,8 @@ from flask import Blueprint, g, jsonify, request
 
 from geonature import app
 from geonature.utils.env import db
+
+from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
@@ -186,6 +188,30 @@ def get_taxon_tree():
 ## ############################################################################
 ## TAXON SHEET ROUTES
 ## ############################################################################
+
+
+@taxon_info_routes.route("/taxon_medias/<int:cd_ref>", methods=["GET"])
+@login_required
+@permissions.check_cruved_scope("R", module_code="SYNTHESE")
+@json_resp
+def taxon_medias(cd_ref):
+    per_page = request.args.get("per_page", 10, int)
+    page = request.args.get("page", 1, int)
+
+    query = select(TMedias).join(Synthese.medias).order_by(TMedias.meta_create_date.desc())
+
+    # Use taxon_sheet_utils
+    taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+    query = query.where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+
+    pagination = db.paginate(query, page=page, per_page=per_page)
+    return {
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "items": [media.as_dict() for media in pagination.items],
+    }
+
 
 if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 

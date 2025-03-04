@@ -63,6 +63,13 @@ export class SyntheseDataService {
     });
   }
 
+  getTaxonMedias(cdRef: number, params?: {}): Observable<any> {
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon_medias/${cdRef}`, {
+      params,
+    });
+  }
+
+
   getSyntheseTaxonSheetObservers(
     cd_ref: number,
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,

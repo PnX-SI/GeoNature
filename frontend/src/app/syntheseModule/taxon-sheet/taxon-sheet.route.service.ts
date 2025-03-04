@@ -7,10 +7,10 @@ import {
   CanActivate,
 } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
-import { Observable } from 'rxjs';
 import { TabGeographicOverviewComponent } from './tab-geographic-overview/tab-geographic-overview.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
 import { TabTaxonomyComponent } from './tab-taxonomy/tab-taxonomy.component';
+import { TabMediaComponent } from './tab-media/tab-media.component';
 import { TabObserversComponent } from './tab-observers/tab-observers.component';
 
 interface Tab {
@@ -32,6 +32,12 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
     path: 'taxonomy',
     configEnabledField: 'ENABLE_TAB_TAXONOMY',
     component: TabTaxonomyComponent,
+  },
+  {
+    label: 'Médias',
+    path: 'media',
+    configEnabledField: 'ENABLE_TAB_MEDIA',
+    component: TabMediaComponent,
   },
   {
     label: 'Profil',

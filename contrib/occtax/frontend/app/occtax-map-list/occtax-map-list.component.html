@@ -134,8 +134,14 @@
                 <div *ngFor="let taxon of displayTaxonsTooltip(row)">
                   {{ taxon.taxName }}
                   <br />
-                  <span [innerHTML]="taxon.icons | safeHTML"></span>
-                  <!-- <pnx-display-medias [medias]="taxon.medias" diaporama="true" display='mini'></pnx-display-medias> -->
+                  <div class="OcctaxMapList__medias">
+                    <pnx-media-item
+                      *ngFor="let media of taxon.medias"
+                      [inputMedia]="media"
+                      [diaporamaMedia]="taxon.medias"
+                      display="icon"
+                    ></pnx-media-item>
+                  </div>
                 </div>
               </div>
             </ng-template>

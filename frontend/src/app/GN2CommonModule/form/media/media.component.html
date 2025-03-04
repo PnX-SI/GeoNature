@@ -8,13 +8,11 @@
     <mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
   </a>
   <div>
-    <pnx-display-medias
+    <pnx-media-item
       *ngIf="media.sent"
-      [medias]="[media]"
-      index="0"
+      [inputMedia]="media"
       display="medium"
-      diaporama="true"
-    ></pnx-display-medias>
+    ></pnx-media-item>
   </div>
 
   <p
