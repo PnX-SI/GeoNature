@@ -44,7 +44,6 @@ import { BadgeComponent } from '@geonature_common/others/badge/badge.component';
 import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DateComponent } from './form/date/date.component';
-import { DisplayMediasComponent } from '@geonature_common/form/media/display-medias.component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
@@ -62,7 +61,9 @@ import { MapListGenericFiltersComponent } from './map-list/generic-filters/gener
 import { MapOverLaysComponent } from './map/overlays/overlays.component';
 import { MarkerComponent } from './map/marker/marker.component';
 import { MediaComponent } from '@geonature_common/form/media/media.component';
-import { MediaDialog } from '@geonature_common/form/media/media-dialog.component';
+import { MediaCard } from '@geonature_common/form/media/media-card.component';
+import { MediaDiaporamaDialog } from '@geonature_common/form/media/media-diaporama-dialog.component';
+import { MediaItem } from '@geonature_common/form/media/media-item.component';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
 import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
@@ -157,7 +158,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DatasetsComponent,
     DateComponent,
     DisableControlDirective,
-    DisplayMediasComponent,
     DisplayMouseOverDirective,
     DumbSelectComponent,
     DynamicFormComponent,
@@ -175,7 +175,9 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MapOverLaysComponent,
     MarkerComponent,
     MediaComponent,
-    MediaDialog,
+    MediaCard,
+    MediaDiaporamaDialog,
+    MediaItem,
     MediasComponent,
     MediasTestComponent,
     ModalDownloadComponent,
@@ -232,7 +234,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DatasetsComponent,
     DateComponent,
     DisableControlDirective,
-    DisplayMediasComponent,
     DisplayMouseOverDirective,
     DumbSelectComponent,
     FormsModule,
@@ -272,7 +273,9 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MediaDialog,
+    MediaCard,
+    MediaDiaporamaDialog,
+    MediaItem,
     MediasComponent,
     ModalDownloadComponent,
     MultiSelectComponent,
@@ -291,8 +294,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     GeometryFormComponent,
     ConfirmationDialog,
     MediasComponent,
-    MediaDialog,
-    DisplayMediasComponent,
     DatalistComponent,
     PlacesComponent,
     PlacesListComponent,

@@ -62,7 +62,7 @@ def build_blurred_precise_geom_queries(
         columns.append(sa.literal(0).label("size_hierarchy"))
     precise_geom_query = SyntheseQuery(
         Synthese,
-        sa.select(*columns).where(sa.and_(*where_clauses)).order_by(Synthese.id_synthese.desc()),
+        sa.select(*columns).where(sa.and_(*where_clauses)).order_by(Synthese.date_min.desc()),
         filters=dict(filters),  # not to edit the actual filter object
     )
 
@@ -76,8 +76,8 @@ def build_blurred_precise_geom_queries(
     CorAreaSyntheseAlias = aliased(CorAreaSynthese)
     LAreasAlias = aliased(LAreas)
     BibAreasTypesAlias = aliased(BibAreasTypes)
-    # TODO@LAreas.geom_4326
-    geom = LAreasAlias.geom.st_transform(4326).label("geom")
+
+    geom = LAreasAlias.geom_4326.label("geom")
     # In SyntheseQuery below :
     # - query_joins parameter is needed to bypass
     #   "self.query_joins is not None" condition in the build_query() method below
@@ -91,7 +91,7 @@ def build_blurred_precise_geom_queries(
     ]
     # size hierarchy is the size of the joined blurring area
     if select_size_hierarchy:
-        columns.append(BibAreasTypes.size_hierarchy.label("size_hierarchy"))
+        columns.append(BibAreasTypesAlias.size_hierarchy.label("size_hierarchy"))
     blurred_geom_query = SyntheseQuery(
         Synthese,
         sa.select(*columns)
@@ -100,7 +100,7 @@ def build_blurred_precise_geom_queries(
             == Synthese.id_nomenclature_sensitivity
         )
         .where(sa.and_(*where_clauses))
-        .order_by(Synthese.id_synthese.desc()),
+        .order_by(Synthese.date_min.desc()),
         filters=dict(filters),
         query_joins=sa.join(
             Synthese,
@@ -182,8 +182,12 @@ def build_synthese_obs_query(observations, allowed_geom_cte, limit):
                 allowed_geom_cte, allowed_geom_cte.c.id_synthese == VSyntheseForWebApp.id_synthese
             )
         )
-        .order_by(VSyntheseForWebApp.id_synthese, allowed_geom_cte.c.priority)
-        .distinct(VSyntheseForWebApp.id_synthese)
+        .order_by(
+            VSyntheseForWebApp.date_min.desc(),
+            VSyntheseForWebApp.id_synthese.desc(),
+            allowed_geom_cte.c.priority,
+        )
+        .distinct(VSyntheseForWebApp.date_min, VSyntheseForWebApp.id_synthese)
         .limit(limit)
     )
     return obs_query

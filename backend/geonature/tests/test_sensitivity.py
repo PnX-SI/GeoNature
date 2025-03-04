@@ -19,6 +19,35 @@ from geonature.tests.fixtures import source
 from ref_geo.models import LAreas, BibAreasTypes
 from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
+from geonature.core.sensitivity.utils import remove_sensitivity_referential
+from click.testing import CliRunner
+
+
+@pytest.fixture
+def sensitivity_rule_source_name():
+    return "sensitivity_rules_test"
+
+
+@pytest.fixture(scope="function")
+def sensitivity_rules(sensitivity_rule_source_name):
+    with db.session.begin_nested():
+        cd_nom = db.session.scalar(sa.select(Taxref.cd_nom).limit(1))
+        sensitivity_nomenc_type = db.session.execute(
+            sa.select(BibNomenclaturesTypes).filter_by(mnemonique="SENSIBILITE")
+        ).scalar_one()
+        diffusion_maille = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=sensitivity_nomenc_type.id_type, mnemonique="2"
+            )
+        ).scalar_one()
+        for _ in range(100):
+            rule = SensitivityRule(
+                cd_nom=cd_nom,
+                sensitivity_duration=5,
+                source=sensitivity_rule_source_name,
+                id_nomenclature_sensitivity=diffusion_maille.id_nomenclature,
+            )
+            db.session.add(rule)
 
 
 @pytest.fixture(scope="function")
@@ -28,8 +57,14 @@ def clean_all_sensitivity_rules():
     db.session.execute(sa.delete(SensitivityRule))
 
 
+@pytest.fixture
+def client_click():
+    return CliRunner()
+
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "clean_all_sensitivity_rules")
 class TestSensitivity:
+
     def test_get_id_nomenclature_sensitivity(self, app):
         taxon = db.session.scalars(sa.select(Taxref)).first()
         geom = WKTElement("POINT(6.15 44.85)", srid=4326)
@@ -363,3 +398,7 @@ class TestSensitivity:
             s.date_max = date_obs
         db.session.refresh(s)
         assert s.id_nomenclature_sensitivity == nomenc_not_sensitive.id_nomenclature
+
+    def test_remove_sensitivy_rule(self, sensitivity_rules, sensitivity_rule_source_name):
+        res = remove_sensitivity_referential(sensitivity_rule_source_name)
+        assert res == 100

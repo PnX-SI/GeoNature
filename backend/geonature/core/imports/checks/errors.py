@@ -61,11 +61,11 @@ class ImportCodeError:
     MISSING_GEOM : str
         The geometry is missing
     GEOMETRY_OUTSIDE : str
-        The geometry is outside the polygon in the GeoNature configuration (`INSTANCE_BOUNDING_BOX`)
+        The geometry is outside the polygon defined by ID_AREA_RESTRICTION in the configuration
     NO_GEOM : str
         No geometry given (wherever WKT or latitude/longitude)
     GEOMETRY_OUT_OF_BOX : str
-        The geometry is outside the perimeter of the instance geography # FIXME: clarify (confusion with GEOMETRY_OUTSIDE)
+        The geometry is outside of a bounding box
     ERRONEOUS_PARENT_ENTITY : str
         The parent entity is not valid
     NO_PARENT_ENTITY : str

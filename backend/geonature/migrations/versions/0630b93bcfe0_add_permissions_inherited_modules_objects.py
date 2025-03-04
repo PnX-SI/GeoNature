@@ -1,7 +1,7 @@
 """add permissions inherited modules objects
 
-Add rows in `gn_permissions.cor_role_action_filter_module_object` to keep the permissions that were previously 
-inherited from the module "GEONATURE" and the object "ALL". 
+Add rows in `gn_permissions.cor_role_action_filter_module_object` to keep the permissions that were previously
+inherited from the module "GEONATURE" and the object "ALL".
 Necessary with the removal of modules and objects inheritance in the function used to get permissions.
 
 Revision ID: 0630b93bcfe0

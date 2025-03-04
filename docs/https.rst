@@ -42,25 +42,25 @@ Cette méthode fonctionne avec un serveur sans nom de domaine.
 
 Création d'un nouveau certificat de 365 jours (30 jours par défaut), de type X509 avec l'emplacement des fichiers de certificat et de clé privé.
 
-::
+.. code:: shell
 
     sudo openssl req -new -x509 -days 365 -nodes -out /etc/ssl/certs/mailserver.crt -keyout /etc/ssl/private/mailserver.key
 
 Sécurisation de la clé
 
-::
+.. code:: shell
 
     sudo chmod 440 /etc/ssl/private/mailserver.key
 
 Chargement du module ssl dans Apache
 
-::
+.. code:: shell
 
     sudo a2enmod ssl
 
 Modification de la configuration du VirtualHost en éditant le fichier ``/etc/apache2/sites-available/geonature.conf``
 
-::
+.. code:: apache
 
     <VirtualHost *:443>
         ServerName x.x.x.x
@@ -87,7 +87,7 @@ Il est nécessaire de mettre à jour le fichier de configuration ``geonature_con
 
 Modifier les éléments suivants : 
 
-:: 
+.. code:: toml
 	
   URL_APPLICATION = 'https://mondomaine.fr/geonature'
   API_ENDPOINT = 'https://mondomaine.fr/geonature/api'

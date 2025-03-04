@@ -17,6 +17,7 @@ import {
 } from '@geonature/modules/imports/models/mapping.model';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormControl } from '@angular/forms';
+import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Component({
   selector: 'pnx-fields-mapping-step',
@@ -41,7 +42,8 @@ export class FieldsMappingStepComponent implements OnInit {
     private _cruvedStore: CruvedStoreService,
     private _importDataService: ImportDataService,
     private _modalService: NgbModal,
-    private _configService: ConfigService
+    private _configService: ConfigService,
+    private _authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -94,21 +96,42 @@ export class FieldsMappingStepComponent implements OnInit {
     if (!this._fieldMappingService.mappingFormGroup?.valid) {
       return;
     }
+
+    // Mapping stored data
     let mappingValue = this._fieldMappingService.currentFieldMapping.value;
-    if (
-      this._fieldMappingService.mappingFormGroup.dirty &&
-      (this.cruved.C || (mappingValue && mappingValue.cruved.U && !mappingValue.public)) //
-    ) {
-      if (mappingValue && !mappingValue.public) {
-        this.updateAvailable = true;
-        this.modalCreateMappingForm.setValue(mappingValue.label);
+    // is mapping update right for the current user is at admin level
+    const hasAdminUpdateMappingRight =
+      this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 2;
+    const hasOwnMappingUpdateRight =
+      this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 0;
+    //
+    const currentUser = this._authService.getCurrentUser();
+
+    if (this._fieldMappingService.mappingFormGroup.dirty && this.cruved.C) {
+      if (mappingValue) {
+        const intersectMappingOwnerUser = mappingValue['owners'].filter((x) =>
+          x.identifiant == currentUser.user_login ? mappingValue['owners'] : false
+        );
+
+        if (
+          mappingValue.public &&
+          (hasAdminUpdateMappingRight ||
+            (hasOwnMappingUpdateRight && intersectMappingOwnerUser.length > 0))
+        ) {
+          this.updateAvailable = true;
+          this.modalCreateMappingForm.setValue(mappingValue.label);
+        } else if (!mappingValue.public) {
+          this.updateAvailable = true;
+          this.modalCreateMappingForm.setValue(mappingValue.label);
+        } else {
+          this.updateAvailable = false;
+        }
       } else {
+        console.log(4);
         this.updateAvailable = false;
-        this.modalCreateMappingForm.setValue('');
       }
       this._modalService.open(this.saveMappingModal, { size: 'lg' });
     } else {
-      // this.spinner = true;
       this.processNextStep();
     }
   }

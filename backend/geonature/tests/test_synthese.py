@@ -184,13 +184,15 @@ class TestSynthese:
         app.config["SYNTHESE"]["ADDITIONAL_COLUMNS_FRONTEND"] += [
             {"prop": "lb_nom", "name": "Nom scientifique"}
         ]
-        url_ungrouped = url_for("gn_synthese.get_observations_for_web")
+        url_ungrouped = url_for("gn_synthese.synthese.get_observations_for_web")
         set_logged_user(self.client, users["admin_user"])
         resp = self.client.get(url_ungrouped)
         for f in resp.json["features"]:
             UngroupedGeoJSONSchema().load(f)
 
-        url_grouped = url_for("gn_synthese.get_observations_for_web", format="grouped_geom")
+        url_grouped = url_for(
+            "gn_synthese.synthese.get_observations_for_web", format="grouped_geom"
+        )
         resp = self.client.get(url_grouped)
         for f in resp.json["features"]:
             GroupedGeoJSONSchema().load(f)
@@ -208,18 +210,20 @@ class TestSynthese:
 
     def test_list_sources(self, source, users):
         set_logged_user(self.client, users["self_user"])
-        response = self.client.get(url_for("gn_synthese.get_sources"))
+        response = self.client.get(url_for("gn_synthese.synthese_other_routes.get_sources"))
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) > 0
 
     def test_get_defaut_nomenclatures(self, users):
         set_logged_user(self.client, users["self_user"])
-        response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
+        response = self.client.get(
+            url_for("gn_synthese.synthese_other_routes.getDefaultsNomenclatures")
+        )
         assert response.status_code == 200
 
     def test_get_observations_for_web(self, app, users, synthese_data, taxon_attribut):
-        url = url_for("gn_synthese.get_observations_for_web")
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
         r = self.client.get(url)
         assert r.status_code == Unauthorized.code
 
@@ -361,7 +365,7 @@ class TestSynthese:
         set_logged_user(self.client, users["self_user"])
 
         # Post a comment
-        url = "gn_synthese.create_report"
+        url = "gn_synthese.reports.create_report"
         synthese = synthese_data["obs1"]
         id_synthese = synthese.id_synthese
         data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
@@ -369,7 +373,7 @@ class TestSynthese:
         assert resp.status_code == 204
 
         # Filter synthese to at least have this comment
-        url = url_for("gn_synthese.get_observations_for_web")
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
         filters = {"has_comment": True}
         r = self.client.get(url, json=filters)
 
@@ -381,7 +385,7 @@ class TestSynthese:
         set_logged_user(self.client, users["self_user"])
         id_source = source.id_source
 
-        url = url_for("gn_synthese.get_observations_for_web")
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
         filters = {"id_source": [id_source]}
         r = self.client.get(url, json=filters)
 
@@ -414,7 +418,7 @@ class TestSynthese:
                 if module.module_code == module_to_filt:
                     id_modules_selected.append(module.id_module)
 
-        url = url_for("gn_synthese.get_observations_for_web")
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
         filters = {"id_module": id_modules_selected}
         r = self.client.get(url, json=filters)
 
@@ -437,7 +441,7 @@ class TestSynthese:
         set_logged_user(self.client, users["admin_user"])
 
         filters = {"observers": observer_input}
-        r = self.client.get(url_for("gn_synthese.get_observations_for_web"), json=filters)
+        r = self.client.get(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
         if expect_observations:
             for feature in r.json["features"]:
                 assert any(
@@ -454,7 +458,7 @@ class TestSynthese:
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"), query_string={"limit": 100}
+            url_for("gn_synthese.synthese.get_observations_for_web"), query_string={"limit": 100}
         )
         data = response.get_json()
         features = data["features"]
@@ -470,7 +474,7 @@ class TestSynthese:
         # Test geometry aggregation
         set_logged_user(self.client, users["admin_user"])
         response = self.client.post(
-            url_for("gn_synthese.get_observations_for_web"),
+            url_for("gn_synthese.synthese.get_observations_for_web"),
             query_string={
                 "format": "grouped_geom",
             },
@@ -489,7 +493,7 @@ class TestSynthese:
         # Test geometry aggregation
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"),
+            url_for("gn_synthese.synthese.get_observations_for_web"),
             query_string={
                 "format": "grouped_geom_by_areas",
             },
@@ -510,7 +514,7 @@ class TestSynthese:
         """
         set_logged_user(self.client, users["self_user"])
 
-        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
+        response = self.client.get(url_for("gn_synthese.synthese.get_observations_for_web"))
         data = response.get_json()
 
         # le résultat doit être supérieur ou égal à 2
@@ -533,7 +537,7 @@ class TestSynthese:
 
         set_logged_user(self.client, users["self_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"),
+            url_for("gn_synthese.synthese.get_observations_for_web"),
             json={
                 filter_name: [group_from_taxref],
             },
@@ -548,7 +552,7 @@ class TestSynthese:
 
         # csv
         response = self.client.post(
-            url_for("gn_synthese.export_observations_web"),
+            url_for("gn_synthese.exports.export_observations_web"),
             json=[1, 2, 3],
             query_string={"export_format": "csv"},
         )
@@ -556,14 +560,14 @@ class TestSynthese:
         assert response.status_code == 200
 
         response = self.client.post(
-            url_for("gn_synthese.export_observations_web"),
+            url_for("gn_synthese.exports.export_observations_web"),
             json=[1, 2, 3],
             query_string={"export_format": "geojson"},
         )
         assert response.status_code == 200
 
         response = self.client.post(
-            url_for("gn_synthese.export_observations_web"),
+            url_for("gn_synthese.exports.export_observations_web"),
             json=[1, 2, 3],
             query_string={"export_format": "shapefile"},
         )
@@ -590,7 +594,7 @@ class TestSynthese:
                 }
             ]
         response = self.client.post(
-            url_for("gn_synthese.export_observations_web"),
+            url_for("gn_synthese.exports.export_observations_web"),
             json=[1, 2, 3],
             query_string={
                 "export_format": "geojson",
@@ -690,7 +694,7 @@ class TestSynthese:
         def assert_export_results(user, expected_id_synthese_list):
             set_logged_user(self.client, user)
             response = self.client.post(
-                url_for("gn_synthese.export_observations_web"),
+                url_for("gn_synthese.exports.export_observations_web"),
                 json=list_id_synthese,
                 query_string={"export_format": "csv"},
             )
@@ -812,7 +816,7 @@ class TestSynthese:
             set_logged_user(self.client, user)
 
             response = self.client.post(
-                url_for("gn_synthese.export_taxon_web"),
+                url_for("gn_synthese.exports.export_taxon_web"),
                 json=list_id_synthese,
             )
 
@@ -913,7 +917,7 @@ class TestSynthese:
             set_logged_user(self.client, user)
 
             response = self.client.post(
-                url_for("gn_synthese.export_status"),
+                url_for("gn_synthese.exports.export_status"),
             )
 
             assert response.status_code == 200
@@ -1000,7 +1004,7 @@ class TestSynthese:
             set_logged_user(self.client, user)
 
             response = self.client.post(
-                url_for("gn_synthese.export_metadata"),
+                url_for("gn_synthese.exports.export_metadata"),
             )
 
             assert response.status_code == 200
@@ -1110,7 +1114,7 @@ class TestSynthese:
     def test_general_stat(self, users):
         set_logged_user(self.client, users["self_user"])
 
-        response = self.client.get(url_for("gn_synthese.general_stats"))
+        response = self.client.get(url_for("gn_synthese.synthese_statistics.general_stats"))
 
         assert response.status_code == 200
 
@@ -1144,28 +1148,40 @@ class TestSynthese:
 
         # Missing area_type parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID),
+            url_for("gn_synthese.synthese_taxon_info.taxon_stats", cd_ref=CD_REF_VALID),
         )
         assert response.status_code == 400
         assert response.json["description"] == "Missing area_type parameter"
 
         # Invalid area_type parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID, area_type=AREA_TYPE_INVALID),
+            url_for(
+                "gn_synthese.synthese_taxon_info.taxon_stats",
+                cd_ref=CD_REF_VALID,
+                area_type=AREA_TYPE_INVALID,
+            ),
         )
         assert response.status_code == 400
-        assert response.json["description"] == "Invalid area_type"
+        assert response.json["description"] == "Invalid area_type parameter"
 
         # Invalid cd_ref parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_INVALID, area_type=AREA_TYPE_VALID),
+            url_for(
+                "gn_synthese.synthese_taxon_info.taxon_stats",
+                cd_ref=CD_REF_INVALID,
+                area_type=AREA_TYPE_VALID,
+            ),
         )
         assert response.status_code == 200
         assert response.get_json() == CD_REF_INVALID_STATS
 
         # Invalid cd_ref parameter
         response = self.client.get(
-            url_for("gn_synthese.taxon_stats", cd_nom=CD_REF_VALID, area_type=AREA_TYPE_VALID),
+            url_for(
+                "gn_synthese.synthese_taxon_info.taxon_stats",
+                cd_ref=CD_REF_VALID,
+                area_type=AREA_TYPE_VALID,
+            ),
         )
         response_json = response.get_json()
         assert response.status_code == 200
@@ -1173,13 +1189,19 @@ class TestSynthese:
 
     def test_get_one_synthese_record(self, app, users, synthese_data):
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
         )
         assert response.status_code == 401
 
         set_logged_user(self.client, users["noright_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
         )
         assert response.status_code == 403
 
@@ -1191,44 +1213,179 @@ class TestSynthese:
             + 1
         )
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=not_existing)
+            url_for("gn_synthese.synthese.get_one_synthese", id_synthese=not_existing)
         )
         assert response.status_code == 404
 
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
         )
         assert response.status_code == 200
 
         set_logged_user(self.client, users["self_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
         )
         assert response.status_code == 200
 
         set_logged_user(self.client, users["user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
         )
         assert response.status_code == 200
 
         set_logged_user(self.client, users["associate_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
         )
         assert response.status_code == 200
 
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
+            url_for(
+                "gn_synthese.synthese.get_one_synthese",
+                id_synthese=synthese_data["obs1"].id_synthese,
+            )
         )
         assert response.status_code == Forbidden.code
+
+    def test_taxon_observer(self, synthese_data, users):
+        set_logged_user(self.client, users["stranger_user"])
+
+        ## Test Data
+
+        SORT_ORDER_UNDEFINED = "sort-order-undefined"
+        SORT_ORDER_ASC = "asc"
+        SORT_ORDER_DESC = "desc"
+        PER_PAGE = 2
+        SORT_BY_UNDEFINED = "sort-by-undefined"
+
+        CD_REF = 2497
+        CD_REF_OBSERVERS_ASC = {
+            "items": [
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "administrateur test",
+                },
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "bob bobby",
+                },
+            ],
+            "page": 1,
+            "per_page": 2,
+            "total": 2,
+        }
+        CD_REF_OBSERVERS_DESC = {
+            "items": [
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "bob bobby",
+                },
+                {
+                    "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "media_count": 0,
+                    "observation_count": 3,
+                    "observer": "administrateur test",
+                },
+            ],
+            "page": 1,
+            "per_page": 2,
+            "total": 2,
+        }
+
+        ## sort_order
+
+        # Unknow sort_order parameters: shoudl fallback in asc
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese_taxon_info.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+                sort_order=SORT_ORDER_UNDEFINED,
+            ),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS_ASC
+
+        # sort order ASC
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese_taxon_info.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+                sort_order=SORT_ORDER_ASC,
+            ),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS_ASC
+
+        # sort order DESC
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese_taxon_info.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+                sort_order=SORT_ORDER_DESC,
+            ),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS_DESC
+
+        ## sort_by
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese_taxon_info.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+                sort_order=SORT_ORDER_ASC,
+                sort_by=SORT_BY_UNDEFINED,
+            ),
+        )
+        assert response.status_code == BadRequest.code
+        assert (
+            response.json["description"] == f"The sort_by column {SORT_BY_UNDEFINED} is not defined"
+        )
+
+        # Ok
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese_taxon_info.taxon_observers",
+                cd_ref=CD_REF,
+                per_page=PER_PAGE,
+            )
+        )
+
+        assert response.status_code == 200
+        assert response.get_json() == CD_REF_OBSERVERS_ASC
 
     def test_color_taxon(self, synthese_data, users):
         # Note: require grids 5×5!
         set_logged_user(self.client, users["self_user"])
-        response = self.client.get(url_for("gn_synthese.get_color_taxon"))
+        response = self.client.get(url_for("gn_synthese.synthese_taxon_info.get_color_taxon"))
         assert response.status_code == 200
 
         data = response.get_json()
@@ -1265,36 +1422,36 @@ class TestSynthese:
     def test_taxa_distribution(self, users, synthese_data):
         s = synthese_data["p1_af1"]
 
-        response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
+        response = self.client.get(url_for("gn_synthese.synthese_taxon_info.get_taxa_distribution"))
         assert response.status_code == Unauthorized.code
 
         set_logged_user(self.client, users["self_user"])
-        response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
+        response = self.client.get(url_for("gn_synthese.synthese_taxon_info.get_taxa_distribution"))
         assert response.status_code == 200
         assert len(response.json)
 
         response = self.client.get(
-            url_for("gn_synthese.get_taxa_distribution"),
+            url_for("gn_synthese.synthese_taxon_info.get_taxa_distribution"),
             query_string={"taxa_rank": "not existing"},
         )
         assert response.status_code == BadRequest.code
 
         response = self.client.get(
-            url_for("gn_synthese.get_taxa_distribution"),
+            url_for("gn_synthese.synthese_taxon_info.get_taxa_distribution"),
             query_string={"taxa_rank": "phylum"},
         )
         assert response.status_code == 200
         assert len(response.json)
 
         response = self.client.get(
-            url_for("gn_synthese.get_taxa_distribution"),
+            url_for("gn_synthese.synthese_taxon_info.get_taxa_distribution"),
             query_string={"id_dataset": s.id_dataset},
         )
         assert response.status_code == 200
         assert len(response.json)
 
         response = self.client.get(
-            url_for("gn_synthese.get_taxa_distribution"),
+            url_for("gn_synthese.synthese_taxon_info.get_taxa_distribution"),
             query_string={"id_af": s.dataset.id_acquisition_framework},
         )
         assert response.status_code == 200
@@ -1303,13 +1460,13 @@ class TestSynthese:
     def test_get_taxa_count(self, synthese_data, users):
         set_logged_user(self.client, users["self_user"])
 
-        response = self.client.get(url_for("gn_synthese.get_taxa_count"))
+        response = self.client.get(url_for("gn_synthese.synthese_statistics.get_taxa_count"))
 
         assert response.json >= len(set(synt.cd_nom for synt in synthese_data.values()))
 
     def test_get_taxa_count_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
-        url = "gn_synthese.get_taxa_count"
+        url = "gn_synthese.synthese_statistics.get_taxa_count"
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
@@ -1324,14 +1481,14 @@ class TestSynthese:
         nb_observations = len(synthese_data)
         set_logged_user(self.client, users["admin_user"])
 
-        response = self.client.get(url_for("gn_synthese.get_observation_count"))
+        response = self.client.get(url_for("gn_synthese.synthese_statistics.get_observation_count"))
 
         assert response.json >= nb_observations
 
     def test_get_observation_count_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
         nb_observations = len([s for s in synthese_data.values() if s.id_dataset == id_dataset])
-        url = "gn_synthese.get_observation_count"
+        url = "gn_synthese.synthese_statistics.get_observation_count"
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
@@ -1343,14 +1500,14 @@ class TestSynthese:
     def test_get_bbox(self, synthese_data, users):
         set_logged_user(self.client, users["self_user"])
 
-        response = self.client.get(url_for("gn_synthese.get_bbox"))
+        response = self.client.get(url_for("gn_synthese.synthese_statistics.get_bbox"))
 
         assert response.status_code == 200
         assert response.json["type"] in ["Point", "Polygon"]
 
     def test_get_bbox_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
-        url = "gn_synthese.get_bbox"
+        url = "gn_synthese.synthese_statistics.get_bbox"
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
@@ -1363,7 +1520,7 @@ class TestSynthese:
 
     def test_get_bbox_id_source(self, synthese_data, users, source):
         id_source = source.id_source
-        url = "gn_synthese.get_bbox"
+        url = "gn_synthese.synthese_statistics.get_bbox"
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_source": id_source})
@@ -1372,7 +1529,7 @@ class TestSynthese:
         assert response.json["type"] == "Polygon"
 
     def test_get_bbox_id_source_empty(self, users, unexisted_id_source):
-        url = "gn_synthese.get_bbox"
+        url = "gn_synthese.synthese_statistics.get_bbox"
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_source": unexisted_id_source})
@@ -1386,10 +1543,16 @@ class TestSynthese:
         set_logged_user(self.client, users["self_user"])
 
         response_dataset = self.client.get(
-            url_for("gn_synthese.observation_count_per_column", column=column_name_dataset)
+            url_for(
+                "gn_synthese.synthese_statistics.observation_count_per_column",
+                column=column_name_dataset,
+            )
         )
         response_cd_nom = self.client.get(
-            url_for("gn_synthese.observation_count_per_column", column=column_name_cd_nom)
+            url_for(
+                "gn_synthese.synthese_statistics.observation_count_per_column",
+                column=column_name_cd_nom,
+            )
         )
 
         ds_keyfunc = lambda s: s.id_dataset
@@ -1436,7 +1599,7 @@ class TestSynthese:
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(
-            url_for("gn_synthese.get_autocomplete_taxons_synthese"),
+            url_for("gn_synthese.synthese_taxon_info.get_autocomplete_taxons_synthese"),
             query_string={"search_name": seach_name},
         )
 
@@ -1577,7 +1740,7 @@ class TestSyntheseBlurring:
         synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
-        url = url_for("gn_synthese.get_observations_for_web")
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
 
         response_json = self.client.post(url, json={"id_source": [source.id_source]}).json
 
@@ -1615,7 +1778,7 @@ class TestSyntheseBlurring:
 
         set_logged_user(self.client, current_user)
 
-        url = url_for("gn_synthese.get_observations_for_web")
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
 
         response_json = self.client.post(url, json={"id_source": [source.id_source]}).json
 
@@ -1643,14 +1806,14 @@ class TestSyntheseBlurring:
         # So that all burred geoms will not appear on the aggregated areas
         monkeypatch.setitem(current_app.config["SYNTHESE"], "AREA_AGGREGATION_TYPE", "M1")
 
-        current_user = users["stranger_user"]
+        current_user = users["noright_user"]
         set_logged_user(self.client, current_user)
         # None is 3
         synthese_read_permissions(current_user, None, sensitivity_filter=True)
         synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"),
+            url_for("gn_synthese.synthese.get_observations_for_web"),
             query_string={
                 "format": "grouped_geom_by_areas",
             },
@@ -1669,7 +1832,6 @@ class TestSyntheseBlurring:
                 synthese_sensitive_data["obs_sensitive_2"],
             )
         ]
-
         # If an observation is blurred and the AREA_AGGREGATION_TYPE is smaller in
         # size than the blurred observation then the observation should not appear
         assert all(
@@ -1695,7 +1857,9 @@ class TestSyntheseBlurring:
         synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
-        url = url_for("gn_synthese.get_one_synthese", id_synthese=sensitive_synthese.id_synthese)
+        url = url_for(
+            "gn_synthese.synthese.get_one_synthese", id_synthese=sensitive_synthese.id_synthese
+        )
 
         response_json = self.client.get(url).json
 
@@ -1713,7 +1877,9 @@ class TestSyntheseBlurring:
         synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
-        url = url_for("gn_synthese.get_one_synthese", id_synthese=unsensitive_synthese.id_synthese)
+        url = url_for(
+            "gn_synthese.synthese.get_one_synthese", id_synthese=unsensitive_synthese.id_synthese
+        )
 
         response_json = self.client.get(url).json
 
@@ -1733,7 +1899,9 @@ class TestSyntheseBlurring:
         synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
-        url = url_for("gn_synthese.get_one_synthese", id_synthese=sensitive_synthese.id_synthese)
+        url = url_for(
+            "gn_synthese.synthese.get_one_synthese", id_synthese=sensitive_synthese.id_synthese
+        )
 
         response = self.client.get(url)
 
@@ -1752,7 +1920,7 @@ class TestSyntheseBlurring:
         list_id_synthese = [synthese.id_synthese for synthese in synthese_sensitive_data.values()]
 
         response = self.client.post(
-            url_for("gn_synthese.export_observations_web"),
+            url_for("gn_synthese.exports.export_observations_web"),
             json=list_id_synthese,
             query_string={"export_format": "csv"},
         )
@@ -1790,7 +1958,7 @@ class TestSyntheseBlurring:
         list_id_synthese = [synthese.id_synthese for synthese in synthese_sensitive_data.values()]
 
         response = self.client.post(
-            url_for("gn_synthese.export_observations_web"),
+            url_for("gn_synthese.exports.export_observations_web"),
             json=list_id_synthese,
             query_string={"export_format": "geojson"},
         )
@@ -1827,7 +1995,7 @@ class TestSyntheseBlurring:
         ]
 
         response = self.client.post(
-            url_for("gn_synthese.export_observations_web"),
+            url_for("gn_synthese.exports.export_observations_web"),
             json=list_id_synthese,
             query_string={"export_format": "geojson"},
         )
@@ -1836,3 +2004,19 @@ class TestSyntheseBlurring:
         # No feature accessible because sensitive data excluded if
         # the user has no right to see it
         assert len(response.json["features"]) == 0
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestMediaTaxon:
+    def test_taxon_medias(self, synthese_read_permissions, users):
+        set_logged_user(self.client, users["self_user"])
+        synthese_read_permissions(users["self_user"], None, sensitivity_filter=True)
+
+        cd_ref = db.session.scalar(select(Taxref.cd_ref))
+
+        response = self.client.get(
+            url_for("gn_synthese.synthese_taxon_info.taxon_medias", cd_ref=cd_ref)
+        )
+
+        assert response.status_code == 200
+        assert isinstance(response.json["items"], list)

@@ -10,7 +10,6 @@ import {
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/empty';
-import { replace } from '@librairies/cypress/types/lodash';
 
 @Injectable()
 export class UnauthorizedInterceptor implements HttpInterceptor {

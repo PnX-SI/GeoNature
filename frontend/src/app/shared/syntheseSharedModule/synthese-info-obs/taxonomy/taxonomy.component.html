@@ -1,46 +1,49 @@
 <div class="Taxonomy">
   <h5 class="Taxonomy__subtitle">Classification</h5>
-  <table class="Classification font-xs table table-striped table-sm">
+  <table
+    *ngIf="observedTaxon; else noClassification"
+    class="Classification font-xs table table-striped table-sm"
+  >
     <tbody>
-      <tr>
-        <td class="Classification__name">Groupe taxonomique</td>
-        <td class="Classification__value">{{ taxon?.classe }}</td>
-      </tr>
-      <tr>
-        <td class="Classification__name">Ordre</td>
-        <td class="Classification__value">{{ taxon?.ordre }}</td>
-      </tr>
-      <tr>
-        <td class="Classification__name">Famille</td>
+      <tr *ngFor="let information of informationsFiltered">
+        <td class="Classification__name">
+          {{ information.label }}
+        </td>
         <td
           class="Classification__value"
-          data-qa="synthese-obs-detail-taxo-familly"
+          [attr.data-qa]="'taxonomy-detail-taxo-' + information.field"
         >
-          {{ taxon?.famille }}
+          {{ observedTaxon[information.field] }}
         </td>
       </tr>
     </tbody>
   </table>
+  <ng-template #noClassification><p>Aucune</p></ng-template>
 
-  <!-- <h5 class="underlined underlined-sm main-color">Attribut(s) Taxonomique(s) locaux</h5>
-  <table class="font-xs table table-striped table-sm">
-    <tr
-      class="font-xs"
-      *ngFor="let attr of taxon?.attributs"
+  <div *ngIf="!isAttributesEmpty || !hideLocalAttributesOnEmpty">
+    <h5 class="Taxonomy__subtitle">Attribut(s) Taxonomique(s) locaux</h5>
+    <table
+      *ngIf="!isAttributesEmpty; else noLocalAttributes"
+      class="font-xs table table-striped table-sm"
     >
-      <td>
-        <b>{{ attr.label_attribut }}</b>
-      </td>
-      <td>{{ attr.valeur_attribut }}</td>
-    </tr>
-  </table> -->
-
+      <tr
+        class="font-xs"
+        *ngFor="let attr of observedTaxon?.attributs"
+      >
+        <td>
+          <b>{{ attr?.bib_attribut?.label_attribut }}</b>
+        </td>
+        <td style="width: 100%">{{ attr.valeur_attribut }}</td>
+      </tr>
+    </table>
+    <ng-template #noLocalAttributes><p>Aucun</p></ng-template>
+  </div>
   <h5 class="Taxonomy__subtitle">Statuts</h5>
   <table
     class="font-xs table table-sm"
-    *ngIf="taxon?.status; else noStatus"
+    *ngIf="!isStatusEmpty; else noStatus"
   >
-    <ng-container *ngFor="let status of taxon?.status | keyvalue">
+    <ng-container *ngFor="let status of observedTaxon.status | keyvalue">
       <tr class="table-primary">
         <th>{{ status.value.display }}</th>
       </tr>

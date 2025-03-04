@@ -129,6 +129,17 @@ function restartTheProcess(user) {
   runTheProcess(user);
 }
 
+function checkThatMappingCanBeSaved() {
+  // Trigger the modal
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('be.enabled').click();
+
+  // Validation modal appear
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL_OK, { force: true }).should('exist');
+
+  // Close the modal
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL_CLOSE, { force: true }).click();
+}
+
 function checkThatMappingCanNotBeSaved() {
   // Trigger the modal
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('be.enabled').click();
@@ -303,15 +314,23 @@ describe('Import - Field mapping step', () => {
       deleteCurrentMapping();
     });
 
-    it('Should not be able to modifiy the default mapping. A save to alternative should be offered to the user.', () => {
+    it('Should be able to modifiy the default mapping if user got rights. A save to alternative should be offered to the user.', () => {
       // Mapping Synthese
       selectMapping(DEFAULT_FIELDMAPPINGS[0]);
       selectField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_fin');
-      checkThatMappingCanNotBeSaved();
+      checkThatMappingCanBeSaved();
 
       restartTheProcess(USER_ADMIN);
       selectMapping(DEFAULT_FIELDMAPPINGS[1]);
       fillTheFormRaw();
+      checkThatMappingCanBeSaved();
+    });
+    it('Should not be able to modifiy the default mapping if user does not got rights', () => {
+      cy.geonatureLogout();
+      cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);
+      runTheProcess(USER_AGENT);
+      selectMapping(DEFAULT_FIELDMAPPINGS[0]);
+      selectField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_fin');
       checkThatMappingCanNotBeSaved();
     });
 

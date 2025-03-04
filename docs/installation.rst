@@ -49,10 +49,10 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Mettre à jour de la liste des dépôts Linux :
 
-  .. code:: console
+  .. code:: shell
 
-    # apt update
-    # apt upgrade
+    apt update
+    apt upgrade
 
 * Configuration de la locale du serveur
 
@@ -83,39 +83,39 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Installer l’utilitaire ``sudo`` :
 
-  .. code:: console
+  .. code:: shell
 
-    # apt install sudo
+    apt install sudo
 
 * Créer un utilisateur Linux dédié (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` :
 
-  .. code:: console
+  .. code:: shell
 
-    # adduser geonatureadmin
+    adduser geonatureadmin
 
 * Lui donner ensuite les droits administrateur en l’ajoutant au groupe ``sudo`` :
 
-  .. code:: console
+  .. code:: shell
 
-    # adduser geonatureadmin sudo
+    adduser geonatureadmin sudo
 
 .. note::
         Vérifier les droits du répertoire HOME de l'utilisateur
           
-          Il doit être en ``7XX`` soit ``drwxr-xr-x``. Si ce n'est pas le cas, exécuter la commande suivante :
-         
-          .. code:: console
+        Il doit être en ``7XX`` soit ``drwxr-xr-x``. Si ce n'est pas le cas, exécuter la commande suivante :
         
-            # chmod 755 /home/geonatureadmin
+        .. code:: shell
+      
+          chmod 755 /home/geonatureadmin
 * Pour la suite du processus d’installation, on utilisera l'utilisateur non privilégié nouvellement créé. Si besoin d'éxecuter des commandes avec les droits d'administrateur, on les précèdera de ``sudo``.
 
   Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ``root``. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
   
   Pour passer de l’utilisateur ``root`` à ``geonatureadmin``, vous pouvez aussi utiliser la commande :
 
-  .. code:: console
+  .. code:: shell
 
-    # su - geonatureadmin
+    su - geonatureadmin
 
 
 .. _installation-all:
@@ -205,25 +205,25 @@ Installer le module avec ``pip`` en mode éditable après avoir activé le venv 
 * Créer un lien symbolique dans le dossier ``frontend/external_modules`` de GeoNature vers le dossier ``frontend`` du module.
   Le lien symbolique doit être nommé suivant le code du module en minuscule :
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    cd ~/geonature/frontend/external_modules/
-    ln -s <dossier du module>/frontend <code du module en minuscule>
+      cd ~/geonature/frontend/external_modules/
+      ln -s <dossier du module>/frontend <code du module en minuscule>
 
-Exemple pour le module Import :
+  Exemple pour le module Import :
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    cd ~/geonature/frontend/external_modules/
-    ln -s ~/gn_module_import/frontend import
+      cd ~/geonature/frontend/external_modules/
+      ln -s ~/gn_module_import/frontend import
 
 * Re-builder le frontend :
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    cd ~/geonature/frontend/
-    nvm use
-    npm run build
+      cd ~/geonature/frontend/
+      nvm use
+      npm run build
 
 **Installation de la base de données**
 
@@ -282,19 +282,19 @@ La mise à jour doit être réalisée avec votre utilisateur linux courant (``ge
 
 * Télécharger la dernière version de GeoNature :
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
-    unzip X.Y.Z.zip
-    rm X.Y.Z.zip
+      wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
+      unzip X.Y.Z.zip
+      rm X.Y.Z.zip
 
 * Renommer l'ancien repertoire de l'application, ainsi que le nouveau :
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    mv ~/geonature/ ~/geonature_old/
-    mv ~/GeoNature-X.Y.Z ~/geonature/
-    cd ~/geonature
+      mv ~/geonature/ ~/geonature_old/
+      mv ~/GeoNature-X.Y.Z ~/geonature/
+      cd ~/geonature
 
 * Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : https://github.com/PnX-SI/GeoNature/releases.
 
@@ -304,9 +304,9 @@ Sauf mentions contraires dans les notes de version, vous pouvez sauter des versi
 
 * Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    ./install/migration/migration.sh 2>&1 | tee install/migration/migration.log
+      ./install/migration/migration.sh 2>&1 | tee install/migration/migration.log
 
 Depuis la version 2.12, le script `migration.sh` peut prendre en argument le chemin vers l'ancien dossier d'installation de GeoNature. Il peut s’agir du même dossier que la nouvelle installation de GeoNature. Cela permet d'utiliser ce script si la nouvelle version de GeoNature est dans le même dossier et donc de gérer le cas où GeoNature est installé et mis à jour avec git.
 

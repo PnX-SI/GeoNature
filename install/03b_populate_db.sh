@@ -38,6 +38,22 @@ then
     geonature db upgrade ref_geo_inpn_grids_10@head
 fi
 
+if [ "$install_grid_layer" = true ] || [ "$install_grid_layer_2" = true ];
+then
+    geonature db upgrade ref_geo_inpn_grids_2@head
+fi
+
+if [ "$install_grid_layer" = true ] || [ "$install_grid_layer_20" = true ];
+then
+    geonature db upgrade ref_geo_inpn_grids_20@head
+fi
+
+if [ "$install_grid_layer" = true ] || [ "$install_grid_layer_50" = true ];
+then
+    geonature db upgrade ref_geo_inpn_grids_50@head
+fi
+
+
 geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM gn_sensitivity.t_sensitivity_rules); END'" 2>/dev/null \
 || if [ "$install_ref_sensitivity" = true ];
 then

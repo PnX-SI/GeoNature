@@ -434,7 +434,13 @@ class Synthese(DB.Model):
     meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
     last_action = DB.Column(DB.Unicode)
 
-    areas = relationship(LAreas, secondary=corAreaSynthese, backref="synthese_obs")
+    areas = relationship(
+        LAreas,
+        secondary=corAreaSynthese,
+        primaryjoin=(corAreaSynthese.c.id_synthese == id_synthese),
+        secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
+        backref="synthese_obs",
+    )
     area_attachment = relationship(LAreas, foreign_keys=[id_area_attachment])
     validations = relationship(TValidations, backref="attached_row")
     last_validation = relationship(last_validation, uselist=False, viewonly=True)
@@ -600,6 +606,14 @@ class VSyntheseForWebApp(DB.Model):
     nom_vern = DB.Column(DB.Unicode)
     lb_nom = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(DB.Unicode)
+    id_statut = DB.Column(DB.Unicode)
+    id_rang = DB.Column(DB.Unicode)
+    regne = DB.Column(DB.Unicode)
+    phylum = DB.Column(DB.Unicode)
+    classe = DB.Column(DB.Unicode)
+    ordre = DB.Column(DB.Unicode)
+    famille = DB.Column(DB.Unicode)
+    sous_famille = DB.Column(DB.Unicode)
     group1_inpn = DB.Column(DB.Unicode)
     group2_inpn = DB.Column(DB.Unicode)
     group3_inpn = DB.Column(DB.Unicode)

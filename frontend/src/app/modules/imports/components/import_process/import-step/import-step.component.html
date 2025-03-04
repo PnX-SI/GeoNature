@@ -26,10 +26,7 @@
       <div class="d-flex justify-content-center align-items-center">
         <div class="text-controls d-flex align-items-center flex-column pb-2">
           <p>Contrôles en cours sur les données</p>
-          <mat-progress-bar
-            class="progress-bar"
-            [value]="progress"
-          ></mat-progress-bar>
+          <mat-progress-bar [value]="progress"></mat-progress-bar>
         </div>
       </div>
     </div>
@@ -111,7 +108,7 @@
           label="{{ entityPreview.entity.label }}"
         >
           <ngx-datatable
-            *ngIf="tableReady"
+            *ngIf="tableReady && entityPreview.valid_data.length > 0"
             #table
             class="material striped"
             [rows]="entityPreview.valid_data"
@@ -124,6 +121,15 @@
             [limit]="15"
             [selectionType]="single"
           ></ngx-datatable>
+          <ng-container *ngIf="entityPreview.valid_data.length === 0">
+            <div
+              class="alert alert-info mt-3"
+              role="alert"
+            >
+              Aucun(e) {{ entityPreview.entity.label.toLowerCase() }}
+              valide n'a été trouvée
+            </div>
+          </ng-container>
         </mat-tab>
       </mat-tab-group>
 
@@ -133,11 +139,7 @@
         class="d-flex flex-column justify-content-center align-items-center w-100 mb-3"
       >
         <p>Import des données en cours</p>
-        <mat-spinner
-          [color]="color"
-          [diameter]="50"
-          class="upload-spinner"
-        ></mat-spinner>
+        <mat-progress-bar [value]="progress"></mat-progress-bar>
       </div>
 
       <div

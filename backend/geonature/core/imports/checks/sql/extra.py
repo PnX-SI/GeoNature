@@ -640,7 +640,7 @@ def check_entity_data_consistency(imprt, entity, fields, grouping_field):
         select(hashedRows.c.grouping_col.label("grouping_col"))
         .group_by(hashedRows.c.grouping_col)
         .having(func.count(func.distinct(hashedRows.c.hashed)) > 1)
-    )
+    ).cte()
 
     # note: rows are unidentified (None) instead of being marked as invalid (False) in order to avoid running checks
     report_erroneous_rows(

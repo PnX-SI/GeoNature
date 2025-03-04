@@ -1,8 +1,9 @@
 name: "Build Sphinx Documentation"
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - master
 
 jobs:
   docs:

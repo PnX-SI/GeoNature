@@ -121,12 +121,17 @@
   >
     <mat-tab-group>
       <mat-tab
-        *ngIf="config.HOME.DISPLAY_LATEST_DISCUSSIONS && displayDiscussions()"
+        *ngIf="displayDiscussions"
         label="Discussions"
       >
         <pnx-home-discussions></pnx-home-discussions>
       </mat-tab>
-      <!-- TODO: Autres onglets à ajouter (Dernière validations etc) -->
+      <mat-tab
+        *ngIf="displayValidations"
+        label="Validations"
+      >
+        <pnx-home-validations></pnx-home-validations>
+      </mat-tab>
     </mat-tab-group>
   </div>
 </div>

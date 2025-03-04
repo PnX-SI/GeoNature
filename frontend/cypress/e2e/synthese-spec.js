@@ -142,7 +142,14 @@ describe('Tests gn_synthese', () => {
     cy.get('[data-qa="synthese-obs-detail-ca"]').invoke('text').should('not.equal', '');
     // vérification de la présence de l'onglet taxonomie
     cy.get('.mat-mdc-tab').contains('Taxonomie').click({ force: true });
-    cy.get('[data-qa="synthese-obs-detail-taxo-familly"]').invoke('text').should('not.equal', '');
+    cy.get('[data-qa="taxonomy-detail-taxo-classe"]').invoke('text').should('not.equal', '');
+    cy.get('[data-qa="taxonomy-detail-taxo-ordre"]').invoke('text').should('not.equal', '');
+    cy.get('[data-qa="taxonomy-detail-taxo-famille"]').invoke('text').should('not.equal', '');
+    cy.get('[data-qa="taxonomy-detail-taxo-cd_nom"]').invoke('text').should('not.equal', '');
+    cy.get('[data-qa="taxonomy-detail-taxo-lb_nom"]').invoke('text').should('not.equal', '');
+    cy.get('[data-qa="taxonomy-detail-taxo-cd_ref"]').invoke('text').should('not.equal', '');
+    cy.get('[data-qa="taxonomy-detail-taxo-nom_cite"]').invoke('text').should('not.equal', '');
+
     // vérification de la présence de l'onglet zonage
     cy.get('.mat-mdc-tab').contains('Zonage').click({ force: true });
     cy.get('[data-qa="synthese-obs-detail-area"]');

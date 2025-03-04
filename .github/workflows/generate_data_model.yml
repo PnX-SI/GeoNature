@@ -1,0 +1,78 @@
+name: Generate Dump and Push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  generate-dump:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: ghcr.io/pnx-si/geonature-db:latest
+        env:
+          POSTGRES_DB: geonature2db
+          POSTGRES_PASSWORD: geonatpasswd
+          POSTGRES_USER: geonatadmin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          echo 'Installation des requirements de prod'
+          python -m pip install --upgrade pip
+          python -m pip install \
+            -e ..[tests] \
+            -r requirements.txt
+        working-directory: ./backend
+      - name: Install core modules backend
+        run: |
+          pip install -e contrib/occtax
+          pip install -e contrib/gn_module_occhab
+          pip install -e contrib/gn_module_validation
+      - name: Install core modules database
+        run: |
+          geonature upgrade-modules-db
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+
+      - name: Run generate_dump.sh
+        working-directory: docs/data_model
+        run: ./generate_dump.sh
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git add .
+          git commit -m "Automated dump generation" || echo "No changes to commit"
+          git push origin HEAD:${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

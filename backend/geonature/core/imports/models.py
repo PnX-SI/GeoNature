@@ -219,6 +219,9 @@ class Destination(db.Model):
         ]
         return max_scope > 0
 
+    def __repr__(self):
+        return self.label
+
 
 @serializable
 class BibThemes(db.Model):
@@ -520,7 +523,7 @@ class MappingTemplate(db.Model):
     __table_args__ = {"schema": "gn_imports"}
 
     id = db.Column(db.Integer, primary_key=True)
-    id_destination = db.Column(db.Integer, ForeignKey(Destination.id_destination))
+    id_destination = db.Column(db.Integer, ForeignKey(Destination.id_destination), nullable=False)
     destination = relationship(Destination)
     label = db.Column(db.Unicode(255), nullable=False)
     type = db.Column(db.Unicode(10), nullable=False)
@@ -667,7 +670,7 @@ class FieldMapping(MappingTemplate):
     }
 
     @staticmethod
-    def validate_values(field_mapping_json):
+    def validate_values(field_mapping_json, destination=None):
         """
         Validate the field mapping values returned by the client form.
 
@@ -689,8 +692,13 @@ class FieldMapping(MappingTemplate):
             "optional_conditions",
             "mandatory_conditions",
         ]
+        (g.destination if (destination is None) else destination)
         entities_for_destination: List[Entity] = (
-            Entity.query.filter_by(destination=g.destination).order_by(sa.desc(Entity.order)).all()
+            Entity.query.filter_by(
+                destination=(g.destination if (destination is None) else destination)
+            )
+            .order_by(sa.desc(Entity.order))
+            .all()
         )
         fields = []
         for entity in entities_for_destination:
@@ -717,7 +725,9 @@ class FieldMapping(MappingTemplate):
                         entity,
                         columns=bib_fields_col,
                         optional_where_clause=sa.and_(
-                            BibFields.destination == g.destination, BibFields.display == True
+                            BibFields.destination
+                            == (g.destination if (destination is None) else destination),
+                            BibFields.display == True,
                         ),
                     )
                 )
@@ -771,10 +781,11 @@ class ContentMapping(MappingTemplate):
     }
 
     @staticmethod
-    def validate_values(values):
+    def validate_values(values, destination=None):
         nomenclature_fields = (
             BibFields.query.filter(
-                BibFields.destination == g.destination, BibFields.nomenclature_type != None
+                BibFields.destination == (g.destination if (destination is None) else destination),
+                BibFields.nomenclature_type != None,
             )
             .options(
                 joinedload(BibFields.nomenclature_type).joinedload(

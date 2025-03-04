@@ -1,5 +1,5 @@
 """
-    Description des options de configuration
+Description des options de configuration
 """
 
 import os
@@ -128,6 +128,7 @@ class HomeConfig(Schema):
     )
     FOOTER = fields.String(load_default="")
     DISPLAY_LATEST_DISCUSSIONS = fields.Boolean(load_default=True)
+    DISPLAY_LATEST_VALIDATIONS = fields.Boolean(load_default=True)
 
 
 class MetadataConfig(Schema):
@@ -177,6 +178,16 @@ class AuthenticationConfig(Schema):
             ProviderConfigurationSchema().load(provider, unknown=INCLUDE)
 
 
+class AuthenticationFrontendConfig(AuthenticationConfig):
+
+    @post_load
+    def post_load(self, data, **kwargs):
+        data["PROVIDERS"] = [
+            {"id_provider": provider["id_provider"]} for provider in data["PROVIDERS"]
+        ]
+        return data
+
+
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
@@ -208,6 +219,9 @@ class GnPySchemaConf(Schema):
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
+    AUTHENTICATION = fields.Nested(
+        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
+    )
 
     @post_load()
     def folders(self, data, **kwargs):
@@ -279,8 +293,11 @@ class ExportObservationSchema(Schema):
 class TaxonSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
-    ENABLE_PROFILE = fields.Boolean(load_default=True)
-    ENABLE_TAXONOMY = fields.Boolean(load_default=True)
+    ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
+    ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
+    ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
+    ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
+    ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
@@ -439,7 +456,11 @@ class Synthese(Schema):
 
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
+    ENABLE_TAXON_SHEETS = fields.Boolean(load_default=True)
     TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
+
+    # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
+    FIELD_OBSERVERS_SEPARATORS = fields.List(fields.String(), load_default=[","])
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):
@@ -578,7 +599,9 @@ class GnGeneralSchemaConf(Schema):
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
     AUTHENTICATION = fields.Nested(
-        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
+        AuthenticationFrontendConfig,
+        load_default=AuthenticationFrontendConfig().load({}),
+        unknown=INCLUDE,
     )
 
     @validates_schema
@@ -611,4 +634,14 @@ class GnGeneralSchemaConf(Schema):
             if module_code in data["DISABLED_MODULES"]:
                 continue
             data[module_code] = get_module_config(dist)
+        return data
+
+    @post_load
+    def profile_display_coherence(self, data, **kwargs):
+        if (
+            data["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"]
+            and not data["FRONTEND"]["ENABLE_PROFILES"]
+        ):
+            data["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"] = False
+
         return data

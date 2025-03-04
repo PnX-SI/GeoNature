@@ -158,3 +158,4 @@ install_all/install_all.log
 /contrib/*/frontend/node_modules
 Makefile.local
 *.DS_Store
+geonature.local.env

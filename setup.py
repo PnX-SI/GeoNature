@@ -42,9 +42,10 @@ setuptools.setup(
         ],
         "doc": [
             "sphinx",
-            "sphinx-book-theme",
+            "furo",
             "myst-parser",
             "sphinx-autoapi",
+            "sphinx-copybutton",
         ],
     },
     classifiers=[

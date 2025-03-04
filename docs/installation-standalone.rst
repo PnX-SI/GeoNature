@@ -9,9 +9,9 @@ Installation des dépendances
 
 Installer les paquets suivants :
 
-::  
+.. code:: shell  
     
-  $ sudo apt install unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
+  sudo apt install unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
 
 
 Récupération de l'application
@@ -21,30 +21,30 @@ Récupération de l'application
 
 * Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_).
 
-  ::
+  .. code:: shell 
 
-    $ wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
+    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
 
 * Dézipper l'archive de l'application
 
-  ::
+  .. code:: shell 
 
-    $ unzip X.Y.Z.zip
-    $ rm X.Y.Z.zip
+    unzip X.Y.Z.zip
+    rm X.Y.Z.zip
 
 * Renommer le répertoire de l'application puis placez-vous dedans : 
 
-  ::
+  .. code:: shell 
 
-    $ mv GeoNature-X.Y.Z /home/`whoami`/geonature/
-    $ cd geonature
+    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
+    cd geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
 
-  ::
+  .. code:: shell 
 
-    $ cp config/settings.ini.sample config/settings.ini
-    $ nano config/settings.ini
+    cp config/settings.ini.sample config/settings.ini
+    nano config/settings.ini
 
 
 Installation de l'application
@@ -70,39 +70,39 @@ Configuration Apache
 
 * Créez la configuration du vhost, incluant la configuration par défaut créée précédemment :
 
-  .. code:: console
+  .. code:: shell
 
-    $ sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf # Copier le vhost
-    $ sudo nano /etc/apache2/sites-available/geonature.conf # Modifier la variable ``${DOMAIN_NAME}``
+    sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf # Copier le vhost
+    sudo nano /etc/apache2/sites-available/geonature.conf # Modifier la variable ``${DOMAIN_NAME}``
 
 * Activez la nouvelle configuration :
 
-  .. code:: console
+  .. code:: shell
 
-    $ sudo a2ensite geonature.conf
+    sudo a2ensite geonature.conf
 
 * et redémarrez Apache :
 
-  .. code:: console
+  .. code:: shell
 
-    $ sudo systemctl reload apache2
+    sudo systemctl reload apache2
 
 * L'application est disponible à l'adresse suivante : http://monurl.fr/geonature
 
 Une page HTML de maintenance et un vhost dédié sont aussi disponibles. Pour les mettre en place :
 
-  .. code:: console
-
-    $ sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf # Copier le vhost
-    $ sudo nano /etc/apache2/sites-available/geonature_maintenance.conf # Modifier la variable ``${DOMAIN_NAME}``
-    $ sudo cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
+.. code:: shell
+  
+  sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf # Copier le vhost
+  sudo nano /etc/apache2/sites-available/geonature_maintenance.conf # Modifier la variable ``${DOMAIN_NAME}``
+  sudo cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
 
 Pour passer votre GeoNature en maintenance, vous pouvez alors désactiver le vhost de GeoNature et activer celui de la page de maintenance : 
 
-  .. code:: console
+.. code:: shell
 
-    $ sudo a2dissite geonature.conf
-    $ sudo a2ensite geonature_maintenance.conf
+  sudo a2dissite geonature.conf
+  sudo a2ensite geonature_maintenance.conf
 
 Dépendances
 -----------

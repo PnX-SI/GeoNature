@@ -11,6 +11,8 @@ import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
+import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
+import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
 
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
@@ -58,6 +60,28 @@ export class SyntheseDataService {
   getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM') {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_stats/${cd_ref}`, {
       params: new HttpParams().append('area_type', areaType),
+    });
+  }
+
+  getTaxonMedias(cdRef: number, params?: {}): Observable<any> {
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon_medias/${cdRef}`, {
+      params,
+    });
+  }
+
+
+  getSyntheseTaxonSheetObservers(
+    cd_ref: number,
+    pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
+    sort: SyntheseDataSortItem = DEFAULT_SORT
+  ) {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_observers/${cd_ref}`, {
+      params: {
+        per_page: pagination.perPage,
+        page: pagination.currentPage,
+        sort_by: sort.sortBy,
+        sort_order: sort.sortOrder,
+      },
     });
   }
 

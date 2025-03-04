@@ -12,6 +12,11 @@ import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+
+export interface ObservedTaxon extends Taxon {
+  nom_cite?: string;
+}
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -31,7 +36,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   public selectedObs: any;
   public validationHistory: Array<any> = [];
-  public selectedObsTaxonDetail: any;
+  public selectedObsTaxonDetail: ObservedTaxon;
   @ViewChild('tabGroup') tabGroup;
   public selectedGeom;
   // public chartType = 'line';
@@ -197,11 +202,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         if (this.selectedObs['unique_id_sinp']) {
           this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
         }
-        let cdNom = this.selectedObs['cd_nom'];
-        let areasStatus = this.selectedObs['areas'].map((area) => area.id_area);
+        const cdNom = this.selectedObs['cd_nom'];
+        const areasStatus = this.selectedObs['areas'].map((area) => area.id_area);
         const taxhubFields = ['attributs', 'attributs.bib_attribut.label_attribut', 'status'];
         this._gnDataService.getTaxonInfo(cdNom, taxhubFields, areasStatus).subscribe((taxInfo) => {
-          this.selectedObsTaxonDetail = taxInfo;
+          this.selectedObsTaxonDetail = { ...taxInfo, nom_cite: this.selectedObs.nom_cite };
           // filter attributs
           this.selectedObsTaxonDetail.attributs = taxInfo['attributs'].filter((v) =>
             this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut)

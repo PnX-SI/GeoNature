@@ -41,7 +41,7 @@ Vous pouvez obtenir la liste des routes de GeoNature avec la commande suivante :
 
 .. code-block:: bash
 
-    $ geonature routes
+    geonature routes
 
 
 Documentation des routes
@@ -80,7 +80,7 @@ Backend
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
 - La longueur maximale pour une ligne de code est 100 caractères. Pour VSCODE copier ces lignes le fichier ``settings.json`` :
 
-::
+.. code:: python
 
     "python.formatting.blackArgs": [
       "--line-length",
@@ -138,7 +138,7 @@ HTML
 - Revenir à la ligne avant et après le contenue d'une balise.
 - Lorsqu'il y a plus d'un attribut sur une balise, revenir à la ligne, aligner les attributs et aller a la ligne pour fermer la balise :
 
-::
+.. code:: html
 
       <button 
         mat-raised-button
@@ -218,9 +218,9 @@ Il est nécessaire d’installer les dépendances (sous-modules Git présent dan
 
 .. code-block:: console
 
-  $ cd backend
-  $ source venv/bin/activate
-  $ pip install -e .. -r requirements-dev.txt
+  cd backend
+  source venv/bin/activate
+  pip install -e .. -r requirements-dev.txt
 
 
 Configuration des URLs de développement
@@ -228,7 +228,7 @@ Configuration des URLs de développement
 
 Il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
 
-.. code-block:: bash
+.. code-block:: toml
 
   URL_APPLICATION = 'http://127.0.0.1:4200'
   API_ENDPOINT = 'http://127.0.0.1:8000'
@@ -263,7 +263,8 @@ La commande ``geonature`` fournit la sous-commande ``dev-back`` pour lancer un s
 
 .. code:: console
 
-    (venv)$ geonature dev-back
+    source <GEONATURE_DIR>backend/venv/bin/activate
+    geonature dev-back
 
 
 L’API est alors accessible à l’adresse http://127.0.0.1:8000.
@@ -278,14 +279,14 @@ Celle-ci fournit un objet ``db`` à importer comme ceci : ``from geonature.utils
 
 Cet objet permet d’accéder à la session SQLAlchemy ainsi :
 
-::
+.. code:: python
 
     from geonature.utils.env import db
     obj = db.session.query(MyModel).get(1)
 
 Mais il fournit une base déclarative ``db.Model`` permettant d’interroger encore plus simplement les modèles via leur attribut ``query`` :
 
-::
+.. code:: python
 
     from geonature.utils.env import db
     class MyModel(db.Model):
@@ -295,7 +296,7 @@ Mais il fournit une base déclarative ``db.Model`` permettant d’interroger enc
 
 L’attribut ``query`` fournit `plusieurs fonctions <https://flask-sqlalchemy.palletsprojects.com/en/2.x/api/#flask_sqlalchemy.BaseQuery>`_ très utiles dont la fonction ``get_or_404`` :
 
-::
+.. code:: python
 
     obj = MyModel.query.get_or_404(1)
 
@@ -309,7 +310,7 @@ L’attribut ``query`` est une instance de la classe ``flask_sqlalchemy.BaseQuer
 
 On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur a accès, ou encore pour implémenter des filtres de recherche.
 
-::
+.. code:: python
 
     from flask import g
     import sqlalchemy as sa
@@ -383,7 +384,6 @@ Attention, la sérialisation d’un objet avec un tel schéma va provoquer une r
 Il est donc nécessaire de restreindre les champs à inclure dans la sérialisation lors de la création du schéma :
 
 - avec l’argument ``only`` :
-
     .. code:: python
 
         parent_schema = ParentModelSchema(only=['pk', 'childs.pk'])
@@ -392,10 +392,10 @@ Il est donc nécessaire de restreindre les champs à inclure dans la sérialisat
     De plus, l’ajout d’une nouvelle colonne au modèle nécessite de la rajouter partout où le schéma est utilisé.
 
 - avec l’argument ``exclude`` :
-
     .. code:: python
 
         parent_schema = ParentModelSchema(exclude=['childs.parent'])
+
 
     Cependant, l’utilisation de ``exclude`` est hautement problématique !
     En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
@@ -530,8 +530,8 @@ vous pouvez devoir créer votre propre convertisseur de modèle héritant à la 
             model_converter = NomenclaturesGeoModelConverter
 
 
-Modèles à permission
-""""""""""""""""""""
+Modèles de permission
+"""""""""""""""""""""
 
 Le mixin ``CruvedSchemaMixin`` permet d’ajouter un champs ``cruved`` à la sérialisation qui contiendra un dictionnaire avec en clé les actions du cruved et en valeur des booléens indiquant si l’action est disponible.
 
@@ -541,7 +541,7 @@ Pour l’utiliser, il faut :
   Ces propriétés sont passées en argument à la fonction ``get_scopes_by_action``.
 - Le **modèle** doit définir une fonction ``has_instance_permission(scope)`` prenant en argument une portée (0, 1, 2 ou 3) et renvoyant un booléen.
 
-Par défaut, pour des raisons de performance, le cruved est exclu de la sérialisation.
+Par défaut, le CRUVED est exclu de la sérialisation pour des raisons de performance.
 Il faut donc demander sa sérialisation lors de la création du schéma avec ``only=["+cruved"]``.
 Le préfixe ``+`` permet de spécifier que l’on souhaite rajouter le cruved aux champs à sérialiser (et non que l’on souhaite sérialiser uniquement le cruved).
 
@@ -700,12 +700,12 @@ Exemple d’une relation vers des modèles enfants, qui sont rattaché à un uni
 Serialisation des modèles avec le décorateur ``@serializable``
 **************************************************************
 
-.. Note::
+.. note::
   L’utilisation des schémas Marshmallow est probablement plus performante.
 
 La bibliothèque maison `Utils-Flask-SQLAlchemy <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy>`_ fournit le décorateur ``@serializable`` qui ajoute une méthode ``as_dict`` sur les modèles décorés :
 
-::
+.. code:: python
 
     from utils_flask_sqla.serializers import serializable
 
@@ -726,7 +726,7 @@ Les relations que l’on souhaite voir sérialisées doivent être explicitement
 
 L’argument ``fields`` supporte la « notation à point » permettant de préciser les champs d’un modèle en relation :
 
-::
+.. code:: python
 
     child.as_dict(fields=['parent.pk'])
 
@@ -744,79 +744,83 @@ Modèles géographiques
 La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo>`_ fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.
 
 - ``utils_flask_sqla_geo.serializers.geoserializable``
+    Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
+    retourne un dictionnaire serialisable sous forme de Feature geojson.
 
 
-  Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
-  retourne un dictionnaire serialisable sous forme de Feature geojson.
+    Fichier définition modèle 
+
+    .. code:: python
+
+        from geonature.utils.env import DB
+        from utils_flask_sqla_geo.serializers import geoserializable
 
 
-  Fichier définition modèle ::
-
-    from geonature.utils.env import DB
-    from utils_flask_sqla_geo.serializers import geoserializable
-
-
-    @geoserializable
-    class MyModel(DB.Model):
-        __tablename__ = 'bla'
-        ...
+        @geoserializable
+        class MyModel(DB.Model):
+            __tablename__ = 'bla'
+            ...
 
 
-  Fichier utilisation modèle ::
+    Fichier utilisation modèle 
 
-    instance = DB.session.query(MyModel).get(1)
-    result = instance.as_geofeature()
+    .. code:: python
+
+        instance = DB.session.query(MyModel).get(1)
+        result = instance.as_geofeature()
 
 - ``utils_flask_sqla_geo.serializers.shapeserializable``
+    Décorateur pour les modèles SQLA :
 
-  Décorateur pour les modèles SQLA :
+    - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
+    - Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre
 
-  - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
-  - Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre
+    Fichier définition modèle
 
-  Fichier définition modèle ::
+    .. code:: python
 
-    from geonature.utils.env import DB
-    from utils_flask_sqla_geo.serializers import shapeserializable
-
-
-    @shapeserializable
-    class MyModel(DB.Model):
-        __tablename__ = 'bla'
-        ...
+        from geonature.utils.env import DB
+        from utils_flask_sqla_geo.serializers import shapeserializable
 
 
-  Fichier utilisation modèle :
+        @shapeserializable
+        class MyModel(DB.Model):
+            __tablename__ = 'bla'
+            ...
 
-  .. code-block::
-  
-      # utilisation de as_shape()
-      data = DB.session.query(MyShapeserializableClass).all()
-      MyShapeserializableClass.as_shape(
-          geom_col='geom_4326',
-          srid=4326,
-          data=data,
-          dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
-          file_name=file_name,
-      )
+
+    Fichier utilisation modèle
+
+    .. code:: python
+
+        # utilisation de as_shape()
+        data = DB.session.query(MyShapeserializableClass).all()
+        MyShapeserializableClass.as_shape(
+            geom_col='geom_4326',
+            srid=4326,
+            data=data,
+            dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
+            file_name=file_name,
+        )
 
 
 
 - ``utils_flask_sqla_geo.utilsgeometry.FionaShapeService``
+    Classe utilitaire pour créer des shapefiles.
 
-  Classe utilitaire pour créer des shapefiles.
+    La classe contient 3 méthodes de classe :
 
-  La classe contient 3 méthodes de classe :
+    - ``FionaShapeService.create_shapes_struct()`` : crée la structure de 3 shapefiles
+    (point, ligne, polygone) à partir des colonens et de la geométrie passée
+    en paramètre
 
-- FionaShapeService.create_shapes_struct() : crée la structure de 3 shapefiles
-  (point, ligne, polygone) à partir des colonens et de la geométrie passée
-  en paramètre
+    - ``FionaShapeService.create_feature()`` : ajoute un enregistrement
+    aux shapefiles
 
-- FionaShapeService.create_feature() : ajoute un enregistrement
-  aux shapefiles
+    - ``FionaShapeService.save_and_zip_shapefiles()`` : sauvegarde et zip les
+    shapefiles qui ont au moins un enregistrement
 
-- FionaShapeService.save_and_zip_shapefiles() : sauvegarde et zip les
-  shapefiles qui ont au moins un enregistrement::
+    .. code:: python
 
         data = DB.session.query(MySQLAModel).all()
 
@@ -838,84 +842,79 @@ Réponses
 Voici quelques conseils sur l’envoi de réponse dans vos routes.
 
 - Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.
+    .. code-block:: python
 
-.. code-block:: python
+        def get_foo(pk):
+            foo = Foo.query.get_or_404(pk)
+            return jsonify(foo.as_dict(fields=...))
 
-    def get_foo(pk):
-        foo = Foo.query.get_or_404(pk)
-        return jsonify(foo.as_dict(fields=...))
+        def get_foo(pk):
+            foo = Foo.query.get_or_404(pk)
+            return FooSchema(only=...).jsonify(foo)
 
-    def get_foo(pk):
-        foo = Foo.query.get_or_404(pk)
-        return FooSchema(only=...).jsonify(foo)
+        def list_foo():
+            q = Foo.query.filter(...)
+            return jsonify([foo.as_dict(fields=...) for foo in q.all()])
 
-    def list_foo():
-        q = Foo.query.filter(...)
-        return jsonify([foo.as_dict(fields=...) for foo in q.all()])
-
-    def list_foo():
-        q = Foo.query.filter(...)
-        return FooSchema(only=...).jsonify(q.all(), many=True)
+        def list_foo():
+            q = Foo.query.filter(...)
+            return FooSchema(only=...).jsonify(q.all(), many=True)
 
 - Pour les listes vides, ne pas renvoyer le code d’erreur 404 mais une liste vide !
+    .. code-block:: python
 
-.. code-block:: python
-
-    return jsonify([])
+        return jsonify([])
 
 - Renvoyer une liste et sa longueur dans une structure de données non conventionnelle est strictement inutile, il est très simple d’accéder à la longueur de la liste en javascript via l’attribut ``length``.
 
 - Traitement des erreurs : utiliser `les exceptions prévues à cet effet <https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/>`_ :
+    .. code-block:: python
 
-.. code-block:: python
+        from werkzeug.exceptions import Fobridden, Badrequest, NotFound
 
-    from werkzeug.exceptions import Fobridden, Badrequest, NotFound
-
-    def restricted_action(pk):
-        if not is_allowed():
-            raise Forbidden
+        def restricted_action(pk):
+            if not is_allowed():
+                raise Forbidden
 
     
 - Penser à utiliser ``get_or_404`` plutôt que de lancer une exception ``NotFound``
 - Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservée aux utilisateurs non authentifiés.
 - Vérifier la validité des données fournies par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
-
-    - Marshmallow peut servir à cela ::
-
-        from marshmallow import Schema, fields, ValidationError
-        def my_route():
-            class RequestSchema(Schema):
-                value = fields.Float()
-            try:
-                data = RequestSchema().load(request.json)
-            except ValidationError as error:
-                raise BadRequest(error.messages)
+    - Marshmallow peut servir à cela
+        .. code:: python
+        
+            from marshmallow import Schema, fields, ValidationError
+            def my_route():
+                class RequestSchema(Schema):
+                    value = fields.Float()
+                try:
+                    data = RequestSchema().load(request.json)
+                except ValidationError as error:
+                    raise BadRequest(error.messages)
 
     - Cela peut être fait avec *jsonschema* :
+        .. code:: python
+        
+            from from jsonschema import validate as validate_json, ValidationError
 
-    ::
-
-        from from jsonschema import validate as validate_json, ValidationError
-
-        def my_route():
-            request_schema = {
-                "type": "object",
-                "properties": {
-                    "value": { "type": "number", },
-                },
-                "minProperties": 1,
-                "additionalProperties": False,
-            }
-            try:
-                validate_json(request.json, request_schema)
-            except ValidationError as err:
-                raise BadRequest(err.message)
+            def my_route():
+                request_schema = {
+                    "type": "object",
+                    "properties": {
+                        "value": { "type": "number", },
+                    },
+                    "minProperties": 1,
+                    "additionalProperties": False,
+                }
+                try:
+                    validate_json(request.json, request_schema)
+                except ValidationError as err:
+                    raise BadRequest(err.message)
     
 - Pour les réponses vides (exemple : route de type delete), on pourra utiliser le code de retour 204 :
+    .. code-block:: python
 
-  ::
-
-    return '', 204
+        return '', 204
 
   Lorsque par exemple une action est traitée mais aucun résultat n'est à renvoyer, inutile d’envoyer une réponse « OK ». C’est l’envoi d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenu d’une réponse non normalisée.
 
@@ -989,7 +988,7 @@ Pour cela, plusieurs solutions :
 
 - Le spécifier dans la relationship :
 
-  ::
+  .. code:: python
 
     class AcquisitionFramework(db.Model)
         datasets = db.relationships(Dataset, uselist=True, lazy='joined')
@@ -997,12 +996,11 @@ Pour cela, plusieurs solutions :
   Cependant, cette stratégie s’appliquera (sauf contre-ordre) dans tous les cas, même lorsque les DS ne sont pas nécessaires, alourdissant potentiellement certaines requêtes qui n’en ont pas usage.
 
 - Le spécifier au moment où la requête est effectuée :
+    .. code:: python
 
-  ::
+        from sqlalchemy.orm import joinedload
 
-    from sqlalchemy.orm import joinedload
-
-    af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
+        af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
 
 Il est également possible de joindre les relations d’une relation, par exemple le créateur des jeux de données :
 
@@ -1422,7 +1420,7 @@ service :
 
   Exemple : afficher les 10 premiers relevés du cd_nom 212 :
 
-  ::
+  .. code:: javascript
 
         mapListService.getData('occtax/releve',
         [{'param': 'limit', 'value': 10'},
@@ -1433,13 +1431,15 @@ service :
   L'API doit nécessairement renvoyer un objet comportant un
   GeoJson. La structure du l'objet doit être la suivante :
 
-  ::
+  .. code:: json
 
-        'total': nombre d'élément total,
-        'total_filtered': nombre d'élément filtré,
-        'page': numéro de page de la liste,
-        'limit': limite d'élément renvoyé,
-        'items': le GeoJson
+    {
+        "total": "nombre d'élément total",
+        "total_filtered": "nombre d'élément filtré",
+        "page": "numéro de page de la liste",
+        "limit": "limite d'élément renvoyé",
+        "items": "le GeoJson"
+    }
 
   Pour une liste simple sans pagination, seule la propriété 'items'
   est obligatoire.
@@ -1451,25 +1451,25 @@ service :
 
   Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2 :
 
-  ::
+  .. code:: javascript
 
       mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])
 
   puis :
 
-  ::
+  .. code:: javascript
     
       refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])
 
   Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
     
-  ::
+  .. code:: javascript
     
       mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])
 
   puis :
     
-  ::
+  .. code:: javascript
     
       mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])
 
@@ -1495,7 +1495,7 @@ Le service contient également deux propriétés publiques ``geoJsonData`` (le g
 
 Exemple d'utilisation avec une liste simple :
         
-.. code-block::
+.. code:: html
 
     <pnx-map-list
             idName="id_releve_occtax"
@@ -1516,7 +1516,7 @@ Gestion des erreurs
 GeoNature utilise un intercepteur générique afin d’afficher un toaster en cas d’erreur lors d’une requête HTTP.
 Si vous souhaitez traiter l’erreur vous-même, et empêcher le toaster par défaut de s’afficher, vous pouvez définir un header ``not-to-handle`` à votre requête :
 
-.. code-block:: typescript
+.. code:: typescript
 
     this._http.get('/url', { headers: { "not-to-handle": 'true' } })
 

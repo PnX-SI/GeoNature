@@ -1,3 +1,4 @@
+from math import ceil
 from flask import current_app
 from werkzeug.exceptions import Conflict
 
@@ -516,12 +517,22 @@ class OcchabImportActions(ImportActions):
                 .where(transient_table.c.id_station.is_not(None))
             )
             destination_table = entity.get_destination_table()
-            insert_stmt = sa.insert(destination_table).from_select(
-                names=names,
-                select=select_stmt,
-            )
-            r = db.session.execute(insert_stmt)
-            imprt.statistics.update({f"{entity.code}_count": r.rowcount})
+            batch_size = current_app.config["IMPORT"]["INSERT_BATCH_SIZE"]
+            batch_count = ceil(imprt.source_count / batch_size)
+            row_count = 0
+            for batch in range(batch_count):
+                min_line_no = batch * batch_size
+                max_line_no = (batch + 1) * batch_size
+                insert_stmt = sa.insert(destination_table).from_select(
+                    names=names,
+                    select=select_stmt.filter(
+                        transient_table.c["line_no"] >= min_line_no,
+                        transient_table.c["line_no"] < max_line_no,
+                    ),
+                )
+                row_count += db.session.execute(insert_stmt).rowcount
+                yield (batch + 1) / batch_count
+            imprt.statistics.update({f"{entity.code}_count": row_count})
 
     @staticmethod
     def remove_data_from_destination(imprt: TImports) -> None:
