@@ -69,6 +69,7 @@ export class SyntheseDataService {
     });
   }
 
+
   getSyntheseTaxonSheetObservers(
     cd_ref: number,
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
