@@ -62,8 +62,24 @@ export const SELECTOR_IMPORT_FIELDMAPPING_CD_HAB = '[data-qa=import-fieldmapping
 export const SELECTOR_IMPORT_FIELDMAPPING_CD_NOM = '[data-qa=import-fieldmapping-theme-cd_nom]';
 export const SELECTOR_IMPORT_FIELDMAPPING_DATASET =
   '[data-qa=import-fieldmapping-theme-unique_dataset_id]';
+
+export const SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_ALTITUDE_MAX =
+  '[data-qa=import-fieldmapping-theme-default-altitude_max] [data-qa=field-number-altitude_max_default_value]';
+export const SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOM_CITE =
+  '[data-qa=import-fieldmapping-theme-default-nom_cite] [data-qa=field-textarea-nom_cite_default_value]';
+export const SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATE_MIN =
+  '[data-qa=import-fieldmapping-theme-default-date_min] [data-qa=input-date]';
+export const SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOMENCLATURE_GEO_OBJECT_NATURE =
+  '[data-qa=import-fieldmapping-theme-default-id_nomenclature_geo_object_nature] ng-select';
+
+export const SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_STATION_NAME =
+  '[data-qa=import-fieldmapping-theme-default-station_name] [data-qa=field-textarea-station_name_default_value]';
+export const SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_NOMENCLATURE_DETERMINATION_TYPE =
+  '[data-qa=import-fieldmapping-theme-default-id_nomenclature_determination_type] ng-select';
+
 export const SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATASET =
   '[data-qa=import-fieldmapping-theme-default-unique_dataset_id] ng-select';
+
 export const SELECTOR_IMPORT_FIELDMAPPING_VALIDATE =
   '[data-qa=import-new-fieldmapping-model-validate]';
 export const SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE =

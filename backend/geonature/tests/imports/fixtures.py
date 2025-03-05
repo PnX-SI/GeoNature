@@ -2,7 +2,7 @@ import pytest
 from flask import g
 import sqlalchemy as sa
 from pathlib import Path
-
+import json
 from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import db
 
@@ -224,6 +224,7 @@ def fieldmapping(
     import_dataset,
     fieldmapping_unique_dataset_id,
     fieldmapping_preset_name,
+    preset_fieldmapping,
 ):
     fieldmapping = {}
     if fieldmapping_preset_name:
@@ -254,6 +255,9 @@ def fieldmapping(
 
     if fieldmapping_unique_dataset_id:
         fieldmapping["unique_dataset_id"] = fieldmapping_unique_dataset_id
+
+    if preset_fieldmapping:
+        fieldmapping.update(preset_fieldmapping["__preset__"])
 
     return fieldmapping
 
@@ -425,12 +429,22 @@ def imports(import_destination, users):
 
 
 @pytest.fixture()
-def uploaded_import(client, import_file_name, override_in_importfile, users, testfiles_folder):
+def preset_fieldmapping():
+    return None
+
+
+@pytest.fixture()
+def uploaded_import(
+    client, import_file_name, override_in_importfile, users, testfiles_folder, preset_fieldmapping
+):
     set_logged_user(client, users["user"])
 
     with open(tests_path / "files" / testfiles_folder / import_file_name, "rb") as f:
         f.seek(0)
         data = {"file": (f, import_file_name)}
+        if preset_fieldmapping:
+            data["fieldmapping"] = json.dumps(preset_fieldmapping)
+
         r = client.post(
             url_for("import.upload_file"),
             data=data,
@@ -469,7 +483,7 @@ def decoded_import(client, uploaded_import):
 
 
 @pytest.fixture()
-def field_mapped_import(client, decoded_import, fieldmapping):
+def field_mapped_import(client, decoded_import, fieldmapping, fieldmapping_preset_name):
     with db.session.begin_nested():
         decoded_import.fieldmapping = fieldmapping
     return decoded_import

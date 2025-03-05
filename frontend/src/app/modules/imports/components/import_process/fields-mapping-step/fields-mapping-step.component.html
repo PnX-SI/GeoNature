@@ -25,6 +25,7 @@
                 class="entity-tab-label"
                 [matBadge]="invalidEntityControls(entitythemes.entity.label)"
                 [matBadgeHidden]="invalidEntityControls(entitythemes.entity.label) < 1"
+                [attr.data-qa]="'import-entity-tab-' + entitythemes.entity.label"
               >
                 {{ entitythemes.entity.label }}
               </span>
