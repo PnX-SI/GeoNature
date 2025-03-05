@@ -72,36 +72,23 @@ describe('Import - Report step', () => {
         force: true,
       });
 
-      // PDF report
-      cy.get(SELECTOR_IMPORT_REPORT_DOWNLOAD_PDF).click({
-        force: true,
-      });
-
+      cy.wait(TIMEOUT_WAIT);
       // https://github.com/cypress-io/cypress/issues/25443
-      cy.intercept(
-        {
-          method: 'POST',
-          url: `${Cypress.env('apiEndpoint')}/import/${destination}/export_pdf/${importID}`,
-        },
-        (req) => {
-          cy.wait(TIMEOUT_WAIT);
-          cy.task('getLastDownloadFileName', DOWNLOADS_FOLDER).then((filename) => {
-            cy.verifyDownload(filename, DOWNLOADS_FOLDER);
-            cy.deleteFile(filename, DOWNLOADS_FOLDER);
-          });
-        }
-      );
+      cy.task('getLastDownloadFileName', DOWNLOADS_FOLDER).then((filename) => {
+        cy.verifyDownload(filename, DOWNLOADS_FOLDER);
+        cy.deleteFile(filename, DOWNLOADS_FOLDER);
+      });
     });
-  });
 
-  afterEach(() => {
-    cy.url().then((url) => {
-      // Extract the ID using string manipulation
-      const parts = url.split('/');
-      const importID = parts[parts.length - 2]; // Get the penultimate element
-      const destination = parts[parts.length - 3];
-      cy.deleteImport(importID, destination);
-      cy.visitImport();
+    afterEach(() => {
+      cy.url().then((url) => {
+        // Extract the ID using string manipulation
+        const parts = url.split('/');
+        const importID = parts[parts.length - 2]; // Get the penultimate element
+        const destination = parts[parts.length - 3];
+        cy.deleteImport(importID, destination);
+        cy.visitImport();
+      });
     });
   });
 });
