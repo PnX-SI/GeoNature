@@ -14,6 +14,14 @@ import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 
 import { DataFormService } from '../data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 
+export interface TaxonParent {
+  cd_ref: number;
+  lb_nom: string;
+  id_rang: string;
+}
+
+export type TaxonParents = Array<TaxonParent>;
+
 export interface Taxon {
   search_name?: string;
   nom_valide?: string;

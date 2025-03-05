@@ -87,4 +87,13 @@ export class RouteService implements CanActivate, CanActivateChild {
     this._router.navigate(['/404'], { skipLocationChange: true });
     return false;
   }
+
+  navigateToCDRef(cd_ref: number) {
+    const url = this._router.url;
+    let new_url = `/synthese/taxon/${cd_ref}`;
+    if (this._router.url.startsWith('/synthese/taxon/')) {
+      new_url = `${new_url}/${url.split('/').pop()}`;
+    }
+    this._router.navigate([new_url]);
+  }
 }

@@ -19,11 +19,10 @@ export class TaxonSheetService {
       return;
     }
     const taxhubFields = ['attributs', 'attributs.bib_attribut.label_attribut', 'status'];
-    this._ds.getTaxonInfo(cd_ref, taxhubFields).subscribe((taxon) => {
+    this._ds.getTaxonInfo(cd_ref, taxhubFields, undefined, true).subscribe((taxon) => {
       taxon['attributs'] = taxon['attributs'].filter((v) => {
         return this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut);
       });
-      this.taxon.next(taxon);
     });
   }
 }
