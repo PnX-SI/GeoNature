@@ -534,3 +534,21 @@ class TestImportsOcchab:
 
         assert data_habitat["n_valid_data"] == valid_numbers["habitat_valid"]
         assert data_habitat["n_invalid_data"] == valid_numbers["habitat_invalid"]
+
+    @pytest.mark.parametrize(
+        "preset_fieldmapping",
+        [
+            {
+                "__preset__": {
+                    "id_nomenclature_determination_type": {
+                        "column_src": "",
+                        "default_value": "Inconnu",
+                    },
+                    "station_name": {"column_src": "", "default_value": "test_station_name"},
+                }
+            }
+        ],
+    )
+    def test_import_upload_preset(self, field_mapped_import, preset_fieldmapping):
+        for key, value in preset_fieldmapping["__preset__"].items():
+            assert field_mapped_import.fieldmapping[key] == value
