@@ -16,7 +16,7 @@ from sqlalchemy.ext.mutable import MutableDict
 
 # revision identifiers, used by Alembic.
 revision = "650f1d749b3b"
-down_revision = "c1a6b0793360"
+down_revision = "b4e1e402ece1"
 branch_labels = None
 depends_on = "e43b01a18850"
 
