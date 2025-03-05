@@ -99,6 +99,7 @@ jobs:
           geonature db upgrade occhab-samples@head
           geonature db upgrade import-samples@head
           geonature permissions supergrant --group --nom "Grp_admin" --yes
+          geonature db autoupgrade
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
