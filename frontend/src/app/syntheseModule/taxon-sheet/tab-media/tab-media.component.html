@@ -1,6 +1,9 @@
+<div *ngIf="isLoading" class="SpinnerContainer">
+  <mat-spinner></mat-spinner>
+</div>
 <div
   class="MediaContainer MediaContainer--empty"
-  *ngIf="medias.length === 0"
+  *ngIf="!isLoading && medias.length === 0"
 >
   <p class="no-media">Aucun média</p>
 </div>

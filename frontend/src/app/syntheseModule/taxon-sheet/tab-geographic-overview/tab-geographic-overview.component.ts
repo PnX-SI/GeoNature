@@ -31,7 +31,7 @@ export class TabGeographicOverviewComponent implements OnInit {
       this._syntheseDataService
         .getSyntheseData(
           {
-            cd_ref: [taxon.cd_ref],
+            cd_ref_parent: [taxon.cd_ref],
           },
           {}
         )
