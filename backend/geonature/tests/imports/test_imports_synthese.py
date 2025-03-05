@@ -1209,7 +1209,7 @@ class TestImportsSynthese:
 
     @pytest.mark.parametrize(
         "import_file_name",
-        [("jdd_to_import_file.csv")],
+        ["jdd_to_import_file.csv"],
     )
     def test_import_jdd_file(self, imported_import, users):
         assert_import_errors(
