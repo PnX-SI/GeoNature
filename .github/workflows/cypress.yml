@@ -6,6 +6,7 @@ on:
       - hotfixes
       - develop
       - feat/import-monitorings
+      - fix-cypress-monitorings
   pull_request:
     branches:
       - master
@@ -97,6 +98,7 @@ jobs:
           geonature db upgrade cypress-samples-test@head
           geonature db autoupgrade
           geonature permissions supergrant --group --nom "Grp_admin" --yes
+          geonature db autoupgrade
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
