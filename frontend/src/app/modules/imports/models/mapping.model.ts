@@ -34,12 +34,22 @@ export interface Field {
   optional_conditions: string[];
 }
 
-export interface FieldMappingValues {
-  [propName: string]: {
-    column_src: string | string[];
-    default_value?: string | number | any;
-  };
-}
+export type FieldMappingItem = {
+  column_src: string | string[];
+  default_value?: string | number | any;
+};
+
+/*
+  Type insatisfaisant, pas assez contraignant
+  L'objectif serait d'avoir, en pseudo code:
+  interface FieldMappingValues {
+    __preset__: Record<string, FieldMappingItem>
+    [propName in string - '__preset__']: FieldMappingItem
+  }
+  Une limitation de typescript empêche ce type de syntaxe.
+  La solution est ce confus 'FieldMappingItem | any',sinon typescript s'emmêle les pinceaux a de multiples endroits
+ */
+export type FieldMappingValues = Record<string, FieldMappingItem | any>;
 
 export interface FieldMapping extends Mapping {
   values: FieldMappingValues;

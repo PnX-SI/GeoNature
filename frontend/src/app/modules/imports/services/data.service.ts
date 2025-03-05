@@ -54,16 +54,24 @@ export class ImportDataService {
     return this._http.get<Import>(`${this.getUrlApiForADestination()}/imports/${id_import}/`);
   }
 
-  addFile(file: File): Observable<Import> {
+  addFile(file: File, fieldmapping: FieldMappingValues): Observable<Import> {
     const fd = new FormData();
     fd.append('file', file, file.name);
+    if (fieldmapping) {
+      fd.append('fieldmapping', JSON.stringify(fieldmapping));
+    }
     const url = `${this.getUrlApiForADestination()}/imports/upload`;
     return this._http.post<Import>(url, fd);
   }
 
-  updateFile(importId: number, file: File): Observable<Import> {
+  updateFile(importId: number, file: File, fieldmapping: FieldMappingValues): Observable<Import> {
     let fd = new FormData();
-    fd.append('file', file, file.name);
+    if (file) {
+      fd.append('file', file, file.name);
+    }
+    if (fieldmapping) {
+      fd.append('fieldmapping', JSON.stringify(fieldmapping));
+    }
     const url = `${this.getUrlApiForADestination()}/imports/${importId}/upload`;
     return this._http.put<Import>(url, fd);
   }
