@@ -7,6 +7,6 @@ export const FILTERS_TABLE = [
   {
     columnName: 'Auteur',
     searchTerm: ['Administrateur-test-import', 'Agent-test-import'],
-    expectedRowsCount: [5, 1],
+    expectedRowsCount: [5, 2],
   },
 ];
