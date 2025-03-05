@@ -7,7 +7,7 @@ export const USERS = [
     },
     destinations: {
       Synthèse: {
-        count: 3,
+        count: 4,
         code: 'synthese',
       },
       Occhab: {
