@@ -1,4 +1,5 @@
-<div class="Infos">
+<div class="Infos"
+  [ngClass]="{ 'Infos--placeholder': !taxon }">
   <taxonomy [taxon]="taxon"></taxonomy>
   <status [taxon]="taxon"></status>
 </div>

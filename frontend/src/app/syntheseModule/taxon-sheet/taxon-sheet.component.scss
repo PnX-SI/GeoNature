@@ -5,6 +5,9 @@
   padding: 1.25rem;
   row-gap: 1.25rem;
   height: 100%;
+  &--placeholder{
+    opacity: 0.2;
+  }
 
   &__indicators {
     align-self: center;
@@ -15,6 +18,11 @@
     justify-content: space-evenly;
     gap: 1rem;
 
+    &--loader{
+      margin: auto;
+    }
+
+    &--loader,
     indicator,
     taxon-image {
       height: 9rem;

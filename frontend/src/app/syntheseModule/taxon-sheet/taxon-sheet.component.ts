@@ -20,6 +20,9 @@ import { CommonModule } from '@angular/common';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonSheetService } from './taxon-sheet.service';
 import { RouteService } from './taxon-sheet.route.service';
+import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { finalize } from 'rxjs/operators';
+import { Loadable } from './loadable';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
@@ -74,7 +77,16 @@ const INDICATORS: Array<IndicatorDescription> = [
   ],
   providers: [TaxonSheetService],
 })
-export class TaxonSheetComponent implements OnInit {
+export class TaxonSheetComponent extends Loadable implements OnInit {
+  taxon: Taxon | null = null;
+
+  get isLoadingTaxon() {
+    return this._tss.isLoading;
+  }
+  get isLoadingIndicators() {
+    return this.isLoading;
+  }
+
   readonly TAB_LINKS = [];
 
   indicators: Array<Indicator>;
@@ -86,16 +98,31 @@ export class TaxonSheetComponent implements OnInit {
     private _syntheseDataService: SyntheseDataService,
     private _routes: RouteService
   ) {
+    super();
     this.TAB_LINKS = this._routes.TAB_LINKS;
   }
+
   ngOnInit() {
+    this._tss.taxon.subscribe((taxon: Taxon | null) => {
+      this.taxon = taxon;
+    });
+
     this._route.params.subscribe((params) => {
+      this.startLoading();
       const cd_ref = params['cd_ref'];
       if (cd_ref) {
         this._tss.updateTaxonByCdRef(cd_ref);
-        this._syntheseDataService.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats) => {
-          this.setIndicators(stats);
-        });
+        this.setIndicators(null);
+        this._syntheseDataService
+          .getSyntheseTaxonSheetStat(cd_ref)
+          .pipe(
+            finalize(() => {
+              this.stopLoading();
+            })
+          )
+          .subscribe((stats) => {
+            this.setIndicators(stats);
+          });
       }
     });
   }

@@ -22,14 +22,15 @@ export class TaxonomyComponent {
     if (taxon == this._taxon) {
       return;
     }
-    this._taxon = taxon;
 
+    this._taxon = taxon;
     if (taxon) {
       this._ds.getTaxonLinnaeanParents(this.taxon).subscribe((parents) => {
         this.linnaeanParents = parents['parents'];
       });
-    } else {
-      this.linnaeanParents = [];
+    }
+    else {
+        this.linnaeanParents = [];
     }
   }
 
@@ -42,14 +43,16 @@ export class TaxonomyComponent {
     private _ds: DataFormService
   ) {}
 
-  get nomComplet(): string {
+  get nomComplet(): string | null {
+    if (!this.taxon) {
+      return null;
+    }
     for (const attributePath of TaxonomyComponent.PRIORITY) {
       if (this.taxon[attributePath]) {
         return this.taxon[attributePath];
       }
     }
-
-    return '';
+    return null;
   }
 
   navigateToCDRef(cd_ref: number) {

@@ -206,9 +206,6 @@ def taxon_medias(cd_ref):
         .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
         .order_by(TMedias.meta_create_date.desc())
     )
-    # Use taxon_sheet_utils
-    taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
-    query = query.where(Synthese.cd_nom.in_(taxref_cd_nom_list))
 
     pagination = db.paginate(query, page=page, per_page=per_page)
     return {
@@ -226,7 +223,6 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
     @json_resp
     def taxon_stats(scope, cd_ref):
         """Return stats for a specific taxon"""
-
         area_type = request.args.get("area_type")
 
         if not area_type:
