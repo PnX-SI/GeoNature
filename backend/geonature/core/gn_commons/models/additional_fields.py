@@ -1,5 +1,5 @@
 """
-    Modèles du schéma gn_commons
+Modèles du schéma gn_commons
 """
 
 from sqlalchemy.dialects.postgresql import JSONB

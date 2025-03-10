@@ -1,5 +1,5 @@
 """
-    functions to insert update or delete data in table gn_synthese.synthese
+functions to insert update or delete data in table gn_synthese.synthese
 """
 
 from sqlalchemy.exc import IntegrityError, ProgrammingError

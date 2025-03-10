@@ -1,7 +1,7 @@
 """
-    Modèles du schéma gn_monitoring
-    Correspond a la centralisation des données de base
-        relatifs aux protocoles de suivis
+Modèles du schéma gn_monitoring
+Correspond a la centralisation des données de base
+    relatifs aux protocoles de suivis
 """
 
 from geoalchemy2 import Geometry

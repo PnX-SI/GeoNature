@@ -1,5 +1,5 @@
 """
-    Description des options de configuration
+Description des options de configuration
 """
 
 import os
