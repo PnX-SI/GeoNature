@@ -1,7 +1,7 @@
 """Add taxonomie info to v_synthese_for_web_app
 
 Revision ID: d73f74e7b662
-Revises: 5cf0ce9e669c
+Revises: 9f4db1786c22
 Create Date: 2025-02-12 17:08:12.043627
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "d73f74e7b662"
-down_revision = "5cf0ce9e669c"
+down_revision = "9f4db1786c22"
 branch_labels = None
 depends_on = None
 
@@ -96,7 +96,6 @@ def upgrade():
             t.group1_inpn,
             t.group2_inpn,
             t.group3_inpn,
-            s.id_import,
             t.id_statut,
             t.id_rang,
             t.regne,
@@ -192,7 +191,6 @@ def downgrade():
             t.group1_inpn,
             t.group2_inpn,
             t.group3_inpn,
-            s.id_import
         FROM gn_synthese.synthese s
             JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
             JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
