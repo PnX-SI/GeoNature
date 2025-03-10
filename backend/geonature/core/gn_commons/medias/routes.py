@@ -1,6 +1,6 @@
 """
-    Route permettant de manipuler les fichiers
-    contenus dans gn_media
+Route permettant de manipuler les fichiers
+contenus dans gn_media
 """
 
 from flask import request, redirect, jsonify

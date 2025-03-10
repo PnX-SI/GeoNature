@@ -1,4 +1,4 @@
-""" Helpers to manipulate the execution environment """
+"""Helpers to manipulate the execution environment"""
 
 import os
 import sys
