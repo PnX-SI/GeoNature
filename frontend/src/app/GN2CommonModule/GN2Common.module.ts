@@ -103,6 +103,9 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
+import { IndividualsComponent } from './form/individuals/individuals.component';
+import { IndividualsService } from './form/individuals/individuals.service';
+import { IndividualsCreateComponent } from './form/individuals/create/individuals-create.component';
 
 @NgModule({
   imports: [
@@ -196,6 +199,8 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
     TaxonTreeComponent,
+    IndividualsComponent,
+    IndividualsCreateComponent,
   ],
   providers: [
     CommonService,
@@ -209,6 +214,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
     TranslateService,
+    IndividualsService,
   ],
   exports: [
     AcquisitionFrameworksComponent,
@@ -300,6 +306,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     TaxonomyComponent,
     TaxonTreeComponent,
     TranslateModule,
+    IndividualsComponent,
   ],
 })
 export class GN2CommonModule {
