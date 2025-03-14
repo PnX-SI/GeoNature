@@ -7,6 +7,7 @@ from geonature.core.gn_permissions import decorators as permissions
 from pypnnomenclature.models import BibNomenclaturesTypes
 
 from geonature.core.imports.models import (
+    Destination,
     Entity,
     EntityField,
     BibFields,
@@ -19,7 +20,7 @@ from geonature.utils.env import db
 
 @blueprint.route("/<destination>/fields", methods=["GET"])
 @permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
-def get_fields(scope, destination):
+def get_fields(scope, destination: Destination):
     """
     .. :quickref: Import; Get synthesis fields.
 
@@ -92,7 +93,10 @@ def get_fields(scope, destination):
                 "themes": themes,
             }
         )
-    return jsonify(data)
+        
+    processed_data = destination.actions.process_fields(destination, data)
+
+    return jsonify(processed_data if processed_data is not None else data)
 
 
 @blueprint.route("/<destination>/nomenclatures", methods=["GET"])

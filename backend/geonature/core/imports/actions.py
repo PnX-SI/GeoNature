@@ -20,6 +20,10 @@ class ImportActions:
     def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         raise NotImplementedError
 
+    @staticmethod
+    def process_fields(destination, fields):
+        pass # because optional
+
     # The output of this method is NEVER used
     @staticmethod
     def preprocess_transient_data(imprt: TImports, df) -> set:

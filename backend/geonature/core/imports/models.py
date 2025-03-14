@@ -138,8 +138,13 @@ class Destination(db.Model):
 
     @property
     def actions(self):
+        # TODO Find a proper way to type the return of the function
+        # Imported here to avoid circular dependencies
+        from geonature.core.imports.actions import ImportActions
+
         try:
-            return self.module.__import_actions__
+            _actions: ImportActions = self.module.__import_actions__
+            return _actions
         except AttributeError as exc:
             """
             This error is likely to occurs when you have some imports to a destination
