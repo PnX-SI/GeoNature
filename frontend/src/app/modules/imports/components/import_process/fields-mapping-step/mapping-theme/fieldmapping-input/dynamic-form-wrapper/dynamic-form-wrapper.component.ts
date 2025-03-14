@@ -42,6 +42,8 @@ export class DynamicFormWrapperComponent {
       return typeof value === 'string' ? value : value?.label_default;
     } else if (this.formDef.type_widget === 'taxonomy') {
       return value?.cd_nom;
+    } else if (this.formDef.type_widget === 'observers') {
+      return typeof value === 'string' ? value : value?.id_role;
     } else if (this.formDef.type_widget === 'date') {
       return this._dateParser.format(value) || undefined;
     }
@@ -54,6 +56,10 @@ export class DynamicFormWrapperComponent {
       return Promise.resolve(newDate);
     } else if (this.formDef.type_widget === 'taxonomy') {
       return this._dfs.getTaxonInfoSynchrone(parseInt(serializedValue));
+    } else if (this.formDef.type_widget === 'observers') {
+      return isNaN(+serializedValue)
+        ? Promise.resolve(serializedValue)
+        : this._dfs.getRole(parseInt(serializedValue)).toPromise();
     } else {
       try {
         const json = JSON.parse(serializedValue);
