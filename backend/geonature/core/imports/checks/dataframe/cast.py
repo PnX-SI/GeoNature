@@ -5,6 +5,7 @@ from itertools import product
 from datetime import datetime
 
 from geonature.core.imports.checks.errors import ImportCodeError
+import numpy as np
 import pandas as pd
 from sqlalchemy.sql import sqltypes
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
@@ -334,21 +335,23 @@ def check_array_int_field(
     """
 
     def to_int_array(x):
-        # Si la valeur est manquante, on la laisse telle quelle
-        if pd.isna(x):
+        # Si x est un ndarray, on le convertit en liste
+        if isinstance(x, np.ndarray):
+            x = x.tolist()
+
+        # Si c'est une valeur manquante (scalar NaN/None), on la renvoie telle quelle
+        if not isinstance(x, (list, tuple)) and pd.isna(x):
             return x
-        # La valeur doit être une liste ou un tuple
-        if isinstance(x, (list, tuple)):
-            for elem in x:
-                # On vérifie que chaque élément est bien un entier
-                if not isinstance(elem, int):
-                    return None
-            return x
-        # Si ce n'est pas une liste ou un tuple, renvoie None pour indiquer une conversion impossible
+
+        # Si c'est une liste ou tuple, on vérifie que tous les éléments sont des int
+        if isinstance(x, (list, tuple)) and all(isinstance(elem, int) for elem in x):
+            return list(x)
+
+        # Sinon conversion impossible → None
         return None
 
-    # Conversion de la colonne source en vérifiant que chaque valeur est un tableau d'entiers
-    array_col = df[source_field].apply(lambda x: to_int_array(x) if pd.notna(x) else x)
+    # Application sur la colonne sans condition externe
+    array_col = df[source_field].apply(to_int_array)
 
     # Définition des lignes invalides
     if required:
