@@ -1,0 +1,17 @@
+.CSVColumnList {
+  &__item {
+    &--used {
+      color: #787878;
+      font-style: italic;
+    }
+  }
+}
+
+.hint-condition {
+  color: #666;
+}
+
+.custom-tooltip {
+  font-size: 20px;
+  background: black !important;
+}

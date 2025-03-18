@@ -1,19 +1,11 @@
 import { Injectable } from '@angular/core';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
-  FormBuilder,
-} from '@angular/forms';
+import { FormGroup, FormControl, AbstractControl, FormBuilder } from '@angular/forms';
 import { ImportDataService } from '../data.service';
 import { Field, FieldMapping, FieldMappingValues, FormDef } from '../../models/mapping.model';
 import { BehaviorSubject, Subscription, forkJoin } from 'rxjs';
 import { ImportProcessService } from '../../components/import_process/import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormService } from '@geonature_common/form/form.service';
-import { isPlainObject } from 'lodash';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { FieldMappingPresetUtils } from '../../utils/fieldmapping-preset-utils';
@@ -57,6 +49,7 @@ export class FieldMappingService {
    * Form group for managing field mappings.
    */
   public mappingFormGroup: FormGroup;
+  public dynamicFormWrapperFormGroup: FormGroup;
 
   /**
    * Contains all field mappings.
@@ -72,10 +65,6 @@ export class FieldMappingService {
    * Names of source fields.
    */
   private sourceFields: Array<string>;
-
-  private defaultValueFormDefs: {
-    [propName: string]: FormDef;
-  } = {};
 
   private fieldsByEntity: Map<string, Array<string>> = new Map();
 
@@ -101,9 +90,7 @@ export class FieldMappingService {
     private _importDataService: ImportDataService,
     private _importProcessService: ImportProcessService,
     private _configService: ConfigService,
-    private _formservice: FormService,
-    private _dateParser: NgbDateParserFormatter,
-    private _dataFormService: DataFormService
+    private _formservice: FormService
   ) {}
 
   /**
@@ -129,7 +116,6 @@ export class FieldMappingService {
       } else {
         // this.fieldMappingStatus.unmapped.add(name_field);
       }
-      this.defaultValueFormDefs[field.name_field] = this.getFieldDefaultValueFormDef(field);
     });
   }
 
@@ -153,9 +139,6 @@ export class FieldMappingService {
   getMappings() {
     return this.mappingData;
   }
-  getDefaultValueFormDefs() {
-    return this.defaultValueFormDefs;
-  }
 
   getUnmappedFieldsLength() {
     return this.getUnmappedFields().length;
@@ -167,6 +150,9 @@ export class FieldMappingService {
   initForm() {
     this.mappingFormGroup = this._fb.group({});
     this.mappingFormGroup.updateValueAndValidity();
+
+    this.dynamicFormWrapperFormGroup = this._fb.group({});
+    this.dynamicFormWrapperFormGroup.updateValueAndValidity();
   }
 
   /**
@@ -249,57 +235,34 @@ export class FieldMappingService {
    *
    */
   populateMappingForm() {
+    // Create a dynamicformWrappergroup
+
     // Populate the form group
     this.flattenTargetFieldData(this.targetFieldsData).forEach(({ name_field, multi }) => {
-      let column_src_control: AbstractControl;
+      // console.log(this.mappingFormGroup.controls[name_field]);
+
+      let fieldControl: AbstractControl;
       let oldValue = null;
+      // let column_src_control: AbstractControl;
+      // let oldValue = null;
       if (!(name_field in this.mappingFormGroup.controls)) {
         // Control validators will be set in the following iteration
-        column_src_control = new FormControl(null, []);
-        column_src_control.valueChanges.subscribe((vc) => {
+        fieldControl = new FormControl(null, []);
+        fieldControl.valueChanges.subscribe((vc) => {
           if (Array.isArray(vc)) this.manageValueChangeMulti(oldValue, vc);
           else this.onFieldMappingChange(vc, oldValue);
           oldValue = vc;
-          column_src_control.setValue(vc, { emitEvent: false });
+          fieldControl.setValue(vc, { emitEvent: false });
         });
       } else {
-        column_src_control = this.mappingFormGroup.controls[name_field];
-      }
-
-      let default_value_control: AbstractControl;
-      const name_field_default_value = `${name_field}_default_value`;
-      if (!(name_field_default_value in this.mappingFormGroup.controls)) {
-        default_value_control = new FormControl(null, [
-          (control: AbstractControl): ValidationErrors | null => {
-            if (!multi || control.value == null || control.value == '') {
-              return null;
-            }
-
-            let isError = false;
-            try {
-              const json = JSON.parse(control.value);
-              if (!isPlainObject(json)) {
-                isError = true;
-              }
-            } catch (error) {
-              isError = true;
-            }
-
-            return isError ? { invalidJSON: true } : null;
-          },
-        ]);
-        default_value_control.valueChanges.subscribe((vc) => {
-          column_src_control.updateValueAndValidity();
-        });
-      } else {
-        default_value_control = this.mappingFormGroup.controls[name_field_default_value];
+        fieldControl = this.mappingFormGroup.controls[name_field];
       }
 
       // Reset the control in the form group
-      this.mappingFormGroup.addControl(name_field, column_src_control);
-      this.mappingFormGroup.addControl(name_field_default_value, default_value_control);
+      this.mappingFormGroup.addControl(name_field, fieldControl);
     });
 
+    // console.log('inter-field-connection');
     // Deal with inter-field conditions
     // TODO ? Move the content of this iteration in the previous iteration
     this.flattenTargetFieldData(this.targetFieldsData).forEach(
@@ -313,6 +276,7 @@ export class FieldMappingService {
                 this.fieldsByEntity.get(entity.label)
               )
             );
+          console.log(this.mappingFormGroup.get(name_field));
         }
         if (optional_conditions !== null && mandatory) {
           this.mappingFormGroup
@@ -377,46 +341,9 @@ export class FieldMappingService {
     );
     this.mappingFormGroup.reset();
     Object.entries(mappingvalues as FieldMappingValues).forEach(async ([target, source]) => {
-      let control = this.mappingFormGroup.get(target);
+      const control = this.mappingFormGroup.get(target);
       if (control) {
-        if (typeof source.column_src === 'object') {
-          let value = source.column_src;
-          let filtered = source.column_src.filter((x) => this.sourceFields.includes(x));
-          if (filtered.length > 0) {
-            value = filtered;
-          }
-          control.setValue(value);
-        } else {
-          if (
-            this.sourceFields.includes(source.column_src) ||
-            this.fieldMappingStatus.autogenerated.has(target)
-          ) {
-            control.setValue(source.column_src);
-          }
-        }
-      }
-
-      const default_value_control = this.mappingFormGroup.get(`${target}_default_value`);
-      if (default_value_control) {
-        const formDef = this.defaultValueFormDefs[target];
-        if (formDef.type_widget === 'date') {
-          return default_value_control.setValue(this._dateParser.parse(source.default_value));
-        }
-        if (formDef.type_widget === 'taxonomy' && source.default_value) {
-          const taxref = await this._dataFormService.getTaxonInfoSynchrone(source.default_value);
-          return default_value_control.setValue(taxref);
-        }
-
-        try {
-          const json = JSON.parse(source.default_value);
-          if (typeof json === 'object') {
-            default_value_control.setValue(JSON.stringify(json, null, 2));
-          } else {
-            default_value_control.setValue(source.default_value);
-          }
-        } catch (error) {
-          default_value_control.setValue(source.default_value);
-        }
+        control.setValue(source);
       }
     });
   }
@@ -445,14 +372,17 @@ export class FieldMappingService {
     return [...new Set(controlsKeys.filter((key) => controls[key].value !== null))];
   }
 
-  onFieldMappingChange(value: any, oldValue: any) {
-    if (value) {
-      this.fieldMappingStatus.mapped.add(value);
-      this.fieldMappingStatus.unmapped.delete(value);
+  onFieldMappingChange(value: string, oldValue: string) {
+    const column_src = value ? value['column_src'] : null;
+    if (column_src) {
+      this.fieldMappingStatus.mapped.add(column_src);
+      this.fieldMappingStatus.unmapped.delete(column_src);
     }
-    if (oldValue != null) {
-      this.fieldMappingStatus.mapped.delete(oldValue);
-      this.fieldMappingStatus.unmapped.add(oldValue);
+
+    const old_column_src = oldValue ? oldValue['column_src'] : null;
+    if (old_column_src) {
+      this.fieldMappingStatus.mapped.delete(old_column_src);
+      this.fieldMappingStatus.unmapped.add(old_column_src);
     }
   }
 
@@ -479,52 +409,7 @@ export class FieldMappingService {
     return false;
   }
 
-  getFieldDefaultValue(name_field: string, default_value: any) {
-    const formDef = this.defaultValueFormDefs[name_field];
-    if (formDef.type_widget === 'nomenclature') {
-      // Using the nomenclature's label instead of the ID allows us to avoid modifying the content mapping step.
-      return typeof default_value === 'string' ? default_value : default_value?.label_default;
-    }
-    if (formDef.type_widget === 'taxonomy') {
-      return default_value?.cd_nom;
-    }
-    if (formDef.type_widget === 'date') {
-      return this._dateParser.format(default_value) || undefined;
-    }
-
-    return default_value ?? undefined;
-  }
-
-  getFieldDefaultValueFormDef(field: Field): FormDef {
-    const def: any = {
-      attribut_label: 'Valeur par défaut',
-      attribut_name: `${field.name_field}_default_value`,
-      ...(field.type_field_params || {}),
-    };
-    // Like server side, we use field.mnemonique and field.multi to handle these types of field
-    if (field.mnemonique || field.type_field === 'nomenclature') {
-      return {
-        ...def,
-        type_widget: 'nomenclature',
-        code_nomenclature_type: field.mnemonique || def.code_nomenclature_type,
-        bind_all_item: true,
-      };
-    }
-    if (field.multi) {
-      return {
-        ...def,
-        type_widget: 'textarea',
-      };
-    }
-    if (field.type_field == 'dataset') {
-      const module_code =
-        this._importProcessService.getImportData().destination?.module.module_code;
-      def.creatable_in_module = module_code;
-    }
-
-    return {
-      ...def,
-      type_widget: field.type_field || 'text',
-    };
+  get moduleCode(): string {
+    return this._importProcessService.getImportData().destination?.module.module_code;
   }
 }
