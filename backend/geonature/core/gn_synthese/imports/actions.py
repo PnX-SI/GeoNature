@@ -89,7 +89,7 @@ class SyntheseImportActions(ImportActions):
             field_name: fields[field_name]
             for field_name, source_field in imprt.fieldmapping.items()
             if source_field.get("column_src", None) in imprt.columns
-            or source_field.get("default_value", None) is not None
+            or source_field.get("constant_value", None) is not None
         }
         init_rows_validity(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
@@ -225,7 +225,7 @@ class SyntheseImportActions(ImportActions):
                 if field_name in fields
                 and (
                     mapping.get("column_src", None) in imprt.columns
-                    or mapping.get("default_value") is not None
+                    or mapping.get("constant_value") is not None
                 )
             },
             fill_with_defaults=current_app.config["IMPORT"][
@@ -358,7 +358,7 @@ class SyntheseImportActions(ImportActions):
             else:
                 if (
                     column_src in imprt.columns
-                    or source_field.get("default_value", None) is not None
+                    or source_field.get("constant_value", None) is not None
                 ):
                     insert_fields |= {field}
 

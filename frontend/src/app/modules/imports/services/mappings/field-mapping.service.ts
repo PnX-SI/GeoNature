@@ -239,8 +239,6 @@ export class FieldMappingService {
 
     // Populate the form group
     this.flattenTargetFieldData(this.targetFieldsData).forEach(({ name_field, multi }) => {
-      // console.log(this.mappingFormGroup.controls[name_field]);
-
       let fieldControl: AbstractControl;
       let oldValue = null;
       // let column_src_control: AbstractControl;
@@ -276,7 +274,6 @@ export class FieldMappingService {
                 this.fieldsByEntity.get(entity.label)
               )
             );
-          console.log(this.mappingFormGroup.get(name_field));
         }
         if (optional_conditions !== null && mandatory) {
           this.mappingFormGroup

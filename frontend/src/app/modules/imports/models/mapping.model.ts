@@ -34,10 +34,16 @@ export interface Field {
   optional_conditions: string[];
 }
 
-export type FieldMappingItem = {
-  column_src: string | string[];
-  default_value?: string | number | any;
+export type FieldMappingItemConstant = {
+  column_src?: never;
+  constant_value: string | number | any;
 };
+export type FieldMappingItemCSV = {
+  column_src: string | string[];
+  constant_value?: never;
+};
+
+export type FieldMappingItem = FieldMappingItemConstant | FieldMappingItemCSV;
 
 /*
   Type insatisfaisant, pas assez contraignant

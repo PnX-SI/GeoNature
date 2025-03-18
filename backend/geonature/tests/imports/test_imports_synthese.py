@@ -85,8 +85,7 @@ def testfiles_folder():  # provide with a default value - should bve overriden
 @pytest.fixture(scope="function")
 def fieldmapping_unique_dataset_id(import_dataset):
     return {
-        "default_value": str(import_dataset.unique_dataset_id),
-        "column_src": "unique_dataset_id",
+        "constant_value": str(import_dataset.unique_dataset_id),
     }
 
 
@@ -716,7 +715,7 @@ class TestImportsSynthese:
         # Field mapping step
         fieldmapping_values = fieldmapping.copy()
         fieldmapping_values.update(
-            {"count_max": fieldmapping_values.get("count_max", {}) | {"default_value": 5}}
+            {"count_max": fieldmapping_values.get("count_max", {}) | {"constant_value": 5}}
         )
         r = self.client.post(
             url_for("import.set_import_field_mapping", import_id=imprt.id_import),
@@ -1232,11 +1231,10 @@ class TestImportsSynthese:
         [
             {
                 "__preset__": {
-                    "nom_cite": {"column_src": "", "default_value": "test_nomcite"},
-                    "altitude_max": {"column_src": "", "default_value": 10},
+                    "nom_cite": {"constant_value": "test_nomcite"},
+                    "altitude_max": {"constant_value": 10},
                     "id_nomenclature_geo_object_nature": {
-                        "column_src": "",
-                        "default_value": "Inventoriel",
+                        "constant_value": "Inventoriel",
                     },
                 }
             }

@@ -488,7 +488,7 @@ class OcchabImportActions(ImportActions):
                 else:
                     if (
                         column_src in imprt.columns
-                        or mapping.get("default_value", None) is not None
+                        or mapping.get("constant_value", None) is not None
                     ):
                         insert_fields |= {field}
             if entity.code == "station":

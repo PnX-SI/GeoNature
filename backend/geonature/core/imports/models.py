@@ -751,7 +751,7 @@ class FieldMapping(MappingTemplate):
                                 else ("array" if field.multi else "string")
                             ),
                         },
-                        "default_value": {
+                        "constant_value": {
                             "oneOf": [
                                 {"type": "boolean"},
                                 {"type": "number"},
@@ -762,7 +762,7 @@ class FieldMapping(MappingTemplate):
                     },
                     "required": [],
                     "additionalProperties": False,
-                    "anyOf": [{"required": ["column_src"]}, {"required": ["default_value"]}],
+                    "oneOf": [{"required": ["column_src"]}, {"required": ["constant_value"]}],
                 }
                 for field in fields
             },
