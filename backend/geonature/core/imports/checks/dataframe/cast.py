@@ -300,8 +300,84 @@ def check_numeric_field(
     return {target_field}
 
 
+def check_array_int_field(
+    df: pd.DataFrame, source_field: str, target_field: str, required: bool
+) -> Set[str]:
+    """
+    Check if column values are arrays (list/tuple) of integers.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to check.
+    source_field : str
+        The name of the column to check.
+    target_field : str
+        The name of the column where to store the result.
+    required : bool
+        Whether the column is mandatory or not.
+
+    Yields
+    ------
+    dict
+        A dictionary containing an error code, the column name, and the invalid rows.
+
+    Returns
+    -------
+    set
+        Set containing the name of the target field.
+
+    Notes
+    -----
+    The error codes are:
+        - INVALID_ARRAY: the value is not an array of integers.
+    """
+
+    def to_int_array(x):
+        # Si la valeur est manquante, on la laisse telle quelle
+        if pd.isna(x):
+            return x
+        # La valeur doit être une liste ou un tuple
+        if isinstance(x, (list, tuple)):
+            for elem in x:
+                # On vérifie que chaque élément est bien un entier
+                if not isinstance(elem, int):
+                    return None
+            return x
+        # Si ce n'est pas une liste ou un tuple, renvoie None pour indiquer une conversion impossible
+        return None
+
+    # Conversion de la colonne source en vérifiant que chaque valeur est un tableau d'entiers
+    array_col = df[source_field].apply(lambda x: to_int_array(x) if pd.notna(x) else x)
+
+    # Définition des lignes invalides
+    if required:
+        # Si le champ est obligatoire, toutes les valeurs non converties (None ou NaN) sont considérées comme invalides
+        invalid_rows = df[array_col.isna()]
+    else:
+        # Sinon, seules les valeurs non nulles mais non converties sont considérées comme invalides
+        invalid_rows = df[array_col.isna() & df[source_field].notna()]
+
+    # Stockage du résultat dans la colonne cible
+    df[target_field] = array_col
+    print("array_col", array_col)
+
+    # Préparation du message d'erreur en listant les valeurs problématiques
+    values_error = invalid_rows[source_field]
+    if len(invalid_rows) > 0:
+        yield dict(
+            error_code=ImportCodeError.UNKNOWN_ERROR,
+            invalid_rows=invalid_rows,
+            comment="Les valeurs suivantes ne sont pas des tableaux d'entiers : {}".format(
+                ", ".join(map(lambda x: str(x), values_error))
+            ),
+        )
+
+    return {target_field}
+
+
 def check_unicode_field(
-    df: pd.DataFrame, field: str, field_length: Optional[int]
+    df: pd.DataFrame, source_col: str, dest_col: str, field_length: Optional[int]
 ) -> Iterator[Dict[str, Any]]:
     """
     Check if column values have the right length.
@@ -324,15 +400,17 @@ def check_unicode_field(
     The error codes are:
         - INVALID_CHAR_LENGTH: the string is too long.
     """
+    df[dest_col] = df[source_col]
     if field_length is None:
-        return
-    length = df[field].apply(lambda x: len(x) if pd.notnull(x) else x)
+        return {dest_col}
+    length = df[source_col].apply(lambda x: len(x) if pd.notnull(x) else x)
     invalid_rows = df[length > field_length]
     if len(invalid_rows) > 0:
         yield dict(
             error_code=ImportCodeError.INVALID_CHAR_LENGTH,
             invalid_rows=invalid_rows,
         )
+    return {dest_col}
 
 
 def check_boolean_field(df, source_col, dest_col, required):
@@ -415,11 +493,17 @@ def check_anytype_field(
     elif isinstance(field_type, UUIDType):
         updated_cols |= yield from check_uuid_field(df, source_col, dest_col, required)
     elif isinstance(field_type, sqltypes.String):
-        yield from check_unicode_field(df, dest_col, field_length=field_type.length)
+        updated_cols |= yield from check_unicode_field(
+            df, source_col, dest_col, field_length=field_type.length
+        )
     elif isinstance(field_type, sqltypes.Boolean):
         updated_cols |= yield from check_boolean_field(df, source_col, dest_col, required)
     elif isinstance(field_type, sqltypes.Numeric):
         updated_cols |= yield from check_numeric_field(df, source_col, dest_col, required)
+    elif isinstance(field_type, sqltypes.ARRAY) and isinstance(
+        field_type.item_type, sqltypes.Integer
+    ):
+        updated_cols |= yield from check_array_int_field(df, source_col, dest_col, required)
     else:
         raise Exception(
             "Unknown type {} for field {}".format(type(field_type), dest_col)
