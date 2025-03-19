@@ -12,34 +12,59 @@
       aria-hidden="true"
     ></i>
   </small>
-  {{ item }}
-  <ng-select
-    id="{{ field.name_field }}"
-    [items]="csvColumnNames"
-    [(ngModel)]="csvColumn"
-    [multiple]="field.multi"
-    [clearable]="true"
-    [virtualScroll]="true"
-    [attr.data-qa]="'import-fieldmapping-theme-' + field.name_field"
-  >
-    <ng-template
-      ng-option-tmp
-      let-item="item"
-      let-index="index"
-      let-search="searchTerm"
+  <div class="InputFieldContainer">
+    <ng-select
+      [hidden]="inputState != InputStackState.INPUT_FILE"
+      id="{{ field.name_field }}"
+      [items]="csvColumnNames"
+      [(ngModel)]="csvColumn"
+      [multiple]="field.multi"
+      [clearable]="true"
+      [virtualScroll]="true"
+      [attr.data-qa]="'import-fieldmapping-theme-' + field.name_field"
     >
-      <div>
-        <span
-          class="pre-wrap CSVColumnList__item"
-          [ngClass]="{
-            'CSVColumnList__item--used': fm.checkTargetFieldStatus('mapped', item)
-          }"
-        >
-          {{ item }}
-        </span>
-      </div>
-    </ng-template>
-  </ng-select>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div>
+          <span
+            class="pre-wrap CSVColumnList__item"
+            [ngClass]="{
+              'CSVColumnList__item--used': fm.checkTargetFieldStatus('mapped', item)
+            }"
+          >
+            {{ item }}
+          </span>
+        </div>
+      </ng-template>
+    </ng-select>
+    <gn-dynamic-form-wrapper
+      [hidden]="inputState != InputStackState.CONSTANT"
+      [field]="field"
+      [value]="constantValue"
+      (valueEdit)="constantValueEdited($event)"
+    />
+    <button
+      mat-stroked-button
+      class="InputFieldContainer__button"
+      (click)="switchInputType()"
+      [ngClass]="{
+        'InputFieldContainer__button--selected': inputState == InputStackState.CONSTANT
+      }"
+    >
+      Constante
+    </button>
+  </div>
+
+  <div
+    *ngIf="!isCsvColumnValid"
+    class="invalid-feedback warning-feedback d-block"
+  >
+    {{ csvColumnValidityMessage }}
+  </div>
 
   <div *ngIf="formGroup.controls[field.name_field]?.errors?.required">
     <strong class="invalid-feedback d-inline">Sélectionnez {{ field.name_field }}</strong>
@@ -52,11 +77,7 @@
       {{ field.optional_conditions.length > 1 ? 'sont renseignées' : 'est renseignée' }}
     </small>
   </div>
-  <gn-dynamic-form-wrapper
-    [field]="field"
-    [value]="constantValue"
-    (valueEdit)="constantValueEdited($event)"
-  />
+
   <ng-container
     *ngIf="!formGroup.controls[field.name_field]?.errors?.required && field.mandatory_conditions"
   >

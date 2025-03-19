@@ -16,6 +16,15 @@ import { FieldMappingItem } from '@geonature/modules/imports/models/mapping.mode
 import { BibField } from './bibfield';
 
 // ////////////////////////////////////////////////////
+// Input State
+// ////////////////////////////////////////////////////
+
+enum InputStackState {
+  INPUT_FILE = 'input_file',
+  CONSTANT = 'constant',
+}
+
+// ////////////////////////////////////////////////////
 // Value type
 // ////////////////////////////////////////////////////
 
@@ -41,6 +50,29 @@ const CUSTOM_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_CONTROL_VALUE_ACCESSOR],
 })
 export class FieldMappingInputComponent implements ControlValueAccessor {
+  // ////////////////////////////////////////////////////
+  // control value accessor
+  // ////////////////////////////////////////////////////
+
+  // expose to html
+  InputStackState = InputStackState;
+
+  inputState: InputStackState = InputStackState.INPUT_FILE;
+
+  switchInputType() {
+    if (this.inputState == InputStackState.INPUT_FILE) {
+      this.inputState = InputStackState.CONSTANT;
+      this.csvColumn = null;
+    } else if (this.inputState == InputStackState.CONSTANT) {
+      this.inputState = InputStackState.INPUT_FILE;
+      this.constantValue = null;
+    } else {
+      // Should never beNever reached
+      this.constantValue = null;
+      this.inputState = InputStackState.INPUT_FILE;
+    }
+  }
+
   // ////////////////////////////////////////////////////
   // control value accessor
   // ////////////////////////////////////////////////////
@@ -88,6 +120,12 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
     }
     if (this.constantValue != this.value?.constant_value) {
       this.constantValue = this.value?.constant_value;
+    }
+
+    if (this._csvColumn) {
+      this.inputState = InputStackState.INPUT_FILE;
+    } else if (this.constantValue) {
+      this.inputState = InputStackState.CONSTANT;
     }
   }
 

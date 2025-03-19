@@ -15,3 +15,36 @@
   font-size: 20px;
   background: black !important;
 }
+
+.InputFieldContainer {
+  --height: 36px; // Default component height in GeoNature material configuration
+  // This is required because dynamic-form input define its height: we need ot overwrite it.
+  display: flex;
+  flex-flow: row nowrap;
+  column-gap: 0.25rem;
+  ng-select,
+  gn-dynamic-form-wrapper {
+    flex-grow: 2;
+  }
+
+  .ng-select {
+    ::ng-deep .ng-select-container {
+      height: var(--height) !important;
+    }
+  }
+
+  gn-dynamic-form-wrapper {
+    ::ng-deep input {
+      height: var(--height) !important;
+    }
+  }
+
+  &__button {
+    color: #c2c2c2;
+    border-color: #c2c2c2;
+    &--selected {
+      color: var(--purple);
+      border-color: var(--purple);
+    }
+  }
+}

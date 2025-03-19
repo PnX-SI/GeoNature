@@ -106,30 +106,32 @@ export class DynamicFormWrapperComponent {
   ) {}
 
   initFormControl() {
-    this._control = new FormControl(null, [
-      (control: AbstractControl): ValidationErrors | null => {
-        if (!this.field.multi || control.value == null || control.value == '') {
-          return null;
-        }
-        let isError = false;
-        try {
-          const json = JSON.parse(control.value);
-          if (!isPlainObject(json)) {
+    if (!this._control) {
+      this._control = new FormControl(null, [
+        (control: AbstractControl): ValidationErrors | null => {
+          if (!this.field.multi || control.value == null || control.value == '') {
+            return null;
+          }
+          let isError = false;
+          try {
+            const json = JSON.parse(control.value);
+            if (!isPlainObject(json)) {
+              isError = true;
+            }
+          } catch (error) {
             isError = true;
           }
-        } catch (error) {
-          isError = true;
-        }
-        return isError ? { invalidJSON: true } : null;
-      },
-    ]);
-    this._control.valueChanges
-      .pipe(debounceTime(400), distinctUntilChanged())
-      .subscribe((value) => {
-        this.valueEdit.emit(this._normalizeValue(value));
-      });
+          return isError ? { invalidJSON: true } : null;
+        },
+      ]);
+      this._control.valueChanges
+        .pipe(debounceTime(400), distinctUntilChanged())
+        .subscribe((value) => {
+          this.valueEdit.emit(this._normalizeValue(value));
+        });
 
-    this.formGroup.addControl(this.field.name_field, this._control);
+      this.formGroup.addControl(this.field.name_field, this._control);
+    }
   }
 
   // //////////////////////////////////////////////////////////////////////////
@@ -137,7 +139,7 @@ export class DynamicFormWrapperComponent {
   // //////////////////////////////////////////////////////////////////////////
 
   readonly DEFAULT_CONSTANT_FORMDEF: FormDef = {
-    attribut_label: 'Valeur constante',
+    // attribut_label: 'Valeur constante',
     type_widget: 'text',
   };
   formDef: FormDef = this.DEFAULT_CONSTANT_FORMDEF;
