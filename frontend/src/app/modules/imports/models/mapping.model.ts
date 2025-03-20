@@ -34,12 +34,14 @@ export interface Field {
   optional_conditions: string[];
 }
 
+export type FieldMappingItemConstantValue = any;
 export type FieldMappingItemConstant = {
   column_src?: never;
-  constant_value: string | number | any;
+  constant_value: FieldMappingItemConstantValue;
 };
+export type FieldMappingItemCSVValue = string | string[] | boolean;
 export type FieldMappingItemCSV = {
-  column_src: string | string[];
+  column_src: FieldMappingItemCSVValue;
   constant_value?: never;
 };
 

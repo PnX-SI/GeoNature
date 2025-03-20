@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, FormBuilder } from '@angular/forms';
 import { ImportDataService } from '../data.service';
-import { Field, FieldMapping, FieldMappingValues, FormDef } from '../../models/mapping.model';
+import {
+  Field,
+  FieldMapping,
+  FieldMappingItem,
+  FieldMappingValues,
+} from '../../models/mapping.model';
 import { BehaviorSubject, Subscription, forkJoin } from 'rxjs';
 import { ImportProcessService } from '../../components/import_process/import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormService } from '@geonature_common/form/form.service';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { DataFormService } from '@geonature_common/form/data-form.service';
 import { FieldMappingPresetUtils } from '../../utils/fieldmapping-preset-utils';
 
 interface FieldsMappingStatus {
@@ -369,17 +372,43 @@ export class FieldMappingService {
     return [...new Set(controlsKeys.filter((key) => controls[key].value !== null))];
   }
 
-  onFieldMappingChange(value: string, oldValue: string) {
-    const column_src = value ? value['column_src'] : null;
-    if (column_src) {
-      this.fieldMappingStatus.mapped.add(column_src);
-      this.fieldMappingStatus.unmapped.delete(column_src);
+  onFieldMappingChange(newValue: FieldMappingItem, previousValue: FieldMappingItem) {
+    if (newValue == previousValue) {
+      return;
     }
 
-    const old_column_src = oldValue ? oldValue['column_src'] : null;
-    if (old_column_src) {
-      this.fieldMappingStatus.mapped.delete(old_column_src);
-      this.fieldMappingStatus.unmapped.add(old_column_src);
+    // Process columns selection status
+
+    // -- New selection: add to mapped
+    if (newValue && newValue.column_src) {
+      const column_src = newValue.column_src;
+      if (typeof column_src != 'boolean') {
+        if (Array.isArray(column_src)) {
+          column_src.forEach((item: string) => {
+            this.fieldMappingStatus.mapped.add(item);
+            this.fieldMappingStatus.unmapped.delete(item);
+          });
+        } else {
+          this.fieldMappingStatus.mapped.add(column_src);
+          this.fieldMappingStatus.unmapped.delete(column_src);
+        }
+      }
+    }
+
+    // -- Previous selection: remove from mapped
+    if (previousValue && previousValue.column_src) {
+      const column_src = previousValue.column_src;
+      if (typeof column_src != 'boolean') {
+        if (Array.isArray(column_src)) {
+          column_src.forEach((item: string) => {
+            this.fieldMappingStatus.mapped.delete(item);
+            this.fieldMappingStatus.unmapped.add(item);
+          });
+        } else {
+          this.fieldMappingStatus.mapped.delete(column_src);
+          this.fieldMappingStatus.unmapped.add(column_src);
+        }
+      }
     }
   }
 

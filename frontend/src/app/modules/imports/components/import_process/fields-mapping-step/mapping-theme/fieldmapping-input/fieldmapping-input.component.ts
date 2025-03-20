@@ -12,7 +12,10 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { DynamicFormWrapperComponent } from './dynamic-form-wrapper/dynamic-form-wrapper.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FieldMappingItem } from '@geonature/modules/imports/models/mapping.model';
+import {
+  FieldMappingItem,
+  FieldMappingItemCSVValue,
+} from '@geonature/modules/imports/models/mapping.model';
 import { BibField } from './bibfield';
 
 // ////////////////////////////////////////////////////
@@ -50,29 +53,7 @@ const CUSTOM_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_CONTROL_VALUE_ACCESSOR],
 })
 export class FieldMappingInputComponent implements ControlValueAccessor {
-  // ////////////////////////////////////////////////////
-  // control value accessor
-  // ////////////////////////////////////////////////////
-
-  // expose to html
-  InputStackState = InputStackState;
-
-  inputState: InputStackState = InputStackState.INPUT_FILE;
-
-  switchInputType() {
-    if (this.inputState == InputStackState.INPUT_FILE) {
-      this.inputState = InputStackState.CONSTANT;
-      this.csvColumn = null;
-    } else if (this.inputState == InputStackState.CONSTANT) {
-      this.inputState = InputStackState.INPUT_FILE;
-      this.constantValue = null;
-    } else {
-      // Should never beNever reached
-      this.constantValue = null;
-      this.inputState = InputStackState.INPUT_FILE;
-    }
-  }
-
+  constructor(public fm: FieldMappingService) {}
   // ////////////////////////////////////////////////////
   // control value accessor
   // ////////////////////////////////////////////////////
@@ -116,7 +97,7 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
 
   updateComponentState() {
     if (this._csvColumn != this.value?.column_src) {
-      this._csvColumn = this.value?.column_src;
+      this.csvColumn = this.value?.column_src;
     }
     if (this.constantValue != this.value?.constant_value) {
       this.constantValue = this.value?.constant_value;
@@ -136,24 +117,37 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   @Input()
   csvColumnNames: Array<string> = [];
 
-  _csvColumn: string | string[] | null = null;
+  _csvColumn: FieldMappingItemCSVValue | null = null;
 
-  get csvColumn(): string | string[] | null {
+  get csvColumn(): FieldMappingItemCSVValue | null {
     return this._csvColumn;
   }
 
-  set csvColumn(csvColumn: string | string[] | null) {
+  set csvColumn(csvColumn: FieldMappingItemCSVValue | null) {
     if (this._csvColumn == csvColumn) {
       return;
     }
 
     this._csvColumn = csvColumn;
-    if (csvColumn) {
+
+    if (this.csvColumn) {
       this.constantValue = null;
+      if (!this._isColumnValid(this.csvColumn)) {
+        this._csvColumn = null;
+      }
     }
     this.updateValue();
     this.onChanged(this.value);
     this.onTouched(true);
+  }
+
+  _isColumnValid(csvColumn: FieldMappingItemCSVValue): boolean {
+    if (typeof csvColumn == 'boolean') {
+      return true;
+    }
+    return Array.isArray(csvColumn)
+      ? csvColumn.every((column) => this.csvColumnNames.includes(column))
+      : this.csvColumnNames.includes(csvColumn);
   }
 
   // //////////////////////////////////////////////////////////////////////////
@@ -216,9 +210,8 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   }
 
   // ////////////////////////////////////////////////////
-  // ctor
+  // generate
   // ////////////////////////////////////////////////////
-  constructor(public fm: FieldMappingService) {}
 
   // TODO: this should not exist at this level. Too specific
   get shouldDisplaySINPGenerateAlert(): boolean {
@@ -244,5 +237,28 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
 
   get mandatoryFieldLabels(): string[] {
     return this._getFieldsLabel(this._field.mandatory_conditions);
+  }
+
+  // ////////////////////////////////////////////////////
+  // Input Stack state
+  // ////////////////////////////////////////////////////
+
+  // expose to html
+  InputStackState = InputStackState;
+
+  inputState: InputStackState = InputStackState.INPUT_FILE;
+
+  switchInputType() {
+    if (this.inputState == InputStackState.INPUT_FILE) {
+      this.inputState = InputStackState.CONSTANT;
+      this.csvColumn = null;
+    } else if (this.inputState == InputStackState.CONSTANT) {
+      this.inputState = InputStackState.INPUT_FILE;
+      this.constantValue = null;
+    } else {
+      // Should never beNever reached
+      this.constantValue = null;
+      this.inputState = InputStackState.INPUT_FILE;
+    }
   }
 }

@@ -28,15 +28,15 @@ export class DynamicFormWrapperComponent {
       return;
     }
 
-    this._denormalizeValue(value).then((normalizedValue) => {
-      if (this._control.value == normalizedValue) {
+    this._deserializeValue(value).then((serializedValue) => {
+      if (this._control.value == serializedValue) {
         return;
       }
-      this._control.setValue(normalizedValue);
+      this._control.setValue(serializedValue);
     });
   }
 
-  _normalizeValue(value: any): string {
+  _serializeValue(value: any): string {
     if (this.formDef.type_widget === 'nomenclature') {
       // Using the nomenclature's label instead of the ID allows us to avoid modifying the content mapping step.
       return typeof value === 'string' ? value : value?.label_default;
@@ -48,23 +48,23 @@ export class DynamicFormWrapperComponent {
     return value;
   }
 
-  _denormalizeValue(value: string): Promise<any> {
+  _deserializeValue(serializedValue: string): Promise<any> {
     if (this.formDef.type_widget === 'date') {
-      const newDate = this._dateParser.parse(value);
+      const newDate = this._dateParser.parse(serializedValue);
       return Promise.resolve(newDate);
     } else if (this.formDef.type_widget === 'taxonomy') {
-      return this._dfs.getTaxonInfoSynchrone(parseInt(value));
+      return this._dfs.getTaxonInfoSynchrone(parseInt(serializedValue));
     } else {
       try {
-        const json = JSON.parse(value);
+        const json = JSON.parse(serializedValue);
         if (typeof json === 'object') {
           const newJson = JSON.stringify(json, null, 2);
           return Promise.resolve(newJson);
         } else {
-          return Promise.resolve(value);
+          return Promise.resolve(serializedValue);
         }
       } catch (error) {
-        return Promise.resolve(value);
+        return Promise.resolve(serializedValue);
       }
     }
   }
@@ -127,7 +127,7 @@ export class DynamicFormWrapperComponent {
       this._control.valueChanges
         .pipe(debounceTime(400), distinctUntilChanged())
         .subscribe((value) => {
-          this.valueEdit.emit(this._normalizeValue(value));
+          this.valueEdit.emit(this._serializeValue(value));
         });
 
       this.formGroup.addControl(this.field.name_field, this._control);
