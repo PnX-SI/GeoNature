@@ -98,7 +98,8 @@ export class FieldsMappingStepComponent implements OnInit {
     }
 
     // Mapping stored data
-    let mappingValue = this._fieldMappingService.currentFieldMapping.value;
+    const fieldmapping = this._fieldMappingService.currentFieldMapping.value;
+
     // is mapping update right for the current user is at admin level
     const hasAdminUpdateMappingRight =
       this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 2;
@@ -108,21 +109,21 @@ export class FieldsMappingStepComponent implements OnInit {
     const currentUser = this._authService.getCurrentUser();
 
     if (this._fieldMappingService.mappingFormGroup.dirty && this.cruved.C) {
-      if (mappingValue) {
-        const intersectMappingOwnerUser = mappingValue['owners'].filter((x) =>
-          x.identifiant == currentUser.user_login ? mappingValue['owners'] : false
+      if (fieldmapping) {
+        const intersectMappingOwnerUser = fieldmapping['owners'].filter((x) =>
+          x.identifiant == currentUser.user_login ? fieldmapping['owners'] : false
         );
 
         if (
-          mappingValue.public &&
+          fieldmapping.public &&
           (hasAdminUpdateMappingRight ||
             (hasOwnMappingUpdateRight && intersectMappingOwnerUser.length > 0))
         ) {
           this.updateAvailable = true;
-          this.modalCreateMappingForm.setValue(mappingValue.label);
-        } else if (!mappingValue.public) {
+          this.modalCreateMappingForm.setValue(fieldmapping.label);
+        } else if (!fieldmapping.public) {
           this.updateAvailable = true;
-          this.modalCreateMappingForm.setValue(mappingValue.label);
+          this.modalCreateMappingForm.setValue(fieldmapping.label);
         } else {
           this.updateAvailable = false;
         }

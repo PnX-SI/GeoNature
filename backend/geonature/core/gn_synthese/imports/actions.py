@@ -57,6 +57,13 @@ from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
 
 
+def get_boolean_value(bib_field: typing.Union[BibFields, None], default_value: bool) -> bool:
+    if not bib_field:
+        return default_value
+
+    return bib_field.get("constant_value", default_value)
+
+
 class SyntheseImportActions(ImportActions):
 
     @staticmethod
@@ -265,7 +272,10 @@ class SyntheseImportActions(ImportActions):
         if "entity_source_pk_value" in selected_fields:
             check_duplicate_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
 
-        if imprt.fieldmapping.get("altitudes_generate", False):
+        if get_boolean_value(
+            imprt.fieldmapping.get("altitudes_generate", None),
+            False,
+        ):
             generate_altitudes(
                 imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
             )
@@ -288,8 +298,8 @@ class SyntheseImportActions(ImportActions):
                     entity,
                     selected_fields["unique_id_sinp"],
                 )
-        if imprt.fieldmapping.get(
-            "unique_id_sinp_generate",
+        if get_boolean_value(
+            imprt.fieldmapping.get("unique_id_sinp_generate", None),
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             generate_missing_uuid(imprt, entity, fields["unique_id_sinp"])
@@ -339,12 +349,16 @@ class SyntheseImportActions(ImportActions):
             fields["id_area_attachment"],  # XXX sure?
             fields["id_dataset"],
         }
-        if imprt.fieldmapping.get(
-            "unique_id_sinp_generate",
+        if get_boolean_value(
+            imprt.fieldmapping.get("unique_id_sinp_generate", None),
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             insert_fields |= {fields["unique_id_sinp"]}
-        if imprt.fieldmapping.get("altitudes_generate", False):
+
+        if get_boolean_value(
+            imprt.fieldmapping.get("altitudes_generate", None),
+            False,
+        ):
             insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
 
         for field_name, source_field in imprt.fieldmapping.items():

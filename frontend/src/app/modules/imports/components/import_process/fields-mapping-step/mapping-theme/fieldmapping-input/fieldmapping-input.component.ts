@@ -17,9 +17,10 @@ import {
   FieldMappingItemCSVValue,
 } from '@geonature/modules/imports/models/mapping.model';
 import { BibField } from './bibfield';
+import { ConfigService } from '@geonature/services/config.service';
 
 // ////////////////////////////////////////////////////
-// Input State
+// control value accessor
 // ////////////////////////////////////////////////////
 
 enum InputStackState {
@@ -53,7 +54,10 @@ const CUSTOM_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_CONTROL_VALUE_ACCESSOR],
 })
 export class FieldMappingInputComponent implements ControlValueAccessor {
-  constructor(public fm: FieldMappingService) {}
+  constructor(
+    public fm: FieldMappingService,
+    private _configService: ConfigService
+  ) {}
   // ////////////////////////////////////////////////////
   // control value accessor
   // ////////////////////////////////////////////////////
@@ -86,7 +90,7 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
       this.value = {
         column_src: this._csvColumn,
       };
-    } else if (this.constantValue) {
+    } else if (this.constantValue != null) {
       this.value = {
         constant_value: this.constantValue,
       };
@@ -105,7 +109,7 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
 
     if (this._csvColumn) {
       this.inputState = InputStackState.INPUT_FILE;
-    } else if (this.constantValue) {
+    } else if (this.constantValue != null) {
       this.inputState = InputStackState.CONSTANT;
     }
   }
@@ -154,15 +158,15 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   // Constant value Selector
   // //////////////////////////////////////////////////////////////////////////
 
-  constantValue: string | null = null;
+  constantValue: string | boolean | null = null;
 
-  constantValueEdited(constantValue: string | null) {
-    if (this.constantValue == constantValue) {
+  constantValueEdited(constantValue: string | boolean | null) {
+    if (this.constantValue === constantValue) {
       return;
     }
 
     this.constantValue = constantValue;
-    if (constantValue) {
+    if (this.constantValue != null) {
       this._csvColumn = null;
     }
     this.updateValue();
@@ -179,6 +183,10 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   @Input()
   set field(field: BibField) {
     this._field = field;
+    if (this._field.name_field === 'unique_id_sinp_generate') {
+      this.constantValue = this._configService.IMPORT.DEFAULT_GENERATE_MISSING_UUID;
+      this.updateValue();
+    }
   }
   get field(): BibField {
     return this._field;
@@ -210,15 +218,19 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   }
 
   // ////////////////////////////////////////////////////
-  // generate
+  // SINPGenerateAlert
   // ////////////////////////////////////////////////////
 
-  // TODO: this should not exist at this level. Too specific
+  get sinpGenerate(): boolean {
+    return this.constantValue === true;
+  }
+
+  set sinpGenerate(value: boolean) {
+    this.constantValueEdited(value);
+  }
+
   get shouldDisplaySINPGenerateAlert(): boolean {
-    return (
-      this._field.name_field === 'unique_id_sinp_generate' &&
-      !this.formGroup.get(this._field.name_field).value
-    );
+    return this._field.name_field === 'unique_id_sinp_generate' && !this.sinpGenerate;
   }
 
   // //////////////////////////////////////////////////////////////////////////

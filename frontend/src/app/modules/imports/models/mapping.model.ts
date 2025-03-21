@@ -39,7 +39,7 @@ export type FieldMappingItemConstant = {
   column_src?: never;
   constant_value: FieldMappingItemConstantValue;
 };
-export type FieldMappingItemCSVValue = string | string[] | boolean;
+export type FieldMappingItemCSVValue = string | string[];
 export type FieldMappingItemCSV = {
   column_src: FieldMappingItemCSVValue;
   constant_value?: never;
