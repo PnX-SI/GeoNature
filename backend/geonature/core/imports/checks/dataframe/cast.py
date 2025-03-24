@@ -491,6 +491,8 @@ def check_anytype_field(
     updated_cols = set()
     if isinstance(field_type, sqltypes.DateTime):
         updated_cols |= yield from check_datetime_field(df, source_col, dest_col, required)
+    if isinstance(field_type, sqltypes.Date):
+        updated_cols |= yield from check_datetime_field(df, source_col, dest_col, required)
     elif isinstance(field_type, sqltypes.Integer):
         updated_cols |= yield from check_integer_field(df, source_col, dest_col, required)
     elif isinstance(field_type, UUIDType):
