@@ -145,7 +145,10 @@ def report_error(imprt: TImports, entity, df, error):
     df.loc[invalid_rows.index, entity.validity_column] = False
     # df['gn_invalid_reason'][invalid_rows.index.intersection(df['gn_invalid_reason'].isnull())] = \
     #        f'{error_type.name}'  # FIXME comment
-    ordered_invalid_rows = sorted(invalid_rows["line_no"])
+    try:
+        ordered_invalid_rows = sorted(invalid_rows["line_no"])
+    except:
+        ordered_invalid_rows = []
     column = generated_fields.get(error["column"], error["column"])
     column = imprt.fieldmapping.get(column, {}).get("column_src", column)
     # If an error for same import, same column and of the same type already exists,
