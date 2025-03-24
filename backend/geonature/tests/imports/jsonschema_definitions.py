@@ -352,6 +352,9 @@ jsonschema_definitions = {
             "id_unique_column": {
                 "type": ["integer", "null"],
             },
+            "id_object": {
+                "type": ["integer", "null"],
+            },
         },
         "additionalProperties": False,
     },
