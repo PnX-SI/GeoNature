@@ -36,7 +36,7 @@ def upgrade():
         ),
     )
     op.execute(
-        "ALTER TABLE gn_imports.bib_entities ADD CONSTRAINT bib_entities_t_objects_fk FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON DELETE CASCADE;"
+        "ALTER TABLE gn_imports.bib_entities ADD CONSTRAINT bib_entities_t_objects_fk FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object);"
     )
 
 
