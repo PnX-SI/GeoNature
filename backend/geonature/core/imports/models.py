@@ -213,9 +213,16 @@ class Destination(db.Model):
         if not user:
             user = g.current_user
 
-        max_scope = get_scopes_by_action(id_role=user.id_role, module_code=self.module.module_code)[
-            action_code
-        ]
+        scopes = [0]
+        for entity in self.entities:
+            scopes.append(
+                get_scopes_by_action(
+                    id_role=user.id_role,
+                    module_code=self.module.module_code,
+                    object_code=entity.object.code_object,
+                )[action_code]
+            )
+        max_scope = max(scopes)
         return max_scope > 0
 
     def __repr__(self):
@@ -279,6 +286,9 @@ class Entity(db.Model):
     childs = relationship("Entity", back_populates="parent")
     fields = relationship("EntityField", back_populates="entity")
     unique_column = relationship("BibFields")
+
+    id_object = db.Column(db.Integer, db.ForeignKey("gn_permissions.t_objects.id_object"))
+    object = relationship("PermObject")
 
     def get_destination_table(self):
         return Table(
