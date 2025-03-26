@@ -1,18 +1,14 @@
 <form>
   <fieldset>
-    <div
-      *ngIf="userFieldMappings.length > 0"
-      class="form-group"
-    >
+    <div class="form-group">
       <legend class="px-1">{{ 'Import.Mapping.ChooseMapping' | translate }}</legend>
       <ng-select
         id="mappingSelection"
         [items]="userFieldMappings"
         [clearable]="true"
         [formControl]="fieldMappingForm"
-        [compareWith]="areMappingFieldEqual"
         [disableControl]="!userFieldMappings.length"
-        placeholder="{{ 'Browse' | translate }}"
+        placeholder="{{ 'Import.Mapping.ChooseMapping' | translate }}"
         data-qa="import-fieldmapping-selection-select"
       >
         <ng-template
