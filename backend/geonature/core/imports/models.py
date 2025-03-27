@@ -767,11 +767,15 @@ class FieldMapping(MappingTemplate):
                 }
                 for field in fields
             },
-            "required": [
-                field.name_field
-                for field in fields
-                if field.mandatory and not field.optional_conditions
-            ],
+            "required": list(
+                set(
+                    [
+                        field.name_field
+                        for field in fields
+                        if field.mandatory and not field.optional_conditions
+                    ]
+                )
+            ),
             "dependentRequired": {
                 field.name_field: field.mandatory_conditions
                 for field in fields
@@ -779,13 +783,15 @@ class FieldMapping(MappingTemplate):
             },
             "additionalProperties": False,
         }
-        optional_conditions = [
-            optional_conditions_to_jsonschema(field.name_field, field.optional_conditions)
-            for field in fields
-            if field.optional_conditions
-        ]
+        optional_conditions = set(
+            [
+                optional_conditions_to_jsonschema(field.name_field, field.optional_conditions)
+                for field in fields
+                if field.optional_conditions
+            ]
+        )
         if optional_conditions:
-            schema["allOf"] = optional_conditions
+            schema["allOf"] = list(optional_conditions)
 
         try:
             validate_json(field_mapping_json, schema)
