@@ -57,10 +57,7 @@ from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
 
 
-def get_boolean_value(bib_field: typing.Union[BibFields, None], default_value: bool) -> bool:
-    if not bib_field:
-        return default_value
-
+def get_boolean_value(bib_field: BibFields, default_value: bool) -> bool:
     return bib_field.get("constant_value", default_value)
 
 
@@ -272,8 +269,9 @@ class SyntheseImportActions(ImportActions):
         if "entity_source_pk_value" in selected_fields:
             check_duplicate_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
 
-        if get_boolean_value(
-            imprt.fieldmapping.get("altitudes_generate", None),
+        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
+        if altitudes_generate_field and get_boolean_value(
+            altitudes_generate_field,
             False,
         ):
             generate_altitudes(
@@ -298,8 +296,9 @@ class SyntheseImportActions(ImportActions):
                     entity,
                     selected_fields["unique_id_sinp"],
                 )
-        if get_boolean_value(
-            imprt.fieldmapping.get("unique_id_sinp_generate", None),
+        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
+        if unique_id_sinp_generate_field and get_boolean_value(
+            unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             generate_missing_uuid(imprt, entity, fields["unique_id_sinp"])
@@ -349,14 +348,17 @@ class SyntheseImportActions(ImportActions):
             fields["id_area_attachment"],  # XXX sure?
             fields["id_dataset"],
         }
-        if get_boolean_value(
-            imprt.fieldmapping.get("unique_id_sinp_generate", None),
+
+        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
+        if unique_id_sinp_generate_field and get_boolean_value(
+            unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             insert_fields |= {fields["unique_id_sinp"]}
 
-        if get_boolean_value(
-            imprt.fieldmapping.get("altitudes_generate", None),
+        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
+        if altitudes_generate_field and get_boolean_value(
+            altitudes_generate_field,
             False,
         ):
             insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
