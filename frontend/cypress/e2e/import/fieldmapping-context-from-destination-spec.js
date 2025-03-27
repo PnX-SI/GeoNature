@@ -30,13 +30,6 @@ const paramsByDestination = [
     destination: 'synthese',
     queryParams: [
       {
-        paramsName: 'nom_cite',
-        paramsValue: 'test_nomcite',
-        isNgSelect: false,
-        expectedValue: 'test_nomcite',
-        constantDataQA: SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOM_CITE,
-      },
-      {
         paramsName: 'altitude_max',
         paramsValue: 10,
         isNgSelect: false,
@@ -56,6 +49,13 @@ const paramsByDestination = [
         isNgSelect: true,
         expectedValue: 'Inventoriel',
         constantDataQA: SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOMENCLATURE_GEO_OBJECT_NATURE,
+      },
+      {
+        paramsName: 'nom_cite',
+        paramsValue: 'test_nomcite',
+        isNgSelect: false,
+        expectedValue: 'test_nomcite',
+        constantDataQA: SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOM_CITE,
       },
     ],
   },
@@ -112,6 +112,7 @@ describe('Import - Upload step', () => {
         it(`Validates fields for destination: ${destination}`, () => {
           queryParams.forEach(
             ({ expectedValue, isNgSelect, entityLabel, constantDataQA: constantDataQA }) => {
+              cy.wait(200);
               if (entityLabel) {
                 const dataQaEntity = `[data-qa="import-entity-tab-${entityLabel}"]`;
                 cy.get(dataQaEntity, { timeout: 30000 }).should('be.visible').click();
