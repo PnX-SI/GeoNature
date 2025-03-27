@@ -40,7 +40,7 @@ const paramsByDestination = [
         paramsName: 'date_min',
         paramsValue: '2024-12-12',
         isNgSelect: false,
-        expectedValue: '2024-12-12',
+        expectedValue: '12/12/2024',
         constantDataQA: SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATE_MIN,
       },
       {
