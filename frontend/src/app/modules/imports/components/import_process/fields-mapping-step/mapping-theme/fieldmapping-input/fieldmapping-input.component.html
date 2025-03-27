@@ -108,19 +108,22 @@
   class="form-group"
   [attr.data-qa]="'import-fieldmapping-theme-' + field.name_field"
 >
-  <p
-    *ngIf="shouldDisplaySINPGenerateAlert"
-    class="text-warning text-sm"
-  >
-    {{ 'Import.FieldMapping.SinpUUIDWarning' | translate }}
-  </p>
-  <label for="{{ field.name_field }}">
-    <small>{{ field.fr_label }} :</small>
-  </label>
-  <input
-    class="ml-1"
-    type="checkbox"
-    id="{{ field.name_field }}"
-    [(ngModel)]="sinpGenerate"
-  />
+  <div>
+    <label for="{{ field.name_field }}">
+      <small>{{ field.fr_label }} :</small>
+    </label>
+    <input
+      class="ml-1"
+      type="checkbox"
+      id="{{ field.name_field }}"
+      [(ngModel)]="sinpGenerate"
+    />
+  </div>
+  <div>
+    <small *ngIf="shouldDisplaySINPGenerateAlert">
+      <strong class="text-warning">
+        {{ 'Import.FieldMapping.SinpUUIDWarning' | translate }}
+      </strong>
+    </small>
+  </div>
 </div>
