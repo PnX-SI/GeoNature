@@ -28,6 +28,23 @@
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
+        <mat-select-trigger
+          *ngIf="!multiple"
+          style="display: flex; align-items: center"
+        >
+          <span>
+            {{ parentFormControl.value ? displayLabelFromValue(parentFormControl.value) : '' }}
+          </span>
+          <button
+            *ngIf="parentFormControl.value"
+            mat-icon-button
+            matSuffix
+            (click)="clearSelection($event)"
+            style="margin-left: auto"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-select-trigger>
         <mat-select-trigger *ngIf="multiple">
           <mat-chip-list>
             <mat-chip
@@ -76,7 +93,6 @@
       [bindLabel]="keyLabel"
       [bindValue]="keyValue"
       [multiple]="multiple"
-      [clearable]="false"
       [virtualScroll]="true"
       [required]="required"
       [formControl]="parentFormControl"
