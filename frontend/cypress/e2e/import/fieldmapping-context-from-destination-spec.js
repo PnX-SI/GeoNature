@@ -120,8 +120,9 @@ describe('Import - Upload step', () => {
               handleFieldValidation(constantDataQA, expectedValue, isNgSelect);
             }
           );
-          cy.visitImport();
-          cy.removeFirstImportInList();
+        });
+        afterEach(() => {
+          cy.deleteCurrentImport();
         });
       });
     });
