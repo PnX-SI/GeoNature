@@ -714,9 +714,7 @@ class TestImportsSynthese:
 
         # Field mapping step
         fieldmapping_values = fieldmapping.copy()
-        fieldmapping_values.update(
-            {"count_max": fieldmapping_values.get("count_max", {}) | {"constant_value": 5}}
-        )
+        fieldmapping_values["count_max"] = {"constant_value": 5}
         r = self.client.post(
             url_for("import.set_import_field_mapping", import_id=imprt.id_import),
             data=fieldmapping_values,
@@ -1207,8 +1205,15 @@ class TestImportsSynthese:
             assert error_row == source_row
 
     @pytest.mark.parametrize(
-        "import_file_name",
-        ["jdd_to_import_file.csv"],
+        "import_file_name,fieldmapping_unique_dataset_id",
+        [
+            (
+                "jdd_to_import_file.csv",
+                {
+                    "column_src": "unique_dataset_id",
+                },
+            )
+        ],
     )
     def test_import_jdd_file(self, imported_import, users):
         assert_import_errors(
