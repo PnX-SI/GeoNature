@@ -326,14 +326,19 @@ class OcchabImportActions(ImportActions):
             geom_4326_field=fields["geom_4326"],
             geom_local_field=fields["geom_local"],
         )
-        autogenerate_field = imprt.fieldmapping.get("altitudes_generate", False)
-        if autogenerate_field and autogenerate_field["column_src"]:
-            # TODO@TestImportsOcchab.test_import_valid_file: add testcase
+
+        # Process altitude generate field
+        # TODO@TestImportsOcchab.test_import_valid_file: add testcase
+        default_altitude_generate = True
+        altitudes_generate = default_altitude_generate
+        altitudes_generate_bib_field = imprt.fieldmapping.get("altitudes_generate", None)
+        if altitudes_generate_bib_field:
+            altitudes_generate = altitudes_generate_bib_field.get(
+                "constant_value", default_altitude_generate
+            )
+        if altitudes_generate:
             generate_altitudes(
-                imprt,
-                fields["the_geom_local"],
-                fields["altitude_min"],
-                fields["altitude_max"],
+                imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
             )
         check_altitudes(
             imprt,
