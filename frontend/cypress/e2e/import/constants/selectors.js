@@ -64,14 +64,16 @@ export const SELECTOR_IMPORT_FIELDMAPPING_DATASET =
   '[data-qa=import-fieldmapping-theme-unique_dataset_id]';
 
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_ALTITUDE_MAX =
-  '[data-qa=field-text-altitude_max]';
-export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOM_CITE = '[data-qa=field-text-nom_cite]';
-export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATE_MIN = '[data-qa=field-text-date_min]';
+  '[data-qa=import-fieldmapping-theme-constant-altitude_max] input';
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOM_CITE =
+  '[data-qa=import-fieldmapping-theme-constant-nom_cite] input';
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATE_MIN =
+  '[data-qa=import-fieldmapping-theme-constant-date_min] input';
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOMENCLATURE_GEO_OBJECT_NATURE =
   '[data-qa=import-fieldmapping-theme-constant-id_nomenclature_geo_object_nature] ng-select';
 
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_STATION_NAME =
-  '[data-qa=field-textarea-station_name]';
+  '[data-qa=import-fieldmapping-theme-constant-station_name] textarea';
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOMENCLATURE_DETERMINATION_TYPE =
   '[data-qa=import-fieldmapping-theme-constant-id_nomenclature_determination_type] ng-select';
 
