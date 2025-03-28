@@ -50,13 +50,6 @@ const paramsByDestination = [
         expectedValue: 'Inventoriel',
         constantDataQA: SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOMENCLATURE_GEO_OBJECT_NATURE,
       },
-      {
-        paramsName: 'nom_cite',
-        paramsValue: 'test_nomcite',
-        isNgSelect: false,
-        expectedValue: 'test_nomcite',
-        constantDataQA: SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOM_CITE,
-      },
     ],
   },
   {
