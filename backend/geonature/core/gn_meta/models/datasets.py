@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID as UUIDType
+from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.models import qfilter
@@ -88,6 +88,8 @@ class TDatasets(db.Model):
     )  # overlaps as alias of digitizer
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
+
+    additional_data = db.Column(JSONB, nullable=True, server_default="{}")
 
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
