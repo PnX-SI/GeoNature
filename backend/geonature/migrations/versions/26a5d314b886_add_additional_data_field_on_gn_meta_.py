@@ -1,7 +1,7 @@
 """add additional_data field on gn_meta tables
 
 Revision ID: 26a5d314b886
-Revises: 22cb0ffdff6d
+Revises: 4e6ce32305f0
 Create Date: 2025-03-28 20:12:50.016630
 
 """
@@ -13,7 +13,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 # revision identifiers, used by Alembic.
 revision = "26a5d314b886"
-down_revision = "22cb0ffdff6d"
+down_revision = "4e6ce32305f0"
 branch_labels = None
 depends_on = None
 
