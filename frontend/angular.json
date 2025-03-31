@@ -90,8 +90,7 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true,
-              "baseHref": "/geonature/"
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
