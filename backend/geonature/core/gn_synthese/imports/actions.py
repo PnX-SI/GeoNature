@@ -426,11 +426,6 @@ class SyntheseImportActions(ImportActions):
         }
 
     @staticmethod
-    def remove_data_from_destination(imprt: TImports) -> None:
-        with start_sentry_child(op="task", description="clean imported data"):
-            db.session.execute(sa.delete(Synthese).where(Synthese.id_import == imprt.id_import))
-
-    @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:
         return taxon_distribution_plot(imprt)
 
