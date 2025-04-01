@@ -431,4 +431,9 @@ class SyntheseImportActions(ImportActions):
 
     @staticmethod
     def compute_bounding_box(imprt: TImports):
-        return compute_bounding_box(imprt, "observation", "the_geom_4326")
+        return compute_bounding_box(
+            imprt=imprt,
+            geom_entity_code="observation",
+            geom_4326_field_name__transient="the_geom_4326",
+            geom_4326_field_name__destination="the_geom_4326",
+        )
