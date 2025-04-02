@@ -18,7 +18,6 @@ import { ConfigService } from '@geonature/services/config.service';
 import { FormControl } from '@angular/forms';
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
-
 @Component({
   selector: 'pnx-fields-mapping-step',
   templateUrl: './fields-mapping-step.component.html',
@@ -35,8 +34,7 @@ export class FieldsMappingStepComponent implements OnInit {
   public updateAvailable: boolean = false;
   public step: Step;
   public modalCreateMappingForm = new FormControl('');
-  public defaultValueFormDefs: any = {};
-  public modalData:ModalData;
+  public modalData: ModalData;
   constructor(
     public _fieldMappingService: FieldMappingService,
     private _route: ActivatedRoute,
@@ -57,7 +55,6 @@ export class FieldsMappingStepComponent implements OnInit {
         if (!fieldMappings) return;
         this._fieldMappingService.parseData({ fieldMappings, targetFields, sourceFields });
         this.targetFields = this._fieldMappingService.getTargetFieldsData();
-        this.defaultValueFormDefs = this._fieldMappingService.getDefaultValueFormDefs();
         this.sourceFields = this._fieldMappingService.getSourceFieldsData();
         this._fieldMappingService.initForm();
         this._fieldMappingService.populateMappingForm();
@@ -101,7 +98,8 @@ export class FieldsMappingStepComponent implements OnInit {
     }
 
     // Mapping stored data
-    let mappingValue = this._fieldMappingService.currentFieldMapping.value;
+    const fieldmapping = this._fieldMappingService.currentFieldMapping.value;
+
     // is mapping update right for the current user is at admin level
     const hasAdminUpdateMappingRight =
       this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 2;
@@ -111,26 +109,25 @@ export class FieldsMappingStepComponent implements OnInit {
     const currentUser = this._authService.getCurrentUser();
 
     if (this._fieldMappingService.mappingFormGroup.dirty && this.cruved.C) {
-      if (mappingValue) {
-        const intersectMappingOwnerUser = mappingValue['owners'].filter((x) =>
-          x.identifiant == currentUser.user_login ? mappingValue['owners'] : false
+      if (fieldmapping) {
+        const intersectMappingOwnerUser = fieldmapping['owners'].filter((x) =>
+          x.identifiant == currentUser.user_login ? fieldmapping['owners'] : false
         );
 
         if (
-          mappingValue.public &&
+          fieldmapping.public &&
           (hasAdminUpdateMappingRight ||
             (hasOwnMappingUpdateRight && intersectMappingOwnerUser.length > 0))
         ) {
           this.updateAvailable = true;
-          this.modalCreateMappingForm.setValue(mappingValue.label);
-        } else if (!mappingValue.public) {
+          this.modalCreateMappingForm.setValue(fieldmapping.label);
+        } else if (!fieldmapping.public) {
           this.updateAvailable = true;
-          this.modalCreateMappingForm.setValue(mappingValue.label);
+          this.modalCreateMappingForm.setValue(fieldmapping.label);
         } else {
           this.updateAvailable = false;
         }
       } else {
-        console.log(4);
         this.updateAvailable = false;
       }
       this._modalService.open(this.saveMappingModal, { size: 'lg' });
@@ -144,18 +141,9 @@ export class FieldsMappingStepComponent implements OnInit {
     this._fieldMappingService
       .flattenTargetFieldData(this.targetFields)
       .forEach(({ name_field }) => {
-        const column_src = this._fieldMappingService.mappingFormGroup.get(name_field)?.value;
-        const default_value = this._fieldMappingService.mappingFormGroup.get(
-          `${name_field}_default_value`
-        )?.value;
-        if (column_src || default_value) {
-          values[name_field] = {
-            column_src: column_src || undefined,
-            default_value: this._fieldMappingService.getFieldDefaultValue(
-              name_field,
-              default_value
-            ),
-          };
+        const formValue = this._fieldMappingService.mappingFormGroup.get(name_field).value;
+        if (formValue) {
+          values[name_field] = formValue;
         }
       });
     return values;
@@ -279,36 +267,35 @@ export class FieldsMappingStepComponent implements OnInit {
     return this._fieldMappingService.getUnmappedFields();
   }
 
-  checkBeforeNextStep(){
-      if (this.importData?.fieldmapping) {
-         this.openModal(this.editModal);
-          return;
-        }
-        else{
-          this.onNextStep();
-        }
+  checkBeforeNextStep() {
+    if (this.importData?.fieldmapping) {
+      this.openModal(this.editModal);
+      return;
+    } else {
+      this.onNextStep();
     }
+  }
 
-    openModal(editModal: TemplateRef<any>) {
-      this.modalData = {
-        title: 'Modification',
-        bodyMessage: 'Des modifications ont été apportées à la correspondances des champs. L\'ancienne correspondance des champs sera supprimée',
-        additionalMessage: 'Êtes-vous sûr de continuer ?',
-        cancelButtonText: 'Annuler',
-        confirmButtonText: 'Confirmer',
-        confirmButtonColor: 'warn',
-        headerDataQa: 'import-modal-edit',
-        confirmButtonDataQa: 'modal-edit-validate',
-      };  
-      this._modalService.open(editModal);
-    }
+  openModal(editModal: TemplateRef<any>) {
+    this.modalData = {
+      title: 'Modification',
+      bodyMessage:
+        "Des modifications ont été apportées à la correspondances des champs. L'ancienne correspondance des champs sera supprimée",
+      additionalMessage: 'Êtes-vous sûr de continuer ?',
+      cancelButtonText: 'Annuler',
+      confirmButtonText: 'Confirmer',
+      confirmButtonColor: 'warn',
+      headerDataQa: 'import-modal-edit',
+      confirmButtonDataQa: 'modal-edit-validate',
+    };
+    this._modalService.open(editModal);
+  }
 
-    handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
-      if (event.confirmed) {
-        if (event.actionType === 'edit') {
-          this.onNextStep();
-        }
+  handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
+    if (event.confirmed) {
+      if (event.actionType === 'edit') {
+        this.onNextStep();
       }
     }
-  
+  }
 }

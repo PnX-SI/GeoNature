@@ -541,10 +541,9 @@ class TestImportsOcchab:
             {
                 "__preset__": {
                     "id_nomenclature_determination_type": {
-                        "column_src": "",
-                        "default_value": "Inconnu",
+                        "constant_value": "Inconnu",
                     },
-                    "station_name": {"column_src": "", "default_value": "test_station_name"},
+                    "station_name": {"constant_value": "test_station_name"},
                 }
             }
         ],
