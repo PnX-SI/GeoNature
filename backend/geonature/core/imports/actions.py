@@ -26,7 +26,7 @@ class ImportActions:
 
     @staticmethod
     def process_fields(destination, fields):
-        pass # because optional
+        pass  # because optional
 
     # The output of this method is NEVER used
     @staticmethod

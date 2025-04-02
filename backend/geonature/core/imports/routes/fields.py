@@ -93,7 +93,7 @@ def get_fields(scope, destination: Destination):
                 "themes": themes,
             }
         )
-        
+
     processed_data = destination.actions.process_fields(destination, data)
 
     return jsonify(processed_data if processed_data is not None else data)
