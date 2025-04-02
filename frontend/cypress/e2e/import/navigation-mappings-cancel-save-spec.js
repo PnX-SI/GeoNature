@@ -7,7 +7,7 @@ import {
   SELECTOR_IMPORT_CONTENTMAPPING_STEP_BUTTON,
   SELECTOR_IMPORT_FIELDMAPPING_CD_NOM,
   SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN,
-  SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATASET,
+  SELECTOR_IMPORT_FIELDMAPPING_DATASET,
   SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE,
   SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS,
   SELECTOR_IMPORT_FIELDMAPPING_WKT,
@@ -75,7 +75,7 @@ function fillTheFieldMappingFormRaw(datasetName) {
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_CD_NOM, 'date_debut');
-  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DEFAULT_DATASET, datasetName);
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_debut');
 }
 // ////////////////////////////////////////////////////////////////////////////
 // Create a mapping with dummy values
