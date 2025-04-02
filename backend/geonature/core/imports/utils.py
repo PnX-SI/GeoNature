@@ -164,7 +164,10 @@ def detect_separator(file_: IO, encoding: str) -> Optional[str]:
 
 
 def preprocess_value(
-    dataframe: pd.DataFrame, field: BibFields, source_col: Union[str, List[str]], default_value: Any
+    dataframe: pd.DataFrame,
+    field: BibFields,
+    source_col: Optional[Union[str, List[str]]],
+    constant_value: Optional[Any],
 ) -> pd.Series:
     """
     Preprocesses values in a DataFrame depending if the field contains multiple values (e.g. additional_data) or not.
@@ -187,13 +190,14 @@ def preprocess_value(
 
     def build_additional_data(columns: dict):
         try:
-            default_values = json.loads(default_value)
+            constant_values = json.loads(constant_value)
         except Exception:
-            default_values = {}
+            constant_values = {}
         result = {}
         for key, value in columns.items():
-            if value is None or value == "":
-                value = default_values.get(key, None)
+            column_constant_value = constant_values.get(key, None)
+            if column_constant_value is not None:
+                value = column_constant_value
             if value is None:
                 continue
             try:
@@ -211,11 +215,15 @@ def preprocess_value(
                 dataframe[col] = None
         col = dataframe[source_col].apply(build_additional_data, axis=1)
     else:
-        if source_col not in dataframe.columns:
-            dataframe[source_col] = None
-        col = dataframe[source_col]
-        if default_value is not None:
-            col = col.replace({"": default_value, None: default_value})
+        source_field = source_col if source_col is not None else field.source_field
+
+        if source_field not in dataframe.columns:
+            dataframe[source_field] = None
+
+        if constant_value is not None:
+            dataframe[source_field] = constant_value
+
+        col = dataframe[source_field]
 
     return col
 
@@ -252,6 +260,7 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
         iterator=True,
         chunksize=10000,
     )
+
     for chunk in reader:
         chunk.replace({"": None}, inplace=True)
         data = {
@@ -261,7 +270,10 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
         data.update(
             {
                 dest_field: preprocess_value(
-                    chunk, mapping["field"], mapping["column_src"], mapping["default_value"]
+                    chunk,
+                    mapping["field"],
+                    mapping.get("column_src", None),
+                    mapping.get("constant_value", None),
                 )
                 for dest_field, mapping in fieldmapping.items()
             }
@@ -313,23 +325,34 @@ def build_fieldmapping(
         if field.name_field in imprt.fieldmapping:
             mapping = imprt.fieldmapping[field.name_field]
             column_src = mapping.get("column_src", None)
-            default_value = mapping.get("default_value", None)
+            constant_value = mapping.get("constant_value", None)
             if field.multi:
                 correct = list(set(columns) & set(column_src))
                 if len(correct) > 0:
+                    if column_src is not None:
+                        fieldmapping[field.source_column] = {
+                            "field": field,
+                            "column_src": correct,
+                        }
+                        used_columns.extend(correct)
+                    elif constant_value is not None:
+                        fieldmapping[field.source_column] = {
+                            "field": field,
+                            "constant_value": constant_value,
+                        }
+            else:
+                if column_src is not None:
                     fieldmapping[field.source_column] = {
                         "field": field,
-                        "column_src": correct,
-                        "default_value": default_value,
+                        "column_src": column_src,
                     }
-                    used_columns.extend(correct)
-            else:
-                fieldmapping[field.source_column] = {
-                    "field": field,
-                    "column_src": column_src,
-                    "default_value": default_value,
-                }
-                used_columns.append(column_src)
+                    used_columns.append(column_src)
+                elif constant_value is not None:
+                    fieldmapping[field.source_column] = {
+                        "field": field,
+                        "constant_value": constant_value,
+                    }
+
     return fieldmapping, used_columns
 
 
@@ -466,7 +489,8 @@ def get_mapping_data(import_: TImports, entity: Entity):
         field_name: fields[field_name]
         for field_name, mapping in import_.fieldmapping.items()
         if (
-            mapping.get("column_src") in import_.columns or mapping.get("default_value") is not None
+            mapping.get("column_src") in import_.columns
+            or mapping.get("constant_value") is not None
         )
         and field_name in fields
     }
