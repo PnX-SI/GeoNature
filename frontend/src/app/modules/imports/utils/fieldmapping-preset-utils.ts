@@ -14,8 +14,7 @@ export class FieldMappingPresetUtils {
       const parsedValue = !isNaN(Number(value)) ? Number(value) : value;
 
       formattedParams[key] = {
-        column_src: '',
-        default_value: parsedValue,
+        constant_value: parsedValue,
       };
     });
 

@@ -364,9 +364,9 @@ def get_import_values(scope, imprt):
         source = imprt.fieldmapping[field.name_field]
         if (
             source.get("column_src", None) not in imprt.columns
-            and source.get("default_value", None) is None
+            and source.get("constant_value", None) is None
         ):
-            # the file do not contain this field expected by the mapping and there is no default value
+            # the file do not contain this field expected by the mapping and there is no constant value
             continue
         # TODO: vérifier que l’on a pas trop de valeurs différentes ?
         column = field.source_column

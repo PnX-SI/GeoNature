@@ -1,9 +1,3 @@
-select option.in_use,
-ng-select span.in_use {
-  color: #787878;
-  font-style: italic;
-}
-
 fieldset {
   padding: 0.35em 0.625em 0.75em !important;
   border: 1px solid silver !important;
@@ -17,17 +11,8 @@ legend {
   color: black !important;
 }
 
-.custom-tooltip {
-  font-size: 20px;
-  background: black !important;
-}
-
 .entities-tab {
   &__content {
     padding: 1em;
   }
-}
-
-.hint-condition {
-  color: #666;
 }

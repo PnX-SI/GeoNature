@@ -12,7 +12,8 @@ Cypress.Commands.add('configureImportFieldMapping', (datasetName) => {
       cy.wrap(v).should('exist').click();
     });
 
-  cy.get('[data-qa="import-fieldmapping-theme-default-unique_dataset_id"] ng-select')
+  cy.get('[data-qa="import-fieldmapping-theme-switch-unique_dataset_id"]').click();
+  cy.get('[data-qa="import-fieldmapping-theme-constant-unique_dataset_id"] ng-select')
     .should('exist')
     .click()
     .get('ng-dropdown-panel')

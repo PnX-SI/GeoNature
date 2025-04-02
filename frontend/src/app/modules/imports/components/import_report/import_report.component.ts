@@ -14,7 +14,6 @@ import {
   ImportError,
   Nomenclature,
   NomenclatureType,
-  TaxaDistribution,
   ThemesFields,
 } from '../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
@@ -256,7 +255,7 @@ export class ImportReportComponent implements OnInit {
         source: mapping?.column_src,
         description: field.comment,
         destination: field.name_field,
-        default_value: mapping?.default_value,
+        constant_value: mapping?.constant_value,
       };
     });
     return mappedFields;
