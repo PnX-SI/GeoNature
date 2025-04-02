@@ -1,36 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
-
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FieldMappingInputComponent } from './fieldmapping-input/fieldmapping-input.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 @Component({
+  standalone: true,
   selector: 'pnx-mapping-theme',
   templateUrl: './mapping-theme.component.html',
   styleUrls: ['./mapping-theme.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule, FieldMappingInputComponent, NgbModule],
 })
-export class MappingThemeComponent implements OnInit {
+export class MappingThemeComponent {
   @Input() themeData;
   @Input() sourceFields: Array<string>;
 
-  defaultValueFormDefs: any = {};
-
-  constructor(public _fm: FieldMappingService) {}
-
-  ngOnInit() {
-    this.defaultValueFormDefs = this._fm.getDefaultValueFormDefs();
-  }
-
-  isMapped(keySource: string) {
-    return this._fm.checkTargetFieldStatus('mapped', keySource);
-  }
-  displayAlert(field) {
-    return (
-      field.name_field === 'unique_id_sinp_generate' &&
-      !this._fm.mappingFormGroup.get(field.name_field).value
-    );
-  }
-
-  getFieldLabels(labels: string[]): string[] {
-    return labels.map((label) => {
-      return this.themeData.fields.find((field) => field.name_field === label)?.fr_label;
-    });
-  }
+  constructor(public fm: FieldMappingService) {}
 }
