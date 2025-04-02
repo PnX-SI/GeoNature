@@ -57,6 +57,10 @@ from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
 
 
+def get_boolean_value(bib_field: BibFields, default_value: bool) -> bool:
+    return bib_field.get("constant_value", default_value)
+
+
 class SyntheseImportActions(ImportActions):
 
     @staticmethod
@@ -89,7 +93,7 @@ class SyntheseImportActions(ImportActions):
             field_name: fields[field_name]
             for field_name, source_field in imprt.fieldmapping.items()
             if source_field.get("column_src", None) in imprt.columns
-            or source_field.get("default_value", None) is not None
+            or source_field.get("constant_value", None) is not None
         }
         init_rows_validity(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
@@ -225,7 +229,7 @@ class SyntheseImportActions(ImportActions):
                 if field_name in fields
                 and (
                     mapping.get("column_src", None) in imprt.columns
-                    or mapping.get("default_value") is not None
+                    or mapping.get("constant_value") is not None
                 )
             },
             fill_with_defaults=current_app.config["IMPORT"][
@@ -265,7 +269,11 @@ class SyntheseImportActions(ImportActions):
         if "entity_source_pk_value" in selected_fields:
             check_duplicate_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
 
-        if imprt.fieldmapping.get("altitudes_generate", False):
+        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
+        if altitudes_generate_field and get_boolean_value(
+            altitudes_generate_field,
+            False,
+        ):
             generate_altitudes(
                 imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
             )
@@ -288,8 +296,9 @@ class SyntheseImportActions(ImportActions):
                     entity,
                     selected_fields["unique_id_sinp"],
                 )
-        if imprt.fieldmapping.get(
-            "unique_id_sinp_generate",
+        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
+        if unique_id_sinp_generate_field and get_boolean_value(
+            unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             generate_missing_uuid(imprt, entity, fields["unique_id_sinp"])
@@ -339,12 +348,19 @@ class SyntheseImportActions(ImportActions):
             fields["id_area_attachment"],  # XXX sure?
             fields["id_dataset"],
         }
-        if imprt.fieldmapping.get(
-            "unique_id_sinp_generate",
+
+        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
+        if unique_id_sinp_generate_field and get_boolean_value(
+            unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             insert_fields |= {fields["unique_id_sinp"]}
-        if imprt.fieldmapping.get("altitudes_generate", False):
+
+        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
+        if altitudes_generate_field and get_boolean_value(
+            altitudes_generate_field,
+            False,
+        ):
             insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
 
         for field_name, source_field in imprt.fieldmapping.items():
@@ -358,7 +374,7 @@ class SyntheseImportActions(ImportActions):
             else:
                 if (
                     column_src in imprt.columns
-                    or source_field.get("default_value", None) is not None
+                    or source_field.get("constant_value", None) is not None
                 ):
                     insert_fields |= {field}
 

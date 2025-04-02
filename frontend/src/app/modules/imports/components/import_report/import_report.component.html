@@ -120,17 +120,35 @@
                 <caption>{{ entity.entityLabel }}</caption>
                 <thead>
                   <tr>
+                    <th
+                      rowspan="1"
+                      colspan="2"
+                    >
+                      Source
+                    </th>
+                    <th
+                      rowspan="2"
+                      colspan="1"
+                    >
+                      Champ cible
+                    </th>
+                    <th
+                      rowspan="2"
+                      colspan="1"
+                    >
+                      Description
+                    </th>
+                  </tr>
+                  <tr>
                     <th>Champ source</th>
-                    <th>Champ cible</th>
-                    <th>Valeur par défaut</th>
-                    <th>Description</th>
+                    <th>Valeur constante</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let field of entity?.themes">
                     <td>{{ field.source }}</td>
+                    <td>{{ field.constant_value }}</td>
                     <td>{{ field.destination }}</td>
-                    <td>{{ field.default_value }}</td>
                     <td>{{ field.description }}</td>
                   </tr>
                 </tbody>
