@@ -37,7 +37,8 @@ def check_all_dependencies():
     if "CELERY" in current_app.config:
         celery_app = Celery("geonature_test")
         celery_app.config_from_object(current_app.config["CELERY"])
-        if not celery_app.control.inspect().active():
+        is_pytest = current_app.config["CELERY"].get("task_always_eager", False)
+        if not is_pytest and not celery_app.control.inspect().active():
             check["celery_worker"] = False
     return check
 
@@ -48,3 +49,13 @@ def health_check():
         return "OK", 200
 
     return "Service Unavailable", 500
+
+
+@routes.route("/services_status", methods=["GET"])
+def services_status():
+    return {
+        "services": [
+            {"name": service_name, "status": "ONLINE" if service_status else "OFFLINE"}
+            for service_name, service_status in check_all_dependencies().items()
+        ]
+    }
