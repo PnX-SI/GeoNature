@@ -338,7 +338,7 @@ class OcchabImportActions(ImportActions):
             )
         if altitudes_generate:
             generate_altitudes(
-                imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
+                imprt, fields["geom_local"], fields["altitude_min"], fields["altitude_max"]
             )
         check_altitudes(
             imprt,

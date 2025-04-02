@@ -244,8 +244,6 @@ export class FieldMappingService {
     this.flattenTargetFieldData(this.targetFieldsData).forEach(({ name_field, multi }) => {
       let fieldControl: AbstractControl;
       let oldValue = null;
-      // let column_src_control: AbstractControl;
-      // let oldValue = null;
       if (!(name_field in this.mappingFormGroup.controls)) {
         // Control validators will be set in the following iteration
         fieldControl = new FormControl(null, []);
@@ -263,7 +261,6 @@ export class FieldMappingService {
       this.mappingFormGroup.addControl(name_field, fieldControl);
     });
 
-    // console.log('inter-field-connection');
     // Deal with inter-field conditions
     // TODO ? Move the content of this iteration in the previous iteration
     this.flattenTargetFieldData(this.targetFieldsData).forEach(

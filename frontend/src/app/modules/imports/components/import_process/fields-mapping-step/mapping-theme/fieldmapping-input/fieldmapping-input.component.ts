@@ -40,7 +40,7 @@ const CUSTOM_CONTROL_VALUE_ACCESSOR: any = {
 
 @Component({
   standalone: true,
-  selector: 'gn-fieldmapping-input',
+  selector: 'pnx-fieldmapping-input',
   templateUrl: './fieldmapping-input.component.html',
   styleUrls: ['./fieldmapping-input.component.scss'],
   imports: [
