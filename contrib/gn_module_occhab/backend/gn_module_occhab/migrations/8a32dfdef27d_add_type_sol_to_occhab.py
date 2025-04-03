@@ -22,12 +22,12 @@ depends_on = None
 def upgrade():
     metadata = MetaData(bind=op.get_bind())
     session = Session(bind=op.get_bind())
-    t_nomenclatures = Table("t_nomenclatures", metadata, schema="ref_nomenclatures", autoload=True)
-    nomenclatures_types = Table(
+    nomenclature = Table("t_nomenclatures", metadata, schema="ref_nomenclatures", autoload=True)
+    nomenclature_type = Table(
         "bib_nomenclatures_types", metadata, schema="ref_nomenclatures", autoload=True
     )
     op.execute(
-        sa.insert(nomenclatures_types).values(
+        sa.insert(nomenclature_type).values(
             dict(
                 mnemonique="TYPE_SOL",
                 label_fr="Type de sol.",
@@ -485,7 +485,7 @@ def upgrade():
     ]
 
     for nom in nomenclatures:
-        op.execute(sa.insert(t_nomenclatures).values(**nom))
+        op.execute(sa.insert(nomenclature).values(**nom))
 
     op.add_column(
         "t_stations",
@@ -566,5 +566,41 @@ def upgrade():
 
 
 def downgrade():
+    metadata = MetaData(bind=op.get_bind())
+    session = Session(bind=op.get_bind())
 
-    pass
+    field = sa.Table("bib_fields", metadata, schema="gn_imports", autoload=True)
+    cor_entity_field = sa.Table("cor_entity_field", metadata, schema="gn_imports", autoload=True)
+    nomenclature = Table("t_nomenclatures", metadata, schema="ref_nomenclatures", autoload=True)
+    nomenclature_type = Table(
+        "bib_nomenclatures_types", metadata, schema="ref_nomenclatures", autoload=True
+    )
+
+    id_field = session.scalar(
+        sa.select(field.c.id_field).where(field.c.name_field == "id_nomenclature_type_sol")
+    )
+    id_type_nomenclature = session.scalar(
+        sa.select(nomenclature_type.c.id_type).where(nomenclature_type.c.mnemonique == "TYPE_SOL")
+    )
+
+    op.execute(sa.delete(cor_entity_field).where(cor_entity_field.c.id_field == id_field))
+    op.execute(sa.delete(field).where(field.c.name_field == "id_nomenclature_type_sol"))
+
+    op.drop_column(
+        schema="pr_occhab",
+        table_name="t_stations",
+        column_name="id_nomenclature_type_sol",
+    )
+    op.drop_column(
+        schema="gn_imports",
+        table_name="t_imports_occhab",
+        column_name="src_id_nomenclature_type_sol",
+    )
+    op.drop_column(
+        schema="gn_imports",
+        table_name="t_imports_occhab",
+        column_name="id_nomenclature_type_sol",
+    )
+
+    op.execute(sa.delete(nomenclature).where(nomenclature.c.id_type == id_type_nomenclature))
+    op.execute(sa.delete(nomenclature_type).where(nomenclature_type.c.mnemonique == "TYPE_SOL"))
