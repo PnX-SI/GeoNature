@@ -208,6 +208,7 @@ def create_app(with_external_mods=True):
         ("pypnusershub.routes_register:bp", "/pypn/register"),
         ("pypnnomenclature.routes:routes", "/nomenclatures"),
         ("ref_geo.routes:routes", "/geo"),
+        ("geonature.core.health.routes:routes", "/"),
         ("geonature.core.gn_commons.routes:routes", "/gn_commons"),
         ("geonature.core.gn_permissions.routes:routes", "/permissions"),
         ("geonature.core.users.routes:routes", "/users"),
