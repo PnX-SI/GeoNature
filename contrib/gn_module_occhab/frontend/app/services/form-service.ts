@@ -59,6 +59,7 @@ export class OcchabFormService {
       area: null,
       id_nomenclature_area_surface_calculation: null,
       id_nomenclature_geographic_object: [null, Validators.required],
+      id_nomenclature_type_sol: null,
       geom_4326: [null, Validators.required],
       comment: null,
       habitats: this._fb.array([]),
@@ -83,6 +84,7 @@ export class OcchabFormService {
       id_nomenclature_area_surface_calculation:
         defaultNomenclature["METHOD_CALCUL_SURFACE"],
       id_nomenclature_geographic_object: defaultNomenclature["NAT_OBJ_GEO"],
+      id_nomenclature_type_sol: defaultNomenclature["TYPE_SOL"],
     });
   }
 
@@ -289,6 +291,7 @@ export class OcchabFormService {
         station,
         "nomenclature_exposure"
       ),
+      id_nomenclature_type_sol: this.getOrNull(station, "type_sol"),
     };
   }
 

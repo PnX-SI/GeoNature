@@ -19,6 +19,7 @@ class FormConfig(Schema):
     area = fields.Boolean(load_default=True)
     area_surface_calculation = fields.Boolean(load_default=True)
     geographic_object = fields.Boolean(load_default=True)
+    type_sol = fields.Boolean(load_default=True)
     comment = fields.Boolean(load_default=True)
     determination_type = fields.Boolean(load_default=True)
     collection_technique = fields.Boolean(load_default=True)
