@@ -209,6 +209,7 @@ def preprocess_value(
         return result
 
     if field.multi:
+        # multi --> muliple column from source_file to single column in dest
         assert type(source_col) is list
         for col in source_col:
             if col not in dataframe.columns:
@@ -221,7 +222,8 @@ def preprocess_value(
             dataframe[source_field] = None
 
         if constant_value is not None:
-            dataframe[source_field] = constant_value
+            dataframe[source_field] = [constant_value] * len(dataframe)
+            # handle array repeated in single dataframe column
 
         col = dataframe[source_field]
 
