@@ -30,7 +30,7 @@ class ImportActions:
 
     # The output of this method is NEVER used
     @staticmethod
-    def preprocess_transient_data(imprt: TImports, df) -> set:
+    def preprocess_transient_data(imprt: TImports, df) -> None:
         raise NotImplementedError
 
     @staticmethod

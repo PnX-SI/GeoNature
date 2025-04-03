@@ -71,7 +71,7 @@ class SyntheseImportActions(ImportActions):
         ]
 
     @staticmethod
-    def preprocess_transient_data(imprt: TImports, df) -> set:
+    def preprocess_transient_data(imprt: TImports, df) -> None:
         pass
 
     @staticmethod
