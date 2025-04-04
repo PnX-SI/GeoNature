@@ -6,6 +6,7 @@
         id="mappingSelection"
         [items]="userFieldMappings"
         [clearable]="true"
+        [formControl]="fieldMappingForm"
         placeholder="{{ 'Import.Mapping.ChooseMapping' | translate }}"
         data-qa="import-fieldmapping-selection-select"
       >
