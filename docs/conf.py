@@ -45,7 +45,7 @@ extensions = [
 ]
 
 ## AUTOAPI
-extensions.append("autoapi.extension")
+# extensions.append("autoapi.extension")
 autoapi_dirs = ["../backend/geonature", "../backend/dependencies"]
 autoapi_ignore = ["*migrations*", "*tests*", "*celery_app.py"]
 autoapi_add_toctree_entry = False
