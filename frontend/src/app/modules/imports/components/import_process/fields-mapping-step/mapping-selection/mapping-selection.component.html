@@ -1,4 +1,4 @@
-<form>
+<form *ngIf="userFieldMappings.length; else placeholder">
   <fieldset>
     <div class="form-group">
       <legend class="px-1">{{ 'Import.Mapping.ChooseMapping' | translate }}</legend>
@@ -6,8 +6,6 @@
         id="mappingSelection"
         [items]="userFieldMappings"
         [clearable]="true"
-        [formControl]="fieldMappingForm"
-        [disableControl]="!userFieldMappings.length"
         placeholder="{{ 'Import.Mapping.ChooseMapping' | translate }}"
         data-qa="import-fieldmapping-selection-select"
       >
@@ -95,7 +93,9 @@
     </div>
   </fieldset>
 </form>
-
+<ng-template #placeholder>
+  <div class="text text-muted">Aucune correspondance des champs prédéfinie n'a été trouvée.</div>
+</ng-template>
 <!-- MODALS -->
 
 <!-- DELETE MODAL -->

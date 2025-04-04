@@ -4,14 +4,11 @@
     data-qa="import-new-fieldmapping-form"
   >
     <div class="card-header">
-      <h5 class="card-title mb-0">{{ 'Import.FieldMapping.Title' | translate }}</h5>
+      <h5 class="card-title">{{ 'Import.FieldMapping.Title' | translate }}</h5>
     </div>
-    <div class="card-body">
+    <div class="card-body FieldmappingForm">
       <pnx-mapping-selection></pnx-mapping-selection>
-      <ng-container
-        *ngIf="isReady; else loadingBlock"
-        class=""
-      >
+      <ng-container *ngIf="isReady; else loadingBlock">
         <mat-tab-group
           [(selectedIndex)]="selectedIndex"
           animationDuration="0ms"
@@ -30,18 +27,15 @@
                 {{ entitythemes.entity.label }}
               </span>
             </ng-template>
-            <div
-              *ngFor="let themefields of entitythemes.themes"
-              class="entities-tab__content"
-            >
+            <div class="entities-tab__tab">
               <pnx-mapping-theme
+                *ngFor="let themefields of entitythemes.themes"
                 [themeData]="themefields"
                 [sourceFields]="sourceFields"
               ></pnx-mapping-theme>
             </div>
           </mat-tab>
         </mat-tab-group>
-        <br />
         <div
           *ngIf="getMappedTargetFields() > 0"
           class="alert alert-success"
@@ -52,7 +46,6 @@
             'Import.FieldMapping.SourceFieldsMapped'
               | translate: { mappedFieldsLength: getMappedTargetFields() }
           }}
-          <br />
         </div>
         <div
           *ngIf="getUnmappedFieldsLength() == 0"
@@ -64,7 +57,6 @@
             'Import.FieldMapping.SourceFieldsAllMapped'
               | translate: { sourceFieldsLength: sourceFields.length }
           }}
-          <br />
         </div>
         <mat-expansion-panel
           *ngIf="getUnmappedFieldsLength() > 0"
@@ -85,11 +77,9 @@
             {{ unmapped }}{{ isLast ? '.' : ',' }}
           </span>
         </mat-expansion-panel>
-        <br />
         <div class="d-flex flex-row justify-content-between">
           <button
             mat-raised-button
-            class="d-flex justify-content-center align-content-between"
             (click)="onPreviousStep()"
             color="primary"
             data-qa="import-fieldmapping-model-back-btn"
@@ -98,7 +88,6 @@
             {{ 'Previous' | translate }}
           </button>
           <button
-            class="d-flex justify-content-center align-content-between"
             mat-raised-button
             color="primary"
             [disabled]="!isNextStepAvailable()"
