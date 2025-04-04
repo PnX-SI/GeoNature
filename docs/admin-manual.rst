@@ -397,7 +397,7 @@ Selon les modules, on peut appliquer des filtres sur ces actions. Notamment des 
 
 - Portée 1 = Seulement mes données. Cela concerne les données sur lesquels je suis :
 
-  - observateur 
+  - observateur
   - personne ayant effectuée la saisie de la donnée
   - personnellement acteur du jeu de données de la donnée
   - personne ayant saisi le JDD de la donnée
@@ -417,7 +417,7 @@ Cas particulier de l'action "C"
 ```````````````````````````````
 
 | Dans les modules de saisie (comme Occtax), on veut que des utilisateurs puissent saisir uniquement dans certains JDD.
-| La liste des JDD ouverts à la saisie est contrôlée par l'action "CREATE" du module dans lequel on se trouve. 
+| La liste des JDD ouverts à la saisie est contrôlée par l'action "CREATE" du module dans lequel on se trouve.
 | Comme il n'est pas "normal" de pouvoir saisir dans des JDD sur lesquels on n'a pas les permissions de lecture, la portée de l'action "CREATE" vient simplement réduire la liste des JDD sur lesquels on a les permissions de lecture ("READ").
 | Même si la portée de l'action "CREATE" sur le module est supérieure à celle de l'action "READ", l'utilisateur ne verra que les JDD sur lesquels il a des permissions de lecture.
 
@@ -1072,7 +1072,7 @@ Si vous souhaitez modifier de manière plus avancée la ligne de commande ``guni
     ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 
   Note : le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
-    
+
 
 Sauvegarde et restauration
 --------------------------
@@ -1147,7 +1147,7 @@ Restauration
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "pg_trgm";'
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "unaccent";'
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "ltree";'
-        
+
 
   - Restaurer la BDD à partir du backup
 
@@ -1194,7 +1194,7 @@ Customiser le contenu
 
 Le texte d'introduction, le titre et le pied de page de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application.
 
-Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNature (``config/geonature_config.toml``) : 
+Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNature (``config/geonature_config.toml``) :
 
 .. code-block:: toml
 
@@ -1209,7 +1209,7 @@ Customiser la page de connexion
 """""""""""""""""""""""""""""""
 
 Il est possible d'ajouter des liens vers des ressources externes sur la page de connexion de GeoNature. Pour cela,
-remplissez un (ou plusieurs) item(s) ``ACCOUNT_MANAGEMENT.EXTERNAL_LINKS`` dans la configuration. 
+remplissez un (ou plusieurs) item(s) ``ACCOUNT_MANAGEMENT.EXTERNAL_LINKS`` dans la configuration.
 Dans cette variable, le lien est indiqué dans la propriété ``url`` et le texte affiché de ce dernier doit être renseigné dans le
 propriété ``label``. Plusieurs exemples sont disponible ci-dessous.
 
@@ -1218,7 +1218,7 @@ propriété ``label``. Plusieurs exemples sont disponible ci-dessous.
 **Ajoutez un lien de contact**
 
 .. code:: toml
-  
+
   [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
       label = "Un problème de connexion ?"
       url = "mailto:anne.onnyme@example.com"
@@ -1227,7 +1227,7 @@ propriété ``label``. Plusieurs exemples sont disponible ci-dessous.
 **Ajoutez un lien vers un formulaire de contact**
 
 .. code:: toml
-  
+
   [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
       label = "Formulaire de contact"
       url = "https://siteorganisme.fr/contact"
@@ -1264,7 +1264,7 @@ Autre exemple, il est possible personnaliser les polices ou les couleurs :
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
   /* Couleurs principales de l'application */
   .color-blue {
-    color:#678BC5!important; 
+    color:#678BC5!important;
   }
   .color-orange {
     color:#DEC70D!important;
@@ -1322,6 +1322,48 @@ Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports 
 
 Le style des fichiers PDF est également customisable grâce au fichier "custom/css/metadata_pdf_custom.css", permettant de surcoucher les classes CSS du fichier ``backend/static/css/metadata_pdf.css``. Par exemple, la classe ``main-color`` permet de changer la couleur des séparateurs (orange par défaut).
 
+Customiser les traductions
+""""""""""""""""""""""""""
+
+Vous pouvez surcharger les fichiers de traductions au format JSON présents dans le dossier
+``/frontend/src/assets/i18n/``. Deux langues sont actuellements gérées :
+
+- *français* (``fr.json``)
+- *anglais* (``en.json``)
+
+Pour adapter un texte à votre installation de GeoNature, créer un dossier
+``/custom/translations/``, puis créer un fichier ``fr.json`` et/ou
+``en.json``.
+Ces fichiers doivent être du JSON valide et contenir un objet Javascript
+dans lequel vous devez copier seulement les attributs des fichier
+``/frontend/src/assets/i18n/`` correspondant que vous souhaitez
+modifier.
+
+Exemple de contenu du fichier ``/custom/translations/fr.json`` :
+
+.. code-block:: javascript
+
+    {
+      "Sel_lang": "Choix de la langue",
+      "Languages": {
+        "French": "Français (French)"
+      }
+    }
+
+Pour que ces fichiers de surcharge de traductions soient pris en compte, il faut reconstruire le *frontend* de GeoNature.
+
+    .. code-block:: bash
+
+        cd frontend/
+        nvm use
+        npm run build
+
+
+**Notes** :
+
+- Vous pouvez trouver plus d'information sur `le format de ces fichiers JSON de traduction sur le site de Ngx-Translate <https://github.com/ngx-translate/core?tab=readme-ov-file#4-define-the-translations>`_.
+- Tous les textes présents dans GeoNature ne sont pas forcément traduits et présents dans ces fichiers.
+
 Intégrer des données
 --------------------
 
@@ -1340,7 +1382,7 @@ GeoNature est fourni avec des données géographiques de base sur la métropole 
   * https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/migrations/versions/87651375c2e8_vectorize_ign_bd_alti.py
 
 .. note::
-  
+
   Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235
 
 Si vous n'avez pas choisi d'intégrer le raster MNT national à 250m fourni par défaut lors de l'installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.
@@ -1394,7 +1436,7 @@ Il est également possible de désactiver des éléments des référentiels géo
 Affichage des référentiels géographiques dans GeoNature
 """"""""""""""""
 
-Il est possible de choisir les éléments des référentiels géographiques pouvant s'afficher sur les cartes. Par exemple si on souhaite modifier l'affichage des communes : 
+Il est possible de choisir les éléments des référentiels géographiques pouvant s'afficher sur les cartes. Par exemple si on souhaite modifier l'affichage des communes :
 
 .. code:: toml
 
@@ -1402,7 +1444,7 @@ Il est possible de choisir les éléments des référentiels géographiques pouv
         [[MAPCONFIG.REF_LAYERS]]
             code = "COM" # correspond à type_code de la couche ref_geo.bib_areas_types
             label = "Communes" # nom s'affichant dans leafmap
-            type = "area" 
+            type = "area"
             activate = false # ne s'affiche pas par défaut sur la carte
             style = { color = "grey", fill = false, fillOpacity = "0.0", weight = 2 }
             params = {limit = 2000} # nombre d'éléments maximum pouvant être affichés
@@ -1495,7 +1537,7 @@ Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accept
         AUTO_ACCOUNT_CREATION = false
         VALIDATOR_EMAIL = 'email@validateur.io'
 
-L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API. 
+L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API.
 
 .. warning::
 
@@ -1573,23 +1615,23 @@ Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par d�
 Accès public
 """"""""""""
 
-Cette section de la documentation concerne l'implémentation d'un utilisateur générique et public accédant à votre instance GeoNature sans authentification. 
+Cette section de la documentation concerne l'implémentation d'un utilisateur générique et public accédant à votre instance GeoNature sans authentification.
 Cela ajoute sur la page d'authentification de GeoNature, un bouton "Accès public" donnant accès à GeoNature sans authentification.
 
 Etapes :
 
 1/ UsersHub :
-  - Aller dans la section `Utilisateurs` 
-  - Créer un utilisateur 
+  - Aller dans la section `Utilisateurs`
+  - Créer un utilisateur
   - Définir un identifiant et un mot de passe (par exemple utilisateur 'public' et mot de passe 'public')
   - S’assurer qu’il ne soit dans aucun groupe
   - Aller ensuite dans la section `Applications`
   - Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
-  - Cliquer sur ajouter un rôle 
+  - Cliquer sur ajouter un rôle
   - Choisir l'utilisateur juste créé
-  - Attribuer le rôle 1, 'Lecteur' 
+  - Attribuer le rôle 1, 'Lecteur'
 
-2/ Configuration GeoNature : 
+2/ Configuration GeoNature :
   - Dans le fichier de configuration de GeoNature (``config/geonature_config.toml``), spécifier le nom d'utilisateur pour l'accès public via le paramètre ``PUBLIC_ACCESS_USERNAME`` :
 
   .. code-block:: ini
@@ -1602,11 +1644,11 @@ Etapes :
 A ce moment-là, cet utilisateur n’a aucune permission dans GeoNature.
 Il s'agit maintenant de gérer ses permissions dans GeoNature.
 
-3/ GeoNature 
+3/ GeoNature
   - Se connecter à GeoNature avec un utilisateur administrateur
   - Aller dans le module Admin
   - Cliquer sur 'Backoffice', puis "Permissions" / "Par utilisateurs"
-  - Choisissez l'utilisateur sélectionné 
+  - Choisissez l'utilisateur sélectionné
   - Ajouter des permissions pour chacun des modules de l'instance auquel vous souhaitez que l'utilisateur public accède
 
 Accès public automatique
@@ -1743,7 +1785,7 @@ Avec ``ID_LIST_HABITAT`` faisant référence aux listes définies dans ``ref_hab
         	cd_hab,
         	id_list
         )
-        SELECT 
+        SELECT
         	hr.cd_hab,
         	2
         FROM ref_habitats.habref hr
@@ -1871,7 +1913,7 @@ Pour créer un nouveau module "Occtax dupliqué", ajoutez une ligne dans la tabl
 
 La ligne doit contenir les informations suivantes :
 
-- le ``module_code`` doit être unique, 
+- le ``module_code`` doit être unique,
 - les champs ``active_frontend=true``, ``active_backend=false``, ``ng_module=occtax`` et le champs ``module_path`` pour l'URL derrière lequel le module sera servi (``/florestation`` par exemple)
 
 Exemple :
@@ -1955,15 +1997,15 @@ Les champs additionnels ne sont pas créés comme des colonnes à part entière,
 
 Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
 
-Le module "Admin" de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
+Le module "Admin" de GeoNature offre une interface de création et de gestion de ces champs additionnels.
 Un champ additionnel est définit par:
 
 - son nom (nom dans la base de données)
 - son label (nom tel qu'il sera affiché sur l'interface)
 - son type de widget : vous devez définir si le champs est une liste déroulante, une checkbox, une nomenclature, un entier, un champ texte, etc...
-- le (ou les) module(s) auquel il est rattaché 
+- le (ou les) module(s) auquel il est rattaché
 - le (ou les) objet(s) auquel il est rattaché. Il s'agit du placement et de la table de rattachement du champs dans le module. Par exemple Occtax est composé de 3 "objets/table". Les objets "relevé", "occurrence" et "dénombrement".
-- le (ou les) JDD auquel il est rattaché. Si aucun JDD n'est renseigné le champ sera proposé dans tout le module pour tous les JDD. S'il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire 
+- le (ou les) JDD auquel il est rattaché. Si aucun JDD n'est renseigné le champ sera proposé dans tout le module pour tous les JDD. S'il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire
 - une série d'autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc...)
 
 Les champs additionnels sont stockés dans la table ``gn_commons.t_additional_fields``.
@@ -1972,12 +2014,12 @@ Exemples de configuration :
 
 Pour les champs de type "select", "multiselect", "checkbox" et "radio", le champs "valeur" doit être rempli par un JSON représentant une liste de dictionnaire "label" (représentant la valeur affiché), et "valeur" (représentant la valeur écrite en base de données).
 
-Exemples : 
+Exemples :
 
 - `[{"label": "Trois", "value": 3}, {"label": "Quatre", "value": 4}]`
 - `[{"label": "1", "value": "Étude générale"}, {"label": "Gestion de site", "value": "2"}, {"label": "Partenariat", "value": "3"}]`
 
-- Un champs type "multiselect": 
+- Un champs type "multiselect":
 
 .. image :: _static/label_value_multiselect.png
 
@@ -1985,7 +2027,7 @@ Exemples :
 
 .. image :: _static/html1.png
 
-- Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API (non porté sur Occtax-mobile). Dans le champ "attributs additionnels", renseignez les éléments suivants : 
+- Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API (non porté sur Occtax-mobile). Dans le champ "attributs additionnels", renseignez les éléments suivants :
 
 .. code:: json
 
@@ -2200,7 +2242,7 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
 
     L'entête ``[SYNTHESE]`` au dessus ``EXPORT_COLUMNS`` indique simplement que cette variable appartient au bloc de configuration de la synthese. Ne pas rajouter l'entête à chaque paramètre de la synthese mais une seule fois au dessus de toutes les variables de configuration du module.
 
-Il est également possible de personnaliser ses exports en créant vos propres vues personnalisées et en remplissant le paramètre suivant avec une ou plusieurs vues d'export spécifiques : 
+Il est également possible de personnaliser ses exports en créant vos propres vues personnalisées et en remplissant le paramètre suivant avec une ou plusieurs vues d'export spécifiques :
 
 .. code:: toml
 
@@ -2208,8 +2250,8 @@ Il est également possible de personnaliser ses exports en créant vos propres v
       ...
       EXPORT_OBSERVATIONS_CUSTOM_VIEWS = [
           {
-              label = "format personnalisé", 
-              view_name = "gn_synthese.v_synthese_for_web_app", 
+              label = "format personnalisé",
+              view_name = "gn_synthese.v_synthese_for_web_app",
           }
       ]
 
@@ -2220,7 +2262,7 @@ Selon les permissions de l'utilisation sur l'action "Export" du module Synthèse
 
 **Export des métadonnées**
 
-En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la vue ``gn_synthese.v_metadata_for_export``. 
+En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la vue ``gn_synthese.v_metadata_for_export``.
 
 Deux champs sont cependant obligatoires dans cette vue :
 
@@ -2294,18 +2336,18 @@ Pour chaque dictionnaire, voici le détail des champs (ils sont tous obligatoire
 * ``display_name`` : indique le texte de l'intitulé de la liste déroulante qui sera affiché sur l'interface.
 * ``status_type`` : pour les statuts de protection cela correspond à une liste des codes de types de statuts de protections à afficher dans la liste déroulante. Les codes existant sont consultables dans le champ ``cd_type_statut`` de la table ``taxonomie.bdc_statut_type``. Pour les listes rouges, il faut seulement indiquer le code de la liste.
 
-Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.  
+Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.
 Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_text`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
 
 Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` pour désactiver les textes des DOM-TOM :
 
 .. code:: sql
 
-  UPDATE taxonomie.bdc_statut_text SET enable = false 
+  UPDATE taxonomie.bdc_statut_text SET enable = false
   WHERE cd_sig IN ('TER971', 'TER972', 'TER973', 'TER971', 'TER974' )
   ;
 
-Une commande dans TaxHub permet de désactiver automatiquement les textes en dehors d'une liste de départements (en passant leur ``area_code``) : 
+Une commande dans TaxHub permet de désactiver automatiquement les textes en dehors d'une liste de départements (en passant leur ``area_code``) :
 
 .. code:: bash
 
@@ -2314,9 +2356,9 @@ Une commande dans TaxHub permet de désactiver automatiquement les textes en deh
 
 **6.** Définir des filtres par défaut
 
-Il s'agit du paramètre ``DEFAULT_FILTERS``.  
-C'est un dictionnaire qui liste la valeur des champs par défaut.  
-Il faut fournir le code des nomenclature par défaut (liste de chaîne de caractère).  
+Il s'agit du paramètre ``DEFAULT_FILTERS``.
+C'est un dictionnaire qui liste la valeur des champs par défaut.
+Il faut fournir le code des nomenclature par défaut (liste de chaîne de caractère).
 (On prend les champs en ``id_nomenclature_...`` et on remplace ``id_nomenclature_`` par ``cd_nomenclature_``)
 
 Exemple de filtres par défaut :
@@ -2420,10 +2462,10 @@ Si ces conditions sont remplies, alors le statut de validation de l'observation 
 Modification de la périodicité de la validation automatique
 ```````````````````````````````````````````````````````````
 
-Le processus de validation automatique est exécuté à une fréquence définie, par défaut toutes les heures. Si toutefois, vous souhaitez diminuer ou augmenter la durée entre chaque validation automatique, définissez cette dernière dans le fichier de configuration (``config/validation_config.toml``) dans la variable ``AUTO_VALIDATION_CRONTAB``. 
+Le processus de validation automatique est exécuté à une fréquence définie, par défaut toutes les heures. Si toutefois, vous souhaitez diminuer ou augmenter la durée entre chaque validation automatique, définissez cette dernière dans le fichier de configuration (``config/validation_config.toml``) dans la variable ``AUTO_VALIDATION_CRONTAB``.
 
 .. code::toml
-  
+
      AUTO_VALIDATION_CRONTAB ="*/1 * * * *"
 
 Ce paramètre est composé de cinq valeurs, chacune séparée par un espace: minute, heure, jour du mois, mois de l'année, journée de la semaine. Dans l'exemple ci-dessus, il est indiqué que le processus d'auto-validation sera répété toutes les minutes. Pour plus d'informations, vous pouvez consulter la documentation de Celery à ce sujet : https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html#crontab-schedules.
@@ -2458,9 +2500,9 @@ Commandes TaxHub
 """"""""""""""""
 
 Depuis la version 2.15, les commandes de TaxHub sont maintenant acessibles depuis la commande `geonature`.
-      
+
 ::
-  
+
   geonature taxref info # avant flask taxref info
   geonature taxref enable-bdc-statut-text # avant flask taxref enable-bdc-statut-text
   geonature taxref migrate-to-v17 # flask taxref migrate-to-v17
