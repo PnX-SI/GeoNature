@@ -70,7 +70,12 @@
             </p>
             <div *ngIf="importStatus === 'TERMINE'">
               <div *ngFor="let item of importData?.destination.statistics_labels">
-                <ng-container *ngIf="importData?.statistics[item.key] !== null">
+                <ng-container
+                  *ngIf="
+                    importData?.statistics[item.key] !== null &&
+                    importData?.statistics[item.key] !== undefined
+                  "
+                >
                   <p>
                     <b>{{ item.value }} :</b>
                     {{ importData?.statistics[item.key] }}

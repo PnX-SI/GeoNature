@@ -71,7 +71,7 @@ class SyntheseImportActions(ImportActions):
         ]
 
     @staticmethod
-    def preprocess_transient_data(imprt: TImports, df) -> set:
+    def preprocess_transient_data(imprt: TImports, df) -> None:
         pass
 
     @staticmethod
@@ -426,14 +426,14 @@ class SyntheseImportActions(ImportActions):
         }
 
     @staticmethod
-    def remove_data_from_destination(imprt: TImports) -> None:
-        with start_sentry_child(op="task", description="clean imported data"):
-            db.session.execute(sa.delete(Synthese).where(Synthese.id_import == imprt.id_import))
-
-    @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:
         return taxon_distribution_plot(imprt)
 
     @staticmethod
     def compute_bounding_box(imprt: TImports):
-        return compute_bounding_box(imprt, "observation", "the_geom_4326")
+        return compute_bounding_box(
+            imprt=imprt,
+            geom_entity_code="observation",
+            geom_4326_field_name__transient="the_geom_4326",
+            geom_4326_field_name__destination="the_geom_4326",
+        )

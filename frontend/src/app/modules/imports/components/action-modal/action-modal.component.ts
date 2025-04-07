@@ -3,6 +3,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { ImportDataService } from '../../services/data.service';
 import { Import } from '../../models/import.model';
 import { ModalData } from '../../models/modal-data.model';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'import-action-modal',
@@ -10,8 +11,8 @@ import { ModalData } from '../../models/modal-data.model';
   styleUrls: ['./action-modal.component.scss'],
 })
 export class ModalActionImport implements OnInit {
-  @Input() data: Import; 
-  @Input() c: any;  
+  @Input() data: Import;
+  @Input() c: any;
   @Input() actionType: 'delete' | 'edit' = 'delete';
   @Input() modalData: ModalData = {
     title: 'Confirmation',
@@ -43,16 +44,18 @@ export class ModalActionImport implements OnInit {
 
   // Supprimer l'import
   deleteImport() {
-    this._ds.deleteImport(this.data.id_import).subscribe(() => {
-      this._commonService.translateToaster('success', 'Import.ImportStatus.DeleteSuccessfully');
-      this.onAction.emit({ confirmed: true, actionType: this.actionType, data: this.data });
-      this.c();
-    });
+    this._ds
+      .deleteImport(this.data.id_import)
+      .pipe(finalize(() => this.c()))
+      .subscribe(() => {
+        this._commonService.translateToaster('success', 'Import.ImportStatus.DeleteSuccessfully');
+        this.onAction.emit({ confirmed: true, actionType: this.actionType, data: this.data });
+      });
   }
 
   // Modifier l'import
   editImport() {
-      this.onAction.emit({ confirmed: true, actionType: this.actionType, data: this.data });
-      this.c();
+    this.onAction.emit({ confirmed: true, actionType: this.actionType, data: this.data });
+    this.c();
   }
 }
