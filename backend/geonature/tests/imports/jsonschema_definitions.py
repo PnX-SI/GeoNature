@@ -5,6 +5,7 @@ jsonschema_definitions = {
             "label": {
                 "type": "string",
             },
+            "object": {"type": "object"},
         },
         "required": [
             "label",

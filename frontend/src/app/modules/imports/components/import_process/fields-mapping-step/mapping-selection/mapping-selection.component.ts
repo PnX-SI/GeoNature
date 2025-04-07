@@ -56,14 +56,9 @@ export class MappingSelectionComponent implements OnInit {
     });
     this.fieldMappingForm.setValue(null);
     this._fm.currentFieldMapping.next(null);
-    this.fieldMappingSub = this.fieldMappingForm.valueChanges
-      .pipe(
-        // skip first empty value to avoid reseting the field form if importData as mapping:
-        skip(this._importProcessService.getImportData().fieldmapping === null ? 0 : 1)
-      )
-      .subscribe((mapping: FieldMapping) => {
-        this.onNewMappingSelected(mapping);
-      });
+    this.fieldMappingSub = this.fieldMappingForm.valueChanges.subscribe((mapping: FieldMapping) => {
+      this.onNewMappingSelected(mapping);
+    });
   }
 
   ngOnDestroy() {

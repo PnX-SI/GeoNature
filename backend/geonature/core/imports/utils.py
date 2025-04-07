@@ -209,6 +209,7 @@ def preprocess_value(
         return result
 
     if field.multi:
+        # multi --> muliple column from source_file to single column in dest
         assert type(source_col) is list
         for col in source_col:
             if col not in dataframe.columns:
@@ -221,7 +222,8 @@ def preprocess_value(
             dataframe[source_field] = None
 
         if constant_value is not None:
-            dataframe[source_field] = constant_value
+            dataframe[source_field] = [constant_value] * len(dataframe)
+            # handle array repeated in single dataframe column
 
         col = dataframe[source_field]
 
@@ -531,7 +533,8 @@ def get_required(import_: TImports, entity: Entity):
 def compute_bounding_box(
     imprt: TImports,
     geom_entity_code: str,
-    geom_4326_field_name: str,
+    geom_4326_field_name__transient: str,
+    geom_4326_field_name__destination: str,
     *,
     child_entity_code: str = None,
     transient_where_clause=None,
@@ -563,44 +566,48 @@ def compute_bounding_box(
         The bounding box of all entities in the given import, in GeoJSON format.
     """
 
-    def get_entities_hierarchy(parent_entity, child_entity) -> Iterable[Entity]:
+    def get_entities_hierarchy(entity, child_entity) -> Iterable[Entity]:
         """
         Get all entities between the parent_entity and the child_entity, in order from parent to child.
 
         Parameters
         ----------
-        parent_entity : Entity
-            The parent entity.
+        entity : Entity
+            The current entity.
         child_entity : Entity
             The child entity.
 
         Yields
         ------
         Entity
-            The entities between the parent and child entity, in order from parent to child.
+            The entities between the current and child entity, in order from parent to child.
         """
         current = child_entity
-        while current != parent_entity and current:
+        while current != entity and current:
             yield current
             current = current.parent
 
-    parent_entity: Entity = db.session.execute(
+    entity: Entity = db.session.execute(
         sa.select(Entity).filter_by(destination=imprt.destination, code=geom_entity_code)
     ).scalar_one()
-    parent_table = parent_entity.get_destination_table()
+
+    destination_table = entity.get_destination_table()
     transient_table = imprt.destination.get_transient_table()
 
     # If only one entity in an import destination
     if not child_entity_code:
+        field = None
         if imprt.date_end_import:
-            table = parent_table
+            table = destination_table
+            field = geom_4326_field_name__destination
         elif imprt.processed:
             table = transient_table
+            field = geom_4326_field_name__transient
         else:
             return None
 
-        assert geom_4326_field_name in table.columns
-        query = select(func.ST_AsGeojson(func.ST_Extent(table.c[geom_4326_field_name]))).where(
+        assert field in table.columns
+        query = select(func.ST_AsGeojson(func.ST_Extent(table.c[field]))).where(
             table.c.id_import == imprt.id_import
         )
         (valid_bbox,) = db.session.execute(query).fetchone()
@@ -614,11 +621,11 @@ def compute_bounding_box(
 
     # When the import is finished
     if imprt.date_end_import:
-        entities = list(get_entities_hierarchy(parent_entity, child_entity))
+        entities = list(get_entities_hierarchy(entity, child_entity))
         entities.reverse()
 
         # Geom entity linked to the current import based on their children (or grand-children, etc.)
-        query = sa.select(parent_table.c[geom_4326_field_name].label("geom"))
+        query = sa.select(destination_table.c[geom_4326_field_name__destination].label("geom"))
         or_where_clause = []
         for entity in entities:
             ent_table = entity.get_destination_table()
@@ -629,8 +636,8 @@ def compute_bounding_box(
         # Merge with geom entity with an id_import equal to the current import
         query = sa.union(
             query,
-            sa.select(parent_table.c[geom_4326_field_name].label("geom")).where(
-                parent_table.c.id_import == imprt.id_import
+            sa.select(destination_table.c[geom_4326_field_name__destination].label("geom")).where(
+                destination_table.c.id_import == imprt.id_import
             ),
         ).subquery()
         if destination_where_clause:
@@ -641,25 +648,27 @@ def compute_bounding_box(
         transient_table = imprt.destination.get_transient_table()
 
         # query all existing entities'geom
-        query = sa.select(parent_table.c[geom_4326_field_name].label("geom")).where(
+        query = sa.select(
+            destination_table.c[geom_4326_field_name__destination].label("geom")
+        ).where(
             transient_table.c.id_import == imprt.id_import,  # basic !
             sa.and_(  # Check that no parent entity is invalid
                 transient_table.c[entity.validity_column] != False
-                for entity in get_entities_hierarchy(parent_entity, child_entity)
+                for entity in get_entities_hierarchy(entity, child_entity)
             ),
-            transient_table.c[parent_entity.validity_column]
+            transient_table.c[entity.validity_column]
             == None,  # Check that parent entity already exists in DB
-            transient_table.c[parent_entity.unique_column.dest_field]
-            == parent_table.c[parent_entity.unique_column.dest_field],  # for join
+            transient_table.c[entity.unique_column.dest_field]
+            == destination_table.c[entity.unique_column.dest_field],  # for join
         )
 
         # UNION between existing geom in the DB and new entities'geom in the transient table
         query = sa.union(
             query,
-            sa.select(transient_table.c[geom_4326_field_name].label("geom")).where(
+            sa.select(transient_table.c[geom_4326_field_name__transient].label("geom")).where(
                 sa.and_(
                     transient_table.c.id_import == imprt.id_import,
-                    transient_table.c[parent_entity.validity_column] == True,
+                    transient_table.c[entity.validity_column] == True,
                 )
             ),
         ).subquery()

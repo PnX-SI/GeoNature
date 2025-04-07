@@ -138,8 +138,13 @@ class Destination(db.Model):
 
     @property
     def actions(self):
+        # TODO Find a proper way to type the return of the function
+        # Imported here to avoid circular dependencies
+        from geonature.core.imports.actions import ImportActions
+
         try:
-            return self.module.__import_actions__
+            _actions: ImportActions = self.module.__import_actions__
+            return _actions
         except AttributeError as exc:
             """
             This error is likely to occurs when you have some imports to a destination
@@ -762,11 +767,15 @@ class FieldMapping(MappingTemplate):
                 }
                 for field in fields
             },
-            "required": [
-                field.name_field
-                for field in fields
-                if field.mandatory and not field.optional_conditions
-            ],
+            "required": list(
+                set(
+                    [
+                        field.name_field
+                        for field in fields
+                        if field.mandatory and not field.optional_conditions
+                    ]
+                )
+            ),
             "dependentRequired": {
                 field.name_field: field.mandatory_conditions
                 for field in fields
@@ -777,8 +786,9 @@ class FieldMapping(MappingTemplate):
         optional_conditions = [
             optional_conditions_to_jsonschema(field.name_field, field.optional_conditions)
             for field in fields
-            if field.optional_conditions
+            if type(field.optional_conditions) == list
         ]
+
         if optional_conditions:
             schema["allOf"] = optional_conditions
 
