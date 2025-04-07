@@ -233,21 +233,33 @@ Il faut d'abord créer une classe héritant de la classe `ImportActions`
         def statistics_labels() -> typing.List[ImportStatisticsLabels]:
         # Retourne un objet contenant les labels pour les statistiques
 
+        @staticmethod
+        def process_fields(destination, fields):
+        # Effectue un traitement sur les données des champs d'imports (Voir table bib_fields)
+        # Utilisé dans le cas de monitoring pour remplacer les variables de configurations
+        # de monitoring (e.g. __MODULE.ID_LIST_TAXONOMY) dans les paramètres de champs.
+
+        @staticmethod
         def preprocess_transient_data(imprt: TImports, df) -> None:
         # Effectue un pré-traitement des données dans un dataframe
 
+        @staticmethod
         def check_transient_data(task, logger, imprt: TImports) -> None:
         # Effectue la validation des données
-
+        
+        @staticmethod
         def import_data_to_destination(imprt: TImports) -> None:
         # Importe les données dans la table de destination
-
+        
+        @staticmethod
         def remove_data_from_destination(imprt: TImports) -> None:
         # Supprime les données de la table de destination
-
+        
+        @staticmethod
         def report_plot(imprt: TImports) -> StandaloneEmbedJson:
         # Retourne des graphiques sur l'import
 
+        @staticmethod
         def compute_bounding_box(imprt: TImports) -> None:
         # Calcule la bounding box
 

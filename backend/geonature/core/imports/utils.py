@@ -580,7 +580,7 @@ def compute_bounding_box(
         Yields
         ------
         Entity
-            The entities between the parent and child entity, in order from parent to child.
+            The entities between the current and child entity, in order from parent to child.
         """
         current = child_entity
         while current != entity and current:
