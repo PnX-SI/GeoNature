@@ -2,6 +2,7 @@ const DEFAULT_MAPPING = 'Synthese GeoNature';
 const DEFAULT_DATASET = '';
 
 Cypress.Commands.add('configureImportFieldMapping', (datasetName) => {
+  cy.wait(1000); // TODO remove later
   cy.get('[data-qa="import-fieldmapping-selection-select"]')
     .should('exist')
     .click()
