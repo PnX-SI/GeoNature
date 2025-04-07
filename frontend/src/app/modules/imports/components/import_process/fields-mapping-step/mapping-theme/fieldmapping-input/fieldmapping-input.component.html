@@ -43,6 +43,7 @@
     </ng-select>
     <gn-dynamic-form-wrapper
       [hidden]="inputState != InputStackState.CONSTANT"
+      [entity]="entity"
       [field]="field"
       [value]="constantValue"
       (valueEdit)="constantValueEdited($event)"
