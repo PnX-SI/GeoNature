@@ -14,6 +14,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 export class MappingThemeComponent {
   @Input() themeData;
   @Input() sourceFields: Array<string>;
+  @Input() entity;
 
   constructor(public fm: FieldMappingService) {}
 }
