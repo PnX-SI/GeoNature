@@ -18,6 +18,8 @@ import { BibField } from '../bibfield';
   imports: [CommonModule, GN2CommonModule],
 })
 export class DynamicFormWrapperComponent {
+  @Input() entity;
+
   @Input()
   set value(value: string | null) {
     if (!this._control) {
@@ -174,7 +176,7 @@ export class DynamicFormWrapperComponent {
       return;
     }
     if (this._field.type_field == 'dataset') {
-      this.formDef.creatable_in_module = this.fm.moduleCode;
+      this.formDef.creatable_in_module = `${this.fm.moduleCode}.${this.entity.object.code_object}`;
     }
     this.formDef = {
       ...this.formDef,

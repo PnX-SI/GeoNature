@@ -363,7 +363,6 @@ def check_array_int_field(
 
     # Stockage du résultat dans la colonne cible
     df[target_field] = array_col
-    print("array_col", array_col)
 
     # Préparation du message d'erreur en listant les valeurs problématiques
     values_error = invalid_rows[source_field]

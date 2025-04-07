@@ -89,7 +89,7 @@ def get_fields(scope, destination: Destination):
             )
         data.append(
             {
-                "entity": entity.as_dict(fields=["label"]),
+                "entity": entity.as_dict(fields=["label", "object.code_object"]),
                 "themes": themes,
             }
         )
