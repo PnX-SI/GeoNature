@@ -1,6 +1,6 @@
 import promisify from 'cypress-promise';
 
-const taxaNameRef = 'Canis lupus lupus = Canis lupus lupus Linnaeus, 1758 - [SSES - 899246]';
+const taxaNameRef = 'Canis lupus = Canis lupus Linnaeus, 1758 - [ES - 60577]';
 const dateSaisieTaxon = '25/01/2022';
 const taxaSearch = 'canis lupus';
 
@@ -8,8 +8,8 @@ function filterMapList(testFunction) {
   cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX/releves?**', testFunction);
   cy.get('[data-qa="pnx-occtax-filter"]').click();
   cy.get('[data-qa="taxonomy-form-input"]').clear().type(taxaSearch);
-  const results = cy.get('ngb-typeahead-window');
-  results.first().click();
+  cy.get('ngb-typeahead-window:visible').find('button.dropdown-item').as('results');
+  cy.get('@results').first().click();
   cy.get('[data-qa="pnx-occtax-filter-date-min"] [data-qa="input-date"]')
     .click()
     .clear()
@@ -37,12 +37,12 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
 
   it('should add a marker on map, remove overlay and btn sumbit still disabe', () => {
     // Après un zoom sur la carte suffisant sur la carte et la sélection d'un point ou la sélection d'une géométrie, le recouvrement des champs de saisie n'existe plus
-    const plus = cy.get(
+    cy.get(
       'pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in'
-    );
+    ).as('plus');
     Array(10)
       .fill(0)
-      .forEach((e) => plus.wait(200).click());
+      .forEach((e) => cy.get('@plus').wait(200).click());
     cy.get(
       'pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom'
     ).click(100, 100);
@@ -185,8 +185,7 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
     // TODO : assert que y a bien un changement de page vers la page taxon
 
     // Le bouton d'ajout d'occurence doit être disable
-    const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
-    taxonInput.then((d) => {
+    cy.get("input[data-qa='taxonomy-form-input'].ng-invalid").then((d) => {
       expect(d[0].value).to.contains('');
       cy.get("[data-qa='occurrence-add-btn'][disabled='true']");
     });
@@ -209,12 +208,12 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
   // });
 
   it('Should be possible to search and select taxa', () => {
-    const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
-    taxonInput.type(taxaSearch);
-    const results = cy.get('ngb-typeahead-window');
-    results.first().click();
-    const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
-    nomValideResult.contains('Canis lupus');
+    cy.get("input[data-qa='taxonomy-form-input'].ng-invalid").as('taxonInput');
+    cy.get('@taxonInput').type(taxaSearch);
+    cy.get('ngb-typeahead-window:visible').find('button.dropdown-item').as('results');
+    cy.get('@results').first().click();
+    cy.get("[data-qa='occurrence-nom-valide']").as('nomValideResult');
+    cy.get('@nomValideResult').contains('Canis lupus');
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled');
 
     cy.get(
@@ -308,12 +307,18 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
   });
 
   it('Should submit an occurrence and check occurrence list', () => {
+    cy.pause();
     cy.get("[data-qa='occurrence-add-btn']").click({ force: true });
+    cy.pause();
     //Should save the good taxa
-    const cyTaxaHead = cy.get('[data-qa="pnx-occtax-taxon-form-taxa-head-0"]');
-    cyTaxaHead.should('have.text', taxaNameRef);
-    cyTaxaHead.click();
+    cy.get('[data-qa="pnx-occtax-taxon-form-taxa-head-0"]').as('cyTaxaHead');
+    cy.pause();
+    cy.get('@cyTaxaHead').should('have.text', taxaNameRef);
+    cy.pause();
+    cy.get('@cyTaxaHead').click();
+    cy.pause();
     cy.get('[data-qa="pnx-occtax-taxon-form-taxa-name-0"]').should('include.text', taxaNameRef);
+    cy.pause();
   });
 
   it('Should close observation', () => {

@@ -18,11 +18,11 @@ describe('Tests gn_synthese', () => {
     cy.get('[data-qa="synthese-search-btn"]').click();
 
     cy.wait(500);
-    const cells = cy.get('.synthese-list-col-nom_vern_or_lb_nom');
-    cells.then((d) => {
+    cy.get('.synthese-list-col-nom_vern_or_lb_nom').as('cells');
+    cy.get('@cells').then((d) => {
       expect(d.length).to.greaterThan(0);
     });
-    cells.each(($el, index, $list) => {
+    cy.get('@cells').each(($el, index, $list) => {
       cy.wrap($el).contains('Lynx');
     });
   });
@@ -32,11 +32,11 @@ describe('Tests gn_synthese', () => {
 
     cy.intercept(Cypress.env('apiEndpoint') + 'synthese/for_web?**', (req) => {
       if (req.body.hasOwnProperty('date_min')) {
-        const cells = cy.get('.synthese-list-col-date_min');
-        cells.then((d) => {
+        cy.get('.synthese-list-col-date_min').as('cells');
+        cy.get('@cells').then((d) => {
           expect(d.length).to.greaterThan(0);
         });
-        cells.each(($el, index, $list) => {
+        cy.get('@cells').each(($el, index, $list) => {
           var [day, month, year] = $el.text().split('-');
           const date = new Date(year, month - 1, day);
           expect(date).to.be.greaterThan(new Date('2016-12-24'));
@@ -68,11 +68,11 @@ describe('Tests gn_synthese', () => {
     cy.get('[data-qa="synthese-search-btn"]').click();
     cy.wait(500);
     // get datatable cells containing the observater info
-    const cells = cy.get('.synthese-list-col-observers');
-    cells.then((d) => {
+    cy.get('.synthese-list-col-observers').as('cells');
+    cy.get('@cells').then((d) => {
       expect(d.length).to.greaterThan(0);
     });
-    cells.each(($el, index, $list) => {
+    cy.get('@cells').each(($el, index, $list) => {
       cy.wrap($el).contains('Administrateur test');
     });
   });
@@ -113,11 +113,11 @@ describe('Tests gn_synthese', () => {
           .click()
           .wait(1000)
           .then(() => {
-            const resultsCells = cy.get('.synthese-list-col-dataset_name');
-            resultsCells.then((d) => {
+            cy.get('.synthese-list-col-dataset_name').as('resultsCells');
+            cy.get('@resultsCells').then((d) => {
               expect(d.length).to.greaterThan(0);
             });
-            resultsCells.each(($el, index, $list) => {
+            cy.get('@resultsCells').each(($el, index, $list) => {
               expect($el.text().trim()).to.be.equal('JDD-1');
             });
           });
