@@ -38,7 +38,6 @@ from geonature.core.imports.checks.sql import (
     check_orphan_rows,
     convert_geom_columns,
     do_nomenclatures_mapping,
-    generate_altitudes,
     generate_missing_uuid,
     init_rows_validity,
     set_geom_point,
@@ -269,14 +268,6 @@ class SyntheseImportActions(ImportActions):
         if "entity_source_pk_value" in selected_fields:
             check_duplicate_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
 
-        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
-        if altitudes_generate_field and get_boolean_value(
-            altitudes_generate_field,
-            False,
-        ):
-            generate_altitudes(
-                imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
-            )
         check_altitudes(
             imprt, entity, selected_fields.get("altitude_min"), selected_fields.get("altitude_max")
         )
@@ -356,12 +347,7 @@ class SyntheseImportActions(ImportActions):
         ):
             insert_fields |= {fields["unique_id_sinp"]}
 
-        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
-        if altitudes_generate_field and get_boolean_value(
-            altitudes_generate_field,
-            False,
-        ):
-            insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
+        insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
 
         for field_name, source_field in imprt.fieldmapping.items():
             if field_name not in fields:  # not a destination field
