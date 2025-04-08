@@ -247,7 +247,7 @@
     }
   },
   "Validation": {
-    "noData": "Aucune données à afficher",
+    "noData": "Aucune donnée à afficher",
     "noIdFound": "Aucun résultat pour cet ID",
     "displayAll": "Voir toutes les occurrences"
   },
