@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable } from 'rxjs';
@@ -22,6 +22,7 @@ export class AfFormComponent implements OnInit {
   public form: UntypedFormGroup;
   //observable pour la liste déroulantes HTML des AF parents
   public acquisitionFrameworkParents: Observable<any>;
+  public isUUIDInput = false;
 
   constructor(
     private _dfs: DataFormService,
@@ -81,7 +82,14 @@ export class AfFormComponent implements OnInit {
 
     let api: Observable<any>;
 
-    const af = Object.assign(this.afFormS.acquisition_framework.getValue() || {}, this.form.value);
+    const base = {
+      ...this.afFormS.acquisition_framework.getValue(),
+      ...this.form.value,
+    };
+
+    const af = this.form.value.unique_acquisition_framework_id != null
+      ? { ...base, unique_acquisition_framework_id: this.form.value.unique_acquisition_framework_id }
+      : base;
 
     af.acquisition_framework_start_date = this.dateParser.format(
       af.acquisition_framework_start_date
@@ -114,6 +122,7 @@ export class AfFormComponent implements OnInit {
             acquisition_framework.id_acquisition_framework,
           ]),
         (error) => {
+          console.log(error);
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'Errors.NotAllowed');
             this._router.navigate(['/metadata/']);
@@ -121,4 +130,22 @@ export class AfFormComponent implements OnInit {
         }
       );
   }
+  updateUuidValidator(): void {
+    const uuidControl = this.form.get('unique_acquisition_framework_id');
+    if (!uuidControl) return;
+
+    if (this.isUUIDInput) {
+      uuidControl.addValidators(Validators.required);
+    } else {
+      uuidControl.removeValidators(Validators.required);
+    }
+
+    uuidControl.updateValueAndValidity();
+  }
+
+  onIsParentCheckboxChange(checked: boolean): void {
+    this.isUUIDInput = checked;
+    this.updateUuidValidator();
+  }
+
 }
