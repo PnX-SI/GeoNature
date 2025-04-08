@@ -24,7 +24,6 @@ synthese_fieldmappings = {
     "altitude_max": "alti_max",
     "depth_min": "prof_min",
     "depth_max": "prof_max",
-    "altitudes_generate": "",
     "longitude": "",
     "latitude": "",
     "observers": "observateurs",

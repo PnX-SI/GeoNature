@@ -47,7 +47,6 @@ from geonature.core.imports.checks.sql import (
     check_no_parent_entity,
     convert_geom_columns,
     do_nomenclatures_mapping,
-    generate_altitudes,
     set_id_parent_from_destination,
     set_parent_line_no,
     init_rows_validity,
@@ -325,19 +324,6 @@ class OcchabImportActions(ImportActions):
             geom_local_field=fields["geom_local"],
         )
 
-        # Process altitude generate field
-        # TODO@TestImportsOcchab.test_import_valid_file: add testcase
-        default_altitude_generate = True
-        altitudes_generate = default_altitude_generate
-        altitudes_generate_bib_field = imprt.fieldmapping.get("altitudes_generate", None)
-        if altitudes_generate_bib_field:
-            altitudes_generate = altitudes_generate_bib_field.get(
-                "constant_value", default_altitude_generate
-            )
-        if altitudes_generate:
-            generate_altitudes(
-                imprt, fields["geom_local"], fields["altitude_min"], fields["altitude_max"]
-            )
         check_altitudes(
             imprt,
             entity_station,
@@ -497,9 +483,7 @@ class OcchabImportActions(ImportActions):
             if entity.code == "station":
                 insert_fields |= {fields["id_dataset"]}
                 insert_fields |= {fields["geom_4326"], fields["geom_local"]}
-                # TODO@TestImportsOcchab.test_import_valid_file: add testcase
-                if imprt.fieldmapping.get("altitudes_generate", False):
-                    insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
+                insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
                 # FIXME:
                 # if not selected_fields.get("unique_id_sinp_generate", False):
                 #    # even if not selected, add uuid column to force insert of NULL values instead of default generation of uuid
