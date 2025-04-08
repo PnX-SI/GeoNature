@@ -20,6 +20,8 @@ from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.utils import secure_filename
 from marshmallow import ValidationError, EXCLUDE
+from sqlalchemy.exc import IntegrityError
+from psycopg2.errors import UniqueViolation
 
 
 from geonature.utils.config import config
@@ -775,6 +777,15 @@ def delete_acquisition_framework(scope, af_id):
 
 def acquisitionFrameworkHandler(request, *, acquisition_framework):
     # Test des droits d'édition du acquisition framework si modification
+
+    # 🔎 Récupération des données brutes du body
+    request_data = request.get_json()
+
+    # Validation du champ unique_acquisition_framework_id
+    unique_id = request_data.get("unique_acquisition_framework_id")
+    if not unique_id:
+        request_data.pop("unique_acquisition_framework_id", None)
+
     if acquisition_framework.id_acquisition_framework is not None:
         user_cruved = get_scopes_by_action(module_code="METADATA")
 
@@ -801,7 +812,14 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework):
         raise BadRequest(error.messages)
 
     DB.session.add(acquisition_framework)
-    DB.session.commit()
+    try:
+        DB.session.commit()
+    except IntegrityError as err:
+        DB.session.rollback()
+
+        if isinstance(err.orig, UniqueViolation):
+            raise Conflict("unique_acquisition_framework_id already exists") from err
+        raise
 
     return acquisition_framework
 
