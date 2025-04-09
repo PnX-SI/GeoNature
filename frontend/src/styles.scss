@@ -357,6 +357,17 @@ ng-select.ng-invalid .ng-select-container,
   line-height: 38px;
 }
 
+.panel-intro {
+  display: flex;
+  flex-direction: column;
+  height: 55vh;
+}
+
+.panel-body-intro {
+  flex-grow: 1;
+  overflow: auto;
+}
+
 .title-spaced {
   font-size: 20px;
   font-weight: 300;
