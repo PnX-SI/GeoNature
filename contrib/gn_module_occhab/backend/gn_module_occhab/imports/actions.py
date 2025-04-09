@@ -7,6 +7,8 @@ from geonature.core.imports.checks.sql.extra import (
     disable_duplicated_rows,
     generate_missing_uuid_for_id_origin,
     generate_missing_uuid,
+    generate_entity_id,
+    set_parent_id_from_line_no,
 )
 from geonature.core.imports.checks.sql.utils import report_erroneous_rows, print_transient_table
 import sqlalchemy as sa
@@ -59,8 +61,6 @@ from geonature.core.imports.checks.sql.core import (
 )
 from .checks import (
     check_existing_station_permissions,
-    generate_id_station,
-    set_id_station_from_line_no,
 )
 from bokeh.embed.standalone import StandaloneEmbedJson
 
@@ -205,6 +205,7 @@ class OcchabImportActions(ImportActions):
             ],
         )
 
+        # Check habitat parents
         check_no_parent_entity(
             imprt,
             parent_entity=entity_station,
@@ -458,22 +459,32 @@ class OcchabImportActions(ImportActions):
                 .all()
             )
         }
+        entity_station = entities["station"]
+        entity_habitat = entities["habitat"]
+
+        #     """
+        #     We need the id_station in transient table to use it when inserting habitats.
+        #     I have tried to use RETURNING after inserting the stations to update transient table, roughly:
+        #     WITH (INSERT pr_occhab.t_stations FROM SELECT ... RETURNING transient_table.line_no, id_station) AS insert_cte
+        #     UPDATE transient_table SET id_station = insert_cte.id_station WHERE transient_table.line_no = insert_cte.line_no
+        #     but RETURNING clause can only contains columns from INSERTed table so we can not return line_no.
+        #     Consequently, we generate id_station directly in transient table before inserting the stations.
+        #     """
+        generate_entity_id(
+            imprt, entity_station, "pr_occhab", "t_stations", "unique_id_sinp_station", "id_station"
+        )
+        generate_entity_id(
+            imprt, entity_habitat, "pr_occhab", "t_habitats", "unique_id_sinp_hab", "id_habitat"
+        )
+
+        set_parent_id_from_line_no(
+            imprt,
+            entity=entity_habitat,
+            parent_line_no_field_name="station_line_no",
+            parent_id_field_name="id_station",
+        )
+
         for entity in entities.values():
-            if entity.code == "station":
-                """
-                We need the id_station in transient table to use it when inserting habitats.
-                I have tried to use RETURNING after inserting the stations to update transient table, roughly:
-                WITH (INSERT pr_occhab.t_stations FROM SELECT ... RETURNING transient_table.line_no, id_station) AS insert_cte
-                UPDATE transient_table SET id_station = insert_cte.id_station WHERE transient_table.line_no = insert_cte.line_no
-                but RETURNING clause can only contains columns from INSERTed table so we can not return line_no.
-                Consequently, we generate id_station directly in transient table before inserting the stations.
-                """
-                generate_id_station(imprt, entity)
-            else:
-                set_id_station_from_line_no(
-                    imprt,
-                    habitat_entity=entities["habitat"],
-                )
 
             fields = {
                 ef.field.name_field: ef.field for ef in entity.fields if ef.field.dest_field != None

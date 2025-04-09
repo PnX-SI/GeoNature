@@ -690,3 +690,71 @@ def disable_duplicated_rows(imprt, entity, fields, grouping_field):
         .where(duplicates.c.row_number > 1)  # keep first row
         .values({entity.validity_column: None})
     )
+
+
+def generate_entity_id(
+    imprt: TImports,
+    entity: Entity,
+    schema_name: str,
+    table_name: str,
+    uuid_field_name: str,
+    id_field_name: str,
+) -> None:
+    """
+    Generate the id for each new valid entity
+
+    Parameters
+    ----------
+    imprt : TImports
+        _description_
+    entity : Entity
+        entity
+    """
+    # Generate an id for the first occurence of each UUID
+
+    transient_table = imprt.destination.get_transient_table()
+    uuid_valid_cte = (
+        sa.select(
+            sa.distinct(transient_table.c[uuid_field_name]).label(uuid_field_name),
+            sa.func.min(transient_table.c.line_no).label("line_no"),
+        )
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(transient_table.c[entity.validity_column].is_(True))
+        .group_by(transient_table.c[uuid_field_name])
+        .cte("uuid_valid_cte")
+    )
+
+    db.session.execute(
+        sa.update(transient_table)
+        .where(transient_table.c.line_no == uuid_valid_cte.c.line_no)
+        .values(
+            {f"{id_field_name}": sa.func.nextval(f"{schema_name}.{table_name}_{id_field_name}_seq")}
+        )
+    )
+
+
+def set_parent_id_from_line_no(
+    imprt: TImports, entity: Entity, parent_line_no_field_name: str, parent_id_field_name: str
+) -> None:
+    """
+    Set the parent id of each entity in the transient table using the line_no of the corresponding parent.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import object containing the destination.
+    entity : Entity
+        entity
+    """
+    transient_entity = imprt.destination.get_transient_table()
+    transient_parent = aliased(transient_entity)
+    db.session.execute(
+        sa.update(transient_entity)
+        .where(
+            transient_entity.c.id_import == imprt.id_import,
+            transient_entity.c[entity.validity_column].is_(True),
+            transient_parent.c.id_import == imprt.id_import,
+            transient_parent.c.line_no == transient_entity.c[parent_line_no_field_name],
+        )
+        .values({parent_id_field_name: transient_parent.c[parent_id_field_name]})
+    )
