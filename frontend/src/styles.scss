@@ -1,5 +1,14 @@
+@use '@angular/material' as mat;
+@use 'm3-theme.scss';
+
 @import 'conf/names_variables.scss';
 @import 'material-symbols';
+
+@include mat.core();
+
+html {
+  @include mat.all-component-themes(m3-theme.$dark-theme);
+}
 
 html,
 body,
@@ -42,14 +51,6 @@ mat-sidenav-content {
   background-color: #38993850 !important;
 }
 
-.mat-toolbar {
-  //min-height: 5vh !important;
-  min-height: 40px !important;
-  box-shadow:
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12),
-    0 3px 1px -2px rgba(0, 0, 0, 0.2);
-}
 .mat-toolbar-row {
   //height: 5vh !important;
   height: 40px !important;

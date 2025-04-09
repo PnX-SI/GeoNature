@@ -2,7 +2,7 @@
   background-color: #f7f7f7 !important;
 }
 
-.mat-paginator {
+.mat-mdc-paginator {
   margin-top: 5px;
   justify-content: flex-start;
 }
@@ -74,28 +74,37 @@ mat-expansion-panel {
   cursor: pointer;
 }
 
-::ng-deeps .mat-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+/*TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+::ng-deeps
+  .mat-mdc-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled)
+  .mat-slide-toggle-bar {
   background-color: rgba(0, 128, 0, 0.322);
 }
 
-::ng-deeps .mat-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+/*TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+::ng-deeps
+  .mat-mdc-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled)
+  .mat-slide-toggle-thumb {
   background-color: green;
 }
 
-::ng-deeps .mat-slide-toggle.custom-toggle .mat-slide-toggle-bar {
+/*TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+::ng-deeps .mat-mdc-slide-toggle.custom-toggle .mat-slide-toggle-bar {
   background-color: rgba(255, 0, 0, 0.322);
 }
 
-::ng-deeps .mat-slide-toggle.custom-toggle .mat-slide-toggle-thumb {
+/*TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+::ng-deeps .mat-mdc-slide-toggle.custom-toggle .mat-slide-toggle-thumb {
   background-color: red;
 }
 
-::ng-deeps .mat-slide-toggle.mat-disabled .mat-slide-toggle-label,
+::ng-deeps .mat-mdc-slide-toggle.mat-disabled .mat-slide-toggle-label,
 .mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb-container {
   cursor: not-allowed !important;
 }
 
-::ng-deeps .mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb {
+/*TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+::ng-deeps .mat-mdc-slide-toggle.mat-disabled .mat-slide-toggle-thumb {
   cursor: not-allowed !important;
 }
 

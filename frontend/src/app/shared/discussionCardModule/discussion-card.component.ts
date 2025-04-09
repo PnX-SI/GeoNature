@@ -4,7 +4,7 @@ import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { isEmpty, uniqueId } from 'lodash';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
@@ -47,9 +47,9 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
 
   orderData(data) {
     const newarr = data.sort((a, b) => {
-      const aDate = moment(a.creation_date ? a.creation_date : a.dateTime);
-      const bDate = moment(b.creation_date ? b.creation_date : b.dateTime);
-      return moment(aDate).diff(bDate);
+      const aDate = DateTime.fromISO(a.creation_date ? a.creation_date : a.dateTime);
+      const bDate = DateTime.fromISO(b.creation_date ? b.creation_date : b.dateTime);
+      return aDate.diff(bDate);
     });
     if (this.sort === 'desc') {
       newarr.reverse();

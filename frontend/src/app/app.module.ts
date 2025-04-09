@@ -2,7 +2,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 
-import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClient,
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 
 // For Angular Dependencies
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -55,6 +60,8 @@ import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatButtonModule } from '@angular/material/button';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -80,9 +87,20 @@ export function initApp(injector) {
 }
 
 @NgModule({
+  declarations: [
+    AppComponent,
+    HomeContentComponent,
+    SidenavItemsComponent,
+    PageNotFoundComponent,
+    NavHomeComponent,
+    FooterComponent,
+    IntroductionComponent,
+    NotificationComponent,
+    RulesComponent,
+  ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
-    HttpClientModule,
     BrowserAnimationsModule,
     routing,
     NgChartsModule,
@@ -101,18 +119,7 @@ export function initApp(injector) {
     }),
     LoginModule,
     HomeDiscussionsComponent,
-    HomeValidationsComponent,
-  ],
-  declarations: [
-    AppComponent,
-    HomeContentComponent,
-    SidenavItemsComponent,
-    PageNotFoundComponent,
-    NavHomeComponent,
-    FooterComponent,
-    IntroductionComponent,
-    NotificationComponent,
-    RulesComponent,
+    MatButtonModule,
   ],
   providers: [
     AuthService,
@@ -137,7 +144,8 @@ export function initApp(injector) {
       deps: [Injector],
       multi: true,
     },
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}

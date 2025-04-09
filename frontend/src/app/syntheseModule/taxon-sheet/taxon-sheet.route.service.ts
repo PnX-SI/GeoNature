@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  Router,
-  CanActivateChild,
-  CanActivate,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
 import { TabGeographicOverviewComponent } from './tab-geographic-overview/tab-geographic-overview.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
@@ -56,7 +50,7 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
 @Injectable({
   providedIn: 'root',
 })
-export class RouteService implements CanActivate, CanActivateChild {
+export class RouteService {
   readonly TAB_LINKS = [];
   constructor(
     private _config: ConfigService,

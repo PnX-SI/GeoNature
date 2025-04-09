@@ -193,7 +193,7 @@ export class DynamicFormService {
     let func;
 
     try {
-      func = eval(s);
+      func = new Function(s);
     } catch (error) {
       console.error(`Erreur dans la définition de la fonction ${error}`);
     }

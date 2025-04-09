@@ -31,7 +31,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 
-import { TreeModule } from '@circlon/angular-tree-component';
+// import { TreeModule } from '@circlon/angular-tree-component';
 
 // Components
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
@@ -140,7 +140,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     NgSelectModule,
     RouterModule,
     TranslateModule.forChild(),
-    TreeModule,
+    // TreeModule,
   ],
   declarations: [
     AcquisitionFrameworksComponent,

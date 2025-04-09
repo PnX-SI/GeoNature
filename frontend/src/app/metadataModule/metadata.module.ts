@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Routes, RouterModule } from '@angular/router';
-import { HttpClientXsrfModule } from '@angular/common/http';
+import { provideHttpClient, withXsrfConfiguration } from '@angular/common/http';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -49,38 +49,32 @@ export class MetadataPaginator extends MatPaginatorIntl {
   }
 }
 
-@NgModule({
-  imports: [
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'token',
-      headerName: 'token',
-    }),
-    CommonModule,
-    GN2CommonModule,
-    NgChartsModule,
-    RouterModule.forChild(routes),
-    MatCheckboxModule,
-    MatButtonToggleModule,
-  ],
-  exports: [],
-  declarations: [
-    MetadataComponent,
-    MetadataDatasetComponent,
-    DatasetFormComponent,
-    DatasetCardComponent,
-    AfFormComponent,
-    ActorComponent,
-    AfCardComponent,
-    ButtonDeleteAfComponent,
-  ],
-  providers: [
-    MetadataService,
-    MetadataDataService,
-    ActorFormService,
-    {
-      provide: MatPaginatorIntl,
-      useClass: MetadataPaginator,
-    },
-  ],
-})
+@NgModule({ exports: [],
+    declarations: [
+        MetadataComponent,
+        MetadataDatasetComponent,
+        DatasetFormComponent,
+        DatasetCardComponent,
+        AfFormComponent,
+        ActorComponent,
+        AfCardComponent,
+        ButtonDeleteAfComponent,
+    ], imports: [CommonModule,
+        GN2CommonModule,
+        NgChartsModule,
+        RouterModule.forChild(routes),
+        MatCheckboxModule,
+        MatButtonToggleModule], providers: [
+        MetadataService,
+        MetadataDataService,
+        ActorFormService,
+        {
+            provide: MatPaginatorIntl,
+            useClass: MetadataPaginator,
+        },
+        provideHttpClient(withXsrfConfiguration({
+            cookieName: 'token',
+            headerName: 'token',
+        })),
+    ] })
 export class MetadataModule {}

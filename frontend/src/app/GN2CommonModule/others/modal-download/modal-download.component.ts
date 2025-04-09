@@ -1,14 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {
-  HttpClient,
-  HttpParams,
-  HttpEvent,
-  HttpHeaders,
-  HttpRequest,
-  HttpEventType,
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpClient, HttpParams, HttpEvent, HttpHeaders, HttpRequest, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 

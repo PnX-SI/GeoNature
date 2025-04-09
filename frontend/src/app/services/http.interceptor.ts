@@ -1,13 +1,7 @@
 import { throwError, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Injectable, Injector } from '@angular/core';
-import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from './config.service';

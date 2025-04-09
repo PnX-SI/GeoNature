@@ -1,20 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  CanActivateChild,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class SignUpGuard implements CanActivate {
+export class SignUpGuard  {
   constructor(
     private _router: Router,
     public config: ConfigService
@@ -31,7 +24,7 @@ export class SignUpGuard implements CanActivate {
 }
 
 @Injectable()
-export class UserEditGuard implements CanActivate {
+export class UserEditGuard  {
   constructor(
     private _router: Router,
     private _authService: AuthService
@@ -48,7 +41,7 @@ export class UserEditGuard implements CanActivate {
 }
 
 @Injectable()
-export class UserManagementGuard implements CanActivate {
+export class UserManagementGuard  {
   constructor(
     private _router: Router,
     public config: ConfigService
@@ -65,7 +58,7 @@ export class UserManagementGuard implements CanActivate {
 }
 
 @Injectable()
-export class UserPublicGuard implements CanActivate {
+export class UserPublicGuard  {
   /*
   A guard used to prevent public user from accessing certain routes :
   - Used to prevent public user from accessing the "/user" route in which the user can see and change its own information

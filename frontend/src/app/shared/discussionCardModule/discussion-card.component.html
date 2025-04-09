@@ -18,7 +18,10 @@
     class="blocks"
     *ngIf="open"
   >
-    <mat-card class="comment-card mb-2">
+    <mat-card
+      appearance="outlined"
+      class="comment-card mb-2"
+    >
       <mat-card-header></mat-card-header>
       <mat-card-content class="m-0">
         <mat-form-field
@@ -61,6 +64,7 @@
   <div class="blocks">
     <span *ngFor="let comment of discussions">
       <mat-card
+        appearance="outlined"
         class="discussion-card my-3 mx-0 p-0"
         *ngIf="!comment.spid && !comment?.deleted"
       >

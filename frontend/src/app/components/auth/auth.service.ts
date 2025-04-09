@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { ModuleService } from '../../services/module.service';
 import { RoutingService } from '@geonature/routing/routing.service';
@@ -130,7 +130,7 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return moment().utc().isBefore(this.getExpiration());
+    return DateTime.now().toUTC() <= this.getExpiration();
   }
 
   isLoggedOut() {
@@ -139,7 +139,7 @@ export class AuthService {
 
   getExpiration() {
     const expiration = localStorage.getItem(this.prefix + 'expires_at');
-    return moment(expiration).utc();
+    return DateTime.fromISO(expiration).toUTC();
   }
 
   logout() {
