@@ -152,7 +152,7 @@ def check_geometry(
         wkt_mask = df[wkt_col].notnull()
         if wkt_mask.any():
             geom.loc[wkt_mask] = df[wkt_mask][wkt_col].apply(wkt_to_geometry)
-            invalid_wkt = geom[wkt_mask & geom.isnull()]
+            invalid_wkt = df[wkt_mask & geom.isnull()]
             if not invalid_wkt.empty:
                 yield {
                     "error_code": ImportCodeError.INVALID_WKT,
