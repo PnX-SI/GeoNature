@@ -685,8 +685,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     DEFAULT_GENERATE_MISSING_UUID = true
 
 
-    # Identifiant d'une géométrie présente dans RefGeo. Si différent de -1, vérifie si les géométries
-    # des entités importées sont bien dans l'emprise spatiale de cette dernière.
+    # Si différent de null, ce paramètre vérifie que les géométries des observations (ou stations) importées se trouvent 
+    dans le polygone du zonage relié à l'identifiant indiqué par la valeur. Cette identifiant doit correspondre à une valeur contenue dans `ref_geo.l_areas.id_area`.
     ID_AREA_RESTRICTION = null
 
 
