@@ -511,18 +511,14 @@ class OcchabImportActions(ImportActions):
                 # TODO@TestImportsOcchab.test_import_valid_file: add testcase
                 if imprt.fieldmapping.get("altitudes_generate", False):
                     insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
-                # FIXME:
-                # if not selected_fields.get("unique_id_sinp_generate", False):
-                #    # even if not selected, add uuid column to force insert of NULL values instead of default generation of uuid
-                #    insert_fields |= {fields["unique_id_sinp_station"]}
+                # The field is either generated, or marked as mandatory
+                insert_fields |= {fields["unique_id_sinp_station"]}
             elif entity.code == "habitat":  # habitat
                 # These fields are associated with habitat as necessary to find the corresponding station,
                 # but they are not inserted in habitat destination so we need to manually remove them.
                 insert_fields -= {fields["unique_id_sinp_station"], fields["id_station_source"]}
-                # FIXME:
-                # if not selected_fields.get("unique_id_sinp_generate", False):
-                #    # even if not selected, add uuid column to force insert of NULL values instead of default generation of uuid
-                #    insert_fields |= {fields["unique_id_sinp_habitat"]}
+                # The field is either generated, or marked as mandatory
+                insert_fields |= {fields["unique_id_sinp_habitat"]}
             names = ["id_import"] + [field.dest_field for field in insert_fields]
             select_stmt = (
                 sa.select(
