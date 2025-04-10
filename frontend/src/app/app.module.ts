@@ -26,6 +26,7 @@ import { NavHomeComponent } from './components/nav-home/nav-home.component';
 import { LoginModule } from './modules/login/login.module';
 import { NotificationComponent } from './components/notification/notification.component';
 import { RulesComponent } from './components/notification/rules/rules.component';
+import { CustomTranslateLoader } from './shared/translate/custom-loader';
 
 // Custom component (footer, presentation etc...)
 import { FooterComponent } from './components/footer/footer.component';
@@ -48,9 +49,7 @@ import { ConfigService } from './services/config.service';
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { UnauthorizedInterceptor } from './services/unauthorized.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
+
 import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
@@ -95,9 +94,11 @@ export function initApp(injector) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient],
+        useClass: CustomTranslateLoader,
+        deps: [HttpClient, ConfigService],
       },
+      isolate: false,
+      extend: true,
     }),
     LoginModule,
     HomeDiscussionsComponent,
