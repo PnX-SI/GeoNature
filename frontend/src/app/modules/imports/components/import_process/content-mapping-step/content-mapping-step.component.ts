@@ -82,20 +82,13 @@ export class ContentMappingStepComponent implements OnInit {
           let control = new FormControl(null, [Validators.required]);
           let control_name = targetField + '-' + index;
           this.contentTargetForm.addControl(control_name, control);
-          if (!this.importData.contentmapping) {
-            // Search for a nomenclature with a label equals to the user value.
-            let nomenclature = this.importValues[targetField].nomenclatures.find(
-              (n) => n.label_default == value
-            );
-            if (nomenclature) {
-              control.setValue(nomenclature);
-              control.markAsDirty();
-            }
-          }
         });
       }
       if (this.importData.contentmapping) {
         this.fillContentFormWithMapping(this.importData.contentmapping);
+      }
+      else {
+        this.fillContentFormWithDefault()
       }
       if (_.isEmpty(importValues)) {
         this._commonService.translateToaster('info', 'Import.SkipContentMapping');
@@ -122,7 +115,23 @@ export class ContentMappingStepComponent implements OnInit {
       this.fillContentFormWithMapping(mapping.values);
       this.mappingSelected = true;
     } else {
+      this.fillContentFormWithDefault()
       this.mappingSelected = false;
+    }
+  }
+
+  fillContentFormWithDefault() {
+    for (let targetField of Object.keys(this.importValues)) {
+      this.importValues[targetField].values.forEach((value, index) => {
+        let control = this.contentTargetForm.get(targetField + '-' + index);
+        let nomenclature = this.importValues[targetField].nomenclatures.find(
+          (n) => n.label_default == value
+        );
+        if (nomenclature) {
+          control.setValue(nomenclature);
+          control.markAsDirty();
+        }
+      });
     }
   }
 
