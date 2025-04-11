@@ -4,7 +4,7 @@ import { ModuleService } from '@geonature/services/module.service';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from '@librairies/rxjs';
-import { Router } from '@librairies/@angular/router';
+import { SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 
 enum ValidationsModule {
   SYNTHESE = 'SYNTHESE',
@@ -14,12 +14,6 @@ enum ValidationsModule {
 export interface SortingItem {
   sort: 'asc' | 'desc';
   order_by: string;
-}
-
-export interface Pagination {
-  total: number;
-  page: number;
-  per_page: number;
 }
 export interface ValidationItem {
   id_synthese: number;
@@ -36,16 +30,15 @@ export interface ValidationItem {
   };
 }
 
-export interface ValidationCollection extends Pagination {
+export interface ValidationCollection {
   items: ValidationItem[];
+  // pagination defined on backend side
+  total: number;
+  page: number;
+  per_page: number;
 }
 @Injectable()
 export class HomeValidationsService {
-  static readonly DEFAULT_PAGINATION: Pagination = {
-    total: 0,
-    page: 1,
-    per_page: 4,
-  };
   readonly MODULES_PREVALENCE = [ValidationsModule.SYNTHESE, ValidationsModule.VALIDATION];
   constructor(
     private _http: HttpClient,
@@ -66,11 +59,7 @@ export class HomeValidationsService {
       return false;
     }
 
-    return (
-      this.MODULES_PREVALENCE.every((module) =>
-        this._isReadGrandedInModule(module)
-      )
-    );
+    return this.MODULES_PREVALENCE.every((module) => this._isReadGrandedInModule(module));
   }
 
   // //////////////////////////////////////////////////////////////////////////
@@ -99,13 +88,13 @@ export class HomeValidationsService {
   // //////////////////////////////////////////////////////////////////////////
 
   public fetchValidations(
-    pagination: Pagination,
+    pagination: SyntheseDataPaginationItem,
     sort: SortingItem
   ): Observable<ValidationCollection> {
     return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation`, {
       params: {
-        page: pagination.page.toString(),
-        per_page: pagination.per_page.toString(),
+        page: pagination.currentPage.toString(),
+        per_page: pagination.perPage.toString(),
         sort: sort.sort,
         order_by: sort.order_by,
         format: 'json',

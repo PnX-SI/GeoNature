@@ -6,12 +6,12 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {
   HomeValidationsService,
-  Pagination,
   SortingItem,
   ValidationCollection,
   ValidationItem,
 } from './home-validations.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 
 interface ValidationItemEnhanced {
   id_synthese: number;
@@ -43,7 +43,7 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   };
   validations: ValidationItemEnhanced[] = [];
   // TODO: update this
-  pagination: Pagination = HomeValidationsService.DEFAULT_PAGINATION;
+  pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION;
   sort: SortingItem = this.DEFAULT_SORTING;
 
   private destroy$ = new Subject<void>();
@@ -63,7 +63,7 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   }
 
   onChangePage(event: any) {
-    this.pagination.page = event.offset + 1;
+    this.pagination.currentPage = event.offset + 1;
     this._fetchValidations();
   }
 
@@ -72,7 +72,7 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
       sort: event.newValue,
       order_by: event.column.prop,
     };
-    this.pagination.page = 1;
+    this.pagination.currentPage = 1;
     this._fetchValidations();
   }
 
@@ -98,9 +98,9 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   private _setValidations(validations: ValidationCollection) {
     this.validations = this._transformValidations(validations.items);
     this.pagination = {
-      total: validations.total,
-      per_page: validations.per_page,
-      page: validations.page,
+      totalItems: validations.total,
+      perPage: validations.per_page,
+      currentPage: validations.page,
     };
   }
 
@@ -143,6 +143,5 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
 
   getValidationStatusColor(cd_nomenclature: number) {
     return this._config.VALIDATION.STATUS_INFO[cd_nomenclature]?.color;
-
   }
 }
