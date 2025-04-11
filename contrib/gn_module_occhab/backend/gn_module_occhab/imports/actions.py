@@ -185,7 +185,7 @@ class OcchabImportActions(ImportActions):
         set_id_parent_from_destination(
             imprt,
             parent_entity=entity_station,
-            child_entity=entity_habitat,
+            entity=entity_habitat,
             id_field=fields["id_station"],
             fields=[
                 selected_fields.get("unique_id_sinp_station"),
@@ -196,7 +196,7 @@ class OcchabImportActions(ImportActions):
         set_parent_line_no(
             imprt,
             parent_entity=entity_station,
-            child_entity=entity_habitat,
+            entity=entity_habitat,
             parent_line_no="station_line_no",
             fields=[
                 selected_fields.get("id_station_source"),
@@ -208,7 +208,7 @@ class OcchabImportActions(ImportActions):
         check_no_parent_entity(
             imprt,
             parent_entity=entity_station,
-            child_entity=entity_habitat,
+            entity=entity_habitat,
             id_parent="id_station",
             parent_line_no="station_line_no",
         )
@@ -216,7 +216,7 @@ class OcchabImportActions(ImportActions):
         check_erroneous_parent_entities(
             imprt,
             parent_entity=entity_station,
-            child_entity=entity_habitat,
+            entity=entity_habitat,
             parent_line_no="station_line_no",
         )
 
