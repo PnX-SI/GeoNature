@@ -69,7 +69,7 @@ export class FieldMappingService {
    */
   private sourceFields: Array<string>;
 
-  private fieldsByEntity: Map<string, Array<string>> = new Map();
+  private fieldsByEntity: Record<string, Array<string>> = {};
 
   /**
    * Status of field mappings.
@@ -183,39 +183,36 @@ export class FieldMappingService {
             },
           });
         });
-        this.fieldsByEntity.set(entity.label, entityFields);
+        this.fieldsByEntity[entity.label] = entityFields;
       });
     });
-    if (this.fieldsByEntity.size > 1)
+    if (this.fieldsByEntity) {
       this.fieldsByEntity = this.removeCommonStrings(this.fieldsByEntity);
+    }
     return flattened;
   }
 
   /**
    * Removes common strings from each array in the given map and returns a new map with the modified arrays.
    *
-   * @param {Map<string, string[]>} map - The map containing arrays of strings.
-   * @return {Map<string, string[]>} A new map with the modified arrays.
+   * @param {Record<string, string[]>} map - The map containing arrays of strings.
+   * @return {Record<string, string[]>} A new map with the modified arrays.
    */
-  removeCommonStrings(map: Map<string, string[]>): Map<string, string[]> {
-    const result = new Map<string, string[]>();
+  removeCommonStrings(record: Record<string, string[]>): Record<string, string[]> {
+    const result: Record<string, string[]> = {};
 
-    for (const [key, array1] of map) {
-      const newArray: string[] = [];
-
-      for (const array2 of map.values()) {
-        if (array1 !== array2) {
-          for (const str of array1) {
-            if (!array2.includes(str)) {
-              newArray.push(str);
+    for (const entity in record) {
+      result[entity] = record[entity].filter((field) => {
+        for (const entityCandidate in record) {
+          if (entityCandidate != entity) {
+            if (record[entityCandidate].includes(field)) {
+              return false;
             }
           }
         }
-      }
-
-      result.set(key, newArray);
+        return true;
+      });
     }
-
     return result;
   }
 
@@ -271,7 +268,7 @@ export class FieldMappingService {
             .setValidators(
               this._formservice.RequiredIfControlIsNotNullValidator(
                 mandatory_conditions,
-                this.fieldsByEntity.get(entity.label)
+                this.fieldsByEntity[entity.label]
               )
             );
         }
@@ -281,14 +278,14 @@ export class FieldMappingService {
             .setValidators(
               this._formservice.NotRequiredIfControlIsNotNullValidator(
                 optional_conditions,
-                this.fieldsByEntity.get(entity.label)
+                this.fieldsByEntity[entity.label]
               )
             );
         } else if (mandatory) {
           this.mappingFormGroup
             .get(name_field)
             .setValidators(
-              this._formservice.NotRequiredIfNoOther(this.fieldsByEntity.get(entity.label))
+              this._formservice.NotRequiredIfNoOther(this.fieldsByEntity[entity.label])
             );
         }
 
@@ -407,15 +404,6 @@ export class FieldMappingService {
         this.fieldMappingStatus.unmapped.add(column_src);
       }
     }
-  }
-
-  IsEntityMapped(entity, mapped): boolean {
-    for (const theme of entity.themes) {
-      for (const field of theme.fields) {
-        if (mapped.includes(field)) return true;
-      }
-    }
-    return false;
   }
 
   get moduleCode(): string {
