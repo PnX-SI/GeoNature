@@ -1,6 +1,7 @@
 import './backToImportList';
 import './checkCellValueExistsInColumn';
 import './checkCurrentPageIsImport';
+import './checkCurrentPageIsImportUpload';
 import './checkImportListSize';
 import './configureImportContentMapping';
 import './configureImportFieldMapping';
@@ -17,7 +18,6 @@ import './getGlobalConfig';
 import './getRowIndexByCellValue';
 import './hasToastError';
 import './loadImportFile';
-import './pickDataset';
 import './pickDestination';
 import './removeFirstImportInList';
 import './startImport';

@@ -47,9 +47,6 @@
           </li>
 
           {% endfor %}
-        {% if data.dataset: %}
-            <li><b>Jeu de données</b> : {{ data.dataset.dataset_name }}</li>
-        {% endif %}
         </ul>
         {% if data.keywords: %}
         <div class="information">
@@ -74,7 +71,7 @@
     </div>
     {% endif %}
 
-    
+
     {% if data.date_end_import is not none %}
     <div class="row card">
         <div class="card-header">
@@ -97,7 +94,7 @@
                 {% endfor %}
                 </tbody>
             </table>
-   
+
             <div class="charts">
                 <img
                 class="charts__img"
@@ -106,7 +103,7 @@
             </div>
 
         </div>
-  
+
     </div>
     {% endif %}
     {% if data.processed %}
@@ -137,7 +134,7 @@
             </table>
         </div>
     </div>
-    
+
     {% endif %} <!-- Endif import.processed-->
 
 

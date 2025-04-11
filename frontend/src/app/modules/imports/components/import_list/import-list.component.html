@@ -89,14 +89,6 @@
                 "
               >
                 <ng-container [ngSwitch]="col.prop">
-                  <ng-container *ngSwitchCase="'dataset.dataset_name'">
-                    <a
-                      routerLink="/metadata/dataset_detail/{{ row.id_dataset }}"
-                      matTooltip="Voir la fiche du jeu de données"
-                    >
-                      {{ row.dataset ? row.dataset.dataset_name : '' }}
-                    </a>
-                  </ng-container>
                   <ng-container *ngSwitchCase="'date_create_import'">
                     {{ row.date_create_import | date: 'dd-MM-yyyy' }}
                   </ng-container>
@@ -202,12 +194,12 @@
               ngx-datatable-cell-template
             >
               <button
-                [disabled]="row.processing || !row?.cruved?.U || !row?.dataset?.active"
+                [disabled]="row.processing || !row?.cruved?.U"
                 [matTooltip]="getTooltip(row, 'edit')"
                 mat-icon-button
                 color="primary"
                 class="Datatable__button"
-                (click)="onFinishImport(row)"
+                (click)="openModal(editModal, 'edit', row)"
                 [attr.data-qa]="'import-list-table-row-' + index + '-actions-edit'"
               >
                 <mat-icon>edit</mat-icon>
@@ -237,11 +229,11 @@
                 ></i>
               </button>
               <button
-                [disabled]="!row?.cruved?.D || !row?.dataset?.active"
+                [disabled]="!row?.cruved?.D"
                 mat-icon-button
                 color="warn"
                 class="Datatable__button"
-                (click)="openDeleteModal(row, deleteModal)"
+                (click)="openModal(deleteModal, 'delete', row)"
                 [matTooltip]="getTooltip(row, 'delete')"
                 [attr.data-qa]="'import-list-table-row-' + index + '-actions-delete'"
               >
@@ -259,16 +251,34 @@
       ></import-modal-destination>
 
       <ng-template
+        #editModal
+        let-c="close"
+        let-d="dismiss"
+        data-qa="import-list-modal-edit"
+      >
+        <import-action-modal
+          [modalData]="editModalData"
+          [data]="selectedRow"
+          [actionType]="'edit'"
+          [c]="c"
+          (onAction)="handleModalAction($event)"
+        ></import-action-modal>
+      </ng-template>
+
+      <!-- Modale pour Delete -->
+      <ng-template
         #deleteModal
-        let-c="close "
+        let-c="close"
         let-d="dismiss"
         data-qa="import-list-modal-delete"
       >
-        <import-delete
-          [row]="deleteOne"
+        <import-action-modal
+          [modalData]="deleteModalData"
+          [data]="selectedRow"
+          [actionType]="'delete'"
           [c]="c"
-          (onDelete)="onImportList(offset, search_string)"
-        ></import-delete>
+          (onAction)="handleModalAction($event)"
+        ></import-action-modal>
       </ng-template>
     </div>
   </div>
