@@ -11,6 +11,7 @@ import {
   SyntheseDataPaginationItem,
 } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { Loadable } from '../loadable';
+import { finalize } from 'rxjs/operators';
 
 enum Direction {
   BACKWARD,
@@ -59,6 +60,7 @@ export class TabMediaComponent extends Loadable implements OnInit {
         page: this.pagination.currentPage,
         per_page: this.pagination.perPage,
       })
+      .pipe(finalize(() => this.stopLoading()))
       .subscribe(
         (response) => {
           this.medias = response.items;
@@ -70,10 +72,6 @@ export class TabMediaComponent extends Loadable implements OnInit {
           if (!this.medias.some((media) => media.id_media == this.selectedMedia.id_media)) {
             this.selectedMedia = this.medias[selectedMediaIndex];
           }
-          this.stopLoading();
-        },
-        () => {
-          this.stopLoading();
         }
       );
   }
