@@ -18,7 +18,7 @@ __all__ = [
 def set_id_parent_from_destination(
     imprt: TImports,
     parent_entity: Entity,
-    child_entity: Entity,
+    entity: Entity,
     id_field: BibFields,
     fields: List[BibFields],
 ) -> None:
@@ -31,8 +31,8 @@ def set_id_parent_from_destination(
         The import to update.
     parent_entity : Entity
         The entity of the parent.
-    child_entity : Entity
-        The entity of the child.
+    entity : Entity
+        The current entity.
     id_field : BibFields
         The field containing the id of the parent.
     fields : List[BibFields]
@@ -47,7 +47,7 @@ def set_id_parent_from_destination(
             sa.update(transient_table)
             .where(
                 transient_table.c.id_import == imprt.id_import,
-                transient_table.c[child_entity.validity_column].isnot(None),
+                transient_table.c[entity.validity_column].isnot(None),
             )
             # We need to complete the id_parent only for child not on the same row than a parent
             .where(transient_table.c[parent_entity.validity_column].is_(None))
@@ -60,8 +60,7 @@ def set_id_parent_from_destination(
 def set_parent_line_no(
     imprt: TImports,
     parent_entity: Entity,
-    child_entity: Entity,
-    id_parent: BibFields,
+    entity: Entity,
     parent_line_no: BibFields,
     fields: List[BibFields],
 ) -> None:
@@ -77,8 +76,8 @@ def set_parent_line_no(
         The import to update.
     parent_entity : Entity
         The entity of the parent.
-    child_entity : Entity
-        The entity of the child.
+    entity : Entity
+        The current entity.
     id_parent : BibFields
         The field containing the id of the parent.
     parent_line_no : BibFields
@@ -95,7 +94,7 @@ def set_parent_line_no(
             sa.update(transient_child)
             .where(
                 transient_child.c.id_import == imprt.id_import,
-                transient_child.c[child_entity.validity_column].isnot(None),
+                transient_child.c[entity.validity_column].isnot(None),
             )
             # We need to complete the parent_line_no only for child not on the same row than a parent
             .where(transient_child.c[parent_entity.validity_column].is_(None))
@@ -112,7 +111,7 @@ def set_parent_line_no(
 def check_no_parent_entity(
     imprt: TImports,
     parent_entity: Entity,
-    child_entity: Entity,
+    entity: Entity,
     id_parent: BibFields,
     parent_line_no: BibFields,
 ) -> None:
@@ -128,8 +127,8 @@ def check_no_parent_entity(
         The import to check.
     parent_entity : Entity
         The entity of the parent.
-    child_entity : Entity
-        The entity of the child.
+    entity : Entity
+        The current entity.
     id_parent : BibFields
         The field containing the id of the parent.
     parent_line_no : BibFields
@@ -138,13 +137,13 @@ def check_no_parent_entity(
     transient_table = imprt.destination.get_transient_table()
     report_erroneous_rows(
         imprt,
-        child_entity,
+        entity,
         error_type=ImportCodeError.NO_PARENT_ENTITY,
         error_column=id_parent,
         whereclause=sa.and_(
             # Complains for missing parent only for valid child, as parent may be missing
             # because of erroneous uuid required to find the parent.
-            transient_table.c[child_entity.validity_column].is_(True),
+            transient_table.c[entity.validity_column].is_(True),
             transient_table.c[parent_entity.validity_column].is_(None),  # no parent on same line
             transient_table.c[id_parent].is_(None),  # no parent in destination
             transient_table.c[parent_line_no].is_(None),  # no parent on another line
@@ -153,7 +152,7 @@ def check_no_parent_entity(
 
 
 def check_erroneous_parent_entities(
-    imprt: TImports, parent_entity: Entity, child_entity: Entity, parent_line_no: BibFields
+    imprt: TImports, parent_entity: Entity, entity: Entity, parent_line_no: BibFields
 ) -> None:
     """
     Check for erroneous (not valid) parent entities in the transient table of an import.
@@ -164,8 +163,8 @@ def check_erroneous_parent_entities(
         The import to check.
     parent_entity : Entity
         The entity of the parent.
-    child_entity : Entity
-        The entity of the child.
+    entity : Entity
+        The current entity.
     parent_line_no : BibFields
         The field containing the line number of the parent.
 
@@ -181,11 +180,11 @@ def check_erroneous_parent_entities(
     transient_parent = aliased(transient_child)
     report_erroneous_rows(
         imprt,
-        child_entity,
+        entity,
         error_type=ImportCodeError.ERRONEOUS_PARENT_ENTITY,
         error_column="",
         whereclause=sa.and_(
-            transient_child.c[child_entity.validity_column].isnot(None),
+            transient_child.c[entity.validity_column].isnot(None),
             sa.or_(
                 # parent is on the same line
                 transient_child.c[parent_entity.validity_column].is_(False),
