@@ -726,6 +726,10 @@ class FieldMapping(MappingTemplate):
                 ),
             )
 
+            # no field --> nothing to check. next entity !
+            if not fields_of_ent:
+                continue
+
             # if the only column corresponds to id_columns, we only do the validation on the latter
             if [entity.unique_column.name_field] == [f.name_field for f in fields_of_ent]:
                 fields.extend(fields_of_ent)

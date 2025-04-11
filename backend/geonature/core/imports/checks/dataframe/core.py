@@ -223,6 +223,8 @@ def check_datasets(
     """
     updated_cols = set()
     uuid_col = uuid_field.source_column
+    if uuid_col not in df:
+        return updated_cols
     uuid = df[uuid_col].unique().tolist()
 
     # check uuid format
