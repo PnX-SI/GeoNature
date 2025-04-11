@@ -11,7 +11,7 @@ export class CommonService {
 
   private current: any = {};
 
-  translateToaster(messageType: string, messageValue: string, options: Object = null): void {
+  translateToaster(messageType: string, messageValue: string, options: Object = {}): void {
 
     // si toaster contenant le message est en cours on ne fait rien
     if(this.current[messageValue]) {
@@ -25,7 +25,7 @@ export class CommonService {
       .subscribe((res) => this.toastrService[messageType](res, '', options));
 
     // on supprime le message de current au bout de 5s
-    const deleteAfterTime = (options['timeout'] ? options['timeout'] : 5000)
+    const deleteAfterTime = (options['timeout'] ? options['timeout'] : 5000);
     setTimeout(() => {
       delete this.current[messageValue];
     }, deleteAfterTime);
