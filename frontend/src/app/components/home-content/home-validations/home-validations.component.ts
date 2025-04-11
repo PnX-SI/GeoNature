@@ -6,12 +6,18 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {
   HomeValidationsService,
-  SortingItem,
   ValidationCollection,
   ValidationItem,
 } from './home-validations.service';
 import { ConfigService } from '@geonature/services/config.service';
-import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import {
+  DEFAULT_PAGINATION,
+  SyntheseDataPaginationItem,
+} from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import {
+  SyntheseDataSortItem,
+  SORT_ORDER,
+} from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 
 interface ValidationItemEnhanced {
   id_synthese: number;
@@ -37,14 +43,14 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   readonly PROP_VALIDATION_CODE = 'nomenclature_valid_status.cd_nomenclature';
   readonly PROP_VALIDATION_MESSAGE = 'last_validation.validation_comment';
   readonly PROP_OBSERVATION = 'observation';
-  readonly DEFAULT_SORTING: SortingItem = {
-    sort: 'desc',
-    order_by: this.PROP_VALIDATION_DATE,
+  readonly DEFAULT_SORTING: SyntheseDataSortItem = {
+    sortOrder: SORT_ORDER.DESC,
+    sortBy: this.PROP_VALIDATION_DATE,
   };
   validations: ValidationItemEnhanced[] = [];
   // TODO: update this
   pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION;
-  sort: SortingItem = this.DEFAULT_SORTING;
+  sort: SyntheseDataSortItem = this.DEFAULT_SORTING;
 
   private destroy$ = new Subject<void>();
   constructor(
@@ -69,8 +75,8 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
 
   onColumnSort(event: any) {
     this.sort = {
-      sort: event.newValue,
-      order_by: event.column.prop,
+      sortOrder: event.newValue,
+      sortBy: event.column.prop,
     };
     this.pagination.currentPage = 1;
     this._fetchValidations();

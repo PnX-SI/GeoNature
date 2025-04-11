@@ -5,16 +5,13 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from '@librairies/rxjs';
 import { SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import { SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 
 enum ValidationsModule {
   SYNTHESE = 'SYNTHESE',
   VALIDATION = 'VALIDATION',
 }
 
-export interface SortingItem {
-  sort: 'asc' | 'desc';
-  order_by: string;
-}
 export interface ValidationItem {
   id_synthese: number;
   date_max: string;
@@ -89,14 +86,14 @@ export class HomeValidationsService {
 
   public fetchValidations(
     pagination: SyntheseDataPaginationItem,
-    sort: SortingItem
+    sort: SyntheseDataSortItem
   ): Observable<ValidationCollection> {
     return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation`, {
       params: {
         page: pagination.currentPage.toString(),
         per_page: pagination.perPage.toString(),
-        sort: sort.sort,
-        order_by: sort.order_by,
+        sort: sort.sortOrder,
+        order_by: sort.sortBy,
         format: 'json',
         fields:
           'id_synthese,nom_cite,observers,date_min,date_max,last_validation,nomenclature_valid_status.cd_nomenclature,nomenclature_valid_status.mnemonique,nomenclature_valid_status.label_default,validator',
