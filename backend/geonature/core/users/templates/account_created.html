@@ -1,0 +1,21 @@
+<html>
+
+    <body>
+        <h2>Création de compte validée</h2>
+        <p>Le compte suivant a bien été validé:  </p>
+        <ul>
+            <li> <b> Nom : </b>  {{user.nom_role}} </li>
+            <li> <b> Prénom : </b>  {{user.prenom_role}} </li>
+            <li> <b> Identifiant : </b>  {{user.identifiant}} </li>
+            <li> <b> Email : </b>  {{user.email}} </li>
+                {% for key, value in user.champs_addi.items() %} 
+                <li>
+                    <b> {{key}} :  </b> {{value}} 
+                </li>
+                {% endfor %}
+        </ul>
+
+        <a href=" {{redirect_url}} ">Retour à l'application GeoNature</a>
+
+    </body>
+</html>

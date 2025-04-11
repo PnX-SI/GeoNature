@@ -1,4 +1,5 @@
 @import 'conf/names_variables.scss';
+@import 'material-symbols';
 
 html,
 body,
@@ -7,6 +8,7 @@ mat-sidenav-container {
   margin: 0;
   width: 100%;
   height: 100%;
+  font-size: clamp(10px, 1vw, 20px);
 }
 
 mat-sidenav-content {
@@ -43,16 +45,14 @@ mat-sidenav-content {
 .mat-toolbar {
   //min-height: 5vh !important;
   min-height: 40px !important;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
+  box-shadow:
+    0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12),
     0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
 .mat-toolbar-row {
   //height: 5vh !important;
   height: 40px !important;
-}
-
-.mat-tooltip {
-  white-space: pre-line;
 }
 
 .app-content {
@@ -271,11 +271,15 @@ li.no-bullet {
 }
 
 .box-shadow {
-  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow:
+    4px 5px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .hard-shadow {
-  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.49), 7px 6px 20px 0 rgba(0, 0, 0, 0.41) !important;
+  box-shadow:
+    4px 5px 8px 0 rgba(0, 0, 0, 0.49),
+    7px 6px 20px 0 rgba(0, 0, 0, 0.41) !important;
 }
 
 .disabled {
@@ -290,9 +294,9 @@ li.no-bullet {
   border-color: 1px solid #ced4da !important;
 }
 
-.ng-invalid,
-.custom-invalid,
-.custom-control > .ng-invalid {
+.form-control.ng-invalid,
+ng-select.ng-invalid .ng-select-container,
+.mdc-text-field--invalid {
   border-left: 5px solid #ff0000 !important;
 }
 
@@ -346,11 +350,22 @@ li.no-bullet {
 .panel-heading {
   padding: 10px 15px;
   border-bottom: 1px solid transparent;
-  font-size: 20px;
+  font-size: clamp(14px, 1.4vw, 32px);
   font-weight: 300;
   letter-spacing: 0.025em;
   // height: 60px;
   line-height: 38px;
+}
+
+.panel-intro {
+  display: flex;
+  flex-direction: column;
+  height: 55vh;
+}
+
+.panel-body-intro {
+  flex-grow: 1;
+  overflow: auto;
 }
 
 .title-spaced {
@@ -562,9 +577,27 @@ ngb-modal-backdrop {
 
 .list-option-without-radio {
   span .mdc-list-item__primary-text {
-    display:flex;
+    display: flex;
   }
   span.mdc-list-item__end.ng-star-inserted {
-    display:none;
+    display: none;
+  }
+}
+
+.mat-mdc-button-touch-target {
+  display: none;
+}
+:root {
+  --mdc-typography-button-font-size: clamp(8px, 0.8vw, 18px);
+}
+
+.cdk-overlay-pane {
+  &.mat-mdc-tooltip-panel {
+    .mat-mdc-tooltip {
+      div {
+        max-width: unset;
+      }
+      white-space: preserve nowrap;
+    }
   }
 }

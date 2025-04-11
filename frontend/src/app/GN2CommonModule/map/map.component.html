@@ -1,5 +1,11 @@
-<div class="map-container" [ngStyle]="{ height: height }">
-  <div class="form-row" *ngIf="searchBar">
+<div
+  class="map-container"
+  [ngStyle]="{ height: height }"
+>
+  <div
+    class="form-row"
+    *ngIf="searchBar"
+  >
     <div class="form-group col-md-12">
       <input
         type="text"
@@ -12,10 +18,21 @@
         [ngClass]="{ loading: searching }"
         placeholder="Rechercher un lieu"
       />
-      <ng-template #dropdown let-r="result" let-t="term" class="dropdown-nominatim">
-        <span class="clickable" [innerHTML]="r.display_name"> </span>
+      <ng-template
+        #dropdown
+        let-r="result"
+        let-t="term"
+        class="dropdown-nominatim"
+      >
+        <span
+          class="clickable"
+          [innerHTML]="r.display_name"
+        ></span>
       </ng-template>
     </div>
   </div>
-  <div #mapDiv [ngStyle]="{ height: height }"></div>
+  <div
+    #mapDiv
+    [ngStyle]="{ height: height }"
+  ></div>
 </div>

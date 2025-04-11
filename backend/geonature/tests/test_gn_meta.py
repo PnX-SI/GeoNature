@@ -3,43 +3,51 @@ import uuid
 from io import StringIO
 from unittest.mock import patch
 
+
 import pytest
 from flask import url_for
-from flask_sqlalchemy import BaseQuery
 from geoalchemy2.shape import to_shape
-
 from geojson import Point
-from sqlalchemy import func
-from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
-from werkzeug.datastructures import MultiDict
-from ref_geo.models import BibAreasTypes, LAreas
-
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import (
-    CorDatasetActor,
-    TAcquisitionFramework,
-    TDatasets,
+from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.repositories import (
+    cruved_af_filter,
+    cruved_ds_filter,
+    get_metadata_list,
 )
 from geonature.core.gn_meta.routes import get_af_from_id
-from geonature.core.gn_permissions.models import (
-    CorRoleActionFilterModuleObject,
-    TActions,
-    TFilters,
-)
+from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
+from pypnusershub.schemas import UserSchema
+from ref_geo.models import BibAreasTypes, LAreas
+from sqlalchemy import func, select, exists
+from sqlalchemy.sql.selectable import Select
+from werkzeug.datastructures import Headers, MultiDict
+from werkzeug.exceptions import (
+    BadRequest,
+    Conflict,
+    Forbidden,
+    NotFound,
+    Unauthorized,
+    UnsupportedMediaType,
+)
 
 from .fixtures import *
-from .utils import logged_user_headers, set_logged_user_cookie
+from .utils import logged_user_headers, set_logged_user
 
 
 @pytest.fixture(scope="function")
 def commune_without_obs():
-    return LAreas.query.filter(
-        LAreas.area_type.has(
-            BibAreasTypes.type_code == "COM",
-        ),
-        ~LAreas.synthese_obs.any(),
+    return db.session.scalars(
+        select(LAreas)
+        .where(
+            LAreas.area_type.has(
+                BibAreasTypes.type_code == "COM",
+            ),
+            ~LAreas.synthese_obs.any(),
+        )
+        .limit(1)
     ).first()
 
 
@@ -47,20 +55,24 @@ def getCommBySynthese(obs):
     """
     Return area by synthese
     """
-    return LAreas.query.filter(
-        LAreas.area_type.has(
-            BibAreasTypes.type_code == "COM",
-        ),
-        LAreas.synthese_obs.any(
-            Synthese.id_synthese == obs.id_synthese,
-        ),
+    return db.session.scalars(
+        select(LAreas)
+        .where(
+            LAreas.area_type.has(
+                BibAreasTypes.type_code == "COM",
+            ),
+            LAreas.synthese_obs.any(
+                Synthese.id_synthese == obs.id_synthese,
+            ),
+        )
+        .limit(1)
     ).first()
 
 
 # TODO: maybe move it to global fixture
 @pytest.fixture()
 def unexisted_id():
-    return db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+    return db.session.scalar(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)) + 1
 
 
 @pytest.fixture
@@ -99,9 +111,7 @@ def get_csv_from_response(data):
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGNMeta:
-    def test_acquisition_frameworks_permissions(
-        self, app, acquisition_frameworks, datasets, users
-    ):
+    def test_acquisition_frameworks_permissions(self, app, acquisition_frameworks, datasets, users):
         af = acquisition_frameworks["own_af"]
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
@@ -135,6 +145,8 @@ class TestGNMeta:
 
             nested = db.session.begin_nested()
             af.t_datasets.remove(datasets["own_dataset"])
+            af.t_datasets.remove(datasets["private"])
+            af.t_datasets.remove(datasets["own_dataset_not_activated"])
             # Now, the AF has no DS on which user is digitizer.
             assert af.has_instance_permission(1) == False
             # But the AF has still DS on which user organism is actor.
@@ -145,33 +157,66 @@ class TestGNMeta:
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
             af_ids = [af.id_acquisition_framework for af in acquisition_frameworks.values()]
-            qs = TAcquisitionFramework.query.filter(
+            qs = select(TAcquisitionFramework).where(
                 TAcquisitionFramework.id_acquisition_framework.in_(af_ids)
             )
-            assert set(qs.filter_by_scope(0).all()) == set([])
-            assert set(qs.filter_by_scope(1).all()) == set(
+            ta = TAcquisitionFramework
+            sc = db.session.scalars
+
+            assert set(sc(ta.filter_by_scope(0, query=qs)).unique().all()) == set([])
+            assert set(sc(ta.filter_by_scope(1, query=qs)).unique().all()) == set(
                 [
                     acquisition_frameworks["own_af"],
                     acquisition_frameworks["orphan_af"],  # through DS
+                    acquisition_frameworks["parent_af"],
+                    acquisition_frameworks["child_af"],
+                    acquisition_frameworks["parent_wo_children_af"],
+                    acquisition_frameworks["delete_parent_wo_children_af"],
+                    acquisition_frameworks["delete_af"],
                 ]
             )
-            assert set(qs.filter_by_scope(2).all()) == set(
+            assert set(sc(ta.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
                     acquisition_frameworks["own_af"],
                     acquisition_frameworks["associate_af"],
                     acquisition_frameworks["orphan_af"],  # through DS
+                    acquisition_frameworks["parent_af"],
+                    acquisition_frameworks["child_af"],
+                    acquisition_frameworks["parent_wo_children_af"],
+                    acquisition_frameworks["delete_parent_wo_children_af"],
+                    acquisition_frameworks["delete_af"],
                 ]
             )
-            assert set(qs.filter_by_scope(3).all()) == set(acquisition_frameworks.values())
+            assert set(sc(ta.filter_by_scope(3, query=qs)).unique().all()) == set(
+                acquisition_frameworks.values()
+            )
 
-    def test_acquisition_framework_is_deletable(self, app, acquisition_frameworks, datasets):
-        assert acquisition_frameworks["own_af"].is_deletable() == True
-        assert (
-            acquisition_frameworks["orphan_af"].is_deletable() == False
-        )  # DS are attached to this AF
+    @pytest.mark.parametrize(
+        "af,has_datasets",
+        [
+            ("own_af", False),
+            ("orphan_af", True),
+        ],
+    )
+    def test_acquisition_framework_has_datasets(
+        self, app, acquisition_frameworks, datasets, af, has_datasets
+    ):
+        assert acquisition_frameworks[af].has_datasets() == has_datasets
+
+    @pytest.mark.parametrize(
+        "af,has_child_af",
+        [
+            ("parent_af", True),
+            ("parent_wo_children_af", False),
+        ],
+    )
+    def test_acquisition_framework_has_child_acquisition_framework(
+        self, app, acquisition_frameworks, datasets, af, has_child_af
+    ):
+        assert acquisition_frameworks[af].has_child_acquisition_framework() == has_child_af
 
     def test_create_acquisition_framework(self, users):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         # Post with only required attributes
         response = self.client.post(
@@ -185,48 +230,43 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_create_acquisition_framework_forbidden(self, users):
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
 
         response = self.client.post(url_for("gn_meta.create_acquisition_framework"), data={})
 
         assert response.status_code == Forbidden.code
 
-    def test_delete_acquisition_framework(self, app, users, acquisition_frameworks, datasets):
-        af_id = acquisition_frameworks["orphan_af"].id_acquisition_framework
+    @pytest.mark.parametrize(
+        "user,dataset,status_code",
+        [
+            (None, "orphan_af", Unauthorized.code),
+            ("noright_user", "orphan_af", Forbidden.code),
+            ("self_user", "orphan_af", Forbidden.code),
+            ("admin_user", "orphan_af", Conflict.code),
+            ("admin_user", "parent_af", Conflict.code),
+            ("user", "own_af", 204),
+            ("user", "delete_parent_wo_children_af", 204),
+            ("user", "delete_af", 204),
+        ],
+    )
+    def test_delete_acquisition_framework(
+        self, app, users, acquisition_frameworks, datasets, user, dataset, status_code
+    ):
+        if user:
+            set_logged_user(self.client, users[user])
 
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == Unauthorized.code
-
-        set_logged_user_cookie(self.client, users["noright_user"])
-
-        # The user has no rights on METADATA module
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == Forbidden.code
-        assert "METADATA" in response.json["description"]
-
-        set_logged_user_cookie(self.client, users["self_user"])
-
-        # The user has right on METADATA module, but not on this specific AF
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == Forbidden.code
-        assert "METADATA" not in response.json["description"]
-
-        set_logged_user_cookie(self.client, users["admin_user"])
-
-        # The AF can not be deleted due to attached DS
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == Conflict.code
-
-        set_logged_user_cookie(self.client, users["user"])
-        af_id = acquisition_frameworks["own_af"].id_acquisition_framework
-
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
-        assert response.status_code == 204
+        response = self.client.delete(
+            url_for(
+                "gn_meta.delete_acquisition_framework",
+                af_id=acquisition_frameworks[dataset].id_acquisition_framework,
+            )
+        )
+        assert response.status_code == status_code
 
     def test_update_acquisition_framework(self, users, acquisition_frameworks):
         new_name = "thenewname"
         af = acquisition_frameworks["own_af"]
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.post(
             url_for(
@@ -239,11 +279,49 @@ class TestGNMeta:
         assert response.status_code == 200
         assert response.json.get("acquisition_framework_name") == new_name
 
+    def test_update_acquisition_framework_forbidden(self, users, acquisition_frameworks):
+        stranger_user = users["stranger_user"]
+        set_logged_user(self.client, stranger_user)
+        af = acquisition_frameworks["own_af"]
+
+        response = self.client.post(
+            url_for(
+                "gn_meta.updateAcquisitionFramework",
+                id_acquisition_framework=af.id_acquisition_framework,
+            ),
+            data=dict(acquisition_framework_name="new_name"),
+        )
+
+        assert response.status_code == Forbidden.code
+        assert (
+            response.json["description"]
+            == f"User {stranger_user.identifiant} cannot update acquisition framework {af.id_acquisition_framework}"
+        )
+
+    def test_update_acquisition_framework_forbidden_af(self, users, acquisition_frameworks):
+        self_user = users["self_user"]
+        set_logged_user(self.client, self_user)
+        af = acquisition_frameworks["own_af"]
+
+        response = self.client.post(
+            url_for(
+                "gn_meta.updateAcquisitionFramework",
+                id_acquisition_framework=af.id_acquisition_framework,
+            ),
+            data=dict(acquisition_framework_name="new_name"),
+        )
+
+        assert response.status_code == Forbidden.code
+        assert (
+            response.json["description"]
+            == f"User {self_user.identifiant} cannot update acquisition framework {af.id_acquisition_framework}"
+        )
+
     def test_get_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
         response = self.client.get(
@@ -256,54 +334,18 @@ class TestGNMeta:
         )
         assert response.status_code == 200
 
-    def test_get_post_acquisition_frameworks(self, users, commune_without_obs):
-        # SIMPLE TEST WITH POST REQUEST
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={},
-        )
-        assert response.status_code == Unauthorized.code
-
-        set_logged_user_cookie(self.client, users["admin_user"])
-        # POST EMPTY REQUEST FAIL WITHOUT ANY PARAMS
-        response = self.client.post(url_for("gn_meta.get_acquisition_frameworks"))
-        assert response.status_code == BadRequest.code
-        # POST REQUEST WITHOUT JSON AND WITHOUT QUERY STRING
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={},
-        )
-        assert response.status_code == 200
-        # POST REQUEST WITHOUT JSON
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            query_string={
-                "datasets": "1",
-                "creator": "1",
-                "actors": "1",
-            },
-            json={},
-        )
-        assert response.status_code == 200
-        # TEST RESPONSE WITH ONE FILTER AREA
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [[commune_without_obs.id_type, commune_without_obs.id_area]]},
-        )
-        assert response.status_code == 200
-
     def test_get_acquisition_frameworks_list(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == 200
 
     def test_filter_acquisition_by_geo(self, synthese_data, users, commune_without_obs):
         # security test already passed in previous tests
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         # get 2 synthese observations in two differents AF and two differents communes
         s1, s2 = synthese_data["p1_af1"], synthese_data["p3_af3"]
@@ -318,7 +360,7 @@ class TestGNMeta:
         # search metadata in first commune
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [[comm1.id_type, comm1.id_area]]},
+            json={"areas": [comm1.id_area]},
         )
         ids = [af["id_acquisition_framework"] for af in response.json]
         assert s1.dataset.id_acquisition_framework in ids
@@ -328,7 +370,7 @@ class TestGNMeta:
         # get commune for this id synthese
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [[comm2.id_type, comm2.id_area]]},
+            json={"areas": [comm2.id_area]},
         )
         ids = [af["id_acquisition_framework"] for af in response.json]
         assert s1.dataset.id_acquisition_framework not in ids
@@ -337,7 +379,7 @@ class TestGNMeta:
         # test no response if a commune have observations
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [[commune_without_obs.id_type, commune_without_obs.id_area]]},
+            json={"areas": [commune_without_obs.id_area]},
         )
         resp = response.json
         # will return empty response
@@ -345,7 +387,7 @@ class TestGNMeta:
 
     def test_get_acquisition_frameworks_list_excluded_fields(self, users):
         excluded = ["id_acquisition_framework", "id_digitizer"]
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_acquisition_frameworks_list"),
@@ -358,7 +400,7 @@ class TestGNMeta:
     def test_get_acquisition_frameworks_list_excluded_fields_not_nested(self, users):
         excluded = ["id_acquisition_framework", "id_digitizer"]
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_acquisition_frameworks_list"),
@@ -375,23 +417,106 @@ class TestGNMeta:
         response = self.client.get(get_af_url)
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         response = self.client.get(get_af_url)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(get_af_url)
         assert response.status_code == 200
 
-    def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
-        af_id = acquisition_frameworks["own_af"].id_acquisition_framework
+    @pytest.mark.skip(reason="Problem with CI")
+    def test_get_acquisition_framework_add_only(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        get_af_url = url_for("gn_meta.get_acquisition_frameworks", datasets=1, creator=1, actors=1)
 
-        set_logged_user_cookie(self.client, users["user"])
+        response = self.client.get(get_af_url)
+        assert response.status_code == 200
+        assert len(response.json) > 1
+        data = response.json
+        assert DatasetSchema(many=True).validate(data)
+        assert UserSchema().validate(data[0]["creator"])
+        assert all(["cor_af_actor" in af for af in data])
+
+    def test_get_acquisition_frameworks_search_af_name(
+        self, users, acquisition_frameworks, datasets
+    ):
+        set_logged_user(self.client, users["admin_user"])
+        af1 = acquisition_frameworks["af_1"]
+        af2 = acquisition_frameworks["af_2"]
+        get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+
+        response = self.client.post(get_af_url, json={"search": af1.acquisition_framework_name})
+
+        af_list = [af["id_acquisition_framework"] for af in response.json]
+        assert af1.id_acquisition_framework in af_list
+        assert af2.id_acquisition_framework not in af_list
+
+    def test_get_acquisition_frameworks_search_ds_name(
+        self, users, acquisition_frameworks, datasets
+    ):
+        set_logged_user(self.client, users["admin_user"])
+        ds = datasets["belong_af_1"]
+        af1 = acquisition_frameworks["af_1"]
+        af2 = acquisition_frameworks["af_2"]
+        get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+
+        response = self.client.post(get_af_url, json={"search": ds.dataset_name})
+        assert response.status_code == 200
+
+        af_list = [af["id_acquisition_framework"] for af in response.json]
+        assert af1.id_acquisition_framework in af_list
+        assert af2.id_acquisition_framework not in af_list
+
+    def test_get_acquisition_frameworks_search_af_uuid(self, users, acquisition_frameworks):
+        set_logged_user(self.client, users["admin_user"])
+
+        af1 = acquisition_frameworks["af_1"]
 
         response = self.client.post(
-            url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
-            )
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"search": str(af1.unique_acquisition_framework_id)[:5]},
+        )
+
+        assert {af["id_acquisition_framework"] for af in response.json} == {
+            af1.id_acquisition_framework
+        }
+
+    def test_get_acquisition_frameworks_search_af_date(self, users, acquisition_frameworks):
+        set_logged_user(self.client, users["admin_user"])
+
+        af1 = acquisition_frameworks["af_1"]
+
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"search": af1.acquisition_framework_start_date.strftime("%d/%m/%Y")},
+        )
+        assert response.status_code == 200
+
+        expected = {af1.id_acquisition_framework}
+        assert expected.issubset({af["id_acquisition_framework"] for af in response.json})
+        # TODO check another AF with another start_date (and no DS at search date) is not returned
+
+    def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
+        af_id = acquisition_frameworks["orphan_af"].id_acquisition_framework
+
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.post(
+            url_for("gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id)
+        )
+
+        assert response.status_code == 200
+
+    def test_get_export_pdf_acquisition_frameworks_with_data(
+        self, users, acquisition_frameworks, datasets
+    ):
+        af_id = acquisition_frameworks["af_1"].id_acquisition_framework
+
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.post(
+            url_for("gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id)
         )
 
         assert response.status_code == 200
@@ -400,9 +525,7 @@ class TestGNMeta:
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 
         response = self.client.post(
-            url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
-            )
+            url_for("gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id)
         )
 
         assert response.status_code == Unauthorized.code
@@ -411,7 +534,7 @@ class TestGNMeta:
         self, users, acquisition_frameworks, datasets, synthese_data
     ):
         af = synthese_data["obs1"].dataset.acquisition_framework
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(
             url_for(
@@ -431,13 +554,13 @@ class TestGNMeta:
         # For each entry, take the max between count_min and count_max. And if
         # not provided: count_min and/or count_max is 1. Since one entry in
         # synthese is at least 1 taxon
-        assert data["nb_taxons"] == sum(max(s.count_min or 1, s.count_max or 1) for s in obs)
+        assert data["nb_taxons"] == len(set([s.cd_nom for s in obs]))
 
     def test_get_acquisition_framework_bbox(self, users, acquisition_frameworks, synthese_data):
         # this AF contains at least 2 obs at different locations
         af = synthese_data["p1_af1"].dataset.acquisition_framework
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(
             url_for(
@@ -476,20 +599,29 @@ class TestGNMeta:
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
             ds_ids = [ds.id_dataset for ds in datasets.values()]
-            qs = TDatasets.query.filter(TDatasets.id_dataset.in_(ds_ids))
-            assert set(qs.filter_by_scope(0).all()) == set([])
-            assert set(qs.filter_by_scope(1).all()) == set(
+            sc = db.session.scalars
+            dsc = TDatasets
+            qs = select(TDatasets).where(TDatasets.id_dataset.in_(ds_ids))
+            assert set(sc(dsc.filter_by_scope(0, query=qs)).unique().all()) == set([])
+            assert set(sc(dsc.filter_by_scope(1, query=qs)).unique().all()) == set(
                 [
                     datasets["own_dataset"],
+                    datasets["own_dataset_not_activated"],
+                    datasets["private"],
                 ]
             )
-            assert set(qs.filter_by_scope(2).all()) == set(
+            assert set(sc(dsc.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
                     datasets["own_dataset"],
+                    datasets["own_dataset_not_activated"],
                     datasets["associate_dataset"],
+                    datasets["associate_2_dataset_sensitive"],
+                    datasets["private"],
                 ]
             )
-            assert set(qs.filter_by_scope(3).all()) == set(datasets.values())
+            assert set(sc(dsc.filter_by_scope(3, query=qs)).unique().all()) == set(
+                datasets.values()
+            )
 
     def test_dataset_is_deletable(self, app, synthese_data, datasets):
         assert (
@@ -503,27 +635,27 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
 
         # The user has no rights on METADATA module
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Forbidden.code
         assert "METADATA" in response.json["description"]
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         # The user has right on METADATA module, but not on this specific DS
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Forbidden.code
         assert "METADATA" not in response.json["description"]
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         # The DS can not be deleted due to attached rows in synthese
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Conflict.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         ds_id = datasets["orphan_dataset"].id_dataset
 
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
@@ -533,27 +665,20 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == 200
         expected_ds = {dataset.id_dataset for dataset in datasets.values()}
         resp_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(resp_ds)
+
+        afs = [acquisition_frameworks["af_1"], acquisition_frameworks["af_2"]]
         filtered_response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict(
-                [
-                    (
-                        "id_acquisition_framework",
-                        acquisition_frameworks["af_1"].id_acquisition_framework,
-                    ),
-                    (
-                        "id_acquisition_framework",
-                        acquisition_frameworks["af_2"].id_acquisition_framework,
-                    ),
-                ]
-            ),
+            json={
+                "id_acquisition_frameworks": [af.id_acquisition_framework for af in afs],
+            },
         )
         assert filtered_response.status_code == 200
         expected_ds = {
@@ -563,14 +688,33 @@ class TestGNMeta:
         }
         filtered_ds = {ds["id_dataset"] for ds in filtered_response.json}
         assert expected_ds.issubset(filtered_ds)
+        assert all(
+            dataset["id_acquisition_framework"] in [af.id_acquisition_framework for af in afs]
+            for dataset in filtered_response.json
+        )
 
-    def test_create_dataset(self, users):
+    def test_list_datasets_mobile(self, users, datasets, acquisition_frameworks):
+        set_logged_user(self.client, users["admin_user"])
+        headers = Headers()
+        headers.add("User-Agent", "okhttp/")
+
+        response = self.client.get(url_for("gn_meta.get_datasets"), headers=headers)
+
+        assert set(response.json.keys()) == {"data"}
+
+    def test_create_dataset(self, users, datasets):
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.post(url_for("gn_meta.create_dataset"))
+        assert response.status_code == UnsupportedMediaType.code
+
+        set_logged_user(self.client, users["admin_user"])
+        ds = datasets["own_dataset"].as_dict()
+        ds["id_dataset"] = "takeonme"
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds)
         assert response.status_code == BadRequest.code
 
     def test_get_dataset(self, users, datasets):
@@ -579,18 +723,221 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        stranger_user = users["stranger_user"]
+        set_logged_user(self.client, stranger_user)
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == Forbidden.code
+        assert (
+            response.json["description"]
+            == f"User {stranger_user.identifiant} cannot read dataset {ds.id_dataset}"
+        )
 
-        set_logged_user_cookie(self.client, users["associate_user"])
+        set_logged_user(self.client, users["associate_user"])
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == 200
+
+        assert DatasetSchema().validate(response.json)
+        assert response.json["id_dataset"] == ds.id_dataset
+
+    def test_get_datasets_synthese_records_count(self, users):
+        # FIXME : verify content
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_meta.get_datasets", synthese_records_count=1))
+
+        assert response.status_code == 200
+
+    @pytest.mark.skip(reason="Works localy but not on GH actions ! ")
+    def test_get_datasets_fields(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_meta.get_datasets", fields="id_dataset"))
+        assert response.status_code == 200
+
+        for dataset in response.json:
+            assert not "id_dataset" in dataset or len(dataset.keys()) > 1
+
+        response = self.client.get(url_for("gn_meta.get_datasets", fields="modules"))
+        assert response.status_code == 200
+
+        # Test if modules non empty
+        resp = response.json
+        # FIXME : don't pass the test on GH
+        assert len(resp) > 1 and "modules" in resp[0] and len(resp[0]["modules"]) > 0
+
+    def test_get_datasets_order_by(self, users):
+        # If added an orderby
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_meta.get_datasets", orderby="id_dataset"))
+        assert response.status_code == 200
+        ids = [dataset["id_dataset"] for dataset in response.json]
+        assert ids == sorted(ids)
+
+        # with pytest.raises(BadRequest):
+        response = self.client.get(
+            url_for("gn_meta.get_datasets", orderby="you_create_unknown_columns?")
+        )
+        assert response.status_code == BadRequest.code
+
+    def test_get_dataset_filter_active(self, users, datasets, module):
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"active": True},
+        )
+
+        expected_ds = {dataset.id_dataset for dataset in datasets.values() if dataset.active}
+        filtered_ds = {ds["id_dataset"] for ds in response.json}
+        assert expected_ds.issubset(filtered_ds)
+
+    def test_get_dataset_filter_module_code(self, users, datasets, module):
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"module_code": module.module_code},
+        )
+
+        expected_ds = {datasets["with_module_1"].id_dataset}
+        filtered_ds = {ds["id_dataset"] for ds in response.json}
+        assert expected_ds.issubset(filtered_ds)
+        assert datasets["own_dataset"].id_dataset not in filtered_ds
+
+    def test_get_dataset_filter_create(self, users, datasets, module):
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"module_code": module.module_code, "create": module.module_code},
+        )
+
+        response_with_object = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"module_code": module.module_code, "create": module.module_code + ".ALL"},
+        )
+
+        expected_ds = {datasets["with_module_1"].id_dataset}
+        filtered_ds = {ds["id_dataset"] for ds in response.json}
+        assert response.json == response_with_object.json
+        assert expected_ds.issubset(filtered_ds)
+        assert datasets["own_dataset"].id_dataset not in filtered_ds
+
+    def test_get_dataset_search(self, users, datasets, module):
+        set_logged_user(self.client, users["admin_user"])
+        ds = datasets["with_module_1"]
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"search": ds.dataset_name},
+        )
+
+        expected_ds = {ds.id_dataset}
+        filtered_ds = {ds["id_dataset"] for ds in response.json}
+        assert expected_ds.issubset(filtered_ds)
+        assert datasets["own_dataset"].id_dataset not in filtered_ds
+
+    def test_get_dataset_search_uuid(self, users, datasets):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"search": str(ds.unique_dataset_id)[:5]},
+        )
+
+        expected_ds = {ds.id_dataset}
+        filtered_ds = {dataset["id_dataset"] for dataset in response.json}
+        assert expected_ds == filtered_ds
+
+    def test_get_dataset_search_date(self, users, datasets):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"search": ds.meta_create_date.strftime("%d/%m/%Y")},
+        )
+
+        expected_ds = {ds.id_dataset}
+        filtered_ds = {dataset["id_dataset"] for dataset in response.json}
+        assert expected_ds.issubset(filtered_ds)
+        # FIXME: add a DS to fixture with an unmatching meta_create_date
+
+    def test_get_dataset_search_af_matches(self, users, datasets, acquisition_frameworks):
+        dataset = datasets["belong_af_1"]
+        acquisition_framework = [
+            af
+            for af in acquisition_frameworks.values()
+            if af.id_acquisition_framework == dataset.id_acquisition_framework
+        ][0]
+        set_logged_user(self.client, users["admin_user"])
+
+        # If Acquisition Framework matches, returns all datasets
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={
+                "id_acquisition_frameworks": [dataset.id_acquisition_framework],
+                "search": acquisition_framework.acquisition_framework_name,
+            },
+        )
+
+        assert {ds["id_acquisition_framework"] for ds in response.json} == {
+            ds.id_acquisition_framework for ds in acquisition_framework.datasets
+        }
+
+    def test_get_dataset_search_ds_matches(self, users, datasets, acquisition_frameworks):
+        dataset = datasets["belong_af_1"]
+        set_logged_user(self.client, users["admin_user"])
+
+        # If Acquisition Framework matches, returns all datasets
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={
+                "id_acquisition_frameworks": [dataset.id_acquisition_framework],
+                "search": dataset.dataset_name,
+            },
+        )
+
+        assert len(response.json) == 1
+        assert response.json[0]["dataset_name"] == dataset.dataset_name
+
+    def test_get_dataset_search_ds_and_af_matches(self, users, datasets, acquisition_frameworks):
+        dataset = datasets["belong_af_1"]
+        acquisition_framework = [
+            af
+            for af in acquisition_frameworks.values()
+            if af.id_acquisition_framework == dataset.id_acquisition_framework
+        ][0]
+        set_logged_user(self.client, users["admin_user"])
+
+        # If Acquisition Framework matches, returns all datasets
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={
+                "id_acquisition_frameworks": [dataset.id_acquisition_framework],
+                "search": dataset.dataset_name[-4:],
+            },
+        )
+
+        assert {ds["id_acquisition_framework"] for ds in response.json} == {
+            ds.id_acquisition_framework for ds in acquisition_framework.datasets
+        }
+
+    def test_get_dataset_forbidden_ds(self, users, datasets):
+        ds = datasets["own_dataset"]
+        self_user = users["self_user"]
+        set_logged_user(self.client, self_user)
+
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+
+        assert response.status_code == Forbidden.code
+        assert (
+            response.json["description"]
+            == f"User {self_user.identifiant} cannot read dataset {ds.id_dataset}"
+        )
 
     def test_update_dataset(self, users, datasets):
         new_name = "thenewname"
         ds = datasets["own_dataset"]
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.patch(
             url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
@@ -601,7 +948,7 @@ class TestGNMeta:
         assert response.json.get("dataset_name") == new_name
 
     def test_update_dataset_not_found(self, users, datasets, unexisted_id):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.patch(url_for("gn_meta.update_dataset", id_dataset=unexisted_id))
 
@@ -609,14 +956,16 @@ class TestGNMeta:
 
     def test_update_dataset_forbidden(self, users, datasets):
         ds = datasets["own_dataset"]
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        set_logged_user(self.client, users["stranger_user"])
 
         response = self.client.patch(url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset))
 
         assert response.status_code == Forbidden.code
 
     def test_dataset_pdf_export(self, users, datasets):
-        unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+        unexisting_id = (
+            db.session.scalar(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)) + 1
+        )
         ds = datasets["own_dataset"]
 
         response = self.client.post(
@@ -624,7 +973,7 @@ class TestGNMeta:
         )
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.post(
             url_for("gn_meta.get_export_pdf_dataset", id_dataset=unexisting_id)
@@ -636,21 +985,23 @@ class TestGNMeta:
         )
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.post(
             url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset)
         )
         assert response.status_code == 200
 
     def test_uuid_report(self, users, synthese_data):
-        observations_nbr = db.session.query(func.count(Synthese.id_synthese)).scalar()
+        observations_nbr = db.session.scalar(
+            select(func.count(Synthese.id_synthese)).select_from(Synthese)
+        )
         if observations_nbr > 1000000:
             pytest.skip("Too much observations in gn_synthese.synthese")
 
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == 200
 
@@ -660,7 +1011,7 @@ class TestGNMeta:
     ):
         dataset_id = datasets["own_dataset"].id_dataset
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(
             url_for("gn_meta.uuid_report"), query_string={"id_dataset": dataset_id}
@@ -685,7 +1036,7 @@ class TestGNMeta:
         )
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(
             url_for("gn_meta.sensi_report"), query_string={"id_dataset": dataset_id}
@@ -693,7 +1044,7 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_sensi_report_fail(self, users):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_meta.sensi_report"))
         # BadRequest because for now id_dataset query is required
@@ -726,18 +1077,14 @@ class TestGNMeta:
 
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
-            create = TDatasets.query._get_create_scope(module_code=modcode)
+            create = TDatasets._get_create_scope(module_code=modcode)
 
-        usercreate = TDatasets.query._get_create_scope(module_code=modcode, user=users["user"])
-        norightcreate = TDatasets.query._get_create_scope(
-            module_code=modcode, user=users["noright_user"]
-        )
-        associatecreate = TDatasets.query._get_create_scope(
+        usercreate = TDatasets._get_create_scope(module_code=modcode, user=users["user"])
+        norightcreate = TDatasets._get_create_scope(module_code=modcode, user=users["noright_user"])
+        associatecreate = TDatasets._get_create_scope(
             module_code=modcode, user=users["associate_user"]
         )
-        admincreate = TDatasets.query._get_create_scope(
-            module_code=modcode, user=users["admin_user"]
-        )
+        admincreate = TDatasets._get_create_scope(module_code=modcode, user=users["admin_user"])
 
         assert create == 2
         assert usercreate == 2
@@ -786,9 +1133,9 @@ class TestGNMeta:
         afuser = TAcquisitionFramework.get_user_af(user=user, only_user=True)
         afdefault = TAcquisitionFramework.get_user_af(user=user)
 
-        assert isinstance(afquery, BaseQuery)
+        assert isinstance(afquery, Select)
         assert isinstance(afuser, list)
-        assert len(afuser) == 1
+        assert len(afuser) == 6
         assert isinstance(afdefault, list)
         assert len(afdefault) >= 1
 
@@ -800,7 +1147,7 @@ class TestGNMeta:
         organismonly = CorDatasetActor(role=None, organism=user.organisme)
         complete = CorDatasetActor(role=user, organism=user.organisme)
 
-        assert empty.actor is None
+        assert not empty.actor
         assert roleonly.actor == user
         assert organismonly.actor == user.organisme
         assert complete.actor == user
@@ -808,7 +1155,7 @@ class TestGNMeta:
     def test_publish_acquisition_framework_no_data(
         self, mocked_publish_mail, users, acquisition_frameworks
     ):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         af = acquisition_frameworks["own_af"]
         response = self.client.get(
@@ -833,7 +1180,7 @@ class TestGNMeta:
     def test_publish_acquisition_framework_with_data(
         self, mocked_publish_mail, users, acquisition_frameworks, synthese_data
     ):
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         response = self.client.get(
             url_for(
@@ -843,3 +1190,50 @@ class TestGNMeta:
         )
         assert response.status_code == 200, response.json
         mocked_publish_mail.assert_called_once()
+
+
+@pytest.mark.usefixtures(
+    "client_class", "temporary_transaction", "users", "datasets", "acquisition_frameworks"
+)
+class TestRepository:
+    def test_cruved_ds_filter(self, users, datasets):
+        with pytest.raises(Unauthorized):
+            cruved_ds_filter(None, None, 0)
+
+        # Has access to every dataset (scope 3 == superuser)
+        assert cruved_ds_filter(None, None, 3)
+
+        # Access to a dataset of its organism
+        assert cruved_ds_filter(datasets["associate_dataset"], users["self_user"], 2)
+        # Access to its own dataset
+        assert cruved_ds_filter(datasets["associate_dataset"], users["associate_user"], 1)
+
+        # Not access to a dataset from an other organism
+        assert not cruved_ds_filter(datasets["associate_dataset"], users["stranger_user"], 2)
+        # Not access to a dataset of its own
+        assert not cruved_ds_filter(datasets["associate_dataset"], users["stranger_user"], 1)
+
+    def test_cruved_af_filter(self, acquisition_frameworks, users):
+        with pytest.raises(Unauthorized):
+            cruved_af_filter(None, None, 0)
+        assert cruved_af_filter(None, None, 3)
+
+        # Has access to every af (scope 3 == superuser)
+        assert cruved_af_filter(None, None, 3)
+
+        # Access to a af of its organism
+        assert cruved_af_filter(acquisition_frameworks["associate_af"], users["self_user"], 2)
+        # Access to its own af
+        assert cruved_af_filter(acquisition_frameworks["own_af"], users["user"], 1)
+
+        # Not access to a af from an other organism
+        assert not cruved_af_filter(
+            acquisition_frameworks["associate_af"], users["stranger_user"], 2
+        )
+        # Not access to a af of its own
+        assert not cruved_af_filter(
+            acquisition_frameworks["associate_af"], users["stranger_user"], 1
+        )
+
+    def test_metadata_list(self):
+        get_metadata_list

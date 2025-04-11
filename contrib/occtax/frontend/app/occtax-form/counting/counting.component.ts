@@ -8,6 +8,8 @@ import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormCountingService } from './counting.service';
 import { ConfigService } from '@geonature/services/config.service';
 
+import { ValidationErrorsId } from '@geonature/services/validators';
+
 @Component({
   selector: 'pnx-occtax-form-counting',
   templateUrl: './counting.component.html',
@@ -35,6 +37,9 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
     private occtaxFormCountingService: OcctaxFormCountingService,
     public config: ConfigService
   ) {}
+
+  // Expose enum to html
+  ValidationErrorsId = ValidationErrorsId;
 
   ngOnInit() {
     this.form = this.occtaxFormCountingService.form;

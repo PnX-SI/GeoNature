@@ -1,6 +1,7 @@
 // Angular's modules
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -28,7 +29,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 // Required modules
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -41,10 +41,10 @@ import { AreasIntersectedComponent } from './form/areas-intersected/areas-inters
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
+import { BadgeComponent } from '@geonature_common/others/badge/badge.component';
 import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DateComponent } from './form/date/date.component';
-import { DisplayMediasComponent } from '@geonature_common/form/media/display-medias.component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
@@ -62,7 +62,9 @@ import { MapListGenericFiltersComponent } from './map-list/generic-filters/gener
 import { MapOverLaysComponent } from './map/overlays/overlays.component';
 import { MarkerComponent } from './map/marker/marker.component';
 import { MediaComponent } from '@geonature_common/form/media/media.component';
-import { MediaDialog } from '@geonature_common/form/media/media-dialog.component';
+import { MediaCard } from '@geonature_common/form/media/media-card.component';
+import { MediaDiaporamaDialog } from '@geonature_common/form/media/media-diaporama-dialog.component';
+import { MediaItem } from '@geonature_common/form/media/media-item.component';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
 import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
@@ -75,11 +77,12 @@ import { ObserversTextComponent } from '@geonature_common/form/observers-text/ob
 import { PeriodComponent } from '@geonature_common/form/date/period.component';
 import { PlacesComponent } from './map/places/places.component';
 import { PlacesListComponent } from './map/placesList/placesList.component';
+import { StatusBadgesComponent } from '@geonature_common/others/status-badges/status-badges.component';
 import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
 import { TaxaComponent } from '@geonature_common/form/taxa/taxa.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Directives
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -101,6 +104,11 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
+import { IndividualsComponent } from './form/individuals/individuals.component';
+import { IndividualsService } from './form/individuals/individuals.service';
+import { IndividualsCreateComponent } from './form/individuals/create/individuals-create.component';
+import { CustomTranslateLoader } from '../shared/translate/custom-loader';
+import { ConfigService } from '@geonature/services/config.service';
 
 @NgModule({
   imports: [
@@ -130,12 +138,19 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     MatTooltipModule,
     NgbModule,
     NgxDatatableModule,
-    NgxMatSelectSearchModule,
     ReactiveFormsModule,
     NgxDatatableModule,
     NgSelectModule,
     RouterModule,
-    TranslateModule.forChild(),
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useClass: CustomTranslateLoader,
+        deps: [HttpClient, ConfigService],
+      },
+      isolate: false,
+      extend: true,
+    }),
     TreeModule,
   ],
   declarations: [
@@ -143,6 +158,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     AreasComponent,
     NomenclatureComponent,
     ObserversComponent,
+    BadgeComponent,
     BreadcrumbsComponent,
     DateComponent,
     TaxonomyComponent,
@@ -153,7 +169,6 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     DatasetsComponent,
     DateComponent,
     DisableControlDirective,
-    DisplayMediasComponent,
     DisplayMouseOverDirective,
     DumbSelectComponent,
     DynamicFormComponent,
@@ -171,7 +186,9 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     MapOverLaysComponent,
     MarkerComponent,
     MediaComponent,
-    MediaDialog,
+    MediaCard,
+    MediaDiaporamaDialog,
+    MediaItem,
     MediasComponent,
     MediasTestComponent,
     ModalDownloadComponent,
@@ -187,11 +204,14 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     SafeHtmlPipe,
     SyntheseSearchComponent,
     SafeStripHtmlPipe,
+    StatusBadgesComponent,
     StripHtmlPipe,
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
     TaxonTreeComponent,
+    IndividualsComponent,
+    IndividualsCreateComponent,
   ],
   providers: [
     CommonService,
@@ -205,11 +225,13 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
     TranslateService,
+    IndividualsService,
   ],
   exports: [
     AcquisitionFrameworksComponent,
     AreasComponent,
     MunicipalitiesComponent,
+    BadgeComponent,
     BreadcrumbsComponent,
     DynamicFormComponent,
     NomenclatureComponent,
@@ -223,7 +245,6 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     DatasetsComponent,
     DateComponent,
     DisableControlDirective,
-    DisplayMediasComponent,
     DisplayMouseOverDirective,
     DumbSelectComponent,
     FormsModule,
@@ -263,14 +284,15 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MediaDialog,
+    MediaCard,
+    MediaDiaporamaDialog,
+    MediaItem,
     MediasComponent,
     ModalDownloadComponent,
     MultiSelectComponent,
     MunicipalitiesComponent,
     NgbModule,
     NgxDatatableModule,
-    NgxMatSelectSearchModule,
     NomenclatureComponent,
     ObserversComponent,
     ObserversTextComponent,
@@ -283,23 +305,31 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     GeometryFormComponent,
     ConfirmationDialog,
     MediasComponent,
-    MediaDialog,
-    DisplayMediasComponent,
     DatalistComponent,
     PlacesComponent,
     PlacesListComponent,
     ReactiveFormsModule,
     ReadablePropertiePipe,
     SafeHtmlPipe,
+    StatusBadgesComponent,
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
     TaxonTreeComponent,
     TranslateModule,
+    IndividualsComponent,
   ],
 })
 export class GN2CommonModule {
-  constructor(public matIconRegistry: MatIconRegistry) {
+  constructor(public matIconRegistry: MatIconRegistry, private translateService: TranslateService) {
     matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
+
+    // Workaround to force translation loaded for LazyModule.
+    // See: https://github.com/ngx-translate/core/issues/1193#issuecomment-735040662
+    const currentLang = translateService.currentLang;
+    if (currentLang !== undefined) {
+      translateService.currentLang = '';
+      translateService.use(currentLang);
+    }
   }
 }

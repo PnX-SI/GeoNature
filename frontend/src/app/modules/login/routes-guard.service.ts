@@ -1,12 +1,24 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  CanActivateChild,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
 
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class SignUpGuard implements CanActivate {
-  constructor(private _router: Router, public config: ConfigService) {}
+  constructor(
+    private _router: Router,
+    public config: ConfigService
+  ) {}
 
   canActivate() {
     if (this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
@@ -19,8 +31,28 @@ export class SignUpGuard implements CanActivate {
 }
 
 @Injectable()
+export class UserEditGuard implements CanActivate {
+  constructor(
+    private _router: Router,
+    private _authService: AuthService
+  ) {}
+
+  canActivate() {
+    if (!this._authService.canBeLoggedWithLocalProvider()) {
+      this._router.navigate(['/']);
+      return false;
+    }
+
+    return true;
+  }
+}
+
+@Injectable()
 export class UserManagementGuard implements CanActivate {
-  constructor(private _router: Router, public config: ConfigService) {}
+  constructor(
+    private _router: Router,
+    public config: ConfigService
+  ) {}
 
   canActivate() {
     if (this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {

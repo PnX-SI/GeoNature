@@ -1,6 +1,9 @@
 import datetime
 import json
 import geojson
+from geonature.core.gn_meta.models.aframework import TAcquisitionFramework
+from geonature.core.gn_meta.models.commons import CorAcquisitionFrameworkActor, CorDatasetActor
+from geonature.core.gn_meta.models.datasets import TDatasets
 from marshmallow import EXCLUDE, INCLUDE
 
 from flask import (
@@ -13,12 +16,11 @@ from flask import (
     jsonify,
     g,
 )
-from werkzeug.exceptions import BadRequest, Forbidden
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
-from shapely.geometry import asShape
-from sqlalchemy import func, distinct
+from sqlalchemy import func, distinct, select
 from sqlalchemy.sql import text
 from sqlalchemy.orm import raiseload, joinedload
 
@@ -39,6 +41,7 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils import filemanager
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
+from .module import OcchabModule
 from .models import (
     Station,
     OccurenceHabitat,
@@ -50,22 +53,35 @@ from .schemas import StationSchema
 blueprint = Blueprint("occhab", __name__)
 
 
+def get_joinedload_when_scope(scope):
+    joinedload_when_scope = []
+    if scope != 0:
+        # Required when a scope is defined.
+        # The following enable the restricted user to access one (or more) stations' datasets information
+        joinedload_when_scope = [
+            joinedload(TDatasets.cor_dataset_actor).options(
+                joinedload(CorDatasetActor.role), joinedload(CorDatasetActor.organism)
+            ),
+            joinedload(TDatasets.acquisition_framework).options(
+                joinedload(TAcquisitionFramework.cor_af_actor).options(
+                    joinedload(CorAcquisitionFrameworkActor.role)
+                )
+            ),
+        ]
+    return joinedload_when_scope
+
+
 @blueprint.route("/stations/", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
 def list_stations(scope):
-    stations = (
-        Station.query.filter_by_params(request.args)
-        .filter_by_scope(scope)
-        .options(
-            raiseload("*"),
-            joinedload("observers"),
-            joinedload("dataset"),
-        )
+    joinedload_when_scope = get_joinedload_when_scope(scope)
+    stations = Station.filter_by_params(request.args).where(Station.filter_by_scope(scope=scope))
+    stations = stations.order_by(Station.date_min.desc()).options(
+        raiseload("*"),
+        joinedload(Station.observers),
+        joinedload(Station.dataset).options(*joinedload_when_scope),
     )
-    only = [
-        "observers",
-        "dataset",
-    ]
+    only = ["observers", "dataset", "+cruved"]
     if request.args.get("habitats", default=False, type=int):
         only.extend(
             [
@@ -74,8 +90,8 @@ def list_stations(scope):
             ]
         )
         stations = stations.options(
-            joinedload("habitats").options(
-                joinedload("habref"),
+            joinedload(Station.habitats).options(
+                joinedload(OccurenceHabitat.habref),
             ),
         )
     if request.args.get("nomenclatures", default=False, type=int):
@@ -85,10 +101,14 @@ def list_stations(scope):
     if fmt not in ("json", "geojson"):
         raise BadRequest("Unsupported format")
     if fmt == "json":
-        return jsonify(StationSchema(only=only).dump(stations.all(), many=True))
+        return jsonify(
+            StationSchema(only=only).dump(db.session.scalars(stations).unique().all(), many=True)
+        )
     elif fmt == "geojson":
         return geojsonify(
-            StationSchema(only=only, as_geojson=True).dump(stations.all(), many=True)
+            StationSchema(only=only, as_geojson=True).dump(
+                db.session.scalars(stations).unique().all(), many=True
+            )
         )
 
 
@@ -107,16 +127,31 @@ def get_station(id_station, scope):
     :rtype dict<TStationsOcchab>
 
     """
-    station = Station.query.options(
-        raiseload("*"),
-        joinedload("observers"),
-        joinedload("dataset"),
-        joinedload("habitats").options(
-            joinedload("habref"),
-            *[joinedload(nomenc) for nomenc in OccurenceHabitat.__nomenclatures__],
-        ),
-        *[joinedload(nomenc) for nomenc in Station.__nomenclatures__],
-    ).get_or_404(id_station)
+    joinedload_when_scope = get_joinedload_when_scope(scope)
+    station = (
+        db.session.scalars(
+            select(Station)
+            .options(
+                raiseload("*"),
+                joinedload(Station.observers),
+                joinedload(Station.dataset).options(*joinedload_when_scope),
+                joinedload(Station.habitats).options(
+                    joinedload(OccurenceHabitat.habref),
+                    *[
+                        joinedload(getattr(OccurenceHabitat, nomenc))
+                        for nomenc in OccurenceHabitat.__nomenclatures__
+                    ],
+                ),
+                *[joinedload(getattr(Station, nomenc)) for nomenc in Station.__nomenclatures__],
+            )
+            .where(Station.id_station == id_station)
+        )
+        .unique()
+        .one_or_none()
+    )
+    if not station:
+        raise NotFound("")
+
     if not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
     only = [
@@ -147,31 +182,30 @@ def create_or_update_station(id_station=None):
     """
     scopes = get_scopes_by_action(module_code="OCCHAB")
     if id_station is None:
-        action = "C"
+        station = None  # Station()
+        if scopes["C"] < 1:
+            raise Forbidden(f"You do not have create permission on stations.")
     else:
-        action = "U"
-    scope = scopes[action]
-    if scope < 1:
-        raise Forbidden(f"You do not have {action} permission on stations.")
+        station = db.session.get(Station, id_station)
+        if not station.has_instance_permission(scopes["U"]):
+            raise Forbidden("You do not have update permission on this station.")
     # Allows habitats
     # Allows only observers.id_role
     # Dataset are not accepted as we expect id_dataset on station directly
     station_schema = StationSchema(
         only=["habitats", "observers.id_role"],
-        dump_only=["habitats.id_station"],
+        dump_only=["id_station", "habitats.id_station"],
         unknown=EXCLUDE,
         as_geojson=True,
     )
-    station = station_schema.load(request.json)
-    if station.id_station != id_station:
-        raise BadRequest("Unmatching id_station.")
-    if id_station and not station.has_instance_permission(scope):
-        raise Forbidden("You do not have access to this station.")
-    dataset = Dataset.query.filter_by(id_dataset=station.id_dataset).one_or_none()
-    if dataset is None:
-        raise BadRequest("Unexisting dataset")
-    if not dataset.has_instance_permission(scopes["C"]):
-        raise Forbidden("You do not have access to this dataset.")
+    station = station_schema.load(request.json, instance=station)
+    with db.session.no_autoflush:
+        # avoid flushing station.id_dataset before validating dataset!
+        dataset = db.session.get(Dataset, station.id_dataset)
+        if dataset is None:
+            raise BadRequest("Unexisting dataset")
+        if not dataset.has_instance_permission(scopes["C"]):
+            raise Forbidden("You do not have access to this dataset.")
     db.session.add(station)
     db.session.commit()
     return geojsonify(station_schema.dump(station))
@@ -186,7 +220,7 @@ def delete_station(id_station, scope):
     .. :quickref: Occhab;
 
     """
-    station = Station.query.get_or_404(id_station)
+    station = db.get_or_404(Station, id_station)
     if not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
     db.session.delete(station)
@@ -226,11 +260,11 @@ def export_all_habitats(
             if db_col.key != "geometry":
                 db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
-    results = (
-        db.session.query(export_view.tableDef)
-        .filter(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
+    results = db.session.execute(
+        select(export_view.tableDef)
+        .where(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
         .limit(blueprint.config["NB_MAX_EXPORT"])
-    )
+    ).all()
     if export_format == "csv":
         formated_data = [export_view.as_dict(d, fields=[]) for d in results]
         return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
@@ -243,9 +277,7 @@ def export_all_habitats(
                     properties=export_view.as_dict(r, fields=columns_to_serialize),
                 )
             )
-        return to_json_resp(
-            FeatureCollection(features), as_file=True, filename=file_name, indent=4
-        )
+        return to_json_resp(FeatureCollection(features), as_file=True, filename=file_name, indent=4)
     else:
         dir_name, file_name = export_as_geo_file(
             export_format=export_format,
@@ -259,6 +291,7 @@ def export_all_habitats(
 
 
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
+@login_required
 def get_default_nomenclatures():
     """Get default nomenclatures define in occhab module
 
@@ -273,20 +306,20 @@ def get_default_nomenclatures():
         organism = params["organism"]
     types = request.args.getlist("mnemonique")
 
-    q = db.session.query(
+    query = select(
         distinct(DefaultNomenclatureValue.mnemonique_type),
         func.pr_occhab.get_default_nomenclature_value(
             DefaultNomenclatureValue.mnemonique_type, organism
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclatureValue.mnemonique_type.in_(tuple(types)))
-    data = q.all()
+        query = query.where(DefaultNomenclatureValue.mnemonique_type.in_(tuple(types)))
+    data = db.session.execute(query).all()
 
     formated_dict = {}
     for d in data:
         nomenclature_obj = None
         if d[1]:
-            nomenclature_obj = db.session.query(TNomenclatures).get(d[1]).as_dict()
+            nomenclature_obj = db.session.get(TNomenclatures, d[1]).as_dict()
         formated_dict[d[0]] = nomenclature_obj
     return formated_dict

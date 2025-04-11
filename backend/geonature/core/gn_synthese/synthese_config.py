@@ -15,6 +15,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "regne",
     "group1_inpn",
     "group2_inpn",
+    "group3_inpn",
     "classe",
     "ordre",
     "famille",
@@ -90,7 +91,7 @@ DEFAULT_COLUMNS_API_SYNTHESE = [
 ]
 
 # Mandatory columns for the frontend in Synthese API
-MANDATORY_COLUMNS = ["entity_source_pk_value", "url_source", "cd_nom"]
+MANDATORY_COLUMNS = ["id_synthese", "entity_source_pk_value", "url_source", "cd_nom", "id_dataset"]
 
 # CONFIG MAP-LIST
 DEFAULT_LIST_COLUMN = [

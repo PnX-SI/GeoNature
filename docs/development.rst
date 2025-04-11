@@ -1,4 +1,4 @@
-DEVELOPPEMENT
+Développement
 =============
 
 Général
@@ -10,6 +10,9 @@ GeoNature 2 est une refonte initiée en 2017 par les parcs nationaux français e
 
 Mainteneurs actuels :
 
+- Jacques FIZE (PnEcrins)
+- Pierre NARCISI (Patrinat)
+- Vincent CAUCHOIS (Patrinat)
 - Élie BOUTTIER (PnEcrins)
 - Théo LECHEMIA (PnEcrins)
 - Amandine SAHL (PnCevennes)
@@ -24,7 +27,7 @@ API
 
 GeoNature utilise :
 
-- l'API de TaxHub (recherche taxon, règne et groupe d'un taxon...)
+- l'API de TaxHub (recherche taxon, règne et groupe d'un taxon...), intégrée à GeoNature depuis sa version 2.15
 - l'API du sous-module Nomenclatures (typologies et listes déroulantes)
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
@@ -38,7 +41,7 @@ Vous pouvez obtenir la liste des routes de GeoNature avec la commande suivante :
 
 .. code-block:: bash
 
-    $ geonature routes
+    geonature routes
 
 
 Documentation des routes
@@ -77,7 +80,7 @@ Backend
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
 - La longueur maximale pour une ligne de code est 100 caractères. Pour VSCODE copier ces lignes le fichier ``settings.json`` :
 
-::
+.. code:: python
 
     "python.formatting.blackArgs": [
       "--line-length",
@@ -101,6 +104,8 @@ Les conventions précédentes concernent uniquement la BDD. Pour les modèles Py
 
 - Nommer les modèles sans le préfixe "t\_", et à les écrire au singulier. Exemple : ``class Observation:``.
 - Ne pas répeter le nom des tables dans les noms des colonnes.
+
+.. _typescript:
 
 Typescript
 **********
@@ -130,9 +135,10 @@ HTML
 ****
 
 - La longueur maximale pour une ligne de code est 100 caractères.
-- Lorsqu'il y a plus d'un attribut sur une balise, revenir à la ligne et aligner les attributs :
+- Revenir à la ligne avant et après le contenue d'une balise.
+- Lorsqu'il y a plus d'un attribut sur une balise, revenir à la ligne, aligner les attributs et aller a la ligne pour fermer la balise :
 
-::
+.. code:: html
 
       <button 
         mat-raised-button
@@ -145,6 +151,7 @@ HTML
       </button>
 
 - VSCODE fournit un formatteur de HTML par défaut (Dans les options de VsCode, tapez "wrap attributes" et sélectionner "force-expand-multiline")
+- En plus du TypeScript/Javascript, Prettier permet de formater le HTML et le SCSS (Se référer à la configuration N’oubliez pas les :ref:`Typescript <typescript>`.)
 
 Style et ergonomie
 ******************
@@ -211,9 +218,9 @@ Il est nécessaire d’installer les dépendances (sous-modules Git présent dan
 
 .. code-block:: console
 
-  $ cd backend
-  $ source venv/bin/activate
-  $ pip install -e .. -r requirements-dev.txt
+  cd backend
+  source venv/bin/activate
+  pip install -e .. -r requirements-dev.txt
 
 
 Configuration des URLs de développement
@@ -221,11 +228,10 @@ Configuration des URLs de développement
 
 Il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
 
-.. code-block:: bash
+.. code-block:: toml
 
   URL_APPLICATION = 'http://127.0.0.1:4200'
   API_ENDPOINT = 'http://127.0.0.1:8000'
-  API_TAXHUB =  'http://127.0.0.1:5000/api'
 
 N’oubliez pas les :ref:`actions à effectuer après modification de la configuration <post_config_change>`.
 
@@ -236,30 +242,14 @@ Autres extensions en développement
 Il n'est pas forcémment utile de passer toutes les extensions en mode dévelomment.
 Pour plus d'informations, référez-vous aux documentations dédiées :
 
-- https://taxhub.readthedocs.io/fr/latest/installation.html#developpement
+- https://taxhub.readthedocs.io/fr/latest/developpement.html
 - https://usershub.readthedocs.io/fr/latest/
-
-Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://127.0.0.1:5000, alors vous pouvez avoir besoin de passer TaxHub en mode développement :
-
-.. code-block:: bash
-
-  source ~/taxhub/venv/bin/activate
-  flask run
 
 Debugger avec un navigateur
 ***************************
 
 L'extension `Angular DevTools <https://angular.io/guide/devtools>`_ permettra de debugger l'application dans la console du navigateur.
 Pour utiliser l'extension vous devez l'installer et passer obligatoirement en mode ``development``.
-
-Ouvrez le fichier ``frontend/src/conf/app.config.ts`` et modifiez la valeur ``PROD_MOD`` pour avoir :
-
-.. code-block:: javascript
-  :linenos:
-
-  "PROD_MOD": false
-
-Si le mode production (PROD_MOD) est à true, alors vous n'êtes pas en mode production lors du lancement de la commande ``npm run start``.
 
 .. _dev-backend:
 
@@ -273,7 +263,8 @@ La commande ``geonature`` fournit la sous-commande ``dev-back`` pour lancer un s
 
 .. code:: console
 
-    (venv)$ geonature dev-back
+    source <GEONATURE_DIR>backend/venv/bin/activate
+    geonature dev-back
 
 
 L’API est alors accessible à l’adresse http://127.0.0.1:8000.
@@ -288,14 +279,14 @@ Celle-ci fournit un objet ``db`` à importer comme ceci : ``from geonature.utils
 
 Cet objet permet d’accéder à la session SQLAlchemy ainsi :
 
-::
+.. code:: python
 
     from geonature.utils.env import db
     obj = db.session.query(MyModel).get(1)
 
 Mais il fournit une base déclarative ``db.Model`` permettant d’interroger encore plus simplement les modèles via leur attribut ``query`` :
 
-::
+.. code:: python
 
     from geonature.utils.env import db
     class MyModel(db.Model):
@@ -305,7 +296,7 @@ Mais il fournit une base déclarative ``db.Model`` permettant d’interroger enc
 
 L’attribut ``query`` fournit `plusieurs fonctions <https://flask-sqlalchemy.palletsprojects.com/en/2.x/api/#flask_sqlalchemy.BaseQuery>`_ très utiles dont la fonction ``get_or_404`` :
 
-::
+.. code:: python
 
     obj = MyModel.query.get_or_404(1)
 
@@ -319,7 +310,7 @@ L’attribut ``query`` est une instance de la classe ``flask_sqlalchemy.BaseQuer
 
 On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur a accès, ou encore pour implémenter des filtres de recherche.
 
-::
+.. code:: python
 
     from flask import g
     import sqlalchemy as sa
@@ -393,7 +384,6 @@ Attention, la sérialisation d’un objet avec un tel schéma va provoquer une r
 Il est donc nécessaire de restreindre les champs à inclure dans la sérialisation lors de la création du schéma :
 
 - avec l’argument ``only`` :
-
     .. code:: python
 
         parent_schema = ParentModelSchema(only=['pk', 'childs.pk'])
@@ -402,10 +392,10 @@ Il est donc nécessaire de restreindre les champs à inclure dans la sérialisat
     De plus, l’ajout d’une nouvelle colonne au modèle nécessite de la rajouter partout où le schéma est utilisé.
 
 - avec l’argument ``exclude`` :
-
     .. code:: python
 
         parent_schema = ParentModelSchema(exclude=['childs.parent'])
+
 
     Cependant, l’utilisation de ``exclude`` est hautement problématique !
     En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
@@ -540,8 +530,8 @@ vous pouvez devoir créer votre propre convertisseur de modèle héritant à la 
             model_converter = NomenclaturesGeoModelConverter
 
 
-Modèles à permission
-""""""""""""""""""""
+Modèles de permission
+"""""""""""""""""""""
 
 Le mixin ``CruvedSchemaMixin`` permet d’ajouter un champs ``cruved`` à la sérialisation qui contiendra un dictionnaire avec en clé les actions du cruved et en valeur des booléens indiquant si l’action est disponible.
 
@@ -551,7 +541,7 @@ Pour l’utiliser, il faut :
   Ces propriétés sont passées en argument à la fonction ``get_scopes_by_action``.
 - Le **modèle** doit définir une fonction ``has_instance_permission(scope)`` prenant en argument une portée (0, 1, 2 ou 3) et renvoyant un booléen.
 
-Par défaut, pour des raisons de performance, le cruved est exclu de la sérialisation.
+Par défaut, le CRUVED est exclu de la sérialisation pour des raisons de performance.
 Il faut donc demander sa sérialisation lors de la création du schéma avec ``only=["+cruved"]``.
 Le préfixe ``+`` permet de spécifier que l’on souhaite rajouter le cruved aux champs à sérialiser (et non que l’on souhaite sérialiser uniquement le cruved).
 
@@ -710,12 +700,12 @@ Exemple d’une relation vers des modèles enfants, qui sont rattaché à un uni
 Serialisation des modèles avec le décorateur ``@serializable``
 **************************************************************
 
-.. Note::
+.. note::
   L’utilisation des schémas Marshmallow est probablement plus performante.
 
 La bibliothèque maison `Utils-Flask-SQLAlchemy <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy>`_ fournit le décorateur ``@serializable`` qui ajoute une méthode ``as_dict`` sur les modèles décorés :
 
-::
+.. code:: python
 
     from utils_flask_sqla.serializers import serializable
 
@@ -736,7 +726,7 @@ Les relations que l’on souhaite voir sérialisées doivent être explicitement
 
 L’argument ``fields`` supporte la « notation à point » permettant de préciser les champs d’un modèle en relation :
 
-::
+.. code:: python
 
     child.as_dict(fields=['parent.pk'])
 
@@ -754,79 +744,83 @@ Modèles géographiques
 La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo>`_ fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.
 
 - ``utils_flask_sqla_geo.serializers.geoserializable``
+    Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
+    retourne un dictionnaire serialisable sous forme de Feature geojson.
 
 
-  Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
-  retourne un dictionnaire serialisable sous forme de Feature geojson.
+    Fichier définition modèle 
+
+    .. code:: python
+
+        from geonature.utils.env import DB
+        from utils_flask_sqla_geo.serializers import geoserializable
 
 
-  Fichier définition modèle ::
-
-    from geonature.utils.env import DB
-    from utils_flask_sqla_geo.serializers import geoserializable
-
-
-    @geoserializable
-    class MyModel(DB.Model):
-        __tablename__ = 'bla'
-        ...
+        @geoserializable
+        class MyModel(DB.Model):
+            __tablename__ = 'bla'
+            ...
 
 
-  Fichier utilisation modèle ::
+    Fichier utilisation modèle 
 
-    instance = DB.session.query(MyModel).get(1)
-    result = instance.as_geofeature()
+    .. code:: python
+
+        instance = DB.session.query(MyModel).get(1)
+        result = instance.as_geofeature()
 
 - ``utils_flask_sqla_geo.serializers.shapeserializable``
+    Décorateur pour les modèles SQLA :
 
-  Décorateur pour les modèles SQLA :
+    - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
+    - Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre
 
-  - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
-  - Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre
+    Fichier définition modèle
 
-  Fichier définition modèle ::
+    .. code:: python
 
-    from geonature.utils.env import DB
-    from utils_flask_sqla_geo.serializers import shapeserializable
-
-
-    @shapeserializable
-    class MyModel(DB.Model):
-        __tablename__ = 'bla'
-        ...
+        from geonature.utils.env import DB
+        from utils_flask_sqla_geo.serializers import shapeserializable
 
 
-  Fichier utilisation modèle :
+        @shapeserializable
+        class MyModel(DB.Model):
+            __tablename__ = 'bla'
+            ...
 
-  .. code-block::
-  
-      # utilisation de as_shape()
-      data = DB.session.query(MyShapeserializableClass).all()
-      MyShapeserializableClass.as_shape(
-          geom_col='geom_4326',
-          srid=4326,
-          data=data,
-          dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
-          file_name=file_name,
-      )
+
+    Fichier utilisation modèle
+
+    .. code:: python
+
+        # utilisation de as_shape()
+        data = DB.session.query(MyShapeserializableClass).all()
+        MyShapeserializableClass.as_shape(
+            geom_col='geom_4326',
+            srid=4326,
+            data=data,
+            dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
+            file_name=file_name,
+        )
 
 
 
 - ``utils_flask_sqla_geo.utilsgeometry.FionaShapeService``
+    Classe utilitaire pour créer des shapefiles.
 
-  Classe utilitaire pour créer des shapefiles.
+    La classe contient 3 méthodes de classe :
 
-  La classe contient 3 méthodes de classe :
+    - ``FionaShapeService.create_shapes_struct()`` : crée la structure de 3 shapefiles
+    (point, ligne, polygone) à partir des colonens et de la geométrie passée
+    en paramètre
 
-- FionaShapeService.create_shapes_struct() : crée la structure de 3 shapefiles
-  (point, ligne, polygone) à partir des colonens et de la geométrie passée
-  en paramètre
+    - ``FionaShapeService.create_feature()`` : ajoute un enregistrement
+    aux shapefiles
 
-- FionaShapeService.create_feature() : ajoute un enregistrement
-  aux shapefiles
+    - ``FionaShapeService.save_and_zip_shapefiles()`` : sauvegarde et zip les
+    shapefiles qui ont au moins un enregistrement
 
-- FionaShapeService.save_and_zip_shapefiles() : sauvegarde et zip les
-  shapefiles qui ont au moins un enregistrement::
+    .. code:: python
 
         data = DB.session.query(MySQLAModel).all()
 
@@ -848,84 +842,79 @@ Réponses
 Voici quelques conseils sur l’envoi de réponse dans vos routes.
 
 - Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.
+    .. code-block:: python
 
-.. code-block:: python
+        def get_foo(pk):
+            foo = Foo.query.get_or_404(pk)
+            return jsonify(foo.as_dict(fields=...))
 
-    def get_foo(pk):
-        foo = Foo.query.get_or_404(pk)
-        return jsonify(foo.as_dict(fields=...))
+        def get_foo(pk):
+            foo = Foo.query.get_or_404(pk)
+            return FooSchema(only=...).jsonify(foo)
 
-    def get_foo(pk):
-        foo = Foo.query.get_or_404(pk)
-        return FooSchema(only=...).jsonify(foo)
+        def list_foo():
+            q = Foo.query.filter(...)
+            return jsonify([foo.as_dict(fields=...) for foo in q.all()])
 
-    def list_foo():
-        q = Foo.query.filter(...)
-        return jsonify([foo.as_dict(fields=...) for foo in q.all()])
-
-    def list_foo():
-        q = Foo.query.filter(...)
-        return FooSchema(only=...).jsonify(q.all(), many=True)
+        def list_foo():
+            q = Foo.query.filter(...)
+            return FooSchema(only=...).jsonify(q.all(), many=True)
 
 - Pour les listes vides, ne pas renvoyer le code d’erreur 404 mais une liste vide !
+    .. code-block:: python
 
-.. code-block:: python
-
-    return jsonify([])
+        return jsonify([])
 
 - Renvoyer une liste et sa longueur dans une structure de données non conventionnelle est strictement inutile, il est très simple d’accéder à la longueur de la liste en javascript via l’attribut ``length``.
 
 - Traitement des erreurs : utiliser `les exceptions prévues à cet effet <https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/>`_ :
+    .. code-block:: python
 
-.. code-block:: python
+        from werkzeug.exceptions import Fobridden, Badrequest, NotFound
 
-    from werkzeug.exceptions import Fobridden, Badrequest, NotFound
-
-    def restricted_action(pk):
-        if not is_allowed():
-            raise Forbidden
+        def restricted_action(pk):
+            if not is_allowed():
+                raise Forbidden
 
     
 - Penser à utiliser ``get_or_404`` plutôt que de lancer une exception ``NotFound``
 - Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservée aux utilisateurs non authentifiés.
 - Vérifier la validité des données fournies par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
-
-    - Marshmallow peut servir à cela ::
-
-        from marshmallow import Schema, fields, ValidationError
-        def my_route():
-            class RequestSchema(Schema):
-                value = fields.Float()
-            try:
-                data = RequestSchema().load(request.json)
-            except ValidationError as error:
-                raise BadRequest(error.messages)
+    - Marshmallow peut servir à cela
+        .. code:: python
+        
+            from marshmallow import Schema, fields, ValidationError
+            def my_route():
+                class RequestSchema(Schema):
+                    value = fields.Float()
+                try:
+                    data = RequestSchema().load(request.json)
+                except ValidationError as error:
+                    raise BadRequest(error.messages)
 
     - Cela peut être fait avec *jsonschema* :
+        .. code:: python
+        
+            from from jsonschema import validate as validate_json, ValidationError
 
-    ::
-
-        from from jsonschema import validate as validate_json, ValidationError
-
-        def my_route():
-            request_schema = {
-                "type": "object",
-                "properties": {
-                    "value": { "type": "number", },
-                },
-                "minProperties": 1,
-                "additionalProperties": False,
-            }
-            try:
-                validate_json(request.json, request_schema)
-            except ValidationError as err:
-                raise BadRequest(err.message)
+            def my_route():
+                request_schema = {
+                    "type": "object",
+                    "properties": {
+                        "value": { "type": "number", },
+                    },
+                    "minProperties": 1,
+                    "additionalProperties": False,
+                }
+                try:
+                    validate_json(request.json, request_schema)
+                except ValidationError as err:
+                    raise BadRequest(err.message)
     
 - Pour les réponses vides (exemple : route de type delete), on pourra utiliser le code de retour 204 :
+    .. code-block:: python
 
-  ::
-
-    return '', 204
+        return '', 204
 
   Lorsque par exemple une action est traitée mais aucun résultat n'est à renvoyer, inutile d’envoyer une réponse « OK ». C’est l’envoi d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenu d’une réponse non normalisée.
 
@@ -999,7 +988,7 @@ Pour cela, plusieurs solutions :
 
 - Le spécifier dans la relationship :
 
-  ::
+  .. code:: python
 
     class AcquisitionFramework(db.Model)
         datasets = db.relationships(Dataset, uselist=True, lazy='joined')
@@ -1007,12 +996,11 @@ Pour cela, plusieurs solutions :
   Cependant, cette stratégie s’appliquera (sauf contre-ordre) dans tous les cas, même lorsque les DS ne sont pas nécessaires, alourdissant potentiellement certaines requêtes qui n’en ont pas usage.
 
 - Le spécifier au moment où la requête est effectuée :
+    .. code:: python
 
-  ::
+        from sqlalchemy.orm import joinedload
 
-    from sqlalchemy.orm import joinedload
-
-    af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
+        af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
 
 Il est également possible de joindre les relations d’une relation, par exemple le créateur des jeux de données :
 
@@ -1128,7 +1116,7 @@ Utiliser le décorateur ``@login_required`` :
 Si l’utilisateur n’est pas authentifié, celui-ci est redirigé vers une page d’authentification, à moins que la requête contienne un header ``Accept: application/json`` (requête effectuée par le frontend) auquel cas une erreur 401 (Unauthorized) est levé.
 
 
-Restreindre une route aux utilisateurs ayant certains droits
+Restreindre une route aux utilisateurs avec un certain scope
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Utiliser le décorateur ``@check_cruved_scope`` :
@@ -1138,10 +1126,9 @@ Utiliser le décorateur ``@check_cruved_scope`` :
    :param action: Type d'action effectuée par la route
                   (Create, Read, Update, Validate, Export, Delete)
    :type action: str["C", "R", "U", "V", "E", "D"]
-   :param module_code: Code du module sur lequel on veut vérifier la portée.
-    Si non fourni, on vérifie le CRUVED de GeoNature.
-   :type module_code: str, optional
-   :param object_code: Code de l’objet sur lequel on veut vérifié la portée.
+   :param module_code: Code du module sur lequel on veut vérifier les permissions.
+   :type module_code: str
+   :param object_code: Code de l’objet sur lequel on veut vérifier les permissions.
     Si non fourni, on vérifie la portée sur l’objet ``ALL``.
    :type object_code: str, optional
    :param get_scope: si ``True``, ajoute le scope aux kwargs de la vue
@@ -1174,10 +1161,29 @@ Exemple d’utilisation :
             raise Forbidden
 
 
-Récupération manuelle des permissions
-"""""""""""""""""""""""""""""""""""""
+Récupération manuelle du scope
+""""""""""""""""""""""""""""""
 
-La fonction suivante permet de récupérer manuellement le scope pour chaque actions pour un rôle et un module donnés :
+La fonction suivante permet de récupérer manuellement le scope pour un rôle, une action et un module donnés :
+
+.. py:function:: get_scope(action_code, id_role, module_code, object_code)
+
+   Retourne le scope de l’utilisateur donnée une action dans le module demandé.
+
+   :param action_code: Code de l’action.
+   :type action_code: str["C", "R", "U", "V", "E", "D"]
+   :param id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
+                   (nécessite de se trouver dans une route authentifiée).
+   :type id_role: int, optional
+   :param module_code: Code du module. Si non spécifié, utilisation de ``g.current_module``
+   :type module_code: str, optional
+   :param object_code: Code de l’objet. Si non spécifié, utilisation de ``g.current_object``,
+                       ``ALL`` à défaut.
+   :type object_code: str, optional
+   :return: Valeur du scope
+   :rtype: int[0, 1, 2, 3]
+
+Il est également possible de récupérer les scopes pour l’ensemble des actions possibles grâce à la fonction suivante :
 
 .. py:function:: get_scopes_by_action(id_role, module_code, object_code)
 
@@ -1199,6 +1205,125 @@ Exemple d’usage :
     >>> from geonature.core.gn_permissions.tools import get_scopes_by_action
     >>> get_scopes_by_action(id_role=3, module_code="METADATA")
     {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3}
+
+
+Restreindre une route aux utilisateurs avec des permissions avancées
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser le décorateur ``@permissions_required`` :
+
+.. py:decorator:: permissions_required
+
+   :param action: Type d'action effectuée par la route
+                  (Create, Read, Update, Validate, Export, Delete)
+   :type action: str["C", "R", "U", "V", "E", "D"]
+   :param module_code: Code du module sur lequel on veut vérifier les permissions.
+   :type module_code: str
+   :param object_code: Code de l’objet sur lequel on veut vérifier les permissions.
+    Si non fourni, on vérifie la portée sur l’objet ``ALL``.
+   :type object_code: str, optional
+
+Lorsque l’utilisateur n’est pas connecté, le comportement est le même que le décorateur ``@login_required``.
+Lorsque celui-ci est connecté, le décorateur va récupérer l’ensemble des permissions pour l’action donnée dans le module donnée (et éventuellement l’objet donnée).
+Si aucune permission n’est trouvée, alors une erreur 403 (Forbidden) est levée.
+
+.. warning::
+
+    Le décorateur ne vérifie pas si le jeu de permissions est suffisant pour accéder
+    aux ressources demandées. C’est à votre route d’implémenter cette vérification,
+    celle-ci recevant le jeu de permissions en argument.
+
+
+Exemple d’utilisation :
+
+.. code-block:: python
+
+    from geonature.core.gn_permissions.decorators import permissions_required
+
+    @blueprint.route('/mysensibleview', methods=['GET'])
+    @permissions_required(
+            'R',
+            module_code="SYNTHESE"
+    )
+    def my_sensible_view(permissions):
+        for perm in permissions:
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
+                continue
+            if perm.scope_value > 2 and not perm.sensitivity_filter:
+                break
+        else:
+            raise Forbidden
+
+
+Récupération manuelle des permissions avancées
+""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser la fonction ``get_permissions`` :
+
+.. py:function:: get_permissions(action_code, id_role, module_code, object_code)
+
+   Retourne l’ensemble des permissions de l’utilisateur donnée pour l’action, le module et l’objet précisé.
+
+   :param action_code: Code de l’action.
+   :type action_code: str["C", "R", "U", "V", "E", "D"]
+   :param id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
+                   (nécessite de se trouver dans une route authentifiée).
+   :type id_role: int, optional
+   :param module_code: Code du module. Si non spécifié, utilisation de ``g.current_module``
+   :type module_code: str, optional
+   :param object_code: Code de l’objet. Si non spécifié, utilisation de ``g.current_object``,
+                       ``ALL`` à défaut.
+   :type object_code: str, optional
+   :return: Liste de permissions
+   :rtype: list[Permission]
+
+
+À propos de l’API « scope »
+"""""""""""""""""""""""""""
+
+Certains modules supportent des permissions avec plusieurs types de filtres (par exemple, filtre d’appartenance et filtre de sensibilité), ce qui amène à devoir définir plusieurs permissions pour une même action dans un module donnée (par exemple, droit de lecteur des données de mon organisme sans restriction de sensibilité + droit de lecteur des données non sensible sans restriction d’appartenance).
+
+Cependant, cet usage est très peu répandu, la plupart des modules acceptant uniquement un filtre d’appartenance, voir aucun filtre.
+Ainsi, l’API « scope » (décorateur ``@check_cruved_scope``, fonctions ``get_scope`` et ``get_scopes_by_action``) visent à simplifier l’usage des permissions dans ces modules en résumant les droits de l’utilisateur par un entier de 0 à 4 :
+
+- 0 : aucune donnée (pas de permission)
+- 1 : données m’appartenant
+- 2 : données appartenant à mon organisme
+- 3 : toutes les données (permission sans filtre d’appartenance)
+
+L’utilisateur héritant des permissions des différents groupes auquel il appartient en plus de ses permissions personnelles, l’API « scope » s’occupe de calculer le scope maximal de l’utilisateur.
+
+
+Rajouter un nouveau type de filtre
+""""""""""""""""""""""""""""""""""
+
+On suppose souhaiter l’ajout d’un nouveau type de filtre « foo ».
+
+1. Rajouter une colonne dans la table ``t_permissions`` nommé ``foo_filter`` du type désiré (booléen, entier, …) avec éventuellement une contrainte de clé étrangère.
+   Dans le cas où le filtre peut contenir une liste de valeur contrôlées par une Foreign Key, on préfèrera l’ajout d’une nouvelle table contenant une Foreign Key vers ``t_permissions.id_permission`` (par exemple, filtre géographique avec liste d’``id_area`` ou filtre taxonomique avec liste de ``cd_nom``).
+
+2. Rajouter une colonne booléenne dans la table ``t_permissions_available`` nommé ``foo_filter``.
+
+3. Faire évoluer les modèles Python ``Permission`` et ``PermissionAvailable`` pour refléter les changements du schéma de base de données.
+
+4. Compléter ``Permission.filters_fields`` et ``PermissionAvailable.filters_fields`` (*e.g.* ``"FOO": foo_filter``).
+
+5. Vérifier que la propriété ``Permission.filters`` fonctionne correctement avec le nouveau filtre : celui-ci doit être renvoyé uniquement s’il est défini.
+   Le cas d’une relationship n’a encore jamais été traité.
+
+6. Optionel : Rajouter une méthode statique ``Permission.__FOO_le__(a, b)``.
+   Celle-ci reçoit en argument 2 filtres FOO et doit renvoyer ``True`` lorsque le filtre ``a`` est plus restrictif (au autant) que le filtre ``b``.
+   Par exemple, dans le cas d’un filtre géographique, on renvera ``True`` si ``b`` vaut ``None`` (pas de restriction géographique) ou si la liste des zonages ``a`` est un sous-ensemble de la liste des zonages ``b``.
+   Cette méthode permet d’optimiser le jeu de permission en supprimant les permissions redondantes.
+
+7. Compléter la classe ``PermFilter`` qui permet l’affichage des permissions dans Flask-Admin (permissions des utilisateurs et des groupes).
+   Attention, Flask-Admin utilise FontAwesome version **4**.
+
+8. Faire évoluer Flask-Admin (classes ``PermissionAdmin`` et ``PermissionAvailableAdmin``) pour prendre en charge le nouveau type de filtre.
+
+9. Implémenter le support de son nouveau filtre à l’endroit voulu (typiquement la synthèse).
+
+10. Compléter ou faire évoluer la table ``t_permissions_available`` pour déclarer le nouveau filtre comme disponible pour son module.
 
 
 Développement Frontend
@@ -1295,7 +1420,7 @@ service :
 
   Exemple : afficher les 10 premiers relevés du cd_nom 212 :
 
-  ::
+  .. code:: javascript
 
         mapListService.getData('occtax/releve',
         [{'param': 'limit', 'value': 10'},
@@ -1306,13 +1431,15 @@ service :
   L'API doit nécessairement renvoyer un objet comportant un
   GeoJson. La structure du l'objet doit être la suivante :
 
-  ::
+  .. code:: json
 
-        'total': nombre d'élément total,
-        'total_filtered': nombre d'élément filtré,
-        'page': numéro de page de la liste,
-        'limit': limite d'élément renvoyé,
-        'items': le GeoJson
+    {
+        "total": "nombre d'élément total",
+        "total_filtered": "nombre d'élément filtré",
+        "page": "numéro de page de la liste",
+        "limit": "limite d'élément renvoyé",
+        "items": "le GeoJson"
+    }
 
   Pour une liste simple sans pagination, seule la propriété 'items'
   est obligatoire.
@@ -1324,25 +1451,25 @@ service :
 
   Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2 :
 
-  ::
+  .. code:: javascript
 
       mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])
 
   puis :
 
-  ::
+  .. code:: javascript
     
       refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])
 
   Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
     
-  ::
+  .. code:: javascript
     
       mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])
 
   puis :
     
-  ::
+  .. code:: javascript
     
       mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])
 
@@ -1368,7 +1495,7 @@ Le service contient également deux propriétés publiques ``geoJsonData`` (le g
 
 Exemple d'utilisation avec une liste simple :
         
-.. code-block::
+.. code:: html
 
     <pnx-map-list
             idName="id_releve_occtax"
@@ -1381,6 +1508,17 @@ Exemple d'utilisation avec une liste simple :
                     <td > {{row.date}} </td>
             </tr>
     </table>
+
+
+Gestion des erreurs
+*******************
+
+GeoNature utilise un intercepteur générique afin d’afficher un toaster en cas d’erreur lors d’une requête HTTP.
+Si vous souhaitez traiter l’erreur vous-même, et empêcher le toaster par défaut de s’afficher, vous pouvez définir un header ``not-to-handle`` à votre requête :
+
+.. code:: typescript
+
+    this._http.get('/url', { headers: { "not-to-handle": 'true' } })
 
 
 Tests
@@ -1503,6 +1641,8 @@ Bonnes pratiques Frontend
 
     <img src="assets/<gn_module_validation>/afb.png">
 
+.. include:: development/import-dev.rst
+
 
 Documentation
 -------------
@@ -1527,10 +1667,16 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
-- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances
-- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements-dependencies.in`` (puis regénérer ``backend/requirements.txt`` avec ``pip compile``)
-- Complétez le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le ``requirements-dependencies.in`` a bien été mis à jour.
+- Regénérer les fichiers ``requirements.txt`` et ``requirements-dev.txt`` avec les commandes suivantes dans la plus petite version de python supportée par GeoNature
+  ::
+    pip-compile requirements.in > requirements.txt
+    pip-compile requirements-dev.in > requirements-dev.txt
+
+- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``
+- Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
 - Mergez la branche ``develop`` dans la branche ``master``
 - Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
-- Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``
+- Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.md``
+- Faites la release de `GeoNature-Docker-services <https://github.com/PnX-SI/GeoNature-Docker-services>`_ avec la nouvelle version de GeoNature, et éventuellement des modules (Voir un `exemple <https://github.com/PnX-SI/GeoNature-Docker-services/pull/19/files>`_)

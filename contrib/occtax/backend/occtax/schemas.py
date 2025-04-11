@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from flask import current_app, g
-from marshmallow import pre_load, post_load, pre_dump, fields, ValidationError
+from marshmallow import pre_load, post_load, pre_dump, post_dump, fields, ValidationError
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
-from shapely.geometry import asShape
+from shapely.geometry import shape
 from geoalchemy2.shape import to_shape, from_shape
 from geoalchemy2.types import Geometry as GeometryType
 from geojson import Feature, FeatureCollection
@@ -20,12 +20,6 @@ from pypnusershub.db.models import User
 from pypn_habref_api.schemas import HabrefSchema
 
 
-@pre_dump
-def remove_additional_none_val(self, data, **kwargs):
-    data.additional_fields = data.additional_fields if data.additional_fields else {}
-    return data
-
-
 class GeojsonSerializationField(fields.Field):
     def _serialize(self, value, attr, obj):
         if value is None:
@@ -39,8 +33,8 @@ class GeojsonSerializationField(fields.Field):
 
     def _deserialize(self, value, attr, data, **kwargs):
         try:
-            shape = asShape(value)
-            two_dimension_geom = remove_third_dimension(shape)
+            shape_ = shape(value)
+            two_dimension_geom = remove_third_dimension(shape_)
             return from_shape(two_dimension_geom, srid=4326)
         except ValueError as error:
             raise ValidationError("Geometry error") from error
@@ -78,7 +72,6 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     medias = MA.Nested(MediaSchema, many=True)
-    pre_dump_fn = remove_additional_none_val
 
     @pre_load
     def make_counting(self, data, **kwargs):
@@ -93,11 +86,8 @@ class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
         include_fk = True
 
-    additional_fields = fields.Raw(allow_none=False, required=True)
-    # additional_fields = fields.Raw(load_only=True)
     cor_counting_occtax = MA.Nested(CountingSchema, many=True)
     taxref = MA.Nested(TaxrefSchema, dump_only=True)
-    pre_dump_fn = remove_additional_none_val
 
 
 class ReleveSchema(MA.SQLAlchemyAutoSchema):
@@ -128,14 +118,12 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     @pre_load
     def make_releve(self, data, **kwargs):
         data["id_module"] = g.current_module.id_module
-        if data.get("observers") is None:
+        if "observers" in data and data["observers"] is None:
             data["observers"] = []
         if data.get("id_releve_occtax") is None:
             data.pop("id_releve_occtax", None)
         data.pop("id_digitiser", None)  # id_digitiser is dump_only
         return data
-
-    pre_dump_fn = remove_additional_none_val
 
 
 class GeojsonReleveSchema(MA.Schema):

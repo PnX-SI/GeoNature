@@ -47,12 +47,14 @@ button .mat-spinner {
   background-clip: padding-box;
   border: 1px solid #ced4da;
   border-radius: 0.2rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
   background-color: #ddd;
   cursor: not-allowed;
 }
 
-:host ::ng-deep ngb-typeahead-window  {
+:host ::ng-deep ngb-typeahead-window {
   width: 100%;
   overflow: auto;
   max-height: 300px;

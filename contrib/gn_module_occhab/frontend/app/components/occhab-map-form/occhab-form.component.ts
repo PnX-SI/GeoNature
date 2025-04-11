@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { OcchabFormService } from '../../services/form-service';
 import { OcchabStoreService } from '../../services/store.service';
 import { OccHabDataService } from '../../services/data.service';
@@ -9,6 +9,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { filter } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
 import { StationFeature } from '../../models';
+import { FormService } from '@geonature_common/form/form.service';
 
 @Component({
   selector: 'pnx-occhab-form',
@@ -16,10 +17,10 @@ import { StationFeature } from '../../models';
   styleUrls: ['./occhab-form.component.scss', '../responsive-map.scss'],
   providers: [OcchabFormService],
 })
-export class OccHabFormComponent implements OnInit {
+export class OccHabFormComponent implements OnInit, OnDestroy {
   public leafletDrawOptions = leafletDrawOption;
   public filteredHab: any;
-  private _sub: Subscription;
+  private _sub: Array<Subscription> = [];
   public editionMode = false;
   public MAP_SMALL_HEIGHT = '50vh !important;';
   public MAP_FULL_HEIGHT = '87vh';
@@ -45,7 +46,8 @@ export class OccHabFormComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _commonService: CommonService,
-    public config: ConfigService
+    public config: ConfigService,
+    public globalFormService: FormService
   ) {}
 
   ngOnInit() {
@@ -55,6 +57,7 @@ export class OccHabFormComponent implements OnInit {
     leafletDrawOption.draw.rectangle = false;
 
     this.occHabForm.stationForm = this.occHabForm.initStationForm();
+
     this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe((d) => {
       this.disabledForm = false;
     });
@@ -65,25 +68,38 @@ export class OccHabFormComponent implements OnInit {
 
   ngAfterViewInit() {
     // get the id from the route
-    this._sub = this._route.params.subscribe((params) => {
-      if (params['id_station']) {
-        this.editionMode = true;
-        this.atLeastOneHab = true;
-        this.showHabForm = false;
-        this.showTabHab = true;
-        this._occHabDataService.getStation(params['id_station']).subscribe((station) => {
-          this.currentEditingStation = station;
-          if (station.geometry.type == 'Point') {
-            // set the input for the marker component
-            this.markerCoordinates = station.geometry.coordinates;
-          } else {
-            // set the input for leaflet draw component
-            this.currentGeoJsonFileLayer = station.geometry;
-          }
-          this.occHabForm.patchStationForm(station);
-        });
-      }
-    });
+    this._sub.push(
+      this._route.params.subscribe((params) => {
+        if (params['id_station']) {
+          this.editionMode = true;
+          this.atLeastOneHab = true;
+          this.showHabForm = false;
+          this.showTabHab = true;
+          this._occHabDataService.getStation(params['id_station']).subscribe((station: any) => {
+            if (!station.properties.cruved.U) {
+              this._commonService.regularToaster(
+                'error',
+                "Vous n'avez pas les permissions requises pour modifier cette station !"
+              );
+              this._router.navigate(['occhab']);
+            }
+            this.currentEditingStation = station;
+            if (station.geometry.type == 'Point') {
+              // set the input for the marker component
+              this.markerCoordinates = station.geometry.coordinates;
+            } else {
+              // set the input for leaflet draw component
+              this.currentGeoJsonFileLayer = station.geometry;
+            }
+            this.occHabForm.patchStationForm(station);
+            if (station.properties.date_min != station.properties.date_max) {
+              this.occHabForm.stationForm.get('date_min').markAsDirty();
+              this.occHabForm.stationForm.get('date_max').markAsDirty();
+            }
+          });
+        }
+      })
+    );
   }
 
   formIsDisable() {
@@ -114,6 +130,7 @@ export class OccHabFormComponent implements OnInit {
 
   // toggle the hab form and call the editHab function of form service
   editHab(index) {
+    this.occHabForm.cancelHab();
     this.occHabForm.editHab(index);
     this.showHabForm = true;
   }
@@ -140,6 +157,8 @@ export class OccHabFormComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this._sub.unsubscribe();
+    this._sub.forEach((sub) => {
+      sub.unsubscribe();
+    });
   }
 }

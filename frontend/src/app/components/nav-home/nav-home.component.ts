@@ -24,6 +24,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public locale: string;
   public moduleUrl: string;
   public notificationNumber: number;
+  public useLocalProvider: boolean; // Indicate if the user is logged in using a non local provider
 
   @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
@@ -50,11 +51,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
-
-    if (this.config.NOTIFICATIONS_ENABLED == true) {
-      // Update notification count to display in badge
-      this.updateNotificationCount();
-    }
+    this.useLocalProvider = this.authService.canBeLoggedWithLocalProvider();
   }
 
   private extractLocaleFromUrl() {
@@ -85,7 +82,9 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   private onModuleChange() {
     this._moduleService.currentModule$.subscribe((module) => {
       if (!module) {
+        // If in Home Page
         module = this.sideNavService.getHomeItem();
+        module.module_doc_url = this._moduleService.geoNatureModule.module_doc_url;
       }
       this.moduleName = module.module_label;
       this.moduleUrl = module.module_url;

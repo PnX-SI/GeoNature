@@ -57,7 +57,9 @@
   border-top-left-radius: 0px;
 }
 .btn-toogle-sidenav:focus {
-  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+  box-shadow:
+    4px 5px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
 }
 
 #sidebar.active .btn-toogle-sidenav {

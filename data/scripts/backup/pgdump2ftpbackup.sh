@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BKPDIR="/var/backups/pgsql"
 TODAY=`date +%F`

@@ -5,6 +5,7 @@ Revises: 944072911ff7
 Create Date: 2022-04-25 13:52:16.016035
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 
@@ -96,7 +97,7 @@ def downgrade():
        ALTER COLUMN id_nomenclature_bio_condition DROP DEFAULT;   
 
        ALTER TABLE pr_occtax.t_occurrences_occtax  
-       ALTER COLUMN id_nomenclature_bio_status SET DROP DEFAULT;   
+       ALTER COLUMN id_nomenclature_bio_status DROP DEFAULT;   
 
        ALTER TABLE pr_occtax.t_occurrences_occtax  
        ALTER COLUMN id_nomenclature_naturalness DROP DEFAULT;     

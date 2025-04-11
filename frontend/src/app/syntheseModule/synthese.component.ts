@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -7,7 +7,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import * as cloneDeep from 'lodash/cloneDeep';
 import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
@@ -35,7 +35,9 @@ export class SyntheseComponent implements OnInit {
     private _toasterService: ToastrService,
     private _route: ActivatedRoute,
     private _ngModal: NgbModal,
-    public config: ConfigService
+    private _changeDetector: ChangeDetectorRef,
+    public config: ConfigService,
+    private _router: Router
   ) {}
 
   ngOnInit() {
@@ -70,12 +72,20 @@ export class SyntheseComponent implements OnInit {
       this._fs.selectedRedLists = [];
       this._fs.selectedStatus = [];
       this._fs.selectedTaxRefAttributs = [];
-      this.loadAndStoreData(this._fs.formatParams());
-      // remove initial parameter passed by url
-      this._fs.searchForm.patchValue({
-        id_dataset: null,
-        id_acquisition_framework: null,
-      });
+
+      // application des valeurs par defaut
+      this._fs
+        .processDefaultFilters(this.config.SYNTHESE.DEFAULT_FILTERS)
+        .subscribe((processedDefaultFilters) => {
+          if (params.get('id_import')) {
+            processedDefaultFilters['id_import'] = params.get('id_import');
+          }
+          this._fs.searchForm.patchValue(this._fs.processedDefaultFilters);
+          this._fs.processedDefaultFilters = processedDefaultFilters;
+          this._changeDetector.detectChanges();
+
+          this.loadAndStoreData(this._fs.formatParams());
+        });
     });
   }
 
@@ -104,10 +114,11 @@ export class SyntheseComponent implements OnInit {
         }
 
         // Store geojson
+        // TODO: [IMPROVE][PAGINATE]
         this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(data));
         this.formatDataForTable(data);
 
-        this._mapListService.idName = 'id';
+        this._mapListService.idName = 'id_synthese';
         this.searchService.dataLoaded = true;
       },
       () => {
@@ -126,16 +137,22 @@ export class SyntheseComponent implements OnInit {
   /** table data expect an array obs observation
    * the geojson get from API is a list of features whith an observation list
    */
+  // TODO: [IMPROVE][PAGINATE] data in datable is formated here
   formatDataForTable(geojson) {
     this._mapListService.tableData = [];
     const idSynthese = new Set();
     geojson.features.forEach((feature) => {
       feature.properties.observations.forEach((obs) => {
-        if (!idSynthese.has(obs.id)) {
+        if (!idSynthese.has(obs.id_synthese)) {
           this._mapListService.tableData.push(obs);
-          idSynthese.add(obs.id);
+          idSynthese.add(obs.id_synthese);
         }
       });
+    });
+
+    // order by date
+    this._mapListService.tableData = this._mapListService.tableData.sort((a, b) => {
+      return (new Date(b.date_min).valueOf() as any) - new Date(a.date_min).valueOf();
     });
   }
 
@@ -150,6 +167,7 @@ export class SyntheseComponent implements OnInit {
           this._mapListService.geojsonData = this.simplifyGeoJson(
             cloneDeep(this._syntheseStore.pointData)
           );
+          this.formatDataForTable(this._syntheseStore.pointData);
         } else {
           this.loadAndStoreData(this._fs.formatParams());
         }
@@ -158,6 +176,7 @@ export class SyntheseComponent implements OnInit {
           this._mapListService.geojsonData = this.simplifyGeoJson(
             cloneDeep(this._syntheseStore.gridData)
           );
+          this.formatDataForTable(this._syntheseStore.gridData);
         } else {
           this.loadAndStoreData(this._fs.formatParams());
         }
@@ -165,6 +184,8 @@ export class SyntheseComponent implements OnInit {
     }
   }
   onSearchEvent() {
+    // remove limit
+    this._fs.selectors = this._fs.selectors.delete('limit');
     // on search button click, clean cache and call loadAndStoreData
     this._syntheseStore.gridData = null;
     this._syntheseStore.pointData = null;
@@ -175,21 +196,31 @@ export class SyntheseComponent implements OnInit {
     let ids = [];
     for (let feature of geojson.features) {
       feature.properties.observations.forEach((obs) => {
-        ids.push(obs['id']);
+        ids.push(obs['id_synthese']);
       });
     }
     return ids;
   }
 
   private simplifyGeoJson(geojson) {
+    let noGeomMessage = false;
     for (let feature of geojson.features) {
+      if (!feature.geometry) {
+        noGeomMessage = true;
+      }
+
       let ids = [];
       for (let obs of Object.values(feature.properties.observations)) {
-        if (obs['id']) {
-          ids.push(obs['id']);
+        if (obs['id_synthese']) {
+          ids.push(obs['id_synthese']);
         }
       }
-      feature.properties.observations = { id: ids };
+      feature.properties.observations = { id_synthese: ids };
+    }
+    if (noGeomMessage) {
+      this._toasterService.warning(
+        "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible"
+      );
     }
     return geojson;
   }
@@ -202,6 +233,17 @@ export class SyntheseComponent implements OnInit {
     modalRef.componentInstance.idSynthese = idSynthese;
     modalRef.componentInstance.header = true;
     modalRef.componentInstance.useFrom = 'synthese';
+
+    let tabRoute = this._route.snapshot.paramMap.get('tab');
+    if (tabRoute != null) {
+      modalRef.componentInstance.selectedTab = tabRoute;
+    }
+
+    modalRef.result
+      .then((result) => {})
+      .catch((_) => {
+        this._router.navigate([modalRef.componentInstance.useFrom]);
+      });
   }
 
   mooveButton() {

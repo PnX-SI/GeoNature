@@ -17,6 +17,17 @@
   border: 0px !important;
 }
 
+.radio-group-container {
+  padding-left: 0px;
+}
+
+.border-red {
+  border-left: 4px solid red;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+  padding-left: 10px;
+}
+
 //
 // factorisation patchs présents dans media et monitoring
 //

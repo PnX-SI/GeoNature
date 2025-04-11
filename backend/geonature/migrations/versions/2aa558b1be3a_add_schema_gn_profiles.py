@@ -5,6 +5,7 @@ Revises: 5f4c4b644844
 Create Date: 2021-08-24 11:10:08.973033
 
 """
+
 import importlib.resources
 
 from alembic import op

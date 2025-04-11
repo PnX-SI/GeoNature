@@ -21,8 +21,16 @@ export class ModuleService {
   get currentModule(): any {
     return this.currentModule$.getValue();
   }
+  get geoNatureModule(): any {
+    return this.modules.find((module) => {
+      return module.module_code.toLowerCase() == 'geonature';
+    });
+  }
 
-  constructor(private _api: DataFormService, private _router: Router) {}
+  constructor(
+    private _api: DataFormService,
+    private _router: Router
+  ) {}
 
   loadModules(): Observable<any[]> {
     return this._api.getModulesList([]).pipe(

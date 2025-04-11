@@ -1,7 +1,8 @@
 """
-    Fonctions permettant de manipuler de façon génériques
-    les fonctions de flask_sqla_geo
+Fonctions permettant de manipuler de façon génériques
+les fonctions de flask_sqla_geo
 """
+
 from pathlib import Path
 
 from flask import current_app

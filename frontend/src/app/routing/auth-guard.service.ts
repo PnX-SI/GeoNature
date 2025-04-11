@@ -10,18 +10,23 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { RoutingService } from './routing.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
-  constructor(private _router: Router, private _injector: Injector) {}
+  constructor(
+    private _router: Router,
+    private _injector: Injector
+  ) {}
 
   async redirectAuth(route, state) {
     const authService = this._injector.get(AuthService);
     const moduleService = this._injector.get(ModuleService);
     const configService = this._injector.get(ConfigService);
     const routingService = this._injector.get(RoutingService);
+    const httpclient = this._injector.get(HttpClient);
 
-    if (authService.getToken() === null) {
+    if (!authService.isLoggedIn()) {
       if (
         route.queryParams.access &&
         route.queryParams.access === 'public' &&
@@ -35,17 +40,21 @@ export class AuthGuard implements CanActivate, CanActivateChild {
             return false;
           });
         if (data) {
-          await authService.manageUser(data).toPromise();
+          authService.manageUser(data);
           const modules = await moduleService.loadModules().toPromise();
-          routingService.loadRoutes(modules, route._routerState.url);
+          routingService.loadRoutes(modules, route._routerState.url.replace('access=public', ''));
         } else {
           return false;
         }
       } else {
-        this._router.navigate(['/login'], {
-          queryParams: { ...route.queryParams, ...{ route: state.url.split('?')[0] } },
-        });
-        return false;
+        let data = await httpclient
+          .get(`${configService.API_ENDPOINT}/auth/get_current_user`)
+          .toPromise();
+        data = { ...data };
+        authService.manageUser(data);
+        const modules = await moduleService.loadModules().toPromise();
+        routingService.loadRoutes(modules, route._routerState.url);
+        return authService.isLoggedIn();
       }
     } else if (moduleService.shouldLoadModules) {
       const modules = await moduleService.loadModules().toPromise();

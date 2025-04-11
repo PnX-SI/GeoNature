@@ -1,0 +1,104 @@
+<ngx-datatable
+  #table
+  class="material striped margin-top-xs table-size expandable"
+  [rows]="discussions"
+  headerHeight="50"
+  footerHeight="50"
+  rowHeight="100"
+  [externalPaging]="true"
+  [limit]="pagination.perPage"
+  [count]="pagination.totalItems"
+  (page)="onChangePage($event)"
+  [externalSorting]="true"
+  [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
+  (sort)="onColumnSort($event)"
+>
+  <ngx-datatable-column
+    [maxWidth]="5"
+    [resizeable]="false"
+    [sortable]="false"
+    [draggable]="false"
+    [canAutoResize]="false"
+  >
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <button
+        class="btn btn-outline-shadow btn-no-padding btn-ghost"
+        (click)="navigateToDiscussion(row.id_synthese)"
+      >
+        <i
+          #iElement
+          [matTooltip]="'Voir le fil de discussion lié à la synthese id : ' + row.id_synthese"
+          class="fa fa-info-circle"
+          aria-hidden="true "
+        ></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    width="150"
+    [prop]="PROP_CREATION_DATE"
+    name="Date commentaire"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      {{ renderDate(row[PROP_CREATION_DATE]) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    width="150"
+    [prop]="PROP_USER"
+    name="Auteur"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      {{ row[PROP_USER] }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    [prop]="PROP_CONTENT"
+    width="600"
+    height="100"
+    name="Contenu"
+    [sortable]="true"
+    [resizeable]="true"
+    [canAutoResize]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      <div class="TextContentContainer">
+        <div class="TextContent">
+          {{ row[PROP_CONTENT] }}
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    width="600"
+    [prop]="PROP_OBSERVATION"
+    name="Observation"
+    [sortable]="false"
+    [resizeable]="true"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+    >
+      <span [innerHTML]="row.observation"></span>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>

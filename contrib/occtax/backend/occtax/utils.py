@@ -48,16 +48,6 @@ def get_nomenclature_filters(params):
     return releve_filters, occurrence_filters, counting_filters
 
 
-def is_already_joined(my_class, query):
-    """
-    Check if the given class is already present is the current query
-    _class: SQLAlchemy class
-    query: SQLAlchemy query
-    return boolean
-    """
-    return my_class in [mapper.class_ for mapper in query._join_entities]
-
-
 def as_dict_with_add_cols(
     export_view, row, additional_cols_key: str, addition_cols_to_export: list
 ):

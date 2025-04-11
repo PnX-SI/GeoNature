@@ -1,4 +1,4 @@
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 <div class="input-group">
   <input
     type="text"
@@ -13,10 +13,17 @@
     (selectItem)="itemSelected($event)"
     [placeholder]="placeholder"
   />
-  <ng-template #rt let-r="result" let-t="term">
-    <span [innerHTML]="r[keyValue]"> </span>
+  <ng-template
+    #rt
+    let-r="result"
+    let-t="term"
+  >
+    <span [innerHTML]="r[keyValue]"></span>
   </ng-template>
 </div>
-<small *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3" style="color: red">
-  Aucun élement trouvé</small
+<small
+  *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
+  style="color: red"
 >
+  Aucun élement trouvé
+</small>

@@ -1,5 +1,5 @@
 """
-    Entry point for the command line 'geonature'
+Entry point for the command line 'geonature'
 """
 
 import logging
@@ -10,17 +10,18 @@ import toml
 import click
 from flask.cli import run_command
 
-from geonature.utils.env import GEONATURE_VERSION
+import geonature
+from geonature.utils.env import GEONATURE_VERSION, ROOT_DIR
 from geonature.utils.module import iter_modules_dist
 from geonature import create_app
-from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
 from geonature.utils.config import config
 from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature.utils.command import (
-    create_frontend_config,
     create_frontend_module_config,
     build_frontend,
 )
+from os.path import join
+import glob
 
 from flask.cli import FlaskGroup
 
@@ -36,8 +37,13 @@ def normalize(name):
     cls=FlaskGroup,
     create_app=create_app,
     context_settings={"token_normalize_func": normalize},
+    add_version_option=False,
 )
-@click.version_option(version=GEONATURE_VERSION)
+@click.version_option(
+    GEONATURE_VERSION,
+    "--version",
+    package_name="geonature",
+)
 @click.pass_context
 def main(ctx):
     pass
@@ -59,27 +65,11 @@ def dev_back(ctx, host, port):
     """
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
-    ctx.invoke(run_command, host=host, port=port)
-
-
-@main.command()
-@click.option(
-    "--input",
-    "input_file",
-    type=click.File("r"),
-)
-@click.option(
-    "--output",
-    "output_file",
-    type=click.File("w"),
-)
-def generate_frontend_config(input_file, output_file):
-    """
-    Génération des fichiers de configurations pour javascript
-    """
-    create_frontend_config(input_file, output_file)
-    click.echo(
-        "Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True
+    ctx.invoke(
+        run_command,
+        host=host,
+        port=port,
+        extra_files=[file for file in glob.glob(join(ROOT_DIR, "config", "*.toml"))],
     )
 
 
@@ -114,7 +104,6 @@ def update_configuration(modules, build):
     """
     click.echo("Génération de la configuration du frontend :")
     click.echo("  GeoNature … ", nl=False)
-    create_frontend_config()
     click.secho("OK", fg="green")
     if modules:
         for dist in iter_modules_dist():
@@ -132,15 +121,6 @@ def update_configuration(modules, build):
 
 
 @main.command()
-@click.argument("table_name")
-def import_jdd_from_mtd(table_name):
-    """
-    Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
-    """
-    import_all_dataset_af_and_actors(table_name)
-
-
-@main.command()
 def default_config():
     """
     Afficher l’ensemble des paramètres et leur valeur par défaut.
@@ -148,7 +128,6 @@ def default_config():
     required_fields = (
         "URL_APPLICATION",
         "API_ENDPOINT",
-        "API_TAXHUB",
         "SECRET_KEY",
         "SQLALCHEMY_DATABASE_URI",
     )

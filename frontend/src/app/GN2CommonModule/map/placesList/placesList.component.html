@@ -1,7 +1,16 @@
-<ng-template #modalContent let-c="close" let-d="dismiss">
+<ng-template
+  #modalContent
+  let-c="close"
+  let-d="dismiss"
+>
   <div class="modal-header">
     <h4 class="modal-title">Liste de mes lieux</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d()">
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d()"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -14,17 +23,32 @@
           (ngModelChange)="onSelectPlace($event)"
           style="min-width: 200px; margin-right: 50px"
         >
-          <option *ngFor="let place of places" [ngValue]="place">
+          <option
+            *ngFor="let place of places"
+            [ngValue]="place"
+          >
             {{ place.properties.place_name }}
           </option>
         </select>
-        <button type="button" mat-flat-button color="warn" (click)="deletePlace()">
+        <button
+          type="button"
+          mat-flat-button
+          color="warn"
+          (click)="deletePlace()"
+        >
           Supprimer le lieu
         </button>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button mat-button type="button" class="button-success" (click)="loadPlace()">Valider</button>
+    <button
+      mat-button
+      type="button"
+      class="button-success"
+      (click)="loadPlace()"
+    >
+      Valider
+    </button>
   </div>
 </ng-template>

@@ -16,9 +16,11 @@ from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
+from sqlalchemy import select
+
 
 def iter_modules_dist():
-    for module_code_entry in entry_points(group="gn_module", name="code"):
+    for module_code_entry in set(entry_points(group="gn_module", name="code")):
         yield module_code_entry.dist
 
 
@@ -40,9 +42,17 @@ def get_module_config_path(module_code):
 
 def get_module_config(module_dist):
     module_code = module_dist.entry_points["code"].load()
-    config_schema = module_dist.entry_points["config_schema"].load()
-    config = {"MODULE_CODE": module_code, "MODULE_URL": f"/{module_code.lower()}"}
-    config.update(load_and_validate_toml(get_module_config_path(module_code), config_schema))
+    config = {
+        "MODULE_CODE": module_code,
+        "MODULE_URL": f"/{module_code.lower()}",  # path to the module in the frontend
+        "MODULE_API": f"/{module_code.lower()}",  # path to the module API
+    }
+    try:
+        config_schema = module_dist.entry_points["config_schema"].load()
+    except KeyError:
+        pass  # this module does not have any config
+    else:
+        config.update(load_and_validate_toml(get_module_config_path(module_code), config_schema))
     return config
 
 
@@ -95,9 +105,15 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
             alembic_branch = module_code.lower()
     else:
         alembic_branch = None
-    module = TModules.query.filter_by(module_code=module_code).one_or_none()
+    module = db.session.execute(
+        select(TModules).filter_by(module_code=module_code)
+    ).scalar_one_or_none()
     if module is None:
         # add module to database
+        try:
+            module_label = module_dist.entry_points["label"].load()
+        except KeyError:
+            module_label = module_code.capitalize()
         try:
             module_picto = module_dist.entry_points["picto"].load()
         except KeyError:
@@ -106,13 +122,18 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
             module_type = module_dist.entry_points["type"].load()
         except KeyError:
             module_type = None
+        try:
+            module_doc_url = module_dist.entry_points["doc_url"].load()
+        except KeyError:
+            module_doc_url = None
         module = TModules(
             type=module_type,
             module_code=module_code,
-            module_label=module_code.capitalize(),
+            module_label=module_label,
             module_path=module_code.lower(),
             module_target="_self",
             module_picto=module_picto,
+            module_doc_url=module_doc_url,
             active_frontend=True,
             active_backend=True,
             ng_module=module_code.lower(),

@@ -1,0 +1,113 @@
+<div class="Observers">
+  <ng-template
+    #cellDateTemplate
+    let-date="date"
+  >
+    {{ renderDate(date) }}
+  </ng-template>
+
+  <ng-template
+    #cellNumberTemplate
+    let-value="value"
+  >
+    {{ value ? value : '-' }}
+  </ng-template>
+
+  <ng-template
+    #cellNameTemplate
+    let-value="value"
+  >
+    {{ value | titlecase }}
+  </ng-template>
+
+  <ng-template
+    #cellDefaultTemplate
+    let-value="value"
+  >
+    {{ value }}
+  </ng-template>
+
+  <ngx-datatable
+    class="Observers__table material striped"
+    [rows]="items"
+    columnMode="force"
+    [draggable]="false"
+    (page)="onChangePage($event)"
+    footerHeight="auto"
+    headerHeight="auto"
+    [externalPaging]="true"
+    [count]="pagination.totalItems"
+    [limit]="pagination.perPage"
+    rowHeight="auto"
+    [externalSorting]="true"
+    (sort)="onSort($event)"
+    [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
+    [loadingIndicator]="isLoading"
+  >
+    <ngx-datatable-column
+      name="Observateur"
+      [prop]="PROP_OBSERVER"
+    >
+      <ng-template
+        ngx-datatable-cell-template
+        let-row="row"
+      >
+        <ng-template
+          *ngTemplateOutlet="cellNameTemplate; context: { value: row[PROP_OBSERVER] }"
+        ></ng-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Plus ancienne"
+      [prop]="PROP_DATE_MIN"
+    >
+      <ng-template
+        ngx-datatable-cell-template
+        let-row="row"
+      >
+        <ng-template
+          *ngTemplateOutlet="cellDateTemplate; context: { date: row[PROP_DATE_MIN] }"
+        ></ng-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Plus récente"
+      [prop]="PROP_DATE_MAX"
+    >
+      <ng-template
+        ngx-datatable-cell-template
+        let-row="row"
+      >
+        <ng-template
+          *ngTemplateOutlet="cellDateTemplate; context: { date: row[PROP_DATE_MAX] }"
+        ></ng-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Nombre d'observation(s)"
+      [prop]="PROP_OBSERVATION_COUNT"
+    >
+      <ng-template
+        ngx-datatable-cell-template
+        let-row="row"
+      >
+        <ng-template
+          *ngTemplateOutlet="cellNumberTemplate; context: { value: row[PROP_OBSERVATION_COUNT] }"
+        ></ng-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Nombre de media(s)"
+      [prop]="PROP_MEDIA_COUNT"
+    >
+      <ng-template
+        ngx-datatable-cell-template
+        let-row="row"
+      >
+        <ng-template
+          *ngTemplateOutlet="cellNumberTemplate; context: { value: row[PROP_MEDIA_COUNT] }"
+        ></ng-template>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</div>

@@ -19,6 +19,7 @@ export class TaxonAdvancedStoreService {
   public formBuilded: boolean;
   public taxonomyHab: Array<any>;
   public taxonomyGroup2Inpn: Array<any>;
+  public taxonomyGroup3Inpn: Array<any>;
   public redListsValues: any = {};
 
   constructor(
@@ -63,11 +64,6 @@ export class TaxonAdvancedStoreService {
           attr['attribut_name'] = 'taxhub_attribut_' + attr['id_attribut'];
           attr['required'] = attr['obligatoire'];
           attr['attribut_label'] = attr['label_attribut'];
-          if (attr['type_widget'] == 'multiselect') {
-            attr['values'] = attr['values'].map((val) => {
-              return { value: val };
-            });
-          }
           this._formGen.addNewControl(attr, this._formService.searchForm);
 
           return attr;
@@ -92,6 +88,10 @@ export class TaxonAdvancedStoreService {
         });
       }
       this.taxonomyGroup2Inpn = all_groups;
+    });
+
+    this._dataService.getGroup3Inpn().subscribe((data) => {
+      this.taxonomyGroup3Inpn = data.map((item) => ({ value: item }));
     });
   }
 }

@@ -138,6 +138,7 @@ div.titre {
 
 .fiche-descriptive, 
 .zone-geographique, 
+.charts,
 .repartition-especes {
   text-align: center;
   margin: 5px auto 20px;
@@ -161,7 +162,7 @@ div.titre {
   height:600px;
 }
 
-.zone, .repartition {
+.zone {
   height: 40%;
 }
 
@@ -203,10 +204,6 @@ div.titre {
 .ca-initial-info {
   font-size: 10px;
   margin: 2px 0 0 10px;
-}
-
-.information {
-  margin-bottom: 20px;
 }
 
 .info-titre {

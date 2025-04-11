@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
@@ -11,12 +11,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { ConfigService } from '@geonature/services/config.service';
+import { HomeDiscussionsService } from './home-discussions/home-discussions.service';
+import { HomeValidationsService } from './home-validations/home-validations.service';
 
 @Component({
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, SyntheseDataService],
+  providers: [MapService, SyntheseDataService, HomeDiscussionsService, HomeValidationsService],
 })
 export class HomeContentComponent implements OnInit, AfterViewInit {
   public showLastObsMap: boolean = false;
@@ -26,13 +28,16 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   public destroy$: Subject<boolean> = new Subject<boolean>();
   public cluserOrSimpleFeatureGroup = null;
 
+  params: URLSearchParams = new URLSearchParams();
   constructor(
     private _SideNavService: SideNavService,
     private _syntheseApi: SyntheseDataService,
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _discussionsService: HomeDiscussionsService,
+    private _validationsService: HomeValidationsService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -51,6 +56,9 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    // Ensure cleaning of currentModule
+    this._moduleService.currentModule$.next(null);
+
     this.getI18nLocale();
 
     this._SideNavService.sidenav.open();
@@ -69,6 +77,18 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  get isExistBlockToDisplay(): boolean {
+    return this.displayDiscussions || this.displayValidations;
+  }
+
+  get displayDiscussions(): boolean {
+    return this._discussionsService.isAvailable;
+  }
+
+  get displayValidations(): boolean {
+    return this._validationsService.isAvailable;
   }
 
   private computeMapBloc() {

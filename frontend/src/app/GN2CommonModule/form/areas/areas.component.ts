@@ -52,6 +52,10 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    */
   @Input() typeCodes: Array<string> = []; // Areas type_code
   /**
+   * Do not get the geom from the getArea call, for performances
+   */
+  @Input() withoutGeom: Boolean = false;
+  /**
    * Nom du champ à utiliser pour déterminer la valeur à utiliser pour le
    * contenu du `FormControl`.
    * Si vous souhaitez forcer le maintient dans `parentFormControl` d'un
@@ -90,12 +94,16 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
+  params = {};
 
   constructor(private dataService: DataFormService) {
     super();
   }
 
   ngOnInit() {
+    super.ngOnInit();
+    this.params['type_code'] = this.typeCodes;
+    this.params['without_geom'] = this.withoutGeom;
     this.valueFieldName = this.valueFieldName === undefined ? 'id_area' : this.valueFieldName;
 
     this.getAreas();
@@ -104,9 +112,9 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   /**
    * Merge initial 100 areas + default values (for update)
    */
-  initalAreas(): Observable<any> {
+  initialAreas(): Observable<any> {
     return zip(
-      this.dataService.getAreas(this.typeCodes).pipe(map((data) => this.formatAreas(data))), // Default items
+      this.dataService.getAreas(this.params).pipe(map((data) => this.formatAreas(data))), // Default items
       of(this.defaultItems) // Default items in update mode
     ).pipe(
       map((areasArrays) => {
@@ -129,14 +137,15 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
 
   getAreas() {
     this.areas = concat(
-      this.initalAreas(),
+      this.initialAreas(),
       this.areas_input$.pipe(
         debounceTime(200),
         distinctUntilChanged(),
         tap(() => (this.loading = true)),
         switchMap((term) => {
+          this.params['area_name'] = term;
           return term && term.length >= 2
-            ? this.dataService.getAreas(this.typeCodes, term).pipe(
+            ? this.dataService.getAreas(this.params).pipe(
                 map((data) => this.formatAreas(data)),
                 catchError(() => of([])), // Empty list on error
                 tap(() => (this.loading = false))

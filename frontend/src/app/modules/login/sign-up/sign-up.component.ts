@@ -7,7 +7,6 @@ import { CommonService } from '@geonature_common/service/common.service';
 
 import { AuthService } from '../../../components/auth/auth.service';
 import { ConfigService } from '@geonature/services/config.service';
-
 @Component({
   selector: 'pnx-signup',
   templateUrl: './sign-up.component.html',
@@ -19,6 +18,7 @@ export class SignUpComponent implements OnInit {
   public disableSubmit = false;
   public formControlBuilded = false;
   public FORM_CONFIG = null;
+  public errorMsg = '';
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -57,21 +57,33 @@ export class SignUpComponent implements OnInit {
 
   save() {
     if (this.form.valid) {
+      this.errorMsg = ''; // raz de l'erreur
       this.disableSubmit = true;
       const finalForm = Object.assign({}, this.form.value);
       // concatenate two forms
+      finalForm['champs_addi'] = {};
       if (this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
         finalForm['champs_addi'] = this.dynamicFormGroup.value;
       }
+      // ajout de organisme aux champs addi
+      finalForm['champs_addi']['organisme'] = this.form.value['organisme'];
       this._authService
         .signupUser(finalForm)
-        .subscribe(() => {
-          const callbackMessage = this.config.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
-            ? 'AutoAccountEmailConfirmation'
-            : 'AdminAccountEmailConfirmation';
-          this._commonService.translateToaster('info', callbackMessage);
-          this._router.navigate(['/login']);
-        })
+        .subscribe(
+          () => {
+            const callbackMessage = this.config.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
+              ? 'AutoAccountEmailConfirmation'
+              : 'AdminAccountEmailConfirmation';
+            this._commonService.translateToaster('info', callbackMessage);
+            this._router.navigate(['/login']);
+          },
+          (error) => {
+            // affichage de l'erreur renvoyé par l'api
+            if (error.error.msg) {
+              this.errorMsg = error.error.msg;
+            }
+          }
+        )
         .add(() => {
           this.disableSubmit = false;
         });

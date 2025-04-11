@@ -21,6 +21,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { find, isEmpty, get, findIndex } from 'lodash';
 import { ConfigService } from '@geonature/services/config.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'pnx-validation-synthese-list',
@@ -42,6 +43,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
 
   @Input() inputSyntheseData: Array<any>;
   @Input() validationStatus: Array<any>;
+  @Input() selectedTab: string;
   @ViewChild('table') table: DatatableComponent;
   @Output() pageChange: EventEmitter<number>;
   @Output() displayAll = new EventEmitter<any>();
@@ -61,7 +63,8 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
     public ref: ChangeDetectorRef,
     private _ms: MapService,
     public formService: SyntheseFormService,
-    public config: ConfigService
+    public config: ConfigService,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -73,7 +76,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 37);
+    this.rowNumber = Math.trunc(h / 50);
 
     // this.group = new FeatureGroup();
     this.onMapClick();
@@ -252,6 +255,9 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
     modalRef.componentInstance.validationStatus = this.validationStatus;
     modalRef.componentInstance.currentValidationStatus = row.nomenclature_valid_status;
     modalRef.componentInstance.mapListService = this.mapListService;
+    if (this.selectedTab) {
+      modalRef.componentInstance.tab = this.selectedTab;
+    }
     modalRef.componentInstance.modifiedStatus.subscribe((modifiedStatus) => {
       for (let obs in this.mapListService.tableData) {
         if (this.mapListService.tableData[obs].id_synthese == modifiedStatus.id_synthese) {
@@ -261,10 +267,18 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
         }
       }
     });
-    modalRef.componentInstance.onCloseModal.subscribe(() => {
-      // to refresh mapListService table UI
-      this.updateReports();
-    });
+    modalRef.result.then(
+      (result) => {
+        this.updateReports();
+        this.idSynthese = null;
+        this.location.replaceState(`/validation`);
+      },
+      (reason) => {
+        this.updateReports();
+        this.idSynthese = null;
+        this.location.replaceState(`/validation`);
+      }
+    );
     modalRef.componentInstance.valDate.subscribe((data) => {
       for (let obs in this.mapListService.selectedRow) {
         this.mapListService.selectedRow[obs]['validation_date'] = data;

@@ -60,7 +60,7 @@ legend {
 }
 
 .taxon-list li:hover {
-  background-color: rgba(#FFF, .5)
+  background-color: rgba(#fff, 0.5);
 }
 
 .search-alert {
@@ -103,11 +103,11 @@ legend {
   position: relative;
 }
 
-:host ::ng-deep ngb-typeahead-window>button>span {
+:host ::ng-deep ngb-typeahead-window > button > span {
   font-size: 12px !important;
   cursor: pointer;
 }
 
-:host ::ng-deep ngb-typeahead-window>button {
+:host ::ng-deep ngb-typeahead-window > button {
   padding-left: 5px;
 }

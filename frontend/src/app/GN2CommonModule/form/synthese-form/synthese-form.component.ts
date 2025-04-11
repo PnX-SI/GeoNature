@@ -21,7 +21,6 @@ export class SyntheseSearchComponent implements OnInit {
   public taxonApiEndPoint = null;
   public validationStatus: Array<any>;
   private params: any;
-  public processedDefaultFilters: any;
 
   public isCollapsePeriod = true;
   public isCollapseScore = true;
@@ -84,18 +83,6 @@ export class SyntheseSearchComponent implements OnInit {
         this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset]);
       }
     }
-
-    // application des valeurs par defaut (input this.defaults)
-    this.formService
-      .processDefaultFilters(this.defaultFilters)
-      .subscribe((processedDefaultFilters) => {
-        this.processedDefaultFilters = processedDefaultFilters;
-        this.formService.searchForm.patchValue(this.processedDefaultFilters);
-        // Timeout sinon le patchValue n'a pas le temps de faire effet
-        setTimeout(() => {
-          this.onSubmitForm();
-        });
-      });
   }
 
   onSubmitForm() {
@@ -110,7 +97,7 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.selectedRedLists = [];
     this.formService.selectedStatus = [];
     this.formService.selectedTaxRefAttributs = [];
-    this.formService.searchForm.reset(this.processedDefaultFilters);
+    this.formService.searchForm.reset(this.formService.processedDefaultFilters);
     this.resetFilter.emit();
 
     // refresh taxon tree

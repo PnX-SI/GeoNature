@@ -3,8 +3,16 @@
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
         <small class="font-sm">Règne:</small>
-        <select [formControl]="regneControl" class="form-control form-control-sm">
-          <option *ngFor="let regne of regnes" [value]="regne">{{ regne }}</option>
+        <select
+          [formControl]="regneControl"
+          class="form-control form-control-sm"
+        >
+          <option
+            *ngFor="let regne of regnes"
+            [value]="regne"
+          >
+            {{ regne }}
+          </option>
         </select>
       </div>
       <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -29,7 +37,7 @@
     </div>
   </div>
 </div>
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 <div class="input-group">
   <input
     data-qa="taxonomy-form-input"
@@ -44,21 +52,34 @@
     [resultTemplate]="rt"
     (selectItem)="taxonSelected($event)"
   />
-  <div class="input-group-append" *ngIf="displayAdvancedFilters">
+  <div
+    class="input-group-append"
+    *ngIf="displayAdvancedFilters"
+  >
     <button
       (click)="isCollapseTaxonomy = !isCollapseTaxonomy"
       [attr.aria-expanded]="!isCollapseTaxonomy"
       class="btn btn-sm btn-outline-shadow"
       matTooltip="Filtrer les taxons proposés à l'autocompletion  par règne et groupe INPN"
     >
-      <i class="fa fa-filter" aria-hidden="true"></i>
+      <i
+        class="fa fa-filter"
+        aria-hidden="true"
+      ></i>
     </button>
   </div>
 
-  <ng-template #rt let-r="result" let-t="term">
-    <span [innerHTML]="r.search_name"> </span>
+  <ng-template
+    #rt
+    let-r="result"
+    let-t="term"
+  >
+    <span [innerHTML]="r.search_name"></span>
   </ng-template>
 </div>
-<small *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3" style="color: red">
-  {{ 'Taxon.NoTaxonFound' | translate }}</small
+<small
+  *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
+  style="color: red"
 >
+  {{ 'Taxon.NoTaxonFound' | translate }}
+</small>

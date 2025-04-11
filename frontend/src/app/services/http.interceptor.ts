@@ -26,8 +26,11 @@ export class MyCustomInterceptor implements HttpInterceptor {
     let errMsg: string;
     let enableHtml: boolean = false;
     if (error instanceof HttpErrorResponse) {
-      if ([401].includes(error.status) || [404].includes(error.status)) return;
-      if (
+      if ([401, 404].includes(error.status)) return;
+      if (error.status == 502) {
+        errTitle = 'Timeout';
+        errMsg = 'La requête n’a pas abouti dans le temps imparti';
+      } else if (
         typeof error.error === 'object' &&
         'name' in error.error &&
         'description' in error.error
@@ -63,6 +66,13 @@ export class MyCustomInterceptor implements HttpInterceptor {
     ) {
       request = request.clone({
         withCredentials: true,
+      });
+    }
+    // Pass JWT in header for each request
+    const idToken = localStorage.getItem('gn_id_token');
+    if (idToken) {
+      request = request.clone({
+        headers: request.headers.set('Authorization', 'Bearer ' + idToken),
       });
     }
 

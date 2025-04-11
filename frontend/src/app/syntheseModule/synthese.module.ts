@@ -16,10 +16,47 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 import { DiscussionCardComponent } from '@geonature/shared/discussionCardModule/discussion-card.component';
 import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
+import {
+  RouteService,
+  ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES,
+} from './taxon-sheet/taxon-sheet.route.service';
+import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SyntheseObsModalWrapperComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs-container.component';
 const routes: Routes = [
-  { path: '', component: SyntheseComponent },
-  { path: 'occurrence/:id_synthese', component: SyntheseComponent, pathMatch: 'full' },
-  { path: 'taxon/:cd_nom', component: TaxonSheetComponent },
+  {
+    path: '',
+    component: SyntheseComponent,
+    children: [
+      {
+        path: 'occurrence/:id_synthese',
+        redirectTo: 'occurrence/:id_synthese/details',
+        pathMatch: 'full',
+      },
+      {
+        path: 'occurrence/:id_synthese/:tab',
+        component: SyntheseObsModalWrapperComponent,
+      },
+    ],
+  },
+  {
+    path: 'taxon/:cd_ref',
+    component: TaxonSheetComponent,
+    canActivate: [RouteService],
+    canActivateChild: [RouteService],
+    children: [
+      {
+        path: '',
+        redirectTo: ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES[0].path,
+        pathMatch: 'prefix',
+      },
+      ...ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.map((tab) => {
+        return {
+          path: tab.path,
+          component: tab.component,
+        };
+      }),
+    ],
+  },
 ];
 
 @NgModule({
@@ -29,20 +66,30 @@ const routes: Routes = [
     SharedSyntheseModule,
     CommonModule,
     TreeModule,
+    NgbModule,
+    TaxonSheetComponent,
   ],
   declarations: [
     SyntheseComponent,
     SyntheseListComponent,
     SyntheseCarteComponent,
     SyntheseModalDownloadComponent,
-    TaxonSheetComponent,
   ],
   entryComponents: [
+    SyntheseComponent,
     SyntheseInfoObsComponent,
     SyntheseModalDownloadComponent,
     DiscussionCardComponent,
     AlertInfoComponent,
+    SyntheseObsModalWrapperComponent,
   ],
-  providers: [MapService, DynamicFormService, TaxonAdvancedStoreService, SyntheseFormService],
+  providers: [
+    MapService,
+    DynamicFormService,
+    TaxonAdvancedStoreService,
+    SyntheseFormService,
+    NgbActiveModal,
+    RouteService,
+  ],
 })
 export class SyntheseModule {}

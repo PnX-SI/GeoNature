@@ -1,3 +1,20 @@
+.af-card-header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+
+  &__left {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+  }
+  &__right {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+  }
+}
+
 .btn-secondary,
 .btn-primary,
 .btn-success,

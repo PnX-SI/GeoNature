@@ -4,10 +4,10 @@
   #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData"
-  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
+  [columns]="defaultColumns"
   [columnMode]="'force'"
   [headerHeight]="50"
-  [footerHeight]="35"
+  [footerHeight]="50"
   [selected]="mapListService.selectedRow"
   [selectionType]="'single'"
   [count]="mapListService.tableData.length"
@@ -19,8 +19,26 @@
   (select)="mapListService.onRowSelect($event)"
 >
   <ngx-datatable-column [maxWidth]="5">
-    <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(row)">
+    <ng-template ngx-datatable-header-template>
+      <i
+        id="dropdownMenuButton"
+        class="fa fa-cog clickable"
+        aria-hidden="true"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        matTooltip="{{ 'List.Columns' | translate }}"
+        (click)="openModalCol($event, modalCol)"
+      ></i>
+    </ng-template>
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <button
+        class="btn btn-outline-shadow btn-no-padding btn-ghost"
+        [routerLink]="['occurrence', row['id_synthese'], 'details']"
+      >
         <i
           #iElement
           matTooltip="{{ row[mapListService.idName] }}"
@@ -33,7 +51,10 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column [maxWidth]="5">
-    <ng-template let-row="row" ngx-datatable-cell-template>
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
       <button
         *ngIf="row.url_source"
         class="btn btn-outline-shadow btn-no-padding btn-ghost"
@@ -48,46 +69,115 @@
     </ng-template>
   </ngx-datatable-column>
 
-
   <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
   <ngx-datatable-column
-    *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
-    [comparator]="dateComparator"
+    *ngFor="let col of defaultColumns"
     [maxWidth]="col.max_width"
     [name]="col.name"
     [prop]="col.prop"
     [sortable]="true"
-    cellClass="synthese-list-col-{{col.prop}}" 
+    cellClass="synthese-list-col-{{ col.prop }}"
   >
-    <ng-template  let-row="row" ngx-datatable-cell-template>
-      {{
-        col.prop == 'date_max' || col.prop == 'date_min' ? getDate(row[col.prop]) : row[col.prop]
-      }}
-
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <span
+        [title]="row[col.prop]"
+        [ngSwitch]="col.prop"
+      >
+        <div *ngSwitchCase="'date_min' || 'date_max'">
+          {{ getDate(row[col.prop]) }}
+        </div>
+        <div *ngSwitchCase="'nom_vern_or_lb_nom'">
+          <a
+            class="Link"
+            [routerLink]="['taxon/' + row.cd_nom]"
+            *ngIf="
+              config.SYNTHESE.ENABLE_TAXON_SHEETS && row.hasOwnProperty('cd_nom');
+              else cellDefault
+            "
+            matTooltip="Afficher la fiche du taxon"
+          >
+            <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+          </a>
+        </div>
+        <div *ngSwitchCase="'dataset_name'">
+          <a
+            class="Link"
+            [routerLink]="['/metadata/dataset_detail/' + row.id_dataset]"
+            *ngIf="row.hasOwnProperty('id_dataset'); else cellDefault"
+            matTooltip="Afficher la fiche du jeu de données"
+          >
+            <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+          </a>
+        </div>
+        <ng-container *ngSwitchDefault>
+          <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+        </ng-container>
+      </span>
+      <ng-template #cellDefault>{{ row[col.prop] }}</ng-template>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>
 
-<button
-  type="button"
-  class="uppercase"
-  id="download-btn"
-  mat-raised-button
-  color="primary"
-  (click)="openDownloadModal()"
-  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
-  data-qa="synthese-download-btn"
+<div class="actions-btns mt-3">
+  <div class="col-auto">
+    <button
+      *ngIf="canImport"
+      id="upload-btn"
+      mat-raised-button
+      color="primary"
+      class="btn-action uppercase"
+      [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
+    >
+      {{ 'Upload' | translate }}
+      <mat-icon>file_upload</mat-icon>
+    </button>
+  </div>
+  <div class="col-auto">
+    <button
+      type="button"
+      class="uppercase"
+      id="download-btn"
+      mat-raised-button
+      color="primary"
+      (click)="openDownloadModal()"
+      [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
+      data-qa="synthese-download-btn"
+    >
+      {{ 'Download' | translate }}
+      <mat-icon>file_download</mat-icon>
+    </button>
+  </div>
+</div>
+<ng-template
+  #modalCol
+  let-c="close"
+  let-d="dismiss"
 >
-  {{ 'Download' | translate }}
-  <mat-icon>file_download</mat-icon>
-</button>
+  <div class="modal-header">
+    <h4>{{ 'List.DisplayColumns' | translate }}</h4>
+  </div>
+  <div class="modal-body">
+    <div
+      class="form-check"
+      *ngFor="let col of availableColumns"
+    >
+      <input
+        class="form-check-input"
+        type="checkbox"
+        [id]="col.name"
+        (click)="toggleColumnNames(col)"
+        [checked]="col.checked"
+      />
 
-<!-- <pnx-modal-download [pathDownload]="exportRoute " [queryString]="queyrStringDownload " [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT "
-  (buttonClicked)="setQueryString() ">
-
-</pnx-modal-download> -->
-
-<!-- MODAL INFO OBS -->
-<!-- <ng-template #modalInfoObs let-c="close " let-d="dismiss">
-  <pnx-synthese-modal-info-obs></pnx-synthese-modal-info-obs>
-</ng-template> -->
+      <label
+        [attr.for]="col.name"
+        class="form-check-label"
+      >
+        {{ col.name | readablePropertie }}
+      </label>
+    </div>
+  </div>
+</ng-template>

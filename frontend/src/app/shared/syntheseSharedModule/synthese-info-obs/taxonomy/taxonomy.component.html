@@ -1,0 +1,89 @@
+<div class="Taxonomy">
+  <h5 class="Taxonomy__subtitle">Classification</h5>
+  <table
+    *ngIf="observedTaxon; else noClassification"
+    class="Classification font-xs table table-striped table-sm"
+  >
+    <tbody>
+      <tr *ngFor="let information of informationsFiltered">
+        <td class="Classification__name">
+          {{ information.label }}
+        </td>
+        <td
+          class="Classification__value"
+          [attr.data-qa]="'taxonomy-detail-taxo-' + information.field"
+        >
+          {{ observedTaxon[information.field] }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noClassification><p>Aucune</p></ng-template>
+
+  <div *ngIf="!isAttributesEmpty || !hideLocalAttributesOnEmpty">
+    <h5 class="Taxonomy__subtitle">Attribut(s) Taxonomique(s) locaux</h5>
+    <table
+      *ngIf="!isAttributesEmpty; else noLocalAttributes"
+      class="font-xs table table-striped table-sm"
+    >
+      <tr
+        class="font-xs"
+        *ngFor="let attr of observedTaxon?.attributs"
+      >
+        <td>
+          <b>{{ attr?.bib_attribut?.label_attribut }}</b>
+        </td>
+        <td style="width: 100%">{{ attr.valeur_attribut }}</td>
+      </tr>
+    </table>
+    <ng-template #noLocalAttributes><p>Aucun</p></ng-template>
+  </div>
+  <h5 class="Taxonomy__subtitle">Statuts</h5>
+  <table
+    class="font-xs table table-sm"
+    *ngIf="!isStatusEmpty; else noStatus"
+  >
+    <ng-container *ngFor="let status of observedTaxon.status | keyvalue">
+      <tr class="table-primary">
+        <th>{{ status.value.display }}</th>
+      </tr>
+      <tr *ngFor="let text of status.value.text | keyvalue">
+        <td>
+          <ul class="list-unstyled mt-2">
+            <li
+              *ngIf="text.value.full_citation"
+              class="d-flex w-100 justify-content-between"
+            >
+              <span class="flex-shrink-1 w-75">
+                <strong [innerHtml]="text.value.full_citation | safeHTML"></strong>
+                <br />
+                ({{ text.value.lb_adm_tr }} - {{ text.value.cd_sig }})
+              </span>
+              <a
+                *ngIf="text.value.doc_url"
+                class="btn align-self-start"
+                href="{{ text.value.doc_url }}"
+                mat-stroked-button
+                color="primary"
+                target="_blank"
+              >
+                Voir / Télécharger
+                <mat-icon aria-hidden="true">launch</mat-icon>
+              </a>
+            </li>
+            <li>
+              <span *ngFor="let value of text.value.values | keyvalue">
+                <strong *ngIf="value.value.code != 'true'">
+                  {{ value.value.code_statut }}
+                </strong>
+                {{ value.value.label_statut }}
+                {{ value.value.rq_statut }}
+              </span>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </ng-container>
+  </table>
+  <ng-template #noStatus><p>Aucun</p></ng-template>
+</div>

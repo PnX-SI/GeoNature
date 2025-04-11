@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, forkJoin, combineLatest } from 'rxjs';
 import { filter, map, switchMap, tap, skip, distinctUntilChanged, pairwise } from 'rxjs/operators';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -19,7 +19,7 @@ import { OcctaxFormParamService } from '../form-param/form-param.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
-
+import { FormService as GlobalFormService } from '@geonature_common/form/form.service';
 @Injectable()
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
@@ -53,7 +53,8 @@ export class OcctaxFormReleveService {
     private occtaxParamS: OcctaxFormParamService,
     private _mapService: MapService,
     public moduleService: ModuleService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _globalFormService: GlobalFormService
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -251,34 +252,6 @@ export class OcctaxFormReleveService {
         this.propertiesForm.patchValue(altitude);
       });
 
-    /* gestion de l'autocomplétion de la date ou non.
-     * autocomplete si date_max non renseignée (creation) ou si date_min = date_max (creation ou edition)
-     */
-    //date_min part : if date_max is empty or date_min == date_max
-    this.propertiesForm
-      .get('date_min')
-      .valueChanges.pipe(
-        distinctUntilChanged(),
-        pairwise(),
-        filter(
-          ([date_min_prev, date_min_new]) =>
-            this.propertiesForm.get('date_max').value === null ||
-            JSON.stringify(date_min_prev) ===
-              JSON.stringify(this.propertiesForm.get('date_max').value)
-        ),
-        map(([date_min_prev, date_min_new]) => date_min_new)
-      )
-      .subscribe((date_min) => this.propertiesForm.get('date_max').setValue(date_min));
-
-    //date_max part : only if date_min is empty
-    this.propertiesForm
-      .get('date_max')
-      .valueChanges.pipe(
-        distinctUntilChanged(),
-        filter(() => this.propertiesForm.get('date_min').value === null)
-      )
-      .subscribe((date_max) => this.propertiesForm.get('date_min').setValue(date_max));
-
     // AUTOCORRECTION de hour
     // si le champ est une chaine vide ('') on reset la valeur null
     this.propertiesForm
@@ -315,7 +288,6 @@ export class OcctaxFormReleveService {
   /** Get occtax data in order to patch value to the form */
   private get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
-      tap(() => this.habitatForm.setValue(null)),
       filter((data) => data && data.releve.properties),
       map((data) => data.releve.properties),
       map((releve) => {
@@ -330,6 +302,8 @@ export class OcctaxFormReleveService {
         return releve;
       }),
       tap((releve) => {
+        this.habitatForm.setValue(null);
+
         // set habitat form value from
         if (releve.habitat) {
           const habitatFormValue = releve.habitat;
@@ -337,6 +311,16 @@ export class OcctaxFormReleveService {
           habitatFormValue['search_name'] =
             habitatFormValue.lb_code + ' - ' + habitatFormValue.lb_hab_fr;
           this.habitatForm.setValue(habitatFormValue);
+        }
+        // set date as dirty if date_min != date_max to avoid wrong synchronisation
+        if (JSON.stringify(releve.date_min) != JSON.stringify(releve.date_max)) {
+          this.propertiesForm.get('date_max').markAsDirty();
+          this.propertiesForm.get('date_min').markAsDirty();
+        }
+        // same for hours
+        if (releve.hour_min != releve.hour_max) {
+          this.propertiesForm.get('hour_min').markAsDirty();
+          this.propertiesForm.get('hour_max').markAsDirty();
         }
       })
     );

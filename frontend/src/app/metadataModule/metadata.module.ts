@@ -14,10 +14,11 @@ import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
 import { MetadataDatasetComponent } from './metadata-dataset.component';
 import { AfCardComponent } from './af/af-card.component';
-import { ChartsModule } from 'ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 import { MetadataService } from './services/metadata.service';
 import { MetadataDataService } from './services/metadata-data.service';
 import { ActorFormService } from './services/actor-form.service';
+import { ButtonDeleteAfComponent } from './af/button-delete-af.component';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -56,7 +57,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     }),
     CommonModule,
     GN2CommonModule,
-    ChartsModule,
+    NgChartsModule,
     RouterModule.forChild(routes),
     MatCheckboxModule,
     MatButtonToggleModule,
@@ -70,6 +71,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     AfFormComponent,
     ActorComponent,
     AfCardComponent,
+    ButtonDeleteAfComponent,
   ],
   providers: [
     MetadataService,

@@ -10,8 +10,8 @@ import {
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
-import { DatasetStoreService } from './dataset.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { AbstractControl, Validators } from '@angular/forms';
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
@@ -30,6 +30,7 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class DatasetsComponent extends GenericFormComponent implements OnInit, OnChanges, DoCheck {
   public iterableDiffer: IterableDiffer<any>;
+  datasets: Array<Object>;
   /**
    * Permet de filtrer les JDD en fonction d'un tableau d'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.
    * Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode multiselect.
@@ -61,7 +62,6 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     private _dfs: DataFormService,
     private _commonService: CommonService,
     private _iterableDiffers: IterableDiffers,
-    public datasetStore: DatasetStoreService,
     public config: ConfigService
   ) {
     super();
@@ -69,6 +69,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.bindValue = this.bindAllItem ? null : this.bindValue;
     this.getDatasets();
   }
@@ -84,33 +85,25 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.creatableInModule) {
       filter_param['create'] = this.creatableInModule;
     }
-    this._dfs.getDatasets((params = filter_param)).subscribe(
-      (res) => {
-        this.datasetStore.filteredDataSets = res;
-        this.datasetStore.datasets = res;
-        this.valueLoaded.emit({ value: this.datasetStore.datasets });
-      },
-      (error) => {
-        if (error.status === 404) {
-          if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-            this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
-          } else {
-            this._commonService.translateToaster('warning', 'MetaData.NoJDD');
-          }
+    this._dfs.getDatasets((params = filter_param)).subscribe((datasets) => {
+      this.datasets = datasets;
+      this.valueLoaded.emit({ value: datasets });
+      if (
+        datasets.length == 1 &&
+        this.parentFormControl.hasValidator(Validators.required) &&
+        [null, []].includes(this.parentFormControl.value)
+      ) {
+        let value: number[] | number = datasets[0].id_dataset;
+        if (this.multiSelect) {
+          value = [datasets[0].id_dataset];
         }
+        this.parentFormControl.patchValue(value);
       }
-    );
-  }
-
-  filterItems(event) {
-    this.datasetStore.filteredDataSets = super.filterItems(
-      event,
-      this.datasetStore.datasets,
-      'dataset_shortname'
-    );
+    });
   }
 
   ngOnChanges(changes) {
+    super.ngOnChanges(changes);
     // detetch change on input idAcquisitionFramework
     // (the number, if the AFcomponent is not multiSelect) to reload datasets
     if (

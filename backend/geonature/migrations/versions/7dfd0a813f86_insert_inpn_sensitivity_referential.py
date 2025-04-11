@@ -4,6 +4,7 @@ Revision ID: 7dfd0a813f86
 Create Date: 2021-11-22
 
 """
+
 import csv
 import importlib.resources
 from functools import lru_cache, partial
@@ -68,7 +69,7 @@ def upgrade():
     statut_biologique_nomenclatures = list(
         chain.from_iterable(
             conn.execute(
-                sa.select([nomenclature.c.cd_nomenclature])
+                sa.select(nomenclature.c.cd_nomenclature)
                 .select_from(
                     nomenclature.join(
                         nomenclature_type, nomenclature.c.id_type == nomenclature_type.c.id_type

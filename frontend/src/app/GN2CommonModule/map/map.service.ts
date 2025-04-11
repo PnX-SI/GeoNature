@@ -382,7 +382,7 @@ export class MapService {
         let geojson = {
           type: 'FeatureCollection',
           name: layerAdded.label,
-          features: res.map((r) => ({ ...r, geometry: JSON.parse(r.geometry) })),
+          features: res.map((r) => ({ ...r, geometry: r.geometry })),
         };
         overlayer.addData(geojson);
       });

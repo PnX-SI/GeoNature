@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, ValidatorFn, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
-// import { FormGroup, FormControl } from "@angular/forms/src/model";
-import { Subscription } from 'rxjs';
+import {
+  AbstractControl,
+  ValidatorFn,
+  UntypedFormGroup,
+  UntypedFormControl,
+  FormControl,
+  Validators,
+  ValidationErrors,
+} from '@angular/forms';
+import { Subscription, Observable, forkJoin } from 'rxjs';
+import { distinctUntilChanged, map, filter, pairwise, tap, startWith } from 'rxjs/operators';
 
 @Injectable()
 export class FormService {
@@ -126,35 +134,133 @@ export class FormService {
     return filteredData;
   }
 
-  autoCompleteDate(
-    formControl,
-    dateMinControlName = 'date_min',
-    dateMaxControlName = 'date_max'
-  ): Subscription {
-    // date max autocomplete
-    const dateMinControl: UntypedFormControl = formControl.get(dateMinControlName);
-    const subscription = dateMinControl.valueChanges.subscribe((newvalue) => {
-      // Get mindate and maxdate value before mindate change
-      let oldmindate = formControl.value['date_min'];
-      let oldmaxdate = formControl.value['date_max'];
+  synchronizeMax(formGroup, minControlName, maxControlName) {
+    const minControl = formGroup.get(minControlName);
+    const maxControl = formGroup.get(maxControlName);
 
-      // Compare the dates before the change of the datemin.
-      // If datemin and datemax were equal, maintain this equality
-      // If they don't, do nothing
-      // oldmaxdate and oldmindate are objects. Strigify it for a right comparison
-      if (oldmindate) {
-        if (JSON.stringify(oldmaxdate) === JSON.stringify(oldmindate) || oldmaxdate == null) {
-          formControl.patchValue({
-            date_max: newvalue,
-          });
-        }
-        // if olddatminDate is null => fill dateMax
-      } else {
-        formControl.patchValue({
-          date_max: newvalue,
-        });
+    if (maxControl.pristine) {
+      maxControl.setValue(minControl.value);
+    }
+  }
+
+  synchronizeMin(formGroup, minControlName, maxControlName) {
+    const minControl = formGroup.get(minControlName);
+    const maxControl = formGroup.get(maxControlName);
+
+    if (minControl.pristine) {
+      minControl.setValue(maxControl.value);
+    }
+  }
+  /**
+   * Validator function that checks if the reference control is not null, then the current control must not be null.
+   *
+   * @param {string[]} referenceControlNames - The name of the control in the same form group that holds the reference value.
+   * @return {ValidatorFn} A validator function
+   */
+
+  /**
+   * Validator function that checks if all of reference controls are not null, then the current control must not be null.
+   *
+   * @param {string[]} referenceControlNames - The names of the controls in the same form group that holds the reference value.
+   * @param {AbstractControl} currentControl - The control to be validated.
+   * @return {boolean} True if the validation is successful, false otherwise.
+   */
+  areAllRefControlsNotNull(
+    referenceControlNames: string[],
+    currentControl: AbstractControl
+  ): boolean {
+    let validation: boolean = true;
+    referenceControlNames.forEach((referenceControlName) => {
+      const referenceControl = currentControl.parent.get(referenceControlName);
+
+      // Throw an error if the reference control is null or undefined
+      if (referenceControl == null) throw Error('Reference formControl is null or undefined');
+
+      // Check if the reference control value is null or undefined
+      const refValueIsNullOrUndefined =
+        referenceControl.value == null || referenceControl.value == undefined;
+      // Check if the current control value is null or undefined
+      const currentControlValueIsNullOrUndefined =
+        currentControl.value == null || currentControl.value == undefined;
+
+      // Return the validation result.
+      // Return a validation error if the reference control is not null or undefined and the current control is null
+      validation =
+        validation && (!refValueIsNullOrUndefined || !currentControlValueIsNullOrUndefined);
+    });
+    return validation;
+  }
+
+  /**
+   * Checks if any of the reference controls are not null.
+   *
+   * @param {string[]} referenceControlNames - The names of the controls in the same form group that holds the reference value.
+   * @param {AbstractControl} currentControl - The control to be validated.
+   * @return {boolean} True if any of the reference controls is not null, false otherwise.
+   */
+  areAnyRefControlsNotNull(
+    referenceControlNames: string[],
+    currentControl: AbstractControl
+  ): boolean {
+    let result = false;
+    if (referenceControlNames.length === 0) return true;
+    referenceControlNames.forEach((referenceControlName) => {
+      const referenceControl = currentControl.parent.get(referenceControlName);
+
+      // Throw an error if the reference control is null or undefined
+      if (referenceControl == null) throw Error('Reference formControl is null or undefined');
+
+      if (referenceControl.value !== null && referenceControl.value !== undefined) {
+        result = true;
       }
     });
-    return subscription;
+    return result;
+  }
+
+  /**
+   * Generates a validator function that requires the current control if any of the reference controls is not null.
+   *
+   * @param {string[]} referenceControlNames - The name of the control in the same form group that holds the reference value.
+   * @return {ValidatorFn} The validator function.
+   */
+  RequiredIfControlIsNotNullValidator(
+    referenceControlNames: string[],
+    entityControls: string[]
+  ): ValidatorFn {
+    return (currentControl: AbstractControl): ValidationErrors | null => {
+      if (!this.areAnyRefControlsNotNull(entityControls, currentControl)) {
+        return null;
+      }
+      return this.areAllRefControlsNotNull(referenceControlNames, currentControl)
+        ? Validators.required(currentControl)
+        : null;
+    };
+  }
+  /**
+   * Generates a validator function that makes the current control not required if any of the reference controls is not null.
+   *
+   * @param {string[]} referenceControlNames - The name of the control in the same form group that holds the reference value.
+   * @return {ValidatorFn} The validator function.
+   */
+  NotRequiredIfControlIsNotNullValidator(
+    referenceControlNames: string[],
+    entityControls: string[]
+  ): ValidatorFn {
+    return (currentControl: AbstractControl): ValidationErrors | null => {
+      if (!this.areAnyRefControlsNotNull(entityControls, currentControl)) {
+        return null;
+      }
+      return this.areAnyRefControlsNotNull(referenceControlNames, currentControl)
+        ? null
+        : Validators.required(currentControl);
+    };
+  }
+
+  NotRequiredIfNoOther(entityControls: string[]): ValidatorFn {
+    return (currentControl: AbstractControl): ValidationErrors | null => {
+      return this.areAnyRefControlsNotNull(entityControls, currentControl)
+        ? Validators.required(currentControl)
+        : null;
+    };
   }
 }

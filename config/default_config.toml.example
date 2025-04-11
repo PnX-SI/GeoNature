@@ -1,5 +1,5 @@
 ###############################################################################
-# Liste complète des paramètres et de leurs valeurs par défaut
+# Liste (presque) complète des paramètres et de leurs valeurs par défaut
 #
 # UTILISATION : piochez les paramètres que vous souhaitez surcoucher dans ce
 #     fichier et intégrez les au fichier 'config/geonature_config.toml'.
@@ -8,9 +8,6 @@
 #     doivent être au début du fichier !
 #     Les paramètres dans une section doivent être maintenus dans leur section.
 #
-# NOTES : après toute modification dans ce fichier, il est nécessaire de
-#     mettre à jour GeoNature à l'aide de la commande :
-#     `geonature update_configuration`
 ###############################################################################
 
 # Base de données
@@ -26,10 +23,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = true
 # Application
 
 # Nom de l'application dans la page d'accueil.
-appName = "GeoNature 2"
-
-# Nom du fichier du logo present dans le dossier custom/images
-LOGO_STRUCTURE_FILE = 'logo_structure.png'
+appName = "GeoNature"
 
 # Langue par défaut utilisée par l'application.
 # Utilisée pour l'instant seulement avec les nomenclatures.
@@ -47,11 +41,6 @@ URL_APPLICATION = "http://url.com/geonature"
 # URL de l'API de GeoNature. Remplacer "url.com" par votre domaine ou IP
 API_ENDPOINT = "http://url.com/geonature/api"
 
-# URL de l'API de Taxhub
-API_TAXHUB = "http://127.0.0.1:5000/api/"
-
-# Identifiant de l'appplication GeoNature (id_application) dans UsersHub
-ID_APPLICATION_GEONATURE = 3
 
 # Type de session
 SESSION_TYPE = "filesystem"
@@ -68,19 +57,6 @@ COOKIE_AUTORENEW = true
 # Capturer toutes les exceptions (=true) ou pas (=false)
 TRAP_ALL_EXCEPTIONS = false
 
-# Niveau de Log pour l'API. Par défaut ERROR (=40)
-# Cf. https://docs.python.org/3/library/logging.html#logging-levels
-API_LOG_LEVEL = 40
-
-# MTD (pour la connexion au webservice de métadonnées de l'INPN)
-XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
-MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
-
-# Fichiers
-# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-# Chemin du dossier où stocker les fichiers depuis la racine du dossier 'backend'
-UPLOAD_FOLDER = "static/medias"
-
 # Configuration de l'accès sans authentication. Renseigner l’identifiant de l’utilisateur public.
 PUBLIC_ACCESS_USERNAME = ""
 
@@ -90,6 +66,8 @@ MAIL_ON_ERROR = false
 
 # Notifications (true / false)
 NOTIFICATIONS_ENABLED = true
+
+MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
 [USERSHUB]
     # URL de l'application Usershub
@@ -123,38 +101,21 @@ NOTIFICATIONS_ENABLED = true
     # après les virgules sont ignorés.
     ERROR_MAIL_TO = ["Prénom NOM <email@email.com>", "email2@email.com"]
 
-# CAS authentification (Optionnel, remplace l'authentification locale via UsersHub)
-[CAS_PUBLIC]
-    CAS_AUTHENTIFICATION = false
-    CAS_URL_LOGIN = "https://preprod-inpn.mnhn.fr/auth/login"
-    CAS_URL_LOGOUT = "https://preprod-inpn.mnhn.fr/auth/logout"
-
-[CAS]
-    CAS_URL_VALIDATION = "https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-
-[CAS.CAS_USER_WS]
-    URL = "https://inpn2.mnhn.fr/authentication/information"
-    BASE_URL = "https://inpn2.mnhn.fr/authentication/"
-    ID = "mon_id"
-    PASSWORD = "mon_pass"
-
-# Connexion avec le WS MTD
-[MTD]
-    # Modules auxquels les JDD sont automatiquement associés
-    JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
-    # Filter les JDD par id_instance
-    ID_INSTANCE_FILTER = "null"
-
 [BDD]
     id_area_type_municipality = 25
-    ID_USER_SOCLE_1 = 8
-    ID_USER_SOCLE_2 = 6
 
 [RIGHTS]
     NOTHING = 0
     MY_DATA = 1
     MY_ORGANISM_DATA = 2
     ALL_DATA = 3
+
+# Configuration de taxhub
+[TAXHUB]
+    # Préfixe des routes de l'api de taxhub
+    API_PREFIX="/api"
+    # Identifiant du type de médias "Photo principale"
+    ID_TYPE_MAIN_PHOTO=1
 
 # Configuration générale de l'interface de GeoNature
 [FRONTEND]
@@ -184,7 +145,7 @@ NOTIFICATIONS_ENABLED = true
     #Information de l'observation à mettre dans l'email
     DISPLAY_EMAIL_DISPLAY_INFO = ["NOM_VERN", "DATE", "COMMUNES", "MEDIAS"]
 
-    # Activer l'affichage des informations liées aux profils de taxons
+    # Activer l'affichage des informations liées aux profils de taxons (dans les modules Validation, Synthèse et Occtax)
     ENABLE_PROFILES = true
 
 # Configuration de l'affichage des cartes dans GeoNature
@@ -204,6 +165,9 @@ NOTIFICATIONS_ENABLED = true
     # Zoom appliqué sur la carte lors du clic sur une liste
     ZOOM_ON_CLICK = 16
 
+    # activation d'un boutton de géolocalisation sur la carte
+    GEOLOCATION = false
+
     # Restreindre la recherche OpenStreetMap (sur la carte dans l'encart "Rechercher un lieu")
     # à certains pays. Les pays doivent être au format ISO_3166-1 :
     # https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 et séparés par une virgule.
@@ -217,24 +181,24 @@ NOTIFICATIONS_ENABLED = true
 # l'option service est obligatoire uniquement pour les wms
 # l'ensemble des paramètre WMS peuvent être passé dans cette section
 [[MAPCONFIG.BASEMAP]]
-    name = "OpenstreetMap"
+    name = "OpenStreetMap"
     url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-    attribution = "OSM contributors"
+    attribution = "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>"
 [[MAPCONFIG.BASEMAP]]
     name = "IGN Plan v2"
-    url = "https://wxs.ign.fr/cartes/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png&STYLE=normal"
     attribution = "&copy IGN"
 [[MAPCONFIG.BASEMAP]]
     name = "IGN Ortho"
-    url = "https://wxs.ign.fr/ortho/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/jpeg&STYLE=normal"
     attribution = "&copy IGN"
 [[MAPCONFIG.BASEMAP]]
     name = "IGN Scan 25"
-    url = "https://wxs.ign.fr/YOUR-IGN-KEY/geoportail/wmts?LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    url = "https://data.geopf.fr/private/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&apikey=ign_scan_ws&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/jpeg&STYLE=normal"
     attribution = "&copy IGN"
 [[MAPCONFIG.BASEMAP]]
     name = "IGN Cadastre"
-    url = "https://wxs.ign.fr/parcellaire/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=CADASTRALPARCELS.PARCELS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=CADASTRALPARCELS.PARCELS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png&STYLE=normal"
     attribution = "&copy IGN"
 [[MAPCONFIG.BASEMAP]]
     name = "WMS"
@@ -243,14 +207,22 @@ NOTIFICATIONS_ENABLED = true
     layers = 'ma_layer'
     attribution = 'lala'
 [[MAPCONFIG.BASEMAP]]
-    attribution = "GoogleSatellite"
+    attribution = "&copy Google Maps"
     name = "google"
     url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
 
-# There are no defaut layers, but this document how to add one:
+# Add base layers on maps (from ref_geo, WMS, WFS, GeoJSON...)
+# Exemple les limites administratives
+[[MAPCONFIG.REF_LAYERS]]
+    activate = false
+    code = "limitesadministratives"
+    label = "Limites administratives (IGN)"
+    params = {service = "wms", version = "1.3.0", request = "GetMap", layers = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST", styles = "normal", format = "image/png", crs = "CRS:84", dpiMode = 7}
+    type = "wms"
+    url = "https://data.geopf.fr/wms-r"
 #[[MAPCONFIG.REF_LAYERS]]
-#    code = "COM",
+#    code = "COM"
 #    label = "Communes"
 #    type = "area"
 #    activate = false
@@ -272,14 +244,22 @@ NOTIFICATIONS_ENABLED = true
     ]
 
     # Colonne à afficher par défaut sur la liste des résultats de la synthese
-    # Choisir le champ 'prop' parmis les colonnes suivantes :
-    # id (=id_synthese), date_min, cd_nom, lb_nom, nom_vern_or_lb_nom,
+    # Choisir le champ 'prop' parmi les colonnes suivantes :
+    # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom,
     # observers, dataset_name, url_source, count_min_max
+    # La liste des colonnes affichables est celle de la vue `gn_synthese.v_synthese_for_web_app`+ `nom_vern_or_lb_nom` et `count_min_max`
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
         { prop = "date_min", name = "Date début" },
         { prop = "observers", name = "Observateurs" },
         { prop = "dataset_name", name = "Jeu de données" }
+    ]
+
+    # Colonnes affichables dans la liste des résulats, mais masquées par default
+    # Possibilité de les ajouter en cliquant sur la route crantée en haut de la liste
+    # La liste des colonnes affichables est celle de la vue `gn_synthese.v_synthese_for_export`
+    ADDITIONAL_COLUMNS_FRONTEND = [
+        { prop = "lb_nom", name = "Nom scientifique" },
     ]
 
     # Nombre de résultats à afficher pour la recherche autocompletée de taxon
@@ -321,17 +301,16 @@ NOTIFICATIONS_ENABLED = true
     # Nombre max d'observations dans les exports
     NB_MAX_OBS_EXPORT = 50000
 
-    # Noms des colonnes obligatoires de la vue ``gn_synthese.v_synthese_for_export``
-    EXPORT_ID_SYNTHESE_COL = "id_synthese"
-    EXPORT_ID_DATASET_COL = "jdd_id"
-    EXPORT_ID_DIGITISER_COL = "id_digitiser"
-    EXPORT_OBSERVERS_COL = "observateurs"
-    EXPORT_GEOJSON_4326_COL = "geojson_4326"
-    EXPORT_GEOJSON_LOCAL_COL = "geojson_local"
-
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
     EXPORT_FORMAT = ["csv", "geojson", "shapefile"]
 
+    # Vues d'export personnalisées
+    EXPORT_OBSERVATIONS_CUSTOM_VIEWS = [
+        {
+            label = "format personnalisé",
+            view_name = "schema_name.view_name"
+        }
+    ]
     # Noms des colonnes obligatoires de la vue ``gn_synthese.v_metadata_for_export``
     EXPORT_METADATA_ID_DATASET_COL = "jdd_id"
     EXPORT_METADATA_ACTOR_COL = "acteurs"
@@ -438,7 +417,7 @@ NOTIFICATIONS_ENABLED = true
     ]
 
     # Enable areas vizualisation with toggle slide
-    ENABLE_AREA_AGGREGATION = true
+    AREA_AGGREGATION_ENABLED = true
     # Choose size of areas
     AREA_AGGREGATION_TYPE = "M10"
     # Activate areas mode by default
@@ -462,6 +441,21 @@ NOTIFICATIONS_ENABLED = true
         # Seulement les données de présence
         cd_nomenclature_observation_status = ['Pr']
 
+    # Activer l'affichage des informations liées à la fiche taxon dans la synthèse
+    ENABLE_TAXON_SHEETS = true
+    [SYNTHESE.TAXON_SHEET]
+        # Options dédiées à la fiche taxon
+        # Permet d'activer ou non l'onglet "Profil"
+        ENABLE_TAB_PROFILE = true
+        # Permet d'activer ou non l'onglet "Taxonomie"
+
+        ENABLE_TAB_TAXONOMY = true
+        # Permet d'activer ou non la section "Observers"
+        ENABLE_TAB_OBSERVERS = true
+
+    # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
+    FIELD_OBSERVERS_SEPARATORS =  [","]
+
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
     # Activer l'affichage du lien vers le formulaire d'inscription
@@ -479,6 +473,23 @@ NOTIFICATIONS_ENABLED = true
     # compte utilisateur
     AUTO_DATASET_CREATION = true
 
+    # Ajouter des liens sur la page de connexion de GeoNature,
+    # peut être utile lors d'une externalisation des services de connexion
+    # Chaque [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]] correspond à un lien
+    # supplémentaire ajouté sous le bouton "SE CONNECTER"
+
+    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+    label = "Mot de passe oublié ?"
+    url = "https://mon.formulaire.de.motdepasse"
+
+    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+    label = "Demande d'inscription"
+    url = "https://mon.formulaire.dinscription"
+
+    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+    label = "Un autre lien"
+    url = "https://un.autre.lien"
+
     # Email du validateur si auto_account_creation = false.
     # Deux syntaxes alternatives sont autorisées pour ce paramètre :
     # - une chaine contenant un ou plusieurs emails séparés par des
@@ -489,7 +500,7 @@ NOTIFICATIONS_ENABLED = true
     # Les espaces présents en début et fin de chaine ainsi qu'avant et
     # après les virgules sont ignorés.
     VALIDATOR_EMAIL = """
-        Théo LECHEMIA <theo.lechemia@ecrins-parcnational.fr>,
+        Théo LECHEMIA <theo.lechemia@ecrins.fr>,
         Carl von LINNÉ <c.linnaeus@linnaeus.se>
         """
 
@@ -507,7 +518,7 @@ NOTIFICATIONS_ENABLED = true
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
         attribut_label = """
-            <a target="_blank" href="http://docs.geonature.fr">
+            <a target="_blank" href="https://docs.geonature.fr">
                 J'ai lu et j'accepte la charte
             </a>"""
         attribut_name = "validate_charte"
@@ -555,6 +566,7 @@ NOTIFICATIONS_ENABLED = true
             pourrez accéder aux observations publiques avec leur
             précision de géolocalisation maximale.</p>"""
 
+
 [SERVER]
     # Nivau de log du serveur.
     # Indiquer la valeur numérique correspondant au niveau suivant;
@@ -596,5 +608,95 @@ NOTIFICATIONS_ENABLED = true
 # Page d’accueil
 [HOME]
     TITLE = "Bienvenue dans GeoNature"
-    INTRODUCTION = ""
+    INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     FOOTER = ""
+    DISPLAY_LATEST_DISCUSSIONS = true
+    DISPLAY_LATEST_VALIDATIONS = true
+
+[AUTHENTICATION]
+	DEFAULT_RECONCILIATION_GROUP_ID = 2
+    [[AUTHENTICATION.PROVIDERS]]
+        module="pypnusershub.auth.providers.default.LocalProvider"
+		id_provider="local_provider"
+
+    [[AUTHENTICATION.PROVIDERS]]
+        module="pypnusershub.auth.providers.openid_provider.OpenIDProvider"
+		id_provider = "google"
+		logo = "<i class='fa fa-google' aria-hidden='true'></i>"
+		label = "Google"
+		ISSUER = "https://accounts.google.com/"
+		CLIENT_ID = "ID" # API key
+		CLIENT_SECRET = "SECRET" # API Secret
+
+[IMPORT]
+    # Encodage des fichiers importés autorisées
+    ENCODAGE = ["UTF-8"]
+
+    # Taille maximale du fichier chargé (en Mo)
+    MAX_FILE_SIZE=500
+
+    # SRID autorisés pour les fichiers en entrée
+    SRID = [
+    {name = "WGS84", code = 4326},
+    {name = "Lambert93", code = 2154}
+    ]
+    # Extensions autorisées (seul le csv est accepté actuellement)
+    ALLOWED_EXTENSIONS = [".csv"]
+
+    # Activer ou non l'étape du mapping des valeurs
+    ALLOW_VALUE_MAPPING = true
+
+    # Si le mapping des valeurs est désactivé, specifier l'identifiant du mapping qui doit être utilisé
+    DEFAULT_VALUE_MAPPING_ID = 3
+
+    # rempli les valeurs de nomenclature erroné par la valeur par defaut
+    # Leve un warning et non une erreur sur les lignes concernées
+    FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE = false
+
+    # Active la vérification de l'existence du champs "floutage" si le JDD est privé
+    CHECK_PRIVATE_JDD_BLURING = false
+
+    # Active la vérification qu'une ref biblio est fournie si la valeur du champs source = "litterature"
+    CHECK_REF_BIBLIO_LITTERATURE = true
+
+    # Active la vérification qu'une preuve d'existance est fournie si preuve existance = "oui"
+    CHECK_EXIST_PROOF = true
+
+    # Customiser le nom du fichier de rapport de l'import
+    # Pour indiquer des données liés à l'import dans le nom du fichier ajouter le nom de la variable
+    # contenant cette dernière. Les variables suivantes sont accessibles :
+    # - date_create_import -> date de création de l'import
+    # - dataset.dataset_name -> nom du jeu de données de destination
+    # - dataset.active -> Si le jeu de données de destination est actif
+    # - date_end_import -> Date de fin de l'import
+    # - date_max_data -> Date maximum dans les données
+    # - date_min_data -> Date minimum dans les données
+    # - date_update_import -> Date de la dernière mise à jour de l'import
+    # - destination, destination.code, destination.label --> Information sur la destination
+    # - id_dataset, id_destionation, id_import -> identifiant de différentes entités impliquées
+    # - import_count -> Nombre de lignes importées des données envoyés par l'utilisateur
+    EXPORT_REPORT_PDF_FILENAME = "import_{id_import}_{date_create_import}_report.pdf"
+
+    # Paramètre pour définir le rang utilisé pour le diagramme camembert du rapport d'import.
+    # Valeurs possibles : ['regne', 'phylum', 'classe', 'ordre', 'famille', 'sous_famille', 'tribu', 'group1_inpn', 'group2_inpn']
+    DEFAULT_RANK = "regne"
+
+    # L'UUID d'une entité importée sera généré s'il n'est pas indiqué dans les données du fichier d'entée,
+    DEFAULT_GENERATE_MISSING_UUID = true
+
+
+    # Si différent de null, ce paramètre vérifie que les géométries des observations (ou stations) importées se trouvent 
+    dans le polygone du zonage relié à l'identifiant indiqué par la valeur. Cette identifiant doit correspondre à une valeur contenue dans `ref_geo.l_areas.id_area`.
+    ID_AREA_RESTRICTION = null
+
+
+    # Id d'une liste de taxons permettant de restreindre l'import d'observations de taxons comprises dans cette dernière
+    # Lève une exception si un taxon n'appartenant pas à liste indiquée apparaît dans les donnés importées.
+    ID_LIST_TAXA_RESTRICTION = fields.Integer(load_default=None)
+
+    # URL d'accès au module d'import
+    MODULE_URL = "/import"
+
+    # Taille des `batch` de données importées en même temps
+    DATAFRAME_BATCH_SIZE = 10000
+

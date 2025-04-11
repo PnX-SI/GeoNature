@@ -152,7 +152,12 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
       this.setForms();
 
       // pour dire aux formulaires qu'il y a un changement;
-      this.update = true;
+
+      // fy ExpressionChangedAfterItHasBeenCheckedError
+      setTimeout(() => {
+        this.update = true;
+      });
+
       setTimeout(() => {
         this.update = false;
       }, 500);

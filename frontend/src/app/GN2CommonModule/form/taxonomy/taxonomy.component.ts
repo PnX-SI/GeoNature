@@ -35,8 +35,9 @@ export interface Taxon {
   nom_vern?: string;
   ordre?: string;
   phylum?: string;
-  statuts_protection?: any[];
+  status?: any[];
   synonymes?: any[];
+  attributs?: any[];
 }
 
 /**
@@ -90,7 +91,10 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   @Output() onDelete = new EventEmitter<Taxon>();
   public isCollapseTaxonomy = true;
 
-  constructor(private _dfService: DataFormService, public config: ConfigService) {}
+  constructor(
+    private _dfService: DataFormService,
+    public config: ConfigService
+  ) {}
 
   ngOnInit() {
     if (!this.apiEndPoint) {
@@ -127,9 +131,9 @@ export class TaxonomyComponent implements OnInit, OnChanges {
 
   setApiEndPoint(idList) {
     if (idList) {
-      this.apiEndPoint = `${this.config.API_TAXHUB}/taxref/allnamebylist/${idList}`;
+      this.apiEndPoint = `${this._dfService.getTaxhubAPI()}/taxref/allnamebylist/${idList}`;
     } else {
-      this.apiEndPoint = `${this.config.API_TAXHUB}/taxref/allnamebylist`;
+      this.apiEndPoint = `${this._dfService.getTaxhubAPI()}/taxref/allnamebylist`;
     }
   }
 

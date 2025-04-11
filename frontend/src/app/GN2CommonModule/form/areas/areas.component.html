@@ -1,4 +1,4 @@
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 <ng-select
   [ngClass]="class"
   [items]="areas | async"
@@ -26,11 +26,15 @@
     </div>
   </ng-template>
 
-  <ng-template ng-notfound-tmp let-searchTerm="searchTerm">
+  <ng-template
+    ng-notfound-tmp
+    let-searchTerm="searchTerm"
+  >
     <div class="ng-option disabled">
       <span
         class="bg-warning p-2 rounded"
         matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
+        matTooltipPosition="after"
       >
         <mat-icon inline>warning_amber</mat-icon>
         Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»
@@ -38,10 +42,14 @@
     </div>
   </ng-template>
 
-  <ng-template ng-loadingtext-tmp let-searchTerm="searchTerm">
+  <ng-template
+    ng-loadingtext-tmp
+    let-searchTerm="searchTerm"
+  >
     <div
       class="ng-option disabled"
       matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
+      matTooltipPosition="after"
     >
       <span class="bg-info p-2 rounded">
         <mat-icon inline>autorenew</mat-icon>
@@ -50,14 +58,27 @@
     </div>
   </ng-template>
 
-  <ng-template ng-option-tmp let-item="item">
-    <div matTooltip="{{ item.area_name }}">
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+  >
+    <div
+      matTooltip="{{ item.area_name }}"
+      matTooltipPosition="after"
+    >
       <span class="pre-wrap">{{ item.area_name }}</span>
     </div>
   </ng-template>
 
-  <ng-template ng-label-tmp let-item="item" let-clear="clear">
-    <span class="ng-value-label pl-2" [style.background-color]="item.kolor">
+  <ng-template
+    ng-label-tmp
+    let-item="item"
+    let-clear="clear"
+  >
+    <span
+      class="ng-value-label pl-2"
+      [style.background-color]="item.kolor"
+    >
       {{ item.area_name }}
     </span>
     <span

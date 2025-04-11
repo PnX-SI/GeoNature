@@ -1,0 +1,29 @@
+<div
+  class="Profile"
+  *ngIf="profile; else noProfile"
+>
+  <small class="Profile__disclaimer text-muted">
+    {{ 'FicheTaxon.MessageProfil' | translate }}
+  </small>
+  <div class="Profile__indicators">
+    <indicator
+      *ngFor="let indicator of indicators"
+      [indicator]="indicator"
+      [small]="true"
+    />
+  </div>
+  <div class="Profile__map">
+    <pnx-map height="100%">
+      <pnx-geojson
+        [geojson]="profile"
+        [zoomOnFirstTime]="true"
+      ></pnx-geojson>
+    </pnx-map>
+  </div>
+  <small class="Profile__disclaimer text-muted">
+    {{ 'FicheTaxon.MessageProfil' | translate }}
+  </small>
+</div>
+<ng-template #noProfile>
+  <div class="text-muted text-center">{{ 'FicheTaxon.MessageNoProfil' | translate }}</div>
+</ng-template>

@@ -1,39 +1,46 @@
 """
-    Description des options de configuration
+Description des options de configuration
 """
 
 import os
+import warnings
+
+from warnings import warn
 
 from marshmallow import (
+    INCLUDE,
     Schema,
     fields,
     validates_schema,
     ValidationError,
     post_load,
+    pre_load,
 )
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
-    DEFAULT_COLUMNS_API_SYNTHESE,
 )
+from geonature.core.imports.config_schema import ImportConfigSchema
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
-from geonature.utils.utilstoml import load_and_validate_toml
+from pypnusershub.auth.authentication import ProviderConfigurationSchema
+from apptax.utils.config.config_schema import TaxhubAppConf
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         if isinstance(value, str):
-            self._check_email(value)
-            return value
-        elif isinstance(value, list) and all(isinstance(x, str) for x in value):
-            self._check_email(value)
-            return value
-        else:
+            value = list(map(lambda x: x.replace("\n", "").strip(), value.split(",")))
+
+        if not isinstance(value, list) and all(isinstance(x, str) for x in value):
             raise ValidationError("Field should be str or list of str")
+
+        self._check_email(value)
+
+        return value
 
     def _check_email(self, value):
         recipients = clean_recipients(value)
@@ -42,38 +49,6 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             # Validate email with Marshmallow
             validator = Email()
             validator(email)
-
-
-class CasUserSchemaConf(Schema):
-    URL = fields.Url(load_default="https://inpn.mnhn.fr/authentication/information")
-    BASE_URL = fields.Url(load_default="https://inpn.mnhn.fr/authentication/")
-    ID = fields.String(load_default="mon_id")
-    PASSWORD = fields.String(load_default="mon_pass")
-
-
-class CasFrontend(Schema):
-    CAS_AUTHENTIFICATION = fields.Boolean(load_default=False)
-    CAS_URL_LOGIN = fields.Url(load_default="https://preprod-inpn.mnhn.fr/auth/login")
-    CAS_URL_LOGOUT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/auth/logout")
-
-
-class CasSchemaConf(Schema):
-    CAS_URL_VALIDATION = fields.String(
-        load_default="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-    )
-    CAS_USER_WS = fields.Nested(CasUserSchemaConf, load_default=CasUserSchemaConf().load({}))
-    USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(load_default=False)
-    # Quel modules seront associés au JDD récupérés depuis MTD
-
-
-class MTDSchemaConf(Schema):
-    JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
-    ID_INSTANCE_FILTER = fields.Integer(load_default=None)
-
-
-class BddConfig(Schema):
-    ID_USER_SOCLE_1 = fields.Integer(load_default=8)
-    ID_USER_SOCLE_2 = fields.Integer(load_default=6)
 
 
 class RightsSchemaConf(Schema):
@@ -100,6 +75,8 @@ class MailConfig(Schema):
 class CeleryConfig(Schema):
     broker_url = fields.String(load_default="redis://localhost:6379/0")
     result_backend = fields.String(load_default="redis://localhost:6379/0")
+    enable_utc = fields.Boolean(load_default=False)
+    timezone = fields.String(load_default=None)
 
 
 class AccountManagement(Schema):
@@ -112,6 +89,10 @@ class AccountManagement(Schema):
     ACCOUNT_FORM = fields.List(fields.Dict(), load_default=[])
     ADDON_USER_EMAIL = fields.String(load_default="")
     DATASET_MODULES_ASSOCIATION = fields.List(fields.String(), load_default=["OCCTAX"])
+    EXTERNAL_LINKS = fields.List(
+        fields.Dict,
+        load_default=[],
+    )
 
 
 class UsersHubConfig(Schema):
@@ -142,8 +123,12 @@ class AdditionalFields(Schema):
 
 class HomeConfig(Schema):
     TITLE = fields.String(load_default="Bienvenue dans GeoNature")
-    INTRODUCTION = fields.String(load_default="")
+    INTRODUCTION = fields.String(
+        load_default="Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
+    )
     FOOTER = fields.String(load_default="")
+    DISPLAY_LATEST_DISCUSSIONS = fields.Boolean(load_default=True)
+    DISPLAY_LATEST_VALIDATIONS = fields.Boolean(load_default=True)
 
 
 class MetadataConfig(Schema):
@@ -175,15 +160,40 @@ class MetadataConfig(Schema):
     )
 
 
-# class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
+class AuthenticationConfig(Schema):
+    PROVIDERS = fields.List(
+        fields.Dict(),
+        load_default=[
+            dict(
+                module="pypnusershub.auth.providers.default.LocalProvider",
+                id_provider="local_provider",
+            )
+        ],
+    )
+    DEFAULT_RECONCILIATION_GROUP_ID = fields.Integer()
+
+    @validates_schema
+    def validate_provider(self, data, **kwargs):
+        for provider in data["PROVIDERS"]:
+            ProviderConfigurationSchema().load(provider, unknown=INCLUDE)
+
+
+class AuthenticationFrontendConfig(AuthenticationConfig):
+
+    @post_load
+    def post_load(self, data, **kwargs):
+        data["PROVIDERS"] = [
+            {"id_provider": provider["id_provider"]} for provider in data["PROVIDERS"]
+        ]
+        return data
 
 
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+",
-            error="Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name",
+            r"^(postgres(?:ql)?)((\+psycopg2)?):\/\/(?:([^@\s]+)@)?([^\/\s]+)(?:\/(\w+))?(?:\?(.+))?",
+            error="PostgreSQL database URL is invalid. Check for authorized URL here : https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS",
         ),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
@@ -198,20 +208,20 @@ class GnPySchemaConf(Schema):
     STATIC_FOLDER = fields.String(load_default="static")
     CUSTOM_STATIC_FOLDER = fields.String(load_default=ROOT_DIR / "custom")
     MEDIA_FOLDER = fields.String(load_default="media")
-    CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
     CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
-    ACCOUNT_MANAGEMENT = fields.Nested(
-        AccountManagement, load_default=AccountManagement().load({})
-    )
+    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     BAD_LOGIN_STATUS_CODE = fields.Integer(load_default=401)
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
+    AUTHENTICATION = fields.Nested(
+        AuthenticationConfig, load_default=AuthenticationConfig().load({}), unknown=INCLUDE
+    )
 
     @post_load()
     def folders(self, data, **kwargs):
@@ -271,6 +281,23 @@ class GnFrontEndConf(Schema):
     # show email on synthese and validation info obs modal
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(load_default=True)
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
+
+
+class ExportObservationSchema(Schema):
+    label = fields.String(required=True)
+    view_name = fields.String(required=True)
+    geojson_4326_field = fields.String(load_default="geojson_4326")
+    geojson_local_field = fields.String(load_default="geojson_local")
+
+
+class TaxonSheet(Schema):
+    # --------------------------------------------------------------------
+    # SYNTHESE - TAXON_SHEET
+    ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
+    ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
+    ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
+    ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
+    ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
@@ -347,19 +374,18 @@ class Synthese(Schema):
 
     # --------------------------------------------------------------------
     # SYNTHESE - OBSERVATIONS LIST
-    # Listes des champs renvoyés par l'API synthese '/synthese'
-    # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
-    # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
+    # Colonnes affichées par défaut sur la liste des résultats de la synthese
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
-        fields.String, load_default=DEFAULT_COLUMNS_API_SYNTHESE
-    )
-    # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=DEFAULT_LIST_COLUMN)
+    # Colonnes affichables sur la liste des résultats de la synthese via la modale de selection des colonnes
+    ADDITIONAL_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=[])
 
     # --------------------------------------------------------------------
     # SYNTHESE - DOWNLOADS (AKA EXPORTS)
     EXPORT_COLUMNS = fields.List(fields.String(), load_default=DEFAULT_EXPORT_COLUMNS)
+    EXPORT_OBSERVATIONS_CUSTOM_VIEWS = fields.List(
+        fields.Nested(ExportObservationSchema), load_default=[]
+    )
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(load_default="id_synthese")
     EXPORT_ID_DATASET_COL = fields.String(load_default="jdd_id")
@@ -425,6 +451,32 @@ class Synthese(Schema):
             {"min": 0, "color": "#FFEDA0"},
         ],
     )
+    # Activate the blurring of sensitive observations. Otherwise, exclude them
+    BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
+
+    # --------------------------------------------------------------------
+    # SYNTHESE - TAXON_SHEET
+    ENABLE_TAXON_SHEETS = fields.Boolean(load_default=True)
+    TAXON_SHEET = fields.Nested(TaxonSheet, load_default=TaxonSheet().load({}))
+
+    # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
+    FIELD_OBSERVERS_SEPARATORS = fields.List(fields.String(), load_default=[","])
+
+    @pre_load
+    def warn_deprecated(self, data, **kwargs):
+        deprecated = {
+            "EXPORT_ID_SYNTHESE_COL",
+            "EXPORT_ID_DIGITISER_COL",
+            "EXPORT_OBSERVERS_COL",
+            "EXPORT_GEOJSON_4326_COL",
+            "EXPORT_GEOJSON_LOCAL_COL",
+        }
+        for deprecated_field in deprecated & set(data.keys()):
+            warn(
+                f"{deprecated_field} is deprecated - "
+                "Please use `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` parameter to customize your synthese exports "
+            )
+        return data
 
 
 # Map configuration
@@ -459,6 +511,7 @@ class MapConfig(Schema):
     CENTER = fields.List(fields.Float, load_default=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(load_default=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(load_default=15)
+    GEOLOCATION = fields.Boolean(load_default=False)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
     # ne s'applique qu'aux points
     ZOOM_ON_CLICK = fields.Integer(load_default=18)
@@ -476,15 +529,17 @@ class MapConfig(Schema):
                 "code": "limitesadministratives",
                 "label": "Limites administratives (IGN)",
                 "type": "wms",
-                "url": "https://wxs.ign.fr/essentiels/geoportail/r/wms",
+                "url": "https://data.geopf.fr/wms-r",
                 "activate": False,
                 "params": {
-                    "VERSION": "1.3.0",
+                    "service": "wms",
+                    "version": "1.3.0",
+                    "request": "GetMap",
+                    "layers": "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
+                    "styles": "normal",
+                    "format": "image/png",
                     "crs": "CRS:84",
                     "dpiMode": 7,
-                    "format": "image/png",
-                    "layers": "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
-                    "styles": "",
                 },
             },
             {
@@ -494,23 +549,19 @@ class MapConfig(Schema):
                 "url": "https://ws.carmencarto.fr/WMS/119/fxx_inpn",
                 "activate": False,
                 "params": {
-                    "layers": "znieff1",
-                    "opacity": 0.2,
-                    "crs": "EPSG:4326",
                     "service": "wms",
-                    "format": "image/png",
                     "version": "1.3.0",
                     "request": "GetMap",
+                    "layers": "znieff1",
+                    "format": "image/png",
+                    "crs": "EPSG:4326",
+                    "opacity": 0.2,
                     "transparent": True,
                 },
             },
         ],
     )
     REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
-
-
-class TaxHub(Schema):
-    ID_TYPE_MAIN_PHOTO = fields.Integer(load_default=1)
 
 
 # class a utiliser pour les paramètres que l'on veut passer au frontend
@@ -522,46 +573,36 @@ class GnGeneralSchemaConf(Schema):
     DEBUG = fields.Boolean(load_default=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
-    API_TAXHUB = fields.Url(required=True)
+    API_TAXHUB = fields.Url()
     CODE_APPLICATION = fields.String(load_default="GN")
-    XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
-    MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     DISABLED_MODULES = fields.List(fields.String(), load_default=[])
-    CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
     FRONTEND = fields.Nested(GnFrontEndConf, load_default=GnFrontEndConf().load({}))
     SYNTHESE = fields.Nested(Synthese, load_default=Synthese().load({}))
+    IMPORT = fields.Nested(ImportConfigSchema, load_default=ImportConfigSchema().load({}))
     MAPCONFIG = fields.Nested(MapConfig, load_default=MapConfig().load({}))
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
-    BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
-    ACCOUNT_MANAGEMENT = fields.Nested(
-        AccountManagement, load_default=AccountManagement().load({})
-    )
+    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     STATIC_URL = fields.String(load_default="/static")
     MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
-    MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
-    TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    TAXHUB = fields.Nested(TaxhubAppConf, load_default=TaxhubAppConf().load({"API_PREFIX": "/api"}))
+
     HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
-
-    @validates_schema
-    def validate_enable_sign_up(self, data, **kwargs):
-        # si CAS_PUBLIC = true and ENABLE_SIGN_UP = true
-        if data["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"] and (
-            data["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"]
-            or data["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"]
-        ):
-            raise ValidationError(
-                "CAS_PUBLIC et ENABLE_SIGN_UP ou ENABLE_USER_MANAGEMENT ne peuvent être activés ensemble",
-                "ENABLE_SIGN_UP, ENABLE_USER_MANAGEMENT",
-            )
+    PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
+    MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
+    AUTHENTICATION = fields.Nested(
+        AuthenticationFrontendConfig,
+        load_default=AuthenticationFrontendConfig().load({}),
+        unknown=INCLUDE,
+    )
 
     @validates_schema
     def validate_account_autovalidation(self, data, **kwargs):
@@ -575,11 +616,32 @@ class GnGeneralSchemaConf(Schema):
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
 
+    @pre_load
+    def _pre_load(self, data, **kwargs):
+        if "API_TAXHUB" in data:
+            warnings.warn(
+                "Le paramètre API_TAXHUB n'est plus utilisé depuis la version 2.15.",
+                Warning,
+            )
+        return data
+
     @post_load
     def insert_module_config(self, data, **kwargs):
+
+        # Configuration des modules actifs
         for dist in iter_modules_dist():
             module_code = dist.entry_points["code"].load()
             if module_code in data["DISABLED_MODULES"]:
                 continue
             data[module_code] = get_module_config(dist)
+        return data
+
+    @post_load
+    def profile_display_coherence(self, data, **kwargs):
+        if (
+            data["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"]
+            and not data["FRONTEND"]["ENABLE_PROFILES"]
+        ):
+            data["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"] = False
+
         return data

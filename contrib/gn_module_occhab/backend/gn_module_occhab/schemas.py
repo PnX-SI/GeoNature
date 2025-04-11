@@ -30,6 +30,7 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
         sqla_session = db.session
         feature_id = "id_station"
         model_converter = StationConverter
+        feature_geometry = "geom_4326"
 
     __module_code__ = "OCCHAB"
 
@@ -39,16 +40,22 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
     date_max = fields.DateTime("%Y-%m-%d")
 
     habitats = Nested("OccurenceHabitatSchema", unknown=EXCLUDE, many=True)
-    observers = Nested(UserSchema, unknown=EXCLUDE, many=True)
+    observers = Nested(UserSchema, exclude=["max_level_profil"], unknown=EXCLUDE, many=True)
     dataset = Nested(DatasetSchema, dump_only=True)
 
+    # TODO@TestImportsOcchab.test_import_valid_file: maybe add testcase
     @validates_schema
     def validate_habitats(self, data, **kwargs):
         """
         Ensure this schema is not leveraged to retrieve habitats from other station
         """
-        for hab in data["habitats"]:
-            if hab.id_station is not None and data.get("id_station") != hab.id_station:
+        for hab in data.get("habitats", []):
+            # Note: unless instance is given during schema instantiation or when load is called,
+            # self.instance in created in @post_load, but @validates_schema execute before @post_load
+            # so we need to use data.get("id_station")
+            sta_id_station = self.instance.id_station if self.instance else data.get("id_station")
+            # we could have hab.id_station None with station.id_station not None when creating new habitats
+            if hab.id_station is not None and hab.id_station != sta_id_station:
                 raise ValidationError(
                     "Habitat does not belong to this station.", field_name="habitats"
                 )

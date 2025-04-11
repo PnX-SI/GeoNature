@@ -4,14 +4,17 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class CommonService {
-  constructor(private toastrService: ToastrService, private translate: TranslateService) {}
+  constructor(
+    private toastrService: ToastrService,
+    private translate: TranslateService
+  ) {}
 
   /** pour ne pas afficher plusieurs fois le meme message
    * (par ex quand on ) zomme sur la carte avant la saisie */
 
   private current: any = {};
 
-  translateToaster(messageType: string, messageValue: string): void {
+  translateToaster(messageType: string, messageValue: string, parameters: Object = {}): void {
     // si toaster contenant le message est en cours on ne fait rien
     if (this.current[messageValue]) {
       return;
@@ -20,7 +23,7 @@ export class CommonService {
     this.current[messageValue] = true;
 
     this.translate
-      .get(messageValue, { value: messageValue })
+      .get(messageValue, parameters)
       .subscribe((res) => this.toastrService[messageType](res, ''));
 
     // on supprime le message de current au bout de 5s

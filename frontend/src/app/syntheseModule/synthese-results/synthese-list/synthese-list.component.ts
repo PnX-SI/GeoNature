@@ -23,6 +23,11 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
+import { ModuleService } from '@geonature/services/module.service';
+
+import { FormArray, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { fromEvent } from 'rxjs';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -31,7 +36,6 @@ import { ConfigService } from '@geonature/services/config.service';
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = null;
   public selectedObs: any;
-  public selectObsTaxonInfo: any;
   public selectedObsTaxonDetail: any;
   public previousRow: any;
   public rowNumber: number;
@@ -39,26 +43,55 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   public inpnMapUrl: string;
   public downloadMessage: string;
   public ColumnMode: ColumnMode;
+  public availableColumns: Array<any> = [];
+  public defaultColumns: Array<any> = [];
   //input to resize datatable on searchbar toggle
   @Input() searchBarHidden: boolean;
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table', { static: true }) table: DatatableComponent;
   private _latestWidth: number;
+  public destinationImportCode: string;
+
+  public userCruved: any;
+  public canImport: boolean = false;
+
   constructor(
     public mapListService: MapListService,
     public ngbModal: NgbModal,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _moduleService: ModuleService,
+    private _router: Router
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.module_code.toLowerCase();
   }
 
   ngOnInit() {
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.destination[0]?.code;
+
+    // get user cruved
+    this.userCruved = currentModule.cruved;
+    let cruvedImport: any = {};
+    if (this._cruvedStore.cruved.IMPORT) {
+      cruvedImport = this._cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
+    }
+    const canCreateImport = cruvedImport.C > 0;
+    const canCreateSynthese = this.userCruved.C > 0;
+
+    this.canImport = canCreateImport && canCreateSynthese;
     // get wiewport height to set the number of rows in the tabl
-    const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 37);
+    const resizeObservable = fromEvent(window, 'resize');
+    resizeObservable.subscribe((e) => {
+      this.setHeightListPanel();
+    });
+    this.setHeightListPanel();
+
+    this.initListColumns();
 
     // On map click, select on the list a change the page
     this.mapListService.onMapClik$.subscribe((ids) => {
@@ -67,13 +100,13 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       this.mapListService.tableData.map((row) => {
         // mandatory to sort (each row must have a selected attr)
         row.selected = false;
-        if (ids.includes(row.id)) {
+        if (ids.includes(row.id_synthese)) {
           row.selected = true;
         }
       });
 
       let observations = this.mapListService.tableData.filter((e) => {
-        return ids.includes(e.id);
+        return ids.includes(e.id_synthese);
       });
 
       this.mapListService.tableData.sort((a, b) => {
@@ -83,7 +116,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       this.mapListService.selectedRow = observations;
       const page = Math.trunc(
         this.mapListService.tableData.findIndex((e) => {
-          return e.id === ids[0];
+          return e.id_synthese === ids[0];
         }) / this.rowNumber
       );
       this.table.offset = page;
@@ -104,6 +137,25 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.table.sorts = [];
   }
 
+  private setHeightListPanel() {
+    const h = document.documentElement.clientHeight * 0.86;
+    this.rowNumber = Math.trunc(h / 37);
+  }
+
+  initListColumns() {
+    this.defaultColumns = this.SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND;
+    let allColumnsTemp = [
+      ...this.SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND,
+      ...this.SYNTHESE_CONFIG.ADDITIONAL_COLUMNS_FRONTEND,
+    ];
+    this.availableColumns = allColumnsTemp.map((col) => {
+      col['checked'] = this.defaultColumns.some((defcol) => {
+        return defcol.name == col.name;
+      });
+      return col;
+    });
+  }
+
   /**
    * Restore previous selected rows when sort state return to 'undefined'.
    * With ngx-datable sortType must be 'multi' to use 3 states : asc, desc and undefined !
@@ -111,7 +163,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
    */
   onSort(event) {
     if (event.newValue === undefined) {
-      let selectedObsIds = this.mapListService.selectedRow.map((obs) => obs.id);
+      let selectedObsIds = this.mapListService.selectedRow.map((obs) => obs.id_synthese);
       this.mapListService.mapSelected.next(selectedObsIds);
     }
   }
@@ -120,11 +172,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.rowNumber = Math.trunc(event.target.innerHeight / 37);
-  }
-
-  dateComparator(a: Date, b: Date) {
-    if (new Date(a) < new Date(b)) return -1;
-    if (new Date(a) > new Date(b)) return 1;
   }
 
   backToModule(url_source, id_pk_source) {
@@ -137,15 +184,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     link.remove();
   }
 
-  openInfoModal(row) {
-    row.id_synthese = row.id;
-    const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
-      size: 'lg',
-      windowClass: 'large-modal',
-    });
-    modalRef.componentInstance.idSynthese = row.id_synthese;
-    modalRef.componentInstance.header = true;
-    modalRef.componentInstance.useFrom = 'synthese';
+  openModalCol($event, modal) {
+    this.ngbModal.open(modal);
   }
 
   openDownloadModal() {
@@ -164,6 +204,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     }
     const d = new Date(date);
     return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('-');
+  }
+
+  toggleColumnNames(col) {
+    col.checked = !col.checked;
+    this.defaultColumns = this.availableColumns.filter((col) => col.checked);
   }
 
   ngOnChanges(changes) {

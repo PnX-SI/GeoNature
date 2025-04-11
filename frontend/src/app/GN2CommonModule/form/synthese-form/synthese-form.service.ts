@@ -33,6 +33,7 @@ export class SyntheseFormService {
   public redListsFilters;
   public selectedRedLists = [];
   public selectedTaxRefAttributs = [];
+  public processedDefaultFilters: any;
 
   public _nomenclatures: Array<any> = [];
 
@@ -71,6 +72,7 @@ export class SyntheseFormService {
       observers_list: null,
       id_organism: null,
       id_dataset: null,
+      id_import: null,
       id_acquisition_framework: null,
       id_nomenclature_valid_status: null,
       modif_since_validation: [false, null],
@@ -84,10 +86,10 @@ export class SyntheseFormService {
       period_end: null,
       municipalities: null,
       geoIntersection: null,
-      radius: null,
       taxonomy_lr: null,
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
+      taxonomy_group3_inpn: null,
       taxon_rank: null,
     });
 
@@ -161,11 +163,12 @@ export class SyntheseFormService {
         // stringify accepte uniquement les geojson simple (pas les feature collection)
         // on boucle sur les feature pour les transformer en WKT
         if (Array.isArray(params['geoIntersection'])) {
-          updatedParams['geoIntersection'] = params['geoIntersection'].map((geojson) => {
-            return stringify(geojson);
-          });
+          updatedParams['geoIntersection'] = {
+            type: 'FeatureCollection',
+            features: params['geoIntersection'],
+          };
         } else {
-          updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
+          updatedParams['geoIntersection'] = params['geoIntersection'];
         }
         // remove null/undefined but not zero (use for boolean)
       } else if (params[key] != null || params[key] != undefined) {

@@ -1,10 +1,13 @@
 from flask import url_for
-
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
+import sqlalchemy as sa
+from geonature.utils.env import db
 from pypnusershub.tests.utils import (
-    set_logged_user_cookie,
-    unset_logged_user_cookie,
+    set_logged_user,
+    unset_logged_user,
+    logged_user,
     logged_user_headers,
-)
+)  # Do not remove, used by other test files
 
 
 def login(client, username="admin", password=None):
@@ -16,77 +19,39 @@ def login(client, username="admin", password=None):
     assert response.status_code == 200
 
 
-jsonschema_definitions = {
-    "geometries": {
-        "BoundingBox": {
-            "type": "array",
-            "minItems": 4,
-            "items": {"type": "number"},
-        },
-        "PointCoordinates": {"type": "array", "minItems": 2, "items": {"type": "number"}},
-        "Point": {
-            "title": "GeoJSON Point",
-            "type": "object",
-            "required": ["type", "coordinates"],
-            "properties": {
-                "type": {"type": "string", "enum": ["Point"]},
-                "coordinates": {
-                    "$ref": "#/definitions/geometries/PointCoordinates",
-                },
-                "bbox": {
-                    "$ref": "#/definitions/geometries/BoundingBox",
-                },
-            },
-        },
-    },
-    "feature": {
-        "title": "GeoJSON Feature",
-        "type": "object",
-        "required": ["type", "properties", "geometry"],
-        "properties": {
-            "type": {"type": "string", "enum": ["Feature"]},
-            "id": {"oneOf": [{"type": "number"}, {"type": "string"}]},
-            "properties": {
-                "oneOf": [
-                    {"type": "null"},
-                    {"$ref": "#/$defs/props"},
-                ],
-            },
-            "geometry": {
-                "oneOf": [
-                    {"type": "null"},
-                    {"$ref": "#/definitions/geometries/Point"},
-                    # {"$ref": "#/definitions/geometries/LineString"},
-                    # {"$ref": "#/definitions/geometries/Polygon"},
-                    # {"$ref": "#/definitions/geometries/MultiPoint"},
-                    # {"$ref": "#/definitions/geometries/MultiLineString"},
-                    # {"$ref": "#/definitions/geometries/MultiPolygon"},
-                    # {"$ref": "#/definitions/geometries/GeometryCollection"},
-                ],
-            },
-            "bbox": {
-                "$ref": "#/definitions/geometries/BoundingBox",
-            },
-        },
-    },
-    "featurecollection": {
-        "title": "GeoJSON FeatureCollection",
-        "type": "object",
-        "required": ["type", "features"],
-        "properties": {
-            "type": {
-                "type": "string",
-                "enum": ["FeatureCollection"],
-            },
-            "features": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/feature",
-                },
-            },
-            "bbox": {
-                "$ref": "#/definitions/geometries/BoundingBox",
-            },
-        },
-    },
-}
+def get_id_nomenclature(nomenclature_type_mnemonique, cd_nomenclature):
+    return db.session.scalar(
+        sa.select(TNomenclatures.id_nomenclature)
+        .where(TNomenclatures.cd_nomenclature == cd_nomenclature)
+        .where(
+            TNomenclatures.nomenclature_type.has(
+                BibNomenclaturesTypes.mnemonique == nomenclature_type_mnemonique
+            )
+        )
+    )
+
+
+def dict2obj(dict_data):
+
+    # checking whether object d is a
+    # instance of class list
+    if isinstance(dict_data, list):
+        dict_data = [dict2obj(x) for x in dict_data]
+
+    # if d is not a instance of dict then
+    # directly object is returned
+    if not isinstance(dict_data, dict):
+        return dict_data
+
+    # declaring a class
+    class C:
+        def __getitem__(self, item):
+            return getattr(self, item)
+
+    # constructor of the class passed to obj
+    obj = C()
+
+    for k in dict_data:
+        obj.__dict__[k] = dict2obj(dict_data[k])
+
+    return obj

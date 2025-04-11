@@ -1,6 +1,7 @@
 """
-    Modèles du schéma gn_commons
+Modèles du schéma gn_commons
 """
+
 from sqlalchemy.dialects.postgresql import JSONB
 
 from utils_flask_sqla.serializers import serializable
@@ -10,7 +11,7 @@ from geonature.utils.env import DB
 
 from .base import cor_field_module, cor_field_object, cor_field_dataset
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_permissions.models import PermObject
 
 
 @serializable
@@ -37,10 +38,7 @@ class TAdditionalFields(DB.Model):
     exportable = DB.Column(DB.Boolean, default=True)
     field_order = DB.Column(DB.Integer)
     type_widget = DB.relationship("BibWidgets")
-    bib_nomenclature_type = DB.relationship(
-        "BibNomenclaturesTypes",
-        primaryjoin="BibNomenclaturesTypes.mnemonique == TAdditionalFields.code_nomenclature_type",
-    )
+    bib_nomenclature_type = DB.relationship("BibNomenclaturesTypes")
     additional_attributes = DB.Column(JSONB)
     multiselect = DB.Column(DB.Boolean)
     api = DB.Column(DB.String)
@@ -49,8 +47,10 @@ class TAdditionalFields(DB.Model):
         "TModules",
         secondary=cor_field_module,
     )
-    objects = DB.relationship("TObjects", secondary=cor_field_object)
-    datasets = DB.relationship("TDatasets", secondary=cor_field_dataset)
+    objects = DB.relationship(PermObject, secondary=cor_field_object)
+    datasets = DB.relationship(
+        TDatasets, secondary=cor_field_dataset, back_populates="additional_fields"
+    )
 
     def __str__(self):
-        return f"{self.field_label} ({self.description})"
+        return self.field_label

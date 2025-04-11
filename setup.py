@@ -17,7 +17,7 @@ setuptools.setup(
     maintainer="Parcs nationaux des Écrins et des Cévennes",
     maintainer_email="geonature@ecrins-parcnational.fr",
     url="https://github.com/PnX-SI/GeoNature/",
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     version=version,
     packages=setuptools.find_packages(where="backend", include=["geonature*"]),
     package_dir={
@@ -32,16 +32,20 @@ setuptools.setup(
     + list(open("backend/requirements-dependencies.in", "r")),
     extras_require={
         "tests": [
+            "pandas",
             "pytest",
             "pytest-flask",
+            "pytest-benchmark",
             "pytest-cov",
             "jsonschema",
+            "pandas",
         ],
         "doc": [
             "sphinx",
-            "sphinx_rtd_theme",
-            "sphinxcontrib-httpdomain",
-            "sphinxcontrib-websupport",
+            "furo",
+            "myst-parser",
+            "sphinx-autoapi",
+            "sphinx-copybutton",
         ],
     },
     classifiers=[

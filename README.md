@@ -12,10 +12,10 @@ technologies :
 - Python
 - Flask
 - Leaflet
-- Angular 7
+- Angular
 - Bootstrap
 
-Documentation sur <http://docs.geonature.fr>.
+Documentation sur <https://docs.geonature.fr>.
 
 **Application de saisie, de gestion, de synthèse et de diffusion
 d\'observations faune et flore.**
@@ -133,9 +133,9 @@ Licence
 =======
 
 -   OpenSource - GPL-3.0
--   Copyleft 2014-2022 - Parc National des Écrins - Parc national des
+-   Copyleft 2014-2023 - Parc National des Écrins - Parc national des
     Cévennes
 
-[![image](http://geonature.fr/img/logo-pne.jpg)](http://www.ecrins-parcnational.fr)
+[![image](https://geonature.fr/img/logo-pne.jpg)](https://www.ecrins-parcnational.fr)
 
-[![image](http://geonature.fr/img/logo-pnc.jpg)](http://www.cevennes-parcnational.fr)
+[![image](https://geonature.fr/img/logo-pnc.jpg)](https://www.cevennes-parcnational.fr)

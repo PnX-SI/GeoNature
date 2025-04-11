@@ -4,17 +4,22 @@ FAQ
 Problèmes liés au frontend
 --------------------------
 
+Changement d'URL de GeoNature
+"""""""""""""""""""""""""""""
+
+Si vous souhaitez changer l'URL de l'API de GeoNature, il est nécessaire d'indiquer les nouvelles adresses dans le fichier de configuration principale (``geonature/config/geonature_config.toml`` pour GeoNature, ainsi que celle de UsersHub)  ainsi que le fichier ``frontend/src/assets/config.json`` précisant l'URL de l'API au frontend. Pour mettre à jour ce fichier automatiquement, relancer le script ``install/05_install_frontend.sh``.
+ 
 Message d'erreur lors de la compilation du frontend
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
-- **Probleme lié à Node-sass**::
+- **Problème lié à Node-sass**::
 
     at module.exports (/home/myuser/geonature2/frontend/node_modules/node-sass/lib/binding.js:15:13) at Object.<anonymous> (/home/myuser/geonature2/frontend/node_modules/node-sass/lib/index.js:14:35)
 
 Lancer la commande : ``npm rebuild node-sass --force``
 
 
-- **Probleme de mémoire**
+- **Problème de mémoire**
 
 Si vous avez un message d’erreur durant le build du frontend ressemblant à l’un des messages ci-dessous :
 
@@ -45,14 +50,12 @@ Vous pouvez essayer de stopper les backends durant le build du frontend :
 
     $ sudo systemctl stop geonature
     $ sudo systemctl stop geonature-worker
-    $ sudo systemctl stop taxhub
     $ sudo systemctl stop usershub
     $ cd frontend
     $ nvm use
     $ npm run build
     $ sudo systemctl start geonature
     $ sudo systemctl start geonature-worker
-    $ sudo systemctl start taxhub
     $ sudo systemctl start usershub
 
 

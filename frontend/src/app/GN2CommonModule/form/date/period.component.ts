@@ -14,7 +14,10 @@ import { DateComponent } from './date.component';
 export class PeriodComponent extends DateComponent implements OnInit {
   public elementRef: ElementRef;
 
-  constructor(myElement: ElementRef, public dateParser: NgbDateParserFormatter) {
+  constructor(
+    myElement: ElementRef,
+    public dateParser: NgbDateParserFormatter
+  ) {
     super(myElement, dateParser);
   }
 

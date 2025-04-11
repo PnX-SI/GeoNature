@@ -1,7 +1,11 @@
+bokeh==3.4.1
 celery[redis]
+chardet  # imports
 click>=7.0
-fiona
-flask
+fiona>=1.9.6
+flask>=3.0
+flask-admin
+flask-babel
 flask-cors
 flask-mail
 flask-marshmallow
@@ -11,18 +15,24 @@ flask-weasyprint
 flask_wtf
 geojson
 gunicorn>=19.8.0
-importlib_metadata;python_version<"3.10"
+importlib_metadata==4.13.0;python_version<"3.10"
+importlib_metadata;python_version>"3.10"
+jsonschema
 lxml
 marshmallow
 marshmallow-sqlalchemy
+pandas  # imports
 pillow
 packaging
 psycopg2
+pyproj<3.1;python_version<"3.10"  # imports
+pyproj;python_version>="3.10"  # imports
 python-dateutil
-shapely
-sqlalchemy<1.4
+shapely>=2.0.0
+sqlalchemy<2.0
 toml
-weasyprint<53
-wtforms
+weasyprint
+# Compatibility with flask admin
+wtforms==3.1.2
 wtforms-sqlalchemy
 xmltodict

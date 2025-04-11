@@ -5,7 +5,10 @@ import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 export class MetadataSearchFormService {
   public form: UntypedFormGroup;
   public rapidSearchControl: UntypedFormControl;
-  constructor(private _fb: UntypedFormBuilder, public dateParser: NgbDateParserFormatter) {
+  constructor(
+    private _fb: UntypedFormBuilder,
+    public dateParser: NgbDateParserFormatter
+  ) {
     this.form = this._fb.group({
       selector: 'ds',
       uuid: null,

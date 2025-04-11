@@ -1,8 +1,8 @@
 """
-   Spécification du schéma toml des paramètres de configurations
-   La classe doit impérativement s'appeller GnModuleSchemaConf
-   Fichier spécifiant les types des paramètres et leurs valeurs par défaut
-   Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
+Spécification du schéma toml des paramètres de configurations
+La classe doit impérativement s'appeller GnModuleSchemaConf
+Fichier spécifiant les types des paramètres et leurs valeurs par défaut
+Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
 """
 
 from marshmallow import Schema, fields
@@ -41,18 +41,21 @@ class GnModuleSchemaConf(Schema):
     EXPORT_COLUMS = fields.List(
         fields.String(),
         load_default=[
-            "identifiantStaSINP",
-            "metadonneeId",
-            "dSPublique",
-            "dateDebut",
-            "dateFin",
-            "observateur",
-            "methodeCalculSurface",
+            "uuid_station",
+            "uuid_jdd",
+            "date_debut",
+            "date_fin",
+            "observateurs",
+            "methode_calcul_surface",
             "geometry",
-            "natureObjetGeo",
-            "identifiantHabSINP",
-            "nomCite",
-            "cdHab",
-            "precisionTechnique",
+            "surface",
+            "altitude_min",
+            "altitude_max",
+            "exposition",
+            "nature_objet_geo",
+            "uuid_habitat",
+            "nom_cite",
+            "cd_hab",
+            "precision_technique",
         ],
     )

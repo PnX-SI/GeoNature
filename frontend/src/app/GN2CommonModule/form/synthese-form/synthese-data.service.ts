@@ -11,6 +11,8 @@ import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
+import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
+import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
 
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
@@ -24,7 +26,10 @@ export class SyntheseDataService {
   public isDownloading: Boolean = false;
   public downloadProgress: BehaviorSubject<number>;
   private _blob: Blob;
-  constructor(private _api: HttpClient, public config: ConfigService) {
+  constructor(
+    private _api: HttpClient,
+    public config: ConfigService
+  ) {
     this.downloadProgress = <BehaviorSubject<number>>new BehaviorSubject(0.0);
   }
 
@@ -50,6 +55,34 @@ export class SyntheseDataService {
 
   getSyntheseGeneralStat() {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/general_stats`);
+  }
+
+  getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM') {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_stats/${cd_ref}`, {
+      params: new HttpParams().append('area_type', areaType),
+    });
+  }
+
+  getTaxonMedias(cdRef: number, params?: {}): Observable<any> {
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon_medias/${cdRef}`, {
+      params,
+    });
+  }
+
+
+  getSyntheseTaxonSheetObservers(
+    cd_ref: number,
+    pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
+    sort: SyntheseDataSortItem = DEFAULT_SORT
+  ) {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_observers/${cd_ref}`, {
+      params: {
+        per_page: pagination.perPage,
+        page: pagination.currentPage,
+        sort_by: sort.sortBy,
+        sort_order: sort.sortOrder,
+      },
+    });
   }
 
   getTaxaCount(params = {}) {
@@ -82,12 +115,6 @@ export class SyntheseDataService {
     });
   }
 
-  getObsCountByColumn(column) {
-    return this._api.get<any>(
-      `${this.config.API_ENDPOINT}/synthese/observation_count_per_column/${column}`
-    );
-  }
-
   getOneSyntheseObservation(id_synthese) {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
   }
@@ -105,10 +132,10 @@ export class SyntheseDataService {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxons_tree`);
   }
 
-  downloadObservations(idSyntheseList: Array<number>, format: string) {
+  downloadObservations(idSyntheseList: Array<number>, format: string, view_name: string) {
     this.isDownloading = true;
-    const queryString = new HttpParams().set('export_format', format);
-
+    let queryString = new HttpParams().set('export_format', format);
+    queryString = queryString.set('view_name', view_name);
     const source = this._api.post(
       `${this.config.API_ENDPOINT}/synthese/export_observations`,
       idSyntheseList,
@@ -226,8 +253,10 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
-  getReports(params) {
-    return this._api.get(`${this.config.API_ENDPOINT}/synthese/reports?${params}`);
+  getReports(params, idSynthese = null) {
+    const baseUrl = `${this.config.API_ENDPOINT}/synthese/reports`;
+    const url = idSynthese ? `${baseUrl}/${idSynthese}` : baseUrl;
+    return this._api.get(`${url}?${params}`);
   }
 
   createReport(params) {

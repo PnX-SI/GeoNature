@@ -65,6 +65,10 @@ export class NomenclatureComponent
    */
   @Input() group2Inpn: string;
   /**
+   * Filter group 3 INPN
+   */
+  @Input() group3Inpn?: string;
+  /**
    * Attribut de l'objet nomenclature renvoyé au formControl (facultatif, par défaut ``id_nomenclature``).
    * Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API
    */
@@ -74,11 +78,15 @@ export class NomenclatureComponent
   @Input() cdNomenclatures: Array<string> = [];
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
-  constructor(private _dfService: DataFormService, private _translate: TranslateService) {
+  constructor(
+    private _dfService: DataFormService,
+    private _translate: TranslateService
+  ) {
     super();
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.keyValue = this.bindAllItem ? null : this.keyValue || 'id_nomenclature'; // patch pour les cas ou this.keyValue == undefined
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
@@ -117,6 +125,8 @@ export class NomenclatureComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    super.ngOnChanges(changes);
+
     // if change regne => change groupe2inpn also
     if (changes.regne !== undefined && !changes.regne.firstChange) {
       this.initLabels();
@@ -125,7 +135,9 @@ export class NomenclatureComponent
     if (
       changes.regne === undefined &&
       changes.group2Inpn !== undefined &&
-      !changes.group2Inpn.firstChange
+      !changes.group2Inpn.firstChange &&
+      changes.group3Inpn !== undefined &&
+      !changes.group3Inpn.firstChange
     ) {
       this.initLabels();
     }
@@ -134,7 +146,13 @@ export class NomenclatureComponent
   initLabels() {
     const filters = { orderby: 'label_default', cd_nomenclature: this.cdNomenclatures };
     this._dfService
-      .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
+      .getNomenclature(
+        this.codeNomenclatureType,
+        this.regne,
+        this.group2Inpn,
+        this.group3Inpn,
+        filters
+      )
       .subscribe((data) => {
         this.labels = data.values;
         this.savedLabels = data.values;

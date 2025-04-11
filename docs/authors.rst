@@ -1,4 +1,4 @@
-AUTEURS
+Auteurs
 =======
 
 Parc national des Écrins
@@ -7,6 +7,7 @@ Parc national des Écrins
 * Gil Deluermoz
 * Théo Lechemia
 * Élie Bouttier
+* Jacques Fize
 * Camille Monchicourt
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
@@ -45,6 +46,7 @@ Contributeurs
 * Sébastien Grimault
 * Sébastien Pascal-Poher (Probesys)
 * Jean-Pascal Milcent (CBNA)
+* Cendrine Hoarau (CBNA)
 * Florent Vollmer (Ouidou)
 * Aboubakr Oudghiri (Ouidou)
 * Matthieu Etourneau (Geofit)
@@ -52,6 +54,8 @@ Contributeurs
 * Antoine Cecchi (UMS Patrinat)
 * Judith Panijel (UMS Patrinat)
 * Alain Laupin (UMS Patrinat)
+* Vincent Cauchois (UMS Patrinat)
+* Pierre Narcisi (UMS Patrinat)
 * Ludovic Le Pontois (Parc national des Pyrénées)
 * Vincent Prunet (Parc national du Mercantour)
 * David Michallet (CEN 38)
@@ -62,5 +66,13 @@ Contributeurs
 * Aurélie Jambon (Natural Solutuons)
 * Julien Graziani (Natural Solutions)
 * Ophélie Da Silva (Natural Solutions)
+* Andria Capai (Natural Solutions)
+* Etienne Delclaux (Natural Solutions)
 * Gaëtan Bruel (JDev)
 * Pierre Jégo (JDev)
+* Pierre Le Dorze (Bretagne Vivante)
+* Bastien Alvez (Makina Corpus)
+* dece
+* Mathieu Roudaut (CREA Mont-Blanc)
+* Marie-Laure Séguin (CEN Normandie)
+* Zacharie Moulin (RNF)

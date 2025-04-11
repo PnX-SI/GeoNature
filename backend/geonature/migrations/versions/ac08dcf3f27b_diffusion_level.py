@@ -5,6 +5,7 @@ Revises: dfec5f64ac73
 Create Date: 2022-02-10 12:45:05.472204
 
 """
+
 from distutils.util import strtobool
 
 from alembic import op, context

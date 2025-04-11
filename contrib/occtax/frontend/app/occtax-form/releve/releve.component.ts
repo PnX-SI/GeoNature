@@ -11,6 +11,7 @@ import { OcctaxFormMapService } from '../map/occtax-map.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxDataService } from '../../services/occtax-data.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { FormService as GlobalFormService } from '@geonature_common/form/form.service';
 
 @Component({
   selector: 'pnx-occtax-form-releve',
@@ -39,7 +40,8 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     public moduleService: ModuleService,
     public occtaxDataService: OcctaxDataService,
-    public config: ConfigService
+    public config: ConfigService,
+    public globalFormService: GlobalFormService
   ) {}
 
   ngOnInit() {

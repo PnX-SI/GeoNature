@@ -1,53 +1,112 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ConfigService } from '@geonature/services/config.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { CommonService } from '@geonature_common/service/common.service';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+import { InfosComponent } from './infos/infos.component';
+import { LayoutComponent } from './layout/layout.component';
+import {
+  computeIndicatorFromDescription,
+  Indicator,
+  IndicatorDescription,
+} from './indicator/indicator';
+import { TaxonImageComponent } from './infos/taxon-image/taxon-image.component';
+import { IndicatorComponent } from './indicator/indicator.component';
+import { CommonModule } from '@angular/common';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { TaxonSheetService } from './taxon-sheet.service';
+import { RouteService } from './taxon-sheet.route.service';
+
+const INDICATORS: Array<IndicatorDescription> = [
+  {
+    name: 'observation(s)',
+    matIcon: 'search',
+    field: 'observation_count',
+    type: 'number',
+  },
+  {
+    name: 'observateur(s)',
+    matIcon: 'people',
+    field: 'observer_count',
+    type: 'number',
+  },
+  {
+    name: 'commune(s)',
+    matIcon: 'location_on',
+    field: 'area_count',
+    type: 'number',
+  },
+  {
+    name: "Plage d'altitude(s)",
+    matIcon: 'terrain',
+    unit: 'm',
+    type: 'number',
+    field: ['altitude_min', 'altitude_max'],
+  },
+  {
+    name: "Plage d'observation(s)",
+    matIcon: 'date_range',
+    type: 'date',
+    field: ['date_min', 'date_max'],
+    separator: '-',
+  },
+];
 
 @Component({
+  standalone: true,
   selector: 'pnx-taxon-sheet',
   templateUrl: 'taxon-sheet.component.html',
   styleUrls: ['taxon-sheet.component.scss'],
+  imports: [
+    CommonModule,
+    GN2CommonModule,
+    IndicatorComponent,
+    InfosComponent,
+    LayoutComponent,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    TaxonImageComponent,
+  ],
+  providers: [TaxonSheetService],
 })
 export class TaxonSheetComponent implements OnInit {
-  public taxon: any;
-  public profile: any;
-  public profilArea: any;
-  public mediaUrl: any;
-  constructor(
-    private _route: ActivatedRoute,
-    private _ds: DataFormService,
-    private _commonService: CommonService,
-    public config: ConfigService
-  ) {}
+  readonly TAB_LINKS = [];
 
+  indicators: Array<Indicator>;
+
+  constructor(
+    private _router: Router,
+    private _route: ActivatedRoute,
+    private _tss: TaxonSheetService,
+    private _syntheseDataService: SyntheseDataService,
+    private _routes: RouteService
+  ) {
+    this.TAB_LINKS = this._routes.TAB_LINKS;
+  }
   ngOnInit() {
     this._route.params.subscribe((params) => {
-      const cdNom = params['cd_nom'];
-      if (cdNom) {
-        this._ds.getTaxonInfo(cdNom).subscribe((taxon) => {
-          this.taxon = taxon;
-          this._ds.getProfile(taxon.cd_ref).subscribe(
-            (profil) => {
-              this.profile = profil.properties;
-              this.profilArea = profil;
-              this._ds.getTaxonAttributsAndMedia(taxon.cd_ref).subscribe((taxonAttrAndMedias) => {
-                const media = taxonAttrAndMedias.medias.find(
-                  (m) => m.id_type == this.config['TAXHUB']['ID_TYPE_MAIN_PHOTO']
-                );
-                if (media) {
-                  this.mediaUrl = `${this.config.API_TAXHUB}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
-                }
-              });
-            },
-            (errors) => {
-              if (errors.status == 404) {
-                this._commonService.regularToaster('warning', 'Aucune donnée pour ce taxon');
-              }
-            }
-          );
+      const cd_ref = params['cd_ref'];
+      if (cd_ref) {
+        this._tss.updateTaxonByCdRef(cd_ref);
+        this._syntheseDataService.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats) => {
+          this.setIndicators(stats);
         });
       }
     });
+  }
+
+  setIndicators(stats: any) {
+    this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
+      computeIndicatorFromDescription(indicatorConfig, stats)
+    );
+  }
+
+  goToPath(path: string) {
+    this._router.navigate([path], { relativeTo: this._route });
   }
 }

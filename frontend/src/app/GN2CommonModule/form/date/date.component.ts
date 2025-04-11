@@ -48,11 +48,16 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() maxDate;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
+  /**Event fired on datepicker click on or keyboard date change */
+  @Output() onSelectOrKeyIn = new EventEmitter<any>();
   dynamicId;
   public changeSub: Subscription;
   public today: DateStruc;
 
-  constructor(myElement: ElementRef, private _dateParser: NgbDateParserFormatter) {
+  constructor(
+    myElement: ElementRef,
+    private _dateParser: NgbDateParserFormatter
+  ) {
     this.elementRef = myElement;
     this.initializeDates();
   }

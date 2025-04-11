@@ -17,12 +17,16 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { AppComponent } from './app.component';
 import { routing } from './routing/app-routing.module'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
+import { HomeDiscussionsComponent } from './components/home-content/home-discussions/home-discussions.component';
+import { HomeValidationsComponent } from './components/home-content/home-validations/home-validations.component';
+
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 import { LoginModule } from './modules/login/login.module';
 import { NotificationComponent } from './components/notification/notification.component';
 import { RulesComponent } from './components/notification/rules/rules.component';
+import { CustomTranslateLoader } from './shared/translate/custom-loader';
 
 // Custom component (footer, presentation etc...)
 import { FooterComponent } from './components/footer/footer.component';
@@ -31,7 +35,7 @@ import { IntroductionComponent } from './components/introduction/introduction.co
 // Service
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
-import { ChartsModule } from 'ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 
 // PublicAccessGuard,
 
@@ -45,9 +49,7 @@ import { ConfigService } from './services/config.service';
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { UnauthorizedInterceptor } from './services/unauthorized.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
+
 import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
@@ -82,7 +84,7 @@ export function initApp(injector) {
     HttpClientModule,
     BrowserAnimationsModule,
     routing,
-    ChartsModule,
+    NgChartsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',
       tapToDismiss: true,
@@ -92,11 +94,15 @@ export function initApp(injector) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient],
+        useClass: CustomTranslateLoader,
+        deps: [HttpClient, ConfigService],
       },
+      isolate: false,
+      extend: true,
     }),
     LoginModule,
+    HomeDiscussionsComponent,
+    HomeValidationsComponent,
   ],
   declarations: [
     AppComponent,

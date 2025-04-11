@@ -4,7 +4,7 @@ import sys
 
 from flask import current_app, request, json, redirect
 from werkzeug.exceptions import Unauthorized, InternalServerError, HTTPException, BadRequest
-from werkzeug.urls import url_encode
+from urllib.parse import urlencode
 from marshmallow.exceptions import ValidationError
 
 
@@ -26,13 +26,10 @@ def handle_unauthenticated_request(e):
     else:
         base_url = current_app.config["URL_APPLICATION"]
         login_path = "/#/login"  # FIXME: move in config
-        api_endpoint = current_app.config["API_ENDPOINT"]
-        url_application = current_app.config["URL_APPLICATION"]
-        if urlparse(api_endpoint).netloc == urlparse(url_application).netloc:
-            next_url = request.full_path
-        else:
-            next_url = request.url
-        query_string = url_encode({"next": next_url})
+        query_string = ""
+        if not request.url.endswith("/auth/logout"):  # TODO : remove this hack
+            query_string = urlencode({"next": request.url})
+
         return redirect(f"{base_url}{login_path}?{query_string}")
 
 

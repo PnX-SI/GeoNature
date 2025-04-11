@@ -1,10 +1,10 @@
 SQLALCHEMY_DATABASE_URI = "postgresql://geonatadmin:geonatpasswd@127.0.0.1:5432/geonature2db"
 URL_APPLICATION = 'http://127.0.0.1:4200'
 API_ENDPOINT = 'http://127.0.0.1:8000'
-API_TAXHUB = 'http://127.0.0.1:5000/api'
 SECRET_KEY = '5fdc2c8fb46f44033144d07396ba082a95b8b3cc827b611a7aaaefbef414f13b'
 DEFAULT_LANGUAGE='fr'
 [MAPCONFIG]
+ZOOM_LEVEL_RELEVE = 1
 REF_LAYERS=[
     {
         code="znieff1",
@@ -55,3 +55,9 @@ REF_LAYERS=[
 
 [SYNTHESE]
 AREA_AGGREGATION_TYPE = "M5"
+STATUS_FILTERS = [
+    { "id" = "protections", "show" = true, "display_name" = "Taxons protégés", "status_types" = ["PN", "PR", "PD"] },
+    { "id" = "regulations", "show" = true, "display_name" = "Taxons réglementés", "status_types" = ["REGLII", "REGL", "REGLSO"] },
+    { "id" = "invasive", "show" = true, "display_name" = "Espèces envahissantes", "status_types" = ["REGLLUTTE"] },
+    { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
+]

@@ -1,0 +1,18 @@
+beforeEach(() => {
+  cy.geonatureLogin();
+  cy.visit('/#/occtax_ds');
+});
+
+it('Should click on OCCTAX_DS module and load data with module_code in url', () => {
+  cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX_DS/releves?**', (req) => {
+    expect(req.response.statusCode, 200);
+  });
+});
+it('Should change module nav home name', () => {
+  cy.get("[data-qa='nav-home-module-name']").contains('Occtax ds');
+});
+
+it('Should edit a releve and keep module name in URL', () => {
+  cy.get("[data-qa='edit-releve']").first().click();
+  cy.url().should('include', 'occtax_ds'); // => true
+});

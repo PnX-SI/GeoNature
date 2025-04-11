@@ -1,13 +1,23 @@
-<ng-template #content let-c="close" let-d="dismiss">
+<ng-template
+  #content
+  let-c="close"
+  let-d="dismiss"
+>
   <div class="modal-header">
     <h5 class="modal-title">{{ 'Releve.InfoGeo' | translate }}</h5>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <p *ngFor="let area of areasIntersected">
-      <b> {{ area.type_name }}:</b> {{ area.areas }}
+      <b>{{ area.type_name }}:</b>
+      {{ area.areas }}
     </p>
   </div>
 </ng-template>
@@ -18,5 +28,8 @@
   (click)="openIntesectionModal(content)"
   matTooltip="{{ 'Releve.InfoGeo' | translate }} "
 >
-  <i class="fa fa-globe" aria-hidden="true"></i>
+  <i
+    class="fa fa-globe"
+    aria-hidden="true"
+  ></i>
 </button>

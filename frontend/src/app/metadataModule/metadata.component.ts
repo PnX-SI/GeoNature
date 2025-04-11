@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, combineLatest } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { map, distinctUntilChanged, debounceTime, tap, switchMap, startWith } from 'rxjs/operators';
 import { omitBy } from 'lodash';
 
-import { DataFormService } from '@geonature_common/form/data-form.service';
+import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { MetadataService } from './services/metadata.service';
 import { ConfigService } from '@geonature/services/config.service';
@@ -21,6 +22,7 @@ export class MetadataComponent implements OnInit {
 
   /* getter this.metadataService.filteredAcquisitionFrameworks */
   acquisitionFrameworks: Observable<any[]>;
+  public rapidSearchControl: UntypedFormControl = new UntypedFormControl();
 
   get expandAccordions(): boolean {
     return this.metadataService.expandAccordions;
@@ -30,6 +32,10 @@ export class MetadataComponent implements OnInit {
   public organisms: any[] = [];
   /* liste des roles issues de l'API pour le select. */
   public roles: any[] = [];
+  public meta_type: any[] = [
+    { label: 'Jeu de données', value: 'ds' },
+    { label: "Cadre d'acquisition", value: 'af' },
+  ];
 
   public areaFilters: Array<any>;
 
@@ -42,8 +48,7 @@ export class MetadataComponent implements OnInit {
   afPublishModalLabel: string;
   afPublishModalContent: string;
 
-  pageSize: number;
-  pageIndex: number;
+  acquisitionFrameworksLength: number = 0;
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -64,14 +69,38 @@ export class MetadataComponent implements OnInit {
 
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = combineLatest(
-      this.metadataService.filteredAcquisitionFrameworks.pipe(distinctUntilChanged()),
+      this.metadataService.acquisitionFrameworks.pipe(distinctUntilChanged()),
       this.metadataService.pageIndex.asObservable().pipe(distinctUntilChanged()),
       this.metadataService.pageSize.asObservable().pipe(distinctUntilChanged())
     ).pipe(
-      map(([afs, pageIndex, pageSize]) =>
-        afs.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
-      )
+      map(([afs, pageIndex, pageSize]) => {
+        this.acquisitionFrameworksLength = afs.length;
+        return afs.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+      })
     );
+
+    // rapid search event
+    //combinaison de la zone de recherche et du chargement des données
+    this.rapidSearchControl.valueChanges
+      .pipe(
+        startWith(''),
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap((term) => {
+          if (term !== null) {
+            if (term === '') {
+              delete this.searchTerms.search;
+            } else {
+              this.searchTerms = { ...this.searchTerms, search: this.rapidSearchControl.value };
+            }
+          }
+        }),
+        switchMap(() => this.metadataService.search(this.searchTerms))
+      )
+      .subscribe(() => {
+        return;
+      });
+
     // format areas filter
     this.areaFilters = this.config.METADATA.METADATA_AREA_FILTERS.map((area) => {
       if (typeof area['type_code'] === 'string') {
@@ -87,27 +116,17 @@ export class MetadataComponent implements OnInit {
     return option?.area_name;
   }
 
-  setDsObservationCount(datasets, dsNbObs) {
-    datasets.forEach((ds) => {
-      let foundDS = dsNbObs.find((d) => {
-        return d.id_dataset == ds.id_dataset;
-      });
-      if (foundDS) {
-        ds.observation_count = foundDS.count;
-      } else {
-        ds.observation_count = 0;
-      }
-    });
-  }
-
   refreshFilters() {
     this.metadataService.resetForm();
+    this.rapidSearchControl.reset();
     this.advancedSearch();
     this.metadataService.expandAccordions = false;
   }
 
   private advancedSearch() {
-    let formValues = this.metadataService.form.value;
+    let formValues = Object.fromEntries(
+      Object.entries(this.metadataService.form.value).filter(([_, v]) => v != null)
+    );
     // reformat areas value
     let areas = [];
     let omited = omitBy(formValues, (value = [], field) => {
@@ -115,18 +134,23 @@ export class MetadataComponent implements OnInit {
       if (!field || !field.startsWith('area_')) return false;
       // use only one areas ids list
       if (value) {
-        areas = [...areas, ...value.map((area) => [area.id_type, area.id_area])];
+        areas = [...areas, ...value.map((area) => area.id_area)];
       }
       return true;
     });
-    let finalFormValue = { ...omited, areas: areas.length ? areas : null };
+    this.searchTerms = {
+      ...omited,
+      ...(areas.length && { areas: areas }),
+      ...(this.rapidSearchControl.value !== null && {
+        search: this.rapidSearchControl.value,
+      }),
+    };
+    this.metadataService.form.patchValue(this.searchTerms);
     this.metadataService.formatFormValue(Object.assign({}, formValues));
-    this.metadataService.getMetadata(finalFormValue);
-    this.metadataService.expandAccordions = true;
+    this.metadataService.getMetadata(this.searchTerms);
   }
 
   openSearchModal(searchModal) {
-    this.metadataService.resetForm();
     this.modal.open(searchModal);
   }
 
@@ -134,15 +158,19 @@ export class MetadataComponent implements OnInit {
     this.modal.dismissAll();
   }
 
-  // isDisplayed(idx: number) {
-  //   //numero du CA à partir de 1
-  //   let element = idx + 1;
-  //   //calcul des tranches active à afficher
-  //   let idxMin = this.pageSize * this.activePage;
-  //   let idxMax = this.pageSize * (this.activePage + 1);
-
-  //   return idxMin < element && element <= idxMax;
-  // }
+  onOpenExpansionPanel(af: any) {
+    if (af.t_datasets === undefined) {
+      let params = {};
+      const queryStrings: ParamsDict = { synthese_records_count: 1 };
+      if (this.searchTerms.selector === 'ds') {
+        params = this.searchTerms;
+      }
+      if (this.rapidSearchControl.value) {
+        params = { ...params, search: this.rapidSearchControl.value };
+      }
+      this.metadataService.addDatasetToAcquisitionFramework(af, params, queryStrings);
+    }
+  }
 
   changePaginator(event: PageEvent) {
     this.metadataService.pageSize.next(event.pageSize);
@@ -166,11 +194,6 @@ export class MetadataComponent implements OnInit {
           this._commonService.regularToaster(
             'warning',
             "Erreur lors de l'envoi de l'email de confirmation. Le cadre d'acquisition a bien été fermé"
-          );
-        } else {
-          this._commonService.regularToaster(
-            'error',
-            "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
           );
         }
       }

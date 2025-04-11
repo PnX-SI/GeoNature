@@ -13,6 +13,10 @@ from geonature.utils.env import MA
 from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
+
+# Note: import of SourceSchema is importent as it trigger import of synthese models
+# which define TDatasets.sources & TDatasets.synthese_records_count, and these must be
+# defined before AutoSchema creation to be known by marshmallow!
 from geonature.core.gn_synthese.schemas import SourceSchema
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
@@ -64,23 +68,39 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
 
-    @post_dump(pass_original=True)
+    @post_dump(pass_many=False, pass_original=True)
     def module_input(self, item, original, many, **kwargs):
         if "modules" in item:
             for i, module in enumerate(original.modules):
+                if not hasattr(module, "generate_input_url_for_dataset"):
+                    continue
+                object_code = getattr(module.generate_input_url_for_dataset, "object_code", "ALL")
                 create_scope = get_scopes_by_action(
-                    id_role=g.current_user.id_role, module_code=module.module_code
+                    id_role=g.current_user.id_role,
+                    module_code=module.module_code,
+                    object_code=object_code,
                 )["C"]
                 if not original.has_instance_permission(create_scope):
                     continue
-                if hasattr(module, "generate_input_url_for_dataset"):
-                    item["modules"][i].update(
-                        {
-                            "input_url": module.generate_input_url_for_dataset(original),
-                            "input_label": module.generate_input_url_for_dataset.label,
-                        }
-                    )
+                item["modules"][i].update(
+                    {
+                        "input_url": module.generate_input_url_for_dataset(original),
+                        "input_label": module.generate_input_url_for_dataset.label,
+                    }
+                )
         return item
+
+    # retro-compatibility with mobile app
+    @post_dump(pass_many=True, pass_original=True)
+    def mobile_app_compat(self, data, original, many, **kwargs):
+        if self.context.get("mobile_app"):
+            if many:
+                for ds, orig_ds in zip(data, original):
+                    ds["meta_create_date"] = str(orig_ds.meta_create_date)
+                data = {"data": data}
+            else:
+                data["meta_create_date"] = str(original.meta_create_date)
+        return data
 
 
 class BibliographicReferenceSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
@@ -129,6 +149,7 @@ class AcquisitionFrameworkSchema(
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)
     t_datasets = MA.Nested(DatasetSchema, many=True)
+    datasets = MA.Nested(DatasetSchema, many=True)
     bibliographical_references = MA.Nested(BibliographicReferenceSchema, many=True)
     cor_af_actor = MA.Nested(AcquisitionFrameworkActorSchema, many=True, unknown=EXCLUDE)
     cor_volets_sinp = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)

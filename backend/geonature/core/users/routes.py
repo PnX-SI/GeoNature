@@ -3,8 +3,9 @@ import requests
 import json
 
 
-from flask import Blueprint, request, current_app, Response, redirect, g
+from flask import Blueprint, request, current_app, Response, redirect, g, render_template
 from sqlalchemy.sql import distinct, and_
+from sqlalchemy import distinct, and_, select, exists
 from werkzeug.exceptions import NotFound, BadRequest, Forbidden
 
 from geonature.utils.env import DB
@@ -26,7 +27,6 @@ from pypnusershub.env import REGISTER_POST_ACTION_FCT
 from pypnusershub.db.models import User, Application
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
-from pypnusershub.routes import check_auth
 from utils_flask_sqla.response import json_resp
 
 
@@ -73,14 +73,14 @@ def get_roles_by_menu_id(id_menu):
     :type id_menu: int
     :query str nom_complet: begenning of complet name of the role
     """
-    q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
+    query = select(VUserslistForallMenu).filter_by(id_menu=id_menu)
 
     parameters = request.args
-    if parameters.get("nom_complet"):
-        q = q.filter(
-            VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
-        )
-    data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
+    nom_complet = parameters.get("nom_complet")
+    if nom_complet:
+        query = query.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
+
+    data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
     return [n.as_dict() for n in data]
 
 
@@ -97,7 +97,7 @@ def get_roles_by_menu_code(code_liste):
     :query str nom_complet: begenning of complet name of the role
     """
 
-    q = DB.session.query(VUserslistForallMenu).join(
+    query = select(VUserslistForallMenu).join(
         UserList,
         and_(
             UserList.id_liste == VUserslistForallMenu.id_menu,
@@ -107,18 +107,18 @@ def get_roles_by_menu_code(code_liste):
 
     parameters = request.args
     if parameters.get("nom_complet"):
-        q = q.filter(
+        query = query.where(
             VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
         )
-    data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
+    data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
     return [n.as_dict() for n in data]
 
 
 @routes.route("/listes", methods=["GET"])
 @json_resp
 def get_listes():
-    q = DB.session.query(UserList)
-    lists = q.all()
+    query = select(UserList)
+    lists = DB.session.scalars(query).all()
     return [l.as_dict() for l in lists]
 
 
@@ -134,8 +134,11 @@ def get_role(id_role):
     :param id_role: the id user
     :type id_role: int
     """
-    user = User.query.get_or_404(id_role)
-    return user.as_dict(fields=user_fields)
+    user = DB.get_or_404(User, id_role)
+    fields = user_fields.copy()
+    if g.current_user == user:
+        fields.add("email")
+    return user.as_dict(fields=fields)
 
 
 @routes.route("/roles", methods=["GET"])
@@ -148,16 +151,16 @@ def get_roles():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = User.query
+    q = select(User)
     if "group" in params:
-        q = q.filter(User.groupe == params["group"])
+        q = q.where(User.groupe == params["group"])
     if "orderby" in params:
         try:
             order_col = getattr(User.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [user.as_dict(fields=user_fields) for user in q.all()]
+    return [user.as_dict(fields=user_fields) for user in DB.session.scalars(q).all()]
 
 
 @routes.route("/organisms", methods=["GET"])
@@ -170,14 +173,14 @@ def get_organismes():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = Organisme.query
+    q = select(Organisme)
     if "orderby" in params:
         try:
             order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
+    return [organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(q).all()]
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])
@@ -191,21 +194,24 @@ def get_organismes_jdd():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-
-    datasets = [d.id_dataset for d in TDatasets.query.filter_by_readable()]
-    q = (
-        DB.session.query(Organisme)
+    datasets = DB.session.scalars(TDatasets.filter_by_readable()).unique().all()
+    datasets = [d.id_dataset for d in datasets]
+    query = (
+        select(Organisme)
         .join(CorDatasetActor, Organisme.id_organisme == CorDatasetActor.id_organism)
-        .filter(CorDatasetActor.id_dataset.in_(datasets))
+        .where(CorDatasetActor.id_dataset.in_(datasets))
         .distinct()
     )
     if "orderby" in params:
         try:
             order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
+            query = query.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
+    return [
+        organism.as_dict(fields=organism_fields)
+        for organism in DB.session.scalars(query).unique().all()
+    ]
 
 
 #########################
@@ -228,8 +234,10 @@ def inscription():
     data = request.get_json()
     # ajout des valeurs non présentes dans le form
     data["id_application"] = (
-        Application.query.filter_by(code_application=current_app.config["CODE_APPLICATION"])
-        .one()
+        DB.session.execute(
+            select(Application).filter_by(code_application=current_app.config["CODE_APPLICATION"])
+        )
+        .scalar_one()
         .id_application
     )
     data["groupe"] = False
@@ -282,10 +290,10 @@ def confirmation():
 
     data = {
         "token": token,
-        "id_application": Application.query.filter_by(
-            code_application=current_app.config["CODE_APPLICATION"]
+        "id_application": DB.session.execute(
+            select(Application).filter_by(code_application=current_app.config["CODE_APPLICATION"])
         )
-        .one()
+        .scalar_one()
         .id_application,
     }
 
@@ -295,9 +303,14 @@ def confirmation():
     )
 
     if r.status_code != 200:
+        if r.json() and r.json().get("msg"):
+            return r.json().get("msg"), r.status_code
         return Response(r), r.status_code
 
-    return redirect(config["URL_APPLICATION"], code=302)
+    new_user = r.json()
+    return render_template(
+        "account_created.html", user=new_user, redirect_url=config["URL_APPLICATION"]
+    )
 
 
 @routes.route("/after_confirmation", methods=["POST"])
@@ -314,7 +327,7 @@ def after_confirmation():
 
 
 @routes.route("/role", methods=["PUT"])
-@permissions.check_cruved_scope("R")
+@permissions.login_required
 @json_resp
 def update_role():
     """
@@ -359,9 +372,9 @@ def update_role():
 
 
 @routes.route("/password/change", methods=["PUT"])
-@check_auth(1, True)
+@permissions.login_required
 @json_resp
-def change_password(id_role):
+def change_password():
     """
     Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp
     Fait appel à l'API UsersHub
@@ -369,9 +382,7 @@ def change_password(id_role):
     if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
 
-    user = DB.session.query(User).get(id_role)
-    if not user:
-        return {"msg": "Droit insuffisant"}, 403
+    user = g.current_user
     data = request.get_json()
 
     init_password = data.get("init_password", None)

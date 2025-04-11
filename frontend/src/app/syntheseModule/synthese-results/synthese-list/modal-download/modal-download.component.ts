@@ -24,8 +24,8 @@ export class SyntheseModalDownloadComponent {
     this.syntheseConfig = this.config.SYNTHESE;
   }
 
-  downloadObservations(format) {
-    this._dataService.downloadObservations(this._storeService.idSyntheseList, format);
+  downloadObservations(format, view_name) {
+    this._dataService.downloadObservations(this._storeService.idSyntheseList, format, view_name);
   }
 
   downloadTaxons(format, filename) {

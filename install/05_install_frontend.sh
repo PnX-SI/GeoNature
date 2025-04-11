@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # DESC: Usage help
 # ARGS: None
@@ -59,24 +59,12 @@ echo "Activation du venv..."
 source "${BASE_DIR}/backend/venv/bin/activate"
 
 # create config.json
-if [[ ! -f src/assets/config.json ]]; then
-  write_log "Création des fichiers de configuration du frontend"
-  cp -n src/assets/config.sample.json src/assets/config.json
-fi
 api_end_point=$(geonature get-config API_ENDPOINT)
-echo "REMPLACE API ENDPOINT"
-echo $api_end_point
-sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' src/assets/config.json
+api_end_point=${api_end_point/'http:'/''}
+echo "Set API_ENDPOINT to "$api_end_point" in frontend configuration file..."
+echo '{"API_ENDPOINT":"'${api_end_point}'"}' > src/assets/config.json
+echo "Generated configuration files :" 
 cat src/assets/config.json
-# Copy the custom components
-if [[ ! -f src/assets/custom.css ]]; then
-  write_log "Création des fichiers de customisation du frontend..."
-  cp -n src/assets/custom.sample.css src/assets/custom.css
-
-fi
-echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
-# Generate the app.config.ts
-geonature generate-frontend-config
 
 echo "Désactivation du venv..."
 deactivate
@@ -86,23 +74,17 @@ if [[ "${CI}" == true ]] ; then
   exit 0
 fi
 
-echo "Installation de nvm"
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install
-
 # Frontend installation
 echo "Installation des paquets Npm"
 cd "${BASE_DIR}/frontend"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 nvm use || exit 1
 if [[ "${MODE}" == "dev" ]]; then
   npm ci || exit 1
 else
   npm ci --omit=dev || exit 1
 fi
-cd "${BASE_DIR}/backend/static"
-npm ci || exit 1
 
 cd "${BASE_DIR}/frontend"
 

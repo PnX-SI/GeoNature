@@ -1,10 +1,13 @@
 """
 Action triggered after register action (create temp user, change password etc...)
 """
+
 import datetime
 from warnings import warn
 
-from flask import Markup, render_template, current_app, url_for
+from flask import render_template, current_app, url_for
+from sqlalchemy import select
+from markupsafe import Markup
 from pypnusershub.db.models import Application, User
 from pypnusershub.db.models_register import TempUser
 from sqlalchemy.sql import func
@@ -20,6 +23,14 @@ from geonature.utils.utilsmails import send_mail
 from geonature.utils.env import db, DB
 
 
+def validators_emails():
+    """
+    On souhaite récupérer une liste de mails
+    """
+    emails = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
+    return emails if isinstance(emails, list) else [emails]
+
+
 def validate_temp_user(data):
     """
     Send an email after the action of account creation.
@@ -31,8 +42,7 @@ def validate_temp_user(data):
     """
     token = data.get("token", None)
 
-    user = DB.session.query(TempUser).filter(TempUser.token_role == token).first()
-
+    user = DB.session.scalars(select(TempUser).where(TempUser.token_role == token).limit(1)).first()
     if not user:
         return {
             "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(token=token)
@@ -44,17 +54,18 @@ def validate_temp_user(data):
         recipients = [user.email]
     else:
         template = "email_admin_validate_account.html"
-        recipients = [current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]]
+        recipients = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
     url_validation = url_for("users.confirmation", token=user.token_role, _external=True)
+
+    additional_fields = [
+        {"key": key, "value": value} for key, value in (user_dict.get("champs_addi") or {}).items()
+    ]
 
     msg_html = render_template(
         template,
         url_validation=url_validation,
         user=user_dict,
-        additional_fields=[
-            {"key": key, "value": value}
-            for key, value in (user_dict.get("champs_addi") or {}).items()
-        ],
+        additional_fields=additional_fields,
     )
 
     send_mail(recipients, subject, msg_html)
@@ -123,7 +134,10 @@ def create_dataset_user(user):
     db.session.add(new_dataset)
 
     for module_code in current_app.config["ACCOUNT_MANAGEMENT"]["DATASET_MODULES_ASSOCIATION"]:
-        module = TModules.query.filter_by(module_code=module_code).one_or_none()
+        # module = TModules.query.filter_by(module_code=module_code).one_or_none()
+        module = db.session.execute(
+            select(TModules).filter_by(module_code=module_code)
+        ).scalar_one_or_none()
         if module is None:
             warn("Module code '{}' does not exist, can not associate dataset.".format(module_code))
             continue
@@ -151,7 +165,8 @@ def inform_user(user):
         text_addon=html_text_addon,
     )
     subject = f"Confirmation inscription {app_name}"
-    send_mail([user["email"]], subject, msg_html)
+    recipients = [user["email"]]
+    send_mail(recipients, subject, msg_html)
 
 
 def send_email_for_recovery(data):

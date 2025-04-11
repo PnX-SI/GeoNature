@@ -1,0 +1,9 @@
+[Unit]
+StopWhenUnneeded=true
+
+[Path]
+PathModified=${BASE_DIR}/config/%i_config.toml
+Unit=geonature-reload.service
+
+[Install]
+WantedBy=multi-user.target

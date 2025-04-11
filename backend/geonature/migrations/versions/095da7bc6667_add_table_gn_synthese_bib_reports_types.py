@@ -5,6 +5,7 @@ Revises: ca052245c6ec
 Create Date: 2022-03-17 10:57:34.730596
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from utils_flask_sqla.migrations.utils import logger

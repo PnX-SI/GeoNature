@@ -35,3 +35,26 @@ mat-spinner {
 #btn-map {
   font-weight: bold;
 }
+
+ngx-datatable {
+  display: block;
+  width: 100%;
+}
+
+ngx-datatable-column {
+  white-space: normal; /* Assurez-vous que le texte peut se déplier */
+}
+
+.datatable-cell {
+  overflow: hidden; /* Empêche le débordement du texte */
+  text-overflow: ellipsis; /* Affiche des points de suspension si le texte dépasse */
+}
+
+.toggle-container mat-slide-toggle {
+  padding: 4px;
+}
+
+.mat-mdc-tab-group {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}

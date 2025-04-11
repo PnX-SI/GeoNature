@@ -7,6 +7,10 @@
   background-color: #1d21249e;
 }
 
+mat-dialog-content {
+  z-index: 50;
+}
+
 .panel-heading {
   background-color: transparent;
   color: white;
@@ -29,12 +33,16 @@
   box-shadow: 0.5px -0.5px 0.5px 0.2rem rgba(98, 255, 0, 0.15) !important;
 }
 
+#externalLoginForm {
+  margin-top: 10%;
+}
+
 .addon {
   color: #55585a;
   position: absolute;
   top: 10px;
   left: 6px;
-  z-index: 9999;
+  z-index: 10;
   font-size: 18px;
 }
 
@@ -80,7 +88,8 @@ small {
   color: red;
 }
 
-.inscription {
+.inscription,
+.external_link {
   color: #fff;
 }
 
@@ -91,12 +100,14 @@ small {
   margin-bottom: 10px;
   cursor: pointer;
 }
-.forgot:hover {
+.forgot:hover,
+.external_link:hover {
   text-decoration: underline;
 }
 
 .inscription a,
-.forgot-password a {
+.forgot-password a,
+.external_link a {
   color: inherit;
 }
 
@@ -133,4 +144,10 @@ i.loader .mat-spinner {
   width: 20px !important;
   height: 20px !important;
   margin-right: 8px !important;
+}
+
+#no-provider {
+  display: flex;
+  align-items: center;
+  height: 100vh;
 }

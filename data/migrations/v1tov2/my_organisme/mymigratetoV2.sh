@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 . ../migratetoV2.ini
 . mymigratetov2.ini
 . ../../../../config/settings.ini

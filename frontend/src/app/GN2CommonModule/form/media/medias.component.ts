@@ -28,7 +28,10 @@ export class MediasComponent implements OnInit {
 
   public bInitialized: boolean;
 
-  constructor(public ms: MediaService, public config: ConfigService) {}
+  constructor(
+    public ms: MediaService,
+    public config: ConfigService
+  ) {}
 
   ngOnInit() {
     this.ms.getNomenclatures().subscribe(() => {

@@ -4,6 +4,7 @@ import json
 
 from flask import Blueprint, request, jsonify, current_app, g
 from flask.json import jsonify
+from werkzeug.exceptions import Forbidden
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased, contains_eager, selectinload
 from marshmallow import ValidationError
@@ -21,57 +22,96 @@ from geonature.core.gn_commons.models.base import TValidations
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.notifications.utils import dispatch_notifications
-
+import gn_module_validation.tasks
 
 blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
 
 
 @blueprint.route("", methods=["GET", "POST"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="VALIDATION")
+@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
 def get_synthese_data(scope):
     """
     Return synthese and t_validations data filtered by form params
     Params must have same synthese fields names
 
     .. :quickref: Validation;
-
     Parameters:
     ------------
-
+    :query str sort: str<'asc', 'desc'> trier dans l'ordre ascendant ou descendant (optionnel, 'order')
+    :query str order_by: champs sur lequel appliquer le tri de données (optionnel. lié à 'sort')
+    :query int page: numéro de page (optionnel, lié à 'per_page')
+    :query int per_page: nombre d'élément par page (optionnel, lié à 'page')
+    :query str format: str<'json', 'geojson'> format de la sortie
     Returns
     -------
-    FeatureCollection
+    FeatureCollection | json
     """
-
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
-    fields = {
-        "id_synthese",
-        "unique_id_sinp",
-        "entity_source_pk_value",
-        "meta_update_date",
-        "id_nomenclature_valid_status",
-        "nomenclature_valid_status.cd_nomenclature",
-        "nomenclature_valid_status.mnemonique",
-        "nomenclature_valid_status.label_default",
-        "last_validation.validation_date",
-        "last_validation.validation_auto",
-        "taxref.cd_nom",
-        "taxref.nom_vern",
-        "taxref.lb_nom",
-        "taxref.nom_vern_or_lb_nom",
-        "dataset.validable",
-    }
 
-    if enable_profile:
-        fields |= {
-            "profile.score",
-            "profile.valid_phenology",
-            "profile.valid_altitude",
-            "profile.valid_distribution",
-        }
+    # Sorting parameter
+    sort = request.args.get("sort", "desc", str)
+    order_by = sa.text(request.args.get("order_by", "last_validation.validation_date", str))
+    sorting_active = sort != "" and order_by != ""
 
-    fields |= {col["column_name"] for col in blueprint.config["COLUMN_LIST"]}
+    # Pagination parameter
+    page = request.args.get("page", 0, int)
+    per_page = request.args.get("per_page", 0, int)
+    pagination_active = page > 0 and per_page > 0
+
+    # Format: output format
+    format = request.args.get("format", "geojson")
+    if format not in ["json", "geojson"]:
+        raise BadRequest("Invalid format parameter")
+
+    # Check pagination is active for json
+    if format == "json" and not pagination_active:
+        raise BadRequest("Pagination must be active when requesting json object")
+
+    if format == "geojson" and pagination_active:
+        raise BadRequest("Pagination can't be active when requesting geojson object")
+
+    no_auto = request.args.get("no_auto", False, bool)
+    # # modifiy_only
+    # modified_status_only = request.args.get("modified_status_only", bool, False)
+
+    # Fields: Setup fields as route parameters with default behavior
+    fields_as_str = request.args.get("fields", None)
+    fields = set()
+    if fields_as_str:
+        fields.update({field for field in fields_as_str.split(",")})
+    else:
+        fields.update(
+            {
+                "id_synthese",
+                "unique_id_sinp",
+                "entity_source_pk_value",
+                "meta_update_date",
+                "id_nomenclature_valid_status",
+                "nomenclature_valid_status.cd_nomenclature",
+                "nomenclature_valid_status.mnemonique",
+                "nomenclature_valid_status.label_default",
+                "last_validation.validation_date",
+                "last_validation.validation_auto",
+                "taxref.cd_nom",
+                "taxref.nom_vern",
+                "taxref.lb_nom",
+                "taxref.nom_vern_or_lb_nom",
+                "dataset.validable",
+            }
+        )
+        if enable_profile:
+            fields.update(
+                {
+                    "profile.score",
+                    "profile.valid_phenology",
+                    "profile.valid_altitude",
+                    "profile.valid_distribution",
+                }
+            )
+
+    # Fields: add config parameters
+    fields.update({col["column_name"] for col in blueprint.config["COLUMN_LIST"]})
 
     filters = (request.json if request.is_json else None) or {}
 
@@ -89,7 +129,8 @@ def get_synthese_data(scope):
     to use to populate relationships models.
     """
     last_validation_subquery = (
-        TValidations.query.filter(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
+        sa.select(TValidations)
+        .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
         .order_by(TValidations.validation_date.desc())
         .limit(1)
         .subquery()
@@ -100,7 +141,8 @@ def get_synthese_data(scope):
 
     if enable_profile:
         profile_subquery = (
-            VConsistancyData.query.filter(VConsistancyData.id_synthese == Synthese.id_synthese)
+            sa.select(VConsistancyData)
+            .where(VConsistancyData.id_synthese == Synthese.id_synthese)
             .limit(result_limit)
             .subquery()
             .lateral("profile")
@@ -132,41 +174,46 @@ def get_synthese_data(scope):
     for alias in lateral_join.keys():
         query = query.outerjoin(alias, sa.true())
 
-    query = query.filter(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
+    # geometry required only for geojson
+    if format == "geojson":
+        query = query.where(Synthese.the_geom_4326.isnot(None))
 
     # filter with profile
     if enable_profile:
         score = filters.pop("score", None)
         if score is not None:
-            query = query.filter(profile.score == score)
+            query = query.where(profile.score == score)
         valid_distribution = filters.pop("valid_distribution", None)
         if valid_distribution is not None:
-            query = query.filter(profile.valid_distribution.is_(valid_distribution))
+            query = query.where(profile.valid_distribution.is_(valid_distribution))
         valid_altitude = filters.pop("valid_altitude", None)
         if valid_altitude is not None:
-            query = query.filter(profile.valid_altitude.is_(valid_altitude))
+            query = query.where(profile.valid_altitude.is_(valid_altitude))
         valid_phenology = filters.pop("valid_phenology", None)
         if valid_phenology is not None:
-            query = query.filter(profile.valid_phenology.is_(valid_phenology))
+            query = query.where(profile.valid_phenology.is_(valid_phenology))
 
     if filters.pop("modif_since_validation", None):
-        query = query.filter(Synthese.meta_update_date > last_validation.validation_date)
+        query = query.where(Synthese.meta_update_date > last_validation.validation_date)
+
+    if no_auto:
+        query = query.where(last_validation.validation_auto == False)
 
     # Filter only validable dataset
 
-    query = query.filter(dataset_alias.validable == True)
+    query = query.where(dataset_alias.validable == True)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
-    assert len(query.selectable.froms) == 1
+    assert len(query.selectable.get_final_froms()) == 1
 
-    query = (
-        SyntheseQuery(Synthese, query.selectable, filters, query_joins=query.selectable.froms[0])
-        .filter_query_all_filters(g.current_user, scope)
-        .limit(result_limit)
-    )
+    selectable = SyntheseQuery(
+        Synthese,
+        query.selectable,
+        filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
+    ).filter_query_all_filters(g.current_user, scope)
 
     # Step 3: Construct Synthese model from query result
-    syntheseModelQuery = Synthese.query.options(
+    syntheseQueryStatement = Synthese.query.options(
         *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
     ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
 
@@ -182,23 +229,48 @@ def get_synthese_data(scope):
     )
     if alertActivate or pinActivate:
         fields |= {"reports.report_type.type"}
-        syntheseModelQuery = syntheseModelQuery.options(
+        syntheseQueryStatement = syntheseQueryStatement.options(
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
 
-    query = syntheseModelQuery.from_statement(query)
+    # Sort
+    if sorting_active:
+        if sort == "asc":
+            selectable = selectable.order_by(sa.asc(order_by))
+        else:
+            selectable = selectable.order_by(sa.desc(order_by))
 
-    # The raise option ensure that we have correctly retrived relationships data at step 3
-    return jsonify(query.as_geofeaturecollection(fields=fields))
+    # Paginer
+    if pagination_active:
+        offset = (page - 1) * per_page
+        query = syntheseQueryStatement.from_statement(selectable.limit(per_page).offset(offset))
+    else:
+        query = syntheseQueryStatement.from_statement(selectable)
+
+    if format == "geojson":
+        return jsonify(query.as_geofeaturecollection(fields=fields))
+    elif format == "json":
+        count = db.session.execute(
+            selectable.with_only_columns([sa.func.count()]).order_by(None)
+        ).scalar()
+        return jsonify(
+            {
+                "items": [item.as_dict(fields=fields) for item in query.all()],
+                "total": count,
+                "per_page": per_page,
+                "page": page,
+            }
+        )
 
 
 @blueprint.route("/statusNames", methods=["GET"])
-@permissions.check_cruved_scope("R", module_code="VALIDATION")
+@permissions.check_cruved_scope("C", module_code="VALIDATION")
 def get_statusNames():
     nomenclatures = (
-        TNomenclatures.query.join(BibNomenclaturesTypes)
-        .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
-        .filter(TNomenclatures.active == True)
+        sa.select(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .where(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
+        .where(TNomenclatures.active == True)
         .order_by(TNomenclatures.cd_nomenclature)
     )
     return jsonify(
@@ -206,20 +278,20 @@ def get_statusNames():
             nomenc.as_dict(
                 fields=["id_nomenclature", "mnemonique", "cd_nomenclature", "definition_default"]
             )
-            for nomenc in nomenclatures.all()
+            for nomenc in db.session.scalars(nomenclatures).all()
         ]
     )
 
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
-@permissions.check_cruved_scope("C", module_code="VALIDATION")
-def post_status(id_synthese):
+@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
+def post_status(scope, id_synthese):
     data = dict(request.get_json())
     try:
         id_validation_status = data["statut"]
     except KeyError:
         raise BadRequest("Aucun statut de validation n'est sélectionné")
-    validation_status = TNomenclatures.query.get_or_404(id_validation_status)
+    validation_status = db.get_or_404(TNomenclatures, id_validation_status)
     try:
         validation_comment = data["comment"]
     except KeyError:
@@ -231,7 +303,11 @@ def post_status(id_synthese):
         # t_validations.id_validation:
 
         # t_validations.uuid_attached_row:
-        synthese = Synthese.query.get_or_404(int(id))
+        synthese = db.get_or_404(Synthese, int(id))
+
+        if not synthese.has_instance_permission(scope):
+            raise Forbidden
+
         uuid = synthese.unique_id_sinp
 
         # t_validations.id_validator:
@@ -269,12 +345,19 @@ def post_status(id_synthese):
 
 
 @blueprint.route("/date/<uuid:uuid>", methods=["GET"])
-def get_validation_date(uuid):
+@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
+def get_validation_date(scope, uuid):
     """
     Retourne la date de validation
     pour l'observation uuid
     """
-    s = Synthese.query.filter_by(unique_id_sinp=uuid).lateraljoin_last_validation().first_or_404()
+    s = db.first_or_404(
+        Synthese.lateraljoin_last_validation(
+            query=sa.select(Synthese).filter_by(unique_id_sinp=uuid)
+        )
+    )
+    if not s.has_instance_permission(scope):
+        raise Forbidden
     if s.last_validation:
         return jsonify(str(s.last_validation.validation_date))
     else:

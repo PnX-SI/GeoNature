@@ -15,7 +15,10 @@ import { MediaService } from '@geonature_common/service/media.service';
 
 @Injectable()
 export class DynamicFormService {
-  constructor(private _mediaService: MediaService, private _formBuilder: UntypedFormBuilder) {}
+  constructor(
+    private _mediaService: MediaService,
+    private _formBuilder: UntypedFormBuilder
+  ) {}
 
   initFormGroup() {
     return this._formBuilder.group({});
@@ -127,11 +130,11 @@ export class DynamicFormService {
 
   createControl(formDef): AbstractControl {
     const formControl = new UntypedFormControl();
-    const value = formDef.value || null;
+    const value = formDef.value == undefined ? null : formDef.value;
     this.setControl(formControl, formDef, value);
+
     return formControl;
   }
-
   addNewControl(formDef, formGroup: UntypedFormGroup) {
     //Mise en fonction des valeurs des dynamic-form ex: "hidden: "({value}) => value.monChamps != 'maValeur'""
     for (const keyParam of Object.keys(formDef)) {

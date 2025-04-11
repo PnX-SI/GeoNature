@@ -12,11 +12,11 @@ from flask import (
     g,
 )
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
-from sqlalchemy import or_, func, distinct, case
+from sqlalchemy import or_, func, distinct, case, select
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 from geojson import Feature, FeatureCollection
-from shapely.geometry import asShape
+from shapely.geometry import shape
 from geoalchemy2.shape import from_shape, to_shape
 from marshmallow import ValidationError
 
@@ -51,16 +51,20 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 
+from occtax.commands import add_submodule_permissions
 
-blueprint = Blueprint("pr_occtax", __name__)
+blueprint = Blueprint("pr_occtax", __name__, cli_group="occtax")
+blueprint.cli.add_command(add_submodule_permissions)
+
 log = logging.getLogger(__name__)
 
 
 @blueprint.url_value_preprocessor
 def set_current_module(endpoint, values):
     requested_module = values.pop("module_code", "OCCTAX")
-    g.current_module = TModules.query.filter_by(module_code=requested_module).first_or_404(
-        f"No module name {requested_module}"
+    g.current_module = db.first_or_404(
+        select(TModules).filter_by(module_code=requested_module),
+        description=f"No module name {requested_module}",
     )
 
 
@@ -85,9 +89,11 @@ def getReleves(scope):
     page = int(parameters.get("offset", 0))
     orderby = {
         "orderby": (parameters.get("orderby", "date_max")).lower(),
-        "order": (parameters.get("order", "desc")).lower()
-        if (parameters.get("order", "desc")).lower() == "asc"
-        else "desc",  # asc or desc
+        "order": (
+            (parameters.get("order", "desc")).lower()
+            if (parameters.get("order", "desc")).lower() == "asc"
+            else "desc"
+        ),  # asc or desc
     }
 
     # Filters
@@ -95,10 +101,12 @@ def getReleves(scope):
     query_without_limit = q
     # Order by
     q = get_query_occtax_order(orderby, TRelevesOccurrence, q)
-    data = q.limit(limit).offset(page * limit).all()
+    data = db.session.scalars(q.limit(limit).offset(page * limit)).unique().all()
 
     # Pour obtenir le nombre de résultat de la requete sans le LIMIT
-    nb_results_without_limit = query_without_limit.count()
+    nb_results_without_limit = db.session.execute(
+        select(func.count()).select_from(query_without_limit.subquery())
+    ).scalar_one()
 
     featureCollection = []
     for n in data:
@@ -125,27 +133,11 @@ def getReleves(scope):
     }
 
 
-@blueprint.route("/<module_code>/occurrences", methods=["GET"])
-@blueprint.route("/occurrences", methods=["GET"])
-@permissions.check_cruved_scope("R")
-@json_resp
-def getOccurrences():
-    """
-    Get all Occurrences
-
-    .. :quickref: Occtax;
-
-    :returns: `dict<TOccurrencesOccurrence>`
-    """
-    q = DB.session.query(TOccurrencesOccurrence)
-    data = q.all()
-    return [n.as_dict() for n in data]
-
-
 @blueprint.route("/<module_code>/counting/<int:id_counting>", methods=["GET"])
 @blueprint.route("/counting/<int:id_counting>", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True)
 @json_resp
-def getOneCounting(id_counting):
+def getOneCounting(scope, id_counting):
     """
     Get one counting record, with its id_counting
 
@@ -156,9 +148,13 @@ def getOneCounting(id_counting):
     :returns: a dict representing a counting record
     :rtype: dict<CorCountingOccurrence>
     """
+    ccc = db.get_or_404(CorCountingOccurrence, id_counting)
+    if not ccc.occurrence.releve.has_instance_permission(scope):
+        raise Forbidden
+
     try:
-        data = (
-            DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax)
+        data = DB.session.execute(
+            select(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax)
             .join(
                 TOccurrencesOccurrence,
                 TOccurrencesOccurrence.id_occurrence_occtax
@@ -168,9 +164,8 @@ def getOneCounting(id_counting):
                 TRelevesOccurrence,
                 TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
-            .filter(CorCountingOccurrence.id_counting_occtax == id_counting)
-            .one()
-        )
+            .where(CorCountingOccurrence.id_counting_occtax == id_counting)
+        ).one_or_none()
     except NoResultFound:
         return None
     counting = data[0].as_dict()
@@ -193,7 +188,7 @@ def getOneReleve(id_releve, scope):
     :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}`
     """
     releveCruvedSchema = ReleveCruvedSchema()
-    releve = TRelevesOccurrence.query.get_or_404(id_releve)
+    releve = db.get_or_404(TRelevesOccurrence, id_releve)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
 
@@ -262,12 +257,11 @@ def insertOrUpdateOneReleve():
             data["properties"].pop(att)
 
     releve = TRelevesOccurrence(**data["properties"])
-    shape = asShape(data["geometry"])
-    two_dimension_geom = remove_third_dimension(shape)
+    two_dimension_geom = remove_third_dimension(shape(data["geometry"]))
     releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
 
     if observersList is not None:
-        observers = User.query.filter(User.id_role.in_(observersList)).all()
+        observers = db.session.scalars(select(User).where(User.id_role.in_(observersList))).all()
         for o in observers:
             releve.observers.append(o)
 
@@ -276,7 +270,6 @@ def insertOrUpdateOneReleve():
         if "cor_counting_occtax" in occ:
             cor_counting_occtax = occ["cor_counting_occtax"]
             occ.pop("cor_counting_occtax")
-
         # Test et suppression
         #   des propriétés inexistantes de TOccurrencesOccurrence
         attliste = [k for k in occ]
@@ -301,7 +294,6 @@ def insertOrUpdateOneReleve():
             countingOccurrence = CorCountingOccurrence(**cnt)
             occtax.cor_counting_occtax.append(countingOccurrence)
         releve.t_occurrences_occtax.append(occtax)
-
     # if its a update
     if releve.id_releve_occtax:
         scope = get_scopes_by_action()["U"]
@@ -313,15 +305,14 @@ def insertOrUpdateOneReleve():
     # if its a simple post
     else:
         scope = get_scopes_by_action()["C"]
-        if not TDatasets.query.get(releve.id_dataset).has_instance_permission(scope):
+        if not db.session.get(TDatasets, releve.id_dataset).has_instance_permission(scope):
             raise Forbidden(
-                f"User {g.current_user.id_role} is not allowed to create releve in dataset {dataset.id_dataset}"
+                f"User {g.current_user.id_role} is not allowed to create releve in dataset."
             )
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
         DB.session.add(releve)
     DB.session.commit()
-
     return releve.get_geofeature(depth=depth)
 
 
@@ -346,7 +337,8 @@ def releveHandler(request, *, releve, scope):
     # if creation
     else:
         # Check if user can add a releve in the current dataset
-        if not TDatasets.query.get(releve.id_dataset).has_instance_permission(scope):
+        dataset = db.session.get(TDatasets, releve.id_dataset)
+        if not dataset.has_instance_permission(scope):
             raise Forbidden(
                 f"User {g.current_user.id_role} has no right in dataset {releve.id_dataset}"
             )
@@ -408,7 +400,7 @@ def updateReleve(id_releve, scope):
 
     """
     # get releve by id_releve
-    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
+    releve = DB.session.get(TRelevesOccurrence, id_releve)
 
     if not releve:
         return {"message": "not found"}, 404
@@ -423,7 +415,7 @@ def updateReleve(id_releve, scope):
 
 
 def occurrenceHandler(request, *, occurrence, scope):
-    releve = TRelevesOccurrence.query.get_or_404(occurrence.id_releve_occtax)
+    releve = db.get_or_404(TRelevesOccurrence, occurrence.id_releve_occtax)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
 
@@ -463,7 +455,7 @@ def updateOccurrence(id_occurrence, scope):
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
-    occurrence = TOccurrencesOccurrence.query.get_or_404(id_occurrence)
+    occurrence = db.get_or_404(TOccurrencesOccurrence, id_occurrence)
 
     return OccurrenceSchema().dump(
         occurrenceHandler(request=request, occurrence=occurrence, scope=scope)
@@ -481,12 +473,12 @@ def deleteOneReleve(id_releve, scope):
     :params int id_releve: ID of the releve to delete
 
     """
-    releve = TRelevesOccurrence.query.get_or_404(id_releve)
+    releve = db.get_or_404(TRelevesOccurrence, id_releve)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
     db.session.delete(releve)
     db.session.commit()
-    return jsonify({"message": "delete with success"})
+    return jsonify({"message": "deleted with success"})
 
 
 @blueprint.route("/<module_code>/occurrence/<int:id_occ>", methods=["DELETE"])
@@ -500,7 +492,7 @@ def deleteOneOccurence(id_occ, scope):
     :params int id_occ: ID of the occurrence to delete
 
     """
-    occ = TOccurrencesOccurrence.query.get_or_404(id_occ)
+    occ = db.get_or_404(TOccurrencesOccurrence, id_occ)
 
     if not occ.releve.has_instance_permission(scope):
         raise Forbidden()
@@ -513,8 +505,8 @@ def deleteOneOccurence(id_occ, scope):
 
 @blueprint.route("/<module_code>/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
 @blueprint.route("/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
-@permissions.check_cruved_scope("D")
-def deleteOneOccurenceCounting(id_count):
+@permissions.check_cruved_scope("D", get_scope=True)
+def deleteOneOccurenceCounting(scope, id_count):
     """Delete one counting
 
     .. :quickref: Occtax;
@@ -522,8 +514,9 @@ def deleteOneOccurenceCounting(id_count):
     :params int id_count: ID of the counting to delete
 
     """
-    ccc = CorCountingOccurrence.query.get_or_404(id_count)
-    # TODO check ccc ownership!
+    ccc = db.get_or_404(CorCountingOccurrence, id_count)
+    if not ccc.occurrence.releve.has_instance_permission(scope):
+        raise Forbidden
     DB.session.delete(ccc)
     DB.session.commit()
     return "", 204
@@ -531,6 +524,7 @@ def deleteOneOccurenceCounting(id_count):
 
 @blueprint.route("/<module_code>/defaultNomenclatures", methods=["GET"])
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
+@permissions.login_required
 def getDefaultNomenclatures():
     """Get default nomenclatures define in occtax module
 
@@ -544,15 +538,15 @@ def getDefaultNomenclatures():
     group2_inpn = request.args.get("group2_inpn", "0")
     types = request.args.getlist("id_type")
 
-    q = db.session.query(
+    query = select(
         distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occtax.get_default_nomenclature_value(
             DefaultNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
-    data = q.all()
+        query = query.where(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+    data = db.session.execute(query).all()
     if not data:
         raise NotFound
     return jsonify(dict(data))
@@ -601,7 +595,10 @@ def export(scope):
 
     if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
         q, columns = releve_repository.add_media_in_export(q, columns)
-    data = q.all()
+
+    data = db.session.execute(q)
+
+    print(data)
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
@@ -609,14 +606,18 @@ def export(scope):
     # Ajout des colonnes additionnels
     additional_col_names = []
     query_add_fields = (
-        DB.session.query(TAdditionalFields)
-        .filter(TAdditionalFields.modules.any(module_code=g.current_module.module_code))
-        .filter(TAdditionalFields.exportable == True)
+        select(TAdditionalFields)
+        .where(TAdditionalFields.modules.any(module_code=g.current_module.module_code))
+        .where(TAdditionalFields.exportable == True)
     )
-    global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
+    global_add_fields = db.session.scalars(
+        query_add_fields.where(~TAdditionalFields.datasets.any())
+    ).all()
     if "id_dataset" in request.args:
-        dataset_add_fields = query_add_fields.filter(
-            TAdditionalFields.datasets.any(id_dataset=request.args["id_dataset"])
+        dataset_add_fields = db.session.scalars(
+            query_add_fields.where(
+                TAdditionalFields.datasets.any(id_dataset=request.args["id_dataset"])
+            )
         ).all()
         global_add_fields = [*global_add_fields, *dataset_add_fields]
 

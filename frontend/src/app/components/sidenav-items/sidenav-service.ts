@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { Module } from '@geonature/models/module.model';
 import { Subject } from 'rxjs';
 
 @Injectable()
@@ -26,17 +27,18 @@ export class SideNavService {
     sidenav.open();
   }
 
-  setCurrentApp(app): any {
-    this.currentModule = app;
-    this._module.next(app);
-  }
-
   getCurrentApp() {
     return this.currentModule;
   }
 
-  getHomeItem() {
-    return { module_url: '/', module_label: 'Accueil', module_picto: 'fa-home', id: '1' };
+  getHomeItem(): Module {
+    return {
+      module_url: '/',
+      module_label: 'Accueil',
+      module_picto: 'fa-home',
+      id_module: 1,
+      module_path: '/geonature',
+    };
   }
 
   toggleSideNav() {

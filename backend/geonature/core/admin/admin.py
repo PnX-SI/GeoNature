@@ -1,3 +1,5 @@
+import os
+
 from flask import g
 from werkzeug.exceptions import Unauthorized
 from flask_admin import Admin, AdminIndexView, expose
@@ -6,8 +8,8 @@ from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import db
 from geonature.utils.config import config
-from geonature.core.gn_commons.models import TAdditionalFields, TMobileApps
-from geonature.core.gn_commons.admin import BibFieldAdmin, TMobileAppsAdmin
+from geonature.core.gn_commons.models import TAdditionalFields, TMobileApps, TModules
+from geonature.core.gn_commons.admin import BibFieldAdmin, TMobileAppsAdmin, TModulesAdmin
 from geonature.core.notifications.admin import (
     NotificationTemplateAdmin,
     NotificationCategoryAdmin,
@@ -33,7 +35,7 @@ from .utils import CruvedProtectedMixin
 
 class MyHomeView(AdminIndexView):
     def is_accessible(self):
-        if g.current_user is None:
+        if not g.current_user.is_authenticated:
             raise Unauthorized  # return False leads to Forbidden which is different
         return True
 
@@ -96,15 +98,6 @@ admin.add_view(
     )
 )
 
-admin.add_view(
-    BibFieldAdmin(
-        TAdditionalFields,
-        db.session,
-        name="Bibliothèque de champs additionnels",
-        category="Champs additionnels",
-    )
-)
-
 # Ajout de la vue pour la gestion des templates de notifications
 # accès protegé par CruvedProtectedMixin
 admin.add_view(
@@ -135,12 +128,31 @@ admin.add_view(
 )
 
 admin.add_view(
+    BibFieldAdmin(
+        TAdditionalFields,
+        db.session,
+        name="Champs additionnels",
+        category="Autres",
+    )
+)
+
+admin.add_view(
     TMobileAppsAdmin(
         TMobileApps,
         db.session,
         name="Applications mobiles",
-        category="Applications mobiles",
+        category="Autres",
     )
 )
+
+admin.add_view(
+    TModulesAdmin(
+        TModules,
+        db.session,
+        name="Modules",
+        category="Autres",
+    )
+)
+
 
 flask_admin = admin  # for retro-compatibility, usefull for export module for instance

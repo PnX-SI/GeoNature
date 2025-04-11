@@ -1,0 +1,18 @@
+.Profile {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  &__disclaimer {
+    margin-top: -0.5rem;
+    font-style: italic;
+  }
+  &__indicators {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 1rem;
+  }
+  &__map {
+    flex-grow: 2;
+  }
+}

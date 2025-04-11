@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # DESC: Usage help
 # ARGS: None
@@ -58,8 +58,7 @@ else
   echo "Préparation du fichier de configuration..."
   sed -i "s|^SQLALCHEMY_DATABASE_URI = .*$|SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name?application_name=geonature\"|" config/geonature_config.toml
   sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${my_url}geonature'|" config/geonature_config.toml
-  sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${my_url}geonature\/api'|" config/geonature_config.toml
-  sed -i "s|^API_TAXHUB = .*$|API_TAXHUB = '${my_url}taxhub\/api'|" config/geonature_config.toml
+  sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${my_url}geonature\/api'|" config/geonature_config.toml 
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
   sed -i "s|^DEFAULT_LANGUAGE = .*$|DEFAULT_LANGUAGE = '${default_language}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
@@ -78,7 +77,7 @@ source venv/bin/activate
 
 
 echo "Installation des dépendances Python..."
-pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
+pip install --upgrade "pip>=19.3"  "wheel"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 if [[ "${MODE}" == "dev" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
   git submodule status | grep -E "^-" >/dev/null
@@ -110,3 +109,11 @@ if [[ -f "\${VIRTUAL_ENV}/bin/${COMPLETION_FILE_NAME}" ]]; then
 fi
 EOF
 fi
+
+echo "Installation des paquets npm"
+cd "${BASE_DIR}/frontend"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm use || exit 1
+cd "${BASE_DIR}/backend/static"
+npm ci || exit 1

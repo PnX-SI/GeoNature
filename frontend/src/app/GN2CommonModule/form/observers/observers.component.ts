@@ -41,8 +41,9 @@ export class ObserversComponent extends GenericFormComponent {
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.bindValue = this.bindAllItem ? null : this.bindValue;
-    this.multiSelect = this.multiSelect || true;
+    this.multiSelect = this.multiSelect ? true : this.multiSelect;
     // uniformise as IdList the id of list
     // retrocompat: keep idMenu
     if (this.idList) {

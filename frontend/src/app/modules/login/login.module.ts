@@ -9,11 +9,12 @@ import { NewPasswordComponent } from './new-password/new-password.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 
 import { routes } from './login.routes';
-import { SignUpGuard, UserManagementGuard } from './routes-guard.service';
+import { SignUpGuard, UserEditGuard, UserManagementGuard } from './routes-guard.service';
+import { LoginDialog } from './login/external-login-dialog';
 
 @NgModule({
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
-  declarations: [LoginComponent, NewPasswordComponent, SignUpComponent],
-  providers: [SignUpGuard, UserManagementGuard],
+  declarations: [LoginComponent, NewPasswordComponent, SignUpComponent, LoginDialog],
+  providers: [SignUpGuard, UserManagementGuard, UserEditGuard],
 })
 export class LoginModule {}
