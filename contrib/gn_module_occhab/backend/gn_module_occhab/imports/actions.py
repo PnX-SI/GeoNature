@@ -197,7 +197,6 @@ class OcchabImportActions(ImportActions):
             imprt,
             parent_entity=entity_station,
             child_entity=entity_habitat,
-            id_parent="id_station",
             parent_line_no="station_line_no",
             fields=[
                 selected_fields.get("id_station_source"),

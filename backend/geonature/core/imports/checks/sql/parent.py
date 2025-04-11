@@ -61,7 +61,6 @@ def set_parent_line_no(
     imprt: TImports,
     parent_entity: Entity,
     child_entity: Entity,
-    id_parent: BibFields,
     parent_line_no: BibFields,
     fields: List[BibFields],
 ) -> None:
