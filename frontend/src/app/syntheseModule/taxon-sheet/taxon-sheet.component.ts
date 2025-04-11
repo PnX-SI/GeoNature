@@ -115,11 +115,7 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
         this.setIndicators(null);
         this._syntheseDataService
           .getSyntheseTaxonSheetStat(cd_ref)
-          .pipe(
-            finalize(() => {
-              this.stopLoading();
-            })
-          )
+          .pipe(finalize(() => this.stopLoading()))
           .subscribe((stats) => {
             this.setIndicators(stats);
           });

@@ -26,11 +26,7 @@ export class TaxonSheetService extends Loadable {
     const taxhubFields = ['attributs', 'attributs.bib_attribut.label_attribut', 'status'];
     this._ds
       .getTaxonInfo(cd_ref, taxhubFields)
-      .pipe(
-        finalize(() => {
-          this.stopLoading();
-        })
-      )
+      .pipe(finalize(() => this.stopLoading()))
       .subscribe((taxon) => {
         taxon['attributs'] = taxon['attributs'].filter((v) => {
           return this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut);
