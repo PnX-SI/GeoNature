@@ -36,7 +36,7 @@
       display: flex;
       flex-flow: row wrap;
       gap: 1em;
-      justify-content: start;
+      justify-content: flex-start;
       &__item {
         cursor: pointer;
         display: flex;
