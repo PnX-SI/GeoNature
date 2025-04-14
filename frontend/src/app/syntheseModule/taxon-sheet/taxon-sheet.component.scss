@@ -2,21 +2,22 @@
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
-  padding: 1.25rem;
-  row-gap: 1.25rem;
-  height: 100%;
+  font-size: 0.9rem;
+  padding: 0.9rem;
+  row-gap: 0.9rem;
+  width: 100%;
+  height: calc(100vh - 80px); // TODO Magic number: toolbar height
   &--placeholder{
     opacity: 0.2;
   }
 
   &__indicators {
     align-self: center;
-    width: 80%;
 
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
-    gap: 1rem;
+    gap: 1em;
 
     &--loader{
       margin: auto;
@@ -25,11 +26,14 @@
     &--loader,
     indicator,
     taxon-image {
-      height: 9rem;
+      height: 6em;
     }
   }
   .AvancedInfos {
+    flex-grow: 1;
+    overflow: auto;
     &__navBar {
+      font-size: 0.9em;
       a {
         border-bottom: 1px solid rgba(0, 0, 0, 0.125);
       }
@@ -39,10 +43,10 @@
     }
 
     &__content {
-      max-height: 54vh;
-      height: 54vh;
+      padding: 1em;
+      height: 100%;
+      max-height: 100%;
       overflow: auto;
-      padding: 1rem;
     }
   }
 }
