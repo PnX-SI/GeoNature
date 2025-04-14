@@ -41,25 +41,26 @@
 .TabGeographic {
   display: flex;
   flex-flow: row nowrap;
-  gap: 1rem;
+  justify-content: space-between;
   height: 100%;
   &__map {
     width: 70%;
   }
   &__side {
     width: 30%;
+
     &Item {
+      padding: 1em;
       display: flex;
       flex-flow: column;
       justify-content: flex-start;
-      max-width: 100%;
       .DateSlider {
+        align-self: center;
         --mdc-slider-handle-width: 15px;
         --mdc-slider-handle-height: 15px;
         --mdc-slider-inactive-track-height: 3px;
         --mdc-slider-active-track-height: var(--mdc-slider-inactive-track-height);
-
-        width: inherit;
+        width: 90%;
       }
     }
   }

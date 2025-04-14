@@ -3,44 +3,30 @@
   flex-flow: column;
   align-items: center;
   justify-content: center;
-  row-gap: 0rem;
-  padding: 1rem;
+  row-gap: 0em;
+  padding: 1em;
   height: 100%;
   width: auto;
-  min-width: 12rem;
+  min-width: 10em;
   &__icon {
-    $icon-size: 2rem;
+    $icon-size: 1.2em;
     font-size: $icon-size;
     height: $icon-size;
     width: $icon-size;
     min-height: $icon-size;
   }
   &__value {
-    font-size: 1.5rem;
+    font-size: 1em;
     white-space: nowrap;
     &Unit {
       opacity: 0.5;
     }
   }
   &__name {
-    font-size: 1rem;
+    font-size: 0.8em;
     text-align: center;
   }
-}
-
-.Indicator--small {
-  border: none;
-  .Indicator__icon {
-    $icon-size: 1.5rem;
-    font-size: $icon-size;
-    height: $icon-size;
-    width: $icon-size;
-    min-height: $icon-size;
-  }
-  .Indicator__value {
-    font-size: 1.3rem;
-  }
-  .Indicator__name {
-    font-size: 1rem;
+  &--small {
+    border: none;
   }
 }
