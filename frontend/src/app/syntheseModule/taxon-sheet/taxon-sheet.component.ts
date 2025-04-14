@@ -17,7 +17,7 @@ import {
 import { TaxonImageComponent } from './infos/taxon-image/taxon-image.component';
 import { IndicatorComponent } from './indicator/indicator.component';
 import { CommonModule } from '@angular/common';
-import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { TaxonStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonSheetService } from './taxon-sheet.service';
 import { RouteService } from './taxon-sheet.route.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
@@ -95,7 +95,6 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
     private _router: Router,
     private _route: ActivatedRoute,
     private _tss: TaxonSheetService,
-    private _syntheseDataService: SyntheseDataService,
     private _routes: RouteService
   ) {
     super();
@@ -107,23 +106,24 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
       this.taxon = taxon;
     });
 
+    this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
+      if (stats) {
+        this.stopLoading();
+      }
+      this.setIndicators(stats);
+    });
+
     this._route.params.subscribe((params) => {
-      this.startLoading();
       const cd_ref = params['cd_ref'];
       if (cd_ref) {
-        this._tss.updateTaxonByCdRef(cd_ref);
+        this.startLoading();
         this.setIndicators(null);
-        this._syntheseDataService
-          .getSyntheseTaxonSheetStat(cd_ref)
-          .pipe(finalize(() => this.stopLoading()))
-          .subscribe((stats) => {
-            this.setIndicators(stats);
-          });
+        this._tss.updateTaxonByCdRef(cd_ref);
       }
     });
   }
 
-  setIndicators(stats: any) {
+  setIndicators(stats: TaxonStats) {
     this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
       computeIndicatorFromDescription(indicatorConfig, stats)
     );

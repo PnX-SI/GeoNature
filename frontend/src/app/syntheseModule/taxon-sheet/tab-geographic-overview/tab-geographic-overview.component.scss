@@ -1,0 +1,66 @@
+::ng-deep .leaflet-tooltip-pane .number-obs {
+  color: rgb(0, 0, 0);
+  /* font-weight: bold; */
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  /* font-size:2; */
+}
+::ng-deep .tab-geographic-overview {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+::ng-deep .tab-geographic-overview .custom-control-label {
+  margin: 0.2rem;
+}
+::ng-deep .tab-geographic-overview .custom-control-label::before {
+  top: 0.05rem;
+}
+::ng-deep .tab-geographic-overview .custom-control-label::after {
+  top: calc(0.05rem + 2px);
+}
+::ng-deep .legend {
+  line-height: 10px;
+  font-size: 14px;
+  color: #555;
+  background-color: white;
+  opacity: 0.7;
+  padding: 5px;
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+::ng-deep .legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+}
+::ng-deep .legend:hover {
+  opacity: 1;
+}
+
+.TabGeographic {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+  height: 100%;
+  &__map {
+    width: 70%;
+  }
+  &__side {
+    width: 30%;
+    &Item {
+      display: flex;
+      flex-flow: column;
+      justify-content: flex-start;
+      max-width: 100%;
+      .DateSlider {
+        --mdc-slider-handle-width: 15px;
+        --mdc-slider-handle-height: 15px;
+        --mdc-slider-inactive-track-height: 3px;
+        --mdc-slider-active-track-height: var(--mdc-slider-inactive-track-height);
+
+        width: inherit;
+      }
+    }
+  }
+}

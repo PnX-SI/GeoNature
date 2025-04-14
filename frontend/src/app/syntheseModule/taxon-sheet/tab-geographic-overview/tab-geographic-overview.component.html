@@ -1,6 +1,61 @@
-<pnx-map height="100%">
-  <pnx-geojson
-    [geojson]="observations"
-    [zoomOnFirstTime]="true"
-  ></pnx-geojson>
-</pnx-map>
+<div class="TabGeographic">
+  <pnx-map
+    class="TabGeographic__map"
+    height="100%"
+  >
+    <pnx-geojson
+      [geojson]="observations"
+      [zoomOnFirstTime]="true"
+      [style]="styleTabGeoJson"
+    ></pnx-geojson>
+  </pnx-map>
+  <div class="TabGeographic__side">
+    <div
+      class="TabGeographic__sideItem"
+      *ngIf="
+        yearIntervalBoundaries &&
+          yearInterval &&
+          yearIntervalBoundaries.max != yearIntervalBoundaries.min;
+        else yearSliderPlaceholder
+      "
+    >
+      <div class="text-muted">
+        Plage d'observations:
+        <b class="text">
+          {{ yearInterval.min }}
+        </b>
+        -
+        <b class="text">{{ yearInterval.max }}</b>
+      </div>
+      <mat-slider
+        class="DateSlider"
+        [displayWith]="formatLabel"
+        [min]="yearIntervalBoundaries.min"
+        [max]="yearIntervalBoundaries.max"
+        step="1"
+        discrete
+      >
+        <input
+          (change)="updateTabGeographic()"
+          [(ngModel)]="yearInterval.min"
+          matSliderStartThumb
+        />
+        <input
+          (change)="updateTabGeographic()"
+          [(ngModel)]="yearInterval.max"
+          matSliderEndThumb
+        />
+      </mat-slider>
+    </div>
+    <ng-template #yearSliderPlaceholder>
+      <div class="TabGeographic__sideItem">
+        <div class="text-muted">
+          Année d'observation(s):
+          <b class="text">
+            {{ yearInterval?.min ?? '' }}
+          </b>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>
