@@ -139,7 +139,7 @@ def create_module(module_code, module_label, module_path, active_frontend, activ
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="class")
 def modules():
     dict_module_to_create = {
         0: {
@@ -173,7 +173,7 @@ def modules():
     return modules
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def module(users):
     other_module = db.session.execute(
         select(TModules).filter_by(module_code="GEONATURE")
@@ -197,7 +197,7 @@ def module(users):
     return new_module
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def perm_object():
     with db.session.begin_nested():
         new_object = PermObject(code_object="TEST_OBJECT")
@@ -380,7 +380,7 @@ def celery_eager(app, monkeypatch):
     monkeypatch.setattr(celery_app.conf, "task_eager_propagates", True)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def acquisition_frameworks(users):
     principal_actor_role = db.session.execute(
         select(TNomenclatures)
@@ -431,7 +431,7 @@ def acquisition_frameworks(users):
     return afs
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def datasets(users, acquisition_frameworks, module):
     principal_actor_role = db.session.execute(
         select(TNomenclatures)
@@ -523,7 +523,7 @@ def datasets(users, acquisition_frameworks, module):
     return datasets
 
 
-@pytest.fixture()
+@pytest.fixture(scope="class")
 def source():
     with db.session.begin_nested():
         source = TSources(name_source="Fixture", desc_source="Synthese data from fixture")
@@ -531,7 +531,7 @@ def source():
     return source
 
 
-@pytest.fixture()
+@pytest.fixture(scope="class")
 def sources_modules(modules):
     sources = []
     for name_source, module in [("source test 1", modules[0]), ("source test 2", modules[1])]:
@@ -583,7 +583,7 @@ def create_synthese(
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="class")
 def synthese_data(app, users, datasets, source, sources_modules):
     point1 = Point(5.92, 45.56)
     point2 = Point(-1.54, 46.85)
