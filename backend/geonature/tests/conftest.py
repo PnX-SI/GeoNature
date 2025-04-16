@@ -1,5 +1,5 @@
 # force discovery of some fixtures
-from .fixtures import app, users, _session
+from .fixtures import app, users, _session, _app
 from pypnusershub.tests.fixtures import teardown_logout_user
 import pytest
 

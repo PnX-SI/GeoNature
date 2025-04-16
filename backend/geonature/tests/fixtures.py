@@ -95,8 +95,8 @@ class GeoNatureClient(JSONClient):
         return response
 
 
-@pytest.fixture(scope="session", autouse=True)
-def app():
+@pytest.fixture(scope="session")
+def _app():
     config["CELERY"]["task_always_eager"] = True
     app = create_app()
     app.testing = True
@@ -116,9 +116,17 @@ def app():
         fixtures must commit their database changes in a nested transaction
         (i.e. in a with db.session.begin_nested() block).
         """
-        transaction = db.session.begin_nested()  # execute tests in a savepoint
         yield app
-        transaction.rollback()  # rollback all database changes
+
+
+@pytest.fixture(scope="session")
+def _session(_app):
+    return db.session
+
+
+@pytest.fixture(scope="session", autouse=True)
+def app(_app, _session):
+    return _app
 
 
 def create_module(module_code, module_label, module_path, active_frontend, active_backend):
@@ -362,11 +370,6 @@ def users(app):
         users[username] = create_user(username, *args, **kwargs)
 
     return users
-
-
-@pytest.fixture
-def _session(app):
-    return db.session
 
 
 @pytest.fixture
