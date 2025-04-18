@@ -22,7 +22,7 @@ from geonature.core.gn_meta.models import (
 )
 from geonature.core.gn_commons.models import TModules
 from pypnusershub.db.models import Organisme as BibOrganismes, User
-
+from .mtd_webservice import get_jdd_by_user_id, get_acquisition_framework, get_jdd_by_uuid
 NOMENCLATURE_MAPPING = {
     "cd_nomenclature_data_type": "DATA_TYP",
     "cd_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
