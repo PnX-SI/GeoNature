@@ -197,6 +197,8 @@ class GnPySchemaConf(Schema):
         ),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
+
+    SQLALCHEMY_ENGINE_OPTIONS = fields.Dict(load_default={})
     SESSION_TYPE = fields.String(load_default="filesystem")
     SECRET_KEY = fields.String(required=True, validate=Length(min=20))
     # le cookie expire toute les 7 jours par défaut
