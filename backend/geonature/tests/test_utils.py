@@ -10,6 +10,8 @@ from geonature.utils.env import db
 from geonature.utils.config_schema import GnPySchemaConf
 from geonature.utils.utilstoml import *
 from geonature.utils.errors import GeoNatureError, ConfigError
+from jsonschema import validate
+from json import loads
 
 from .fixtures import *
 
@@ -133,6 +135,21 @@ class TestUtils:
                 )
 
 
+pagination_schema = {
+    "type": "object",
+    "properties": {
+        "items": {"type": "array"},
+        "page": {"type": "number"},
+        "per_page": {"type": "number"},
+        "pages": {"type": "number"},
+        "total": {"type": "number"},
+        "prev_num": {"type": ["number", "null"]},
+        "next_num": {"type": ["number", "null"]},
+    },
+    "required": ["items", "page", "per_page", "pages", "total", "prev_num", "next_num"],
+}
+
+
 class TestJSONProvider:
     def test_serialize_row(self, app):
         query = sa.select(TModules.__table__)
@@ -141,9 +158,11 @@ class TestJSONProvider:
 
     def test_serialize_pagination_asdict(self, app):
         query = sa.select(TModules)
-        app.json.dumps(db.paginate(query))
+        json_data = app.json.dumps(db.paginate(query))
+        validate(loads(json_data), pagination_schema)
 
     def test_serialize_pagination_schema(self, app):
         query = sa.select(TModules)
         g.pagination_schema = ModuleSchema()
-        app.json.dumps(db.paginate(query))
+        json_data = app.json.dumps(db.paginate(query))
+        validate(loads(json_data), pagination_schema)
