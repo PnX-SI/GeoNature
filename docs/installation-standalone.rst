@@ -52,6 +52,7 @@ Installation de l'application
 
 Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre les scripts suivants :
 
+* ``00_install_nvm.sh`` : Installation de NVM
 * ``01_install_backend.sh`` : Création du virtualenv python, installation des dépendances et du backend de GeoNature dans celui-ci.
 * ``02_configure_systemd.sh`` : Création des services systemd ``geonature`` et ``geonature-worker``, configuration de ``logrotate``, création des dossiers ``/run/geonature`` et ``/var/log/geonature``.
 * ``03_create_db.sh`` : Création du role PostgreSQL, de la base de données, ajout des extensions nécessaires (PostGIS, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
