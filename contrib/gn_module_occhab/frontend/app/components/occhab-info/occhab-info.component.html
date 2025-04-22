@@ -98,6 +98,14 @@
         </div>
         <div class="content row">
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
+            <h5>
+              <b class="text-muted">Type de sole :</b>
+            </h5>
+            <p *ngIf="station?.properties.nomenclature_type_sol">
+              {{ station.properties.nomenclature_type_sol.label_default }}
+            </p>
+          </div>
+          <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5><b class="text-muted">Habitats de la station :</b></h5>
             <table class="table table-hover">
               <tr
@@ -122,6 +130,8 @@
             <p>{{ station?.properties.comment }}</p>
           </div>
 
+        </div>
+        <div class="content row">
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
             <h5><b class="text-muted">UUID de la station :</b></h5>
             <p>{{ station?.properties.unique_id_sinp_station }}</p>
