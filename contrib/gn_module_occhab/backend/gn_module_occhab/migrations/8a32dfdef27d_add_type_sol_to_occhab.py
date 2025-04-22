@@ -30,8 +30,8 @@ def upgrade():
         sa.insert(nomenclature_type).values(
             dict(
                 mnemonique="TYPE_SOL",
-                label_fr="Type de sol.",
-                label_default="Type de sol.",
+                label_fr="Type de sol",
+                label_default="Type de sol",
                 definition_fr="",
                 source="SINP",
                 statut="Validé",

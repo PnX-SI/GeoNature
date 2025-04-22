@@ -275,6 +275,7 @@ export class OcchabFormService {
       formatedHabitats[index]["habref"]["search_name"] = hab.nom_cite;
     });
     station["habitats"] = formatedHabitats;
+    console.log(station);
     return {
       ...station,
       date_min: this._dateParser.parse(station.date_min),
@@ -291,7 +292,10 @@ export class OcchabFormService {
         station,
         "nomenclature_exposure"
       ),
-      id_nomenclature_type_sol: this.getOrNull(station, "type_sol"),
+      id_nomenclature_type_sol: this.getOrNull(
+        station,
+        "nomenclature_type_sol"
+      ),
     };
   }
 
