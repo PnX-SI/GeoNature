@@ -1,10 +1,7 @@
 <div class="row row-sm">
   <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
     <pnx-map height="87vh">
-      <pnx-geojson
-        [geojson]="station"
-        [zoomOnFirstTime]="true"
-      ></pnx-geojson>
+      <pnx-geojson [geojson]="station" [zoomOnFirstTime]="true"></pnx-geojson>
     </pnx-map>
   </div>
   <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 padding-sm right-side">
@@ -33,10 +30,7 @@
           <mat-icon>delete</mat-icon>
         </button>
       </h5>
-      <div
-        class="card-body"
-        id="card-station"
-      >
+      <div class="card-body" id="card-station">
         <div class="content row">
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5>
@@ -49,8 +43,8 @@
               <b class="text-muted">Date :</b>
             </h5>
             <p>
-              {{ station?.properties.date_min | date: 'dd/MM/yyyy' }} -
-              {{ station?.properties.date_max | date: 'dd/MM/yyyy' }}
+              {{ station?.properties.date_min | date : "dd/MM/yyyy" }} -
+              {{ station?.properties.date_max | date : "dd/MM/yyyy" }}
             </p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
@@ -58,7 +52,12 @@
               <b class="text-muted">Observateur(s) :</b>
             </h5>
             <div *ngIf="station?.properties.observers; else elseBlock">
-              <p *ngFor="let obs of station.properties.observers; let last = last">
+              <p
+                *ngFor="
+                  let obs of station.properties.observers;
+                  let last = last
+                "
+              >
                 {{ obs.nom_role }} {{ obs.prenom_role }}
                 <span *ngIf="!last">,</span>
               </p>
@@ -82,7 +81,10 @@
               {{ station?.properties.area }}
               <small>
                 (
-                {{ station?.properties.nomenclature_area_surface_calculation?.label_default }}
+                {{
+                  station?.properties.nomenclature_area_surface_calculation
+                    ?.label_default
+                }}
                 )
               </small>
             </p>
@@ -92,7 +94,9 @@
               <b class="text-muted">Type d'information géographique :</b>
             </h5>
             <p *ngIf="station?.properties.nomenclature_geographic_object">
-              {{ station.properties.nomenclature_geographic_object.label_default }}
+              {{
+                station.properties.nomenclature_geographic_object.label_default
+              }}
             </p>
           </div>
         </div>
@@ -108,10 +112,7 @@
               >
                 <td>{{ hab.nom_cite }}</td>
                 <td>
-                  <i
-                    class="fa fa-eye clickable"
-                    aria-hidden="true"
-                  ></i>
+                  <i class="fa fa-eye clickable" aria-hidden="true"></i>
                 </td>
               </tr>
             </table>
@@ -131,10 +132,7 @@
     </div>
     <br />
     <!-- SELECTED HAB -->
-    <div
-      *ngIf="currentHab"
-      class="card border-primary"
-    >
+    <div *ngIf="currentHab" class="card border-primary">
       <h5 class="card-header bg-primary text-white">
         {{ currentHab?.nom_cite }}
       </h5>
@@ -142,6 +140,8 @@
       <div class="card-body">
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+            <b class="text-muted">UUID de l'habitat :</b>
+            {{ currentHab?.unique_id_sinp_hab }}
             <b class="text-muted">Technique de collecte :</b>
             {{ currentHab?.nomenclature_collection_technique?.label_default }}
             <br />
@@ -191,41 +191,25 @@
     </div>
   </div>
 
-  <ng-template
-    #modalInfo
-    let-d="dismiss"
-    let-c="close"
-  >
+  <ng-template #modalInfo let-d="dismiss" let-c="close">
     <div class="modal-header">
       <h3>Infos</h3>
-      <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        (click)="c()"
-      >
+      <button type="button" class="close" aria-label="Close" (click)="c()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
       {{ modalContent }}
-      <div *ngIf="!modalContent || modalContent.length == 0">Aucune information complémentaire</div>
+      <div *ngIf="!modalContent || modalContent.length == 0">
+        Aucune information complémentaire
+      </div>
     </div>
   </ng-template>
 
-  <ng-template
-    #modalCoresp
-    let-d="dismiss"
-    let-c="close"
-  >
+  <ng-template #modalCoresp let-d="dismiss" let-c="close">
     <div class="modal-header">
       <h3>Correspondances</h3>
-      <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        (click)="c()"
-      >
+      <button type="button" class="close" aria-label="Close" (click)="c()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -247,10 +231,7 @@
     </div>
   </ng-template>
 
-  <ng-template
-    #deleteModal
-    let-c="close"
-  >
+  <ng-template #deleteModal let-c="close">
     <pnx-occhab-delete
       [c]="c"
       [idStation]="station?.id"
