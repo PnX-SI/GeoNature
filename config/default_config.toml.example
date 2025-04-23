@@ -20,6 +20,11 @@ SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monpor
 # Note : Patch pour suivre la supression des médias et pouvoir supprimer un fichier sur un DELETE de media
 SQLALCHEMY_TRACK_MODIFICATIONS = true
 
+# Ce paramètre permet de configurer la connexion de SQLAlchemy avec la base de données
+# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine` 
+# de SQLAlchemy : https://docs.sqlalchemy.org/en/14/core/engines.html#sqlalchemy.create_engine
+SQLALCHEMY_ENGINE_OPTIONS = {}
+
 # Application
 
 # Nom de l'application dans la page d'accueil.
