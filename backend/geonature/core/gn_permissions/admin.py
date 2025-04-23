@@ -2,7 +2,7 @@ from flask import url_for, has_app_context, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
 from ref_geo.models import BibAreasTypes, LAreas
-from apptax.taxonomie.models import Taxref
+from apptax.taxonomie.models import Taxref, VMTaxrefListForautocomplete
 import sqlalchemy as sa
 from flask_admin.contrib.sqla.tools import get_primary_key
 from flask_admin.contrib.sqla.fields import QuerySelectField
@@ -357,10 +357,10 @@ class AreaAjaxModelLoader(QueryAjaxModelLoader):
 
 class TaxrefAjaxModelLoader(QueryAjaxModelLoader):
     def format(self, taxref):
-        label = f"[{taxref.cd_nom}] {taxref.nom_valide}"
-        if taxref.nom_vern:
-            label += f" ({taxref.nom_vern})"
-        return (taxref.cd_nom, label)
+        label = db.session.scalar(
+            sa.select(VMTaxrefListForautocomplete.search_name).filter_by(cd_nom=taxref.cd_nom)
+        )
+        return (taxref.cd_nom, label.replace("<i>", "").replace("</i>", ""))
 
 
 ### ModelViews
@@ -391,7 +391,15 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
     object_code = "PERMISSIONS"
 
-    column_list = ("role", "module", "object", "action", "label", "filters")
+    column_list = (
+        "role",
+        "module",
+        "object",
+        "action",
+        "label",
+        "filters",
+        "expire_on",
+    )
     column_labels = {
         "role": "Rôle",
         "filters": "Restriction(s)",
@@ -444,6 +452,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "sensitivity_filter",
         "areas_filter",
         "taxons_filter",
+        "expire_on",
     )
     form_overrides = dict(
         availability=OptionQuerySelectField,

@@ -188,13 +188,15 @@ class PermFilter:
                 areas_names = ", ".join([a.area_name for a in self.value])
                 return f"""<i class="fa fa-map-marker" aria-hidden="true"></i>  {areas_names}"""
             else:
-                return """<i class="fa fa-globe" aria-hidden="true"></i>  partout"""
+                return (
+                    """<i class="fa fa-globe" aria-hidden="true"></i>  Aucune limite géographique"""
+                )
         elif self.name == "TAXONOMIC":
             if self.value:
                 taxons_names = ", ".join([t.nom_vern_or_lb_nom for t in self.value])
                 return f"""<i class="fa fa-tree" aria-hidden="true"></i>  {taxons_names}"""
             else:
-                return """<i class="fa fa-universal-access" aria-hidden="true"></i>  le vivant"""
+                return """<i class="fa fa-tree" aria-hidden="true"></i>  Tous les taxons"""
 
 
 cor_permission_area = db.Table(
