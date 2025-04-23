@@ -6,11 +6,10 @@ Create Date: 2022-01-28 14:06:38.748133
 
 """
 
-from distutils.util import strtobool
-
 from alembic import op, context
 import sqlalchemy as sa
 
+from utils_flask_sqla.utils import strtobool
 from utils_flask_sqla.migrations.utils import logger
 
 

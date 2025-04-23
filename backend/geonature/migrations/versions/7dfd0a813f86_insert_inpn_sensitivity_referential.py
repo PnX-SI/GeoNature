@@ -11,14 +11,14 @@ from functools import lru_cache, partial
 from itertools import chain
 from lzma import open as lzmaopen
 from alembic import context
-from distutils.util import strtobool
 
 
 from alembic import op
 from sqlalchemy import func
 import sqlalchemy as sa
 
-from utils_flask_sqla.migrations.utils import logger, open_remote_file
+from utils_flask_sqla.utils import strtobool
+from utils_flask_sqla.migrations.utils import open_remote_file
 
 
 lzmaopen = partial(lzmaopen, mode="rt")
