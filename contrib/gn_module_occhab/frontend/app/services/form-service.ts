@@ -260,7 +260,7 @@ export class OcchabFormService {
         ...hab,
         id_nomenclature_determination_type: this.getOrNull(
           hab,
-          "nomenclature_determination_method"
+          "nomenclature_determination_type"
         ),
         id_nomenclature_collection_technique: this.getOrNull(
           hab,
@@ -269,6 +269,10 @@ export class OcchabFormService {
         id_nomenclature_abundance: this.getOrNull(
           hab,
           "nomenclature_abundance"
+        ),
+        id_nomenclature_community_interest: this.getOrNull(
+          hab,
+          "nomenclature_community_interest"
         ),
       };
     });

@@ -239,6 +239,15 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_sensitivity],
     )
+    id_nomenclature_community_interest = db.Column(
+        "id_nomenclature_community_interest",
+        db.Integer,
+        ForeignKey(Nomenclature.id_nomenclature),
+    )
+    nomenclature_community_interest = db.relationship(
+        Nomenclature,
+        foreign_keys=[id_nomenclature_community_interest],
+    )
 
 
 @serializable
