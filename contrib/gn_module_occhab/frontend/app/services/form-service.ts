@@ -176,9 +176,11 @@ export class OcchabFormService {
     if (this.currentEditingHabForm !== null) {
       const habArrayForm = this.stationForm.controls
         .habitats as UntypedFormArray;
-      habArrayForm.controls[this.currentEditingHabForm].setValue(
-        this.currentHabCopy
-      );
+      if (this.currentHabCopy === null) habArrayForm.removeAt(0);
+      else
+        habArrayForm.controls[this.currentEditingHabForm].setValue(
+          this.currentHabCopy
+        );
       this.currentHabCopy = null;
       this.currentEditingHabForm = null;
     }
