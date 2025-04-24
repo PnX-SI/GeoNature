@@ -93,10 +93,10 @@ def list_modules():
             "" if module.active_frontend else module.module_external_url
         )
         module_dict["module_url"] = module.module_path if module.active_frontend else ""
-
         # Setup manually TAXHUB URL
-        if module_dict["module_code"] == "TAXHUB":
+        if module_dict["module_code"] in ("TAXHUB", "ADMIN"):
             module_dict["module_external_url"] = f"{config['API_ENDPOINT']}/admin"
+            module_dict["active_frontend"] = False
 
         module_dict["module_objects"] = {}
         # get cruved for each object
