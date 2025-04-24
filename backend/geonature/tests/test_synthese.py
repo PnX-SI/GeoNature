@@ -56,14 +56,6 @@ def unexisted_id():
 
 
 @pytest.fixture()
-def source():
-    source = TSources(name_source="test source")
-    with db.session.begin_nested():
-        db.session.add(source)
-    return source
-
-
-@pytest.fixture()
 def unexisted_id_source(source):
     return (
         db.session.execute(select(func.max(TSources.id_source)).select_from(TSources)).scalar_one()

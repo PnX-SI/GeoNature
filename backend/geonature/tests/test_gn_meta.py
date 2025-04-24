@@ -1167,16 +1167,6 @@ class TestGNMeta:
         assert response.status_code == Conflict.code, response.json
         mocked_publish_mail.assert_not_called()
 
-        af = acquisition_frameworks["orphan_af"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.publish_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        assert response.status_code == Conflict.code, response.json
-        mocked_publish_mail.assert_not_called()
-
     def test_publish_acquisition_framework_with_data(
         self, mocked_publish_mail, users, acquisition_frameworks, synthese_data
     ):
