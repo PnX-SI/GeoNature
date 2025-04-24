@@ -36,6 +36,15 @@ describe('Testing homepage', () => {
     cy.get(SELECTOR_HOME_CONTENT).should('exist').should('be.visible');
   });
 
+  it('should have an appropriate page title', () => {
+    cy.visit('/#/');
+    cy.title().should('eq', 'GeoNature2');
+    cy.visit('/#/synthese');
+    cy.title().should('eq', 'GeoNature2 - Synthèse');
+    cy.visit('/#/import');
+    cy.title().should('eq', 'GeoNature2 - Import');
+  });
+
   it('disconnect', () => {
     cy.get(SELECTOR_EXIT_BUTTON).click({ force: true });
     cy.get(SELECTOR_CONNECTION_BUTTON).should('exist').should('be.visible');
