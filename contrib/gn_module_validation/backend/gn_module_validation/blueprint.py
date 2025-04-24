@@ -36,6 +36,7 @@ def get_synthese_data(scope):
     Params must have same synthese fields names
 
     .. :quickref: Validation;
+
     Parameters:
     ------------
     :query str sort: str<'asc', 'desc'> trier dans l'ordre ascendant ou descendant (optionnel, 'order')
@@ -49,18 +50,20 @@ def get_synthese_data(scope):
     """
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
 
+    params = (request.json if request.is_json else None) or {}
+    params.update(request.args)
+
     # Sorting parameter
-    sort = request.args.get("sort", "desc", str)
+    sort = params.get("sort", "desc")
     order_by = sa.text(request.args.get("order_by", "last_validation.validation_date", str))
     sorting_active = sort != "" and order_by != ""
-
     # Pagination parameter
-    page = request.args.get("page", 0, int)
-    per_page = request.args.get("per_page", 0, int)
+    page = int(params.get("page", 0))
+    per_page = int(params.get("per_page", 0))
     pagination_active = page > 0 and per_page > 0
 
     # Format: output format
-    format = request.args.get("format", "geojson")
+    format = params.get("format", "geojson")
     if format not in ["json", "geojson"]:
         raise BadRequest("Invalid format parameter")
 
@@ -71,12 +74,12 @@ def get_synthese_data(scope):
     if format == "geojson" and pagination_active:
         raise BadRequest("Pagination can't be active when requesting geojson object")
 
-    no_auto = request.args.get("no_auto", False, bool)
+    no_auto = params.get("no_auto", False)
     # # modifiy_only
     # modified_status_only = request.args.get("modified_status_only", bool, False)
 
     # Fields: Setup fields as route parameters with default behavior
-    fields_as_str = request.args.get("fields", None)
+    fields_as_str = params.get("fields", None)
     fields = set()
     if fields_as_str:
         fields.update({field for field in fields_as_str.split(",")})
@@ -113,9 +116,9 @@ def get_synthese_data(scope):
     # Fields: add config parameters
     fields.update({col["column_name"] for col in blueprint.config["COLUMN_LIST"]})
 
-    filters = (request.json if request.is_json else None) or {}
+    filters = params or {}
 
-    result_limit = filters.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
+    result_limit = params.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
     lateral_join = {}
     """
     1) We start creating the query with SQLAlchemy ORM.
@@ -174,9 +177,8 @@ def get_synthese_data(scope):
     for alias in lateral_join.keys():
         query = query.outerjoin(alias, sa.true())
 
-    # geometry required only for geojson
     if format == "geojson":
-        query = query.where(Synthese.the_geom_4326.isnot(None))
+        query = query.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
 
     # filter with profile
     if enable_profile:
@@ -232,27 +234,26 @@ def get_synthese_data(scope):
         syntheseQueryStatement = syntheseQueryStatement.options(
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
+    query = selectable
 
     # Sort
     if sorting_active:
         if sort == "asc":
-            selectable = selectable.order_by(sa.asc(order_by))
+            query = query.order_by(sa.asc(order_by))
         else:
-            selectable = selectable.order_by(sa.desc(order_by))
+            query = query.order_by(sa.desc(order_by))
 
-    # Paginer
     if pagination_active:
         offset = (page - 1) * per_page
-        query = syntheseQueryStatement.from_statement(selectable.limit(per_page).offset(offset))
+        query = syntheseQueryStatement.from_statement(query.limit(per_page).offset(offset))
     else:
-        query = syntheseQueryStatement.from_statement(selectable)
+        query = syntheseQueryStatement.from_statement(query.limit(result_limit))
 
+    # The raise option ensure that we have correctly retrived relationships data at step 3
     if format == "geojson":
         return jsonify(query.as_geofeaturecollection(fields=fields))
     elif format == "json":
-        count = db.session.execute(
-            selectable.with_only_columns([sa.func.count()]).order_by(None)
-        ).scalar()
+        count = db.session.scalar(selectable.with_only_columns([sa.func.count()]).order_by(None))
         return jsonify(
             {
                 "items": [item.as_dict(fields=fields) for item in query.all()],
