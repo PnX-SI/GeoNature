@@ -109,6 +109,8 @@ import { IndividualsService } from './form/individuals/individuals.service';
 import { IndividualsCreateComponent } from './form/individuals/create/individuals-create.component';
 import { CustomTranslateLoader } from '../shared/translate/custom-loader';
 import { ConfigService } from '@geonature/services/config.service';
+import { GnValidationErrorComponent } from '@geonature_common/form/gn-validation-error.component';
+import { ValidatorMessageService } from './service/validator-message.service';
 
 @NgModule({
   imports: [
@@ -212,6 +214,7 @@ import { ConfigService } from '@geonature/services/config.service';
     TaxonTreeComponent,
     IndividualsComponent,
     IndividualsCreateComponent,
+    GnValidationErrorComponent
   ],
   providers: [
     CommonService,
@@ -226,6 +229,7 @@ import { ConfigService } from '@geonature/services/config.service';
     SyntheseDataService,
     TranslateService,
     IndividualsService,
+    ValidatorMessageService
   ],
   exports: [
     AcquisitionFrameworksComponent,
@@ -318,6 +322,7 @@ import { ConfigService } from '@geonature/services/config.service';
     TaxonTreeComponent,
     TranslateModule,
     IndividualsComponent,
+    GnValidationErrorComponent
   ],
 })
 export class GN2CommonModule {

@@ -9,6 +9,7 @@
         'select',
         'time',
         'number',
+        'txt_number',
         'file',
         'medias',
         'bool_radio'
@@ -51,14 +52,15 @@
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="text"
     />
-    <div
+    <!-- TODO: ne trouve pas l'utilité de ce message ou comment l'implémenter via les config des protocoles (rempmlacé par gn-validation-error) -->
+    <!-- <div
       *ngIf="
         formDefComp['type_widget'] == 'text' &&
         form.get(formDefComp['attribut_name']).errors?.pattern
       "
     >
       <small class="text-danger">{{ formDefComp['pattern_message'] }}</small>
-    </div>
+    </div> -->
 
     <input
       *ngSwitchCase="'time'"
@@ -76,6 +78,17 @@
       type="number"
       min="{{ formDefComp['min'] }}"
       max="{{ formDefComp['max'] }}"
+    />
+
+    <input
+      *ngSwitchCase="'txt_number'"
+      inputmode="decimal"
+      class="form-control form-control-sm"
+      [ngClass]="{ 'ng-invalid': ctrl.invalid }"
+      [formControl]="ctrl"
+      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+      (blur)="ctrl.markAsTouched()"
+      type="text"
     />
 
     <textarea
@@ -386,5 +399,6 @@
       [cdNom]="formDefComp['cd_nom']"
     ></pnx-individuals>
     <small class="form-text text-muted">{{ formDefComp['help'] }}</small>
+    <gn-validation-error [control]="ctrl"></gn-validation-error>
   </div>
 </div>

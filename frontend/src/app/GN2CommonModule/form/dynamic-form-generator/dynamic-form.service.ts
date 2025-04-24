@@ -10,6 +10,7 @@ import {
 import {
   arrayMinLengthValidator,
   isObjectValidator,
+  numberValidator,
 } from '@geonature/services/validators/validators';
 import { MediaService } from '@geonature_common/service/media.service';
 
@@ -95,6 +96,26 @@ export class DynamicFormService {
           typeof formDef.max === 'number' &&
           !(typeof formDef.min === 'number' && formDef.min > formDef.max);
 
+        if (cond_min) {
+          validators.push(Validators.min(formDef.min));
+        }
+
+        if (cond_max) {
+          validators.push(Validators.max(formDef.max));
+        }
+        validators.push(numberValidator());
+      }else if (formDef.type_widget === 'txt_number') {
+        // cas texte : on récupère la string brute
+        const cond_min =
+          typeof formDef.min === 'number' &&
+          !(typeof formDef.max === 'number' && formDef.min > formDef.max);
+        const cond_max =
+          typeof formDef.max === 'number' &&
+          !(typeof formDef.min === 'number' && formDef.min > formDef.max);
+      
+        // 1) d’abord on vérifie que c’est un nombre
+        validators.push(numberValidator());
+      
         if (cond_min) {
           validators.push(Validators.min(formDef.min));
         }

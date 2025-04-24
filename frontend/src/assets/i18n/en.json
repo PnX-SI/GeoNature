@@ -52,7 +52,27 @@
     "AdvancedFilters": "Advanced filters",
     "OtherFilters": "Other filter",
     "Organism": "Organism(s)",
+    "Filter":"Filtrer",
+    "Errors": {
+      "required":               "This field is required.",
+      "minlength":              "At least {{requiredLength}} characters required (currently {{actualLength}}).",
+      "maxlength":              "No more than {{requiredLength}} characters allowed (currently {{actualLength}}).",
+      "pattern":                "Invalid format.",
+      "min":                    "Value must be at least {{min}} (currently {{actual}}).",
+      "max":                    "Value must be at most {{max}} (currently {{actual}}).",
+  
+      "notNumber":              "Please enter a valid number.",
+      "arrayMinLengthError":    "Please provide at least {{arrayLength}} items.",
+      "isObjectError":          "Invalid object format.",
+      "minGreaterThanMax":      "Minimum must not be greater than maximum.",
+  
+      "invalidTaxon":           "Selected taxon is invalid.",
+      "file":                   "File is too large or format not supported.",
+      "medias":                 "Invalid media format.",
+
     "Filter":"Filtrer"
+   
+    }
   },
   "List": {
     "Columns": "Columns",

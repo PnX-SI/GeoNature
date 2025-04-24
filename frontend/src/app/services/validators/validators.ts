@@ -46,6 +46,38 @@ export function isObjectValidator(): ValidatorFn {
   };
 }
 
+/**
+ * Valide qu'un champ est un nombre valide.
+ * - Laisse passer null/undefined/'' (pour que `required` reste indépendant)
+ * - Pour les chaînes, remplace la virgule par un point puis parseFloat()
+ */
+export function numberValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const v = control.value;
+
+    // 1) Pas de valeur => on laisse `required` gérer le cas
+    if (v === null || v === undefined || v === '') {
+      return null;
+    }
+
+    // 2) Si c'est une string, on gère la virgule décimale
+    const raw = typeof v === 'string'
+      ? v.replace(',', '.')
+      : v;
+
+    // 3) On essaie de parser en nombre
+    const num = typeof raw === 'string'
+      ? parseFloat(raw)
+      : raw;
+    
+      const isNum = isFinite(num);
+    // 4) Si ce n'est pas un nombre fini, on renvoie l'erreur
+    return !isNum
+      ? buildValidationErrors(ValidationErrorsId.NOT_NUMBER_ERROR)
+      : null;
+  };
+}
+
 // ////////////////////////////////////////////////////////////////////////////
 // Group Error
 // ////////////////////////////////////////////////////////////////////////////
