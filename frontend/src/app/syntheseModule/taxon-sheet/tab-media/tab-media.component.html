@@ -9,7 +9,7 @@
 </div>
 <div
   class="MediaContainer"
-  *ngIf="medias.length !== 0"
+  *ngIf="!isLoading && medias.length !== 0"
   (keydown)="onKeydown($event)"
 >
   <div class="MediaContainer__list">
