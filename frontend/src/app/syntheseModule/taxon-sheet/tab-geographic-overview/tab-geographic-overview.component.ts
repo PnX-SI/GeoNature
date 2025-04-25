@@ -15,6 +15,8 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { TranslateService } from '@ngx-translate/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { MatSliderModule } from '@angular/material/slider';
+import { Loadable } from '../loadable';
+import { finalize } from 'rxjs/operators';
 
 interface MapAreasStyle {
   color: string;
@@ -35,7 +37,7 @@ interface YearInterval {
   styleUrls: ['tab-geographic-overview.component.scss'],
   imports: [GN2CommonModule, CommonModule, MatSliderModule],
 })
-export class TabGeographicOverviewComponent implements OnInit {
+export class TabGeographicOverviewComponent extends Loadable implements OnInit {
   observations: FeatureCollection | null = null;
   areasEnable: boolean;
   areasLegend: any;
@@ -67,6 +69,8 @@ export class TabGeographicOverviewComponent implements OnInit {
     public translateService: TranslateService,
     private _ms: MapService
   ) {
+    super();
+
     this.areasEnable =
       this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
       this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
@@ -106,6 +110,8 @@ export class TabGeographicOverviewComponent implements OnInit {
   }
 
   updateTabGeographic() {
+    this.startLoading();
+
     const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
 
     const filter: {
@@ -120,31 +126,34 @@ export class TabGeographicOverviewComponent implements OnInit {
       filter.date_max = `${this.yearInterval.max}-12-31`;
     }
 
-    this._syntheseDataService.getSyntheseData(filter, { format }).subscribe((data) => {
-      this.styleTabGeoJson = undefined;
-      const map = this._ms.map;
+    this._syntheseDataService
+      .getSyntheseData(filter, { format })
+      .pipe(finalize(() => this.stopLoading()))
+      .subscribe((data) => {
+        this.styleTabGeoJson = undefined;
+        const map = this._ms.map;
 
-      map.eachLayer((layer) => {
-        if (!(layer instanceof L.TileLayer)) {
-          map.removeLayer(layer);
-        }
-      });
-
-      if (data) {
-        const geoJSON = L.geoJSON(data, {
-          pointToLayer: (feature, latlng) => {
-            const circleMarker = L.circleMarker(latlng, {
-              radius: 10,
-            });
-            return circleMarker;
-          },
-          onEachFeature: this.onEachFeature.bind(this),
+        map.eachLayer((layer) => {
+          if (!(layer instanceof L.TileLayer)) {
+            map.removeLayer(layer);
+          }
         });
 
-        this._ms.map.addLayer(geoJSON);
-        this._ms.map.fitBounds(geoJSON.getBounds());
-      }
-    });
+        if (data) {
+          const geoJSON = L.geoJSON(data, {
+            pointToLayer: (feature, latlng) => {
+              const circleMarker = L.circleMarker(latlng, {
+                radius: 10,
+              });
+              return circleMarker;
+            },
+            onEachFeature: this.onEachFeature.bind(this),
+          });
+
+          this._ms.map.addLayer(geoJSON);
+          this._ms.map.fitBounds(geoJSON.getBounds());
+        }
+      });
   }
 
   onEachFeature(feature, layer) {
