@@ -5,8 +5,8 @@ import localeZh from '@angular/common/locales/zh';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from './services/config.service';
-import {ActivatedRoute, Router, NavigationEnd} from "@angular/router";
-import {Title} from "@librairies/@angular/platform-browser";
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { Title } from '@librairies/@angular/platform-browser';
 import { filter, map, mergeMap } from 'rxjs/operators';
 
 @Component({
@@ -31,19 +31,18 @@ export class AppComponent implements OnInit {
     this.translate.use(this.config.DEFAULT_LANGUAGE);
     this.router.events
       .pipe(
-        filter(event => event instanceof NavigationEnd),
-         map(() => this.getDeepestChild(this.activatedRoute)),
-        mergeMap(route => route.data)
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.getDeepestChild(this.activatedRoute)),
+        mergeMap((route) => route.data)
       )
-      .subscribe((data: { module_label?: string; module_code?: string })  => {
+      .subscribe((data: { module_label?: string; module_code?: string }) => {
         let title = config.appName;
-        let complement = data['module_label'] || data['module_code']
-        if (complement){
-          title = `${title} - ${complement}`
+        const complement = data['module_label'] || data['module_code'];
+        if (complement) {
+          title = `${title} - ${complement}`;
         }
         this.titleService.setTitle(title);
       });
-
   }
   private getDeepestChild(route: ActivatedRoute): ActivatedRoute {
     while (route.firstChild) {
