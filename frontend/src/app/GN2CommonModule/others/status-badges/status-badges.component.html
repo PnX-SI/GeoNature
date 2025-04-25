@@ -1,4 +1,4 @@
-<div class="StatusBadges">
+<div *ngIf="status.length > 0; else placeholder" class="StatusBadges">
   <gn-badge
     *ngFor="let status of status"
     [tooltip]="status.tooltip"
@@ -6,3 +6,8 @@
     [symbology]="status.symbology"
   />
 </div>
+<ng-template #placeholder>
+  <div class="StatusBadges">
+  <gn-badge text="Aucun" [symbology]="{'color': '#efefef' }" ></gn-badge>
+  </div>
+</ng-template>
