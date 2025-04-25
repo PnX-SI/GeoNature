@@ -45,7 +45,7 @@ const defaultRoutes: Routes = [
       },
       {
         path: 'synthese',
-        data: { module_code: 'synthese', module_label: 'Synthèse'},
+        data: { module_code: 'synthese', module_label: 'Synthèse' },
         canActivate: [ModuleGuardService],
         loadChildren: () =>
           import(
@@ -55,7 +55,7 @@ const defaultRoutes: Routes = [
       },
       {
         path: 'metadata',
-        data: { module_code: 'metadata', module_label: 'Metadata' },
+        data: { module_code: 'metadata', module_label: 'Metadonnées' },
         canActivate: [ModuleGuardService],
         loadChildren: () =>
           import(
@@ -65,7 +65,7 @@ const defaultRoutes: Routes = [
       },
       {
         path: 'admin',
-        data: { module_code: 'admin', module_label: 'Admin'},
+        data: { module_code: 'admin', module_label: 'Admin' },
         loadChildren: () =>
           import(
             /* webpackChunkName: "admin" */
@@ -76,7 +76,7 @@ const defaultRoutes: Routes = [
 
       {
         path: 'user',
-        data: { module_code: 'user', module_label: 'User'},
+        data: { module_code: 'user', module_label: 'Utilisateur' },
         loadChildren: () =>
           import(
             /* webpackChunkName: "user" */
@@ -86,7 +86,7 @@ const defaultRoutes: Routes = [
       },
       {
         path: 'import',
-        data: { module_code: 'import', module_label: 'Import'},
+        data: { module_code: 'import', module_label: 'Import' },
         canActivate: [ModuleGuardService],
         loadChildren: () =>
           import(
@@ -96,7 +96,7 @@ const defaultRoutes: Routes = [
       },
       {
         path: 'notification',
-        data: {module_label: 'Notifications'},
+        data: { module_label: 'Notifications' },
         component: NotificationComponent,
       },
       {
