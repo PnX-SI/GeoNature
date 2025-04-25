@@ -357,10 +357,26 @@ class AreaAjaxModelLoader(QueryAjaxModelLoader):
 
 class TaxrefAjaxModelLoader(QueryAjaxModelLoader):
     def format(self, taxref):
-        label = db.session.scalar(
-            sa.select(VMTaxrefListForautocomplete.search_name).filter_by(cd_nom=taxref.cd_nom)
-        )
+        if not hasattr(taxref, "search_name"):
+            label = db.session.scalar(
+                sa.select(VMTaxrefListForautocomplete.search_name).filter_by(cd_nom=taxref.cd_nom)
+            )
+        else:
+            label = taxref.search_name
         return (taxref.cd_nom, label.replace("<i>", "").replace("</i>", ""))
+
+    def get_query(self):
+        return db.session.query(
+            Taxref.cd_nom,
+            VMTaxrefListForautocomplete.search_name,
+        ).join(
+            VMTaxrefListForautocomplete,
+            VMTaxrefListForautocomplete.cd_nom == Taxref.cd_nom,
+        )
+
+    def get_one(self, pk):
+        with self.session.no_autoflush:
+            return self.session.get(self.model, pk)
 
 
 ### ModelViews
