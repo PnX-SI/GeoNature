@@ -8,7 +8,7 @@ from geonature.utils.env import DB, db
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from sqlalchemy import ForeignKey, or_, func
-from sqlalchemy.dialects.postgresql import UUID as UUIDType
+from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy import func, select, exists
@@ -51,6 +51,8 @@ class TAcquisitionFramework(db.Model):
 
     acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
     acquisition_framework_end_date = DB.Column(DB.Date)
+
+    additional_data = db.Column(JSONB, nullable=True, server_default="{}")
 
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
