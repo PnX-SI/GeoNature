@@ -1,7 +1,7 @@
-<div
-  class="Taxonomy"
->
-  <div class="Taxonomy__breadcrumb" *ngIf="taxon"
+<div class="Taxonomy">
+  <div
+    class="Taxonomy__breadcrumb"
+    *ngIf="taxon"
   >
     <span *ngFor="let item of linnaeanParents">
       <a
@@ -18,13 +18,16 @@
       </a>
     </span>
   </div>
-  <div class="Taxonomy__breadcrumb" *ngIf="!taxon">
+  <div
+    class="Taxonomy__breadcrumb"
+    *ngIf="!taxon"
+  >
     -
   </div>
   <div class="Taxonomy__completeName">
-    {{ taxon?.nom_complet ?? "-" }}
+    {{ taxon?.nom_complet ?? '-' }}
   </div>
   <div class="Taxonomy__vernacularName">
-    {{ nomComplet ?? "-" }}
+    {{ nomComplet ?? '-' }}
   </div>
 </div>

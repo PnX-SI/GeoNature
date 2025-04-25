@@ -7,7 +7,7 @@
   row-gap: 0.9rem;
   width: 100%;
   height: calc(100vh - 80px); // TODO Magic number: toolbar height
-  &--placeholder{
+  &--placeholder {
     opacity: 0.2;
   }
 
@@ -19,7 +19,7 @@
     justify-content: space-evenly;
     gap: 1em;
 
-    &--loader{
+    &--loader {
       margin: auto;
     }
 

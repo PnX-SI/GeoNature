@@ -1,15 +1,23 @@
 <layout>
-  <div class="TaxonSheet"  [ngClass]="{ 'TaxonSheet--placeholder': isLoadingTaxon }"
->
+  <div
+    class="TaxonSheet"
+    [ngClass]="{ 'TaxonSheet--placeholder': isLoadingTaxon }"
+  >
     <infos class="TaxonSheet__infos" />
-    <div class="TaxonSheet__indicators" *ngIf="!isLoadingIndicators">
+    <div
+      class="TaxonSheet__indicators"
+      *ngIf="!isLoadingIndicators"
+    >
       <taxon-image />
       <indicator
         *ngFor="let indicator of indicators"
         [indicator]="indicator"
       />
     </div>
-    <div class="TaxonSheet__indicators--loader" *ngIf="isLoadingIndicators">
+    <div
+      class="TaxonSheet__indicators--loader"
+      *ngIf="isLoadingIndicators"
+    >
       <mat-spinner></mat-spinner>
     </div>
     <div class="card AvancedInfos">

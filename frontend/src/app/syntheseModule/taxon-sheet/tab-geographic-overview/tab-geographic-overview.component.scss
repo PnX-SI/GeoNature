@@ -45,7 +45,7 @@
   justify-content: space-between;
   height: 100%;
 
-  &__spinner{
+  &__spinner {
     position: absolute;
     left: 0;
     right: 0;
@@ -55,7 +55,7 @@
     backdrop-filter: blur(10px);
     z-index: 9998;
 
-    .mat-mdc-progress-spinner{
+    .mat-mdc-progress-spinner {
       position: absolute;
       top: 50%;
       left: 50%;
