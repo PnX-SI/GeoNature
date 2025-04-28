@@ -47,7 +47,6 @@ id_for_enAttenteDeValidation = 465
 
 DISPLAY_TAXON_TREE = True
 
-ID_ATTRIBUT_TAXHUB = [1, 2]
 
 AREA_FILTERS = [{"label": "Communes", "type_code": "COM"}]
 MAIL_BODY = """La donnée en date du ${ d.date_min } relative au taxon ${ d.nom_vern } - ${ d.nom_valide } pose question.\n\r
@@ -78,7 +77,6 @@ class GnModuleSchemaConf(Schema):
     ZOOM_SINGLE_POINT = fields.Integer(load_default=ZOOM_SINGLE_POINT)
     id_for_enAttenteDeValidation = fields.Integer(load_default=id_for_enAttenteDeValidation)
     DISPLAY_TAXON_TREE = fields.Boolean(load_default=True)
-    ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer, load_default=ID_ATTRIBUT_TAXHUB)
     AREA_FILTERS = fields.List(fields.Dict, load_default=AREA_FILTERS)
     MAIL_BODY = fields.String(load_default=MAIL_BODY)
     MAIL_SUBJECT = fields.String(load_default=MAIL_SUBJECT)
