@@ -523,6 +523,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("module", "module.module_code"),
         ("object", "object.code_object"),
         ("action", "action.code_action"),
+        ("expire_on", "expire_on"),
     )
     column_default_sort = [
         ("role.nom_complet", False),
