@@ -263,6 +263,7 @@ def export_observations_web(permissions):
             )
         )
         .where(export_view.tableDef.columns["id_synthese"].in_(id_list))
+        .distinct(export_view.tableDef.columns["id_synthese"])
     )
 
     # Get the results for export
