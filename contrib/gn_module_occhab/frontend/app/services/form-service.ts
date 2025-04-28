@@ -176,9 +176,11 @@ export class OcchabFormService {
     if (this.currentEditingHabForm !== null) {
       const habArrayForm = this.stationForm.controls
         .habitats as UntypedFormArray;
-      habArrayForm.controls[this.currentEditingHabForm].setValue(
-        this.currentHabCopy
-      );
+      if (this.currentHabCopy === null) habArrayForm.removeAt(0);
+      else
+        habArrayForm.controls[this.currentEditingHabForm].setValue(
+          this.currentHabCopy
+        );
       this.currentHabCopy = null;
       this.currentEditingHabForm = null;
     }
@@ -258,7 +260,7 @@ export class OcchabFormService {
         ...hab,
         id_nomenclature_determination_type: this.getOrNull(
           hab,
-          "nomenclature_determination_method"
+          "nomenclature_determination_type"
         ),
         id_nomenclature_collection_technique: this.getOrNull(
           hab,
@@ -267,6 +269,10 @@ export class OcchabFormService {
         id_nomenclature_abundance: this.getOrNull(
           hab,
           "nomenclature_abundance"
+        ),
+        id_nomenclature_community_interest: this.getOrNull(
+          hab,
+          "nomenclature_community_interest"
         ),
       };
     });

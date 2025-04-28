@@ -1,20 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { OcchabFormService } from '../../services/form-service';
-import { OcchabStoreService } from '../../services/store.service';
-import { OccHabDataService } from '../../services/data.service';
-import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import { CommonService } from '@geonature_common/service/common.service';
-import { filter } from 'rxjs/operators';
-import { ConfigService } from '@geonature/services/config.service';
-import { StationFeature } from '../../models';
-import { FormService } from '@geonature_common/form/form.service';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { OcchabFormService } from "../../services/form-service";
+import { OcchabStoreService } from "../../services/store.service";
+import { OccHabDataService } from "../../services/data.service";
+import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subscription } from "rxjs/Subscription";
+import { CommonService } from "@geonature_common/service/common.service";
+import { filter } from "rxjs/operators";
+import { ConfigService } from "@geonature/services/config.service";
+import { StationFeature } from "../../models";
+import { FormService } from "@geonature_common/form/form.service";
 
 @Component({
-  selector: 'pnx-occhab-form',
-  templateUrl: 'occhab-form.component.html',
-  styleUrls: ['./occhab-form.component.scss', '../responsive-map.scss'],
+  selector: "pnx-occhab-form",
+  templateUrl: "occhab-form.component.html",
+  styleUrls: ["./occhab-form.component.scss", "../responsive-map.scss"],
   providers: [OcchabFormService],
 })
 export class OccHabFormComponent implements OnInit, OnDestroy {
@@ -22,8 +22,8 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
   public filteredHab: any;
   private _sub: Array<Subscription> = [];
   public editionMode = false;
-  public MAP_SMALL_HEIGHT = '50vh !important;';
-  public MAP_FULL_HEIGHT = '87vh';
+  public MAP_SMALL_HEIGHT = "50vh !important;";
+  public MAP_FULL_HEIGHT = "87vh";
   public mapHeight = this.MAP_FULL_HEIGHT;
   public showHabForm = false;
   public showTabHab = false;
@@ -58,45 +58,51 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
 
     this.occHabForm.stationForm = this.occHabForm.initStationForm();
 
-    this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe((d) => {
-      this.disabledForm = false;
-    });
-    this.storeService.defaultNomenclature$.pipe(filter((val) => val !== null)).subscribe((val) => {
-      this.occHabForm.patchDefaultNomenclaureStation(val);
-    });
+    this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(
+      (d) => {
+        this.disabledForm = false;
+      }
+    );
+    this.storeService.defaultNomenclature$
+      .pipe(filter((val) => val !== null))
+      .subscribe((val) => {
+        this.occHabForm.patchDefaultNomenclaureStation(val);
+      });
   }
 
   ngAfterViewInit() {
     // get the id from the route
     this._sub.push(
       this._route.params.subscribe((params) => {
-        if (params['id_station']) {
+        if (params["id_station"]) {
           this.editionMode = true;
           this.atLeastOneHab = true;
           this.showHabForm = false;
           this.showTabHab = true;
-          this._occHabDataService.getStation(params['id_station']).subscribe((station: any) => {
-            if (!station.properties.cruved.U) {
-              this._commonService.regularToaster(
-                'error',
-                "Vous n'avez pas les permissions requises pour modifier cette station !"
-              );
-              this._router.navigate(['occhab']);
-            }
-            this.currentEditingStation = station;
-            if (station.geometry.type == 'Point') {
-              // set the input for the marker component
-              this.markerCoordinates = station.geometry.coordinates;
-            } else {
-              // set the input for leaflet draw component
-              this.currentGeoJsonFileLayer = station.geometry;
-            }
-            this.occHabForm.patchStationForm(station);
-            if (station.properties.date_min != station.properties.date_max) {
-              this.occHabForm.stationForm.get('date_min').markAsDirty();
-              this.occHabForm.stationForm.get('date_max').markAsDirty();
-            }
-          });
+          this._occHabDataService
+            .getStation(params["id_station"])
+            .subscribe((station: any) => {
+              if (!station.properties.cruved.U) {
+                this._commonService.regularToaster(
+                  "error",
+                  "Vous n'avez pas les permissions requises pour modifier cette station !"
+                );
+                this._router.navigate(["occhab"]);
+              }
+              this.currentEditingStation = station;
+              if (station.geometry.type == "Point") {
+                // set the input for the marker component
+                this.markerCoordinates = station.geometry.coordinates;
+              } else {
+                // set the input for leaflet draw component
+                this.currentGeoJsonFileLayer = station.geometry;
+              }
+              this.occHabForm.patchStationForm(station);
+              if (station.properties.date_min != station.properties.date_max) {
+                this.occHabForm.stationForm.get("date_min").markAsDirty();
+                this.occHabForm.stationForm.get("date_max").markAsDirty();
+              }
+            });
         }
       })
     );
@@ -104,14 +110,17 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
 
   formIsDisable() {
     if (this.disabledForm) {
-      this._commonService.translateToaster('warning', 'Releve.FillGeometryFirst');
+      this._commonService.translateToaster(
+        "warning",
+        "Releve.FillGeometryFirst"
+      );
     }
   }
 
   // display help toaster for filelayer
   infoMessageFileLayer() {
     if (this.firstFileLayerMessage) {
-      this._commonService.translateToaster('info', 'Map.FileLayerInfoMessage');
+      this._commonService.translateToaster("info", "Map.FileLayerInfoMessage");
     }
     this.firstFileLayerMessage = false;
   }
@@ -125,6 +134,7 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
     this.showHabForm = false;
     this.showTabHab = true;
     this.occHabForm.currentEditingHabForm = null;
+    this.occHabForm.currentHabCopy = null;
     this.atLeastOneHab = true;
   }
 
@@ -148,7 +158,7 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
     const station = this.occHabForm.formatStationBeforePost();
     this._occHabDataService.createOrUpdateStation(station).subscribe((data) => {
       this.occHabForm.resetAllForm();
-      this._router.navigate(['occhab']);
+      this._router.navigate(["occhab"]);
     });
   }
 
