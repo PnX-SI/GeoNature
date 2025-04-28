@@ -1,6 +1,8 @@
 from flask import url_for, has_app_context, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
+from ref_geo.models import BibAreasTypes, LAreas
+from apptax.taxonomie.models import Taxref, VMTaxrefListForautocomplete
 import sqlalchemy as sa
 from flask_admin.contrib.sqla.tools import get_primary_key
 from flask_admin.contrib.sqla.fields import QuerySelectField
@@ -118,132 +120,203 @@ def role_formatter(view, context, model, name):
     return Markup('<a href="{}">{}</a>'.format(url, nom))
 
 
+def list_permissions_formatter(
+    permissions, available_permission, managable, current_user, return_url
+):
+    """
+    Render a list of permissions for module-object-action item as an HTML table.
+
+    This function generates an HTML table that displays permissions associated to specific
+     module, object, or action. Each permission is rendered with its status, expiration
+    date, and associated filters. If the permissions are manageable, edit and delete options are
+    included for each permission.
+
+    Parameters
+    ----------
+    permissions : list[Permission]
+        A list of permission objects to be rendered.
+    available_permission : PermissionAvailable
+        the permission template.
+    managable : bool
+        A boolean indicating whether the permissions are manageable. If True,
+        edit and delete options will be included in the rendered HTML.
+    model : User
+        current user
+    return_url : str
+        The URL to return to after performing an action (e.g., editing or
+        deleting a permission).
+
+    Returns
+    -------
+    str
+        An HTML string representing the permissions table.
+
+    Notes
+    -----
+    The function uses Bootstrap classes for styling the table and its elements.
+    If a permission has filters, they are displayed as a list within the table cell.
+    If a permission is not active, it is marked with a 'table-secondary' class and a
+    'text-danger' class for the expiration date.
+    If a permission is active but has an expiration date, it is marked with a 'text-success'
+    class for the expiration date.
+    """
+
+    html_output = ""
+    if permissions:
+
+        # List of permissions is shown in a HTML table TODO -> maybe use card of bootstrap -> https://getbootstrap.com/docs/4.6/components/card/
+        html_output += '<table class="table table-sm" style="border-collapse: separate; border-spacing:0 8px;">'
+
+        for perm in permissions:
+
+            permission_filters = perm.filters
+            html_output += "<tr>"
+
+            if not permission_filters:
+                html_output += '<td class="table-success">'
+            elif not perm.is_active:
+                html_output += '<td class="table-secondary">'
+            else:
+                html_output += '<td class="table-light">'
+
+            html_output += """<div class="row"><div class="col">"""
+            if not perm.is_active:
+                html_output += f"""<p class="small text-danger" style="margin-bottom:0;">Expiré le {perm.expire_on}</p>"""
+            elif perm.expire_on:
+                html_output += f"""<p class="small text-success" style="margin-bottom:0;">Expire le {perm.expire_on}</p>"""
+            # Display filters associated to the permission
+            if permission_filters:
+                filter_html = ""
+                for flt_name in perm.availability.filters:
+                    flt_field = Permission.filters_fields[flt_name]
+                    flt = PermFilter(flt_name, getattr(perm, flt_field))
+                    filter_html += f"""<li class="list-group-item" style="margin-bottom:0.2em;border-radius:5px">{flt}</li>"""
+                html_output += f"""<ul class="list-group">{filter_html}</ul>"""
+            else:
+                html_output += """<i class="fa fa-check" aria-hidden="true"></i>"""
+
+            html_output += """</div></div>"""
+            if managable:
+                html_output += """<div class="row"><div class="col text-right pt-1">"""
+                edit_url = url_for(
+                    "permissions/permission.edit_view",
+                    id=perm.id_permission,
+                    url=return_url,
+                )
+                delete_url = url_for(
+                    "permissions/permission.delete_view",
+                    id=perm.id_permission,
+                    url=return_url,
+                )
+                html_output += f"""<form method="post" action="{delete_url}">"""
+                if len(available_permission.filters) > 0:
+                    html_output += (
+                        f"""<a class="btn btn-primary btn-sm m-1" href="{edit_url}">"""
+                        """<i class="fa fa-pencil" aria-hidden="true"></i>"""
+                        """</a>"""
+                    )
+                html_output += (
+                    """<button class="btn btn-danger btn-sm m-1" onclick="return faHelpers.safeConfirm('Supprimer cette permission ?');">"""
+                    """<i class="fa fa-trash" aria-hidden="true"></i>"""
+                    "</button>"
+                    "</form>"
+                )
+                html_output += """</div></div>"""
+            html_output += "</td></tr>"
+        html_output += "</table>"
+
+    # If cell contains user permission, include create permission button
+    # Permission may be created if no permission was set or that multiple permission can be assign to this permission item (module, object, action)
+    if managable and (not permissions or len(available_permission.filters) > 1):
+        add_url = url_for(
+            "permissions/permission.create_view",
+            id_role=current_user.id_role,
+            module_code=available_permission.module.module_code,
+            code_object=available_permission.object.code_object,
+            code_action=available_permission.action.code_action,
+            url=return_url,
+        )
+        html_output += (
+            f"""<a class="btn btn-success btn-sm float-right" href="{add_url}">"""
+            """<i class="fa fa-plus" aria-hidden="true"></i>"""
+            """</a>"""
+        )
+    html_output = f"<td> {html_output}</td>"
+    return html_output
+
+
 def permissions_formatter(view, context, model, name):
     available_permissions = db.session.scalars(PermissionAvailable.nice_order()).unique().all()
-
-    o = "<table class='table'>"
+    html_output = "<table class='table'>"
     columns = ["Module", "Object", "Action", "Label"]
+
     if model.groupe:
         return_url = url_for("permissions/group.details_view", id=model.id_role)
         columns += ["Permissions"]
     else:
         return_url = url_for("permissions/user.details_view", id=model.id_role)
         columns += ["Permissions personnelles", "Permissions effectives"]
-    o += "<thead><tr>" + "".join([f"<th>{col}</th>" for col in columns]) + "</tr></thead>"
-    o += "<tbody>"
-    for ap in available_permissions:
+
+    html_output += "<thead><tr>" + "".join([f"<th>{col}</th>" for col in columns]) + "</tr></thead>"
+    html_output += "<tbody>"
+
+    for available_permission in available_permissions:
+        permissions = [permission for permission in model.permissions]
         own_permissions = list(
             filter(
-                lambda p: p.module == ap.module and p.object == ap.object and p.action == ap.action,
-                model.permissions,
+                lambda p: p.module == available_permission.module
+                and p.object == available_permission.object
+                and p.action == available_permission.action,
+                permissions,
             )
         )
-        permissions = [(own_permissions, True)]
+        permissions = [(own_permissions, True, "own")]
         if not model.groupe:
             effective_permissions = list(
                 get_permissions(
                     id_role=model.id_role,
-                    module_code=ap.module.module_code,
-                    object_code=ap.object.code_object,
-                    action_code=ap.action.code_action,
+                    module_code=available_permission.module.module_code,
+                    object_code=available_permission.object.code_object,
+                    action_code=available_permission.action.code_action,
                 )
             )
-            permissions.append((effective_permissions, False))
-            o += (
+            permissions.append((effective_permissions, False, "effective"))
+            html_output += (
                 "<tr>"
                 if own_permissions or effective_permissions
                 else "<tr class='text-muted alert alert-danger'>"
             )
         else:
-            o += "<tr>" if own_permissions else "<tr class='text-muted alert alert-danger'>"
+            html_output += (
+                "<tr>" if own_permissions else "<tr class='text-muted alert alert-danger'>"
+            )
 
-        o += "".join(
+        html_output += "".join(
             [
                 f"<td>{col}</td>"
                 for col in [
-                    ap.module.module_code,
-                    ap.object.code_object,
-                    ap.action.code_action,
-                    ap.label,
+                    available_permission.module.module_code,
+                    available_permission.object.code_object,
+                    available_permission.action.code_action,
+                    available_permission.label,
                 ]
             ]
         )
-        for perms, managable in permissions:
-            o += "<td>"
-            if perms:
-                if len(perms) > 1:
-                    o += f"{len(perms)} permissions :"
-                o += '<table class="table table-bordered table-sm" style="border-collapse: separate; border-spacing:0 8px;">'
-                for perm in perms:
-                    flts = perm.filters
-                    o += "<tr>"
-                    if not flts:
-                        o += '<td class="table-success">'
-                    else:
-                        o += '<td class="table-info">'
-                    o += """<div class="row"><div class="col">"""
-                    if not flts:
-                        o += """<i class="fa fa-check" aria-hidden="true"></i>"""
-                    else:
-                        o += """<ul class="list-group">"""
-                        for flt_name in perm.availability.filters:
-                            flt_field = Permission.filters_fields[flt_name]
-                            flt = PermFilter(flt_name, getattr(perm, flt_field.name))
-                            o += f"""<li class="list-group-item">{flt}</li>"""
-                        o += "</ul>"
-                    o += """</div></div>"""
-                    if managable:
-                        o += """<div class="row"><div class="col text-right">"""
-                        edit_url = url_for(
-                            "permissions/permission.edit_view",
-                            id=perm.id_permission,
-                            url=return_url,
-                        )
-                        delete_url = url_for(
-                            "permissions/permission.delete_view",
-                            id=perm.id_permission,
-                            url=return_url,
-                        )
-                        o += f"""<form method="post" action="{delete_url}">"""
-                        if len(ap.filters) > 0:
-                            o += (
-                                f"""<a class="btn btn-primary btn-sm" href="{edit_url}">"""
-                                """<i class="fa fa-pencil" aria-hidden="true"></i>"""
-                                """</a>"""
-                            )
-                        o += (
-                            """<button class="btn btn-danger btn-sm" onclick="return faHelpers.safeConfirm('Supprimer cette permission ?');">"""
-                            """<i class="fa fa-trash" aria-hidden="true"></i>"""
-                            "</button>"
-                            "</form>"
-                        )
-                        o += """</div></div>"""
-                    o += "</td></tr>"
-                o += "</table>"
-            if managable and (not perms or len(ap.filters) > 1):
-                add_url = url_for(
-                    "permissions/permission.create_view",
-                    id_role=model.id_role,
-                    module_code=ap.module.module_code,
-                    code_object=ap.object.code_object,
-                    code_action=ap.action.code_action,
-                    url=return_url,
-                )
-                o += (
-                    f"""<a class="btn btn-success btn-sm float-right" href="{add_url}">"""
-                    """<i class="fa fa-plus" aria-hidden="true"></i>"""
-                    """</a>"""
-                )
-            o += "</td>"
-        o += "</tr>"
-    o += "</tbody>"
-    o += "</table>"
-    return Markup(o)
+        for perms, managable, name in permissions:
+            html_output += list_permissions_formatter(
+                perms, available_permission, managable, model, return_url
+            )
+
+        html_output += "</tr>"
+    html_output += "</tbody>"
+    html_output += "</table>"
+    return Markup(html_output)
 
 
 def permissions_count_formatter(view, context, model, name):
     url = url_for("permissions/permission.index_view", flt1_rle_equals=model.id_role)
-    return Markup(f'<a href="{url}">{len(model.permissions)}</a>')
+    permissions_count = len([p for p in model.permissions if p.is_active])
+    return Markup(f'<a href="{url}">{permissions_count}</a>')
 
 
 ### Widgets
@@ -288,6 +361,15 @@ class OptionQuerySelectField(QuerySelectField):
 
 class UserAjaxModelLoader(QueryAjaxModelLoader):
     def format(self, user):
+        """
+        Instead of returning a list of tuple (id, label), we return a list of tuple (id, label, excluded_availabilities).
+        The third element of each tuple is the list of type of permissions the user already have, so it is useless
+        to add this permission to the user, and they will be not available in the front select.
+        Two remarks:
+        - We only consider active permissions of the user
+        - If the type of the permission allows two or more filters, we do not exclude it as it makes sens to add several
+          permissions of the same type with differents set of filters.
+        """
         if not user:
             return None
 
@@ -299,13 +381,15 @@ class UserAjaxModelLoader(QueryAjaxModelLoader):
         def filter_availability(availability):
             filters_count = sum(
                 [
-                    getattr(availability, field.name)
+                    getattr(availability, field)
                     for field in PermissionAvailable.filters_fields.values()
                 ]
             )
             return filters_count < 2
 
-        availabilities = {p.availability for p in user.permissions if p.availability}
+        availabilities = {
+            p.availability for p in user.permissions if p.availability and p.is_active
+        }
         excluded_availabilities = filter(filter_availability, availabilities)
         excluded_availabilities = map(format_availability, excluded_availabilities)
         return super().format(user) + (list(excluded_availabilities),)
@@ -317,6 +401,51 @@ class UserAjaxModelLoader(QueryAjaxModelLoader):
             .options(joinedload(User.permissions).joinedload(Permission.availability))
             .order_by(User.groupe.desc(), User.nom_role)
         )
+
+
+class AreaAjaxModelLoader(QueryAjaxModelLoader):
+    def format(self, area):
+        return (area.id_area, f"{area.area_name} ({area.area_type.type_name})")
+
+    def get_one(self, pk):
+        # prevent autoflush from occuring during populate_obj
+        with self.session.no_autoflush:
+            return self.session.get(self.model, pk)
+
+    def get_query(self):
+        return (
+            super()
+            .get_query()
+            .join(LAreas.area_type)
+            .where(
+                BibAreasTypes.type_code.in_(config["PERMISSIONS"]["GEOGRAPHIC_FILTER_AREA_TYPES"])
+            )
+            .order_by(BibAreasTypes.id_type, LAreas.area_name)
+        )
+
+
+class TaxrefAjaxModelLoader(QueryAjaxModelLoader):
+    def format(self, taxref):
+        if not hasattr(taxref, "search_name"):
+            label = db.session.scalar(
+                sa.select(VMTaxrefListForautocomplete.search_name).filter_by(cd_nom=taxref.cd_nom)
+            )
+        else:
+            label = taxref.search_name
+        return (taxref.cd_nom, label.replace("<i>", "").replace("</i>", ""))
+
+    def get_query(self):
+        return db.session.query(
+            Taxref.cd_nom,
+            VMTaxrefListForautocomplete.search_name,
+        ).join(
+            VMTaxrefListForautocomplete,
+            VMTaxrefListForautocomplete.cd_nom == Taxref.cd_nom,
+        )
+
+    def get_one(self, pk):
+        with self.session.no_autoflush:
+            return self.session.get(self.model, pk)
 
 
 ### ModelViews
@@ -347,7 +476,15 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
     object_code = "PERMISSIONS"
 
-    column_list = ("role", "module", "object", "action", "label", "filters")
+    column_list = (
+        "role",
+        "module",
+        "object",
+        "action",
+        "label",
+        "filters",
+        "expire_on",
+    )
     column_labels = {
         "role": "Rôle",
         "filters": "Restriction(s)",
@@ -355,11 +492,14 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "role.identifiant": "identifiant du rôle",
         "role.nom_complet": "nom du rôle",
         "availability": "Permission",
+        "expire_on": "Date d’expiration",
         "scope": "Filtre sur l'appartenance des données",
         "sensitivity_filter": (
             "Flouter" if config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"] else "Exclure"
         )
         + " les données sensibles",
+        "areas_filter": "Filtre géographique",
+        "taxons_filter": "Filtre taxonomique",
     }
     column_select_related_list = ("availability",)
     column_searchable_list = ("role.identifiant", "role.nom_complet")
@@ -383,6 +523,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("module", "module.module_code"),
         ("object", "object.code_object"),
         ("action", "action.code_action"),
+        ("expire_on", "expire_on"),
     )
     column_default_sort = [
         ("role.nom_complet", False),
@@ -390,23 +531,36 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", False),
         ("id_action", False),
     ]
-    form_columns = ("role", "availability", "scope", "sensitivity_filter")
+    form_columns = (
+        "role",
+        "availability",
+        "scope",
+        "sensitivity_filter",
+        "areas_filter",
+        "taxons_filter",
+        "expire_on",
+    )
     form_overrides = dict(
         availability=OptionQuerySelectField,
     )
     form_args = dict(
         availability=dict(
             query_factory=lambda: PermissionAvailable.nice_order(),
-            options_additional_values=["sensitivity_filter", "scope_filter"],
+            options_additional_values=[
+                "sensitivity_filter",
+                "scope_filter",
+                "areas_filter",
+                "taxons_filter",
+            ],
         ),
     )
     create_template = "admin/hide_select2_options_create.html"
     edit_template = "admin/hide_select2_options_edit.html"
     form_ajax_refs = {
         "role": UserAjaxModelLoader(
-            "role",
-            db.session,
-            User,
+            name="role",
+            session=db.session,
+            model=User,
             fields=(
                 "identifiant",
                 "nom_role",
@@ -415,7 +569,36 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
             placeholder="Veuillez sélectionner un utilisateur ou un groupe",
             minimum_input_length=0,
         ),
+        "areas_filter": AreaAjaxModelLoader(
+            name="areas_filter",
+            session=db.session,
+            model=LAreas,
+            fields=(LAreas.area_name, LAreas.area_code),
+            page_size=25,
+            placeholder="Sélectionnez une ou plusieurs zones géographiques",
+            minimum_input_length=1,
+        ),
+        "taxons_filter": TaxrefAjaxModelLoader(
+            name="taxons_filter",
+            session=db.session,
+            model=Taxref,
+            fields=(
+                Taxref.cd_nom,
+                Taxref.nom_vern,
+                Taxref.nom_valide,
+                Taxref.nom_complet,
+            ),
+            page_size=25,
+            placeholder="Sélectionnez un ou plusieurs taxons",
+            minimum_input_length=1,
+        ),
     }
+
+    def get_query(self):
+        return super().get_query().where(Permission.active_filter())
+
+    def get_count_query(self):
+        return super().get_count_query().where(Permission.active_filter())
 
     def render(self, template, **kwargs):
         self.extra_js = [url_for("static", filename="js/hide_unnecessary_filters.js")]
@@ -455,6 +638,8 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         "object": "Objet",
         "scope_filter": "Filtre appartenance",
         "sensitivity_filter": "Filtre sensibilité",
+        "areas_filter": "Filtre géographique",
+        "taxons_filter": "Filtre taxonomique",
     }
     column_formatters = {
         "module": lambda v, c, m, p: m.module.module_code,
@@ -471,7 +656,7 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", False),
         ("id_action", False),
     ]
-    form_columns = ("scope_filter", "sensitivity_filter")
+    form_columns = ("scope_filter", "sensitivity_filter", "areas_filter", "taxons_filter")
 
 
 class RolePermAdmin(CruvedProtectedMixin, ModelView):
@@ -504,6 +689,14 @@ class RolePermAdmin(CruvedProtectedMixin, ModelView):
         "permissions_count": permissions_count_formatter,
     }
 
+    def get_query(self):
+        # TODO : change to sqla2.0 query when flask admin update to sqla2
+        return db.session.query(User).where(User.filter_by_app())
+
+    def get_count_query(self):
+        # TODO : change to sqla2.0 query when flask admin update to sqla2
+        return db.session.query(sa.func.count("*")).select_from(User).where(User.filter_by_app())
+
 
 class GroupPermAdmin(RolePermAdmin):
     column_list = (
@@ -513,17 +706,10 @@ class GroupPermAdmin(RolePermAdmin):
     column_details_list = ("nom_role", "permissions_count", "permissions")
 
     def get_query(self):
-        # TODO : change to sqla2.0 query when flask admin update to sqla2
-        return db.session.query(User).filter_by(groupe=True).where(User.filter_by_app())
+        return super().get_query().where(User.groupe.is_(sa.true()))
 
     def get_count_query(self):
-        # TODO : change to sqla2.0 query when flask admin update to sqla2
-        return (
-            db.session.query(sa.func.count("*"))
-            .select_from(User)
-            .where(User.groupe == True)
-            .where(User.filter_by_app())
-        )
+        return super().get_count_query().where(User.groupe.is_(sa.true()))
 
 
 class UserPermAdmin(RolePermAdmin):
@@ -548,17 +734,10 @@ class UserPermAdmin(RolePermAdmin):
     )
 
     def get_query(self):
-        # TODO : change to sqla2.0 query when flask admin update to sqla2
-        return db.session.query(User).filter_by(groupe=False).where(User.filter_by_app())
+        return super().get_query().where(User.groupe.is_(sa.false()))
 
     def get_count_query(self):
-        # TODO : change to sqla2.0 query when flask admin update to sqla2
-        return (
-            db.session.query(sa.func.count("*"))
-            .select_from(User)
-            .where(User.groupe == False)
-            .where(User.filter_by_app())
-        )
+        return super().get_count_query().where(User.groupe.is_(sa.false()))
 
 
 admin.add_view(

@@ -15,6 +15,18 @@ $('#availability').on('change', function() {
         $("#scope").parent().hide();
         $("#scope").val("__None").trigger("change");
     }
+
+    if (selected && selected.hasAttribute("areas_filter"))
+        $("#areas_filter").parent().show();
+    else {
+        $("#areas_filter").parent().hide();
+    }
+
+    if (selected && selected.hasAttribute("taxons_filter"))
+        $("#taxons_filter").parent().show();
+    else {
+        $("#taxons_filter").parent().hide();
+    }
 });
 
 $('#availability').trigger('change');
