@@ -165,14 +165,14 @@ export class TabGeographicOverviewComponent extends Loadable implements OnInit {
         const obsCount = observations.length;
         this.setAreasStyle(layer as L.Path, obsCount);
         popupContent = `
-          <b>Nombre d'observations:</b> ${obsCount}<br>
-          <b>Zone:</b> ${feature.properties.area_name || 'Non définie'}<br>
+          <b>Nombre d'observations :</b> ${obsCount}<br>
+          <b>Zone :</b> ${feature.properties.area_name || 'Non définie'}<br>
         `;
       } else if (feature.geometry.type === 'Point') {
         popupContent = `
           ${observations[0].nom_vern_or_lb_nom || ''}<br>
-          <b>Observé le:</b> ${observations[0].date_min || 'Non défini'}<br>
-          <b>Par:</b> ${observations[0].observers || 'Non défini'}
+          <b>Observé le :</b> ${observations[0].date_min || 'Non défini'}<br>
+          <b>Par :</b> ${observations[0].observers || 'Non défini'}
         `;
       }
 
