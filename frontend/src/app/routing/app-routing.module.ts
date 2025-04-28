@@ -64,17 +64,6 @@ const defaultRoutes: Routes = [
           ).then((m) => m.MetadataModule),
       },
       {
-        path: 'admin',
-        data: { module_code: 'admin', module_label: 'Admin' },
-        loadChildren: () =>
-          import(
-            /* webpackChunkName: "admin" */
-            '@geonature/adminModule/admin.module'
-          ).then((m) => m.AdminModule),
-        canActivate: [ModuleGuardService],
-      },
-
-      {
         path: 'user',
         data: { module_code: 'user', module_label: 'Utilisateur' },
         loadChildren: () =>
