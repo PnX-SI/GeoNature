@@ -62,6 +62,7 @@
       "max":                    "Value must be at most {{max}} (currently {{actual}}).",
   
       "notNumber":              "Please enter a valid number.",
+      "commaNotAllowed":         "Please use '.' instead of ','",
       "arrayMinLengthError":    "Please provide at least {{arrayLength}} items.",
       "isObjectError":          "Invalid object format.",
       "minGreaterThanMax":      "Minimum must not be greater than maximum.",

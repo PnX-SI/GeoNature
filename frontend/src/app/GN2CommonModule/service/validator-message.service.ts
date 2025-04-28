@@ -19,6 +19,7 @@ export class ValidatorMessageService {
     [ValidationErrorsId.IS_OBJECT_ERROR]       : 'Format d’objet invalide.',
     [ValidationErrorsId.MIN_GREATER_THAN_MAX]  : 'Le minimum doit être ≤ le maximum.',
     [ValidationErrorsId.NOT_NUMBER_ERROR]      : 'Le champ doit être un nombre valide.',
+    [ValidationErrorsId.COMMA_NOT_ALLOWED]      : 'Le champ de type nombre ne doit pas contenir de virgule. Utilisez le point pour la décimale.',
     file                    : 'Le fichier est trop volumineux.',
     medias                  : 'Format de médias invalide.',
   };

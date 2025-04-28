@@ -61,14 +61,14 @@ export function numberValidator(): ValidatorFn {
     }
 
     // 2) Si c'est une string, on gère la virgule décimale
-    const raw = typeof v === 'string'
-      ? v.replace(',', '.')
-      : v;
+    if (typeof v === 'string' && v.includes(',')) {
+      return buildValidationErrors(ValidationErrorsId.COMMA_NOT_ALLOWED)
+    }
 
     // 3) On essaie de parser en nombre
-    const num = typeof raw === 'string'
-      ? parseFloat(raw)
-      : raw;
+    const num = typeof v === 'string'
+      ? parseFloat(v)
+      : v;
     
       const isNum = isFinite(num);
     // 4) Si ce n'est pas un nombre fini, on renvoie l'erreur

@@ -87,43 +87,26 @@ export class DynamicFormService {
         }
       }
 
-      // Contraints min and max for "number" input
-      if (formDef.type_widget === 'number') {
-        const cond_min =
-          typeof formDef.min === 'number' &&
-          !(typeof formDef.max === 'number' && formDef.min > formDef.max);
-        const cond_max =
-          typeof formDef.max === 'number' &&
-          !(typeof formDef.min === 'number' && formDef.min > formDef.max);
+      // Contraintes min et max pour les inputs numériques (number et txt_number)
+      if (formDef.type_widget === 'number' || formDef.type_widget === 'txt_number') {
+        const hasValidMin = typeof formDef.min === 'number';
+        const hasValidMax = typeof formDef.max === 'number';
+        const minLessThanMax = !(
+          hasValidMin && hasValidMax && formDef.min > formDef.max
+        );
 
-        if (cond_min) {
+        // 1) Toujours valider que c’est un nombre
+        validators.push(numberValidator());
+
+        // 2) Appliquer min/max si valides
+        if (hasValidMin && minLessThanMax) {
           validators.push(Validators.min(formDef.min));
         }
-
-        if (cond_max) {
-          validators.push(Validators.max(formDef.max));
-        }
-        validators.push(numberValidator());
-      }else if (formDef.type_widget === 'txt_number') {
-        // cas texte : on récupère la string brute
-        const cond_min =
-          typeof formDef.min === 'number' &&
-          !(typeof formDef.max === 'number' && formDef.min > formDef.max);
-        const cond_max =
-          typeof formDef.max === 'number' &&
-          !(typeof formDef.min === 'number' && formDef.min > formDef.max);
-      
-        // 1) d’abord on vérifie que c’est un nombre
-        validators.push(numberValidator());
-      
-        if (cond_min) {
-          validators.push(Validators.min(formDef.min));
-        }
-
-        if (cond_max) {
+        if (hasValidMax && minLessThanMax) {
           validators.push(Validators.max(formDef.max));
         }
       }
+
 
       // Constraint pattern for the "text"
       if (formDef.type_widget === 'text') {

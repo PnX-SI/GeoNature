@@ -76,6 +76,7 @@
       "max"                  : "La valeur doit être ≤ {{max}} (actuellement {{actual}}).",
   
       "notNumber"            : "Le champ doit contenir un nombre valide.",
+      "commaNotAllowed"      : "Le champ ne doit pas contenir de virgule. Utiliser le point à la place.",
       "arrayMinLengthError"  : "Il faut au moins {{arrayLength}} éléments.",
       "isObjectError"        : "Le format de l’objet est invalide.",
       "minGreaterThanMax"    : "Le minimum doit être inférieur ou égal au maximum.",
