@@ -9,6 +9,7 @@ from sqlalchemy.orm import (
     relationship,
     column_property,
     foreign,
+    remote,
     joinedload,
     contains_eager,
     deferred,
@@ -39,7 +40,7 @@ from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
-from apptax.taxonomie.models import Taxref
+from apptax.taxonomie.models import Taxref, TaxrefTree
 from geonature.core.imports.models import TImports as Import
 from ref_geo.models import LAreas
 
@@ -51,6 +52,7 @@ from geonature.core.gn_commons.models import (
     TMedias,
     TModules,
 )
+from geonature.core.gn_permissions.models import Permission
 from geonature.utils.env import DB, db
 
 
@@ -187,6 +189,7 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
 
     def lateraljoin_last_validation(self):
+        # FIXME missing order by!
         subquery = (
             select(TValidations)
             .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
@@ -399,6 +402,9 @@ class Synthese(DB.Model):
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
     taxref = relationship(Taxref)
+    taxref_tree = relationship(
+        TaxrefTree, primaryjoin=foreign(cd_nom) == remote(TaxrefTree.cd_nom), viewonly=True
+    )
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
     habitat = relationship(Habref)
     nom_cite = DB.Column(DB.Unicode(length=1000), nullable=False)
@@ -450,10 +456,8 @@ class Synthese(DB.Model):
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
-    def _has_scope_grant(self, scope):
-        if scope == 0:
-            return False
-        elif scope in (1, 2):
+    def _has_scope_grant(self, scope) -> bool:
+        if scope in (1, 2):
             if g.current_user == self.digitiser:
                 return True
             if g.current_user in self.cor_observers:
@@ -461,38 +465,45 @@ class Synthese(DB.Model):
             return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
+        return False
 
-    def _has_permissions_grant(self, permissions):
-        blur_sensitive_observations = current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]
+    def _has_permissions_grant(self, permissions) -> bool:
         if not permissions:
             return False
         for perm in permissions:
-            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY", "GEOGRAPHIC", "TAXONOMIC"):
                 continue  # unsupported filters
             if perm.sensitivity_filter:
-                if (
-                    blur_sensitive_observations
-                    and self.nomenclature_sensitivity.cd_nomenclature == "4"
-                ):
-                    continue
-                if (
-                    not blur_sensitive_observations
-                    and self.nomenclature_sensitivity.cd_nomenclature != "0"
-                ):
-                    continue
+                if current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]:
+                    # refuse access to obs with no diffusion sensitivity level
+                    # (lower sensitivity level will trigger blurring)
+                    if self.nomenclature_sensitivity.cd_nomenclature == "4":
+                        continue
+                else:
+                    # refuse access to obs with any sensitivity level (as blurring is disabled)
+                    if self.nomenclature_sensitivity.cd_nomenclature != "0":
+                        continue
             if perm.scope_value:
-                if g.current_user == self.digitiser:
-                    return True
-                if g.current_user in self.cor_observers:
-                    return True
-                if self.dataset.has_instance_permission(perm.scope_value):
-                    return True
-                continue  # scope filter denied access, check next permission
+                if not (
+                    g.current_user == self.digitiser
+                    or g.current_user in self.cor_observers
+                    or self.dataset.has_instance_permission(perm.scope_value)
+                ):
+                    continue  # scope filter denied access, check next permission
+            if perm.areas_filter:
+                if set(perm.areas_filter).isdisjoint(self.areas):
+                    # the permission does not allows any area overlapping the observation areas
+                    continue
+            if perm.taxons_filter:
+                if set(map(int, self.taxref_tree.path.split("."))).isdisjoint(
+                    [t.cd_ref for t in perm.taxons_filter]
+                ):
+                    continue
             return True  # no filter exclude this permission
         return False
 
-    def has_instance_permission(self, permissions):
-        if type(permissions) == int:
+    def has_instance_permission(self, permissions) -> bool:
+        if type(permissions) is int:
             return self._has_scope_grant(permissions)
         else:
             return self._has_permissions_grant(permissions)
@@ -666,6 +677,17 @@ class VSyntheseForWebApp(DB.Model):
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)
 
+    areas = relationship(
+        LAreas,
+        secondary=corAreaSynthese,
+        primaryjoin=corAreaSynthese.c.id_synthese == id_synthese,
+        secondaryjoin=corAreaSynthese.c.id_area == LAreas.id_area,
+        overlaps="areas,synthese_obs",
+    )
+    taxref = relationship(Taxref, primaryjoin=foreign(cd_nom) == Taxref.cd_nom)
+    taxref_tree = relationship(
+        TaxrefTree, primaryjoin=foreign(cd_nom) == remote(TaxrefTree.cd_nom), viewonly=True
+    )
     medias = relationship(
         TMedias, primaryjoin=(TMedias.uuid_attached_row == foreign(unique_id_sinp)), uselist=True
     )

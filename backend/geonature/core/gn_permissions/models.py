@@ -3,7 +3,9 @@ Models of gn_permissions schema
 """
 
 from packaging import version
+from datetime import datetime
 
+from ref_geo.models import LAreas
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.sql import select
@@ -13,6 +15,7 @@ from utils_flask_sqla.models import qfilter
 
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
+from apptax.taxonomie.models import Taxref
 
 from geonature.utils.env import db
 from geonature.core.gn_commons.models.base import TModules
@@ -132,15 +135,19 @@ class PermissionAvailable(db.Model):
 
     scope_filter = db.Column(db.Boolean, server_default=sa.false())
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+    areas_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+    taxons_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
 
     filters_fields = {
-        "SCOPE": scope_filter,
-        "SENSITIVITY": sensitivity_filter,
+        "SCOPE": "scope_filter",
+        "SENSITIVITY": "sensitivity_filter",
+        "GEOGRAPHIC": "areas_filter",
+        "TAXONOMIC": "taxons_filter",
     }
 
     @property
     def filters(self):
-        return [k for k, v in self.filters_fields.items() if getattr(self, v.name)]
+        return [k for k, v in self.filters_fields.items() if getattr(self, v)]
 
     def __str__(self):
         s = self.module.module_label
@@ -176,6 +183,46 @@ class PermFilter:
                 return """<i class="fa fa-low-vision" aria-hidden="true"></i>  non sensible"""
             else:
                 return """<i class="fa fa-eye" aria-hidden="true"></i>  sensible et non sensible"""
+        elif self.name == "GEOGRAPHIC":
+            if self.value:
+                areas_names = ", ".join([a.area_name for a in self.value])
+                return f"""<i class="fa fa-map-marker" aria-hidden="true"></i>  {areas_names}"""
+            else:
+                return (
+                    """<i class="fa fa-globe" aria-hidden="true"></i>  Aucune limite géographique"""
+                )
+        elif self.name == "TAXONOMIC":
+            if self.value:
+                taxons_names = ", ".join([t.nom_vern_or_lb_nom for t in self.value])
+                return f"""<i class="fa fa-tree" aria-hidden="true"></i>  {taxons_names}"""
+            else:
+                return """<i class="fa fa-tree" aria-hidden="true"></i>  Tous les taxons"""
+
+
+cor_permission_area = db.Table(
+    "cor_permission_area",
+    sa.Column(
+        "id_permission",
+        sa.Integer,
+        sa.ForeignKey("gn_permissions.t_permissions.id_permission"),
+        primary_key=True,
+    ),
+    sa.Column("id_area", sa.Integer, sa.ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
+    schema="gn_permissions",
+)
+
+
+cor_permission_taxref = db.Table(
+    "cor_permission_taxref",
+    sa.Column(
+        "id_permission",
+        sa.Integer,
+        sa.ForeignKey("gn_permissions.t_permissions.id_permission"),
+        primary_key=True,
+    ),
+    sa.Column("cd_nom", sa.Integer, sa.ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True),
+    schema="gn_permissions",
+)
 
 
 @serializable
@@ -194,14 +241,18 @@ class Permission(db.Model):
     )
 
     id_permission = db.Column(db.Integer, primary_key=True)
-    id_role = db.Column(db.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action))
-    id_module = db.Column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_role = db.Column(db.Integer, ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
+    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action), nullable=False)
+    id_module = db.Column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"), nullable=False)
     id_object = db.Column(
         db.Integer,
         ForeignKey(PermObject.id_object),
         default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
+        nullable=False,
     )
+    created_on = db.Column(sa.DateTime, server_default=sa.func.now())
+    expire_on = db.Column(db.DateTime)
+    validated = db.Column(sa.Boolean, server_default=sa.true())
 
     role = db.relationship(User, backref=db.backref("permissions", cascade_backrefs=False))
     action = db.relationship(PermAction)
@@ -211,6 +262,8 @@ class Permission(db.Model):
     scope_value = db.Column(db.Integer, ForeignKey(PermScope.value), nullable=True)
     scope = db.relationship(PermScope)
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+    areas_filter = db.relationship(LAreas, secondary=cor_permission_area)
+    taxons_filter = db.relationship(Taxref, secondary=cor_permission_taxref)
 
     availability = db.relationship(
         PermissionAvailable,
@@ -219,8 +272,10 @@ class Permission(db.Model):
     )
 
     filters_fields = {
-        "SCOPE": scope_value,
-        "SENSITIVITY": sensitivity_filter,
+        "SCOPE": "scope_value",
+        "SENSITIVITY": "sensitivity_filter",
+        "GEOGRAPHIC": "areas_filter",
+        "TAXONOMIC": "taxons_filter",
     }
 
     @staticmethod
@@ -231,6 +286,15 @@ class Permission(db.Model):
     def __SENSITIVITY_le__(a, b):
         # False only if: A is False and b is True
         return (not a) <= (not b)
+
+    @staticmethod
+    def __GEOGRAPHIC_le__(a, b):
+        return (a and set(a).issubset(b)) or not b
+
+    @staticmethod
+    def __TAXONOMIC_le__(a, b):
+        # True if *all* taxons of a is included in *any* taxons of b
+        return (a and any(all((_a <= _b for _a in a)) for _b in b)) or not b
 
     @staticmethod
     def __default_le__(a, b):
@@ -244,7 +308,7 @@ class Permission(db.Model):
         for name, field in self.filters_fields.items():
             # Get filter comparison function or use default comparison function
             __le_fct__ = getattr(self, f"__{name}_le__", Permission.__default_le__)
-            self_value, other_value = getattr(self, field.name), getattr(other, field.name)
+            self_value, other_value = getattr(self, field), getattr(other, field)
             if not __le_fct__(self_value, other_value):
                 return False
         return True
@@ -253,12 +317,18 @@ class Permission(db.Model):
     def filters(self):
         filters = []
         for name, field in self.filters_fields.items():
-            value = getattr(self, field.name)
-            if field.nullable:
-                if value is None:
-                    continue
-            if field.type.python_type == bool:
-                if not value:
+            value = getattr(self, field)
+            mapper = self.__mapper__
+            if field in mapper.columns:
+                column = mapper.columns[field]
+                if column.nullable:
+                    if value is None:
+                        continue
+                if column.type.python_type is bool:
+                    if not value:
+                        continue
+            elif field in mapper.relationships:
+                if value == []:
                     continue
             filters.append(PermFilter(name, value))
         return filters
@@ -272,3 +342,16 @@ class Permission(db.Model):
     @qfilter(query=True)
     def nice_order(cls, **kwargs):
         return _nice_order(cls, kwargs["query"])
+
+    @property
+    def is_active(self):
+        return (
+            self.expire_on is None or self.expire_on > datetime.now()
+        ) and self.validated is True
+
+    @classmethod
+    def active_filter(cls):
+        return sa.and_(
+            sa.or_(cls.expire_on.is_(sa.null()), cls.expire_on > sa.func.now()),
+            cls.validated.is_(True),
+        )

@@ -1,9 +1,12 @@
 from collections import ChainMap
+from datetime import datetime, timedelta
 from itertools import product
+from copy import deepcopy
 
+from marshmallow.exceptions import ValidationError
 import pytest
-
 from flask import g
+import sqlalchemy as sa
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
@@ -13,12 +16,19 @@ from geonature.core.gn_permissions.models import (
     Permission,
     PermissionAvailable,
 )
-from geonature.core.gn_permissions.tools import get_scopes_by_action, has_any_permissions_by_action
+from geonature.core.gn_permissions.tools import (
+    get_permissions,
+    get_scopes_by_action,
+    has_any_permissions_by_action,
+)
+from geonature.core.gn_permissions.schemas import PermissionSchema
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
+from apptax.taxonomie.models import Taxref
 
-from sqlalchemy import select
+from ref_geo.models import BibAreasTypes, LAreas
+from sqlalchemy import select, null
 
 
 @pytest.fixture(scope="class")
@@ -129,6 +139,7 @@ def permissions(roles, groups, actions, module_gn):
         scope_type = db.session.execute(
             select(PermFilterType).filter_by(code_filter_type="SCOPE")
         ).scalar_one()
+        perms = {}
         with db.session.begin_nested():
             for a, s in zip("CRUVED", cruved):
                 if s == "-":
@@ -137,9 +148,11 @@ def permissions(roles, groups, actions, module_gn):
                     s = None
                 else:
                     s = int(s)
-                db.session.add(
-                    Permission(role=role, action=actions[a], module=module, scope_value=s, **kwargs)
+                perms[a] = Permission(
+                    role=role, action=actions[a], module=module, scope_value=s, **kwargs
                 )
+                db.session.add(perms[a])
+        return perms
 
     return _permissions
 
@@ -180,6 +193,43 @@ def assert_cruved(roles):
         ) == cruved_dict(cruved)
 
     return _assert_cruved
+
+
+@pytest.fixture()
+def assert_permissions(roles):
+    def _assert_permissions(role, action_code, expected_perms, module=None, object=None):
+        role = roles[role]
+        module_code = module.module_code if module else None
+        object_code = object.code_object if object else None
+        perms = get_permissions(
+            id_role=role.id_role,
+            action_code=action_code,
+            module_code=module_code,
+            object_code=object_code,
+        )
+        perms = set(
+            (
+                p.scope_value,
+                p.sensitivity_filter,
+                frozenset(p.areas_filter),
+                frozenset(p.taxons_filter),
+            )
+            for p in perms
+        )
+        expected_perms = set(
+            (
+                (
+                    p.get("SCOPE", None),
+                    p.get("SENSITIVITY", False),
+                    frozenset(p.get("AREAS", [])),
+                    frozenset(p.get("TAXONS", [])),
+                )
+                for p in expected_perms
+            )
+        )
+        assert perms == expected_perms
+
+    return _assert_permissions
 
 
 @pytest.fixture(scope="class")
@@ -291,3 +341,210 @@ class TestPermissions:
         assert has_any_permissions_by_action(
             id_role=roles["r2"].id_role, module_code=module_a.module_code
         ) == b_cruved("111111")
+
+    def test_expired_perm(self, permissions, assert_cruved):
+        """
+        Expired permissions should not been taken into account.
+        Permissons with expire_on=NULL should be considered active.
+        """
+        permissions("r1", "1-----")
+        permissions("r1", "-1----", expire_on=None)
+        permissions("r1", "--1---", expire_on=datetime.now() - timedelta(days=1))
+        permissions("r1", "---1--", expire_on=datetime.now() + timedelta(days=1))
+
+        assert_cruved("r1", "110100")
+
+    def test_validation_perm(self, permissions, assert_cruved):
+        """
+        Permission not yet validated or refused should be ignored.
+        """
+        permissions("r1", "1-----")  # validation status default to True
+        permissions("r1", "-1----", validated=null())  # validation pending
+        permissions("r1", "--1---", validated=False)  # permission refused
+        permissions("r1", "---1--", validated=True)  # permission granted
+
+        assert_cruved("r1", "100100")
+
+
+@pytest.mark.usefixtures("temporary_transaction", "g_permissions")
+class TestPermissionsFilters:
+    def test_sensitivity_filter(self, roles, permissions, assert_permissions):
+        permissions("r1", "1-----")
+        permissions("r1", "-1----", sensitivity_filter=False)
+        permissions("r1", "--1---", sensitivity_filter=True)
+
+        assert_permissions("r1", "C", [{"SCOPE": 1, "SENSITIVITY": False}])
+        assert_permissions("r1", "R", [{"SCOPE": 1, "SENSITIVITY": False}])
+        assert_permissions("r1", "U", [{"SCOPE": 1, "SENSITIVITY": True}])
+
+    def test_sensitivity_filter_overlap(self, permissions, assert_permissions):
+        permissions("g1", "1-----", sensitivity_filter=True)
+        permissions("g2", "1-----", sensitivity_filter=False)
+        permissions("g1", "-1----", sensitivity_filter=True)
+        permissions("g2", "-2----", sensitivity_filter=False)
+        permissions("g1", "--2---", sensitivity_filter=True)
+        permissions("g2", "--1---", sensitivity_filter=False)
+
+        # g2 permisson is superior
+        assert_permissions("g12_r1", "C", [{"SCOPE": 1, "SENSITIVITY": False}])
+
+        # g2 permisson is superior
+        assert_permissions("g12_r1", "R", [{"SCOPE": 2, "SENSITIVITY": False}])
+
+        # g1 and g2 permissions can not be simplified
+        assert_permissions(
+            "g12_r1", "U", [{"SCOPE": 2, "SENSITIVITY": True}, {"SCOPE": 1, "SENSITIVITY": False}]
+        )
+
+    def test_geographic_filter(self, roles, permissions, assert_permissions):
+        grenoble = db.session.execute(
+            sa.select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Grenoble",
+            )
+        ).scalar_one()
+
+        permissions("r1", "1-----")
+        permissions("r1", "-1----", areas_filter=[])
+        permissions("r1", "--1---", areas_filter=[grenoble])
+
+        assert_permissions("r1", "C", [{"SCOPE": 1, "AREAS": []}])
+        assert_permissions("r1", "R", [{"SCOPE": 1, "AREAS": []}])
+        assert_permissions("r1", "U", [{"SCOPE": 1, "AREAS": [grenoble]}])
+
+    def test_geographic_filter_overlap(self, roles, permissions, assert_permissions):
+        grenoble = db.session.execute(
+            sa.select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Grenoble",
+            )
+        ).scalar_one()
+        gap = db.session.execute(
+            sa.select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Gap",
+            )
+        ).scalar_one()
+
+        assert Permission(areas_filter=[gap]) <= Permission(areas_filter=[gap])
+        assert not Permission(areas_filter=[gap]) <= Permission(areas_filter=[grenoble])
+        assert not Permission(areas_filter=[grenoble]) <= Permission(areas_filter=[gap])
+
+        permissions("g1", "1-----", areas_filter=[grenoble])
+        permissions("g2", "1-----", areas_filter=[])
+        permissions("g1", "-1----", areas_filter=[grenoble])
+        permissions("g2", "-2----", areas_filter=[])
+        permissions("g1", "--2---", areas_filter=[grenoble])
+        permissions("g2", "--1---", areas_filter=[])
+        permissions("g1", "---1--", areas_filter=[grenoble])
+        permissions("g2", "---2--", areas_filter=[grenoble])
+        permissions("g1", "----1-", areas_filter=[grenoble, gap])
+        permissions("g2", "----2-", areas_filter=[grenoble])
+        permissions("g1", "-----1", areas_filter=[grenoble])
+        permissions("g2", "-----2", areas_filter=[grenoble, gap])
+
+        assert_permissions("g12_r1", "C", [{"SCOPE": 1, "AREAS": []}])
+        assert_permissions("g12_r1", "R", [{"SCOPE": 2, "AREAS": []}])
+        assert_permissions(
+            "g12_r1", "U", [{"SCOPE": 1, "AREAS": []}, {"SCOPE": 2, "AREAS": [grenoble]}]
+        )
+        assert_permissions("g12_r1", "V", [{"SCOPE": 2, "AREAS": [grenoble]}])
+        assert_permissions(
+            "g12_r1",
+            "E",
+            [{"SCOPE": 1, "AREAS": [grenoble, gap]}, {"SCOPE": 2, "AREAS": [grenoble]}],
+        )
+        assert_permissions("g12_r1", "D", [{"SCOPE": 2, "AREAS": [grenoble, gap]}])
+
+    def test_taxonomic_filter(self, roles, permissions, assert_permissions):
+        animalia = db.session.execute(sa.select(Taxref).where(Taxref.cd_nom == 183716)).scalar_one()
+
+        permissions("r1", "1-----")
+        permissions("r1", "-1----", taxons_filter=[])
+        permissions("r1", "--1---", taxons_filter=[animalia])
+
+        assert_permissions("r1", "C", [{"SCOPE": 1, "TAXONS": []}])
+        assert_permissions("r1", "R", [{"SCOPE": 1, "TAXONS": []}])
+        assert_permissions("r1", "U", [{"SCOPE": 1, "TAXONS": [animalia]}])
+
+    def test_taxonomic_filter_overlap(self, roles, permissions, assert_permissions):
+        animalia = db.session.execute(sa.select(Taxref).where(Taxref.cd_nom == 183716)).scalar_one()
+        capra_ibex = db.session.execute(
+            sa.select(Taxref).where(Taxref.cd_nom == 61098)
+        ).scalar_one()
+        cinnamon = db.session.execute(sa.select(Taxref).where(Taxref.cd_nom == 706584)).scalar_one()
+
+        assert Permission(taxons_filter=[animalia]) <= Permission(taxons_filter=[animalia])
+        assert Permission(taxons_filter=[capra_ibex]) <= Permission(taxons_filter=[animalia])
+        assert not Permission(taxons_filter=[animalia]) <= Permission(taxons_filter=[capra_ibex])
+        assert not Permission(taxons_filter=[cinnamon]) <= Permission(taxons_filter=[animalia])
+        assert not Permission(taxons_filter=[cinnamon]) <= Permission(taxons_filter=[capra_ibex])
+        assert not Permission(taxons_filter=[cinnamon, capra_ibex]) <= Permission(
+            taxons_filter=[animalia]
+        )
+
+        permissions("g1", "1-----", taxons_filter=[capra_ibex])
+        permissions("g2", "1-----", taxons_filter=[])
+        permissions("g1", "-1----", taxons_filter=[capra_ibex])
+        permissions("g2", "-2----", taxons_filter=[])
+        permissions("g1", "--2---", taxons_filter=[capra_ibex])
+        permissions("g2", "--1---", taxons_filter=[])
+        permissions("g1", "---1--", taxons_filter=[capra_ibex])
+        permissions("g2", "---2--", taxons_filter=[capra_ibex])
+        permissions("g1", "----1-", taxons_filter=[capra_ibex])
+        permissions("g2", "----2-", taxons_filter=[animalia])
+        permissions("g1", "-----1", taxons_filter=[capra_ibex, cinnamon])
+        permissions("g2", "-----2", taxons_filter=[animalia])
+
+        assert_permissions("g12_r1", "C", [{"SCOPE": 1, "TAXONS": []}])
+        assert_permissions("g12_r1", "R", [{"SCOPE": 2, "TAXONS": []}])
+        assert_permissions(
+            "g12_r1", "U", [{"SCOPE": 1, "TAXONS": []}, {"SCOPE": 2, "TAXONS": [capra_ibex]}]
+        )
+        assert_permissions("g12_r1", "V", [{"SCOPE": 2, "TAXONS": [capra_ibex]}])
+        assert_permissions("g12_r1", "E", [{"SCOPE": 2, "TAXONS": [animalia]}])
+        assert_permissions(
+            "g12_r1",
+            "D",
+            [{"SCOPE": 1, "TAXONS": [capra_ibex, cinnamon]}, {"SCOPE": 2, "TAXONS": [animalia]}],
+        )
+
+
+@pytest.mark.usefixtures("temporary_transaction")
+class TestPermissionSchema:
+    def test_permission_schema(self, roles, actions, module_a):
+        gap = db.session.execute(
+            sa.select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Gap",
+            )
+        ).scalar_one()
+        capra_ibex = db.session.execute(
+            sa.select(Taxref).where(Taxref.cd_nom == 61098)
+        ).scalar_one()
+        data = {
+            "id_role": roles["r1"].id_role,
+            "id_action": actions["R"].id_action,
+            "id_module": module_a.id_module,
+            "scope_value": 3,
+            "areas_filter": [{"id_area": gap.id_area}],
+            "taxons_filter": [{"cd_nom": capra_ibex.cd_nom}],
+        }
+        schema = PermissionSchema(only=["areas_filter", "taxons_filter"])
+        schema.load(data)
+        unexisting_area_data = deepcopy(data)
+        unexisting_area_id = (
+            db.session.execute(sa.select(sa.func.max(LAreas.id_area)).select_from(LAreas)).scalar()
+            + 1
+        )
+        unexisting_area_data["areas_filter"] = [{"id_area": unexisting_area_id}]
+        with pytest.raises(ValidationError, match="Area does not exist"):
+            schema.load(unexisting_area_data)
+        unexisting_taxon_data = deepcopy(data)
+        unexisting_taxon_id = (
+            db.session.execute(sa.select(sa.func.max(Taxref.cd_nom)).select_from(Taxref)).scalar()
+            + 1
+        )
+        unexisting_taxon_data["taxons_filter"] = [{"cd_nom": unexisting_taxon_id}]
+        with pytest.raises(ValidationError, match="Taxon does not exist"):
+            schema.load(unexisting_taxon_data)
