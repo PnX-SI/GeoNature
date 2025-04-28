@@ -69,7 +69,11 @@ export class TabMediaComponent extends Loadable implements OnInit {
             currentPage: response.page,
             perPage: response.per_page,
           };
-          if (!this.medias.some((media) => media.id_media == this.selectedMedia.id_media)) {
+          if (
+            !this.selectedMedia || !this.medias.some(
+              (media) => media.id_media == this.selectedMedia.id_media
+            )
+          ) {
             this.selectedMedia = this.medias[selectedMediaIndex];
           }
         }

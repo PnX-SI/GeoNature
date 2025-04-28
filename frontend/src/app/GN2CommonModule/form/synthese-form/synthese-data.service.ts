@@ -15,7 +15,7 @@ import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
 
 export interface TaxonStats {
-  cd_ref?: 246817;
+  cd_ref?: number;
   altitude_max?: number;
   altitude_min?: number;
   area_count?: number;

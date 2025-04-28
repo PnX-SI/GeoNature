@@ -197,7 +197,7 @@ def taxon_medias(cd_ref):
     per_page = request.args.get("per_page", 10, int)
     page = request.args.get("page", 1, int)
 
-    taxon_subquery = TaxonSheetUtils.get_taxon_subquery(cd_ref)
+    taxon_subquery = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
 
     query = (
         select(TMedias)
@@ -231,8 +231,8 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
         if not TaxonSheetUtils.is_valid_area_type(area_type):
             raise BadRequest("Invalid area_type parameter")
 
-        areas_subquery = TaxonSheetUtils.get_area_subquery(area_type)
-        taxon_subquery = TaxonSheetUtils.get_taxon_subquery(cd_ref)
+        areas_subquery = TaxonSheetUtils.get_area_selectquery(area_type)
+        taxon_subquery = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
 
         # Main query to fetch stats
         query = select(
@@ -291,7 +291,7 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
         if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:
             raise BadRequest(f"The sort_by column {sort_by} is not defined")
 
-        taxon_subquery = TaxonSheetUtils.get_taxon_subquery(cd_ref)
+        taxon_subquery = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
 
         field_separators_as_regexp = rf"[{''.join(field_separators)}]+"
 

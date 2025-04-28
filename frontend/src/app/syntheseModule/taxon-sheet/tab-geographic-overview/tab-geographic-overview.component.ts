@@ -115,10 +115,12 @@ export class TabGeographicOverviewComponent extends Loadable implements OnInit {
     const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
 
     const filter: {
+      cd_ref: number[];
       cd_ref_parent: number[];
       date_min?: string;
       date_max?: string;
     } = {
+      cd_ref: [this.taxon.cd_ref],
       cd_ref_parent: [this.taxon.cd_ref],
     };
     if (this.yearInterval) {
