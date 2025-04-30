@@ -82,7 +82,7 @@ import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/sy
 import { TaxaComponent } from '@geonature_common/form/taxa/taxa.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Directives
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -107,8 +107,6 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
 import { IndividualsComponent } from './form/individuals/individuals.component';
 import { IndividualsService } from './form/individuals/individuals.service';
 import { IndividualsCreateComponent } from './form/individuals/create/individuals-create.component';
-import { CustomTranslateLoader } from '../shared/translate/custom-loader';
-import { ConfigService } from '@geonature/services/config.service';
 
 @NgModule({
   imports: [
@@ -142,15 +140,7 @@ import { ConfigService } from '@geonature/services/config.service';
     NgxDatatableModule,
     NgSelectModule,
     RouterModule,
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useClass: CustomTranslateLoader,
-        deps: [HttpClient, ConfigService],
-      },
-      isolate: false,
-      extend: true,
-    }),
+    TranslateModule,
     TreeModule,
   ],
   declarations: [
@@ -321,15 +311,7 @@ import { ConfigService } from '@geonature/services/config.service';
   ],
 })
 export class GN2CommonModule {
-  constructor(public matIconRegistry: MatIconRegistry, private translateService: TranslateService) {
+  constructor(public matIconRegistry: MatIconRegistry) {
     matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
-
-    // Workaround to force translation loaded for LazyModule.
-    // See: https://github.com/ngx-translate/core/issues/1193#issuecomment-735040662
-    const currentLang = translateService.currentLang;
-    if (currentLang !== undefined) {
-      translateService.currentLang = '';
-      translateService.use(currentLang);
-    }
   }
 }

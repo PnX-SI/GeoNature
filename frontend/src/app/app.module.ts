@@ -54,6 +54,7 @@ import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
+import { I18nService } from './shared/translate/i18n-service';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -138,6 +139,7 @@ export function initApp(injector) {
       deps: [Injector],
       multi: true,
     },
+    I18nService
   ],
   bootstrap: [AppComponent],
 })
