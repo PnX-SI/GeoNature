@@ -38,9 +38,10 @@
                 "output": "./assets/i18n/override/"
               },
               {
-                "glob": "**/*",
-                "input": "external_modules/*/assets/",
-                "output": "./assets/"
+                "followSymlinks": true,
+                "glob": "**/assets/**/*",
+                "input": "./external_modules/",
+                "output": "/modules/"
               },
               {
                 "glob": "**/*",
