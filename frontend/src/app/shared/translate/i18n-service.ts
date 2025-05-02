@@ -19,7 +19,19 @@ export class I18nService {
   ) {
     this.currentLang = this.translateService.getDefaultLang();
 
+    this.extractLocaleFromUrl();
+
     this.subscribeToRootLangChange();
+  }
+
+  private extractLocaleFromUrl() {
+    this.activatedRoute.queryParams.subscribe((param: any) => {
+      const locale = param['locale'];
+      if (locale !== undefined) {
+        this.translateService.setDefaultLang(locale);
+        this.translateService.use(locale);
+      }
+    });
   }
 
   private subscribeToRootLangChange() {
