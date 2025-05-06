@@ -41,7 +41,7 @@
 .TabGeographic {
   position: relative;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
   height: 100%;
 
@@ -65,10 +65,11 @@
   }
 
   &__map {
-    width: 70%;
+    width: 100%;
+    height: 400px;
   }
   &__side {
-    width: 30%;
+    width: 100%;
 
     &Item {
       padding: 1em;
