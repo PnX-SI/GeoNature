@@ -191,7 +191,7 @@ export class ImportReportComponent implements OnInit {
       leafletImage(
         this._map.map ? this._map.map : '',
         function (err, canvas) {
-          const mapImgBase64 = canvas.toDataURL('image/png');
+          const mapImgBase64 = canvas.toDataURL('image/jpeg');
           this.triggerPdfExport(chartImgBase64, mapImgBase64);
         }.bind(this)
       );
