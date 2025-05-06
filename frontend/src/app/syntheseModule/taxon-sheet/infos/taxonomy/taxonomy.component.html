@@ -4,18 +4,16 @@
     *ngIf="taxon"
   >
     <span *ngFor="let item of linnaeanParents">
+      <!-- prettier-ignore -->
       <a
         class="Link"
         (click)="navigateToCDRef(item.cd_ref)"
       >
-        {{ item.lb_nom }}
-      </a>
-      <span>/</span>
+        {{ item.lb_nom }}</a>
+      /
     </span>
     <span>
-      <a class="active">
-        {{ taxon.lb_nom }}
-      </a>
+      <a class="active">{{ taxon.nom_complet }}</a>
     </span>
   </div>
   <div
@@ -23,9 +21,6 @@
     *ngIf="!taxon"
   >
     -
-  </div>
-  <div class="Taxonomy__completeName">
-    {{ taxon?.nom_complet ?? '-' }}
   </div>
   <div class="Taxonomy__vernacularName">
     {{ nomComplet ?? '-' }}
