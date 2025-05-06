@@ -71,6 +71,8 @@ def taxon_distribution_plot(imprt) -> StandaloneEmbedJson:
 
         # Extract the rank values and counts
         rank_values, counts = data[:, 1], data[:, 0].astype(int)
+        if len(rank_values) > 256:
+            continue
 
         # Get angles (in radians) where start each section of the pie chart
         angles = np.cumsum(
