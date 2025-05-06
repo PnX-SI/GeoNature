@@ -313,5 +313,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
 export class GN2CommonModule {
   constructor(public matIconRegistry: MatIconRegistry) {
     matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
+    matIconRegistry.setDefaultFontSetClass('material-icons');
   }
 }
