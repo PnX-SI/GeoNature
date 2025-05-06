@@ -16,9 +16,9 @@
       [asCluster]="true"
     ></pnx-geojson>
   </pnx-map>
-  <div class="TabGeographic__side">
+  <div class="TabGeographic__toolbar">
     <div
-      class="TabGeographic__sideItem"
+      class="TabGeographic__toolbarItem"
       *ngIf="
         yearIntervalBoundaries &&
           yearInterval &&
@@ -26,13 +26,15 @@
         else yearSliderPlaceholder
       "
     >
-      <div class="text-muted">
-        Plage d'observations :
-        <b class="text">
+      <div class="Label text-muted">
+        <span class="Label__text">Plage d'observations :</span>
+        <span class="Label__text Label__text--highlighted">
           {{ yearInterval.min }}
-        </b>
-        -
-        <b class="text">{{ yearInterval.max }}</b>
+        </span>
+        <span class="Label__text">-</span>
+        <span class="Label__text Label__text--highlighted">
+          {{ yearInterval.max }}
+        </span>
       </div>
       <mat-slider
         class="DateSlider"
@@ -55,12 +57,12 @@
       </mat-slider>
     </div>
     <ng-template #yearSliderPlaceholder>
-      <div class="TabGeographic__sideItem">
-        <div class="text-muted">
-          Année d'observation(s):
-          <b class="text">
+      <div class="TabGeographic__toolbarItem">
+        <div class="Label Label--placeholder text-muted">
+          <span class="Label__text">Année d'observation(s):</span>
+          <span class="Label__text Label__text--highlighted">
             {{ yearInterval?.min ?? '' }}
-          </b>
+          </span>
         </div>
       </div>
     </ng-template>
