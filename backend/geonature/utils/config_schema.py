@@ -297,7 +297,6 @@ class TaxonSheet(Schema):
     ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
     ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
     ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
-    ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
 
 
 class Synthese(Schema):
