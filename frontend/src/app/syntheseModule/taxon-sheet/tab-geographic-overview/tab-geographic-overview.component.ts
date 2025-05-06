@@ -71,9 +71,7 @@ export class TabGeographicOverviewComponent extends Loadable implements OnInit {
   ) {
     super();
 
-    this.areasEnable =
-      this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
-      this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
+    this.areasEnable = true;
   }
 
   formatLabel(value: number): string {
@@ -213,7 +211,7 @@ export class TabGeographicOverviewComponent extends Loadable implements OnInit {
         let switchBtn = L.DomUtil.create('input', 'custom-control-input', switchBtnContainer);
         switchBtn.id = 'toggle-areas-btn';
         switchBtn.type = 'checkbox';
-        switchBtn.checked = this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
+        switchBtn.checked = this.areasEnable;
 
         switchBtn.onclick = () => {
           this.areasEnable = switchBtn.checked;
