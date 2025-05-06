@@ -152,7 +152,7 @@ export class TabGeographicOverviewComponent extends Loadable implements OnInit {
             onEachFeature: this.onEachFeature.bind(this),
           });
 
-          this._ms.map.addLayer(geoJSON);
+          this._ms.map.addLayer((L as any).markerClusterGroup().addLayer(geoJSON));
           this._ms.map.fitBounds(geoJSON.getBounds());
         }
       });

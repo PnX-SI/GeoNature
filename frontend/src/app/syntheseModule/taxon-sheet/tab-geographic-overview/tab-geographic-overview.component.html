@@ -13,6 +13,7 @@
       [geojson]="observations"
       [zoomOnFirstTime]="true"
       [style]="styleTabGeoJson"
+      [asCluster]="true"
     ></pnx-geojson>
   </pnx-map>
   <div class="TabGeographic__side">
@@ -26,7 +27,7 @@
       "
     >
       <div class="text-muted">
-        Plage d'observations:
+        Plage d'observations :
         <b class="text">
           {{ yearInterval.min }}
         </b>
