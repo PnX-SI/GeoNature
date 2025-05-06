@@ -22,7 +22,7 @@ interface Tab {
 
 export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   {
-    label: 'Synthèse géographique',
+    label: 'Observations',
     path: 'geographic_overview',
     component: TabGeographicOverviewComponent,
     configEnabledField: null, // make it always available !
@@ -32,6 +32,12 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
     path: 'taxonomy',
     configEnabledField: 'ENABLE_TAB_TAXONOMY',
     component: TabTaxonomyComponent,
+  },
+  {
+    label: 'Observateurs',
+    path: 'observers',
+    configEnabledField: 'ENABLE_TAB_OBSERVERS',
+    component: TabObserversComponent,
   },
   {
     label: 'Médias',
@@ -44,12 +50,6 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
     path: 'profile',
     configEnabledField: 'ENABLE_TAB_PROFILE',
     component: TabProfileComponent,
-  },
-  {
-    label: 'Observateurs',
-    path: 'observers',
-    configEnabledField: 'ENABLE_TAB_OBSERVERS',
-    component: TabObserversComponent,
   },
 ];
 
