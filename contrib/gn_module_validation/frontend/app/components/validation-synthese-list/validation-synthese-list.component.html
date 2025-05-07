@@ -35,7 +35,11 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column maxWidth="5">
+  <ngx-datatable-column
+    maxWidth="5"
+    [comparator]="compareWarning"
+    prop=""
+  >
     <ng-template
       let-column="column"
       ngx-datatable-header-template
@@ -63,13 +67,10 @@
       </div>
     </ng-template>
   </ngx-datatable-column>
-  <ngx-datatable-column maxWidth="60">
-    <ng-template
-      let-column="column"
-      ngx-datatable-header-template
-    >
-      <span>Détails</span>
-    </ng-template>
+  <ngx-datatable-column
+    maxWidth="60"
+    [sortable]="false"
+  >
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
@@ -100,7 +101,11 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column maxWidth="60">
+  <ngx-datatable-column
+    maxWidth="60"
+    prop="nomenclature_valid_status.cd_nomenclature"
+    name="Status"
+  >
     <ng-template
       let-row="row"
       ngx-datatable-cell-template

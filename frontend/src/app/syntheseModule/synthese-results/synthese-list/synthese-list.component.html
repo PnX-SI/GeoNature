@@ -18,7 +18,10 @@
   (sort)="onSort($event)"
   (select)="mapListService.onRowSelect($event)"
 >
-  <ngx-datatable-column [maxWidth]="5">
+  <ngx-datatable-column
+    [maxWidth]="5"
+    [sortable]="false"
+  >
     <ng-template ngx-datatable-header-template>
       <i
         id="dropdownMenuButton"
@@ -50,7 +53,10 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column [maxWidth]="5">
+  <ngx-datatable-column
+    [maxWidth]="5"
+    [sortable]="false"
+  >
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
