@@ -16,10 +16,10 @@ logger.setLevel(logging.DEBUG)
 
 from .utils import CLIENT_GET, CLIENT_POST, add_bluring_to_benchmark_test_class
 
-SYNTHESE_GET_OBS_URL = """url_for("gn_synthese.get_observations_for_web")"""
-SYNTHESE_EXPORT_OBS_URL = """url_for("gn_synthese.export_observations_web")"""
-SYNTHESE_EXPORT_STATUS_URL = """url_for("gn_synthese.export_status")"""
-SYNTHESE_EXPORT_TAXON_WEB_URL = """url_for("gn_synthese.export_taxon_web")"""
+SYNTHESE_GET_OBS_URL = """url_for("gn_synthese.synthese.get_observations_for_web")"""
+SYNTHESE_EXPORT_OBS_URL = """url_for("gn_synthese.exports.export_observations_web")"""
+SYNTHESE_EXPORT_STATUS_URL = """url_for("gn_synthese.exports.export_status")"""
+SYNTHESE_EXPORT_TAXON_WEB_URL = """url_for("gn_synthese.exports.export_taxon_web")"""
 
 
 @pytest.mark.benchmark(group="synthese")
@@ -28,7 +28,7 @@ class TestBenchmarkSynthese:
     # GET NOMENCLATURE
     test_get_default_nomenclatures = BenchmarkTest(
         CLIENT_GET,
-        [CLater("""url_for("gn_synthese.getDefaultsNomenclatures")""")],
+        [CLater("""url_for("gn_synthese.synthese_other_routes.getDefaultsNomenclatures")""")],
         dict(user_profile="self_user"),
     )
 
