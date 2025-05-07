@@ -33,11 +33,11 @@ interface YearInterval {
 @Component({
   standalone: true,
   selector: 'tab-geographic-overview',
-  templateUrl: 'tab-geographic-overview.component.html',
-  styleUrls: ['tab-geographic-overview.component.scss'],
+  templateUrl: 'tab-observations.component.html',
+  styleUrls: ['tab-observations.component.scss'],
   imports: [GN2CommonModule, CommonModule, MatSliderModule],
 })
-export class TabGeographicOverviewComponent extends Loadable implements OnInit {
+export class TabObservationsComponent extends Loadable implements OnInit {
   observations: FeatureCollection | null = null;
   areasEnable: boolean;
   areasLegend: any;
@@ -164,11 +164,8 @@ export class TabGeographicOverviewComponent extends Loadable implements OnInit {
       if (this.areasEnable && feature.geometry.type === 'MultiPolygon') {
         const obsCount = observations.length;
         this.setAreasStyle(layer as L.Path, obsCount);
-        popupContent = `
-          <b>Nombre d'observations :</b> ${obsCount}<br>
-          <b>Zone :</b> ${feature.properties.area_name || 'Non définie'}<br>
-        `;
-      } else if (feature.geometry.type === 'Point') {
+        popupContent = `${obsCount} observations`;
+      } else {
         popupContent = `
           ${observations[0].nom_vern_or_lb_nom || ''}<br>
           <b>Observé le :</b> ${observations[0].date_min || 'Non défini'}<br>

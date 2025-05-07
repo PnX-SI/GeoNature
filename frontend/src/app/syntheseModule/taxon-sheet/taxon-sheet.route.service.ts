@@ -7,7 +7,7 @@ import {
   CanActivate,
 } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
-import { TabGeographicOverviewComponent } from './tab-geographic-overview/tab-geographic-overview.component';
+import { TabObservationsComponent } from './tab-observations/tab-observations.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
 import { TabTaxonomyComponent } from './tab-taxonomy/tab-taxonomy.component';
 import { TabMediaComponent } from './tab-media/tab-media.component';
@@ -23,8 +23,8 @@ interface Tab {
 export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   {
     label: 'Observations',
-    path: 'geographic_overview',
-    component: TabGeographicOverviewComponent,
+    path: 'observations',
+    component: TabObservationsComponent,
     configEnabledField: null, // make it always available !
   },
   {
