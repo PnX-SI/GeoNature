@@ -24,8 +24,8 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   {
     label: 'Observations',
     path: 'observations',
+    configEnabledField: 'ENABLE_TAB_OBSERVATIONS', // make it always available !
     component: TabObservationsComponent,
-    configEnabledField: null, // make it always available !
   },
   {
     label: 'Taxonomie',
@@ -82,6 +82,14 @@ export class RouteService implements CanActivate, CanActivateChild {
     const targetedPath = childRoute.routeConfig.path;
     if (this.TAB_LINKS.map((tab) => tab.path).includes(targetedPath)) {
       return true;
+    }
+
+    // In case a tab is not enable but given in the URL
+    for (const tab of this.TAB_LINKS) {
+      if (this._config.SYNTHESE.TAXON_SHEET[tab.configEnabledField]) {
+        this._router.navigate([state.url.replace(`/${targetedPath}`, `/${tab.path}`)]);
+        return false;
+      }
     }
 
     this._router.navigate(['/404'], { skipLocationChange: true });

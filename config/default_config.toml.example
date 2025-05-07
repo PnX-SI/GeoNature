@@ -450,8 +450,10 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Permet d'activer ou non l'onglet "Taxonomie"
 
         ENABLE_TAB_TAXONOMY = true
-        # Permet d'activer ou non la section "Observers"
+        # Permet d'activer ou non la section "Observateurs"
         ENABLE_TAB_OBSERVERS = true
+        # Permet d'activer ou non la section "Observations
+        ENABLE_TAB_OBSERVATIONS = true
 
     # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
     FIELD_OBSERVERS_SEPARATORS =  [","]
