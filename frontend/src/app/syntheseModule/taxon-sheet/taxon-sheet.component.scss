@@ -2,7 +2,6 @@
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
-  font-size: 0.9rem;
   padding: 0.9rem;
   row-gap: 0.9rem;
   width: 100%;
@@ -32,8 +31,8 @@
     flex-grow: 1;
     overflow: auto;
     &__navBar {
-      font-size: 0.9em;
       a {
+        font-size: 0.9em;
         border-bottom: 1px solid rgba(0, 0, 0, 0.125);
       }
       a:hover {
