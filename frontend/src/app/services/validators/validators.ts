@@ -65,16 +65,14 @@ export function numberValidator(): ValidatorFn {
       return buildValidationErrors(ValidationErrorsId.COMMA_NOT_ALLOWED)
     }
 
-    // 3) On essaie de parser en nombre
-    const num = typeof v === 'string'
-      ? parseFloat(v)
-      : v;
-    
-      const isNum = isFinite(num);
+    // 3) On accepte uniquement les chiffres 
+    const stringValue = v.toString().trim();
+    const validNumberRegex = /^-?\d+(\.\d+)?$/;
     // 4) Si ce n'est pas un nombre fini, on renvoie l'erreur
-    return !isNum
-      ? buildValidationErrors(ValidationErrorsId.NOT_NUMBER_ERROR)
-      : null;
+    if (!validNumberRegex.test(stringValue)) {
+      return buildValidationErrors(ValidationErrorsId.NOT_NUMBER_ERROR);
+    }
+    return null;
   };
 }
 
