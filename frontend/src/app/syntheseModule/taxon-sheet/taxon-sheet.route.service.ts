@@ -16,7 +16,7 @@ import { TabObserversComponent } from './tab-observers/tab-observers.component';
 interface Tab {
   label: string;
   path: string;
-  configEnabledField?: string;
+  configEnabledField: string;
   component: any;
 }
 
@@ -24,8 +24,8 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   {
     label: 'Observations',
     path: 'observations',
+    configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
     component: TabObservationsComponent,
-    configEnabledField: null, // make it always available !
   },
   {
     label: 'Taxonomie',
@@ -69,13 +69,25 @@ export class RouteService implements CanActivate, CanActivateChild {
       );
     }
   }
+
+  _isComponentRootLevelRoute(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return state.url.endsWith(route.params.cd_ref);
+  }
+
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (!this._config.SYNTHESE.ENABLE_TAXON_SHEETS) {
       this._router.navigate(['/404'], { skipLocationChange: true });
       return false;
     }
 
-    return true;
+    // Apply a redirection if needed to the first enabled child.
+    if (this._isComponentRootLevelRoute(route, state)) {
+      if (this.TAB_LINKS.length) {
+        const redirectionTab = this.TAB_LINKS[0];
+        this._router.navigate([state.url + '/' + redirectionTab.path]);
+        return true;
+      }
+    }
   }
 
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {

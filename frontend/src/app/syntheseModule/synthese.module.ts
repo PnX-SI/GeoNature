@@ -44,11 +44,8 @@ const routes: Routes = [
     canActivate: [RouteService],
     canActivateChild: [RouteService],
     children: [
-      {
-        path: '',
-        redirectTo: ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES[0].path,
-        pathMatch: 'prefix',
-      },
+      // The tabs are all optional. therefore, we can't apply redireciotn here.
+      // A redirection from parent to child is apply in canActivate
       ...ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.map((tab) => {
         return {
           path: tab.path,

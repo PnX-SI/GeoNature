@@ -448,10 +448,14 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Permet d'activer ou non l'onglet "Profil"
         ENABLE_TAB_PROFILE = true
         # Permet d'activer ou non l'onglet "Taxonomie"
-
         ENABLE_TAB_TAXONOMY = true
-        # Permet d'activer ou non la section "Observers"
+        # Permet d'activer ou non la section "Observateurs"
         ENABLE_TAB_OBSERVERS = true
+        # Permet d'activer ou non la section "Observations"
+        ENABLE_TAB_OBSERVATIONS = true
+        # Permet d'activer ou non la section "Medias"
+        ENABLE_TAB_MEDIA = true
+
 
     # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
     FIELD_OBSERVERS_SEPARATORS =  [","]
@@ -685,7 +689,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     DEFAULT_GENERATE_MISSING_UUID = true
 
 
-    # Si différent de null, ce paramètre vérifie que les géométries des observations (ou stations) importées se trouvent 
+    # Si différent de null, ce paramètre vérifie que les géométries des observations (ou stations) importées se trouvent
     dans le polygone du zonage relié à l'identifiant indiqué par la valeur. Cette identifiant doit correspondre à une valeur contenue dans `ref_geo.l_areas.id_area`.
     ID_AREA_RESTRICTION = null
 
