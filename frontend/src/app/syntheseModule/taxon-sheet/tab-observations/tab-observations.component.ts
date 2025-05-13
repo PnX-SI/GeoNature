@@ -17,6 +17,7 @@ import { MapService } from '@geonature_common/map/map.service';
 import { MatSliderModule } from '@angular/material/slider';
 import { Loadable } from '../loadable';
 import { finalize } from 'rxjs/operators';
+import { CommonService } from '@geonature_common/service/common.service';
 
 interface MapAreasStyle {
   color: string;
@@ -48,6 +49,8 @@ export class TabObservationsComponent extends Loadable implements OnInit {
   yearIntervalBoundaries: YearInterval | null = null;
   yearInterval: YearInterval | null = null;
 
+  private isSuperiorToSyntheseLimit: Boolean = false;
+
   mapAreasStyle: MapAreasStyle = {
     color: '#FFFFFF',
     weight: 0.4,
@@ -67,7 +70,8 @@ export class TabObservationsComponent extends Loadable implements OnInit {
     public config: ConfigService,
     public formService: SyntheseFormService,
     public translateService: TranslateService,
-    private _ms: MapService
+    private _ms: MapService,
+    private _commonService: CommonService
   ) {
     super();
 
@@ -89,6 +93,7 @@ export class TabObservationsComponent extends Loadable implements OnInit {
 
     this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
       this.updateTaxonStats(stats);
+      console.log(stats);
     });
     this.initializeFormWithMapParams();
   }
@@ -99,6 +104,9 @@ export class TabObservationsComponent extends Loadable implements OnInit {
       this.yearInterval = null;
       return;
     }
+    this.isSuperiorToSyntheseLimit =
+      stats.observation_count > this.config['SYNTHESE']['NB_MAX_OBS_MAP'];
+
     this.yearIntervalBoundaries = {
       min: new Date(stats.date_min).getFullYear(),
       max: new Date(stats.date_max).getFullYear(),
@@ -125,11 +133,18 @@ export class TabObservationsComponent extends Loadable implements OnInit {
       filter.date_min = `${this.yearInterval.min}-01-01`;
       filter.date_max = `${this.yearInterval.max}-12-31`;
     }
+    const limit = this.areasEnable ? -1 : undefined;
 
     this._syntheseDataService
-      .getSyntheseData(filter, { format })
+      .getSyntheseData({ filter }, { format, limit })
       .pipe(finalize(() => this.stopLoading()))
       .subscribe((data) => {
+        if (!this.areasEnable && this.isSuperiorToSyntheseLimit) {
+          this._commonService.regularToaster(
+            'warning',
+            `Pour des raisons de performances, le nombre d'observations affichées est limité à ${this.config['SYNTHESE']['NB_MAX_OBS_MAP']}`
+          );
+        }
         this.styleTabGeoJson = undefined;
         const map = this._ms.map;
 
