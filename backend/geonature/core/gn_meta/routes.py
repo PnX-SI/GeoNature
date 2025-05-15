@@ -50,6 +50,7 @@ from geonature.core.gn_meta.schemas import (
     DatasetSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
+from utils_flask_sqla.db import ordered
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
@@ -104,14 +105,7 @@ def get_datasets():
     if request.is_json:
         query = TDatasets.filter_by_params(request.json, query=query)
 
-    if "orderby" in params:
-        table_columns = TDatasets.__table__.columns
-        order_by_column = params.pop("orderby")
-        try:
-            orderCol = getattr(table_columns, order_by_column)
-            query = query.order_by(orderCol)
-        except AttributeError as exc:
-            raise BadRequest("the attribute to order on does not exist") from exc
+    query = ordered(query, TDatasets, arg_name="orderby")
 
     query = query.options(
         Load(TDatasets).raiseload("*"),
