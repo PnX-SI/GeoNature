@@ -2,17 +2,15 @@
 Démarrage de l'application
 """
 
-import logging, warnings, os, sys
+import logging, warnings, sys
 from itertools import chain
 from importlib import import_module
-from packaging import version
 
 if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
 else:
     from importlib.metadata import entry_points
 from flask import Flask, g, request, current_app, send_from_directory
-from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
 from flask_babel import Babel
 from flask_cors import CORS
@@ -22,18 +20,13 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.wrappers import Response
-import sqlalchemy as sa
-
-if version.parse(sa.__version__) >= version.parse("1.4"):
-    from sqlalchemy.engine import Row
-else:  # retro-compatibility SQLAlchemy 1.3
-    from sqlalchemy.engine import RowProxy as Row
 
 from geonature.utils.config import config
 
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import iter_modules_dist
+from geonature.utils.json import MyJSONProvider
 from geonature.core.admin.admin import admin
 from geonature.middlewares import SchemeFix, RequestID
 
@@ -73,14 +66,6 @@ if config.get("SENTRY_DSN"):
         integrations=[FlaskIntegration(), RedisIntegration(), CeleryIntegration()],
         traces_sample_rate=1.0,
     )
-
-
-class MyJSONProvider(DefaultJSONProvider):
-    @staticmethod
-    def default(o):
-        if isinstance(o, Row):
-            return o._asdict()
-        return DefaultJSONProvider.default(o)
 
 
 def get_locale():

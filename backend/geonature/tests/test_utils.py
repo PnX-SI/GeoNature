@@ -1,11 +1,19 @@
 import tempfile
 
-from geonature.utils.config_schema import GnPySchemaConf
-from .fixtures import *
 import pytest
+import sqlalchemy as sa
+from flask import g
+
+from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_commons.schemas import ModuleSchema
+from geonature.utils.env import db
+from geonature.utils.config_schema import GnPySchemaConf
 from geonature.utils.utilstoml import *
 from geonature.utils.errors import GeoNatureError, ConfigError
-from marshmallow.exceptions import ValidationError
+from jsonschema import validate
+from json import loads
+
+from .fixtures import *
 
 
 #############################################################################
@@ -125,3 +133,36 @@ class TestUtils:
                     config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"]
                     == expected_enable_tab_profile
                 )
+
+
+pagination_schema = {
+    "type": "object",
+    "properties": {
+        "items": {"type": "array"},
+        "page": {"type": "number"},
+        "per_page": {"type": "number"},
+        "pages": {"type": "number"},
+        "total": {"type": "number"},
+        "prev_num": {"type": ["number", "null"]},
+        "next_num": {"type": ["number", "null"]},
+    },
+    "required": ["items", "page", "per_page", "pages", "total", "prev_num", "next_num"],
+}
+
+
+class TestJSONProvider:
+    def test_serialize_row(self, app):
+        query = sa.select(TModules.__table__)
+        app.json.dumps(db.session.execute(query).fetchone())
+        app.json.dumps(db.session.execute(query).fetchall())
+
+    def test_serialize_pagination_asdict(self, app):
+        query = sa.select(TModules)
+        json_data = app.json.dumps(db.paginate(query))
+        validate(loads(json_data), pagination_schema)
+
+    def test_serialize_pagination_schema(self, app):
+        query = sa.select(TModules)
+        g.pagination_schema = ModuleSchema()
+        json_data = app.json.dumps(db.paginate(query))
+        validate(loads(json_data), pagination_schema)
