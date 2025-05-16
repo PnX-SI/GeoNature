@@ -181,7 +181,7 @@ export class ImportReportComponent implements OnInit {
   }
   getChartPNG(): string {
     const obj: any = Object.values(Bokeh.index)[0];
-    return obj ? obj.export().canvas.toDataURL('image/png') : '';
+    return obj ? obj.export().canvas.toDataURL('image/png', 0.5) : '';
   }
 
   async exportAsPDF() {
@@ -191,7 +191,7 @@ export class ImportReportComponent implements OnInit {
       leafletImage(
         this._map.map ? this._map.map : '',
         function (err, canvas) {
-          const mapImgBase64 = canvas.toDataURL('image/jpeg');
+          const mapImgBase64 = canvas.toDataURL('image/jpeg', 0.5);
           this.triggerPdfExport(chartImgBase64, mapImgBase64);
         }.bind(this)
       );
