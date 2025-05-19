@@ -352,11 +352,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
    * This GET is required to get id_report autogenerate on creation, and DELETE with id_report next.
    */
   getReport(type) {
-    this._dataService
-      .getReports(`idSynthese=${this.idSynthese}&type=${type}&sort=asc`)
-      .subscribe((data) => {
-        this[type] = data[0];
-      });
+    this._dataService.getReports(`type=${type}&sort=asc`, this.idSynthese).subscribe((data) => {
+      this[type] = data[0];
+    });
   }
 
   openCloseAlert() {
