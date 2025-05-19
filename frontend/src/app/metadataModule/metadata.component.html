@@ -174,7 +174,7 @@
                       *ngIf="config.METADATA?.ENABLE_CLOSE_AF"
                       type="button"
                       mat-icon-button
-                      [disabled]="!af.opened"
+                      [disabled]="!af.opened || !af.cruved.U"
                       (click)="
                         openPublishModalAf($event, af.id_acquisition_framework, publishModal)
                       "
