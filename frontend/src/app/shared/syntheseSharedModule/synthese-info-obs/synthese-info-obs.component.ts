@@ -412,7 +412,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     this._clipboard.copy(
       `${this.config.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`
     );
-    this._commonService.translateToaster('info', 'Actions.Copy');
+    this._commonService.translateToaster('info', 'Synthese.Messages.Copied');
   }
 
   /**
