@@ -9,31 +9,26 @@ from lxml import etree as ET
 
 from flask import Blueprint, current_app, request, Response, g, render_template
 
-import click
-
-from flask.json import jsonify
-from sqlalchemy import inspect, and_, or_
-from sqlalchemy.sql import text, exists, select, update
+from sqlalchemy import inspect
+from sqlalchemy.exc import DatabaseError
+from sqlalchemy.sql import text, select
 from sqlalchemy.sql.functions import func
-from sqlalchemy.orm import Load, joinedload, raiseload, undefer
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
-from werkzeug.datastructures import Headers, MultiDict
-from werkzeug.utils import secure_filename
+from sqlalchemy.orm import Load, joinedload, undefer
+from werkzeug.exceptions import Conflict, BadRequest, Forbidden
+from werkzeug.datastructures import MultiDict
 from marshmallow import ValidationError, EXCLUDE
 
 
 from geonature.utils.config import config
-from geonature.utils.env import DB, db
+from geonature.utils.env import db
 from geonature.core.gn_synthese.models import (
     Synthese,
     CorAreaSynthese,
 )
 from geonature.core.gn_permissions.decorators import login_required
+from geonature.utils.errors import GeoNatureError
 
-
-from ref_geo.models import LAreas
 from pypnnomenclature.models import TNomenclatures
-from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 
 from geonature.core.gn_meta.models import (
@@ -54,7 +49,6 @@ from utils_flask_sqla.db import ordered
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
-from geonature.core.gn_permissions.models import TObjects
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
 
@@ -214,8 +208,8 @@ def delete_dataset(scope, ds_id):
             "La suppression du jeu de données n'est pas possible "
             "car des données y sont rattachées dans la Synthèse"
         )
-    DB.session.delete(dataset)
-    DB.session.commit()
+    db.session.delete(dataset)
+    db.session.commit()
     return "", 204
 
 
@@ -350,7 +344,7 @@ def sensi_report(ds_id=None):
         }
         for row in data
     ]
-    sensi_version = DB.session.scalars(
+    sensi_version = db.session.scalars(
         select(func.gn_commons.get_default_parameter("ref_sensi_version"))
     ).one_or_none()
 
@@ -403,8 +397,8 @@ def datasetHandler(dataset, data):
     except ValidationError as error:
         raise BadRequest(error.messages)
 
-    DB.session.add(dataset)
-    DB.session.commit()
+    db.session.add(dataset)
+    db.session.commit()
     return dataset
 
 
@@ -607,7 +601,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     Get a PDF export of one acquisition
     """
     # Recuperation des données
-    af = DB.session.get(TAcquisitionFramework, id_acquisition_framework)
+    af = db.session.get(TAcquisitionFramework, id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)
     dataset_ids = [d.id_dataset for d in af.datasets]
     nb_data = len(dataset_ids)
@@ -628,7 +622,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         .select_from(text("information_schema.schemata"))
         .where(text("schema_name = 'pr_occhab'"))
     )
-    if DB.session.execute(check_schema_query).scalar_one() > 0 and nb_data > 0:
+    if db.session.execute(check_schema_query).scalar_one() > 0 and nb_data > 0:
         query = (
             "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
         ("
@@ -636,7 +630,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
             + ")"
         )
 
-        nb_habitat = DB.engine.execute(text(query)).first()[0]
+        nb_habitat = db.engine.execute(text(query)).first()[0]
 
     acquisition_framework["stats"] = {
         "nb_data": nb_data,
@@ -800,8 +794,8 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework):
         log.exception(error)
         raise BadRequest(error.messages)
 
-    DB.session.add(acquisition_framework)
-    DB.session.commit()
+    db.session.add(acquisition_framework)
+    db.session.commit()
 
     return acquisition_framework
 
@@ -903,7 +897,7 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
         )
     ).all()
 
-    geojsonData = DB.session.scalars(
+    geojsonData = db.session.scalars(
         select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .where(Synthese.id_dataset.in_(dataset_ids))
         .limit(1)
@@ -918,74 +912,18 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
     return json.loads(geojsonData) if geojsonData else None
 
 
-def publish_acquisition_framework_mail(af):
+def call_extended_af_publish(af_id):
     """
-    Method for sending a mail during the publication process
+    If a route with the name extended_publish, we call it.
     """
-
-    # Parsing the AF XML from MTD to get the idTPS parameter
-    af_xml = mtd_utils.get_acquisition_framework(str(af.unique_acquisition_framework_id).upper())
-    xml_parser = ET.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
-    namespace = current_app.config["XML_NAMESPACE"]
-    root = ET.fromstring(af_xml, parser=xml_parser)
-    try:
-        ca = root.find(".//" + namespace + "CadreAcquisition")
-        ca_idtps = mtd_utils.get_tag_content(ca, "idTPS")
-    except AttributeError:
-        ca_idtps = ""
-
-    # Generate the links for the AF's deposite certificate and framework download
-    pdf_url = (
-        current_app.config["API_ENDPOINT"]
-        + "/meta/acquisition_frameworks/export_pdf/"
-        + str(af.id_acquisition_framework)
-    )
-
-    # Mail subject
-    mail_subject = "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
-    mail_subject_base = current_app.config["METADATA"]["MAIL_SUBJECT_AF_CLOSED_BASE"]
-    if mail_subject_base:
-        mail_subject = mail_subject_base + " " + mail_subject
-    if ca_idtps:
-        mail_subject = mail_subject + " pour le dossier {}".format(ca_idtps)
-
-    # Mail content
-    mail_content = f"""Bonjour,<br>
-    <br>
-    Le cadre d'acquisition <i> "{af.acquisition_framework_name}" </i> dont l’identifiant est
-    "{str(af.unique_acquisition_framework_id).upper()}" que vous nous avez transmis a été déposé"""
-
-    mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_CLOSED_ADDITION"]
-    mail_content_pdf = current_app.config["METADATA"]["MAIL_CONTENT_AF_CLOSED_PDF"]
-    mail_content_greetings = current_app.config["METADATA"]["MAIL_CONTENT_AF_CLOSED_GREETINGS"]
-
-    if ca_idtps:
-        mail_content = mail_content + f"dans le cadre du dossier {ca_idtps}"
-
-    if mail_content_additions:
-        mail_content = mail_content + mail_content_additions
-    else:
-        mail_content = mail_content + ".<br>"
-
-    if mail_content_pdf:
-        mail_content = mail_content + mail_content_pdf.format(pdf_url) + pdf_url + "<br>"
-
-    if mail_content_greetings:
-        mail_content = mail_content + mail_content_greetings
-
-    # Mail recipients : if the publisher is the the AF digitizer, we send a mail to both of them
-    mail_recipients = set()
-    cur_user = g.current_user
-    if cur_user and cur_user.email:
-        mail_recipients.add(cur_user.email)
-
-    if af.id_digitizer:
-        digitizer = DB.session.get(User, af.id_digitizer)
-        if digitizer and digitizer.email:
-            mail_recipients.add(digitizer.email)
-    # Mail sent
-    if mail_subject and mail_content and len(mail_recipients) > 0:
-        mail.send_mail(list(mail_recipients), mail_subject, mail_content)
+    extended_route = current_app.view_functions.get("extended_af_publish")
+    if extended_route:
+        try:
+            extended_route(af_id)
+        except Exception as excp:
+            raise GeoNatureError(
+                f"Custom route extended_af_publish called on {af_id} raised : {excp} "
+            )
 
 
 @routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
@@ -1024,14 +962,20 @@ def publish_acquisition_framework(af_id):
         dataset.active = False
 
     # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
-    af = DB.session.get(TAcquisitionFramework, af_id)
+    af = db.session.get(TAcquisitionFramework, af_id)
     af.opened = False
     if af.initial_closing_date is None:
         af.initial_closing_date = dt.datetime.now()
-
-    # first commit before sending mail
-    DB.session.commit()
-    # We send a mail to notify the AF publication
-    publish_acquisition_framework_mail(af)
+    try:
+        db.session.flush()  # tester si le commit devrait fonctionner
+        call_extended_af_publish(af_id)
+    except (DatabaseError, GeoNatureError) as error:
+        db.session.rollback()  # Si ça plante, on annule tout
+        log.error(
+            f"Erreur de type {type(error).__name__} lors de la publication du cadre : {error}"
+        )
+        raise Exception(f"Erreur lors de la publication du cadre, cadre non publié")
+    else:
+        db.session.commit()  # On commit que si tout a bien fonctionné
 
     return af.as_dict()

@@ -1651,6 +1651,13 @@ Bonnes pratiques Frontend
 
 .. include:: development/import-dev.rst
 
+Surcharge de fonctionnalités
+*************************
+Il est possible de surcharger les fonctionnalités de certains éléments de GeoNature.
+
+En déclarant une route nommée ``extended_af_publish``, qui prends l'identifiant d'un cadre d'acquisition en paramètre,
+dans votre module vous pouvez ajouter des actions qui seront réalisées
+aprés la publication de votre cadre d'acquisition.
 
 Documentation
 -------------
