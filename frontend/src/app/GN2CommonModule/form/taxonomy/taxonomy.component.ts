@@ -53,7 +53,7 @@ export interface Taxon {
  *
  *  @example
  * <pnx-taxonomy #taxon
- * label="{{ 'Taxon.Taxon' | translate }}
+ * label="{{ 'Taxon' | translate }}
  * [parentFormControl]="occurrenceForm.controls.cd_nom"
  * [idList]="occtaxConfig.id_taxon_list"
  * [charNumber]="3"

@@ -7,7 +7,7 @@
       color="primary"
       class="m-2 disccusion-action-btn"
       (click)="openCloseComment()"
-      ngbTooltip="{{ 'Synthese.AddComment' | translate }}"
+      ngbTooltip="{{ 'Synthese.Actions.AddComment' | translate }}"
       placement="left"
       align="end"
     >
@@ -80,7 +80,7 @@
             align="end"
             color="error"
             class="deleteComment"
-            ngbTooltip="{{ 'Synthese.DeleteComment' | translate }}"
+            ngbTooltip="{{ 'Synthese.Actions.DeleteComment' | translate }}"
             placement="left"
             *ngIf="currentUser.id_role === comment.id_role"
             (click)="deleteComment(comment.id_report, comment.report_type.type)"

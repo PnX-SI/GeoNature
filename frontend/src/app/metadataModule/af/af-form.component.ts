@@ -103,7 +103,7 @@ export class AfFormComponent implements OnInit {
     api
       .pipe(
         tap(() => {
-          this._commonService.translateToaster('success', 'MetaData.AFadded');
+          this._commonService.translateToaster('success', 'MetaData.Messages.AFadded');
           this.metadataS.getMetadata(); //rechargement de la liste de la page principale
         })
       )
@@ -115,7 +115,7 @@ export class AfFormComponent implements OnInit {
           ]),
         (error) => {
           if (error.status === 403) {
-            this._commonService.translateToaster('error', 'NotAllowed');
+            this._commonService.translateToaster('error', 'Errors.NotAllowed');
             this._router.navigate(['/metadata/']);
           }
         }

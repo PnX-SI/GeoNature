@@ -421,7 +421,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.formService.searchForm.controls.geoIntersection.setValue(geojson);
 
     if (this.firstFileLayerMessage) {
-      this._commonService.translateToaster('success', 'Map.FileLayerInfoSynthese');
+      this._commonService.translateToaster('success', 'Map.Messages.FileLayerInfoSynthese');
     }
     this.firstFileLayerMessage = false;
   }

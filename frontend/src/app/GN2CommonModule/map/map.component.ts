@@ -108,7 +108,7 @@ export class MapComponent implements OnInit {
         this._nominatim.search(term).pipe(
           tap(() => (this.searchFailed = false)),
           catchError(() => {
-            this._commonService.translateToaster('Warning', 'Map.LocationError');
+            this._commonService.translateToaster('Warning', 'Map.Messages.LocationError');
             this.searchFailed = true;
             return of([]);
           })

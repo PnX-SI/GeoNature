@@ -8,7 +8,7 @@
       routerLink="/metadata"
     >
       <mat-icon>chevron_left</mat-icon>
-      {{ 'GoBack' | translate }}
+      {{ 'Back' | translate }}
     </a>
   </div>
 
@@ -16,11 +16,11 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color">{{ 'MetaData.DatasetCard.Dataset' | translate }}</h3>
+          <h3 class="main-color">{{ 'Dataset' | translate }}</h3>
         </div>
         <div class="card-body">
           <div>
-            <small>{{ 'MetaData.AcquisitionFramework' | translate }}</small>
+            <small>{{ 'AcquisitionFramework' | translate }}</small>
             <ng-select
               [formControl]="form.get('id_acquisition_framework')"
               [items]="acquisitionFrameworks | async"
@@ -59,7 +59,7 @@
               class="error"
               style="color: red"
             >
-              {{ 'MetaData.DatasetForm.SizeNameJDD' | translate }}
+              {{ 'MetaData.DatasetForm.Messages.SizeNameJDD' | translate }}
             </small>
           </div>
 
@@ -77,13 +77,13 @@
                 class="error"
                 style="color: red"
               >
-                {{ 'MetaData.DatasetForm.SizeShortNameJDD' | translate }}
+                {{ 'MetaData.DatasetForm.Messages.SizeShortNameJDD' | translate }}
               </small>
             </div>
           </div>
 
           <div>
-            <small>{{ 'Media.description' | translate }}</small>
+            <small>{{ 'Description' | translate }}</small>
             <textarea
               class="form-control form-control-sm"
               type="text"
@@ -93,7 +93,7 @@
           </div>
 
           <div>
-            <small>{{ 'MetaData.DatasetCard.Keywords' | translate }}</small>
+            <small>{{ 'Keywords' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="text"
@@ -149,7 +149,7 @@
 
           <div>
             <pnx-nomenclature
-              label="{{ 'MetaData.DatasetForm.Aim' | translate }}"
+              label="{{ 'Aim' | translate }}"
               [parentFormControl]="form.get('id_nomenclature_dataset_objectif')"
               codeNomenclatureType="JDD_OBJECTIFS"
               data-qa="pnx-dataset-form-objectif"
@@ -159,7 +159,7 @@
           <div>
             <pnx-nomenclature
               [multiSelect]="true"
-              label="{{ 'MetaData.DatasetCard.Areas' | translate }}"
+              label="{{ 'MetaData.DatasetCard.Territories' | translate }}"
               [parentFormControl]="form.get('cor_territories')"
               codeNomenclatureType="TERRITOIRE"
               [bindAllItem]="true"
@@ -218,7 +218,7 @@
                 type="checkbox"
                 id="validable"
               />
-              <label for="validable">{{ 'MetaData.DatasetCard.Validable' | translate }}</label>
+              <label for="validable">{{ 'Validable' | translate }}</label>
             </div>
           </div>
 
@@ -343,7 +343,7 @@
       color="warn"
       routerLink="/metadata"
     >
-      {{ 'Cancel' | translate }}
+      {{ 'Actions.Cancel' | translate }}
     </button>
     <button
       [disabled]="form.invalid || datasetFormS.genericActorForm.invalid"
@@ -352,7 +352,7 @@
       (click)="postDataset()"
       data-qa="pnx-dataset-form-save-jdd"
     >
-      {{ 'MetaData.DatasetForm.SaveDataset' | translate }}
+      {{ 'MetaData.DatasetForm.Actions.SaveDataset' | translate }}
     </button>
   </div>
 </div>

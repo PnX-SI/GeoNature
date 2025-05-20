@@ -148,7 +148,9 @@ export class DatasetCardComponent implements OnInit {
         this._dfs
           .deleteDs(dataset.id_dataset)
           .pipe(
-            tap(() => this._commonService.translateToaster('success', 'MetaData.DatasetRemoved'))
+            tap(() =>
+              this._commonService.translateToaster('success', 'MetaData.Messages.DatasetRemoved')
+            )
           )
           .subscribe(() => this._router.navigate(['metadata']));
       }

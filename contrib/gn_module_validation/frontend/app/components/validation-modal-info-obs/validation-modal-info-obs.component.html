@@ -1,7 +1,11 @@
 <!-- MODAL HEADER -->
 <div class="modal-header padding-md-all">
   <h5 class="my-3 ml-3">
-    {{ edit ? 'Modifier le statut de validation' : "Information sur l'observation" }}
+    {{
+      edit
+        ? "Modifier le statut de validation"
+        : "Information sur l'observation"
+    }}
   </h5>
 
   <button
@@ -16,11 +20,7 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div
-  *ngIf="edit"
-  id="statusChange"
-  class="m-4"
->
+<div *ngIf="edit" id="statusChange" class="m-4">
   <p>Sélectionner le statut de l'observation :</p>
   <form class="my-3">
     <div class="my-3">
@@ -31,8 +31,11 @@
       >
         <label
           [ngStyle]="{
-            'background-color': config.VALIDATION.STATUS_INFO[item.cd_nomenclature]?.color,
-            color: ['0', '6'].includes(item.cd_nomenclature) ? 'darkslategray' : 'white',
+            'background-color':
+              config.VALIDATION.STATUS_INFO[item.cd_nomenclature]?.color,
+            color: ['0', '6'].includes(item.cd_nomenclature)
+              ? 'darkslategray'
+              : 'white',
             'border-color': ['0', '6'].includes(item.cd_nomenclature)
               ? 'rgba(0,0,0,0.2)'
               : 'transparent'
@@ -51,11 +54,7 @@
         </label>
       </span>
     </div>
-    <mat-form-field
-      appearance="fill"
-      style="width: 100%"
-      class="my-3"
-    >
+    <mat-form-field appearance="fill" style="width: 100%" class="my-3">
       <mat-label class="gn-color">Commentaire :</mat-label>
       <textarea
         matInput
@@ -102,7 +101,7 @@
   <button
     class="status-badge"
     mat-button
-    ngbTooltip="{{ 'Synthese.changeValidStatus' | translate }}"
+    ngbTooltip="{{ 'Validation.Actions.SetStatus' | translate }}"
     (click)="editStatus()"
     [ngStyle]="{
       'background-color': currentValidationStatus?.color || 'red',
@@ -119,10 +118,7 @@
   </button>
 </pnx-synthese-info-obs>
 <!--<div class="modal-footer justify-content-between">-->
-<div
-  class="modal-footer"
-  *ngIf="!edit"
->
+<div class="modal-footer" *ngIf="!edit">
   <div id="navigButtons">
     <button
       [disabled]="!isPrevButtonValid"

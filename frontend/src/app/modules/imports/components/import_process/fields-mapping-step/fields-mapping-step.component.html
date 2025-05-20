@@ -48,7 +48,7 @@
           style="text-align: center"
         >
           {{
-            'Import.FieldMapping.SourceFieldsMapped'
+            'Import.FieldMapping.Messages.SourceFieldsMapped'
               | translate: { mappedFieldsLength: getMappedTargetFields() }
           }}
           <br />
@@ -60,7 +60,7 @@
           style="text-align: center"
         >
           {{
-            'Import.FieldMapping.SourceFieldsAllMapped'
+            'Import.FieldMapping.Messages.SourceFieldsAllMapped'
               | translate: { sourceFieldsLength: sourceFields.length }
           }}
           <br />
@@ -75,7 +75,7 @@
               style="text-align: center"
             >
               {{
-                'Import.FieldMapping.SourceFieldsUnmapped'
+                'Import.FieldMapping.Messages.SourceFieldsUnmapped'
                   | translate: { unmappedFieldsLength: getUnmappedFieldsLength() }
               }}
             </div>
@@ -124,7 +124,7 @@
         class="modal-title"
         id="modal-basic-title"
       >
-        {{ 'Import.FieldMapping.SaveMapping' | translate }}
+        {{ 'Import.FieldMapping.Actions.SaveMapping' | translate }}
       </h4>
       <button
         type="button"
@@ -138,11 +138,11 @@
     </div>
     <div class="modal-body">
       <span *ngIf="!this.updateAvailable; else elseBlock">
-        {{ 'Import.FieldMapping.MappingCreate?' | translate }}
+        {{ 'Import.FieldMapping.Questions.MappingCreate?' | translate }}
       </span>
       <ng-template #elseBlock>
         <span>
-          {{ 'Import.FieldMapping.MappingChanged?' | translate }}
+          {{ 'Import.FieldMapping.Questions.MappingChanged?' | translate }}
         </span>
       </ng-template>
       <form>
@@ -151,7 +151,7 @@
             for="mappingName"
             *ngIf="this.updateAvailable"
           >
-            {{ 'Import.FieldMapping.MappingName' | translate }}
+            {{ 'Import.MappingName' | translate }}
           </label>
           <input
             [formControl]="modalCreateMappingForm"
@@ -164,7 +164,7 @@
             *ngIf="!modalCreateMappingForm.value"
             class="text-warning"
           >
-            {{ 'Import.FieldMapping.MappingNameWarning' | translate }}
+            {{ 'Import.FieldMapping.Messages.MappingNameWarning' | translate }}
           </span>
           <span
             *ngIf="
@@ -174,7 +174,7 @@
             "
             class="text-warning"
           >
-            {{ 'Import.FieldMapping.MappingChangeNameWarning' | translate }}
+            {{ 'Import.FieldMapping.Messages.MappingChangeNameWarning' | translate }}
           </span>
         </div>
       </form>
@@ -187,7 +187,7 @@
         (click)="modal.close(); processNextStep()"
         data-qa="import-fieldmapping-saving-modal-cancel"
       >
-        {{ 'Import.Mapping.DontSaveMapping' | translate }}
+        {{ 'Import.Mapping.Actions.DontSaveMapping' | translate }}
       </button>
       <button
         *ngIf="this.updateAvailable"
@@ -197,7 +197,7 @@
         (click)="modal.close(); updateMapping(true)"
         data-qa="import-fieldmapping-saving-modal-ok"
       >
-        {{ 'Import.Mapping.UpdateMapping' | translate }}
+        {{ 'Import.Mapping.Actions.UpdateMapping' | translate }}
       </button>
       <button
         type="button"
@@ -212,7 +212,7 @@
         "
         data-qa="import-fieldmapping-saving-modal-new-ok"
       >
-        {{ 'Import.Mapping.SaveNewMapping' | translate }}
+        {{ 'Import.Mapping.Actions.SaveNewMapping' | translate }}
       </button>
     </div>
   </ng-template>

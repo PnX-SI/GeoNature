@@ -124,7 +124,7 @@ export class OccHabMapListComponent implements OnInit {
       // error callback
       (e) => {
         if (e.status == 500) {
-          this._commonService.translateToaster("error", "ErrorMessage");
+          this._commonService.translateToaster("error", "Errors.ErrorMessage");
         }
         this.dataLoading = false;
       }

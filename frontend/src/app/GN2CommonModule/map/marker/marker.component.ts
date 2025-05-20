@@ -100,7 +100,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     this.map.on('click', (e: any) => {
       // check zoom level
       if (this.map.getZoom() < this.zoomLevel) {
-        this._commonService.translateToaster('warning', 'Map.ZoomWarning');
+        this._commonService.translateToaster('warning', 'Map.Messages.ZoomWarning');
       } else {
         this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat, true);
       }
@@ -133,7 +133,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   markerMoveEvent(marker: Marker) {
     marker.on('moveend', (event: L.LeafletMouseEvent) => {
       if (this.map.getZoom() < this.zoomLevel) {
-        this._commonService.translateToaster('warning', 'Map.ZoomWarning');
+        this._commonService.translateToaster('warning', 'Map.Messages.ZoomWarning');
         this.mapservice.marker.remove();
         this.mapservice.marker = this.mapservice.createMarker(
           this.previousCoord[0],

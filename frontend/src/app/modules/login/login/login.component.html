@@ -62,7 +62,7 @@
                       class="forgot"
                       (click)="login_or_pass_recovery = true"
                     >
-                      {{ 'ForgotPasswordOrLogin' | translate }}
+                      {{ 'Authentication.Messages.ForgotPasswordOrLogin' | translate }}
                     </div>
 
                     <button
@@ -105,7 +105,9 @@
 
                 <div *ngIf="enable_sign_up">
                   <div class="inscription">
-                    <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>
+                    <a routerLink="/login/inscription">
+                      {{ 'Authentication.Actions.CreateAccount' | translate }}
+                    </a>
                   </div>
                 </div>
                 <div
@@ -169,7 +171,7 @@
                 role="alert"
                 style="margin-top: 5px"
               >
-                <strong>{{ 'LoginError' | translate }}</strong>
+                <strong>{{ 'Authentication.Errors.LoginError' | translate }}</strong>
               </p>
               <img
                 style="margin-left: 40%"

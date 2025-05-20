@@ -13,7 +13,9 @@
     class="media-dialog__arrow media-dialog__arrow--left"
     (click)="changeMedia(-1)"
   >
-    <mat-icon matTooltip="{{ 'Media.previous' | translate }}">keyboard_arrow_left</mat-icon>
+    <mat-icon matTooltip="{{ 'Media.Actions.PreviousMedia' | translate }}">
+      keyboard_arrow_left
+    </mat-icon>
   </button>
 
   <button
@@ -22,6 +24,8 @@
     class="media-dialog__arrow media-dialog__arrow--right"
     (click)="changeMedia(1)"
   >
-    <mat-icon matTooltip="{{ 'Media.next' | translate }}">keyboard_arrow_right</mat-icon>
+    <mat-icon matTooltip="{{ 'Media.Actions.NextMedia' | translate }}">
+      keyboard_arrow_right
+    </mat-icon>
   </button>
 </div>

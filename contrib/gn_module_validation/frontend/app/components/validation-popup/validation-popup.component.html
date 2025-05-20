@@ -8,24 +8,19 @@
   [disabled]="!isAccess()"
   (click)="openVerticallyCentered(content)"
 >
-  {{ 'Validation.SetStatus' | translate }}
+  {{ "Validation.Actions.SetStatus" | translate }}
 </button>
 
-<ng-template
-  #content
-  let-c="close"
-  let-d="dismiss"
->
+<ng-template #content let-c="close" let-d="dismiss">
   <!-- Modal Validation Popup-->
 
   <!-- Modal content-->
 
   <form class="modal-content">
-    <div
-      class="modal-header"
-      style="justify-content: center"
-    >
-      <h4 class="modal-title">{{ 'Validation.ChangeStatus' | translate }}</h4>
+    <div class="modal-header" style="justify-content: center">
+      <h4 class="modal-title">
+        {{ "Validation.Actions.ChangeStatus" | translate }}
+      </h4>
       <button
         type="button"
         class="close"
@@ -36,28 +31,19 @@
       </button>
     </div>
 
-    <div
-      class="modal-body"
-      id="bodyModal"
-      style="padding-top: 30px"
-    >
+    <div class="modal-body" id="bodyModal" style="padding-top: 30px">
       <div>
         <span id="nbObs">{{ this.observations.length }}</span>
-        {{ 'Validation.SelectedObservations' | translate: { plural: plurielObservations } }}
-      </div>
-      <div
-        *ngIf="nbOffPage !== 0"
-        class="d-flex"
-      >
-        <i
-          id="attention"
-          class="material-icons"
-        >
-          warning
-        </i>
         {{
-          'Validation.WarningHiddenObservations'
-            | translate: { plural: plurielNbOffPage, value: nbOffPage }
+          "Validation.SelectedObservations"
+            | translate : { plural: plurielObservations }
+        }}
+      </div>
+      <div *ngIf="nbOffPage !== 0" class="d-flex">
+        <i id="attention" class="material-icons"> warning </i>
+        {{
+          "Validation.WarningHiddenObservations"
+            | translate : { plural: plurielNbOffPage, value: nbOffPage }
         }}
       </div>
 
@@ -66,13 +52,11 @@
         <legend>Choix du statut</legend>
 
         <div>
-          <span
-            *ngFor="let item of validationStatus"
-            id="validButtons"
-          >
+          <span *ngFor="let item of validationStatus" id="validButtons">
             <label
               [ngStyle]="{
-                'background-color': config.VALIDATION.STATUS_INFO[item.cd_nomenclature]?.color
+                'background-color':
+                  config.VALIDATION.STATUS_INFO[item.cd_nomenclature]?.color
               }"
               role="button"
               class="btn btn-success box-shadow"
@@ -94,10 +78,7 @@
         </div>
       </fieldset>
 
-      <div
-        class="md-form mb-0"
-        style="padding-top: 30px"
-      >
+      <div class="md-form mb-0" style="padding-top: 30px">
         <span>Commentaire :</span>
         <textarea
           type="text"
@@ -109,10 +90,7 @@
     </div>
 
     <!-- Bouton de fermeture de la modal pop-up ou envoi -->
-    <div
-      class="modal-footer"
-      id="choicePopup"
-    >
+    <div class="modal-footer" id="choicePopup">
       <button
         id="saveButton"
         (click)="onSubmit(statusForm.value)"
