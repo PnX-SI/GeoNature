@@ -1,5 +1,8 @@
 <div class="row">
-  <div *ngIf="config.OCCTAX.form_fields.obj_count" class="col-lg-4 col-sm-6">
+  <div
+    *ngIf="config.OCCTAX.form_fields.obj_count"
+    class="col-lg-4 col-sm-6"
+  >
     <pnx-nomenclature
       label="{{ 'Occtax.Counting.CountingObject' | translate }}"
       codeNomenclatureType="OBJ_DENBR"
@@ -9,7 +12,10 @@
       [group3Inpn]="(occtaxFormOccurrenceService.taxref | async)?.group3_inpn"
     ></pnx-nomenclature>
   </div>
-  <div *ngIf="config.OCCTAX.form_fields.type_count" class="col-lg-4 col-sm-6">
+  <div
+    *ngIf="config.OCCTAX.form_fields.type_count"
+    class="col-lg-4 col-sm-6"
+  >
     <pnx-nomenclature
       #typeDenombrement
       label="{{ 'Occtax.Counting.CountingType' | translate }}"
@@ -29,14 +35,17 @@
   class="error"
   style="color: red"
 >
-  {{ "Occtax.Counting.Errors.CountingObjectRequiredError" | translate }}
+  {{ 'Occtax.Counting.Errors.CountingObjectRequiredError' | translate }}
 </small>
 
 <div class="row">
   <div class="col-6">
     <div class="row">
-      <div *ngIf="config.OCCTAX.form_fields.count_min" class="col-6">
-        <small>{{ "Occtax.Counting.NumberMin" | translate }}</small>
+      <div
+        *ngIf="config.OCCTAX.form_fields.count_min"
+        class="col-6"
+      >
+        <small>{{ 'Occtax.Counting.NumberMin' | translate }}</small>
         <input
           data-qa="counting-count-min"
           class="form-control form-control-sm"
@@ -45,8 +54,11 @@
           [formControl]="form.get('count_min')"
         />
       </div>
-      <div *ngIf="config.OCCTAX.form_fields.count_max" class="col-6">
-        <small>{{ "Occtax.Counting.NumberMax" | translate }}</small>
+      <div
+        *ngIf="config.OCCTAX.form_fields.count_max"
+        class="col-6"
+      >
+        <small>{{ 'Occtax.Counting.NumberMax' | translate }}</small>
         <input
           data-qa="counting-count-max"
           class="form-control form-control-sm"
@@ -62,11 +74,14 @@
       class="error"
       style="color: red"
     >
-      {{ "Occtax.Counting.Errors.CountError" | translate }}
+      {{ 'Occtax.Counting.Errors.CountError' | translate }}
     </small>
   </div>
 
-  <div *ngIf="config.OCCTAX.form_fields.life_stage" class="col-3">
+  <div
+    *ngIf="config.OCCTAX.form_fields.life_stage"
+    class="col-3"
+  >
     <pnx-nomenclature
       label="{{ 'Occtax.Counting.LifeStage' | translate }}"
       codeNomenclatureType="STADE_VIE"
@@ -83,10 +98,13 @@
       class="error"
       style="color: red"
     >
-      {{ "Occtax.Counting.Errors.LifeStageRequiredError" | translate }}
+      {{ 'Occtax.Counting.Errors.LifeStageRequiredError' | translate }}
     </small>
   </div>
-  <div *ngIf="config.OCCTAX.form_fields.sex" class="col-3">
+  <div
+    *ngIf="config.OCCTAX.form_fields.sex"
+    class="col-3"
+  >
     <pnx-nomenclature
       label="{{ 'Occtax.Counting.Sex' | translate }}"
       codeNomenclatureType="SEXE"
@@ -103,7 +121,7 @@
       class="error"
       style="color: red"
     >
-      {{ "Occtax.Counting.Errors.SexRequiredError" | translate }}
+      {{ 'Occtax.Counting.Errors.SexRequiredError' | translate }}
     </small>
   </div>
 </div>
@@ -127,7 +145,7 @@
         matBadgeOverlap="false"
         class="color-add-media"
       >
-        {{ "Media.Medias" | translate }}
+        {{ 'Media.Medias' | translate }}
       </span>
     </h6>
     <pnx-medias

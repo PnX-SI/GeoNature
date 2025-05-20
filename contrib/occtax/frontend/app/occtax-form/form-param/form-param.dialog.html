@@ -1,6 +1,12 @@
-<ng-template #modalContent let-modal>
+<ng-template
+  #modalContent
+  let-modal
+>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">
+    <h4
+      class="modal-title"
+      id="modal-basic-title"
+    >
       Paramétrage de la valeur par défaut des champs du formulaire
     </h4>
     <button
@@ -14,7 +20,10 @@
   </div>
   <div class="modal-body">
     <div class="help">
-      <div class="display-help" (click)="collapse()">
+      <div
+        class="display-help"
+        (click)="collapse()"
+      >
         <ng-container *ngIf="state === 'collapsed'; else hideBlock">
           Afficher l'aide
           <mat-icon>arrow_drop_down</mat-icon>
@@ -25,14 +34,14 @@
         </ng-template>
       </div>
       <p [@detailExpand]="state">
-        Cet espace permet de spécifier une valeur de remplacement par défaut
-        pour certains champs du formulaire.
+        Cet espace permet de spécifier une valeur de remplacement par défaut pour certains champs du
+        formulaire.
         <br />
-        Les 3 boutons ci-dessous permettent d'activer ou de désactiver cette
-        fonctionnalité pour les différentes parties du formulaire concernées.
+        Les 3 boutons ci-dessous permettent d'activer ou de désactiver cette fonctionnalité pour les
+        différentes parties du formulaire concernées.
         <br />
-        Un champ laissé vide n'affectera pas le formulaire qui continuera de
-        prendre la valeur définie par défaut au niveau de GeoNature.
+        Un champ laissé vide n'affectera pas le formulaire qui continuera de prendre la valeur
+        définie par défaut au niveau de GeoNature.
       </p>
     </div>
     <div>
@@ -86,15 +95,16 @@
         [disabled]="!(occtaxFormParamService.geometryState|async)"
       >
         <div style="display: inline-block; margin-top: 10px">
-          <button class="btn btn-primary" (click)="geometryFormMapper()">
+          <button
+            class="btn btn-primary"
+            (click)="geometryFormMapper()"
+          >
             Copier la localisation du relevé en cours
           </button>
         </div>
 
         <div class="copied-geometry">
-          <ng-container
-            *ngIf="paramsForm.get('geometry').value !== null; else noGeometryBlock"
-          >
+          <ng-container *ngIf="paramsForm.get('geometry').value !== null; else noGeometryBlock">
             <mat-icon style="color: green">check</mat-icon>
             Une géométrie est proposée par défaut
           </ng-container>
@@ -111,13 +121,20 @@
         [disabled]="!(occtaxFormParamService.releveState|async)"
       >
         <div style="margin-top: 10px">
-          <button mat-flat-button color="primary" (click)="releveFormMapper()">
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="releveFormMapper()"
+          >
             Copier les informations du relevé en cours
           </button>
         </div>
 
         <div class="row">
-          <div *ngIf="config.OCCTAX.form_fields.precision" class="col-4">
+          <div
+            *ngIf="config.OCCTAX.form_fields.precision"
+            class="col-4"
+          >
             <small>Précision du pointage (m)</small>
             <input
               type="number"
@@ -127,7 +144,10 @@
             />
           </div>
 
-          <div *ngIf="config.OCCTAX.form_fields.place_name" class="col-4">
+          <div
+            *ngIf="config.OCCTAX.form_fields.place_name"
+            class="col-4"
+          >
             <small>{{ 'Occtax.Releve.PlaceName' | translate }}</small>
             <input
               class="form-control form-control-sm"
@@ -178,7 +198,10 @@
 
         <div class="row">
           <div class="col-6">
-            <div *ngIf="config.OCCTAX.form_fields.hour_min" class="form-group">
+            <div
+              *ngIf="config.OCCTAX.form_fields.hour_min"
+              class="form-group"
+            >
               <small>{{'HourMin' | translate }}</small>
               <input
                 [ngClass]="{'is-invalid' : releveParamForm.get('hour_min').invalid || releveParamForm.hasError('invalidHour')}"
@@ -190,7 +213,10 @@
             </div>
           </div>
           <div class="col-6">
-            <div *ngIf="config.OCCTAX.form_fields.hour_max" class="form-group">
+            <div
+              *ngIf="config.OCCTAX.form_fields.hour_max"
+              class="form-group"
+            >
               <small>{{'HourMax' | translate }}</small>
               <input
                 [ngClass]="{'is-invalid' : releveParamForm.get('hour_max').invalid || releveParamForm.hasError('invalidHour')}"
@@ -204,7 +230,10 @@
         </div>
 
         <div class="row">
-          <div *ngIf="config.OCCTAX.form_fields.altitude_min" class="col-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.altitude_min"
+            class="col-6"
+          >
             <small>{{ 'MinAltitude' | translate }}</small>
             <input
               class="form-control form-control-sm"
@@ -214,7 +243,10 @@
           </div>
 
           <!-- ALTITUDE MAX -->
-          <div *ngIf="config.OCCTAX.form_fields.altitude_max" class="col-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.altitude_max"
+            class="col-6"
+          >
             <small>{{ 'MaxAltitude' | translate }}</small>
             <input
               class="form-control form-control-sm"
@@ -225,7 +257,10 @@
         </div>
 
         <div class="row">
-          <div *ngIf="config.OCCTAX.form_fields.depth_min" class="col-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.depth_min"
+            class="col-6"
+          >
             <small>{{ 'MinDepth' | translate }}</small>
             <input
               class="form-control form-control-sm"
@@ -234,7 +269,10 @@
             />
           </div>
 
-          <div *ngIf="config.OCCTAX.form_fields.depth_min" class="col-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.depth_min"
+            class="col-6"
+          >
             <small>{{ 'MaxDepth' | translate }}</small>
             <input
               class="form-control form-control-sm"
@@ -245,7 +283,10 @@
         </div>
 
         <div class="row">
-          <div *ngIf="config.OCCTAX.form_fields.group_type" class="col-4">
+          <div
+            *ngIf="config.OCCTAX.form_fields.group_type"
+            class="col-4"
+          >
             <pnx-nomenclature
               label="{{ 'Occtax.Releve.GroupType' | translate }}"
               [parentFormControl]="releveParamForm.get('id_nomenclature_grp_typ')"
@@ -253,7 +294,10 @@
             ></pnx-nomenclature>
           </div>
 
-          <div *ngIf="config.OCCTAX.form_fields.grp_method" class="col-4">
+          <div
+            *ngIf="config.OCCTAX.form_fields.grp_method"
+            class="col-4"
+          >
             <small>{{'Occtax.Releve.GroupMethod' | translate}}</small>
             <input
               type="text"
@@ -306,7 +350,10 @@
         </div>
 
         <div class="row">
-          <div *ngIf="config.OCCTAX.form_fields.determiner" class="col-sm-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.determiner"
+            class="col-sm-6"
+          >
             <small>{{ 'Occtax.Taxon.Determiner' | translate }}</small>
             <input
               class="form-control form-control-sm"
@@ -475,14 +522,20 @@
         [disabled]="!(occtaxFormParamService.countingState|async)"
       >
         <div class="row">
-          <div *ngIf="config.OCCTAX.form_fields.life_stage" class="col-sm-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.life_stage"
+            class="col-sm-6"
+          >
             <pnx-nomenclature
               label="{{ 'Occtax.Counting.LifeStage' | translate }}"
               codeNomenclatureType="STADE_VIE"
               [parentFormControl]="countingParamForm.get('id_nomenclature_life_stage')"
             ></pnx-nomenclature>
           </div>
-          <div *ngIf="config.OCCTAX.form_fields.sex" class="col-sm-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.sex"
+            class="col-sm-6"
+          >
             <pnx-nomenclature
               label="{{ 'Occtax.Counting.Sex' | translate }}"
               codeNomenclatureType="SEXE"
@@ -490,7 +543,10 @@
             ></pnx-nomenclature>
           </div>
 
-          <div *ngIf="config.OCCTAX.form_fields.count_min" class="col-sm-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.count_min"
+            class="col-sm-6"
+          >
             <small>{{ 'Occtax.Counting.NumberMin' | translate }}</small>
             <input
               class="form-control form-control-sm"
@@ -500,7 +556,10 @@
             />
           </div>
 
-          <div *ngIf="config.OCCTAX.form_fields.count_max" class="col-sm-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.count_max"
+            class="col-sm-6"
+          >
             <small>{{ 'Occtax.Counting.NumberMax' | translate }}</small>
             <input
               class="form-control form-control-sm"
@@ -510,14 +569,20 @@
             />
           </div>
 
-          <div *ngIf="config.OCCTAX.form_fields.obj_count" class="col-sm-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.obj_count"
+            class="col-sm-6"
+          >
             <pnx-nomenclature
               label="{{ 'Occtax.Counting.CountingObject' | translate }}"
               codeNomenclatureType="OBJ_DENBR"
               [parentFormControl]="countingParamForm.get('id_nomenclature_obj_count')"
             ></pnx-nomenclature>
           </div>
-          <div *ngIf="config.OCCTAX.form_fields.type_count" class="col-sm-6">
+          <div
+            *ngIf="config.OCCTAX.form_fields.type_count"
+            class="col-sm-6"
+          >
             <pnx-nomenclature
               #typeDenombrement
               label="{{ 'Occtax.Counting.CountingType' | translate }}"
@@ -531,7 +596,11 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close()"
+    >
       Fermer
     </button>
   </div>
