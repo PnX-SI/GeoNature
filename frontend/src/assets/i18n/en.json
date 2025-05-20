@@ -301,16 +301,16 @@
       }
     }
   },
-  "Components": {
-    "Filter": {
+  "Filter": {
+    "Actions": {
       "RefreshFilters": "Refresh filters",
       "AdvancedFilters": "Advanced filters",
       "AddFilter": "Add a filter",
-      "OtherFilters": "Other filters",
-      "Filter": "Filter"
-    },
-    "TaxonSearch": {
-      "Advanced": "Advanced",
+      "OtherFilters": "Other filters"
+    }
+  },
+  "TaxonSearch": {
+    "Messages": {
       "NoTaxonFound": "No taxon found for this search"
     }
   },
