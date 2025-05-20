@@ -136,7 +136,7 @@ export class DatasetCardComponent implements OnInit {
   }
 
   deleteDataset(dataset) {
-    const message = `${this.translate.instant('Delete')} ${dataset.dataset_name} ?`;
+    const message = `${this.translate.instant('Actions.Delete')} ${dataset.dataset_name} ?`;
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: '350px',
       position: { top: '5%' },
