@@ -65,13 +65,13 @@
 
     <!-- Organismes -->
     <ng-container *ngIf="toggleButtonValue == 'organism' || toggleButtonValue == 'all'">
-      <small>{{ 'Form.Organism' | translate }}</small>
+      <small>{{ 'Organism' | translate }}</small>
       <ng-select
         class="auto"
         [items]="organisms"
         bindLabel="nom_organisme"
         bindValue="id_organisme"
-        placeholder="{{ 'Form.Organism' | translate }}"
+        placeholder="{{ 'Organism' | translate }}"
         [multiple]="false"
         [clearable]="false"
         [virtualScroll]="true"
