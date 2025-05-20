@@ -91,7 +91,7 @@
           (click)="addMedia()"
           [disabled]="!validOrLoadingMedias() || disabled"
         >
-          <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}"
+          <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.Actions.Add' | translate) }}"
             >add</mat-icon
           >
         </button> -->
@@ -104,7 +104,9 @@
       (click)="addMedia()"
       [disabled]="!validOrLoadingMedias() || disabled"
     >
-      <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}">add</mat-icon>
+      <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.Actions.Add' | translate) }}">
+        add
+      </mat-icon>
     </button>
   </div>
 </div>

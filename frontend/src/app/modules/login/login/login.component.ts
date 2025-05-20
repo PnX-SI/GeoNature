@@ -51,7 +51,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this._authService.getAuthProviders().subscribe((providers) => {
       this.authProviders = providers;
       this.isOtherProviders = this.authProviders.length > 1;
@@ -97,7 +96,10 @@ export class LoginComponent implements OnInit {
     this._authService
       .loginOrPwdRecovery(data)
       .subscribe(() => {
-        this._commonService.translateToaster('info', 'PasswordAndLoginRecovery');
+        this._commonService.translateToaster(
+          'info',
+          'MyAccount.Authentication.PasswordAndLoginRecovery'
+        );
       })
       .add(() => {
         this.disableSubmit = false;

@@ -27,7 +27,7 @@
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        matTooltip="{{ 'List.Columns' | translate }}"
+        matTooltip="{{ 'Columns' | translate }}"
         (click)="openModalCol($event, modalCol)"
       ></i>
     </ng-template>
@@ -131,7 +131,7 @@
       class="btn-action uppercase"
       [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
     >
-      {{ 'Upload' | translate }}
+      {{ 'Actions.Upload' | translate }}
       <mat-icon>file_upload</mat-icon>
     </button>
   </div>
@@ -146,7 +146,7 @@
       [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
       data-qa="synthese-download-btn"
     >
-      {{ 'Download' | translate }}
+      {{ 'Actions.Download' | translate }}
       <mat-icon>file_download</mat-icon>
     </button>
   </div>
@@ -157,7 +157,7 @@
   let-d="dismiss"
 >
   <div class="modal-header">
-    <h4>{{ 'List.DisplayColumns' | translate }}</h4>
+    <h4>{{ 'DisplayColumns' | translate }}</h4>
   </div>
   <div class="modal-body">
     <div

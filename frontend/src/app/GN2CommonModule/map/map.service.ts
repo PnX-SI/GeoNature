@@ -229,7 +229,7 @@ export class MapService {
       this.setGeojsonCoord(geojson);
       this.marker.on('moveend', () => {
         if (this.map.getZoom() < this.config.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
-          this._commonService.translateToaster('warning', 'Map.ZoomWarning');
+          this._commonService.translateToaster('warning', 'Map.Messages.ZoomWarning');
         } else {
           markerCoord = this.marker.getLatLng();
           geojson = {

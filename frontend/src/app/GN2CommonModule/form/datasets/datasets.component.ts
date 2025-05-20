@@ -21,7 +21,7 @@ import { AbstractControl, Validators } from '@angular/forms';
  * [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value"
  * [multiSelect]='true'
  * [parentFormControl]="formService.searchForm.controls.id_dataset"
- * label="{{ 'MetaData.Datasets' | translate}}"
+ * label="{{ 'Datasets' | translate}}"
  * </pnx-datasets>
  */
 @Component({

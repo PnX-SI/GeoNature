@@ -86,12 +86,11 @@ export class ContentMappingStepComponent implements OnInit {
       }
       if (this.importData.contentmapping) {
         this.fillContentFormWithMapping(this.importData.contentmapping);
-      }
-      else {
-        this.fillContentFormWithDefault()
+      } else {
+        this.fillContentFormWithDefault();
       }
       if (_.isEmpty(importValues)) {
-        this._commonService.translateToaster('info', 'Import.SkipContentMapping');
+        this._commonService.translateToaster('info', 'Import.Messages.SkipContentMapping');
         this.processNextStep();
       } else this.showContentMappingForm = true;
     });
@@ -115,7 +114,7 @@ export class ContentMappingStepComponent implements OnInit {
       this.fillContentFormWithMapping(mapping.values);
       this.mappingSelected = true;
     } else {
-      this.fillContentFormWithDefault()
+      this.fillContentFormWithDefault();
       this.mappingSelected = false;
     }
   }
