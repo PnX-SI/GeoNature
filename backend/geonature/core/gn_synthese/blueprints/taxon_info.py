@@ -13,7 +13,6 @@ from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
     Synthese,
     VColorAreaTaxon,
-    CorObserverSynthese,
 )
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils, SortOrder
@@ -198,11 +197,15 @@ def taxon_medias(cd_ref):
     per_page = request.args.get("per_page", 10, int)
     page = request.args.get("page", 1, int)
 
-    query = select(TMedias).join(Synthese.medias).order_by(TMedias.meta_create_date.desc())
+    taxon_subquery = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
 
-    # Use taxon_sheet_utils
-    taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
-    query = query.where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+    query = (
+        select(TMedias)
+        .select_from(Synthese)
+        .join(Synthese.medias)
+        .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
+        .order_by(TMedias.meta_create_date.desc())
+    )
 
     pagination = db.paginate(query, page=page, per_page=per_page)
     return {
@@ -220,7 +223,6 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
     @json_resp
     def taxon_stats(scope, cd_ref):
         """Return stats for a specific taxon"""
-
         area_type = request.args.get("area_type")
 
         if not area_type:
@@ -229,12 +231,12 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
         if not TaxonSheetUtils.is_valid_area_type(area_type):
             raise BadRequest("Invalid area_type parameter")
 
-        areas_subquery = TaxonSheetUtils.get_area_subquery(area_type)
-        taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+        areas_subquery = TaxonSheetUtils.get_area_selectquery(area_type)
+        taxon_subquery = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
 
         # Main query to fetch stats
-        query = (
-            select(
+        query = select(
+            [
                 func.count(distinct(Synthese.id_synthese)).label("observation_count"),
                 func.count(distinct(Synthese.observers)).label("observer_count"),
                 func.count(distinct(areas_subquery.c.id_area)).label("area_count"),
@@ -242,18 +244,17 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
                 func.max(Synthese.altitude_max).label("altitude_max"),
                 func.min(Synthese.date_min).label("date_min"),
                 func.max(Synthese.date_max).label("date_max"),
+            ]
+        ).select_from(
+            join(
+                Synthese,
+                CorAreaSynthese,
+                Synthese.id_synthese == CorAreaSynthese.id_synthese,
             )
-            .select_from(
-                join(
-                    Synthese,
-                    CorAreaSynthese,
-                    Synthese.id_synthese == CorAreaSynthese.id_synthese,
-                )
-                .join(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area)
-                .join(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
-                .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
-            )
-            .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
+            .join(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area)
+            .join(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
+            .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
+            .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
         )
 
         synthese_query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
@@ -290,7 +291,7 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
         if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:
             raise BadRequest(f"The sort_by column {sort_by} is not defined")
 
-        taxref_cd_nom_list = TaxonSheetUtils.get_cd_nom_list_from_cd_ref(cd_ref)
+        taxon_subquery = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
 
         field_separators_as_regexp = rf"[{''.join(field_separators)}]+"
 
@@ -306,9 +307,9 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
                 func.count(Synthese.id_synthese).label("observation_count"),
                 func.count(TMedias.id_media).label("media_count"),
             )
+            .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
             .group_by("observer")
             .outerjoin(Synthese.medias)
-            .where(Synthese.cd_nom.in_(taxref_cd_nom_list))
         )
         query = TaxonSheetUtils.get_synthese_query_with_scope(g.current_user, scope, query)
         query = TaxonSheetUtils.update_query_with_sorting(query, sort_by, sort_order)

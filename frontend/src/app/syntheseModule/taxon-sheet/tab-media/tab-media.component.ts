@@ -6,7 +6,12 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import {
+  DEFAULT_PAGINATION,
+  SyntheseDataPaginationItem,
+} from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import { Loadable } from '../loadable';
+import { finalize } from 'rxjs/operators';
 
 enum Direction {
   BACKWARD,
@@ -20,7 +25,7 @@ enum Direction {
   styleUrls: ['./tab-media.component.scss'],
   imports: [GN2CommonModule, CommonModule],
 })
-export class TabMediaComponent implements OnInit {
+export class TabMediaComponent extends Loadable implements OnInit {
   public medias: any[] = [];
   public selectedMedia: any = {};
   taxon: Taxon | null = null;
@@ -31,6 +36,7 @@ export class TabMediaComponent implements OnInit {
     private _tss: TaxonSheetService,
     private _syntheseDataService: SyntheseDataService
   ) {
+    super();
   }
 
   ngOnInit() {
@@ -47,22 +53,31 @@ export class TabMediaComponent implements OnInit {
   }
 
   loadMedias(selectedMediaIndex: number = 0) {
+    this.startLoading();
+
     this._syntheseDataService
       .getTaxonMedias(this.taxon.cd_ref, {
         page: this.pagination.currentPage,
         per_page: this.pagination.perPage,
       })
-      .subscribe((response) => {
-        this.medias = response.items;
-        this.pagination = {
-          totalItems: response.total,
-          currentPage: response.page,
-          perPage: response.per_page,
-        };
-        if (!this.medias.some((media) => media.id_media == this.selectedMedia.id_media)) {
-          this.selectedMedia = this.medias[selectedMediaIndex];
+      .pipe(finalize(() => this.stopLoading()))
+      .subscribe(
+        (response) => {
+          this.medias = response.items;
+          this.pagination = {
+            totalItems: response.total,
+            currentPage: response.page,
+            perPage: response.per_page,
+          };
+          if (
+            !this.selectedMedia || !this.medias.some(
+              (media) => media.id_media == this.selectedMedia.id_media
+            )
+          ) {
+            this.selectedMedia = this.medias[selectedMediaIndex];
+          }
         }
-      });
+      );
   }
 
   selectMedia(media: any) {
@@ -95,10 +110,7 @@ export class TabMediaComponent implements OnInit {
     // Forward
     if (nextIndex > this.medias.length - 1) {
       // Check if not last page
-      if (
-        this.pagination.perPage * (this.pagination.currentPage) <
-        this.pagination.totalItems
-      ) {
+      if (this.pagination.perPage * this.pagination.currentPage < this.pagination.totalItems) {
         this.pagination.currentPage++;
         this.loadMedias();
         return;

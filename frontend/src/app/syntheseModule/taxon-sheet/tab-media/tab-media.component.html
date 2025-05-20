@@ -1,12 +1,18 @@
 <div
-  class="MediaContainer MediaContainer--empty"
-  *ngIf="medias.length === 0"
+  *ngIf="isLoading"
+  class="SpinnerContainer"
 >
-  <p class="no-media">Aucun média</p>
+  <mat-spinner></mat-spinner>
+</div>
+<div
+  class="MediaContainer MediaContainer--empty text-muted"
+  *ngIf="!isLoading && medias.length === 0"
+>
+  Aucun média
 </div>
 <div
   class="MediaContainer"
-  *ngIf="medias.length !== 0"
+  *ngIf="!isLoading && medias.length !== 0"
   (keydown)="onKeydown($event)"
 >
   <div class="MediaContainer__list">

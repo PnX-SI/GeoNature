@@ -3,10 +3,11 @@ from geonature.utils.env import db
 from ref_geo.models import LAreas, BibAreasTypes
 
 from geonature.core.gn_synthese.models import Synthese
-from sqlalchemy import select, desc, asc
-from apptax.taxonomie.models import Taxref
+from sqlalchemy import select, desc, asc, column, func, and_
+from apptax.taxonomie.models import Taxref, TaxrefTree
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-from sqlalchemy.orm import Query
+from sqlalchemy.orm import Query, aliased
+from sqlalchemy.sql.selectable import Select
 from werkzeug.exceptions import BadRequest
 from flask_sqlalchemy.pagination import Pagination
 from enum import Enum
@@ -54,11 +55,28 @@ class TaxonSheetUtils:
         return valid_area_types
 
     @staticmethod
-    def get_area_subquery(area_type: str) -> Query:
+    def get_area_selectquery(area_type: str) -> Select:
 
-        # Subquery to fetch areas based on area_type
+        # selectquery to fetch areas based on area_type
         return (
             select(LAreas.id_area)
             .where(LAreas.id_type == BibAreasTypes.id_type, BibAreasTypes.type_code == area_type)
             .alias("areas")
+        )
+
+    @staticmethod
+    def get_taxon_selectquery(cd_ref: int) -> Select:
+        # selectquery to fetch taxon and sub taxa based on cd_ref
+        current = aliased(TaxrefTree)
+        return (
+            select(Taxref.cd_nom)
+            .join(TaxrefTree, TaxrefTree.cd_nom == Taxref.cd_nom)
+            .join(
+                current,
+                and_(
+                    current.cd_nom == cd_ref,
+                    TaxrefTree.path.op("<@")(current.path),
+                ),
+            )
+            .alias("taxons")
         )

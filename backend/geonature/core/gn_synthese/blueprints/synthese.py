@@ -97,6 +97,8 @@ def get_observations_for_web(permissions):
         "limit", current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"], type=int
     )
 
+    result_limit = None if result_limit == -1 else result_limit
+
     output_format = request.args.get("format", "ungrouped_geom")
     if output_format not in ["ungrouped_geom", "grouped_geom", "grouped_geom_by_areas"]:
         raise BadRequest(f"Bad format '{output_format}'")

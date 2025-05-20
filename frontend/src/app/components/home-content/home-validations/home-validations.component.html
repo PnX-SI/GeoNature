@@ -8,12 +8,12 @@
   footerHeight="50"
   rowHeight="100"
   [externalPaging]="true"
-  [limit]="pagination.per_page"
-  [count]="pagination.total"
+  [limit]="pagination.perPage"
+  [count]="pagination.totalItems"
   (page)="onChangePage($event)"
   [externalSorting]="true"
   (sort)="onColumnSort($event)"
-  [sorts]="[{ prop: DEFAULT_SORTING.order_by, dir: DEFAULT_SORTING.sort }]"
+  [sorts]="[{ prop: DEFAULT_SORTING.sortBy, dir: DEFAULT_SORTING.sortOrder }]"
 >
   <ngx-datatable-column
     [maxWidth]="5"

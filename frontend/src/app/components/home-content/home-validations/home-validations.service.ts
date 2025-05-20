@@ -4,23 +4,14 @@ import { ModuleService } from '@geonature/services/module.service';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from '@librairies/rxjs';
-import { Router } from '@librairies/@angular/router';
+import { SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import { SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 
 enum ValidationsModule {
   SYNTHESE = 'SYNTHESE',
   VALIDATION = 'VALIDATION',
 }
 
-export interface SortingItem {
-  sort: 'asc' | 'desc';
-  order_by: string;
-}
-
-export interface Pagination {
-  total: number;
-  page: number;
-  per_page: number;
-}
 export interface ValidationItem {
   id_synthese: number;
   date_max: string;
@@ -36,16 +27,15 @@ export interface ValidationItem {
   };
 }
 
-export interface ValidationCollection extends Pagination {
+export interface ValidationCollection {
   items: ValidationItem[];
+  // pagination defined on backend side
+  total: number;
+  page: number;
+  per_page: number;
 }
 @Injectable()
 export class HomeValidationsService {
-  static readonly DEFAULT_PAGINATION: Pagination = {
-    total: 0,
-    page: 1,
-    per_page: 4,
-  };
   readonly MODULES_PREVALENCE = [ValidationsModule.SYNTHESE, ValidationsModule.VALIDATION];
   constructor(
     private _http: HttpClient,
@@ -66,11 +56,7 @@ export class HomeValidationsService {
       return false;
     }
 
-    return (
-      this.MODULES_PREVALENCE.every((module) =>
-        this._isReadGrandedInModule(module)
-      )
-    );
+    return this.MODULES_PREVALENCE.every((module) => this._isReadGrandedInModule(module));
   }
 
   // //////////////////////////////////////////////////////////////////////////
@@ -99,15 +85,15 @@ export class HomeValidationsService {
   // //////////////////////////////////////////////////////////////////////////
 
   public fetchValidations(
-    pagination: Pagination,
-    sort: SortingItem
+    pagination: SyntheseDataPaginationItem,
+    sort: SyntheseDataSortItem
   ): Observable<ValidationCollection> {
     return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation`, {
       params: {
-        page: pagination.page.toString(),
-        per_page: pagination.per_page.toString(),
-        sort: sort.sort,
-        order_by: sort.order_by,
+        page: pagination.currentPage.toString(),
+        per_page: pagination.perPage.toString(),
+        sort: sort.sortOrder,
+        order_by: sort.sortBy,
         format: 'json',
         fields:
           'id_synthese,nom_cite,observers,date_min,date_max,last_validation,nomenclature_valid_status.cd_nomenclature,nomenclature_valid_status.mnemonique,nomenclature_valid_status.label_default,validator',

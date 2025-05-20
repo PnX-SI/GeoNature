@@ -14,6 +14,16 @@ import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
 
+export interface TaxonStats {
+  cd_ref?: number;
+  altitude_max?: number;
+  altitude_min?: number;
+  area_count?: number;
+  date_max?: string;
+  date_min?: string;
+  observation_count?: number;
+  observer_count?: number;
+}
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
   ['json', 'application/json'],
@@ -57,8 +67,8 @@ export class SyntheseDataService {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/general_stats`);
   }
 
-  getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM') {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_stats/${cd_ref}`, {
+  getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM'): Observable<TaxonStats> {
+    return this._api.get<TaxonStats>(`${this.config.API_ENDPOINT}/synthese/taxon_stats/${cd_ref}`, {
       params: new HttpParams().append('area_type', areaType),
     });
   }

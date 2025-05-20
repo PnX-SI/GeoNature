@@ -69,5 +69,9 @@ export class TaxonomyComponent {
       label: 'Nom cite',
       field: 'nom_cite',
     },
+    {
+      label: 'Rang taxonomique',
+      field: 'nom_rang',
+    },
   ];
 }

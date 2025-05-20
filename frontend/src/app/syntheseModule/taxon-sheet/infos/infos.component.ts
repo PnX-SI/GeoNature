@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ConfigService } from '@geonature/services/config.service';
 import { TaxonSheetService } from '../taxon-sheet.service';
 
 import { StatusComponent } from './status/status.component';

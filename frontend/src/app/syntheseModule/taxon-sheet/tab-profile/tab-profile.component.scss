@@ -1,16 +1,16 @@
 .Profile {
   display: flex;
   flex-flow: column;
+  justify-content: center;
   height: 100%;
   &__disclaimer {
-    margin-top: -0.5rem;
     font-style: italic;
   }
   &__indicators {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
-    gap: 1rem;
+    gap: 0.5em;
   }
   &__map {
     flex-grow: 2;

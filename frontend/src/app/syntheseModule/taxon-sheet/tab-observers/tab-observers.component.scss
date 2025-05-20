@@ -1,5 +1,16 @@
 .Observers {
+  height: 100%;
+  width: 100%;
   &__table {
+    height: inherit;
     box-shadow: none;
+    ::ng-deep .visible {
+      height: inherit;
+      .datatable-body {
+        height: 80% !important;
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
+    }
   }
 }
