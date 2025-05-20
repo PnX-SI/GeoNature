@@ -189,7 +189,7 @@
               class="error"
               style="color: red"
             >
-              {{ 'DateMaxError' | translate }}
+              {{ 'Errors.DateMaxError' | translate }}
             </small>
           </div>
 
@@ -199,7 +199,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['altitude_min']"
               >
-                <small for="">Altitude min</small>
+                <small for="">{{ 'MinAltitude' | translate }}</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -210,7 +210,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['altitude_max']"
               >
-                <small for="">Altitude max</small>
+                <small for="">{{ 'MaxAltitude' | translate }}</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
