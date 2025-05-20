@@ -41,9 +41,9 @@
     "Email": "Email",
     "Username": "Nom d'utilisateur",
     "Password": "Mot de passe",
-    "LogIn": "Connexion",
-    "LogOut": "Déconnexion",
     "Actions": {
+      "LogIn": "Connexion",
+      "LogOut": "Déconnexion",
       "CreateAccount": "Créer un compte"
     },
     "Errors": {
@@ -301,16 +301,14 @@
       }
     }
   },
-  "Components": {
-    "Filter": {
-      "RefreshFilters": "Rafraîchir les filtres",
-      "AdvancedFilters": "Filtres avancés",
-      "AddFilter": "Ajouter un filtre",
-      "OtherFilters": "Autres filtres",
-      "Filter": "Filtrer"
-    },
-    "TaxonSearch": {
-      "Advanced": "Avancé",
+  "Filter": {
+    "RefreshFilters": "Rafraîchir les filtres",
+    "AdvancedFilters": "Filtres avancés",
+    "AddFilter": "Ajouter un filtre",
+    "OtherFilters": "Autres filtres"
+  },
+  "TaxonSearch": {
+    "Messages": {
       "NoTaxonFound": "Aucun taxon trouvé pour cette recherche"
     }
   },

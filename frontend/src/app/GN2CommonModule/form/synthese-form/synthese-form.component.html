@@ -375,8 +375,8 @@
   </fieldset>
 
   <fieldset>
-    <legend>{{ 'Components.Filter.AdvancedFilters' | translate }}</legend>
-    <small>{{ 'Components.Filter.AddFilter' | translate }}</small>
+    <legend>{{ 'Filter.AdvancedFilters' | translate }}</legend>
+    <small>{{ 'Filter.AddFilter' | translate }}</small>
     <pnx-dynamic-form-generator
       *ngIf="formService.processedDefaultFilters"
       [myFormGroup]="formService.searchForm"
@@ -392,7 +392,7 @@
     mat-raised-button
     color="warn"
     (click)="refreshFilters()"
-    matTooltip="{{ 'Components.Filter.RefreshFilters' | translate }}"
+    matTooltip="{{ 'Filter.RefreshFilters' | translate }}"
     data-qa="synthese-refresh-btn"
   >
     <i
