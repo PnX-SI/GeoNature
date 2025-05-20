@@ -2,10 +2,10 @@
   "Occtax": {
     "Releve": {
       "Releve": "Relevé",
-      "AddReleve": "Ajouter un relevé",
       "Observer": "Observateur",
       "Observers": "Observateur(s)",
       "Actions": {
+        "AddReleve": "Ajouter un relevé",
         "SaveReleve": "Enregistrer le relevé",
         "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
         "EditReleve": "Editer le relevé",

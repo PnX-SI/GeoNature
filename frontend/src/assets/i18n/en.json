@@ -1,287 +1,492 @@
 {
-  "Title": "GeoNature",
   "Home": "Home",
-  "Sel_lang": "Choose the language",
+
+  "LanguageSelection": "Choose the interface language",
   "Language": "Language",
-  "Languages": {
-    "English": "English",
-    "French": "Français (French)",
-    "Chinese": "中文 (Chinese)"
+  "Languages": "Languages",
+  "AvailableLanguages": {
+    "English": "English (Anglais)",
+    "French": "Français",
+    "Chinese": "中文 (Chinois)"
   },
-  "Email": "Email",
-  "Username": "Username",
-  "Password": "Password",
-  "LogIn": "Log in",
-  "LogOut": "Log out",
-  "IntroTitle": "Welcome in GeoNature V2",
-  "IntroText": "",
-  "Observations": "Observations",
-  "Species": "Species",
-  "LatestObservations": "Latest observations",
-  "Search": "Search",
-  "By": "By",
-  "Columns": "Columns",
-  "Cancel": "Cancel",
-  "Delete": "Delete",
-  "NotAllowed": "You do not have the permissions to perform this action",
-  "LoginError": "Login or password incorrect",
-  "DownloadData": "Download data",
-  "Download": "Download",
-  "Upload": "Upload",
-  "Downloading": "Downloading",
-  "DownloadOverflow": "The number of items is too big to be downloaded, please modify your request or contact your administrator",
-  "AllItems": "all",
-  "GoBack": "Go back",
-  "MapList": {
-    "InvalidTypeError": "Invalid type error",
-    "NoColumnSelected": "Please select a column to filter",
+  "Actions": {
+    "Singular": "Action",
+    "Plural": "Actions",
+    "Add": "Add",
+    "Filter": "Filter",
+    "Download": "Download",
+    "Delete": "Delete",
+    "Cancel": "Cancel",
+    "Upload": "Import",
+    "Search": "Search",
+    "Confirm": "Confirm",
+    "Close": "Close",
+    "Browse": "Browse",
     "Validate": "Validate",
-    "UnValidate": "UnValidate",
-    "ObservationNumber": "Observation number:"
+    "PDFExport": "Export a PDF",
+    "DownloadData": "Download data",
+    "Copy": "Copy"
+  },
+  "Messages": {
+    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
+  },
+  "Errors": {
+    "ErrorMessage": "An error occurred",
+    "DateMaxError": "The start date cannot be later than the end date",
+    "AltitudeError": "The maximum altitude cannot be less than the minimum altitude",
+    "NotAllowed": "You do not have permission to perform this action"
+  },
+
+  "Authentication": {
+    "Email": "Email",
+    "Username": "Username",
+    "Password": "Password",
+    "LogIn": "Login",
+    "LogOut": "Logout",
+    "Actions": {
+      "CreateAccount": "Create an account"
+    },
+    "Errors": {
+      "LoginError": "Incorrect username or password"
+    },
+    "Messages": {
+      "ForgotPasswordOrLogin": "Forgot username or password?"
+    }
+  },
+  "MyAccount": {
+    "MyAccount": "My Account",
+
+    "Messages": {
+      "AutoAccountEmailConfirmation": "An email has just been sent to you to activate your account",
+      "AdminAccountEmailConfirmation": "Your account creation request has been taken into account, it will be evaluated by an administrator",
+      "PasswordAndLoginRecovery": "An email has just been sent to you to recover your username and/or renew your password"
+    }
+  },
+
+  "Observer": "Observer",
+  "Observers?": "Observers",
+  "Observers": "Observer(s)",
+  "Digitiser": "Creator",
+  "Digitisers": "Creators",
+  "Digitisers?": "Creator(s)",
+  "Organism": "Organism",
+  "Organisms": "Organisms",
+  "Organisms?": "Organism(s)",
+  "Actor": "Actor",
+  "Actors": "Actor",
+  "Actors?": "Actor(s)",
+  "ActorPerson": "Actor (person)",
+  "Group": "Group",
+  "Groups": "Groups",
+  "Creator": "Creator",
+  "Creators": "Creators",
+  "Creators?": "Creator(s)",
+
+  "Dataset": "Dataset",
+  "Datasets": "Datasets",
+  "AcquisitionFramework": "Acquisition Framework",
+  "AcquisitionFrameworks": "Acquisition Frameworks",
+  "Observations": "Observations",
+  "Taxon": "Taxon",
+  "Taxons": "Taxons",
+  "Species": "Species",
+
+  "Sex": "Sex",
+  "LifeStage": "Life Stage",
+
+  "By": "By",
+  "On": "On",
+  "Of": "of",
+  "Columns": "Columns",
+  "DisplayColumns": "Columns to display",
+
+  "Yes": "Yes",
+  "No": "No",
+  "Previous": "Previous",
+  "Next": "Next",
+  "Back": "Back",
+  "Confirmation": "Confirmation",
+
+  "Report": "Report",
+  "Comment": "Comment",
+  "Discussion": "Discussion",
+  "Status": "Status",
+  "Source": "Source",
+
+  "Mandatory": "Mandatory",
+  "Optional": "Optional",
+  "OptionalIf": "Optional if",
+  "RequiredIf": "Required if",
+
+  "Name": "Name",
+  "What": "What?",
+  "When": "When?",
+  "Who": "Who?",
+  "How": "How?",
+  "Where": "Where?",
+  "New": "New",
+
+  "Advanced": "Advanced",
+  "All": "All",
+  "Aim": "Objective",
+  "Aims": "Objectives",
+  "Title": "Title",
+  "Description": "Description",
+  "Validable": "Validable",
+  "Valid": "Valid",
+  "Invalid": "Invalid",
+  "Active": "Active",
+
+  "Date": "Date",
+  "MaxDate": "End Date",
+  "MinDate": "Start Date",
+  "HourMin": "Start Time",
+  "HourMax": "End Time",
+  "Altitude": "Altitude",
+  "MinAltitude": "Min Altitude",
+  "MaxAltitude": "Max Altitude",
+  "MinDepth": "Min Depth",
+  "MaxDepth": "Max Depth",
+  "HourFormat": "hh:mm",
+  "Label": "Label",
+  "Keywords": "Keywords",
+
+  "Downloading": "Downloading",
+
+  "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
+
+  "Map": {
+    "Actions": {
+      "SearchLocation": "Search for a location",
+      "AddPoint": "Locate the observation (point)",
+      "AddLine": "Locate the observation (line)",
+      "AddPolygon": "Locate the observation (polygon)"
+    },
+    "Errors": {
+      "LocationError": "Location not found"
+    },
+    "Messages": {
+      "ZoomWarning": "Inappropriate scale, please zoom in further to point the survey",
+      "FileLayerInfoMessage": "Click on the layer (point/line/polygon) to make it the point of your survey. The selected layer appears in red on the map. Right-click to display the layer info",
+      "FileLayerInfoSynthese": "File imported. Right-click on an object to display its info"
+    }
+  },
+  "MapList": {
+    "ObservationNumber": "Number of observation(s)",
+    "Messages": {
+      "NoColumnSelected": "Please select a column to filter"
+    },
+    "Errors": {
+      "InvalidTypeError": "The type of value provided does not match the field type"
+    }
   },
   "MetaData": {
-    "JddError": "Error while fetching datasets",
-    "JddErrorMTD": "Error while get dataset - MTD",
-    "NoJDD": "No dataset found, contact your administrator",
-    "NoJDDMTD": "No dataset found, first go to the MTD application",
-    "Programs": "Program",
-    "Datasets": "Dataset",
-    "AcquisitionFramework": "Acquisition framework",
-    "Catalog": "Catalogue des jeux de données",
-    "AddAF": "Add an acquisition framework",
-    "AddDataset": "Add a dataset",
+    "Programs": "Programs",
+    "Catalog": "Dataset catalog",
+    "Errors": {
+      "JddError": "Error retrieving datasets",
+      "JddErrorMTD": "Error retrieving JDD via the MTD application"
+    },
+    "Messages": {
+      "NoJDD": "No dataset found, contact your administrator",
+      "NoJDDMTD": "No dataset found, please first enter them in the MTD application",
+      "AF404": "Non-existent acquisition framework",
+      "DatasetAdded": "Dataset added successfully",
+      "DatasetRemoved": "Dataset removed successfully",
+      "AFAdded": "Acquisition framework added successfully",
+      "AFDeleted": "Acquisition framework deleted successfully",
+      "NoStakeholder": "No stakeholder provided",
+      "FiledAF": "The acquisition framework has already been filed",
+      "EmptyAF": "The acquisition framework is empty",
+      "NoMetadata": "Oops! There is no metadata to display."
+    },
+    "Actions": {
+      "AddDataset": "Add a dataset",
+      "AddAF": "Add an acquisition framework",
+      "SubmitAF": "Submit the acquisition framework",
+      "EditAF": "Edit this acquisition framework",
+      "EditDataset": "Edit the dataset",
+      "DeleteDataset": "Delete the dataset",
+      "ResetSearch": "Reset search",
+      "SeeAFSheet": "View the acquisition framework sheet"
+    },
     "AdvancedSearch": "Advanced search",
-    "AFAndDatasetsList": "Frameworks acquisition and associated datasets list",
-    "Name": "Name",
-    "CreationDate": "Creation date",
+    "AFAndDatasetsList": "List of acquisition frameworks and associated datasets",
+    "CreationDate": "Launch date",
     "Stakeholders": "Stakeholders",
-    "Actions": "Actions",
-    "Designer": "Designer",
-    "Confirm": "Confirm",
-    "NoStakeholder": "No stakeholder indicated",
-    "Close": "Close",
-    "Search": "Search",
     "DatasetName": "Dataset name",
+    "AFName": "Acquisition framework name",
     "DataAmount": "Amount of data",
-    "NoMetadata": "Oops! There is no metadata to display.",
-    "On": " on",
     "StakeholderOrganization": "Stakeholder (organization)",
-    "ResetSearch": "Reset search",
-    "SeeAFSheet": "See the acquisition framework sheet",
-    "EditAF": "Edit this acqusition framework",
-    "FiledAF": "The acquisition framework has already been filed",
-    "EmptyFiled": "The acquisition framework is empty",
-    "SubmitAF": " Submit the acquisition framework",
     "DataSources": "Data sources",
+
     "DatasetCard": {
-      "Dataset": "Datasets",
+      "Actions": {
+        "DisplayData": "Display data"
+      },
+      "Messages": {
+        "NoActorProvided": "No stakeholder provided"
+      },
+      "Errors": {
+        "ErrorDeleteDataset": "The dataset contains data and cannot be deleted"
+      },
       "SpeciesDistribution": "Species distribution",
       "DescriptiveForm": "Descriptive form",
       "ID": "Identification",
-      "DisplayData": "Display data",
+
       "GeographicalScope": "Geographical scope",
       "UUIDReport": "UUID report",
       "SensitivityReport": "Sensitivity report",
-      "PDFExport": "PDF Export",
-      "Report": "Report",
-      "Status": "Status",
+
       "IntegratedOn": "Integrated on",
-      "NumberOfData": "Nombre de données",
-      "Source": "Source",
-      "IMportsList": "Imports list",
+      "NumberOfData": "Number of data",
       "WidgetType": "Widget type",
       "Quantitative": "Quantitative",
       "Unit": "Unit",
-      "AdditionalDatasetFields": "Additional fields of the dataset",
-      "AssociatedGNModules": "GeoNature module(s) associated to the dataset",
-      "TaxaListID": "ID de liste de taxon",
-      "Mandatory": "Mandatory",
-      "Validable": "Validable",
-      "Active": "Active",
-      "GNSpecificFeatures": "GeoNature specific features",
-      "Keywords": "Keywords",
+      "AdditionalDatasetFields": "Additional dataset fields",
+      "AssociatedGNModules": "GeoNature module(s) associated with the dataset",
+      "TaxaListID": "Taxon list ID",
+      "GNSpecificFeatures": "GeoNature specifics features",
       "DatasetCreator": "Dataset creator",
-      "Creator": "Creator",
-      "NoActorProvided": "No actor provided",
-      "DatasetSINPID": " SINP ID of the dataset",
+
+      "DatasetSINPID": "SINP ID of the dataset",
       "DatasetGeoNatureID": "GeoNature ID of the dataset",
-      "ShortName": "Short name",
-      "DataType": "Type of data",
-      "Areas": "Areas",
-      "Aims": "Aims",
-      "LandCoverage": "Land Coverage",
-      "MarineAreaCoverage": "Coverage of the marine area",
-      "TermsReference": "Terms of reference",
+      "ShortName": "Short label",
+      "DataType": "Data type",
+
+      "LandCoverage": "Land territory coverage",
+      "MarineAreaCoverage": "Marine territory coverage",
+      "TermsReference": "Reference framework",
       "TitleAF": "Title of the acquisition framework",
       "IDAF": "ID of the acquisition framework",
-      "CollectionProcess": "Collection process",
-      "Label": "Label",
-      "DeleteDataset": "Delete dataset",
-      "ErroDeleteDataset": "The dataset contains data and cannot be deleted",
-      "EditDataset": "Edit the dataset"
+      "CollectionProcess": "Collection process"
+    },
+    "DatasetForm": {
+      "Actions": {
+        "SaveDataset": "Save the dataset",
+        "SelectTaxaList": "--Select a taxon list--"
+      },
+      "Messages": {
+        "StakeholderExists": "This stakeholder is already in the list",
+        "MainContactExists": "This main contact is already in the list",
+        "SizeNameJDD": "The JDD name must be less than or equal to 150 characters",
+        "SizeShortNameJDD": "The short JDD name must be less than or equal to 30 characters",
+        "NoList": "No list (all Taxref)"
+      },
+
+      "ShortNameJDD": "Short JDD name",
+      "Field": "Field",
+      "LandField": "Land field",
+      "MarineField": "Marine field",
+      "SourceStatus": "Source status",
+      "CollectionMethod": "Collection method",
+      "OtherStakeholders": "Other stakeholder(s)",
+      "MainContact": "Main contact",
+      "DataOrigin": "Data origin",
+
+      "ResourceType": "Resource type",
+      "FacultativeTaxaList": "Taxon list (optional)",
+      "SpecificGeonature": "Specific GeoNature",
+      "ActiveOnEntry": "Active on entry"
+    },
+    "AcquisitionFrameworkForm": {},
+    "Actors": {
+      "Person": "Person",
+      "RoleType": "Role type",
+      "Actions": {
+        "EnterOrganization": "Enter an organization only",
+        "EnterPerson": "Enter a person only",
+        "EnterOrganizationPerson": "Enter an organization and a person",
+        "DeleteThisActor": "Delete this stakeholder"
+      }
     }
   },
-  "DatasetForm": {
-    "SizeNameJDD": "The name of the JDD must be less than or equal to 150 characters",
-    "ShortNameJDD": "Short name of the dataset",
-    "SizeShortNameJDD": " The short name of the JDD must be less than or equal to 30 characters",
-    "Field": "Field",
-    "LandField": "Land field",
-    "MarineField": "Marine field",
-    "SaveDataset": "Save dataset",
-    "Aim": "Aim",
-    "SourceStatus": "Source status",
-    "CollectionMethod": "Collection method",
-    "StakeholderExists": "Stakeholder already exists",
-    "MainContactExists": "This main contact already exists",
-    "MainContact": "Main contact",
-    "DataOrigin": "Data origin",
-    "NoList": "No list (any Taxref)",
-    "SelectTaxaList": "Select taxa list",
-    "ResourceType": "Resource type",
-    "FacultativeTaxaList": "Facultative taxa list",
-    "SpecificGeonature": "Specific GeoNature",
-    "ActiveOnEntry": "Active on entry",
-    "OtherStakeholders": "Other stakeholder(s)"
-  },
-  "Actors": {
-    "EnterOrganization": "Enter an organization only",
-    "EnterPerson": "Enter a person only",
-    "Person": "Person",
-    "RoleType": "Role type",
-    "EnterOrganizationPerson": "Enter an organization and a person",
-    "DeleteThisActor": "Delete this actor"
-  },
-  "Form": {
-    "RefreshFilters": "Refresh filters",
-    "AdvancedFilters": "Advanced filters",
-    "AddFilter": "Add a filter",
-    "OtherFilters": "Other filter",
-    "Organism": "Organism(s)",
-    "Filter": "Filtrer",
-    "Actor": "Actor (person)",
-    "SyntheseForm": {
-      "Validation": "Validation",
-      "ValidationStatus": "Validation status",
-      "EditedDataSinceLastEdit": "Edited data since the last edition",
-      "FilterTaxaProfile": "Filter according to taxa profile",
-      "Score": "Score",
-      "ValidPosition": "Valid position",
-      "NoFilter": "No filter",
-      "Valid": "Valid",
-      "Invalid": "Invalid",
-      "ValidAltitude": "Valid altitude",
-      "ValidPhenology": "Valid phenology",
-      "What": "What?",
-      "SearchedTaxa": "Searched taxa",
-      "AdvancedFieldsSelected": "Advanced fileds selected",
-      "RedListCategory": "Red list category",
-      "ProtectionStatus": "Protection status",
-      "TaxrefAttributes": "Taxref attributes",
-      "When": "When?",
-      "Who": "Who?",
-      "How": "How?",
-      "Where": "Where?"
+  "Components": {
+    "Filter": {
+      "RefreshFilters": "Refresh filters",
+      "AdvancedFilters": "Advanced filters",
+      "AddFilter": "Add a filter",
+      "OtherFilters": "Other filters",
+      "Filter": "Filter"
+    },
+    "TaxonSearch": {
+      "Advanced": "Advanced",
+      "NoTaxonFound": "No taxon found for this search"
     }
-  },
-  "List": {
-    "Columns": "Columns",
-    "DisplayColumns": "Columns to display"
-  },
-  "Map": {
-    "SearchLocation": "Search a location",
-    "LocationError": "Location not found",
-    "AddPoint": "Locate observation (point)",
-    "AddLine": "Locate observation (line)",
-    "AddPolygon": "Locate observation (polygon)",
-    "ZoomWarning": "Inappropriate scale, zoom more ",
-    "FileLayerInfoMessage": "Right click on the shape to select your current releve. Selected layer is in red. Right click to display the layer info",
-    "FileLayerInfoSynthese": "Right click on the shape to display info"
-  },
-  "Releve": {
-    "Dataset": "Dataset",
-    "FillGeometryFirst": "Please locate on map",
-    "InfoGeo": "Geographic informations of the survey",
-    "MaxDate": "End date",
-    "MinDate": "Start date",
-    "Observer": "Observer",
-    "Observers": "Observers",
-    "Errors": {
-      "DateMaxError": "Max date can't be inferior to the min date",
-      "AltitudeError": "Altitude max cannot be smaller than altitude min"
-    }
-  },
-  "Taxon": {
-    "Advanced": "Advanced",
-    "NoTaxonFound": "No taxon found for this search",
-    "Observations": "Observations",
-    "Taxon": "Taxon",
-    "Taxons": "Taxons"
   },
   "Geo": {
-    "Municipalities": "Cities"
-  },
-  "IntroMessage": "Welcome in CONTACT module. It allows to record observations based on SINP Taxon Occurrencies standard.",
-  "ErrorMessage": "Game over",
-  "Export": {
-    "ExportModuleName": "Export module"
+    "Municipality": "Municipality",
+    "Municipalities": "Municipality(ies)",
+    "Territories": "Territories"
   },
   "Synthese": {
-    "DeleteObs": "Delete this observation",
-    "Map": {
-      "AreasToggleBtn": "Areas"
-    }
-  },
-  "MyAccount": "My account",
-  "CreateAccount": "Create an account",
-  "ForgotPasswordOrLogin": "Loggin or password forgotten",
-  "AutoAccountEmailConfirmation": "An email has been sent to confirm your account",
-  "AdminAccountEmailConfirmation": "Your demand has been saved, an administrator will answer to you soon",
-  "PasswordAndLoginRecovery": "An email has been sent to recover your login and password",
-  "Media": {
-    "Medias": "Medias",
-    "Media": "Media",
-    "add": "Add media",
-    "edit": "Edit media",
-    "valid": "Validate media",
-    "delete": "Delete media",
-    "undo": "Undo changes",
-    "loading": "Loading media",
-    "link": "Link to the media",
-    "diaporama": "Link to the media",
-    "title": "Title",
-    "description": "Description",
-    "author": "Author",
-    "type": "Media Type",
-    "next": "Go to previous media",
-    "previous": "Go to next media"
-  },
-  "Import": {
-    "Report": {
-      "Errors": {
-        "Entity": "Entity"
-      }
+    "LatestObservations": "Latest observations",
+    "Actions": {
+      "DeleteObs": "Delete the observation",
+      "Mailto": "Contact by email",
+      "CopyPermalink": "Copy the permalink",
+      "AddComment": "Add a comment",
+      "DeleteComment": "Delete a comment",
+      "ChangeValidStatus": "Change validation status",
+      "RedirectToModule": "View in the data entry module"
     },
-    "Destinations": "Destinations",
-    "FileUpload": " Upload a file ",
-    "ChooseDataset": "Select a dataset",
-    "DestinationLabel": "Import destination",
-    "ChooseDestination": "Select a destination",
-    "ImportFile": "Import a file",
-    "ChooseFile": "Select a file",
-    "Next": "Next",
-    "Validate": "Validate",
-    "ErrorMessage": {
-      "Title": "The import module encountered an issue.",
-      "Remark": "This  issue is not related to the data control.",
-      "DescriptionRestart": "You can retry the import after parameters checking.",
-      "DescriptionContactAdmin": "If the problem ius still there, please contact your administrator."
+    "Messages": {
+      "Copied": "Copied to clipboard!",
+      "DeleteSuccess": "Observation deleted successfully"
     },
     "Errors": {
-      "FileTooBig": "Le fichier sélectionné est trop volumineux. La taille maximale est de {{maxFileSize}}Mo",
-      "EmptyFile": "Le fichier sélectionné est vide",
-      "FileColumn": "La première ligne du fichier doit correspondre au nom des colonnes",
-      "FileNameTooBig": "Le nom du fichier est trop long. Il doit faire moins de {{maxFileNameLength}} caractères."
+      "PeriodError": "The 'start period' and 'end period' fields must be filled if you want to search by period"
+    },
+
+    "Commented": "commented on",
+    "ChangeStatus": "changed the status on",
+    "ModalTitle": "Observation information",
+
+    "LocationName": "Location name",
+    "Accuracy": "Pointing accuracy",
+    "Owner": "Observation by",
+    "UidObs": "Observation UUID",
+    "Habitat": "Associated habitat",
+    "InpnTaxon": "INPN sheet",
+    "GnRecord": "Taxon sheet",
+    "ObsState": "Observation status",
+    "ObsTech": "Observation technique",
+    "ObsStateBio": "Biological state",
+    "ObsStatusBio": "Biological status",
+    "ObsStatBiogeo": "Biogeographical status",
+    "ObsBehav": "Behavior",
+    "ObsSex": "Sex",
+    "ObsLifeStep": "Life stage",
+    "DeterMeth": "Determination method",
+    "Form": {
+      "Validation": "Validation",
+      "ValidationStatus": "Validation status",
+      "EditedDataSinceLastEdit": "Data modified since the last edit",
+      "FilterTaxaProfile": "Filter by taxon profile",
+      "Score": "Score",
+      "ValidPosition": "Valid location",
+      "NoFilter": "No filter",
+      "ValidAltitude": "Valid altitude",
+      "ValidPhenology": "Valid phenology",
+      "SearchedTaxa": "Searched taxon(s)",
+      "AdvancedFieldsSelected": "Advanced field(s) selected",
+      "RedListCategory": "Red list category",
+      "ProtectionStatus": "Protection status",
+      "TaxrefAttributes": "TaxRef attributes"
+    },
+    "FicheTaxon": {
+      "Messages": {
+        "MessageProfil": "* This profile is calculated on the observations considered valid present in the Synthesis. It helps to facilitate the validation of new observations by comparing them to the spatial, altitudinal, and phenological distribution of valid observations.",
+        "MessageNoProfil": "No profile data for this taxon"
+      }
+    },
+    "Map": {
+      "AreasToggleBtn": "Grid cells"
     }
+  },
+  "Media": {
+    "Medias": "Media",
+    "Media": "Media",
+    "Actions": {
+      "Add": "Add Media",
+      "Edit": "Edit the media",
+      "Valid": "Validate the media",
+      "Delete": "Delete the media",
+      "Undo": "Restore the media",
+      "Link": "Display the media",
+      "Diaporama": "Display the media",
+      "NextMedia": "View the next media",
+      "PreviousMedia": "View the previous media"
+    },
+    "Messages": {
+      "loading": "Loading media"
+    },
+    "MediaType": "Media type"
+  },
+  "Import": {
+    "Destination": "Destination",
+    "Destinations": "Destinations",
+    "Entity": "Entity",
+    "FileUpload": "File upload",
+    "MappingName": "Model name",
+    "Actions": {
+      "ChooseDataset": "Choose a dataset",
+      "ChooseDestination": "Choose a destination",
+      "ImportFile": "Import a file (CSV)",
+      "ChooseFile": "Choose your file"
+    },
+    "FileName": "File name",
+    "Mapping": {
+      "Actions": {
+        "ChooseMapping": "Use a predefined import model",
+        "RenameMapping": "Rename the import model",
+        "DeleteMapping": "Delete the import model",
+
+        "UpdateMapping": "Update the existing model",
+        "SaveNewMapping": "Save a new model",
+        "NoSaveMapping": "Do not save",
+        "DontSaveMapping": "Continue without saving"
+      },
+      "Questions": {
+        "DeleteMapping?": "Do you want to delete the model?"
+      }
+    },
+    "FieldMapping": {
+      "Title": "Field correspondence with the model",
+      "MappingName": "Model name",
+      "Messages": {
+        "SourceFieldsMapped": "{{ mappedFieldsLength }} target fields have been associated with a source field.",
+        "SourceFieldsAllMapped": "All {{ sourceFieldsLength }} fields in the import file have been associated with a target field.",
+        "SourceFieldsUnmapped": "{{ unmappedFieldsLength }} fields in the import file are currently not associated with any target field and will therefore be ignored.",
+        "MappingNameWarning": "A name must be provided to create a model",
+        "MappingChangeNameWarning": "Change the name to save the model",
+        "SinpUUIDWarning": "Warning: SINP identifiers will not be generated",
+        "MappingDeleted": "The mapping {{label}} has been successfully deleted"
+      },
+      "Questions": {
+        "MappingCreate?": "Do you want to save your correspondences in a model to reuse them during a future import?",
+        "MappingChanged?": "The correspondence model has been modified; do you want to update the existing model or create a new model?"
+      },
+      "Actions": {
+        "SelectMapping": "Please select a mapping",
+        "SaveMapping": "Save the model",
+        "ConfirmMappingDeletion": "Delete the model"
+      }
+    },
+    "ContentMapping": {
+      "Title": "Nomenclature correspondence",
+      "Messages": {
+        "NomenclatureValuesAllMapped": "All values in the file have been automatically associated with the nomenclatures.",
+        "OneNomenclatureValueMapped": "Only one value in the file has been automatically associated with the nomenclature values.",
+        "RestToMapped": "{{number}} remain to be associated manually.",
+        "NumberOfNomenclatureValueAutoMapped": "{{number}} fields in the file have been automatically associated with the fields in the import model.",
+        "NoNomenclatureValueCouldBeMapped": "No value in the file could be associated with the nomenclature values.",
+        "MissingMappingNameWarning": "A name must be provided to create a model",
+        "ChangeMappingNameWarning": "Change the name to create a model",
+        "ControlInProgress": "File control in progress...",
+        "ControlNotifications": "The controls on your file of {{ nbLignes }} lines have been successfully launched... A notification email will be sent to you at the end of the process."
+      },
+      "Questions": {
+        "SaveMappingMessage?": "Do you want to save your correspondences in a model to reuse them during a future import?",
+        "CreateOrUpdateMappingModel?": "The correspondence model has been modified; do you want to update the existing model or create a new model?"
+      }
+    },
+    "Errors": {
+      "Title": "The import module encountered a problem",
+      "Remark": "This is a problem independent of data control.",
+      "DescriptionRestart": "You can try to restart the import after checking the parameters.",
+      "DescriptionContactAdmin": "If the problem persists, please contact your administrator.",
+      "FileTooBig": "The selected file is too large. The maximum size is {{maxFileSize}}MB",
+      "EmptyFile": "The selected file is empty",
+      "FileColumn": "The first line of the file must correspond to the column names",
+      "FileNameTooBig": "The file name is too long. It must be less than {{maxFileNameLength}} characters."
+    },
+    "Messages": {
+      "DeleteSuccessfully": "Import deleted",
+      "SkipContentMapping": "No nomenclature present in the provided data, proceeding to the 'Data Import' step."
+    }
+  },
+  "Releve": {
+    "InfoGeo": "Geographical information of the survey"
   }
 }

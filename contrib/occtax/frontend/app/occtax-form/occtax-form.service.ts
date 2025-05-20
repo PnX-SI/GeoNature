@@ -134,7 +134,7 @@ export class OcctaxFormService {
     if (this.disabled) {
       this._commonService.translateToaster(
         "warning",
-        "Occtax.Releve.Messages.FillGeometryFirst"
+        "Messages.FillGeometryFirst"
       );
     }
   }

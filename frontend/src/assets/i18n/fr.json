@@ -9,7 +9,6 @@
     "French": "Français",
     "Chinese": "中文 (Chinois)"
   },
-  "ActionsLabel": "Actions",
   "Actions": {
     "Singular": "Action",
     "Plural": "Actions",
@@ -24,9 +23,12 @@
     "Close": "Fermer",
     "Browse": "Parcourir",
     "Validate": "Valider",
-    "PDFExport": "Export un PDF",
+    "PDFExport": "Exporter en PDF",
     "DownloadData": "Télécharger les données",
     "Copy": "Copier"
+  },
+  "Messages": {
+    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
   },
   "Errors": {
     "ErrorMessage": "Une erreur s'est produite",
