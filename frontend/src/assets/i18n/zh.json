@@ -1,43 +1,37 @@
 {
-  "Title": "GeoNature",
   "Home": "家",
-  "Sel_lang": "选择语言",
+  "LanguageSelection": "选择语言",
   "Language": "语言",
-  "Languages": {
+  "AvailableLanguages": {
     "English": "English (英语)",
     "French": "Français (法国人)",
     "Chinese": "中文"
   },
-  "Email": "电子邮件",
-  "Username": "用户名",
-  "Password": "密码",
-  "LogIn": "登录",
-  "LogOut": "登出",
-  "IntroTitle": "欢迎来到 GeoNature V2",
-  "IntroText": "您正在GeoNature V2的演示实例。目前正在开发中，每天更新。 <br/>关于<a href=\"https://github.com/PnX-SI/GeoNature/\" target=\"_blank\">项目的Github </a>的详细说明和特征。 <br/> <br/>该字段用于向用户显示消息，可以将其定义为定期更改或隐藏。 <br/>这个主页还提供关于数据库的全球统计数据（观察数量，物种，程序，数据集...）。 <br/>然后显示合成中最近的50个观察结果，然后显示关于数据及其进化的全局统计。 <br/>侧面导航栏允许根据连接的用户可用的权限访问不同的模块。 <br/> <br/>目前，只有模块CONTACT（=分类单元的出现）的形式可用并在开发中.",
+  "Authentication": {
+    "Email": "电子邮件",
+    "Username": "用户名",
+    "Password": "密码",
+    "Actions": {
+      "LogIn": "登录",
+      "LogOut": "登出"
+    }
+  },
+  "Datasets": "数据集",
   "Observations": "意见",
+  "Taxon": "类群",
+  "Taxons": "类群",
   "Species": "种类",
   "LatestObservations": "最新观察",
+  "Advanced": "高级",
   "MetaData": {
-    "Programs": "程式",
-    "Datasets": "数据集"
+    "Programs": "程式"
   },
   "Map": {
-    "SearchLocation": "搜索位置",
-    "AddPoint": "找到观察点 (点)",
-    "AddLine": "找到观察 (线)",
-    "AddPolygon": "定位观察 (多边形)"
-  },
-  "Releve": {
-    "Dataset": "数据集",
-    "Observer": "观察者",
-    "Observers": "观察家"
-  },
-  "Taxon": {
-    "Advanced": "高级",
-    "Observations": "意见",
-    "Taxon": "类群",
-    "Taxons": "类群"
-  },
-  "IntroMessage": "欢迎来到CONTACT模块. 它允许根据SINP分类群发现标准来捕获观测值."
+    "Actions": {
+      "SearchLocation": "搜索位置",
+      "AddPoint": "找到观察点 (点)",
+      "AddLine": "找到观察 (线)",
+      "AddPolygon": "定位观察 (多边形)"
+    }
+  }
 }
