@@ -1,10 +1,15 @@
 {
   "Validation": {
-    "ChangeStatus": "Modification du statut de validation",
-    "noData": "Aucune donnée à afficher",
-    "noIdFound": "Aucun résultat pour cet ID",
-    "SelectedObservations": "observation{{plural}} sélectionnée{{plural}}",
-    "SetStatus": "Attribuer un statut de validation",
-    "WarningHiddenObservations": "Attention {{value}} observation{{plural}} non-visible{{plural}} (hors de la page courante) sélectionnée{{plural}}"
+    "Messages": {
+      "noData": "Aucune donnée à afficher",
+      "noIdFound": "Aucun résultat pour cet ID",
+      "WarningHiddenObservations": "Attention {{value}} observation{{plural}} non-visible{{plural}} (hors de la page courante) sélectionnée{{plural}}"
+    },
+    "Actions": {
+      "SetStatus": "Attribuer un statut de validation",
+      "ChangeStatus": "Modification du statut de validation"
+    },
+
+    "SelectedObservations": "observation{{plural}} sélectionnée{{plural}}"
   }
 }
