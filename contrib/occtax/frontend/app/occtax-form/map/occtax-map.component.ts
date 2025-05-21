@@ -1,17 +1,15 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
-import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
-import { CommonService } from "@geonature_common/service/common.service";
-import { MapService } from "@geonature_common/map/map.service";
-import { OcctaxFormMapService } from "./occtax-map.service";
-import { ConfigService } from "@geonature/services/config.service";
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
+import { CommonService } from '@geonature_common/service/common.service';
+import { MapService } from '@geonature_common/map/map.service';
+import { OcctaxFormMapService } from './occtax-map.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
-  selector: "pnx-occtax-form-map",
-  templateUrl: "occtax-map.component.html",
+  selector: 'pnx-occtax-form-map',
+  templateUrl: 'occtax-map.component.html',
 })
-export class OcctaxFormMapComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy {
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
 
@@ -52,8 +50,8 @@ export class OcctaxFormMapComponent
     }
 
     filelayerFeatures.forEach((el) => {
-      if ((el as any).getLayers()[0].options.color == "red") {
-        (el as any).setStyle({ color: "green", opacity: 0.2 });
+      if ((el as any).getLayers()[0].options.color == 'red') {
+        (el as any).setStyle({ color: 'green', opacity: 0.2 });
       }
     });
   }
@@ -61,10 +59,7 @@ export class OcctaxFormMapComponent
   // display help toaster for filelayer
   infoMessageFileLayer() {
     if (this.firstFileLayerMessage) {
-      this._commonService.translateToaster(
-        "info",
-        "Map.Messages.FileLayerInfoMessage"
-      );
+      this._commonService.translateToaster('info', 'Map.Messages.FileLayerInfoMessage');
     }
     this.firstFileLayerMessage = false;
   }
