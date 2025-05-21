@@ -1,5 +1,6 @@
 """
-Description des options de configuration
+Global GeoNature settings definitions and default values.
+Never edit this file, but you can override some settings in you own config/default_config.toml file.
 """
 
 import os
