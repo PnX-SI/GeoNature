@@ -242,7 +242,7 @@
     class="modal-body"
     style="align-items: flex-end"
   >
-    <label>{{ 'Actions.Search' | translate }}{{ 'On' | translate }} :</label>
+    <label>{{ 'Actions.Search' | translate }}{{ 'On' | translate | lowercase }} :</label>
     <ng-select
       [items]="meta_type"
       [formControl]="metadataService.form.get('selector')"
