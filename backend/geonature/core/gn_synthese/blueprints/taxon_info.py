@@ -132,21 +132,23 @@ def get_autocomplete_taxons_synthese():
     :query str group2_inpn : filter with INPN group 2
     """
     search_name = request.args.get("search_name", "")
-    query = (
-        select(
-            VMTaxrefListForautocomplete,
-            func.similarity(VMTaxrefListForautocomplete.unaccent_search_name, search_name).label(
-                "idx_trgm"
-            ),
-        )
-        .distinct()
-        .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
+    synthese_cdnom_avalaible = select(func.distinct(Synthese.cd_nom).label("cd_nom")).subquery(
+        name="distinct_cd_nom"
+    )
+
+    query = select(
+        VMTaxrefListForautocomplete,
+        func.similarity(
+            VMTaxrefListForautocomplete.unaccent_search_name,
+            search_name,
+        ).label("idx_trgm"),
+    ).join(
+        synthese_cdnom_avalaible,
+        synthese_cdnom_avalaible.c.cd_nom == VMTaxrefListForautocomplete.cd_nom,
     )
     search_name = search_name.replace(" ", "%")
     query = query.where(
-        VMTaxrefListForautocomplete.unaccent_search_name.ilike(
-            func.unaccent("%" + search_name + "%")
-        )
+        VMTaxrefListForautocomplete.unaccent_search_name.ilike(func.unaccent(f"%{search_name}%"))
     )
     regne = request.args.get("regne")
     if regne:
