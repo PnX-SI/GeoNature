@@ -1325,6 +1325,15 @@ Le style des fichiers PDF est également customisable grâce au fichier "custom/
 Customiser les traductions
 """"""""""""""""""""""""""
 
+Dans GeoNature, il est possible de changer la langue de l'interface. Aujourd'hui seul trois langages sont disponibles :
+
+- Francais : ``fr``
+- Anglais (partiellement) : ``en``
+- Chinois (partiellement) : ``zh``
+
+Pour changer de la langue par défaut, indiquer le code de cette dernière dans le paramètre ``DEFAULT_LANGUAGE``. Si vous voulez proposer aux
+utilisateurs de pouvoir changer de langue, passer le paramètre ``MULTILINGUAL`` à ``true``.
+
 Vous pouvez surcharger les fichiers de traductions au format JSON présents dans le dossier
 ``/frontend/src/assets/i18n/`` (pour les textes globaux de GeoNature) et les dossiers ``/frontend/assets/i18n/`` 
 de chaque module (pour les textes spécifiques de chaque module). 
