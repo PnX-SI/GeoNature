@@ -1347,9 +1347,13 @@ Exemple de contenu du fichier ``/custom/translations/fr.json`` :
 .. code-block:: javascript
 
     {
-      "LanguageSelection": "Choix de la langue",
-      "Languages": {
-        "French": "Français (French)"
+      "Datasets": "JDD",
+      "Occtax": {
+        "Releve": {
+          "Actions": {
+            "AddReleve": "Créer un relevé"
+          }
+        }
       }
     }
 
@@ -1362,10 +1366,10 @@ Pour que ces fichiers de surcharge de traductions soient pris en compte, il faut
     npm run build
 
 
-**Notes** :
+.. note::
 
-- Vous pouvez trouver plus d'information sur `le format de ces fichiers JSON de traduction sur le site de Ngx-Translate <https://github.com/ngx-translate/core?tab=readme-ov-file#4-define-the-translations>`_.
-- Tous les textes présents dans GeoNature ne sont pas forcément traduits pour le moment et présents dans ces fichiers.
+  - Vous pouvez trouver plus d'information sur `le format de ces fichiers JSON de traduction sur le site de Ngx-Translate <https://github.com/ngx-translate/core?tab=readme-ov-file#4-define-the-translations>`_.
+  - Tous les textes présents dans GeoNature ne sont pas forcément traduits pour le moment et présents dans ces fichiers.
 
 Intégrer des données
 --------------------
