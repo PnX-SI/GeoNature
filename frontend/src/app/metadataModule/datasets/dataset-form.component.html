@@ -236,9 +236,9 @@
             [formControl]="form.get('id_taxa_list')"
           >
             <option [ngValue]="null">
-              {{ 'MetaData.DatasetForm.SelectTaxaList' | translate }}
+              {{ 'MetaData.DatasetForm.Actions.SelectTaxaList' | translate }}
             </option>
-            <option [ngValue]="-1">{{ 'MetaData.DatasetForm.NoList' | translate }}</option>
+            <option [ngValue]="-1">{{ 'MetaData.DatasetForm.Messages.NoList' | translate }}</option>
             <option
               *ngFor="let list of taxaBibList"
               [ngValue]="list.id_liste"
