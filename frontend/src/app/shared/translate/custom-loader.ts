@@ -7,22 +7,37 @@ import { TranslateLoader } from '@ngx-translate/core';
 
 import { ConfigService } from '@geonature/services/config.service';
 
-export class CustomTranslateLoader implements TranslateLoader {
+export interface iCustomTranslateLoaderOptions {
+  moduleName?: String | null;
+}
+
+export abstract class iCustomTranslateLoader extends TranslateLoader {
+  public options: iCustomTranslateLoaderOptions;
+}
+
+export class CustomTranslateLoader implements iCustomTranslateLoader {
   constructor(
     private http: HttpClient,
-    private config: ConfigService
+    private config: ConfigService,
+    public options: iCustomTranslateLoaderOptions = { moduleName: null }
   ) {}
 
   getTranslation(lang: string = this.config.DEFAULT_LANGUAGE): Observable<any> {
-    return forkJoin([
-      this.http.get(`/assets/i18n/${lang}.json`),
-      this.http.get(`/assets/i18n/override/${lang}.json`).catch((error) => of({})),
-    ]).pipe(
+    const i18nFiles = [this.http.get(`/assets/i18n/${lang}.json`)];
+    if (this.options.moduleName !== null) {
+      i18nFiles.push(
+        this.http
+          .get(`/modules/${this.options.moduleName}/assets/i18n/${lang}.json`)
+          .catch((error) => of({}))
+      );
+    }
+    i18nFiles.push(this.http.get(`/assets/i18n/override/${lang}.json`).catch((error) => of({})));
+
+    return forkJoin(i18nFiles).pipe(
       map((data) => {
-        const mergedTranslations = {};
+        let mergedTranslations = {};
         data.forEach((currentTranslations) => {
-          //Object.assign(translations, obj);
-          merge(mergedTranslations, currentTranslations);
+          mergedTranslations = merge(mergedTranslations, currentTranslations);
         });
         return mergedTranslations;
       })

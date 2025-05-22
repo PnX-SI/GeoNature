@@ -73,7 +73,7 @@ export class OcctaxFormService {
           }
         },
         (error) => {
-          this._commonService.translateToaster('error', 'Releve.DoesNotExist');
+          this._commonService.translateToaster('error', 'Occtax.Releve.Errors.DoesNotExist');
           this._router.navigate(['occtax/form']);
         }
       );
@@ -117,7 +117,7 @@ export class OcctaxFormService {
 
   formDisabled() {
     if (this.disabled) {
-      this._commonService.translateToaster('warning', 'Releve.FillGeometryFirst');
+      this._commonService.translateToaster('warning', 'Messages.FillGeometryFirst');
     }
   }
 

@@ -76,19 +76,19 @@
                       </div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.place_name">
-                      <div class="label">{{ 'Releve.PlaceName' | translate }} :</div>
+                      <div class="label">{{ 'Occtax.Releve.PlaceName' | translate }} :</div>
                       <div class="value">{{ releve.place_name || '-' }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.precision">
-                      <div class="label">{{ 'Releve.Precision' | translate }} :</div>
+                      <div class="label">{{ 'Occtax.Releve.Precision' | translate }} :</div>
                       <div class="value">{{ releve.precision || '-' }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.altitude_min">
-                      <div class="label">Altitude min :</div>
+                      <div class="label">{{ 'MinAltitude' | translate }}</div>
                       <div class="value">{{ releve.altitude_min || '-' }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.altitude_max">
-                      <div class="label">Altitude max :</div>
+                      <div class="label">{{ 'MaxAltitude' | translate }}</div>
                       <div class="value">{{ releve.altitude_max || '-' }}</div>
                     </div>
                     <!--Champs additionnels-->
@@ -108,28 +108,30 @@
                   </div>
                   <div class="col-6">
                     <div *ngIf="config.OCCTAX.form_fields.depth_min">
-                      <div class="label">{{ 'Releve.MinDepth' | translate }} :</div>
+                      <div class="label">{{ 'MinDepth' | translate }} :</div>
                       <div class="value">{{ releve.depth_min || '-' }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.depth_max">
-                      <div class="label">{{ 'Releve.MaxDepth' | translate }} :</div>
+                      <div class="label">{{ 'MaxDepth' | translate }} :</div>
                       <div class="value">{{ releve.depth_max || '-' }}</div>
                     </div>
 
                     <div *ngIf="config.OCCTAX.form_fields.tech_collect">
-                      <div class="label">{{ 'Releve.TechCollectCampanule' | translate }} :</div>
+                      <div class="label">
+                        {{ 'Occtax.Releve.TechCollectCampanule' | translate }} :
+                      </div>
                       <div class="value">
                         {{ getLibelleByID(releve.id_nomenclature_tech_collect_campanule) }}
                       </div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.group_type">
-                      <div class="label">{{ 'Releve.GroupType' | translate }} :</div>
+                      <div class="label">{{ 'Occtax.Releve.GroupType' | translate }} :</div>
                       <div class="value">
                         {{ getLibelleByID(releve.id_nomenclature_grp_typ) }}
                       </div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.grp_method">
-                      <div class="label">{{ 'Releve.GroupMethod' | translate }} :</div>
+                      <div class="label">{{ 'Occtax.Releve.GroupMethod' | translate }} :</div>
                       <div class="value">{{ releve.grp_method || '-' }}</div>
                     </div>
                     <div>
@@ -137,7 +139,7 @@
                       <div class="value">{{ releve.unique_id_sinp_grp }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.geo_object_nature">
-                      <div class="label">{{ 'Releve.GeoObjectNature' | translate }} :</div>
+                      <div class="label">{{ 'Occtax.Releve.GeoObjectNature' | translate }} :</div>
                       <div class="value">
                         {{ getLibelleByID(releve.id_nomenclature_geo_object_nature) }}
                       </div>
@@ -167,7 +169,7 @@
                 [matBadge]="occurrences?.length"
                 matBadgeOverlap="false"
               >
-                {{ 'Taxon.ObservedTaxon' | translate }}
+                {{ 'Occtax.Taxon.ObservedTaxon' | translate }}
               </span>
               <mat-selection-list
                 dense
@@ -198,7 +200,9 @@
                   <mat-tab-group>
                     <mat-tab label="Caractérisation de l'occurrence">
                       <div *ngIf="config.OCCTAX.form_fields.observation_status">
-                        <div class="label">{{ 'Taxon.ObservationStatus' | translate }} :</div>
+                        <div class="label">
+                          {{ 'Occtax.Taxon.ObservationStatus' | translate }} :
+                        </div>
                         <div class="value">
                           {{
                             getLibelleByID(
@@ -208,7 +212,7 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.obs_tech">
-                        <div class="label">{{ 'Taxon.ObsTech' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.ObsTech' | translate }} :</div>
                         <div class="value">
                           {{
                             getLibelleByID(
@@ -218,7 +222,9 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.bio_condition">
-                        <div class="label">{{ 'Taxon.BiologicalCondition' | translate }} :</div>
+                        <div class="label">
+                          {{ 'Occtax.Taxon.BiologicalCondition' | translate }} :
+                        </div>
                         <div class="value">
                           {{
                             getLibelleByID(
@@ -228,7 +234,7 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.behaviour">
-                        <div class="label">{{ 'Taxon.OccBehaviour' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.OccBehaviour' | translate }} :</div>
                         <div class="value">
                           {{
                             getLibelleByID((displayOccurrence | async).id_nomenclature_behaviour)
@@ -236,7 +242,7 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.bio_status">
-                        <div class="label">{{ 'Taxon.BiologicalStatus' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.BiologicalStatus' | translate }} :</div>
                         <div class="value">
                           {{
                             getLibelleByID((displayOccurrence | async).id_nomenclature_bio_status)
@@ -244,7 +250,9 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.determination_method">
-                        <div class="label">{{ 'Taxon.DeterminationMethod' | translate }} :</div>
+                        <div class="label">
+                          {{ 'Occtax.Taxon.DeterminationMethod' | translate }} :
+                        </div>
                         <div class="value">
                           {{
                             getLibelleByID(
@@ -254,7 +262,7 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.determiner">
-                        <div class="label">{{ 'Taxon.Determiner' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.Determiner' | translate }} :</div>
                         <div class="value">
                           {{ (displayOccurrence | async).determiner || '' }}
                         </div>
@@ -266,7 +274,7 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.exist_proof">
-                        <div class="label">{{ 'Taxon.ExistProof' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.ExistProof' | translate }} :</div>
                         <div class="value">
                           {{
                             getLibelleByID((displayOccurrence | async).id_nomenclature_exist_proof)
@@ -274,25 +282,25 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.digital_proof">
-                        <div class="label">{{ 'Taxon.DigitalProof' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.DigitalProof' | translate }} :</div>
                         <div class="value">
                           {{ (displayOccurrence | async).digital_proof || '-' }}
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.non_digital_proof">
-                        <div class="label">{{ 'Taxon.NonDigitalProof' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.NonDigitalProof' | translate }} :</div>
                         <div class="value">
                           {{ (displayOccurrence | async).non_digital_proof || '-' }}
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.blurring">
-                        <div class="label">{{ 'Taxon.Blurring' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.Blurring' | translate }} :</div>
                         <div class="value">
                           {{ getLibelleByID((displayOccurrence | async).id_nomenclature_blurring) }}
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.source_status">
-                        <div class="label">{{ 'Taxon.StatusSource' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.StatusSource' | translate }} :</div>
                         <div class="value">
                           {{
                             getLibelleByID(
@@ -302,7 +310,7 @@
                         </div>
                       </div>
                       <div *ngIf="config.OCCTAX.form_fields.comment_occ">
-                        <div class="label">{{ 'Taxon.Comment' | translate }} :</div>
+                        <div class="label">{{ 'Occtax.Taxon.Comment' | translate }} :</div>
                         <div class="value">
                           {{ (displayOccurrence | async).comment || '' }}
                         </div>
@@ -330,49 +338,56 @@
                         "
                       >
                         <div *ngIf="config.OCCTAX.form_fields.life_stage">
-                          <div class="label">{{ 'Counting.LifeStage' | translate }} :</div>
+                          <div class="label">{{ 'LifeStage' | translate }} :</div>
                           <div class="value">
                             {{ getLibelleByID(counting.id_nomenclature_life_stage) }}
                           </div>
                         </div>
 
                         <div *ngIf="config.OCCTAX.form_fields.sex">
-                          <div class="label">{{ 'Counting.Sex' | translate }} :</div>
+                          <div class="label">{{ 'Sex' | translate }} :</div>
                           <div class="value">
                             {{ getLibelleByID(counting.id_nomenclature_sex) }}
                           </div>
                         </div>
 
                         <div *ngIf="config.OCCTAX.form_fields.obj_count">
-                          <div class="label">{{ 'Counting.CountingObject' | translate }} :</div>
+                          <div class="label">
+                            {{ 'Occtax.Counting.CountingObject' | translate }} :
+                          </div>
                           <div class="value">
                             {{ getLibelleByID(counting.id_nomenclature_obj_count) }}
                           </div>
                         </div>
 
                         <div *ngIf="config.OCCTAX.form_fields.type_count">
-                          <div class="label">{{ 'Counting.CountingType' | translate }} :</div>
+                          <div class="label">
+                            {{ 'Occtax.Counting.CountingType' | translate }} :
+                          </div>
                           <div class="value">
                             {{ getLibelleByID(counting.id_nomenclature_type_count) }}
                           </div>
                         </div>
 
                         <div *ngIf="config.OCCTAX.form_fields.count_min">
-                          <div class="label">{{ 'Counting.NumberMin' | translate }} :</div>
+                          <div class="label">{{ 'Occtax.Counting.NumberMin' | translate }} :</div>
                           <div class="value">
                             {{ counting.count_min || '-' }}
                           </div>
                         </div>
 
                         <div *ngIf="config.OCCTAX.form_fields.count_max">
-                          <div class="label">{{ 'Counting.NumberMax' | translate }} :</div>
+                          <div class="label">{{ 'Occtax.Counting.NumberMax' | translate }} :</div>
                           <div class="value">
                             {{ counting.count_max || '-' }}
                           </div>
                         </div>
 
                         <div>
-                          <div class="label">{{ 'Counting.ValidationStatus' | translate }} :</div>
+                          <div class="label">
+                            {{ 'Occtax.Counting.ValidationStatus' | translate }}
+                            :
+                          </div>
                           <div class="value">
                             {{ counting?.validation_status?.mnemonique || '-' }}
                           </div>

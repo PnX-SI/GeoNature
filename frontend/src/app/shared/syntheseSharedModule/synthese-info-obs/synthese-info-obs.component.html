@@ -85,7 +85,7 @@
         <button
           mat-mini-fab
           *ngIf="selectedObs?.source?.url_source"
-          ngbTooltip="{{ 'Synthese.Edit' | translate }}"
+          ngbTooltip="{{ 'Synthese.Actions.RedirectToModule' | translate }}"
           placement="bottom"
           (click)="
             backToModule(selectedObs?.source?.url_source, selectedObs?.entity_source_pk_value)
@@ -96,7 +96,7 @@
         <button
           *ngIf="selectedObs?.cor_observers?.length > 0 && config.FRONTEND.DISPLAY_EMAIL_INFO_OBS"
           mat-mini-fab
-          ngbTooltip="{{ 'Synthese.Mailto' | translate }}"
+          ngbTooltip="{{ 'Synthese.Actions.Mailto' | translate }}"
           placement="bottom"
           (click)="sendMail()"
         >
@@ -104,7 +104,7 @@
         </button>
         <button
           mat-mini-fab
-          ngbTooltip="{{ 'Synthese.copyPermalink' | translate }}"
+          ngbTooltip="{{ 'Synthese.Actions.CopyPermalink' | translate }}"
           placement="bottom"
           (click)="copyToClipBoard()"
         >
@@ -151,29 +151,29 @@
           {{ selectedObs?.precision }}
         </span>
       </div>
-      <b>{{ 'Synthese.Owner' | translate }} :</b>
+      <b>{{ 'Observation' | translate }} {{ 'Of' | translate }} :</b>
       <span data-qa="synthese-info-obs-observateur">
         {{ selectedObs?.observers }}
       </span>
       <br />
       <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
-        <b>{{ 'Synthese.Date' | translate }} :</b>
+        <b>{{ 'Date' | translate }} :</b>
         <span>{{ selectedObs?.date_min }} -> {{ selectedObs?.date_max }}</span>
       </span>
       <ng-template #elseBlock>
-        <b>{{ 'Synthese.Date' | translate }} :</b>
+        <b>{{ 'Date' | translate }} :</b>
         <span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min }}</span>
       </ng-template>
       <br />
       <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
-        <b>{{ 'Synthese.Altitude' | translate }}</b>
+        <b>{{ 'Altitude' | translate }}</b>
         : {{ selectedObs?.altitude_min }} m - {{ selectedObs?.altitude_max }} m
         <br />
       </span>
       <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
-        <b>{{ 'Synthese.DeepMin' | translate }}</b>
+        <b>{{ 'DepthMin' | translate }}</b>
         : {{ selectedObs?.depth_min }} m -
-        <b>{{ 'Synthese.DeepMax' | translate }} :</b>
+        <b>{{ 'DepthMax' | translate }} :</b>
         {{ selectedObs?.depth_max }} m
         <br />
       </span>

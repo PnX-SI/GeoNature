@@ -85,7 +85,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this._currentGeojson == null ? { geometry: this.geojson } : this._currentGeojson;
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
       if (this.map.getZoom() < this.zoomLevel) {
-        this._commonService.translateToaster('warning', 'Map.ZoomWarning');
+        this._commonService.translateToaster('warning', 'Map.Messages.ZoomWarning');
       }
       // remove eventual filelayer layers
       if (this.mapservice.fileLayerFeatureGroup) {
@@ -115,7 +115,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.map.on(this._Le.Draw.Event.CREATED, (e) => {
       this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
       if (this.map.getZoom() < this.zoomLevel) {
-        this._commonService.translateToaster('warning', 'Map.ZoomWarning');
+        this._commonService.translateToaster('warning', 'Map.Messages.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
       } else {
         this._currentDraw = (e as any).layer;

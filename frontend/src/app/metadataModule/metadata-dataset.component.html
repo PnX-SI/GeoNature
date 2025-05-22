@@ -48,7 +48,7 @@
 <td style="text-align: left">
   <span *ngIf="dataset.creator">
     <b>{{ dataset.creator?.nom_complet }} :</b>
-    créateur
+    {{ 'Creator' | translate }}
   </span>
 
   <ng-container *ngIf="dataset.cor_dataset_actor.length; else elifNoActor">
@@ -68,7 +68,7 @@
   <ng-template #elifNoActor>
     <div class="alert-actor">
       <mat-icon>report</mat-icon>
-      <span>Aucun acteur renseigné</span>
+      <span>{{ 'MetaData.Messages.NoStakeholder' | translate }}</span>
     </div>
   </ng-template>
 </td>

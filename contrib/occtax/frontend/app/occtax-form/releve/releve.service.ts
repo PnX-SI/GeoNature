@@ -448,7 +448,7 @@ export class OcctaxFormReleveService {
         .pipe(tap(() => (this.waiting = false)))
         .subscribe(
           (data: any) => {
-            this._commonService.translateToaster('info', 'Releve.Infos.ReleveModified');
+            this._commonService.translateToaster('info', 'Occtax.Releve.Messages.Modified');
             this.occtaxFormService.replaceReleveData(data);
             this.releveForm.markAsPristine();
             this.router.navigate([`${modulePath}/form`, data.id, 'taxons']);
@@ -456,7 +456,7 @@ export class OcctaxFormReleveService {
           },
           (err) => {
             this.waiting = false;
-            this._commonService.translateToaster('error', 'ErrorMessage');
+            this._commonService.translateToaster('error', 'Errors.ErrorOccurs');
           }
         );
     } else {
@@ -470,7 +470,7 @@ export class OcctaxFormReleveService {
         .subscribe(
           (data: any) => {
             this.occtaxFormService.id_releve_occtax.next(data.id);
-            this._commonService.translateToaster('info', 'Releve.Infos.ReleveAdded');
+            this._commonService.translateToaster('info', 'Occtax.Releve.Messages.Added');
             this.router.navigate([data.id, 'taxons'], {
               relativeTo: this.route,
             });

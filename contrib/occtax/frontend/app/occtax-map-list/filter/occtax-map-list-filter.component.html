@@ -4,7 +4,7 @@
 >
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
     <pnx-taxonomy
-      label="{{ 'Taxon.Taxon' | translate }}"
+      label="{{ 'Taxon' | translate }}"
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.cd_nom"
       [idList]="config.OCCTAX.id_taxon_list"
       [charNumber]="3"
@@ -20,7 +20,7 @@
     <ng-template #elseBlock>
       <pnx-observers
         class="auto"
-        label="{{ 'Releve.Observers' | translate }}"
+        label="{{ 'Observers' | translate }}"
         [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.observers"
         [multiSelect]="true"
         [idMenu]="config.OCCTAX.id_observers_list"
@@ -30,7 +30,7 @@
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
     <pnx-datasets
       class="auto"
-      label="{{ 'Releve.Dataset' | translate }}"
+      label="{{ 'Dataset' | translate }}"
       [displayAll]="true"
       [displayOnlyActive]="false"
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_dataset"
@@ -39,7 +39,7 @@
   </div>
   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
     <pnx-date
-      label="{{ 'Releve.MinDate' | translate }}"
+      label="{{ 'MinDate' | translate }}"
       data-qa="pnx-occtax-filter-date-min"
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.date_low"
     ></pnx-date>
@@ -47,7 +47,7 @@
 
   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
     <pnx-date
-      label="{{ 'Releve.MaxDate' | translate }}"
+      label="{{ 'MaxDate' | translate }}"
       data-qa="pnx-occtax-filter-date-max"
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.date_up"
     ></pnx-date>
@@ -55,7 +55,7 @@
 
   <button
     class="btn btn-outline-shadow actions"
-    matTooltip="{{ 'Form.RefreshFilters' | translate }}"
+    matTooltip="{{ 'Filters.Refresh' | translate }}"
     (click)="refreshFilters()"
   >
     <i
@@ -67,7 +67,7 @@
 
   <button
     class="btn btn-outline-shadow actions"
-    matTooltip="{{ 'Form.AdvancedFilters' | translate }}"
+    matTooltip="{{ 'Filter.Advanced' | translate }}"
     (click)="toggleAdvancedFilters()"
   >
     <i
@@ -97,7 +97,7 @@
     (click)="searchData()"
     data-qa="pnx-occtax-filter-search"
   >
-    {{ 'Search' | translate }}
+    {{ 'Actions.Search' | translate }}
     <mat-icon>search</mat-icon>
   </button>
 </div>

@@ -1,0 +1,15 @@
+{
+  "Validation": {
+    "Messages": {
+      "NoData": "Aucune donnée à afficher",
+      "NoIdFound": "Aucun résultat pour cet ID",
+      "WarningHiddenObservations": "Attention {{value}} observation{{plural}} non-visible{{plural}} (hors de la page courante) sélectionnée{{plural}}"
+    },
+    "Actions": {
+      "SetStatus": "Attribuer un statut de validation",
+      "ChangeStatus": "Modification du statut de validation"
+    },
+
+    "SelectedObservations": "observation{{plural}} sélectionnée{{plural}}"
+  }
+}

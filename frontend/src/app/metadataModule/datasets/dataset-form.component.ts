@@ -95,7 +95,7 @@ export class DatasetFormComponent implements OnInit {
     api
       .pipe(
         tap(() => {
-          this._commonService.translateToaster('success', 'MetaData.Datasetadded');
+          this._commonService.translateToaster('success', 'MetaData.Messages.DatasetAdded');
           this.metadataS.getMetadata(); //rechargement de la liste de la page principale
         })
       )
@@ -105,7 +105,7 @@ export class DatasetFormComponent implements OnInit {
         },
         (error) => {
           if (error.status === 403) {
-            this._commonService.translateToaster('error', 'NotAllowed');
+            this._commonService.translateToaster('error', 'Errors.NotAllowed');
             this._router.navigate(['/metadata/']);
           }
         }

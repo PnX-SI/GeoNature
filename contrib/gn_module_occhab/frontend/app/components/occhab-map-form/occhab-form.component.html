@@ -123,7 +123,7 @@
                 <pnx-observers
                   [parentFormControl]="occHabForm.stationForm.get('observers')"
                   [idMenu]="config.OCCHAB.OBSERVER_LIST_ID"
-                  label="{{ 'Releve.Observers' | translate }}"
+                  label="{{ 'Observers' | translate }}"
                   [bindAllItem]="true"
                 ></pnx-observers>
               </ng-template>
@@ -136,7 +136,7 @@
                   else elseblocDataset
                 "
               >
-                <small>{{ 'MetaData.Datasets' | translate }}:</small>
+                <small>{{ 'Datasets' | translate }}:</small>
                 <small>
                   <b>
                     {{ currentEditingStation?.properties?.dataset?.dataset_name }}
@@ -145,7 +145,7 @@
               </div>
               <ng-template #elseblocDataset>
                 <pnx-datasets
-                  label="{{ 'MetaData.Datasets' | translate }}"
+                  label="{{ 'Datasets' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
                   moduleCode="OCCHAB"
                   creatableInModule="OCCHAB"
@@ -163,7 +163,7 @@
               >
                 <pnx-date
                   [defaultToday]="true"
-                  label="{{ 'Releve.MinDate' | translate }}"
+                  label="{{ 'MinDate' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('date_min')"
                   (onSelectOrKeyIn)="
                     globalFormService.synchronizeMax(occHabForm.stationForm, 'date_min', 'date_max')
@@ -176,7 +176,7 @@
               >
                 <pnx-date
                   [defaultToday]="true"
-                  label="{{ 'Releve.MaxDate' | translate }}"
+                  label="{{ 'MaxDate' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('date_max')"
                   (onSelectOrKeyIn)="
                     globalFormService.synchronizeMin(occHabForm.stationForm, 'date_min', 'date_max')
@@ -189,7 +189,7 @@
               class="error"
               style="color: red"
             >
-              {{ 'Releve.DateMaxError' | translate }}
+              {{ 'Errors.DatesReversed' | translate }}
             </small>
           </div>
 
@@ -199,7 +199,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['altitude_min']"
               >
-                <small for="">Altitude min</small>
+                <small for="">{{ 'MinAltitude' | translate }}</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -210,7 +210,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['altitude_max']"
               >
-                <small for="">Altitude max</small>
+                <small for="">{{ 'MaxAltitude' | translate }}</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -249,7 +249,7 @@
               class="error"
               style="color: red"
             >
-              {{ 'Releve.AltitudeError' | translate }}
+              {{ 'Errors.AltitudeError' | translate }}
             </small>
           </div>
 
@@ -262,7 +262,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['depth_min']"
               >
-                <small for="">Profondeur min</small>
+                <small for="">{{ 'MinDepth' | translate }}</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -273,7 +273,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['depth_max']"
               >
-                <small for="">Profondeur max</small>
+                <small for="">{{ 'MaxDepth' | translate }}</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"

@@ -28,7 +28,7 @@ export class MapListGenericFiltersComponent implements OnInit {
       )
       .subscribe((value) => {
         if (value !== null && this.mapListService.colSelected.name === '') {
-          this._commonService.translateToaster('warning', 'MapList.NoColumnSelected');
+          this._commonService.translateToaster('warning', 'MapList.Messages.NoColumnSelected');
         } else {
           this.mapListService.urlQuery = this.mapListService.urlQuery.delete(
             this.mapListService.colSelected.prop

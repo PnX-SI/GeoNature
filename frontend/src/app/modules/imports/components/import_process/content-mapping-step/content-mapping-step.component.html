@@ -11,7 +11,7 @@
     <form class="was-validated">
       <fieldset>
         <div *ngIf="cruvedStore?.cruved?.IMPORT.module_objects.MAPPING.cruved.R != '0'">
-          <legend class="px-1">{{ 'Import.Mapping.ChooseMapping' | translate }}</legend>
+          <legend class="px-1">{{ 'Import.Mapping.Actions.Choose' | translate }}</legend>
           <div class="form-group">
             <select
               class="form-control form-control-sm"
@@ -43,7 +43,7 @@
               [disabled]="!deleteMappingEnabled()"
               data-qa="import-contentmapping-selection-button-rename"
             >
-              {{ 'Import.Mapping.RenameMapping' | translate }}
+              {{ 'Import.Mapping.Actions.Rename' | translate }}
             </button>
             <button
               id="deleteMapping"
@@ -55,7 +55,7 @@
               [disabled]="!deleteMappingEnabled()"
               data-qa="import-contentmapping-selection-button-delete"
             >
-              {{ 'Import.Mapping.DeleteMapping' | translate }}
+              {{ 'Import.Mapping.Actions.Delete' | translate }}
             </button>
           </div>
           <!--<div
@@ -112,34 +112,40 @@
             *ngIf="unmappedFields.size == 0"
             class="alert alert-success mat-alert"
           >
-            {{ 'Import.ContentMapping.NomenclatureValuesAllMapped' | translate }}
+            {{ 'Import.ContentMapping.Messages.NomenclatureValuesAllMapped' | translate }}
             L'ensemble des valeurs du fichier a été automatiquement associé aux nomenclatures.
           </div>
           <div
             *ngIf="unmappedFields.size == 1"
             class="alert alert-success mat-alert"
           >
-            {{ 'Import.ContentMapping.OneNomenclatureValueMapped' | translate }}
+            {{ 'Import.ContentMapping.Messages.OneNomenclatureValueMapped' | translate }}
             <br />
-            {{ 'Import.ContentMapping.RestToMapped' | translate: { number: unmappedFields.size } }}
+            {{
+              'Import.ContentMapping.Messages.RestToMapped'
+                | translate: { number: unmappedFields.size }
+            }}
           </div>
           <div
             *ngIf="unmappedFields.size > 1"
             class="alert alert-success mat-alert"
           >
             {{
-              'Import.ContentMapping.NumberOfNomenclatureValueAutoMapped'
+              'Import.ContentMapping.Messages.NumberOfNomenclatureValueAutoMapped'
                 | translate: { number: mappedFields.size }
             }}
 
             <br />
-            {{ 'Import.ContentMapping.RestToMapped' | translate: { number: unmappedFields.size } }}
+            {{
+              'Import.ContentMapping.Messages.RestToMapped'
+                | translate: { number: unmappedFields.size }
+            }}
           </div>
           <div
             *ngIf="mappedFields.size == 0"
             class="alert alert-danger"
           >
-            {{ 'Import.ContentMapping.NoNomenclatureValueCouldBeMapped' | translate }}
+            {{ 'Import.ContentMapping.Messsages.NoNomenclatureValueCouldBeMapped' | translate }}
           </div>
         </div>
         <div
@@ -320,11 +326,11 @@
   </div>
   <div class="modal-body">
     <span *ngIf="!this.updateAvailable; else elseBlock">
-      {{ 'Import.ContentMapping.SaveMappingMessage?' | translate }}
+      {{ 'Import.ContentMapping.Questions.SaveMappingMessage?' | translate }}
     </span>
     <ng-template #elseBlock>
       <span>
-        {{ 'Import.ContentMapping.CreateOrUpdateMappingModel?' | translate }}
+        {{ 'Import.ContentMapping.Questions.CreateOrUpdateMappingModel?' | translate }}
       </span>
     </ng-template>
     <form>
@@ -333,7 +339,7 @@
           for="mappingName"
           *ngIf="this.updateAvailable"
         >
-          {{ 'Import.ContentMapping.MappingNameLabel' | translate }}
+          {{ 'Import.MappingName' | translate }}
         </label>
         <input
           [formControl]="modalCreateMappingForm"
@@ -346,7 +352,7 @@
           *ngIf="!modalCreateMappingForm.value"
           class="text-warning"
         >
-          {{ 'Import.ContentMapping.MissingMappingNameWarning' | translate }}
+          {{ 'Import.ContentMapping.Messages.MissingMappingNameWarning' | translate }}
         </span>
         <span
           *ngIf="
@@ -355,7 +361,7 @@
           "
           class="text-warning"
         >
-          {{ 'Import.ContentMapping.ChangeMappingNameWarning' | translate }}
+          {{ 'Import.ContentMapping.Messages.ChangeMappingNameWarning' | translate }}
         </span>
       </div>
     </form>
@@ -368,7 +374,7 @@
       (click)="processNextStep(); modal.close()"
       data-qa="import-contentmapping-saving-modal-cancel"
     >
-      {{ 'Import.Mapping.NoSaveMapping' | translate }}
+      {{ 'Import.Mapping.Actions.NoSave' | translate }}
     </button>
     <button
       *ngIf="updateAvailable"
@@ -378,7 +384,7 @@
       (click)="updateMapping(); modal.close()"
       data-qa="import-contentmapping-saving-modal-ok"
     >
-      {{ 'Import.Mapping.UpdateMapping' | translate }}
+      {{ 'Import.Mapping.Actions.Update' | translate }}
     </button>
     <button
       type="button"
@@ -392,7 +398,7 @@
       "
       data-qa="import-contentmapping-saving-modal-new-ok"
     >
-      {{ 'Import.Mapping.SaveNewMapping' | translate }}
+      {{ 'Import.Mapping.Actions.Save' | translate }}
     </button>
   </div>
 </ng-template>
@@ -406,7 +412,7 @@
       class="modal-title"
       id="modal-basic-title"
     >
-      {{ 'Import.ContentMapping.ControlInProgress' | translate }}
+      {{ 'Import.ContentMapping.Messages.ControlInProgress' | translate }}
     </h4>
     <button
       type="button"
@@ -418,7 +424,7 @@
     </button>
   </div>
   <div class="modal-body">
-    {{ 'Import.ContentMapping.ControlNotifications' | translate: { nbLignes: nbLignes } }}
+    {{ 'Import.ContentMapping.Messages.ControlNotifications' | translate: { nbLignes: nbLignes } }}
   </div>
   <div class="modal-footer">
     <button
@@ -436,7 +442,7 @@
   data-qa="import-contentmapping-selection-modal-delete"
 >
   <div class="modal-header">Confirmation</div>
-  <div class="modal-body">{{ 'Import.Mapping.DeleteMapping?' | translate }}</div>
+  <div class="modal-body">{{ 'Import.Mapping.Questions.Delete?' | translate }}</div>
   <div class="modal-footer">
     <button
       type="button"
@@ -454,7 +460,7 @@
       (click)="modalDelete.close(); deleteMapping()"
       data-qa="import-contentmapping-selection-modal-delete-ok"
     >
-      {{ 'Import.Mapping.DeleteMapping' | translate }}
+      {{ 'Import.Mapping.Actions.Delete' | translate }}
     </button>
   </div>
 </ng-template>

@@ -151,13 +151,16 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     this._occtaxService.deleteReleve(id).subscribe(
       (data) => {
         this.mapListService.deleteObsFront(id);
-        this._commonService.translateToaster('success', 'Releve.DeleteSuccessfully');
+        this._commonService.translateToaster(
+          'success',
+          'Occtax.Releve.Messages.DeleteSuccessfully'
+        );
       },
       (error) => {
         if (error.status === 403) {
-          this._commonService.translateToaster('error', 'NotAllowed');
+          this._commonService.translateToaster('error', 'Erros.NotAllowed');
         } else {
-          this._commonService.translateToaster('error', 'ErrorMessage');
+          this._commonService.translateToaster('error', 'Errors.ErrorOccurs');
         }
       }
     );

@@ -76,7 +76,7 @@
               matTooltipPosition="before"
               routerLink="/user"
             >
-              {{ 'MyAccount' | translate }}
+              {{ 'MyAccount.MyAccount' | translate }}
             </a>
           </mat-menu>
         </ng-container>
@@ -112,7 +112,7 @@
         <button
           class="mx-2 mat-elevation-z1"
           mat-icon-button
-          matTooltip="{{ 'Sel_lang' | translate }}"
+          matTooltip="{{ 'LanguageSelection' | translate }}"
           [matMenuTriggerFor]="languagesMenu"
         >
           <mat-icon>language</mat-icon>
@@ -127,7 +127,7 @@
             matTooltipPosition="before"
           >
             <mat-icon *ngIf="locale == 'fr'">check</mat-icon>
-            {{ 'Languages.French' | translate }}
+            {{ 'AvailableLanguages.French' | translate }}
           </button>
           <button
             mat-menu-item
@@ -137,7 +137,7 @@
             matTooltipPosition="before"
           >
             <mat-icon *ngIf="locale == 'en'">check</mat-icon>
-            {{ 'Languages.English' | translate }}
+            {{ 'AvailableLanguages.English' | translate }}
           </button>
           <button
             mat-menu-item
@@ -147,7 +147,7 @@
             matTooltipPosition="before"
           >
             <mat-icon *ngIf="locale == 'zh'">check</mat-icon>
-            {{ 'Languages.Chinese' | translate }}
+            {{ 'AvailableLanguages.Chinese' | translate }}
           </button>
         </mat-menu>
       </ng-container>
@@ -165,7 +165,7 @@
       <button
         class="mx-2 mat-elevation-z1"
         mat-icon-button
-        matTooltip="{{ 'LogOut' | translate }}"
+        matTooltip="{{ 'Authentication.Actions.LogOut' | translate }}"
         (click)="authService.logout()"
         data-qa="pnx-home-content-exit-button"
       >

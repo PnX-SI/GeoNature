@@ -9,7 +9,7 @@
   </div>
   <div class="col-2">
     <pnx-datasets
-      label="{{ 'Releve.Dataset' | translate }}"
+      label="{{ 'Dataset' | translate }}"
       [displayAll]="true"
       [displayOnlyActive]="false"
       [parentFormControl]="mapListFormService.searchForm.get('id_dataset')"
@@ -31,14 +31,14 @@
   </div>
   <div class="col-2">
     <pnx-date
-      label="{{ 'Releve.MinDate' | translate }}"
+      label="{{ 'MinDate' | translate }}"
       [parentFormControl]="mapListFormService.searchForm.get('date_low')"
     ></pnx-date>
   </div>
 
   <div class="col-2">
     <pnx-date
-      label="{{ 'Releve.MaxDate' | translate }}"
+      label="{{ 'MaxDate' | translate }}"
       [parentFormControl]="mapListFormService.searchForm.get('date_up')"
     ></pnx-date>
   </div>

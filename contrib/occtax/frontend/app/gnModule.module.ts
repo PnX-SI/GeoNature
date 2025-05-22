@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Routes, RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { GNPanelModule } from '@geonature/templates/gn-panel/gn-panel.module';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 
 // Components
 import { OcctaxMapListComponent } from './occtax-map-list/occtax-map-list.component';
@@ -28,6 +30,10 @@ import { OcctaxFormParamService } from './occtax-form/form-param/form-param.serv
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ConfigService } from '@geonature/services/config.service';
+import { CustomTranslateLoader } from '@geonature/shared/translate/custom-loader';
+import { I18nService } from '@geonature/shared/translate/i18n-service';
+
 const routes: Routes = [
   { path: '', component: OcctaxMapListComponent },
   {
@@ -56,10 +62,22 @@ const routes: Routes = [
   },
 ];
 
+export function createTranslateLoader(http: HttpClient, config: ConfigService) {
+  return new CustomTranslateLoader(http, config, { moduleName: 'occtax' });
+}
+
 @NgModule({
   imports: [
     RouterModule.forChild(routes),
     GN2CommonModule,
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient, ConfigService],
+      },
+      isolate: true,
+    }),
     CommonModule,
     MatSlideToggleModule,
     MatTabsModule,
@@ -81,4 +99,13 @@ const routes: Routes = [
   ],
   providers: [OcctaxDataService, MapListService, OcctaxFormMapService, OcctaxFormParamService],
 })
-export class GeonatureModule {}
+export class GeonatureModule {
+  constructor(
+    private translateService: TranslateService,
+    private i18nService: I18nService
+  ) {
+    // Workaround to force translation loaded for LazyModule.
+    // See: https://github.com/ngx-translate/core/issues/1302
+    this.i18nService.initializeModuleTranslateService(this.translateService);
+  }
+}

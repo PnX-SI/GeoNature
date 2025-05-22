@@ -190,7 +190,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
             });
         },
         (error) => {
-          this._commonService.translateToaster('error', 'Releve.DoesNotExist');
+          this._commonService.translateToaster('error', 'Occtax.Releve.Messages.DoesNotExist');
           const currentModulePath = this._moduleService.currentModule.module_path.toLowerCase();
           this._router.navigate([currentModulePath]);
         }
@@ -230,15 +230,18 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   deleteReleve(modal) {
     this.occtaxDataService.deleteReleve(this.id).subscribe(
       () => {
-        this._commonService.translateToaster('success', 'Releve.DeleteSuccessfully');
+        this._commonService.translateToaster(
+          'success',
+          'Occtax.Releve.Messages.DeleteSuccessfully'
+        );
         const currentModulePath = this._moduleService.currentModule.module_path.toLowerCase();
         this._router.navigate([currentModulePath]);
       },
       (error) => {
         if (error.status === 403) {
-          this._commonService.translateToaster('error', 'NotAllowed');
+          this._commonService.translateToaster('error', 'Errors.NotAllowed');
         } else {
-          this._commonService.translateToaster('error', 'ErrorMessage');
+          this._commonService.translateToaster('error', 'Errors.ErrorOccurs');
         }
       }
     );

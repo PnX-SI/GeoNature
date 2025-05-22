@@ -5,7 +5,7 @@
 >
   <div class="col-sm-6">
     <pnx-taxonomy
-      label="{{ 'Taxon.NomCite' | translate }}"
+      label="{{ 'Occtax.Taxon.NomCite' | translate }}"
       [parentFormControl]="taxonForm"
       [idList]="fs.idTaxonList"
       [charNumber]="3"
@@ -21,7 +21,7 @@
       class="error"
       style="color: red"
     >
-      {{ 'Taxon.Errors.NomCiteRequiredError' | translate }}
+      {{ 'Occtax.Taxon.Errors.NomCiteRequiredError' | translate }}
     </small>
     <small
       *ngIf="
@@ -32,7 +32,7 @@
       class="error"
       style="color: red"
     >
-      {{ 'Taxon.Errors.CdNomRequiredError' | translate }}
+      {{ 'Occtax.Taxon.Errors.CdNomRequiredError' | translate }}
     </small>
   </div>
   <div
@@ -57,7 +57,7 @@
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
-      label="{{ 'Taxon.ObsTech' | translate }}"
+      label="{{ 'Occtax.Taxon.ObsTech' | translate }}"
       [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_technique')"
       codeNomenclatureType="METH_OBS"
       [regne]="taxref?.regne"
@@ -74,7 +74,7 @@
       style="color: red"
       data-qa="pnx-nomenclature-meth-obs-error"
     >
-      {{ 'Taxon.Errors.TechObsRequiredError' | translate }}
+      {{ 'Occtax.Taxon.Errors.TechObsRequiredError' | translate }}
     </small>
   </div>
   <div
@@ -82,7 +82,7 @@
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
-      label="{{ 'Taxon.BiologicalCondition' | translate }}"
+      label="{{ 'Occtax.Taxon.BiologicalCondition' | translate }}"
       [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_condition')"
       codeNomenclatureType="ETA_BIO"
       [regne]="taxref?.regne"
@@ -99,7 +99,7 @@
       style="color: red"
       data-qa="pnx-nomenclature-eta-bio-error"
     >
-      {{ 'Taxon.Errors.BiologicalConditionRequiredError' | translate }}
+      {{ 'Occtax.Taxon.Errors.BiologicalConditionRequiredError' | translate }}
     </small>
   </div>
 </div>
@@ -115,7 +115,7 @@
       class="fa fa-cog"
       aria-hidden="true"
     ></i>
-    {{ 'Taxon.Advanced' | translate }}
+    {{ 'Advanced' | translate }}
   </button>
 </div>
 
@@ -125,7 +125,7 @@
       *ngIf="config.OCCTAX.form_fields.determiner"
       class="col-lg-4 col-sm-6"
     >
-      <small>{{ 'Taxon.Determiner' | translate }}</small>
+      <small>{{ 'Occtax.Taxon.Determiner' | translate }}</small>
       <input
         class="form-control form-control-sm"
         [formControl]="occurrenceForm.get('determiner')"
@@ -141,7 +141,7 @@
         class="error"
         style="color: red"
       >
-        {{ 'Taxon.Errors.DeterminerRequiredError' | translate }}
+        {{ 'Occtax.Taxon.Errors.DeterminerRequiredError' | translate }}
       </small>
     </div>
     <div
@@ -149,7 +149,7 @@
       class="col-lg-8 col-sm-6"
     >
       <pnx-nomenclature
-        label="{{ 'Taxon.DeterminationMethod' | translate }}"
+        label="{{ 'Occtax.Taxon.DeterminationMethod' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
         codeNomenclatureType="METH_DETERMIN"
         [regne]="taxref?.regne"
@@ -164,7 +164,7 @@
         class="error"
         style="color: red"
       >
-        {{ 'Taxon.Errors.DeterminationMethodRequiredError' | translate }}
+        {{ 'Occtax.Taxon.Errors.DeterminationMethodRequiredError' | translate }}
       </small>
     </div>
   </div>
@@ -174,7 +174,7 @@
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
-        label="{{ 'Taxon.ObservationStatus' | translate }}"
+        label="{{ 'Occtax.Taxon.ObservationStatus' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_observation_status')"
         codeNomenclatureType="STATUT_OBS"
       ></pnx-nomenclature>
@@ -186,7 +186,7 @@
         class="error"
         style="color: red"
       >
-        {{ 'Taxon.Errors.BiologicalConditionRequiredError' | translate }}
+        {{ 'Occtax.Taxon.Errors.BiologicalConditionRequiredError' | translate }}
       </small>
     </div>
 
@@ -195,7 +195,7 @@
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
-        label="{{ 'Taxon.Naturalness' | translate }}"
+        label="{{ 'Occtax.Taxon.Naturalness' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_naturalness')"
         codeNomenclatureType="NATURALITE"
         [regne]="taxref?.regne"
@@ -214,7 +214,7 @@
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
-        label="{{ 'Taxon.BiologicalStatus' | translate }}"
+        label="{{ 'Occtax.Taxon.BiologicalStatus' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_status')"
         codeNomenclatureType="STATUT_BIO"
         [regne]="taxref?.regne"
@@ -228,7 +228,7 @@
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
-        label="{{ 'Taxon.OccBehaviour' | translate }}"
+        label="{{ 'Occtax.Taxon.OccBehaviour' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_behaviour')"
         codeNomenclatureType="OCC_COMPORTEMENT"
         [regne]="taxref?.regne"
@@ -241,7 +241,7 @@
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
-        label="{{ 'Taxon.StatusSource' | translate }}"
+        label="{{ 'Occtax.Taxon.StatusSource' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_source_status')"
         codeNomenclatureType="STATUT_SOURCE"
       ></pnx-nomenclature>
@@ -252,7 +252,7 @@
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
-        label="{{ 'Taxon.Blurring' | translate }}"
+        label="{{ 'Occtax.Taxon.Blurring' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_blurring')"
         codeNomenclatureType="DEE_FLOU"
       ></pnx-nomenclature>
@@ -265,7 +265,7 @@
       style="margin-bottom: 1rem"
     >
       <pnx-nomenclature
-        label="{{ 'Taxon.ExistProof' | translate }}"
+        label="{{ 'Occtax.Taxon.ExistProof' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_exist_proof')"
         codeNomenclatureType="PREUVE_EXIST"
         [regne]="taxref?.regne"
@@ -284,7 +284,7 @@
       }"
     >
       <div class="form-group">
-        <small>{{ 'Taxon.DigitalProof' | translate }}</small>
+        <small>{{ 'Occtax.Taxon.DigitalProof' | translate }}</small>
         <input
           [ngClass]="{
             'is-invalid':
@@ -301,7 +301,7 @@
         class="error"
         style="color: red"
       >
-        {{ 'Taxon.Errors.ExistProofValidation' | translate }}
+        {{ 'Occtax.Taxon.Errors.ExistProofValidation' | translate }}
       </small>
     </div>
     <div
@@ -334,7 +334,7 @@
     class="error"
     style="color: red; margin-top: -0.8rem; margin-bottom: 0.5rem; font-size: 80%; font-weight: 400"
   >
-    {{ 'Taxon.Errors.NoExistProofError' | translate }}
+    {{ 'Occtax.Taxon.Errors.NoExistProofError' | translate }}
   </div>
   <div
     *ngIf="
@@ -344,7 +344,7 @@
     class="error"
     style="color: red; margin-top: -0.8rem; margin-bottom: 0.5rem; font-size: 80%; font-weight: 400"
   >
-    {{ 'Taxon.Errors.ExistproofError' | translate }}
+    {{ 'Occtax.Taxon.Errors.ExistproofError' | translate }}
   </div>
 
   <div *ngIf="config.OCCTAX.form_fields.comment_occ">
@@ -369,7 +369,7 @@
     [matBadge]="countings.length"
     matBadgeOverlap="false"
   >
-    {{ 'Counting.Counting' | translate }}
+    {{ 'Occtax.Counting.Counting' | translate }}
     <ng-container *ngIf="countings.length > 1">s</ng-container>
   </span>
 </h5>
@@ -379,7 +379,7 @@
   class="error"
   style="color: red"
 >
-  {{ 'Taxon.Errors.CountingRequiredError' | translate }}
+  {{ 'Occtax.Taxon.Errors.CountingRequiredError' | translate }}
 </div>
 
 <mat-accordion

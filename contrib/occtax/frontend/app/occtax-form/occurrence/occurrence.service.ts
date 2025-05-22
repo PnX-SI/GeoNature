@@ -293,7 +293,7 @@ export class OcctaxFormOccurrenceService {
         .pipe(
           retry(3),
           tap((occurrence) => {
-            this.commonService.translateToaster('info', 'Taxon.UpdateDone');
+            this.commonService.translateToaster('info', 'Occtax.Taxon.Messages.UpdateDone');
             this.occtaxFormService.replaceOccurrenceData(occurrence);
           })
         );
@@ -301,7 +301,7 @@ export class OcctaxFormOccurrenceService {
       //create
       api = this.occtaxDataService.createOccurrence(id_releve, formValue).pipe(
         tap((occurrence) => {
-          this.commonService.translateToaster('info', 'Taxon.CreateDone');
+          this.commonService.translateToaster('info', 'Occtax.Taxon.Messages.CreateDone');
           this.occtaxFormService.addOccurrenceData(occurrence);
         })
       );
@@ -312,7 +312,7 @@ export class OcctaxFormOccurrenceService {
         this.occtaxTaxaListService.removeOccurrenceInProgress(TEMP_ID_OCCURRENCE);
       },
       (error) => {
-        this.commonService.translateToaster('error', 'ErrorMessage');
+        this.commonService.translateToaster('error', 'Errors.ErrorOccurs');
         this.occtaxTaxaListService.errorOccurrenceInProgress(TEMP_ID_OCCURRENCE);
       }
     );
@@ -325,10 +325,10 @@ export class OcctaxFormOccurrenceService {
     this.occtaxDataService.deleteOccurrence(occurrence.id_occurrence_occtax).subscribe(
       (confirm: boolean) => {
         this.occtaxFormService.removeOccurrenceData(occurrence.id_occurrence_occtax);
-        this.commonService.translateToaster('info', 'Taxon.DeleteDone');
+        this.commonService.translateToaster('info', 'Occtax.Taxon.Messages.DeleteDone');
       },
       (error) => {
-        this.commonService.translateToaster('error', 'ErrorMessage');
+        this.commonService.translateToaster('error', 'Errors.ErrorOccurs');
       }
     );
   }

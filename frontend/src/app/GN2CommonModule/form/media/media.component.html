@@ -5,7 +5,7 @@
     class="link-media float-right"
     [href]="media.href(config.API_ENDPOINT, config.MEDIA_URL)"
   >
-    <mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
+    <mat-icon matTooltip="{{ 'Media.Actions.Link' | translate }}">link</mat-icon>
   </a>
   <div>
     <pnx-media-item
@@ -49,7 +49,7 @@
     (click)="postMedia()"
     [disabled]="!mediaFormReadyToSend()"
   >
-    <mat-icon matTooltip="{{ 'Media.valid' | translate }}">check</mat-icon>
+    <mat-icon matTooltip="{{ 'Media.Actions.Valid' | translate }}">check</mat-icon>
   </button>
 
   <mat-progress-bar

@@ -4,7 +4,7 @@
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
-      label="{{ 'Counting.CountingObject' | translate }}"
+      label="{{ 'Occtax.Counting.CountingObject' | translate }}"
       codeNomenclatureType="OBJ_DENBR"
       [parentFormControl]="form.get('id_nomenclature_obj_count')"
       [regne]="(occtaxFormOccurrenceService.taxref | async)?.regne"
@@ -18,7 +18,7 @@
   >
     <pnx-nomenclature
       #typeDenombrement
-      label="{{ 'Counting.CountingType' | translate }}"
+      label="{{ 'Occtax.Counting.CountingType' | translate }}"
       codeNomenclatureType="TYP_DENBR"
       [parentFormControl]="form.get('id_nomenclature_type_count')"
       [regne]="(occtaxFormOccurrenceService.taxref | async)?.regne"
@@ -35,7 +35,7 @@
   class="error"
   style="color: red"
 >
-  {{ 'Counting.Errors.CountingObjectRequiredError' | translate }}
+  {{ 'Occtax.Counting.Errors.CountingObjectRequiredError' | translate }}
 </small>
 
 <div class="row">
@@ -45,7 +45,7 @@
         *ngIf="config.OCCTAX.form_fields.count_min"
         class="col-6"
       >
-        <small>{{ 'Counting.NumberMin' | translate }}</small>
+        <small>{{ 'Occtax.Counting.NumberMin' | translate }}</small>
         <input
           data-qa="counting-count-min"
           class="form-control form-control-sm"
@@ -58,7 +58,7 @@
         *ngIf="config.OCCTAX.form_fields.count_max"
         class="col-6"
       >
-        <small>{{ 'Counting.NumberMax' | translate }}</small>
+        <small>{{ 'Occtax.Counting.NumberMax' | translate }}</small>
         <input
           data-qa="counting-count-max"
           class="form-control form-control-sm"
@@ -74,7 +74,7 @@
       class="error"
       style="color: red"
     >
-      {{ 'Counting.Errors.CountError' | translate }}
+      {{ 'Occtax.Counting.Errors.CountError' | translate }}
     </small>
   </div>
 
@@ -83,7 +83,7 @@
     class="col-3"
   >
     <pnx-nomenclature
-      label="{{ 'Counting.LifeStage' | translate }}"
+      label="{{ 'Occtax.Counting.LifeStage' | translate }}"
       codeNomenclatureType="STADE_VIE"
       [parentFormControl]="form.get('id_nomenclature_life_stage')"
       [regne]="(occtaxFormOccurrenceService.taxref | async)?.regne"
@@ -98,7 +98,7 @@
       class="error"
       style="color: red"
     >
-      {{ 'Counting.Errors.LifeStageRequiredError' | translate }}
+      {{ 'Occtax.Counting.Errors.LifeStageRequiredError' | translate }}
     </small>
   </div>
   <div
@@ -106,7 +106,7 @@
     class="col-3"
   >
     <pnx-nomenclature
-      label="{{ 'Counting.Sex' | translate }}"
+      label="{{ 'Occtax.Counting.Sex' | translate }}"
       codeNomenclatureType="SEXE"
       [parentFormControl]="form.get('id_nomenclature_sex')"
       [regne]="(occtaxFormOccurrenceService.taxref | async)?.regne"
@@ -121,7 +121,7 @@
       class="error"
       style="color: red"
     >
-      {{ 'Counting.Errors.SexRequiredError' | translate }}
+      {{ 'Occtax.Counting.Errors.SexRequiredError' | translate }}
     </small>
   </div>
 </div>

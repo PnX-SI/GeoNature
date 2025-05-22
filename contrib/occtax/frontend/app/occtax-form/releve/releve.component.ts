@@ -119,7 +119,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
   formDisabled() {
     if (this.occtaxFormService.disabled) {
-      this.commonService.translateToaster('warning', 'Releve.FillGeometryFirst');
+      this.commonService.translateToaster('warning', 'Messages.FillGeometryFirst');
     }
   }
 

@@ -1,235 +1,349 @@
 {
-  "Title": "GeoNature",
   "Home": "Accueil",
-  "Sel_lang": "Choisissez la langue de l'interface",
+
+  "LanguageSelection": "Choisissez la langue de l'interface",
   "Language": "Langue",
-  "Languages": {
+  "Languages": "Langues",
+  "AvailableLanguages": {
     "English": "English (Anglais)",
     "French": "Français",
     "Chinese": "中文 (Chinois)"
   },
-  "Email": "Email",
-  "Username": "Nom d'utilisateur",
-  "Password": "Mot de passe",
-  "LogIn": "Connexion",
-  "LogOut": "Déconnexion",
-  "IntroTitle": "Bienvenue dans GeoNature V2",
-  "IntroText": "",
+  "Actions": {
+    "Singular": "Action",
+    "Plural": "Actions",
+    "Add": "Ajouter",
+    "Filter": "Filter",
+    "Download": "Télécharger",
+    "Delete": "Supprimer",
+    "Cancel": "Annuler",
+    "Upload": "Importer",
+    "Search": "Rechercher",
+    "Confirm": "Confirmer",
+    "Close": "Fermer",
+    "Browse": "Parcourir",
+    "Validate": "Valider",
+    "PDFExport": "Exporter en PDF",
+    "DownloadData": "Télécharger les données",
+    "Copy": "Copier"
+  },
+  "Messages": {
+    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
+  },
+  "Errors": {
+    "ErrorOccurs": "Une erreur s'est produite",
+    "DatesReversed": "La date de début ne peut pas être postérieure à la date de fin",
+    "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
+    "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action"
+  },
+
+  "Authentication": {
+    "Email": "Email",
+    "Username": "Nom d'utilisateur",
+    "Password": "Mot de passe",
+    "Actions": {
+      "LogIn": "Connexion",
+      "LogOut": "Déconnexion",
+      "CreateAccount": "Créer un compte"
+    },
+    "Errors": {
+      "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect"
+    },
+    "Messages": {
+      "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?"
+    }
+  },
+  "MyAccount": {
+    "MyAccount": "Mon compte",
+
+    "Messages": {
+      "AutoAccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte",
+      "AdminAccountEmailConfirmation": "Votre demande de création de compte a bien été prise en compte, elle va être évaluée par un administrateur",
+      "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe"
+    }
+  },
+
+  "Observer": "Observateur",
+  "Observers": "Observateurs",
+  "Observers?": "Observateur(s)",
+  "Digitiser": "Créateur",
+  "Digitisers": "Créateurs",
+  "Digitisers?": "Créateur(s)",
+  "Organism": "Organisme",
+  "Organisms": "Organismes",
+  "Organisms?": "Organisme(s)",
+  "Actor": "Acteur",
+  "Actors": "Acteurs",
+  "Actors?": "Acteur(s)",
+  "ActorPerson": "Acteur (personne)",
+  "Group": "Groupe",
+  "Groups": "Groupes",
+  "Creator": "Créateur",
+  "Creators": "Créateurs",
+  "Creators?": "Créateur(s)",
+
+  "Dataset": "Jeu de données",
+  "Datasets": "Jeux de données",
+  "AcquisitionFramework": "Cadre d'acquisition",
+  "AcquisitionFrameworks": "Cadres d'acquisition",
   "Observations": "Observations",
+  "Taxon": "Taxon",
+  "Taxons": "Taxons",
   "Species": "Espèces",
-  "LatestObservations": "Dernières observations",
-  "Search": "Rechercher",
+
+  "Sex": "Sexe",
+  "LifeStage": "Stade de vie",
+
   "By": "Par",
+  "On": " Sur",
+  "Of": "de",
   "Columns": "Colonnes",
-  "Cancel": "Annuler",
-  "Delete": "Supprimer",
+  "DisplayColumns": "Colonnes à afficher",
+
   "Yes": "Oui",
   "No": "Non",
   "Previous": "Précédent",
   "Next": "Suivant",
+  "Back": "Retour",
   "Confirmation": "Confirmation",
-  "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action",
-  "LoginError": "Identifiant ou mot de passe incorrect",
+
+  "Report": "Rapport",
+  "Comment": "Commentaire",
+  "Discussion": "Discussion",
+  "Status": "Statut",
+  "Source": "Source",
+
+  "Mandatory": "Obligatoire",
+  "Optional": "Facultatif",
+  "OptionalIf": "Optionnel si",
+  "RequiredIf": "Requis si",
+
+  "Name": "Nom",
+  "What": "Quoi ?",
+  "When": "Quand ?",
+  "Who": "Qui ?",
+  "How": "Comment ?",
+  "Where": "Où ?",
+  "New": "Nouveau",
+
+  "Advanced": "Avancé",
+  "All": "Tous",
+  "Aim": "Objectif",
+  "Aims": "Objectifs",
+  "Title": "Titre",
+  "Description": "Description",
+  "Validable": "Validable",
+  "Valid": "Valide",
+  "Invalid": "Invalide",
+  "Active": "Actif",
+
+  "Date": "Date",
+  "MaxDate": "Date fin",
+  "MinDate": "Date début",
+  "HourMin": "Heure début",
+  "HourMax": "Heure fin",
+  "Altitude": "Altitude",
+  "MinAltitude": "Altitude min",
+  "MaxAltitude": "Altitude max",
+  "MinDepth": "Profondeur min",
+  "MaxDepth": "Profondeur max",
+  "HourFormat": "hh:mm",
+  "Label": "Libellé",
+  "Keywords": "Mots-clés",
+
   "Downloading": "Téléchargement en cours",
-  "DownloadData": "Télécharger les données",
-  "Upload": "Importer",
-  "Download": "Télécharger",
+
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
-  "AllItems": "Tous",
-  "Browse": "Parcourir",
+
   "Map": {
-    "SearchLocation": "Rechercher un lieu",
-    "LocationError": "Localisation non trouvée",
-    "AddPoint": "Localisez l'observation (point)",
-    "AddLine": "Localisez l'observation (ligne)",
-    "AddPolygon": "Localisez l'observation (polygone)",
-    "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé",
-    "FileLayerInfoMessage": "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre relevé. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche",
-    "FileLayerInfoSynthese": "Fichier importé. Clic droit sur un objet pour afficher ses infos"
-  },
-  "MetaData": {
-    "JddError": "Erreur lors de la récupération des jeux de données",
-    "JddErrorMTD": "Erreur lors de la récupération des JDD via l'application MTD",
-    "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
-    "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
-    "AF404": "Cadre d'acquisition inexistant",
-    "Datasetadded": "Jeu de donnée ajouté avec succès",
-    "DatasetRemoved": "Jeu de donnée supprimé avec succès",
-    "Programs": "Programmes",
-    "Datasets": "Jeux de données",
-    "AcquisitionFramework": "Cadre d'acquisition",
-    "AFadded": "Cadre d'acquisition ajouté avec succès",
-    "AFDeleted": "Cadre d'acquisition supprimé avec succès"
-  },
-  "Form": {
-    "RefreshFilters": "Rafraichir les filtres",
-    "AdvancedFilters": "Filtres avancés",
-    "OtherFilters": "Autres filtres",
-    "Organism": "Organisme(s)",
-    "Filter": "Filtrer"
-  },
-  "List": {
-    "Columns": "Colonnes",
-    "DisplayColumns": "Colonnes à afficher"
-  },
-  "MapList": {
-    "InvalidTypeError": "Le type de valeur renseigné ne correspond pas au type du champ",
-    "NoColumnSelected": "Veuillez sélectionner une colonne à filtrer",
-    "ObservationNumber": "Nombre d'observation(s) :"
-  },
-  "Releve": {
-    "Releve": "Relevé",
-    "AddReleve": "Ajouter un relevé",
-    "Observer": "Observateur",
-    "Observers": "Observateur(s)",
-    "MinDate": "Date début",
-    "MaxDate": "Date fin",
-    "HourMin": "Heure début",
-    "HourMax": "Heure fin",
-    "HourFormat": "hh:mm",
-    "MinAltitude": "Alt min",
-    "MaxAltitude": "Alt max",
-    "MinDepth": "Profondeur min",
-    "MaxDepth": "Profondeur max",
-    "Municipality": "Commune",
-    "Municipalities": "Commune(s)",
-    "Dataset": "Jeu de données",
-    "Comment": "Commentaire",
-    "SaveReleve": "Enregistrer le relevé",
-    "SavedTaxon": "Taxon(s) enregistré(s)",
-    "InfoGeo": "Informations géographiques du relevé",
-    "Edit": "Editer le relevé",
-    "Info": "Informations relevé",
-    "Delete": "Supprimer le relevé",
-    "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
-    "Validate": "Valider le relevé",
-    "UnValidate": "Invalider le relevé",
-    "ObsTechnique": "Technique d'observation",
-    "TechCollectCampanule": "Technique de collecte du relevé (Campanule)",
-    "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
-    "CancelTaxon": "Annuler la saisie du taxon",
-    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
-    "GroupType": "Type de regroupement",
-    "GroupMethod": "Méthode de regroupement",
-    "DoesNotExist": "Ce relevé n'existe pas",
-    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
-    "GeoObjectNature": "Nature de l'objet géographique",
-    "PlaceName": "Nom du lieu",
-    "Precision": "Precision",
-    "Infos": {
-      "ReleveAdded": "Relevé ajouté",
-      "ReleveModified": "Relevé modifié"
+    "Actions": {
+      "SearchLocation": "Rechercher un lieu",
+      "AddPoint": "Localisez l'observation (point)",
+      "AddLine": "Localisez l'observation (ligne)",
+      "AddPolygon": "Localisez l'observation (polygone)"
     },
     "Errors": {
-      "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
-      "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
-      "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
-      "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin"
+      "LocationError": "Localisation non trouvée"
+    },
+    "Messages": {
+      "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé",
+      "FileLayerInfo": "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre relevé. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche",
+      "FileLayerInfoSynthese": "Fichier importé. Clic droit sur un objet pour afficher ses infos"
     }
   },
-  "Taxon": {
-    "ObservedTaxon": "Taxon(s) observé(s)",
-    "Observation": "Observation",
-    "Observations": "Observations",
-    "Comment": "Commentaire",
-    "Group": "Groupe",
-    "New": "Nouveau",
-    "Priority": "Prioritaire",
-    "Optional": "Facultatif",
-    "Taxon": "Taxon",
-    "NomCite": "Taxon (nom cité)",
-    "Taxons": "Taxons",
-    "TaxonName": "Nom du taxon",
-    "ObsTech": "Technique d'observation",
-    "Advanced": "Avancé",
-    "BiologicalCondition": "Etat biologique",
-    "BiologicalStatus": "Statut biologique",
-    "Naturalness": "Naturalite",
-    "DeterminationMethod": "Méthode de détermination",
-    "DeterminationMethodComplement": "Complément méthode de détermination",
-    "Determiner": "Déterminateur",
-    "ExistProof": "Preuve d'existence",
-    "SampleNumber": "Numéro du prélevement",
-    "DigitalProof": "Preuve numérique",
-    "NonDigitalProof": "Preuve non numérique",
-    "SaveTaxon": "Enregistrer le taxon",
-    "AddTaxon": "Ajouter le taxon",
-    "ValidateTaxon": "Valider le taxon",
-    "DiffusionLevel": "Niveau de diffusion",
-    "ObservationStatus": "Statut d'observation",
-    "Blurring": "Floutage",
-    "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
-    "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
-    "StatusSource": "Statut source",
-    "DeleteDone": "Taxon supprimé",
-    "CreateDone": "Taxon ajouté au relevé",
-    "UpdateDone": "Taxon mis à jour",
-    "OccBehaviour": "Comportement",
+  "MapList": {
+    "ObservationNumber": "Nombre d'observation(s)",
+    "Messages": {
+      "NoColumnSelected": "Veuillez sélectionner une colonne à filtrer"
+    },
     "Errors": {
-      "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
-      "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
-      "ExistproofError": "Les preuves d'existence ne peuvent être renseignées seulement si 'preuve d'existence = Oui'",
-      "NomCiteRequiredError": "Veuillez renseigner un taxon",
-      "CdNomRequiredError": "Veuillez selectionner un taxon présent dans le référentiel Taxref",
-      "DeterminerRequiredError": "Veuillez indiquer un déterminateur",
-      "DeterminationMethodRequiredError": "Veuillez indiquer la méthode de détermination",
-      "TechObsRequiredError": "Veuillez indiquer la technique d'observation",
-      "BiologicalConditionRequiredError": "Veuillez indiquer l'état biologique",
-      "CountingRequiredError": "Veuillez renseigner un dénombrement"
+      "InvalidTypeError": "Le type de valeur renseigné ne correspond pas au type du champ"
     }
   },
-  "Counting": {
-    "Counting": "Dénombrement",
-    "NumberMin": "Nombre min",
-    "NumberMax": "Nombre max",
-    "Type": "Type",
-    "LifeStage": "Stade de vie",
-    "Sex": "Sexe",
-    "ValidationStatus": "Statut de validation",
-    "Phenology": "Phénologie",
-    "CountingObject": "Objet du dénombrement",
-    "CountingType": "Type de dénombrement",
-    "Numbers": "Effectif",
-    "Total": "Total",
+  "MetaData": {
+    "Programs": "Programmes",
+    "Catalog": "Catalogue des jeux de données",
     "Errors": {
-      "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum",
-      "LifeStageRequiredError": "Veuillez indiquer le stade de vie",
-      "SexRequiredError": "Veuillez indiquer le sexe",
-      "CountingObjectRequiredError": "Veuillez indiquer l'objet du dénombrement"
+      "JddError": "Erreur lors de la récupération des jeux de données",
+      "JddErrorMTD": "Erreur lors de la récupération des JDD via l'application MTD"
+    },
+    "Messages": {
+      "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
+      "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
+      "AF404": "Cadre d'acquisition inexistant",
+      "DatasetAdded": "Jeu de donnée ajouté avec succès",
+      "DatasetRemoved": "Jeu de donnée supprimé avec succès",
+      "AFAdded": "Cadre d'acquisition ajouté avec succès",
+      "AFDeleted": "Cadre d'acquisition supprimé avec succès",
+      "NoStakeholder": "Aucun acteur renseigné",
+      "FiledAF": "Le cadre d'acquisition a déjà été déposé",
+      "EmptyAF": "Le cadre d'acquisition est vide",
+      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher."
+    },
+    "Actions": {
+      "AddDataset": "Ajouter un jeu de données",
+      "AddAF": "Ajouter un cadre d'acquisition",
+      "SubmitAF": "Déposer le cadre d'acquisition",
+      "EditAF": "Editer ce cadre d'acquisition",
+      "EditDataset": "Éditer le jeu de données",
+      "DeleteDataset": "Supprimer le jeu de données",
+      "ResetSearch": "Réinitialiser la recherche",
+      "SeeAFSheet": "Voir la fiche du cadre d'acquisition"
+    },
+    "AdvancedSearch": "Recherche avancée",
+    "AFAndDatasetsList": "Liste des cadres d'acquisition et des jeux de données associés",
+    "CreationDate": "Date de lancement",
+    "Stakeholders": "Acteurs",
+    "DatasetName": "Nom du jeu de données",
+    "AFName": "Nom du cadre d'acquisition",
+    "DataAmount": "Nombre de données",
+    "StakeholderOrganization": "Acteur (organisme)",
+    "DataSources": "Sources des données",
+
+    "DatasetCard": {
+      "Actions": {
+        "DisplayData": "Afficher les données"
+      },
+      "Messages": {
+        "NoActorProvided": "Aucun acteur renseigné"
+      },
+      "Errors": {
+        "ErrorDeleteDataset": "Le jeu de données contient des données et ne peut pas être supprimé"
+      },
+      "SpeciesDistribution": "Répartition des espèces",
+      "DescriptiveForm": "Fiche descriptive",
+      "ID": "Identification",
+
+      "GeographicalScope": "Périmètre géographique",
+      "UUIDReport": "Rapport d'UUID",
+      "SensitivityReport": "Rapport de sensibilité",
+
+      "IntegratedOn": "Intégré le",
+      "NumberOfData": "Nombre de données",
+      "WidgetType": "Type de widget",
+      "Quantitative": "Quantitatif",
+      "Unit": "Unité",
+      "AdditionalDatasetFields": "Champs additionnels du jeu de données",
+      "AssociatedGNModules": "Module(s) GeoNature associé(s) au jeu de données",
+      "TaxaListID": "ID de liste de taxon",
+      "GNSpecificFeatures": "Spécificités GeoNature",
+      "DatasetCreator": "Créateur du jeu de données",
+
+      "DatasetSINPID": "Identifiant SINP du jeu de données",
+      "DatasetGeoNatureID": "Identifiant GeoNature du jeu de données",
+      "ShortName": "Libellé court",
+      "DataType": "Type de données",
+
+      "LandCoverage": "Couverture du territoire terrestre",
+      "MarineAreaCoverage": "Couverture du territoire marin",
+      "TermsReference": "Cadre de référence",
+      "TitleAF": "Titre du cadre d'acquisition",
+      "IDAF": "Identifiant du cadre d'acquisition",
+      "CollectionProcess": "Processus de collecte"
+    },
+    "DatasetForm": {
+      "Actions": {
+        "SaveDataset": "Enregistrer le jeu de données",
+        "SelectTaxaList": "--Sélectionner une liste de taxons--"
+      },
+      "Messages": {
+        "StakeholderExists": "Cet acteur est déjà présent dans la liste",
+        "MainContactExists": "Ce contact principal est déjà présent dans la liste",
+        "SizeNameJDD": "Le nom du JDD doit être inférieur ou égal à 150 caractères",
+        "SizeShortNameJDD": "Le nom court du JDD doit être inférieur ou égal à 30 caractères",
+        "NoList": "Aucune liste (tous Taxref)"
+      },
+
+      "ShortNameJDD": "Nom court du JDD",
+      "Field": "Domaine",
+      "LandField": "Domaine terrestre",
+      "MarineField": "Domaine marin",
+      "SourceStatus": "Statut source",
+      "CollectionMethod": "Méthode de collecte",
+      "OtherStakeholders": "Autre(s) acteur(s)",
+      "MainContact": "Contact principal",
+      "DataOrigin": "Origine des données",
+
+      "ResourceType": "Type de ressource",
+      "FacultativeTaxaList": "Liste de taxons (facultatif)",
+      "SpecificGeonature": "Spécifique GeoNature",
+      "ActiveOnEntry": "Actif à la saisie"
+    },
+    "AcquisitionFrameworkForm": {},
+    "Actors": {
+      "Person": "Personne",
+      "RoleType": "Type de rôle",
+      "Actions": {
+        "EnterOrganization": "Renseigner un organisme uniquement",
+        "EnterPerson": "Renseigner une personne uniquement",
+        "EnterOrganizationPerson": "Renseigner un organisme et un personne",
+        "DeleteActor": "Supprimer cet acteur"
+      }
+    }
+  },
+  "Filters": {
+    "Refresh": "Rafraîchir les filtres",
+    "Advanced": "Filtres avancés",
+    "Add": "Ajouter un filtre",
+    "Other": "Autres filtres"
+  },
+  "TaxonSearch": {
+    "Messages": {
+      "NoTaxonFound": "Aucun taxon trouvé pour cette recherche"
     }
   },
   "Geo": {
-    "Municipalities": "Communes"
-  },
-  "IntroMessage": "Bienvenue dans le module Occtax. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
-  "ErrorMessage": "Une erreur s'est produite",
-  "Export": {
-    "ExportModuleName": "Module d'export des données"
+    "Municipality": "Commune",
+    "Municipalities": "Commune(s)",
+    "Territories": "Territoires"
   },
   "Synthese": {
-    "copy": "Copié dans le presse-papier !",
-    "copyPermalink": "Copier le permalien",
-    "Discussion": "Discussion",
+    "LatestObservations": "Dernières observations",
+    "Actions": {
+      "DeleteObs": "Supprimer l'observations",
+      "Mailto": "Contacter par email",
+      "CopyPermalink": "Copier le permalien",
+      "AddComment": "Ajouter un commentaire",
+      "DeleteComment": "Supprimer un commentaire",
+      "ChangeValidStatus": "Modifier le statut de validation",
+      "RedirectToModule": "Voir dans le module de saisie"
+    },
+    "Messages": {
+      "Copied": "Copié dans le presse-papier !",
+      "DeleteSuccess": "Observation supprimée avec succès"
+    },
+    "Errors": {
+      "PeriodCompleteness": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
+    },
+
     "Commented": "a commenté le",
-    "AddComment": "Ajouter un commentaire",
-    "ChangeComment": "Modifier",
     "ChangeStatus": "a modifié le statut le",
-    "DeleteComment": "Supprimer",
-    "changeValidStatus": "Modifier le statut de validation",
     "ModalTitle": "Information sur l'observation",
-    "Edit": "Voir dans le module de saisie",
-    "Mailto": "Contacter par email",
-    "DeleteObs": "Supprimer l'observations",
-    "DeleteSuccess": "Observation supprimée avec succès",
-    "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période",
+
     "LocationName": "Nom du lieux",
     "Accuracy": "Précision du pointage",
     "Owner": "Observation de",
-    "Date": "Date",
-    "Altitude": "Altitude",
     "UidObs": "UUID observation",
-    "MinDeep": "Profondeur min",
-    "MaxDeep": "Profondeur max",
     "Habitat": "Habitat associé",
     "InpnTaxon": "Fiche INPN",
     "GnRecord": "Fiche taxon",
@@ -242,119 +356,135 @@
     "ObsSex": "Sexe",
     "ObsLifeStep": "Stade de vie",
     "DeterMeth": "Méthode de détermination",
+    "Form": {
+      "Validation": "Validation",
+      "ValidationStatus": "Statut de validation",
+      "EditedDataSinceLastEdit": "Données modifiées depuis la dernière édition",
+      "FilterTaxaProfile": "Filtrer selon le profil de taxon",
+      "Score": "Score",
+      "ValidPosition": "Localisation valide",
+      "NoFilter": "Aucun filtre",
+      "ValidAltitude": "Altitude valide",
+      "ValidPhenology": "Phéologie valide",
+      "SearchedTaxa": "Taxon(s) recherché(s)",
+      "AdvancedFieldsSelected": "Champs avancé(s) sélectionné(s)",
+      "RedListCategory": "catégorie de liste rouge",
+      "ProtectionStatus": "status de protection",
+      "TaxrefAttributes": "attributs TaxRef"
+    },
+    "FicheTaxon": {
+      "Messages": {
+        "MessageProfil": "* Ce profil est calculé sur les observations considérées valides présentes dans la Synthèse. Il permet de faciliter la validation de nouvelles observations en les comparant à la répartition spatiale, altitudinale et phénologique des observations valides.",
+        "MessageNoProfil": "Aucune donnée de profil pour ce taxon"
+      }
+    },
     "Map": {
       "AreasToggleBtn": "Mailles"
     }
   },
-  "Validation": {
-    "noData": "Aucune donnée à afficher",
-    "noIdFound": "Aucun résultat pour cet ID",
-    "displayAll": "Voir toutes les occurrences"
-  },
-  "MyAccount": "Mon compte",
-  "CreateAccount": "Créer un compte",
-  "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
-  "AutoAccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte",
-  "AdminAccountEmailConfirmation": "Votre demande de création de compte a bien été prise en compte, elle va être évaluée par un administrateur",
-  "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe",
   "Media": {
     "Medias": "Médias",
     "Media": "Média",
-    "add": "Ajouter un Média",
-    "edit": "Editer le média",
-    "valid": "Valider le média",
-    "delete": "Supprimer le média",
-    "undo": "Rétablir le média",
-    "loading": "Chargement du média en cours",
-    "link": "Afficher le media",
-    "diaporama": "Afficher le media",
-    "title": "Titre",
-    "description": "Description",
-    "author": "Auteur",
-    "type": "Type de média",
-    "next": "Voir le média suivant",
-    "previous": "Voir le média précédent"
-  },
-  "FicheTaxon": {
-    "MessageProfil": "* Ce profil est calculé sur les observations considérées valides présentes dans la Synthèse. Il permet de faciliter la validation de nouvelles observations en les comparant à la répartition spatiale, altitudinale et phénologique des observations valides.",
-    "MessageNoProfil": "Aucune donnée de profil pour ce taxon"
+    "Actions": {
+      "Add": "Ajouter un Média",
+      "Edit": "Editer le média",
+      "Valid": "Valider le média",
+      "Delete": "Supprimer le média",
+      "Undo": "Rétablir le média",
+      "Link": "Afficher le media",
+      "Diaporama": "Afficher le media",
+      "Next": "Voir le média suivant",
+      "Previous": "Voir le média précédent"
+    },
+    "Messages": {
+      "loading": "Chargement du média en cours"
+    },
+    "MediaType": "Type de média"
   },
   "Import": {
-    "DestinationLabel": "Destination",
-    "DestinatinationDatasetLabel": "Jeu de données ",
-    "Destinations": "Destinations",
     "Destination": "Destination",
-    "FileUpload": " Téléversement du fichier ",
-    "ChooseDataset": "Choisir un jeu de données :",
-    "ChooseDestination": "Choisir une destination",
-    "ImportFile": "Importer un fichier (CSV) :",
-    "ChooseFile": "Choisissez votre fichier",
-    "FileName": "Nom du fichier ",
-    "Validate": "Valider",
-    "SkipContentMapping": "Aucune nomenclature présente dans les données fournies, passage à l'étape \"Import des données.\"",
+    "Destinations": "Destinations",
+    "Entity": "Entité",
+    "FileUpload": " Téléversement du fichier",
+    "MappingName": "Nom du modèle",
+    "Actions": {
+      "ChooseDataset": "Choisir un jeu de données",
+      "ChooseDestination": "Choisir une destination",
+      "ImportFile": "Importer un fichier (CSV)",
+      "ChooseFile": "Choisissez votre fichier"
+    },
+    "FileName": "Nom du fichier",
     "Mapping": {
-      "ChooseMapping": "Utiliser un modèle d'import prédéfini",
-      "RenameMapping": "Renommer le modèle d'import",
-      "DeleteMapping": "Supprimer le modèle d'import",
-      "DeleteMapping?": "Voulez vous supprimer le modèle ?",
-      "UpdateMapping": "Mettre à jour le modèle existant",
-      "SaveNewMapping": "Enregistrer un nouveau modèle",
-      "NoSaveMapping": "Ne pas enregistrer",
-      "DontSaveMapping": "Continuer sans enregistrer"
+      "Actions": {
+        "Choose": "Utiliser un modèle d'import prédéfini",
+        "Rename": "Renommer le modèle d'import",
+        "Delete": "Supprimer le modèle d'import",
+
+        "Update": "Mettre à jour le modèle existant",
+        "Save": "Enregistrer un nouveau modèle",
+        "NoSave": "Ne pas enregistrer",
+        "DontSave": "Continuer sans enregistrer"
+      },
+      "Questions": {
+        "Delete?": "Voulez vous supprimer le modèle ?"
+      }
     },
     "FieldMapping": {
       "Title": "Correspondance des champs avec le modèle",
-      "SourceFieldsMapped": "{{ mappedFieldsLength }} champs cibles ont été associés à un champs source.",
-      "SourceFieldsAllMapped": "L'ensemble des {{ sourceFieldsLength }} champs du fichier d’import ont été associés à un champs cible.",
-      "SourceFieldsUnmapped": "{{ unmappedFieldsLength }} champs du fichier d’import ne sont actuellement associés à aucun champs cible et seront donc ignorés.",
-      "SaveMapping": "Enregistrement du modèle",
-      "MappingCreate?": "Souhaitez-vous sauvegarder vos correspondances dans un modèle pour les réutiliser lors d’un futur import ?",
-      "MappingChanged?": "Le modèle de correspondance a été modifié ; souhaitez-vous mettre à jour le modèle existant ou créer un nouveau modèle ?",
       "MappingName": "Nom du modèle",
-      "MappingNameWarning": "Un nom doit être renseigné pour pouvoir créer un modèle",
-      "MappingChangeNameWarning": "Changer de nom pour pouvoir enregistrer le modèle",
-      "OptionalIf": "Optionnel si :",
-      "RequiredIf": "Requis si :",
-      "SinpUUIDWarning": "Attention les identifiants SINP ne seront pas générés",
-      "ConfirmMappingDeletion": "Supprimer le modèle",
-
-      "MappingDeleted": "Le mapping {{label}} a bien été supprimé",
-      "SelectMapping": "Veuillez sélectionner un mapping"
+      "Messages": {
+        "SourceFieldsMapped": "{{ mappedFieldsLength }} champs cibles ont été associés à un champs source.",
+        "SourceFieldsAllMapped": "L'ensemble des {{ sourceFieldsLength }} champs du fichier d’import ont été associés à un champs cible.",
+        "SourceFieldsUnmapped": "{{ unmappedFieldsLength }} champs du fichier d’import ne sont actuellement associés à aucun champs cible et seront donc ignorés.",
+        "MappingNameWarning": "Un nom doit être renseigné pour pouvoir créer un modèle",
+        "MappingChangeNameWarning": "Changer de nom pour pouvoir enregistrer le modèle",
+        "SinpUUIDWarning": "Attention les identifiants SINP ne seront pas générés",
+        "MappingDeleted": "Le mapping {{label}} a bien été supprimé"
+      },
+      "Questions": {
+        "MappingCreate?": "Souhaitez-vous sauvegarder vos correspondances dans un modèle pour les réutiliser lors d’un futur import ?",
+        "MappingChanged?": "Le modèle de correspondance a été modifié ; souhaitez-vous mettre à jour le modèle existant ou créer un nouveau modèle ?"
+      },
+      "Actions": {
+        "SelectMapping": "Veuillez sélectionner un mapping",
+        "SaveMapping": "Enregistrement du modèle",
+        "ConfirmMappingDeletion": "Supprimer le modèle"
+      }
     },
     "ContentMapping": {
       "Title": "Correspondance des nomenclatures",
-      "MappingNameLabel": "Nom du modèle",
-      "NomenclatureValuesAllMapped": "L'ensemble des valeurs du fichier a été automatiquement associé aux nomenclatures.",
-      "OneNomenclatureValueMapped": "Une seule valeur du fichier a été automatiquement associée aux valeurs des nomenclatures.",
-      "RestToMapped": "{{number}} restent à associer manuellement.",
-      "NumberOfNomenclatureValueAutoMapped": "{{number}} champs du fichier ont été automatiquement associés aux champs du modèle d'import.",
-      "NoNomenclatureValueCouldBeMapped": "Aucune valeur du fichier n'a pu être associée aux valeurs des nomenclatures.",
-      "SaveMappingMessage?": "Souhaitez sauvegarder vos correspondances dans un modèle pour les réutiliser lors d’un futur import ?",
-      "CreateOrUpdateMappingModel?": "Le modèle de correspondance a été modifié ; souhaitez-vous mettre à jour le modèle existant ou créer un nouveau modèle ?",
-      "MissingMappingNameWarning": "Un nom doit être renseigné pour pouvoir créer un modèle",
-      "ChangeMappingNameWarning": "Changer de nom pour pouvoir créer un modèle",
-      "ControlInProgress": "Contrôle du fichier en cours...",
-      "ControlNotifications": "Les contrôles sur votre fichier de {{ nbLignes }} lignes ont bien été lancés ... Un mail de notification vous sera envoyé à la fin du traitement."
+      "Messages": {
+        "NomenclatureValuesAllMapped": "L'ensemble des valeurs du fichier a été automatiquement associé aux nomenclatures.",
+        "OneNomenclatureValueMapped": "Une seule valeur du fichier a été automatiquement associée aux valeurs des nomenclatures.",
+        "RestToMapped": "{{number}} restent à associer manuellement.",
+        "NumberOfNomenclatureValueAutoMapped": "{{number}} champs du fichier ont été automatiquement associés aux champs du modèle d'import.",
+        "NoNomenclatureValueCouldBeMapped": "Aucune valeur du fichier n'a pu être associée aux valeurs des nomenclatures.",
+        "MissingMappingNameWarning": "Un nom doit être renseigné pour pouvoir créer un modèle",
+        "ChangeMappingNameWarning": "Changer de nom pour pouvoir créer un modèle",
+        "ControlInProgress": "Contrôle du fichier en cours...",
+        "ControlNotifications": "Les contrôles sur votre fichier de {{ nbLignes }} lignes ont bien été lancés ... Un mail de notification vous sera envoyé à la fin du traitement."
+      },
+      "Questions": {
+        "SaveMappingMessage?": "Souhaitez sauvegarder vos correspondances dans un modèle pour les réutiliser lors d’un futur import ?",
+        "CreateOrUpdateMappingModel?": "Le modèle de correspondance a été modifié ; souhaitez-vous mettre à jour le modèle existant ou créer un nouveau modèle ?"
+      }
     },
-    "ErrorMessage": {
+    "Errors": {
       "Title": "Le module d'import a rencontré un problème",
       "Remark": "Il s'agit d'un problème indépendant du controle des données.",
       "DescriptionRestart": "Vous pouvez essayer de relancer l'import après vérification des paramètres.",
-      "DescriptionContactAdmin": "Si le problème persiste, merci de contacter votre administrateur."
-    },
-    "Errors": {
+      "DescriptionContactAdmin": "Si le problème persiste, merci de contacter votre administrateur.",
       "FileTooBig": "Le fichier sélectionné est trop volumineux. La taille maximale est de {{maxFileSize}}Mo",
       "EmptyFile": "Le fichier sélectionné est vide",
       "FileColumn": "La première ligne du fichier doit correspondre au nom des colonnes",
       "FileNameTooBig": "Le nom du fichier est trop long. Il doit faire moins de {{maxFileNameLength}} caractères."
     },
-    "Report": {
-      "Errors": {
-        "Entity": "Entité"
-      }
-    },
-    "ImportStatus": {
-      "DeleteSuccessfully": "Import supprimé"
+    "Messages": {
+      "DeleteSuccessfully": "Import supprimé",
+      "SkipContentMapping": "Aucune nomenclature présente dans les données fournies, passage à l'étape \"Import des données.\""
     }
+  },
+  "Releve": {
+    "InfoGeo": "Information géographique du relevé"
   }
 }

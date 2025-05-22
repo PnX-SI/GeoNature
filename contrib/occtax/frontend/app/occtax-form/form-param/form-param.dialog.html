@@ -117,7 +117,7 @@
 
       <!-- RELEVE -->
       <mat-tab
-        [label]="'Releve.Releve' | translate"
+        [label]="'Occtax.Releve.Releve' | translate"
         [disabled]="!(occtaxFormParamService.releveState|async)"
       >
         <div style="margin-top: 10px">
@@ -148,7 +148,7 @@
             *ngIf="config.OCCTAX.form_fields.place_name"
             class="col-4"
           >
-            <small>{{ 'Releve.PlaceName' | translate }}</small>
+            <small>{{ 'Occtax.Releve.PlaceName' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="text"
@@ -161,7 +161,7 @@
           *ngIf="!config.OCCTAX.observers_txt; else elseBlock"
           [parentFormControl]="releveParamForm.get('observers')"
           [idMenu]="config.OCCTAX.id_observers_list"
-          label="{{ 'Releve.Observers' | translate }}"
+          label="{{ 'Occtax.Releve.Observers' | translate }}"
           [bindAllItem]="true"
         ></pnx-observers>
         <ng-template #elseBlock>
@@ -171,7 +171,7 @@
         </ng-template>
 
         <pnx-datasets
-          label="{{ 'MetaData.Datasets' | translate }}"
+          label="{{ 'Datasets' | translate }}"
           [parentFormControl]="releveParamForm.get('id_dataset')"
           moduleCode="OCCTAX"
         ></pnx-datasets>
@@ -181,7 +181,7 @@
             <pnx-date
               *ngIf="config.OCCTAX.form_fields.date_min"
               [isInvalid]="releveParamForm.hasError('invalidDate') || releveParamForm.get('date_min').invalid"
-              label="{{ 'Releve.MinDate' | translate }}"
+              label="{{ 'MinDate' | translate }}"
               [defaultToday]="config.OCCTAX.DATE_FORM_WITH_TODAY"
               [parentFormControl]="releveParamForm.get('date_min')"
             ></pnx-date>
@@ -190,7 +190,7 @@
             <pnx-date
               *ngIf="config.OCCTAX.form_fields.date_max"
               [isInvalid]="releveParamForm.hasError('invalidDate') || releveParamForm.get('date_max').invalid"
-              label="{{ 'Releve.MaxDate' | translate }} "
+              label="{{ 'MaxDate' | translate }} "
               [parentFormControl]="releveParamForm.get('date_max')"
             ></pnx-date>
           </div>
@@ -202,13 +202,13 @@
               *ngIf="config.OCCTAX.form_fields.hour_min"
               class="form-group"
             >
-              <small>{{'Releve.HourMin' | translate }}</small>
+              <small>{{'HourMin' | translate }}</small>
               <input
                 [ngClass]="{'is-invalid' : releveParamForm.get('hour_min').invalid || releveParamForm.hasError('invalidHour')}"
                 [formControl]="releveParamForm.get('hour_min')"
                 class="form-control form-control-sm"
                 type="text"
-                placeholder="{{'Releve.HourFormat' | translate }}"
+                placeholder="{{'HourFormat' | translate }}"
               />
             </div>
           </div>
@@ -217,13 +217,13 @@
               *ngIf="config.OCCTAX.form_fields.hour_max"
               class="form-group"
             >
-              <small>{{'Releve.HourMax' | translate }}</small>
+              <small>{{'HourMax' | translate }}</small>
               <input
                 [ngClass]="{'is-invalid' : releveParamForm.get('hour_max').invalid || releveParamForm.hasError('invalidHour')}"
                 [formControl]="releveParamForm.get('hour_max')"
                 class="form-control form-control-sm"
                 type="text"
-                placeholder="{{'Releve.HourFormat' | translate }}"
+                placeholder="{{'HourFormat' | translate }}"
               />
             </div>
           </div>
@@ -234,7 +234,7 @@
             *ngIf="config.OCCTAX.form_fields.altitude_min"
             class="col-6"
           >
-            <small>{{ 'Releve.MinAltitude' | translate }}</small>
+            <small>{{ 'MinAltitude' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
@@ -247,7 +247,7 @@
             *ngIf="config.OCCTAX.form_fields.altitude_max"
             class="col-6"
           >
-            <small>{{ 'Releve.MaxAltitude' | translate }}</small>
+            <small>{{ 'MaxAltitude' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
@@ -261,7 +261,7 @@
             *ngIf="config.OCCTAX.form_fields.depth_min"
             class="col-6"
           >
-            <small>{{ 'Releve.MinDepth' | translate }}</small>
+            <small>{{ 'MinDepth' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
@@ -273,7 +273,7 @@
             *ngIf="config.OCCTAX.form_fields.depth_min"
             class="col-6"
           >
-            <small>{{ 'Releve.MaxDepth' | translate }}</small>
+            <small>{{ 'MaxDepth' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
@@ -288,7 +288,7 @@
             class="col-4"
           >
             <pnx-nomenclature
-              label="{{ 'Releve.GroupType' | translate }}"
+              label="{{ 'Occtax.Releve.GroupType' | translate }}"
               [parentFormControl]="releveParamForm.get('id_nomenclature_grp_typ')"
               codeNomenclatureType="TYP_GRP"
             ></pnx-nomenclature>
@@ -298,7 +298,7 @@
             *ngIf="config.OCCTAX.form_fields.grp_method"
             class="col-4"
           >
-            <small>{{'Releve.GroupMethod' | translate}}</small>
+            <small>{{'Occtax.Releve.GroupMethod' | translate}}</small>
             <input
               type="text"
               class="form-control form-control-sm"
@@ -311,7 +311,7 @@
             class="col-4"
           >
             <pnx-nomenclature
-              label="{{ 'Releve.GeoObjectNature' | translate }}"
+              label="{{ 'Occtax.Releve.GeoObjectNature' | translate }}"
               [parentFormControl]="releveParamForm.get('id_nomenclature_geo_object_nature')"
               codeNomenclatureType="NAT_OBJ_GEO"
             ></pnx-nomenclature>
@@ -320,13 +320,13 @@
 
         <pnx-nomenclature
           *ngIf="config.OCCTAX.form_fields.tech_collect"
-          label="{{ 'Releve.TechCollectCampanule' | translate }}"
+          label="{{ 'Occtax.Releve.TechCollectCampanule' | translate }}"
           [parentFormControl]="releveParamForm.get('id_nomenclature_tech_collect_campanule')"
           codeNomenclatureType="TECHNIQUE_OBS"
         ></pnx-nomenclature>
 
         <div *ngIf="config.OCCTAX.form_fields.comment_releve">
-          <small>{{ 'Releve.Comment' | translate }}</small>
+          <small>{{ 'Comment' | translate }}</small>
           <textarea
             class="form-control"
             [formControl]="releveParamForm.get('comment')"
@@ -336,7 +336,7 @@
 
       <!-- OCCTURRENCE -->
       <mat-tab
-        [label]="'Taxon.Observation' | translate"
+        [label]="'Observation' | translate"
         [disabled]="!(occtaxFormParamService.occurrenceState|async)"
       >
         <div style="margin-top: 10px">
@@ -354,7 +354,7 @@
             *ngIf="config.OCCTAX.form_fields.determiner"
             class="col-sm-6"
           >
-            <small>{{ 'Taxon.Determiner' | translate }}</small>
+            <small>{{ 'Occtax.Taxon.Determiner' | translate }}</small>
             <input
               class="form-control form-control-sm"
               [formControl]="occurrenceParamForm.get('determiner')"
@@ -367,7 +367,7 @@
             class="col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.DeterminationMethod' | translate }}"
+              label="{{ 'Occtax.Taxon.DeterminationMethod' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_determination_method')"
               codeNomenclatureType="METH_DETERMIN"
             ></pnx-nomenclature>
@@ -380,7 +380,7 @@
             class="col-lg-4 col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.ObservationStatus' | translate }}"
+              label="{{ 'Occtax.Taxon.ObservationStatus' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_observation_status')"
               codeNomenclatureType="STATUT_OBS"
             ></pnx-nomenclature>
@@ -391,7 +391,7 @@
             class="col-lg-4 col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.ObsTech' | translate }}"
+              label="{{ 'Occtax.Taxon.ObsTech' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_obs_technique')"
               codeNomenclatureType="METH_OBS"
             ></pnx-nomenclature>
@@ -402,7 +402,7 @@
             class="col-lg-4 col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.BiologicalCondition' | translate }}"
+              label="{{ 'Occtax.Taxon.BiologicalCondition' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_bio_condition')"
               codeNomenclatureType="ETA_BIO"
             ></pnx-nomenclature>
@@ -413,7 +413,7 @@
             class="col-lg-4 col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.Naturalness' | translate }}"
+              label="{{ 'Occtax.Taxon.Naturalness' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_naturalness')"
               codeNomenclatureType="NATURALITE"
             ></pnx-nomenclature>
@@ -424,7 +424,7 @@
             class="col-lg-4 col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.BiologicalStatus' | translate }}"
+              label="{{ 'Occtax.Taxon.BiologicalStatus' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_bio_status')"
               codeNomenclatureType="STATUT_BIO"
             ></pnx-nomenclature>
@@ -435,7 +435,7 @@
             class="col-lg-4 col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.OccBehaviour' | translate }}"
+              label="{{ 'Occtax.Taxon.OccBehaviour' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_behaviour')"
               codeNomenclatureType="OCC_COMPORTEMENT"
             ></pnx-nomenclature>
@@ -446,7 +446,7 @@
             class="col-lg-4 col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.StatusSource' | translate }}"
+              label="{{ 'Occtax.Taxon.StatusSource' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_source_status')"
               codeNomenclatureType="STATUT_SOURCE"
             ></pnx-nomenclature>
@@ -457,7 +457,7 @@
             class="col-lg-4 col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.Blurring' | translate }}"
+              label="{{ 'Occtax.Taxon.Blurring' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_blurring')"
               codeNomenclatureType="DEE_FLOU"
             ></pnx-nomenclature>
@@ -471,7 +471,7 @@
             style="margin-bottom: 1rem"
           >
             <pnx-nomenclature
-              label="{{ 'Taxon.ExistProof' | translate }}"
+              label="{{ 'Occtax.Taxon.ExistProof' | translate }}"
               [parentFormControl]="occurrenceParamForm.get('id_nomenclature_exist_proof')"
               codeNomenclatureType="PREUVE_EXIST"
             ></pnx-nomenclature>
@@ -482,7 +482,7 @@
             class="col-lg-4 col-sm-6"
           >
             <div class="form-group">
-              <small>{{ 'Taxon.DigitalProof' | translate }}</small>
+              <small>{{ 'Occtax.Taxon.DigitalProof' | translate }}</small>
               <input
                 class="form-control form-control-sm"
                 [formControl]="occurrenceParamForm.get('digital_proof')"
@@ -495,7 +495,7 @@
             class="col-lg-4 col-sm-6"
           >
             <div class="form-group">
-              <small>{{ 'Taxon.NonDigitalProof' | translate }}</small>
+              <small>{{ 'Occtax.Taxon.NonDigitalProof' | translate }}</small>
               <input
                 class="form-control form-control-sm"
                 [formControl]="occurrenceParamForm.get('non_digital_proof')"
@@ -507,7 +507,7 @@
 
         <div *ngIf="config.OCCTAX.form_fields.comment_occ">
           <textarea
-            placeholder="{{ 'Taxon.Comment' | translate }}"
+            placeholder="{{ 'Comment' | translate }}"
             class="form-control"
             [formControl]="occurrenceParamForm.get('comment')"
             rows="2"
@@ -518,7 +518,7 @@
 
       <!-- DENOMBREMENT -->
       <mat-tab
-        [label]="'Counting.Counting' | translate"
+        [label]="'Occtax.Counting.Counting' | translate"
         [disabled]="!(occtaxFormParamService.countingState|async)"
       >
         <div class="row">
@@ -527,7 +527,7 @@
             class="col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Counting.LifeStage' | translate }}"
+              label="{{ 'Occtax.Counting.LifeStage' | translate }}"
               codeNomenclatureType="STADE_VIE"
               [parentFormControl]="countingParamForm.get('id_nomenclature_life_stage')"
             ></pnx-nomenclature>
@@ -537,7 +537,7 @@
             class="col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Counting.Sex' | translate }}"
+              label="{{ 'Occtax.Counting.Sex' | translate }}"
               codeNomenclatureType="SEXE"
               [parentFormControl]="countingParamForm.get('id_nomenclature_sex')"
             ></pnx-nomenclature>
@@ -547,7 +547,7 @@
             *ngIf="config.OCCTAX.form_fields.count_min"
             class="col-sm-6"
           >
-            <small>{{ 'Counting.NumberMin' | translate }}</small>
+            <small>{{ 'Occtax.Counting.NumberMin' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
@@ -560,7 +560,7 @@
             *ngIf="config.OCCTAX.form_fields.count_max"
             class="col-sm-6"
           >
-            <small>{{ 'Counting.NumberMax' | translate }}</small>
+            <small>{{ 'Occtax.Counting.NumberMax' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="number"
@@ -574,7 +574,7 @@
             class="col-sm-6"
           >
             <pnx-nomenclature
-              label="{{ 'Counting.CountingObject' | translate }}"
+              label="{{ 'Occtax.Counting.CountingObject' | translate }}"
               codeNomenclatureType="OBJ_DENBR"
               [parentFormControl]="countingParamForm.get('id_nomenclature_obj_count')"
             ></pnx-nomenclature>
@@ -585,7 +585,7 @@
           >
             <pnx-nomenclature
               #typeDenombrement
-              label="{{ 'Counting.CountingType' | translate }}"
+              label="{{ 'Occtax.Counting.CountingType' | translate }}"
               codeNomenclatureType="TYP_DENBR"
               [parentFormControl]="countingParamForm.get('id_nomenclature_type_count')"
             ></pnx-nomenclature>

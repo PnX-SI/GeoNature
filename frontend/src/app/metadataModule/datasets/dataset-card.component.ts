@@ -136,7 +136,7 @@ export class DatasetCardComponent implements OnInit {
   }
 
   deleteDataset(dataset) {
-    const message = `${this.translate.instant('Delete')} ${dataset.dataset_name} ?`;
+    const message = `${this.translate.instant('Actions.Delete')} ${dataset.dataset_name} ?`;
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: '350px',
       position: { top: '5%' },
@@ -148,7 +148,9 @@ export class DatasetCardComponent implements OnInit {
         this._dfs
           .deleteDs(dataset.id_dataset)
           .pipe(
-            tap(() => this._commonService.translateToaster('success', 'MetaData.DatasetRemoved'))
+            tap(() =>
+              this._commonService.translateToaster('success', 'MetaData.Messages.DatasetRemoved')
+            )
           )
           .subscribe(() => this._router.navigate(['metadata']));
       }

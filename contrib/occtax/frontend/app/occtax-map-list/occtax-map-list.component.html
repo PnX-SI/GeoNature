@@ -12,11 +12,11 @@
           class="btn-action hard-shadow button-success uppercase ml-3"
           [routerLink]="['form/releve']"
         >
-          {{ 'Releve.AddReleve' | translate }}
+          {{ 'Occtax.Releve.Actions.Add' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
         </a>
         <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase">
-          {{ 'Releve.AddReleve' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
+          {{ 'Occtax.Releve.Actions.Add' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
         </a> -->
       </ng-container>
       <button
@@ -117,7 +117,7 @@
                 {{ row?.digitiser?.nom_complet || '-' }}
               </div>
               <div *ngIf="row.place_name != null && row.place_name != ''">
-                <strong>{{ 'Releve.PlaceName' | translate }} :</strong>
+                <strong>{{ 'Occtax.Releve.PlaceName' | translate }} :</strong>
                 {{ row.place_name }}
               </div>
               <div><strong>Observé par:</strong></div>
@@ -162,7 +162,7 @@
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                matTooltip="{{ 'List.Columns' | translate }}"
+                matTooltip="{{ 'Columns' | translate }}"
                 (click)="openModalCol($event, modalCol)"
               ></i>
             </ng-template>
@@ -194,7 +194,9 @@
                   [routerLink]="['form/releve', row.id_releve_occtax]"
                 >
                   <i
-                    matTooltip="{{ 'Releve.Edit' | translate }} {{ row.id_releve_occtax }}"
+                    matTooltip="{{ 'Occtax.Releve.Actions.Edit' | translate }} {{
+                      row.id_releve_occtax
+                    }}"
                     class="fa fa-pencil-square-o"
                     aria-hidden="true"
                   ></i>
@@ -207,7 +209,9 @@
                 >
                   <i
                     class="fa fa-pencil-square-o disabled"
-                    matTooltip="{{ 'Releve.Edit' | translate }} {{ row.id_releve_occtax }}"
+                    matTooltip="{{ 'Occtax.Releve.Actions.Edit' | translate }} {{
+                      row.id_releve_occtax
+                    }}"
                     aria-hidden="true"
                   ></i>
                 </button>
@@ -226,7 +230,7 @@
                   [routerLink]="['info', row.id_releve_occtax]"
                 >
                   <i
-                    matTooltip="{{ 'Releve.Info' | translate }} {{ row.id_releve_occtax }}"
+                    matTooltip="{{ 'Occtax.Releve.Info' | translate }} {{ row.id_releve_occtax }}"
                     class="fa fa-info-circle"
                     aria-hidden="true"
                   ></i>
@@ -262,7 +266,9 @@
                 <i
                   [ngClass]="{ disabled: !row.rights.D }"
                   #iElement
-                  matTooltip="{{ 'Releve.Delete' | translate }} {{ row[mapListService.idName] }}"
+                  matTooltip="{{ 'Occtax.Releve.Actions.Delete' | translate }} {{
+                    row[mapListService.idName]
+                  }}"
                   class="fa fa-trash-o"
                   aria-hidden="true"
                 ></i>
@@ -352,7 +358,7 @@
           color="primary"
           (click)="openModalDownload($event, modalDownload)"
         >
-          {{ 'Download' | translate }}
+          {{ 'Actions.Download' | translate }}
 
           <mat-icon>file_download</mat-icon>
         </button>
@@ -364,7 +370,7 @@
           let-d="dismiss"
         >
           <div class="modal-header">
-            <h4>{{ 'List.DisplayColumns' | translate }}</h4>
+            <h4>{{ 'DisplayColumns' | translate }}</h4>
           </div>
           <div class="modal-body">
             <li
@@ -395,7 +401,7 @@
               class="modal-title"
               id="exampleModalLabel"
             >
-              {{ 'Releve.Delete' | translate }}
+              {{ 'Occtax.Releve.Actions.Delete' | translate }}
               {{ mapListService.selectedRow[0][mapListService.idName] }} ?
             </h5>
           </div>
@@ -406,7 +412,7 @@
               class="mr-1 uppercase"
               (click)="c()"
             >
-              {{ 'Cancel' | translate }}
+              {{ 'Actions.Cancel' | translate }}
             </button>
             <button
               type="button"
@@ -416,7 +422,7 @@
               data-qa="pnx-occtax-delete"
               (click)="c(); onDeleteReleve(mapListService.selectedRow[0].id_releve_occtax)"
             >
-              {{ 'Delete' | translate }}
+              {{ 'Actions.Delete' | translate }}
             </button>
           </div>
         </ng-template>
@@ -433,7 +439,7 @@
               class="modal-title"
               id="exampleModalLabel"
             >
-              {{ 'DownloadData' | translate }}
+              {{ 'Actions.DownloadData' | translate }}
             </h5>
           </div>
           <div class="modal-body">

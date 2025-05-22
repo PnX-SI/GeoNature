@@ -72,8 +72,8 @@ export class SignUpComponent implements OnInit {
         .subscribe(
           () => {
             const callbackMessage = this.config.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
-              ? 'AutoAccountEmailConfirmation'
-              : 'AdminAccountEmailConfirmation';
+              ? 'MyAccount.Messages.AutoAccountEmailConfirmation'
+              : 'MyAccount.Messages.AdminAccountEmailConfirmation';
             this._commonService.translateToaster('info', callbackMessage);
             this._router.navigate(['/login']);
           },

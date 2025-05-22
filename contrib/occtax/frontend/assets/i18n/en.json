@@ -1,0 +1,110 @@
+{
+  "Occtax": {
+    "Releve": {
+      "Releve": "Survey",
+      "Actions": {
+        "Add": "Add a survey",
+        "Save": "Save the survey",
+        "AddTaxon": "Add a taxon to this survey",
+        "Edit": "Edit the survey",
+        "Delete": "Delete the survey",
+        "Validate": "Validate the survey",
+        "UnValidate": "Invalidate the survey"
+      },
+      "Messages": {
+        "DeleteSuccessfully": "The survey has been successfully deleted",
+        "Added": "Survey added",
+        "Modified": "Survey modified"
+      },
+      "SavedTaxon": "Saved taxon(s)",
+
+      "InfoGeo": "Geographical information of the survey",
+      "Info": "Survey information",
+
+      "ObsTechnique": "Observation technique",
+      "TechCollectCampanule": "Survey collection technique (Campanule)",
+
+      "GroupType": "Group type",
+      "GroupMethod": "Grouping method",
+
+      "StayOnFormInterface": "Chain surveys without returning to the map/list interface",
+      "GeoObjectNature": "Nature of the geographical object",
+      "PlaceName": "Place name",
+      "Precision": "Precision",
+      "Errors": {
+        "AltitudeError": "The maximum altitude cannot be less than the minimum altitude",
+        "DepthError": "The maximum depth cannot be less than the minimum depth",
+        "HourMaxError": "The start time cannot be later than the end time",
+        "DoesNotExist": "This survey does not exist"
+      }
+    },
+    "Taxon": {
+      "Actions": {
+        "Save": "Save the taxon",
+        "Add": "Add the taxon",
+        "Cancel": "Cancel the taxon entry",
+        "Validate": "Validate the taxon"
+      },
+      "Messages": {
+        "DeleteDone": "Taxon deleted",
+        "CreateDone": "Taxon added to the survey",
+        "UpdateDone": "Taxon updated",
+        "NoTaxonFound": "No taxon found for this search",
+        "CurrentlyEditing": "Please save the taxon being edited before editing a new one"
+      },
+      "Errors": {
+        "ExistProofValidation": "This field must start with 'http://', 'https://', or 'ftp://'",
+        "NoExistProofError": "If 'proof of existence = Yes', one of the two proof fields must be filled",
+        "ExistproofError": "Proofs of existence can only be filled if 'proof of existence = Yes'",
+        "NomCiteRequiredError": "Please provide a taxon",
+        "CdNomRequiredError": "Please select a taxon present in the Taxref reference",
+        "DeterminerRequiredError": "Please indicate a determiner",
+        "DeterminationMethodRequiredError": "Please indicate the determination method",
+        "TechObsRequiredError": "Please indicate the observation technique",
+        "BiologicalConditionRequiredError": "Please indicate the biological condition",
+        "CountingRequiredError": "Please provide a count"
+      },
+      "ObservedTaxon": "Observed taxon(s)",
+      "Priority": "Priority",
+      "NomCite": "Taxon (cited name)",
+      "TaxonName": "Taxon name",
+      "ObsTech": "Observation technique",
+      "BiologicalCondition": "Biological condition",
+      "BiologicalStatus": "Biological status",
+      "Naturalness": "Naturalness",
+      "DeterminationMethod": "Determination method",
+      "DeterminationMethodComplement": "Additional determination method",
+      "Determiner": "Determiner",
+      "ExistProof": "Proof of existence",
+      "SampleNumber": "Sample number",
+      "DigitalProof": "Digital proof",
+      "NonDigitalProof": "Non-digital proof",
+      "DiffusionLevel": "Diffusion level",
+      "ObservationStatus": "Observation status",
+      "Blurring": "Blurring",
+      "StatusSource": "Source status",
+      "OccBehaviour": "Behavior"
+    },
+    "Counting": {
+      "Counting": "Count",
+      "Countings": "Counts",
+      "NumberMin": "Minimum number",
+      "NumberMax": "Maximum number",
+      "Type": "Type",
+      "LifeStage": "Life stage",
+      "Sex": "Sex",
+      "ValidationStatus": "Validation status",
+      "Phenology": "Phenology",
+      "CountingObject": "Count object",
+      "CountingType": "Count type",
+      "Numbers": "Count",
+      "Total": "Total",
+      "Errors": {
+        "CountError": "The maximum count cannot be less than the minimum count",
+        "LifeStageRequiredError": "Please indicate the life stage",
+        "SexRequiredError": "Please indicate the sex",
+        "CountingObjectRequiredError": "Please indicate the count object"
+      }
+    }
+  }
+}

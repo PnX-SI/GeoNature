@@ -81,7 +81,7 @@ export class MappingSelectionComponent implements OnInit {
   // }
   toggleRenameMappingForm(valueToggle: boolean = null) {
     if (!this.fieldMappingForm.value?.label) {
-      this._commonService.translateToaster('error', 'Import.FieldMapping.SelectMapping');
+      this._commonService.translateToaster('error', 'Import.FieldMapping.Actions.SelectMapping');
     } else {
       this.renameMappingFormVisible =
         valueToggle !== null ? valueToggle : !this.renameMappingFormVisible;
@@ -97,7 +97,7 @@ export class MappingSelectionComponent implements OnInit {
 
   openDeleteModal() {
     if (!this.fieldMappingForm.value?.label) {
-      this._commonService.translateToaster('error', 'Import.FieldMapping.SelectMapping');
+      this._commonService.translateToaster('error', 'Import.FieldMapping.Actions.SelectMapping');
     } else {
       this.toggleRenameMappingForm(false);
       this.toggleDeleteModal(true);
@@ -133,9 +133,13 @@ export class MappingSelectionComponent implements OnInit {
       .pipe()
       .subscribe(
         () => {
-          this._commonService.translateToaster('success', 'Import.FieldMapping.MappingDeleted', {
-            label: this.fieldMappingForm.value.label,
-          });
+          this._commonService.translateToaster(
+            'success',
+            'Import.FieldMapping.Messages.MappingDeleted',
+            {
+              label: this.fieldMappingForm.value.label,
+            }
+          );
           this.fieldMappingForm.setValue(null, { emitEvent: false });
           this.userFieldMappings = this.userFieldMappings
             .filter((mapping) => {

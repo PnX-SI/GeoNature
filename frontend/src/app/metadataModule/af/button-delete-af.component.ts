@@ -54,7 +54,7 @@ export class ButtonDeleteAfComponent {
           if (this.redirectionUrl) {
             this._router.navigate([this.redirectionUrl]);
           }
-          this._commonService.translateToaster('success', 'MetaData.AFDeleted');
+          this._commonService.translateToaster('success', 'MetaData.Messages.AFDeleted');
         });
       }
     });

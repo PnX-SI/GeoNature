@@ -73,7 +73,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   }
 
   deleteOccurrence(occurrence) {
-    const message = `${this.translate.instant('Delete')} ${this.taxonTitle(occurrence)} ?`;
+    const message = `${this.translate.instant('Actions.Delete')} ${this.taxonTitle(occurrence)} ?`;
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: '350px',
       position: { top: '5%' },

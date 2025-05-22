@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog } from "@angular/material/dialog";
 import { BehaviorSubject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
@@ -57,7 +57,7 @@ export class MetadataDatasetComponent implements OnInit {
           .deleteDs(dataset.id_dataset)
           .pipe(tap(() => this.metadataS.getMetadata()))
           .subscribe(() =>
-            this._commonService.translateToaster('success', 'MetaData.DatasetRemoved')
+            this._commonService.translateToaster('success', 'MetaData.Messages.DatasetRemoved')
           );
       }
     });
