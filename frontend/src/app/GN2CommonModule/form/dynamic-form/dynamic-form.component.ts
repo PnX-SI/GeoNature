@@ -8,7 +8,7 @@ import {
   SimpleChanges,
   OnDestroy,
 } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, AbstractControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -32,7 +32,10 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   public formDefComp: any = {};
   public isValInSelectList: boolean = true;
   private _sub: Subscription;
-
+  
+  get ctrl(): AbstractControl {
+    return this.form.get(this.formDefComp.attribut_name);
+  }
   constructor(
     private _dynformService: DynamicFormService,
     public config: ConfigService

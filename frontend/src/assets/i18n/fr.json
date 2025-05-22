@@ -66,7 +66,28 @@
     "AdvancedFilters": "Filtres avancés",
     "OtherFilters": "Autres filtres",
     "Organism": "Organisme(s)",
+    "Filter": "Filtrer",
+    "Errors":{
+      "required"             : "Ce champ est obligatoire.",
+      "minlength"            : "Il faut au moins {{requiredLength}} caractères (actuellement {{actualLength}}).",
+      "maxlength"            : "Au plus {{requiredLength}} caractères (actuellement {{actualLength}}).",
+      "pattern"              : "Format invalide.",
+      "min"                  : "La valeur doit être ≥ {{min}} (actuellement {{actual}}).",
+      "max"                  : "La valeur doit être ≤ {{max}} (actuellement {{actual}}).",
+  
+      "notNumber"            : "Le champ doit contenir un nombre valide.",
+      "commaNotAllowed"      : "Le champ ne doit pas contenir de virgule. Utiliser le point à la place.",
+      "arrayMinLengthError"  : "Il faut au moins {{arrayLength}} éléments.",
+      "isObjectError"        : "Le format de l’objet est invalide.",
+      "minGreaterThanMax"    : "Le minimum doit être inférieur ou égal au maximum.",
+  
+      "invalidTaxon"         : "Le taxon sélectionné est invalide.",
+  
+      "file"                 : "Le fichier est trop volumineux ou format non supporté.",
+      "medias"               : "Format des médias invalide.",
+  
     "Filter": "Filtrer"
+    }  
   },
   "List": {
     "Columns": "Colonnes",
