@@ -488,9 +488,9 @@
                   [parentFormControl]="
                     occHabForm.stationForm
                       .get('habitats')
-                      .controls[occHabForm.currentEditingHabForm].get(
-                        'id_nomenclature_community_interest'
-                      )
+                      .controls[
+                        occHabForm.currentEditingHabForm
+                      ].get('id_nomenclature_community_interest')
                   "
                   [items]="storeService.nomenclatureItems.HAB_INTERET_COM"
                   comparedKey="id_nomenclature"
@@ -527,9 +527,9 @@
                   [parentFormControl]="
                     occHabForm.stationForm
                       .get('habitats')
-                      .controls[occHabForm.currentEditingHabForm].get(
-                        'id_nomenclature_determination_type'
-                      )
+                      .controls[
+                        occHabForm.currentEditingHabForm
+                      ].get('id_nomenclature_determination_type')
                   "
                   [items]="storeService.nomenclatureItems.DETERMINATION_TYP_HAB"
                   comparedKey="id_nomenclature"
@@ -545,9 +545,9 @@
               [parentFormControl]="
                 occHabForm.stationForm
                   .get('habitats')
-                  .controls[occHabForm.currentEditingHabForm].get(
-                    'id_nomenclature_collection_technique'
-                  )
+                  .controls[
+                    occHabForm.currentEditingHabForm
+                  ].get('id_nomenclature_collection_technique')
               "
               [items]="storeService.nomenclatureItems.TECHNIQUE_COLLECT_HAB"
               comparedKey="id_nomenclature"
