@@ -298,10 +298,10 @@
                     {{ displayDateTooltip(row) }}
                   </span>
                   <span *ngSwitchCase="'date_min'">
-                    {{ row.date_min | date : 'dd-MM-yyyy' }}
+                    {{ row.date_min | date: 'dd-MM-yyyy' }}
                   </span>
                   <span *ngSwitchCase="'date_max'">
-                    {{ row.date_max | date : 'dd-MM-yyyy' }}
+                    {{ row.date_max | date: 'dd-MM-yyyy' }}
                   </span>
                   <span
                     *ngSwitchCase="'nb_taxons'"
