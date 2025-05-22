@@ -139,10 +139,10 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Affiche la carte des 100 dernieres observations sur la page d'accueil
     DISPLAY_MAP_LAST_OBS = true
 
-    # Passe le frontend en mode multilingue (non implémenté pour l'instant)
+    # Affiche le selecteur de langue dans l'interface
     MULTILINGUAL = false
 
-    #Affiche les emails des observateurs dans les modules Synthese et Validation
+    # Affiche les emails des observateurs dans les modules Synthese et Validation
     DISPLAY_EMAIL_INFO_OBS = true
 
     # Ajoute du contenu à l'email validation / synthèse

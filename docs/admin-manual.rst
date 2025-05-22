@@ -1325,17 +1325,29 @@ Le style des fichiers PDF est également customisable grâce au fichier "custom/
 Customiser les traductions
 """"""""""""""""""""""""""
 
+Dans GeoNature, il est possible de changer la langue de l'interface. Aujourd'hui seul trois langages sont disponibles :
+
+- Francais : ``fr``
+- Anglais (partiellement) : ``en``
+- Chinois (partiellement) : ``zh``
+
+Pour changer de la langue par défaut, indiquer le code de cette dernière dans le paramètre ``DEFAULT_LANGUAGE``. Si vous voulez proposer aux
+utilisateurs de pouvoir changer de langue, passer le paramètre ``MULTILINGUAL`` à ``true``.
+
 Vous pouvez surcharger les fichiers de traductions au format JSON présents dans le dossier
-``/frontend/src/assets/i18n/``. Deux langues sont actuellements gérées :
+``/frontend/src/assets/i18n/`` (pour les textes globaux de GeoNature) et les dossiers ``/frontend/assets/i18n/`` 
+de chaque module (pour les textes spécifiques de chaque module). 
+
+Deux langues sont actuellement gérées :
 
 - *français* (``fr.json``)
 - *anglais* (``en.json``)
 
 Pour adapter un texte à votre installation de GeoNature, créer un dossier
-``/custom/translations/``, puis créer un fichier ``fr.json`` et/ou
-``en.json``.
+``/translations/`` dans le dossier ``/custom/`` (existant à la racine de GeoNature)
+, puis créer un fichier ``fr.json`` et/ou ``en.json``.
 Ces fichiers doivent être du JSON valide et contenir un objet Javascript
-dans lequel vous devez copier seulement les attributs des fichier
+dans lequel vous devez copier seulement les attributs du fichier
 ``/frontend/src/assets/i18n/`` correspondant que vous souhaitez
 modifier.
 
@@ -1344,25 +1356,29 @@ Exemple de contenu du fichier ``/custom/translations/fr.json`` :
 .. code-block:: javascript
 
     {
-      "Sel_lang": "Choix de la langue",
-      "Languages": {
-        "French": "Français (French)"
+      "Datasets": "JDD",
+      "Occtax": {
+        "Releve": {
+          "Actions": {
+            "AddReleve": "Créer un relevé"
+          }
+        }
       }
     }
 
 Pour que ces fichiers de surcharge de traductions soient pris en compte, il faut reconstruire le *frontend* de GeoNature.
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        cd frontend/
-        nvm use
-        npm run build
+    cd frontend/
+    nvm use
+    npm run build
 
 
-**Notes** :
+.. note::
 
-- Vous pouvez trouver plus d'information sur `le format de ces fichiers JSON de traduction sur le site de Ngx-Translate <https://github.com/ngx-translate/core?tab=readme-ov-file#4-define-the-translations>`_.
-- Tous les textes présents dans GeoNature ne sont pas forcément traduits et présents dans ces fichiers.
+  - Vous pouvez trouver plus d'information sur `le format de ces fichiers JSON de traduction sur le site de Ngx-Translate <https://github.com/ngx-translate/core?tab=readme-ov-file#4-define-the-translations>`_.
+  - Tous les textes présents dans GeoNature ne sont pas forcément traduits pour le moment et présents dans ces fichiers.
 
 Intégrer des données
 --------------------
