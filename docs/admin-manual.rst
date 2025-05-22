@@ -1326,16 +1326,19 @@ Customiser les traductions
 """"""""""""""""""""""""""
 
 Vous pouvez surcharger les fichiers de traductions au format JSON présents dans le dossier
-``/frontend/src/assets/i18n/``. Deux langues sont actuellements gérées :
+``/frontend/src/assets/i18n/`` (pour les textes globaux de GeoNature) et les dossiers ``/frontend/assets/i18n/`` 
+de chaque module (pour les textes spécifiques de chaque module). 
+
+Deux langues sont actuellement gérées :
 
 - *français* (``fr.json``)
 - *anglais* (``en.json``)
 
 Pour adapter un texte à votre installation de GeoNature, créer un dossier
-``/custom/translations/``, puis créer un fichier ``fr.json`` et/ou
-``en.json``.
+``/translations/`` dans le dossier ``/custom/`` (existant à la racine de GeoNature)
+, puis créer un fichier ``fr.json`` et/ou ``en.json``.
 Ces fichiers doivent être du JSON valide et contenir un objet Javascript
-dans lequel vous devez copier seulement les attributs des fichier
+dans lequel vous devez copier seulement les attributs du fichier
 ``/frontend/src/assets/i18n/`` correspondant que vous souhaitez
 modifier.
 
@@ -1344,7 +1347,7 @@ Exemple de contenu du fichier ``/custom/translations/fr.json`` :
 .. code-block:: javascript
 
     {
-      "Sel_lang": "Choix de la langue",
+      "LanguageSelection": "Choix de la langue",
       "Languages": {
         "French": "Français (French)"
       }
@@ -1352,17 +1355,17 @@ Exemple de contenu du fichier ``/custom/translations/fr.json`` :
 
 Pour que ces fichiers de surcharge de traductions soient pris en compte, il faut reconstruire le *frontend* de GeoNature.
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        cd frontend/
-        nvm use
-        npm run build
+    cd frontend/
+    nvm use
+    npm run build
 
 
 **Notes** :
 
 - Vous pouvez trouver plus d'information sur `le format de ces fichiers JSON de traduction sur le site de Ngx-Translate <https://github.com/ngx-translate/core?tab=readme-ov-file#4-define-the-translations>`_.
-- Tous les textes présents dans GeoNature ne sont pas forcément traduits et présents dans ces fichiers.
+- Tous les textes présents dans GeoNature ne sont pas forcément traduits pour le moment et présents dans ces fichiers.
 
 Intégrer des données
 --------------------
