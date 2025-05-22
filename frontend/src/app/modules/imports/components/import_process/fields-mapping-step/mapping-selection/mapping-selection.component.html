@@ -4,7 +4,7 @@
       *ngIf="userFieldMappings.length > 0"
       class="form-group"
     >
-      <legend class="px-1">{{ 'Import.Mapping.Actions.ChooseMapping' | translate }}</legend>
+      <legend class="px-1">{{ 'Import.Mapping.Actions.Choose' | translate }}</legend>
       <ng-select
         id="mappingSelection"
         [items]="userFieldMappings"
@@ -44,7 +44,7 @@
           [disabled]="!isMappingSelected()"
           data-qa="import-fieldmapping-selection-button-rename"
         >
-          {{ 'Import.Mapping.Actions.RenameMapping' | translate }}
+          {{ 'Import.Mapping.Actions.Rename' | translate }}
         </button>
         <button
           id="deleteMapping"
@@ -56,7 +56,7 @@
           [disabled]="!isMappingSelected()"
           data-qa="import-fieldmapping-selection-button-delete"
         >
-          {{ 'Import.Mapping.Actions.DeleteMapping' | translate }}
+          {{ 'Import.Mapping.Actions.Delete' | translate }}
         </button>
       </div>
     </div>
@@ -109,7 +109,7 @@
   data-qa="import-fieldmapping-selection-modal-delete"
 >
   <div class="modal-header">{{ 'Confirmation' | translate }}</div>
-  <div class="modal-body">{{ 'Import.Mapping.DeleteMapping?' | translate }}</div>
+  <div class="modal-body">{{ 'Import.Mapping.Delete?' | translate }}</div>
   <div class="modal-footer">
     <button
       type="button"
@@ -127,7 +127,7 @@
       (click)="modalDelete.close(); deleteMapping()"
       data-qa="import-fieldmapping-selection-modal-delete-ok"
     >
-      {{ 'Import.Mapping.Actions.DeleteMapping' | translate }}
+      {{ 'Import.Mapping.Actions.Delete' | translate }}
     </button>
   </div>
 </ng-template>

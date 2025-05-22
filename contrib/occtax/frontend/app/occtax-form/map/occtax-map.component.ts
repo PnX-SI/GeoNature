@@ -59,7 +59,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
   // display help toaster for filelayer
   infoMessageFileLayer() {
     if (this.firstFileLayerMessage) {
-      this._commonService.translateToaster('info', 'Map.Messages.FileLayerInfoMessage');
+      this._commonService.translateToaster('info', 'Map.Messages.FileLayerInfo');
     }
     this.firstFileLayerMessage = false;
   }

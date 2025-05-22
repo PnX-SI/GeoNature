@@ -1,8 +1,8 @@
 {
   "Validation": {
     "Messages": {
-      "noData": "Aucune donnée à afficher",
-      "noIdFound": "Aucun résultat pour cet ID",
+      "NoData": "Aucune donnée à afficher",
+      "NoIdFound": "Aucun résultat pour cet ID",
       "WarningHiddenObservations": "Attention {{value}} observation{{plural}} non-visible{{plural}} (hors de la page courante) sélectionnée{{plural}}"
     },
     "Actions": {

@@ -31,8 +31,8 @@
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
   },
   "Errors": {
-    "ErrorMessage": "Une erreur s'est produite",
-    "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
+    "ErrorOccurs": "Une erreur s'est produite",
+    "DatesReversed": "La date de début ne peut pas être postérieure à la date de fin",
     "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
     "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action"
   },
@@ -47,7 +47,7 @@
       "CreateAccount": "Créer un compte"
     },
     "Errors": {
-      "LoginError": "Identifiant ou mot de passe incorrect"
+      "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect"
     },
     "Messages": {
       "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?"
@@ -64,8 +64,8 @@
   },
 
   "Observer": "Observateur",
-  "Observers?": "Observateurs",
-  "Observers": "Observateur(s)",
+  "Observers": "Observateurs",
+  "Observers?": "Observateur(s)",
   "Digitiser": "Créateur",
   "Digitisers": "Créateurs",
   "Digitisers?": "Créateur(s)",
@@ -73,7 +73,7 @@
   "Organisms": "Organismes",
   "Organisms?": "Organisme(s)",
   "Actor": "Acteur",
-  "Actors": "Acteur",
+  "Actors": "Acteurs",
   "Actors?": "Acteur(s)",
   "ActorPerson": "Acteur (personne)",
   "Group": "Groupe",
@@ -167,7 +167,7 @@
     },
     "Messages": {
       "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé",
-      "FileLayerInfoMessage": "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre relevé. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche",
+      "FileLayerInfo": "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre relevé. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche",
       "FileLayerInfoSynthese": "Fichier importé. Clic droit sur un objet pour afficher ses infos"
     }
   },
@@ -297,15 +297,15 @@
         "EnterOrganization": "Renseigner un organisme uniquement",
         "EnterPerson": "Renseigner une personne uniquement",
         "EnterOrganizationPerson": "Renseigner un organisme et un personne",
-        "DeleteThisActor": "Supprimer cet acteur"
+        "DeleteActor": "Supprimer cet acteur"
       }
     }
   },
-  "Filter": {
-    "RefreshFilters": "Rafraîchir les filtres",
-    "AdvancedFilters": "Filtres avancés",
-    "AddFilter": "Ajouter un filtre",
-    "OtherFilters": "Autres filtres"
+  "Filters": {
+    "Refresh": "Rafraîchir les filtres",
+    "Advanced": "Filtres avancés",
+    "Add": "Ajouter un filtre",
+    "Other": "Autres filtres"
   },
   "TaxonSearch": {
     "Messages": {
@@ -333,7 +333,7 @@
       "DeleteSuccess": "Observation supprimée avec succès"
     },
     "Errors": {
-      "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
+      "PeriodCompleteness": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
     },
 
     "Commented": "a commenté le",
@@ -393,8 +393,8 @@
       "Undo": "Rétablir le média",
       "Link": "Afficher le media",
       "Diaporama": "Afficher le media",
-      "NextMedia": "Voir le média suivant",
-      "PreviousMedia": "Voir le média précédent"
+      "Next": "Voir le média suivant",
+      "Previous": "Voir le média précédent"
     },
     "Messages": {
       "loading": "Chargement du média en cours"
@@ -416,17 +416,17 @@
     "FileName": "Nom du fichier",
     "Mapping": {
       "Actions": {
-        "ChooseMapping": "Utiliser un modèle d'import prédéfini",
-        "RenameMapping": "Renommer le modèle d'import",
-        "DeleteMapping": "Supprimer le modèle d'import",
+        "Choose": "Utiliser un modèle d'import prédéfini",
+        "Rename": "Renommer le modèle d'import",
+        "Delete": "Supprimer le modèle d'import",
 
-        "UpdateMapping": "Mettre à jour le modèle existant",
-        "SaveNewMapping": "Enregistrer un nouveau modèle",
-        "NoSaveMapping": "Ne pas enregistrer",
-        "DontSaveMapping": "Continuer sans enregistrer"
+        "Update": "Mettre à jour le modèle existant",
+        "Save": "Enregistrer un nouveau modèle",
+        "NoSave": "Ne pas enregistrer",
+        "DontSave": "Continuer sans enregistrer"
       },
       "Questions": {
-        "DeleteMapping?": "Voulez vous supprimer le modèle ?"
+        "Delete?": "Voulez vous supprimer le modèle ?"
       }
     },
     "FieldMapping": {

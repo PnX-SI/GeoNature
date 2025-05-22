@@ -11,7 +11,7 @@
     <form class="was-validated">
       <fieldset>
         <div *ngIf="cruvedStore?.cruved?.IMPORT.module_objects.MAPPING.cruved.R != '0'">
-          <legend class="px-1">{{ 'Import.Actions.ChooseMapping' | translate }}</legend>
+          <legend class="px-1">{{ 'Import.Mapping.Actions.Choose' | translate }}</legend>
           <div class="form-group">
             <select
               class="form-control form-control-sm"
@@ -43,7 +43,7 @@
               [disabled]="!deleteMappingEnabled()"
               data-qa="import-contentmapping-selection-button-rename"
             >
-              {{ 'Import.Actions.RenameMapping' | translate }}
+              {{ 'Import.Mapping.Actions.Rename' | translate }}
             </button>
             <button
               id="deleteMapping"
@@ -55,7 +55,7 @@
               [disabled]="!deleteMappingEnabled()"
               data-qa="import-contentmapping-selection-button-delete"
             >
-              {{ 'Import.Actions.DeleteMapping' | translate }}
+              {{ 'Import.Mapping.Actions.Delete' | translate }}
             </button>
           </div>
           <!--<div
@@ -374,7 +374,7 @@
       (click)="processNextStep(); modal.close()"
       data-qa="import-contentmapping-saving-modal-cancel"
     >
-      {{ 'Import.Mapping.Actions.NoSaveMapping' | translate }}
+      {{ 'Import.Mapping.Actions.NoSave' | translate }}
     </button>
     <button
       *ngIf="updateAvailable"
@@ -384,7 +384,7 @@
       (click)="updateMapping(); modal.close()"
       data-qa="import-contentmapping-saving-modal-ok"
     >
-      {{ 'Import.Mapping.Actions.UpdateMapping' | translate }}
+      {{ 'Import.Mapping.Actions.Update' | translate }}
     </button>
     <button
       type="button"
@@ -398,7 +398,7 @@
       "
       data-qa="import-contentmapping-saving-modal-new-ok"
     >
-      {{ 'Import.Mapping.Actions.SaveNewMapping' | translate }}
+      {{ 'Import.Mapping.Actions.Save' | translate }}
     </button>
   </div>
 </ng-template>
@@ -442,7 +442,7 @@
   data-qa="import-contentmapping-selection-modal-delete"
 >
   <div class="modal-header">Confirmation</div>
-  <div class="modal-body">{{ 'Import.Mapping.Questions.DeleteMapping?' | translate }}</div>
+  <div class="modal-body">{{ 'Import.Mapping.Questions.Delete?' | translate }}</div>
   <div class="modal-footer">
     <button
       type="button"
@@ -460,7 +460,7 @@
       (click)="modalDelete.close(); deleteMapping()"
       data-qa="import-contentmapping-selection-modal-delete-ok"
     >
-      {{ 'Import.Mapping.Actions.DeleteMapping' | translate }}
+      {{ 'Import.Mapping.Actions.Delete' | translate }}
     </button>
   </div>
 </ng-template>

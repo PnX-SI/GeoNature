@@ -84,8 +84,8 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
     this.npage = 1;
     this.messages = {
       emptyMessage: this.idSynthese
-        ? this.translate.instant('Validation.Messages.noIdFound')
-        : this.translate.instant('Validation.Messages.noData'),
+        ? this.translate.instant('Validation.Messages.NoIdFound')
+        : this.translate.instant('Validation.Messages.NoData'),
     };
   }
 

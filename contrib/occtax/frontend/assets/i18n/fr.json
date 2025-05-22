@@ -5,18 +5,18 @@
       "Observer": "Observateur",
       "Observers": "Observateur(s)",
       "Actions": {
-        "AddReleve": "Ajouter un relevé",
-        "SaveReleve": "Enregistrer le relevé",
-        "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
-        "EditReleve": "Editer le relevé",
-        "DeleteReleve": "Supprimer le relevé",
+        "Add": "Ajouter un relevé",
+        "Save": "Enregistrer le relevé",
+        "AddTaxon": "Ajouter un taxon sur ce relevé",
+        "Edit": "Editer le relevé",
+        "Delete": "Supprimer le relevé",
         "Validate": "Valider le relevé",
         "UnValidate": "Invalider le relevé"
       },
       "Messages": {
         "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
-        "ReleveAdded": "Relevé ajouté",
-        "ReleveModified": "Relevé modifié"
+        "Added": "Relevé ajouté",
+        "Modified": "Relevé modifié"
       },
       "SavedTaxon": "Taxon(s) enregistré(s)",
 
@@ -34,7 +34,6 @@
       "PlaceName": "Nom du lieu",
       "Precision": "Precision",
       "Errors": {
-        "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
         "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
         "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
         "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
@@ -43,10 +42,10 @@
     },
     "Taxon": {
       "Actions": {
-        "SaveTaxon": "Enregistrer le taxon",
-        "AddTaxon": "Ajouter le taxon",
-        "CancelTaxon": "Annuler la saisie du taxon",
-        "ValidateTaxon": "Valider le taxon"
+        "Save": "Enregistrer le taxon",
+        "Add": "Ajouter le taxon",
+        "Cancel": "Annuler la saisie du taxon",
+        "Validate": "Valider le taxon"
       },
       "Messages": {
         "DeleteDone": "Taxon supprimé",

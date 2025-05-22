@@ -12,11 +12,11 @@
           class="btn-action hard-shadow button-success uppercase ml-3"
           [routerLink]="['form/releve']"
         >
-          {{ 'Occtax.Releve.Actions.AddReleve' | translate }}
+          {{ 'Occtax.Releve.Actions.Add' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
         </a>
         <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase">
-          {{ 'Occtax.Releve.Actions.AddReleve' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
+          {{ 'Occtax.Releve.Actions.Add' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
         </a> -->
       </ng-container>
       <button
@@ -194,7 +194,7 @@
                   [routerLink]="['form/releve', row.id_releve_occtax]"
                 >
                   <i
-                    matTooltip="{{ 'Occtax.Releve.Actions.EditReleve' | translate }} {{
+                    matTooltip="{{ 'Occtax.Releve.Actions.Edit' | translate }} {{
                       row.id_releve_occtax
                     }}"
                     class="fa fa-pencil-square-o"
@@ -209,7 +209,7 @@
                 >
                   <i
                     class="fa fa-pencil-square-o disabled"
-                    matTooltip="{{ 'Occtax.Releve.Actions.EditReleve' | translate }} {{
+                    matTooltip="{{ 'Occtax.Releve.Actions.Edit' | translate }} {{
                       row.id_releve_occtax
                     }}"
                     aria-hidden="true"
@@ -266,7 +266,7 @@
                 <i
                   [ngClass]="{ disabled: !row.rights.D }"
                   #iElement
-                  matTooltip="{{ 'Occtax.Releve.Actions.DeleteReleve' | translate }} {{
+                  matTooltip="{{ 'Occtax.Releve.Actions.Delete' | translate }} {{
                     row[mapListService.idName]
                   }}"
                   class="fa fa-trash-o"
@@ -298,10 +298,10 @@
                     {{ displayDateTooltip(row) }}
                   </span>
                   <span *ngSwitchCase="'date_min'">
-                    {{ row.date_min | date: 'dd-MM-yyyy' }}
+                    {{ row.date_min | date : 'dd-MM-yyyy' }}
                   </span>
                   <span *ngSwitchCase="'date_max'">
-                    {{ row.date_max | date: 'dd-MM-yyyy' }}
+                    {{ row.date_max | date : 'dd-MM-yyyy' }}
                   </span>
                   <span
                     *ngSwitchCase="'nb_taxons'"
@@ -401,7 +401,7 @@
               class="modal-title"
               id="exampleModalLabel"
             >
-              {{ 'Occtax.Releve.Actions.DeleteReleve' | translate }}
+              {{ 'Occtax.Releve.Actions.Delete' | translate }}
               {{ mapListService.selectedRow[0][mapListService.idName] }} ?
             </h5>
           </div>
