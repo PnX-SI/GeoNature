@@ -296,7 +296,7 @@
           class="error"
           style="color: rgb(18, 32, 155)"
         >
-          {{ 'Synthese.PeriodError' | translate }}
+          {{ 'Synthese.Errors.PeriodCompleteness' | translate }}
         </small>
       </div>
     </div>
@@ -375,8 +375,8 @@
   </fieldset>
 
   <fieldset>
-    <legend>{{ 'Filter.AdvancedFilters' | translate }}</legend>
-    <small>{{ 'Filter.AddFilter' | translate }}</small>
+    <legend>{{ 'Filter.Advanced' | translate }}</legend>
+    <small>{{ 'Filter.Add' | translate }}</small>
     <pnx-dynamic-form-generator
       *ngIf="formService.processedDefaultFilters"
       [myFormGroup]="formService.searchForm"
@@ -392,7 +392,7 @@
     mat-raised-button
     color="warn"
     (click)="refreshFilters()"
-    matTooltip="{{ 'Filter.RefreshFilters' | translate }}"
+    matTooltip="{{ 'Filters.Refresh' | translate }}"
     data-qa="synthese-refresh-btn"
   >
     <i

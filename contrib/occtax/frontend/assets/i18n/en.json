@@ -3,18 +3,18 @@
     "Releve": {
       "Releve": "Survey",
       "Actions": {
-        "AddReleve": "Add a survey",
-        "SaveReleve": "Save the survey",
-        "AddTaxonOnReleve": "Add a taxon to this survey",
-        "EditReleve": "Edit the survey",
-        "DeleteReleve": "Delete the survey",
+        "Add": "Add a survey",
+        "Save": "Save the survey",
+        "AddTaxon": "Add a taxon to this survey",
+        "Edit": "Edit the survey",
+        "Delete": "Delete the survey",
         "Validate": "Validate the survey",
         "UnValidate": "Invalidate the survey"
       },
       "Messages": {
         "DeleteSuccessfully": "The survey has been successfully deleted",
-        "ReleveAdded": "Survey added",
-        "ReleveModified": "Survey modified"
+        "Added": "Survey added",
+        "Modified": "Survey modified"
       },
       "SavedTaxon": "Saved taxon(s)",
 
@@ -32,7 +32,6 @@
       "PlaceName": "Place name",
       "Precision": "Precision",
       "Errors": {
-        "DateMaxError": "The start date cannot be later than the end date",
         "AltitudeError": "The maximum altitude cannot be less than the minimum altitude",
         "DepthError": "The maximum depth cannot be less than the minimum depth",
         "HourMaxError": "The start time cannot be later than the end time",
@@ -41,10 +40,10 @@
     },
     "Taxon": {
       "Actions": {
-        "SaveTaxon": "Save the taxon",
-        "AddTaxon": "Add the taxon",
-        "CancelTaxon": "Cancel the taxon entry",
-        "ValidateTaxon": "Validate the taxon"
+        "Save": "Save the taxon",
+        "Add": "Add the taxon",
+        "Cancel": "Cancel the taxon entry",
+        "Validate": "Validate the taxon"
       },
       "Messages": {
         "DeleteDone": "Taxon deleted",

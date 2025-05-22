@@ -3,12 +3,12 @@
     "Releve": {
       "Releve": "声明",
       "Actions": {
-        "SaveReleve": "保存声明"
+        "Save": "保存声明"
       }
     },
     "Taxon": {
       "Actions": {
-        "SaveTaxon": "保存分类"
+        "Save": "保存分类"
       },
       "DeterminationMethod": "测定方法",
       "Determiner": "确定",

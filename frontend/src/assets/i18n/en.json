@@ -31,8 +31,8 @@
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
   },
   "Errors": {
-    "ErrorMessage": "An error occurred",
-    "DateMaxError": "The start date cannot be later than the end date",
+    "ErrorOccurs": "An error occurred",
+    "DatesReversed": "The start date cannot be later than the end date",
     "AltitudeError": "The maximum altitude cannot be less than the minimum altitude",
     "NotAllowed": "You do not have permission to perform this action"
   },
@@ -47,7 +47,7 @@
       "CreateAccount": "Create an account"
     },
     "Errors": {
-      "LoginError": "Incorrect username or password"
+      "WrongLoginOrPassword": "Incorrect username or password"
     },
     "Messages": {
       "ForgotPasswordOrLogin": "Forgot username or password?"
@@ -167,7 +167,7 @@
     },
     "Messages": {
       "ZoomWarning": "Inappropriate scale, please zoom in further to point the survey",
-      "FileLayerInfoMessage": "Click on the layer (point/line/polygon) to make it the point of your survey. The selected layer appears in red on the map. Right-click to display the layer info",
+      "FileLayerInfo": "Click on the layer (point/line/polygon) to make it the point of your survey. The selected layer appears in red on the map. Right-click to display the layer info",
       "FileLayerInfoSynthese": "File imported. Right-click on an object to display its info"
     }
   },
@@ -297,16 +297,16 @@
         "EnterOrganization": "Enter an organization only",
         "EnterPerson": "Enter a person only",
         "EnterOrganizationPerson": "Enter an organization and a person",
-        "DeleteThisActor": "Delete this stakeholder"
+        "DeleteActor": "Delete this stakeholder"
       }
     }
   },
-  "Filter": {
+  "Filters": {
     "Actions": {
-      "RefreshFilters": "Refresh filters",
-      "AdvancedFilters": "Advanced filters",
-      "AddFilter": "Add a filter",
-      "OtherFilters": "Other filters"
+      "Refresh": "Refresh filters",
+      "Advanced": "Advanced filters",
+      "Add": "Add a filter",
+      "Other": "Other filters"
     }
   },
   "TaxonSearch": {
@@ -335,7 +335,7 @@
       "DeleteSuccess": "Observation deleted successfully"
     },
     "Errors": {
-      "PeriodError": "The 'start period' and 'end period' fields must be filled if you want to search by period"
+      "PeriodCompleteness": "The 'start period' and 'end period' fields must be filled if you want to search by period"
     },
 
     "Commented": "commented on",
@@ -395,8 +395,8 @@
       "Undo": "Restore the media",
       "Link": "Display the media",
       "Diaporama": "Display the media",
-      "NextMedia": "View the next media",
-      "PreviousMedia": "View the previous media"
+      "Next": "View the next media",
+      "Previous": "View the previous media"
     },
     "Messages": {
       "loading": "Loading media"
@@ -418,17 +418,17 @@
     "FileName": "File name",
     "Mapping": {
       "Actions": {
-        "ChooseMapping": "Use a predefined import model",
-        "RenameMapping": "Rename the import model",
-        "DeleteMapping": "Delete the import model",
+        "Choose": "Use a predefined import model",
+        "Rename": "Rename the import model",
+        "Delete": "Delete the import model",
 
-        "UpdateMapping": "Update the existing model",
-        "SaveNewMapping": "Save a new model",
-        "NoSaveMapping": "Do not save",
-        "DontSaveMapping": "Continue without saving"
+        "Update": "Update the existing model",
+        "Save": "Save a new model",
+        "NoSave": "Do not save",
+        "DontSave": "Continue without saving"
       },
       "Questions": {
-        "DeleteMapping?": "Do you want to delete the model?"
+        "Delete?": "Do you want to delete the model?"
       }
     },
     "FieldMapping": {

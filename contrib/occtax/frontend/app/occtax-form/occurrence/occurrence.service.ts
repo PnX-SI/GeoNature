@@ -312,7 +312,7 @@ export class OcctaxFormOccurrenceService {
         this.occtaxTaxaListService.removeOccurrenceInProgress(TEMP_ID_OCCURRENCE);
       },
       (error) => {
-        this.commonService.translateToaster('error', 'ErrorMessage');
+        this.commonService.translateToaster('error', 'Errors.ErrorOccurs');
         this.occtaxTaxaListService.errorOccurrenceInProgress(TEMP_ID_OCCURRENCE);
       }
     );
@@ -328,7 +328,7 @@ export class OcctaxFormOccurrenceService {
         this.commonService.translateToaster('info', 'Occtax.Taxon.Messages.DeleteDone');
       },
       (error) => {
-        this.commonService.translateToaster('error', 'ErrorMessage');
+        this.commonService.translateToaster('error', 'Errors.ErrorOccurs');
       }
     );
   }

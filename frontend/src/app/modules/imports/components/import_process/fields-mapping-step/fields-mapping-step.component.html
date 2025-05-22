@@ -187,7 +187,7 @@
         (click)="modal.close(); processNextStep()"
         data-qa="import-fieldmapping-saving-modal-cancel"
       >
-        {{ 'Import.Mapping.Actions.DontSaveMapping' | translate }}
+        {{ 'Import.Mapping.Actions.DontSave' | translate }}
       </button>
       <button
         *ngIf="this.updateAvailable"
@@ -197,7 +197,7 @@
         (click)="modal.close(); updateMapping(true)"
         data-qa="import-fieldmapping-saving-modal-ok"
       >
-        {{ 'Import.Mapping.Actions.UpdateMapping' | translate }}
+        {{ 'Import.Mapping.Actions.Update' | translate }}
       </button>
       <button
         type="button"
@@ -212,7 +212,7 @@
         "
         data-qa="import-fieldmapping-saving-modal-new-ok"
       >
-        {{ 'Import.Mapping.Actions.SaveNewMapping' | translate }}
+        {{ 'Import.Mapping.Actions.Save' | translate }}
       </button>
     </div>
   </ng-template>
