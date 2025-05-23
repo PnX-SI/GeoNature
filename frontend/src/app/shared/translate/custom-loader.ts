@@ -23,15 +23,18 @@ export class CustomTranslateLoader implements iCustomTranslateLoader {
   ) {}
 
   getTranslation(lang: string = this.config.DEFAULT_LANGUAGE): Observable<any> {
-    const i18nFiles = [this.http.get(`/assets/i18n/${lang}.json`)];
+    const url_application = this.config.URL_APPLICATION;
+    const i18nFiles = [this.http.get(`${url_application}/assets/i18n/${lang}.json`)];
     if (this.options.moduleName !== null) {
       i18nFiles.push(
         this.http
-          .get(`/modules/${this.options.moduleName}/assets/i18n/${lang}.json`)
+          .get(`${url_application}/modules/${this.options.moduleName}/assets/i18n/${lang}.json`)
           .catch((error) => of({}))
       );
     }
-    i18nFiles.push(this.http.get(`/assets/i18n/override/${lang}.json`).catch((error) => of({})));
+    i18nFiles.push(
+      this.http.get(`${url_application}/assets/i18n/override/${lang}.json`).catch((error) => of({}))
+    );
 
     return forkJoin(i18nFiles).pipe(
       map((data) => {
