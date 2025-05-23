@@ -138,11 +138,13 @@ class MetadataConfig(Schema):
     CLOSED_AF_TITLE = fields.String(load_default="")
     AF_PDF_TITLE = fields.String(load_default="Cadre d'acquisition: ")
     DS_PDF_TITLE = fields.String(load_default="")
+    # TODO SUPPRIMER les variables mails pour les mettre dans mtd_sync
     MAIL_SUBJECT_AF_CLOSED_BASE = fields.String(load_default="")
     MAIL_CONTENT_AF_CLOSED_ADDITION = fields.String(load_default="")
     MAIL_CONTENT_AF_CLOSED_PDF = fields.String(load_default="")
     MAIL_CONTENT_AF_CLOSED_URL = fields.String(load_default="")
     MAIL_CONTENT_AF_CLOSED_GREETINGS = fields.String(load_default="")
+    EXTENDED_AF_PUBLISH_ROUTE_NAME = fields.String(load_default="")
     CLOSED_MODAL_LABEL = fields.String(load_default="Fermer un cadre d'acquisition")
     CLOSED_MODAL_CONTENT = fields.String(
         load_default="""L'action de fermeture est irréversible. Il ne sera

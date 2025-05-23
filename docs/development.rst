@@ -1655,9 +1655,12 @@ Surcharge de fonctionnalités
 *************************
 Il est possible de surcharger les fonctionnalités de certains éléments de GeoNature.
 
-En déclarant une route nommée ``extended_af_publish``, qui prends l'identifiant d'un cadre d'acquisition en paramètre,
+En déclarant une route, qui prends l'identifiant d'un cadre d'acquisition en paramètre,
 dans votre module vous pouvez ajouter des actions qui seront réalisées
-aprés la publication de votre cadre d'acquisition.
+aprés la publication de votre cadre d'acquisition. Il faudra ensuite dans votre
+configuration GeoNature ajouter le nom complet de votre route dans une
+variable EXTENDED_AF_PUBLISH_ROUTE_NAME (attention, le nom complet inclus le nom de
+votre module)sous la section METADATA.
 
 Documentation
 -------------

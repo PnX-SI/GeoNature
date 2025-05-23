@@ -916,7 +916,9 @@ def call_extended_af_publish(af_id):
     """
     If a route with the name extended_publish, we call it.
     """
-    extended_route = current_app.view_functions.get("extended_af_publish")
+    extended_route = current_app.view_functions.get(
+        current_app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"]
+    )
     if extended_route:
         try:
             extended_route(af_id)

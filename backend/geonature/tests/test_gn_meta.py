@@ -4,7 +4,7 @@ from io import StringIO
 from unittest.mock import MagicMock
 
 import pytest
-from flask import url_for, Blueprint, Flask
+from flask import url_for, Flask
 from kombu.asynchronous.http import Response
 
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
@@ -1173,9 +1173,14 @@ class TestGNMeta:
     def test_publish_acquisition_frameworks_extended(
         self, app, users, acquisition_frameworks, synthese_data
     ):
+        """
+        We test if the mechanism of extension of acquisition framework publication works
+        """
+        # We use mock as extended function so we can keep track wether it's called
         mocked_extended_publish = MagicMock()
-        # We add a mock route 'extended_af_publish'
-        app.view_functions["extended_af_publish"] = lambda _=None: mocked_extended_publish()
+        route_name = "test.extended_af_publish"
+        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
+        app.view_functions[route_name] = mocked_extended_publish
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         response = self.client.get(
@@ -1191,10 +1196,16 @@ class TestGNMeta:
     def test_publish_acquisition_frameworks_extended_with_exception(
         self, app, users, acquisition_frameworks, synthese_data
     ):
+        """
+        We test if when an error occur in the extended af publish, the af stay opened.
+        """
+
         def mocked_publish(_=None):
             raise GeoNatureError()
 
-        app.view_functions["extended_af_publish"] = mocked_publish
+        route_name = "test.extended_af_publish"
+        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
+        app.view_functions[route_name] = mocked_publish
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         response = self.client.get(
