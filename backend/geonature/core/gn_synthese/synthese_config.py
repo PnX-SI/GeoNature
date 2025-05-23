@@ -98,5 +98,5 @@ DEFAULT_LIST_COLUMN = [
     {"prop": "nom_vern_or_lb_nom", "name": "Taxon", "max_width": 200},
     {"prop": "date_min", "name": "Date obs", "max_width": 100},
     {"prop": "dataset_name", "name": "JDD", "max_width": 200},
-    {"prop": "observers", "name": "observateur", "max_width": 200},
+    {"prop": "observers", "name": "Observateur", "max_width": 200},
 ]
