@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-alembic==1.15.2
+alembic==1.16.1
     # via
     #   flask-migrate
     #   pypn-ref-geo
@@ -18,10 +18,15 @@ attrs==25.3.0
     #   fiona
     #   jsonschema
     #   referencing
-authlib==1.5.2
+authlib==1.6.0
     # via pypnusershub
 babel==2.17.0
     # via flask-babel
+backports-entry-points-selectable==1.3.0
+    # via
+    #   pypn-ref-geo
+    #   pypnnomenclature
+    #   taxhub
 bcrypt==4.3.0
     # via pypnusershub
 billiard==4.2.1
@@ -105,7 +110,9 @@ flask-admin==1.6.1
     #   pypnnomenclature
     #   taxhub
 flask-babel==4.0.0
-    # via -r requirements-common.in
+    # via
+    #   -r requirements-common.in
+    #   taxhub
 flask-cors==6.0.0
     # via
     #   -r requirements-common.in
@@ -226,7 +233,7 @@ pandas==2.2.3
     # via
     #   -r requirements-common.in
     #   bokeh
-pillow==9.5.0
+pillow==11.2.1
     # via
     #   -r requirements-common.in
     #   bokeh
@@ -250,13 +257,13 @@ pyjwt==2.9.0
     # via redis
 pyphen==0.17.2
     # via weasyprint
-pypn-habref-api==0.4.1
+pypn-habref-api==0.4.2
     # via -r requirements-dependencies.in
-pypn-ref-geo==1.5.4
+pypn-ref-geo==1.5.5
     # via
     #   -r requirements-dependencies.in
     #   taxhub
-pypnnomenclature==1.6.4
+pypnnomenclature==1.6.5
     # via -r requirements-dependencies.in
 pypnusershub==3.0.3
     # via
@@ -292,7 +299,7 @@ requests==2.32.3
     # via
     #   pypn-habref-api
     #   pypnusershub
-rpds-py==0.25.0
+rpds-py==0.25.1
     # via
     #   jsonschema
     #   referencing
@@ -317,10 +324,8 @@ sqlalchemy==1.4.54
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==2.1.2
-    # via
-    #   -r requirements-dependencies.in
-    #   pypnnomenclature
+taxhub==2.2.1
+    # via -r requirements-dependencies.in
 tinycss2==1.4.0
     # via
     #   cssselect2
@@ -331,7 +336,9 @@ toml==0.10.2
     # via
     #   -r requirements-common.in
     #   taxhub
-tornado==6.5
+tomli==2.2.1
+    # via alembic
+tornado==6.5.1
     # via bokeh
 typing-extensions==4.13.2
     # via
@@ -347,7 +354,7 @@ urllib3==2.4.0
     # via
     #   requests
     #   taxhub
-utils-flask-sqlalchemy==0.4.1
+utils-flask-sqlalchemy==0.4.2
     # via
     #   -r requirements-dependencies.in
     #   pypn-habref-api
@@ -356,7 +363,7 @@ utils-flask-sqlalchemy==0.4.1
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-utils-flask-sqlalchemy-geo==0.3.2
+utils-flask-sqlalchemy-geo==0.3.3
     # via
     #   -r requirements-dependencies.in
     #   pypn-ref-geo
