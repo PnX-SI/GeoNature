@@ -1354,8 +1354,8 @@ Pour changer de la langue par défaut, indiquer le code de cette dernière dans 
 utilisateurs de pouvoir changer de langue, passer le paramètre ``MULTILINGUAL`` à ``true``.
 
 Vous pouvez surcharger les fichiers de traductions au format JSON présents dans le dossier
-``/frontend/src/assets/i18n/`` (pour les textes globaux de GeoNature) et les dossiers ``/frontend/assets/i18n/`` 
-de chaque module (pour les textes spécifiques de chaque module). 
+``/frontend/src/assets/i18n/`` (pour les textes globaux de GeoNature) et les dossiers ``/frontend/assets/i18n/``
+de chaque module (pour les textes spécifiques de chaque module).
 
 Deux langues sont actuellement gérées :
 
@@ -2169,10 +2169,24 @@ Configuration
 
 L'ensemble des paramètres de configuration du module se trouve dans le fichier général de configuration de GeoNature ``config/geonature_config.toml`` puisqu'il s'agit d'un module du coeur.
 
-**1.** Modifier les filtres géographiques disponibles par défaut dans l'interface de recherche.
 
-Editer la variable ``AREA_FILTERS`` en y ajoutant le label et le code du type d'entité géographique que vous souhaitez rajouter. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1 (``code_type = "ZNIEFF1"``). Attention, dans ce cas les entités géographiques correspondantes au type `ZNIEFF1`, doivent également être présentes dans la table ``ref_geo.l_areas``.
-Attention : Si des données sont déjà présentes dans la synthèse et que l'on ajoute de nouvelles entités géographiques à ``ref_geo.l_areas``, il faut également recalculer les valeurs de la table ``gn_synthese.cor_area_synthese`` qui assure la correspondance entre les données de la synthèse et les entités géographiques.
+Configurer les filtres géographiques
+````````````````````````````````````
+Il est possible de modifier les filtres géographiques disponibles
+par défaut dans l'interface de recherche.
+
+Éditer la variable ``AREA_FILTERS`` en y ajoutant le label
+et le code du type d'entité géographique que vous souhaitez rajouter.
+Voir table ``ref_geo.bib_areas_types``.
+Dans l'exemple on ajoute le type ZNIEFF1 (``code_type = "ZNIEFF1"``).
+**Attention**, dans ce cas les entités géographiques correspondantes au type
+`ZNIEFF1`, doivent également être présentes dans la table ``ref_geo.l_areas``.
+
+**Attention** : Si des données sont déjà présentes dans la synthèse et que l'on
+ajoute de nouvelles entités géographiques à ``ref_geo.l_areas``, il faut
+également recalculer les valeurs de la table
+``gn_synthese.cor_area_synthese`` qui assure la correspondance entre les
+données de la synthèse et les entités géographiques.
 
 .. code:: toml
 
@@ -2184,9 +2198,13 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l'on
             { label = "ZNIEFF1", type_code = "ZNIEFF1" },
         ]
 
-Il est aussi possible de passer plusieurs ``type_code`` regroupés dans un même filtre géographique (exemple : ``{ label = "Zonages réglementaires", type_code = ["ZC", "ZPS", "SIC"] }``).
+Il est aussi possible de passer plusieurs ``type_code`` regroupés dans un
+même filtre géographique (exemple :
+``{ label = "Zonages réglementaires", type_code = ["ZC", "ZPS", "SIC"] }``).
 
-**2.** Configurer les champs des exports
+
+Configurer les champs des exports
+`````````````````````````````````
 
 Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue SQL servant l'export.
 
@@ -2314,13 +2332,22 @@ Deux champs sont cependant obligatoires dans cette vue :
 
 Cet export n'est pas basé sur une vue.
 
-**3.** Configurer les seuils du nombre de données pour la recherche et les exports
+
+Configurer les seuils de données
+````````````````````````````````
 
 Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultats affichés sur la carte et le nombre d'observations dans les exports.
 
 Ces seuils sont modifiables respectivement par les variables ``NB_MAX_OBS_MAP`` et ``NB_MAX_OBS_EXPORT`` :
 
-Le mode cluster activé par défaut peut être désactivé via le paramètre ``ENABLE_LEAFLET_CLUSTER``. Dans ce cas, il est conseillé de repasser le paramètre `NB_MAX_OBS_MAP` à 10000.
+Sur la carte, les observations sont groupées par défaut sous forme de clusters
+pour des raisons de performance. Ce sont des cercles avec une bordure estompée,
+colorés en fonction du nombre d'observations qu'ils contiennent : vert
+(moins de 10), jaune (de 11 à 100) et orange (plus de 100).
+Ce mode "cluster" peut être désactivé via le paramètre
+``ENABLE_LEAFLET_CLUSTER``.
+Dans ce cas, il est conseillé de repasser le paramètre `NB_MAX_OBS_MAP`
+à 10000.
 
 .. code:: toml
 
@@ -2330,7 +2357,322 @@ Le mode cluster activé par défaut peut être désactivé via le paramètre ``E
         # Nombre max d'observation dans les exports
         NB_MAX_OBS_EXPORT = 40000
 
-**4.** Désactiver des filtres génériques
+
+Configurer l'affichage de la densité d'observation sur la carte
+```````````````````````````````````````````````````````````````
+
+Par défaut, la carte du module Synthese affiche les observations sous forme
+de cercles (données ponctuelles) ou de polygones (données surfaciques) au
+contour bleu.
+Pour les données représentées sous forme de cercle, le nombre d'observations
+est indiqué en son centre.
+
+Il est possible d'activer, éventuellement par défaut
+(`AREA_AGGREGATION_BY_DEFAULT`), un affichage de la densité d'observations
+(`AREA_AGGREGATION_ENABLED`) aggrégée en fonction d'un type de zone
+géographique (`AREA_AGGREGATION_TYPE`). Les classes de densité peuvent être
+personnaliées à l'aide du paramètre `AREA_AGGREGATION_LEGEND_CLASSES`.
+Par défaut, cette fonctionnalité est désactivée. Quand elle est active, un
+bouton à bascule nommé "Mailles" apparait sur la carte sous le bouton de
+sélection des fonds de cartes.
+Soit les paramètres suivants :
+
+.. code:: toml
+
+    [SYNTHESE]
+        # Si `true`, rend possible l'affichage de la densité d'observations sur la carte
+        AREA_AGGREGATION_ENABLED = true
+        # Groupement par mailles SINP de 10x10km par défaut. Utilisé un code de
+        # `ref_geo.bib_areas_types.type_code` pour modifier le type de zone
+        # géographique d'aggrégation.
+        AREA_AGGREGATION_TYPE = "M10"
+        # Si `true`, l'affichage de la densité d'observation sera activé par défaut.
+        AREA_AGGREGATION_BY_DEFAULT = false
+        # Tableau d'objets (Voir fichier de configuration d’exemple) :
+        # `min` le nombre d'observations minimum que doit contenir la zone géographique
+        # `color` la couleur rendu sur la carte
+        AREA_AGGREGATION_LEGEND_CLASSES = [
+          { min = 100, color = "#800026" },
+          #...
+        ]
+
+
+Configurer d'autres critères d'affichage sur la carte
+`````````````````````````````````````````````````````
+
+La carte de la SYNTHESE peut permettre à l'utilisateur de sélectionner un
+critère (précision, validation, période, ...) d'affichage des observations.
+
+Lorsque la configuration contient le paramètre `MAP_CRITERIA_LIST` dans la
+section `SYNTHESE`, un bouton de sélection des modes d'affichage s'affiche
+sous le bouton de sélection des fonds de carte.
+Ces deux boutons fonctionnent sur le même principe. Au survol, un panneau
+s'ouvre et permet de sélectionner, à l'aide de boutons radio, le mode
+d'affichage.
+
+Une première liste permet de cocher "*Affichage par défaut*"
+(activé par défaut) ou "*Densité d'observations*"
+(si `AREA_AGGREGATION_ENABLED = true`).
+
+Une seconde liste, séparée de la première par une ligne, permet de choisir
+un critère configuré par l'administrateur à l'aide du paramètre
+`MAP_CRITERIA_LIST`.
+
+La sélection d'un critère déclenche :
+  * l'affichage d'une légende sur la carte ;
+  * l'affichage des observations sur la carte avec un marqueur dont le
+    contour correspond à la couleur du critère ;
+  * la coloration du fond du bouton contenant l'icône 🛈 de la liste des
+    observations. Au survol, une infobulle affichera l'intitulé et la
+    description de la valeur du critère correspondant à l'observation ;
+  * l'apparition d'un badge au niveau de l'en-tête de la fiche d'une
+    observation.
+    La couleur et l'icône associées au critère sont utilisées comme couleur
+    de fond et illustration du badge. Au survol, une infobulle affiche
+    l'intitulé et la description de la valeur critère correspondant à
+    l'observation.
+
+Dans le cas des **géométries regroupant des observations aux valeurs
+contradictoires** vis-à-vis du critère sélectionné. Elles sont affichées
+à l'aide d'une couleur neutre (**grise** ; configurable pour chaque critère).
+Un clic sur la géométrie affiche la liste des observations, surlignées en
+vert en tête de liste, où la couleur de l'icône 🛈 permet de distinguer les
+valeurs des différentes observations.
+
+Dans le cas des **géométries possédant des valeurs inconnues** (ou non prise
+en compte dans votre configuration), elles sont affichées à l'aide d'une
+couleur distinctive (**rouge** ; configurable pour chaque critère).
+
+Le paramètre `MAP_CRITERIA_LIST` est un dictionnaire où chacun de ses
+entrées correspond également à un dictionnaire décrivant un critère. Les clés
+sont des codes alphanumériques qui permettent d'identifier ce critère d'un
+point de vue technique. Chaque code doit être unique dans la liste et ne
+doit pas contenir de caractères spéciaux.
+
+À chaque critère correspond un dictionnaire possédant les champs suivants
+(**en gras** les champs obligatoires) :
+
+**label** (*chaîne*)
+    Intitulé par défaut du critère à utiliser. Sert à l'affichage dans la
+    liste des modes d'affichage.
+**type** (*chaîne*)
+    Le type du critère parmi : ``nomenclatures``, ``classes``, ``dates``.
+
+    * Le critère de type ``nomenclatures`` est à utiliser avec tous les
+      champs (``field``) de **type nomenclature** ou à un champ
+      texte pour lequel on veut réaliser une coloration en fonction d'une
+      valeur précise.
+    * Le type ``classes`` est à utiliser avec les champs de **type numérique**
+      pour lesquels nous voulons établir des classes de valeurs.
+    * Le type ``dates`` est à utiliser avec les champs de **type date** pour
+      lesquels nous voulons établir des classes de valeurs.
+**field** (*chaîne*)
+    Le nom du champ présent dans la vue ``gn_synthese.v_synthese_for_web_app``
+    à utiliser pour le critère.
+*mnemonic* (*chaine*):
+    Pour un critère de type ``nomenclatures``, permet d'indiquer la mnémonique
+    de la nomenclature
+    (champ ``ref_nomenclatures.bib_nomenclatures_types.mnemonique``)
+    afin de pouvoir utiliser le ``cd_nomenclature`` des valeurs de la
+    nomenclature à la place des ``id_nomenclature`` pour la configuration
+    des valeurs du critère (voir ci-dessous).
+*activate* (*booléen*, défaut : ``true``)
+    Indique si le critère doit être afficher (``true``) ou non (``false``)
+    dans la liste des modes d'affichage. Permet une désactivation temporaire
+    sans avoir à commenter ou supprimer les paramètres de configuration.
+*default* (*booléen*, défaut : ``false``)
+    Indique si ce critère doit être utilisé comme mode d'affichage par défaut
+    (``true``) ou non (``false``). Le premier critère avec la valeur ``true``
+    trouvé dans la liste sera pris en compte. Si aucun n'est présent, la
+    valeur par défaut est ``false``.
+**values** (*liste de dictionnaire*)
+    Liste de dictionnaires correspondant aux valeurs possibles du critère.
+    Chaque dictionnaire d'une valeur peut contenir les champs suivants :
+
+    **value** (*liste de chaines* | *chaîne*  | *nombre*)
+          * Dans le cas du type ``nomenclature``, contiendra un code ou une
+            liste de codes de la nomenclature (champ ``cd_nomenclature``) si
+            l'attribut ``mnemonic`` du critère a été renseigné ; sinon, il est
+            possible d'indiquer les valeurs du champ ``id_nomenclature``.
+          * Dans le cas du type ``classes`` ou ``dates``, il contiendra la
+            valeur minimum de comparaison à utiliser vis-à-vis du contenu de
+            l'attribut ``field``.
+            Un objet sur la carte prend la couleur correspondante si sa valeur
+            dans le champ ``field`` est supérieure ou égale à la valeur
+            indiquée.
+            L'ordre des entrées de la liste ``values`` n'est pas important
+            car pour les *classes* et les *dates*, les valeurs de l'attribut
+            ``value`` sont triées par ordre décroissant avant d'être comparées.
+    *label* (*chaîne*)
+        Intitulé court par défaut de la valeur. Servira à l'affichage dans
+        la légende, au survol de l'icône d'accès ou du badge de la fiche
+        d'une observation. Si cet attribut n'est pas renseigné, il prend
+        la valeur de l'attribut ``value``.
+    *description* (*chaîne*)
+        Intitulé long de la valeur. Affiché principalement via des info-bulles
+        au survol d'une valeur de la légende, de l'icône d'accès ou du badge
+        de la fiche d'une observation.
+    *color* (*chaîne*)
+        Code hexadécimal de la couleur de la valeur. La valeur est utilisée
+        pour le style *fillcolor* du marqueur sur la carte, au niveau de la
+        légende et en courleur de fond du badge de la fiche d'une observation.
+        Si non renseigné, une couleur est automatiquement attribuée. Dans
+        ce dernier cas, il n'est pas garantie que la couleur soit
+        systématiquement la même entre chaque rechargement de la configuration.
+        C'est surtout utile pour les tests.
+        Pour le choix des couleurs utilisable en cartographie, il est
+        possible de consulter des sites tels que
+        `Color Brewer  <https://colorbrewer2.org/>`_ ou `ColorHexa
+        <https://www.colorhexa.com/>`_.
+    *icon*  (*dictionnaire*)
+        Dictionnaire pouvant contenir les attributs suivants :
+
+        **name** (*chaîne*)
+            Indique une icône à l'aide de son nom. Possibilité d'utiliser
+            des icônes : `Fontawsome <https://fontawesome.com/v4/icons/>`_,
+            `Angular Material <https://fonts.google.com/icons?hl=fr>`_.
+            L'icône est affichée au niveau de la légende sur la carte et dans
+            le badge affiché à gauche du titre de la fiche d'une observation.
+        **font** (*chaîne*)
+            Indique le nom de la police contenant l'icône. Par exemple, ``fa``
+            pour Fontawesome ou ``material-icons-outlined`` pour les polices
+            Material.
+            Pour l'instant, l'affichage a été testé avec les icônes
+            "FontAwesome v4.7" et les icônes "Angular Material".
+        *color* (*chaîne*)
+            Code hexadécimal, valeur RGBA, nom web... de la couleur de l'icône.
+            La valeur de couleur sera utilisée avec `la propriété CSS <https://developer.mozilla.org/fr/docs/Web/CSS/color>`_ ``color``.
+            Ce paramètre peut donc prendre n'importe quelle valeur autorisée
+            par cette propriété. Si non précisé, une couleur par défaut
+            blanche (``white``) sera utilisée.
+
+Exemples:
+
+    .. code:: toml
+
+        # Critère de type `classes` sur la précision de la localisation (code `precision`)
+        [SYNTHESE.MAP_CRITERIA_LIST.precision]
+            label = "Précision localisation"
+            type = "classes"
+            field = "precision"
+            default = false
+            [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+                value = 250
+                label = "Supérieur à 250m"
+                description = "Observations dont la précision est supérieure ou égale à 250m."
+                color = "#ff8faa"
+                icon = { name="radio_button_unchecked", color="white", font="material-symbols-outlined" }
+            [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+                value = 25
+                label = "Entre 25 et 250m"
+                description = "Observations dont la précision est supérieure ou égale à 25m et inférieure à 250m."
+                color = "#f95e9c"
+                icon = { name="radio_button_checked", color="white", font="material-symbols-outlined" }
+            [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+                value = 0
+                label = "Inférieur à 25m"
+                description = "Observations dont la précision est supérieure ou égale à 0m et inférieure à 25m."
+                color = "#b000bb"
+                icon = { name="gps_fixed", color="white", font="material-symbols-outlined" }
+            [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+                # Personnalisation de l'entrée "Valeurs multiples"
+                value = "*"
+                description = "Observations sur une même géométrie avec des précisions différentes."
+                color = "#e6dc36"
+            [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
+                # Personnalisation de l'entrée "Autres valeurs"
+                value = "?"
+                description = "Observations dont la précision contient une valeur non prise en charge."
+                color = "#14ec00"
+
+        # Critère de type `dates` sur la période de l'observation (code `period`)
+        [SYNTHESE.MAP_CRITERIA_LIST.period]
+            label = "Périodes"
+            type = "dates"
+            field = "date_max"
+            default = false
+            [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
+                value = "1999-12-31T00:00:00"
+                label = "Après 2000"
+                description = "Observations dont la date de fin est égale ou supérieure au 1er janvier 2000."
+                color = "#225ea8"
+                icon = { name="fa-angle-double-right", color="white", font="fa" }
+            [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
+                value = "0000-01-01T00:00:00"
+                label = "Avant 2000"
+                description = "Observations dont la date de fin est avant le 1er janvier 2000."
+                color = "#2ca25f"
+                icon = { name="fa-angle-double-left", color="white", font="fa" }
+            [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
+                # Personnalisation de l'entrée "Valeurs multiples"
+                value = "*"
+                description = "Observations sur une même géométrie avec des périodes différentes."
+                color = "#e6dc36"
+            [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
+                # Personnalisation de l'entrée "Autres valeurs"
+                value = "?"
+                description = "Observations dont la date de fin contient une valeur non prise en charge."
+                color = "#14ec00"
+
+        # Critère de type `nomenclatures` sur le statut de validation (code `valid_status`)
+        [SYNTHESE.MAP_CRITERIA_LIST.valid_status]
+            label = "Status de validation"
+            type = "nomenclatures"
+            field = "id_nomenclature_valid_status"
+            mnemonic = "STATUT_VALID"
+            # Disable temporary this criterion with `activate` field:
+            activate = false
+            default = false
+            [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+                value = ["1", "2"]
+                label = "Probable"
+                description = "Certain à probable"
+                color = "#44ce1b"
+                icon = { name = "fa-check-square", font = "fa", color = "white" }
+            [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+                value = "3"
+                label = "Douteux"
+                color = "#f2a134"
+                icon = { name = "fa-exclamation-triangle", font = "fa" }
+            [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+                value = "4"
+                label =  "Invalide"
+                color = "#e51f1f"
+                icon = { name = "fa-minus-circle", font = "fa", color = "#FFFFFF" }
+            [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
+                value = ["5", "6", "0"]
+                label = "Indéterminé"
+                description = "Non réalisable, Inconnu ou en attente de validation"
+                color = "#f3f6f4"
+                icon = { name = "fa-question-circle", font = "fa", color = "white" }
+        # Critère de type `nomenclatures` sur le statut de l'observation (code `observation_status`)
+        [SYNTHESE.MAP_CRITERIA_LIST.observation_status]
+            label = "Statut de l'observation"
+            type = "nomenclatures"
+            # Mnémonique de la nomenclature inutile ici car nous utilisions les id
+            #mnemonic = "STATUT_OBS"
+            field = "id_nomenclature_observation_status"
+            # Définit ce critère comme affichage par  défaut pour la carte de la Synthese:
+            default = true
+            [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+                value = "84"
+                #value = "Pr"
+                label = "Présent"
+                color = "#44ce1b"
+            [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+                value = "83"
+                #value = "No"
+                label = "Non observé"
+                color = "#e51f1f"
+            [[SYNTHESE.MAP_CRITERIA_LIST.observation_status.values]]
+                value = "85"
+                #value = "NSP"
+                label = "Non renseigné"
+                color = "#f3f6f4"
+
+
+Désactiver des filtres génériques
+`````````````````````````````````
 
 L'interface de recherche de la synthèse permet de filtrer sur l'ensemble des nomenclatures de la table ``gn_synthese``, il est cependant possible de désactiver les filtres de certains champs.
 
@@ -2341,7 +2683,8 @@ Modifiez la variable ``EXCLUDED_COLUMNS``
     [SYNTHESE]
         EXCLUDED_COLUMNS = ['non_digital_proof'] # pour enlever le filtre 'preuve non numérique'
 
-**5.** Configurer les filtres des statuts de protection et des listes rouges
+Configurer les filtres des statuts de protection et des listes rouges
+`````````````````````````````````````````````````````````````````````
 
 Il existe deux paramètres qui permettent de configurer les statuts de protection et les listes rouges à afficher dans la fenêtre avancée du module Synthese.
 
@@ -2395,7 +2738,8 @@ Une commande dans TaxHub permet de désactiver automatiquement les textes en deh
   source ~/geonature/backend/venv/bin/activate
   geonature taxref enable-bdc-statut-text -d <MON_DEP_1> -d <MON_DEP_2> --clean
 
-**6.** Définir des filtres par défaut
+Définir des filtres par défaut
+```````````````````````````````
 
 Il s'agit du paramètre ``DEFAULT_FILTERS``.
 C'est un dictionnaire qui liste la valeur des champs par défaut.
