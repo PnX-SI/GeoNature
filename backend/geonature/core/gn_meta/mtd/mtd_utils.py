@@ -243,9 +243,13 @@ def associate_actors(
     for actor in actors:
         id_organism = None
         uuid_organism = actor["uuid_organism"]
-        organism_name = actor["organism"]
+        organism_name = actor.get("organism", None)
         email_actor = actor["email"]
         if uuid_organism:
+            if not organism_name:
+                logger.warning(f"Actor : {actor} has no organism name (this is abnormal). "
+                               f"We skip this actor in synchro.")
+                continue
             with DB.session.begin_nested():
                 # create or update organisme
                 # TODO: check the following FIXME
@@ -437,7 +441,8 @@ def associate_actors(
                     values["id_role"] = id_user_contact_principal_for_orphan_metadata
                 else:
                     logger.warning(
-                        f"MTD - actor association impossible for {type_mtd} with UUID '{uuid_mtd}' because no id_organism nor id_role could be retrieved - with the following actor information:\n"
+                        f"MTD - actor association impossible for {type_mtd} with UUID '{uuid_mtd}' because no "
+                        f"id_organism nor id_role could be retrieved - with the following actor information:\n"
                         + format_str_dict_actor_for_logging(actor)
                     )
                     continue
@@ -457,7 +462,8 @@ def associate_actors(
         except IntegrityError as I:
             DB.session.rollback()
             logger.error(
-                f"MTD - DB INTEGRITY ERROR - actor association failed for {type_mtd} with UUID '{uuid_mtd}' and following actor information:\n"
+                f"MTD - DB INTEGRITY ERROR - actor association failed for {type_mtd} with UUID "
+                f"'{uuid_mtd}' and following actor information:\n"
                 + format_sqlalchemy_error_for_logging(I)
                 + format_str_dict_actor_for_logging(actor)
             )
