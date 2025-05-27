@@ -370,9 +370,11 @@ export class MapService {
 
     // Load geojson file or WFS - application/json only
     if (['geojson', 'wfs'].includes(layerAdded.type)) {
-      this._httpClient.get<any>(layerAdded.url).subscribe((res = { features: [] }) => {
-        overlayer.addData(res);
-      });
+      fetch(layerAdded.url)
+        .then((response) => response.json())
+        .then((data) => {
+          overlayer.addData(data);
+        });
     }
 
     // Load ref_geo data
