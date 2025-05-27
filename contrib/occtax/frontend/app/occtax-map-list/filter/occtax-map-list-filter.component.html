@@ -1,11 +1,10 @@
-<div
-  class="row row-sm"
-  id="filter"
->
+<div class="row row-sm" id="filter">
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
     <pnx-taxonomy
       label="{{ 'Taxon' | translate }}"
-      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.cd_nom"
+      [parentFormControl]="
+        occtaxMapListService.dynamicFormGroup.controls.cd_nom
+      "
       [idList]="config.OCCTAX.id_taxon_list"
       [charNumber]="3"
       [listLength]="20"
@@ -14,14 +13,18 @@
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
     <div *ngIf="config.OCCTAX.observers_txt; else elseBlock">
       <pnx-observers-text
-        [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.observers_txt"
+        [parentFormControl]="
+          occtaxMapListService.dynamicFormGroup.controls.observers_txt
+        "
       ></pnx-observers-text>
     </div>
     <ng-template #elseBlock>
       <pnx-observers
         class="auto"
         label="{{ 'Observers' | translate }}"
-        [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.observers"
+        [parentFormControl]="
+          occtaxMapListService.dynamicFormGroup.controls.observers
+        "
         [multiSelect]="true"
         [idMenu]="config.OCCTAX.id_observers_list"
       ></pnx-observers>
@@ -33,7 +36,9 @@
       label="{{ 'Dataset' | translate }}"
       [displayAll]="true"
       [displayOnlyActive]="false"
-      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_dataset"
+      [parentFormControl]="
+        occtaxMapListService.dynamicFormGroup.controls.id_dataset
+      "
       [moduleCode]="moduleService.currentModule?.module_code"
     ></pnx-datasets>
   </div>
@@ -41,7 +46,9 @@
     <pnx-date
       label="{{ 'MinDate' | translate }}"
       data-qa="pnx-occtax-filter-date-min"
-      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.date_low"
+      [parentFormControl]="
+        occtaxMapListService.dynamicFormGroup.controls.date_low
+      "
     ></pnx-date>
   </div>
 
@@ -49,7 +56,9 @@
     <pnx-date
       label="{{ 'MaxDate' | translate }}"
       data-qa="pnx-occtax-filter-date-max"
-      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.date_up"
+      [parentFormControl]="
+        occtaxMapListService.dynamicFormGroup.controls.date_up
+      "
     ></pnx-date>
   </div>
 
@@ -67,13 +76,10 @@
 
   <button
     class="btn btn-outline-shadow actions"
-    matTooltip="{{ 'Filter.Advanced' | translate }}"
+    matTooltip="{{ 'Filters.Advanced' | translate }}"
     (click)="toggleAdvancedFilters()"
   >
-    <i
-      class="fa fa-filter"
-      aria-hidden="true"
-    ></i>
+    <i class="fa fa-filter" aria-hidden="true"></i>
   </button>
 
   <svg
@@ -81,14 +87,7 @@
     height="40"
     width="10"
   >
-    <circle
-      cx="5"
-      cy="30"
-      r="3"
-      stroke="red"
-      stroke-width="0"
-      fill="red"
-    />
+    <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
   </svg>
   <button
     id="search-btn"
@@ -97,15 +96,12 @@
     (click)="searchData()"
     data-qa="pnx-occtax-filter-search"
   >
-    {{ 'Actions.Search' | translate }}
+    {{ "Actions.Search" | translate }}
     <mat-icon>search</mat-icon>
   </button>
 </div>
 
-<div
-  id="collapse-settings"
-  [hidden]="!advandedFilterOpen"
->
+<div id="collapse-settings" [hidden]="!advandedFilterOpen">
   <pnx-dynamic-form-generator
     #dynamicForm
     selectLabel="Autres Critères"
