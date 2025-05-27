@@ -38,6 +38,12 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     public config: ConfigService
   ) {}
 
+  isCheckBoxChecked(formControl, checkBoxItemValue) {
+    return Array.isArray(formControl?.value)
+      ? formControl.value.includes(checkBoxItemValue)
+      : false;
+  }
+
   ngOnInit() {
     this.setFormDefComp(true);
     // Disable the form if a value is provided and is not in the select list
