@@ -108,16 +108,7 @@ jobs:
             -e ..[tests] \
             -r requirements-dev.txt
         working-directory: ./backend
-      - name: Show database branches and dependencies
-        run: |
-          geonature db status --dependencies
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Show database status
-        run: |
-          geonature db status
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
+
       - name: Install core modules backend
         run: |
           pip install -e contrib/occtax
@@ -127,6 +118,11 @@ jobs:
         run: |
           pip install -e .
         working-directory: ${{ env.MODULE_DIR }}
+      - name: Show database status
+        run: |
+          geonature db status
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install modules database
         run: |
           geonature db autoupgrade
