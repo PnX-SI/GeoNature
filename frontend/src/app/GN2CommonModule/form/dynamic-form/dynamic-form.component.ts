@@ -112,6 +112,11 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
       formControl.patchValue(currentFormValue.filter((valItem) => valItem != value));
     }
   }
+  isCheckBoxChecked(formControl, checkBoxItemValue) {
+    return Array.isArray(formControl?.value)
+      ? formControl.value.includes(checkBoxItemValue)
+      : false;
+  }
 
   onRadioChange(val, formControl: UntypedFormControl) {
     if (formControl.value === val) {

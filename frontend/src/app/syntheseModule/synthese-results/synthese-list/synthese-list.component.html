@@ -38,8 +38,9 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      <button
-        class="btn btn-outline-shadow btn-no-padding btn-ghost"
+      <a
+        class="link-dark"
+        style="color: black"
         [routerLink]="['occurrence', row['id_synthese'], 'details']"
       >
         <i
@@ -49,7 +50,7 @@
           aria-hidden="true "
           data-qa="synthese-info-btn"
         ></i>
-      </button>
+      </a>
     </ng-template>
   </ngx-datatable-column>
 
@@ -61,9 +62,9 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      <button
+      <a
         *ngIf="row.url_source"
-        class="btn btn-outline-shadow btn-no-padding btn-ghost"
+        class="link-dark"
         (click)="backToModule(row.url_source, row.entity_source_pk_value)"
       >
         <i
@@ -71,7 +72,7 @@
           class="fa fa-file-text"
           aria-hidden="true"
         ></i>
-      </button>
+      </a>
     </ng-template>
   </ngx-datatable-column>
 

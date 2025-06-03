@@ -166,6 +166,7 @@
           class="custom-control custom-checkbox"
           [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
         >
+          <!-- <span>{{ form.get(formDefComp['attribut_name']) | json }}</span> -->
           <input
             class="custom-control-input"
             type="checkbox"
@@ -173,7 +174,7 @@
             [name]="formDefComp['attribut_name']"
             [value]="item.value"
             (change)="onCheckChange($event, form.get(formDefComp['attribut_name']), item.value)"
-            [checked]="form.get(formDefComp['attribut_name']).value?.includes(item.value)"
+            [checked]="isCheckBoxChecked(form.get(formDefComp['attribut_name']), item.value)"
           />
           <label
             for="{{ item.label }}_{{ rand }}"

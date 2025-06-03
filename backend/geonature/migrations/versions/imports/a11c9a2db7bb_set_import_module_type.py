@@ -36,7 +36,7 @@ def downgrade():
     UPDATE
         gn_commons.t_modules
     SET
-        type = NULL
+        type = 'base'
     WHERE
         module_code = 'IMPORT'
     """
