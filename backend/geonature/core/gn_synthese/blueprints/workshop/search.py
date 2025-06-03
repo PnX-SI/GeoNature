@@ -21,7 +21,7 @@ from geonature.utils.env import db
 from geonature.core.gn_permissions.tools import get_permissions
 
 
-def synthese_column_formaters(param_column_list):
+def synthese_column_formatters(param_column_list):
     columns = []
     if "count_min_max" in param_column_list:
         count_min_max = sa.case(
@@ -55,6 +55,7 @@ def observations():
     page = parameters.pop("page", None)
     limit = parameters.pop("limit", None)
     with_geom = parameters.pop("with_geom", True)
+    format = parameters.pop("format", "json")
 
     #
     current_user = db.session.get(User, 3)
@@ -73,7 +74,7 @@ def observations():
     )
     param_column_list = {col["prop"] for col in configured_columns}
 
-    columns.extend(synthese_column_formaters(param_column_list))
+    columns.extend(synthese_column_formatters(param_column_list))
     columns += [getattr(VSyntheseForWebApp, column) for column in param_column_list]
 
     if with_geom:
@@ -123,5 +124,6 @@ def observations():
     obs_query = synthese_query_class.build_query()
 
     if page and per_page:
-        return db.paginate(obs_query, per_page=per_page, page=page)
+        db.paginate(select=obs_query, page=page, per_page=per_page)
+
     return db.session.execute(obs_query).all()
