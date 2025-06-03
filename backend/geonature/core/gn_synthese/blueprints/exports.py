@@ -70,14 +70,14 @@ def export_taxon_web(permissions):
 
     id_list = request.get_json()
 
-    export_taxons.delay(
+    uuid_task = export_taxons.delay(
         id_permissions=[p.id_permission for p in permissions],
         id_list=id_list,
         id_role=g.current_user.id_role,
     )
 
     return (
-        {"msg": "task en cours"},
+        {"msg": "task en cours", "uuid_task": str(uuid_task)},
         200,
     )
 
