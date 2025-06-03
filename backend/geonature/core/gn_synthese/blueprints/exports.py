@@ -47,7 +47,11 @@ from utils_flask_sqla.response import to_csv_resp, to_json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo, GenericQueryGeo
 from werkzeug.exceptions import BadRequest, Forbidden
 
-from geonature.core.gn_synthese.tasks.exports import export_taxons, export_observations
+from geonature.core.gn_synthese.tasks.exports import (
+    export_taxons,
+    export_observations,
+    export_metadata_task,
+)
 
 export_routes = Blueprint("exports", __name__)
 
@@ -77,10 +81,7 @@ def export_taxon_web(permissions):
         id_role=g.current_user.id_role,
     )
 
-    return (
-        {"msg": "task en cours", "uuid_task": str(uuid_task)},
-        200,
-    )
+    return {"msg": "task en cours", "uuid_task": str(uuid_task)}
 
 
 @export_routes.route("/export_observations", methods=["POST"])
@@ -103,17 +104,14 @@ def export_observations_web(permissions):
     # get list of id synthese from POST
     id_list = request.get_json()
 
-    export_observations.delay(
+    uuid_task = export_observations.delay(
         id_permissions=[p.id_permission for p in permissions],
         id_list=id_list,
         params=params,
         id_role=g.current_user.id_role,
     )
 
-    return (
-        {"msg": "task en cours"},
-        200,
-    )
+    return {"msg": "task en cours", "uuid_task": str(uuid_task)}
 
 
 # TODO: Change the following line to set method as "POST" only ?
@@ -132,65 +130,72 @@ def export_metadata(permissions):
     """
     filters = request.json if request.is_json else {}
 
-    metadata_view = GenericTable(
-        tableName="v_metadata_for_export",
-        schemaName="gn_synthese",
-        engine=DB.engine,
+    uuid_task = export_metadata_task.delay(
+        id_permissions=[p.id_permission for p in permissions],
+        id_role=g.current_user.id_role,
+        filters=filters,
     )
+    return {"msg": "task en cours", "uuid_task": str(uuid_task)}
+
+    # metadata_view = GenericTable(
+    #     tableName="v_metadata_for_export",
+    #     schemaName="gn_synthese",
+    #     engine=DB.engine,
+    # )
 
     # Test de conformité de la vue v_metadata_for_export
-    try:
-        assert hasattr(metadata_view.tableDef.columns, "jdd_id")
-    except AssertionError as e:
-        return (
-            {
-                "msg": """
-                        View v_metadata_for_export
-                        must have a jdd_id column \n
-                        trace: {}
-                        """.format(
-                    str(e)
-                )
-            },
-            500,
-        )
+    # try:
+    #     assert hasattr(metadata_view.tableDef.columns, "jdd_id")
+    # except AssertionError as e:
+    #     return (
+    #         {
+    #             "msg": """
+    #                     View v_metadata_for_export
+    #                     must have a jdd_id column \n
+    #                     trace: {}
+    #                     """.format(
+    #                 str(e)
+    #             )
+    #         },
+    #         500,
+    #     )
 
-    q = select(distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef)
+    # q = select(distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef)
 
-    synthese_query_class = SyntheseQuery(
-        VSyntheseForWebApp,
-        q,
-        filters,
-    )
-    synthese_query_class.add_join(
-        metadata_view.tableDef,
-        getattr(
-            metadata_view.tableDef.columns,
-            current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
-        ),
-        VSyntheseForWebApp.id_dataset,
-    )
+    # synthese_query_class = SyntheseQuery(
+    #     VSyntheseForWebApp,
+    #     q,
+    #     filters,
+    # )
+    # synthese_query_class.add_join(
+    #     metadata_view.tableDef,
+    #     getattr(
+    #         metadata_view.tableDef.columns,
+    #         current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
+    #     ),
+    #     VSyntheseForWebApp.id_dataset,
+    # )
 
-    # Filter query with permissions (scope, sensitivity, ...)
-    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
+    # # Filter query with permissions (scope, sensitivity, ...)
+    # synthese_query_class.filter_query_all_filters(g.current_user, permissions)
 
-    data = DB.session.execute(synthese_query_class.query)
+    # data = DB.session.execute(synthese_query_class.query)
 
-    # Define the header of the csv file
-    columns = [db_col.key for db_col in metadata_view.tableDef.columns]
-    columns[columns.index("nombre_obs")] = "nombre_total_obs"
+    # # Define the header of the csv file
+    # columns = [db_col.key for db_col in metadata_view.tableDef.columns]
+    # columns[columns.index("nombre_obs")] = "nombre_total_obs"
 
-    # Retrieve the data to write in the csv file
-    data = [metadata_view.as_dict(d) for d in data]
-    for d in data:
-        d["nombre_total_obs"] = d.pop("nombre_obs")
+    # # Retrieve the data to write in the csv file
+    # data = [metadata_view.as_dict(d) for d in data]
+    # for d in data:
+    #     d["nombre_total_obs"] = d.pop("nombre_obs")
 
-    return to_csv_resp(
-        datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
-        data=data,
-        separator=";",
-        columns=columns,
-    )
+    # return to_csv_resp(
+    #     datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
+    #     data=data,
+    #     separator=";",
+    #     columns=columns,
+    # )
 
 
 @export_routes.route("/export_statuts", methods=["POST"])

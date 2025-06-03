@@ -94,6 +94,12 @@ def create_db_task(id_role, uuid_celery):
     return task
 
 
+def update_db_task(task):
+    task.end = datetime.datetime.now()
+    task.status = "success"
+    db.session.commit()
+
+
 @celery_app.task(bind=True)
 def export_taxons(self, id_permissions, id_list, id_role):
     db_task = create_db_task(id_role, self.request.id)
@@ -171,10 +177,7 @@ def export_taxons(self, id_permissions, id_list, id_role):
             srid=None,
             columns=[],
         )
-
-        db_task.end = datetime.datetime.now()
-        db_task.status = "success"
-        db.session.commit()
+        update_db_task(db_task)
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
@@ -183,218 +186,285 @@ def export_taxons(self, id_permissions, id_list, id_role):
 
 @celery_app.task(bind=True)
 def export_observations(self, id_permissions, id_list, params, id_role):
+    try:
+        current_user = db.session.scalar(select(User).where(User.id_role == id_role))
+        permissions = db.session.scalars(
+            select(Permission).where(Permission.id_permission.in_(id_permissions))
+        ).all()
+        db_task = create_db_task(current_user.id_role, self.request.id)
 
-    current_user = db.session.scalar(select(TRoles).where(TRoles.id_role == id_role))
+        # set default to csv
+        export_format = params.get("export_format", "csv")
+        view_name_param = params.get("view_name", "gn_synthese.v_synthese_for_export")
+        # Test export_format
+        if export_format not in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
+            raise BadRequest("Unsupported format")
+        config_view = {
+            "view_name": "gn_synthese.v_synthese_for_web_app",
+            "geojson_4326_field": "geojson_4326",
+            "geojson_local_field": "geojson_local",
+        }
+        # Test export view name is config params for security reason
+        if view_name_param != "gn_synthese.v_synthese_for_export":
+            try:
+                config_view = next(
+                    _view
+                    for _view in current_app.config["SYNTHESE"]["EXPORT_OBSERVATIONS_CUSTOM_VIEWS"]
+                    if _view["view_name"] == view_name_param
+                )
+            except StopIteration:
+                raise Forbidden("This view is not available for export")
+
+        geojson_4326_field = config_view["geojson_4326_field"]
+        geojson_local_field = config_view["geojson_local_field"]
+        try:
+            schema_name, view_name = view_name_param.split(".")
+        except ValueError:
+            raise BadRequest("view_name parameter must be a string with schema dot view_name")
+
+        # Get the SRID for the export
+        local_srid = DB.session.execute(
+            func.Find_SRID("gn_synthese", "synthese", "the_geom_local")
+        ).scalar()
+
+        blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
+
+        # Get the view for export
+        # Useful to have geom column so that they can be replaced by blurred geoms
+        # (only if the user has sensitive permissions)
+        export_view = GenericQueryGeo(DB=DB, tableName=view_name, schemaName=schema_name)
+
+        mandatory_columns = {"id_synthese", geojson_4326_field, geojson_local_field}
+        if not mandatory_columns.issubset(set(map(lambda col: col.name, export_view.view.db_cols))):
+            print(set(map(lambda col: col.name, export_view.view.db_cols)))
+            raise BadRequest(
+                f"The view {view_name} miss one of required columns {str(mandatory_columns)}"
+            )
+
+        # If there is no sensitive permissions => same path as before blurring implementation
+        if not blurring_permissions:
+            # Get the CTE for synthese filtered by user permissions
+            synthese_query_class = SyntheseQuery(
+                Synthese,
+                select(Synthese.id_synthese),
+                {},
+            )
+            synthese_query_class.filter_query_all_filters(current_user, permissions)
+            cte_synthese_filtered = synthese_query_class.build_query().cte("cte_synthese_filtered")
+            selectable_columns = [export_view.view.tableDef]
+        else:
+            # Use slightly the same process as for get_observations_for_web()
+            # Add a where_clause to filter the id_synthese provided to reduce the
+            # UNION queries
+            where_clauses = [Synthese.id_synthese.in_(id_list)]
+            blurred_geom_query, precise_geom_query = build_blurred_precise_geom_queries(
+                filters={}, where_clauses=where_clauses
+            )
+
+            cte_synthese_filtered = build_allowed_geom_cte(
+                blurring_permissions=blurring_permissions,
+                precise_permissions=precise_permissions,
+                blurred_geom_query=blurred_geom_query,
+                precise_geom_query=precise_geom_query,
+                limit=current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"],
+            )
+
+            # Overwrite geometry columns to compute the blurred geometry from the blurring cte
+            columns_with_geom_excluded = [
+                col
+                for col in export_view.view.tableDef.columns
+                if col.name
+                not in [
+                    "geometrie_wkt_4326",  # FIXME: hardcoded column names?
+                    "x_centroid_4326",
+                    "y_centroid_4326",
+                    geojson_4326_field,
+                    geojson_local_field,
+                ]
+            ]
+            # Recomputed the blurred geometries
+            blurred_geom_columns = [
+                func.st_astext(cte_synthese_filtered.c.geom).label("geometrie_wkt_4326"),
+                func.st_x(func.st_centroid(cte_synthese_filtered.c.geom)).label("x_centroid_4326"),
+                func.st_y(func.st_centroid(cte_synthese_filtered.c.geom)).label("y_centroid_4326"),
+                func.st_asgeojson(cte_synthese_filtered.c.geom).label(geojson_4326_field),
+                func.st_asgeojson(
+                    func.st_transform(cte_synthese_filtered.c.geom, local_srid)
+                ).label(geojson_local_field),
+            ]
+
+            # Finally provide all the columns to be selected in the export query
+            selectable_columns = columns_with_geom_excluded + blurred_geom_columns
+
+        # Get the query for export
+        export_query = (
+            select(*selectable_columns)
+            .select_from(
+                export_view.view.tableDef.join(
+                    cte_synthese_filtered,
+                    cte_synthese_filtered.c.id_synthese
+                    == export_view.view.tableDef.columns["id_synthese"],
+                )
+            )
+            .where(export_view.view.tableDef.columns["id_synthese"].in_(id_list))
+            .distinct(export_view.view.tableDef.columns["id_synthese"])
+        )
+
+        # Créate schema
+        ExportObservationViewSchema = export_view.get_marshmallow_schema()
+
+        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
+        current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+        export_file_name = f"export_observations_{current_timestamp}"
+
+        db_cols_for_shape = []
+        columns_to_serialize = []
+        # loop over synthese config to exclude columns if its default export
+        for db_col in export_view.view.db_cols:
+            if view_name_param == "gn_synthese.v_synthese_for_export":
+                if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
+                    db_cols_for_shape.append(db_col)
+                    columns_to_serialize.append(db_col.key)
+            else:
+                # remove geojson fields of serialization
+                if db_col.key not in [geojson_4326_field, geojson_local_field, "geometry"]:
+                    db_cols_for_shape.append(db_col)
+                    columns_to_serialize.append(db_col.key)
+
+        export_data_file(
+            file_name=f"{export_dir}/{export_file_name}.{export_format}",
+            export_url="",
+            format=export_format,
+            query=export_query,
+            schema_class=ExportObservationViewSchema,
+            pk_name=None,
+            geometry_field=geojson_local_field,
+            srid=local_srid,
+            columns=columns_to_serialize,
+        )
+
+        # # Get the results for export
+        # results = DB.session.execute(
+        #     export_query.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
+        # )
+
+        # db_cols_for_shape = []
+        # columns_to_serialize = []
+        # # loop over synthese config to exclude columns if its default export
+        # for db_col in export_view.db_cols:
+        #     if view_name_param == "gn_synthese.v_synthese_for_export":
+        #         if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
+        #             db_cols_for_shape.append(db_col)
+        #             columns_to_serialize.append(db_col.key)
+        #     else:
+        #         # remove geojson fields of serialization
+        #         if db_col.key not in [geojson_4326_field, geojson_local_field]:
+        #             db_cols_for_shape.append(db_col)
+        #             columns_to_serialize.append(db_col.key)
+
+        # file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+        # file_name = filemanager.removeDisallowedFilenameChars(file_name)
+
+        # if export_format == "csv":
+        #     formated_data = [export_view.as_dict(d, fields=columns_to_serialize) for d in results]
+        #     return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
+        # elif export_format == "geojson":
+        #     features = []
+        #     for r in results:
+        #         geometry = json.loads(getattr(r, geojson_4326_field))
+        #         feature = Feature(
+        #             geometry=geometry,
+        #             properties=export_view.as_dict(r, fields=columns_to_serialize),
+        #         )
+        #         features.append(feature)
+        #     results = FeatureCollection(features)
+        #     return to_json_resp(results, as_file=True, filename=file_name, indent=4)
+        # else:
+        #     try:
+        #         dir_name, file_name = export_as_geo_file(
+        #             export_format=export_format,
+        #             export_view=export_view,
+        #             db_cols=db_cols_for_shape,
+        #             geojson_col=geojson_local_field,
+        #             data=results,
+        #             file_name=file_name,
+        #         )
+        #         return send_from_directory(dir_name, file_name, as_attachment=True)
+
+        #     except GeonatureApiError as e:
+        #         message = str(e)
+
+        #     return render_template(
+        #         "error.html",
+        #         error=message,
+        #         redirect=current_app.config["URL_APPLICATION"] + "/#/synthese",
+        #     )
+        update_db_task(db_task)
+    except Exception as e:
+        db_task.status = "error"
+        db.session.commit()
+        raise e
+
+
+@celery_app.task(bind=True)
+def export_metadata_task(self, id_permissions, id_role, filters):
+    db_task = create_db_task(id_role, self.request.id)
+    current_user = db.session.scalar(select(User).where(User.id_role == id_role))
     permissions = db.session.scalars(
         select(Permission).where(Permission.id_permission.in_(id_permissions))
     ).all()
-
-    # set default to csv
-    export_format = params.get("export_format", "csv")
-    view_name_param = params.get("view_name", "gn_synthese.v_synthese_for_export")
-    # Test export_format
-    if export_format not in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
-        raise BadRequest("Unsupported format")
-    config_view = {
-        "view_name": "gn_synthese.v_synthese_for_web_app",
-        "geojson_4326_field": "geojson_4326",
-        "geojson_local_field": "geojson_local",
-    }
-    # Test export view name is config params for security reason
-    if view_name_param != "gn_synthese.v_synthese_for_export":
-        try:
-            config_view = next(
-                _view
-                for _view in current_app.config["SYNTHESE"]["EXPORT_OBSERVATIONS_CUSTOM_VIEWS"]
-                if _view["view_name"] == view_name_param
-            )
-        except StopIteration:
-            raise Forbidden("This view is not available for export")
-
-    geojson_4326_field = config_view["geojson_4326_field"]
-    geojson_local_field = config_view["geojson_local_field"]
     try:
-        schema_name, view_name = view_name_param.split(".")
-    except ValueError:
-        raise BadRequest("view_name parameter must be a string with schema dot view_name")
-
-    # Get the SRID for the export
-    local_srid = DB.session.execute(
-        func.Find_SRID("gn_synthese", "synthese", "the_geom_local")
-    ).scalar()
-
-    blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
-
-    # Get the view for export
-    # Useful to have geom column so that they can be replaced by blurred geoms
-    # (only if the user has sensitive permissions)
-    export_view = GenericQueryGeo(DB=DB, tableName=view_name, schemaName=schema_name)
-
-    mandatory_columns = {"id_synthese", geojson_4326_field, geojson_local_field}
-    if not mandatory_columns.issubset(set(map(lambda col: col.name, export_view.view.db_cols))):
-        print(set(map(lambda col: col.name, export_view.view.db_cols)))
-        raise BadRequest(
-            f"The view {view_name} miss one of required columns {str(mandatory_columns)}"
+        metadata_view = GenericTable(
+            tableName="v_metadata_for_export",
+            schemaName="gn_synthese",
+            engine=DB.engine,
         )
+        metadata_view = GenericQueryGeo(
+            DB=DB, tableName="v_metadata_for_export", schemaName="gn_synthese"
+        )
+        columns = metadata_view.view.tableDef.columns
+        id_dataset_col = current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"]
+        try:
+            assert hasattr(metadata_view.view.tableDef.columns, id_dataset_col)
+        except AssertionError as e:
+            raise Exception("View v_metadata_for_export must have a jdd_id column")
 
-    # If there is no sensitive permissions => same path as before blurring implementation
-    if not blurring_permissions:
-        # Get the CTE for synthese filtered by user permissions
+        q = select(distinct(VSyntheseForWebApp.id_dataset), metadata_view.view.tableDef)
+
         synthese_query_class = SyntheseQuery(
-            Synthese,
-            select(Synthese.id_synthese),
-            {},
+            VSyntheseForWebApp,
+            q,
+            filters,
         )
-        synthese_query_class.filter_query_all_filters(current_user, permissions)
-        cte_synthese_filtered = synthese_query_class.build_query().cte("cte_synthese_filtered")
-        selectable_columns = [export_view.view.tableDef]
-    else:
-        # Use slightly the same process as for get_observations_for_web()
-        # Add a where_clause to filter the id_synthese provided to reduce the
-        # UNION queries
-        where_clauses = [Synthese.id_synthese.in_(id_list)]
-        blurred_geom_query, precise_geom_query = build_blurred_precise_geom_queries(
-            filters={}, where_clauses=where_clauses
-        )
-
-        cte_synthese_filtered = build_allowed_geom_cte(
-            blurring_permissions=blurring_permissions,
-            precise_permissions=precise_permissions,
-            blurred_geom_query=blurred_geom_query,
-            precise_geom_query=precise_geom_query,
-            limit=current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"],
-        )
-
-        # Overwrite geometry columns to compute the blurred geometry from the blurring cte
-        columns_with_geom_excluded = [
-            col
-            for col in export_view.view.tableDef.columns
-            if col.name
-            not in [
-                "geometrie_wkt_4326",  # FIXME: hardcoded column names?
-                "x_centroid_4326",
-                "y_centroid_4326",
-                geojson_4326_field,
-                geojson_local_field,
-            ]
-        ]
-        # Recomputed the blurred geometries
-        blurred_geom_columns = [
-            func.st_astext(cte_synthese_filtered.c.geom).label("geometrie_wkt_4326"),
-            func.st_x(func.st_centroid(cte_synthese_filtered.c.geom)).label("x_centroid_4326"),
-            func.st_y(func.st_centroid(cte_synthese_filtered.c.geom)).label("y_centroid_4326"),
-            func.st_asgeojson(cte_synthese_filtered.c.geom).label(geojson_4326_field),
-            func.st_asgeojson(func.st_transform(cte_synthese_filtered.c.geom, local_srid)).label(
-                geojson_local_field
+        synthese_query_class.add_join(
+            metadata_view.view.tableDef,
+            getattr(
+                metadata_view.view.tableDef.columns,
+                id_dataset_col,
             ),
-        ]
-
-        # Finally provide all the columns to be selected in the export query
-        selectable_columns = columns_with_geom_excluded + blurred_geom_columns
-
-    # Get the query for export
-    export_query = (
-        select(*selectable_columns)
-        .select_from(
-            export_view.view.tableDef.join(
-                cte_synthese_filtered,
-                cte_synthese_filtered.c.id_synthese
-                == export_view.view.tableDef.columns["id_synthese"],
-            )
+            VSyntheseForWebApp.id_dataset,
         )
-        .where(export_view.view.tableDef.columns["id_synthese"].in_(id_list))
-        .distinct(export_view.view.tableDef.columns["id_synthese"])
-    )
 
-    # Créate schema
-    ExportObservationViewSchema = export_view.get_marshmallow_schema()
+        synthese_query_class.filter_query_all_filters(current_user, permissions)
+        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
+        current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+        export_file_name = f"export_metadonnées_{current_timestamp}.csv"
 
-    export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
-    current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
-    export_file_name = f"export_observations_{current_timestamp}"
-
-    db_cols_for_shape = []
-    columns_to_serialize = []
-    # loop over synthese config to exclude columns if its default export
-    for db_col in export_view.view.db_cols:
-        if view_name_param == "gn_synthese.v_synthese_for_export":
-            if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
-                db_cols_for_shape.append(db_col)
-                columns_to_serialize.append(db_col.key)
-        else:
-            # remove geojson fields of serialization
-            if db_col.key not in [geojson_4326_field, geojson_local_field, "geometry"]:
-                db_cols_for_shape.append(db_col)
-                columns_to_serialize.append(db_col.key)
-
-    export_data_file(
-        file_name=f"{export_dir}/{export_file_name}.{export_format}",
-        export_url="",
-        format=export_format,
-        query=export_query,
-        schema_class=ExportObservationViewSchema,
-        pk_name=None,
-        geometry_field=geojson_local_field,
-        srid=local_srid,
-        columns=columns_to_serialize,
-    )
-
-    # # Get the results for export
-    # results = DB.session.execute(
-    #     export_query.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
-    # )
-
-    # db_cols_for_shape = []
-    # columns_to_serialize = []
-    # # loop over synthese config to exclude columns if its default export
-    # for db_col in export_view.db_cols:
-    #     if view_name_param == "gn_synthese.v_synthese_for_export":
-    #         if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
-    #             db_cols_for_shape.append(db_col)
-    #             columns_to_serialize.append(db_col.key)
-    #     else:
-    #         # remove geojson fields of serialization
-    #         if db_col.key not in [geojson_4326_field, geojson_local_field]:
-    #             db_cols_for_shape.append(db_col)
-    #             columns_to_serialize.append(db_col.key)
-
-    # file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
-    # file_name = filemanager.removeDisallowedFilenameChars(file_name)
-
-    # if export_format == "csv":
-    #     formated_data = [export_view.as_dict(d, fields=columns_to_serialize) for d in results]
-    #     return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
-    # elif export_format == "geojson":
-    #     features = []
-    #     for r in results:
-    #         geometry = json.loads(getattr(r, geojson_4326_field))
-    #         feature = Feature(
-    #             geometry=geometry,
-    #             properties=export_view.as_dict(r, fields=columns_to_serialize),
-    #         )
-    #         features.append(feature)
-    #     results = FeatureCollection(features)
-    #     return to_json_resp(results, as_file=True, filename=file_name, indent=4)
-    # else:
-    #     try:
-    #         dir_name, file_name = export_as_geo_file(
-    #             export_format=export_format,
-    #             export_view=export_view,
-    #             db_cols=db_cols_for_shape,
-    #             geojson_col=geojson_local_field,
-    #             data=results,
-    #             file_name=file_name,
-    #         )
-    #         return send_from_directory(dir_name, file_name, as_attachment=True)
-
-    #     except GeonatureApiError as e:
-    #         message = str(e)
-
-    #     return render_template(
-    #         "error.html",
-    #         error=message,
-    #         redirect=current_app.config["URL_APPLICATION"] + "/#/synthese",
-    #     )
+        export_data_file(
+            file_name=f"{export_dir}/{export_file_name}",
+            export_url="",
+            format="csv",
+            query=synthese_query_class.query,
+            schema_class=metadata_view.get_marshmallow_schema(),
+            pk_name=None,
+            srid=None,
+            columns=[],
+        )
+        update_db_task(db_task)
+    except Exception as e:
+        db_task.status = "error"
+        db.session.commit()
+        raise e
 
 
 def export_data_file(
