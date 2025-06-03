@@ -1,3 +1,22 @@
+.SyntheseSearch{
+  display: flex;
+  flex-flow: column;
+  height: calc(100vh - 80px); // TODO Magic number: toolbar height
+
+  .search-wrapper {
+    flex-grow: 2;
+    overflow: auto;
+    // Unset position to show content dropdown-menu hover all panels
+    position: unset;
+  }
+
+  .search-btn {
+    padding: 2px;
+    float: right;
+  }
+
+}
+
 .pnx-card {
   padding: 10px;
   border-color: #cccccc;
@@ -87,17 +106,6 @@ legend {
   float: right;
 }
 
-.search-btn {
-  padding: 2px;
-  float: right;
-}
-
-.search-wrapper {
-  max-height: 86vh;
-  overflow: auto;
-  // Unset position to show content dropdown-menu hover all panels
-  position: unset;
-}
 
 .relative {
   position: relative;

@@ -1,0 +1,61 @@
+.ModuleLayout{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  width: 100%;
+  height: calc(100vh - 80px); // TODO Magic number: toolbar height
+  background-color: #fff;
+  &__content{
+    flex-grow: 2;
+    display: flex;
+    flex-flow: row wrap;
+    .Toggle{
+      z-index: 10000;
+      position: absolute;
+      padding: 0px 5px;
+      padding: 0px 5px;
+      border-bottom-left-radius: 0px;
+      border-top-left-radius: 0px;
+    }
+    .Map{
+      flex-grow: 2;
+    }
+
+    .List{
+      flex-grow: 2;
+    }
+  }
+}
+
+@media (min-width: 1000px) {
+  #sidebar {
+    width: 250px;
+    // min-width: 250px;
+    // max-width: 250px;
+  }
+  #sidebar.active {
+    margin-left: -250px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #sidebar {
+    width: 300px;
+    // min-width: 250px;
+    // max-width: 250px;
+  }
+  #sidebar.active {
+    margin-left: -300px;
+  }
+}
+
+@media (min-width: 1500px) {
+  #sidebar {
+    width: 350px;
+    // min-width: 250px;
+    // max-width: 250px;
+  }
+  #sidebar.active {
+    margin-left: -350px;
+  }
+}
