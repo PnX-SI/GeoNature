@@ -1,0 +1,16 @@
+<pnx-map
+  height="100%"
+  class="map-card"
+>
+  <pnx-leaflet-filelayer
+    (onLoad)="onFileLayerLoaded($event)"
+    [removeLayer]="drawingService.currentLeafletDrawCoord"
+    [style]="{ color: 'green' }"
+  ></pnx-leaflet-filelayer>
+  <pnx-leaflet-draw
+    [options]="drawingService.leafletDrawOptions"
+    [zoomLevel]="1"
+    (layerDrawed)="drawingService.layerDrawed($event)"
+    (layerDeleted)="drawingService.layerDeleted()"
+  ></pnx-leaflet-draw>
+</pnx-map>

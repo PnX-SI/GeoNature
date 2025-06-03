@@ -5,6 +5,8 @@ config/*_config.toml
 **/conf_gn_module.toml
 **/module.config.ts
 
+# syntheseModule_old
+
 log/*
 .vscode/
 geonature_config.toml
