@@ -1,5 +1,6 @@
 from pathlib import Path
 import tempfile
+import uuid
 
 import pytest
 import json
@@ -112,6 +113,7 @@ def task(modules, users):
     with db.session.begin_nested():
         t = Task(
             id_role=users["user"].id_role,
+            uuid_celery=uuid.uuid4(),
             id_module=modules[0].id_module,
             start=datetime.datetime.now(),
             message="test",
@@ -670,7 +672,7 @@ class TestCommons:
         # la tache est créée avec l'utilisateur "user"
         set_logged_user(self.client, users["user"])
         resp = self.client.get(
-            url_for("gn_commons.get_tasks", id_module=modules[0].id_module, id_task=task.id_task)
+            url_for("gn_commons.get_tasks", id_module=modules[0].id_module, uuid=task.uuid_celery)
         )
         assert resp.status_code == 200
         resp_tasks = resp.json

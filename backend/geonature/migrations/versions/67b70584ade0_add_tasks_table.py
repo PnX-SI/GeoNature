@@ -8,6 +8,7 @@ Create Date: 2025-06-03 09:44:22.628841
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import UUID
 
 
 # revision identifiers, used by Alembic.
@@ -21,6 +22,7 @@ def upgrade():
     op.create_table(
         "t_tasks",
         sa.Column("id_task", sa.Integer, primary_key=True),
+        sa.Column("uuid_celery", UUID(as_uuid=True), nullable=False),
         sa.Column(
             "id_role", sa.Integer, sa.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False
         ),
@@ -30,7 +32,7 @@ def upgrade():
         sa.Column("start", sa.DateTime, nullable=False),
         sa.Column("end", sa.DateTime),
         sa.Column("status", sa.Unicode(50)),
-        sa.Column("message", sa.Text, nullable=False),
+        sa.Column("message", sa.Text),
         schema="gn_commons",
     )
 

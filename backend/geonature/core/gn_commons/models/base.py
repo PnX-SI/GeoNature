@@ -350,6 +350,7 @@ class Task(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
 
     id_task = DB.Column(DB.Integer, primary_key=True)
+    uuid_celery = DB.Column(UUID(as_uuid=True), nullable=False)
     id_role = DB.Column(DB.Integer, DB.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
     id_module = DB.Column(
         DB.Integer, DB.ForeignKey("gn_commons.t_modules.id_module"), nullable=False
@@ -357,4 +358,4 @@ class Task(DB.Model):
     start = DB.Column(DB.DateTime, nullable=False)
     end = DB.Column(DB.DateTime)
     status = DB.Column(DB.Unicode, nullable=False)
-    message = DB.Column(DB.Unicode, nullable=False)
+    message = DB.Column(DB.Unicode)

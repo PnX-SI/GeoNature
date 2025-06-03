@@ -314,8 +314,8 @@ def delete_place(id_place):
 @login_required
 def get_tasks():
     query = db.select(Task).filter_by(id_role=g.current_user.id_role)
-    if "id_task" in request.args:
-        query = query.filter_by(id_task=request.args["id_task"])
+    if "uuid" in request.args:
+        query = query.filter_by(uuid_celery=request.args["uuid"])
     if "id_module" in request.args:
         query = query.filter_by(id_module=request.args["id_module"])
     tasks = db.session.scalars(query).all()
