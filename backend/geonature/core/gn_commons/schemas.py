@@ -13,6 +13,7 @@ from geonature.core.gn_commons.models import (
     TValidations,
     TAdditionalFields,
     BibWidgets,
+    Task,
 )
 from geonature.core.gn_permissions.schemas import PermObjectSchema
 
@@ -69,6 +70,13 @@ class BibWidgetSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
         model = BibWidgets
         load_instance = True
+
+
+class TaskSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Task
+        load_instance = True
+        include_fk = True
 
 
 class LabelValueDict(Schema):
