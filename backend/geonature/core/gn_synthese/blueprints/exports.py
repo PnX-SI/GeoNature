@@ -2,7 +2,7 @@ import datetime
 import json
 import re
 from collections import OrderedDict
-
+from pathlib import Path
 from flask import (
     Blueprint,
     current_app,
@@ -12,6 +12,7 @@ from flask import (
     send_from_directory,
 )
 
+from marshmallow import fields
 from geojson import Feature, FeatureCollection
 from geonature.core.gn_permissions.decorators import permissions_required
 from geonature.core.gn_synthese.models import (
@@ -30,7 +31,6 @@ from geonature.utils import filemanager
 from geonature.utils.env import DB, db
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
-
 from apptax.taxonomie.models import (
     Taxref,
     TaxrefBdcStatutCorTextValues,
@@ -40,12 +40,13 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutValues,
     bdc_statut_cor_text_area,
 )
-
 from sqlalchemy import distinct, func, select
 from utils_flask_sqla.generic import GenericTable, serializeQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp
-from utils_flask_sqla_geo.generic import GenericTableGeo
+from utils_flask_sqla_geo.generic import GenericTableGeo, GenericQueryGeo
 from werkzeug.exceptions import BadRequest, Forbidden
+
+from geonature.core.gn_synthese.tasks.exports import export_taxons
 
 export_routes = Blueprint("exports", __name__)
 
@@ -66,62 +67,18 @@ def export_taxon_web(permissions):
     :query str export_format: str<'csv'>
 
     """
-    taxon_view = GenericTable(
-        tableName="v_synthese_taxon_for_export_view",
-        schemaName="gn_synthese",
-        engine=DB.engine,
-    )
-    columns = taxon_view.tableDef.columns
-
-    # Test de conformité de la vue v_synthese_for_export_view
-    try:
-        assert hasattr(taxon_view.tableDef.columns, "cd_ref")
-    except AssertionError as e:
-        return (
-            {
-                "msg": """
-                        View v_synthese_taxon_for_export_view
-                        must have a cd_ref column \n
-                        trace: {}
-                        """.format(
-                    str(e)
-                )
-            },
-            500,
-        )
 
     id_list = request.get_json()
 
-    sub_query = (
-        select(
-            VSyntheseForWebApp.cd_ref,
-            func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
-            func.min(VSyntheseForWebApp.date_min).label("date_min"),
-            func.max(VSyntheseForWebApp.date_max).label("date_max"),
-        )
-        .where(VSyntheseForWebApp.id_synthese.in_(id_list))
-        .group_by(VSyntheseForWebApp.cd_ref)
+    export_taxons.delay(
+        id_permissions=[p.id_permission for p in permissions],
+        id_list=id_list,
+        id_role=g.current_user.id_role,
     )
 
-    synthese_query_class = SyntheseQuery(
-        VSyntheseForWebApp,
-        sub_query,
-        {},
-    )
-
-    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
-
-    subq = synthese_query_class.query.alias("subq")
-
-    query = select(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
-        subq, subq.c.cd_ref == columns.cd_ref
-    )
-
-    return to_csv_resp(
-        datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
-        data=serializeQuery(db.session.execute(query).all(), query.column_descriptions),
-        separator=";",
-        columns=[db_col.key for db_col in columns] + ["nb_obs", "date_min", "date_max"],
+    return (
+        {"msg": "task en cours"},
+        200,
     )
 
 
