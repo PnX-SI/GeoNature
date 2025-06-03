@@ -13,6 +13,8 @@ from geonature.core.gn_permissions.tools import get_permissions, get_scopes_by_a
 
 # use login_required from flask_login
 from flask_login import login_required
+from geonature.utils.env import db
+from pypnusershub.db.models import User
 
 
 def _forbidden_message(action, module_code, object_code):
@@ -66,19 +68,30 @@ def check_cruved_scope(
     return _check_cruved_scope
 
 
-def permissions_required(
-    action,
-    module_code=None,
-    object_code=None,
-):
+def permissions_required(action, module_code=None, object_code=None):
     def _permission_required(view_func):
         @wraps(view_func)
         def decorated_view(*args, **kwargs):
-            if not g.current_user.is_authenticated:
-                raise Unauthorized
-            permissions = get_permissions(action, module_code=module_code, object_code=object_code)
+            # Check if apikey in headers and get user accordingly
+            apikey = request.headers.get("X-Api-Key")
+            if apikey:
+                user = db.session.query(User).filter_by(api_key=apikey).one()
+                if not user:
+                    raise Unauthorized("ApiKey invalide")
+
+            elif hasattr(g, "current_user") and g.current_user.is_authenticated:
+                user = g.current_user
+                # Permissions déduites automatiquement (ex : via g.current_user.id_role en interne)
+            permissions = get_permissions(
+                action,
+                module_code=module_code,
+                object_code=object_code,
+                id_role = user.id_role
+                )
+
             if not permissions:
                 raise Forbidden(description=_forbidden_message(action, module_code, object_code))
+
             kwargs["permissions"] = permissions
             return view_func(*args, **kwargs)
 
