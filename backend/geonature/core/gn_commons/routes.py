@@ -18,7 +18,9 @@ from geonature.core.gn_commons.models import (
     TMobileApps,
     TPlaces,
     TAdditionalFields,
+    Task,
 )
+from geonature.core.gn_commons.schemas import TaskSchema
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.utils.env import DB, db, BACKEND_DIR
@@ -306,6 +308,19 @@ def delete_place(id_place):
     db.session.delete(place)
     db.session.commit()
     return "", 204
+
+
+@routes.route("/tasks", methods=["GET"])
+@login_required
+def get_tasks():
+    query = db.select(Task).filter_by(id_role=g.current_user.id_role)
+    if "uuid" in request.args:
+        query = query.filter_by(uuid_celery=request.args["uuid"])
+    if "id_module" in request.args:
+        query = query.filter_by(id_module=request.args["id_module"])
+    tasks = db.session.scalars(query).all()
+    task_schema = TaskSchema()
+    return task_schema.jsonify(tasks, many=True)
 
 
 ##############################

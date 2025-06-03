@@ -1,4 +1,5 @@
 import os
+import datetime
 from pathlib import Path
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
@@ -23,6 +24,8 @@ from geonature.core.gn_synthese.models import (
     VSyntheseForWebApp,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+
+from geonature.core.gn_commons.models import Task, TModules
 from geonature.core.gn_synthese.utils.blurring import (
     build_allowed_geom_cte,
     build_blurred_precise_geom_queries,
@@ -52,7 +55,7 @@ from werkzeug.exceptions import BadRequest, Forbidden
 from typing import List, Optional
 
 
-from app.models import TRoles
+from pypnusershub.db.models import User
 from geonature.utils.env import db
 from geonature.core.gn_commons.repositories import TMediumRepository
 from geonature.utils.celery import celery_app
@@ -75,82 +78,107 @@ from marshmallow import Schema
 logger = get_task_logger(__name__)
 
 
+def create_db_task(id_role, uuid_celery):
+    module = db.session.execute(db.select(TModules).filter_by(module_code="SYNTHESE")).scalar()
+    task = Task(
+        id_role=id_role,
+        uuid_celery=uuid_celery,
+        start=datetime.datetime.now(),
+        status="pending",
+        id_module=module.id_module,
+        message="",
+    )
+    db.session.add(task)
+    db.session.commit()
+
+    return task
+
+
 @celery_app.task(bind=True)
 def export_taxons(self, id_permissions, id_list, id_role):
-
-    current_user = db.session.scalar(select(TRoles).where(TRoles.id_role == id_role))
-    permissions = db.session.scalars(
-        select(Permission).where(Permission.id_permission.in_(id_permissions))
-    ).all()
-    taxon_view = GenericQueryGeo(
-        DB=DB, tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese"
-    )
-    columns = taxon_view.view.tableDef.columns
-
-    # Test de conformité de la vue v_synthese_for_export_view
+    db_task = create_db_task(id_role, self.request.id)
     try:
-        assert hasattr(columns, "cd_ref")
-    except AssertionError as e:
-        return (
-            {
-                "msg": """
-                        View v_synthese_taxon_for_export_view
-                        must have a cd_ref column \n
-                        trace: {}
-                        """.format(
-                    str(e)
-                )
-            },
-            500,
+        current_user = db.session.scalar(select(User).where(User.id_role == id_role))
+        permissions = db.session.scalars(
+            select(Permission).where(Permission.id_permission.in_(id_permissions))
+        ).all()
+        taxon_view = GenericQueryGeo(
+            DB=DB, tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese"
+        )
+        columns = taxon_view.view.tableDef.columns
+
+        # Test de conformité de la vue v_synthese_for_export_view
+        try:
+            assert hasattr(columns, "cd_ref")
+        except AssertionError as e:
+            return (
+                {
+                    "msg": """
+                            View v_synthese_taxon_for_export_view
+                            must have a cd_ref column \n
+                            trace: {}
+                            """.format(
+                        str(e)
+                    )
+                },
+                500,
+            )
+
+        sub_query = (
+            select(
+                VSyntheseForWebApp.cd_ref,
+                func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
+                func.min(VSyntheseForWebApp.date_min).label("date_min"),
+                func.max(VSyntheseForWebApp.date_max).label("date_max"),
+            )
+            .where(VSyntheseForWebApp.id_synthese.in_(id_list))
+            .group_by(VSyntheseForWebApp.cd_ref)
         )
 
-    sub_query = (
-        select(
-            VSyntheseForWebApp.cd_ref,
-            func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
-            func.min(VSyntheseForWebApp.date_min).label("date_min"),
-            func.max(VSyntheseForWebApp.date_max).label("date_max"),
+        synthese_query_class = SyntheseQuery(
+            VSyntheseForWebApp,
+            sub_query,
+            {},
         )
-        .where(VSyntheseForWebApp.id_synthese.in_(id_list))
-        .group_by(VSyntheseForWebApp.cd_ref)
-    )
 
-    synthese_query_class = SyntheseQuery(
-        VSyntheseForWebApp,
-        sub_query,
-        {},
-    )
+        synthese_query_class.filter_query_all_filters(current_user, permissions)
 
-    synthese_query_class.filter_query_all_filters(current_user, permissions)
+        subq = synthese_query_class.query.alias("subq")
 
-    subq = synthese_query_class.query.alias("subq")
+        query = select(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
+            subq, subq.c.cd_ref == columns.cd_ref
+        )
 
-    query = select(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
-        subq, subq.c.cd_ref == columns.cd_ref
-    )
+        # Créate schema
+        extra_fields = {}
+        extra_fields["nb_obs"] = fields.Integer(dump_only=True)
+        extra_fields["date_min"] = fields.Date(dump_only=True)
+        extra_fields["date_max"] = fields.Date(dump_only=True)
+        ExportTaxonViewSchema = type(
+            "ExportTaxonViewSchema", (taxon_view.get_marshmallow_schema(),), extra_fields
+        )
+        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
+        current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+        export_file_name = f"export_taxons_{current_timestamp}"
 
-    # Créate schema
-    extra_fields = {}
-    extra_fields["nb_obs"] = fields.Integer(dump_only=True)
-    extra_fields["date_min"] = fields.Date(dump_only=True)
-    extra_fields["date_max"] = fields.Date(dump_only=True)
-    ExportTaxonViewSchema = type(
-        "ExportTaxonViewSchema", (taxon_view.get_marshmallow_schema(),), extra_fields
-    )
-    export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
-    current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
-    export_file_name = f"export_taxons_{current_timestamp}"
+        export_data_file(
+            file_name=f"{export_dir}/{export_file_name}",
+            export_url="",
+            format="csv",
+            query=query,
+            schema_class=ExportTaxonViewSchema,
+            pk_name=None,
+            srid=None,
+            columns=[],
+        )
 
-    export_data_file(
-        file_name=f"{export_dir}/{export_file_name}",
-        export_url="",
-        format="csv",
-        query=query,
-        schema_class=ExportTaxonViewSchema,
-        pk_name=None,
-        srid=None,
-        columns=[],
-    )
+        db_task.end = datetime.datetime.now()
+        db_task.status = "success"
+        db.session.commit()
+    except Exception as e:
+        db_task.status = "error"
+        db.session.commit()
+        raise e
 
 
 @celery_app.task(bind=True)

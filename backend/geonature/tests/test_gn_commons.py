@@ -1,8 +1,10 @@
 from pathlib import Path
 import tempfile
+import uuid
 
 import pytest
 import json
+import datetime
 from flask import url_for, current_app
 from geoalchemy2.elements import WKTElement
 from PIL import Image
@@ -13,7 +15,13 @@ from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
 from werkzeug.datastructures import Headers
 
 from geonature.core.gn_commons.admin import BibFieldAdmin
-from geonature.core.gn_commons.models import TAdditionalFields, TMedias, TPlaces, BibTablesLocation
+from geonature.core.gn_commons.models import (
+    TAdditionalFields,
+    TMedias,
+    TPlaces,
+    BibTablesLocation,
+    Task,
+)
 from geonature.core.gn_commons.models.base import TMobileApps, TModules, TParameters, BibWidgets
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.tasks import clean_attachments
@@ -97,6 +105,21 @@ def nonexistent_media():
 @pytest.fixture(scope="function")
 def media_repository(medium):
     return TMediaRepository(id_media=medium.id_media)
+
+
+@pytest.fixture(scope="function")
+def task(modules, users):
+    t = None
+    with db.session.begin_nested():
+        t = Task(
+            id_role=users["user"].id_role,
+            uuid_celery=uuid.uuid4(),
+            id_module=modules[0].id_module,
+            start=datetime.datetime.now(),
+            message="test",
+        )
+        db.session.add(t)
+    return t
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -640,6 +663,27 @@ class TestCommons:
 
         assert response.status_code == 204  # No content
         assert response.json is None
+
+    def test_get_db_tasks_unautorize(self, tasks):
+        resp = self.client.get(url_for("gn_commons.get_tasks"))
+        assert resp.status_code == 401
+
+    def test_get_db_tasks_filtered(self, task, users, modules):
+        # la tache est créée avec l'utilisateur "user"
+        set_logged_user(self.client, users["user"])
+        resp = self.client.get(
+            url_for("gn_commons.get_tasks", id_module=modules[0].id_module, uuid=task.uuid_celery)
+        )
+        assert resp.status_code == 200
+        resp_tasks = resp.json
+        assert type(resp_tasks) is list
+        expected_columns = ["id_task", "id_role", "id_module", "start", "end", "message"]
+        first_task = resp_tasks[0]
+        for col in expected_columns:
+            assert col in first_task
+        assert first_task["id_role"] == users["user"].id_role
+        assert first_task["id_module"] == modules[0].id_module
+        assert first_task["id_task"] == task.id_task
 
 
 @pytest.mark.usefixtures("temporary_transaction")
