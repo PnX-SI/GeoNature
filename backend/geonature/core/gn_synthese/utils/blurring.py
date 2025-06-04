@@ -183,8 +183,6 @@ def build_synthese_obs_query(observations, allowed_geom_cte, limit):
             )
         )
         .order_by(
-            VSyntheseForWebApp.date_min.desc(),
-            VSyntheseForWebApp.id_synthese.desc(),
             allowed_geom_cte.c.priority,
         )
         .distinct(VSyntheseForWebApp.date_min, VSyntheseForWebApp.id_synthese)

@@ -21,9 +21,11 @@ from geonature.utils.env import db
 from geonature.core.gn_permissions.tools import get_permissions
 from geonature.core.gn_permissions.decorators import permissions_required
 
+from utils_flask_sqla.db import ordered
+
 
 def synthese_column_formatters(param_column_list):
-    columns = []
+    columns = {}
     if "count_min_max" in param_column_list:
         count_min_max = sa.case(
             (
@@ -36,14 +38,14 @@ def synthese_column_formatters(param_column_list):
             ),
             else_="",
         )
-        columns += [count_min_max]
+        columns["count_min_max"] = count_min_max
         param_column_list.remove("count_min_max")
 
     if "nom_vern_or_lb_nom" in param_column_list:
         nom_vern_or_lb_nom = sa.func.coalesce(
             sa.func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
         )
-        columns += [nom_vern_or_lb_nom]
+        columns["nom_vern_or_lb_nom"] = nom_vern_or_lb_nom
         param_column_list.remove("nom_vern_or_lb_nom")
     return columns
 
@@ -58,26 +60,45 @@ def observations(permissions):
     limit = parameters.pop("limit", None)
     with_geom = parameters.pop("with_geom", True)
     format = parameters.pop("format", "json")
+    query_columns = parameters.pop("columns", MANDATORY_COLUMNS)
 
     blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
-    ##################################################
-    ## Retrieve columns returned by the Synthese query
-    ##################################################
 
-    columns = [getattr(VSyntheseForWebApp, col) for col in MANDATORY_COLUMNS]
+    columns = {col: getattr(VSyntheseForWebApp, col) for col in query_columns}
+    columns.update(synthese_column_formatters(query_columns))
 
-    # Column declared in the configuration
-    configured_columns = (
-        current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
-        + current_app.config["SYNTHESE"]["ADDITIONAL_COLUMNS_FRONTEND"]
-    )
-    param_column_list = {col["prop"] for col in configured_columns}
+    if with_geom or format == "geojson":
+        columns.update(
+            {
+                "geojson": sa.func.st_asgeojson(VSyntheseForWebApp.the_geom_4326)
+                .cast(sa.JSON)
+                .label("geojson")
+            }
+        )
 
-    columns.extend(synthese_column_formatters(param_column_list))
-    columns += [getattr(VSyntheseForWebApp, column) for column in param_column_list]
+    if format == "geojson":
+        cols = []
+        for colname, col_ in columns.items():
+            if not colname == "geojson":
+                cols.extend([colname, col_])
 
-    if with_geom:
-        columns.append(sa.func.st_asgeojson(VSyntheseForWebApp.the_geom_4326).label("geojson"))
+        columns = sa.func.json_build_object(
+            "type",
+            "FeatureCollection",
+            "features",
+            sa.func.json_agg(
+                sa.func.json_build_object(
+                    "type",
+                    "Feature",
+                    "geometry",
+                    columns["geojson"],
+                    "properties",
+                    sa.func.json_build_object(*cols),
+                )
+            ),
+        )
+    else:
+        columns = list(columns.values())
 
     #########################
     # CREATING THE QUERY
@@ -104,14 +125,10 @@ def observations(permissions):
             limit=limit,
         )
     else:
-        obs_query = (
-            sa.select(columns)
-            .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
-            .order_by(VSyntheseForWebApp.date_min.desc())
-        )
+        obs_query = sa.select(columns).where(VSyntheseForWebApp.the_geom_4326.isnot(None))
 
-    if limit:
-        obs_query = obs_query.limit(limit)
+        if limit:
+            obs_query = obs_query.limit(limit)
 
     # Add filters to observations CTE query
     synthese_query_class = SyntheseQuery(
@@ -123,6 +140,6 @@ def observations(permissions):
     obs_query = synthese_query_class.build_query()
 
     if page and per_page:
-        return jsonify(db.paginate(select=obs_query, page=page, per_page=per_page))
+        return jsonify(db.paginate(select=obs_query, page=page, per_page=per_page, scalars=False))
 
     return db.session.execute(obs_query).all()
