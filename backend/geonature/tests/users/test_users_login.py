@@ -78,6 +78,7 @@ class TestUsersLogin:
         response = self.client.post(url_for("auth.public_login"))
         assert response.status_code == 200
 
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestApiUsersLogin:
     def test_connect_api_user(self, users):
