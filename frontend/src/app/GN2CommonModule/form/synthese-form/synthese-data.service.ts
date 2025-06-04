@@ -9,6 +9,7 @@ import {
 } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
+import { stringify as toWKT } from 'wellknown';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
