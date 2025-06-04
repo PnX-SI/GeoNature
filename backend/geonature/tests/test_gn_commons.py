@@ -114,7 +114,7 @@ def task(modules, users):
         t = Task(
             id_role=users["user"].id_role,
             uuid_celery=uuid.uuid4(),
-            id_module=modules[0].id_module,
+            id_module=modules[0].id_module,  # module_code = MODULE_TEST_1
             start=datetime.datetime.now(),
             message="test",
         )
@@ -672,12 +672,17 @@ class TestCommons:
         # la tache est créée avec l'utilisateur "user"
         set_logged_user(self.client, users["user"])
         resp = self.client.get(
-            url_for("gn_commons.get_tasks", id_module=modules[0].id_module, uuid=task.uuid_celery)
+            url_for(
+                "gn_commons.get_tasks",
+                module_code=modules[0].module_code,
+                uuid=task.uuid_celery,
+                start=datetime.datetime.now(),
+            )
         )
         assert resp.status_code == 200
         resp_tasks = resp.json
         assert type(resp_tasks) is list
-        expected_columns = ["id_task", "id_role", "id_module", "start", "end", "message"]
+        expected_columns = ["id_task", "id_role", "id_module", "start", "end", "message", "url"]
         first_task = resp_tasks[0]
         for col in expected_columns:
             assert col in first_task

@@ -88,7 +88,7 @@ def create_db_task(id_role, uuid_celery):
         start=datetime.datetime.now(),
         status="pending",
         id_module=module.id_module,
-        message="",
+        message="Le génération du fichier d'export est en cours...",
     )
     db.session.add(task)
     db.session.commit()
@@ -99,11 +99,12 @@ def create_db_task(id_role, uuid_celery):
 def update_db_task(task, export_file_path):
     task.end = datetime.datetime.now()
     task.status = "success"
-    task.message = url_for(
+    task.url = url_for(
         "media",
         filename="exports/synthese/" + export_file_path,
         _external=True,
     )
+    task.message = "L'export a été généré et est prêt à être télécharger"
     db.session.commit()
 
 

@@ -359,3 +359,6 @@ class Task(DB.Model):
     end = DB.Column(DB.DateTime)
     status = DB.Column(DB.Unicode, nullable=False)
     message = DB.Column(DB.Unicode)
+    url = DB.Column(DB.Unicode)
+
+    module = DB.relationship(TModules)

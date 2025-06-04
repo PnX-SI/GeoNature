@@ -315,9 +315,10 @@ def delete_place(id_place):
 def get_tasks():
     query = db.select(Task).filter_by(id_role=g.current_user.id_role)
     if "uuid" in request.args:
-        query = query.filter_by(uuid_celery=request.args["uuid"])
-    if "id_module" in request.args:
-        query = query.filter_by(id_module=request.args["id_module"])
+        uuid_list = request.args.getlist("uuid")
+        query = query.filter(Task.uuid_celery.in_(uuid_list))
+    if "module_code" in request.args:
+        query = query.filter(Task.module.has(module_code=request.args["module_code"]))
     tasks = db.session.scalars(query).all()
     task_schema = TaskSchema()
     return task_schema.jsonify(tasks, many=True)
