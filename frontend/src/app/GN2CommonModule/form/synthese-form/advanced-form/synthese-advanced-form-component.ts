@@ -13,7 +13,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 @Component({
   selector: 'pnx-validation-taxon-advanced',
   templateUrl: './synthese-advanced-form.component.html',
-  providers: [DynamicFormService],
+  providers: [DynamicFormService, TaxonAdvancedStoreService],
   styleUrls: ['./synthese-advanced-form.component.scss'],
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
