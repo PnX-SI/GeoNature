@@ -16,6 +16,7 @@ from geonature.core.gn_synthese.blueprints import (
     taxon_info_routes,
     other_routes,
     export_routes,
+    obs_routes,
 )
 
 routes = Blueprint("gn_synthese", __name__)
@@ -26,6 +27,9 @@ routes.register_blueprint(statistics_routes, url_prefix="/")
 routes.register_blueprint(taxon_info_routes, url_prefix="/")
 routes.register_blueprint(other_routes, url_prefix="/")
 routes.register_blueprint(export_routes, url_prefix="/")
+
+# new /observations
+routes.register_blueprint(obs_routes, url_prefix="/observations")
 
 
 @routes.route("/log", methods=["get"])
