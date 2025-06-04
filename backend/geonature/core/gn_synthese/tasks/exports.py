@@ -393,7 +393,7 @@ def export_status_task(self, id_permissions, id_role, filters):
             srid=None,
             columns=[],
         )
-        update_db_task(db_task, export_file_name)
+        db_task.set_succesfull(export_file_name)
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
