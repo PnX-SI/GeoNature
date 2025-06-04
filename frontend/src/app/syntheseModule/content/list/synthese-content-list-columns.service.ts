@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ConfigService } from '@geonature/services/config.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 

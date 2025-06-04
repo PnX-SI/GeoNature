@@ -10,9 +10,11 @@ import {
   RouteService,
   ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES,
 } from './taxon-sheet/taxon-sheet.route.service';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseObsModalWrapperComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs-container.component';
 import { SyntheseFormService } from './services/form.service';
+import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
+import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 const routes: Routes = [
   {
     path: '',
@@ -56,14 +58,13 @@ const routes: Routes = [
     TreeModule,
     NgbModule,
     TaxonSheetComponent,
-    SyntheseComponent
+    SyntheseComponent,
   ],
   entryComponents: [
     SyntheseComponent,
+    SyntheseInfoObsComponent,
+    SyntheseObsModalWrapperComponent
   ],
-  providers: [
-    RouteService,
-    SyntheseFormService
-  ],
+  providers: [NgbActiveModal, RouteService, SyntheseFormService, TaxonAdvancedStoreService],
 })
 export class SyntheseModule {}
