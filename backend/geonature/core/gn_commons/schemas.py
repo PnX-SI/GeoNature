@@ -1,4 +1,5 @@
 import logging
+from flask import url_for
 from marshmallow import Schema, pre_load, fields, EXCLUDE
 
 from utils_flask_sqla.schema import SmartRelationshipsMixin
@@ -77,6 +78,15 @@ class TaskSchema(MA.SQLAlchemyAutoSchema):
         model = Task
         load_instance = True
         include_fk = True
+
+    url = fields.Method("get_url")
+
+    def get_url(self, obj):
+        if obj.file_name:
+            return url_for(
+                "media", filename="exports/usr_generated/" + obj.file_name, _external=True
+            )
+        return None
 
 
 class LabelValueDict(Schema):

@@ -47,5 +47,3 @@ if "APPLICATION_ROOT" not in config:
     config["APPLICATION_ROOT"] = api_uri.path or "/"
 if "PREFERRED_URL_SCHEME" not in config:
     config["PREFERRED_URL_SCHEME"] = api_uri.scheme
-
-config["SERVER_NAME"] = api_uri.netloc

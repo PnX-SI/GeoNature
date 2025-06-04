@@ -33,7 +33,7 @@ def upgrade():
         sa.Column("end", sa.DateTime),
         sa.Column("status", sa.Unicode(50)),
         sa.Column("message", sa.Text),
-        sa.Column("url", sa.Unicode(500)),
+        sa.Column("file_name", sa.Unicode(500)),
         schema="gn_commons",
     )
 

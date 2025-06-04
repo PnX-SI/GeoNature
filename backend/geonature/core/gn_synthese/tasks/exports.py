@@ -1,21 +1,15 @@
 import os
-import datetime
 from pathlib import Path
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
-import datetime
+from datetime import datetime, timedelta
+
 import json
 import re
 from collections import OrderedDict
 from pathlib import Path
-from flask import (
-    Blueprint,
-    current_app,
-    g,
-    render_template,
-    request,
-    send_from_directory,
-)
+
+from flask import current_app, url_for
 
 from marshmallow import fields
 from geonature.core.gn_synthese.models import (
@@ -37,18 +31,10 @@ from geonature.utils.env import DB, db
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 from apptax.taxonomie.models import (
-    Taxref,
-    TaxrefBdcStatutCorTextValues,
-    TaxrefBdcStatutTaxon,
-    TaxrefBdcStatutText,
-    TaxrefBdcStatutType,
-    TaxrefBdcStatutValues,
     bdc_statut_cor_text_area,
 )
 
-from flask import url_for
-
-from sqlalchemy import distinct, func, select
+from sqlalchemy import distinct, func, select, delete
 from utils_flask_sqla.generic import GenericTable, serializeQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo, GenericQueryGeo
@@ -85,7 +71,7 @@ def create_db_task(id_role, uuid_celery):
     task = Task(
         id_role=id_role,
         uuid_celery=uuid_celery,
-        start=datetime.datetime.now(),
+        start=datetime.now(),
         status="pending",
         id_module=module.id_module,
         message="Le génération du fichier d'export est en cours...",
@@ -96,14 +82,10 @@ def create_db_task(id_role, uuid_celery):
     return task
 
 
-def update_db_task(task, export_file_path):
-    task.end = datetime.datetime.now()
+def update_db_task(task, file_name):
+    task.end = datetime.now()
     task.status = "success"
-    task.url = url_for(
-        "media",
-        filename="exports/synthese/" + export_file_path,
-        _external=True,
-    )
+    task.file_name = file_name
     task.message = "L'export a été généré et est prêt à être télécharger"
     db.session.commit()
 
@@ -160,8 +142,8 @@ def export_taxons(self, id_permissions, id_list, id_role):
         ExportTaxonViewSchema = type(
             "ExportTaxonViewSchema", (taxon_view.get_marshmallow_schema(),), extra_fields
         )
-        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
-        current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated"
+        current_timestamp = datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
         export_file_name = f"export_taxons_{current_timestamp}.csv"
 
         full_file_path = f"{export_dir}/{export_file_name}"
@@ -310,8 +292,8 @@ def export_observations(self, id_permissions, id_list, params, id_role):
         # Créate schema
         ExportObservationViewSchema = export_view.get_marshmallow_schema()
 
-        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
-        current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated"
+        current_timestamp = datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
         export_file_name = f"export_observations_{current_timestamp}"
 
         db_cols_for_shape = []
@@ -380,8 +362,8 @@ def export_metadata_task(self, id_permissions, id_role, filters):
         )
 
         synthese_query_class.filter_query_all_filters(current_user, permissions)
-        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
-        current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated"
+        current_timestamp = datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
         export_file_name = f"export_metadonnées_{current_timestamp}.csv"
 
         query = synthese_query_class.build_query()
@@ -445,8 +427,8 @@ def export_status_task(self, id_permissions, id_role, filters):
         query = synthese_query_class.build_query()
 
         synthese_query_class.filter_query_all_filters(current_user, permissions)
-        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
-        current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated"
+        current_timestamp = datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
 
         export_file_name = f"export_status_{current_timestamp}.csv"
 

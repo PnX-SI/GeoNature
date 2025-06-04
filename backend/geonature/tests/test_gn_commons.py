@@ -1,10 +1,11 @@
-from pathlib import Path
 import tempfile
 import uuid
-
+import os
 import pytest
 import json
 import datetime
+
+from pathlib import Path
 from flask import url_for, current_app
 from geoalchemy2.elements import WKTElement
 from PIL import Image
@@ -44,6 +45,13 @@ def place(users):
     with db.session.begin_nested():
         db.session.add(place)
     return place
+
+
+@pytest.fixture(scope="function")
+def export_directory(monkeypatch):
+    with tempfile.TemporaryDirectory() as media_td:
+        monkeypatch.setitem(current_app.config, "MEDIA_FOLDER", media_td)
+        yield media_td
 
 
 @pytest.fixture(scope="function")
@@ -108,18 +116,29 @@ def media_repository(medium):
 
 
 @pytest.fixture(scope="function")
-def task(modules, users):
+def tasks(modules, users):
     t = None
     with db.session.begin_nested():
-        t = Task(
+        new_task = Task(
             id_role=users["user"].id_role,
             uuid_celery=uuid.uuid4(),
-            id_module=modules[0].id_module,  # module_code = MODULE_TEST_1
+            id_module=modules[0].id_module,
             start=datetime.datetime.now(),
             message="test",
         )
-        db.session.add(t)
-    return t
+        db.session.add(new_task)
+        old_date = datetime.datetime.now() - datetime.timedelta(15)
+        old_task = Task(
+            id_role=users["user"].id_role,
+            uuid_celery=uuid.uuid4(),
+            id_module=modules[0].id_module,
+            start=old_date,
+            end=old_date,
+            message="test",
+            file_name="test.csv",
+        )
+        db.session.add(old_task)
+    return {"new_task": new_task, "old_task": old_task}
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -668,14 +687,14 @@ class TestCommons:
         resp = self.client.get(url_for("gn_commons.get_tasks"))
         assert resp.status_code == 401
 
-    def test_get_db_tasks_filtered(self, task, users, modules):
+    def test_get_db_tasks_filtered(self, tasks, users, modules):
         # la tache est créée avec l'utilisateur "user"
         set_logged_user(self.client, users["user"])
         resp = self.client.get(
             url_for(
                 "gn_commons.get_tasks",
                 module_code=modules[0].module_code,
-                uuid=task.uuid_celery,
+                uuid=tasks["new_task"].uuid_celery,
                 start=datetime.datetime.now(),
             )
         )
@@ -688,7 +707,7 @@ class TestCommons:
             assert col in first_task
         assert first_task["id_role"] == users["user"].id_role
         assert first_task["id_module"] == modules[0].id_module
-        assert first_task["id_task"] == task.id_task
+        assert first_task["id_task"] == tasks["new_task"].id_task
 
 
 @pytest.mark.usefixtures("temporary_transaction")
@@ -709,3 +728,35 @@ class TestTasks:
 
         # File should be removed
         assert not Path(medium.media_path).is_file()
+
+
+# deletes the files hand created files
+def test_export_clean(self, export_directories):
+    (export_directories["schedules_path"] / "very_old.txt").open("x")
+    os.utime(
+        export_directories["schedules_path"] / "very_old.txt",
+        (1330712280, 1330712292),
+    )
+    recent = datetime.datetime.now() - datetime.timedelta(
+        days=current_app.config["EXPORTS"]["nb_days_keep_file"] / 2
+    )
+    (export_directories["schedules_path"] / "recent.txt").open("x")
+    os.utime(
+        export_directories["schedules_path"] / "recent.txt",
+        (recent.timestamp(), recent.timestamp()),
+    )
+    old = datetime.datetime.now() - datetime.timedelta(
+        days=current_app.config["EXPORTS"]["nb_days_keep_file"] * 2
+    )
+    (export_directories["usr_generated_path"] / "old.txt").open("x")
+    os.utime(
+        export_directories["usr_generated_path"] / "old.txt",
+        (old.timestamp(), old.timestamp()),
+    )
+    (export_directories["usr_generated_path"] / "very_recent.txt").open("x")
+
+    clean_export_file()
+    assert not (export_directories["schedules_path"] / "very_old.txt").is_file()
+    assert (export_directories["schedules_path"] / "recent.txt").is_file()
+    assert not (export_directories["usr_generated_path"] / "old.txt").is_file()
+    assert (export_directories["usr_generated_path"] / "very_recent.txt").is_file()
