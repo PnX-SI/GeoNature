@@ -7,10 +7,7 @@ from flask import (
 from geonature.core.gn_permissions.decorators import permissions_required
 
 from geonature.core.gn_synthese.tasks.exports import (
-    export_taxons,
-    export_observations,
-    export_metadata_task,
-    export_status_task,
+    export_synthese_task,
 )
 
 export_routes = Blueprint("exports", __name__)
@@ -35,9 +32,10 @@ def export_taxon_web(permissions):
 
     id_list = request.get_json()
 
-    uuid_task = export_taxons.delay(
+    uuid_task = export_synthese_task.delay(
+        export_type="taxons",
         id_permissions=[p.id_permission for p in permissions],
-        id_list=id_list,
+        params={"id_list": id_list},
         id_role=g.current_user.id_role,
     )
 
@@ -63,11 +61,12 @@ def export_observations_web(permissions):
     params = request.args
     # get list of id synthese from POST
     id_list = request.get_json()
+    all_params = {**params, **{"id_list": id_list}}
 
-    uuid_task = export_observations.delay(
+    uuid_task = export_synthese_task.delay(
+        export_type="observations",
         id_permissions=[p.id_permission for p in permissions],
-        id_list=id_list,
-        params=params,
+        params=all_params,
         id_role=g.current_user.id_role,
     )
 
@@ -90,11 +89,13 @@ def export_metadata(permissions):
     """
     filters = request.json if request.is_json else {}
 
-    uuid_task = export_metadata_task.delay(
+    uuid_task = export_synthese_task.delay(
+        export_type="metadata",
         id_permissions=[p.id_permission for p in permissions],
+        params=filters,
         id_role=g.current_user.id_role,
-        filters=filters,
     )
+
     return {"msg": "task en cours", "uuid_task": str(uuid_task)}
 
 
@@ -112,10 +113,11 @@ def export_status(permissions):
         - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
     """
     filters = request.json if request.is_json else {}
-    uuid_task = export_status_task.delay(
+    uuid_task = export_synthese_task.delay(
+        export_type="status",
         id_permissions=[p.id_permission for p in permissions],
+        params=filters,
         id_role=g.current_user.id_role,
-        filters=filters,
     )
 
     return {"msg": "task en cours", "uuid_task": str(uuid_task)}
