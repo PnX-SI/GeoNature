@@ -19,6 +19,7 @@ class GeomMode(str, Enum):
     PRECISE = 'precise'
     AUTO = 'auto'
 
+
 def _aggregate_by_area(observation_subquery, area_aggregation_type):
     """
     From a subquery, or cte aggregate with area of type area_aggregation_type
@@ -50,7 +51,7 @@ def _geom_area_mode(filters, permissions, area_aggregation_type):
     if not blurring_permissions:
         # No need to apply blurring => same path as before blurring feature
         obs_query = (
-            select(VSyntheseForWebApp.id_synthese, VSyntheseForWebApp.id_synthese)
+            select(VSyntheseForWebApp.id_synthese)
             .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
             .order_by(VSyntheseForWebApp.date_min.desc())
         )
@@ -66,15 +67,21 @@ def _geom_area_mode(filters, permissions, area_aggregation_type):
         obs_query = obs_query.subquery("obs")
         obs_query_aggregated_by_area = _aggregate_by_area(obs_query, area_aggregation_type)
 
-        grouped_properties = func.json_build_object(
-            "observations_count", func.count(obs_query_aggregated_by_area.c.id_synthese).label("observations_count")
-        )
-        query = select(obs_query_aggregated_by_area.c.geojson, grouped_properties).group_by(
+        query = select(obs_query_aggregated_by_area.c.geojson,
+                       func.count(obs_query_aggregated_by_area.c.id_synthese).label("observations_count")).group_by(
             obs_query_aggregated_by_area.c.geojson)
     else:
         raise NotImplemented("Not implemented blurring permissions")
     results = db.session.execute(query)
-    return results.all()
+    geojson_features = []
+    for geom_as_geojson, observation_count in results.all():
+        geojson_features.append(
+            Feature(
+                geometry=json.loads(geom_as_geojson) if geom_as_geojson else None,
+                properties={"observation_count": observation_count},
+            )
+        )
+    return jsonify(FeatureCollection(geojson_features))
 
 
 @permissions_required("R", module_code="SYNTHESE")
