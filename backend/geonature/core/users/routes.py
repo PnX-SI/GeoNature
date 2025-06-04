@@ -4,6 +4,7 @@ import json
 
 
 from flask import Blueprint, request, current_app, Response, redirect, g, render_template
+from flask_login import login_required
 from sqlalchemy.sql import distinct, and_
 from sqlalchemy import distinct, and_, select, exists
 from werkzeug.exceptions import NotFound, BadRequest, Forbidden, Unauthorized
@@ -450,7 +451,7 @@ def new_password():
 # TODO bcp plus pratique en get, on reste en get ?
 @routes.route("/get_api_secret", methods=["GET"])
 @json_resp
-@permissions.login_required
+@login_required
 def get_api_secret():
     """
         génère un secret api et une clé api
