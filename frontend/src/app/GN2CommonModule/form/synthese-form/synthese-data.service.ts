@@ -285,4 +285,12 @@ export class SyntheseDataService {
   modifyReport(id, params) {
     return this._api.put(`${this.config.API_ENDPOINT}/synthese/reports/${id}`, params);
   }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // observations
+  // //////////////////////////////////////////////////////////////////////////
+
+  getObservations(filters) {
+    return this._api.post<any>(`${this.config.API_ENDPOINT}/synthese/observations/search`, filters);
+  }
 }

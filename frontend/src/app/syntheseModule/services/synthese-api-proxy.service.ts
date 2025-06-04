@@ -22,8 +22,8 @@ export class SyntheseApiProxyService {
     sortBy: 'date_min',
   };
 
-  pagination: SyntheseDataPaginationItem;
-  sort?: SyntheseDataSortItem;
+  pagination: SyntheseDataPaginationItem = this.DEFAULT_PAGINATION;
+  sort: SyntheseDataSortItem = this.DEFAULT_SORTING;
 
   // //////////////////////////////////////////////////////////////////////////
   // Filters
@@ -31,7 +31,7 @@ export class SyntheseApiProxyService {
   _filters: {};
 
   get filters() {
-    return this.filters;
+    return this._filters;
   }
   set filters(filters: any) {
     // reset pagination and sort
@@ -39,13 +39,36 @@ export class SyntheseApiProxyService {
     this.sort.sortBy = this.DEFAULT_SORTING.sortBy;
     this.sort.sortOrder = this.DEFAULT_SORTING.sortOrder;
 
-    this.filters = filters;
-    console.log(this.filters);
+    this._filters = filters;
   }
 
-  observationsPaginated: [];
+  // //////////////////////////////////////////////////////////////////////////
+  // observationsList
+  // //////////////////////////////////////////////////////////////////////////
 
-  public fetchObservations() {
+  observationsList:[];
 
+  // //////////////////////////////////////////////////////////////////////////
+  // Filters
+  // //////////////////////////////////////////////////////////////////////////
+
+  private _concatFilterPaginationAndSort() {
+    return {
+      ...this._filters,
+      per_page: this.pagination.perPage,
+      page: this.pagination.currentPage
+    }
+  }
+
+  public fetchObservationsList() {
+    this._dataService
+      .getObservations(this._concatFilterPaginationAndSort())
+      .subscribe((observations) => {
+        this.observationsList = observations.items;
+        this.pagination.totalItems = observations.total;
+        this.pagination.perPage = observations.per_page;
+        this.pagination.currentPage = observations.page;
+        console.log(this.observationsList);
+      });
   }
 }

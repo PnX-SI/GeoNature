@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { SyntheseApiProxyService } from '@geonature/syntheseModule/services/synthese-api-proxy.service';
 import { SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   standalone: true,
@@ -17,16 +18,19 @@ import { SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synth
   providers: [SyntheseContentListColumnsService],
 })
 export class SyntheseContentListComponent {
+  constructor(
+    public columnService: SyntheseContentListColumnsService,
+    private _apiProxyService: SyntheseApiProxyService,
+    public config: ConfigService
+  ) {}
+
   // //////////////////////////////////////////////////////////////////////////
   // data
   // //////////////////////////////////////////////////////////////////////////
 
-  data: Array<any>;
-
-  constructor(
-    public columnService: SyntheseContentListColumnsService,
-    private _apiProxyService: SyntheseApiProxyService
-  ) {}
+  get observationsList() {
+    return this._apiProxyService.observationsList;
+  }
 
   get pagination(): SyntheseDataPaginationItem {
     return this._apiProxyService.pagination;
@@ -36,7 +40,7 @@ export class SyntheseContentListComponent {
     return this._apiProxyService.sort;
   }
 
-  fetchObservations = this._apiProxyService.fetchObservations;
+  fetchObservationsList = this._apiProxyService.fetchObservationsList;
 
   // //////////////////////////////////////////////////////////////////////////
   // Pagination and sorting
@@ -44,13 +48,25 @@ export class SyntheseContentListComponent {
 
   onChangePage(event: any) {
     this.pagination.currentPage = event.offset + 1;
-    this.fetchObservations();
+    this.fetchObservationsList();
   }
 
   onColumnSort(event: any) {
     this.sort.sortBy = event.newValue;
     this.sort.sortOrder = event.column.prop;
     this.pagination.currentPage = 1;
-    this.fetchObservations();
+    this.fetchObservationsList();
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // Date
+  // //////////////////////////////////////////////////////////////////////////
+
+  getDate(date) {
+    function pad(s) {
+      return s < 10 ? '0' + s : s;
+    }
+    const d = new Date(date);
+    return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('-');
   }
 }

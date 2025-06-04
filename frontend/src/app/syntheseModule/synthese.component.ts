@@ -25,8 +25,7 @@ export class SyntheseComponent implements OnInit {
   ngOnInit() {}
 
   onSearchEvent(event) {
-    console.log('-- trigger search event');
-    console.log(event);
     this._apiProxyService.filters = event;
+    this._apiProxyService.fetchObservationsList();
   }
 }

@@ -1,7 +1,7 @@
 <ngx-datatable
   #table
-  class="material margin-top-xs table-size expandable"
-  [rows]="data"
+  class="SyntheseContentList material margin-top-xs table-size expandable"
+  [rows]="observationsList"
   [columns]="columnService.defaultColumns"
   [columnMode]="'force'"
   [reorderable]="true"
@@ -36,7 +36,7 @@
       >
         <i
           #iElement
-          matTooltip="{{ row[mapListService.idName] }}"
+          matTooltip="{{ ETIENNE }}"
           class="fa fa-info-circle"
           aria-hidden="true "
           data-qa="synthese-info-btn"
