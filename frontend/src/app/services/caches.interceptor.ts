@@ -7,7 +7,6 @@ import { ConfigService } from './config.service';
 @Injectable()
 export class CachesInterceptor implements HttpInterceptor {
   private cache = new Map<string, any>();
-
   private urlToCache = new Set(['/synthese/for_web']);
 
   constructor(public config: ConfigService) {}
@@ -15,8 +14,6 @@ export class CachesInterceptor implements HttpInterceptor {
     let url = request.url.replace(this.config.API_ENDPOINT, '');
     const cacheKey = this.createCacheKey(request.url, request.body);
 
-    console.log(url);
-    console.log(request.url);
     this.config.API_ENDPOINT;
     http: if (this.urlToCache.has(url)) {
       caches.open('geonature');

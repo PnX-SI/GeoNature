@@ -23,6 +23,8 @@ import { SyntheseCarteDrawingService } from './synthese-carte-drawing.service';
 import { LeafletDrawComponent } from '@geonature_common/map/leaflet-draw/leaflet-draw.component';
 import { LeafletFileLayerComponent } from '@geonature_common/map/filelayer/filelayer.component';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { GeoJsonObject } from '@librairies/@types/geojson';
 
 export type EventToggle = 'grid' | 'point';
 
@@ -34,7 +36,7 @@ export type EventToggle = 'grid' | 'point';
   imports: [GN2CommonModule],
   providers: [SyntheseCarteDrawingService],
 })
-export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy {
   public firstFileLayerMessage = true;
   public SYNTHESE_CONFIG = null;
   public cluserOrSimpleFeatureGroup = null;
@@ -84,8 +86,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     iconAnchor: [14, 38],
   });
 
-  @Input() inputSyntheseData: GeoJSON;
-  @Output() onAreasToggle = new EventEmitter<EventToggle>();
+  private SyntheseData: GeoJsonObject;
 
   constructor(
     public mapListService: MapListService,
@@ -94,23 +95,20 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     private _commonService: CommonService,
     private translateService: TranslateService,
     public config: ConfigService,
-    public drawingService: SyntheseCarteDrawingService
+    public drawingService: SyntheseCarteDrawingService,
+    public dataService: SyntheseDataService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
     // set a new featureGroup - cluster or not depending of the synthese config
     this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
       ? (L as any).markerClusterGroup()
       : new L.FeatureGroup();
-    this.areasEnable =
-      this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
-      this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
+    this.areasEnable = true;
+    // this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
+    // this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
   }
 
   ngOnInit() {
-    // this.leafletDrawOptions.draw.rectangle = true;
-    // this.leafletDrawOptions.draw.circle = true;
-    // this.leafletDrawOptions.draw.polyline = false;
-    // this.leafletDrawOptions.edit.remove = true;
     this.initializeFormWithMapParams();
   }
 
@@ -150,13 +148,22 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
 
     // Handle areas button and legend
-    if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED) {
-      this.addAreasButton();
-      this.onLanguageChange();
-      if (this.areasEnable) {
-        this.addAreasLegend();
-      }
-    }
+    this.addAreasButton();
+    this.onLanguageChange();
+    this.addAreasLegend();
+    // if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED) {
+    //   if (this.areasEnable) {
+    //   }
+    // }
+    const debouncedStoppedMoving = this.debounceEvent(this.manageMouveEvent.bind(this), 2000);
+
+    this._ms.map.on('zoomend', debouncedStoppedMoving.bind(this));
+    this._ms.map.on('dragend', debouncedStoppedMoving.bind(this));
+    this.getAreas();
+  }
+
+  manageMouveEvent(e) {
+    this.getAreas();
   }
 
   private onLanguageChange() {
@@ -191,19 +198,20 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         let switchBtn = L.DomUtil.create('input', 'custom-control-input', switchBtnContainer);
         switchBtn.id = 'toggle-areas-btn';
         switchBtn.type = 'checkbox';
-        switchBtn.checked = this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
+        switchBtn.checked = true;
         switchBtn.onclick = () => {
           this.areasEnable = switchBtn.checked;
           this.formService.selectors = this.formService.selectors.set(
             'format',
             switchBtn.checked ? 'grouped_geom_by_areas' : 'grouped_geom'
           );
-          this.onAreasToggle.emit(switchBtn.checked ? 'grid' : 'point');
 
           // Show areas legend if areas toggle button is enable
           if (this.areasEnable) {
             this.addAreasLegend();
+            this.getAreas();
           } else {
+            this.getGeoms();
             this.removeAreasLegend();
             this.enableFitBounds = false;
           }
@@ -284,12 +292,12 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   onEachFeature(feature, layer) {
     // make a cache a layers in a dict with id key
-    this.layerDictCache(feature.properties.observations.id_synthese, layer);
+    // this.layerDictCache(feature.properties.observations.id_synthese, layer);
     // set style
     if (this.areasEnable) {
-      this.setAreasStyle(layer, feature.properties.observations.id_synthese.length);
+      this.setAreasStyle(layer, feature.properties.observation_count);
     }
-    this.layerEvent(feature, layer, feature.properties.observations.id_synthese);
+    this.layerEvent(feature, layer, feature.properties.observation_count);
   }
 
   /**
@@ -310,7 +318,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     });
   }
 
-  ngOnChanges(change) {
+  insertGeojsonData() {
     // clear layerDict cache
     this.layersDict = {};
     // on change delete the previous layer and load the new ones from the geojson data send by the API
@@ -319,14 +327,14 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       // remove the whole featureGroup to avoid iterate over all its layer
       this._ms.map.removeLayer(this.cluserOrSimpleFeatureGroup);
     }
-    if (change && change.inputSyntheseData.currentValue) {
+    if (this.SyntheseData) {
       // regenerate the featuregroup
       this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup({
             iconCreateFunction: this.clusterCountOverrideFn,
           })
         : new L.FeatureGroup();
-      const geojsonLayer = new L.GeoJSON(change.inputSyntheseData.currentValue, {
+      const geojsonLayer = new L.GeoJSON(this.SyntheseData, {
         pointToLayer: (feature, latlng) => {
           const circleMarker = L.circleMarker(latlng);
           let countObs = feature.properties.observations.id_synthese.length;
@@ -344,17 +352,18 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       });
       this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
+      this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
       // zoom on extend after first search
-      if (change.inputSyntheseData.previousValue !== undefined) {
-        try {
-          // try to fit bound on layer. catch error if no layer in feature group
-          if (this.enableFitBounds) {
-            this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
-          } else {
-            this.enableFitBounds = true;
-          }
-        } catch (error) {}
-      }
+      // if (change.SyntheseData.previousValue !== undefined) {
+      //   try {
+      //     // try to fit bound on layer. catch error if no layer in feature group
+      //     if (this.enableFitBounds) {
+      //       this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+      //     } else {
+      //       this.enableFitBounds = true;
+      //     }
+      //   } catch (error) {}
+      // }
     }
   }
 
@@ -381,19 +390,19 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   toggleStyleFromMap(feature, layer) {
     console.log('-- toggleStyleFromMap');
-  //   // restore initial style
-  //   let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
-  //   let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
+    //   // restore initial style
+    //   let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
+    //   let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
 
-  //   if (this.selectedLayers.length > 0) {
-  //     this.selectedLayers.forEach((layer) => {
-  //       (layer as L.GeoJSON).setStyle(originStyle);
-  //     });
-  //   }
-  //   // set selected style
+    //   if (this.selectedLayers.length > 0) {
+    //     this.selectedLayers.forEach((layer) => {
+    //       (layer as L.GeoJSON).setStyle(originStyle);
+    //     });
+    //   }
+    //   // set selected style
 
-  //   layer.setStyle(selectedStyle);
-  //   this.selectedLayers = [layer];
+    //   layer.setStyle(selectedStyle);
+    //   this.selectedLayers = [layer];
   }
 
   // private toggleStyleFromList(currentSelectedLayers) {
@@ -414,7 +423,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   // }
 
   private bindAreasPopup(layer, ids) {
-    let popupContent = `<b>${ids.length} observation(s)</b>`;
+    let popupContent = `<b>${ids} observation(s)</b>`;
     layer.bindPopup(popupContent).openPopup();
   }
 
@@ -434,4 +443,48 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   deleteControlValue() {
     this.formService.searchForm.controls.geoIntersection.reset();
   }
+
+  /**
+   * takes leaflet bounds and change it to geojson
+   */
+  boundsToGeoJson(bounds) {
+    return {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [bounds._southWest.lng, bounds._southWest.lat],
+            [bounds._northEast.lng, bounds._southWest.lat],
+            [bounds._northEast.lng, bounds._northEast.lat],
+            [bounds._southWest.lng, bounds._northEast.lat],
+            [bounds._southWest.lng, bounds._southWest.lat],
+          ],
+        ],
+      },
+    };
+  }
+
+  /**
+   * function to manage event bounce
+   * (to call an event function once it has stopped changing)
+   */
+  debounceEvent(func, timeout) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer); // no need to check for undefined.
+      timer = setTimeout(() => func(...args), timeout);
+    };
+  }
+
+  getAreas() {
+    let bounds = this._ms.map.getBounds();
+
+    this.dataService.fetchMapGeoms(this.boundsToGeoJson(bounds)).subscribe((response) => {
+      this.SyntheseData = response['features'];
+      this.insertGeojsonData();
+    });
+  }
+
+  getGeoms() {}
 }
