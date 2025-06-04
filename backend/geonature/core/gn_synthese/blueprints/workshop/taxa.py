@@ -1,38 +1,14 @@
 from flask import request, g, jsonify
 from sqlalchemy import select, func, distinct
-from utils_flask_sqla.generic import GenericTable
 
 from geonature.core.gn_permissions.decorators import permissions_required
 from geonature.core.gn_synthese.models import VSyntheseForWebApp
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-from geonature.utils.env import DB, db
+from geonature.utils.env import db
 
 
 @permissions_required("E", module_code="SYNTHESE")
 def taxa(permissions):
-    taxon_view = GenericTable(
-        tableName="v_synthese_taxon_for_export_view",
-        schemaName="gn_synthese",
-        engine=DB.engine,
-    )
-    columns = taxon_view.tableDef.columns
-
-    # Test de conformité de la vue v_synthese_for_export_view
-    try:
-        assert hasattr(taxon_view.tableDef.columns, "cd_ref")
-    except AssertionError as e:
-        return (
-            {
-                "msg": """
-                        View v_synthese_taxon_for_export_view
-                        must have a cd_ref column \n
-                        trace: {}
-                        """.format(
-                    str(e)
-                )
-            },
-            500,
-        )
 
     parameters = request.json or {}
     per_page = parameters.pop("per_page", None)
