@@ -1,5 +1,6 @@
 import {
   Component,
+  OnInit,
 } from '@angular/core';
 import { SyntheseContentListColumnsService } from './synthese-content-list-columns.service';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
@@ -8,7 +9,7 @@ import { SyntheseApiProxyService } from '@geonature/syntheseModule/services/synt
 import { SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 import { ConfigService } from '@geonature/services/config.service';
-import { RouterModule } from '@librairies/@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -18,20 +19,25 @@ import { RouterModule } from '@librairies/@angular/router';
   imports: [GN2CommonModule, CommonModule, RouterModule],
   providers: [SyntheseContentListColumnsService],
 })
-export class SyntheseContentListComponent {
+export class SyntheseContentListComponent implements OnInit {
   constructor(
     public columnService: SyntheseContentListColumnsService,
     private _apiProxyService: SyntheseApiProxyService,
     public config: ConfigService
-  ) {}
+  ) {
+  }
+
+  ngOnInit() {
+    this._apiProxyService.observationsList.subscribe((observationsList) => {
+      this.observationsList = observationsList;
+    });
+  }
 
   // //////////////////////////////////////////////////////////////////////////
   // data
   // //////////////////////////////////////////////////////////////////////////
 
-  get observationsList() {
-    return this._apiProxyService.observationsList;
-  }
+  observationsList = [];
 
   get pagination(): SyntheseDataPaginationItem {
     return this._apiProxyService.pagination;

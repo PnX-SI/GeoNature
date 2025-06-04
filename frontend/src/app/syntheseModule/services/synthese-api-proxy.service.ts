@@ -53,7 +53,7 @@ export class SyntheseApiProxyService {
   // observationsList
   // //////////////////////////////////////////////////////////////////////////
 
-  observationsList: [];
+  public observationsList: BehaviorSubject<any> = new BehaviorSubject([]);
 
   // //////////////////////////////////////////////////////////////////////////
   // geomList
@@ -78,7 +78,7 @@ export class SyntheseApiProxyService {
     this.dataService
       .getObservations(this._concatFilterPaginationAndSort())
       .subscribe((observations) => {
-        this.observationsList = observations.items;
+        this.observationsList.next(observations.items);
         this.pagination.totalItems = observations.total;
         this.pagination.perPage = observations.per_page;
         this.pagination.currentPage = observations.page;
