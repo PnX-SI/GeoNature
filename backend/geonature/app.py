@@ -54,7 +54,6 @@ def configure_alembic(alembic_config):
     alembic_config.set_main_option("version_locations", " ".join(version_locations))
     return alembic_config
 
-
 if config.get("SENTRY_DSN"):
     import sentry_sdk
     from sentry_sdk.integrations.flask import FlaskIntegration
@@ -157,6 +156,14 @@ def create_app(with_external_mods=True):
         @app.before_request
         def set_sentry_context():
             from flask_login import current_user
+
+            if "CONTENT_LENGTH" in request.environ:
+                length = int(request.environ.get("CONTENT_LENGTH", "0"))
+                if "wsgi.input" in request.environ:
+                    import copy
+
+                    body = copy.copy(request.environ["wsgi.input"]).read(length)
+                    set_tag("request.body", body)
 
             if "FLASK_REQUEST_ID" in request.environ:
                 set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
