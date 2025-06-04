@@ -50,6 +50,21 @@ Documentation des routes
 Génération automatique actuellement hors-service :-(
 
 
+Connexion à l'API GeoNature
+***************************
+
+Vous pouvez connecter une application tierce à l'API de GeoNature à condition que l'administrateur
+n'ai pas désactivé l'accès (``API_ACCESS_ACTIVATED``).
+
+Pour cela, il vous faudra récupérer une clé api à l'adresse `/api/users/get_api_secret`. Attention, à chaque appel
+de cette route, l'ancien secret est invalidé et un nouveau est généré, stockez le bien !
+
+Pour l'utilisez il vous suffit de rajouter à vos requêtes les champs
+``X-Api-Secret``
+et
+``X-Api-Key``
+
+
 Pratiques et règles de developpement
 ------------------------------------
 
