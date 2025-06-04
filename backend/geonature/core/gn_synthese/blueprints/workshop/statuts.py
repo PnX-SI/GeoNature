@@ -16,7 +16,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.utils.env import db
 
 
-@permissions_required("E", module_code="SYNTHESE")
+@permissions_required("R", module_code="SYNTHESE")
 def status(permissions):
     filters = request.json if request.is_json else {}
     per_page = filters.pop("per_page", None)
