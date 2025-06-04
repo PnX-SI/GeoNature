@@ -20,7 +20,7 @@ class MyJSONProvider(DefaultJSONProvider):
             if "pagination_schema" in g:
                 items = g.pagination_schema.dump(o.items, many=True)
             else:
-                items = [item.as_dict() for item in o.items]
+                items = [item._asdict() for item in o.items]
             return {
                 "items": items,
                 "page": o.page,
