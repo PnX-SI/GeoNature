@@ -14,6 +14,12 @@ import { CommonModule } from '@angular/common';
   providers: [SyntheseContentListColumnsService],
 })
 export class SyntheseContentListComponent {
+
+  constructor(
+    public columnService: SyntheseContentListColumnsService,
+
+  ) {}
+
   // //////////////////////////////////////////////////////////////////////////
   // data
   // //////////////////////////////////////////////////////////////////////////
