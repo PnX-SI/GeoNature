@@ -32,6 +32,15 @@ class TestBenchmarkSynthese:
         dict(user_profile="self_user"),
     )
 
+    test_only_with_modif_since_validation_false = BenchmarkTest(
+        CLIENT_POST,
+        [CLater(SYNTHESE_GET_OBS_URL)],
+        dict(
+            user_profile="admin_user",
+            json=benchmark_synthese_only_modif_since_validation_false,
+        ),
+    )
+
     test_with_geometry_bbox = BenchmarkTest(
         CLIENT_POST,
         [CLater(SYNTHESE_GET_OBS_URL)],
