@@ -58,5 +58,6 @@ def taxa(permissions):
     query = select(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
         subq, subq.c.cd_ref == columns.cd_ref
     )
-
-    return jsonify(db.paginate(select=query, page=page, per_page=per_page, error_out=False))
+    if per_page and page:
+        return jsonify(db.paginate(select=query, page=page, per_page=per_page, error_out=False))
+    return db.session.execute(query).all()
