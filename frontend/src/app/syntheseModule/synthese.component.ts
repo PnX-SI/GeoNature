@@ -5,20 +5,28 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { SyntheseCarteComponent } from './carte/synthese-carte.component';
 import { SyntheseContentComponent } from './content/synthese-content.component';
+import { SyntheseApiProxyService } from './services/synthese-api-proxy.service';
 @Component({
   standalone: true,
   selector: 'pnx-synthese',
   styleUrls: ['synthese.component.scss'],
   templateUrl: 'synthese.component.html',
-  imports: [GN2CommonModule, ModuleLayoutComponent, SyntheseCarteComponent, SyntheseContentComponent],
-  providers: [SyntheseFormService, TaxonAdvancedStoreService],
+  imports: [
+    GN2CommonModule,
+    ModuleLayoutComponent,
+    SyntheseCarteComponent,
+    SyntheseContentComponent,
+  ],
+  providers: [SyntheseApiProxyService, TaxonAdvancedStoreService],
 })
 export class SyntheseComponent implements OnInit {
-  constructor() {}
+  constructor(private _apiProxyService: SyntheseApiProxyService) {}
 
   ngOnInit() {}
 
-  onSearchEvent() {
-    console.log('trigger search event');
+  onSearchEvent(event) {
+    console.log('-- trigger search event');
+    console.log(event);
+    this._apiProxyService.filters = event;
   }
 }

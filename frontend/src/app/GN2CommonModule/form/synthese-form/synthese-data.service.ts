@@ -285,13 +285,4 @@ export class SyntheseDataService {
   modifyReport(id, params) {
     return this._api.put(`${this.config.API_ENDPOINT}/synthese/reports/${id}`, params);
   }
-
-  // //////////////////////////////////////////////////////////////////////////
-  // Synthese
-  // //////////////////////////////////////////////////////////////////////////
-
-  fetchObservationsList(pagination: SyntheseDataPaginationItem, sort: SyntheseDataSortItem) {
-    console.log(this._formService.formatParams())
-    console.log(this._formService)
-  }
 }
