@@ -4,6 +4,7 @@ Decorators to protects routes with permissions
 
 from functools import wraps
 from warnings import warn
+from sqlalchemy import select
 
 from flask import request, g
 from werkzeug.exceptions import Unauthorized, Forbidden
@@ -75,19 +76,15 @@ def permissions_required(action, module_code=None, object_code=None):
             # Check if apikey in headers and get user accordingly
             apikey = request.headers.get("X-Api-Key")
             if apikey:
-                user = db.session.query(User).filter_by(api_key=apikey).one()
-                if not user:
+                g.current_user = db.session.execute(
+                    select(User).filter_by(api_key=apikey)
+                ).scalar_one()
+                if not hasattr(g, "current_user") and g.current_user.is_authenticated:
                     raise Unauthorized("ApiKey invalide")
 
-            elif hasattr(g, "current_user") and g.current_user.is_authenticated:
-                user = g.current_user
-                # Permissions déduites automatiquement (ex : via g.current_user.id_role en interne)
-            permissions = get_permissions(
-                action,
-                module_code=module_code,
-                object_code=object_code,
-                id_role = user.id_role
-                )
+            if not g.current_user.is_authenticated:
+                raise Unauthorized
+            permissions = get_permissions(action, module_code=module_code, object_code=object_code)
 
             if not permissions:
                 raise Forbidden(description=_forbidden_message(action, module_code, object_code))
