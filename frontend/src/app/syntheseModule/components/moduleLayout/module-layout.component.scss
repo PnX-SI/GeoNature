@@ -9,19 +9,30 @@
     flex-grow: 2;
     display: flex;
     flex-flow: row wrap;
-    .Toggle{
+    .HideButton{
       z-index: 10000;
       position: absolute;
       padding: 0px 5px;
-      padding: 0px 5px;
-      border-bottom-left-radius: 0px;
-      border-top-left-radius: 0px;
+      &--left{
+        border-bottom-left-radius: 0px;
+        border-top-left-radius: 0px;
+        left: 0;
+        top: 50%;
+      }
+      &--right{
+        border-bottom-right-radius: 0px;
+        border-top-right-radius: 0px;
+        right: 0;
+        top: 50%;
+      }
     }
     .Map{
+      position: relative;
       flex-grow: 2;
     }
 
     .List{
+      max-width: 50%;
       flex-grow: 2;
     }
   }

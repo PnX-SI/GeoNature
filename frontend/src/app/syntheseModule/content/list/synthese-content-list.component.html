@@ -1,0 +1,142 @@
+<ngx-datatable
+  #table
+  class="material striped margin-top-xs table-size expandable"
+  [rows]="data"
+  [columns]="columnService.defaultColumns"
+  [columnMode]="'force'"
+  [reorderable]="true"
+  sortType="multi"
+>
+  <ngx-datatable-column [maxWidth]="5">
+    <ng-template ngx-datatable-header-template>
+      <i
+        id="dropdownMenuButton"
+        class="fa fa-cog clickable"
+        aria-hidden="true"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        matTooltip="{{ 'List.Columns' | translate }}"
+        (click)="openModalCol($event, modalCol)"
+      ></i>
+    </ng-template>
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <button
+        class="btn btn-outline-shadow btn-no-padding btn-ghost"
+        [routerLink]="['occurrence', row['id_synthese'], 'details']"
+      >
+        <i
+          #iElement
+          matTooltip="{{ row[mapListService.idName] }}"
+          class="fa fa-info-circle"
+          aria-hidden="true "
+          data-qa="synthese-info-btn"
+        ></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column [maxWidth]="5">
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <button
+        *ngIf="row.url_source"
+        class="btn btn-outline-shadow btn-no-padding btn-ghost"
+        (click)="backToModule(row.url_source, row.entity_source_pk_value)"
+      >
+        <i
+          matTooltip="Voir l'observation dans le module de saisie"
+          class="fa fa-file-text"
+          aria-hidden="true"
+        ></i>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
+  <ngx-datatable-column
+    *ngFor="let col of defaultColumns"
+    [maxWidth]="col.max_width"
+    [name]="col.name"
+    [prop]="col.prop"
+    [sortable]="true"
+    cellClass="synthese-list-col-{{ col.prop }}"
+  >
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <span
+        [title]="row[col.prop]"
+        [ngSwitch]="col.prop"
+      >
+        <div *ngSwitchCase="'date_min' || 'date_max'">
+          {{ getDate(row[col.prop]) }}
+        </div>
+        <div *ngSwitchCase="'nom_vern_or_lb_nom'">
+          <a
+            class="Link"
+            [routerLink]="['taxon/' + row.cd_nom]"
+            *ngIf="
+              config.SYNTHESE.ENABLE_TAXON_SHEETS && row.hasOwnProperty('cd_nom');
+              else cellDefault
+            "
+            matTooltip="Afficher la fiche du taxon"
+          >
+            <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+          </a>
+        </div>
+        <div *ngSwitchCase="'dataset_name'">
+          <a
+            class="Link"
+            [routerLink]="['/metadata/dataset_detail/' + row.id_dataset]"
+            *ngIf="row.hasOwnProperty('id_dataset'); else cellDefault"
+            matTooltip="Afficher la fiche du jeu de données"
+          >
+            <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+          </a>
+        </div>
+        <ng-container *ngSwitchDefault>
+          <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
+        </ng-container>
+      </span>
+      <ng-template #cellDefault>{{ row[col.prop] }}</ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+
+<ng-template
+  #modalCol
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header">
+    <h4>{{ 'List.DisplayColumns' | translate }}</h4>
+  </div>
+  <div class="modal-body">
+    <div
+      class="form-check"
+      *ngFor="let col of availableColumns"
+    >
+      <input
+        class="form-check-input"
+        type="checkbox"
+        [id]="col.name"
+        (click)="columnService.toggleColumnNames(col)"
+        [checked]="col.checked"
+      />
+
+      <label
+        [attr.for]="col.name"
+        class="form-check-label"
+      >
+        {{ col.name | readablePropertie }}
+      </label>
+    </div>
+  </div>
+</ng-template>

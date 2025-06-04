@@ -5,8 +5,9 @@ import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
   selector: 'pnx-module-layout',
   templateUrl: 'module-layout.component.html',
   styleUrls: ['module-layout.component.scss'],
-  imports: [NgbCollapse]
+  imports: [NgbCollapse],
 })
 export class ModuleLayoutComponent {
   public collapseFilters = false;
+  public collapseList = false;
 }

@@ -1,10 +1,10 @@
 import {
   Component,
-  OnInit,
 } from '@angular/core';
 
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-import { SyntheseContentDownloadComponent } from "./download/synthese-content-download.component";
+import { SyntheseContentDownloadComponent } from './download/synthese-content-download.component';
+import { SyntheseContentListComponent } from './list/synthese-content-list.component';
 
 // Todo: à renommer
 @Component({
@@ -12,13 +12,8 @@ import { SyntheseContentDownloadComponent } from "./download/synthese-content-do
   selector: 'pnx-synthese-content',
   templateUrl: 'synthese-content.component.html',
   styleUrls: ['synthese-content.component.scss'],
-  imports: [GN2CommonModule, SyntheseContentDownloadComponent],
+  imports: [GN2CommonModule, SyntheseContentDownloadComponent, SyntheseContentListComponent],
 })
-export class SyntheseContentComponent implements OnInit {
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
+export class SyntheseContentComponent {
+  constructor() {}
 }
