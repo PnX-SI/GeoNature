@@ -66,33 +66,9 @@ from marshmallow import Schema
 logger = get_task_logger(__name__)
 
 
-def create_db_task(id_role, uuid_celery):
-    module = db.session.execute(db.select(TModules).filter_by(module_code="SYNTHESE")).scalar()
-    task = Task(
-        id_role=id_role,
-        uuid_celery=uuid_celery,
-        start=datetime.now(),
-        status="pending",
-        id_module=module.id_module,
-        message="Le génération du fichier d'export est en cours...",
-    )
-    db.session.add(task)
-    db.session.commit()
-
-    return task
-
-
-def update_db_task(task, file_name):
-    task.end = datetime.now()
-    task.status = "success"
-    task.file_name = file_name
-    task.message = "L'export a été généré et est prêt à être télécharger"
-    db.session.commit()
-
-
 @celery_app.task(bind=True)
 def export_taxons(self, id_permissions, id_list, id_role):
-    db_task = create_db_task(id_role, self.request.id)
+    db_task = Task.create_pending_task(id_role, self.request.id, "SYNTHESE")
     try:
         current_user = db.session.scalar(select(User).where(User.id_role == id_role))
         permissions = db.session.scalars(
@@ -156,7 +132,7 @@ def export_taxons(self, id_permissions, id_list, id_role):
             srid=None,
             columns=[],
         )
-        update_db_task(db_task, export_file_name)
+        db_task.set_succesfull(export_file_name)
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
@@ -170,7 +146,7 @@ def export_observations(self, id_permissions, id_list, params, id_role):
         permissions = db.session.scalars(
             select(Permission).where(Permission.id_permission.in_(id_permissions))
         ).all()
-        db_task = create_db_task(current_user.id_role, self.request.id)
+        db_task = Task.create_pending_task(current_user.id_role, self.request.id, "SYNTHESE")
 
         # set default to csv
         export_format = params.get("export_format", "csv")
@@ -320,7 +296,7 @@ def export_observations(self, id_permissions, id_list, params, id_role):
             srid=local_srid,
             columns=columns_to_serialize,
         )
-        update_db_task(db_task, f"{export_file_name}.{export_format}")
+        db_task.set_succesfull(f"{export_file_name}.{export_format}")
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
@@ -329,7 +305,7 @@ def export_observations(self, id_permissions, id_list, params, id_role):
 
 @celery_app.task(bind=True)
 def export_metadata_task(self, id_permissions, id_role, filters):
-    db_task = create_db_task(id_role, self.request.id)
+    db_task = Task.create_pending_task(id_role, self.request.id, "SYNTHESE")
     current_user = db.session.scalar(select(User).where(User.id_role == id_role))
     permissions = db.session.scalars(
         select(Permission).where(Permission.id_permission.in_(id_permissions))
@@ -377,7 +353,7 @@ def export_metadata_task(self, id_permissions, id_role, filters):
             srid=None,
             columns=[],
         )
-        update_db_task(db_task, export_file_name)
+        db_task.set_succesfull(export_file_name)
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
@@ -386,7 +362,7 @@ def export_metadata_task(self, id_permissions, id_role, filters):
 
 @celery_app.task(bind=True)
 def export_status_task(self, id_permissions, id_role, filters):
-    db_task = create_db_task(id_role, self.request.id)
+    db_task = Task.create_pending_task(id_role, self.request.id, "SYNTHESE")
     try:
         current_user = db.session.scalar(select(User).where(User.id_role == id_role))
         permissions = db.session.scalars(

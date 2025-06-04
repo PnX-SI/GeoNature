@@ -3,6 +3,8 @@ Modèles du schéma gn_commons
 """
 
 import os
+import datetime
+
 from pathlib import Path
 from collections import defaultdict
 
@@ -362,3 +364,45 @@ class Task(DB.Model):
     file_name = DB.Column(DB.Unicode)
 
     module = DB.relationship(TModules)
+
+    @classmethod
+    def create_pending_task(cls, id_role: int, uuid_celery, module_code: str):
+        """Create a pending task for a role and a module
+
+        Parameters
+        ----------
+        id_role : int
+        uuid_celery : uuid
+        module_code : str
+
+        Returns
+        -------
+        Task
+        """
+        module = DB.session.execute(DB.select(TModules).filter_by(module_code=module_code)).scalar()
+        task = Task(
+            id_role=id_role,
+            uuid_celery=uuid_celery,
+            start=datetime.datetime.now(),
+            status="pending",
+            id_module=module.id_module,
+            message="Le génération du fichier d'export est en cours...",
+        )
+        DB.session.add(task)
+        DB.session.commit()
+
+        return task
+
+    def set_succesfull(self, file_name):
+        """Update a task when the celery task has succeed.
+        Set the filename generated
+
+        Parameters
+        ----------
+        file_name : str
+        """
+        self.end = datetime.now()
+        self.status = "success"
+        self.file_name = file_name
+        self.message = "L'export a été généré et est prêt à être télécharger"
+        DB.session.commit()

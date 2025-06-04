@@ -715,6 +715,21 @@ class TestCommons:
 
 @pytest.mark.usefixtures("temporary_transaction")
 class TestTasks:
+
+    def test_create_pending_task(self, users, module):
+        task = Task.create_pending_task(
+            id_role=users["admin_user"].id_role,
+            uuid_celery=uuid.uuid4(),
+            module_code=module.module_code,
+        )
+
+        db_task = db.session.get(Task, task.id)
+        assert db_task is not None
+        assert db_task.module_code == module.module_code
+        assert db_task.start is not None
+        assert db_task.id_role == users["admin_user"].id_role
+        assert db.status == "pending"
+
     def test_clean_attachements(self, monkeypatch, celery_eager, medium):
         # Monkey patch the __before_commit_delete not to remove file
         # when deleting the medium, so the clean_attachments can work
