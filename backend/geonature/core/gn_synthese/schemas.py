@@ -1,3 +1,5 @@
+from marshmallow import Schema, fields
+
 from geonature.utils.env import db, ma
 from geonature.utils.config import config
 
@@ -70,3 +72,17 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
     last_validation = ma.Nested(TValidationSchema, dump_only=True)
     reports = ma.Nested(ReportSchema, many=True)
     # Missing nested schemas: taxref
+
+
+class ExportStatusSchema(Schema):
+    cd_ref = fields.Integer(dump_only=True)
+    nom_valide = fields.Str(dump_only=True)
+    nom_vern = fields.Str(dump_only=True)
+    rq_statut = fields.Str(dump_only=True)
+    regroupement_type = fields.Str(dump_only=True)
+    lb_type_statut = fields.Str(dump_only=True)
+    cd_sig = fields.Str(dump_only=True)
+    full_citation = fields.Str(dump_only=True)
+    doc_url = fields.Str(dump_only=True)
+    code_statut = fields.Str(dump_only=True)
+    label_statut = fields.Str(dump_only=True)
