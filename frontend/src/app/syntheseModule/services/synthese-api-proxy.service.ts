@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { SORT_ORDER, SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { sortBy } from '@librairies/cypress/types/lodash';
 
 @Injectable()
 export class SyntheseApiProxyService {
-  constructor(private _dataService: SyntheseDataService) {}
+  constructor(public dataService: SyntheseDataService) {}
 
   // //////////////////////////////////////////////////////////////////////////
   // Pagination and Sort
@@ -56,19 +55,20 @@ export class SyntheseApiProxyService {
     return {
       ...this._filters,
       per_page: this.pagination.perPage,
-      page: this.pagination.currentPage
+      page: this.pagination.currentPage,
+      with_geom: false,
     }
   }
 
   public fetchObservationsList() {
-    this._dataService
+    console.log(this);
+    this.dataService
       .getObservations(this._concatFilterPaginationAndSort())
       .subscribe((observations) => {
         this.observationsList = observations.items;
         this.pagination.totalItems = observations.total;
         this.pagination.perPage = observations.per_page;
         this.pagination.currentPage = observations.page;
-        console.log(this.observationsList);
       });
   }
 }

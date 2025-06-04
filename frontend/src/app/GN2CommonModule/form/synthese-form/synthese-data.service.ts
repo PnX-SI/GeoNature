@@ -8,12 +8,10 @@ import {
   HttpEvent,
 } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
-import { SyntheseFormService } from './synthese-form.service';
 
 export interface TaxonStats {
   cd_ref?: number;
@@ -39,8 +37,7 @@ export class SyntheseDataService {
   private _blob: Blob;
   constructor(
     private _api: HttpClient,
-    public config: ConfigService,
-    private _formService: SyntheseFormService
+    public config: ConfigService
   ) {
     this.downloadProgress = <BehaviorSubject<number>>new BehaviorSubject(0.0);
   }

@@ -40,22 +40,20 @@ export class SyntheseContentListComponent {
     return this._apiProxyService.sort;
   }
 
-  fetchObservationsList = this._apiProxyService.fetchObservationsList;
-
   // //////////////////////////////////////////////////////////////////////////
   // Pagination and sorting
   // //////////////////////////////////////////////////////////////////////////
 
   onChangePage(event: any) {
     this.pagination.currentPage = event.offset + 1;
-    this.fetchObservationsList();
+    this._apiProxyService.fetchObservationsList();
   }
 
   onColumnSort(event: any) {
     this.sort.sortBy = event.newValue;
     this.sort.sortOrder = event.column.prop;
     this.pagination.currentPage = 1;
-    this.fetchObservationsList();
+    this._apiProxyService.fetchObservationsList();
   }
 
   // //////////////////////////////////////////////////////////////////////////
@@ -68,5 +66,19 @@ export class SyntheseContentListComponent {
     }
     const d = new Date(date);
     return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('-');
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // Back to module
+  // //////////////////////////////////////////////////////////////////////////
+
+  backToModule(url_source, id_pk_source) {
+    const link = document.createElement('a');
+    link.target = '_blank';
+    link.href = url_source + '/' + id_pk_source;
+    link.setAttribute('visibility', 'hidden');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 }

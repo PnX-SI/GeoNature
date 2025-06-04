@@ -1,6 +1,9 @@
 <ngx-datatable
   #table
   class="SyntheseContentList material margin-top-xs table-size expandable"
+  headerHeight="50"
+  footerHeight="50"
+  rowHeight="100"
   [rows]="observationsList"
   [columns]="columnService.defaultColumns"
   [columnMode]="'force'"
