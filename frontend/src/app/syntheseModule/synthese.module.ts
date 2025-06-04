@@ -62,7 +62,8 @@ const routes: Routes = [
     SyntheseComponent,
   ],
   providers: [
-    RouteService
+    RouteService,
+    SyntheseFormService
   ],
 })
 export class SyntheseModule {}

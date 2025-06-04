@@ -5,7 +5,13 @@
   [columns]="columnService.defaultColumns"
   [columnMode]="'force'"
   [reorderable]="true"
-  sortType="multi"
+  [externalPaging]="true"
+  [limit]="pagination.perPage"
+  [count]="pagination.totalItems"
+  (page)="onChangePage($event)"
+  [externalSorting]="true"
+  [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
+  (sort)="onColumnSort($event)"
 >
   <ngx-datatable-column [maxWidth]="5">
     <ng-template ngx-datatable-header-template>

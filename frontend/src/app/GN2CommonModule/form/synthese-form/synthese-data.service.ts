@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
+import { SyntheseFormService } from './synthese-form.service';
 
 export interface TaxonStats {
   cd_ref?: number;
@@ -38,7 +39,8 @@ export class SyntheseDataService {
   private _blob: Blob;
   constructor(
     private _api: HttpClient,
-    public config: ConfigService
+    public config: ConfigService,
+    private _formService: SyntheseFormService
   ) {
     this.downloadProgress = <BehaviorSubject<number>>new BehaviorSubject(0.0);
   }
@@ -78,7 +80,6 @@ export class SyntheseDataService {
       params,
     });
   }
-
 
   getSyntheseTaxonSheetObservers(
     cd_ref: number,
@@ -263,6 +264,10 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
+  // //////////////////////////////////////////////////////////////////////////
+  // Report
+  // //////////////////////////////////////////////////////////////////////////
+
   getReports(params, idSynthese = null) {
     const baseUrl = `${this.config.API_ENDPOINT}/synthese/reports`;
     const url = idSynthese ? `${baseUrl}/${idSynthese}` : baseUrl;
@@ -279,5 +284,14 @@ export class SyntheseDataService {
 
   modifyReport(id, params) {
     return this._api.put(`${this.config.API_ENDPOINT}/synthese/reports/${id}`, params);
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // Synthese
+  // //////////////////////////////////////////////////////////////////////////
+
+  fetchObservationsList(pagination: SyntheseDataPaginationItem, sort: SyntheseDataSortItem) {
+    console.log(this._formService.formatParams())
+    console.log(this._formService)
   }
 }
