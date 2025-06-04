@@ -46,6 +46,8 @@ from apptax.taxonomie.models import (
     bdc_statut_cor_text_area,
 )
 
+from flask import url_for
+
 from sqlalchemy import distinct, func, select
 from utils_flask_sqla.generic import GenericTable, serializeQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp
@@ -94,9 +96,14 @@ def create_db_task(id_role, uuid_celery):
     return task
 
 
-def update_db_task(task):
+def update_db_task(task, export_file_path):
     task.end = datetime.datetime.now()
     task.status = "success"
+    task.message = url_for(
+        "media",
+        filename="exports/synthese/" + export_file_path,
+        _external=True,
+    )
     db.session.commit()
 
 
@@ -117,18 +124,7 @@ def export_taxons(self, id_permissions, id_list, id_role):
         try:
             assert hasattr(columns, "cd_ref")
         except AssertionError as e:
-            return (
-                {
-                    "msg": """
-                            View v_synthese_taxon_for_export_view
-                            must have a cd_ref column \n
-                            trace: {}
-                            """.format(
-                        str(e)
-                    )
-                },
-                500,
-            )
+            raise Exception("View v_synthese_taxon_for_export_view must have a cd_ref column \n")
 
         sub_query = (
             select(
@@ -165,10 +161,11 @@ def export_taxons(self, id_permissions, id_list, id_role):
         )
         export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
         current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
-        export_file_name = f"export_taxons_{current_timestamp}"
+        export_file_name = f"export_taxons_{current_timestamp}.csv"
 
+        full_file_path = f"{export_dir}/{export_file_name}"
         export_data_file(
-            file_name=f"{export_dir}/{export_file_name}",
+            file_name=full_file_path,
             export_url="",
             format="csv",
             query=query,
@@ -177,7 +174,7 @@ def export_taxons(self, id_permissions, id_list, id_role):
             srid=None,
             columns=[],
         )
-        update_db_task(db_task)
+        update_db_task(db_task, export_file_name)
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
@@ -330,9 +327,9 @@ def export_observations(self, id_permissions, id_list, params, id_role):
                 if db_col.key not in [geojson_4326_field, geojson_local_field, "geometry"]:
                     db_cols_for_shape.append(db_col)
                     columns_to_serialize.append(db_col.key)
-
+        full_filepath = f"{export_dir}/{export_file_name}.{export_format}"
         export_data_file(
-            file_name=f"{export_dir}/{export_file_name}.{export_format}",
+            file_name=full_filepath,
             export_url="",
             format=export_format,
             query=export_query,
@@ -342,64 +339,7 @@ def export_observations(self, id_permissions, id_list, params, id_role):
             srid=local_srid,
             columns=columns_to_serialize,
         )
-
-        # # Get the results for export
-        # results = DB.session.execute(
-        #     export_query.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
-        # )
-
-        # db_cols_for_shape = []
-        # columns_to_serialize = []
-        # # loop over synthese config to exclude columns if its default export
-        # for db_col in export_view.db_cols:
-        #     if view_name_param == "gn_synthese.v_synthese_for_export":
-        #         if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
-        #             db_cols_for_shape.append(db_col)
-        #             columns_to_serialize.append(db_col.key)
-        #     else:
-        #         # remove geojson fields of serialization
-        #         if db_col.key not in [geojson_4326_field, geojson_local_field]:
-        #             db_cols_for_shape.append(db_col)
-        #             columns_to_serialize.append(db_col.key)
-
-        # file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
-        # file_name = filemanager.removeDisallowedFilenameChars(file_name)
-
-        # if export_format == "csv":
-        #     formated_data = [export_view.as_dict(d, fields=columns_to_serialize) for d in results]
-        #     return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
-        # elif export_format == "geojson":
-        #     features = []
-        #     for r in results:
-        #         geometry = json.loads(getattr(r, geojson_4326_field))
-        #         feature = Feature(
-        #             geometry=geometry,
-        #             properties=export_view.as_dict(r, fields=columns_to_serialize),
-        #         )
-        #         features.append(feature)
-        #     results = FeatureCollection(features)
-        #     return to_json_resp(results, as_file=True, filename=file_name, indent=4)
-        # else:
-        #     try:
-        #         dir_name, file_name = export_as_geo_file(
-        #             export_format=export_format,
-        #             export_view=export_view,
-        #             db_cols=db_cols_for_shape,
-        #             geojson_col=geojson_local_field,
-        #             data=results,
-        #             file_name=file_name,
-        #         )
-        #         return send_from_directory(dir_name, file_name, as_attachment=True)
-
-        #     except GeonatureApiError as e:
-        #         message = str(e)
-
-        #     return render_template(
-        #         "error.html",
-        #         error=message,
-        #         redirect=current_app.config["URL_APPLICATION"] + "/#/synthese",
-        #     )
-        update_db_task(db_task)
+        update_db_task(db_task, f"{export_file_name}.{export_format}")
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
@@ -414,11 +354,6 @@ def export_metadata_task(self, id_permissions, id_role, filters):
         select(Permission).where(Permission.id_permission.in_(id_permissions))
     ).all()
     try:
-        metadata_view = GenericTable(
-            tableName="v_metadata_for_export",
-            schemaName="gn_synthese",
-            engine=DB.engine,
-        )
         metadata_view = GenericQueryGeo(
             DB=DB, tableName="v_metadata_for_export", schemaName="gn_synthese"
         )
@@ -450,17 +385,85 @@ def export_metadata_task(self, id_permissions, id_role, filters):
         current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
         export_file_name = f"export_metadonnées_{current_timestamp}.csv"
 
+        query = synthese_query_class.build_query()
+        full_filepath = f"{export_dir}/{export_file_name}"
         export_data_file(
-            file_name=f"{export_dir}/{export_file_name}",
+            file_name=full_filepath,
             export_url="",
             format="csv",
-            query=synthese_query_class.query,
+            query=query,
             schema_class=metadata_view.get_marshmallow_schema(),
             pk_name=None,
             srid=None,
             columns=[],
         )
-        update_db_task(db_task)
+        update_db_task(db_task, export_file_name)
+    except Exception as e:
+        db_task.status = "error"
+        db.session.commit()
+        raise e
+
+
+@celery_app.task(bind=True)
+def export_status_task(self, id_permissions, id_role, filters):
+    db_task = create_db_task(id_role, self.request.id)
+    try:
+        current_user = db.session.scalar(select(User).where(User.id_role == id_role))
+        permissions = db.session.scalars(
+            select(Permission).where(Permission.id_permission.in_(id_permissions))
+        ).all()
+
+        status_view = GenericQueryGeo(
+            DB=DB, tableName="v_status_for_exports", schemaName="gn_synthese"
+        )
+
+        query = select(
+            distinct(VSyntheseForWebApp.cd_nom).label("cd_nom"), status_view.view.tableDef
+        )
+
+        synthese_query_class = SyntheseQuery(
+            VSyntheseForWebApp,
+            query,
+            filters,
+        )
+        synthese_query_class.add_join(
+            status_view.view.tableDef,
+            getattr(
+                status_view.view.tableDef.columns,
+                "cd_nom",
+            ),
+            VSyntheseForWebApp.cd_nom,
+        )
+
+        synthese_query_class.add_join(
+            CorAreaSynthese,
+            CorAreaSynthese.id_synthese,
+            VSyntheseForWebApp.id_synthese,
+        )
+        synthese_query_class.add_join(
+            bdc_statut_cor_text_area, bdc_statut_cor_text_area.c.id_area, CorAreaSynthese.id_area
+        )
+
+        query = synthese_query_class.build_query()
+
+        synthese_query_class.filter_query_all_filters(current_user, permissions)
+        export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/synthese"
+        current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+
+        export_file_name = f"export_status_{current_timestamp}.csv"
+
+        full_filepath = f"{export_dir}/{export_file_name}"
+        export_data_file(
+            file_name=full_filepath,
+            export_url="",
+            format="csv",
+            query=query,
+            schema_class=status_view.get_marshmallow_schema(),
+            pk_name=None,
+            srid=None,
+            columns=[],
+        )
+        update_db_task(db_task, export_file_name)
     except Exception as e:
         db_task.status = "error"
         db.session.commit()

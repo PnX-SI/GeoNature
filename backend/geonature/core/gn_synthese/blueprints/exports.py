@@ -51,6 +51,7 @@ from geonature.core.gn_synthese.tasks.exports import (
     export_taxons,
     export_observations,
     export_metadata_task,
+    export_status_task,
 )
 
 export_routes = Blueprint("exports", __name__)
@@ -137,66 +138,6 @@ def export_metadata(permissions):
     )
     return {"msg": "task en cours", "uuid_task": str(uuid_task)}
 
-    # metadata_view = GenericTable(
-    #     tableName="v_metadata_for_export",
-    #     schemaName="gn_synthese",
-    #     engine=DB.engine,
-    # )
-
-    # Test de conformité de la vue v_metadata_for_export
-    # try:
-    #     assert hasattr(metadata_view.tableDef.columns, "jdd_id")
-    # except AssertionError as e:
-    #     return (
-    #         {
-    #             "msg": """
-    #                     View v_metadata_for_export
-    #                     must have a jdd_id column \n
-    #                     trace: {}
-    #                     """.format(
-    #                 str(e)
-    #             )
-    #         },
-    #         500,
-    #     )
-
-    # q = select(distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef)
-
-    # synthese_query_class = SyntheseQuery(
-    #     VSyntheseForWebApp,
-    #     q,
-    #     filters,
-    # )
-    # synthese_query_class.add_join(
-    #     metadata_view.tableDef,
-    #     getattr(
-    #         metadata_view.tableDef.columns,
-    #         current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
-    #     ),
-    #     VSyntheseForWebApp.id_dataset,
-    # )
-
-    # # Filter query with permissions (scope, sensitivity, ...)
-    # synthese_query_class.filter_query_all_filters(g.current_user, permissions)
-
-    # data = DB.session.execute(synthese_query_class.query)
-
-    # # Define the header of the csv file
-    # columns = [db_col.key for db_col in metadata_view.tableDef.columns]
-    # columns[columns.index("nombre_obs")] = "nombre_total_obs"
-
-    # # Retrieve the data to write in the csv file
-    # data = [metadata_view.as_dict(d) for d in data]
-    # for d in data:
-    #     d["nombre_total_obs"] = d.pop("nombre_obs")
-
-    # return to_csv_resp(
-    #     datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
-    #     data=data,
-    #     separator=";",
-    #     columns=columns,
-    # )
-
 
 @export_routes.route("/export_statuts", methods=["POST"])
 @permissions_required("E", module_code="SYNTHESE")
@@ -212,7 +153,13 @@ def export_status(permissions):
         - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
     """
     filters = request.json if request.is_json else {}
+    uuid_task = export_status_task.delay(
+        id_permissions=[p.id_permission for p in permissions],
+        id_role=g.current_user.id_role,
+        filters=filters,
+    )
 
+    return {"msg": "task en cours", "uuid_task": str(uuid_task)}
     # Initalize the select object
     query = select(
         distinct(VSyntheseForWebApp.cd_nom).label("cd_nom"),
@@ -273,7 +220,7 @@ def export_status(permissions):
 
     # Set enable status texts filter
     query = query.where(TaxrefBdcStatutText.enable == True)
-
+    print(query)
     protection_status = []
     data = DB.session.execute(query)
 
