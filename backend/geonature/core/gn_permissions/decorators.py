@@ -74,15 +74,14 @@ def permissions_required(action, module_code=None, object_code=None):
         @wraps(view_func)
         def decorated_view(*args, **kwargs):
             # Check if apikey in headers and get user accordingly
-            apikey = request.headers.get("X-Api-Key")
-            if apikey:
-                g.current_user = db.session.execute(
-                    select(User).filter_by(api_key=apikey)
-                ).scalar_one()
-                if not hasattr(g, "current_user") and g.current_user.is_authenticated:
-                    raise Unauthorized("ApiKey invalide")
+            api_secret = request.headers.get("X-Api-Secret")
+            api_key = request.headers.get("X-Api-Key")
+            if api_key and api_secret:
+                g.current_user = User.check_api_key(api_key, api_secret)
+                if not g.current_user:
+                    raise Unauthorized("Api key and Api secret didn't match or are invalid")
 
-            if not g.current_user.is_authenticated:
+            if not hasattr(g, "current_user") or not g.current_user.is_authenticated:
                 raise Unauthorized
             permissions = get_permissions(action, module_code=module_code, object_code=object_code)
 

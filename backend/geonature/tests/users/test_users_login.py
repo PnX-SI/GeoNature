@@ -1,14 +1,17 @@
 import pytest
 
 from flask import g, url_for
+from werkzeug.exceptions import Unauthorized
 
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User, Application, AppUser, UserApplicationRight, Profils
 from sqlalchemy import select
+from geonature.tests.fixtures import *
+from pypnusershub.tests.utils import set_logged_user
 
-from . import *
-from .utils import logged_user_headers
+from geonature.tests import *
+from geonature.tests.utils import logged_user_headers
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -74,3 +77,25 @@ class TestUsersLogin:
         monkeypatch.setitem(app.config, "PUBLIC_ACCESS_USERNAME", user.identifiant)
         response = self.client.post(url_for("auth.public_login"))
         assert response.status_code == 200
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestApiUsersLogin:
+    def test_connect_api_user(self, users):
+        user = users["self_user"]
+        api_key, api_secret = user.generate_api_secret()
+        assert User.check_api_key(api_key, api_secret) == user
+        assert User.check_api_key(api_key, "RANDOM SECRET") is None
+
+    def test_gen_api_secret_route(self, users):
+        user = users["self_user"]
+        url = url_for("users.get_api_secret")
+        r = self.client.get(url)
+        assert r.status_code == Unauthorized.code
+        set_logged_user(self.client, user)
+        r = self.client.get(url)
+        assert r.status_code == 200
+        data = r.json
+        assert "api_key" in data
+        assert "api_secret" in data
+        assert data["api_key"] == user.api_key
