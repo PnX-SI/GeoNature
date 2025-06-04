@@ -37,14 +37,14 @@ def synthese_column_formatters(param_column_list):
                 sa.func.concat(VSyntheseForWebApp.count_min),
             ),
             else_="",
-        )
+        ).label("count_min_max")
         columns["count_min_max"] = count_min_max
         param_column_list.remove("count_min_max")
 
     if "nom_vern_or_lb_nom" in param_column_list:
         nom_vern_or_lb_nom = sa.func.coalesce(
             sa.func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
-        )
+        ).label("nom_vern_or_lb_nom")
         columns["nom_vern_or_lb_nom"] = nom_vern_or_lb_nom
         param_column_list.remove("nom_vern_or_lb_nom")
     return columns
@@ -64,8 +64,8 @@ def observations(permissions):
 
     blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
 
-    columns = {col: getattr(VSyntheseForWebApp, col) for col in query_columns}
-    columns.update(synthese_column_formatters(query_columns))
+    columns = synthese_column_formatters(query_columns)
+    columns.update({col: getattr(VSyntheseForWebApp, col) for col in query_columns})
 
     if with_geom or format == "geojson":
         columns.update(
@@ -139,7 +139,12 @@ def observations(permissions):
     synthese_query_class.apply_all_filters(g.current_user, permissions)
     obs_query = synthese_query_class.build_query()
 
+    # obs_query = ordered(obs_query, VSyntheseForWebApp, order_by=VSyntheseForWebApp.date_min.desc())
     if page and per_page:
-        return jsonify(db.paginate(select=obs_query, page=page, per_page=per_page, scalars=False))
+        scalars = format == "geojson"
+        return jsonify(db.paginate(select=obs_query, page=page, per_page=per_page, scalars=scalars))
 
-    return db.session.execute(obs_query).all()
+    obj_query = db.session.execute(obs_query)
+    if format == "geojson":
+        obj_query = obj_query.scalars()
+    return jsonify(obj_query.all())
