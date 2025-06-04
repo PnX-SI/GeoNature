@@ -30,6 +30,7 @@ from geonature.core.gn_permissions.models import PermObject
 from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 from geonature.core.gn_commons.schemas import CastableField
+from geonature.core.gn_commons.tasks import delete_file_and_tasks
 
 from .fixtures import *
 from .utils import set_logged_user
@@ -49,9 +50,11 @@ def place(users):
 
 @pytest.fixture(scope="function")
 def export_directory(monkeypatch):
-    with tempfile.TemporaryDirectory() as media_td:
-        monkeypatch.setitem(current_app.config, "MEDIA_FOLDER", media_td)
-        yield media_td
+    with tempfile.TemporaryDirectory() as tmp_folder:
+        monkeypatch.setitem(current_app.config, "MEDIA_FOLDER", tmp_folder)
+        export_dir = Path(tmp_folder) / "exports" / "usr_generated"
+        export_dir.mkdir(parents=True)
+        yield export_dir
 
 
 @pytest.fixture(scope="function")
@@ -729,34 +732,26 @@ class TestTasks:
         # File should be removed
         assert not Path(medium.media_path).is_file()
 
+    # deletes the files hand created files
+    def test_clean_file_and_tasks(self, export_directory, tasks):
+        (export_directory / "very_old.txt").open("x")
+        os.utime(
+            export_directory / "very_old.txt",
+            (1330712280, 1330712292),
+        )
+        # fichier généré il y a deux jour
+        recent = datetime.datetime.now() - datetime.timedelta(2)
+        (export_directory / "recent.txt").open("x")
+        os.utime(
+            export_directory / "recent.txt",
+            (recent.timestamp(), recent.timestamp()),
+        )
 
-# deletes the files hand created files
-def test_export_clean(self, export_directories):
-    (export_directories["schedules_path"] / "very_old.txt").open("x")
-    os.utime(
-        export_directories["schedules_path"] / "very_old.txt",
-        (1330712280, 1330712292),
-    )
-    recent = datetime.datetime.now() - datetime.timedelta(
-        days=current_app.config["EXPORTS"]["nb_days_keep_file"] / 2
-    )
-    (export_directories["schedules_path"] / "recent.txt").open("x")
-    os.utime(
-        export_directories["schedules_path"] / "recent.txt",
-        (recent.timestamp(), recent.timestamp()),
-    )
-    old = datetime.datetime.now() - datetime.timedelta(
-        days=current_app.config["EXPORTS"]["nb_days_keep_file"] * 2
-    )
-    (export_directories["usr_generated_path"] / "old.txt").open("x")
-    os.utime(
-        export_directories["usr_generated_path"] / "old.txt",
-        (old.timestamp(), old.timestamp()),
-    )
-    (export_directories["usr_generated_path"] / "very_recent.txt").open("x")
+        delete_file_and_tasks()
+        assert not (export_directory / "very_old.txt").is_file()
+        assert (export_directory / "recent.txt").is_file()
 
-    clean_export_file()
-    assert not (export_directories["schedules_path"] / "very_old.txt").is_file()
-    assert (export_directories["schedules_path"] / "recent.txt").is_file()
-    assert not (export_directories["usr_generated_path"] / "old.txt").is_file()
-    assert (export_directories["usr_generated_path"] / "very_recent.txt").is_file()
+        recent_task = db.session.get(Task, tasks["new_task"].id_task)
+        assert recent_task
+        old_task = db.session.get(Task, tasks["old_task"].id_task)
+        assert old_task is None

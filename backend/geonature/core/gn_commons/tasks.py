@@ -55,15 +55,15 @@ def delete_file_and_tasks():
         fichiers générés par le module export ayant plus de X jours
 
     """
-    time_to_del = datetime.timestamp(datetime.today() - timedelta(days=15))
+    limit_date = datetime.today() - timedelta(days=15)
     path_to_delete = Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated"
     for item in path_to_delete.glob("**/*"):
         item_time = item.stat().st_mtime
-        if item_time < time_to_del:
+        if item_time < datetime.timestamp(limit_date):
             if item.is_file():
                 item.unlink()
     # delete tasks
-    db.session.execute(delete(Task).where(Task.end < time_to_del))
+    db.session.execute(delete(Task).where(Task.end < limit_date))
 
 
 @celery_app.task(bind=True)
