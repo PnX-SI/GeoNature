@@ -1,9 +1,11 @@
-from io import StringIO
 import sys
 import csv
 import datetime
 import itertools
+
 from collections import Counter
+from io import StringIO
+from pathlib import Path
 
 import pytest
 from flask import url_for, current_app
@@ -25,6 +27,7 @@ from geonature.core.gn_permissions.tools import get_permissions
 from geonature.core.gn_synthese.utils.blurring import split_blurring_precise_permissions
 from geonature.core.gn_synthese.schemas import SyntheseSchema
 from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
+from geonature.core.gn_synthese.tasks.exports import export_observations
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
@@ -540,31 +543,44 @@ class TestSynthese:
             synthese["properties"]["id_synthese"] for synthese in response_json["features"]
         }
 
-    def test_export(self, users):
-        set_logged_user(self.client, users["self_user"])
+    @pytest.mark.parametrize("format", ["csv", "gpkg"])
+    def test_export_obs(self, users, format):
+        params = {"export_format": format}
 
-        # csv
-        response = self.client.post(
-            url_for("gn_synthese.exports.export_observations_web"),
-            json=[1, 2, 3],
-            query_string={"export_format": "csv"},
+        task = export_observations(
+            id_list=[], id_permissions=[], id_role=users["admin_user"].id_role, params=params
         )
 
-        assert response.status_code == 200
+        assert task.status == "success"
+        file = Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated" / task.file_name
+        assert file.exists()
+        file.suffix == "." + format
 
-        response = self.client.post(
-            url_for("gn_synthese.exports.export_observations_web"),
-            json=[1, 2, 3],
-            query_string={"export_format": "geojson"},
-        )
-        assert response.status_code == 200
+    # def test_export(self, users):
+    #     set_logged_user(self.client, users["self_user"])
 
-        response = self.client.post(
-            url_for("gn_synthese.exports.export_observations_web"),
-            json=[1, 2, 3],
-            query_string={"export_format": "shapefile"},
-        )
-        assert response.status_code == 200
+    #     # csv
+    #     response = self.client.post(
+    #         url_for("gn_synthese.exports.export_observations_web"),
+    #         json=[1, 2, 3],
+    #         query_string={"export_format": "csv"},
+    #     )
+
+    #     assert response.status_code == 200
+
+    #     response = self.client.post(
+    #         url_for("gn_synthese.exports.export_observations_web"),
+    #         json=[1, 2, 3],
+    #         query_string={"export_format": "geojson"},
+    #     )
+    #     assert response.status_code == 200
+
+    #     response = self.client.post(
+    #         url_for("gn_synthese.exports.export_observations_web"),
+    #         json=[1, 2, 3],
+    #         query_string={"export_format": "shapefile"},
+    #     )
+    #     assert response.status_code == 200
 
     @pytest.mark.parametrize(
         "view_name,response_status_code",

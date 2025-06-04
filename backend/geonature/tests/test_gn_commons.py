@@ -128,6 +128,7 @@ def tasks(modules, users):
             id_module=modules[0].id_module,
             start=datetime.datetime.now(),
             message="test",
+            status="pending",
         )
         db.session.add(new_task)
         old_date = datetime.datetime.now() - datetime.timedelta(15)
@@ -723,12 +724,20 @@ class TestTasks:
             module_code=module.module_code,
         )
 
-        db_task = db.session.get(Task, task.id)
+        db_task = db.session.get(Task, task.id_task)
         assert db_task is not None
-        assert db_task.module_code == module.module_code
+        assert db_task.id_module == module.id_module
         assert db_task.start is not None
         assert db_task.id_role == users["admin_user"].id_role
-        assert db.status == "pending"
+        assert db_task.status == "pending"
+
+    def test_set_successuff_task(self, tasks):
+        task = tasks["new_task"]
+        task.set_succesfull("toto.csv")
+
+        db_task = db.session.get(Task, task.id_task)
+        assert db_task.status == "success"
+        assert db_task.end is not None
 
     def test_clean_attachements(self, monkeypatch, celery_eager, medium):
         # Monkey patch the __before_commit_delete not to remove file

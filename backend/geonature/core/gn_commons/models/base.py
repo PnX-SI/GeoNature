@@ -4,6 +4,7 @@ Modèles du schéma gn_commons
 
 import os
 import datetime
+import uuid
 
 from pathlib import Path
 from collections import defaultdict
@@ -352,7 +353,7 @@ class Task(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
 
     id_task = DB.Column(DB.Integer, primary_key=True)
-    uuid_celery = DB.Column(UUID(as_uuid=True), nullable=False)
+    uuid_celery = DB.Column(UUID(as_uuid=True), nullable=False, default=uuid.uuid4())
     id_role = DB.Column(DB.Integer, DB.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
     id_module = DB.Column(
         DB.Integer, DB.ForeignKey("gn_commons.t_modules.id_module"), nullable=False

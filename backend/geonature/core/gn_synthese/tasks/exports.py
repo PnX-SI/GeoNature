@@ -122,19 +122,19 @@ def export_taxons(self, id_permissions, id_list, id_role):
 
 @celery_app.task(bind=True)
 def export_observations(self, id_permissions, id_list, params, id_role):
+    current_user = db.session.scalar(select(User).where(User.id_role == id_role))
+    db_task = Task.create_pending_task(current_user.id_role, self.request.id, "SYNTHESE")
     try:
-        current_user = db.session.scalar(select(User).where(User.id_role == id_role))
         permissions = db.session.scalars(
             select(Permission).where(Permission.id_permission.in_(id_permissions))
         ).all()
-        db_task = Task.create_pending_task(current_user.id_role, self.request.id, "SYNTHESE")
 
         # set default to csv
         export_format = params.get("export_format", "csv")
         view_name_param = params.get("view_name", "gn_synthese.v_synthese_for_export")
         # Test export_format
         if export_format not in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
-            raise BadRequest("Unsupported format")
+            raise BadRequest(f"Unsupported format {export_format}")
         config_view = {
             "view_name": "gn_synthese.v_synthese_for_web_app",
             "geojson_4326_field": "geojson_4326",
@@ -278,6 +278,7 @@ def export_observations(self, id_permissions, id_list, params, id_role):
             columns=columns_to_serialize,
         )
         db_task.set_succesfull(f"{export_file_name}.{export_format}")
+        return db_task
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
@@ -335,6 +336,7 @@ def export_metadata_task(self, id_permissions, id_role, filters):
             columns=[],
         )
         db_task.set_succesfull(export_file_name)
+        return db_task
     except Exception as e:
         db_task.status = "error"
         db.session.commit()
