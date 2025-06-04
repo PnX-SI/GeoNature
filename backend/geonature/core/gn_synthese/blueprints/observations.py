@@ -23,7 +23,7 @@ obs_routes.route("/", methods=["POST"])(new)
 
 
 @obs_routes.route("/<int:id_synthese>", methods=["PUT", "GET", "DELETE"])
-def observation(id_synthese):
+def observation____(id_synthese):
     if request.method == "GET":
         return observation(id_synthese)
     if request.method == "PUT":
