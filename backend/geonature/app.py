@@ -167,6 +167,10 @@ def create_app(with_external_mods=True):
 
             set_tag("with_synthese_extended", False)
 
+            if "QUERY_STRING" in request.environ:
+                query_string = request.environ["QUERY_STRING"]
+                set_tag("request.query", query_string)
+
             if "FLASK_REQUEST_ID" in request.environ:
                 set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
             if current_user.is_authenticated:
