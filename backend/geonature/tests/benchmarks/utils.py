@@ -81,7 +81,7 @@ def add_bluring_to_benchmark_test_class(benchmark_cls: type, different_user: str
                 continue
 
             # Include blurring fixture
-            kwargs = b_test.function_kwargs
+            kwargs = b_test.function_kwargs.copy()
             kwargs["fixtures"] = (
                 kwargs["fixtures"] + [blur_sensitive_observations]
                 if "fixtures" in kwargs
