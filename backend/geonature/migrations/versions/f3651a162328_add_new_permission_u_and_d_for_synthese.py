@@ -5,19 +5,20 @@ Revises: 707390c722fe
 Create Date: 2025-06-03 19:00:30.541152
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f3651a162328'
-down_revision = '707390c722fe'
+revision = "f3651a162328"
+down_revision = "707390c722fe"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-        op.execute(
+    op.execute(
         """
         INSERT INTO
             gn_permissions.t_permissions_available (
@@ -51,6 +52,7 @@ def upgrade():
             gn_permissions.bib_actions a ON a.code_action = v.action_code
         """
     )
+
 
 def downgrade():
     op.execute(

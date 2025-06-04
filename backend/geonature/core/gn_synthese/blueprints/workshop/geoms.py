@@ -1,5 +1,4 @@
 import json
-import logging
 
 from flask import request, g, current_app, jsonify
 from geojson import Feature, FeatureCollection
@@ -8,8 +7,12 @@ from werkzeug.exceptions import BadRequest
 
 from geonature.core.gn_permissions.decorators import permissions_required
 from geonature.core.gn_synthese.models import VSyntheseForWebApp, CorAreaSynthese
-from geonature.core.gn_synthese.utils.blurring import split_blurring_precise_permissions, \
-    build_blurred_precise_geom_queries, build_allowed_geom_cte, build_synthese_obs_query
+from geonature.core.gn_synthese.utils.blurring import (
+    split_blurring_precise_permissions,
+    build_blurred_precise_geom_queries,
+    build_allowed_geom_cte,
+    build_synthese_obs_query,
+)
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.utils.env import db
 from ref_geo.models import BibAreasTypes, LAreas
@@ -33,12 +36,18 @@ def _aggregate_by_area(observation_subquery, area_aggregation_type, blurring):
         # Do not select cells which size_hierarchy is bigger than AREA_AGGREGATION_TYPE
         # It means that we do not aggregate obs that have a blurring geometry greater in
         # size than the aggregation area
-        agg_areas = agg_areas.where(observation_subquery.c.size_hierarchy <= BibAreasTypes.size_hierarchy)
+        agg_areas = agg_areas.where(
+            observation_subquery.c.size_hierarchy <= BibAreasTypes.size_hierarchy
+        )
     agg_areas = agg_areas.lateral("agg_areas")
     obs_query_aggregated_by_area = (
-        select(func.ST_AsGeoJSON(LAreas.geom_4326).label("geojson"), agg_areas.c.id_area.label("id_area"),
-               agg_areas.c.area_name.label("area_name"),agg_areas.c.area_code.label("area_code"),
-               observation_subquery.c.id_synthese)
+        select(
+            func.ST_AsGeoJSON(LAreas.geom_4326).label("geojson"),
+            agg_areas.c.id_area.label("id_area"),
+            agg_areas.c.area_name.label("area_name"),
+            agg_areas.c.area_code.label("area_code"),
+            observation_subquery.c.id_synthese,
+        )
         .select_from(
             observation_subquery.outerjoin(
                 agg_areas, agg_areas.c.id_synthese == observation_subquery.c.id_synthese
@@ -70,7 +79,6 @@ def _build_base_obs_subquery(permissions, filters, limit):
         )
         synthese_query_class.apply_all_filters(g.current_user, permissions)
         obs_query = synthese_query_class.build_query()
-        logging.getLogger().error("NOT BLURRED")
 
     else:
         # Build 2 queries that will be UNIONed
@@ -83,18 +91,15 @@ def _build_base_obs_subquery(permissions, filters, limit):
             precise_permissions=precise_permissions,
             blurred_geom_query=blurred_geom_query,
             precise_geom_query=precise_geom_query,
-            limit=limit
+            limit=limit,
         )
 
         obs_query = build_synthese_obs_query(
             observations=VSyntheseForWebApp.id_synthese,
             allowed_geom_cte=allowed_geom_cte,
-            limit=limit
+            limit=limit,
         )
-        obs_query = obs_query.add_columns(
-            allowed_geom_cte.c.size_hierarchy.label("size_hierarchy")
-        )
-        logging.getLogger().error("BLURRED")
+        obs_query = obs_query.add_columns(allowed_geom_cte.c.size_hierarchy.label("size_hierarchy"))
     return obs_query.subquery("obs")
 
 
@@ -105,14 +110,16 @@ def _geom_area_mode(filters, permissions, area_aggregation_type, limit):
     blurring_permissions, _ = split_blurring_precise_permissions(permissions)
     need_blurring = bool(blurring_permissions)
     obs_subquery = _build_base_obs_subquery(permissions, filters, limit)
-    obs_query_aggregated_by_area = _aggregate_by_area(obs_subquery, area_aggregation_type, need_blurring)
+    obs_query_aggregated_by_area = _aggregate_by_area(
+        obs_subquery, area_aggregation_type, need_blurring
+    )
 
     query = select(
         obs_query_aggregated_by_area.c.geojson,
         obs_query_aggregated_by_area.c.id_area,
         obs_query_aggregated_by_area.c.area_name,
         obs_query_aggregated_by_area.c.area_code,
-        func.count(obs_query_aggregated_by_area.c.id_synthese).label("observations_count")
+        func.count(obs_query_aggregated_by_area.c.id_synthese).label("observations_count"),
     ).group_by(
         obs_query_aggregated_by_area.c.geojson,
         obs_query_aggregated_by_area.c.id_area,
@@ -126,11 +133,12 @@ def _geom_area_mode(filters, permissions, area_aggregation_type, limit):
         geojson_features.append(
             Feature(
                 geometry=json.loads(geom_as_geojson) if geom_as_geojson else None,
-                properties={"id_area": id_area,
-                            "area_name": area_name,
-                            "area_code":area_code,
-                            "observation_count": observation_count,
-                            },
+                properties={
+                    "id_area": id_area,
+                    "area_name": area_name,
+                    "area_code": area_code,
+                    "observation_count": observation_count,
+                },
             )
         )
     return jsonify(FeatureCollection(geojson_features))
@@ -152,8 +160,11 @@ def geoms(permissions):
         raise BadRequest("Bad filters")
     area_aggregation_type = filters.pop("area_aggregation_type", None)
     result_limit = filters.pop("limit", None)
-    result_limit = min(result_limit, current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]) if result_limit else \
-    current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+    result_limit = (
+        min(result_limit, current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"])
+        if result_limit
+        else current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+    )
     if not area_aggregation_type:
         raise BadRequest(f"geom is not supported without area_aggregation_type param")
     return _geom_area_mode(filters, permissions, area_aggregation_type, result_limit)

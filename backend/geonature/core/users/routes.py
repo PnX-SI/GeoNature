@@ -448,13 +448,14 @@ def new_password():
         return {"msg": "Erreur serveur"}, 500
     return {"msg": "Mot de passe modifié avec succès"}, 200
 
+
 # TODO bcp plus pratique en get, on reste en get ?
 @routes.route("/get_api_secret", methods=["GET"])
 @json_resp
 @login_required
 def get_api_secret():
     """
-        génère un secret api et une clé api
+    génère un secret api et une clé api
     """
     if not current_app.config["API_ACCESS_ACTIVATED"]:
         raise Forbidden("L'administrateur de votre serveur a désactivé l'accès API")
