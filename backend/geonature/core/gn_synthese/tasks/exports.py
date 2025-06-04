@@ -1,67 +1,48 @@
 import os
 from pathlib import Path
-from celery.schedules import crontab
+from datetime import datetime
+from typing import List, Optional
 from celery.utils.log import get_task_logger
-from datetime import datetime, timedelta
 
-import json
-import re
-from collections import OrderedDict
-from pathlib import Path
-
-from flask import current_app, url_for
-
-from marshmallow import fields
-from geonature.core.gn_synthese.models import (
-    CorAreaSynthese,
-    Synthese,
-    VSyntheseForWebApp,
-)
-from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-
-from geonature.core.gn_commons.models import Task, TModules
-from geonature.core.gn_synthese.utils.blurring import (
-    build_allowed_geom_cte,
-    build_blurred_precise_geom_queries,
-    split_blurring_precise_permissions,
-)
-from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-from geonature.utils import filemanager
-from geonature.utils.env import DB, db
-from geonature.utils.errors import GeonatureApiError
-from geonature.utils.utilsgeometrytools import export_as_geo_file
-from apptax.taxonomie.models import (
-    bdc_statut_cor_text_area,
-)
-
-from sqlalchemy import distinct, func, select, delete
-from utils_flask_sqla.generic import GenericTable, serializeQuery
-from utils_flask_sqla.response import to_csv_resp, to_json_resp
-from utils_flask_sqla_geo.generic import GenericTableGeo, GenericQueryGeo
+from flask import current_app
+from sqlalchemy import distinct, func, select
+from flask_sqlalchemy.query import Query
+from marshmallow import fields, Schema
 from werkzeug.exceptions import BadRequest, Forbidden
 
-from typing import List, Optional
-
-
-from pypnusershub.db.models import User
-from geonature.utils.env import db
-from geonature.core.gn_commons.repositories import TMediumRepository
-from geonature.utils.celery import celery_app
-from geonature.utils.config import config
-
+from utils_flask_sqla_geo.generic import GenericQueryGeo
 from utils_flask_sqla_geo.export import (
     export_csv,
     export_geojson,
     export_geopackage,
     export_json,
 )
-from geonature.core.gn_permissions.models import Permission
+
 from ref_geo.utils import get_local_srid
 
+from apptax.taxonomie.models import VBdcStatus
 
-from flask_sqlalchemy.query import Query
+from pypnusershub.db.models import User
 
-from marshmallow import Schema
+from geonature.utils.env import DB, db
+from geonature.utils.celery import celery_app
+
+from geonature.core.gn_permissions.models import Permission
+from geonature.core.gn_commons.models import Task, TModules
+
+from geonature.core.gn_synthese.models import (
+    Synthese,
+    VSyntheseForWebApp,
+)
+from geonature.core.gn_synthese.schemas import ExportStatusSchema
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+from geonature.core.gn_synthese.utils.blurring import (
+    build_allowed_geom_cte,
+    build_blurred_precise_geom_queries,
+    split_blurring_precise_permissions,
+)
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
+
 
 logger = get_task_logger(__name__)
 
@@ -369,13 +350,19 @@ def export_status_task(self, id_permissions, id_role, filters):
             select(Permission).where(Permission.id_permission.in_(id_permissions))
         ).all()
 
-        status_view = GenericQueryGeo(
-            DB=DB, tableName="v_status_for_exports", schemaName="gn_synthese"
-        )
-
         query = select(
-            distinct(VSyntheseForWebApp.cd_nom).label("cd_nom"), status_view.view.tableDef
-        )
+            VSyntheseForWebApp.cd_ref,
+            VSyntheseForWebApp.nom_valide,
+            VSyntheseForWebApp.nom_vern,
+            VBdcStatus.rq_statut,
+            VBdcStatus.regroupement_type,
+            VBdcStatus.lb_type_statut,
+            VBdcStatus.cd_sig,
+            VBdcStatus.full_citation,
+            VBdcStatus.doc_url,
+            VBdcStatus.code_statut,
+            VBdcStatus.label_statut,
+        ).distinct()
 
         synthese_query_class = SyntheseQuery(
             VSyntheseForWebApp,
@@ -383,26 +370,14 @@ def export_status_task(self, id_permissions, id_role, filters):
             filters,
         )
         synthese_query_class.add_join(
-            status_view.view.tableDef,
-            getattr(
-                status_view.view.tableDef.columns,
-                "cd_nom",
-            ),
-            VSyntheseForWebApp.cd_nom,
+            VBdcStatus,
+            VBdcStatus.cd_ref,
+            VSyntheseForWebApp.cd_ref,
         )
-
-        synthese_query_class.add_join(
-            CorAreaSynthese,
-            CorAreaSynthese.id_synthese,
-            VSyntheseForWebApp.id_synthese,
-        )
-        synthese_query_class.add_join(
-            bdc_statut_cor_text_area, bdc_statut_cor_text_area.c.id_area, CorAreaSynthese.id_area
-        )
-
-        query = synthese_query_class.build_query()
 
         synthese_query_class.filter_query_all_filters(current_user, permissions)
+        query = synthese_query_class.build_query()
+
         export_dir = Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated"
         current_timestamp = datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
 
@@ -413,7 +388,7 @@ def export_status_task(self, id_permissions, id_role, filters):
             file_name=full_filepath,
             format="csv",
             query=query,
-            schema_class=status_view.get_marshmallow_schema(),
+            schema_class=ExportStatusSchema,
             pk_name=None,
             srid=None,
             columns=[],
