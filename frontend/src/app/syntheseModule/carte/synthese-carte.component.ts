@@ -25,6 +25,7 @@ import { LeafletFileLayerComponent } from '@geonature_common/map/filelayer/filel
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { GeoJsonObject } from '@librairies/@types/geojson';
+import { SyntheseApiProxyService } from '../services/synthese-api-proxy.service';
 
 export type EventToggle = 'grid' | 'point';
 
@@ -96,7 +97,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
     private translateService: TranslateService,
     public config: ConfigService,
     public drawingService: SyntheseCarteDrawingService,
-    public dataService: SyntheseDataService
+    public dataService: SyntheseDataService,
+    private _apiProxyService: SyntheseApiProxyService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
     // set a new featureGroup - cluster or not depending of the synthese config
@@ -159,6 +161,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this._ms.map.on('zoomend', debouncedStoppedMoving.bind(this));
     this._ms.map.on('dragend', debouncedStoppedMoving.bind(this));
+    this._apiProxyService.geomList.subscribe((geom) => {
+      this.SyntheseData = geom;
+      this.insertGeojsonData();
+    });
     this.getAreas();
   }
 
@@ -352,7 +358,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
       });
       this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
-      this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+      // this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
       // zoom on extend after first search
       // if (change.SyntheseData.previousValue !== undefined) {
       //   try {
@@ -480,10 +486,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
   getAreas() {
     let bounds = this._ms.map.getBounds();
 
-    this.dataService.fetchMapGeoms(this.boundsToGeoJson(bounds)).subscribe((response) => {
-      this.SyntheseData = response['features'];
-      this.insertGeojsonData();
-    });
+    this._apiProxyService.fetchMapAreas(this.boundsToGeoJson(bounds));
   }
 
   getGeoms() {}
