@@ -7,7 +7,6 @@ from geonature.core.gn_synthese.models import (
     TReport,
     TSources,
     Synthese,
-    VSyntheseForWebApp,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 

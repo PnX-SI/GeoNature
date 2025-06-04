@@ -18,7 +18,6 @@ from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils, SortOrder
 from pypnusershub.db import User
 from geonature.core.gn_synthese.utils.orm import is_already_joined
-from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from apptax.taxonomie.models import Taxref, VMTaxrefListForautocomplete
 from ref_geo.models import BibAreasTypes, LAreas
 from utils_flask_sqla.generic import GenericTable
