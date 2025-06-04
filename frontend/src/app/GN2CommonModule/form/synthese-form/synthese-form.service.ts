@@ -6,6 +6,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -64,7 +65,8 @@ export class SyntheseFormService {
     private _periodFormatter: NgbDatePeriodParserFormatter,
     public config: ConfigService,
     private _api: DataFormService,
-    private _common: CommonService
+    private _common: CommonService,
+    private http: HttpClient
   ) {
     this.searchForm = this._fb.group({
       cd_nom: null,
@@ -192,6 +194,169 @@ export class SyntheseFormService {
       ];
     }
     return updatedParams;
+  }
+
+  getFiltersAsQueryParams(): string {
+    const params = this.formatParams();
+    const searchParams = new URLSearchParams();
+
+    for (const key in params) {
+      if (params[key] === undefined || params[key] === null) continue;
+      if (Array.isArray(params[key])) {
+        if (params[key].length > 0) {
+          // Add each array value as repeated query param
+          params[key].forEach((val) => {
+            searchParams.append(key, val);
+          });
+        }
+      } else if (typeof params[key] === 'object') {
+        // Serialize objects
+        searchParams.append(key, JSON.stringify(params[key]));
+      } else {
+        searchParams.append(key, params[key]);
+      }
+    }
+
+    console.debug('SyntheseFormService getFiltersAsQueryParams', searchParams.toString());
+    return searchParams.toString();
+  }
+
+  refillFormFromQueryParams(queryParams: any) {
+    // Reset advanced selections
+    this.selectedtaxonFromComponent = [];
+    this.selectedCdRefFromTree = [];
+    this.selectedTaxonFromRankInput = [];
+    this.selectedRedLists = [];
+    this.selectedStatus = [];
+    this.selectedTaxRefAttributs = [];
+
+    // All fields that must always be arrays (multi-selects)
+    const arrayFields = [
+      // Always-array fields
+      'id_organism', 'id_dataset', 'id_import', 'id_acquisition_framework',
+      'id_nomenclature_valid_status', 'id_nomenclature_behaviour', 'id_nomenclature_bio_condition',
+      'id_nomenclature_blurring', 'id_nomenclature_determination_method', 'id_nomenclature_diffusion_level',
+      'id_nomenclature_exist_proof', 'id_nomenclature_geo_object_nature', 'id_nomenclature_grp_typ',
+      'id_nomenclature_life_stage', 'id_nomenclature_naturalness', 'id_nomenclature_obj_count',
+      'id_nomenclature_obs_technique', 'id_nomenclature_sex', 'id_nomenclature_sensitivity',
+      'id_nomenclature_source_status', 'id_nomenclature_type_count', 'id_nomenclature_biogeo_status',
+      'id_nomenclature_bio_status', 'id_nomenclature_observation_status', 'id_source', 'id_module',
+      'id_synthese', 'unique_id_sinp',
+      // Red lists
+      'worldwide_red_lists', 'european_red_lists', 'national_red_lists', 'regional_red_lists',
+      // Protection/regulation status
+      'protections_protection_status', 'regulations_protection_status',
+      // Taxonomy
+      'taxonomy_id_hab', 'taxonomy_group2_inpn', 'taxonomy_group3_inpn'
+    ];
+
+    // Fields that are dates
+    const dateFields = ['date_min', 'date_max', 'period_start', 'period_end'];
+
+    // GeoJSON fields
+    const geoJsonFields = ['geoIntersection'];
+
+    // Advanced fields handling
+    const advancedFieldHandlers = {
+      cd_ref: (value) => {
+        const arr = Array.isArray(value) ? value : [value];
+        arr.filter(v => v !== undefined && v !== null).forEach(cd_ref => {
+          this.getTaxonByCdRef(cd_ref).subscribe(taxon => {
+            if (taxon && !this.selectedtaxonFromComponent.some(t => t.cd_ref === taxon.cd_ref)) {
+              this.selectedtaxonFromComponent.push(taxon);
+              if (this.searchForm.controls['taxon_search_name']) {
+                this.searchForm.controls['taxon_search_name'].setValue(taxon.search_name);
+              }
+            }
+          });
+        });
+      },
+      cd_ref_parent: (value) => {
+        this.selectedCdRefFromTree = Array.isArray(value) ? value : [value];
+      },
+      selectedRedLists: (value) => {
+        this.selectedRedLists = Array.isArray(value) ? value : [value];
+      },
+      selectedStatus: (value) => {
+        this.selectedStatus = Array.isArray(value) ? value : [value];
+      },
+      selectedTaxRefAttributs: (value) => {
+        this.selectedTaxRefAttributs = Array.isArray(value) ? value : [value];
+      }
+    };
+
+    Object.keys(queryParams).forEach((key) => {
+      let value = queryParams[key];
+      try { value = JSON.parse(value); } catch (e) { }
+
+      // --- Advanced fields ---
+      if (advancedFieldHandlers[key]) {
+        advancedFieldHandlers[key](value);
+        return;
+      }
+
+      // --- Date fields ---
+      if (dateFields.includes(key) && typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = value.split('-').map(Number);
+        if (this.searchForm.controls[key]) {
+          this.searchForm.controls[key].setValue({ year, month, day });
+        }
+        return;
+      }
+
+      // --- Area fields (always arrays) ---
+      if (key.startsWith('area_') && this.searchForm.controls[key]) {
+        if (!Array.isArray(value)) value = [value];
+        this.searchForm.controls[key].setValue(value);
+        return;
+      }
+
+      // --- GeoJSON fields ---
+      if (geoJsonFields.includes(key) && this.searchForm.controls[key]) {
+        if (typeof value === 'string') {
+          try { value = JSON.parse(value); } catch (e) { }
+        }
+        this.searchForm.controls[key].setValue(value);
+        return;
+      }
+
+      // --- All other array fields ---
+      if (arrayFields.includes(key) && this.searchForm.controls[key]) {
+        if (!Array.isArray(value)) value = [value];
+        this.searchForm.controls[key].setValue(value);
+        return;
+      }
+
+      // --- Fallback: set value if control exists ---
+      if (this.searchForm.controls[key]) {
+        if (
+          Array.isArray(this.searchForm.controls[key].value) &&
+          typeof value === 'string' &&
+          value.includes(',')
+        ) {
+          this.searchForm.controls[key].setValue(value.split(','));
+        } else {
+          this.searchForm.controls[key].setValue(value);
+        }
+      }
+    });
+  }
+
+  private _taxonsCache: any[] = [];
+
+  getTaxonByCdRef(cd_ref: number): Observable<any> {
+    if (this._taxonsCache.length > 0) {
+      // Find the first matching taxon by cd_ref
+      const taxon = this._taxonsCache.find(t => t.cd_ref == cd_ref);
+      return of(taxon);
+    } else {
+      // Fetch all taxa and cache them
+      return this.http.get<any[]>(`${this.config.API_ENDPOINT}/synthese/taxons_autocomplete`).pipe(
+        tap(taxa => this._taxonsCache = taxa),
+        // Find the first matching taxon by cd_ref
+        mergeMap(taxa => of(taxa.find(t => t.cd_ref == cd_ref)))
+      );
+    }
   }
 
   periodValidator(): ValidatorFn {

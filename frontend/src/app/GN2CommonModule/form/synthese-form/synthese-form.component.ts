@@ -6,7 +6,8 @@ import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
@@ -42,7 +43,10 @@ export class SyntheseSearchComponent implements OnInit {
     private _storeService: TaxonAdvancedStoreService,
     private _api: DataFormService,
     private route: ActivatedRoute,
-    public config: ConfigService
+    public config: ConfigService,
+    private router: Router,
+    private location: Location,
+    public syntheseFormService: SyntheseFormService
   ) {
     this.route.queryParams.subscribe((params) => {
       this.params = params;
@@ -83,11 +87,27 @@ export class SyntheseSearchComponent implements OnInit {
         this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset]);
       }
     }
+
+    this.refillFormWithURLParams();
+  }
+
+  updateUrlWithFilters() {
+    const queryParams = this.syntheseFormService.getFiltersAsQueryParams();
+    const url = this.router.url.split('?')[0] + (queryParams ? '?' + queryParams : '');
+    this.location.replaceState(url);
+    return queryParams;
   }
 
   onSubmitForm() {
     const updatedParams = this.formService.formatParams();
+    this.updateUrlWithFilters();
+    console.log('SyntheseSearchComponent onSubmitForm', updatedParams);
     this.searchClicked.emit(updatedParams);
+  }
+
+  refillFormWithURLParams() {
+    const queryParams = this.route.snapshot.queryParams;
+    this.formService.refillFormFromQueryParams(queryParams);
   }
 
   refreshFilters() {
