@@ -30,12 +30,14 @@ def export_taxon_web(permissions):
 
     """
 
-    id_list = request.get_json()
+    params = request.args
+    json_params = request.get_json()
+    all_params = {**params, **json_params}
 
     uuid_task = export_synthese_task.delay(
         export_type="taxons",
         id_permissions=[p.id_permission for p in permissions],
-        params={"id_list": id_list},
+        params=all_params,
         id_role=g.current_user.id_role,
     )
 
@@ -59,9 +61,8 @@ def export_observations_web(permissions):
 
     """
     params = request.args
-    # get list of id synthese from POST
-    id_list = request.get_json()
-    all_params = {**params, **{"id_list": id_list}}
+    json_params = request.get_json()
+    all_params = {**params, **json_params}
 
     uuid_task = export_synthese_task.delay(
         export_type="observations",

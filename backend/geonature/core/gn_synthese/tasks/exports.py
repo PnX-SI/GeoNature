@@ -59,6 +59,8 @@ def export_synthese_task(self, export_type, id_permissions, params, id_role):
         ).all()
         geometry_field_name = None
         local_srid = None
+        if "ids" in params:
+            params["id_list"] = params.pop("ids")
 
         export_format = params.get("export_format", "csv")
         if export_type == "taxons":
@@ -105,8 +107,8 @@ def export_taxons(permissions, current_user, params):
         DB=DB, tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese"
     )
     columns = taxon_view.view.tableDef.columns
-    id_list = params.pop("id_list")
 
+    id_list = params.pop("id_list")
     # Test de conformité de la vue v_synthese_for_export_view
     try:
         assert hasattr(columns, "cd_ref")
@@ -153,6 +155,7 @@ def export_observations(permissions, current_user, params):
     export_format = params.get("export_format", "csv")
     view_name_param = params.get("view_name", "gn_synthese.v_synthese_for_export")
     id_list = params.pop("id_list")
+    print(id_list)
     # Test export_format
     if export_format not in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise BadRequest("Unsupported format")
