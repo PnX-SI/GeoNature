@@ -10,14 +10,14 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f3651a162328'
-down_revision = '707390c722fe'
+revision = "f3651a162328"
+down_revision = "707390c722fe"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-        op.execute(
+    op.execute(
         """
         INSERT INTO
             gn_permissions.t_permissions_available (

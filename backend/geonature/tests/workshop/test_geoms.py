@@ -20,9 +20,7 @@ class TestGeoms:
         set_logged_user(self.client, users["self_user"])
         r = self.client.post(url)
         assert r.status_code == 400
-        payload = {
-                    "area_aggregation_type": "M10"
-                }
+        payload = {"area_aggregation_type": "M10"}
         r = self.client.post(url, data=json.dumps(payload), content_type="application/json")
         assert r.status_code == 200
         assert r.is_json
@@ -36,9 +34,13 @@ class TestGeoms:
         matching_feature = None
         for feature in data["features"]:
             props = feature.get("properties", {})
-            if props.get("id_area") == expected_id_area and props.get(
-                "observation_count") == expected_observation_count:
+            if (
+                props.get("id_area") == expected_id_area
+                and props.get("observation_count") == expected_observation_count
+            ):
                 matching_feature = feature
                 break
 
-        assert matching_feature is not None, "La feature attendue n'a pas été trouvée dans la réponse"
+        assert (
+            matching_feature is not None
+        ), "La feature attendue n'a pas été trouvée dans la réponse"
