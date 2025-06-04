@@ -1,6 +1,6 @@
 <ngx-datatable
   #table
-  class="material striped margin-top-xs table-size expandable"
+  class="material margin-top-xs table-size expandable"
   [rows]="data"
   [columns]="columnService.defaultColumns"
   [columnMode]="'force'"
@@ -17,7 +17,7 @@
         aria-haspopup="true"
         aria-expanded="false"
         matTooltip="{{ 'List.Columns' | translate }}"
-        (click)="openModalCol($event, modalCol)"
+        (click)="columnService.openModal($event, modalCol)"
       ></i>
     </ng-template>
     <ng-template
@@ -60,7 +60,7 @@
 
   <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
   <ngx-datatable-column
-    *ngFor="let col of defaultColumns"
+    *ngFor="let col of columnService.defaultColumns"
     [maxWidth]="col.max_width"
     [name]="col.name"
     [prop]="col.prop"
@@ -121,7 +121,7 @@
   <div class="modal-body">
     <div
       class="form-check"
-      *ngFor="let col of availableColumns"
+      *ngFor="let col of columnService.availableColumns"
     >
       <input
         class="form-check-input"

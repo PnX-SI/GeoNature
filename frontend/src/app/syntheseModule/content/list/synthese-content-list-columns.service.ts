@@ -1,18 +1,17 @@
 import { Injectable, OnInit } from '@angular/core';
 import { ConfigService } from '@geonature/services/config.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable()
-export class SyntheseContentListColumnsService implements OnInit {
+export class SyntheseContentListColumnsService {
   public defaultColumns: Array<any> = [];
   public availableColumns: Array<any> = [];
 
-  constructor(private _config: ConfigService) { }
-
-  ngOnInit() {
-    this._initListColumns();
-  }
-
-  _initListColumns() {
+  constructor(
+    private _config: ConfigService,
+    public ngbModal: NgbModal
+  ) {
+    // initListColumns
     this.defaultColumns = this._config.SYNTHESE.LIST_COLUMNS_FRONTEND;
     let allColumnsTemp = [
       ...this._config.SYNTHESE.LIST_COLUMNS_FRONTEND,
@@ -29,5 +28,9 @@ export class SyntheseContentListColumnsService implements OnInit {
   toggleColumnNames(col) {
     col.checked = !col.checked;
     this.defaultColumns = this.availableColumns.filter((col) => col.checked);
+  }
+
+  openModal($event, modal) {
+    this.ngbModal.open(modal);
   }
 }

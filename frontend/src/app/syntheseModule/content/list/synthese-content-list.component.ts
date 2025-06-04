@@ -1,16 +1,16 @@
 import {
   Component,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SyntheseContentListColumnsService } from './synthese-content-list-columns.service';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'pnx-synthese-content-list',
   templateUrl: 'synthese-content-list.component.html',
   styleUrls: ['synthese-content-list.component.scss'],
-  imports: [NgxDatatableModule, RouterModule],
+  imports: [GN2CommonModule, CommonModule],
   providers: [SyntheseContentListColumnsService],
 })
 export class SyntheseContentListComponent {
@@ -18,7 +18,7 @@ export class SyntheseContentListComponent {
   // data
   // //////////////////////////////////////////////////////////////////////////
 
-  constructor(columnService: SyntheseContentListColumnsService) { }
-
   data: Array<any>;
+
+
 }
