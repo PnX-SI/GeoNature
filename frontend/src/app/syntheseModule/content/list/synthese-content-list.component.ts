@@ -57,8 +57,8 @@ export class SyntheseContentListComponent implements OnInit {
   }
 
   onColumnSort(event: any) {
-    this.sort.sortBy = event.newValue;
-    this.sort.sortOrder = event.column.prop;
+    this.sort.sortBy = event.column.prop;
+    this.sort.sortOrder = event.newValue;
     this.pagination.currentPage = 1;
     this._apiProxyService.fetchObservationsList();
   }

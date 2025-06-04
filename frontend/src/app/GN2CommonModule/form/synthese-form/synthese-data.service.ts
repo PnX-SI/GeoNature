@@ -9,10 +9,9 @@ import {
 } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
-import { stringify as toWKT } from 'wellknown';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
-import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
+import { DEFAULT_SORT, SORT_ORDER, SyntheseDataSortItem } from './synthese-data-sort-item';
 
 export interface TaxonStats {
   cd_ref?: number;
@@ -288,8 +287,12 @@ export class SyntheseDataService {
   // observations
   // //////////////////////////////////////////////////////////////////////////
 
-  getObservations(filters) {
-    return this._api.post<any>(`${this.config.API_ENDPOINT}/synthese/observations/search`, filters);
+  getObservations(sort: SyntheseDataSortItem, filters) {
+    const sortQueryParam = `sort=${sort.sortOrder == SORT_ORDER.DESC ? '-' : ''}${sort.sortBy}`;
+    return this._api.post<any>(
+      `${this.config.API_ENDPOINT}/synthese/observations/search?${sortQueryParam}`,
+      filters
+    );
   }
 
   getAreas(filters, area_aggregation_type) {
