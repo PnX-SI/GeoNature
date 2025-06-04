@@ -1,4 +1,4 @@
-from flask import request, current_app, jsonify
+from flask import request, current_app, jsonify, g
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
@@ -19,6 +19,7 @@ import sqlalchemy as sa
 
 from geonature.utils.env import db
 from geonature.core.gn_permissions.tools import get_permissions
+from geonature.core.gn_permissions.decorators import permissions_required
 
 
 def synthese_column_formatters(param_column_list):
@@ -47,7 +48,8 @@ def synthese_column_formatters(param_column_list):
     return columns
 
 
-def observations():
+@permissions_required("R", module_code="SYNTHESE")
+def observations(permissions):
 
     parameters = request.json or {}
 
@@ -57,9 +59,6 @@ def observations():
     with_geom = parameters.pop("with_geom", True)
     format = parameters.pop("format", "json")
 
-    #
-    current_user = db.session.get(User, 3)
-    permissions = get_permissions("R", current_user.id_role, module_code="SYNTHESE")
     blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
     ##################################################
     ## Retrieve columns returned by the Synthese query
@@ -120,10 +119,10 @@ def observations():
         obs_query,
         parameters,
     )
-    synthese_query_class.apply_all_filters(current_user, permissions)
+    synthese_query_class.apply_all_filters(g.current_user, permissions)
     obs_query = synthese_query_class.build_query()
 
     if page and per_page:
-        db.paginate(select=obs_query, page=page, per_page=per_page)
+        return jsonify(db.paginate(select=obs_query, page=page, per_page=per_page))
 
     return db.session.execute(obs_query).all()
