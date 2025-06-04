@@ -36,35 +36,35 @@ FROM s;
 
 ---- Ajouter permissions disponibles pour les nouveau module
 
-        INSERT INTO
-            gn_permissions.t_permissions_available (
-                id_module,
-                id_object,
-                id_action,
-                label,
-                scope_filter
-            )
-        SELECT
-            m.id_module,
-            o.id_object,
-            a.id_action,
-            v.label,
-            v.scope_filter
-        FROM
-            (
-                VALUES
-                     ('OCCTAX_DS', 'ALL', 'C', True, 'Créer des relevés')
-                    ,('OCCTAX_DS', 'ALL', 'R', True, 'Voir les relevés')
-                    ,('OCCTAX_DS', 'ALL', 'U', True, 'Modifier les relevés')
-                    ,('OCCTAX_DS', 'ALL', 'E', True, 'Exporter les relevés')
-                    ,('OCCTAX_DS', 'ALL', 'D', True, 'Supprimer des relevés')
-            ) AS v (module_code, object_code, action_code, scope_filter, label)
-        JOIN
-            gn_commons.t_modules m ON m.module_code = v.module_code
-        JOIN
-            gn_permissions.t_objects o ON o.code_object = v.object_code
-        JOIN
-            gn_permissions.bib_actions a ON a.code_action = v.action_code;
+INSERT INTO
+    gn_permissions.t_permissions_available (
+        id_module,
+        id_object,
+        id_action,
+        label,
+        scope_filter
+    )
+SELECT
+    m.id_module,
+    o.id_object,
+    a.id_action,
+    v.label,
+    v.scope_filter
+FROM
+    (
+        VALUES
+                ('OCCTAX_DS', 'ALL', 'C', True, 'Créer des relevés')
+            ,('OCCTAX_DS', 'ALL', 'R', True, 'Voir les relevés')
+            ,('OCCTAX_DS', 'ALL', 'U', True, 'Modifier les relevés')
+            ,('OCCTAX_DS', 'ALL', 'E', True, 'Exporter les relevés')
+            ,('OCCTAX_DS', 'ALL', 'D', True, 'Supprimer des relevés')
+    ) AS v (module_code, object_code, action_code, scope_filter, label)
+JOIN
+    gn_commons.t_modules m ON m.module_code = v.module_code
+JOIN
+    gn_permissions.t_objects o ON o.code_object = v.object_code
+JOIN
+    gn_permissions.bib_actions a ON a.code_action = v.action_code;
 
 
 -- Insérer un cadre d'acquisition d'exemple
@@ -85,7 +85,7 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     acquisition_framework_end_date, 
     meta_create_date, 
     meta_update_date
-    ) VALUES (
+) VALUES (
     '57b7d0f2-4183-4b7b-8f08-6e105d476dc5', 
     'CA-1',
     'CA-1',
@@ -101,8 +101,7 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     null,
     '2018-09-01 10:35:08',
     null
-    );
-;
+);
 
 INSERT INTO gn_meta.t_acquisition_frameworks (
     unique_acquisition_framework_id, 
@@ -120,7 +119,7 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     acquisition_framework_end_date, 
     meta_create_date, 
     meta_update_date
-    ) VALUES (
+) VALUES (
     '48b7d0f2-4183-4b7b-8f08-6e105d476dd8', 
     'CA-2-empty',
     'CA-1-empty',
@@ -136,7 +135,7 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     null,
     '2022-09-01 10:35:08',
     null
-    );
+);
 
 -- Insérer 2 jeux de données d'exemple
 INSERT INTO gn_meta.t_datasets (
@@ -162,11 +161,13 @@ INSERT INTO gn_meta.t_datasets (
     validable,
     meta_create_date,
     meta_update_date
-    )
-    VALUES
-    (
+) VALUES (
     '4d331cae-65e4-4948-b0b2-a11bc5bb46c2',
-     (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
+    (
+        SELECT id_acquisition_framework 
+        FROM gn_meta.t_acquisition_frameworks 
+        WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
+    ),
     'JDD-1',
     'Contact aléatoire',
     'Observations aléatoires de la faune, de la flore ou de la fonge',
@@ -187,10 +188,14 @@ INSERT INTO gn_meta.t_datasets (
     true,
     '2018-09-01 16:57:44.45879',
     null
-    ),
-    (
+),
+(
     'dadab32d-5f9e-4dba-aa1f-c06487d536e8',
-    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
+    (
+        SELECT id_acquisition_framework 
+        FROM gn_meta.t_acquisition_frameworks 
+        WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
+    ),
     'JDD-2',
     'ATBI Lauvitel',
     'Inventaire biologique généralisé sur la réserve du Lauvitel',
@@ -211,10 +216,14 @@ INSERT INTO gn_meta.t_datasets (
     true,
     '2018-09-01 16:59:03.25687',
     null
-    ),
-    (
+),
+(
     'ac55a073-222a-4acc-8ac7-2b1f622018b2',
-     (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
+    (
+        SELECT id_acquisition_framework
+        FROM gn_meta.t_acquisition_frameworks
+        WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
+    ),
     'JDD-Occtax-ds',
     'JDD-Occtax-ds',
     'JDD-Occtax-ds',
@@ -235,8 +244,7 @@ INSERT INTO gn_meta.t_datasets (
     true,
     '2018-09-01 16:57:44.45879',
     null
-    )
-;
+);
 
 -- ajout des JDD dans les modules occtax et occtax dupliqué
 INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
@@ -359,84 +367,82 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
 -- Insérer 3 relevés d'exemple dans Occtax
 
 INSERT INTO pr_occtax.t_releves_occtax (
-  unique_id_sinp_grp,
-  id_module,
-  id_dataset,
-  id_digitiser,
-  id_nomenclature_tech_collect_campanule,
-  id_nomenclature_grp_typ,
-  id_nomenclature_geo_object_nature,
-  date_min,
-  date_max,
-  hour_min,
-  hour_max,
-  altitude_min,
-  altitude_max,
-  meta_device_entry,
-  comment,
-  geom_local,
-  geom_4326,
-  precision
-  ) VALUES (
-      '4f784326-2511-11ec-9fdd-23b0fb947058',
-      (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX'),
-      (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
-      (SELECT id_role from utilisateurs.t_roles WHERE identifiant='admin'),
-      ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
-      ref_nomenclatures.get_id_nomenclature('TYP_GRP','OBS'),
-      ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'), -- ?
-      '2017-01-01',
-      '2017-01-01',
-      '12:05:02',
-      '12:05:02',
-      1500,
-      1565,
-      'web',
-      'Exemple test',
-      '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
-      '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
-      10
+    unique_id_sinp_grp,
+    id_module,
+    id_dataset,
+    id_digitiser,
+    id_nomenclature_tech_collect_campanule,
+    id_nomenclature_grp_typ,
+    id_nomenclature_geo_object_nature,
+    date_min,
+    date_max,
+    hour_min,
+    hour_max,
+    altitude_min,
+    altitude_max,
+    meta_device_entry,
+    comment,
+    geom_local,
+    geom_4326,
+    precision
+) VALUES (
+    '4f784326-2511-11ec-9fdd-23b0fb947058',
+    (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX'),
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
+    (SELECT id_role from utilisateurs.t_roles WHERE identifiant='admin'),
+    ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
+    ref_nomenclatures.get_id_nomenclature('TYP_GRP','OBS'),
+    ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'), -- ?
+    '2017-01-01',
+    '2017-01-01',
+    '12:05:02',
+    '12:05:02',
+    1500,
+    1565,
+    'web',
+    'Exemple test',
+    '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
+    '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
+    10
 ),(
-      '4fa06f7c-2511-11ec-93a1-eb4838107091',
-       (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX'),
-      (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
-      1,
-      ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
-      ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
-      ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'), -- ?
-      '2017-01-08',
-      '2017-01-08',
-      '20:00:00',
-      '23:00:00',
-      1600,
-      1600,
-      'web',
-      'Autre exemple test',
-      '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
-      '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
-      100
-  ),
-  (
-      '297106a0-4dad-4d44-ae59-2e44a419e11f',
-       (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX_DS'),
-      (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='ac55a073-222a-4acc-8ac7-2b1f622018b2'),
-      1,
-      ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
-      ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
-      ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'), -- ?
-      '2017-01-08',
-      '2017-01-08',
-      '20:00:00',
-      '23:00:00',
-      1600,
-      1600,
-      'web',
-      'Autre exemple test',
-      '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
-      '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
-      100
-  )
-  ;
+    '4fa06f7c-2511-11ec-93a1-eb4838107091',
+    (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX'),
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
+    1,
+    ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
+    ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
+    ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'), -- ?
+    '2017-01-08',
+    '2017-01-08',
+    '20:00:00',
+    '23:00:00',
+    1600,
+    1600,
+    'web',
+    'Autre exemple test',
+    '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
+    '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
+    100
+), (
+    '297106a0-4dad-4d44-ae59-2e44a419e11f',
+    (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX_DS'),
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='ac55a073-222a-4acc-8ac7-2b1f622018b2'),
+    1,
+    ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
+    ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
+    ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'), -- ?
+    '2017-01-08',
+    '2017-01-08',
+    '20:00:00',
+    '23:00:00',
+    1600,
+    1600,
+    'web',
+    'Autre exemple test',
+    '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
+    '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
+    100
+);
 
 -- Insérer 4 occurrences dans les 3 relevés Occtax
 
@@ -459,9 +465,7 @@ INSERT INTO pr_occtax.t_occurrences_occtax  (
     digital_proof,
     non_digital_proof,
     comment
-  )
-VALUES
-  (
+) VALUES (
     'f303683c-2510-11ec-b93a-67b44043fe7d',
     (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4f784326-2511-11ec-9fdd-23b0fb947058'),
     ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
@@ -481,8 +485,7 @@ VALUES
     '',
     'Poil',
     'Test'
-  ),
-  (
+  ), (
     'fb106f34-2510-11ec-a3ff-6fb52354595c',
     (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4f784326-2511-11ec-9fdd-23b0fb947058'),
     ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
@@ -502,8 +505,7 @@ VALUES
     '',
     'Poils de plumes',
     'Autre test'
-  ),
-  (
+  ), (
     'fcdf2c24-2510-11ec-9995-fb27008e2817',
     (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4fa06f7c-2511-11ec-93a1-eb4838107091'),
     ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
@@ -514,17 +516,16 @@ VALUES
     --ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', '0'),
     ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'),
     ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
-  'Donovan',
-  ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
-  67111,
-  'Ablette',
-  'Taxref V11.0',
-  '',
-  '',
-  'Poils de plumes',
-  'Troisieme test'
-  ),
-  (
+    'Donovan',
+    ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
+    67111,
+    'Ablette',
+    'Taxref V11.0',
+    '',
+    '',
+    'Poils de plumes',
+    'Troisieme test'
+  ), (
     '8db83b16-3d88-4af3-85ca-44464daf32c0',
     (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='297106a0-4dad-4d44-ae59-2e44a419e11f'),
     ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
@@ -535,17 +536,16 @@ VALUES
     --ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', '0'),
     ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'),
     ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
-  'Donovan',
-  ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
-  67111,
-  'Ablette',
-  'Taxref V11.0',
-  '',
-  '',
-  'Poils de plumes',
-  'Troisieme test'
-  )
-  ;
+    'Donovan',
+    ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
+    67111,
+    'Ablette',
+    'Taxref V11.0',
+    '',
+    '',
+    'Poils de plumes',
+    'Troisieme test'
+);
 
 -- Insérer 1 observateur pour chacun des 3 relevés Occtax
 
@@ -564,16 +564,14 @@ INSERT INTO pr_occtax.cor_role_releves_occtax (id_releve_occtax, id_role) VALUES
 -- Insérer 4 dénombrements dans les 4 occurrences
 
 INSERT INTO  pr_occtax.cor_counting_occtax (
-  id_occurrence_occtax,
-  id_nomenclature_life_stage,
-  id_nomenclature_sex,
-  id_nomenclature_obj_count,
-  id_nomenclature_type_count,
-  count_min,
-  count_max
-  )
-  VALUES
-  (
+    id_occurrence_occtax,
+    id_nomenclature_life_stage,
+    id_nomenclature_sex,
+    id_nomenclature_obj_count,
+    id_nomenclature_type_count,
+    count_min,
+    count_max
+) VALUES (
     (SELECT id_occurrence_occtax FROM pr_occtax.t_occurrences_occtax WHERE unique_id_occurence_occtax='f303683c-2510-11ec-b93a-67b44043fe7d'),
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2') ,
@@ -581,8 +579,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'Co'),
     5,
     5
-  ),
-  (
+), (
     (SELECT id_occurrence_occtax FROM pr_occtax.t_occurrences_occtax WHERE unique_id_occurence_occtax='fb106f34-2510-11ec-a3ff-6fb52354595c'),
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '4') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2'),
@@ -590,8 +587,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'Co'),
     1,
     1
-  ),
-  (
+), (
     (SELECT id_occurrence_occtax FROM pr_occtax.t_occurrences_occtax WHERE unique_id_occurence_occtax='fcdf2c24-2510-11ec-9995-fb27008e2817'),
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '3') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2'),
@@ -599,8 +595,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'Co'),
     1,
     1
-  ),
-    (
+), (
     (SELECT id_occurrence_occtax FROM pr_occtax.t_occurrences_occtax WHERE unique_id_occurence_occtax='8db83b16-3d88-4af3-85ca-44464daf32c0'),
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2') ,
@@ -608,5 +603,85 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'Co'),
     5,
     5
-  )
-;
+);
+
+-- Insertion de plusieurs occurences et dénombrements identiques pour multiplier les données dans le jeu de tests (pagination)
+DO $insert_fixtures$
+BEGIN
+  FOR cpt IN 10..49 LOOP
+    EXECUTE $$
+        -- Insertion d'une occurrence
+        INSERT INTO pr_occtax.t_occurrences_occtax  (
+            unique_id_occurence_occtax,
+            id_releve_occtax,
+            id_nomenclature_obs_technique,
+            id_nomenclature_bio_condition,
+            id_nomenclature_bio_status,
+            id_nomenclature_naturalness,
+            id_nomenclature_exist_proof,
+            id_nomenclature_observation_status,
+            id_nomenclature_blurring,
+            determiner,
+            id_nomenclature_determination_method,
+            cd_nom,
+            nom_cite,
+            meta_v_taxref,
+            sample_number_proof,
+            digital_proof,
+            non_digital_proof,
+            comment
+        )
+        VALUES
+        (
+            (('f303683c-2510-11ec-b93a-67b44043fe' || CAST($1 AS varchar(10)))::uuid),
+            (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4f784326-2511-11ec-9fdd-23b0fb947058'),
+            ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
+            ref_nomenclatures.get_id_nomenclature('ETA_BIO', '1'),
+            ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'),
+            ref_nomenclatures.get_id_nomenclature('NATURALITE', '1'),
+            ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', '0'),
+            ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'),
+            ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
+            'Gil',
+            ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
+            60612,
+            'Lynx Boréal',
+            'Taxref V11.0',
+            '',
+            '',
+            'Poil',
+            'Test'
+        )
+    $$ USING cpt;
+
+    -- Insertion d'un dénombrement associé
+    EXECUTE $$
+        INSERT INTO  pr_occtax.cor_counting_occtax (
+        id_occurrence_occtax,
+        id_nomenclature_life_stage,
+        id_nomenclature_sex,
+        id_nomenclature_obj_count,
+        id_nomenclature_type_count,
+        count_min,
+        count_max
+        )
+        VALUES
+        (
+            (
+                SELECT id_occurrence_occtax
+                FROM pr_occtax.t_occurrences_occtax
+                WHERE unique_id_occurence_occtax=(('f303683c-2510-11ec-b93a-67b44043fe' || CAST($1 AS varchar(10)))::uuid)
+            ),
+            ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2') ,
+            ref_nomenclatures.get_id_nomenclature('SEXE', '2') ,
+            ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+            ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'Co'),
+            5,
+            5
+        )
+        ;
+    $$ USING cpt;
+  END LOOP;
+END;
+
+$insert_fixtures$ ;

@@ -28,8 +28,11 @@ def upgrade():
 
 
 def downgrade():
+    occurence_ids = ",\n".join(
+        [f"'f303683c-2510-11ec-b93a-67b44043fe{str(i)}'" for i in range(10, 50)]
+    )
     op.execute(
-        """
+        f"""
     DELETE FROM pr_occtax.cor_counting_occtax cco
     USING pr_occtax.t_occurrences_occtax too
     WHERE cco.id_occurrence_occtax = too.id_occurrence_occtax
@@ -37,7 +40,8 @@ def downgrade():
         'f303683c-2510-11ec-b93a-67b44043fe7d',
         'fb106f34-2510-11ec-a3ff-6fb52354595c',
         'fcdf2c24-2510-11ec-9995-fb27008e2817',
-        '8db83b16-3d88-4af3-85ca-44464daf32c0'
+        '8db83b16-3d88-4af3-85ca-44464daf32c0',
+        {occurence_ids}
     )
     """
     )
