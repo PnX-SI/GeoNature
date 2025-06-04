@@ -42,3 +42,9 @@ class TestGeoms:
                 break
 
         assert matching_feature is not None, "La feature attendue n'a pas été trouvée dans la réponse"
+        payload = {
+                    "area_aggregation_type": "COM"
+                }
+        r = self.client.post(url, data=json.dumps(payload), content_type="application/json")
+        data = r.get_json()
+        assert "Chambéry" in [feature["properties"]["area_name"] for feature in data['features']]
