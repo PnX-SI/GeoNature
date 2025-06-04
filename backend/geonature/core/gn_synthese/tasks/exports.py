@@ -5,6 +5,7 @@ from typing import List, Optional
 from celery.utils.log import get_task_logger
 
 from flask import current_app
+from geoalchemy2 import Geometry
 from sqlalchemy import distinct, func, select
 from flask_sqlalchemy.query import Query
 from marshmallow import fields, Schema
@@ -253,19 +254,21 @@ def export_observations(self, id_permissions, id_list, params, id_role):
         current_timestamp = datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
         export_file_name = f"export_observations_{current_timestamp}"
 
-        db_cols_for_shape = []
         columns_to_serialize = []
+
         # loop over synthese config to exclude columns if its default export
         for db_col in export_view.view.db_cols:
             if view_name_param == "gn_synthese.v_synthese_for_export":
                 if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
-                    db_cols_for_shape.append(db_col)
                     columns_to_serialize.append(db_col.key)
             else:
-                # remove geojson fields of serialization
-                if db_col.key not in [geojson_4326_field, geojson_local_field, "geometry"]:
-                    db_cols_for_shape.append(db_col)
+                # remove geojson and geometry fields of serialization
+                if (
+                    db_col.key not in [geojson_4326_field, geojson_local_field, "geometry"]
+                    and not type(db_col.type) is Geometry
+                ):
                     columns_to_serialize.append(db_col.key)
+
         full_filepath = f"{export_dir}/{export_file_name}.{export_format}"
         export_data_file(
             file_name=full_filepath,
@@ -473,7 +476,6 @@ def export_as_file(
             geometry_field_name=geometry_field,
             columns=columns,
             srid=srid,
-            in_geojson=True,
         )
         return
 
@@ -489,4 +491,5 @@ def export_as_file(
             schema_class=schema_class,
             fp=f,
             columns=columns,
+            geometry_field_name=geometry_field,
         )
