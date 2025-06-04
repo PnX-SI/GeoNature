@@ -282,12 +282,10 @@ class SyntheseQuery:
         cd_ref_childs.extend(cd_ref_selected)
 
         if len(cd_ref_childs) > 0:
-            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-            self.query = self.query.where(Taxref.cd_ref.in_(cd_ref_childs))
+            self.query = self.query.where(self.model.cd_ref.in_(cd_ref_childs))
         if "taxonomy_id_hab" in self.filters:
-            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
             self.query = self.query.where(
-                Taxref.id_habitat.in_(self.filters.pop("taxonomy_id_hab"))
+                self.model.id_habitat.in_(self.filters.pop("taxonomy_id_hab"))
             )
 
         aliased_cor_taxon_attr = {}
@@ -299,8 +297,7 @@ class SyntheseQuery:
                 # colname = group type (group2 or group3 inpn)
                 # value = list of group values
                 colname = colname.split("taxonomy_")[-1]
-                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-                self.query = self.query.where(getattr(Taxref, colname).in_(value))
+                self.query = self.query.where(getattr(self.model, colname).in_(value))
 
             if colname.startswith("taxhub_attribut"):
                 # Test si la valeur n'est pas une liste transformation
@@ -308,7 +305,6 @@ class SyntheseQuery:
                 if not type(value) is list:
                     value = [value]
 
-                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
                 taxhub_id_attr = colname[16:]
                 aliased_cor_taxon_attr[taxhub_id_attr] = aliased(CorTaxonAttribut)
                 self.add_join_multiple_cond(
@@ -316,7 +312,7 @@ class SyntheseQuery:
                     [
                         aliased_cor_taxon_attr[taxhub_id_attr].id_attribut == taxhub_id_attr,
                         aliased_cor_taxon_attr[taxhub_id_attr].cd_ref
-                        == func.taxonomie.find_cdref(self.model.cd_nom),
+                        == self.model.cd_ref,
                     ],
                 )
                 self.query = self.query.where(
@@ -605,19 +601,9 @@ class SyntheseQuery:
             la liste des status selectionnés par l'utilisateur s'appliquant à l'observation est
             aggrégée de façon à tester le nombre puis jointer sur le département de la donnée
         """
-        # Ajout de la table taxref si non ajouté
-        self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-
         # Ajout jointure permettant d'avoir le département pour chaque donnée
         cas_dep = aliased(CorAreaSynthese)
-        lareas_dep = aliased(LAreas)
-        bib_area_dep = aliased(BibAreasTypes)
         self.add_join(cas_dep, cas_dep.id_synthese, self.model.id_synthese)
-        self.add_join(lareas_dep, lareas_dep.id_area, cas_dep.id_area)
-        self.add_join_multiple_cond(
-            bib_area_dep,
-            [bib_area_dep.id_type == lareas_dep.id_type, bib_area_dep.type_code == "DEP"],
-        )
 
         # Creation requête CTE : taxon, zone d'application départementale des textes
         #   pour les taxons répondant aux critères de selection
@@ -682,7 +668,9 @@ class SyntheseQuery:
             == (len(protection_status_value) + len(red_list_filters))
         )
 
-        bdc_status_cte = bdc_status_cte.cte()
+        bdc_status_cte = bdc_status_cte.cte(
+            name="bdc_status_cte_" + str(uuid.uuid4())[:4]
+        )
 
         # Jointure sur le taxon
         # et vérification que l'ensemble des textes
@@ -690,7 +678,7 @@ class SyntheseQuery:
         self.add_join_multiple_cond(
             bdc_status_cte,
             [
-                bdc_status_cte.c.cd_ref == Taxref.cd_ref,
+                bdc_status_cte.c.cd_ref == self.model.cd_ref,
                 func.array_length(
                     func.array_positions(bdc_status_cte.c.ids_area, cas_dep.id_area), 1
                 )
