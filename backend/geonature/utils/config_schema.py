@@ -611,6 +611,7 @@ class GnGeneralSchemaConf(Schema):
         load_default=AuthenticationFrontendConfig().load({}),
         unknown=INCLUDE,
     )
+    API_ACCESS_ACTIVATED = fields.Boolean(load_default=True)
 
     @validates_schema
     def validate_account_autovalidation(self, data, **kwargs):

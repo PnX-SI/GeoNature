@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, current_app, Response, redirect, g, render_template
 from sqlalchemy.sql import distinct, and_
 from sqlalchemy import distinct, and_, select, exists
-from werkzeug.exceptions import NotFound, BadRequest, Forbidden
+from werkzeug.exceptions import NotFound, BadRequest, Forbidden, Unauthorized
 
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
@@ -446,3 +446,16 @@ def new_password():
         # comme concerne le password, on explicite pas le message
         return {"msg": "Erreur serveur"}, 500
     return {"msg": "Mot de passe modifié avec succès"}, 200
+
+# TODO bcp plus pratique en get, on reste en get ?
+@routes.route("/get_api_secret", methods=["GET"])
+@json_resp
+@permissions.login_required
+def get_api_secret():
+    """
+        génère un secret api et une clé api
+    """
+    if not current_app.config["API_ACCESS_ACTIVATED"]:
+        raise Forbidden("L'administrateur de votre serveur a désactivé l'accès API")
+    api_key, api_secret = g.current_user.generate_api_secret()
+    return {"api_key": api_key, "api_secret": api_secret}
