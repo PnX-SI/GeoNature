@@ -8,13 +8,14 @@ import { SyntheseApiProxyService } from '@geonature/syntheseModule/services/synt
 import { SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 import { ConfigService } from '@geonature/services/config.service';
+import { RouterModule } from '@librairies/@angular/router';
 
 @Component({
   standalone: true,
   selector: 'pnx-synthese-content-list',
   templateUrl: 'synthese-content-list.component.html',
   styleUrls: ['synthese-content-list.component.scss'],
-  imports: [GN2CommonModule, CommonModule],
+  imports: [GN2CommonModule, CommonModule, RouterModule],
   providers: [SyntheseContentListColumnsService],
 })
 export class SyntheseContentListComponent {

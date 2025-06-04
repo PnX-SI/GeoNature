@@ -14,7 +14,7 @@ export class SyntheseApiProxyService {
   readonly DEFAULT_PAGINATION: SyntheseDataPaginationItem = {
     totalItems: 0,
     currentPage: 1,
-    perPage: 15,
+    perPage: 25,
   };
   readonly DEFAULT_SORTING: SyntheseDataSortItem = {
     sortOrder: SORT_ORDER.DESC,
@@ -61,7 +61,6 @@ export class SyntheseApiProxyService {
   }
 
   public fetchObservationsList() {
-    console.log(this);
     this.dataService
       .getObservations(this._concatFilterPaginationAndSort())
       .subscribe((observations) => {
