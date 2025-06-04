@@ -165,6 +165,8 @@ def create_app(with_external_mods=True):
                     body = copy.copy(request.environ["wsgi.input"]).read(length)
                     set_tag("request.body", body)
 
+            set_tag("with_synthese_extended", False)
+
             if "FLASK_REQUEST_ID" in request.environ:
                 set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
             if current_user.is_authenticated:
