@@ -167,7 +167,6 @@ def export_taxons(self, id_permissions, id_list, id_role):
         full_file_path = f"{export_dir}/{export_file_name}"
         export_data_file(
             file_name=full_file_path,
-            export_url="",
             format="csv",
             query=query,
             schema_class=ExportTaxonViewSchema,
@@ -331,7 +330,6 @@ def export_observations(self, id_permissions, id_list, params, id_role):
         full_filepath = f"{export_dir}/{export_file_name}.{export_format}"
         export_data_file(
             file_name=full_filepath,
-            export_url="",
             format=export_format,
             query=export_query,
             schema_class=ExportObservationViewSchema,
@@ -390,7 +388,6 @@ def export_metadata_task(self, id_permissions, id_role, filters):
         full_filepath = f"{export_dir}/{export_file_name}"
         export_data_file(
             file_name=full_filepath,
-            export_url="",
             format="csv",
             query=query,
             schema_class=metadata_view.get_marshmallow_schema(),
@@ -456,7 +453,6 @@ def export_status_task(self, id_permissions, id_role, filters):
         full_filepath = f"{export_dir}/{export_file_name}"
         export_data_file(
             file_name=full_filepath,
-            export_url="",
             format="csv",
             query=query,
             schema_class=status_view.get_marshmallow_schema(),
@@ -473,7 +469,6 @@ def export_status_task(self, id_permissions, id_role, filters):
 
 def export_data_file(
     file_name: str,
-    export_url: str,
     format: str,
     query: Query,
     schema_class: Schema,
