@@ -15,15 +15,21 @@ from geonature.utils.env import db
 
 @permissions_required("R", module_code="SYNTHESE")
 def datasets(permissions):
-    """Route to export the metadata in CSV
+    """
+    Retrieve number of observations per datasets from the VSyntheseForWebApp table with associated metadata.
 
-    .. :quickref: Synthese;
+    This function handles the retrieval of distinct datasets based on the provided parameters
+    and permissions. It ensures that the metadata view conforms to the expected structure
+    and applies necessary filters based on user permissions.
 
-    The table synthese is join with gn_synthese.v_metadata_for_export
-    The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
+    Results can be paginated using the `page` and `per_page` parameters.
 
-    TODO: Remove the following comment line ? or add the where clause for id_synthese in id_list ?
-    POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+    Parameters
+    ----------
+    permissions : list
+        A list containing the permissions for the current user.
+        These permissions are fetch using the `@permissions_required` decorator.
+
     """
     parameters = request.json or {}
     per_page = parameters.pop("per_page", None)
