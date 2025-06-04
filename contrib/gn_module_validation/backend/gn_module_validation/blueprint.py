@@ -15,7 +15,7 @@ from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import Synthese, TReport
 from geonature.core.gn_profiles.models import VConsistancyData
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.decorators import permissions_required
 from geonature.core.gn_commons.schemas import TValidationSchema
 from geonature.core.gn_commons.models.base import TValidations
 
@@ -29,8 +29,8 @@ log = logging.getLogger()
 
 
 @blueprint.route("", methods=["GET", "POST"])
-@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
-def get_synthese_data(scope):
+@permissions_required("C", module_code="VALIDATION")
+def get_synthese_data(permissions):
     """
     Return synthese and t_validations data filtered by form params
     Params must have same synthese fields names
@@ -212,7 +212,7 @@ def get_synthese_data(scope):
         Synthese,
         query.selectable,
         filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
-    ).filter_query_all_filters(g.current_user, scope)
+    ).filter_query_all_filters(g.current_user, permissions)
 
     # Step 3: Construct Synthese model from query result
     syntheseQueryStatement = Synthese.query.options(
@@ -265,8 +265,8 @@ def get_synthese_data(scope):
 
 
 @blueprint.route("/statusNames", methods=["GET"])
-@permissions.check_cruved_scope("C", module_code="VALIDATION")
-def get_statusNames():
+@permissions_required("C", module_code="VALIDATION")
+def get_statusNames(permissions):
     nomenclatures = (
         sa.select(TNomenclatures)
         .join(BibNomenclaturesTypes)
@@ -285,8 +285,8 @@ def get_statusNames():
 
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
-@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
-def post_status(scope, id_synthese):
+@permissions_required("C", module_code="VALIDATION")
+def post_status(permissions, id_synthese):
     data = dict(request.get_json())
     try:
         id_validation_status = data["statut"]
@@ -306,7 +306,7 @@ def post_status(scope, id_synthese):
         # t_validations.uuid_attached_row:
         synthese = db.get_or_404(Synthese, int(id))
 
-        if not synthese.has_instance_permission(scope):
+        if not synthese.has_instance_permission(permissions):
             raise Forbidden
 
         uuid = synthese.unique_id_sinp
@@ -346,8 +346,8 @@ def post_status(scope, id_synthese):
 
 
 @blueprint.route("/date/<uuid:uuid>", methods=["GET"])
-@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
-def get_validation_date(scope, uuid):
+@permissions_required("C", module_code="VALIDATION")
+def get_validation_date(permissions, uuid):
     """
     Retourne la date de validation
     pour l'observation uuid
@@ -357,7 +357,7 @@ def get_validation_date(scope, uuid):
             query=sa.select(Synthese).filter_by(unique_id_sinp=uuid)
         )
     )
-    if not s.has_instance_permission(scope):
+    if not s.has_instance_permission(permissions):
         raise Forbidden
     if s.last_validation:
         return jsonify(str(s.last_validation.validation_date))
