@@ -6,6 +6,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 from flask import request
 from geonature.core.gn_permissions.decorators import permissions_required
 
+
 @permissions_required("U", module_code="SYNTHESE")
 def update_observation(id_synthese, permissions):
     modified_fields = request.json or {}
