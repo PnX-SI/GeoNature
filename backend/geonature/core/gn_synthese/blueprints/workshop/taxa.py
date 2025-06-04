@@ -9,6 +9,22 @@ from geonature.utils.env import db
 
 @permissions_required("R", module_code="SYNTHESE")
 def taxa(permissions):
+    """
+    Retrieve number of observations per taxa from the VSyntheseForWebApp table with associated metadata.
+
+    This function handles the retrieval of distinct taxa based on the provided parameters
+    and permissions. It ensures that the metadata view conforms to the expected structure
+    and applies necessary filters based on user permissions.
+
+    Results can be paginated using the `page` and `per_page` parameters.
+
+    Parameters
+    ----------
+    permissions : list
+        A list containing the permissions for the current user.
+        These permissions are fetch using the `@permissions_required` decorator.
+
+    """
 
     parameters = request.json or {}
     per_page = parameters.pop("per_page", None)
