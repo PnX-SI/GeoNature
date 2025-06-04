@@ -358,7 +358,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
       });
       this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
-      // this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+      this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
       // zoom on extend after first search
       // if (change.SyntheseData.previousValue !== undefined) {
       //   try {

@@ -59,7 +59,7 @@ export class SyntheseApiProxyService {
   // geomList
   // //////////////////////////////////////////////////////////////////////////
 
-  public geomList: BehaviorSubject<any> = new BehaviorSubject([]);
+  public geomList: BehaviorSubject<any> = new BehaviorSubject(null);
 
   // //////////////////////////////////////////////////////////////////////////
   // Filters
