@@ -22,7 +22,7 @@ export class SyntheseApiProxyService {
   readonly DEFAULT_PAGINATION: SyntheseDataPaginationItem = {
     totalItems: 0,
     currentPage: 1,
-    perPage: 15,
+    perPage: 25,
   };
   readonly DEFAULT_SORTING: SyntheseDataSortItem = {
     sortOrder: SORT_ORDER.DESC,
@@ -53,7 +53,7 @@ export class SyntheseApiProxyService {
   // observationsList
   // //////////////////////////////////////////////////////////////////////////
 
-  observationsList: [];
+  public observationsList: BehaviorSubject<any> = new BehaviorSubject([]);
 
   // //////////////////////////////////////////////////////////////////////////
   // geomList
@@ -75,11 +75,10 @@ export class SyntheseApiProxyService {
   }
 
   public fetchObservationsList() {
-    console.log(this);
     this.dataService
       .getObservations(this._concatFilterPaginationAndSort())
       .subscribe((observations) => {
-        this.observationsList = observations.items;
+        this.observationsList.next(observations.items);
         this.pagination.totalItems = observations.total;
         this.pagination.perPage = observations.per_page;
         this.pagination.currentPage = observations.page;

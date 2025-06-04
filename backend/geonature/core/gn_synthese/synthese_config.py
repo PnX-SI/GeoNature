@@ -91,7 +91,17 @@ DEFAULT_COLUMNS_API_SYNTHESE = [
 ]
 
 # Mandatory columns for the frontend in Synthese API
-MANDATORY_COLUMNS = ["id_synthese", "entity_source_pk_value", "url_source", "cd_nom", "id_dataset"]
+MANDATORY_COLUMNS = [
+    "id_synthese",
+    "entity_source_pk_value",
+    "url_source",
+    "cd_nom",
+    "id_dataset",
+    "nom_vern_or_lb_nom",
+    "date_min",
+    "dataset_name",
+    "observers",
+]
 
 # CONFIG MAP-LIST
 DEFAULT_LIST_COLUMN = [

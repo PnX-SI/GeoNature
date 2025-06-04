@@ -1,5 +1,4 @@
 .SyntheseContentList{
-  border: 2px solid greenyellow;
   height: 100%;
 }
 
@@ -22,10 +21,11 @@
   font-size: 12px;
 }
 
-:host ::ng-deep .datatable-body {
-  overflow-x: scroll;
-}
-
 ngx-datatable {
   box-shadow: none !important;
+}
+
+.Link {
+  color: var(--purple);
+  filter: brightness(70%);
 }
