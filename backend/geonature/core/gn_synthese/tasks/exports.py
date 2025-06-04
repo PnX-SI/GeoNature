@@ -29,7 +29,8 @@ from geonature.utils.env import DB, db
 from geonature.utils.celery import celery_app
 
 from geonature.core.gn_permissions.models import Permission
-from geonature.core.gn_commons.models import Task, TModules
+from geonature.core.gn_commons.models import Task
+from geonature.core.gn_commons.schemas import TaskSchema
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -90,8 +91,9 @@ def export_synthese_task(self, export_type, id_permissions, params, id_role):
             columns=columns,
         )
         db_task.set_succesfull(export_file_name)
-        return db_task
+        return TaskSchema().dump(db_task)
     except Exception as e:
+        db.session.rollback()
         db_task.status = "error"
         db.session.commit()
         raise e

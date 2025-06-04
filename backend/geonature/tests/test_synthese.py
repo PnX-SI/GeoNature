@@ -564,8 +564,10 @@ class TestSynthese:
             params=params,
         )
 
-        assert task.status == "success"
-        file = Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated" / task.file_name
+        assert task["status"] == "success"
+        file = (
+            Path(current_app.config["MEDIA_FOLDER"]) / "exports/usr_generated" / task["file_name"]
+        )
         assert file.exists()
         file.suffix == "." + format
 
