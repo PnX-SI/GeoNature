@@ -240,8 +240,8 @@ class TValidations(DB.Model):
     def auto_validation(fct_auto_validation):
         stmt = text(
             f"""
-            select routine_name, routine_schema 
-            from information_schema.routines 
+            select routine_name, routine_schema
+            from information_schema.routines
             where routine_name= '{fct_auto_validation}'
             and routine_type='FUNCTION';
          """
@@ -401,7 +401,7 @@ class Task(DB.Model):
         ----------
         file_name : str
         """
-        self.end = datetime.now()
+        self.end = datetime.datetime.now()
         self.status = "success"
         self.file_name = file_name
         self.message = "L'export a été généré et est prêt à être télécharger"
