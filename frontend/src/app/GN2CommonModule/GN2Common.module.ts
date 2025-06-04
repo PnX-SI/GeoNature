@@ -103,6 +103,7 @@ import { MapService } from './map/map.service';
 import { MediaService } from '@geonature_common/service/media.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
 import { IndividualsComponent } from './form/individuals/individuals.component';
 import { IndividualsService } from './form/individuals/individuals.service';
@@ -214,6 +215,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MediaService,
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
+    SyntheseFormService,
     TranslateService,
     IndividualsService,
   ],
