@@ -103,7 +103,7 @@ def export_taxons(permissions, current_user, params):
         DB=DB, tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese"
     )
     columns = taxon_view.view.tableDef.columns
-    id_list = params.get("id_list")
+    id_list = params.pop("id_list")
 
     # Test de conformité de la vue v_synthese_for_export_view
     try:
@@ -150,7 +150,7 @@ def export_taxons(permissions, current_user, params):
 def export_observations(permissions, current_user, params):
     export_format = params.get("export_format", "csv")
     view_name_param = params.get("view_name", "gn_synthese.v_synthese_for_export")
-    id_list = params.get("id_list")
+    id_list = params.pop("id_list")
     # Test export_format
     if export_format not in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise BadRequest("Unsupported format")
@@ -293,7 +293,6 @@ def export_observations(permissions, current_user, params):
 
 
 def export_metadata(permissions, current_user, params):
-
     metadata_view = GenericQueryGeo(
         DB=DB, tableName="v_metadata_for_export", schemaName="gn_synthese"
     )
