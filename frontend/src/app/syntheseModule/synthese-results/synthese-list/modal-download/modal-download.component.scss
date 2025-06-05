@@ -1,0 +1,115 @@
+// Styles pour le modal de téléchargement
+.tasks-section {
+  margin-top: 24px;
+}
+
+.task-item {
+  margin-bottom: 0;
+}
+
+.task-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.status-label {
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Classes de statut - utilisent les couleurs standards de GeoNature
+.status-pending {
+  color: #ffb53e; // Orange - GeoNature color-orange
+}
+
+.status-progress {
+  color: #30a5ff; // Bleu - GeoNature color-blue
+}
+
+.status-success {
+  color: #389938; // Vert - GeoNature button-success
+}
+
+.status-failure {
+  color: #f9243f; // Rouge - GeoNature color-red
+}
+
+.alert-message {
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.download-section {
+  button {
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+}
+
+// Overrides pour les composants Material
+:host ::ng-deep {
+  .mat-mdc-list-item {
+    height: auto !important;
+  }
+
+  .mat-mdc-list-item-title {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  
+  // Style pour la section de téléchargement
+  .download-section {
+    margin-top: 15px;
+    
+    .mat-mdc-button-base {
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+  }
+  
+  // Style pour la liste des tâches
+  .task-list {
+    margin-top: 20px;
+    
+    .mat-divider {
+      margin: 12px 0;
+    }
+  }
+  
+  // Animations spinner
+  .mat-spinner {
+    display: inline-block;
+    margin-left: 8px;
+  }
+  
+  .download-progress {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    
+    .mat-spinner {
+      margin-left: 12px;
+    }
+  }
+  
+  // Messages d'erreur
+  .error-message {
+    color: var(--error-color, #f9243f); // GeoNature color-red
+    padding: 8px;
+    border-radius: 4px;
+  }
+  
+  // Message de succès
+  .success-message {
+    color: var(--success-color, #389938); // GeoNature button-success
+  }
+  
+  // Barre de progression
+  .mat-progress-bar {
+    margin: 8px 0;
+  }
+}

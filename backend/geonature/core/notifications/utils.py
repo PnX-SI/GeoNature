@@ -22,7 +22,6 @@ def dispatch_notifications(
 ):
     if not current_app.config["NOTIFICATIONS_ENABLED"]:
         return
-
     categories = chain.from_iterable(
         [
             db.session.scalars(
@@ -50,6 +49,7 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
         NotificationRule.subscribed.is_(sa.true()),
     )
     for rule in db.session.scalars(rules).all():
+        print(rule.code_method)
         if content:
             notification_content = content
         else:
@@ -84,6 +84,7 @@ def send_db_notification(role, title, content, url):
         code_status="UNREAD",
     )
     db.session.add(notification)
+    db.session.commit()
     return notification
 
 

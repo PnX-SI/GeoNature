@@ -399,7 +399,7 @@ class Synthese(Schema):
     EXPORT_METADATA_ID_DATASET_COL = fields.String(load_default="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(load_default="acteurs")
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
-    EXPORT_FORMAT = fields.List(fields.String(), load_default=["csv", "geojson", "shapefile"])
+    EXPORT_FORMAT = fields.List(fields.String(), load_default=["csv", "geojson", "gpkg"])
     # Nombre max d'observation dans les exports
     NB_MAX_OBS_EXPORT = fields.Integer(load_default=50000)
 
