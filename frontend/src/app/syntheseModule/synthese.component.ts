@@ -39,11 +39,13 @@ export class SyntheseComponent implements OnInit {
     });
 
     this._apiProxyService.fetchObservationsList();
+    this._apiProxyService.fetchMapAreas();
   }
 
   onSearchEvent(event) {
     this._apiProxyService.filters = event;
     this._apiProxyService.fetchObservationsList();
+    this._apiProxyService.fetchMapAreas();
   }
 
   openInfoModal(idSynthese) {

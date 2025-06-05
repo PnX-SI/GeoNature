@@ -165,7 +165,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
       this.SyntheseData = geom;
       this.insertGeojsonData();
     });
-    this.getAreas();
+    // this.getAreas();
   }
 
   manageMouveEvent(e) {
@@ -188,6 +188,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
       .subscribe((translatedTxt: string[]) => {
         this.areasLabelSwitchBtn.innerText = translatedTxt;
       });
+  }
+
+  addRefreshButton() {
+    const LayerControl = L.Control.extend({
+      options: {
+        position: 'topmiddle',
+      },
+      onAdd: (map) => {},
+    });
   }
 
   addAreasButton() {
@@ -343,7 +352,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
       const geojsonLayer = new L.GeoJSON(this.SyntheseData, {
         pointToLayer: (feature, latlng) => {
           const circleMarker = L.circleMarker(latlng);
-          let countObs = feature.properties.observations.id_synthese.length;
+          let countObs = 1;
           (circleMarker as any).nb_obs = countObs;
           circleMarker.bindTooltip(`${countObs}`, {
             permanent: true,
@@ -358,7 +367,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
       });
       this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
-      this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+      // this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
       // zoom on extend after first search
       // if (change.SyntheseData.previousValue !== undefined) {
       //   try {
@@ -455,6 +464,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   boundsToGeoJson(bounds) {
     return {
+      properties: {},
       type: 'Feature',
       geometry: {
         type: 'Polygon',

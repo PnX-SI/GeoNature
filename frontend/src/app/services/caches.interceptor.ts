@@ -7,7 +7,7 @@ import { ConfigService } from './config.service';
 @Injectable()
 export class CachesInterceptor implements HttpInterceptor {
   private cache = new Map<string, any>();
-  private urlToCache = new Set(['/synthese/for_web']);
+  private urlToCache = new Set(['/synthese/obervations/geoms']);
 
   constructor(public config: ConfigService) {}
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

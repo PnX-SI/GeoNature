@@ -298,7 +298,7 @@ export class SyntheseDataService {
   getAreas(filters, area_aggregation_type) {
     return this._api.post(`${this.config.API_ENDPOINT}/synthese/observations/geoms`, {
       area_aggregation_type,
-      filters,
+      ...filters,
     });
   }
 }

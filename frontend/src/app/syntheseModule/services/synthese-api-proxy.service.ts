@@ -22,7 +22,7 @@ export class SyntheseApiProxyService {
   readonly DEFAULT_PAGINATION: SyntheseDataPaginationItem = {
     totalItems: 0,
     currentPage: 1,
-    perPage: 5,
+    perPage: 12,
   };
   readonly DEFAULT_SORTING: SyntheseDataSortItem = {
     sortOrder: SORT_ORDER.DESC,
@@ -105,7 +105,7 @@ export class SyntheseApiProxyService {
   private _concatMapFilterObs(boundingBox) {
     const result = {
       ...this.filters,
-      // columns: ['id_synthese'],
+      columns: ['id_synthese'],
       format: 'geojson',
       with_geom: true,
     };
@@ -115,7 +115,7 @@ export class SyntheseApiProxyService {
 
   public fetchMapGeoms(boundingBox = null) {
     this.dataService
-      .getObservations(this._concatMapFilterObs(boundingBox))
+      .getObservations(this.sort, this._concatMapFilterObs(boundingBox))
       .subscribe((response) => {
         console.log(response);
         this.geomList.next(response['features']);
