@@ -101,4 +101,24 @@ export class SyntheseApiProxyService {
         this.geomList.next(response['features']);
       });
   }
+
+  private _concatMapFilterObs(boundingBox) {
+    const result = {
+      ...this.filters,
+      // columns: ['id_synthese'],
+      format: 'geojson',
+      with_geom: true,
+    };
+    // if (!result['geoIntersection'] && boundingBox !== null) result['geoIntersection'] = boundingBox;
+    return result;
+  }
+
+  public fetchMapGeoms(boundingBox = null) {
+    this.dataService
+      .getObservations(this._concatMapFilterObs(boundingBox))
+      .subscribe((response) => {
+        console.log(response);
+        this.geomList.next(response['features']);
+      });
+  }
 }

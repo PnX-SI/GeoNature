@@ -489,5 +489,9 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnDestroy 
     this._apiProxyService.fetchMapAreas(this.boundsToGeoJson(bounds));
   }
 
-  getGeoms() {}
+  getGeoms() {
+    let bounds = this._ms.map.getBounds();
+
+    this._apiProxyService.fetchMapGeoms(this.boundsToGeoJson(bounds));
+  }
 }
