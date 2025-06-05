@@ -43,10 +43,19 @@ from geonature.core.gn_synthese.utils.blurring import (
     build_blurred_precise_geom_queries,
     split_blurring_precise_permissions,
 )
+from geonature.core.notifications.utils import dispatch_notifications
+
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 
 logger = get_task_logger(__name__)
+
+EXPORT_TYPE_LABEL_MAPPING = {
+    "observations": "observations",
+    "metadata": "métadonnées",
+    "taxons": "taxons",
+    "status": "statuts",
+}
 
 
 @celery_app.task(bind=True)
@@ -93,7 +102,20 @@ def export_synthese_task(self, export_type, id_permissions, params, id_role):
             columns=columns,
         )
         db_task.set_succesfull(export_file_name)
-        return TaskSchema().dump(db_task)
+        serialized_task = TaskSchema().dump(db_task)
+        dispatch_notifications(
+            code_categories=["SYNTHESE_EXPORT"],
+            id_roles=[current_user.id_role],
+            title=f"Export synthese - {EXPORT_TYPE_LABEL_MAPPING[export_type]} - terminé",
+            url=serialized_task["url"],
+            context={
+                "role": current_user,
+                "export_name": EXPORT_TYPE_LABEL_MAPPING[export_type],
+                "url": serialized_task["url"],
+            },
+        )
+
+        return serialized_task
     except Exception as e:
         db.session.rollback()
         db_task.status = "error"
