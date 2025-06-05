@@ -55,6 +55,7 @@ import { NotificationDataService } from './components/notification/notification-
 
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 import { I18nService } from './shared/translate/i18n-service';
+import { CachesInterceptor } from './services/caches.interceptor';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -133,13 +134,14 @@ export function initApp(injector) {
     ConfigService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CachesInterceptor, multi: true },
     {
       provide: APP_INITIALIZER,
       useFactory: initApp,
       deps: [Injector],
       multi: true,
     },
-    I18nService
+    I18nService,
   ],
   bootstrap: [AppComponent],
 })

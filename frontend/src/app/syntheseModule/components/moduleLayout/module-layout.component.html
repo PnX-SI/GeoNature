@@ -1,0 +1,56 @@
+<div class="ModuleLayout">
+  <div
+    class="ModuleLayout__filters"
+    [(ngbCollapse)]="collapseFilters"
+    [animation]="false"
+    [horizontal]="true"
+  >
+    <ng-content select="[filters]"></ng-content>
+  </div>
+  <div class="ModuleLayout__content">
+    <div class="Map">
+      <button
+        (click)="collapseFilters = !collapseFilters"
+        [attr.aria-expanded]="!collapseFilters"
+        type="button"
+        class="HideButton HideButton--left btn btn-toggle-sidenav box-shadow"
+        id="sidebarCollapse"
+      >
+        <i
+          [hidden]="collapseFilters"
+          class="fa fa-caret-left"
+        ></i>
+        <i
+          [hidden]="!collapseFilters"
+          class="fa fa-caret-right"
+        ></i>
+      </button>
+      <ng-content select="[map]"></ng-content>
+      <button
+        (click)="collapseList = !collapseList"
+        [attr.aria-expanded]="!collapseList"
+        type="button"
+        class="HideButton HideButton--right btn btn-toggle-sidenav box-shadow"
+        id="sidebarCollapse"
+      >
+        <i
+          [hidden]="collapseList"
+          class="fa fa-caret-right"
+        ></i>
+        <i
+          [hidden]="!collapseList"
+          class="fa fa-caret-left"
+        ></i>
+      </button>
+    </div>
+
+    <div
+      class="List"
+      [(ngbCollapse)]="collapseList"
+      [animation]="false"
+      [horizontal]="true"
+    >
+      <ng-content select="[list]"></ng-content>
+    </div>
+  </div>
+</div>

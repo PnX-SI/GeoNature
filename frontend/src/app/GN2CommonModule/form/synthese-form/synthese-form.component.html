@@ -1,412 +1,413 @@
-<div class="card search-wrapper">
-  <fieldset *ngIf="displayValidation">
-    <legend>{{ 'Synthese.Form.Validation' | translate }}</legend>
+<div class="SyntheseSearch">
+  <div class="search-wrapper">
+    <fieldset *ngIf="displayValidation">
+      <legend>{{ 'Synthese.Form.Validation' | translate }}</legend>
 
-    <div>
-      <small>{{ 'Synthese.Form.ValidationStatus' | translate }}</small>
-      <pnx-multiselect
-        [values]="validationStatus"
-        [parentFormControl]="formService.searchForm.controls.id_nomenclature_valid_status"
-        keyLabel="label_fr"
-        keyValue="id_nomenclature"
-        [label]="label"
-        debounceTime="500"
-        [disabled]="disabled"
-        [displayAll]="displayAll"
-        [bindAllItem]="bindAllItem"
-      ></pnx-multiselect>
-    </div>
-
-    <div
-      id="modif"
-      class="form-check"
-    >
-      <input
-        id="modif_checkbox"
-        class="form-check-input"
-        value="true"
-        [formControl]="formService.searchForm.get('modif_since_validation')"
-        type="checkbox"
-        checked
-      />
-      <label
-        for="modif_checkbox"
-        class="form-check-label"
-      >
-        <small>{{ 'Synthese.Form.EditedDataSinceLastEdit' | translate }}</small>
-      </label>
-    </div>
-    <button
-      (click)="isCollapseScore = !isCollapseScore"
-      [attr.aria-expanded]="!isCollapseScore"
-      *ngIf="config.FRONTEND['ENABLE_PROFILES']"
-      class="btn btn-sm btn-outline-shadow profile float-right"
-      matTooltip="{{ 'Synthese.Form.FilterTaxaProfile' | translate }}"
-      matTooltipClass="validation-tooltip"
-    >
-      <i
-        class="fa fa-cog"
-        aria-hidden="true"
-      ></i>
-    </button>
-    <div
-      [(ngbCollapse)]="isCollapseScore"
-      class="advanded-score"
-    >
-      <small>{{ 'Synthese.Form.Score' | translate }}</small>
-      <div class="input-group">
-        <select
-          class="form-control form-control-sm"
-          [formControl]="formService.searchForm.get('score')"
-          name="score"
-        >
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-        </select>
+      <div>
+        <small>{{ 'Synthese.Form.ValidationStatus' | translate }}</small>
+        <pnx-multiselect
+          [values]="validationStatus"
+          [parentFormControl]="formService.searchForm.controls.id_nomenclature_valid_status"
+          keyLabel="label_fr"
+          keyValue="id_nomenclature"
+          [label]="label"
+          debounceTime="500"
+          [disabled]="disabled"
+          [displayAll]="displayAll"
+          [bindAllItem]="bindAllItem"
+        ></pnx-multiselect>
       </div>
-      <small
-        matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?"
+
+      <div
+        id="modif"
+        class="form-check"
+      >
+        <input
+          id="modif_checkbox"
+          class="form-check-input"
+          value="true"
+          [formControl]="formService.searchForm.get('modif_since_validation')"
+          type="checkbox"
+          checked
+        />
+        <label
+          for="modif_checkbox"
+          class="form-check-label"
+        >
+          <small>{{ 'Synthese.Form.EditedDataSinceLastEdit' | translate }}</small>
+        </label>
+      </div>
+      <button
+        (click)="isCollapseScore = !isCollapseScore"
+        [attr.aria-expanded]="!isCollapseScore"
+        *ngIf="config.FRONTEND['ENABLE_PROFILES']"
+        class="btn btn-sm btn-outline-shadow profile float-right"
+        matTooltip="{{ 'Synthese.Form.FilterTaxaProfile' | translate }}"
         matTooltipClass="validation-tooltip"
       >
-        {{ 'Synthese.Form.ValidPosition' | translate }}
-        <mat-icon
-          class="material-icons-outlined"
-          inline="true"
-        >
-          info
-        </mat-icon>
-      </small>
-      <div class="input-group">
-        <select
-          class="form-control form-control-sm"
-          [formControl]="formService.searchForm.get('valid_distribution')"
-          name="score"
-        >
-          <option [ngValue]="null">{{ 'Synthese.Form.NoFilter' | translate }}</option>
-          <option [ngValue]="true">{{ 'Synthese.Form.Valid' | translate }}</option>
-          <option [ngValue]="false">{{ 'Synthese.Form.Invalid' | translate }}</option>
-        </select>
-      </div>
-      <small
-        matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?"
-        matTooltipClass="validation-tooltip"
+        <i
+          class="fa fa-cog"
+          aria-hidden="true"
+        ></i>
+      </button>
+      <div
+        [(ngbCollapse)]="isCollapseScore"
+        class="advanded-score"
       >
-        {{ 'Synthese.Form.ValidAltitude' | translate }}
-        <mat-icon
-          class="material-icons-outlined"
-          inline="true"
-        >
-          info
-        </mat-icon>
-      </small>
-      <div class="input-group">
-        <select
-          class="form-control form-control-sm"
-          [formControl]="formService.searchForm.get('valid_altitude')"
-          name="score"
-        >
-          <option [ngValue]="null">{{ 'Synthese.Form.NoFilter' | translate }}</option>
-          <option [ngValue]="true">{{ 'Valid' | translate }}</option>
-          <option [ngValue]="false">{{ 'Invalid' | translate }}</option>
-        </select>
-      </div>
-      <small
-        matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?"
-        matTooltipClass="validation-tooltip"
-      >
-        {{ 'Synthese.Form.ValidPhenology' | translate }}
-        <mat-icon
-          class="material-icons-outlined"
-          inline="true"
-        >
-          info
-        </mat-icon>
-      </small>
-      <div class="input-group">
-        <select
-          class="form-control form-control-sm"
-          [formControl]="formService.searchForm.get('valid_phenology')"
-          name="score"
-        >
-          <option [ngValue]="null">{{ 'Synthese.Form.NoFilter' | translate }}</option>
-          <option [ngValue]="true">{{ 'Valid' | translate }}</option>
-          <option [ngValue]="false">{{ 'Invalid' | translate }}</option>
-        </select>
-      </div>
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>{{ 'What' | translate }}</legend>
-
-    <pnx-taxonomy
-      label="{{ 'Taxon' | translate }} "
-      [parentFormControl]="formService.searchForm.controls.cd_nom"
-      [charNumber]="3"
-      [listLength]="config.SYNTHESE.TAXON_RESULT_NUMBER"
-      [apiEndPoint]="taxonApiEndPoint"
-      (onChange)="formService.getCurrentTaxon($event)"
-    ></pnx-taxonomy>
-
-    <div
-      *ngIf="formService.selectedtaxonFromComponent.length > 0"
-      class="alert alert-warning search-alert mt-2"
-    >
-      <p class="taxon-list">
-        <b>{{ 'Synthese.Form.SearchedTaxa' | translate }}:</b>
-      </p>
-      <ul class="taxon-list">
-        <li
-          *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
-          class="d-flex justify-content-between align-items-center"
-        >
-          {{ taxon.nom_valide }}
-          <i
-            (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
-            class="fa fa-times clickable"
-            matTooltip="Retirer « {{ taxon.nom_valide }} » des filtres de recherche"
-          ></i>
-        </li>
-      </ul>
-    </div>
-
-    <button
-      (click)="openModal()"
-      class="btn btn-xs btn-outline-secondary advanced mt-2"
-    >
-      {{ 'Advanced' | translate }}
-    </button>
-
-    <div
-      *ngIf="formService.haveAdvancedFormValues()"
-      class="alert alert-warning search-alert mt-2"
-    >
-      <h2 class="h6 mb-1">
-        <small>{{ 'Synthese.Form.AdvancedFieldsSelected' | translate }}</small>
-      </h2>
-      <ul class="list-unstyled search-list">
-        <li
-          *ngIf="
-            formService.selectedCdRefFromTree.length > 0 ||
-            formService.selectedTaxonFromRankInput.length > 0
-          "
-          class="d-flex justify-content-between align-items-center"
-        >
-          {{
-            formService.selectedCdRefFromTree.length + formService.selectedTaxonFromRankInput.length
-          }}
-          taxons
-
-          <i
-            class="fa fa-info-circle clickable"
-            [matTooltip]="'Sélection : ' + formService.getSelectedTaxonsSummary()"
-            matTooltipPosition="above"
-          ></i>
-        </li>
-        <li
-          *ngIf="formService.selectedRedLists.length > 0"
-          class="d-flex justify-content-between align-items-center"
-        >
-          {{ formService.selectedRedLists.length }}&nbsp;
-          {{ 'Synthese.Form.RedListCategory' | translate }}
-
-          <i
-            class="fa fa-info-circle clickable"
-            [matTooltip]="'Sélection : ' + formService.selectedRedLists.join(', ')"
-            matTooltipPosition="above"
-          ></i>
-        </li>
-        <li
-          *ngIf="formService.selectedStatus.length > 0"
-          class="d-flex justify-content-between align-items-center"
-        >
-          {{ formService.selectedStatus.length }}&nbsp;
-          {{ 'Synthese.Form.ProtectionStatus' | translate }}
-
-          <i
-            class="fa fa-info-circle clickable"
-            [matTooltip]="'Sélection : ' + formService.selectedStatus.join(', ')"
-            matTooltipPosition="above"
-          ></i>
-        </li>
-        <li
-          *ngIf="formService.selectedTaxRefAttributs.length > 0"
-          class="d-flex justify-content-between align-items-center"
-        >
-          {{ formService.selectedTaxRefAttributs.length }}&nbsp;
-          {{ 'Synthese.Form.TaxrefAttributes' | translate }}
-
-          <i
-            class="fa fa-info-circle clickable"
-            [matTooltip]="'Sélection : ' + formService.selectedTaxRefAttributs.join(', ')"
-            matTooltipPosition="above"
-          ></i>
-        </li>
-      </ul>
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>{{ 'When' | translate }}</legend>
-    <div class="row row-sm">
-      <pnx-date
-        label="Date min"
-        [parentFormControl]="formService.searchForm.controls.date_min"
-        data-qa="synthese-form-date-min"
-      ></pnx-date>
-    </div>
-    <div class="row row-sm">
-      <pnx-date
-        label="Date max"
-        [parentFormControl]="formService.searchForm.controls.date_max"
-        data-qa="synthese-form-date-max"
-      ></pnx-date>
-    </div>
-
-    <button
-      (click)="isCollapsePeriod = !isCollapsePeriod"
-      [attr.aria-expanded]="!isCollapsePeriod"
-      class="btn btn-sm btn-outline-shadow period"
-      matTooltip="Ajouter une période"
-    >
-      <i
-        class="fa fa-cog"
-        aria-hidden="true"
-      ></i>
-    </button>
-    <div [(ngbCollapse)]="isCollapsePeriod">
-      <div class="row row-sm">
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-          <pnx-period
-            class="form-sm"
-            label="Periode début"
-            [parentFormControl]="formService.searchForm.controls.period_start"
-          ></pnx-period>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-          <pnx-period
-            label="Periode fin"
-            [parentFormControl]="formService.searchForm.controls.period_end"
-          ></pnx-period>
+        <small>{{ 'Synthese.Form.Score' | translate }}</small>
+        <div class="input-group">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="formService.searchForm.get('score')"
+            name="score"
+          >
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
         </div>
         <small
-          *ngIf="formService.searchForm.errors?.invalidPeriod"
-          class="error"
-          style="color: rgb(18, 32, 155)"
+          matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?"
+          matTooltipClass="validation-tooltip"
         >
-          {{ 'Synthese.Errors.PeriodCompleteness' | translate }}
+          {{ 'Synthese.Form.ValidPosition' | translate }}
+          <mat-icon
+            class="material-icons-outlined"
+            inline="true"
+          >
+            info
+          </mat-icon>
         </small>
+        <div class="input-group">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="formService.searchForm.get('valid_distribution')"
+            name="score"
+          >
+            <option [ngValue]="null">{{ 'Synthese.Form.NoFilter' | translate }}</option>
+            <option [ngValue]="true">{{ 'Synthese.Form.Valid' | translate }}</option>
+            <option [ngValue]="false">{{ 'Synthese.Form.Invalid' | translate }}</option>
+          </select>
+        </div>
+        <small
+          matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?"
+          matTooltipClass="validation-tooltip"
+        >
+          {{ 'Synthese.Form.ValidAltitude' | translate }}
+          <mat-icon
+            class="material-icons-outlined"
+            inline="true"
+          >
+            info
+          </mat-icon>
+        </small>
+        <div class="input-group">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="formService.searchForm.get('valid_altitude')"
+            name="score"
+          >
+            <option [ngValue]="null">{{ 'Synthese.Form.NoFilter' | translate }}</option>
+            <option [ngValue]="true">{{ 'Valid' | translate }}</option>
+            <option [ngValue]="false">{{ 'Invalid' | translate }}</option>
+          </select>
+        </div>
+        <small
+          matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?"
+          matTooltipClass="validation-tooltip"
+        >
+          {{ 'Synthese.Form.ValidPhenology' | translate }}
+          <mat-icon
+            class="material-icons-outlined"
+            inline="true"
+          >
+            info
+          </mat-icon>
+        </small>
+        <div class="input-group">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="formService.searchForm.get('valid_phenology')"
+            name="score"
+          >
+            <option [ngValue]="null">{{ 'Synthese.Form.NoFilter' | translate }}</option>
+            <option [ngValue]="true">{{ 'Valid' | translate }}</option>
+            <option [ngValue]="false">{{ 'Invalid' | translate }}</option>
+          </select>
+        </div>
       </div>
-    </div>
-  </fieldset>
+    </fieldset>
 
-  <fieldset>
-    <legend>{{ 'Where' | translate }}</legend>
+    <fieldset>
+      <legend>{{ 'What' | translate }}</legend>
 
-    <div *ngIf="formService.formBuilded">
-      <div *ngFor="let area of formService.areasFilters; let i = index">
-        <pnx-areas
-          [parentFormControl]="area.control"
-          [label]="area.label"
-          [typeCodes]="area.type_code_array"
-          [withoutGeom]="true"
-        ></pnx-areas>
+      <pnx-taxonomy
+        label="{{ 'Taxon' | translate }} "
+        [parentFormControl]="formService.searchForm.controls.cd_nom"
+        [charNumber]="3"
+        [listLength]="config.SYNTHESE.TAXON_RESULT_NUMBER"
+        [apiEndPoint]="taxonApiEndPoint"
+        (onChange)="formService.getCurrentTaxon($event)"
+      ></pnx-taxonomy>
+
+      <div
+        *ngIf="formService.selectedtaxonFromComponent.length > 0"
+        class="alert alert-warning search-alert mt-2"
+      >
+        <p class="taxon-list">
+          <b>{{ 'Synthese.Form.SearchedTaxa' | translate }}:</b>
+        </p>
+        <ul class="taxon-list">
+          <li
+            *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
+            class="d-flex justify-content-between align-items-center"
+          >
+            {{ taxon.nom_valide }}
+            <i
+              (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
+              class="fa fa-times clickable"
+              matTooltip="Retirer « {{ taxon.nom_valide }} » des filtres de recherche"
+            ></i>
+          </li>
+        </ul>
       </div>
-    </div>
-  </fieldset>
 
-  <fieldset>
-    <legend>{{ 'Who' | translate }}</legend>
+      <button
+        (click)="openModal()"
+        class="btn btn-xs btn-outline-secondary advanced mt-2"
+      >
+        {{ 'Advanced' | translate }}
+      </button>
 
-    <ng-container *ngIf="config.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
-      <pnx-observers
+      <div
+        *ngIf="formService.haveAdvancedFormValues()"
+        class="alert alert-warning search-alert mt-2"
+      >
+        <h2 class="h6 mb-1">
+          <small>{{ 'Synthese.Form.AdvancedFieldsSelected' | translate }}</small>
+        </h2>
+        <ul class="list-unstyled search-list">
+          <li
+            *ngIf="
+              formService.selectedCdRefFromTree.length > 0 ||
+              formService.selectedTaxonFromRankInput.length > 0
+            "
+            class="d-flex justify-content-between align-items-center"
+          >
+            {{
+              formService.selectedCdRefFromTree.length + formService.selectedTaxonFromRankInput.length
+            }}
+            taxons
+
+            <i
+              class="fa fa-info-circle clickable"
+              [matTooltip]="'Sélection : ' + formService.getSelectedTaxonsSummary()"
+              matTooltipPosition="above"
+            ></i>
+          </li>
+          <li
+            *ngIf="formService.selectedRedLists.length > 0"
+            class="d-flex justify-content-between align-items-center"
+          >
+            {{ formService.selectedRedLists.length }}&nbsp;
+            {{ 'Synthese.Form.RedListCategory' | translate }}
+
+            <i
+              class="fa fa-info-circle clickable"
+              [matTooltip]="'Sélection : ' + formService.selectedRedLists.join(', ')"
+              matTooltipPosition="above"
+            ></i>
+          </li>
+          <li
+            *ngIf="formService.selectedStatus.length > 0"
+            class="d-flex justify-content-between align-items-center"
+          >
+            {{ formService.selectedStatus.length }}&nbsp;
+            {{ 'Synthese.Form.ProtectionStatus' | translate }}
+
+            <i
+              class="fa fa-info-circle clickable"
+              [matTooltip]="'Sélection : ' + formService.selectedStatus.join(', ')"
+              matTooltipPosition="above"
+            ></i>
+          </li>
+          <li
+            *ngIf="formService.selectedTaxRefAttributs.length > 0"
+            class="d-flex justify-content-between align-items-center"
+          >
+            {{ formService.selectedTaxRefAttributs.length }}&nbsp;
+            {{ 'Synthese.Form.TaxrefAttributes' | translate }}
+
+            <i
+              class="fa fa-info-circle clickable"
+              [matTooltip]="'Sélection : ' + formService.selectedTaxRefAttributs.join(', ')"
+              matTooltipPosition="above"
+            ></i>
+          </li>
+        </ul>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ 'When' | translate }}</legend>
+      <div class="row row-sm">
+        <pnx-date
+          label="Date min"
+          [parentFormControl]="formService.searchForm.controls.date_min"
+          data-qa="synthese-form-date-min"
+        ></pnx-date>
+      </div>
+      <div class="row row-sm">
+        <pnx-date
+          label="Date max"
+          [parentFormControl]="formService.searchForm.controls.date_max"
+          data-qa="synthese-form-date-max"
+        ></pnx-date>
+      </div>
+
+      <button
+        (click)="isCollapsePeriod = !isCollapsePeriod"
+        [attr.aria-expanded]="!isCollapsePeriod"
+        class="btn btn-sm btn-outline-shadow period"
+        matTooltip="Ajouter une période"
+      >
+        <i
+          class="fa fa-cog"
+          aria-hidden="true"
+        ></i>
+      </button>
+      <div [(ngbCollapse)]="isCollapsePeriod">
+        <div class="row row-sm">
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
+            <pnx-period
+              class="form-sm"
+              label="Periode début"
+              [parentFormControl]="formService.searchForm.controls.period_start"
+            ></pnx-period>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
+            <pnx-period
+              label="Periode fin"
+              [parentFormControl]="formService.searchForm.controls.period_end"
+            ></pnx-period>
+          </div>
+          <small
+            *ngIf="formService.searchForm.errors?.invalidPeriod"
+            class="error"
+            style="color: rgb(18, 32, 155)"
+          >
+            {{ 'Synthese.Errors.PeriodCompleteness' | translate }}
+          </small>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ 'Where' | translate }}</legend>
+
+      <div *ngIf="formService.formBuilded">
+        <div *ngFor="let area of formService.areasFilters; let i = index">
+          <pnx-areas
+            [parentFormControl]="area.control"
+            [label]="area.label"
+            [typeCodes]="area.type_code_array"
+            [withoutGeom]="true"
+          ></pnx-areas>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ 'Who' | translate }}</legend>
+
+      <ng-container *ngIf="config.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
+        <pnx-observers
+          [multiSelect]="true"
+          [parentFormControl]="formService.searchForm.get('observers_list')"
+          [idMenu]="config.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
+          [label]="'Observers' | translate"
+          [bindAllItem]="true"
+        ></pnx-observers>
+      </ng-container>
+
+      <ng-template #observersTxtBlock>
+        <i
+          class="fa fa-question-circle"
+          matTooltip="Pour rechercher plusieurs observateurs, séparez-les par des virgules"
+        ></i>
+        <pnx-observers-text
+          [label]="'Observer' | translate"
+          [parentFormControl]="formService.searchForm.get('observers')"
+        ></pnx-observers-text>
+      </ng-template>
+
+      <pnx-multiselect
+        [values]="organisms"
+        [parentFormControl]="formService.searchForm.controls.id_organism"
+        keyLabel="nom_organisme"
+        keyValue="id_organisme"
+        [label]="'Organism' | translate"
+        debounceTime="500"
+        [disabled]="false"
+      ></pnx-multiselect>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ 'How' | translate }}</legend>
+
+      <pnx-acquisition-frameworks
         [multiSelect]="true"
-        [parentFormControl]="formService.searchForm.get('observers_list')"
-        [idMenu]="config.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
-        [label]="'Observers' | translate"
-        [bindAllItem]="true"
-      ></pnx-observers>
-    </ng-container>
+        [displayAll]="true"
+        [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
+        label="{{ 'AcquisitionFramework' | translate }}"
+        data-qa="synthese-form-ca"
+      ></pnx-acquisition-frameworks>
 
-    <ng-template #observersTxtBlock>
+      <pnx-datasets
+        [displayOnlyActive]="false"
+        [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
+        [multiSelect]="true"
+        [displayAll]="true"
+        [parentFormControl]="formService.searchForm.controls.id_dataset"
+        label="{{ 'Datasets' | translate }}"
+        data-qa="synthese-form-dataset"
+      ></pnx-datasets>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ 'Filters.Advanced' | translate }}</legend>
+      <small>{{ 'Filters.Add' | translate }}</small>
+      <pnx-dynamic-form-generator
+        *ngIf="formService.processedDefaultFilters"
+        [myFormGroup]="formService.searchForm"
+        [formsDefinition]="formService.dynamycFormDef"
+        [defaults]="formService.processedDefaultFilters"
+      ></pnx-dynamic-form-generator>
+    </fieldset>
+  </div>
+  <div class="search-btn">
+    <button
+      id="refresh-btn"
+      mat-raised-button
+      color="warn"
+      (click)="refreshFilters()"
+      matTooltip="{{ 'Filters.Refresh' | translate }}"
+      data-qa="synthese-refresh-btn"
+    >
       <i
-        class="fa fa-question-circle"
-        matTooltip="Pour rechercher plusieurs observateurs, séparez-les par des virgules"
+        class="fa fa-refresh"
+        aria-hidden="true"
       ></i>
-      <pnx-observers-text
-        [label]="'Observer' | translate"
-        [parentFormControl]="formService.searchForm.get('observers')"
-      ></pnx-observers-text>
-    </ng-template>
-
-    <pnx-multiselect
-      [values]="organisms"
-      [parentFormControl]="formService.searchForm.controls.id_organism"
-      keyLabel="nom_organisme"
-      keyValue="id_organisme"
-      [label]="'Organism' | translate"
-      debounceTime="500"
-      [disabled]="false"
-    ></pnx-multiselect>
-  </fieldset>
-
-  <fieldset>
-    <legend>{{ 'How' | translate }}</legend>
-
-    <pnx-acquisition-frameworks
-      [multiSelect]="true"
-      [displayAll]="true"
-      [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
-      label="{{ 'AcquisitionFramework' | translate }}"
-      data-qa="synthese-form-ca"
-    ></pnx-acquisition-frameworks>
-
-    <pnx-datasets
-      [displayOnlyActive]="false"
-      [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
-      [multiSelect]="true"
-      [displayAll]="true"
-      [parentFormControl]="formService.searchForm.controls.id_dataset"
-      label="{{ 'Datasets' | translate }}"
-      data-qa="synthese-form-dataset"
-    ></pnx-datasets>
-  </fieldset>
-
-  <fieldset>
-    <legend>{{ 'Filters.Advanced' | translate }}</legend>
-    <small>{{ 'Filters.Add' | translate }}</small>
-    <pnx-dynamic-form-generator
-      *ngIf="formService.processedDefaultFilters"
-      [myFormGroup]="formService.searchForm"
-      [formsDefinition]="formService.dynamycFormDef"
-      [defaults]="formService.processedDefaultFilters"
-    ></pnx-dynamic-form-generator>
-  </fieldset>
-</div>
-
-<div class="search-btn">
-  <button
-    id="refresh-btn"
-    mat-raised-button
-    color="warn"
-    (click)="refreshFilters()"
-    matTooltip="{{ 'Filters.Refresh' | translate }}"
-    data-qa="synthese-refresh-btn"
-  >
-    <i
-      class="fa fa-refresh"
-      aria-hidden="true"
-    ></i>
-  </button>
-  <button
-    data-qa="synthese-search-btn"
-    class="button-success uppercase"
-    mat-raised-button
-    (click)="onSubmitForm()"
-  >
-    {{ 'Actions.Search' | translate }}
-  </button>
-</div>
+    </button>
+    <button
+      data-qa="synthese-search-btn"
+      class="button-success uppercase"
+      mat-raised-button
+      (click)="onSubmitForm()"
+    >
+      {{ 'Actions.Search' | translate }}
+    </button>
+  </div>
 <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre> -->
+</div>

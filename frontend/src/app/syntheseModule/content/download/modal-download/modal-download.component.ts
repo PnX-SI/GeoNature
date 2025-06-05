@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseStoreService } from '../../../services/store.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
+  standalone: true,
   selector: 'pnx-synthese-modal-download',
+  imports: [NgbModalModule],
   templateUrl: 'modal-download.component.html',
 })
 export class SyntheseModalDownloadComponent {

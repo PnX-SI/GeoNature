@@ -5,7 +5,6 @@ Revises: 707390c722fe
 Create Date: 2025-06-03 19:00:30.541152
 
 """
-
 from alembic import op
 import sqlalchemy as sa
 
@@ -52,7 +51,6 @@ def upgrade():
             gn_permissions.bib_actions a ON a.code_action = v.action_code
         """
     )
-
 
 def downgrade():
     op.execute(

@@ -1,27 +1,22 @@
-<!--Table-->
 <ngx-datatable
-  (window:resize)="onResize($event)"
   #table
-  class="material striped margin-top-xs table-size expandable"
-  [rows]="mapListService.tableData"
-  [columns]="defaultColumns"
+  class="SyntheseContentList material margin-top-xs table-size expandable striped"
+  headerHeight="50"
+  footerHeight="50"
+  rowHeight="50"
+  [rows]="observationsList"
+  [columns]="columnService.defaultColumns"
   [columnMode]="'force'"
-  [headerHeight]="50"
-  [footerHeight]="50"
-  [selected]="mapListService.selectedRow"
-  [selectionType]="'single'"
-  [count]="mapListService.tableData.length"
-  [limit]="rowNumber"
-  [rowClass]="getRowClass"
   [reorderable]="true"
-  sortType="multi"
-  (sort)="onSort($event)"
-  (select)="mapListService.onRowSelect($event)"
+  [externalPaging]="true"
+  [limit]="pagination.perPage"
+  [count]="pagination.totalItems"
+  (page)="onChangePage($event)"
+  [externalSorting]="true"
+  [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
+  (sort)="onColumnSort($event)"
 >
-  <ngx-datatable-column
-    [maxWidth]="5"
-    [sortable]="false"
-  >
+  <ngx-datatable-column [maxWidth]="5">
     <ng-template ngx-datatable-header-template>
       <i
         id="dropdownMenuButton"
@@ -30,41 +25,38 @@
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        matTooltip="{{ 'Columns' | translate }}"
-        (click)="openModalCol($event, modalCol)"
+        matTooltip="{{ 'List.Columns' | translate }}"
+        (click)="columnService.openModal($event, modalCol)"
       ></i>
     </ng-template>
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
     >
-      <a
-        class="link-dark"
-        style="color: black"
+      <button
+        class="btn btn-outline-shadow btn-no-padding btn-ghost"
         [routerLink]="['occurrence', row['id_synthese'], 'details']"
+        matTooltip="Afficher la fiche de l'observation"
       >
         <i
           #iElement
-          matTooltip="{{ row[mapListService.idName] }}"
+          matTooltip="{{ ETIENNE }}"
           class="fa fa-info-circle"
           aria-hidden="true "
           data-qa="synthese-info-btn"
         ></i>
-      </a>
+      </button>
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column
-    [maxWidth]="5"
-    [sortable]="false"
-  >
+  <ngx-datatable-column [maxWidth]="5">
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
     >
-      <a
+      <button
         *ngIf="row.url_source"
-        class="link-dark"
+        class="btn btn-outline-shadow btn-no-padding btn-ghost"
         (click)="backToModule(row.url_source, row.entity_source_pk_value)"
       >
         <i
@@ -72,13 +64,13 @@
           class="fa fa-file-text"
           aria-hidden="true"
         ></i>
-      </a>
+      </button>
     </ng-template>
   </ngx-datatable-column>
 
   <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
   <ngx-datatable-column
-    *ngFor="let col of defaultColumns"
+    *ngFor="let col of columnService.defaultColumns"
     [maxWidth]="col.max_width"
     [name]="col.name"
     [prop]="col.prop"
@@ -96,7 +88,7 @@
         <div *ngSwitchCase="'date_min' || 'date_max'">
           {{ getDate(row[col.prop]) }}
         </div>
-        <div *ngSwitchCase="'nom_vern_or_lb_nom'">
+        <div *ngSwitchCase="'lb_nom'">
           <a
             class="Link"
             [routerLink]="['taxon/' + row.cd_nom]"
@@ -128,54 +120,24 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<div class="actions-btns mt-3">
-  <div class="col-auto">
-    <button
-      *ngIf="canImport"
-      id="upload-btn"
-      mat-raised-button
-      color="primary"
-      class="btn-action uppercase"
-      [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
-    >
-      {{ 'Actions.Upload' | translate }}
-      <mat-icon>file_upload</mat-icon>
-    </button>
-  </div>
-  <div class="col-auto">
-    <button
-      type="button"
-      class="uppercase"
-      id="download-btn"
-      mat-raised-button
-      color="primary"
-      (click)="openDownloadModal()"
-      [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
-      data-qa="synthese-download-btn"
-    >
-      {{ 'Actions.Download' | translate }}
-      <mat-icon>file_download</mat-icon>
-    </button>
-  </div>
-</div>
 <ng-template
   #modalCol
   let-c="close"
   let-d="dismiss"
 >
   <div class="modal-header">
-    <h4>{{ 'DisplayColumns' | translate }}</h4>
+    <h4>{{ 'List.DisplayColumns' | translate }}</h4>
   </div>
   <div class="modal-body">
     <div
       class="form-check"
-      *ngFor="let col of availableColumns"
+      *ngFor="let col of columnService.availableColumns"
     >
       <input
         class="form-check-input"
         type="checkbox"
         [id]="col.name"
-        (click)="toggleColumnNames(col)"
+        (click)="columnService.toggleColumnNames(col)"
         [checked]="col.checked"
       />
 

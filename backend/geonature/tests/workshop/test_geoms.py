@@ -8,7 +8,6 @@ from geonature.tests.fixtures import *
 from geonature.tests.test_synthese import *
 from pypnusershub.tests.utils import set_logged_user
 
-
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGeoms:
 

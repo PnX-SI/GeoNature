@@ -1,0 +1,26 @@
+<div class="SyntheseContentDownload">
+  <button
+    *ngIf="canImport"
+    id="upload-btn"
+    mat-raised-button
+    color="primary"
+    class="btn-action uppercase"
+    [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
+  >
+    {{ 'Actions.Upload' | translate }}
+    <mat-icon>file_upload</mat-icon>
+  </button>
+  <button
+    type="button"
+    class="uppercase"
+    id="download-btn"
+    mat-raised-button
+    color="primary"
+    (click)="openDownloadModal()"
+    [disabled]="cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
+    data-qa="synthese-download-btn"
+  >
+    {{ 'Actions.Download' | translate }}
+    <mat-icon>file_download</mat-icon>
+  </button>
+</div>

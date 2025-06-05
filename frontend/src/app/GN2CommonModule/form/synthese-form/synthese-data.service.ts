@@ -8,11 +8,10 @@ import {
   HttpEvent,
 } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
-import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
+import { DEFAULT_SORT, SORT_ORDER, SyntheseDataSortItem } from './synthese-data-sort-item';
 
 export interface TaxonStats {
   cd_ref?: number;
@@ -78,7 +77,6 @@ export class SyntheseDataService {
       params,
     });
   }
-
 
   getSyntheseTaxonSheetObservers(
     cd_ref: number,
@@ -263,6 +261,10 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
+  // //////////////////////////////////////////////////////////////////////////
+  // Report
+  // //////////////////////////////////////////////////////////////////////////
+
   getReports(params, idSynthese = null) {
     const baseUrl = `${this.config.API_ENDPOINT}/synthese/reports`;
     const url = idSynthese ? `${baseUrl}/${idSynthese}` : baseUrl;
@@ -279,5 +281,24 @@ export class SyntheseDataService {
 
   modifyReport(id, params) {
     return this._api.put(`${this.config.API_ENDPOINT}/synthese/reports/${id}`, params);
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // observations
+  // //////////////////////////////////////////////////////////////////////////
+
+  getObservations(sort: SyntheseDataSortItem, filters) {
+    const sortQueryParam = `sort=${sort.sortOrder == SORT_ORDER.DESC ? '-' : ''}${sort.sortBy}`;
+    return this._api.post<any>(
+      `${this.config.API_ENDPOINT}/synthese/observations/search?${sortQueryParam}`,
+      filters
+    );
+  }
+
+  getAreas(filters, area_aggregation_type) {
+    return this._api.post(`${this.config.API_ENDPOINT}/synthese/observations/geoms`, {
+      area_aggregation_type,
+      ...filters,
+    });
   }
 }

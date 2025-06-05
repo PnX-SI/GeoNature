@@ -1,0 +1,20 @@
+.SyntheseContentList{
+  height: 100%;
+}
+
+:host ::ng-deep .datatable-body-row.active .datatable-row-group {
+  background-color: rgb(117, 227, 118) !important;
+}
+
+:host ::ng-deep .datatable-body-cell i {
+  font-size: 0.8rem;
+}
+
+ngx-datatable {
+  box-shadow: none !important;
+}
+
+.Link {
+  color: var(--purple);
+  filter: brightness(70%);
+}
