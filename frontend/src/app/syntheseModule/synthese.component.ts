@@ -1,17 +1,20 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
+import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
+import { ConfigService } from '@geonature/services/config.service';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
-import { SyntheseStoreService } from './services/store.service';
-import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
-import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import * as cloneDeep from 'lodash/cloneDeep';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
+import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
+import { SyntheseStoreService, SyntheseTask } from './services/store.service';
 import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
-import { ConfigService } from '@geonature/services/config.service';
+import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 
 @Component({
   selector: 'pnx-synthese',
@@ -19,12 +22,16 @@ import { ConfigService } from '@geonature/services/config.service';
   templateUrl: 'synthese.component.html',
   providers: [MapListService],
 })
-export class SyntheseComponent implements OnInit {
+export class SyntheseComponent implements OnInit, OnDestroy {
   public searchBarHidden = false;
   public marginButton: number;
   public firstLoad = true;
-
   public isCollapseSyntheseNavBar = false;
+
+  // Gestion des tâches asynchrones
+  private pollingSubscription: Subscription;
+  private pollingInterval = 30000; // 30 secondes
+  private moduleCode = 'SYNTHESE'; // Code du module
 
   constructor(
     public searchService: SyntheseDataService,
@@ -37,10 +44,18 @@ export class SyntheseComponent implements OnInit {
     private _ngModal: NgbModal,
     private _changeDetector: ChangeDetectorRef,
     public config: ConfigService,
-    private _router: Router
+    private _router: Router,
+    private _dataFormService: DataFormService,
+    private _notificationService: NotificationDataService
   ) {}
 
   ngOnInit() {
+    // Initialiser le polling des tâches
+    this.startTaskPolling();
+
+    // Récupérer les tâches existantes pour le module
+    this.loadExistingTasks();
+
     this._fs.selectors = this._fs.selectors
       .set('limit', this.config.SYNTHESE.NB_LAST_OBS)
       .set(
@@ -87,6 +102,101 @@ export class SyntheseComponent implements OnInit {
           this.loadAndStoreData(this._fs.formatParams());
         });
     });
+  }
+
+  /**
+   * Charge les tâches existantes du module synthèse
+   */
+  loadExistingTasks() {
+    this._dataFormService.getModuleTasks(this.moduleCode).subscribe((tasks) => {
+      if (tasks && Array.isArray(tasks)) {
+        // Calculer la date limite (24 heures avant maintenant)
+        const oneDayAgo = new Date();
+        oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+
+        // Filtrer pour ne garder que les tâches actives (pending) et récentes (moins de 24h)
+        tasks
+          .filter((task) => {
+            // Garder uniquement les tâches en attente
+            if (task.status !== 'pending') return false;
+
+            // Vérifier si la tâche est récente (si start est disponible)
+            if (task.start) {
+              const taskDate = new Date(task.start);
+              return taskDate > oneDayAgo;
+            }
+
+            return true; // Si pas de date, on garde par défaut
+          })
+          // Limiter à maximum 10 tâches pour éviter de surcharger l'interface
+          .slice(0, 10)
+          .forEach((task) => {
+            this._syntheseStore.addTask({
+              uuid: task.uuid_celery || task.uuid,
+              status: task.status,
+              result: task.result,
+              downloadUrl: task.download_url,
+            });
+          });
+      }
+    });
+  }
+
+  /**
+   * Démarre le polling des tâches actives
+   */
+  startTaskPolling() {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+    }
+
+    // Utiliser le mécanisme de rafraîchissement du store
+    this.pollingSubscription = this._syntheseStore
+      .startAutoRefresh(this.pollingInterval)
+      .subscribe((updatedTasks) => {
+        // Pour chaque tâche mise à jour, vérifier s'il faut notifier l'utilisateur
+        updatedTasks.forEach((taskData) => {
+          const isComplete = taskData.status === 'success' || taskData.status === 'error';
+          if (isComplete) {
+            this.notifyTaskCompletion(taskData);
+          }
+        });
+      });
+  }
+
+  /**
+   * Notifie l'utilisateur lorsqu'une tâche est terminée
+   */
+  notifyTaskCompletion(task: SyntheseTask) {
+    if (task.status === 'success') {
+      this._toasterService.success(
+        `L'export a été complété avec succès${task.downloadUrl ? '. Le téléchargement va commencer.' : ''}`,
+        'Tâche terminée'
+      );
+
+      // Si un lien de téléchargement est disponible, démarrer le téléchargement
+      if (task.downloadUrl) {
+        const link = document.createElement('a');
+        link.href = task.downloadUrl;
+        link.target = '_blank';
+        link.click();
+      }
+    } else if (task.status === 'error') {
+      this._toasterService.error(
+        `L'export a échoué${task.result ? ': ' + task.result : ''}`,
+        'Erreur'
+      );
+    }
+
+    // Rafraîchir les notifications
+    this._notificationService.getNotificationsNumber();
+  }
+
+  ngOnDestroy() {
+    // Nettoyer la souscription de polling lorsque le composant est détruit
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+    }
   }
 
   loadAndStoreData(formParams) {

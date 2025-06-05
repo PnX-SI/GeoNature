@@ -7,7 +7,7 @@ import {
   HttpEvent,
 } from '@angular/common/http';
 import { Taxon, TaxonParents } from './taxonomy/taxonomy.component';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { isArray } from 'rxjs/internal-compatibility';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
@@ -668,6 +668,89 @@ export class DataFormService {
       ${cdRef}?id_nomenclature_life_stage=
       ${idNomenclatureLifeStage}`
     );
+  }
+  /**
+   * Récupère une tâche spécifique par son UUID
+   * @param taskUuid L'identifiant unique de la tâche
+   * @returns Observable contenant les détails de la tâche
+   * 
+   * Permet de suivre l'état d'une tâche individuelle d'export
+   */
+  getTask(taskUuid: string) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/tasks`, {
+      params: {
+        uuid: taskUuid
+      }
+    }).pipe(
+      map(tasks => tasks && tasks.length > 0 ? tasks[0] : null)
+    );
+  }
+  
+  /**
+   * Récupère plusieurs tâches par leurs UUIDs en une seule requête
+   * @param taskUuids Tableau d'identifiants uniques des tâches
+   * @returns Observable contenant la liste des tâches correspondant aux UUIDs
+   * 
+   * Optimise le rafraîchissement de plusieurs tâches en une seule requête HTTP
+   */
+  getTasksByUuids(taskUuids: string[]) {
+    if (!taskUuids || taskUuids.length === 0) {
+      return of([]);
+    }
+    
+    // Création des paramètres avec plusieurs valeurs pour le même paramètre uuid
+    let params = new HttpParams();
+    taskUuids.forEach(uuid => {
+      params = params.append('uuid', uuid);
+    });
+    
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/tasks`, { params });
+  }
+  
+  /**
+   * Récupère les tâches associées à un module spécifique
+   * @param moduleCode Le code du module
+   * @returns Observable contenant la liste des tâches du module
+   * 
+   * Charge les tâches existantes au démarrage d'un module
+   */
+  getModuleTasks(moduleCode: string) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/tasks`, {
+      params: {
+        module_code: moduleCode
+      }
+    });
+  }
+  
+  
+  /**
+   * Construit une URL de téléchargement pour un fichier exporté
+   * @param filePath Le chemin du fichier sur le serveur
+   * @returns L'URL complète pour télécharger le fichier
+   */
+  getFileDownloadUrl(filePath: string): string {
+    if (!filePath) return null;
+    
+    const fileName = filePath.split('/').pop();
+    return `${this.config.API_ENDPOINT}/media/exports/${fileName}`;
+  }
+  
+  /**
+   * Déclenche le téléchargement d'un fichier via le navigateur
+   * @param url L'URL du fichier à télécharger
+   * @param fileName Nom de fichier facultatif (extrait de l'URL par défaut)
+   */
+  triggerFileDownload(url: string, fileName?: string): void {
+    if (!url) return;
+    
+    const downloadFileName = fileName || url.split('/').pop() || 'export.file';
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = downloadFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   /* A partir d'un id synthese, retourne si l'observation match avec les différents

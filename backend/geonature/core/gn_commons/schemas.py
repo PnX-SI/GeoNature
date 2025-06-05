@@ -1,4 +1,5 @@
 import logging
+from flask import url_for
 from marshmallow import Schema, pre_load, fields, EXCLUDE
 
 from utils_flask_sqla.schema import SmartRelationshipsMixin
@@ -13,6 +14,7 @@ from geonature.core.gn_commons.models import (
     TValidations,
     TAdditionalFields,
     BibWidgets,
+    Task,
 )
 from geonature.core.gn_permissions.schemas import PermObjectSchema
 
@@ -69,6 +71,22 @@ class BibWidgetSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
         model = BibWidgets
         load_instance = True
+
+
+class TaskSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Task
+        load_instance = True
+        include_fk = True
+
+    url = fields.Method("get_url")
+
+    def get_url(self, obj):
+        if obj.file_name:
+            return url_for(
+                "media", filename="exports/usr_generated/" + obj.file_name, _external=True
+            )
+        return None
 
 
 class LabelValueDict(Schema):

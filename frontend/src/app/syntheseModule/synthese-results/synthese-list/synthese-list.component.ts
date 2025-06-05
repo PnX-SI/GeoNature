@@ -24,9 +24,11 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { SyntheseStoreService } from '@geonature/syntheseModule/services/store.service';
 
 import { FormArray, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { fromEvent } from 'rxjs';
 @Component({
   selector: 'pnx-synthese-list',
@@ -51,6 +53,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   @ViewChild('table', { static: true }) table: DatatableComponent;
   private _latestWidth: number;
   public destinationImportCode: string;
+  public activeTasksCount$: Observable<number>;
 
   public userCruved: any;
   public canImport: boolean = false;
@@ -63,11 +66,13 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public _cruvedStore: CruvedStoreService,
     public config: ConfigService,
     private _moduleService: ModuleService,
-    private _router: Router
+    private _router: Router,
+    private _syntheseStore: SyntheseStoreService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
     const currentModule = this._moduleService.currentModule;
     this.destinationImportCode = currentModule.module_code.toLowerCase();
+    this.activeTasksCount$ = this._syntheseStore.activeTasksCount$;
   }
 
   ngOnInit() {
@@ -188,6 +193,9 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.ngbModal.open(modal);
   }
 
+  /**
+   * Ouvre la fenêtre modale de téléchargement et de gestion des tâches asynchrones
+   */
   openDownloadModal() {
     this.ngbModal.open(SyntheseModalDownloadComponent, {
       size: 'lg',

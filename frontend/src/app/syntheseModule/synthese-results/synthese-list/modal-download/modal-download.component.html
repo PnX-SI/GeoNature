@@ -16,16 +16,15 @@
 
   <button
     type="button"
-    class="close"
+    class="btn-close"
     aria-label="Close"
     (click)="activeModal.dismiss('Cross click')"
     data-qa="synthese-download-close-btn"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
+  ></button>
 </div>
 
 <div class="modal-body">
+  <!-- Section des options de téléchargement -->
   <div *ngIf="tooManyObs">
     <div
       class="alert alert-danger"
@@ -57,11 +56,10 @@
   </div>
 
   <div *ngIf="!tooManyObs || syntheseConfig.NB_MAX_OBS_EXPORT > syntheseConfig.NB_MAX_OBS_MAP">
-    <div class="my-3 pt-2">
+    <div class="download-section my-3 pt-2">
       <h5 class="second-color">Télécharger les observations</h5>
       <button
         [disabled]="_dataService.isDownloading"
-        style="margin-left: 5px"
         *ngFor="let format of syntheseConfig.EXPORT_FORMAT"
         mat-raised-button
         (click)="downloadObservations(format, 'gn_synthese.v_synthese_for_export')"
@@ -74,12 +72,11 @@
     </div>
     <div
       *ngFor="let export of syntheseConfig.EXPORT_OBSERVATIONS_CUSTOM_VIEWS"
-      class="my-3 pt-2"
+      class="download-section my-3 pt-2"
     >
       <h5 class="second-color">Télécharger les observations - {{ export.label }}</h5>
       <button
         [disabled]="_dataService.isDownloading"
-        style="margin-left: 5px"
         *ngFor="let format of syntheseConfig.EXPORT_FORMAT"
         mat-raised-button
         (click)="downloadObservations(format, export.view_name)"
@@ -90,7 +87,7 @@
       </button>
     </div>
 
-    <div class="my-3 pt-2">
+    <div class="download-section my-3 pt-2">
       <h5 class="second-color">Télécharger les taxons</h5>
       <button
         [disabled]="_dataService.isDownloading"
@@ -103,7 +100,7 @@
       </button>
     </div>
 
-    <div class="my-3 pt-2">
+    <div class="download-section my-3 pt-2">
       <h5 class="second-color">Télécharger les statuts</h5>
       <button
         [disabled]="_dataService.isDownloading"
@@ -116,7 +113,7 @@
       </button>
     </div>
 
-    <div class="my-3 pt-2">
+    <div class="download-section my-3 pt-2">
       <h5 class="my-2 second-color">Télécharger les métadonnées</h5>
       <button
         [disabled]="_dataService.isDownloading"
@@ -132,17 +129,154 @@
 
   <div
     *ngIf="_dataService.isDownloading"
-    class="telechargement card"
-    style="margin-top: 30px"
+    class="download-progress p-3 my-3 mat-elevation-z1"
   >
-    <div class="card-body text-{{ bstype }}">
-      {{ 'Downloading' | translate }}
-      <img
-        src="assets/images/Spinner.gif"
-        alt="Chargement..."
-        height="40"
-        width="40"
-      />
+    <div class="d-flex align-items-center">
+      <span class="me-2">{{ 'Downloading' | translate }}</span>
+      <mat-spinner
+        diameter="24"
+        color="primary"
+      ></mat-spinner>
     </div>
   </div>
+
+  <!-- Section des tâches d'export en cours -->
+  <div class="tasks-section mt-4 pt-2 border-top">
+    <h5 class="second-color mb-3">Tâches d'export en cours</h5>
+
+    <div
+      *ngIf="(tasks$ | async)?.length === 0"
+      class="text-center p-3"
+    >
+      <p class="text-muted">Aucune tâche d'export en cours.</p>
+    </div>
+
+    <div
+      *ngIf="(tasks$ | async)?.length > 0"
+      class="task-list mat-elevation-z0"
+    >
+      <mat-list class="tasks-list">
+        <div *ngFor="let task of tasks$ | async">
+          <!-- Title of the task type -->
+          <mat-list-item class="task-item">
+            <div
+              matListItemTitle
+              class="d-flex justify-content-between w-100"
+            >
+              <h3 class="task-title mb-0">{{ getTaskDescription(task) }}</h3>
+
+              <div>
+                <!-- Boutons d'action -->
+                <div class="d-flex">
+                  <button
+                    *ngIf="task.status === 'success' && task.downloadUrl"
+                    mat-raised-button
+                    type="button"
+                    class="buttonLoad button-success format-btn me-3"
+                    (click)="downloadTaskResult(task)"
+                  >
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                    Télécharger
+                  </button>
+
+                  <button
+                    mat-raised-button
+                    type="button"
+                    class="buttonLoad btn-delete format-btn"
+                    (click)="removeTask(task)"
+                  >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-list-item>
+
+          <!-- Status section with spinner -->
+          <div class="mx-4 mb-2 d-flex align-items-center">
+            <span class="status-label" [ngClass]="getStatusClass(task.status)">
+              {{ getStatusLabel(task.status) }}
+            </span>
+
+            <span class="spacer-30"></span>
+
+            <mat-spinner
+              *ngIf="task.status === 'pending'"
+              diameter="16"
+              color="accent"
+              class="spinner-pending"
+            ></mat-spinner>
+          </div>
+
+          <!-- Progress section -->
+          <div
+            *ngIf="task.status === 'progress'"
+            class="mx-4 my-2"
+          >
+            <mat-progress-bar
+              mode="determinate"
+              [value]="task.progress || 0"
+              color="primary"
+            ></mat-progress-bar>
+            <div class="text-center mt-1 small">{{ task.progress || 0 }}%</div>
+          </div>
+
+          <!-- Success section -->
+          <div
+            *ngIf="task.status === 'success'"
+            class="mx-4 my-2"
+          >
+            <div
+              *ngIf="!task.downloadUrl"
+              class="alert-message py-2 px-3 mt-2 bg-light border rounded"
+            >
+              <div class="d-flex align-items-center">
+                <span>
+                  Le téléchargement direct n'est pas disponible pour cette tâche.
+                  <br />
+                  <small>Cherchez le fichier dans le dossier des exports de votre serveur.</small>
+                </span>
+              </div>
+            </div>
+
+            <div
+              *ngIf="task.result && task.result.file_path"
+              class="mt-2 small text-muted ms-2"
+            >
+              <strong>Chemin du fichier:</strong>
+              {{ task.result.file_path }}
+            </div>
+          </div>
+
+          <!-- Failure section -->
+          <div
+            *ngIf="task.status === 'error'"
+            class="mx-4 my-2"
+          >
+            <div class="error-message py-2 px-3 bg-light border rounded">
+              <div class="d-flex align-items-center">
+                <span>
+                  <strong>Erreur:</strong>
+                  {{ task.result?.error || "Une erreur est survenue pendant l'export." }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+        </div>
+      </mat-list>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.close()"
+  >
+    Fermer
+  </button>
 </div>

@@ -1,8 +1,11 @@
-from pathlib import Path
 import tempfile
-
+import uuid
+import os
 import pytest
 import json
+import datetime
+
+from pathlib import Path
 from flask import url_for, current_app
 from geoalchemy2.elements import WKTElement
 from PIL import Image
@@ -13,7 +16,13 @@ from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
 from werkzeug.datastructures import Headers
 
 from geonature.core.gn_commons.admin import BibFieldAdmin
-from geonature.core.gn_commons.models import TAdditionalFields, TMedias, TPlaces, BibTablesLocation
+from geonature.core.gn_commons.models import (
+    TAdditionalFields,
+    TMedias,
+    TPlaces,
+    BibTablesLocation,
+    Task,
+)
 from geonature.core.gn_commons.models.base import TMobileApps, TModules, TParameters, BibWidgets
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.tasks import clean_attachments
@@ -21,6 +30,7 @@ from geonature.core.gn_permissions.models import PermObject
 from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 from geonature.core.gn_commons.schemas import CastableField
+from geonature.core.gn_commons.tasks import delete_file_and_tasks
 
 from .fixtures import *
 from .utils import set_logged_user
@@ -36,6 +46,15 @@ def place(users):
     with db.session.begin_nested():
         db.session.add(place)
     return place
+
+
+@pytest.fixture(scope="function")
+def export_directory(monkeypatch):
+    with tempfile.TemporaryDirectory() as tmp_folder:
+        monkeypatch.setitem(current_app.config, "MEDIA_FOLDER", tmp_folder)
+        export_dir = Path(tmp_folder) / "exports" / "usr_generated"
+        export_dir.mkdir(parents=True)
+        yield export_dir
 
 
 @pytest.fixture(scope="function")
@@ -97,6 +116,33 @@ def nonexistent_media():
 @pytest.fixture(scope="function")
 def media_repository(medium):
     return TMediaRepository(id_media=medium.id_media)
+
+
+@pytest.fixture(scope="function")
+def tasks(modules, users):
+    t = None
+    with db.session.begin_nested():
+        new_task = Task(
+            id_role=users["user"].id_role,
+            uuid_celery=uuid.uuid4(),
+            id_module=modules[0].id_module,
+            start=datetime.datetime.now(),
+            message="test",
+            status="pending",
+        )
+        db.session.add(new_task)
+        old_date = datetime.datetime.now() - datetime.timedelta(15)
+        old_task = Task(
+            id_role=users["user"].id_role,
+            uuid_celery=uuid.uuid4(),
+            id_module=modules[0].id_module,
+            start=old_date,
+            end=old_date,
+            message="test",
+            file_name="test.csv",
+        )
+        db.session.add(old_task)
+    return {"new_task": new_task, "old_task": old_task}
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -641,9 +687,58 @@ class TestCommons:
         assert response.status_code == 204  # No content
         assert response.json is None
 
+    def test_get_db_tasks_unautorize(self, tasks):
+        resp = self.client.get(url_for("gn_commons.get_tasks"))
+        assert resp.status_code == 401
+
+    def test_get_db_tasks_filtered(self, tasks, users, modules):
+        # la tache est créée avec l'utilisateur "user"
+        set_logged_user(self.client, users["user"])
+        resp = self.client.get(
+            url_for(
+                "gn_commons.get_tasks",
+                module_code=modules[0].module_code,
+                uuid=tasks["new_task"].uuid_celery,
+                start=datetime.datetime.now(),
+            )
+        )
+        assert resp.status_code == 200
+        resp_tasks = resp.json
+        assert type(resp_tasks) is list
+        expected_columns = ["id_task", "id_role", "id_module", "start", "end", "message", "url"]
+        first_task = resp_tasks[0]
+        for col in expected_columns:
+            assert col in first_task
+        assert first_task["id_role"] == users["user"].id_role
+        assert first_task["id_module"] == modules[0].id_module
+        assert first_task["id_task"] == tasks["new_task"].id_task
+
 
 @pytest.mark.usefixtures("temporary_transaction")
 class TestTasks:
+
+    def test_create_pending_task(self, users, module):
+        task = Task.create_pending_task(
+            id_role=users["admin_user"].id_role,
+            uuid_celery=uuid.uuid4(),
+            module_code=module.module_code,
+        )
+
+        db_task = db.session.get(Task, task.id_task)
+        assert db_task is not None
+        assert db_task.id_module == module.id_module
+        assert db_task.start is not None
+        assert db_task.id_role == users["admin_user"].id_role
+        assert db_task.status == "pending"
+
+    def test_set_successuff_task(self, tasks):
+        task = tasks["new_task"]
+        task.set_succesfull("toto.csv")
+
+        db_task = db.session.get(Task, task.id_task)
+        assert db_task.status == "success"
+        assert db_task.end is not None
+
     def test_clean_attachements(self, monkeypatch, celery_eager, medium):
         # Monkey patch the __before_commit_delete not to remove file
         # when deleting the medium, so the clean_attachments can work
@@ -660,3 +755,27 @@ class TestTasks:
 
         # File should be removed
         assert not Path(medium.media_path).is_file()
+
+    # deletes the files hand created files
+    def test_clean_file_and_tasks(self, export_directory, tasks):
+        (export_directory / "very_old.txt").open("x")
+        os.utime(
+            export_directory / "very_old.txt",
+            (1330712280, 1330712292),
+        )
+        # fichier généré il y a deux jour
+        recent = datetime.datetime.now() - datetime.timedelta(2)
+        (export_directory / "recent.txt").open("x")
+        os.utime(
+            export_directory / "recent.txt",
+            (recent.timestamp(), recent.timestamp()),
+        )
+
+        delete_file_and_tasks()
+        assert not (export_directory / "very_old.txt").is_file()
+        assert (export_directory / "recent.txt").is_file()
+
+        recent_task = db.session.get(Task, tasks["new_task"].id_task)
+        assert recent_task
+        old_task = db.session.get(Task, tasks["old_task"].id_task)
+        assert old_task is None

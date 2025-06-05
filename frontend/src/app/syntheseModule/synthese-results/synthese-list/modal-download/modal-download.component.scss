@@ -1,0 +1,88 @@
+// Styles for download modal
+.task-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+// Status labels
+.status-label {
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Status colors using GeoNature standard colors
+.status-pending {
+  color: #ffb53e; // Orange - GeoNature color-orange
+}
+
+.status-progress {
+  color: #30a5ff; // Blue - GeoNature color-blue
+}
+
+.status-success {
+  color: #389938; // Green - GeoNature button-success
+}
+
+.status-error {
+  color: #f9243f; // Red - GeoNature color-red
+}
+
+// Helper spacing
+.spacer-30 {
+  display: inline-block; 
+  width: 30px;
+}
+
+// Button styles
+.btn-delete {
+  background-color: #d9534f !important; 
+  color: white !important;
+}
+
+// Spinner for pending tasks
+.spinner-pending {
+  color: #ffb53e;
+}
+
+// Export button spacing
+.format-btn {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+// Material design overrides
+:host ::ng-deep {
+  // Fix list item heights
+  .mat-mdc-list-item {
+    height: auto !important;
+  }
+
+  // Download progress indicator
+  .download-progress {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    
+    .mat-spinner {
+      margin-left: 12px;
+    }
+  }
+
+  // Error message
+  .error-message {
+    color: var(--error-color, #f9243f);
+  }
+
+  // Progress bar
+  .mat-progress-bar {
+    margin: 8px 0;
+  }
+
+  // Divider
+  .mat-divider {
+    margin: 12px 0;
+  }
+}
