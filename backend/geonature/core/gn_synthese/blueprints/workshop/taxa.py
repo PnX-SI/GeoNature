@@ -40,6 +40,8 @@ def taxa(permissions):
         VSyntheseForWebApp.ordre,
         VSyntheseForWebApp.phylum,
         VSyntheseForWebApp.regne,
+        VSyntheseForWebApp.nom_vern,
+        VSyntheseForWebApp.nom_valide,
     ]
     sub_query = select(
         VSyntheseForWebApp.cd_ref,
