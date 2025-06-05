@@ -100,32 +100,50 @@ describe('Tests gn_synthese', () => {
     // ce test permet de faire une suite d'actions basées sur la sélection des CA et des JDD
     // vérifie que la sélection d'un cadre d'acquisition filtre bien les jeux de données
     // objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante,
+
+    // --- Open CA Menu, select CA 1 and check JDD-1 is in list ---
     cy.get('[data-qa="synthese-form-ca"] ng-select').click();
-    // Intercept request to datasets which must have a parameter to "id_acquisition_framework"
-    cy.intercept(Cypress.env('apiEndpoint') + 'meta/datasets?**', (req) => {
-      if (req.body.hasOwnProperty('id_acquisition_frameworks')) {
-        // select CA 1 and check JDD-1 is in list
-        cy.get('[data-qa="synthese-form-ca"] ng-select').click();
-        cy.get('[data-qa="CA-1"]').click();
-        cy.get('[data-qa="synthese-form-dataset"] ng-select').click();
-        cy.get('[data-qa="JDD-1"]').click();
-        cy.get('[data-qa="synthese-search-btn"]')
-          .click()
-          .wait(1000)
-          .then(() => {
-            cy.get('.synthese-list-col-dataset_name').as('resultsCells');
-            cy.get('@resultsCells').then((d) => {
-              expect(d.length).to.greaterThan(0);
-            });
-            cy.get('@resultsCells').each(($el, index, $list) => {
-              expect($el.text().trim()).to.be.equal('JDD-1');
-            });
-          });
-      }
-    });
-    // select a CA without dataset and check JDD 1 is not in list
+    cy.get('[data-qa="CA-1"]').click();
+    cy.get('[data-qa="synthese-form-dataset"] ng-select').click();
+    cy.get('[data-qa="JDD-1"]').click();
+    cy.get('[data-qa="synthese-search-btn"]')
+      .click()
+      .wait(500)
+      .then(() => {
+        const resultsCells = cy.get('.synthese-list-col-dataset_name');
+        resultsCells.then((d) => {
+          expect(d.length).to.greaterThan(0);
+        });
+        resultsCells.each(($el, index, $list) => {
+          expect($el.text().trim()).to.be.equal('JDD-1');
+        });
+      });
+    // --- Select a CA without dataset and check JDD 1 is not in list ---
+    // Reset filters
+    cy.get('[data-qa="synthese-form-ca"] ng-select .ng-clear-wrapper').click();
+    cy.get('[data-qa="synthese-form-dataset"] ng-select .ng-clear-wrapper').click();
+    // Select CA 2
+    cy.get('[data-qa="synthese-form-ca"] ng-select').click();
     cy.get('[data-qa="CA-2-empty"]').click();
-    // wait for the filtered request
+    cy.get('[data-qa="synthese-form-dataset"] ng-select').click();
+    const options = cy.get(
+      '[data-qa="synthese-form-dataset"] ng-select ng-dropdown-panel .ng-option'
+    );
+    // Ensure there is not dataset with CA 2 Empty
+    options.then((d) => {
+      expect(d.length).to.be.equal(1);
+      expect(d[0].textContent).to.be.equal('No items found');
+    });
+    cy.get('[data-qa="synthese-search-btn"]')
+      .click()
+      .wait(500)
+      .then(() => {
+        const result = cy.get('datatable-selection');
+        result.then((d) => {
+          expect(d[0].children.length).to.equal(1);
+          expect(d[0].children[0].textContent).to.be.equal('No data to display');
+        });
+      });
   });
 
   it('Should open the observation details pop-up and check its content', () => {
@@ -160,34 +178,6 @@ describe('Tests gn_synthese', () => {
     cy.get('[data-qa="synthese-info-obs-close-btn"]').click();
   });
 
-  // TODO: not working but not prioritary
-  // it('Should sort the list by columns', async () => {
-  //   // Objectif : vérifier qu'on peut bien trier les données dans chaque colonne
-  //   let table = await promisify(cy.get(" pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
-  //   const tableDate = []
-  //   table[0].childNodes.forEach(e => {
-  //     if (e.nodeName === "DATATABLE-ROW-WRAPPER") {
-  //       tableDate.push(e.innerText.split("\n")[1])
-  //     }
-  //   })
-  //   cy.get('[title="Taxon"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label').click();
-  //   // assert : le tri des taxons s'effectue bien --> marche pas
-  //   cy.get('[title="Date obs"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label').click();
-  //   table = await promisify(cy.get("[data-qa='pnx-synthese'] > div > div.col-sm-12.col-md-5.padding-sm > pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
-  //   const tableDateReorder = []
-  //   table[0].childNodes.forEach(e => {
-  //     if (e.nodeName === "DATATABLE-ROW-WRAPPER") {
-  //       tableDateReorder.push(e.innerText.split("\n")[1])
-  //     }
-  //   })
-  //   expect(JSON.stringify(tableDate) === JSON.stringify(tableDateReorder)).to.equals(false)
-  //   // assert : le tri par date s'effectue bien
-  //   cy.get('[title="JDD"] > .datatable-header-cell-template-wrap > .datatable-icon-sort-unset').click();
-  //   // assert : le tri par jeux de données s'effectue bien --> pas testé
-  //   cy.get('[title="observateur"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label').click();
-  //   // assert : le tri par observateur s'effectue bien --> pas testé
-  // });
-
   it('Should download data at the csv format', function () {
     cy.intercept('POST', '/synthese/export_observations?export_format=csv**').as('exportCall');
 
@@ -200,5 +190,129 @@ describe('Tests gn_synthese', () => {
     cy.wait('@exportCall').then((interception) => {
       expect(interception.response.statusCode).to.be.equal(200);
     });
+  });
+
+  it('Should display the mesh mode and its selection should spotlight multiple results in list', function () {
+    // Togle mesh view
+    cy.get('.custom-control-label').click();
+    // Leaflet mesh legend should exists
+    cy.get('.info.legend.leaflet-control strong')
+      .should('exist')
+      .should('contains.text', 'observations');
+
+    // Ensure mesh view on map is working as well as the popup
+    cy.get('.leaflet-overlay-pane > .leaflet-zoom-animated').click();
+    // Popup should contains 4 observations
+    cy.get('.leaflet-popup-content-wrapper .leaflet-popup-content').should(
+      'contains.text',
+      'observation(s)'
+    );
+    // When popup is opened, the list should spotlight the observations
+    cy.get('.datatable-body-row').each(($el) => {
+      cy.wrap($el).should('have.attr', 'ng-reflect-is-selected', 'true');
+    });
+    // When popup is closed, the list should continue to spotlight the observations
+    cy.get('.leaflet-popup-close-button').click();
+    cy.get('.leaflet-popup-content-wrapper .leaflet-popup-content').should('not.exist');
+    cy.get('.datatable-body-row').each(($el) => {
+      cy.wrap($el).should('have.attr', 'ng-reflect-is-selected', 'true');
+    });
+  });
+
+  it('Should refresh the search when mesh mode is toggled', function () {
+    // Ensure there is ocntent display on start
+    cy.get('.datatable-body-cell-label').should('have.length.greaterThan', 2);
+    // Select filter that has no result associated
+    cy.get('[data-qa="synthese-form-ca"] ng-select').click();
+    cy.get('[data-qa="CA-2-empty"]').click();
+    // Togle mesh view
+    cy.get('.custom-control-label').click();
+    // Check if the table is empty
+    cy.get('.datatable-body-cell-label').should('have.length', 0);
+  });
+
+  it('Should sort the list by columns', function () {
+    // Clicking on the column "Name" should sort the list by name/ Last element is now 'Lynx boréal'
+    cy.get(
+      '[title="Taxon"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label'
+    ).click();
+    cy.get(
+      ':nth-child(1) > .clickable > .datatable-row-center > .synthese-list-col-nom_vern_or_lb_nom > .datatable-body-cell-label > span.ng-star-inserted > div.ng-star-inserted > .mat-mdc-tooltip-trigger'
+    ).should('have.text', 'Ablette');
+    // Clicking again on the column "Name" should sort the list by name in reverse order/ Last element is now 'Ablette'
+    cy.get(
+      '.sort-active > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label'
+    ).click();
+    cy.get(
+      ':nth-child(4) > .clickable > .datatable-row-center > .synthese-list-col-nom_vern_or_lb_nom > .datatable-body-cell-label > span.ng-star-inserted > div.ng-star-inserted > .mat-mdc-tooltip-trigger'
+    ).should('have.text', 'Lynx boréal');
+    // When clicking on the column "Date obs", the first element should be '01-01-2017'
+    cy.get(
+      ':nth-child(1) > .clickable > .datatable-row-center > .synthese-list-col-date_min > .datatable-body-cell-label > span.ng-star-inserted > .ng-star-inserted'
+    ).should('have.text', ' 01-01-2017 ');
+    cy.get(
+      '[title="Date obs"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label'
+    ).click();
+    cy.get(
+      '.datatable-header-cell.sort-asc > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label'
+    ).click();
+    cy.get(
+      '[title="Date obs"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label'
+    ).click();
+    cy.get(
+      ':nth-child(1) > .clickable > .datatable-row-center > .synthese-list-col-date_min > .datatable-body-cell-label > span.ng-star-inserted > .ng-star-inserted'
+    ).should('have.text', ' 08-01-2017 ');
+    // The column JDD should also be able to be sorted
+    cy.get(
+      '[title="JDD"] > .datatable-header-cell-template-wrap > .datatable-icon-sort-unset'
+    ).click();
+    cy.get(
+      ':nth-child(1) > .clickable > .datatable-row-center > .synthese-list-col-dataset_name'
+    ).should('have.text', 'JDD-1');
+    cy.get(
+      '.sort-active > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label'
+    ).click();
+    cy.get(
+      ':nth-child(1) > .clickable > .datatable-row-center > .synthese-list-col-dataset_name'
+    ).should('have.text', 'JDD-Occtax-ds');
+  });
+
+  it('Should be able to hide popup when entering <esc> key', function () {
+    // Open the observation details popup
+    cy.get('[data-qa="synthese-info-btn"]').first().click();
+    cy.get('.my-3').should('have.text', " Information sur l'observation ");
+    // Press escape key
+    cy.get('.my-3').type('{esc}');
+    // Check if the popup is closed
+    cy.get('.my-3').should('not.exist');
+  });
+
+  it('Should have multiple pages and navigate between them', function () {
+    cy.get('.page-count').should('have.text', ' 0 selected /  44 total ');
+    // Go to the last page
+    cy.get('.datatable-icon-skip').click();
+    // Go to previous page
+    cy.get('.datatable-icon-left').click();
+    // Go to first page
+    cy.get('.datatable-icon-prev').click();
+    // Go the next page
+    cy.get('.datatable-icon-right').click();
+
+    // Filtering the data should reset the page to 1 and remove page buttons
+    cy.get('[data-qa="taxonomy-form-input"]').type('Grenouille');
+    cy.get('#ngb-typeahead-0-0 > .ng-star-inserted').click();
+    cy.get('[data-qa="synthese-search-btn"]').click();
+    cy.get('.datatable-icon-skip').should('be.hidden');
+    cy.get('.datatable-icon-left').should('be.hidden');
+    cy.get('.datatable-icon-prev').should('be.hidden');
+    cy.get('.datatable-icon-right').should('be.hidden');
+
+    // Reseting the search should bring back the page buttons
+    cy.get('[data-qa="synthese-refresh-btn"]').click();
+    cy.get('[data-qa="synthese-search-btn"]').click();
+    cy.get('.datatable-icon-skip').should('be.visible');
+    cy.get('.datatable-icon-left').should('be.visible');
+    cy.get('.datatable-icon-prev').should('be.visible');
+    cy.get('.datatable-icon-right').should('be.visible');
   });
 });
