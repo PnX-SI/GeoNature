@@ -31,7 +31,7 @@ export class SyntheseComponent implements OnInit, OnDestroy {
   // Gestion des tâches asynchrones
   private pollingSubscription: Subscription;
   private pollingInterval = 30000; // 30 secondes
-  private moduleId: string;
+  private moduleCode = 'SYNTHESE'; // Code du module
 
   constructor(
     public searchService: SyntheseDataService,
@@ -50,19 +50,11 @@ export class SyntheseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Récupérer l'ID du module Synthèse
-    this._dataFormService.getModuleByCodeName('SYNTHESE').subscribe(module => {
-      this.moduleId = module.id_module.toString();
-      
-      // Stocker l'ID du module dans le service pour qu'il soit accessible partout
-      this._syntheseStore.moduleId = this.moduleId;
-      
-      // Initialiser le polling des tâches
-      this.startTaskPolling();
-      
-      // Récupérer les tâches existantes pour le module
-      this.loadExistingTasks();
-    });
+    // Initialiser le polling des tâches
+    this.startTaskPolling();
+    
+    // Récupérer les tâches existantes pour le module
+    this.loadExistingTasks();
     
     this._fs.selectors = this._fs.selectors
       .set('limit', this.config.SYNTHESE.NB_LAST_OBS)
@@ -116,25 +108,18 @@ export class SyntheseComponent implements OnInit, OnDestroy {
    * Charge les tâches existantes du module synthèse
    */
   loadExistingTasks() {
-    if (!this.moduleId) return;
-    
-    this._dataFormService.getModuleTasks(this.moduleId).subscribe(tasks => {
+    this._dataFormService.getModuleTasks(this.moduleCode).subscribe(tasks => {
       if (tasks && Array.isArray(tasks)) {
-        // Filtrer pour ne garder que les tâches actives (PENDING ou PROGRESS)
-        const activeTasks = tasks.filter(task => 
-          task.status === 'PENDING' || task.status === 'PROGRESS'
-        );
-        
-        // Ajouter chaque tâche active au store
-        activeTasks.forEach(task => {
-          this._syntheseStore.addTask({
-            uuid: task.uuid_task || task.uuid,  // Changé de id_task à uuid_task ou uuid
-            status: task.status,
-            progress: task.progress || 0,
-            result: task.result,
-            downloadUrl: task.download_url
+        // Filtrer pour ne garder que les tâches actives (pending)
+        tasks.filter(task => task.status === 'pending')
+          .forEach(task => {
+            this._syntheseStore.addTask({
+              uuid: task.uuid_celery || task.uuid,
+              status: task.status,
+              result: task.result,
+              downloadUrl: task.download_url
+            });
           });
-        });
       }
     });
   }
@@ -147,61 +132,24 @@ export class SyntheseComponent implements OnInit, OnDestroy {
       this.pollingSubscription.unsubscribe();
     }
     
-    this.pollingSubscription = interval(this.pollingInterval).subscribe(() => {
-      this.updateTasksStatus();
-    });
-  }
-  
-  /**
-   * Met à jour le statut de toutes les tâches actives
-   */
-  updateTasksStatus() {
-    if (!this.moduleId) return;
-    
-    // Récupérer toutes les tâches actives
-    this._syntheseStore.activeTasks$.subscribe(activeTasks => {
-      if (activeTasks.length === 0) {
-        return;
-      }
-      
-      // Mettre à jour chaque tâche active
-      activeTasks.forEach(task => {
-        this._dataFormService.getTask(task.uuid).subscribe(
-          updatedTask => {
-            // Convertir la réponse de l'API au format SyntheseTask
-            const taskData: SyntheseTask = {
-              uuid: updatedTask.uuid_task || updatedTask.uuid,  // Changé de id_task à uuid_task ou uuid
-              status: updatedTask.status,
-              progress: updatedTask.progress || 0,
-              result: updatedTask.result,
-              downloadUrl: updatedTask.download_url
-            };
-            
-            // Vérifier si la tâche vient de se terminer
-            const wasActive = task.status === 'PENDING' || task.status === 'PROGRESS';
-            const isComplete = taskData.status === 'SUCCESS' || taskData.status === 'FAILURE';
-            
-            // Mettre à jour la tâche dans le store
-            this._syntheseStore.updateTask(taskData);
-            
-            // Notifier l'utilisateur si la tâche vient de se terminer
-            if (wasActive && isComplete) {
-              this.notifyTaskCompletion(taskData);
-            }
-          },
-          error => {
-            console.error(`Erreur lors de la mise à jour de la tâche ${task.uuid}:`, error);
+    // Utiliser le mécanisme de rafraîchissement du store
+    this.pollingSubscription = this._syntheseStore.startAutoRefresh(this.pollingInterval)
+      .subscribe(updatedTasks => {
+        // Pour chaque tâche mise à jour, vérifier s'il faut notifier l'utilisateur
+        updatedTasks.forEach(taskData => {
+          const isComplete = taskData.status === 'success' || taskData.status === 'error';
+          if (isComplete) {
+            this.notifyTaskCompletion(taskData);
           }
-        );
+        });
       });
-    });
   }
   
   /**
    * Notifie l'utilisateur lorsqu'une tâche est terminée
    */
   notifyTaskCompletion(task: SyntheseTask) {
-    if (task.status === 'SUCCESS') {
+    if (task.status === 'success') {
       this._toasterService.success(
         `L'export a été complété avec succès${task.downloadUrl ? '. Le téléchargement va commencer.' : ''}`,
         'Tâche terminée'
@@ -214,7 +162,7 @@ export class SyntheseComponent implements OnInit, OnDestroy {
         link.target = '_blank';
         link.click();
       }
-    } else if (task.status === 'FAILURE') {
+    } else if (task.status === 'error') {
       this._toasterService.error(
         `L'export a échoué${task.result ? ': ' + task.result : ''}`,
         'Erreur'

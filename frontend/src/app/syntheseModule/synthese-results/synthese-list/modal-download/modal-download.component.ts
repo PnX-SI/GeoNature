@@ -33,13 +33,6 @@ export class SyntheseModalDownloadComponent implements OnInit, OnDestroy {
     private _dataFormService: DataFormService
   ) {
     this.syntheseConfig = this.config.SYNTHESE;
-    
-    // Récupérer l'ID du module Synthèse
-    this._dataFormService.getModuleByCodeName(this.moduleCode).subscribe(module => {
-      if (module && module.id_module) {
-        this._storeService.moduleId = module.id_module.toString();
-      }
-    });
   }
 
   ngOnInit() {
@@ -78,8 +71,7 @@ export class SyntheseModalDownloadComponent implements OnInit, OnDestroy {
       // Ajouter la tâche au store du module synthèse
       this._storeService.addTask({
         uuid: taskResponse.uuid_task,
-        status: 'PENDING',
-        progress: 0,
+        status: 'pending',
         result: null,
         downloadUrl: null,
         message: taskInfo
@@ -107,8 +99,7 @@ export class SyntheseModalDownloadComponent implements OnInit, OnDestroy {
       // Ajouter la tâche au store du module synthèse
       this._storeService.addTask({
         uuid: taskResponse.uuid_task,
-        status: 'PENDING',
-        progress: 0,
+        status: 'pending',
         result: null,
         downloadUrl: null,
         message: taskInfo
@@ -132,8 +123,7 @@ export class SyntheseModalDownloadComponent implements OnInit, OnDestroy {
       // Ajouter la tâche au store du module synthèse
       this._storeService.addTask({
         uuid: taskResponse.uuid_task,
-        status: 'PENDING',
-        progress: 0,
+        status: 'pending',
         result: null,
         downloadUrl: null,
         message: taskInfo
@@ -148,8 +138,7 @@ export class SyntheseModalDownloadComponent implements OnInit, OnDestroy {
    * Télécharger le résultat d'une tâche
    */
   downloadTaskResult(task: SyntheseTask) {
-    const isSuccess = task.status?.toUpperCase() === 'SUCCESS';
-    if (isSuccess) {
+    if (task.status === 'success') {
       if (task.downloadUrl) {
         // Si un lien de téléchargement direct est disponible, l'utiliser
         this._storeService.downloadTaskResult(task.uuid).subscribe(
@@ -191,15 +180,12 @@ export class SyntheseModalDownloadComponent implements OnInit, OnDestroy {
    * Formater le statut d'une tâche pour l'affichage
    */
   getStatusLabel(status: string): string {
-    const statusUpper = status ? status.toUpperCase() : '';
-    switch (statusUpper) {
-      case 'PENDING':
+    switch (status) {
+      case 'pending':
         return 'En attente';
-      case 'PROGRESS':
-        return 'En cours';
-      case 'SUCCESS':
+      case 'success':
         return 'Terminée';
-      case 'FAILURE':
+      case 'error':
         return 'Échouée';
       default:
         return status;
@@ -210,15 +196,12 @@ export class SyntheseModalDownloadComponent implements OnInit, OnDestroy {
    * Déterminer la classe CSS à appliquer en fonction du statut
    */
   getStatusClass(status: string): string {
-    const statusUpper = status ? status.toUpperCase() : '';
-    switch (statusUpper) {
-      case 'PENDING':
+    switch (status) {
+      case 'pending':
         return 'status-pending';
-      case 'PROGRESS':
-        return 'status-progress';
-      case 'SUCCESS':
+      case 'success':
         return 'status-success';
-      case 'FAILURE':
+      case 'error':
         return 'status-failure';
       default:
         return '';

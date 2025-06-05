@@ -706,13 +706,13 @@ export class DataFormService {
   
   /**
    * Récupère les tâches associées à un module spécifique
-   * @param moduleId L'identifiant du module
+   * @param moduleCode Le code du module
    * @returns Observable contenant la liste des tâches du module
    */
-  getModuleTasks(moduleId: string) {
+  getModuleTasks(moduleCode: string) {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/tasks`, {
       params: {
-        id_module: moduleId
+        module_code: moduleCode
       }
     });
   }
