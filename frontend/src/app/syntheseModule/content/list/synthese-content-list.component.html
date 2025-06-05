@@ -1,9 +1,9 @@
 <ngx-datatable
   #table
-  class="SyntheseContentList material margin-top-xs table-size expandable"
+  class="SyntheseContentList material margin-top-xs table-size expandable striped"
   headerHeight="50"
   footerHeight="50"
-  rowHeight="100"
+  rowHeight="50"
   [rows]="observationsList"
   [columns]="columnService.defaultColumns"
   [columnMode]="'force'"
@@ -36,6 +36,7 @@
       <button
         class="btn btn-outline-shadow btn-no-padding btn-ghost"
         [routerLink]="['occurrence', row['id_synthese'], 'details']"
+        matTooltip="Afficher la fiche de l'observation"
       >
         <i
           #iElement
@@ -87,7 +88,7 @@
         <div *ngSwitchCase="'date_min' || 'date_max'">
           {{ getDate(row[col.prop]) }}
         </div>
-        <div *ngSwitchCase="'nom_vern_or_lb_nom'">
+        <div *ngSwitchCase="'lb_nom'">
           <a
             class="Link"
             [routerLink]="['taxon/' + row.cd_nom]"
