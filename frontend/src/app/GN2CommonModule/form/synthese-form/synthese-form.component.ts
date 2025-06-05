@@ -126,6 +126,10 @@ export class SyntheseSearchComponent implements OnInit {
     // remove layers draw in the map
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.fileLayerFeatureGroup);
+
+    // reset the url 
+    const url = this.router.url.split('?')[0];
+    this.location.replaceState(url);
   }
 
   openModal() {

@@ -18,6 +18,7 @@ import { Observable, of } from 'rxjs';
 import { tap, mergeMap } from 'rxjs/operators';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { SyntheseDataService } from './synthese-data.service';
 
 @Injectable()
 export class SyntheseFormService {
@@ -35,6 +36,7 @@ export class SyntheseFormService {
   public selectedRedLists = [];
   public selectedTaxRefAttributs = [];
   public processedDefaultFilters: any;
+  private _taxonsCache: any[] = [];
 
   public _nomenclatures: Array<any> = [];
 
@@ -66,7 +68,7 @@ export class SyntheseFormService {
     public config: ConfigService,
     private _api: DataFormService,
     private _common: CommonService,
-    private http: HttpClient
+    private syntheseDataService: SyntheseDataService,
   ) {
     this.searchForm = this._fb.group({
       cd_nom: null,
@@ -342,18 +344,14 @@ export class SyntheseFormService {
     });
   }
 
-  private _taxonsCache: any[] = [];
-
   getTaxonByCdRef(cd_ref: number): Observable<any> {
     if (this._taxonsCache.length > 0) {
-      // Find the first matching taxon by cd_ref
       const taxon = this._taxonsCache.find(t => t.cd_ref == cd_ref);
       return of(taxon);
     } else {
-      // Fetch all taxa and cache them
-      return this.http.get<any[]>(`${this.config.API_ENDPOINT}/synthese/taxons_autocomplete`).pipe(
+      // fetch and cache taxa
+      return this.syntheseDataService.getAllTaxa().pipe(
         tap(taxa => this._taxonsCache = taxa),
-        // Find the first matching taxon by cd_ref
         mergeMap(taxa => of(taxa.find(t => t.cd_ref == cd_ref)))
       );
     }
