@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd07958b2b7e0'
-down_revision = '707390c722fe'
+revision = "d07958b2b7e0"
+down_revision = "707390c722fe"
 branch_labels = None
 depends_on = None
 
@@ -26,15 +26,12 @@ def upgrade():
         "i_unique_t_acquisition_framework_unique_id",
         schema="gn_meta",
         table_name="t_acquisition_frameworks",
-        if_exists=True
+        if_exists=True,
     )
 
     # redundant with unique_dataset_uuid
     op.drop_index(
-        "i_unique_t_datasets_unique_id",
-        schema="gn_meta",
-        table_name="t_datasets",
-        if_exists=True
+        "i_unique_t_datasets_unique_id", schema="gn_meta", table_name="t_datasets", if_exists=True
     )
 
     # redundant with unique_name_source
@@ -42,20 +39,19 @@ def upgrade():
         "i_unique_t_sources_name_source",
         schema="gn_synthese",
         table_name="t_sources",
-        if_exists=True
+        if_exists=True,
     )
 
 
 def downgrade():
-    """Creates back the redundant indexes.
-    """
+    """Creates back the redundant indexes."""
 
     op.create_index(
         "i_unique_t_acquisition_framework_unique_id",
         schema="gn_meta",
         table_name="t_acquisition_frameworks",
         columns=["unique_acquisition_framework_id"],
-        unique=True
+        unique=True,
     )
 
     op.create_index(
@@ -63,7 +59,7 @@ def downgrade():
         schema="gn_meta",
         table_name="t_datasets",
         columns=["unique_dataset_id"],
-        unique=True
+        unique=True,
     )
 
     op.create_index(
@@ -71,5 +67,5 @@ def downgrade():
         schema="gn_synthese",
         table_name="t_sources",
         columns=["name_source"],
-        unique=True
+        unique=True,
     )
