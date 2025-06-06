@@ -1021,16 +1021,19 @@ def publish_acquisition_framework_mail(af):
     if mail_subject and mail_content and len(mail_recipients) > 0:
         mail.send_mail(list(mail_recipients), mail_subject, mail_content)
 
-
+# DON'T KEEP PERMISSION LIKE THIS IT'S A REALLY REALLY REALLY BAD FIX
 @routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
-@permissions.check_cruved_scope("U", module_code="METADATA")
+@permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 @json_resp
-def publish_acquisition_framework(af_id):
+def publish_acquisition_framework(af_id, scope):
     """
     Publish an acquisition framework
     .. :quickref: Metadata;
     """
-
+    acquisition_framework = db.get_or_404(TAcquisitionFramework, af_id)
+    if not acquisition_framework.has_instance_permission(scope):
+        raise Forbidden(f"User {g.current_user} cannot publish acquisition framework with ID '{af_id}'")
+    
     # The AF must contain DS to be published
     datasets = (
         db.session.scalars(select(TDatasets).filter_by(id_acquisition_framework=af_id))
