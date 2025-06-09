@@ -107,7 +107,7 @@ def build_blurred_precise_geom_queries(
             CorAreaSyntheseAlias,
             CorAreaSyntheseAlias.id_synthese == Synthese.id_synthese,
         ),
-        geom_column=LAreas.geom_4326,
+        geom_column=LAreasAlias.geom_4326,
     )
     # Joins here are needed to retrieve the blurred geometry
     blurred_geom_query.add_join(LAreasAlias, LAreasAlias.id_area, CorAreaSyntheseAlias.id_area)

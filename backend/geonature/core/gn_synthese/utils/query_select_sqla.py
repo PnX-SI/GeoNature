@@ -13,7 +13,7 @@ import uuid
 from flask import current_app
 
 import sqlalchemy as sa
-from sqlalchemy import func, or_, and_, select, distinct
+from sqlalchemy import func, or_, and_, select, distinct, inspect
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from werkzeug.exceptions import BadRequest
@@ -105,12 +105,11 @@ class SyntheseQuery:
                 )
             )
 
+        # For aliased models, we need to use inspect() and the class_ attribute
+        # to get the real table
+        geom_table = inspect(self.geom_column.class_).mapper.local_table
         self.srid = DB.session.scalar(
-            select(
-                func.Find_SRID(
-                    self.geom_column.table.schema, self.geom_column.table.name, self.geom_column.key
-                )
-            )
+            select(func.Find_SRID(geom_table.schema, geom_table.name, self.geom_column.key))
         )
         self.srid_l_areas = DB.session.scalar(
             select(func.Find_SRID(LAreas.__table__.schema, LAreas.__table__.name, "geom"))
@@ -518,7 +517,11 @@ class SyntheseQuery:
         for colname, value in self.filters.items():
             if colname.startswith("area"):
                 if self.geom_column.class_ != self.model:
-                    l_areas_cte = LAreas.query.filter(LAreas.id_area.in_(value)).cte("area_filter")
+                    l_areas_cte = (
+                        select(LAreas.geom, LAreas.geom_4326)
+                        .filter(LAreas.id_area.in_(value))
+                        .cte("area_filter")
+                    )
                     if self.srid != 4326:
 
                         if self.srid != self.srid_l_areas:
