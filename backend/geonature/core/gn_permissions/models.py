@@ -352,6 +352,6 @@ class Permission(db.Model):
     @classmethod
     def active_filter(cls):
         return sa.and_(
-            sa.or_(cls.expire_on.is_(sa.null()), cls.expire_on > sa.func.now()),
+            sa.or_(cls.expire_on.is_(sa.null()), cls.expire_on > datetime.now()),
             cls.validated.is_(True),
         )
