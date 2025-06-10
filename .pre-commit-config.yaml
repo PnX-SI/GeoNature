@@ -3,4 +3,22 @@ repos:
     rev: 25.1.0
     hooks:
       - id: black
+        name: Black lint check
         language_version: python
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Prettier format check
+        entry: bash -c ". ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run format:check"
+        language: system
+        pass_filenames: true
+  - repo: https://github.com/commit-check/commit-check
+    rev: v0.9.6
+    hooks: # support hooks
+      - id: check-message
+      - id: check-author-name
+      - id: check-author-email
