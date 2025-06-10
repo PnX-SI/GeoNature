@@ -3,6 +3,9 @@ Modèles du schéma gn_commons
 """
 
 import os
+import datetime
+import uuid
+
 from pathlib import Path
 from collections import defaultdict
 
@@ -238,8 +241,8 @@ class TValidations(DB.Model):
     def auto_validation(fct_auto_validation):
         stmt = text(
             f"""
-            select routine_name, routine_schema 
-            from information_schema.routines 
+            select routine_name, routine_schema
+            from information_schema.routines
             where routine_name= '{fct_auto_validation}'
             and routine_type='FUNCTION';
          """
@@ -343,3 +346,64 @@ cor_field_dataset = DB.Table(
     DB.Column("id_dataset", DB.Integer, DB.ForeignKey("gn_meta.t_datasets.id_dataset")),
     schema="gn_commons",
 )
+
+
+class Task(DB.Model):
+    __tablename__ = "t_tasks"
+    __table_args__ = {"schema": "gn_commons"}
+
+    id_task = DB.Column(DB.Integer, primary_key=True)
+    uuid_celery = DB.Column(UUID(as_uuid=True), nullable=False, default=uuid.uuid4())
+    id_role = DB.Column(DB.Integer, DB.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
+    id_module = DB.Column(
+        DB.Integer, DB.ForeignKey("gn_commons.t_modules.id_module"), nullable=False
+    )
+    start = DB.Column(DB.DateTime, nullable=False)
+    end = DB.Column(DB.DateTime)
+    status = DB.Column(DB.Unicode, nullable=False)
+    message = DB.Column(DB.Unicode)
+    file_name = DB.Column(DB.Unicode)
+
+    module = DB.relationship(TModules)
+
+    @classmethod
+    def create_pending_task(cls, id_role: int, uuid_celery, module_code: str):
+        """Create a pending task for a role and a module
+
+        Parameters
+        ----------
+        id_role : int
+        uuid_celery : uuid
+        module_code : str
+
+        Returns
+        -------
+        Task
+        """
+        module = DB.session.execute(DB.select(TModules).filter_by(module_code=module_code)).scalar()
+        task = Task(
+            id_role=id_role,
+            uuid_celery=uuid_celery,
+            start=datetime.datetime.now(),
+            status="pending",
+            id_module=module.id_module,
+            message="Le génération du fichier d'export est en cours...",
+        )
+        DB.session.add(task)
+        DB.session.commit()
+
+        return task
+
+    def set_succesfull(self, file_name):
+        """Update a task when the celery task has succeed.
+        Set the filename generated
+
+        Parameters
+        ----------
+        file_name : str
+        """
+        self.end = datetime.datetime.now()
+        self.status = "success"
+        self.file_name = file_name
+        self.message = "L'export a été généré et est prêt à être télécharger"
+        DB.session.commit()
