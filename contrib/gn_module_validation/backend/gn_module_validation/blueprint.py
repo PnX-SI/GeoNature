@@ -142,17 +142,7 @@ def get_synthese_data(permissions):
     last_validation = aliased(TValidations, last_validation_subquery)
     lateral_join = {last_validation: Synthese.last_validation}
 
-    if enable_profile:
-        profile_subquery = (
-            sa.select(VConsistancyData)
-            .where(VConsistancyData.id_synthese == Synthese.id_synthese)
-            .limit(result_limit)
-            .subquery()
-            .lateral("profile")
-        )
-
-        profile = aliased(VConsistancyData, profile_subquery)
-        lateral_join[profile] = Synthese.profile
+    profile_cte = sa.select(VConsistancyData).limit(result_limit).cte("profile")
 
     relationships = list(
         {
@@ -171,6 +161,9 @@ def get_synthese_data(permissions):
 
     query = db.session.query(Synthese, *aliases, *lateral_join.keys())
 
+    if enable_profile:
+        query.outerjoin(profile_cte, profile_cte.c.id_synthese == Synthese.id_synthese)
+
     for rel, alias in zip(relationships, aliases):
         query = query.outerjoin(rel.of_type(alias))
 
@@ -184,16 +177,16 @@ def get_synthese_data(permissions):
     if enable_profile:
         score = filters.pop("score", None)
         if score is not None:
-            query = query.where(profile.score == score)
+            query = query.where(profile_cte.c.score == score)
         valid_distribution = filters.pop("valid_distribution", None)
         if valid_distribution is not None:
-            query = query.where(profile.valid_distribution.is_(valid_distribution))
+            query = query.where(profile_cte.c.valid_distribution.is_(bool(valid_distribution)))
         valid_altitude = filters.pop("valid_altitude", None)
         if valid_altitude is not None:
-            query = query.where(profile.valid_altitude.is_(valid_altitude))
+            query = query.where(profile_cte.c.valid_altitude.is_(bool(valid_altitude)))
         valid_phenology = filters.pop("valid_phenology", None)
         if valid_phenology is not None:
-            query = query.where(profile.valid_phenology.is_(valid_phenology))
+            query = query.where(profile_cte.c.valid_phenology.is_(bool(valid_phenology)))
 
     if filters.pop("modif_since_validation", None):
         query = query.where(Synthese.meta_update_date > last_validation.validation_date)
