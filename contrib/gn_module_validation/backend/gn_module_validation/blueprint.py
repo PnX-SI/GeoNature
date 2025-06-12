@@ -147,8 +147,17 @@ def get_synthese_data(permissions):
     last_validation = aliased(TValidations, last_validation_subquery)
     lateral_join = {last_validation: Synthese.last_validation}
 
-    profile_subquery = sa.select(VConsistancyData).limit(limit).subquery()
-    profil = aliased(VConsistancyData, profile_subquery)
+    if enable_profile and use_profile_filter:
+        profile_subquery = (
+            sa.select(VConsistancyData)
+            .where(VConsistancyData.id_synthese == Synthese.id_synthese)
+            .limit(1)
+            .subquery()
+            .lateral("profile")
+        )
+
+        profile = aliased(VConsistancyData, profile_subquery)
+        lateral_join[profile] = Synthese.profile
 
     relationships = list(
         {
@@ -178,16 +187,14 @@ def get_synthese_data(permissions):
 
     # filter with profile
     if enable_profile and use_profile_filter:
-        query = query.outerjoin(profil, profil.id_synthese == Synthese.id_synthese)
-
         if score is not None:
-            query = query.where(profil.score == score)
+            query = query.where(profile.score == score)
         if valid_distribution is not None:
-            query = query.where(profil.valid_distribution.is_(bool(valid_distribution)))
+            query = query.where(profile.valid_distribution.is_(bool(valid_distribution)))
         if valid_altitude is not None:
-            query = query.where(profil.valid_altitude.is_(bool(valid_altitude)))
+            query = query.where(profile.valid_altitude.is_(bool(valid_altitude)))
         if valid_phenology is not None:
-            query = query.where(profil.valid_phenology.is_(bool(valid_phenology)))
+            query = query.where(profile.valid_phenology.is_(bool(valid_phenology)))
 
     if params.pop("modif_since_validation", None):
         query = query.where(Synthese.meta_update_date > last_validation.validation_date)
