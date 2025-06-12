@@ -190,11 +190,11 @@ def get_synthese_data(permissions):
         if score is not None:
             query = query.where(profile.score == score)
         if valid_distribution is not None:
-            query = query.where(profile.valid_distribution.is_(bool(valid_distribution)))
+            query = query.where(profile.valid_distribution == bool(valid_distribution))
         if valid_altitude is not None:
-            query = query.where(profile.valid_altitude.is_(bool(valid_altitude)))
+            query = query.where(profile.valid_altitude == bool(valid_altitude))
         if valid_phenology is not None:
-            query = query.where(profile.valid_phenology.is_(bool(valid_phenology)))
+            query = query.where(profile.valid_phenology == bool(valid_phenology))
 
     if params.pop("modif_since_validation", None):
         query = query.where(Synthese.meta_update_date > last_validation.validation_date)
