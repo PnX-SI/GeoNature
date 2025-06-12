@@ -27,7 +27,7 @@ from geonature.core.gn_synthese.schemas import SyntheseSchema
 from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
+from geonature.core.gn_synthese.models import Synthese, TSources, SyntheseExtended
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from geonature.core.gn_synthese.schemas import SyntheseSchema
@@ -125,23 +125,23 @@ class CustomRequiredConverter(GeoModelConverter):
         kwargs["required"] = column.name in required_cols
 
 
-class VSyntheseForWebAppSchema(GeoAlchemyAutoSchema):
+class SyntheseExtendedSchema(GeoAlchemyAutoSchema):
     """
-    Schema for serialization/deserialization of VSyntheseForWebApp class
+    Schema for serialization/deserialization of SyntheseExtended class
     """
 
     count_min_max = fields.Str()
     nom_vern_or_lb_nom = fields.Str()
 
     class Meta:
-        model = VSyntheseForWebApp
+        model = SyntheseExtended
         model_converter = CustomRequiredConverter
 
 
-# utility classes for VSyntheseForWebAppSchema validation
+# utility classes for SyntheseExtendedSchema validation
 class UngroupedFeatureSchema(FeatureSchema):
     properties = fields.Nested(
-        VSyntheseForWebAppSchema,
+        SyntheseExtendedSchema,
         required=True,
     )
 
@@ -149,7 +149,7 @@ class UngroupedFeatureSchema(FeatureSchema):
 class GroupedFeatureSchema(FeatureSchema):
     class NestedObs(Schema):
         observations = fields.List(
-            fields.Nested(VSyntheseForWebAppSchema, required=True), required=True
+            fields.Nested(SyntheseExtendedSchema, required=True), required=True
         )
 
     properties = fields.Nested(NestedObs, required=True)
@@ -166,7 +166,7 @@ class GroupedGeoJSONSchema(GeoJSONSchema):
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSynthese:
     def test_required_fields_and_format(self, app, users):
-        # Test required fields base on VSyntheseForWebAppSchema surrounded by a custom converter : CustomRequiredConverter
+        # Test required fields base on SyntheseExtendedSchema surrounded by a custom converter : CustomRequiredConverter
         # also test geojson serialization (grouped by geometry and not)
         app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] += [
             {"prop": "altitude_min", "name": "Altitude min"},

@@ -13,9 +13,10 @@ import uuid
 from flask import current_app
 
 import sqlalchemy as sa
-from sqlalchemy import func, or_, and_, select, distinct
+from sqlalchemy import func, or_, and_, select, distinct, literal_column
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
+from sqlalchemy.dialects.postgresql import array, ARRAY
 from werkzeug.exceptions import BadRequest
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
@@ -30,6 +31,7 @@ from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     TReport,
     TSources,
+    SyntheseExtended,
 )
 from geonature.core.gn_meta.models import (
     CorDatasetActor,
@@ -41,6 +43,7 @@ from apptax.taxonomie.models import (
     TaxrefTree,
     CorTaxonAttribut,
     TaxrefBdcStatutTaxon,
+    TaxonAreaStatus,
     bdc_statut_cor_text_area,
     TaxrefBdcStatutCorTextValues,
     TaxrefBdcStatutText,
@@ -282,12 +285,10 @@ class SyntheseQuery:
         cd_ref_childs.extend(cd_ref_selected)
 
         if len(cd_ref_childs) > 0:
-            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-            self.query = self.query.where(Taxref.cd_ref.in_(cd_ref_childs))
+            self.query = self.query.where(self.model.cd_ref.in_(cd_ref_childs))
         if "taxonomy_id_hab" in self.filters:
-            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
             self.query = self.query.where(
-                Taxref.id_habitat.in_(self.filters.pop("taxonomy_id_hab"))
+                self.model.id_habitat.in_(self.filters.pop("taxonomy_id_hab"))
             )
 
         aliased_cor_taxon_attr = {}
@@ -299,8 +300,7 @@ class SyntheseQuery:
                 # colname = group type (group2 or group3 inpn)
                 # value = list of group values
                 colname = colname.split("taxonomy_")[-1]
-                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-                self.query = self.query.where(getattr(Taxref, colname).in_(value))
+                self.query = self.query.where(getattr(self.model, colname).in_(value))
 
             if colname.startswith("taxhub_attribut"):
                 # Test si la valeur n'est pas une liste transformation
@@ -308,15 +308,13 @@ class SyntheseQuery:
                 if not type(value) is list:
                     value = [value]
 
-                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
                 taxhub_id_attr = colname[16:]
                 aliased_cor_taxon_attr[taxhub_id_attr] = aliased(CorTaxonAttribut)
                 self.add_join_multiple_cond(
                     aliased_cor_taxon_attr[taxhub_id_attr],
                     [
                         aliased_cor_taxon_attr[taxhub_id_attr].id_attribut == taxhub_id_attr,
-                        aliased_cor_taxon_attr[taxhub_id_attr].cd_ref
-                        == func.taxonomie.find_cdref(self.model.cd_nom),
+                        aliased_cor_taxon_attr[taxhub_id_attr].cd_ref == self.model.cd_ref,
                     ],
                 )
                 self.query = self.query.where(
@@ -344,7 +342,7 @@ class SyntheseQuery:
                 ):
                     value = status_cfg["status_types"]
 
-                protection_status_value += value
+                protection_status_value.append(value)
 
         if protection_status_value or red_list_filters:
             self.build_bdc_status_filters(protection_status_value, red_list_filters)
@@ -605,98 +603,47 @@ class SyntheseQuery:
             la liste des status selectionnés par l'utilisateur s'appliquant à l'observation est
             aggrégée de façon à tester le nombre puis jointer sur le département de la donnée
         """
-        # Ajout de la table taxref si non ajouté
-        self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
 
-        # Ajout jointure permettant d'avoir le département pour chaque donnée
-        cas_dep = aliased(CorAreaSynthese)
-        lareas_dep = aliased(LAreas)
-        bib_area_dep = aliased(BibAreasTypes)
-        self.add_join(cas_dep, cas_dep.id_synthese, self.model.id_synthese)
-        self.add_join(lareas_dep, lareas_dep.id_area, cas_dep.id_area)
-        self.add_join_multiple_cond(
-            bib_area_dep,
-            [bib_area_dep.id_type == lareas_dep.id_type, bib_area_dep.type_code == "DEP"],
-        )
+        # Préparation des filtres de statuts à ajouter dans le where du CTE
+        bdc_status_filters = []
+        if red_list_filters:
+            bdc_status_filters += [
+                TaxonAreaStatus.status[k].has_any(array(v)) for k, v in red_list_filters.items()
+            ]
+        if protection_status_value:
+            bdc_status_filters += [
+                TaxonAreaStatus.status.has_any(array(status_value))
+                for status_value in protection_status_value
+            ]
 
         # Creation requête CTE : taxon, zone d'application départementale des textes
         #   pour les taxons répondant aux critères de selection
-        bdc_status_by_type_cte = (
-            select(
-                TaxrefBdcStatutTaxon.cd_ref,
-                bdc_statut_cor_text_area.c.id_area,
-                TaxrefBdcStatutText.cd_type_statut,
+        subquery = (
+            select(CorAreaSynthese.id_synthese, TaxonAreaStatus.status)
+            .join(TaxonAreaStatus, CorAreaSynthese.id_area == TaxonAreaStatus.id_area)
+            .where(
+                TaxonAreaStatus.cd_ref == SyntheseExtended.cd_ref,
+                CorAreaSynthese.id_synthese == SyntheseExtended.id_synthese,
+                sa.and_(*bdc_status_filters),
             )
-            .distinct()
-            .select_from(
-                TaxrefBdcStatutTaxon.__table__.join(
-                    TaxrefBdcStatutCorTextValues,
-                    TaxrefBdcStatutCorTextValues.id_value_text
-                    == TaxrefBdcStatutTaxon.id_value_text,
-                )
-                .join(
-                    TaxrefBdcStatutText,
-                    TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
-                )
-                .join(
-                    TaxrefBdcStatutValues,
-                    TaxrefBdcStatutValues.id_value == TaxrefBdcStatutCorTextValues.id_value,
-                )
-                .join(
-                    bdc_statut_cor_text_area,
-                    bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text,
-                )
-            )
-            .where(TaxrefBdcStatutText.enable == True)
+            .lateral()
         )
 
-        # ajout des filtres de selection des textes
-        bdc_status_filters = []
-        if red_list_filters:
-            bdc_status_filters = [
-                and_(
-                    TaxrefBdcStatutValues.code_statut.in_(v),
-                    TaxrefBdcStatutText.cd_type_statut == k,
-                )
-                for k, v in red_list_filters.items()
-            ]
-        if protection_status_value:
-            bdc_status_filters.append(
-                TaxrefBdcStatutText.cd_type_statut.in_(protection_status_value)
-            )
-
-        bdc_status_by_type_cte = bdc_status_by_type_cte.where(or_(*bdc_status_filters))
-        bdc_status_by_type_cte = bdc_status_by_type_cte.cte(
-            name="bdc_status_by_type_" + str(uuid.uuid4())[:4]
+        # Requête principale
+        status_cte = select(SyntheseExtended.id_synthese, subquery.c.status).join(
+            subquery, literal_column("true")
         )
 
-        # group by de façon à ne selectionner que les taxons
-        #   qui ont l'ensemble des textes selectionnés par l'utilisateur
-        #   c-a-d dont le nombre de cd_type_statut correspond au nombre demandé
-        bdc_status_cte = select(
-            bdc_status_by_type_cte.c.cd_ref,
-            func.array_agg(bdc_status_by_type_cte.c.id_area).label("ids_area"),
-        )
-        bdc_status_cte = bdc_status_cte.group_by(bdc_status_by_type_cte.c.cd_ref).having(
-            func.count(distinct(bdc_status_by_type_cte.c.cd_type_statut))
-            == (len(protection_status_value) + len(red_list_filters))
+        status_cte = status_cte.cte(name="status" + str(uuid.uuid4())[:4])
+
+        exists_subq = (
+            select(literal_column("1"))
+            .select_from(status_cte)
+            .where(and_(status_cte.c.id_synthese == SyntheseExtended.id_synthese))
+            .exists()
         )
 
-        bdc_status_cte = bdc_status_cte.cte()
-
-        # Jointure sur le taxon
-        # et vérification que l'ensemble des textes
-        # soit sur bien sur le département de l'observation
-        self.add_join_multiple_cond(
-            bdc_status_cte,
-            [
-                bdc_status_cte.c.cd_ref == Taxref.cd_ref,
-                func.array_length(
-                    func.array_positions(bdc_status_cte.c.ids_area, cas_dep.id_area), 1
-                )
-                == (len(protection_status_value) + len(red_list_filters)),
-            ],
-        )
+        self.query = self.query.where(exists_subq)
 
 
 def remove_accents(input_str):

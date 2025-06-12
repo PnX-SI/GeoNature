@@ -2,13 +2,12 @@ import typing
 from geonature.utils.env import db
 from ref_geo.models import LAreas, BibAreasTypes
 
-from geonature.core.gn_synthese.models import Synthese
-from sqlalchemy import select, desc, asc, column, func, and_
+from geonature.core.gn_synthese.models import SyntheseExtended
+from sqlalchemy import select, desc, asc, and_
 from apptax.taxonomie.models import Taxref, TaxrefTree
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from sqlalchemy.orm import Query, aliased
 from sqlalchemy.sql.selectable import Select
-from werkzeug.exceptions import BadRequest
 from flask_sqlalchemy.pagination import Pagination
 from enum import Enum
 
@@ -38,7 +37,7 @@ class TaxonSheetUtils:
 
     @staticmethod
     def get_synthese_query_with_scope(current_user, scope: int, query: Query) -> SyntheseQuery:
-        synthese_query_obj = SyntheseQuery(Synthese, query, {})
+        synthese_query_obj = SyntheseQuery(SyntheseExtended, query, {})
         synthese_query_obj.filter_query_with_cruved(current_user, scope)
         return synthese_query_obj.query
 

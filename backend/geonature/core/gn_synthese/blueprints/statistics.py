@@ -4,7 +4,7 @@ from geonature.core.gn_permissions.decorators import (
     login_required,
     permissions_required,
 )
-from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_synthese.models import Synthese, SyntheseExtended
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.utils.env import DB, db
 from utils_flask_sqla.response import json_resp
@@ -149,15 +149,15 @@ def general_stats(permissions):
     results = {"nb_allowed_datasets": nb_allowed_datasets}
 
     queries = {
-        "nb_obs": select(Synthese.id_synthese),
+        "nb_obs": select(SyntheseExtended.id_synthese),
         "nb_distinct_species": select(
-            func.distinct(Synthese.cd_nom),
+            func.distinct(SyntheseExtended.cd_nom),
         ),
         "nb_distinct_observer": select(func.distinct(Synthese.observers)),
     }
 
     for key, query in queries.items():
-        synthese_query = SyntheseQuery(Synthese, query, {})
+        synthese_query = SyntheseQuery(SyntheseExtended, query, {})
         synthese_query.filter_query_with_permissions(g.current_user, permissions)
         results[key] = db.session.scalar(select(func.count("*")).select_from(synthese_query.query))
 
