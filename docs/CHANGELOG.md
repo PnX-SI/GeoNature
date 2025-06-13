@@ -10,8 +10,7 @@
 
 ### 🚀 Nouveautés
 
-- [Fiche Taxon] Evolution de la fiche taxon : (i) Ajout d'un onglet Observateurs et d'un onglet Media; (ii) Ajout d'un fil d'ariane; (iii) Ajout du mode maille et d'un filtre temporelle dans l'onglet Observations (Anciennement Synthèse géographique) (#3479 par @edelclaux et @jules-jean-louis1).
-- Mise à jours des dépendances
+- [Général] Mise à jours des dépendances
   - TaxHub : [2.2.1](https://github.com/PnX-SI/TaxHub/releases/2.2.1)
   - Utils-Flask-SQLAlchemy [0.4.2](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/0.4.2)
   - Utils-Flask-SQLAlchemy-Geo [0.3.3](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.3.3)
@@ -19,33 +18,35 @@
   - Habref-api-module [0.4.2](https://github.com/PnX-SI/Habref-api-module/releases/0.4.2)
   - Nomenclature-api-module [1.6.5](https://github.com/PnX-SI/Nomenclature-api-module/releases/1.6.5)
   - UsersHub-authentification-module [3.0.3](https://github.com/PnX-SI/UsersHub-authentification-module/releases/3.0.3)
+- [Général] Ajouter la possibilité de paramétrer le titre affiché dans l'onglet GeoNature (#3420 par @Christophe-Ramet)
+- [Accueil] Ajout d'une section Dernières validations (#3326 par @edelclaux et @20cents)
+- [Synthèse] Evolution de la fiche taxon : (i) Ajout d'un onglet Observateurs et d'un onglet Media; (ii) Ajout d'un fil d'ariane; (iii) Ajout du mode maille et d'un filtre temporelle dans l'onglet Observations (Anciennement Synthèse géographique) (#3479 par @edelclaux et @jules-jean-louis1).
+- [Synthèse] Les observations sensibles ne sont plus exportées autant de fois qu'il y a de permissions (#3375 par @Pierre-Narcisi)
+- [Synthèse, Validation] Ajout de nouveaux filtres de permissions : géographique, taxonomique et temporelle (travail de @jpm-cbna repris par @bouttier dans #3097)
 - [Traduction] Extension des traductions existantes (#1921 par @MathildeNS et complété dans #3484 par @jpm-cbna et @jacquesfize)
 - [Traduction] Ajout de la possibilité de surcoucher les traductions dans GeoNature (#3416 par @jpm-cbna et @mvergez)
 - [BaseDeDonnées] Ajout d'un paramètre pour customiser la connexion SQLAlchemy à la base de données Postgresql (#3438 par @jacquesfize)
 - [Occhab] Ajout du champ TypeSol (#3430 par @Pierre-Narcisi)
 - [Occhab] Affiche de l'UUID des habitats dans la fiche détail (#3467 par @Pierre-Narcisi)
 - [Notifications] Masquer certaines catégories de notifications de la liste des souscriptions (#3262 par @bouttier)
-- [Synthèse] Les observations sensibles ne sont plus exportées autant de fois qu'il y a de permissions (#3375 par @Pierre-Narcisi)
-- [Synthèse, Validation] Ajout de nouveaux filtres de permissions : géographique, taxonomique et temporelle (travail de @jpm-cbna repris par @bouttier dans #3097)
+
 - [Monitoring] Ajout des individus (#2740 par @mvergez, #3056 par @andriacap. Repris dans #3299 par @amandine-sahl)
 - [Système] Ajout d'une route `/heathz` pour surveiller le status de la connexion avec la BDD, de la connexion avec le worker Celery (#3417 par @TheoLechemia et @jacquesfize)
 - [Installation] Amélioration de la commande d'installation d'un module GeoNature (#3261 par @bouttier)
 - [Documentation] Ajout d'un dump de la structure de la base de données sous forme de fichier SQL dans le dossier `docs/data_model` (#1569 par @jacquesfize)
 - [CI/CD] Utilisation d'[images Docker](https://github.com/PnX-SI/geonature_db) pré-peuplées pour accélérer les tests unitaires (#3369 par @jacquesfize)
 - [Benchmark] Ajout de nouveaux benchmarks (#3392 par @Christophe-Ramet)
-- [Accueil] Ajout d'une section Dernières validations (#3326 par @edelclaux et @20cents)
-- [Général] Ajouter la possibilité de paramétrer le titre affiché dans l'onglet GeoNature (#3420 par @Christophe-Ramet)
 
 ### 🐛 Corrections
 
-- [Occhab] Divers fix sur l'interface de saisie dans OccHab (#3471 par @Pierre-Narcisi)
-- [Import] Correction de la disparition de mapping par défaut après la sélection d'un autre mapping (#3398 par @Christophe-Ramet)
-- [OccHab] nom_cite est maitenant obligatoire dans l'import
-- [Développement] Correction du champ additionnel checkbox dans les dynamic form (#3529 par @jacquesfize)
-- [Carte] Correction problème de chargement des GEOJSON (#3532 par @jacquesfize)
 - [Synthèse] Correction de l'affichage d'observations floutées lorsqu'une commune est sélectionnée (#3566 par @jpm-cbna)
-- [Import] Correction de l'export PDF (#3443 par @jacquesfize)
+- [Occhab] Divers fix sur l'interface de saisie dans OccHab (#3471 par @Pierre-Narcisi)
+- [OccHab] nom_cite est maitenant obligatoire dans l'import
 - [Validation] Correction du tri dans la liste d'observation (#3340 par @Pierre-Narcisi)
+- [Développement] Correction du champ additionnel checkbox dans les dynamic form (#3529 par @jacquesfize)
+- [Carte] Correction du problème de chargement des couches GeoJSON (#3532 par @jacquesfize)
+- [Import] Correction de l'export PDF (#3443 par @jacquesfize)
+- [Import] Correction de la disparition de mapping par défaut après la sélection d'un autre mapping (#3398 par @Christophe-Ramet)
 - [Import] Correction du retour d'erreur quand le WKT donnée est malformé (#3441 par @jacquesfize)
 
 ## 2.15.4 (2025-02-25)
