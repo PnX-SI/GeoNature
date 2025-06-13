@@ -56,6 +56,7 @@ import geonature.utils.utilsmails as mail
 
 from ref_geo.models import LAreas
 
+UNIQUE_AF_ID_CONSTRAINT = "unique_acquisition_frameworks_uuid"
 # FIXME: remove any reference to external modules from GeoNature core
 if "OCCHAB" in config:
     from gn_module_occhab.models import OccurenceHabitat, Station
@@ -812,7 +813,11 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework):
         db.session.rollback()
 
         if isinstance(err.orig, UniqueViolation):
-            raise Conflict("unique_acquisition_framework_id already exists") from err
+            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
+            if not detail:
+                detail = str(err.orig).splitlines()[0]
+
+            raise Conflict(detail) from err
         raise
 
     return acquisition_framework
