@@ -229,6 +229,35 @@ class TestGNMeta:
 
         assert response.status_code == Forbidden.code
 
+    def test_duplicate_uuid_returns_conflict(self, users):
+        """Le deuxième POST avec le même unique_id doit renvoyer 409."""
+        uid = str(uuid.uuid4())
+
+        set_logged_user(self.client, users["user"])
+
+        resp1 = self.client.post(
+            url_for("gn_meta.create_acquisition_framework"),
+            json={
+                "acquisition_framework_name": "premier",
+                "acquisition_framework_desc": "desc",
+                "unique_acquisition_framework_id": uid,
+            },
+        )
+        assert resp1.status_code in (200, 201)
+
+        resp2 = self.client.post(
+            url_for("gn_meta.create_acquisition_framework"),
+            json={
+                "acquisition_framework_name": "doublon",
+                "acquisition_framework_desc": "desc",
+                "unique_acquisition_framework_id": uid,
+            },
+        )
+
+        assert resp2.status_code == 409
+        payload = resp2.get_json()
+        assert "unique_acquisition_framework_id" in payload["description"]
+
     @pytest.mark.parametrize(
         "user,dataset,status_code",
         [
