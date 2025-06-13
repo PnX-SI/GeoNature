@@ -41,7 +41,7 @@ from apptax.taxonomie.models import (
     bdc_statut_cor_text_area,
 )
 
-from sqlalchemy import distinct, func, select
+from sqlalchemy import distinct, func, literal, select
 from utils_flask_sqla.generic import GenericTable, serializeQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
@@ -203,7 +203,7 @@ def export_observations_web(permissions):
         # Get the CTE for synthese filtered by user permissions
         synthese_query_class = SyntheseQuery(
             Synthese,
-            select(Synthese.id_synthese),
+            select(Synthese.id_synthese, literal(1).label("priority")),
             {},
         )
         synthese_query_class.filter_query_all_filters(g.current_user, permissions)
@@ -264,6 +264,7 @@ def export_observations_web(permissions):
         )
         .where(export_view.tableDef.columns["id_synthese"].in_(id_list))
         .distinct(export_view.tableDef.columns["id_synthese"])
+        .order_by(export_view.tableDef.columns["id_synthese"], cte_synthese_filtered.c.priority)
     )
 
     # Get the results for export
