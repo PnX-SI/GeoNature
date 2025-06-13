@@ -21,7 +21,7 @@ SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monpor
 SQLALCHEMY_TRACK_MODIFICATIONS = true
 
 # Ce paramètre permet de configurer la connexion de SQLAlchemy avec la base de données
-# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine` 
+# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine`
 # de SQLAlchemy : https://docs.sqlalchemy.org/en/14/core/engines.html#sqlalchemy.create_engine
 SQLALCHEMY_ENGINE_OPTIONS = {}
 
@@ -438,6 +438,15 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         { min = 1, color = "#FED976" },
         { min = 0, color = "#FFEDA0" }
     ]
+
+    # Active le floutage des observations sensibles si TRUE, sinon avec FALSE, elles sont exclues.
+    BLUR_SENSITIVE_OBSERVATIONS = true
+    # Nom de la colonne du fichier d'export de la Synthese contenant les informations
+    # de la nomenclature DEE_FLOU. Par défaut: "floutage_dee".
+    # La présence de cette colonne n'est pas obligatoire.
+    # Si présente, sa valeur est forcée a OUI si la donnée a été floutée par le niveau de
+    # sensibilité.
+    EXPORT_FIELD_BLURRING = "floutage_dee"
 
     [SYNTHESE.DEFAULT_FILTERS]
         # Tous les statuts de validation sauf invalide '4'
