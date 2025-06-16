@@ -41,7 +41,7 @@ from apptax.taxonomie.models import (
     bdc_statut_cor_text_area,
 )
 
-from sqlalchemy import distinct, func, literal, select
+from sqlalchemy import distinct, func, select
 from utils_flask_sqla.generic import GenericTable, serializeQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
