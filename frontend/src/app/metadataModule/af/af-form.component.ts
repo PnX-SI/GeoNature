@@ -122,7 +122,6 @@ export class AfFormComponent implements OnInit {
             acquisition_framework.id_acquisition_framework,
           ]),
         (error) => {
-          console.log(error);
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'Errors.NotAllowed');
             this._router.navigate(['/metadata/']);
