@@ -56,7 +56,7 @@ import geonature.utils.utilsmails as mail
 
 from ref_geo.models import LAreas
 
-UNIQUE_AF_ID_CONSTRAINT = "unique_acquisition_frameworks_uuid"
+
 # FIXME: remove any reference to external modules from GeoNature core
 if "OCCHAB" in config:
     from gn_module_occhab.models import OccurenceHabitat, Station
