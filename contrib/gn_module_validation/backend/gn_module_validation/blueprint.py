@@ -12,7 +12,7 @@ from marshmallow import ValidationError
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 from geonature.utils.env import DB, db
-from geonature.core.gn_synthese.models import Synthese, TReport
+from geonature.core.gn_synthese.models import Synthese, SyntheseExtended, TReport
 from geonature.core.gn_profiles.models import VConsistancyData
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions.decorators import permissions_required
@@ -209,7 +209,7 @@ def get_synthese_data(permissions):
     assert len(query.selectable.get_final_froms()) == 1
 
     selectable = SyntheseQuery(
-        Synthese,
+        SyntheseExtended,
         query.selectable,
         filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
     ).filter_query_all_filters(g.current_user, permissions)

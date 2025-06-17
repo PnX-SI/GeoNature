@@ -590,8 +590,8 @@ class TReport(DB.Model):
 
 @serializable
 @geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
-class VSyntheseForWebApp(DB.Model):
-    __tablename__ = "v_synthese_for_web_app"
+class SyntheseExtended(DB.Model):
+    __tablename__ = "synthese_extended"
     __table_args__ = {"schema": "gn_synthese"}
 
     id_synthese = DB.Column(
@@ -628,6 +628,7 @@ class VSyntheseForWebApp(DB.Model):
     group1_inpn = DB.Column(DB.Unicode)
     group2_inpn = DB.Column(DB.Unicode)
     group3_inpn = DB.Column(DB.Unicode)
+    id_habitat = DB.Column(DB.Integer)
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
     non_digital_proof = DB.Column(DB.Unicode)

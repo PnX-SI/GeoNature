@@ -23,7 +23,7 @@ from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
     Synthese,
-    VSyntheseForWebApp,
+    SyntheseExtended,
     TReport,
 )
 from geonature.core.gn_synthese.utils.blurring import (
@@ -112,17 +112,17 @@ def get_observations_for_web(permissions):
     # Init with compulsory columns
     columns = []
     for col in MANDATORY_COLUMNS:
-        columns.extend([col, getattr(VSyntheseForWebApp, col)])
+        columns.extend([col, getattr(SyntheseExtended, col)])
 
     if "count_min_max" in param_column_list:
         count_min_max = case(
             (
-                VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
-                func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
+                SyntheseExtended.count_min != SyntheseExtended.count_max,
+                func.concat(SyntheseExtended.count_min, " - ", SyntheseExtended.count_max),
             ),
             (
-                VSyntheseForWebApp.count_min != None,
-                func.concat(VSyntheseForWebApp.count_min),
+                SyntheseExtended.count_min != None,
+                func.concat(SyntheseExtended.count_min),
             ),
             else_="",
         )
@@ -131,13 +131,13 @@ def get_observations_for_web(permissions):
 
     if "nom_vern_or_lb_nom" in param_column_list:
         nom_vern_or_lb_nom = func.coalesce(
-            func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
+            func.nullif(SyntheseExtended.nom_vern, ""), SyntheseExtended.lb_nom
         )
         columns += ["nom_vern_or_lb_nom", nom_vern_or_lb_nom]
         param_column_list.remove("nom_vern_or_lb_nom")
 
     for column in param_column_list:
-        columns += [column, getattr(VSyntheseForWebApp, column)]
+        columns += [column, getattr(SyntheseExtended, column)]
 
     observations = func.json_build_object(*columns).label("obs_as_json")
 
@@ -148,20 +148,20 @@ def get_observations_for_web(permissions):
         # No need to apply blurring => same path as before blurring feature
         obs_query = (
             select(observations)
-            .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
-            .order_by(VSyntheseForWebApp.date_min.desc())
+            .where(SyntheseExtended.the_geom_4326.isnot(None))
+            .order_by(SyntheseExtended.date_min.desc())
             .limit(result_limit)
         )
 
         # Add filters to observations CTE query
         synthese_query_class = SyntheseQuery(
-            VSyntheseForWebApp,
+            SyntheseExtended,
             obs_query,
             dict(filters),
         )
         synthese_query_class.apply_all_filters(g.current_user, permissions)
         obs_query = synthese_query_class.build_query()
-        geojson_column = VSyntheseForWebApp.st_asgeojson
+        geojson_column = SyntheseExtended.st_asgeojson
     else:
         # Build 2 queries that will be UNIONed
         # Select size hierarchy if mesh mode is selected
@@ -186,7 +186,7 @@ def get_observations_for_web(permissions):
         geojson_column = func.st_asgeojson(allowed_geom_cte.c.geom)
 
     if output_format == "grouped_geom_by_areas":
-        obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese)
+        obs_query = obs_query.add_columns(SyntheseExtended.id_synthese)
         # Need to select the size_hierarchy to use is after (only if blurring permissions are found)
         if blurring_permissions:
             obs_query = obs_query.add_columns(
