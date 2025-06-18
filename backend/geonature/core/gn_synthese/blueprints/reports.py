@@ -65,6 +65,8 @@ def create_report(permissions):
             joinedload("cor_observers"),
             joinedload("digitiser"),
             joinedload("dataset"),
+            joinedload("areas"),
+            joinedload("taxref_tree"),
         )
         .filter_by(id_synthese=id_synthese)
         .limit(1),
