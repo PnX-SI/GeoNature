@@ -1131,11 +1131,11 @@ class TestSynthese:
         CD_REF_VALID_STATS = {
             "altitude_max": 900,
             "altitude_min": 800,
-            "area_count": 2,
+            "area_count": 3,
             "cd_ref": CD_REF_VALID,
             "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
             "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
-            "observation_count": 3,
+            "observation_count": 4,
             "observer_count": 1,
         }
 
@@ -1273,14 +1273,14 @@ class TestSynthese:
                     "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 3,
+                    "observation_count": 4,
                     "observer": "administrateur test",
                 },
                 {
                     "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 3,
+                    "observation_count": 4,
                     "observer": "bob bobby",
                 },
             ],
@@ -1294,14 +1294,14 @@ class TestSynthese:
                     "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 3,
+                    "observation_count": 4,
                     "observer": "bob bobby",
                 },
                 {
                     "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 3,
+                    "observation_count": 4,
                     "observer": "administrateur test",
                 },
             ],
@@ -1598,29 +1598,6 @@ class TestSynthese:
 
         assert response.status_code == 200
         assert response.json[0]["cd_nom"] == synthese_data["obs1"].cd_nom
-
-
-@pytest.fixture(scope="class")
-def synthese_module():
-    return TModules.query.filter_by(module_code="SYNTHESE").one()
-
-
-@pytest.fixture()
-def synthese_read_permissions(synthese_module):
-    def _synthese_read_permissions(role, scope_value, action="R", **kwargs):
-        action = PermAction.query.filter_by(code_action=action).one()
-        perm = Permission(
-            role=role,
-            action=action,
-            module=synthese_module,
-            scope_value=scope_value,
-            **kwargs,
-        )
-        with db.session.begin_nested():
-            db.session.add(perm)
-        return perm
-
-    return _synthese_read_permissions
 
 
 @pytest.fixture()
