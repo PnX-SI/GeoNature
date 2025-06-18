@@ -1,8 +1,12 @@
 import json
 
 from datetime import datetime
+from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_permissions.models import PermAction, Permission
+from pypnusershub.db.models import User
 import pytest
 from flask import url_for
+from ref_geo.models import LAreas
 from sqlalchemy import func, select, exists
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
 
@@ -279,6 +283,49 @@ class TestReportsNotifications:
         id_synthese = synthese.id_synthese
         data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
         return self.client.post(url_for(url), data=data)
+
+    def test_taxonomic_filter(self, synthese_data, synthese_read_permissions):
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        taxon1 = synthese_data["obs1"].taxref
+        taxon2 = synthese_data["obs2"].taxref.parent
+        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon1, taxon2])
+        set_logged_user(self.client, user)
+
+        response = self.client.get(
+            url_for("gn_synthese.reports.create_report"),
+            data={"type": "pin", "item": synthese_data["obs1"].id_synthese, "content": ""},
+        )
+        assert response.status_code in (200, 204)
+
+    def test_geo_filter(self, synthese_data, synthese_read_permissions):
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        gap = db.session.execute(select(LAreas).where(LAreas.area_name == "Gap")).scalar_one()
+        chambery = db.session.execute(
+            select(LAreas).where(LAreas.area_name == "Chambéry")
+        ).scalar_one()
+
+        synthese_read_permissions(user, scope_value=None, areas_filter=[gap, chambery])
+        set_logged_user(self.client, user)
+
+        response = self.client.post(
+            url_for("gn_synthese.reports.create_report"),
+            data={"type": "pin", "item": synthese_data["obs1"].id_synthese, "content": ""},
+        )
+        assert response.status_code in (200, 204)
+
+        response = self.client.post(
+            url_for("gn_synthese.reports.create_report"),
+            data={
+                "type": "pin",
+                "item": synthese_data["obs_outside_gap"].id_synthese,
+                "content": "",
+            },
+        )
+        assert response.status_code == Forbidden.code, response.data
 
     def test_report_notification_on_own_obs(
         self,
