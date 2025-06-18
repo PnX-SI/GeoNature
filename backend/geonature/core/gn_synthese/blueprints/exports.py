@@ -264,6 +264,12 @@ def export_observations_web(permissions):
         .where(export_view.tableDef.columns["id_synthese"].in_(id_list))
         .distinct(export_view.tableDef.columns["id_synthese"])
     )
+    if blurring_permissions:
+        # When blurring permission,to ensure the 'distinct on' priorise entry with higher priority (blurred obs => priority = 2 ; precise obs => priority = 1)
+        # Check https://www.postgresql.org/docs/9.0/sql-select.html#SQL-DISTINCT for more details
+        export_query = export_query.order_by(
+            export_view.tableDef.columns["id_synthese"], cte_synthese_filtered.c.priority.asc()
+        )
 
     # Get the results for export
     results = DB.session.execute(

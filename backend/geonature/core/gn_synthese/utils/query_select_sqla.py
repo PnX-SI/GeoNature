@@ -13,7 +13,7 @@ import uuid
 from flask import current_app
 
 import sqlalchemy as sa
-from sqlalchemy import func, or_, and_, select, distinct, literal_column
+from sqlalchemy import func, or_, and_, select, distinct, inspect, literal_column
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from sqlalchemy.dialects.postgresql import array, ARRAY
@@ -108,12 +108,11 @@ class SyntheseQuery:
                 )
             )
 
+        # For aliased models, we need to use inspect() and the class_ attribute
+        # to get the real table
+        geom_table = inspect(self.geom_column.class_).mapper.local_table
         self.srid = DB.session.scalar(
-            select(
-                func.Find_SRID(
-                    self.geom_column.table.schema, self.geom_column.table.name, self.geom_column.key
-                )
-            )
+            select(func.Find_SRID(geom_table.schema, geom_table.name, self.geom_column.key))
         )
         self.srid_l_areas = DB.session.scalar(
             select(func.Find_SRID(LAreas.__table__.schema, LAreas.__table__.name, "geom"))
@@ -292,8 +291,6 @@ class SyntheseQuery:
             )
 
         aliased_cor_taxon_attr = {}
-        protection_status_value = []
-        red_list_filters = {}
 
         for colname, value in self.filters.items():
             if colname.startswith("taxonomy_group"):
@@ -320,7 +317,27 @@ class SyntheseQuery:
                 self.query = self.query.where(
                     aliased_cor_taxon_attr[taxhub_id_attr].valeur_attribut.in_(value)
                 )
-            elif colname.endswith("_red_lists"):
+            
+        # remove attributes taxhub from filters
+        self.filters = {
+            colname: value
+            for colname, value in self.filters.items()
+            if not colname.startswith("taxhub_attribut")
+        }
+
+    def filter_status(self):
+        """
+        Filters the query with taxonomic attributes
+        Parameters:
+            - q (SQLAchemyQuery): an SQLAchemy query
+            - filters (dict): a dict of filter
+        Returns:
+            -Tuple: the SQLAlchemy query and the filter dictionnary
+        """
+        protection_status_value = []
+        red_list_filters = {}
+        for colname, value in self.filters.items():
+            if colname.endswith("_red_lists"):
                 red_list_id = colname.replace("_red_lists", "")
                 all_red_lists_cfg = current_app.config["SYNTHESE"]["RED_LISTS_FILTERS"]
                 red_list_cfg = next(
@@ -352,7 +369,7 @@ class SyntheseQuery:
             for colname, value in self.filters.items()
             if not colname.startswith("taxhub_attribut")
         }
-
+        
     def filter_other_filters(self, user):
         """
         Other filters
@@ -516,7 +533,11 @@ class SyntheseQuery:
         for colname, value in self.filters.items():
             if colname.startswith("area"):
                 if self.geom_column.class_ != self.model:
-                    l_areas_cte = LAreas.query.filter(LAreas.id_area.in_(value)).cte("area_filter")
+                    l_areas_cte = (
+                        select(LAreas.geom, LAreas.geom_4326)
+                        .filter(LAreas.id_area.in_(value))
+                        .cte("area_filter")
+                    )
                     if self.srid != 4326:
 
                         if self.srid != self.srid_l_areas:
@@ -566,6 +587,7 @@ class SyntheseQuery:
         else:
             self.filter_query_with_permissions(user, permissions)
         self.filter_taxonomy()
+        self.filter_status()
         self.filter_other_filters(user)
 
     def build_query(self):

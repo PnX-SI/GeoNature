@@ -183,6 +183,17 @@ def get_observations_for_web(permissions):
             allowed_geom_cte=allowed_geom_cte,
             limit=result_limit,
         )
+
+        # Add filters to observations CTE query
+        synthese_query_class = SyntheseQuery(
+            SyntheseExtended,
+            obs_query,
+            dict(filters),
+        )
+        synthese_query_class.filter_status()
+        obs_query = synthese_query_class.build_query()
+
+        
         geojson_column = func.st_asgeojson(allowed_geom_cte.c.geom)
 
     if output_format == "grouped_geom_by_areas":

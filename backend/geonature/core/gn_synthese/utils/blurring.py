@@ -2,6 +2,7 @@ from functools import lru_cache
 
 from flask import g
 import sqlalchemy as sa
+from sqlalchemy import select
 from sqlalchemy.orm import aliased
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from ref_geo.models import BibAreasTypes, LAreas
@@ -109,16 +110,19 @@ def build_blurred_precise_geom_queries(
             CorAreaSyntheseAlias,
             CorAreaSyntheseAlias.id_synthese == SyntheseExtended.id_synthese,
         ),
-        geom_column=LAreas.geom_4326,
+        geom_column=LAreasAlias.geom_4326,
     )
     # Joins here are needed to retrieve the blurred geometry
     blurred_geom_query.add_join(LAreasAlias, LAreasAlias.id_area, CorAreaSyntheseAlias.id_area)
-    blurred_geom_query.add_join(BibAreasTypesAlias, BibAreasTypesAlias.id_type, LAreasAlias.id_type)
     blurred_geom_query.add_join(
         cor_sensitivity_area_type,
         cor_sensitivity_area_type.c.id_area_type,
-        BibAreasTypesAlias.id_type,
+        LAreasAlias.id_type,
     )
+    # size hierarchy is the size of the joined blurring area
+    if select_size_hierarchy:
+        blurred_geom_query.add_join(BibAreasTypesAlias, BibAreasTypesAlias.id_type, LAreasAlias.id_type)
+
     # Same for the first query => apply filter to avoid querying the whole table
     blurred_geom_query.filter_taxonomy()
     blurred_geom_query.filter_other_filters(g.current_user)
