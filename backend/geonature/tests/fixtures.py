@@ -69,6 +69,8 @@ __all__ = [
     "sources_modules",
     "modules",
     "auto_validation_enabled",
+    "synthese_read_permissions",
+    "synthese_module",
 ]
 
 
@@ -588,6 +590,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
     point1 = Point(5.92, 45.56)
     point2 = Point(-1.54, 46.85)
     point3 = Point(-3.486786, 48.832182)
+    point4 = Point(-1.62, 49.63)  # Cherbourg
     date_1 = datetime.datetime(2024, 10, 2, 11, 22, 33)
     date_2 = datetime.datetime(2024, 10, 3, 8, 9, 10)
     date_3 = datetime.datetime(2024, 10, 4, 17, 4, 9)
@@ -724,6 +727,18 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 "p3_af3",
                 2497,
                 point3,
+                datasets["belong_af_3"],
+                "p3_af3",
+                source,
+                date_2,
+                date_2,
+                altitude_2,
+                altitude_2,
+            ),
+            (
+                "obs_outside_gap",
+                2497,
+                point4,
                 datasets["belong_af_3"],
                 "p3_af3",
                 source,
@@ -1053,3 +1068,26 @@ def notifications_enabled(monkeypatch):
 @pytest.fixture()
 def auto_validation_enabled(monkeypatch):
     monkeypatch.setitem(current_app.config["VALIDATION"], "AUTO_VALIDATION_ENABLED", True)
+
+
+@pytest.fixture(scope="class")
+def synthese_module():
+    return TModules.query.filter_by(module_code="SYNTHESE").one()
+
+
+@pytest.fixture()
+def synthese_read_permissions(synthese_module):
+    def _synthese_read_permissions(role, scope_value, action="R", **kwargs):
+        action = PermAction.query.filter_by(code_action=action).one()
+        perm = Permission(
+            role=role,
+            action=action,
+            module=synthese_module,
+            scope_value=scope_value,
+            **kwargs,
+        )
+        with db.session.begin_nested():
+            db.session.add(perm)
+        return perm
+
+    return _synthese_read_permissions
