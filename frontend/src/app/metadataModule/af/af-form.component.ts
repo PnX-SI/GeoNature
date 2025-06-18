@@ -103,7 +103,7 @@ export class AfFormComponent implements OnInit {
     api
       .pipe(
         tap(() => {
-          this._commonService.translateToaster('success', 'MetaData.Messages.AFadded');
+          this._commonService.translateToaster('success', 'MetaData.Messages.AFAdded');
           this.metadataS.getMetadata(); //rechargement de la liste de la page principale
         })
       )
