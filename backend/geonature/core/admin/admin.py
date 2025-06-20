@@ -71,7 +71,7 @@ admin = Admin(
 ## ajout des liens
 admin.add_link(
     MenuLink(
-        name="Retourner à GeoNature",
+        name="Retourner sur GeoNature",
         url=config["URL_APPLICATION"],
         icon_type="fa",
         icon_value="fa-sign-out",
