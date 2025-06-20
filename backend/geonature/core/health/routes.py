@@ -43,8 +43,8 @@ def check_all_dependencies():
 
     if "CELERY" in current_app.config:
         if check["redis_connection"]["status"]:
-            celery_app = Celery("geonature_test")
-            celery_app.config_from_object(current_app.config["CELERY"])
+            from geonature.utils.celery import celery_app
+
             is_pytest = current_app.config["CELERY"].get("task_always_eager", False)
             if not is_pytest and not celery_app.control.inspect().active():
                 check["celery_worker"] = {
