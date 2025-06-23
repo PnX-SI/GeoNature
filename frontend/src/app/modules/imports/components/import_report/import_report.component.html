@@ -276,12 +276,7 @@
                     </td>
                     <td>
                       <span *ngIf="error.rows.length >= 10 && !error.show">
-                        {{
-                          error.rows.slice(0, maxErrorsLines).join(
-                            ',
-                        '
-                          )
-                        }}
+                        {{ error.rows.slice(0, maxErrorsLines).join(',') }}
                         ...
                         <button
                           mat-icon-button
@@ -313,17 +308,17 @@
             <mat-expansion-panel [disabled]="!importWarnings.length">
               <mat-expansion-panel-header [collapsedHeight]="expansionPanelHeight">
                 <mat-panel-title>
-                  <h6>{{ importWarnings.length }} alerte(s)</h6>
+                  <h6>{{ importWarnings.length }} avertissement(s)</h6>
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <table class="table table-responsive table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th>Type d'erreur</th>
+                    <th>Type d'avertissement</th>
                     <th>Champ</th>
-                    <th>Description erreur</th>
-                    <th>Nombre d'erreur(s)</th>
-                    <th>Numéro des lignes en erreur</th>
+                    <th>Description de l'avertissement</th>
+                    <th>Nombre d'avertissement(s)</th>
+                    <th>Numéro des lignes en avertissement</th>
                     <th>{{ 'Import.Entity' | translate }}</th>
                   </tr>
                 </thead>
@@ -345,12 +340,7 @@
                     </td>
                     <td>
                       <span *ngIf="error.rows.length >= 10 && !error.show">
-                        {{
-                          error.rows.slice(0, maxErrorsLines).join(
-                            ',
-                        '
-                          )
-                        }}
+                        {{ error.rows.slice(0, maxErrorsLines).join(',') }}
                         ...
                         <button
                           mat-icon-button
