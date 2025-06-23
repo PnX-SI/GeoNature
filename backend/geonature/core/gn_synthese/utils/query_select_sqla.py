@@ -539,13 +539,12 @@ class SyntheseQuery:
                             func.ST_Intersects(self.geom_column, l_areas_cte.c.geom_4326)
                         )
                 else:
-                    cor_area_synthese_alias = aliased(CorAreaSynthese)
                     self.add_join(
-                        cor_area_synthese_alias,
-                        cor_area_synthese_alias.id_synthese,
+                        CorAreaSynthese,
+                        CorAreaSynthese.id_synthese,
                         self.model.id_synthese,
                     )
-                    self.query = self.query.where(cor_area_synthese_alias.id_area.in_(value))
+                    self.query = self.query.where(CorAreaSynthese.id_area.in_(value))
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 if isinstance(value, list):
