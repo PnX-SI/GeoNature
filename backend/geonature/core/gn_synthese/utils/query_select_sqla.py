@@ -202,17 +202,20 @@ class SyntheseQuery:
                 ]
                 perm_filters.append(or_(*scope_filters))
             if perm.areas_filter:
-                where_clause = self.model.areas.any(
-                    LAreas.id_area.in_([a.id_area for a in perm.areas_filter])
+                self.add_join(
+                    CorAreaSynthese,
+                    CorAreaSynthese.id_synthese,
+                    self.model.id_synthese,
                 )
+                where_clause = CorAreaSynthese.id_area.in_([a.id_area for a in perm.areas_filter])
+
                 perm_filters.append(where_clause)
             if perm.taxons_filter:
                 # Does obs taxon path is an descendant of any path of taxons_filter?
-                where_clause = self.model.taxref_tree.has(
-                    TaxrefTree.path.op("<@")(
-                        sa.select(sa.func.array_agg(TaxrefTree.path)).where(
-                            TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter])
-                        )
+                self.add_join(TaxrefTree, TaxrefTree.cd_nom, self.model.cd_nom)
+                where_clause = TaxrefTree.path.op("<@")(
+                    sa.select(sa.func.array_agg(TaxrefTree.path)).where(
+                        TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter])
                     )
                 )
                 perm_filters.append(where_clause)
