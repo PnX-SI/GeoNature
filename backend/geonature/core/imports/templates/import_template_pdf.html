@@ -39,8 +39,8 @@
       <div class="card-header">Fiche Descriptive</div>
       <div class="card-body">
         <ul id="description-list">
-          {% for label, key in {"Auteur": "authors_name", "SRID": "srid", "Encodage": "encoding",
-          "Format": "format_source_file"}.items() %}
+          {% for label, key in {"Auteur ": "authors_name", "SRID ": "srid", "Encodage ": "encoding",
+          "Format ": "format_source_file"}.items() %}
           <li>
             <b>{{label}}</b>
             : {{data[key]}}
