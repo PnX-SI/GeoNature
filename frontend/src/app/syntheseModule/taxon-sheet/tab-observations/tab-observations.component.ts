@@ -93,7 +93,6 @@ export class TabObservationsComponent extends Loadable implements OnInit {
 
     this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
       this.updateTaxonStats(stats);
-      console.log(stats);
     });
     this.initializeFormWithMapParams();
   }

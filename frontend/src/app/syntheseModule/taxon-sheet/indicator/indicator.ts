@@ -20,7 +20,7 @@ const DEFAULT_VALUE = '-';
 const DEFAULT_SEPARATOR = '-';
 
 function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: TaxonStats) {
-  if (stats && stats[field]) {
+  if (stats && stats[field] != undefined) {
     let valueAsString = '';
     switch (indicatorConfig.type) {
       case 'number':

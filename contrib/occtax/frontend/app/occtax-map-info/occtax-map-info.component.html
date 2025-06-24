@@ -77,19 +77,19 @@
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.place_name">
                       <div class="label">{{ 'Occtax.Releve.PlaceName' | translate }} :</div>
-                      <div class="value">{{ releve.place_name || '-' }}</div>
+                      <div class="value">{{ releve.place_name ?? '-' }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.precision">
                       <div class="label">{{ 'Occtax.Releve.Precision' | translate }} :</div>
-                      <div class="value">{{ releve.precision || '-' }}</div>
+                      <div class="value">{{ releve.precision ?? '-' }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.altitude_min">
                       <div class="label">{{ 'MinAltitude' | translate }}</div>
-                      <div class="value">{{ releve.altitude_min || '-' }}</div>
+                      <div class="value">{{ releve.altitude_min ?? '-' }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.altitude_max">
                       <div class="label">{{ 'MaxAltitude' | translate }}</div>
-                      <div class="value">{{ releve.altitude_max || '-' }}</div>
+                      <div class="value">{{ releve.altitude_max ?? '-' }}</div>
                     </div>
                     <!--Champs additionnels-->
                     <ng-container *ngFor="let dynamiqueField of releveAddFields">
