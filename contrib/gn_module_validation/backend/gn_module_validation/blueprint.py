@@ -27,6 +27,31 @@ import gn_module_validation.tasks
 blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
 
+DEFAULT_FIELDS = {
+    "id_synthese",
+    "unique_id_sinp",
+    "entity_source_pk_value",
+    "meta_update_date",
+    "id_nomenclature_valid_status",
+    "nomenclature_valid_status.cd_nomenclature",
+    "nomenclature_valid_status.mnemonique",
+    "nomenclature_valid_status.label_default",
+    "last_validation.validation_date",
+    "last_validation.validation_auto",
+    "taxref.cd_nom",
+    "taxref.nom_vern",
+    "taxref.lb_nom",
+    "taxref.nom_vern_or_lb_nom",
+    "dataset.validable",
+}
+
+DEFAULT_PROFILE_FIELDS = {
+    "profile.score",
+    "profile.valid_phenology",
+    "profile.valid_altitude",
+    "profile.valid_distribution",
+}
+
 
 @blueprint.route("", methods=["GET", "POST"])
 @permissions_required("C", module_code="VALIDATION")
@@ -61,9 +86,21 @@ def get_synthese_data(permissions):
     page = int(params.get("page", 0))
     per_page = int(params.get("per_page", 0))
     pagination_active = page > 0 and per_page > 0
+    limit = params.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
+
+    # Profile parameters
+    score = params.pop("score", None)
+    valid_distribution = params.pop("valid_distribution", None)
+    valid_altitude = params.pop("valid_altitude", None)
+    valid_phenology = params.pop("valid_phenology", None)
+    use_profile_filter = valid_altitude or valid_distribution or valid_phenology
 
     # Format: output format
-    format = params.get("format", "geojson")
+    format = params.pop("format", "geojson")
+
+    no_auto = params.pop("no_auto", False)
+    fields_as_str = params.pop("fields", None)
+
     if format not in ["json", "geojson"]:
         raise BadRequest("Invalid format parameter")
 
@@ -74,51 +111,19 @@ def get_synthese_data(permissions):
     if format == "geojson" and pagination_active:
         raise BadRequest("Pagination can't be active when requesting geojson object")
 
-    no_auto = params.get("no_auto", False)
-    # # modifiy_only
-    # modified_status_only = request.args.get("modified_status_only", bool, False)
-
     # Fields: Setup fields as route parameters with default behavior
-    fields_as_str = params.get("fields", None)
+
     fields = set()
     if fields_as_str:
         fields.update({field for field in fields_as_str.split(",")})
     else:
-        fields.update(
-            {
-                "id_synthese",
-                "unique_id_sinp",
-                "entity_source_pk_value",
-                "meta_update_date",
-                "id_nomenclature_valid_status",
-                "nomenclature_valid_status.cd_nomenclature",
-                "nomenclature_valid_status.mnemonique",
-                "nomenclature_valid_status.label_default",
-                "last_validation.validation_date",
-                "last_validation.validation_auto",
-                "taxref.cd_nom",
-                "taxref.nom_vern",
-                "taxref.lb_nom",
-                "taxref.nom_vern_or_lb_nom",
-                "dataset.validable",
-            }
-        )
+        fields.update(DEFAULT_FIELDS)
         if enable_profile:
-            fields.update(
-                {
-                    "profile.score",
-                    "profile.valid_phenology",
-                    "profile.valid_altitude",
-                    "profile.valid_distribution",
-                }
-            )
+            fields.update(DEFAULT_PROFILE_FIELDS)
 
     # Fields: add config parameters
     fields.update({col["column_name"] for col in blueprint.config["COLUMN_LIST"]})
 
-    filters = params or {}
-
-    result_limit = params.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
     lateral_join = {}
     """
     1) We start creating the query with SQLAlchemy ORM.
@@ -142,11 +147,11 @@ def get_synthese_data(permissions):
     last_validation = aliased(TValidations, last_validation_subquery)
     lateral_join = {last_validation: Synthese.last_validation}
 
-    if enable_profile:
+    if enable_profile and use_profile_filter:
         profile_subquery = (
             sa.select(VConsistancyData)
             .where(VConsistancyData.id_synthese == Synthese.id_synthese)
-            .limit(result_limit)
+            .limit(1)
             .subquery()
             .lateral("profile")
         )
@@ -181,21 +186,17 @@ def get_synthese_data(permissions):
         query = query.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
 
     # filter with profile
-    if enable_profile:
-        score = filters.pop("score", None)
+    if enable_profile and use_profile_filter:
         if score is not None:
             query = query.where(profile.score == score)
-        valid_distribution = filters.pop("valid_distribution", None)
         if valid_distribution is not None:
-            query = query.where(profile.valid_distribution.is_(valid_distribution))
-        valid_altitude = filters.pop("valid_altitude", None)
+            query = query.where(profile.valid_distribution == bool(valid_distribution))
         if valid_altitude is not None:
-            query = query.where(profile.valid_altitude.is_(valid_altitude))
-        valid_phenology = filters.pop("valid_phenology", None)
+            query = query.where(profile.valid_altitude == bool(valid_altitude))
         if valid_phenology is not None:
-            query = query.where(profile.valid_phenology.is_(valid_phenology))
+            query = query.where(profile.valid_phenology == bool(valid_phenology))
 
-    if filters.pop("modif_since_validation", None):
+    if params.pop("modif_since_validation", None):
         query = query.where(Synthese.meta_update_date > last_validation.validation_date)
 
     if no_auto:
@@ -206,12 +207,12 @@ def get_synthese_data(permissions):
     query = query.where(dataset_alias.validable == True)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
-    assert len(query.selectable.get_final_froms()) == 1
+    assert len(query.selectable.get_final_froms()) <= 2
 
     selectable = SyntheseQuery(
         Synthese,
         query.selectable,
-        filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
+        params,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
     ).filter_query_all_filters(g.current_user, permissions)
 
     # Step 3: Construct Synthese model from query result
@@ -247,7 +248,7 @@ def get_synthese_data(permissions):
         offset = (page - 1) * per_page
         query = syntheseQueryStatement.from_statement(query.limit(per_page).offset(offset))
     else:
-        query = syntheseQueryStatement.from_statement(query.limit(result_limit))
+        query = syntheseQueryStatement.from_statement(query.limit(limit))
 
     # The raise option ensure that we have correctly retrived relationships data at step 3
     if format == "geojson":
