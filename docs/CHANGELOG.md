@@ -4,50 +4,61 @@
 
 ### ⏩ En bref
 
-- Évolution de la fiche Taxon
-- Ajout des permissions géographiques et taxonomiques dans la Synthèse et la Validation
+- Multilingue étendu, par module et surcouchable
+- Enrichissement des fiches Taxon
+- Ajout des permissions géographiques, taxonomiques et temporelles
+- Gestion des individus pour les protocoles de suivi
 - Nouvelle section "Dernières validations" sur la page d'accueil
 
 ### 🚀 Nouveautés
 
-- [Général] Mise à jours des dépendances
-  - TaxHub : [2.2.1](https://github.com/PnX-SI/TaxHub/releases/2.2.1)
+- [Synthèse] Enrichissement des fiches taxon (#3479 par @edelclaux et @jules-jean-louis1)
+  - Ajout d'un onglet "Observateurs" et d'un onglet "Medias" (#3229)
+  - Ajout d'un fil d'ariane permettant de naviguer entre les rangs taxonomiques
+  - Ajout du mode maille et d'un filtre temporel dans l'onglet "Observations" (anciennement "Synthèse géographique")
+- [Synthèse, Validation] Ajout de nouveaux filtres de permissions : géographique, taxonomique et temporelle (par @jpm-cbna, complété par @bouttier dans #3097)
+- [Permissions] Ajout de filtre temporel sur toutes les permissions
+- [Multilingue] Amélioration et enchissement de la gestion du multilingue (#1551)
+  - Enrichissement des traductions existantes dans différents modules (#1921 par @MathildeNS, complété dans #3484 par @jpm-cbna et @jacquesfize)
+  - Possibilité de définir des fichiers de traduction pour chaque module (#1570 par @mvergez et @jpm-cbna)
+  - Ajout de la possibilité de surcoucher les fichiers par défaut de traduction (#3415 par @jpm-cbna et @mvergez)
+- [Général] Ajout de la possibilité de paramétrer le titre affiché dans l'onglet GeoNature (#3420 par @Christophe-Ramet)
+- [Accueil] Ajout d'une section "Dernières validations" désactivable (#3226 par @edelclaux et @20cents)
+- [Monitoring] Ajout de la gestion des individus pour les protocoles de suivi, avec l'ajout des tables `t_base_individuals` et `t_marking_events` dans le schéma `gn_monitoring` ainsi qu'un composant d'édition d'individus (#2740 par @mvergez, #3056 par @andriacap, complété dans #3299 par @amandine-sahl)
+- [Base de données] Ajout d'un paramètre pour customiser la connexion SQLAlchemy à la base de données PostgreSQL (#3438 par @jacquesfize)
+- [Occhab] Ajout du champ TypeSol (#3379 par @Pierre-Narcisi)
+- [Occhab] Affiche de l'UUID des habitats dans les fiches détail des stations (#3467 par @Pierre-Narcisi)
+- [Notifications] Masquer certaines catégories de notifications de la liste des souscriptions selon les permissions de l'utilisateur (#3262 par @bouttier)
+- [Général] Mise à jour des dépendances
+  - TaxHub : [2.2.1](https://github.com/PnX-SI/TaxHub/releases/2.2.1), incluant notamment la migration vers Taxref v18
   - Utils-Flask-SQLAlchemy [0.4.2](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/0.4.2)
   - Utils-Flask-SQLAlchemy-Geo [0.3.3](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.3.3)
   - RefGeo [1.5.5](https://github.com/PnX-SI/RefGeo/releases/1.5.5)
   - Habref-api-module [0.4.2](https://github.com/PnX-SI/Habref-api-module/releases/0.4.2)
   - Nomenclature-api-module [1.6.5](https://github.com/PnX-SI/Nomenclature-api-module/releases/1.6.5)
   - UsersHub-authentification-module [3.0.3](https://github.com/PnX-SI/UsersHub-authentification-module/releases/3.0.3)
-- [Général] Ajouter la possibilité de paramétrer le titre affiché dans l'onglet GeoNature (#3420 par @Christophe-Ramet)
-- [Accueil] Ajout d'une section Dernières validations (#3326 par @edelclaux et @20cents)
-- [Synthèse] Evolution de la fiche taxon : (i) Ajout d'un onglet Observateurs et d'un onglet Media; (ii) Ajout d'un fil d'ariane; (iii) Ajout du mode maille et d'un filtre temporelle dans l'onglet Observations (Anciennement Synthèse géographique) (#3479 par @edelclaux et @jules-jean-louis1).
-- [Synthèse] Les observations sensibles ne sont plus exportées autant de fois qu'il y a de permissions (#3375 par @Pierre-Narcisi)
-- [Synthèse, Validation] Ajout de nouveaux filtres de permissions : géographique, taxonomique et temporelle (travail de @jpm-cbna repris par @bouttier dans #3097)
-- [Traduction] Extension des traductions existantes (#1921 par @MathildeNS et complété dans #3484 par @jpm-cbna et @jacquesfize)
-- [Traduction] Ajout de la possibilité de surcoucher les traductions dans GeoNature (#3416 par @jpm-cbna et @mvergez)
-- [BaseDeDonnées] Ajout d'un paramètre pour customiser la connexion SQLAlchemy à la base de données Postgresql (#3438 par @jacquesfize)
-- [Occhab] Ajout du champ TypeSol (#3430 par @Pierre-Narcisi)
-- [Occhab] Affiche de l'UUID des habitats dans la fiche détail (#3467 par @Pierre-Narcisi)
-- [Notifications] Masquer certaines catégories de notifications de la liste des souscriptions (#3262 par @bouttier)
-
-- [Monitoring] Ajout des individus (#2740 par @mvergez, #3056 par @andriacap. Repris dans #3299 par @amandine-sahl)
-- [Système] Ajout d'une route `/heathz` pour surveiller le status de la connexion avec la BDD, de la connexion avec le worker Celery (#3417 par @TheoLechemia et @jacquesfize)
+- [Système] Ajout d'une route `/heathz` pour surveiller le statut de la connexion avec la BDD et avec le worker Celery (#3417 par @TheoLechemia et @jacquesfize)
 - [Installation] Amélioration de la commande d'installation d'un module GeoNature (#3261 par @bouttier)
-- [Documentation] Ajout d'un dump de la structure de la base de données sous forme de fichier SQL dans le dossier `docs/data_model` (#1569 par @jacquesfize)
+- [Documentation] Création automatique d'un dump de la structure de la base de données sous forme de fichier SQL dans le dossier `docs/data_model` (#1569 par @jacquesfize)
 - [CI/CD] Utilisation d'[images Docker](https://github.com/PnX-SI/geonature_db) pré-peuplées pour accélérer les tests unitaires (#3369 par @jacquesfize)
-- [Benchmark] Ajout de nouveaux benchmarks (#3392 par @Christophe-Ramet)
+- [Benchmark] Ajout de nouveaux tests automatisés de performances (#3392 par @Christophe-Ramet)
+- [Accueil] Amélioration du responsive de la page d'accueil (#3426 et #3428 par @Christophe-Ramet)
 
 ### 🐛 Corrections
 
-- [Synthèse] Correction de l'affichage d'observations floutées lorsqu'une commune est sélectionnée (#3566 par @jpm-cbna)
-- [Occhab] Divers fix sur l'interface de saisie dans OccHab (#3471 par @Pierre-Narcisi)
-- [OccHab] nom_cite est maitenant obligatoire dans l'import
-- [Validation] Correction du tri dans la liste d'observation (#3340 par @Pierre-Narcisi)
-- [Développement] Correction du champ additionnel checkbox dans les dynamic form (#3529 par @jacquesfize)
+- [Synthèse] Correction de l'affichage des observations sensibles floutées lorsqu'un filtre par zonage est appliqué (#3566 par @jpm-cbna)
+- [Synthèse] Correction de l'affichage des observations sensibles floutées lorsqu'un filtre par zonage est appliqué (#3324 par @jbrieuclp)
+- [Synthèse] Les observations sensibles ne sont plus exportées autant de fois qu'il y a de permissions (#3375 par @Pierre-Narcisi)
+- [Occhab] Diverses corrections sur l'interface de saisie dans OccHab (#3471 par @Pierre-Narcisi)
+- [Occhab] Le champs `nom_cite` est maintenant obligatoire dans les imports (#3434 par @edelclaux)
+- [Validation] Correction du tri dans la liste des observations (#3340 par @Pierre-Narcisi)
+- [Développement] Correction des champs additionnels de type "checkbox" dans les formulaires dynamiques (#3529 par @jacquesfize)
 - [Carte] Correction du problème de chargement des couches GeoJSON (#3532 par @jacquesfize)
 - [Import] Correction de l'export PDF (#3443 par @jacquesfize)
 - [Import] Correction de la disparition de mapping par défaut après la sélection d'un autre mapping (#3398 par @Christophe-Ramet)
 - [Import] Correction du retour d'erreur quand le WKT donnée est malformé (#3441 par @jacquesfize)
+- [Documentation] Clarification du paramètre `ID_AREA_RESTRICTION` (#3382 par @jacquesfize)
+- [CI/CD] Amélioration des tests Cypress (#3436 par @Christophe-Ramet)
 
 ## 2.15.4 (2025-02-25)
 
