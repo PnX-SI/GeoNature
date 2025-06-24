@@ -136,7 +136,7 @@ export class TabObservationsComponent extends Loadable implements OnInit {
     const limit = this.areasEnable ? -1 : undefined;
 
     this._syntheseDataService
-      .getSyntheseData({ filter }, { format, limit })
+      .getSyntheseData({ ...filter }, { format, limit })
       .pipe(finalize(() => this.stopLoading()))
       .subscribe((data) => {
         if (!this.areasEnable && this.isSuperiorToSyntheseLimit) {
