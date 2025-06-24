@@ -13,11 +13,11 @@
 ### 🚀 Nouveautés
 
 - [Synthèse] Enrichissement des fiches taxon (#3479 par @edelclaux et @jules-jean-louis1)
-  - Ajout d'un onglet "Observateurs" et d'un onglet "Medias" (#3229)
+  - Ajout d'un onglet "Observateurs" (#3203) et d'un onglet "Medias" (#3229)
   - Ajout d'un fil d'ariane permettant de naviguer entre les rangs taxonomiques
   - Ajout du mode maille et d'un filtre temporel dans l'onglet "Observations" (anciennement "Synthèse géographique")
-- [Synthèse, Validation] Ajout de nouveaux filtres de permissions : géographique, taxonomique et temporelle (par @jpm-cbna, complété par @bouttier dans #3097)
-- [Permissions] Ajout de filtre temporel sur toutes les permissions
+- [Synthèse, Validation] Ajout de filtres de permission géographique et taxonomique (par @jpm-cbna, complété par @bouttier dans #3097)
+- [Permissions] Ajout de filtres temporels sur toutes les permissions
 - [Multilingue] Amélioration et enchissement de la gestion du multilingue (#1551)
   - Enrichissement des traductions existantes dans différents modules (#1921 par @MathildeNS, complété dans #3484 par @jpm-cbna et @jacquesfize)
   - Possibilité de définir des fichiers de traduction pour chaque module (#1570 par @mvergez et @jpm-cbna)
@@ -43,22 +43,28 @@
 - [CI/CD] Utilisation d'[images Docker](https://github.com/PnX-SI/geonature_db) pré-peuplées pour accélérer les tests unitaires (#3369 par @jacquesfize)
 - [Benchmark] Ajout de nouveaux tests automatisés de performances (#3392 par @Christophe-Ramet)
 - [Accueil] Amélioration du responsive de la page d'accueil (#3426 et #3428 par @Christophe-Ramet)
+- [Developpement] db.paginate (#3463 par @bouttier) et ordered (#3465 par @bouttier)
+- [Dev] feat(synthese): small refact of the code #3301
+- Feat/taxonomie v synthese #3373
+- Suppression page intermédaire ADMIN
 
 ### 🐛 Corrections
 
 - [Synthèse] Correction de l'affichage des observations sensibles floutées lorsqu'un filtre par zonage est appliqué (#3566 par @jpm-cbna)
 - [Synthèse] Correction de l'affichage des observations sensibles floutées lorsqu'un filtre par zonage est appliqué (#3324 par @jbrieuclp)
 - [Synthèse] Les observations sensibles ne sont plus exportées autant de fois qu'il y a de permissions (#3375 par @Pierre-Narcisi)
-- [Occhab] Diverses corrections sur l'interface de saisie dans OccHab (#3471 par @Pierre-Narcisi)
+- [Occhab] Diverses corrections sur l'interface de saisie (#3471 par @Pierre-Narcisi)
 - [Occhab] Le champs `nom_cite` est maintenant obligatoire dans les imports (#3434 par @edelclaux)
 - [Validation] Correction du tri dans la liste des observations (#3340 par @Pierre-Narcisi)
 - [Développement] Correction des champs additionnels de type "checkbox" dans les formulaires dynamiques (#3529 par @jacquesfize)
-- [Carte] Correction du problème de chargement des couches GeoJSON (#3532 par @jacquesfize)
+- [Carte] Correction du problème de chargement des fichiers GeoJSON (#3532 par @jacquesfize)
 - [Import] Correction de l'export PDF (#3443 par @jacquesfize)
 - [Import] Correction de la disparition de mapping par défaut après la sélection d'un autre mapping (#3398 par @Christophe-Ramet)
 - [Import] Correction du retour d'erreur quand le WKT donnée est malformé (#3441 par @jacquesfize)
 - [Documentation] Clarification du paramètre `ID_AREA_RESTRICTION` (#3382 par @jacquesfize)
 - [CI/CD] Amélioration des tests Cypress (#3436 par @Christophe-Ramet)
+- Drop redundant indexes on gn_meta and gn_synthese #3562
+- #3433
 
 ## 2.15.4 (2025-02-25)
 
