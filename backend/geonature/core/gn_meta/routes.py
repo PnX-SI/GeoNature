@@ -192,6 +192,8 @@ def get_dataset(scope, id_dataset):
             "acquisition_framework.cor_af_actor.organism",
             "acquisition_framework.cor_af_actor.role",
             "sources",
+            "obs_count",
+            "hab_count",
         ]
     )
     return dataset_schema.jsonify(dataset)
@@ -608,7 +610,18 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     """
     # Recuperation des données
     af = DB.session.get(TAcquisitionFramework, id_acquisition_framework)
-    acquisition_framework = af.as_dict(True, depth=2)
+    acquisition_framework = af.as_dict(
+        True,
+        depth=2,
+        fields=[
+            "datasets.obs_count",
+            "datasets.hab_count",
+            "datasets.id_dataset",
+            "datasets.id_dataset",
+            "datasets.unique_dataset_id",
+            "datasets.dataset_name",
+        ],
+    )
     dataset_ids = [d.id_dataset for d in af.datasets]
     nb_data = len(dataset_ids)
 
