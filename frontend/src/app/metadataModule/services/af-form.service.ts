@@ -68,6 +68,7 @@ export class AcquisitionFrameworkFormService {
         ]
       ),
       bibliographical_references: this.fb.array([]),
+      unique_acquisition_framework_id: [null, [this.formS.uuidValidator()]],
     });
 
     this.form.setValidators([
