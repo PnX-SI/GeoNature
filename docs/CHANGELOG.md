@@ -43,10 +43,11 @@
 - [CI/CD] Utilisation d'[images Docker](https://github.com/PnX-SI/geonature_db) pré-peuplées pour accélérer les tests unitaires (#3369 par @jacquesfize)
 - [Benchmark] Ajout de nouveaux tests automatisés de performances (#3392 par @Christophe-Ramet)
 - [Accueil] Amélioration du responsive de la page d'accueil (#3426 et #3428 par @Christophe-Ramet)
-- [Developpement] db.paginate (#3463 par @bouttier) et ordered (#3465 par @bouttier)
-- [Dev] feat(synthese): small refact of the code #3301
-- Feat/taxonomie v synthese #3373
-- Suppression page intermédaire ADMIN
+- [Développement] Modification du JSONProvider prenant en compte les objets `Paginate` de `flask-sqlalchemy` (#3463 par @bouttier)
+- [Développement] Utilisation de la nouvelle méthode générique de tri de données `ordered` dans le module méta-données  (#3465 par @bouttier)
+- [Développement] Refactorisation du code des routes Flask de la Synthèse (#3301 par @jacquesfize)
+- [Développement] Extension des champs accessibles dans la vue `gn_synthese.v_synthese_for_web_app` (#3373 par @Pierre-Narcisi)
+- [Général] Suppression de la page intermédiaire pour l'accès au panneau d'administration de GeoNature (par @jacquesfize)
 
 ### 🐛 Corrections
 
@@ -60,11 +61,11 @@
 - [Carte] Correction du problème de chargement des fichiers GeoJSON (#3532 par @jacquesfize)
 - [Import] Correction de l'export PDF (#3443 par @jacquesfize)
 - [Import] Correction de la disparition de mapping par défaut après la sélection d'un autre mapping (#3398 par @Christophe-Ramet)
-- [Import] Correction du retour d'erreur quand le WKT donnée est malformé (#3441 par @jacquesfize)
+- [Import] Correction du retour d'erreur quand le WKT donnée est malformé (#3433 par @jacquesfize)
 - [Documentation] Clarification du paramètre `ID_AREA_RESTRICTION` (#3382 par @jacquesfize)
 - [CI/CD] Amélioration des tests Cypress (#3436 par @Christophe-Ramet)
-- Drop redundant indexes on gn_meta and gn_synthese #3562
-- #3433
+- [BDD] Suppression d'index redondant dans les schémas `gn_meta` et `gn_synthese` (#3562 par @PaulLabruyere)
+- [Développement] Correction de l'affichage des valeurs dans le form `datalist` avec le thème bootstrap (#3590 par @Pierre-Narcisi)
 
 ## 2.15.4 (2025-02-25)
 
