@@ -302,10 +302,12 @@
     }
   },
   "Filters": {
-    "Refresh": "Rafraîchir les filtres",
-    "Advanced": "Filtres avancés",
-    "Add": "Ajouter un filtre",
-    "Other": "Autres filtres"
+    "Actions":{
+      "Refresh": "Rafraîchir les filtres",
+      "Advanced": "Filtres avancés",
+      "Add": "Ajouter un filtre",
+      "Other": "Autres filtres"
+    }
   },
   "TaxonSearch": {
     "Messages": {
