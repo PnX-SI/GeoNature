@@ -2,6 +2,8 @@
 Models of gn_permissions schema
 """
 
+from flask import current_app
+
 from packaging import version
 from datetime import datetime
 
@@ -180,7 +182,12 @@ class PermFilter:
                 return """<i class="fa fa-user-circle" aria-hidden="true"></i> de mon organisme"""
         elif self.name == "SENSITIVITY":
             if self.value:
-                return """<i class="fa fa-low-vision" aria-hidden="true"></i>  non sensible"""
+                statut = (
+                    "floutées"
+                    if current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]
+                    else "exclues"
+                )
+                return f"""<i class="fa fa-low-vision" aria-hidden="true"></i> sensibles {statut}"""
             else:
                 return """<i class="fa fa-eye" aria-hidden="true"></i>  sensible et non sensible"""
         elif self.name == "GEOGRAPHIC":

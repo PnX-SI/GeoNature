@@ -80,12 +80,11 @@ class ScopeFilter(DynamicOptionsMixin, FilterEqual):
 
 
 def filters_formatter(v, c, m, p):
-    filters = []
-    if m.scope:
-        filters.append(m.scope.label)
-    if m.sensitivity_filter:
-        filters.append("Données non sensibles")
-    return Markup("<ul>" + "".join(["<li>{}</li>".format(f) for f in filters]) + "</ul>")
+    return Markup(
+        "<ul >"
+        + "".join(["<li>{}</li>".format(f.__str__()) for f in m.as_dict()["filters"]])
+        + "</ul>"
+    )
 
 
 def modules_formatter(view, context, model, name):
