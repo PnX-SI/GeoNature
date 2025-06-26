@@ -1,9 +1,11 @@
+from flask import g
 import typing
+from geonature.core.gn_permissions.tools import get_permissions
 from geonature.utils.env import db
 from ref_geo.models import LAreas, BibAreasTypes
 
 from geonature.core.gn_synthese.models import Synthese
-from sqlalchemy import select, desc, asc, column, func, and_
+from sqlalchemy import select, desc, asc, column, func, and_, exists, or_
 from apptax.taxonomie.models import Taxref, TaxrefTree
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from sqlalchemy.orm import Query, aliased
@@ -19,6 +21,26 @@ class SortOrder(Enum):
 
 
 class TaxonSheetUtils:
+
+    @staticmethod
+    def has_instance_permission(cd_ref, user=None):
+        if not user:
+            user = g.current_user
+        permissions = get_permissions("R", user.id_role, "SYNTHESE")
+
+        for perm in permissions:
+            if not perm.taxons_filter:
+                continue
+            child_taxon_cte = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
+            is_authorized = db.session.scalar(
+                exists(child_taxon_cte)
+                .where(child_taxon_cte.c.cd_nom.in_([t.cd_nom for t in perm.taxons_filter]))
+                .select()
+            )
+            if not is_authorized:
+                return False
+
+        return True
 
     @staticmethod
     def update_query_with_sorting(query: Query, sort_by: str, sort_order: SortOrder) -> Query:
@@ -37,9 +59,11 @@ class TaxonSheetUtils:
         return db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))
 
     @staticmethod
-    def get_synthese_query_with_scope(current_user, scope: int, query: Query) -> SyntheseQuery:
+    def get_synthese_query_with_permissions(
+        current_user, permissions, query: Query
+    ) -> SyntheseQuery:
         synthese_query_obj = SyntheseQuery(Synthese, query, {})
-        synthese_query_obj.filter_query_with_cruved(current_user, scope)
+        synthese_query_obj.filter_query_with_permissions(current_user, permissions)
         return synthese_query_obj.query
 
     @staticmethod
