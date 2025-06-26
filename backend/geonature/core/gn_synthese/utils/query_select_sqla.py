@@ -128,6 +128,7 @@ class SyntheseQuery:
             self.first = False
             self._already_joined_table.append(right_table)
         else:
+            print(self._already_joined_table)
             # check if the table not already joined
             if right_table not in self._already_joined_table:
                 self.query_joins = self.query_joins.join(right_table, left_column == right_column)
