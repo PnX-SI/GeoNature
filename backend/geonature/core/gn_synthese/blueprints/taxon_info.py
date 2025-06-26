@@ -189,7 +189,7 @@ def get_taxon_tree():
 ## ############################################################################
 
 
-@taxon_info_routes.route("/taxon_medias/<int:cd_ref>", methods=["GET"])
+@taxon_info_routes.route("/taxon/<int:cd_ref>/medias", methods=["GET"])
 @login_required
 @permissions.check_cruved_scope("R", module_code="SYNTHESE")
 @json_resp
@@ -221,7 +221,7 @@ def taxon_medias(cd_ref):
 
 if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
-    @taxon_info_routes.route("/taxon_sheet/is_authorized/<int:cd_ref>")
+    @taxon_info_routes.route("/taxon/<int:cd_ref>/access")
     @permissions.check_cruved_scope("R", module_code="SYNTHESE")
     @json_resp
     def is_authorized(cd_ref):
@@ -230,7 +230,7 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
             raise Forbidden
         return "Authorized", 200
 
-    @taxon_info_routes.route("/taxon_stats/<int:cd_ref>", methods=["GET"])
+    @taxon_info_routes.route("/taxon/<int:cd_ref>", methods=["GET"])
     @permissions.permissions_required("R", module_code="SYNTHESE")
     @json_resp
     def taxon_stats(permissions, cd_ref):
@@ -293,7 +293,7 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
 if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
 
-    @taxon_info_routes.route("/taxon_observers/<int:cd_ref>", methods=["GET"])
+    @taxon_info_routes.route("/taxon/<int:cd_ref>/observers", methods=["GET"])
     @permissions.permissions_required("R", module_code="SYNTHESE")
     def taxon_observers(permissions, cd_ref):
 
