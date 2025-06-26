@@ -29,9 +29,20 @@ class TaxonSheetUtils:
         permissions = get_permissions("R", user.id_role, "SYNTHESE")
 
         for perm in permissions:
-            if not perm.taxons_filter:
-                continue
-            child_taxon_cte = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
+            current = aliased(TaxrefTree)
+            child_taxon_cte = (
+                select(Taxref.cd_nom)
+                .join(TaxrefTree, TaxrefTree.cd_nom == Taxref.cd_nom)
+                .join(
+                    current,
+                    or_(
+                        current.cd_nom == cd_ref,
+                        TaxrefTree.path.op("<@")(current.path),
+                    ),
+                )
+                .alias("taxons")
+            )
+
             is_authorized = db.session.scalar(
                 exists(child_taxon_cte)
                 .where(child_taxon_cte.c.cd_nom.in_([t.cd_nom for t in perm.taxons_filter]))
