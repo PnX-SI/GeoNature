@@ -256,6 +256,14 @@ Ce floutage des données a été implémenté sur 3 routes de la synthèse :
 
 Des tests unitaires ont également été écrits.
 
+.. warning::
+   Si ``BLUR_SENSITIVE_OBSERVATIONS=true`` et qu'un utilisateur se voit appliquer un filtre de floutage, 
+   les observations avec une nomenclature de sensibilité nulle seront absentes des résultats ! 
+
+   Pour assigner une valeur de nomenclature sur ces observations, deux solutions s'offrent à vous : 
+
+   - Relancer l'attribution de la nomenclature de sensibilité en s'appuyant sur le référentiel : ``geonature sensitivity update-synthese``
+   - **OU** Modifier la valeur du champs `gn_synthese.synthese.id_nomenclature_sensitivity` pour les observations concernées 
 
 Traitement des problématiques liés aux zonages
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
