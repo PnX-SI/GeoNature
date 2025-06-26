@@ -221,6 +221,15 @@ def taxon_medias(cd_ref):
 
 if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
+    @taxon_info_routes.route("/taxon_sheet/is_authorized/<int:cd_ref>")
+    @permissions.check_cruved_scope("R", module_code="SYNTHESE")
+    @json_resp
+    def is_authorized(cd_ref):
+        is_authorized_status = TaxonSheetUtils.has_instance_permission(cd_ref)
+        if not is_authorized_status:
+            raise Forbidden
+        return "Authorized", 200
+
     @taxon_info_routes.route("/taxon_stats/<int:cd_ref>", methods=["GET"])
     @permissions.permissions_required("R", module_code="SYNTHESE")
     @json_resp
