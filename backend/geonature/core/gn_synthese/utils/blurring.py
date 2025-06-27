@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from apptax.taxonomie.models import TaxrefTree
 from flask import g
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased
@@ -169,7 +170,11 @@ def build_allowed_geom_cte(
         )
     ).limit(limit)
 
-    return precise_geom_query.union(blurred_geom_query).cte("allowed_geom")
+    return (
+        precise_geom_query.join(TaxrefTree.cd_nom, Synthese.cd_nom == TaxrefTree.cd_nom)
+        .union(blurred_geom_query.join(TaxrefTree.cd_nom, Synthese.cd_nom == TaxrefTree.cd_nom))
+        .cte("allowed_geom")
+    )
 
 
 def build_synthese_obs_query(observations, allowed_geom_cte, limit):

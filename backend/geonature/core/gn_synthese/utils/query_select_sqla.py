@@ -211,12 +211,18 @@ class SyntheseQuery:
 
                 perm_filters.append(where_clause)
             if perm.taxons_filter:
+                print("JE SUIS LA !!!!")
                 # Does obs taxon path is an descendant of any path of taxons_filter?
-                self.add_join(TaxrefTree, TaxrefTree.cd_nom, self.model.cd_nom, join_type="left")
+                self.add_join(
+                    TaxrefTree,
+                    TaxrefTree.cd_nom,
+                    self.model.cd_nom,
+                )
+
                 where_clause = TaxrefTree.path.op("<@")(
-                    sa.select(sa.func.array_agg(TaxrefTree.path)).where(
-                        TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter])
-                    )
+                    sa.select(sa.func.array_agg(TaxrefTree.path))
+                    .where(TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter]))
+                    .subquery()
                 )
                 perm_filters.append(where_clause)
             if perm_filters:
