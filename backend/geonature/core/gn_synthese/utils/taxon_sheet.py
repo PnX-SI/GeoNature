@@ -20,10 +20,12 @@ class SortOrder(Enum):
     DESC = "desc"
 
 
-class TaxonSheetUtils:
+class TaxonSheet:
 
-    @staticmethod
-    def has_instance_permission(cd_ref, user=None):
+    def __init__(self, cd_ref):
+        self.cd_ref = cd_ref
+
+    def has_instance_permission(self, user=None):
         if not user:
             user = g.current_user
         permissions = get_permissions("R", user.id_role, "SYNTHESE")
@@ -43,12 +45,15 @@ class TaxonSheetUtils:
                 )
 
                 is_authorized = db.session.scalar(
-                    exists(TaxrefTree).where(child_taxon_cte.c.cd_nom.in_([cd_ref])).select()
+                    exists(TaxrefTree).where(child_taxon_cte.c.cd_nom.in_([self.cd_ref])).select()
                 )
                 if not is_authorized:
                     return False
 
         return True
+
+
+class TaxonSheetUtils:
 
     @staticmethod
     def update_query_with_sorting(query: Query, sort_by: str, sort_order: SortOrder) -> Query:

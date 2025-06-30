@@ -1,6 +1,6 @@
 from warnings import warn
 
-from flask import Blueprint, g, jsonify, request
+from flask import Blueprint, g, jsonify, request, current_app
 
 from geonature import app
 from geonature.utils.env import db
@@ -15,7 +15,7 @@ from geonature.core.gn_synthese.models import (
     VColorAreaTaxon,
 )
 from geonature.core.gn_commons.models import TMedias
-from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils, SortOrder
+from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheet, TaxonSheetUtils, SortOrder
 from pypnusershub.db import User
 from geonature.core.gn_synthese.utils.orm import is_already_joined
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
@@ -30,6 +30,13 @@ from sqlalchemy.orm import Query
 from werkzeug.exceptions import BadRequest, Forbidden
 
 taxon_info_routes = Blueprint("synthese_taxon_info", __name__)
+
+
+@taxon_info_routes.url_value_preprocessor
+def resolve_import(endpoint, values):
+    if current_app.url_map.is_endpoint_expecting(endpoint, "cd_ref"):
+        sheet = TaxonSheet(values.get("cd_ref"))
+        values["sheet"] = sheet
 
 
 @taxon_info_routes.route("/taxa_distribution", methods=["GET"])
@@ -193,8 +200,8 @@ def get_taxon_tree():
 @login_required
 @permissions.check_cruved_scope("R", module_code="SYNTHESE")
 @json_resp
-def taxon_medias(cd_ref):
-    if not TaxonSheetUtils.has_instance_permission(cd_ref):
+def taxon_medias(cd_ref, sheet):
+    if not sheet.has_instance_permission():
         raise Forbidden
 
     per_page = request.args.get("per_page", 10, int)
@@ -224,8 +231,8 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
     @taxon_info_routes.route("/taxon/<int:cd_ref>/access")
     @permissions.check_cruved_scope("R", module_code="SYNTHESE")
     @json_resp
-    def is_authorized(cd_ref):
-        is_authorized_status = TaxonSheetUtils.has_instance_permission(cd_ref)
+    def is_authorized(cd_ref, sheet):
+        is_authorized_status = sheet.has_instance_permission()
         if not is_authorized_status:
             raise Forbidden
         return "Authorized", 200
@@ -233,11 +240,11 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
     @taxon_info_routes.route("/taxon/<int:cd_ref>", methods=["GET"])
     @permissions.permissions_required("R", module_code="SYNTHESE")
     @json_resp
-    def taxon_stats(permissions, cd_ref):
+    def taxon_stats(permissions, cd_ref, sheet):
         """Return stats for a specific taxon"""
         area_type = request.args.get("area_type")
 
-        if not TaxonSheetUtils.has_instance_permission(cd_ref):
+        if not sheet.has_instance_permission():
             raise Forbidden
         if not area_type:
             raise BadRequest("Missing area_type parameter")
@@ -295,9 +302,9 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
 
     @taxon_info_routes.route("/taxon/<int:cd_ref>/observers", methods=["GET"])
     @permissions.permissions_required("R", module_code="SYNTHESE")
-    def taxon_observers(permissions, cd_ref):
+    def taxon_observers(permissions, cd_ref, sheet):
 
-        if not TaxonSheetUtils.has_instance_permission(cd_ref):
+        if not sheet.has_instance_permission():
             raise Forbidden
 
         per_page = request.args.get("per_page", 10, int)
