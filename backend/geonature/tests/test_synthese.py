@@ -5,7 +5,6 @@ import datetime
 import itertools
 from collections import Counter
 
-from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils
 import pytest
 from flask import url_for, current_app
 import sqlalchemy as sa

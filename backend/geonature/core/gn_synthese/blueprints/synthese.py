@@ -7,7 +7,6 @@ from flask import (
     jsonify,
     g,
 )
-from geonature.core.gn_permissions.tools import _get_user_permissions
 
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest
 from sqlalchemy import func, select, case, join, and_
