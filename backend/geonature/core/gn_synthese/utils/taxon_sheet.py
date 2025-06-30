@@ -29,15 +29,24 @@ class TaxonSheetUtils:
         permissions = get_permissions("R", user.id_role, "SYNTHESE")
 
         for perm in permissions:
-            child_taxon_cte = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
+            if perm.taxons_filter:
+                child_taxon_cte = (
+                    select(TaxrefTree.cd_nom)
+                    .where(
+                        TaxrefTree.path.op("<@")(
+                            select(func.array_agg(TaxrefTree.path))
+                            .where(TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter]))
+                            .subquery()
+                        )
+                    )
+                    .cte()
+                )
 
-            is_authorized = db.session.scalar(
-                exists(child_taxon_cte)
-                .where(child_taxon_cte.c.cd_nom.in_([t.cd_nom for t in perm.taxons_filter]))
-                .select()
-            )
-            if not is_authorized:
-                return False
+                is_authorized = db.session.scalar(
+                    exists(TaxrefTree).where(child_taxon_cte.c.cd_nom.in_([cd_ref])).select()
+                )
+                if not is_authorized:
+                    return False
 
         return True
 
@@ -90,16 +99,12 @@ class TaxonSheetUtils:
     @staticmethod
     def get_taxon_selectquery(cd_ref: int) -> Select:
         # selectquery to fetch taxon and sub taxa based on cd_ref
-        current = aliased(TaxrefTree)
         return (
-            select(Taxref.cd_nom)
-            .join(TaxrefTree, TaxrefTree.cd_nom == Taxref.cd_nom)
-            .join(
-                current,
-                and_(
-                    current.cd_nom == cd_ref,
-                    TaxrefTree.path.op("<@")(current.path),
-                ),
+            select(TaxrefTree.cd_nom)
+            .where(
+                TaxrefTree.path.op("<@")(
+                    select(TaxrefTree.path).where(TaxrefTree.cd_nom == cd_ref).subquery()
+                )
             )
             .alias("taxons")
         )

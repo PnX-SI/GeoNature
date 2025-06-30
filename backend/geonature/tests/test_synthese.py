@@ -5,6 +5,7 @@ import datetime
 import itertools
 from collections import Counter
 
+from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheetUtils
 import pytest
 from flask import url_for, current_app
 import sqlalchemy as sa
@@ -2102,3 +2103,32 @@ class TestSyntheseTaxonomicFilter:
         assert synthese_data["obs1"].id_synthese in response_ids
         assert synthese_data["obs2"].id_synthese in response_ids
         assert synthese_data["obs3"].id_synthese not in response_ids
+
+    @pytest.mark.parametrize("cd_ref,parent", [(2852, None), (79303, 186233)])
+    def test_taxon_sheet(self, synthese_read_permissions, cd_ref, parent):
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        cd_ref_perm = parent if parent else cd_ref
+        taxon = Taxref.query.filter_by(cd_ref=cd_ref_perm).first()
+        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon])
+        set_logged_user(self.client, user)
+
+        for route in [
+            "gn_synthese.synthese_taxon_info.is_authorized",
+            "gn_synthese.synthese_taxon_info.taxon_medias",
+            "gn_synthese.synthese_taxon_info.taxon_observers",
+            "gn_synthese.synthese_taxon_info.taxon_stats",
+        ]:
+            params = (
+                {"area_type": "COM"}
+                if route == "gn_synthese.synthese_taxon_info.taxon_stats"
+                else {}
+            )
+            response = self.client.get(url_for(route, cd_ref=cd_ref, **params))
+            assert response.status_code == 200
+
+            response = self.client.get(
+                url_for(route, cd_ref=202),
+            )
+            assert response.status_code == 403
