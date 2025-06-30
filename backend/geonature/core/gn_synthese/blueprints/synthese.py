@@ -145,20 +145,7 @@ def get_observations_for_web(permissions):
 
     # Need to check if there are blurring permissions so that the blurring process
     # does not affect the performance if there is no blurring permissions
-    print("permissions returned by permissions_required")
-    print(permissions)
-    print("permissions returned by _get_user_permissions")
-    permissions = [
-        perm
-        for perm in _get_user_permissions(g.current_user.id_role)
-        if perm.id_permission == 15131
-        and perm.module.module_code == "SYNTHESE"
-        and perm.action.code_action == "R"
-    ]
-    print(permissions)
-    # print(permissions2)
     blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
-
     if not blurring_permissions:
         # No need to apply blurring => same path as before blurring feature
         obs_query = (
@@ -246,6 +233,9 @@ def get_observations_for_web(permissions):
         )
         query = select(obs_query.c.geojson, grouped_properties).group_by(obs_query.c.geojson)
 
+    from utils_flask_sqla.utils import get_query_SQL
+
+    print(get_query_SQL(query))
     results = DB.session.execute(query)
 
     # Build final GeoJson

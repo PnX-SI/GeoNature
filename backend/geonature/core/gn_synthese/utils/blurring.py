@@ -147,7 +147,7 @@ def build_allowed_geom_cte(
         g.current_user,
         precise_permissions,
     )
-    blurring_perms_filter = precise_geom_query.build_permissions_filter(
+    blurring_perms_filter = blurred_geom_query.build_permissions_filter(
         g.current_user,
         blurring_permissions,
     )
@@ -170,11 +170,15 @@ def build_allowed_geom_cte(
         )
     ).limit(limit)
 
-    return (
-        precise_geom_query.join(TaxrefTree.cd_nom, Synthese.cd_nom == TaxrefTree.cd_nom)
-        .union(blurred_geom_query.join(TaxrefTree.cd_nom, Synthese.cd_nom == TaxrefTree.cd_nom))
-        .cte("allowed_geom")
-    )
+    if any([len(perm.taxons_filter) > 0 for perm in blurring_permissions]):
+        precise_geom_query = precise_geom_query.outerjoin(
+            TaxrefTree.cd_nom, Synthese.cd_nom == TaxrefTree.cd_nom
+        )
+        blurred_geom_query = blurred_geom_query.outerjoin(
+            TaxrefTree.cd_nom, Synthese.cd_nom == TaxrefTree.cd_nom
+        )
+
+    return precise_geom_query.union(blurred_geom_query).cte("allowed_geom")
 
 
 def build_synthese_obs_query(observations, allowed_geom_cte, limit):

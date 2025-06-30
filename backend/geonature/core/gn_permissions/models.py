@@ -291,7 +291,7 @@ class Permission(db.Model):
         - Module: {self.module.module_label} 
         - Action : {self.action.code_action}
         - Scope : {self.scope_value}
-        - TaxonsFilter : {self.taxons_filter}
+        - Taxons Filter : {self.taxons_filter}
         - Areas Filter : {self.areas_filter}
         - Object: {self.object}
         - Expire le : {self.expire_on}\n"""

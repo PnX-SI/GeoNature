@@ -128,7 +128,6 @@ class SyntheseQuery:
             self.first = False
             self._already_joined_table.append(right_table)
         else:
-            print(self._already_joined_table)
             # check if the table not already joined
             if right_table not in self._already_joined_table:
                 self.query_joins = self.query_joins.join(right_table, left_column == right_column)
@@ -211,13 +210,8 @@ class SyntheseQuery:
 
                 perm_filters.append(where_clause)
             if perm.taxons_filter:
-                print("JE SUIS LA !!!!")
                 # Does obs taxon path is an descendant of any path of taxons_filter?
-                self.add_join(
-                    TaxrefTree,
-                    TaxrefTree.cd_nom,
-                    self.model.cd_nom,
-                )
+                self.add_join(TaxrefTree, self.model.cd_nom, TaxrefTree.cd_nom, join_type="right")
 
                 where_clause = TaxrefTree.path.op("<@")(
                     sa.select(sa.func.array_agg(TaxrefTree.path))
