@@ -1995,7 +1995,10 @@ class TestMediaTaxon:
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSyntheseGeographicFilter:
-    def test_geographic_filter_get_obs(self, synthese_data, synthese_read_permissions):
+    @pytest.mark.parametrize("sensitivity_activated", (True, False))
+    def test_geographic_filter_get_obs(
+        self, synthese_data, synthese_read_permissions, sensitivity_activated
+    ):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
@@ -2005,7 +2008,12 @@ class TestSyntheseGeographicFilter:
         guirec = db.session.execute(
             sa.select(LAreas).where(LAreas.area_name == "Perros-Guirec")
         ).scalar_one()
-        synthese_read_permissions(user, scope_value=None, areas_filter=[chambery, guirec])
+        synthese_read_permissions(
+            user,
+            scope_value=None,
+            areas_filter=[chambery, guirec],
+            sensitivity_filter=sensitivity_activated,
+        )
         set_logged_user(self.client, user)
         response = self.client.get(
             url_for(
@@ -2029,7 +2037,10 @@ class TestSyntheseGeographicFilter:
         )
         assert response.status_code == 200, response.data
 
-    def test_geographic_filter_list_obs(self, synthese_data, synthese_read_permissions):
+    @pytest.mark.parametrize("sensitivity_activated", (True, False))
+    def test_geographic_filter_list_obs(
+        self, synthese_data, synthese_read_permissions, sensitivity_activated
+    ):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
@@ -2039,7 +2050,12 @@ class TestSyntheseGeographicFilter:
         guirec = db.session.execute(
             sa.select(LAreas).where(LAreas.area_name == "Perros-Guirec")
         ).scalar_one()
-        synthese_read_permissions(user, scope_value=None, areas_filter=[chambery, guirec])
+        synthese_read_permissions(
+            user,
+            scope_value=None,
+            areas_filter=[chambery, guirec],
+            sensitivity_filter=sensitivity_activated,
+        )
         set_logged_user(self.client, user)
         response = self.client.get(
             url_for(
@@ -2055,13 +2071,21 @@ class TestSyntheseGeographicFilter:
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSyntheseTaxonomicFilter:
-    def test_taxonomic_filter_get_obs(self, synthese_data, synthese_read_permissions):
+    @pytest.mark.parametrize("sensitivity_activated", (True, False))
+    def test_taxonomic_filter_get_obs(
+        self, synthese_data, synthese_read_permissions, sensitivity_activated
+    ):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
         taxon1 = synthese_data["obs1"].taxref
         taxon2 = synthese_data["obs2"].taxref.parent
-        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon1, taxon2])
+        synthese_read_permissions(
+            user,
+            scope_value=None,
+            taxons_filter=[taxon1, taxon2],
+            sensitivity_filter=sensitivity_activated,
+        )
         set_logged_user(self.client, user)
         response = self.client.get(
             url_for(
@@ -2085,13 +2109,21 @@ class TestSyntheseTaxonomicFilter:
         )
         assert response.status_code == Forbidden.code, response.data
 
-    def test_taxonomic_filter_list_obs(self, synthese_data, synthese_read_permissions):
+    @pytest.mark.parametrize("sensitivity_activated", (True, False))
+    def test_taxonomic_filter_list_obs(
+        self, synthese_data, synthese_read_permissions, sensitivity_activated
+    ):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
         taxon1 = synthese_data["obs1"].taxref
         taxon2 = synthese_data["obs2"].taxref.parent
-        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon1, taxon2])
+        synthese_read_permissions(
+            user,
+            scope_value=None,
+            taxons_filter=[taxon1, taxon2],
+            sensitivity_filter=sensitivity_activated,
+        )
         set_logged_user(self.client, user)
         response = self.client.get(
             url_for(
