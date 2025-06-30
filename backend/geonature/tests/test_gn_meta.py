@@ -1,14 +1,12 @@
 import csv
 import uuid
 from io import StringIO
-from unittest.mock import patch
-
+from unittest.mock import MagicMock
 
 import pytest
-from flask import url_for
-from geoalchemy2.shape import to_shape
-from geojson import Point
-from geonature.core.gn_commons.models import TModules
+from flask import url_for, Flask
+from kombu.asynchronous.http import Response
+
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
@@ -35,6 +33,7 @@ from werkzeug.exceptions import (
 
 from .fixtures import *
 from .utils import logged_user_headers, set_logged_user
+from ..utils.errors import GeoNatureError
 
 
 @pytest.fixture(scope="function")
@@ -94,12 +93,6 @@ def synthese_corr():
         "jourDatefin": "date_max",
         "observateurIdentite": "observers",
     }
-
-
-@pytest.fixture
-def mocked_publish_mail():
-    with patch("geonature.core.gn_meta.routes.publish_acquisition_framework_mail") as mock:
-        yield mock
 
 
 def get_csv_from_response(data):
@@ -1152,9 +1145,7 @@ class TestGNMeta:
         assert organismonly.actor == user.organisme
         assert complete.actor == user
 
-    def test_publish_acquisition_framework_no_data(
-        self, mocked_publish_mail, users, acquisition_frameworks
-    ):
+    def test_publish_acquisition_framework_no_data(self, users, acquisition_frameworks):
         set_logged_user(self.client, users["user"])
 
         af = acquisition_frameworks["own_af"]
@@ -1165,10 +1156,9 @@ class TestGNMeta:
             )
         )
         assert response.status_code == Conflict.code, response.json
-        mocked_publish_mail.assert_not_called()
 
     def test_publish_acquisition_framework_with_data(
-        self, mocked_publish_mail, users, acquisition_frameworks, synthese_data
+        self, users, acquisition_frameworks, synthese_data
     ):
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
@@ -1179,7 +1169,53 @@ class TestGNMeta:
             )
         )
         assert response.status_code == 200, response.json
-        mocked_publish_mail.assert_called_once()
+
+    def test_publish_acquisition_frameworks_extended(
+        self, app, users, acquisition_frameworks, synthese_data
+    ):
+        """
+        We test if the mechanism of extension of acquisition framework publication works
+        """
+        # We use mock as extended function so we can keep track wether it's called
+        mocked_extended_publish = MagicMock()
+        route_name = "test.extended_af_publish"
+        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
+        app.view_functions[route_name] = mocked_extended_publish
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.publish_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        mocked_extended_publish.assert_called_once()
+        assert response.status_code == 200, response.json
+        assert af.opened == False
+
+    def test_publish_acquisition_frameworks_extended_with_exception(
+        self, app, users, acquisition_frameworks, synthese_data
+    ):
+        """
+        We test if when an error occur in the extended af publish, the af stay opened.
+        """
+
+        def mocked_publish(_=None):
+            raise GeoNatureError()
+
+        route_name = "test.extended_af_publish"
+        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
+        app.view_functions[route_name] = mocked_publish
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.publish_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == 500, response.json
+        assert af.opened == True
 
 
 @pytest.mark.usefixtures(
