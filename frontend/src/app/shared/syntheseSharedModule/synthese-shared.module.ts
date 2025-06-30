@@ -9,6 +9,7 @@ import { SyntheseInfoObsComponent } from './synthese-info-obs/synthese-info-obs.
 import { DiscussionCardComponent } from '../discussionCardModule/discussion-card.component';
 import { AlertInfoComponent } from '../alertInfoModule/alert-Info.component';
 import { TaxonomyComponent } from './synthese-info-obs/taxonomy/taxonomy.component';
+import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
 
 @NgModule({
   imports: [CommonModule, GN2CommonModule, NgChartsModule, RouterModule, ClipboardModule],
@@ -24,6 +25,8 @@ import { TaxonomyComponent } from './synthese-info-obs/taxonomy/taxonomy.compone
     AlertInfoComponent,
     TaxonomyComponent,
   ],
-  providers: [],
+  providers: [
+    SyntheseCriteriaService
+  ],
 })
 export class SharedSyntheseModule {}
