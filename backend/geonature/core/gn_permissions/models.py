@@ -287,13 +287,14 @@ class Permission(db.Model):
 
     def __repr__(self):
         return f"""Permission {self.id_permission} 
-        - Role: {self.role.nom_complet} 
+        - Role: {self.role.nom_complet or self.role.identifiant} 
         - Module: {self.module.module_label} 
         - Action : {self.action.code_action}
         - Scope : {self.scope_value}
         - Taxons Filter : {self.taxons_filter}
         - Areas Filter : {self.areas_filter}
         - Object: {self.object}
+        - Floutage : {"Oui" if self.sensitivity_filter else "Non"}
         - Expire le : {self.expire_on}\n"""
 
     @staticmethod
