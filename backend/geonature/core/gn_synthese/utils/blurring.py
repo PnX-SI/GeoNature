@@ -5,7 +5,7 @@ from apptax.taxonomie.models import TaxrefTree
 from flask import g
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased
-from sqlalchemy.sql.expression import CTE
+from sqlalchemy.sql.expression import CTE, Select
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from ref_geo.models import BibAreasTypes, LAreas
 
@@ -190,7 +190,7 @@ def build_allowed_geom_cte(
     blurred_geom_query: SyntheseQuery,
     precise_geom_query: SyntheseQuery,
     limit: int,
-) -> sa.Select:
+) -> Select:
     """
     Apply permissions filters and sensitivity filters to separate blurring and precise permissions.
 
@@ -268,9 +268,9 @@ def build_allowed_geom_cte(
 
 def build_synthese_obs_query(
     observations_columns: List[sa.Column], allowed_geom_cte: CTE, limit: int
-):
+) -> Select:
     """
-    Generate the final query used to fetch observations when a user has a sensitivity filter in one of their permissions.
+    $Generate the final query used to fetch observations when a user has a sensitivity filter in one of their permissions.
 
     Parameters
     ----------
@@ -288,7 +288,7 @@ def build_synthese_obs_query(
     """
     # Final observation query
     # orderby priority as explained in build_allowed_geom_cte()
-    obs_query = (
+    query = (
         sa.select(observations_columns)
         .select_from(
             VSyntheseForWebApp.__table__.join(
@@ -303,4 +303,4 @@ def build_synthese_obs_query(
         .distinct(VSyntheseForWebApp.date_min, VSyntheseForWebApp.id_synthese)
         .limit(limit)
     )
-    return obs_query
+    return query
