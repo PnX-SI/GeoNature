@@ -141,7 +141,7 @@ def get_observations_for_web(permissions):
     for column in param_column_list:
         columns += [column, getattr(VSyntheseForWebApp, column)]
 
-    observations = func.json_build_object(*columns).label("obs_as_json")
+    observations_columns = func.json_build_object(*columns).label("obs_as_json")
 
     # Need to check if there are blurring permissions so that the blurring process
     # does not affect the performance if there is no blurring permissions
@@ -149,7 +149,7 @@ def get_observations_for_web(permissions):
     if not blurring_permissions:
         # No need to apply blurring => same path as before blurring feature
         obs_query = (
-            select(observations)
+            select(observations_columns)
             .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
             .order_by(VSyntheseForWebApp.date_min.desc())
             .limit(result_limit)
@@ -181,7 +181,7 @@ def get_observations_for_web(permissions):
         )
 
         obs_query = build_synthese_obs_query(
-            observations=observations,
+            observations_columns=observations_columns,
             allowed_geom_cte=allowed_geom_cte,
             limit=result_limit,
         )
@@ -233,9 +233,6 @@ def get_observations_for_web(permissions):
         )
         query = select(obs_query.c.geojson, grouped_properties).group_by(obs_query.c.geojson)
 
-    from utils_flask_sqla.utils import get_query_SQL
-
-    print(get_query_SQL(query))
     results = DB.session.execute(query)
 
     # Build final GeoJson
