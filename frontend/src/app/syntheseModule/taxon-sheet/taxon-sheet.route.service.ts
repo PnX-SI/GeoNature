@@ -6,12 +6,16 @@ import {
   CanActivateChild,
   CanActivate,
 } from '@angular/router';
+import { catchError } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
 import { TabObservationsComponent } from './tab-observations/tab-observations.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
 import { TabTaxonomyComponent } from './tab-taxonomy/tab-taxonomy.component';
 import { TabMediaComponent } from './tab-media/tab-media.component';
 import { TabObserversComponent } from './tab-observers/tab-observers.component';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { throwError } from '@librairies/rxjs';
+import { HttpErrorResponse } from '@librairies/@angular/common/http';
 
 interface Tab {
   label: string;
@@ -60,7 +64,8 @@ export class RouteService implements CanActivate, CanActivateChild {
   readonly TAB_LINKS = [];
   constructor(
     private _config: ConfigService,
-    private _router: Router
+    private _router: Router,
+    private _sds: SyntheseDataService
   ) {
     if (this._config['SYNTHESE']?.['TAXON_SHEET']) {
       const config = this._config['SYNTHESE']['TAXON_SHEET'];
@@ -75,10 +80,19 @@ export class RouteService implements CanActivate, CanActivateChild {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+
     if (!this._config.SYNTHESE.ENABLE_TAXON_SHEETS) {
       this._router.navigate(['/404'], { skipLocationChange: true });
       return false;
     }
+    const cd_ref = route.params.cd_ref
+    this._sds.getIsAuthorizedCdRefForUser(cd_ref).pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 403) {
+          // Rediriger vers la page 404
+          this._router.navigate(['/404']);
+        }
+        return throwError(error);
+      })).subscribe()
 
     // Apply a redirection if needed to the first enabled child.
     if (this._isComponentRootLevelRoute(route, state)) {
