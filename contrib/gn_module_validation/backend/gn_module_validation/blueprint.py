@@ -314,9 +314,6 @@ def post_status(scope, id_synthese):
         # t_validations.id_validator:
         id_validator = g.current_user.id_role
 
-        # t_validations.validation_date
-        val_date = datetime.datetime.now()
-
         # t_validations.validation_auto
         val_auto = False
         val_dict = {
@@ -324,7 +321,6 @@ def post_status(scope, id_synthese):
             "id_nomenclature_valid_status": id_validation_status,
             "id_validator": id_validator,
             "validation_comment": validation_comment,
-            "validation_date": str(val_date),
             "validation_auto": val_auto,
         }
         # insert values in t_validations
