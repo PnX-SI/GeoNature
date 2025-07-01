@@ -25,10 +25,7 @@ class TaxonSheet:
     def __init__(self, cd_ref):
         self.cd_ref = cd_ref
 
-    def has_instance_permission(self, user=None):
-        if not user:
-            user = g.current_user
-        permissions = get_permissions("R", user.id_role, "SYNTHESE")
+    def has_instance_permission(self, permissions=[]):
 
         for perm in permissions:
             if perm.taxons_filter:

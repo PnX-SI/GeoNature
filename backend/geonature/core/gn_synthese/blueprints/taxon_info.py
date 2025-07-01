@@ -198,10 +198,10 @@ def get_taxon_tree():
 
 @taxon_info_routes.route("/taxon/<int:cd_ref>/medias", methods=["GET"])
 @login_required
-@permissions.check_cruved_scope("R", module_code="SYNTHESE")
+@permissions.permissions_required("R", module_code="SYNTHESE")
 @json_resp
-def taxon_medias(cd_ref, sheet):
-    if not sheet.has_instance_permission():
+def taxon_medias(permissions, cd_ref, sheet):
+    if not sheet.has_instance_permission(permissions=permissions):
         raise Forbidden
 
     per_page = request.args.get("per_page", 10, int)
@@ -229,10 +229,10 @@ def taxon_medias(cd_ref, sheet):
 if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
     @taxon_info_routes.route("/taxon/<int:cd_ref>/access")
-    @permissions.check_cruved_scope("R", module_code="SYNTHESE")
+    @permissions.permissions_required("R", module_code="SYNTHESE")
     @json_resp
-    def is_authorized(cd_ref, sheet):
-        is_authorized_status = sheet.has_instance_permission()
+    def is_authorized(permissions, cd_ref, sheet):
+        is_authorized_status = sheet.has_instance_permission(permissions)
         if not is_authorized_status:
             raise Forbidden
         return "Authorized", 200
@@ -244,7 +244,7 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
         """Return stats for a specific taxon"""
         area_type = request.args.get("area_type")
 
-        if not sheet.has_instance_permission():
+        if not sheet.has_instance_permission(permissions=permissions):
             raise Forbidden
         if not area_type:
             raise BadRequest("Missing area_type parameter")
@@ -304,7 +304,7 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
     @permissions.permissions_required("R", module_code="SYNTHESE")
     def taxon_observers(permissions, cd_ref, sheet):
 
-        if not sheet.has_instance_permission():
+        if not sheet.has_instance_permission(permissions):
             raise Forbidden
 
         per_page = request.args.get("per_page", 10, int)
