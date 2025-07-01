@@ -216,7 +216,7 @@ class SyntheseQuery:
                 where_clause = TaxrefTree.path.op("<@")(
                     sa.select(sa.func.array_agg(TaxrefTree.path))
                     .where(TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter]))
-                    .subquery()
+                    .scalar_subquery()
                 )
                 perm_filters.append(where_clause)
             if perm_filters:

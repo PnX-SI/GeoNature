@@ -105,7 +105,7 @@ class TaxonSheetUtils:
             select(TaxrefTree.cd_nom)
             .where(
                 TaxrefTree.path.op("<@")(
-                    select(TaxrefTree.path).where(TaxrefTree.cd_nom == cd_ref).subquery()
+                    select(TaxrefTree.path).where(TaxrefTree.cd_nom == cd_ref).scalar_subquery()
                 )
             )
             .alias("taxons")

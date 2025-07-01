@@ -33,7 +33,7 @@ taxon_info_routes = Blueprint("synthese_taxon_info", __name__)
 
 
 @taxon_info_routes.url_value_preprocessor
-def resolve_import(endpoint, values):
+def resolve_taxon_sheet(endpoint, values):
     if current_app.url_map.is_endpoint_expecting(endpoint, "cd_ref"):
         sheet = TaxonSheet(values.get("cd_ref"))
         values["sheet"] = sheet
@@ -196,7 +196,7 @@ def get_taxon_tree():
 ## ############################################################################
 
 
-@taxon_info_routes.route("/taxon/<int:cd_ref>/medias", methods=["GET"])
+@taxon_info_routes.route("/taxon/<int(signed=True):cd_ref>/medias", methods=["GET"])
 @login_required
 @permissions.permissions_required("R", module_code="SYNTHESE")
 @json_resp
@@ -228,7 +228,7 @@ def taxon_medias(permissions, cd_ref, sheet):
 
 if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
-    @taxon_info_routes.route("/taxon/<int:cd_ref>/access")
+    @taxon_info_routes.route("/taxon/<int(signed=True):cd_ref>/access")
     @permissions.permissions_required("R", module_code="SYNTHESE")
     @json_resp
     def is_authorized(permissions, cd_ref, sheet):
@@ -237,7 +237,7 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
             raise Forbidden
         return "Authorized", 200
 
-    @taxon_info_routes.route("/taxon/<int:cd_ref>", methods=["GET"])
+    @taxon_info_routes.route("/taxon/<int(signed=True):cd_ref>", methods=["GET"])
     @permissions.permissions_required("R", module_code="SYNTHESE")
     @json_resp
     def taxon_stats(permissions, cd_ref, sheet):
@@ -300,7 +300,7 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
 if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
 
-    @taxon_info_routes.route("/taxon/<int:cd_ref>/observers", methods=["GET"])
+    @taxon_info_routes.route("/taxon/<int(signed=True):cd_ref>/observers", methods=["GET"])
     @permissions.permissions_required("R", module_code="SYNTHESE")
     def taxon_observers(permissions, cd_ref, sheet):
 
