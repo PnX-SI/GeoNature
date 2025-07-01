@@ -68,15 +68,19 @@ export class SyntheseDataService {
   }
 
   getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM'): Observable<TaxonStats> {
-    return this._api.get<TaxonStats>(`${this.config.API_ENDPOINT}/synthese/taxon_stats/${cd_ref}`, {
+    return this._api.get<TaxonStats>(`${this.config.API_ENDPOINT}/synthese/taxon/${cd_ref}`, {
       params: new HttpParams().append('area_type', areaType),
     });
   }
 
   getTaxonMedias(cdRef: number, params?: {}): Observable<any> {
-    return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon_medias/${cdRef}`, {
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon/${cdRef}/medias`, {
       params,
     });
+  }
+
+  getIsAuthorizedCdRefForUser(cd_ref: number){
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon/${cd_ref}/access`);
   }
 
 
@@ -85,7 +89,7 @@ export class SyntheseDataService {
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
     sort: SyntheseDataSortItem = DEFAULT_SORT
   ) {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon_observers/${cd_ref}`, {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/taxon/${cd_ref}/observers`, {
       params: {
         per_page: pagination.perPage,
         page: pagination.currentPage,
