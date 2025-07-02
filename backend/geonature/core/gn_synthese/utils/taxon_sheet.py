@@ -26,28 +26,29 @@ class TaxonSheet:
         self.cd_ref = cd_ref
 
     def has_instance_permission(self, permissions=[]):
-        authorized = []
+        list_cd_nom = []
         for perm in permissions:
             if perm.taxons_filter:
-                child_taxon_cte = (
-                    select(TaxrefTree.cd_nom)
-                    .where(
-                        TaxrefTree.path.op("<@")(
-                            select(func.array_agg(TaxrefTree.path))
-                            .where(TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter]))
-                            .subquery()
-                        )
-                    )
-                    .cte()
+                list_cd_nom.extend([t.cd_nom for t in perm.taxons_filter])
+
+        child_taxon_cte = (
+            select(TaxrefTree.cd_nom)
+            .where(
+                TaxrefTree.path.op("<@")(
+                    select(func.array_agg(TaxrefTree.path))
+                    .where(TaxrefTree.cd_nom.in_(list_cd_nom))
+                    .subquery()
                 )
+            )
+            .cte()
+        )
+        if len(list_cd_nom) > 0:
+            is_authorized = db.session.scalar(
+                exists(TaxrefTree).where(child_taxon_cte.c.cd_nom.in_([self.cd_ref])).select()
+            )
+            return is_authorized
 
-                is_authorized = db.session.scalar(
-                    exists(TaxrefTree).where(child_taxon_cte.c.cd_nom.in_([self.cd_ref])).select()
-                )
-
-                authorized.append(is_authorized)
-
-        return True if len(authorized) < 1 else any(authorized)
+        return True
 
 
 class TaxonSheetUtils:
