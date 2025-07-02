@@ -2135,6 +2135,26 @@ class TestSyntheseTaxonomicFilter:
         assert synthese_data["obs2"].id_synthese in response_ids
         assert synthese_data["obs3"].id_synthese not in response_ids
 
+    def test_acces_taxon_sheet(self, synthese_read_permissions):
+
+        with db.session.begin_nested():
+            user_group = User(identifiant="group_test", groupe=True)
+            db.session.add(user_group)
+            user = User(groups=[user_group])
+            db.session.add(user)
+
+        taxon = Taxref.query.filter_by(cd_ref=60612).first()  # Lynx Boréal
+        taxon2 = Taxref.query.filter_by(cd_ref=61098).first()  # Bouquetin des alpes
+        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon])
+        synthese_read_permissions(user_group, scope_value=None, taxons_filter=[taxon2])
+
+        for taxon_cdref in [60612, 61098]:
+            set_logged_user(self.client, user)
+            response = self.client.get(
+                url_for("gn_synthese.synthese_taxon_info.is_authorized", cd_ref=taxon_cdref)
+            )
+            assert response.status_code == 200
+
     @pytest.mark.parametrize("cd_ref,parent", [(2852, None), (79303, 186233)])
     def test_taxon_sheet(self, synthese_read_permissions, cd_ref, parent):
         with db.session.begin_nested():
