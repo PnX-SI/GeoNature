@@ -225,8 +225,7 @@ class SyntheseQuery:
                 permissions_filters.append(sa.true())
         if permissions_filters:
             return or_(*permissions_filters)
-        else:
-            return sa.false()
+        return sa.false()
 
     def filter_query_with_permissions(self, user, permissions):
         """
