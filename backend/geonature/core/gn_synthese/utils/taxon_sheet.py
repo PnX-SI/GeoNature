@@ -26,7 +26,7 @@ class TaxonSheet:
         self.cd_ref = cd_ref
 
     def has_instance_permission(self, permissions=[]):
-
+        authorized = []
         for perm in permissions:
             if perm.taxons_filter:
                 child_taxon_cte = (
@@ -44,10 +44,10 @@ class TaxonSheet:
                 is_authorized = db.session.scalar(
                     exists(TaxrefTree).where(child_taxon_cte.c.cd_nom.in_([self.cd_ref])).select()
                 )
-                if not is_authorized:
-                    return False
 
-        return True
+                authorized.append(is_authorized)
+
+        return True if len(authorized) < 1 else any(authorized)
 
 
 class TaxonSheetUtils:
