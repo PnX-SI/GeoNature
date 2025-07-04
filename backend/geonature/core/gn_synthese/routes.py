@@ -558,7 +558,7 @@ def export_observations_web(auth, permissions):
                 export_format=export_format,
                 export_view=export_view,
                 db_cols=db_cols_for_shape,
-                geojson_col=current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
+                geojson_col=current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"],
                 data=results,
                 file_name=file_name,
             )
