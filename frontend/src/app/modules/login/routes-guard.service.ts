@@ -58,7 +58,7 @@ export class UserManagementGuard implements CanActivate {
     if (this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
       return true;
     } else {
-      this._router.navigate(['/login']);
+      this._router.navigate(['/']);
       return false;
     }
   }

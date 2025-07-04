@@ -44,6 +44,7 @@ user_fields = {
     "id_organisme",
     "groupe",
     "active",
+    "remarques",
 }
 organism_fields = {
     "id_organisme",
