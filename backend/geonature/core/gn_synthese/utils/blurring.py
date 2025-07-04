@@ -526,17 +526,35 @@ class DataBlurring:
         for field in self.geom_fields:
             label = field["output_field"]
             if with_compute:
-                srid = func.Find_SRID("ref_geo", "l_areas", "geom")
+                local_srid = func.Find_SRID("ref_geo", "l_areas", "geom")
+                srid = field.get("output_srid", local_srid)
                 larea_col = getattr(table, field.get("area_field", "geom"))
                 compute = field.get("compute", None)
                 if compute == "x":
-                    geocolumn = func.ST_X(func.ST_Transform(func.ST_Centroid(larea_col), srid))
+                    geocolumn = (
+                        func.ST_X(func.ST_Transform(func.ST_Centroid(larea_col), srid))
+                        if local_srid != srid
+                        else func.ST_X(func.ST_Centroid(larea_col))
+                    )
+
                 elif compute == "y":
-                    geocolumn = func.ST_Y(func.ST_Transform(func.ST_Centroid(larea_col), srid))
+                    geocolumn = (
+                        func.ST_Y(func.ST_Transform(func.ST_Centroid(larea_col), srid))
+                        if local_srid != srid
+                        else func.ST_Y(func.ST_Centroid(larea_col))
+                    )
                 elif compute == "astext":
-                    geocolumn = func.ST_AsText(func.ST_Transform(larea_col, srid))
+                    geocolumn = (
+                        func.ST_AsText(func.ST_Transform(larea_col, srid))
+                        if local_srid != srid
+                        else func.ST_AsText(larea_col)
+                    )
                 elif compute == "asgeojson":
-                    geocolumn = func.ST_AsGeoJSON(func.ST_Transform(larea_col, srid))
+                    geocolumn = (
+                        func.ST_AsGeoJSON(func.ST_Transform(larea_col, 4326))
+                        if local_srid != 4326
+                        else func.ST_AsGeoJSON(larea_col)
+                    )
                 else:
                     geocolumn = larea_col
                 columns.append(geocolumn.label(label))
