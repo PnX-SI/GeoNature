@@ -324,7 +324,7 @@ sqlalchemy==1.4.54
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==2.2.1
+taxhub==2.2.2
     # via -r requirements-dependencies.in
 tinycss2==1.4.0
     # via
@@ -343,7 +343,6 @@ tornado==6.5.1
 typing-extensions==4.13.2
     # via
     #   alembic
-    #   marshmallow
     #   marshmallow-sqlalchemy
     #   referencing
 tzdata==2025.2
