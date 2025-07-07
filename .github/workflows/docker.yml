@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - release/2.16.0
   release:
     types: [published]
 
