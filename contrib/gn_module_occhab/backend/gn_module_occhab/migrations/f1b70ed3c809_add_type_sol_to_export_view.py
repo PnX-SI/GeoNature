@@ -70,7 +70,7 @@ def upgrade():
             left join ref_nomenclatures.t_nomenclatures nom5 on
                 nom5.id_nomenclature = s.id_nomenclature_exposure
             left join ref_nomenclatures.t_nomenclatures nom6 on
-                nom5.id_nomenclature = s.id_nomenclature_exposure
+                nom5.id_nomenclature = s.id_nomenclature_type_sol
             group by
                 s.id_station,
                 s.id_dataset,
