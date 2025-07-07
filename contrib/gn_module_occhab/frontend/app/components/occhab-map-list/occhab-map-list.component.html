@@ -142,17 +142,16 @@
                 let-row="row"
                 ngx-datatable-cell-template
               >
-                <button
+                <a
+                  class="link-dark"
                   [matTooltip]="row.id_station"
                   [routerLink]="['info', row.id_station]"
-                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
                 >
                   <i
                     class="fa fa-info-circle"
                     aria-hidden="true"
                   ></i>
-                  {{ row.id_station }}
-                </button>
+                </a>
               </ng-template>
             </ngx-datatable-column>
 
@@ -164,8 +163,8 @@
                 let-row="row"
                 ngx-datatable-cell-template
               >
-                <button
-                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
+                <a
+                  class="link-dark"
                   [routerLink]="['edit', row.id_station]"
                   [disabled]="!row.cruved.U"
                 >
@@ -173,7 +172,7 @@
                     class="fa fa-pencil-square-o"
                     aria-hidden="true"
                   ></i>
-                </button>
+                </a>
               </ng-template>
             </ngx-datatable-column>
 
@@ -185,8 +184,8 @@
                 let-row="row"
                 ngx-datatable-cell-template
               >
-                <button
-                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
+                <a
+                  class="link-dark"
                   (click)="openDeleteModal(row, deleteModal)"
                   [disabled]="!row.cruved.D"
                 >
@@ -194,7 +193,7 @@
                     class="fa fa-trash-o"
                     aria-hidden="true"
                   ></i>
-                </button>
+                </a>
               </ng-template>
             </ngx-datatable-column>
 
