@@ -48,6 +48,7 @@
             mat-raised-button
             color="primary"
             (click)="getPdf()"
+            [disabled]="!af.cruved.E"
           >
             Export PDF
             <mat-icon>file_download</mat-icon>
