@@ -302,7 +302,7 @@
     }
   },
   "Filters": {
-    "Actions":{
+    "Actions": {
       "Refresh": "Rafraîchir les filtres",
       "Advanced": "Filtres avancés",
       "Add": "Ajouter un filtre",
@@ -371,7 +371,7 @@
       "SearchedTaxa": "Taxon(s) recherché(s)",
       "AdvancedFieldsSelected": "Champs avancé(s) sélectionné(s)",
       "RedListCategory": "catégorie de liste rouge",
-      "ProtectionStatus": "status de protection",
+      "ProtectionStatus": "statut de protection",
       "TaxrefAttributes": "attributs TaxRef"
     },
     "FicheTaxon": {
