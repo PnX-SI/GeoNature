@@ -1,24 +1,24 @@
 # CHANGELOG
 
-# 2.16.0 (unreleased)
+## 2.16.0 - [Bombina variegata](https://inpn.mnhn.fr/espece/cd_nom/212) 🐸 (2025-07-08)
 
 ### ⏩ En bref
 
 - Multilingue étendu, par module et surcouchable
-- Enrichissement des fiches Taxon
-- Ajout des permissions géographiques, taxonomiques et temporelles
+- Enrichissement des fiches taxon
+- Enrichissement des permissions avec des filtres géographiques, taxonomiques et temporels
 - Gestion des individus pour les protocoles de suivi
 - Nouvelle section "Dernières validations" sur la page d'accueil
 
 ### 🚀 Nouveautés
 
 - [Synthèse] Enrichissement des fiches taxon (#3479 par @edelclaux et @jules-jean-louis1)
-  - Ajout d'un onglet "Observateurs" (#3203) et d'un onglet "Medias" (#3229)
+  - Ajout d'un onglet "Observateurs" (#3203 par @edelclaux) et d'un onglet "Medias" (#3229 par @edelclaux)
   - Ajout d'un fil d'ariane permettant de naviguer entre les rangs taxonomiques
   - Ajout du mode maille et d'un filtre temporel dans l'onglet "Observations" (anciennement "Synthèse géographique")
 - [Synthèse, Validation] Ajout de filtres de permission géographique et taxonomique (par @jpm-cbna, complété par @bouttier dans #3097)
 - [Permissions] Ajout de filtres temporels sur toutes les permissions
-- [Multilingue] Amélioration et enchissement de la gestion du multilingue (#1551)
+- [Multilingue] Amélioration et enrichissement de la gestion du multilingue (#1551)
   - Enrichissement des traductions existantes dans différents modules (#1921 par @MathildeNS, complété dans #3484 par @jpm-cbna et @jacquesfize)
   - Possibilité de définir des fichiers de traduction pour chaque module (#1570 par @mvergez et @jpm-cbna)
   - Ajout de la possibilité de surcoucher les fichiers par défaut de traduction (#3415 par @jpm-cbna et @mvergez)
@@ -30,7 +30,7 @@
 - [Occhab] Affiche de l'UUID des habitats dans les fiches détail des stations (#3467 par @Pierre-Narcisi)
 - [Notifications] Masquer certaines catégories de notifications de la liste des souscriptions selon les permissions de l'utilisateur (#3262 par @bouttier)
 - [Général] Mise à jour des dépendances
-  - TaxHub : [2.2.1](https://github.com/PnX-SI/TaxHub/releases/2.2.1), incluant notamment la migration vers Taxref v18
+  - TaxHub : [2.2.2](https://github.com/PnX-SI/TaxHub/releases/2.2.2), incluant notamment la migration vers Taxref v18
   - Utils-Flask-SQLAlchemy [0.4.2](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/0.4.2)
   - Utils-Flask-SQLAlchemy-Geo [0.3.3](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.3.3)
   - RefGeo [1.5.5](https://github.com/PnX-SI/RefGeo/releases/1.5.5)
@@ -41,21 +41,20 @@
 - [Installation] Amélioration de la commande d'installation d'un module GeoNature (#3261 par @bouttier)
 - [Documentation] Création automatique d'un dump de la structure de la base de données sous forme de fichier SQL dans le dossier `docs/data_model` (#1569 par @jacquesfize)
 - [CI/CD] Utilisation d'[images Docker](https://github.com/PnX-SI/geonature_db) pré-peuplées pour accélérer les tests unitaires (#3369 par @jacquesfize)
-- [Benchmark] Ajout de nouveaux tests automatisés de performances (#3392 par @Christophe-Ramet)
-- [Accueil] Amélioration du responsive de la page d'accueil (#3426 et #3428 par @Christophe-Ramet)
-- [Développement] Modification du JSONProvider prenant en compte les objets `Paginate` de `flask-sqlalchemy` (#3463 par @bouttier)
-- [Développement] Utilisation de la nouvelle méthode générique de tri de données `ordered` dans le module méta-données  (#3465 par @bouttier)
-- [Développement] Refactorisation du code des routes Flask de la Synthèse (#3301 par @jacquesfize)
-- [Développement] Extension des champs accessibles dans la vue `gn_synthese.v_synthese_for_web_app` (#3373 par @Pierre-Narcisi)
+- [Benchmark] Ajout de nouveaux tests automatisés de performance (#3392 par @Christophe-Ramet)
+- [Accueil] Amélioration du _responsive_ de la page d'accueil (#3426 et #3428 par @Christophe-Ramet)
+- [Développement] Modification du `JSONProvider` prenant en compte les objets `Paginate` de `flask-sqlalchemy` (#3463 par @bouttier)
+- [Développement] Utilisation de la nouvelle méthode générique de tri de données `ordered` dans le module méta-données (#3465 par @bouttier)
+- [Développement] Réorganisation du code des _blueprints_ Flask de la Synthèse (#3301 par @jacquesfize)
+- [Développement] Ajout de nouveaux champs dans la vue `gn_synthese.v_synthese_for_web_app` : `id_statut`, `id_rang`, `regne`, `phylum`, `classe`, `ordre`, `famille` et `sous_famille` (#3373 par @Pierre-Narcisi)
 - [Général] Suppression de la page intermédiaire pour l'accès au panneau d'administration de GeoNature (par @jacquesfize)
 
 ### 🐛 Corrections
 
-- [Synthèse] Correction de l'affichage des observations sensibles floutées lorsqu'un filtre par zonage est appliqué (#3566 par @jpm-cbna)
-- [Synthèse] Correction de l'affichage des observations sensibles floutées lorsqu'un filtre par zonage est appliqué (#3324 par @jbrieuclp)
-- [Synthèse] Les observations sensibles ne sont plus exportées autant de fois qu'il y a de permissions (#3375 par @Pierre-Narcisi)
+- [Synthèse] Correction de l'affichage des observations sensibles floutées lorsqu'un filtre par zonage est appliqué (#3566 par @jpm-cbna,#3324)
+- [Synthèse] Correction de l'apparition de doublons dans l'export des observations sensibles (#3375 par @Pierre-Narcisi)
 - [Occhab] Diverses corrections sur l'interface de saisie (#3471 par @Pierre-Narcisi)
-- [Occhab] Le champs `nom_cite` est maintenant obligatoire dans les imports (#3434 par @edelclaux)
+- [Occhab] Le champs `nom_cite` est maintenant obligatoire dans l'import (#3434 par @edelclaux)
 - [Validation] Correction du tri dans la liste des observations (#3340 par @Pierre-Narcisi)
 - [Développement] Correction des champs additionnels de type "checkbox" dans les formulaires dynamiques (#3529 par @jacquesfize)
 - [Carte] Correction du problème de chargement des fichiers GeoJSON (#3532 par @jacquesfize)
@@ -63,9 +62,12 @@
 - [Import] Correction de la disparition de mapping par défaut après la sélection d'un autre mapping (#3398 par @Christophe-Ramet)
 - [Import] Correction du retour d'erreur quand le WKT donnée est malformé (#3433 par @jacquesfize)
 - [Documentation] Clarification du paramètre `ID_AREA_RESTRICTION` (#3382 par @jacquesfize)
-- [CI/CD] Amélioration des tests Cypress (#3436 par @Christophe-Ramet)
 - [BDD] Suppression d'index redondant dans les schémas `gn_meta` et `gn_synthese` (#3562 par @PaulLabruyere)
 - [Développement] Correction de l'affichage des valeurs dans le form `datalist` avec le thème bootstrap (#3590 par @Pierre-Narcisi)
+
+### ⚠️ Note de version
+
+Cette version de GeoNature est incompatible avec les versions du module d'export inférieure à la 1.8.0 !
 
 ## 2.15.4 (2025-02-25)
 
