@@ -1688,3 +1688,4 @@ Pour sortir une nouvelle version de GeoNature :
 - Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
 - Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.md``
 - Faites la release de `GeoNature-Docker-services <https://github.com/PnX-SI/GeoNature-Docker-services>`_ avec la nouvelle version de GeoNature, et éventuellement des modules (Voir un `exemple <https://github.com/PnX-SI/GeoNature-Docker-services/pull/19/files>`_)
+- Faites la release sur `GeoNature_db <https://github.com/PnX-SI/geonature_db>`_ avec la nouvelle version de GeoNature et des modules externes
