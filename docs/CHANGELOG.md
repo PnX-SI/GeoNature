@@ -67,7 +67,7 @@
 
 ### ⚠️ Note de version
 
-Cette version de GeoNature est incompatible avec les versions du module d'export inférieure à la 1.8.0 !
+Cette version de GeoNature est incompatible avec les versions du module Export inférieures à la 1.8.0 !
 
 ## 2.15.4 (2025-02-25)
 
