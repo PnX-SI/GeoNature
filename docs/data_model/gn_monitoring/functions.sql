@@ -12,6 +12,40 @@ BEGIN
 END;
 $function$
 
+CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_t_individuals_t_observations_cd_nom()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN
+
+        -- Mise à jour du cd_nom de la table observation
+        IF
+            NEW.id_individual = OLD.id_individual
+        THEN
+            UPDATE gn_monitoring.t_observations SET cd_nom = NEW.cd_nom WHERE id_individual = NEW.id_individual;
+        END IF;
+
+    RETURN NEW;
+    END;
+    $function$
+
+CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_t_observations_cd_nom()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN
+
+        -- Récupération du cd_nom depuis la table des individus
+        IF
+            NOT NEW.id_individual IS NULL
+        THEN
+        NEW.cd_nom := (SELECT cd_nom FROM gn_monitoring.t_individuals ti WHERE id_individual = NEW.id_individual);
+        END IF;
+
+    RETURN NEW;
+    END;
+    $function$
+
 CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_visite_date_max()
  RETURNS trigger
  LANGUAGE plpgsql

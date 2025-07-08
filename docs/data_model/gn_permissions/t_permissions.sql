@@ -6,7 +6,10 @@ CREATE TABLE gn_permissions.t_permissions (
     id_module integer NOT NULL,
     id_object integer DEFAULT gn_permissions.get_id_object('ALL'::character varying) NOT NULL,
     scope_value integer,
-    sensitivity_filter boolean DEFAULT false
+    sensitivity_filter boolean DEFAULT false,
+    created_on timestamp without time zone DEFAULT now(),
+    expire_on timestamp without time zone,
+    validated boolean DEFAULT true
 );
 
 CREATE SEQUENCE gn_permissions.cor_role_action_filter_module_object_id_permission_seq

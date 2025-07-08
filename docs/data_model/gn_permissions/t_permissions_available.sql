@@ -5,7 +5,9 @@ CREATE TABLE gn_permissions.t_permissions_available (
     id_action integer NOT NULL,
     label character varying,
     scope_filter boolean DEFAULT false,
-    sensitivity_filter boolean DEFAULT false
+    sensitivity_filter boolean DEFAULT false,
+    areas_filter boolean DEFAULT false NOT NULL,
+    taxons_filter boolean DEFAULT false NOT NULL
 );
 
 ALTER TABLE ONLY gn_permissions.t_permissions_available

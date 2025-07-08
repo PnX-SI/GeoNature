@@ -24,7 +24,8 @@ CREATE TABLE gn_meta.t_datasets (
     id_digitizer integer,
     id_taxa_list integer,
     meta_create_date timestamp without time zone NOT NULL,
-    meta_update_date timestamp without time zone
+    meta_update_date timestamp without time zone,
+    additional_data jsonb DEFAULT '{}'::jsonb
 );
 
 COMMENT ON TABLE gn_meta.t_datasets IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';

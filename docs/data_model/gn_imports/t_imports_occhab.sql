@@ -59,7 +59,7 @@ CREATE TABLE gn_imports.t_imports_occhab (
     src_id_nomenclature_collection_technique character varying,
     id_nomenclature_collection_technique integer,
     src_recovery_percentage character varying,
-    recovery_percentage integer,
+    recovery_percentage numeric,
     src_id_nomenclature_abundance character varying,
     id_nomenclature_abundance integer,
     technical_precision character varying,
@@ -72,7 +72,9 @@ CREATE TABLE gn_imports.t_imports_occhab (
     src_id_nomenclature_community_interest character varying,
     id_nomenclature_community_interest integer,
     src_id_nomenclature_type_mosaique_habitat character varying,
-    id_nomenclature_type_mosaique_habitat integer
+    id_nomenclature_type_mosaique_habitat integer,
+    src_id_nomenclature_type_sol character varying,
+    id_nomenclature_type_sol integer
 );
 
 ALTER TABLE ONLY gn_imports.t_imports_occhab
@@ -114,4 +116,7 @@ ALTER TABLE ONLY gn_imports.t_imports_occhab
 
 ALTER TABLE ONLY gn_imports.t_imports_occhab
     ADD CONSTRAINT t_imports_occhab_id_nomenclature_type_mosaique_habitat_fkey FOREIGN KEY (id_nomenclature_type_mosaique_habitat) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature);
+
+ALTER TABLE ONLY gn_imports.t_imports_occhab
+    ADD CONSTRAINT t_imports_occhab_id_nomenclature_type_sol_fkey FOREIGN KEY (id_nomenclature_type_sol) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature);
 

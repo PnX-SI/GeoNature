@@ -24,6 +24,7 @@ CREATE TABLE pr_occhab.t_stations (
     id_station_source character varying,
     id_import integer,
     id_nomenclature_type_mosaique_habitat integer,
+    id_nomenclature_type_sol integer,
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
@@ -93,4 +94,7 @@ ALTER TABLE ONLY pr_occhab.t_stations
 
 ALTER TABLE ONLY pr_occhab.t_stations
     ADD CONSTRAINT t_stations_id_nomenclature_type_mosaique_habitat_fkey FOREIGN KEY (id_nomenclature_type_mosaique_habitat) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature);
+
+ALTER TABLE ONLY pr_occhab.t_stations
+    ADD CONSTRAINT t_stations_id_nomenclature_type_sol_fkey FOREIGN KEY (id_nomenclature_type_sol) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature);
 
