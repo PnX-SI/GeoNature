@@ -15,7 +15,7 @@ PORT=5432
 cat schemas.txt | while read schema || [[ -n $schema ]];
 do
   # List all tables in the schema
-  cmd="PG_PASSWORD=$PG_PASSWORD psql -t -h $HOST -p $PORT -U $PG_USER $PG_DATABASE -c \"SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='$schema'\""
+  cmd="PG_PASSWORD=$PG_PASSWORD psql -t -h $HOST -p $PORT -U $PG_USER $PG_DATABASE -c \"SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='$schema' UNION SELECT viewname AS tablename FROM pg_catalog.pg_views WHERE schemaname='$schema' UNION SELECT matviewname AS tablename FROM pg_catalog.pg_matviews WHERE schemaname='$schema'\""
   tables=$(eval "$cmd")
   if [[ ! -d $schema ]];then
     mkdir $schema;
