@@ -9,14 +9,6 @@ geonature.app
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   geonature.app.MyJSONProvider
-
-
 Functions
 ---------
 
@@ -35,16 +27,6 @@ Module Contents
    This function add to the 'version_locations' parameter of the alembic config the
    'migrations' entry point value of the 'gn_module' group for all modules having such entry point.
    Thus, alembic will find migrations of all installed geonature modules.
-
-
-.. py:class:: MyJSONProvider
-
-   Bases: :py:obj:`flask.json.provider.DefaultJSONProvider`
-
-
-   .. py:method:: default(o)
-      :staticmethod:
-
 
 
 .. py:function:: get_locale()

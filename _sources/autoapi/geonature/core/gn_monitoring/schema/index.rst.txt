@@ -1,0 +1,81 @@
+geonature.core.gn_monitoring.schema
+===================================
+
+.. py:module:: geonature.core.gn_monitoring.schema
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.gn_monitoring.schema.TMarkingEventSchema
+   geonature.core.gn_monitoring.schema.TIndividualsSchema
+
+
+Module Contents
+---------------
+
+.. py:class:: TMarkingEventSchema
+
+   Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
+      .. py:attribute:: load_instance
+         :value: True
+
+
+
+
+   .. py:attribute:: operator
+
+
+   .. py:attribute:: medias
+
+
+.. py:class:: TIndividualsSchema
+
+   Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
+      .. py:attribute:: load_instance
+         :value: True
+
+
+
+
+   .. py:attribute:: nomenclature_sex
+
+
+   .. py:attribute:: digitiser
+
+
+   .. py:attribute:: modules
+
+
+   .. py:attribute:: markings
+
+
+   .. py:attribute:: medias
+
+

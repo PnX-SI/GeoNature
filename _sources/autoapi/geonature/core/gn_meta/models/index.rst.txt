@@ -185,6 +185,9 @@ Package Contents
    .. py:attribute:: modules
 
 
+   .. py:attribute:: additional_data
+
+
    .. py:attribute:: nomenclature_data_type
 
 
@@ -331,6 +334,9 @@ Package Contents
 
 
    .. py:attribute:: acquisition_framework_end_date
+
+
+   .. py:attribute:: additional_data
 
 
    .. py:attribute:: meta_create_date
@@ -727,6 +733,9 @@ Package Contents
 
 
    .. py:attribute:: modules
+
+
+   .. py:attribute:: additional_data
 
 
    .. py:attribute:: nomenclature_data_type

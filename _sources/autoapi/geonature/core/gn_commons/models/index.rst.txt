@@ -637,6 +637,9 @@ Package Contents
    .. py:attribute:: modules
 
 
+   .. py:attribute:: additional_data
+
+
    .. py:attribute:: nomenclature_data_type
 
 

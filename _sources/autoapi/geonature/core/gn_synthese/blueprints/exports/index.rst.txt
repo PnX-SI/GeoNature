@@ -1,0 +1,88 @@
+geonature.core.gn_synthese.blueprints.exports
+=============================================
+
+.. py:module:: geonature.core.gn_synthese.blueprints.exports
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.exports.export_routes
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.exports.export_taxon_web
+   geonature.core.gn_synthese.blueprints.exports.export_observations_web
+   geonature.core.gn_synthese.blueprints.exports.export_metadata
+   geonature.core.gn_synthese.blueprints.exports.export_status
+
+
+Module Contents
+---------------
+
+.. py:data:: export_routes
+
+.. py:function:: export_taxon_web(permissions)
+
+   Optimized route for taxon web export.
+
+   .. :quickref: Synthese;
+
+   This view is customisable by the administrator
+   Some columns are mandatory: cd_ref
+
+   POST parameters: Use a list of cd_ref (in POST parameters)
+        to filter the v_synthese_taxon_for_export_view
+
+   :query str export_format: str<'csv'>
+
+
+
+.. py:function:: export_observations_web(permissions)
+
+   Optimized route for observations web export.
+
+   .. :quickref: Synthese;
+
+   This view is customisable by the administrator
+   Some columns are mandatory: id_synthese, geojson and geojson_local to generate the exported files
+
+   POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+
+   :query str export_format: str<'csv', 'geojson', 'shapefiles', 'gpkg'>
+   :query str export_format: str<'csv', 'geojson', 'shapefiles', 'gpkg'>
+
+
+
+.. py:function:: export_metadata(permissions)
+
+   Route to export the metadata in CSV
+
+   .. :quickref: Synthese;
+
+   The table synthese is join with gn_synthese.v_metadata_for_export
+   The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
+
+   TODO: Remove the following comment line ? or add the where clause for id_synthese in id_list ?
+   POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+
+
+.. py:function:: export_status(permissions)
+
+   Route to get all the protection status of a synthese search
+
+   .. :quickref: Synthese;
+
+   Get the CRUVED from 'R' action because we don't give observations X/Y but only statuts
+   and to be consistent with the data displayed in the web interface.
+
+   Parameters:
+       - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
+
+

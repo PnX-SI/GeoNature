@@ -388,6 +388,9 @@ Module Contents
    .. py:attribute:: taxref
 
 
+   .. py:attribute:: taxref_tree
+
+
    .. py:attribute:: cd_hab
 
 
@@ -508,13 +511,13 @@ Module Contents
    .. py:attribute:: cor_observers
 
 
-   .. py:method:: _has_scope_grant(scope)
+   .. py:method:: _has_scope_grant(scope) -> bool
 
 
-   .. py:method:: _has_permissions_grant(permissions)
+   .. py:method:: _has_permissions_grant(permissions) -> bool
 
 
-   .. py:method:: has_instance_permission(permissions)
+   .. py:method:: has_instance_permission(permissions) -> bool
 
 
    .. py:method:: join_nomenclatures(**kwargs)
@@ -686,6 +689,30 @@ Module Contents
    .. py:attribute:: meta_v_taxref
 
 
+   .. py:attribute:: id_statut
+
+
+   .. py:attribute:: id_rang
+
+
+   .. py:attribute:: regne
+
+
+   .. py:attribute:: phylum
+
+
+   .. py:attribute:: classe
+
+
+   .. py:attribute:: ordre
+
+
+   .. py:attribute:: famille
+
+
+   .. py:attribute:: sous_famille
+
+
    .. py:attribute:: group1_inpn
 
 
@@ -837,6 +864,15 @@ Module Contents
 
 
    .. py:attribute:: st_asgeojson
+
+
+   .. py:attribute:: areas
+
+
+   .. py:attribute:: taxref
+
+
+   .. py:attribute:: taxref_tree
 
 
    .. py:attribute:: medias

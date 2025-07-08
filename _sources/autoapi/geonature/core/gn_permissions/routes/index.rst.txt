@@ -23,6 +23,8 @@ Functions
 .. autoapisummary::
 
    geonature.core.gn_permissions.routes.logout
+   geonature.core.gn_permissions.routes.list_permissions_availables
+   geonature.core.gn_permissions.routes.get_permission_available
 
 
 Module Contents
@@ -39,4 +41,8 @@ Module Contents
    To avoid multiples server call, we store the cruved in the session
    when the user logout we need clear the session to get the new cruved session
 
+
+.. py:function:: list_permissions_availables()
+
+.. py:function:: get_permission_available(module_code, code_object, code_action)
 

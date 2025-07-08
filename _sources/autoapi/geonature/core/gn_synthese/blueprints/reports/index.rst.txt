@@ -1,0 +1,60 @@
+geonature.core.gn_synthese.blueprints.reports
+=============================================
+
+.. py:module:: geonature.core.gn_synthese.blueprints.reports
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.reports.reports_blueprint
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.reports.create_report
+   geonature.core.gn_synthese.blueprints.reports.notify_new_report_change
+   geonature.core.gn_synthese.blueprints.reports.update_content_report
+   geonature.core.gn_synthese.blueprints.reports.list_all_reports
+   geonature.core.gn_synthese.blueprints.reports.list_reports
+   geonature.core.gn_synthese.blueprints.reports.delete_report
+
+
+Module Contents
+---------------
+
+.. py:data:: reports_blueprint
+
+.. py:function:: create_report(permissions)
+
+   Create a report (e.g report) for a given synthese id
+
+   Returns
+   -------
+       report: `json`:
+           Every occurrence's report
+
+
+.. py:function:: notify_new_report_change(synthese, user, id_roles, content)
+
+.. py:function:: update_content_report(id_report)
+
+   Modify a report (e.g report) for a given synthese id
+
+   Returns
+   -------
+       report: `json`:
+           Every occurrence's report
+
+
+.. py:function:: list_all_reports(permissions)
+
+.. py:function:: list_reports(permissions, id_synthese)
+
+.. py:function:: delete_report(id_report)
+

@@ -1,0 +1,81 @@
+geonature.core.gn_synthese.blueprints.taxon_info
+================================================
+
+.. py:module:: geonature.core.gn_synthese.blueprints.taxon_info
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.taxon_info.taxon_info_routes
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.taxon_info.resolve_taxon_sheet
+   geonature.core.gn_synthese.blueprints.taxon_info.get_taxa_distribution
+   geonature.core.gn_synthese.blueprints.taxon_info.get_color_taxon
+   geonature.core.gn_synthese.blueprints.taxon_info.get_autocomplete_taxons_synthese
+   geonature.core.gn_synthese.blueprints.taxon_info.get_taxon_tree
+   geonature.core.gn_synthese.blueprints.taxon_info.taxon_medias
+   geonature.core.gn_synthese.blueprints.taxon_info.is_authorized
+   geonature.core.gn_synthese.blueprints.taxon_info.taxon_observers
+
+
+Module Contents
+---------------
+
+.. py:data:: taxon_info_routes
+
+.. py:function:: resolve_taxon_sheet(endpoint, values)
+
+.. py:function:: get_taxa_distribution()
+
+   Get taxa distribution for a given dataset or acquisition framework
+   and grouped by a certain taxa rank
+
+
+.. py:function:: get_color_taxon()
+
+   Get color of taxon in areas (vue synthese.v_color_taxon_area).
+
+   .. :quickref: Synthese;
+
+   :query str code_area_type: Type area code (ref_geo.bib_areas_types.type_code)
+   :query int id_area: Id of area (ref_geo.l_areas.id_area)
+   :query int cd_nom: taxon code (taxonomie.taxref.cd_nom)
+   Those three parameters can be multiples
+   :returns: Array<dict<VColorAreaTaxon>>
+
+
+.. py:function:: get_autocomplete_taxons_synthese()
+
+   Autocomplete taxon for web search (based on all taxon in Synthese).
+
+   .. :quickref: Synthese;
+
+   The request use trigram algorithm to get relevent results
+
+   :query str search_name: the search name (use sql ilike statement and puts "%" for spaces)
+   :query str regne: filter with kingdom
+   :query str group2_inpn : filter with INPN group 2
+
+
+.. py:function:: get_taxon_tree()
+
+   Get taxon tree.
+
+   .. :quickref: Synthese;
+
+
+.. py:function:: taxon_medias(permissions, cd_ref, sheet)
+
+.. py:function:: is_authorized(permissions, cd_ref, sheet)
+
+.. py:function:: taxon_observers(permissions, cd_ref, sheet)
+

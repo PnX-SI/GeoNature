@@ -1,0 +1,84 @@
+geonature.core.gn_synthese.utils.taxon_sheet
+============================================
+
+.. py:module:: geonature.core.gn_synthese.utils.taxon_sheet
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.utils.taxon_sheet.SortOrder
+   geonature.core.gn_synthese.utils.taxon_sheet.TaxonSheet
+   geonature.core.gn_synthese.utils.taxon_sheet.TaxonSheetUtils
+
+
+Module Contents
+---------------
+
+.. py:class:: SortOrder
+
+   Bases: :py:obj:`enum.Enum`
+
+
+   Generic enumeration.
+
+   Derive from this class to define new enumerations.
+
+
+   .. py:attribute:: ASC
+      :value: 'asc'
+
+
+
+   .. py:attribute:: DESC
+      :value: 'desc'
+
+
+
+.. py:class:: TaxonSheet(cd_ref)
+
+   .. py:attribute:: cd_ref
+
+
+   .. py:method:: has_instance_permission(permissions=[])
+
+
+.. py:class:: TaxonSheetUtils
+
+   .. py:method:: update_query_with_sorting(query: sqlalchemy.orm.Query, sort_by: str, sort_order: SortOrder) -> sqlalchemy.orm.Query
+      :staticmethod:
+
+
+
+   .. py:method:: paginate(query: sqlalchemy.orm.Query, page: int, per_page: int) -> flask_sqlalchemy.pagination.Pagination
+      :staticmethod:
+
+
+
+   .. py:method:: get_cd_nom_list_from_cd_ref(cd_ref: int) -> List[int]
+      :staticmethod:
+
+
+
+   .. py:method:: get_synthese_query_with_permissions(current_user, permissions, query: sqlalchemy.orm.Query) -> geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery
+      :staticmethod:
+
+
+
+   .. py:method:: is_valid_area_type(area_type: str) -> bool
+      :staticmethod:
+
+
+
+   .. py:method:: get_area_selectquery(area_type: str) -> sqlalchemy.sql.selectable.Select
+      :staticmethod:
+
+
+
+   .. py:method:: get_taxon_selectquery(cd_ref: int) -> sqlalchemy.sql.selectable.Select
+      :staticmethod:
+
+
+

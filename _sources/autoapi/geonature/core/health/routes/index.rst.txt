@@ -1,0 +1,45 @@
+geonature.core.health.routes
+============================
+
+.. py:module:: geonature.core.health.routes
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.health.routes.routes
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.health.routes.check_all_dependencies
+   geonature.core.health.routes.health_check
+   geonature.core.health.routes.services_status
+
+
+Module Contents
+---------------
+
+.. py:data:: routes
+
+.. py:function:: check_all_dependencies()
+
+   Check all dependencies are available.
+
+   This function checks that the database and the redis server are available.
+
+   Returns
+   -------
+   dict
+      The value for each key is a boolean indicating if the connection is available or not.
+
+
+.. py:function:: health_check()
+
+.. py:function:: services_status()
+

@@ -44,7 +44,7 @@ Functions
    geonature.core.gn_meta.routes.updateAcquisitionFramework
    geonature.core.gn_meta.routes.get_acquisition_framework_stats
    geonature.core.gn_meta.routes.get_acquisition_framework_bbox
-   geonature.core.gn_meta.routes.publish_acquisition_framework_mail
+   geonature.core.gn_meta.routes.call_extended_af_publish
    geonature.core.gn_meta.routes.publish_acquisition_framework
 
 
@@ -196,9 +196,9 @@ Module Contents
    :param type: int
 
 
-.. py:function:: publish_acquisition_framework_mail(af)
+.. py:function:: call_extended_af_publish(af_id)
 
-   Method for sending a mail during the publication process
+   If a route with the name extended_publish, we call it.
 
 
 .. py:function:: publish_acquisition_framework(af_id)

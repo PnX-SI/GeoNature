@@ -14,5 +14,6 @@ Submodules
    /autoapi/geonature/core/gn_synthese/utils/orm/index
    /autoapi/geonature/core/gn_synthese/utils/process/index
    /autoapi/geonature/core/gn_synthese/utils/query_select_sqla/index
+   /autoapi/geonature/core/gn_synthese/utils/taxon_sheet/index
 
 

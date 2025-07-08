@@ -12,5 +12,6 @@ Submodules
 
    /autoapi/geonature/core/gn_monitoring/models/index
    /autoapi/geonature/core/gn_monitoring/routes/index
+   /autoapi/geonature/core/gn_monitoring/schema/index
 
 

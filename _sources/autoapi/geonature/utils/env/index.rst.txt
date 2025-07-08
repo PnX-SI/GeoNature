@@ -5,7 +5,7 @@ geonature.utils.env
 
 .. autoapi-nested-parse::
 
-   Helpers to manipulate the execution environment 
+   Helpers to manipulate the execution environment
 
 
 

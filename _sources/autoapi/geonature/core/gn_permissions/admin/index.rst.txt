@@ -17,6 +17,8 @@ Classes
    geonature.core.gn_permissions.admin.OptionSelect2Widget
    geonature.core.gn_permissions.admin.OptionQuerySelectField
    geonature.core.gn_permissions.admin.UserAjaxModelLoader
+   geonature.core.gn_permissions.admin.AreaAjaxModelLoader
+   geonature.core.gn_permissions.admin.TaxrefAjaxModelLoader
    geonature.core.gn_permissions.admin.ObjectAdmin
    geonature.core.gn_permissions.admin.PermissionAdmin
    geonature.core.gn_permissions.admin.PermissionAvailableAdmin
@@ -34,6 +36,7 @@ Functions
    geonature.core.gn_permissions.admin.modules_formatter
    geonature.core.gn_permissions.admin.groups_formatter
    geonature.core.gn_permissions.admin.role_formatter
+   geonature.core.gn_permissions.admin.list_permissions_formatter
    geonature.core.gn_permissions.admin.permissions_formatter
    geonature.core.gn_permissions.admin.permissions_count_formatter
 
@@ -92,6 +95,45 @@ Module Contents
 
 .. py:function:: role_formatter(view, context, model, name)
 
+.. py:function:: list_permissions_formatter(permissions, available_permission, managable, current_user, return_url)
+
+   Render a list of permissions for module-object-action item as an HTML table.
+
+   This function generates an HTML table that displays permissions associated to specific
+    module, object, or action. Each permission is rendered with its status, expiration
+   date, and associated filters. If the permissions are manageable, edit and delete options are
+   included for each permission.
+
+   Parameters
+   ----------
+   permissions : list[Permission]
+       A list of permission objects to be rendered.
+   available_permission : PermissionAvailable
+       the permission template.
+   managable : bool
+       A boolean indicating whether the permissions are manageable. If True,
+       edit and delete options will be included in the rendered HTML.
+   model : User
+       current user
+   return_url : str
+       The URL to return to after performing an action (e.g., editing or
+       deleting a permission).
+
+   Returns
+   -------
+   str
+       An HTML string representing the permissions table.
+
+   Notes
+   -----
+   The function uses Bootstrap classes for styling the table and its elements.
+   If a permission has filters, they are displayed as a list within the table cell.
+   If a permission is not active, it is marked with a 'table-secondary' class and a
+   'text-danger' class for the expiration date.
+   If a permission is active but has an expiration date, it is marked with a 'text-success'
+   class for the expiration date.
+
+
 .. py:function:: permissions_formatter(view, context, model, name)
 
 .. py:function:: permissions_count_formatter(view, context, model, name)
@@ -135,8 +177,45 @@ Module Contents
 
    .. py:method:: format(user)
 
+      Instead of returning a list of tuple (id, label), we return a list of tuple (id, label, excluded_availabilities).
+      The third element of each tuple is the list of type of permissions the user already have, so it is useless
+      to add this permission to the user, and they will be not available in the front select.
+      Two remarks:
+      - We only consider active permissions of the user
+      - If the type of the permission allows two or more filters, we do not exclude it as it makes sens to add several
+        permissions of the same type with differents set of filters.
+
+
 
    .. py:method:: get_query()
+
+
+.. py:class:: AreaAjaxModelLoader
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.ajax.QueryAjaxModelLoader`
+
+
+   .. py:method:: format(area)
+
+
+   .. py:method:: get_one(pk)
+
+
+   .. py:method:: get_query()
+
+
+.. py:class:: TaxrefAjaxModelLoader
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.ajax.QueryAjaxModelLoader`
+
+
+   .. py:method:: format(taxref)
+
+
+   .. py:method:: get_query()
+
+
+   .. py:method:: get_one(pk)
 
 
 .. py:class:: ObjectAdmin
@@ -201,7 +280,7 @@ Module Contents
 
 
    .. py:attribute:: column_list
-      :value: ('role', 'module', 'object', 'action', 'label', 'filters')
+      :value: ('role', 'module', 'object', 'action', 'label', 'filters', 'expire_on')
 
 
 
@@ -240,7 +319,7 @@ Module Contents
 
 
    .. py:attribute:: form_columns
-      :value: ('role', 'availability', 'scope', 'sensitivity_filter')
+      :value: ('role', 'availability', 'scope', 'sensitivity_filter', 'areas_filter', 'taxons_filter', 'expire_on')
 
 
 
@@ -261,6 +340,12 @@ Module Contents
 
 
    .. py:attribute:: form_ajax_refs
+
+
+   .. py:method:: get_query()
+
+
+   .. py:method:: get_count_query()
 
 
    .. py:method:: render(template, **kwargs)
@@ -319,7 +404,7 @@ Module Contents
 
 
    .. py:attribute:: form_columns
-      :value: ('scope_filter', 'sensitivity_filter')
+      :value: ('scope_filter', 'sensitivity_filter', 'areas_filter', 'taxons_filter')
 
 
 
@@ -385,6 +470,12 @@ Module Contents
 
 
    .. py:attribute:: column_formatters_detail
+
+
+   .. py:method:: get_query()
+
+
+   .. py:method:: get_count_query()
 
 
 .. py:class:: GroupPermAdmin

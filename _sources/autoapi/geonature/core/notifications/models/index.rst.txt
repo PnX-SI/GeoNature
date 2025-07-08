@@ -74,6 +74,27 @@ Module Contents
    .. py:attribute:: description
 
 
+   .. py:attribute:: id_module
+
+
+   .. py:attribute:: module
+
+
+   .. py:attribute:: id_object
+
+
+   .. py:attribute:: object
+
+
+   .. py:attribute:: id_action
+
+
+   .. py:attribute:: action
+
+
+   .. py:method:: is_allowed(user=None) -> bool
+
+
    .. py:property:: display
 
 

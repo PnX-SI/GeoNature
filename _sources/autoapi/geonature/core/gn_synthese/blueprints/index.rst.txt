@@ -1,0 +1,48 @@
+geonature.core.gn_synthese.blueprints
+=====================================
+
+.. py:module:: geonature.core.gn_synthese.blueprints
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/geonature/core/gn_synthese/blueprints/exports/index
+   /autoapi/geonature/core/gn_synthese/blueprints/others/index
+   /autoapi/geonature/core/gn_synthese/blueprints/reports/index
+   /autoapi/geonature/core/gn_synthese/blueprints/statistics/index
+   /autoapi/geonature/core/gn_synthese/blueprints/synthese/index
+   /autoapi/geonature/core/gn_synthese/blueprints/taxon_info/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.reports_blueprint
+   geonature.core.gn_synthese.blueprints.synthese_routes
+   geonature.core.gn_synthese.blueprints.statistics_routes
+   geonature.core.gn_synthese.blueprints.taxon_info_routes
+   geonature.core.gn_synthese.blueprints.other_routes
+   geonature.core.gn_synthese.blueprints.export_routes
+
+
+Package Contents
+----------------
+
+.. py:data:: reports_blueprint
+
+.. py:data:: synthese_routes
+
+.. py:data:: statistics_routes
+
+.. py:data:: taxon_info_routes
+
+.. py:data:: other_routes
+
+.. py:data:: export_routes
+

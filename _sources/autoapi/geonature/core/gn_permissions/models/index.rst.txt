@@ -16,6 +16,8 @@ Attributes
 
    geonature.core.gn_permissions.models.cor_object_module
    geonature.core.gn_permissions.models.TObjects
+   geonature.core.gn_permissions.models.cor_permission_area
+   geonature.core.gn_permissions.models.cor_permission_taxref
 
 
 Classes
@@ -189,6 +191,12 @@ Module Contents
    .. py:attribute:: sensitivity_filter
 
 
+   .. py:attribute:: areas_filter
+
+
+   .. py:attribute:: taxons_filter
+
+
    .. py:attribute:: filters_fields
 
 
@@ -213,6 +221,10 @@ Module Contents
 
    .. py:method:: __str__()
 
+
+.. py:data:: cor_permission_area
+
+.. py:data:: cor_permission_taxref
 
 .. py:class:: Permission
 
@@ -242,6 +254,15 @@ Module Contents
    .. py:attribute:: id_object
 
 
+   .. py:attribute:: created_on
+
+
+   .. py:attribute:: expire_on
+
+
+   .. py:attribute:: validated
+
+
    .. py:attribute:: role
 
 
@@ -263,10 +284,19 @@ Module Contents
    .. py:attribute:: sensitivity_filter
 
 
+   .. py:attribute:: areas_filter
+
+
+   .. py:attribute:: taxons_filter
+
+
    .. py:attribute:: availability
 
 
    .. py:attribute:: filters_fields
+
+
+   .. py:method:: __repr__()
 
 
    .. py:method:: __SCOPE_le__(a, b)
@@ -275,6 +305,16 @@ Module Contents
 
 
    .. py:method:: __SENSITIVITY_le__(a, b)
+      :staticmethod:
+
+
+
+   .. py:method:: __GEOGRAPHIC_le__(a, b)
+      :staticmethod:
+
+
+
+   .. py:method:: __TAXONOMIC_le__(a, b)
       :staticmethod:
 
 
@@ -298,5 +338,13 @@ Module Contents
 
 
    .. py:method:: nice_order(**kwargs)
+
+
+   .. py:property:: is_active
+
+
+   .. py:method:: active_filter()
+      :classmethod:
+
 
 

@@ -76,6 +76,9 @@ Module Contents
    .. py:attribute:: acquisition_framework_end_date
 
 
+   .. py:attribute:: additional_data
+
+
    .. py:attribute:: meta_create_date
 
 

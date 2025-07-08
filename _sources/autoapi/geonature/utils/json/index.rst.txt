@@ -1,0 +1,27 @@
+geonature.utils.json
+====================
+
+.. py:module:: geonature.utils.json
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.utils.json.MyJSONProvider
+
+
+Module Contents
+---------------
+
+.. py:class:: MyJSONProvider
+
+   Bases: :py:obj:`flask.json.provider.DefaultJSONProvider`
+
+
+   .. py:method:: default(o)
+      :staticmethod:
+
+
+

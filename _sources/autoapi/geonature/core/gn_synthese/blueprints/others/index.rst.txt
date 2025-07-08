@@ -1,0 +1,46 @@
+geonature.core.gn_synthese.blueprints.others
+============================================
+
+.. py:module:: geonature.core.gn_synthese.blueprints.others
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.others.other_routes
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.others.get_sources
+   geonature.core.gn_synthese.blueprints.others.getDefaultsNomenclatures
+
+
+Module Contents
+---------------
+
+.. py:data:: other_routes
+
+.. py:function:: get_sources()
+
+   Get all sources.
+
+   .. :quickref: Synthese;
+
+
+.. py:function:: getDefaultsNomenclatures()
+
+   Get default nomenclatures
+
+   .. :quickref: Synthese;
+
+   :query str group2_inpn:
+   :query str regne:
+   :query int organism:
+
+

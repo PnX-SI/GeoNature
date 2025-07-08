@@ -19,6 +19,7 @@ Submodules
    /autoapi/geonature/core/gn_permissions/index
    /autoapi/geonature/core/gn_profiles/index
    /autoapi/geonature/core/gn_synthese/index
+   /autoapi/geonature/core/health/index
    /autoapi/geonature/core/imports/index
    /autoapi/geonature/core/notifications/index
    /autoapi/geonature/core/sensitivity/index

@@ -17,6 +17,7 @@ Submodules
    /autoapi/geonature/utils/env/index
    /autoapi/geonature/utils/errors/index
    /autoapi/geonature/utils/filemanager/index
+   /autoapi/geonature/utils/json/index
    /autoapi/geonature/utils/logs/index
    /autoapi/geonature/utils/metaclass_utils/index
    /autoapi/geonature/utils/module/index

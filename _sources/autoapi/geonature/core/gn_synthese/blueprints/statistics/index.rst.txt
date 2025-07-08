@@ -1,0 +1,102 @@
+geonature.core.gn_synthese.blueprints.statistics
+================================================
+
+.. py:module:: geonature.core.gn_synthese.blueprints.statistics
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.statistics.statistics_routes
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.statistics.get_taxa_count
+   geonature.core.gn_synthese.blueprints.statistics.get_observation_count
+   geonature.core.gn_synthese.blueprints.statistics.get_bbox
+   geonature.core.gn_synthese.blueprints.statistics.observation_count_per_column
+   geonature.core.gn_synthese.blueprints.statistics.general_stats
+
+
+Module Contents
+---------------
+
+.. py:data:: statistics_routes
+
+.. py:function:: get_taxa_count()
+
+   Get taxa count in synthese filtering with generic parameters
+
+   .. :quickref: Synthese;
+
+   Parameters
+   ----------
+   id_dataset: `int` (query parameter)
+
+   Returns
+   -------
+   count: `int`:
+       the number of taxon
+
+
+.. py:function:: get_observation_count()
+
+   Get observations found in a given dataset
+
+   .. :quickref: Synthese;
+
+   Parameters
+   ----------
+   id_dataset: `int` (query parameter)
+
+   Returns
+   -------
+   count: `int`:
+       the number of observation
+
+
+
+.. py:function:: get_bbox()
+
+   Get bbox of observations
+
+   .. :quickref: Synthese;
+
+   Parameters
+   -----------
+   id_dataset: int: (query parameter)
+
+   Returns
+   -------
+       bbox: `geojson`:
+           the bounding box in geojson
+
+
+.. py:function:: observation_count_per_column(column)
+
+   Get observations count group by a given column
+
+   This function was used to count observations per dataset,
+   but this usage have been replaced by
+   TDatasets.synthese_records_count.
+   Remove this function as it is very inefficient?
+
+
+.. py:function:: general_stats(permissions)
+
+   Return stats about synthese.
+
+   .. :quickref: Synthese;
+
+       - nb of observations
+       - nb of distinct species
+       - nb of distinct observer
+       - nb of datasets
+
+

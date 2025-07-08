@@ -1,0 +1,15 @@
+geonature.core.health
+=====================
+
+.. py:module:: geonature.core.health
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/geonature/core/health/routes/index
+
+

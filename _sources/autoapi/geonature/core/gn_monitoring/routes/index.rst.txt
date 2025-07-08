@@ -20,6 +20,8 @@ Functions
    geonature.core.gn_monitoring.routes.get_list_sites
    geonature.core.gn_monitoring.routes.get_onelist_site
    geonature.core.gn_monitoring.routes.get_site_areas
+   geonature.core.gn_monitoring.routes.get_individuals
+   geonature.core.gn_monitoring.routes.create_one_individual
 
 
 Module Contents
@@ -59,4 +61,8 @@ Module Contents
    :param id_area_type:
    :type id_area_type: int
 
+
+.. py:function:: get_individuals(id_module)
+
+.. py:function:: create_one_individual(id_module: int)
 

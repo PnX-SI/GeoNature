@@ -1,0 +1,80 @@
+geonature.core.gn_synthese.blueprints.synthese
+==============================================
+
+.. py:module:: geonature.core.gn_synthese.blueprints.synthese
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.synthese.synthese_routes
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.synthese.get_observations_for_web
+   geonature.core.gn_synthese.blueprints.synthese.get_one_synthese
+
+
+Module Contents
+---------------
+
+.. py:data:: synthese_routes
+
+.. py:function:: get_observations_for_web(permissions)
+
+   Optimized route to serve data for the frontend with all filters.
+
+   .. :quickref: Synthese; Get filtered observations
+
+   Query filtered by any filter, returning all the fields of the
+   view v_synthese_for_export::
+
+       properties = {
+           "id": r["id_synthese"],
+           "date_min": str(r["date_min"]),
+           "cd_nom": r["cd_nom"],
+           "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+           "lb_nom": r["lb_nom"],
+           "dataset_name": r["dataset_name"],
+           "observers": r["observers"],
+           "url_source": r["url_source"],
+           "unique_id_sinp": r["unique_id_sinp"],
+           "entity_source_pk_value": r["entity_source_pk_value"],
+       }
+       geojson = json.loads(r["st_asgeojson"])
+       geojson["properties"] = properties
+
+   :qparam str limit: Limit number of synthese returned. Defaults to NB_MAX_OBS_MAP.
+   :qparam str cd_ref_parent: filtre tous les taxons enfants d'un TAXREF cd_ref.
+   :qparam str cd_ref: Filter by TAXREF cd_ref attribute
+   :qparam str taxonomy_group2_inpn: Filter by TAXREF group2_inpn attribute
+   :qparam str taxonomy_id_hab: Filter by TAXREF id_habitat attribute
+   :qparam str taxhub_attribut*: filtre générique TAXREF en fonction de l'attribut et de la valeur.
+   :qparam str *_red_lists: filtre générique de listes rouges. Filtre sur les valeurs. Voir config.
+   :qparam str *_protection_status: filtre générique de statuts (BdC Statuts). Filtre sur les types. Voir config.
+   :qparam str observers: Filter on observer
+   :qparam str id_organism: Filter on organism
+   :qparam str date_min: Start date
+   :qparam str date_max: End date
+   :qparam str id_acquisition_framework: *tbd*
+   :qparam str geoIntersection: Intersect with the geom send from the map
+   :qparam str period_start: *tbd*
+   :qparam str period_end: *tbd*
+   :qparam str area*: Generic filter on area
+   :qparam str *: Generic filter, given by colname & value
+   :>jsonarr array data: Array of synthese with geojson key, see above
+   :>jsonarr int nb_total: Number of observations
+   :>jsonarr bool nb_obs_limited: Is number of observations capped
+
+
+.. py:function:: get_one_synthese(permissions, id_synthese)
+
+   Get one synthese record for web app with all decoded nomenclature
+
+

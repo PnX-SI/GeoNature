@@ -9,11 +9,30 @@ Classes
 
 .. autoapisummary::
 
+   geonature.core.gn_permissions.schemas.PermActionSchema
    geonature.core.gn_permissions.schemas.PermObjectSchema
+   geonature.core.gn_permissions.schemas.PermissionSchema
+   geonature.core.gn_permissions.schemas.PermissionAvailableSchema
 
 
 Module Contents
 ---------------
+
+.. py:class:: PermActionSchema
+
+   Bases: :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
 
 .. py:class:: PermObjectSchema
 
@@ -29,5 +48,102 @@ Module Contents
          :value: True
 
 
+
+
+.. py:class:: PermissionSchema
+
+   Bases: :py:obj:`utils_flask_sqla.schema.SmartRelationshipsMixin`, :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+
+   Marchmallow-sqlalchemy behavior is to search object in database,
+   and if not found, to create a new one. As this schema is not means to create
+   any related object, nested fields are dump only (use the FK to set the value).
+   For m2m fields, as it is not possible to load the FK which is in another table,
+   we let the user provide m2m models PK, but we have validation hooks which verify
+   that related models exists and have not been created by marchmallow-sqlalchemy.
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
+      .. py:attribute:: load_instance
+         :value: True
+
+
+
+      .. py:attribute:: sqla_session
+
+
+      .. py:attribute:: dump_only
+         :value: ('role', 'action', 'module', 'object')
+
+
+
+
+   .. py:attribute:: role
+
+
+   .. py:attribute:: action
+
+
+   .. py:attribute:: module
+
+
+   .. py:attribute:: object
+
+
+   .. py:attribute:: scope_value
+
+
+   .. py:attribute:: areas_filter
+
+
+   .. py:attribute:: taxons_filter
+
+
+   .. py:method:: validate_areas_filter(data, **kwargs)
+
+
+   .. py:method:: validate_taxons_filter(data, **kwargs)
+
+
+.. py:class:: PermissionAvailableSchema
+
+   Bases: :py:obj:`utils_flask_sqla.schema.SmartRelationshipsMixin`, :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
+      .. py:attribute:: load_instance
+         :value: True
+
+
+
+      .. py:attribute:: sqla_session
+
+
+
+   .. py:attribute:: action
+
+
+   .. py:attribute:: module
+
+
+   .. py:attribute:: object
 
 
