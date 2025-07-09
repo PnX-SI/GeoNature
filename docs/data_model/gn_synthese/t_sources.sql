@@ -26,8 +26,6 @@ ALTER TABLE ONLY gn_synthese.t_sources
 ALTER TABLE ONLY gn_synthese.t_sources
     ADD CONSTRAINT unique_name_source UNIQUE (name_source);
 
-CREATE UNIQUE INDEX i_unique_t_sources_name_source ON gn_synthese.t_sources USING btree (name_source);
-
 CREATE TRIGGER tri_meta_dates_t_sources BEFORE INSERT OR UPDATE ON gn_synthese.t_sources FOR EACH ROW EXECUTE FUNCTION public.fct_trg_meta_dates_change();
 
 ALTER TABLE ONLY gn_synthese.t_sources

@@ -24,7 +24,9 @@ CREATE TABLE taxonomie.taxref (
     group1_inpn character varying(50),
     group2_inpn character varying(50),
     url text,
-    group3_inpn character varying(250)
+    group3_inpn character varying(250),
+    cd_ba integer,
+    nomenclatural_comment character varying(500)
 );
 
 ALTER TABLE ONLY taxonomie.taxref

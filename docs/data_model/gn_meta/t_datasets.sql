@@ -107,8 +107,6 @@ ALTER TABLE ONLY gn_meta.t_datasets
 
 CREATE INDEX i_t_datasets_id_acquisition_framework ON gn_meta.t_datasets USING btree (id_acquisition_framework);
 
-CREATE UNIQUE INDEX i_unique_t_datasets_unique_id ON gn_meta.t_datasets USING btree (unique_dataset_id);
-
 CREATE TRIGGER tri_meta_dates_change_t_datasets BEFORE INSERT OR UPDATE ON gn_meta.t_datasets FOR EACH ROW EXECUTE FUNCTION public.fct_trg_meta_dates_change();
 
 ALTER TABLE ONLY gn_meta.t_datasets

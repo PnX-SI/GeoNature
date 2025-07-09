@@ -14,3 +14,6 @@ CREATE INDEX fki_cor_taxon_attribut ON taxonomie.cor_taxon_attribut USING btree 
 ALTER TABLE ONLY taxonomie.cor_taxon_attribut
     ADD CONSTRAINT cor_taxon_attrib_bib_attrib_fkey FOREIGN KEY (id_attribut) REFERENCES taxonomie.bib_attributs(id_attribut);
 
+ALTER TABLE ONLY taxonomie.cor_taxon_attribut
+    ADD CONSTRAINT cor_taxon_attrib_taxref_fkey FOREIGN KEY (cd_ref) REFERENCES taxonomie.taxref(cd_nom);
+

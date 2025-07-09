@@ -75,8 +75,6 @@ ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
 ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
     ADD CONSTRAINT unique_acquisition_frameworks_uuid UNIQUE (unique_acquisition_framework_id);
 
-CREATE UNIQUE INDEX i_unique_t_acquisition_framework_unique_id ON gn_meta.t_acquisition_frameworks USING btree (unique_acquisition_framework_id);
-
 CREATE TRIGGER tri_meta_dates_change_t_acquisition_frameworks BEFORE INSERT OR UPDATE ON gn_meta.t_acquisition_frameworks FOR EACH ROW EXECUTE FUNCTION public.fct_trg_meta_dates_change();
 
 ALTER TABLE ONLY gn_meta.t_acquisition_frameworks

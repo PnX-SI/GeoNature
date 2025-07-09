@@ -13,5 +13,5 @@ ALTER TABLE ONLY utilisateurs.cor_role_provider
     ADD CONSTRAINT cor_role_provider_id_provider_fkey FOREIGN KEY (id_provider) REFERENCES utilisateurs.t_providers(id_provider);
 
 ALTER TABLE ONLY utilisateurs.cor_role_provider
-    ADD CONSTRAINT cor_role_provider_id_role_fkey FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role);
+    ADD CONSTRAINT cor_role_provider_id_role_fkey FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON DELETE CASCADE;
 

@@ -13,6 +13,7 @@ CREATE TABLE ref_geo.l_areas (
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     geom_4326 public.geometry(MultiPolygon,4326),
+    description text,
     CONSTRAINT enforce_geotype_l_areas_centroid CHECK (((public.geometrytype(centroid) = 'POINT'::text) OR (centroid IS NULL))),
     CONSTRAINT enforce_geotype_l_areas_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),
     CONSTRAINT enforce_srid_l_areas_centroid CHECK ((public.st_srid(centroid) = 2154)),
