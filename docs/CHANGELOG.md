@@ -37,9 +37,8 @@
   - Habref-api-module [0.4.2](https://github.com/PnX-SI/Habref-api-module/releases/0.4.2)
   - Nomenclature-api-module [1.6.5](https://github.com/PnX-SI/Nomenclature-api-module/releases/1.6.5)
   - UsersHub-authentification-module [3.0.3](https://github.com/PnX-SI/UsersHub-authentification-module/releases/3.0.3)
-- [Système] Ajout d'une route `/heathz` pour surveiller le statut de la connexion avec la BDD et avec le worker Celery (#3417 par @TheoLechemia et @jacquesfize)
+- [Système] Ajout d'une route `/healthz` pour surveiller le statut de la connexion avec la BDD et avec le worker Celery (#3417 par @TheoLechemia et @jacquesfize)
 - [Installation] Amélioration de la commande d'installation d'un module GeoNature (#3261 par @bouttier)
-- [Documentation] Création automatique d'un dump de la structure de la base de données sous forme de fichier SQL dans le dossier `docs/data_model` (#1569 par @jacquesfize)
 - [CI/CD] Utilisation d'[images Docker](https://github.com/PnX-SI/geonature_db) pré-peuplées pour accélérer les tests unitaires (#3369 par @jacquesfize)
 - [Benchmark] Ajout de nouveaux tests automatisés de performance (#3392 par @Christophe-Ramet)
 - [Accueil] Amélioration du _responsive_ de la page d'accueil (#3426 et #3428 par @Christophe-Ramet)
@@ -48,6 +47,7 @@
 - [Développement] Réorganisation du code des _blueprints_ Flask de la Synthèse (#3301 par @jacquesfize)
 - [Développement] Ajout de nouveaux champs dans la vue `gn_synthese.v_synthese_for_web_app` : `id_statut`, `id_rang`, `regne`, `phylum`, `classe`, `ordre`, `famille` et `sous_famille` (#3373 par @Pierre-Narcisi)
 - [Général] Suppression de la page intermédiaire pour l'accès au panneau d'administration de GeoNature (par @jacquesfize)
+- [MétaDonnées] Ajout des champs additional_data pour les JDD et AF (#3422 par @lpofredc)
 
 ### 🐛 Corrections
 
@@ -64,6 +64,14 @@
 - [Documentation] Clarification du paramètre `ID_AREA_RESTRICTION` (#3382 par @jacquesfize)
 - [BDD] Suppression d'index redondant dans les schémas `gn_meta` et `gn_synthese` (#3562 par @PaulLabruyere)
 - [Développement] Correction de l'affichage des valeurs dans le form `datalist` avec le thème bootstrap (#3590 par @Pierre-Narcisi)
+
+### 📊 Suivi de l'évolution de la base de données
+
+Des fichiers SQL pour documenter et améliorer la lisibilité des modifications apportées à la base de données entre deux versions de GeoNature sont automatiquement créés à chaque _release_, depuis la version 2.15.4. Ils sont disponibles dans le dossier `docs/data_model` du dépôt.
+
+Pour observer les différences entre la 2.15.4 et la 2.16.0, il suffit d'utiliser la commande `git diff 2.15.4..2.16.0 docs/data_model/` ou consulter directement sur [GitHub](https://github.com/PnX-SI/GeoNature/compare/ce84b2743bcb09db850f8cfd30c0b3343d1131e0..74a1637665f34ef357f685249969998beca5179e).
+
+Plus de détails sur la génération des fichiers SQL sur [#1569](https://github.com/PnX-SI/GeoNature/issues/1569).
 
 ### ⚠️ Note de version
 
