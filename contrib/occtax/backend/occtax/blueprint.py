@@ -14,11 +14,12 @@ from flask import (
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
 from sqlalchemy import or_, func, distinct, case, select
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, Load, raiseload
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape, to_shape
 from marshmallow import ValidationError
+
 
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.models.base import TModules
@@ -82,6 +83,19 @@ def getReleves(scope):
 
     releve_repository = ReleveRepository(TRelevesOccurrence)
     q = releve_repository.get_filtered_query(g.current_user, scope)
+    q = q.options(
+        Load(TRelevesOccurrence).raiseload("*"),
+        joinedload(TRelevesOccurrence.observers),
+        joinedload(TRelevesOccurrence.digitiser),
+        joinedload(TRelevesOccurrence.dataset),
+        joinedload(TRelevesOccurrence.t_occurrences_occtax).options(
+            joinedload(TOccurrencesOccurrence.taxref),
+            joinedload(TOccurrencesOccurrence.cor_counting_occtax),
+        ),
+    )
+    from sqlalchemy import create_engine
+
+    engine = create_engine(current_app.config["SQLALCHEMY_DATABASE_URI"])
 
     parameters = request.args
 
@@ -98,9 +112,12 @@ def getReleves(scope):
 
     # Filters
     q = get_query_occtax_filters(parameters, TRelevesOccurrence, q)
+
     query_without_limit = q
     # Order by
     q = get_query_occtax_order(orderby, TRelevesOccurrence, q)
+    print(q.compile(engine, compile_kwargs={"literal_binds": True}))
+    print(limit)
     data = db.session.scalars(q.limit(limit).offset(page * limit)).unique().all()
 
     # Pour obtenir le nombre de résultat de la requete sans le LIMIT

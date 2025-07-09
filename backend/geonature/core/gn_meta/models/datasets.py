@@ -35,7 +35,9 @@ class TDatasets(db.Model):
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
     acquisition_framework = DB.relationship(
-        "TAcquisitionFramework", back_populates="datasets", lazy="joined"
+        "TAcquisitionFramework",
+        back_populates="datasets",
+        #   lazy="joined"
     )  # join AF as required for permissions checks
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
@@ -84,7 +86,9 @@ class TDatasets(db.Model):
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
     creator = DB.relationship(
-        User, lazy="joined", overlaps="digitizer"
+        User,
+        # lazy="joined",
+        overlaps="digitizer",
     )  # overlaps as alias of digitizer
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
@@ -125,7 +129,7 @@ class TDatasets(db.Model):
     # because CorDatasetActor could be an User or an Organisme object...
     cor_dataset_actor = relationship(
         CorDatasetActor,
-        lazy="joined",
+        # lazy="joined",
         cascade="save-update, merge, delete, delete-orphan",
         backref=DB.backref("actor_dataset"),
     )
