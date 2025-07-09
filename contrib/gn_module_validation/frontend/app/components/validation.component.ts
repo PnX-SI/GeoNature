@@ -32,6 +32,7 @@ export class ValidationComponent implements OnInit {
     this._fs.selectedCdRefFromTree = [];
     this._fs.selectedTaxonFromRankInput = [];
     this._fs.selectedtaxonFromComponent = [];
+    this._fs.processedDefaultFilters = {};
     this.getStatusNames();
     this._commonService.translateToaster("info", "La limite de nombre d'observations affichable dans le module est de " +
       ModuleConfig.NB_MAX_OBS_MAP);

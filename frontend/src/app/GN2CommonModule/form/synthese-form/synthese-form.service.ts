@@ -4,10 +4,16 @@ import { HttpParams } from '@angular/common/http';
 
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { Observable, of } from '@librairies/rxjs';
+import { mergeMap, tap } from '@librairies/rxjs/operators';
 
 import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
+import { CommonService } from '@geonature_common/service/common.service';
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
+
+import { DataFormService } from '../data-form.service';
+
 
 @Injectable()
 export class SyntheseFormService {
@@ -24,12 +30,38 @@ export class SyntheseFormService {
   public redListsFilters;
   public selectedRedLists = [];
   public selectedTaxRefAttributs = [];
+  public processedDefaultFilters: any;
+
+  private _nomenclatures: Array<any> = [];
+
+  public syntheseNomenclatureTypes = {
+    id_nomenclature_obs_technique: 'METH_OBS',
+    id_nomenclature_geo_object_nature: 'NAT_OBJ_GEO',
+    id_nomenclature_grp_typ: 'TYP_GRP',
+    id_nomenclature_bio_status: 'STATUT_BIO',
+    id_nomenclature_bio_condition: 'ETA_BIO',
+    id_nomenclature_naturalness: 'NATURALITE',
+    id_nomenclature_exist_proof: 'PREUVE_EXIST',
+    id_nomenclature_valid_status: 'STATUT_VALID',
+    id_nomenclature_diffusion_level: 'NIV_PRECIS',
+    id_nomenclature_life_stage: 'STADE_VIE',
+    id_nomenclature_sex: 'SEXE',
+    id_nomenclature_obj_count: 'OBJ_DENBR',
+    id_nomenclature_type_count: 'TYP_DENBR',
+    id_nomenclature_sensitivity: 'SENSIBILITE',
+    id_nomenclature_observation_status: 'STATUT_OBS',
+    id_nomenclature_blurring: 'DEE_FLOU',
+    id_nomenclature_source_status: 'STATUT_SOURCE',
+    id_nomenclature_biogeo_status: 'STAT_BIOGEO',
+  };
 
   constructor(
     @Inject(APP_CONFIG_TOKEN) private cfg,
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    private _periodFormatter: NgbDatePeriodParserFormatter
+    private _periodFormatter: NgbDatePeriodParserFormatter,
+    private _api: DataFormService,
+    private _common: CommonService
   ) {
     this.searchForm = this._fb.group({
       cd_nom: null,
@@ -198,5 +230,82 @@ export class SyntheseFormService {
       summary.push('Arbre taxo : ' + this.selectedCdRefFromTree.length + ' taxons.');
     }
     return summary.join(' ');
+  }
+
+  initNomenclatures(): Observable<Array<any>> {
+    if (this._nomenclatures.length) {
+      return of(this._nomenclatures);
+    }
+    return this._api.getNomenclatures(Object.values(this.syntheseNomenclatureTypes)).pipe(
+      tap((nomenclatures) => {
+        for (const nomenclatureType of nomenclatures) {
+          for (const nomenclature of nomenclatureType.values) {
+            this._nomenclatures.push({ ...nomenclature, type: nomenclatureType.mnemonique });
+          }
+        }
+      })
+    );
+  }
+
+  processDefaultFilters(filters): Observable<any> {
+    return this.initNomenclatures().pipe(
+      mergeMap(() => {
+        const defaultFilters = {};
+        for (const [key, value] of Object.entries(filters)) {
+          // on ne prend pas en compte les filtres à 'null'
+          if ([null, undefined, []].includes(value as any)) {
+            continue;
+          }
+
+          defaultFilters[key] = value;
+          // traitement des dates
+          if (['date_min', 'date_max'].includes(key) && value) {
+            const d = new Date(defaultFilters[key]);
+            defaultFilters[key] = {
+              year: d.getUTCFullYear(),
+              month: d.getUTCMonth() + 1,
+              day: d.getUTCDate(),
+            };
+          }
+
+          // traitement des nomenclatures
+          if (key.startsWith('cd_nomenclature_')) {
+            console.log(`Traitement du filtre par défaut pour ${key} avec la valeur ${value}`);
+
+            const targetKey = key.replace('cd_nomenclature_', 'id_nomenclature_');
+            const nomenclatureType = this.syntheseNomenclatureTypes[targetKey];
+            if (!nomenclatureType) {
+              const errorMsg = `Filtres par défaut: le type de nomenclature n'a pas été trouvé pour la clé ${key}`;
+              console.error(errorMsg);
+              this._common.regularToaster('error', errorMsg);
+            }
+            if (!Array.isArray(value)) {
+              const errorMsg = `Filtres par défaut: la valeur du filtre par défaut pour ${key} doit être une liste de codes`;
+              console.error(errorMsg);
+              this._common.regularToaster('error', errorMsg);
+            }
+            const nomenclatureIds = (value as Array<string>)
+              .map((cdNomenclature) => {
+                const nomenclature = this._nomenclatures.find(
+                  (n) => n['type'] == nomenclatureType && n['cd_nomenclature'] == cdNomenclature
+                );
+                if (!nomenclature) {
+                  const errorMsg = `Filtres par défaut: pas de nomenclature trouvée pour <type.cd_nomenclature> = ${nomenclatureType}.${cdNomenclature}`;
+                  console.error(errorMsg);
+                  this._common.regularToaster('error', errorMsg);
+                  return;
+                }
+                return nomenclature['id_nomenclature'];
+              })
+              .filter((idNomenclature) => !!idNomenclature);
+
+            delete defaultFilters[key];
+            defaultFilters[targetKey] = nomenclatureIds;
+          }
+        }
+        console.log('Filtres par défaut traités:', defaultFilters);
+        return of(defaultFilters);
+      })
+    );
   }
 }

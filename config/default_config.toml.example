@@ -532,7 +532,12 @@ MAIL_ON_ERROR = false
             value = "NSP"
             label = "Non renseigné"
             color = "#f3f6f4"
-
+    [SYNTHESE.DEFAULT_FILTERS]
+        # Tous les statuts de validation sauf invalide '4'
+        # Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)
+        cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
+        # Seulement les données de présence
+        cd_nomenclature_observation_status = ['Pr']
 
 # Configuration de l'accès sans authentication
 [PUBLIC_ACCESS]

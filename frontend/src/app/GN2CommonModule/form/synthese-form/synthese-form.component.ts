@@ -89,7 +89,7 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.selectedRedLists = [];
     this.formService.selectedStatus = [];
     this.formService.selectedTaxRefAttributs = [];
-    this.formService.searchForm.reset();
+    this.formService.searchForm.reset(this.formService.processedDefaultFilters);
     this.resetFilter.emit();
 
     // refresh taxon tree

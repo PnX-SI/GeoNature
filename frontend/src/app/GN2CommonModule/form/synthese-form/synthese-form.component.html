@@ -368,8 +368,10 @@
     <legend> Filtres avancés </legend>
     <small> Ajouter un filtre </small>
     <pnx-dynamic-form-generator
+      *ngIf="formService.processedDefaultFilters"
       [myFormGroup]="formService.searchForm"
       [formsDefinition]="formService.dynamycFormDef"
+      [defaults]="formService.processedDefaultFilters"
     >
     </pnx-dynamic-form-generator>
   </fieldset>

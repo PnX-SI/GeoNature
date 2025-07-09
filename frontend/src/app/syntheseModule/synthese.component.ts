@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -40,7 +40,8 @@ export class SyntheseComponent implements OnInit {
     private _toasterService: ToastrService,
     private _route: ActivatedRoute,
     private criteriaService: SyntheseCriteriaService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -57,17 +58,31 @@ export class SyntheseComponent implements OnInit {
         });
       }
 
-      // Reinitialize the form
-      this._fs.searchForm.reset();
-      this._fs.selectedCdRefFromTree = [];
-      this._fs.selectedTaxonFromRankInput = [];
-      this._fs.selectedtaxonFromComponent = [];
-      this._fs.selectedRedLists = [];
-      this._fs.selectedStatus = [];
-      this._fs.selectedTaxRefAttributs = [];
-
-      this.loadAndStoreData(this._fs.formatParams());
+      this.initializeForm();
+      this.applyDefaultFormValues(params);
     });
+  }
+
+  private initializeForm() {
+    this._fs.searchForm.reset();
+    this._fs.selectedCdRefFromTree = [];
+    this._fs.selectedTaxonFromRankInput = [];
+    this._fs.selectedtaxonFromComponent = [];
+    this._fs.selectedRedLists = [];
+    this._fs.selectedStatus = [];
+    this._fs.selectedTaxRefAttributs = [];
+  }
+
+  private applyDefaultFormValues(params) {
+    this._fs
+      .processDefaultFilters(AppConfig.SYNTHESE.DEFAULT_FILTERS)
+      .subscribe((processedDefaultFilters) => {
+        this._fs.searchForm.patchValue(processedDefaultFilters);
+        this._fs.processedDefaultFilters = processedDefaultFilters;
+        this.changeDetector.detectChanges();
+
+        this.loadAndStoreData(this._fs.formatParams());
+      });
   }
 
   loadAndStoreData(formParams) {
