@@ -43,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: '3.9'
 
       - name: Install dependencies
         run: |
@@ -61,6 +61,7 @@ jobs:
       - name: Install core modules database
         run: |
           geonature upgrade-modules-db
+          geonature db autoupgrade
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
 
