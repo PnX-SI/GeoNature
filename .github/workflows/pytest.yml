@@ -33,7 +33,7 @@ jobs:
 
     services:
       postgres:
-        image: ghcr.io/pnx-si/geonature-db:2.16.0
+        image: ghcr.io/pnx-si/geonature-db:latest
         env:
           POSTGRES_DB: geonature2db
           POSTGRES_PASSWORD: geonatpasswd
