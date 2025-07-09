@@ -40,6 +40,7 @@ class ReleveRepository:
         q = select(self.model).where(
             self.model.id_dataset.in_(tuple(map(lambda x: x.id_dataset, g.current_module.datasets)))
         )
+        # q = select(self.model)
         allowed_datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).unique().all()
         allowed_datasets = [dataset.id_dataset for dataset in allowed_datasets]
         if scope == 2:
@@ -138,13 +139,12 @@ def get_query_occtax_filters(
             TOccurrencesOccurrence.id_releve_occtax == mappedView.id_releve_occtax,
         ).where(TOccurrencesOccurrence.cd_nom == int(params.pop("cd_nom")))
     if "observers" in params:
-        if not is_already_joined(corRoleRelevesOccurrence, q):
-            q = q.join(
-                corRoleRelevesOccurrence,
-                corRoleRelevesOccurrence.id_releve_occtax == mappedView.id_releve_occtax,
-            )
-
-        q = q.where(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
+        exists_criteria = (
+            select(corRoleRelevesOccurrence.id_releve_occtax)
+            .where(mappedView.id_releve_occtax == corRoleRelevesOccurrence.id_releve_occtax)
+            .where(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
+        ).exists()
+        q = q.where(exists_criteria)
         params.pop("observers")
 
     if "date_up" in params:
