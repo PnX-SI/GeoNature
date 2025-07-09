@@ -501,9 +501,8 @@
 <li><p>UsersHub-authentification-module <a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module/releases/3.0.3">3.0.3</a></p></li>
 </ul>
 </li>
-<li><p>[Système] Ajout d’une route <code class="docutils literal notranslate"><span class="pre">/heathz</span></code> pour surveiller le statut de la connexion avec la BDD et avec le worker Celery (#3417 par &#64;TheoLechemia et &#64;jacquesfize)</p></li>
+<li><p>[Système] Ajout d’une route <code class="docutils literal notranslate"><span class="pre">/healthz</span></code> pour surveiller le statut de la connexion avec la BDD et avec le worker Celery (#3417 par &#64;TheoLechemia et &#64;jacquesfize)</p></li>
 <li><p>[Installation] Amélioration de la commande d’installation d’un module GeoNature (#3261 par &#64;bouttier)</p></li>
-<li><p>[Documentation] Création automatique d’un dump de la structure de la base de données sous forme de fichier SQL dans le dossier <code class="docutils literal notranslate"><span class="pre">docs/data_model</span></code> (#1569 par &#64;jacquesfize)</p></li>
 <li><p>[CI/CD] Utilisation d”<a class="reference external" href="https://github.com/PnX-SI/geonature_db">images Docker</a> pré-peuplées pour accélérer les tests unitaires (#3369 par &#64;jacquesfize)</p></li>
 <li><p>[Benchmark] Ajout de nouveaux tests automatisés de performance (#3392 par &#64;Christophe-Ramet)</p></li>
 <li><p>[Accueil] Amélioration du <em>responsive</em> de la page d’accueil (#3426 et #3428 par &#64;Christophe-Ramet)</p></li>
@@ -512,6 +511,7 @@
 <li><p>[Développement] Réorganisation du code des <em>blueprints</em> Flask de la Synthèse (#3301 par &#64;jacquesfize)</p></li>
 <li><p>[Développement] Ajout de nouveaux champs dans la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code> : <code class="docutils literal notranslate"><span class="pre">id_statut</span></code>, <code class="docutils literal notranslate"><span class="pre">id_rang</span></code>, <code class="docutils literal notranslate"><span class="pre">regne</span></code>, <code class="docutils literal notranslate"><span class="pre">phylum</span></code>, <code class="docutils literal notranslate"><span class="pre">classe</span></code>, <code class="docutils literal notranslate"><span class="pre">ordre</span></code>, <code class="docutils literal notranslate"><span class="pre">famille</span></code> et <code class="docutils literal notranslate"><span class="pre">sous_famille</span></code> (#3373 par &#64;Pierre-Narcisi)</p></li>
 <li><p>[Général] Suppression de la page intermédiaire pour l’accès au panneau d’administration de GeoNature (par &#64;jacquesfize)</p></li>
+<li><p>[MétaDonnées] Ajout des champs additional_data pour les JDD et AF (#3422 par &#64;lpofredc)</p></li>
 </ul>
 </section>
 <section id="corrections">
@@ -531,6 +531,12 @@
 <li><p>[BDD] Suppression d’index redondant dans les schémas <code class="docutils literal notranslate"><span class="pre">gn_meta</span></code> et <code class="docutils literal notranslate"><span class="pre">gn_synthese</span></code> (#3562 par &#64;PaulLabruyere)</p></li>
 <li><p>[Développement] Correction de l’affichage des valeurs dans le form <code class="docutils literal notranslate"><span class="pre">datalist</span></code> avec le thème bootstrap (#3590 par &#64;Pierre-Narcisi)</p></li>
 </ul>
+</section>
+<section id="suivi-de-l-evolution-de-la-base-de-donnees">
+<h3>📊 Suivi de l’évolution de la base de données<a class="headerlink" href="#suivi-de-l-evolution-de-la-base-de-donnees" title="Lien vers cette rubrique">¶</a></h3>
+<p>Des fichiers SQL pour documenter et améliorer la lisibilité des modifications apportées à la base de données entre deux versions de GeoNature sont automatiquement créés à chaque <em>release</em>, depuis la version 2.15.4. Ils sont disponibles dans le dossier <code class="docutils literal notranslate"><span class="pre">docs/data_model</span></code> du dépôt.</p>
+<p>Pour observer les différences entre la 2.15.4 et la 2.16.0, il suffit d’utiliser la commande <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span> <span class="pre">2.15.4..2.16.0</span> <span class="pre">docs/data_model/</span></code> ou consulter directement sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/compare/ce84b2743bcb09db850f8cfd30c0b3343d1131e0..74a1637665f34ef357f685249969998beca5179e">GitHub</a>.</p>
+<p>Plus de détails sur la génération des fichiers SQL sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/1569">#1569</a>.</p>
 </section>
 <section id="note-de-version">
 <h3>⚠️ Note de version<a class="headerlink" href="#note-de-version" title="Lien vers cette rubrique">¶</a></h3>
@@ -5542,6 +5548,7 @@ générique des sites et visites de suivi</p></li>
 <li><a class="reference internal" href="#en-bref">⏩ En bref</a></li>
 <li><a class="reference internal" href="#nouveautes">🚀 Nouveautés</a></li>
 <li><a class="reference internal" href="#corrections">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#suivi-de-l-evolution-de-la-base-de-donnees">📊 Suivi de l’évolution de la base de données</a></li>
 <li><a class="reference internal" href="#note-de-version">⚠️ Note de version</a></li>
 </ul>
 </li>
