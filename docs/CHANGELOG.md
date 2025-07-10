@@ -17,7 +17,7 @@
   - Ajout d'un fil d'ariane permettant de naviguer entre les rangs taxonomiques
   - Ajout du mode maille et d'un filtre temporel dans l'onglet "Observations" (anciennement "Synthèse géographique")
 - [Synthèse, Validation] Ajout de filtres de permission géographique et taxonomique (par @jpm-cbna, complété par @bouttier dans #3097)
-- [Permissions] Ajout de filtres temporels sur toutes les permissions
+- [Permissions] Ajout de filtres temporels sur toutes les permissions (#3099 par @jpm-cbna et @bouttier)
 - [Multilingue] Amélioration et enrichissement de la gestion du multilingue (#1551)
   - Enrichissement des traductions existantes dans différents modules (#1921 par @MathildeNS, complété dans #3484 par @jpm-cbna et @jacquesfize)
   - Possibilité de définir des fichiers de traduction pour chaque module (#1570 par @mvergez et @jpm-cbna)
