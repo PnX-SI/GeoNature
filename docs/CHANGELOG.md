@@ -43,7 +43,7 @@
 - [Benchmark] Ajout de nouveaux tests automatisés de performance (#3392 par @Christophe-Ramet)
 - [Accueil] Amélioration du _responsive_ de la page d'accueil (#3426 et #3428 par @Christophe-Ramet)
 - [Développement] Modification du `JSONProvider` prenant en compte les objets `Paginate` de `flask-sqlalchemy` (#3463 par @bouttier)
-- [Développement] Utilisation de la nouvelle méthode générique de tri de données `ordered` dans le module méta-données (#3465 par @bouttier)
+- [Développement] Utilisation de la nouvelle méthode générique de tri de données `ordered` dans le module Métadonnées (#3465 par @bouttier)
 - [Développement] Réorganisation du code des _blueprints_ Flask de la Synthèse (#3301 par @jacquesfize)
 - [Développement] Ajout de nouveaux champs dans la vue `gn_synthese.v_synthese_for_web_app` : `id_statut`, `id_rang`, `regne`, `phylum`, `classe`, `ordre`, `famille` et `sous_famille` (#3373 par @Pierre-Narcisi)
 - [Général] Suppression de la page intermédiaire pour l'accès au panneau d'administration de GeoNature (par @jacquesfize)
