@@ -21,10 +21,10 @@ import {
   providers: [HomeDiscussionsService],
 })
 export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
-  readonly PROP_CREATION_DATE = 'creation_date';
-  readonly PROP_USER = 'user.nom_complet';
-  readonly PROP_CONTENT = 'content';
-  readonly PROP_OBSERVATION = 'observation';
+  public readonly PROP_CREATION_DATE = 'creation_date';
+  public readonly PROP_USER = 'user.nom_complet';
+  public readonly PROP_CONTENT = 'content';
+  public readonly PROP_OBSERVATION = 'observation';
 
   readonly DEFAULT_PAGINATION: SyntheseDataPaginationItem = {
     totalItems: 0,
