@@ -12,7 +12,7 @@ from sqlalchemy.orm import relationship, aliased
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
-
+from sqlalchemy.schema import FetchedValue
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
@@ -225,7 +225,7 @@ class TValidations(DB.Model):
     validator_role = DB.relationship(User)
     validation_auto = DB.Column(DB.Boolean)
     validation_comment = DB.Column(DB.Unicode)
-    validation_date = DB.Column(DB.TIMESTAMP)
+    validation_date = DB.Column(DB.TIMESTAMP, server_default=FetchedValue())
     validation_auto = DB.Column(DB.Boolean)
     # FIXME: remove and use nomenclature_valid_status
     validation_label = DB.relationship(
