@@ -47,7 +47,7 @@
 - [Développement] Réorganisation du code des _blueprints_ Flask de la Synthèse (#3301 par @jacquesfize)
 - [Développement] Ajout de nouveaux champs dans la vue `gn_synthese.v_synthese_for_web_app` : `id_statut`, `id_rang`, `regne`, `phylum`, `classe`, `ordre`, `famille` et `sous_famille` (#3373 par @Pierre-Narcisi)
 - [Général] Suppression de la page intermédiaire pour l'accès au panneau d'administration de GeoNature (par @jacquesfize)
-- [MétaDonnées] Ajout des champs additional_data pour les JDD et AF (#3422 par @lpofredc)
+- [Métadonnées] Ajout des champs `additional_data` dans les tables des JDD et des CA (#3422 par @lpofredc)
 
 ### 🐛 Corrections
 
