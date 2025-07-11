@@ -929,7 +929,7 @@ def call_extended_af_publish(af_id):
 
 
 @routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
-@permissions.check_cruved_scope("E", module_code="METADATA")
+@permissions.check_cruved_scope("U", module_code="METADATA")
 @json_resp
 def publish_acquisition_framework(af_id):
     """
