@@ -189,14 +189,12 @@ class TRelevesOccurrence(DB.Model):
 
     digitiser = relationship(
         User,
-        lazy="joined",
         primaryjoin=(User.id_role == id_digitiser),
         foreign_keys=[id_digitiser],
     )
 
     dataset = relationship(
         TDatasets,
-        lazy="joined",
         primaryjoin=(TDatasets.id_dataset == id_dataset),
         foreign_keys=[id_dataset],
     )
