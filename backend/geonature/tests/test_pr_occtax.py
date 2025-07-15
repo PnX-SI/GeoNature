@@ -218,7 +218,11 @@ def releve_occtax(app: Flask, users: dict, releve_data: dict[str, Any], occtax_m
     g.current_module = occtax_module
     data = releve_data["properties"]
     data["geom_4326"] = releve_data["geometry"]
-    data["observers"] = [users["user"].id_role]
+    data["observers"] = [
+        users["user"].id_role,
+        users["associate_user"].id_role,
+        users["user_with_blurring"].id_role,
+    ]
     releve_db = ReleveSchema().load(data)
     with db.session.begin_nested():
         db.session.add(releve_db)
@@ -272,6 +276,18 @@ class TestOcctaxReleve:
         assert releve_occtax.id_releve_occtax in [
             int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
         ]
+
+    def test_get_releve_filters(self, users: dict, releve_occtax: Any):
+        set_logged_user(self.client, users["user"])
+        url = url_for("pr_occtax.getReleves")
+        response = self.client.get(url, query_string={"observers": users["user"].id_role})
+
+        assert response.status_code == 200
+        json_resp = response.json
+        assert json_resp["total"] >= 1
+        assert json_resp["total_filtered"] == 1
+        releve = json_resp["items"]["features"][0]["properties"]
+        assert users["user"].id_role in map(lambda r: r["id_role"], releve["observers"])
 
     def test_get_one_releve(self, users: dict, releve_occtax: TRelevesOccurrence):
         # FIX ME: CHECK CONTENT
