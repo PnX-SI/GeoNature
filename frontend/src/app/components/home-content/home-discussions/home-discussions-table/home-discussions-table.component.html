@@ -64,7 +64,7 @@
       ngx-datatable-cell-template
       let-row="row"
     >
-      {{ row[PROP_USER] }}
+      {{ row?.user.nom_complet }}
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column
