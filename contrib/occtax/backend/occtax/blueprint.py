@@ -82,8 +82,8 @@ def getReleves(scope):
     """
 
     releve_repository = ReleveRepository(TRelevesOccurrence)
-    q = releve_repository.get_filtered_query(g.current_user, scope)
-    q = q.options(
+    query = releve_repository.get_filtered_query(g.current_user, scope)
+    query = query.options(
         Load(TRelevesOccurrence).raiseload("*"),
         joinedload(TRelevesOccurrence.observers),
         joinedload(TRelevesOccurrence.digitiser),
@@ -93,9 +93,6 @@ def getReleves(scope):
             joinedload(TOccurrencesOccurrence.cor_counting_occtax),
         ),
     )
-    from sqlalchemy import create_engine
-
-    engine = create_engine(current_app.config["SQLALCHEMY_DATABASE_URI"])
 
     parameters = request.args
 
@@ -111,14 +108,11 @@ def getReleves(scope):
     }
 
     # Filters
-    q = get_query_occtax_filters(parameters, TRelevesOccurrence, q)
-
-    query_without_limit = q
+    query = get_query_occtax_filters(parameters, TRelevesOccurrence, query)
+    query_without_limit = query
     # Order by
-    q = get_query_occtax_order(orderby, TRelevesOccurrence, q)
-    print(q.compile(engine, compile_kwargs={"literal_binds": True}))
-    print(limit)
-    data = db.session.scalars(q.limit(limit).offset(page * limit)).unique().all()
+    query = get_query_occtax_order(orderby, TRelevesOccurrence, query)
+    data = db.session.scalars(query.limit(limit).offset(page * limit)).unique().all()
 
     # Pour obtenir le nombre de résultat de la requete sans le LIMIT
     nb_results_without_limit = db.session.execute(
