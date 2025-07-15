@@ -84,7 +84,10 @@ class TDatasets(db.Model):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
+    digitizer = DB.relationship(
+        User,
+        # lazy="joined",
+    )  # joined for permission check
     creator = DB.relationship(
         User,
         # lazy="joined",
