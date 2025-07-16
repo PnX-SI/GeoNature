@@ -374,11 +374,9 @@ def notify_validation_state_change(synthese, validation, status):
         code_categories=["VALIDATION-STATUS-CHANGED%"],
         id_roles=[synthese.id_digitiser],
         title="Changement de statut de validation",
-        url=(
-            current_app.config["URL_APPLICATION"]
-            + "/#/synthese/occurrence/"
-            + str(synthese.id_synthese),
-        ),
+        url=current_app.config["URL_APPLICATION"]
+        + "/#/synthese/occurrence/"
+        + str(synthese.id_synthese),
         context={
             "synthese": synthese,
             "validation": validation,
