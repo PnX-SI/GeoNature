@@ -18,6 +18,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { Loadable } from '../loadable';
 import { finalize } from 'rxjs/operators';
 import { CommonService } from '@geonature_common/service/common.service';
+import { Router } from '@librairies/@angular/router';
 
 interface MapAreasStyle {
   color: string;
@@ -71,7 +72,8 @@ export class TabObservationsComponent extends Loadable implements OnInit {
     public formService: SyntheseFormService,
     public translateService: TranslateService,
     private _ms: MapService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _router: Router
   ) {
     super();
 
@@ -180,11 +182,15 @@ export class TabObservationsComponent extends Loadable implements OnInit {
         this.setAreasStyle(layer as L.Path, obsCount);
         popupContent = `${obsCount} observations`;
       } else {
+        const url = new URL(window.location.href);
+        url.hash = this._router.serializeUrl(
+          this._router.createUrlTree(['synthese', 'occurrence', observations[0].id_synthese])
+        );
         popupContent = `
           ${observations[0].nom_vern_or_lb_nom || ''}<br>
           <b>Observé le :</b> ${observations[0].date_min || 'Non défini'}<br>
-          <b>Par :</b> ${observations[0].observers || 'Non défini'}
-        `;
+          <b>Par :</b> ${observations[0].observers || 'Non défini'}<br>
+          <a href="${url.href}">Lien vers l'observation</a>`;
       }
 
       layer.bindPopup(popupContent);
