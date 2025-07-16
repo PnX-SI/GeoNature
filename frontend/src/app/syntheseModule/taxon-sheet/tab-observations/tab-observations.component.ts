@@ -18,7 +18,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { Loadable } from '../loadable';
 import { finalize } from 'rxjs/operators';
 import { CommonService } from '@geonature_common/service/common.service';
-import { ActivatedRoute, Router } from '@librairies/@angular/router';
+import { Router } from '@librairies/@angular/router';
 
 interface MapAreasStyle {
   color: string;
@@ -73,7 +73,6 @@ export class TabObservationsComponent extends Loadable implements OnInit {
     public translateService: TranslateService,
     private _ms: MapService,
     private _commonService: CommonService,
-    private _route: ActivatedRoute,
     private _router: Router
   ) {
     super();
