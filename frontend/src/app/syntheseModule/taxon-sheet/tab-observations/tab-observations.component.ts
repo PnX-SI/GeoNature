@@ -180,10 +180,12 @@ export class TabObservationsComponent extends Loadable implements OnInit {
         this.setAreasStyle(layer as L.Path, obsCount);
         popupContent = `${obsCount} observations`;
       } else {
+        const linktoObs = `${this.config.URL_APPLICATION}/#/synthese/occurrence/${observations[0].id_synthese}`;
         popupContent = `
           ${observations[0].nom_vern_or_lb_nom || ''}<br>
           <b>Observé le :</b> ${observations[0].date_min || 'Non défini'}<br>
-          <b>Par :</b> ${observations[0].observers || 'Non défini'}
+          <b>Par :</b> ${observations[0].observers || 'Non défini'}<br>
+          <a href="${linktoObs}">Lien vers l'observation</a>
         `;
       }
 
