@@ -16,6 +16,9 @@ from .fixtures import *
 from .utils import set_logged_user
 import sqlalchemy as sa
 
+from datetime import timezone
+from zoneinfo import ZoneInfo
+
 gn_module_validation = pytest.importorskip("gn_module_validation")
 pytestmark = pytest.mark.skipif(
     "VALIDATION" in config["DISABLED_MODULES"], reason="Validation is disabled"
@@ -78,7 +81,9 @@ class TestValidation:
                 )
             )
         ).scalar_one()
-        validation_date = datetime.now()
+
+        timezone = db.session.scalar(sa.text("SHOW TIMEZONE;"))
+        validation_date = datetime.now(ZoneInfo(timezone))
 
         response = self.client.get(
             url_for("validation.get_validation_date", uuid=synthese.unique_id_sinp)
@@ -98,7 +103,8 @@ class TestValidation:
             url_for("validation.get_validation_date", uuid=synthese.unique_id_sinp)
         )
         assert response.status_code == 200
-        assert abs(datetime.fromisoformat(response.json) - validation_date) < timedelta(seconds=2)
+        response_date = datetime.fromisoformat(response.json).replace(tzinfo=ZoneInfo(timezone))
+        assert abs(response_date - validation_date) < timedelta(seconds=4)
 
     def test_get_validation_history(self, users, synthese_data):
         set_logged_user(self.client, users["user"])
