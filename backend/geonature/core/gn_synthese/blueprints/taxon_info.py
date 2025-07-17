@@ -271,10 +271,11 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
                 Synthese,
                 CorAreaSynthese,
                 Synthese.id_synthese == CorAreaSynthese.id_synthese,
+                isouter=True
             )
-            .join(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area)
-            .join(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
-            .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
+            .join(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area, isouter=True)
+            .join(LAreas, CorAreaSynthese.id_area == LAreas.id_area, isouter=True)
+            .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type, isouter=True)
             .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
         )
 
