@@ -271,7 +271,7 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
                 Synthese,
                 CorAreaSynthese,
                 Synthese.id_synthese == CorAreaSynthese.id_synthese,
-                isouter=True
+                isouter=True,
             )
             .join(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area, isouter=True)
             .join(LAreas, CorAreaSynthese.id_area == LAreas.id_area, isouter=True)
