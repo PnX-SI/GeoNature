@@ -82,9 +82,8 @@ class TestValidation:
             )
         ).scalar_one()
 
-        timezone = db.session.scalar(sa.text("SHOW TIMEZONE;"))
-        validation_date = datetime.now(ZoneInfo(timezone))
-
+        tz = ZoneInfo(db.session.scalar(sa.text("SHOW TIMEZONE;")))
+        validation_date = datetime.now(tz)
         response = self.client.get(
             url_for("validation.get_validation_date", uuid=synthese.unique_id_sinp)
         )
@@ -103,7 +102,7 @@ class TestValidation:
             url_for("validation.get_validation_date", uuid=synthese.unique_id_sinp)
         )
         assert response.status_code == 200
-        response_date = datetime.fromisoformat(response.json).replace(tzinfo=ZoneInfo(timezone))
+        response_date = datetime.fromisoformat(response.json).replace(tzinfo=tz)
         assert abs(response_date - validation_date) < timedelta(seconds=4)
 
     def test_get_validation_history(self, users, synthese_data):
