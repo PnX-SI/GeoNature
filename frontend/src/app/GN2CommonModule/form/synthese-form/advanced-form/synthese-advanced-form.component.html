@@ -142,6 +142,7 @@
             class="custom-control-input"
             [formControl]="status.control"
             [value]="status.status_types[0]"
+            [checked]="formService.selectedStatus.includes(status.status_types[0])"
             (change)="onStatusCheckboxChanged($event)"
           />
           <label
