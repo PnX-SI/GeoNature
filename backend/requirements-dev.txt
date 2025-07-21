@@ -34,7 +34,7 @@
     # via
     #   -r requirements-submodules.in
     #   pypn-ref-geo
-alembic==1.16.2
+alembic==1.16.4
     # via
     #   flask-migrate
     #   pypn-ref-geo
@@ -48,7 +48,7 @@ attrs==25.3.0
     #   fiona
     #   jsonschema
     #   referencing
-authlib==1.6.0
+authlib==1.6.1
     # via pypnusershub
 babel==2.17.0
     # via flask-babel
@@ -73,7 +73,7 @@ brotli==1.1.0
     # via fonttools
 celery[redis]==5.5.3
     # via -r requirements-common.in
-certifi==2025.6.15
+certifi==2025.7.14
     # via
     #   fiona
     #   pyproj
@@ -191,7 +191,7 @@ flask-wtf==1.2.2
     # via
     #   -r requirements-common.in
     #   usershub
-fonttools[woff]==4.58.5
+fonttools[woff]==4.59.0
     # via
     #   fonttools
     #   weasyprint
@@ -230,7 +230,7 @@ jinja2==3.1.6
     #   bokeh
     #   flask
     #   flask-babel
-jsonschema==4.24.0
+jsonschema==4.25.0
     # via -r requirements-common.in
 jsonschema-specifications==2025.4.1
     # via jsonschema
