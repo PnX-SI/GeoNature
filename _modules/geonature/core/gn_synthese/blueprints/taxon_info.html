@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_synthese.blueprints.taxon_info - Documentation GeoNature 2.16.0</title>
+        <title>geonature.core.gn_synthese.blueprints.taxon_info - Documentation GeoNature 2.16.1</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.0</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.0</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -726,8 +726,8 @@
         <span class="n">taxon_subquery</span> <span class="o">=</span> <span class="n">TaxonSheetUtils</span><span class="o">.</span><span class="n">get_taxon_selectquery</span><span class="p">(</span><span class="n">cd_ref</span><span class="p">)</span>
 
         <span class="c1"># Main query to fetch stats</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span>
-            <span class="p">[</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span>
                 <span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">distinct</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">))</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;observation_count&quot;</span><span class="p">),</span>
                 <span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">distinct</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">observers</span><span class="p">))</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;observer_count&quot;</span><span class="p">),</span>
                 <span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">distinct</span><span class="p">(</span><span class="n">areas_subquery</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_area</span><span class="p">))</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;area_count&quot;</span><span class="p">),</span>
@@ -735,16 +735,12 @@
                 <span class="n">func</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">altitude_max</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;altitude_max&quot;</span><span class="p">),</span>
                 <span class="n">func</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">date_min</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;date_min&quot;</span><span class="p">),</span>
                 <span class="n">func</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">date_max</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;date_max&quot;</span><span class="p">),</span>
-            <span class="p">]</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">select_from</span><span class="p">(</span>
-            <span class="n">join</span><span class="p">(</span>
-                <span class="n">Synthese</span><span class="p">,</span>
-                <span class="n">CorAreaSynthese</span><span class="p">,</span>
-                <span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span> <span class="o">==</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">areas_subquery</span><span class="p">,</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_area</span> <span class="o">==</span> <span class="n">areas_subquery</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_area</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LAreas</span><span class="p">,</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_area</span> <span class="o">==</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">id_area</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BibAreasTypes</span><span class="p">,</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">id_type</span> <span class="o">==</span> <span class="n">BibAreasTypes</span><span class="o">.</span><span class="n">id_type</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">CorAreaSynthese</span><span class="p">,</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span> <span class="o">==</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">areas_subquery</span><span class="p">,</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_area</span> <span class="o">==</span> <span class="n">areas_subquery</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_area</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">LAreas</span><span class="p">,</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_area</span> <span class="o">==</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">id_area</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">BibAreasTypes</span><span class="p">,</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">id_type</span> <span class="o">==</span> <span class="n">BibAreasTypes</span><span class="o">.</span><span class="n">id_type</span><span class="p">)</span>
             <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">taxon_subquery</span><span class="p">,</span> <span class="n">taxon_subquery</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">cd_nom</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">)</span>
         <span class="p">)</span>
 
@@ -857,7 +853,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=10905da3"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=b4e8d9ba"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

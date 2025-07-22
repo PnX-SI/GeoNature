@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_meta.models.datasets - Documentation GeoNature 2.16.0</title>
+        <title>geonature.core.gn_meta.models.datasets - Documentation GeoNature 2.16.1</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.0</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.0</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -500,7 +500,9 @@
 <div class="viewcode-block" id="TDatasets.acquisition_framework">
 <a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/models/datasets/index.html#geonature.core.gn_commons.models.TDatasets.acquisition_framework">[docs]</a>
     <span class="n">acquisition_framework</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
-        <span class="s2">&quot;TAcquisitionFramework&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;datasets&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span>
+        <span class="s2">&quot;TAcquisitionFramework&quot;</span><span class="p">,</span>
+        <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;datasets&quot;</span><span class="p">,</span>
+        <span class="c1">#   lazy=&quot;joined&quot;</span>
     <span class="p">)</span>  <span class="c1"># join AF as required for permissions checks</span></div>
 
 <div class="viewcode-block" id="TDatasets.dataset_name">
@@ -613,12 +615,17 @@
 
 <div class="viewcode-block" id="TDatasets.digitizer">
 <a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/models/datasets/index.html#geonature.core.gn_commons.models.TDatasets.digitizer">[docs]</a>
-    <span class="n">digitizer</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">)</span>  <span class="c1"># joined for permission check</span></div>
+    <span class="n">digitizer</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span>
+        <span class="c1"># lazy=&quot;joined&quot;,</span>
+    <span class="p">)</span>  <span class="c1"># joined for permission check</span></div>
 
 <div class="viewcode-block" id="TDatasets.creator">
 <a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/models/datasets/index.html#geonature.core.gn_commons.models.TDatasets.creator">[docs]</a>
     <span class="n">creator</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
-        <span class="n">User</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">,</span> <span class="n">overlaps</span><span class="o">=</span><span class="s2">&quot;digitizer&quot;</span>
+        <span class="n">User</span><span class="p">,</span>
+        <span class="c1"># lazy=&quot;joined&quot;,</span>
+        <span class="n">overlaps</span><span class="o">=</span><span class="s2">&quot;digitizer&quot;</span><span class="p">,</span>
     <span class="p">)</span>  <span class="c1"># overlaps as alias of digitizer</span></div>
 
 <div class="viewcode-block" id="TDatasets.id_taxa_list">
@@ -692,7 +699,7 @@
 <a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/models/datasets/index.html#geonature.core.gn_commons.models.TDatasets.cor_dataset_actor">[docs]</a>
     <span class="n">cor_dataset_actor</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
         <span class="n">CorDatasetActor</span><span class="p">,</span>
-        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">,</span>
+        <span class="c1"># lazy=&quot;joined&quot;,</span>
         <span class="n">cascade</span><span class="o">=</span><span class="s2">&quot;save-update, merge, delete, delete-orphan&quot;</span><span class="p">,</span>
         <span class="n">backref</span><span class="o">=</span><span class="n">DB</span><span class="o">.</span><span class="n">backref</span><span class="p">(</span><span class="s2">&quot;actor_dataset&quot;</span><span class="p">),</span>
     <span class="p">)</span></div>
@@ -1000,7 +1007,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=10905da3"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=b4e8d9ba"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=5fa4622c"></script>
