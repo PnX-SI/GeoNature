@@ -3,7 +3,7 @@
 # Update depending on the database
 PG_DATABASE="geonature2db"
 PG_USER="geonatadmin"
-PG_PASSWORD="geonatpasswd"
+PG_PASSWORD="geonatadmin"
 HOST=localhost
 PORT=5432
 
@@ -15,13 +15,13 @@ PORT=5432
 cat schemas.txt | while read schema || [[ -n $schema ]];
 do
   # List all tables in the schema
-  cmd="PG_PASSWORD=$PG_PASSWORD psql -t -h $HOST -p $PORT -U $PG_USER $PG_DATABASE -c \"SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='$schema' UNION SELECT viewname AS tablename FROM pg_catalog.pg_views WHERE schemaname='$schema' UNION SELECT matviewname AS tablename FROM pg_catalog.pg_matviews WHERE schemaname='$schema'\""
+  cmd="PGPASSWORD=$PG_PASSWORD psql -t -h $HOST -p $PORT -U $PG_USER $PG_DATABASE -c \"SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='$schema' UNION SELECT viewname AS tablename FROM pg_catalog.pg_views WHERE schemaname='$schema' UNION SELECT matviewname AS tablename FROM pg_catalog.pg_matviews WHERE schemaname='$schema'\""
   tables=$(eval "$cmd")
   if [[ ! -d $schema ]];then
     mkdir $schema;
   fi
   # Dump functions of the schema
-  psql -t -A -U $PG_USER -h $HOST -p $PORT $PG_DATABASE -c "
+  PGPASSWORD=$PG_PASSWORD psql -t -A -U $PG_USER -h $HOST -p $PORT $PG_DATABASE -c "
     SELECT pg_get_functiondef(f.oid)
     FROM pg_catalog.pg_proc f
     INNER JOIN pg_catalog.pg_namespace n ON (f.pronamespace = n.oid)
@@ -32,7 +32,7 @@ do
   for table in $tables;
   do
     echo "Dumping ${schema}.${table}..."
-    PG_PASSWORD=$PG_PASSWORD pg_dump -O -x -s -t "${schema}.${table}" -U $PG_USER -h $HOST -p $PORT $PG_DATABASE > $schema/$table.sql
+    PGPASSWORD=$PG_PASSWORD pg_dump -O -x -s -t "${schema}.${table}" -U $PG_USER -h $HOST -p $PORT $PG_DATABASE > $schema/$table.sql
     
     sed -i '/^--/d' $schema/$table.sql
     sed -i '/^SELECT pg_catalog/d' $schema/$table.sql
