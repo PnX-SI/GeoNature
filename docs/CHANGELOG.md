@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2.16.1 (2025-07-22)
+
+### 🚀 Nouveautés
+
+- [Métadonnées] Amélioration des performances du chargement des informations des jeux de données et des cadres d'acquisitions (#3617 par @TheoLechemia)
+- [Synthèse] Ajout d'un lien vers les détails d'une observation dans l'onglet "Observations" de la fiche Taxon (#3610 par @jacquesfize)
+
+### 🐛 Corrections
+
+- [Occtax] Correction du filtre "Observateurs" avec un R=2 (#3616 par @TheoLechemia)
+- [Occtax] Correction d'un lien vers la page d’accueil dans le contexte d'un module dupliqué de Occtax (#3610 @ch-cbna)
+- [Discussion] Correction de l'affichage des auteurs dans le bloc de la page d'accueil (#3618 par @TheoLechemia)
+- [Synthèse] Correction des statistiques calculées dans les fiches taxon si une observation n'est pas associée à une commune (#3631 par @Pierre-Narcisi)
+- [Synthèse] Les filtres de statut avec une seul valeur ne sont plus cochés par défaut (#3624 par @jacquesfize)
+- [Validation] Correction du lien généré dans la notification par mail (#3623 par @jacquesfize)
+- [Général] Correction permettant un chargement des médias asynchrones dans le composant `pnx-medias` (#3636 par @amandine-sahl)
+
 ## 2.16.0 - [Bombina variegata](https://inpn.mnhn.fr/espece/cd_nom/212) 🐸 (2025-07-08)
 
 ### ⏩ En bref
