@@ -3,7 +3,10 @@
     <span id="destination">{{ infoBox.destinationName }}</span>
   </h5>
 
-  <h5 *ngIf="infoBox.fileName" class="HeaderStepper">
+  <h5
+    *ngIf="infoBox.fileName"
+    class="HeaderStepper"
+  >
     <span>{{ 'Import.FileName' | translate }}:</span>
     <span id="filename">{{ infoBox.fileName }}</span>
   </h5>
