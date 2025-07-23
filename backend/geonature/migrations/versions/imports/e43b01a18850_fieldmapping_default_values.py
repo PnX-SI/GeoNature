@@ -1,7 +1,7 @@
 """fieldmapping default values
 
 Revision ID: e43b01a18850
-Revises: 5cf0ce9e669c
+Revises: a7f95c66819a
 Create Date: 2024-11-28 17:33:06.243150
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "e43b01a18850"
-down_revision = "4e6ce32305f0"
+down_revision = "a7f95c66819a"
 branch_labels = None
 depends_on = None
 
