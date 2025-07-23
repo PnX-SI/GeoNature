@@ -70,6 +70,10 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   @Input()
   value: FieldMappingItem | null = null;
   writeValue(value: FieldMappingItem | null): void {
+    // TODO : fix this
+    if (value == null && this.value != null) {
+      return;
+    }
     if (this.value == value) {
       return;
     }
