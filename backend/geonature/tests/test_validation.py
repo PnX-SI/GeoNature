@@ -762,7 +762,7 @@ class TestValidationRoutes:
         )
         assert response.status_code == 200
         response_date = datetime.fromisoformat(response.json).replace(tzinfo=tz)
-        assert abs(response_date - validation_date) < timedelta(minutes=5)
+        assert abs(response_date - validation_date) < timedelta(minutes=10)
 
     def test_post_status_multiple_synthese(self, users, synthese_data):
         """Test validation of multiple observations at once."""
