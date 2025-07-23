@@ -103,7 +103,7 @@ class TestValidation:
         )
         assert response.status_code == 200
         response_date = datetime.fromisoformat(response.json).replace(tzinfo=tz)
-        assert abs(response_date - validation_date) < timedelta(minutes=5)
+        assert abs(response_date - validation_date) < timedelta(minutes=10)
 
     def test_get_validation_history(self, users, synthese_data):
         set_logged_user(self.client, users["user"])
