@@ -10,8 +10,6 @@
         selector=".btn-clear"
         displayMouseOver
       >
-
-
         <mat-expansion-panel
           [expanded]="parentFormControl.value.length === i + 1 && !media.id_media"
           (closed)="media.closed = true"
@@ -21,15 +19,15 @@
             <mat-panel-title>
               <div style="display: block; width: 100%">
                 <div class="Medias__title">
-                <button
-                  mat-icon-button
-                  *ngIf="media.valid() && !media.bLoading"
-                  class="btn-clear d-none"
-                  (click)="deleteMedia(i)"
-                  matTooltip="Supprimer ce media"
+                  <button
+                    mat-icon-button
+                    *ngIf="media.valid() && !media.bLoading"
+                    class="btn-clear d-none"
+                    (click)="deleteMedia(i)"
+                    matTooltip="Supprimer ce media"
                   >
-                  <mat-icon >clear</mat-icon>
-                </button>
+                    <mat-icon>clear</mat-icon>
+                  </button>
                   <mat-icon
                     *ngIf="!media.valid() && !media.bLoading"
                     [matTooltip]="'Veuillez compléter le formulaire.'"
