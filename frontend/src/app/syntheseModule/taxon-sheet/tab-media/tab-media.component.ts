@@ -92,12 +92,15 @@ export class TabMediaComponent extends Loadable implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   onKeydown(event: KeyboardEvent) {
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      this.selectFollowingMedia(Direction.BACKWARD);
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      this.selectFollowingMedia(Direction.FORWARD);
+    // add Ctrl modifier to prevent triggering other left arrow actions
+    if (event.ctrlKey) {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        this.selectFollowingMedia(Direction.BACKWARD);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        this.selectFollowingMedia(Direction.FORWARD);
+      }
     }
   }
 
