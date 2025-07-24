@@ -413,7 +413,9 @@
       "ChooseDataset": "Choisir un jeu de données",
       "ChooseDestination": "Choisir une destination",
       "ImportFile": "Importer un fichier (CSV)",
-      "ChooseFile": "Choisissez votre fichier"
+      "ChooseFile": "Choisissez votre fichier",
+      "IndicateUniqueValue": "Saisir une valeur unique",
+      "IndicateColumn": "Sélectionner une colonne du fichier"
     },
     "FileName": "Nom du fichier",
     "Mapping": {

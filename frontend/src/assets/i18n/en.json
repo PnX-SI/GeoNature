@@ -413,7 +413,9 @@
       "ChooseDataset": "Choose a dataset",
       "ChooseDestination": "Choose a destination",
       "ImportFile": "Import a file (CSV)",
-      "ChooseFile": "Choose your file"
+      "ChooseFile": "Choose your file",
+      "IndicateUniqueValue": "Indicate a unique value",
+      "IndicateColumn": "Select a column from the file"
     },
     "FileName": "File name",
     "Mapping": {
