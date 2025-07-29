@@ -168,14 +168,14 @@
             [noMaxDate]="true"
           ></pnx-date>
           <div>
-            <small>Je renseigne mon propre UUID</small>
+            <small>Je renseigne mon propre Identifiant SINP (UUID)</small>
             <input
               type="checkbox"
               (change)="onIsParentCheckboxChange($event.target.checked)"
             />
           </div>
           <div *ngIf="isUUIDInput">
-            <small>UUID CA</small>
+            <small>Identifiant SINP du cadre d'acquisition (UUID)</small>
             <input
               class="form-control form-control-sm"
               type="text"
