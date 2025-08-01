@@ -551,8 +551,10 @@ class DataBlurring:
                     )
                 elif compute == "asgeojson":
                     geocolumn = (
-                        func.ST_AsGeoJSON(func.ST_Transform(larea_col, 4326))
-                        if local_srid != 4326
+                        # WARNING: do not force output SRID to 4326 because utils sqla geo uses
+                        # not standard SRID.
+                        func.ST_AsGeoJSON(func.ST_Transform(larea_col, srid))
+                        if local_srid != srid
                         else func.ST_AsGeoJSON(larea_col)
                     )
                 else:
