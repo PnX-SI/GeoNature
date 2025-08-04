@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2.16.2 (2025-08-??)
+
+### 🐛 Corrections
+
+- [Synthèse] Correction de la navigation avec les flêche dans la fiche taxon (#3639 par @edelclaux)
+- [Général] Affichage bouton suppression d'un média (#3641 par @amandine-sahl)
+- [Général] Correction du formulaire dynamique qui ne détectait pas les modifications de fichier
+- [Monitoring] Fix du filtre par scope pour les individus (#3647 par @amandine-sahl)
+
 ## 2.16.1 (2025-07-22)
 
 ### 🚀 Nouveautés
