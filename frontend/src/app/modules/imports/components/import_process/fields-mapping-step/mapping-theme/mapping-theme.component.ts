@@ -17,4 +17,10 @@ export class MappingThemeComponent {
   @Input() entity;
 
   constructor(public fm: FieldMappingService) {}
+
+  ngOnInit() {
+    this.sourceFields = this.sourceFields.sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: 'base' })
+    );
+  }
 }
