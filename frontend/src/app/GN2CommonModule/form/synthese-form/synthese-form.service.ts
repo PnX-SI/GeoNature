@@ -66,7 +66,7 @@ export class SyntheseFormService {
     private _api: DataFormService,
     private _common: CommonService
   ) {
-    this.searchForm = this._fb.group({
+    const baseForm = this._fb.group({
       cd_nom: null,
       observers: null,
       observers_list: null,
@@ -92,7 +92,11 @@ export class SyntheseFormService {
       taxonomy_group3_inpn: null,
       taxon_rank: null,
     });
-
+    const monitoringCode = config.MONITORINGS?.MODULE_CODE;
+    if (monitoringCode) {
+      baseForm.addControl(monitoringCode, this._fb.group({}));
+    }
+    this.searchForm = baseForm;
     this.searchForm.setValidators([this.periodValidator()]);
 
     // Add protection status filters defined in configuration parameters

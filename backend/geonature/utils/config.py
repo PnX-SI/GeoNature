@@ -47,3 +47,19 @@ if "APPLICATION_ROOT" not in config:
     config["APPLICATION_ROOT"] = api_uri.path or "/"
 if "PREFERRED_URL_SCHEME" not in config:
     config["PREFERRED_URL_SCHEME"] = api_uri.scheme
+
+
+############################# ENRICH CONFIG #############################
+from importlib.metadata import entry_points
+
+
+def get_entry_point(group: str, name: str, dist_name: str = None):
+    """
+    Charge dynamiquement un entry point depuis un groupe donné.
+    Si dist_name est précisé, ne retourne que celui correspondant.
+    """
+    eps = entry_points(group=group, name=name)
+    for ep in eps:
+        if dist_name is None or ep.dist.name == dist_name:
+            return ep.load()
+    return None

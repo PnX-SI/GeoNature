@@ -13,9 +13,10 @@ import uuid
 from flask import current_app
 
 import sqlalchemy as sa
-from sqlalchemy import func, or_, and_, select, distinct, inspect
+from sqlalchemy import func, or_, and_, select, distinct, inspect, cast
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
+from sqlalchemy.types import Boolean, Integer
 from werkzeug.exceptions import BadRequest
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
@@ -30,6 +31,7 @@ from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     TReport,
     TSources,
+    Synthese,
 )
 from geonature.core.gn_meta.models import (
     CorDatasetActor,
@@ -566,6 +568,28 @@ class SyntheseQuery:
                         self.query = self.query.where(col == value)
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value)))
+
+        if "MONITORINGS" in self.filters and self.filters["MONITORINGS"]:
+            monitoring_filters = self.filters.pop("MONITORINGS")
+            synth = aliased(Synthese)
+            self.add_join(
+                synth,
+                synth.id_synthese,
+                self.model.id_synthese,
+            )
+            for colname, value in monitoring_filters.items():
+                if value is None:
+                    continue
+                col = synth.additional_data["monitoring_observation"][colname].astext
+
+                if isinstance(value, bool):
+                    self.query = self.query.filter(cast(col, Boolean) == value)
+                elif isinstance(value, int):
+                    self.query = self.query.filter(cast(col, Integer) == value)
+                elif isinstance(value, list):
+                    self.query = self.query.filter(col.in_([str(v) for v in value]))
+                else:
+                    self.query = self.query.filter(col == str(value))
 
     def apply_all_filters(self, user, permissions):
         if type(permissions) == int:  # scope
