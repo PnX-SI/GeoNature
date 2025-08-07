@@ -92,7 +92,7 @@
         [title]="row[col.prop]"
         [ngSwitch]="col.prop"
       >
-        <div *ngSwitchCase="'date_min' || 'date_max'">
+        <div *ngSwitchCase="['date_min', 'date_max'].includes(col.prop) ? col.prop : false">
           {{ getDate(row[col.prop]) }}
         </div>
         <div *ngSwitchCase="'nom_vern_or_lb_nom'">
