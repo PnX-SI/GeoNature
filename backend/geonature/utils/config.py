@@ -58,7 +58,8 @@ def get_entry_point(group: str, name: str, dist_name: str = None):
     Charge dynamiquement un entry point depuis un groupe donné.
     Si dist_name est précisé, ne retourne que celui correspondant.
     """
-    eps = entry_points(group=group, name=name)
+    eps = [ep for ep in entry_points().get(group, []) if ep.name == name]
+
     for ep in eps:
         if dist_name is None or ep.dist.name == dist_name:
             return ep.load()
