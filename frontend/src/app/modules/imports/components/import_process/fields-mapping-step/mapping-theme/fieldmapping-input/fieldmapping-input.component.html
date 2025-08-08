@@ -52,13 +52,13 @@
       mat-stroked-button
       class="InputFieldContainer__button"
       (click)="switchInputType()"
+      [matTooltip]="getTooltip()"
       [ngClass]="{
         'InputFieldContainer__button--selected': inputState == InputStackState.CONSTANT
       }"
       [attr.data-qa]="'import-fieldmapping-theme-switch-' + field.name_field"
     >
       <mat-icon>edit</mat-icon>
-      Saisie manuelle
     </button>
   </div>
 
