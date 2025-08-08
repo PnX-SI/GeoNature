@@ -18,6 +18,7 @@ import {
 } from '@geonature/modules/imports/models/mapping.model';
 import { BibField } from './bibfield';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 // ////////////////////////////////////////////////////
 // control value accessor
@@ -56,7 +57,8 @@ const CUSTOM_CONTROL_VALUE_ACCESSOR: any = {
 export class FieldMappingInputComponent implements ControlValueAccessor {
   constructor(
     public fm: FieldMappingService,
-    private _configService: ConfigService
+    private _configService: ConfigService,
+    private _translateService: TranslateService
   ) {}
 
   // ////////////////////////////////////////////////////
@@ -282,5 +284,11 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
       this.constantValue = null;
       this.inputState = InputStackState.INPUT_FILE;
     }
+  }
+
+  getTooltip() {
+    return this.inputState == InputStackState.INPUT_FILE
+      ? this._translateService.instant('Import.FieldMapping.Actions.DefineUniqueValue')
+      : this._translateService.instant('Import.FieldMapping.Actions.SelectASourceFileColumn');
   }
 }
