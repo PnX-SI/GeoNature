@@ -64,6 +64,10 @@ class CorCountingOccurrence(DB.Model):
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
 
+    # phyto
+    id_nomenclature_vegetation_stratum = DB.Column(DB.Integer)
+    id_nomenclature_phytosociological_abundance = DB.Column(DB.Integer)
+
     # additional fields dans occtax MET 14/10/2020
     additional_fields = DB.Column(JSONB)
     occurrence = db.relationship("TOccurrencesOccurrence", back_populates="cor_counting_occtax")
@@ -163,7 +167,11 @@ class TRelevesOccurrence(DB.Model):
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     geom_local = DB.Column(Geometry("GEOMETRY"))
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
-    precision = DB.Column(DB.Integer)
+    precision = DB.Column(DB.Numeric(10, 2))
+    code_releve = DB.Column(DB.String(50), nullable=True)
+    slope = DB.Column(DB.Numeric(4, 2))
+    area = DB.Column(DB.Numeric(20, 2))
+    id_nomenclature_exposure = DB.Column(DB.Integer)
 
     habitat = relationship(Habref, lazy="select")
     additional_fields = DB.Column(JSONB)
@@ -197,6 +205,14 @@ class TRelevesOccurrence(DB.Model):
         TDatasets,
         primaryjoin=(TDatasets.id_dataset == id_dataset),
         foreign_keys=[id_dataset],
+    )
+
+    # Relation avec les strates de végétation
+    t_vegetation_stratum = relationship(
+        "TVegetationStratum",
+        lazy="joined",
+        cascade="all, delete-orphan",
+        back_populates="releve",
     )
 
     readonly_fields = ["id_releve_occtax", "t_occurrences_occtax", "observers"]
@@ -239,6 +255,24 @@ class TRelevesOccurrence(DB.Model):
             action: self.has_instance_permission(scope)
             for action, scope in get_scopes_by_action(**kwargs).items()
         }
+
+
+@serializable
+class TVegetationStratum(DB.Model):
+    __tablename__ = "t_vegetation_stratum"
+    __table_args__ = {"schema": "pr_occtax"}
+
+    id_vegetation_stratum = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
+    id_releve_occtax = DB.Column(
+        DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
+    )
+    id_nomenclature_vegetation_stratum = DB.Column(DB.Integer)
+    min_height = DB.Column(DB.Numeric(5, 2))
+    max_height = DB.Column(DB.Numeric(5, 2))
+    average_height = DB.Column(DB.Numeric(5, 2))
+    percentage_cover_vegatation_stratum = DB.Column(DB.Integer)
+
+    releve = relationship("TRelevesOccurrence", back_populates="t_vegetation_stratum")
 
 
 @serializable

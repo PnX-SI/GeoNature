@@ -50,6 +50,10 @@ class FormConfig(Schema):
     behaviour = fields.Boolean(load_default=True)
     place_name = fields.Boolean(load_default=False)
     precision = fields.Boolean(load_default=False)
+    code_releve = fields.Boolean(load_default=False)
+    slope = fields.Boolean(load_default=False)
+    area = fields.Boolean(load_default=False)
+    exposition = fields.Boolean(load_default=False)
 
 
 default_map_list_conf = [
