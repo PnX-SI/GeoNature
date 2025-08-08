@@ -198,3 +198,7 @@ MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_typ
     geo_object_nature = false
     place_name = false
     precision = false
+    code_releve = false
+    slope = false
+    area = false
+    exposition = true
