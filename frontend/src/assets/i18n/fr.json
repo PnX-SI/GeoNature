@@ -450,7 +450,9 @@
       "Actions": {
         "SelectMapping": "Veuillez sélectionner un mapping",
         "SaveMapping": "Enregistrement du modèle",
-        "ConfirmMappingDeletion": "Supprimer le modèle"
+        "ConfirmMappingDeletion": "Supprimer le modèle",
+        "DefineUniqueValue": "Définir une valeur unique",
+        "SelectASourceFileColumn": "Sélectionner une colonne du fichier"
       }
     },
     "ContentMapping": {
