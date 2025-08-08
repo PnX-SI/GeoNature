@@ -115,6 +115,7 @@ class Destination(db.Model):
     code = db.Column(db.String(64), unique=True)
     label = db.Column(db.String(128))
     table_name = db.Column(db.String(64))
+    active = sa.Column("active", sa.Boolean, server_default=sa.true())
 
     module = relationship(TModules, backref="destination")
     entities = relationship("Entity", back_populates="destination")
@@ -178,7 +179,9 @@ class Destination(db.Model):
             user = g.current_user
 
         # Retrieve all destinations
-        all_destination = db.session.scalars(sa.select(Destination)).all()
+        all_destination = db.session.scalars(
+            sa.select(Destination).where(Destination.active == True)
+        ).all()
         return [dest for dest in all_destination if dest.has_instance_permission(user, action_code)]
 
     @qfilter
