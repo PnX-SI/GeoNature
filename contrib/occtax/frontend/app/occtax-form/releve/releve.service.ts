@@ -102,6 +102,10 @@ export class OcctaxFormReleveService {
       grp_method: null,
       id_nomenclature_geo_object_nature: null,
       precision: null,
+      slope: null,
+      area: null,
+      id_nomenclature_exposure: null,
+      code_releve: null,
       additional_fields: this.fb.group({}),
     });
 

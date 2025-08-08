@@ -32,7 +32,11 @@
       "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
       "GeoObjectNature": "Nature de l'objet géographique",
       "PlaceName": "Nom du lieu",
-      "Precision": "Precision",
+      "Precision": "Précision",
+      "CodeReleve": "Code du relevé",
+      "Area": "Surface (m²)",
+      "Slope": "Pente (degrés)",
+      "Exposure": "Exposition",
       "Errors": {
         "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
         "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
