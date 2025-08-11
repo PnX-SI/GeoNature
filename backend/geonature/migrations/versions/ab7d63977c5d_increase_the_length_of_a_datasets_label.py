@@ -21,7 +21,7 @@ def upgrade():
     op.execute(
         """
     update pg_attribute 
-    set atttypmod = 516
+    set atttypmod = 1004
     WHERE attrelid = 'gn_meta.t_datasets'::regclass
     AND attname = 'dataset_name';
     """
