@@ -1,13 +1,15 @@
 # CHANGELOG
 
-## 2.16.2 (2025-08-??)
+## 2.16.2 (2025-08-11)
 
 ### 🐛 Corrections
 
-- [Synthèse] Correction de la navigation avec les flêche dans la fiche taxon (#3639 par @edelclaux)
-- [Général] Affichage bouton suppression d'un média (#3641 par @amandine-sahl)
-- [Général] Correction du formulaire dynamique qui ne détectait pas les modifications de fichier
-- [Monitoring] Fix du filtre par scope pour les individus (#3647 par @amandine-sahl)
+- [Synthèse] Correction de la navigation avec les flèches dans la fiche taxon (#3639 par @edelclaux)
+- [Général] Correction de l'affichage bouton suppression d'un média (#3641 par @amandine-sahl)
+- [Général] Correction de la détection de changement de fichier par les _dynamic-forms_ (#3660 par @Pierre-Narcisi)
+- [Monitoring] Correction du filtre de portée pour les individus (#3647 par @amandine-sahl)
+- [Métadonnées] Augmentation de la taille disponible du nom des jeu de données en passant de 255 à 1000 caractères (#3646 par @jacquesfize)
+- [Synthèse] Correction de l'affichage des dates dans la Synthèse (#3655 par @jbrieuclp)
 
 ## 2.16.1 (2025-07-22)
 
