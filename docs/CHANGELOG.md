@@ -4,12 +4,12 @@
 
 ### 🐛 Corrections
 
-- [Synthèse] Correction de la navigation avec les flèches dans la fiche taxon (#3639 par @edelclaux)
-- [Général] Correction de l'affichage bouton suppression d'un média (#3641 par @amandine-sahl)
-- [Général] Correction de la détection de changement de fichier par les _dynamic-forms_ (#3660 par @Pierre-Narcisi)
-- [Monitoring] Correction du filtre de portée pour les individus (#3647 par @amandine-sahl)
-- [Métadonnées] Augmentation de la taille disponible du nom des jeu de données en passant de 255 à 1000 caractères (#3646 par @jacquesfize)
-- [Synthèse] Correction de l'affichage des dates dans la Synthèse (#3655 par @jbrieuclp)
+- [Synthèse] Correction de la navigation avec les flèches dans les fiches taxon (#3639 par @edelclaux)
+- [Général] Correction de l'affichage du bouton de suppression d'un média (#3641 par @amandine-sahl)
+- [Général] Correction de la détection de changement de fichier dans les _dynamic-forms_ (#3660 par @Pierre-Narcisi)
+- [Monitoring] Correction du filtre de portée de permission pour les individus (#3647 par @amandine-sahl)
+- [Métadonnées] Augmentation de la taille disponible du nom des jeux de données en passant le champ `gn_meta.t_datasets.dataset_name` de 150 à 1000 caractères (#3646 par @jacquesfize)
+- [Synthèse] Correction de l'affichage des dates max dans la Synthèse (#3655 par @jbrieuclp)
 
 ## 2.16.1 (2025-07-22)
 
