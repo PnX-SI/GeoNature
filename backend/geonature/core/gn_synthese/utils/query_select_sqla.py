@@ -570,26 +570,38 @@ class SyntheseQuery:
                     self.query = self.query.where(col.ilike("%{}%".format(value)))
 
         if "MONITORINGS" in self.filters and self.filters["MONITORINGS"]:
-            monitoring_filters = self.filters.pop("MONITORINGS")
-            synth = aliased(Synthese)
-            self.add_join(
-                synth,
-                synth.id_synthese,
-                self.model.id_synthese,
-            )
-            for colname, value in monitoring_filters.items():
-                if value is None:
-                    continue
-                col = synth.additional_data["monitoring_observation"][colname].astext
+            monitoring_filters = self.filters.pop("MONITORINGS") or {}
 
-                if isinstance(value, bool):
-                    self.query = self.query.filter(cast(col, Boolean) == value)
-                elif isinstance(value, int):
-                    self.query = self.query.filter(cast(col, Integer) == value)
-                elif isinstance(value, list):
-                    self.query = self.query.filter(col.in_([str(v) for v in value]))
-                else:
-                    self.query = self.query.filter(col == str(value))
+            self.add_join(TSources, self.model.id_source, TSources.id_source)
+            synth = aliased(Synthese)
+            self.add_join(synth, synth.id_synthese, self.model.id_synthese)
+
+            proto_clauses = []
+            for proto_code, fields_dict in monitoring_filters.items():
+                if not fields_dict:
+                    continue
+
+                clause_parts = [TSources.name_source == f"MONITORING_{proto_code.upper()}"]
+
+                for colname, value in (fields_dict or {}).items():
+                    if value is None or value == "":
+                        continue
+                    col = synth.additional_data["monitoring_observation"][colname].astext
+
+                    if isinstance(value, bool):
+                        clause_parts.append(cast(col, Boolean) == value)
+                    elif isinstance(value, int):
+                        clause_parts.append(cast(col, Integer) == value)
+                    elif isinstance(value, list):
+                        if len(value) > 0:
+                            clause_parts.append(col.in_([str(v) for v in value]))
+                    else:
+                        clause_parts.append(col == str(value))
+
+                proto_clauses.append(and_(*clause_parts))
+
+            if proto_clauses:
+                self.query = self.query.filter(or_(*proto_clauses))
 
     def apply_all_filters(self, user, permissions):
         if type(permissions) == int:  # scope
