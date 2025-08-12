@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.16.2 (2025-08-11)
+
+### 🐛 Corrections
+
+- [Synthèse] Correction de la navigation avec les flèches dans les fiches taxon (#3639 par @edelclaux)
+- [Général] Correction de l'affichage du bouton de suppression d'un média (#3641 par @amandine-sahl)
+- [Général] Correction de la détection de changement de fichier dans les _dynamic-forms_ (#3660 par @Pierre-Narcisi)
+- [Monitoring] Correction du filtre de portée de permission pour les individus (#3647 par @amandine-sahl)
+- [Synthèse] Correction de l'affichage des dates max dans la Synthèse (#3655 par @jbrieuclp)
+
 ## 2.16.1 (2025-07-22)
 
 ### 🚀 Nouveautés

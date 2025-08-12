@@ -373,7 +373,7 @@ Module Contents
    .. py:attribute:: medias
 
 
-   .. py:method:: filter_by_scope(query, scope, user)
+   .. py:method:: filter_by_scope(query, scope, user=None)
       :classmethod:
 
 
