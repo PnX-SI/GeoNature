@@ -1,11 +1,12 @@
+import logging
 import os
 from pathlib import Path
 import sys
 
 if sys.version_info < (3, 10):
-    from importlib_metadata import entry_points
+    from importlib_metadata import entry_points, version, PackageNotFoundError
 else:
-    from importlib.metadata import entry_points
+    from importlib.metadata import entry_points, version, PackageNotFoundError
 
 from alembic.script import ScriptDirectory
 from alembic.migration import MigrationContext
@@ -152,3 +153,17 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
         revision = alembic_branch + "@head"
         db_upgrade(directory, revision, sql, tag, x_arg)
     return True
+
+
+def get_module_version(module_label: str):
+    """
+    Get the module version from the module_label. We check what python package is installed.
+    If no package is found, we return None.
+    TODO: Pas idéal du tout pour l'instant, certains modules ne respectent pas cette convention
+    """
+    try:
+        if module_label:
+            return version(f"gn_module_{module_label.lower()}")
+    except PackageNotFoundError:
+        return None
+    return None
