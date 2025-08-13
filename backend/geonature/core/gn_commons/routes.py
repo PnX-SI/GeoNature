@@ -2,14 +2,12 @@ import json
 from operator import or_
 from pathlib import Path
 
-from flask import Blueprint, request, current_app, g, url_for
-from flask.json import jsonify
+from flask import Blueprint, current_app, g, url_for
 from werkzeug.exceptions import Forbidden, Conflict
-import requests
 from sqlalchemy.orm import joinedload
-from sqlalchemy import select, func
+from sqlalchemy import func
 
-from utils_flask_sqla.response import json_resp
+
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.core.gn_commons.models import (
@@ -19,11 +17,9 @@ from geonature.core.gn_commons.models import (
     TPlaces,
     TAdditionalFields,
 )
-from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
-from geonature.utils.env import DB, db, BACKEND_DIR
+from geonature.utils.env import db
 from geonature.utils.config import config_frontend, config
-from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scope
 from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
@@ -31,10 +27,9 @@ import geonature.core.gn_commons.tasks  # noqa: F401
 
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
-from geonature.utils.errors import (
-    GeonatureApiError,
-)
 
+from ...utils.module import get_module_version
+from apptax.taxonomie.models import TMetaTaxref
 
 routes = Blueprint("gn_commons", __name__)
 
@@ -51,6 +46,16 @@ def config_route():
     return config_frontend
 
 
+@routes.route("/ref_info", methods=["GET"])
+def ref_info():
+    """
+    Return information about ref used
+    """
+    query = select(TMetaTaxref)
+    taxref_metas = db.session.scalars(query).unique().all()
+    return {taxref_meta.referencial_name: taxref_meta.version for taxref_meta in taxref_metas}
+
+
 @routes.route("/modules", methods=["GET"])
 @login_required
 def list_modules():
@@ -60,7 +65,6 @@ def list_modules():
 
     """
     params = request.args
-
     exclude = current_app.config["DISABLED_MODULES"].copy()
     if "exclude" in params:
         exclude.extend(params.getlist("exclude"))
@@ -114,6 +118,8 @@ def list_modules():
             if any(obj_dict["cruved"].values()):
                 module_allowed = True
             module_dict["module_objects"][obj_code] = obj_dict
+        if version := get_module_version(module.module_label):
+            module_dict["version"] = version
         if module_allowed:
             allowed_modules.append(module_dict)
     return jsonify(allowed_modules)

@@ -81,6 +81,26 @@
     >
       {{ version }}
     </a>
+    <mat-icon
+      [matMenuTriggerFor]="modulesMenu"
+      (menuOpened)="onMenuOpened()"
+      class="material-icons-outlined info-icon"
+      style="vertical-align: middle; cursor: pointer"
+    >
+      info
+    </mat-icon>
+
+    <mat-menu #modulesMenu="matMenu">
+      <div class="menu-content">
+        <b>Version des modules GeoNature:</b>
+        <br />
+        {{ getModulesVersionTooltip() }}
+        <br />
+        <b>Version des Référentiels:</b>
+        <br />
+        {{ refTooltip }}
+      </div>
+    </mat-menu>
   </p>
   <p class="p-small">
     Logiciel open source développé par une

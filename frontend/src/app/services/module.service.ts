@@ -46,6 +46,7 @@ export class ModuleService {
     return this.modules;
   }
 
+
   getDisplayedModules() {
     return this.modules.filter((mod) => {
       return (

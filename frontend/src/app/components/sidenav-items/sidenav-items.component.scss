@@ -42,3 +42,20 @@ mat-card {
 a:hover {
   text-decoration: none;
 }
+
+.navbar-footer .p-small {
+  font-size: 11px;
+}
+
+.menu-content {
+  font-size: 11px;
+  padding: 8px;
+  color: inherit;
+  white-space: pre-line;
+}
+
+.navbar-footer .info-icon {
+  font-size: 11px;
+  vertical-align: middle;
+  cursor: pointer;
+}
