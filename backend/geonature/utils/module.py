@@ -61,7 +61,7 @@ def get_dist_from_code(module_code):
     for dist in iter_modules_dist():
         if module_code == dist.entry_points["code"].load():
             return dist
-    raise Exception(f"Module with code {module_code} not installed in venv")
+    raise PackageNotFoundError(f"Module with code {module_code} not installed in venv")
 
 
 def iterate_revisions(script, base_revision):
@@ -155,15 +155,16 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
     return True
 
 
-def get_module_version(module_label: str):
+def get_module_version(module_code: str):
     """
-    Get the module version from the module_label. We check what python package is installed.
+    Get the module version from the module_code. We check what python package is installed.
     If no package is found, we return None.
-    TODO: Pas idéal du tout pour l'instant, certains modules ne respectent pas cette convention
     """
     try:
-        if module_label:
-            return version(f"gn_module_{module_label.lower()}")
+        logging.error(module_code)
+        if module_code:
+            dist = get_dist_from_code(module_code)
+            return dist.version
     except PackageNotFoundError:
         return None
     return None

@@ -21,7 +21,7 @@ from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.utils.env import db
 from geonature.utils.config import config_frontend, config
 from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_permissions.tools import get_scope
+from geonature.core.gn_permissions.tools import get_scope, get_user_permissions, get_permissions, has_any_permissions
 from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 import geonature.core.gn_commons.tasks  # noqa: F401
 
@@ -118,7 +118,9 @@ def list_modules():
             if any(obj_dict["cruved"].values()):
                 module_allowed = True
             module_dict["module_objects"][obj_code] = obj_dict
-        if version := get_module_version(module.module_label):
+        if has_any_permissions("R", module_code="ADMIN", object_code="MODULES"):
+            module_allowed = True
+        if version := get_module_version(module.module_code):
             module_dict["version"] = version
         if module_allowed:
             allowed_modules.append(module_dict)

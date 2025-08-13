@@ -692,8 +692,4 @@ export class DataFormService {
       params: queryString,
     });
   }
-
-   getRefVersion() {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/ref_info`);
-  }
 }
