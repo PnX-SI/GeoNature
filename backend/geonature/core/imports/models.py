@@ -1,7 +1,7 @@
 from datetime import datetime
 from collections.abc import Mapping
 import re
-from typing import Any, Iterable, List, Optional
+from typing import Any, Iterable, List, Optional, Set
 from packaging import version
 
 from flask import g
@@ -288,13 +288,16 @@ class Entity(db.Model):
     id_unique_column = db.Column(
         db.Integer, db.ForeignKey("gn_imports.bib_fields.id_field"), primary_key=True
     )
+    id_uuid_column = db.Column(
+        db.Integer, db.ForeignKey("gn_imports.bib_fields.id_field"), primary_key=True
+    )
     id_parent = db.Column(db.Integer, ForeignKey("gn_imports.bib_entities.id_entity"))
 
     parent = relationship("Entity", back_populates="childs", remote_side=[id_entity])
     childs = relationship("Entity", back_populates="parent")
     fields = relationship("EntityField", back_populates="entity")
-    unique_column = relationship("BibFields")
-
+    unique_column = relationship("BibFields", foreign_keys=[id_unique_column])
+    uuid_column = relationship("BibFields", foreign_keys=[id_uuid_column])
     id_object = db.Column(db.Integer, db.ForeignKey("gn_permissions.t_objects.id_object"))
     object = relationship("PermObject")
 
@@ -306,6 +309,9 @@ class Entity(db.Model):
             autoload_with=db.session.connection(),
             schema=self.destination_table_schema,
         )
+
+    def __repr__(self):
+        return f"{self.label}, {self.code}, {self.validity_column}"
 
 
 class InstancePermissionMixin:
@@ -515,8 +521,8 @@ class BibFields(db.Model):
     def dest_column(self):
         return self.dest_field if self.dest_field else self.source_field
 
-    def __str__(self):
-        return self.fr_label
+    def __repr__(self):
+        return f"{self.name_field}"
 
 
 cor_role_mapping = db.Table(
@@ -724,17 +730,45 @@ class FieldMapping(MappingTemplate):
                     sa.or_(
                         ~BibFields.entities.any(EntityField.entity != entity),
                         BibFields.name_field == entity.unique_column.name_field,
+                        BibFields.name_field.ilike("uuid%"),
                     ),
                     BibFields.name_field.in_(field_mapping_json.keys()),
                 ),
             )
-
             # no field --> nothing to check. next entity !
             if not fields_of_ent:
                 continue
 
+            def fetch_all_id_field_name(entity, entity_field_attribute="uuid_column") -> Set[str]:
+                """
+                Fetch all field `name_field` contained in a BibFields typed attribute of an entity and its parents.
+
+                Parameters
+                ----------
+                entity : Entity
+                    entity
+                entity_field_attribute : str
+                    Entity attribute linked to a BibFields object
+                Returns
+                -------
+                set
+                    set of name_field
+                """
+
+                ent = entity
+                assert hasattr(ent, entity_field_attribute)
+                fields = [getattr(ent, entity_field_attribute).name_field]
+                while ent.parent and hasattr(ent.parent, entity_field_attribute):
+                    ent = ent.parent
+                    fields.append(getattr(ent, entity_field_attribute).name_field)
+                return set(fields)
+
+            # pas propre a bien refactoriser
+            uuid_field = fetch_all_id_field_name(entity, "uuid_column")
+            id_fields = fetch_all_id_field_name(entity, "unique_column")
+            name_fields = set([f.name_field for f in fields_of_ent])
             # if the only column corresponds to id_columns, we only do the validation on the latter
-            if [entity.unique_column.name_field] == [f.name_field for f in fields_of_ent]:
+            if id_fields == name_fields or name_fields == uuid_field:
                 fields.extend(fields_of_ent)
             else:
                 # if other columns than the id_columns are used, we need to check every fields of this entity
@@ -798,7 +832,6 @@ class FieldMapping(MappingTemplate):
 
         if optional_conditions:
             schema["allOf"] = optional_conditions
-
         try:
             validate_json(field_mapping_json, schema)
         except JSONValidationError as e:
