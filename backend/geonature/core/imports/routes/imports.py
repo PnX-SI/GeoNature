@@ -485,7 +485,7 @@ def preview_valid_data(scope, imprt):
             .unique()
             .all()
         )
-        columns = [{"prop": field.dest_column, "name": field.name_field} for field in fields]
+        columns = [{"prop": field.dest_column, "name": field.fr_label} for field in fields]
 
         id_field = (
             entity.unique_column.dest_field if entity.unique_column.dest_field in fields else None
