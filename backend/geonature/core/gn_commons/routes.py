@@ -21,7 +21,12 @@ from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.utils.env import db
 from geonature.utils.config import config_frontend, config
 from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_permissions.tools import get_scope, get_user_permissions, get_permissions, has_any_permissions
+from geonature.core.gn_permissions.tools import (
+    get_scope,
+    get_user_permissions,
+    get_permissions,
+    has_any_permissions,
+)
 from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 import geonature.core.gn_commons.tasks  # noqa: F401
 
@@ -44,16 +49,6 @@ def config_route():
     Returns geonature configuration
     """
     return config_frontend
-
-
-@routes.route("/ref_info", methods=["GET"])
-def ref_info():
-    """
-    Return information about ref used
-    """
-    query = select(TMetaTaxref)
-    taxref_metas = db.session.scalars(query).unique().all()
-    return {taxref_meta.referencial_name: taxref_meta.version for taxref_meta in taxref_metas}
 
 
 @routes.route("/modules", methods=["GET"])
