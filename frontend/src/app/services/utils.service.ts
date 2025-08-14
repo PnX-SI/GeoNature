@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {ConfigService} from "@geonature/services/config.service";
 import {HttpClient} from "@angular/common/http";
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,9 @@ export class UtilsService {
   }
 
   getRefVersion() {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/ref_info`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/taxhub${this.config.TAXHUB.API_PREFIX}/taxref/version`)
+      .pipe(
+        map(data => ({[data.referencial_name]: data.version}))
+      );
   }
 }

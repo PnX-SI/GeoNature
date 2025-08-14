@@ -1,12 +1,11 @@
-import logging
 import os
 from pathlib import Path
 import sys
 
 if sys.version_info < (3, 10):
-    from importlib_metadata import entry_points, version, PackageNotFoundError
+    from importlib_metadata import entry_points, PackageNotFoundError
 else:
-    from importlib.metadata import entry_points, version, PackageNotFoundError
+    from importlib.metadata import entry_points, PackageNotFoundError
 
 from alembic.script import ScriptDirectory
 from alembic.migration import MigrationContext
@@ -161,7 +160,6 @@ def get_module_version(module_code: str):
     If no package is found, we return None.
     """
     try:
-        logging.error(module_code)
         if module_code:
             dist = get_dist_from_code(module_code)
             return dist.version
