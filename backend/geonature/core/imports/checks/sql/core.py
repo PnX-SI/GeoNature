@@ -56,7 +56,7 @@ def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
             .where(BibFields.name_field != dataset_name_field)
             .all()
         )
-        is_constant_field_indicated = (
+        is_constant_field_indicated = db.session.scalar(
             sa.exists(BibFields)
             .where(BibFields.name_field.in_(constant_fields))
             .where(BibFields.entities.any(EntityField.entity == entity))
