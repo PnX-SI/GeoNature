@@ -1,7 +1,7 @@
 """add_default_mapping
 
 Revision ID: 650f1d749b3b
-Revises: 35bf3f4a80f1
+Revises: bd73fa82a3f4
 Create Date: 2024-12-12 13:21:49.612529
 
 """
@@ -16,7 +16,7 @@ from sqlalchemy.ext.mutable import MutableDict
 
 # revision identifiers, used by Alembic.
 revision = "650f1d749b3b"
-down_revision = "35bf3f4a80f1"
+down_revision = "bd73fa82a3f4"
 branch_labels = None
 depends_on = "e43b01a18850"
 
