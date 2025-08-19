@@ -33,11 +33,11 @@ MODIFICATIONS = {
     },
     "CONDITIONAL_INVALID_DATA": {"NEW": "Erreur de valeur", "OLD": "Erreur de valeur"},
     "CONDITIONAL_MANDATORY_FIELD_ERROR": {
-        "NEW": "Un champs rendu obligatoire par la présence d’un autre champs n’a pas été rempli. Par exemple, si profondeur_max est indiqué, il est d'usage que profondeur_min soit donnée obligatoirement",
+        "NEW": "Un champs rendu obligatoire par la présence d’un autre champs n’a pas été rempli. Par exemple, si profondeur_max est indiqué, profondeur_min doit être donné.",
         "OLD": "Champs obligatoires conditionnels manquants. Il existe des ensembles de champs liés à un concept qui sont “obligatoires conditionnels”, c’est à dire que si l'un des champs du concept est utilisé, alors d'autres champs du concept deviennent obligatoires.",
     },
     "COUNT_MIN_SUP_COUNT_MAX": {
-        "NEW": "Incohérence entre les champs dénombrement. La valeur de denombrement_min est supérieure à celle de denombrement _max ou la valeur de denombrement _max est inférieur à denombrement_min.",
+        "NEW": "Incohérence entre des champs dénombrement. La valeur de denombrement_min est supérieure à celle de denombrement _max ou la valeur de denombrement _max est inférieur à denombrement_min.",
         "OLD": "Incohérence entre les champs dénombrement. La valeur de denombrement_min est supérieure à celle de denombrement _max ou la valeur de denombrement _max est inférieur à denombrement_min.",
     },
     "DATASET_NOT_ACTIVE": {
@@ -53,7 +53,7 @@ MODIFICATIONS = {
         "OLD": "La référence du jeu de données n’a pas été trouvé",
     },
     "DATE_MAX_TOO_HIGH": {
-        "NEW": "La date de fin donnée est supérieur à la date d'exécution de l'import.",
+        "NEW": "La date de fin donnée est supérieure à la date d'exécution de l'import.",
         "OLD": "La date de fin est dans le futur",
     },
     "DATE_MAX_TOO_LOW": {
@@ -77,7 +77,7 @@ MODIFICATIONS = {
         "OLD": "profondeur min > profondeur max",
     },
     "DUPLICATE_ENTITY_SOURCE_PK": {
-        "NEW": "Deux lignes entités ont la même clé primaire d’origine ; les clés primaires du fichier source ne peuvent pas être dupliquées.",
+        "NEW": "Deux lignes entités ont la même clé primaire d’origine. Les clés primaires du fichier source ne peuvent pas être dupliquées.",
         "OLD": "Deux lignes du fichier ont la même clé primaire d’origine ; les clés primaires du fichier source ne peuvent pas être dupliquées.",
     },
     "DUPLICATE_UUID": {
@@ -102,11 +102,11 @@ MODIFICATIONS = {
         "OLD": "Une erreur de chargement s'est produite, probablement à cause d'un mauvais séparateur dans le fichier.",
     },
     "EXISTING_UUID": {
-        "NEW": "L'identifiant UUID fourni existe déjà en base.  Il faut en fournir une autre ou laisser la valeur vide pour une attribution automatique.",
+        "NEW": "L'identifiant UUID fourni existe déjà en base. Il faut en fournir une autre ou laisser la valeur vide pour une attribution automatique.",
         "OLD": "L'identifiant SINP fourni existe déjà en base.  Il faut en fournir une autre ou laisser la valeur vide pour une attribution automatique.",
     },
     "FILE_EXTENSION_ERROR": {
-        "NEW": "L'extension du fichier téléversé n'est pas correct.",
+        "NEW": "L'extension du fichier téléversé est incorrect.",
         "OLD": "L'extension de fichier fournie n'est pas correct",
     },
     "FILE_FORMAT_ERROR": {
@@ -218,15 +218,15 @@ MODIFICATIONS = {
         "OLD": "Géométrie invalide ; la valeur de la géométrie ne correspond pas au format WKT.",
     },
     "MISSING_GEOM": {
-        "NEW": "Géoréférencement manquant ; un géoréférencement doit être fourni, c’est à dire qu’il faut livrer : soit une géométrie, soit une ou plusieurs commune(s), ou département(s), ou maille(s), dont le champ “typeInfoGeo” est indiqué à 1.",
+        "NEW": "Géoréférencement manquant. Un géoréférencement doit être fourni, c’est à dire qu’il faut livrer : soit une géométrie, soit une ou plusieurs commune(s), ou département(s), ou maille(s), dont le champ “typeInfoGeo” est indiqué à 1.",
         "OLD": "Géoréférencement manquant ; un géoréférencement doit être fourni, c’est à dire qu’il faut livrer : soit une géométrie, soit une ou plusieurs commune(s), ou département(s), ou maille(s), dont le champ “typeInfoGeo” est indiqué à 1.",
     },
     "MISSING_VALUE": {
-        "NEW": "Valeur manquante dans un champs obligatoire",
+        "NEW": "Valeur manquante dans un champs obligatoire.",
         "OLD": "Valeur manquante dans un champs obligatoire",
     },
     "MULTIPLE_ATTACHMENT_TYPE_CODE": {
-        "NEW": "Plusieurs géoréférencements ; un seul géoréférencement doit être livré. Une seule des colonnes codeCommune/codeMaille/codeDépartement doit être remplie pour chaque ligne",
+        "NEW": "Plusieurs géoréférencements ; un seul géoréférencement doit être livré. Une seule des colonnes codeCommune/codeMaille/codeDépartement doit être remplie pour chaque ligne.",
         "OLD": "Plusieurs géoréférencements ; un seul géoréférencement doit être livré. Une seule des colonnes codeCommune/codeMaille/codeDépartement doit être remplie pour chaque ligne",
     },
     "MULTIPLE_CODE_ATTACHMENT": {
@@ -244,7 +244,7 @@ MODIFICATIONS = {
         "OLD": "Aucune entité parente identifiée.",
     },
     "ORPHAN_ROW": {
-        "NEW": "La ligne du fichier n’a pû être rattaché à aucune entité.",
+        "NEW": "La ligne du fichier n’a pû être rattachée à aucune entité.",
         "OLD": "La ligne du fichier n’a pû être rattaché à aucune entité.",
     },
     "PROJECTION_ERROR": {
@@ -260,7 +260,7 @@ MODIFICATIONS = {
         "OLD": "Une ligne du fichier a plus de colonnes que l'en-tête.",
     },
     "SKIP_EXISTING_UUID": {
-        "NEW": "Les entités existantes selon UUID sont ignorées.",
+        "NEW": "Les entités existantes selon leur UUID sont ignorées.",
         "OLD": "Les entitiés existantes selon UUID sont ignorees.",
     },
     "UNKNOWN_ERROR": {"NEW": "Erreur inconnue.", "OLD": ""},
