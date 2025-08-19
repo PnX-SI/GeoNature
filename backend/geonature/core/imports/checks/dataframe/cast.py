@@ -411,6 +411,7 @@ def check_unicode_field(
         yield dict(
             error_code=ImportCodeError.INVALID_CHAR_LENGTH,
             invalid_rows=invalid_rows,
+            comment=f"La taille maximale autorisé pour le champ {dest_col} est de {field_length}",
         )
     return {dest_col}
 
