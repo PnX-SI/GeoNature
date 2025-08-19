@@ -13,7 +13,7 @@ import uuid
 from flask import current_app
 
 import sqlalchemy as sa
-from sqlalchemy import func, or_, and_, select, distinct, inspect, cast
+from sqlalchemy import func, or_, and_, select, distinct, inspect, cast, Date
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from sqlalchemy.types import Boolean, Integer
@@ -568,7 +568,7 @@ class SyntheseQuery:
                         self.query = self.query.where(col == value)
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value)))
-
+        #TODO: NEED TO ADD BACKEND TEST
         if "MONITORINGS" in self.filters and self.filters["MONITORINGS"]:
             monitoring_filters = self.filters.pop("MONITORINGS") or {}
 
@@ -593,8 +593,23 @@ class SyntheseQuery:
                     elif isinstance(value, int):
                         clause_parts.append(cast(col, Integer) == value)
                     elif isinstance(value, list):
-                        if len(value) > 0:
-                            clause_parts.append(col.in_([str(v) for v in value]))
+                        if len(value) == 0:
+                            continue
+                        # this is needed to compare string array from filters and string values concatenated with ',' in json field or if it is an array of string in json field.
+                        filter_set = set(str(v).strip() for v in value)
+
+                        clause_parts.append(
+                            func.string_to_array(col, ",").op("@>")(list(filter_set))
+                        )
+
+                    elif (
+                        isinstance(value, dict)
+                        and "year" in value
+                        and "month" in value
+                        and "day" in value
+                    ):
+                        dt = datetime.date(value["year"], value["month"], value["day"])
+                        clause_parts.append(cast(col, Date) == dt)
                     else:
                         clause_parts.append(col == str(value))
 
