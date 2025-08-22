@@ -57,7 +57,7 @@
 - [Occhab] Affiche de l'UUID des habitats dans les fiches détail des stations (#3467 par @Pierre-Narcisi)
 - [Notifications] Masquer certaines catégories de notifications de la liste des souscriptions selon les permissions de l'utilisateur (#3262 par @bouttier)
 - [Général] Mise à jour des dépendances
-  - TaxHub : [2.2.2](https://github.com/PnX-SI/TaxHub/releases/2.2.2), incluant notamment la migration vers Taxref v18
+  - TaxHub : [2.2.2](https://github.com/PnX-SI/TaxHub/releases/2.2.2), incluant notamment les scripts de migration vers Taxref v18
   - Utils-Flask-SQLAlchemy [0.4.2](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/0.4.2)
   - Utils-Flask-SQLAlchemy-Geo [0.3.3](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.3.3)
   - RefGeo [1.5.5](https://github.com/PnX-SI/RefGeo/releases/1.5.5)
