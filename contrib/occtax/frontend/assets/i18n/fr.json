@@ -32,7 +32,13 @@
       "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
       "GeoObjectNature": "Nature de l'objet géographique",
       "PlaceName": "Nom du lieu",
-      "Precision": "Precision",
+      "Precision": "Précision",
+      "CodeReleve": "Code du relevé",
+      "Area": "Surface (m²)",
+      "Slope": "Pente (degrés)",
+      "Exposure": "Exposition",
+      "LocationType": "Type de localisation",
+      "AreaAttachement": "Rattachement à une localisation existante",
       "Errors": {
         "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
         "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
@@ -76,6 +82,7 @@
       "Naturalness": "Naturalite",
       "DeterminationMethod": "Méthode de détermination",
       "DeterminationMethodComplement": "Complément méthode de détermination",
+      "SupportOrganism": "Type de support",
       "Determiner": "Déterminateur",
       "ExistProof": "Preuve d'existence",
       "SampleNumber": "Numéro du prélevement",
@@ -85,7 +92,8 @@
       "ObservationStatus": "Statut d'observation",
       "Blurring": "Floutage",
       "StatusSource": "Statut source",
-      "OccBehaviour": "Comportement"
+      "OccBehaviour": "Comportement",
+      "OccSupport": "Support"
     },
     "Counting": {
       "Counting": "Dénombrement",

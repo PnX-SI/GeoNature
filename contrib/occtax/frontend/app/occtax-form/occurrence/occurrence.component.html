@@ -102,6 +102,18 @@
       {{ 'Occtax.Taxon.Errors.BiologicalConditionRequiredError' | translate }}
     </small>
   </div>
+  <div
+    *ngIf="config.OCCTAX.form_fields.support_organism"
+    class="col-lg-4 col-sm-6"
+  >
+    <pnx-nomenclature
+      label="{{ 'Occtax.Taxon.SupportOrganism' | translate }}"
+      [parentFormControl]="
+        occurrenceForm.get('id_nomenclature_organism_support')
+      "
+      codeNomenclatureType="SUPPORT_ORGANISM"
+    ></pnx-nomenclature>
+  </div>
 </div>
 
 <gn-advanced-section [state]="advancedSectionState">
