@@ -34,6 +34,8 @@ const NOMENCLATURES = [
   'TYP_DENBR',
   'NAT_OBJ_GEO',
   'OCC_COMPORTEMENT',
+  'EXPOSITION',
+  'SUPPORT_ORGANISM'
 ];
 
 @Component({

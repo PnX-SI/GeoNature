@@ -122,6 +122,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_determination_method: Mapped[Optional[int]] = mapped_column(
         Integer, server_default=FetchedValue()
     )
+    id_nomenclature_organism_support = DB.Column(DB.Integer)
     id_nomenclature_behaviour: Mapped[Optional[int]] = mapped_column(
         Integer, server_default=FetchedValue()
     )
@@ -198,6 +199,14 @@ class TRelevesOccurrence(DB.Model):
     geom_local: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY"))
     cd_hab: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(Habref.cd_hab))
     precision: Mapped[Optional[int]]
+    code_releve = DB.Column(DB.String(50), nullable=True)
+    slope = DB.Column(DB.Numeric(4, 2))
+    area = DB.Column(DB.Numeric(20, 2))
+    id_nomenclature_exposure = DB.Column(DB.Integer)
+    id_nomenclature_location_type = DB.Column(
+        DB.Integer, ForeignKey("ref_geo.bib_areas_types.id_type")
+    )
+    id_area_attachement = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"))
 
     habitat = relationship(Habref, lazy="select")
     additional_fields: Mapped[Optional[Any]] = mapped_column(JSONB)

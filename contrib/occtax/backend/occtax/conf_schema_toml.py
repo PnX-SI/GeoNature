@@ -69,6 +69,7 @@ class FormConfig(Schema):
     blurring = fields.Boolean(load_default=False)
     determiner = fields.Boolean(load_default=True)
     determination_method = fields.Boolean(load_default=True)
+    support_organism = fields.Boolean(load_default=False)
     digital_proof = fields.Boolean(load_default=True)
     non_digital_proof = fields.Boolean(load_default=True)
     source_status = fields.Boolean(load_default=False)
@@ -87,6 +88,12 @@ class FormConfig(Schema):
     behaviour = fields.Boolean(load_default=True)
     place_name = fields.Boolean(load_default=False)
     precision = fields.Boolean(load_default=False)
+    code_releve = fields.Boolean(load_default=False)
+    slope = fields.Boolean(load_default=False)
+    area = fields.Boolean(load_default=False)
+    exposition = fields.Boolean(load_default=False)
+    location_type = fields.Boolean(load_default=False)
+    area_attachement = fields.Boolean(load_default=False)
 
 
 default_map_list_conf = [
@@ -147,6 +154,7 @@ default_columns_export = [
     "ocStatBio",
     "preuveOui",
     "ocMethDet",
+    "ocSupport",
     "preuvNum",
     "preuvNoNum",
     "obsCtx",
@@ -167,6 +175,12 @@ default_columns_export = [
     "natObjGeo",
     "nomLieu",
     "precision",
+    "codeReleve",
+    "slope",
+    "area",
+    "exposition",
+    "typeLieu",
+    "zoneReference",
     "additional_data",
 ]
 
