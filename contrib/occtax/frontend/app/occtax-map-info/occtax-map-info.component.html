@@ -97,6 +97,16 @@
                       <div class="value">{{ releve.altitude_max ?? '-' }}</div>
                     </div>
                     <div *ngIf="config.OCCTAX.form_fields.area">
+                          <!-- TODO: config.OCCTAX to occtaxConfig.moduleConf -->
+                      <div class="label">{{ 'Occtax.Releve.Area' | translate }} :</div>
+                      <div class="value">{{ releve.area ?? '-' }}</div>
+                    </div>
+                    <div *ngIf="config.OCCTAX.form_fields.slope">
+                          <!-- TODO: config.OCCTAX to occtaxConfig.moduleConf -->
+                      <div class="label">{{ 'Occtax.Releve.Slope' | translate }} :</div>
+                      <div class="value">{{ releve.slope ?? '-' }}</div>
+                    </div>
+                    <div *ngIf="config.OCCTAX.form_fields.area">
                       <div class="label">{{ 'Occtax.Releve.Area' | translate }} :</div>
                       <div class="value">{{ releve.area ?? '-' }}</div>
                     </div>
@@ -395,6 +405,7 @@
                         </div>
 
                         <div *ngIf="config.OCCTAX.form_fields.individual && counting.id_individual">
+                          <!-- TODO: config.OCCTAX to occtaxConfig.moduleConf -->
                           <div class="label">{{ 'Individual.Raw' | translate }} :</div>
                           <div class="value">
                             {{ counting.individual?.individual_name }}
