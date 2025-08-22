@@ -49,6 +49,12 @@
                 </mat-card-subtitle>
                 <div class="row">
                   <div class="col-6">
+                    <div *ngIf="config.OCCTAX.form_fields.code_releve">
+                      <div class="label">
+                        {{ "Occtax.Releve.CodeReleve" | translate }} :
+                      </div>
+                      <div class="value">{{ releve.code_releve ?? "-" }}</div>
+                    </div>
                     <div>
                       <div class="label">Observateur(s) :</div>
                       <div class="value">
@@ -90,6 +96,14 @@
                     <div *ngIf="config.OCCTAX.form_fields.altitude_max">
                       <div class="label">{{ 'MaxAltitude' | translate }}</div>
                       <div class="value">{{ releve.altitude_max ?? '-' }}</div>
+                    </div>
+                    <div *ngIf="config.OCCTAX.form_fields.area">
+                      <div class="label">{{ 'Occtax.Releve.Area' | translate }} :</div>
+                      <div class="value">{{ releve.area ?? '-' }}</div>
+                    </div>
+                    <div *ngIf="config.OCCTAX.form_fields.slope">
+                      <div class="label">{{ 'Occtax.Releve.Slope' | translate }} :</div>
+                      <div class="value">{{ releve.slope ?? '-' }}</div>
                     </div>
                     <!--Champs additionnels-->
                     <ng-container *ngFor="let dynamiqueField of releveAddFields">
@@ -305,6 +319,16 @@
                           {{
                             getLibelleByID(
                               (displayOccurrence | async).id_nomenclature_source_status
+                            )
+                          }}
+                        </div>
+                      </div>
+                      <div *ngIf="config.OCCTAX.form_fields.support_organism">
+                        <div class="label">{{ 'Occtax.Taxon.OccSupport' | translate }} :</div>
+                        <div class="value">
+                          {{
+                            getLibelleByID(
+                              (displayOccurrence | async).id_nomenclature_organism_support
                             )
                           }}
                         </div>
