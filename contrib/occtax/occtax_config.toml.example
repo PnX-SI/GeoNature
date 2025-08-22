@@ -115,6 +115,7 @@ export_columns =  [
   "ocStatBio",
   "preuveOui",
   "ocMethDet",
+  "ocSupport",
   "preuvNum",
   "preuvNoNum",
   "obsCtx",
@@ -132,7 +133,13 @@ export_columns =  [
   "orgGestDat",
   "WKT",
   "natObjGeo",
-  "nomLieu"
+  "nomLieu",
+  "codeReleve",
+  "slope",
+  "area",
+  "exposition",
+  "typeLieu",
+  "zoneReference"
  ]
 
 # Afficher l'outil pour pointer un marker à partir des coordonnées X/Y
@@ -181,6 +188,7 @@ MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_typ
     blurring = false
     determiner = true
     determination_method = true
+    support_organism = false
     digital_proof = true
     non_digital_proof = true
     source_status = false
@@ -198,3 +206,9 @@ MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_typ
     geo_object_nature = false
     place_name = false
     precision = false
+    code_releve = false
+    slope = false
+    area = false
+    exposition = false
+    location_type = false
+    area_attachement = false

@@ -7,11 +7,12 @@
 ></div>
 
 <div class="row">
+  <!-- PRECISION -->
   <div
     *ngIf="config.OCCTAX.form_fields.precision"
     class="col-8"
   >
-    <small>Précision du pointage (m)</small>
+    <small>{{ "Occtax.Releve.Precision" | translate }}</small>
     <input
       type="number"
       [formControl]="propertiesForm.get('precision')"
@@ -22,6 +23,23 @@
 </div>
 
 <div class="row">
+  <!-- CODE RELEVE -->
+  <div
+    *ngIf="config.OCCTAX.form_fields.code_releve"
+    class="col-xl-4 col-md-6 col-sm-8 col-11"
+  >
+    <small>{{ "Occtax.Releve.CodeReleve" | translate }}</small>
+    <input
+      type="text"
+      [formControl]="propertiesForm.get('code_releve')"
+      class="form-control form-control-sm"
+      placeholder="Identifiant terrain du relevé"
+    />
+  </div>
+</div>
+
+<div class="row">
+  <!-- PLACE NAME -->
   <div class="col-8">
     <div *ngIf="config.OCCTAX.form_fields.place_name">
       <small>{{ 'Occtax.Releve.PlaceName' | translate }}</small>
@@ -270,6 +288,50 @@
   style="color: red; font-size: 80%; font-weight: 400"
 >
   {{ 'Occtax.Releve.Errors.DepthError' | translate }}
+</div>
+
+<div class="row">
+  <!-- AREA -->
+  <div
+    *ngIf="config.OCCTAX.form_fields.area"
+    class="col-xl-4 col-md-6 col-sm-8 col-10"
+  >
+    <small>{{ "Occtax.Releve.Area" | translate }}</small>
+    <input
+      type="number"
+      [formControl]="propertiesForm.get('area')"
+      class="form-control form-control-sm"
+      placeholder="Surface en m² du relevé. Possibilité de stocker des valeurs < 1 m dans le cas de relevés bryologiques, lichenologiques"
+    />
+  </div>
+</div>
+
+<div class="row">
+  <!-- SLOPE -->
+  <div
+    *ngIf="config.OCCTAX.form_fields.slope"
+    class="col-xl-4 col-md-6 col-sm-8 col-10"
+  >
+    <small>{{ "Occtax.Releve.Slope" | translate }}</small>
+    <input
+      type="number"
+      [formControl]="propertiesForm.get('slope')"
+      class="form-control form-control-sm"
+      placeholder="Pente ou déclivité en degrés du terrain sur l’aire du relevé"
+    />
+  </div>
+
+  <!-- EXPOSITION -->
+  <div
+    *ngIf="config.OCCTAX.form_fields.exposition"
+    class="col-xl-4 col-md-6 col-sm-8 col-10"
+  >
+    <pnx-nomenclature
+      label="{{ 'Occtax.Releve.Exposure' | translate }}"
+      [parentFormControl]="propertiesForm.get('id_nomenclature_exposure')"
+      codeNomenclatureType="EXPOSITION"
+    ></pnx-nomenclature>
+  </div>
 </div>
 
 <div class="row">
