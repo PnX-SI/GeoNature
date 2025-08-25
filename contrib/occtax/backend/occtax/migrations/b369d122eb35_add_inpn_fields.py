@@ -9,7 +9,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import text
 
-
 # revision identifiers, used by Alembic.
 revision = "b369d122eb35"
 down_revision = "b66d30f4e3d1"
@@ -24,13 +23,11 @@ def _backup_view(conn, schema: str, view: str):
     ).scalar()
 
     grants = conn.execute(
-        text(
-            f"""
+        text(f"""
             SELECT array_agg('GRANT ' || privilege_type || ' ON {schema}.{view} TO ' || grantee)
             FROM information_schema.role_table_grants
             WHERE table_schema = :schema AND table_name = :view
-        """
-        ),
+        """),
         {"schema": schema, "view": view},
     ).scalar()
 
@@ -75,25 +72,21 @@ def upgrade():
     )
 
     # Add foreign key constraint on id_nomenclature_exposure
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE ONLY pr_occtax.t_releves_occtax
         ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_exposure
         FOREIGN KEY (id_nomenclature_exposure)
         REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature)
         ON UPDATE CASCADE
-    """
-    )
+    """)
 
     # Add CHECK constraint on id_nomenclature_exposure
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE pr_occtax.t_releves_occtax
         ADD CONSTRAINT check_t_releves_occtax_exposure
         CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_exposure, 'EXPOSITION'))
         NOT VALID
-    """
-    )
+    """)
 
     op.add_column(
         "t_releves_occtax",
@@ -115,25 +108,21 @@ def upgrade():
     )
 
     # Add foreign key constraint on id_nomenclature_organism_support
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE ONLY pr_occtax.t_occurrences_occtax
         ADD CONSTRAINT fk_t_occurrences_occtax_id_nomenclature_organism_support
         FOREIGN KEY (id_nomenclature_organism_support)
         REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature)
         ON UPDATE CASCADE
-    """
-    )
+    """)
 
     # Add CHECK constraint on id_nomenclature_organism_support
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE pr_occtax.t_occurrences_occtax
         ADD CONSTRAINT check_t_occurrences_occtax_organism_support
         CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_organism_support, 'SUPPORT_ORGANISM'))
         NOT VALID
-    """
-    )
+    """)
 
     # --- Recreate export view ---
     # Backup current view def + grants, drop view (dependency on "precision"), alter column, then recreate with new fields.
@@ -334,32 +323,24 @@ def downgrade():
     op.drop_column("t_releves_occtax", "slope", schema=schema)
     op.drop_column("t_releves_occtax", "area", schema=schema)
     # Drop CHECK and foreign key constraints for t_releves_occtax
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE pr_occtax.t_releves_occtax
         DROP CONSTRAINT IF EXISTS check_t_releves_occtax_exposure
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         ALTER TABLE pr_occtax.t_releves_occtax
         DROP CONSTRAINT IF EXISTS fk_t_releves_occtax_id_nomenclature_exposure
-    """
-    )
+    """)
     op.drop_column("t_releves_occtax", "id_nomenclature_exposure", schema=schema)
     op.drop_column("t_releves_occtax", "id_nomenclature_location_type", schema=schema)
     op.drop_column("t_releves_occtax", "id_area_attachement", schema=schema)
     # Drop CHECK and foreign key constraints for t_occurrences_occtax
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE pr_occtax.t_releves_occtax
         DROP CONSTRAINT IF EXISTS check_t_occurrences_occtax_organism_support
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         ALTER TABLE pr_occtax.t_releves_occtax
         DROP CONSTRAINT IF EXISTS fk_t_relevest_occurrences_occtax_id_nomenclature_organism_support
-    """
-    )
+    """)
     op.drop_column("t_occurrences_occtax", "id_nomenclature_organism_support", schema=schema)

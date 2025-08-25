@@ -51,10 +51,8 @@
                 <div class="row">
                   <div class="col-6">
                     <div *ngIf="config.OCCTAX.form_fields.code_releve">
-                      <div class="label">
-                        {{ "Occtax.Releve.CodeReleve" | translate }} :
-                      </div>
-                      <div class="value">{{ releve.code_releve ?? "-" }}</div>
+                      <div class="label">{{ 'Occtax.Releve.CodeReleve' | translate }} :</div>
+                      <div class="value">{{ releve.code_releve ?? '-' }}</div>
                     </div>
                     <div>
                       <div class="label">Observateur(s) :</div>
