@@ -1,8 +1,5 @@
 <h5>Ajout d'un taxon</h5>
-<div
-  class="row"
-  style="height: 70px !important"
->
+<div class="row" style="height: 70px !important">
   <div class="col-sm-6">
     <pnx-taxonomy
       label="{{ 'Occtax.Taxon.NomCite' | translate }}"
@@ -16,12 +13,14 @@
     ></pnx-taxonomy>
     <small
       *ngIf="
-        occurrenceForm.get('nom_cite').hasError('required') && taxonForm.touched && !taxonFormFocus
+        occurrenceForm.get('nom_cite').hasError('required') &&
+        taxonForm.touched &&
+        !taxonFormFocus
       "
       class="error"
       style="color: red"
     >
-      {{ 'Occtax.Taxon.Errors.NomCiteRequiredError' | translate }}
+      {{ "Occtax.Taxon.Errors.NomCiteRequiredError" | translate }}
     </small>
     <small
       *ngIf="
@@ -32,13 +31,10 @@
       class="error"
       style="color: red"
     >
-      {{ 'Occtax.Taxon.Errors.CdNomRequiredError' | translate }}
+      {{ "Occtax.Taxon.Errors.CdNomRequiredError" | translate }}
     </small>
   </div>
-  <div
-    *ngIf="config.OCCTAX.form_fields.display_nom_valide"
-    class="col-sm-6"
-  >
+  <div *ngIf="config.OCCTAX.form_fields.display_nom_valide" class="col-sm-6">
     <small>TAXREF - Nom valide</small>
     <span
       data-qa="occurrence-nom-valide"
@@ -48,14 +44,8 @@
   </div>
 </div>
 
-<div
-  class="row"
-  data-qa="pnx-nomenclature-info-comp"
->
-  <div
-    *ngIf="config.OCCTAX.form_fields.obs_tech"
-    class="col-lg-4 col-sm-6"
-  >
+<div class="row" data-qa="pnx-nomenclature-info-comp">
+  <div *ngIf="config.OCCTAX.form_fields.obs_tech" class="col-lg-4 col-sm-6">
     <pnx-nomenclature
       label="{{ 'Occtax.Taxon.ObsTech' | translate }}"
       [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_technique')"
@@ -67,14 +57,16 @@
     ></pnx-nomenclature>
     <small
       *ngIf="
-        occurrenceForm.get('id_nomenclature_obs_technique').hasError('required') &&
+        occurrenceForm
+          .get('id_nomenclature_obs_technique')
+          .hasError('required') &&
         occurrenceForm.get('id_nomenclature_obs_technique').touched
       "
       class="error"
       style="color: red"
       data-qa="pnx-nomenclature-meth-obs-error"
     >
-      {{ 'Occtax.Taxon.Errors.TechObsRequiredError' | translate }}
+      {{ "Occtax.Taxon.Errors.TechObsRequiredError" | translate }}
     </small>
   </div>
   <div
@@ -92,14 +84,16 @@
     ></pnx-nomenclature>
     <small
       *ngIf="
-        occurrenceForm.get('id_nomenclature_bio_condition').hasError('required') &&
+        occurrenceForm
+          .get('id_nomenclature_bio_condition')
+          .hasError('required') &&
         occurrenceForm.get('id_nomenclature_bio_condition').touched
       "
       class="error"
       style="color: red"
       data-qa="pnx-nomenclature-eta-bio-error"
     >
-      {{ 'Occtax.Taxon.Errors.BiologicalConditionRequiredError' | translate }}
+      {{ "Occtax.Taxon.Errors.BiologicalConditionRequiredError" | translate }}
     </small>
   </div>
   <div
@@ -123,21 +117,15 @@
     (click)="collapse()"
     data-qa="pnx-occtax-taxon-form-advanced"
   >
-    <i
-      class="fa fa-cog"
-      aria-hidden="true"
-    ></i>
-    {{ 'Advanced' | translate }}
+    <i class="fa fa-cog" aria-hidden="true"></i>
+    {{ "Advanced" | translate }}
   </button>
 </div>
 
 <div [@detailExpand]="advanced">
   <div class="row">
-    <div
-      *ngIf="config.OCCTAX.form_fields.determiner"
-      class="col-lg-4 col-sm-6"
-    >
-      <small>{{ 'Occtax.Taxon.Determiner' | translate }}</small>
+    <div *ngIf="config.OCCTAX.form_fields.determiner" class="col-lg-4 col-sm-6">
+      <small>{{ "Occtax.Taxon.Determiner" | translate }}</small>
       <input
         class="form-control form-control-sm"
         [formControl]="occurrenceForm.get('determiner')"
@@ -153,7 +141,7 @@
         class="error"
         style="color: red"
       >
-        {{ 'Occtax.Taxon.Errors.DeterminerRequiredError' | translate }}
+        {{ "Occtax.Taxon.Errors.DeterminerRequiredError" | translate }}
       </small>
     </div>
     <div
@@ -162,7 +150,9 @@
     >
       <pnx-nomenclature
         label="{{ 'Occtax.Taxon.DeterminationMethod' | translate }}"
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
+        [parentFormControl]="
+          occurrenceForm.get('id_nomenclature_determination_method')
+        "
         codeNomenclatureType="METH_DETERMIN"
         [regne]="taxref?.regne"
         [group2Inpn]="taxref?.group2_inpn"
@@ -170,13 +160,15 @@
       ></pnx-nomenclature>
       <small
         *ngIf="
-          occurrenceForm.get('id_nomenclature_determination_method').hasError('required') &&
+          occurrenceForm
+            .get('id_nomenclature_determination_method')
+            .hasError('required') &&
           occurrenceForm.get('id_nomenclature_determination_method').touched
         "
         class="error"
         style="color: red"
       >
-        {{ 'Occtax.Taxon.Errors.DeterminationMethodRequiredError' | translate }}
+        {{ "Occtax.Taxon.Errors.DeterminationMethodRequiredError" | translate }}
       </small>
     </div>
   </div>
@@ -187,18 +179,22 @@
     >
       <pnx-nomenclature
         label="{{ 'Occtax.Taxon.ObservationStatus' | translate }}"
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_observation_status')"
+        [parentFormControl]="
+          occurrenceForm.get('id_nomenclature_observation_status')
+        "
         codeNomenclatureType="STATUT_OBS"
       ></pnx-nomenclature>
       <small
         *ngIf="
-          occurrenceForm.get('id_nomenclature_bio_condition').hasError('required') &&
+          occurrenceForm
+            .get('id_nomenclature_bio_condition')
+            .hasError('required') &&
           occurrenceForm.get('id_nomenclature_bio_condition').touched
         "
         class="error"
         style="color: red"
       >
-        {{ 'Occtax.Taxon.Errors.BiologicalConditionRequiredError' | translate }}
+        {{ "Occtax.Taxon.Errors.BiologicalConditionRequiredError" | translate }}
       </small>
     </div>
 
@@ -221,10 +217,7 @@
       *ngIf="occtaxFormOccurrenceService.formFieldsStatus.bio_status"
       class="col-lg-4 col-sm-6"
     -->
-    <div
-      *ngIf="config.OCCTAX.form_fields.bio_status"
-      class="col-lg-4 col-sm-6"
-    >
+    <div *ngIf="config.OCCTAX.form_fields.bio_status" class="col-lg-4 col-sm-6">
       <pnx-nomenclature
         label="{{ 'Occtax.Taxon.BiologicalStatus' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_status')"
@@ -235,10 +228,7 @@
       ></pnx-nomenclature>
     </div>
 
-    <div
-      *ngIf="config.OCCTAX.form_fields.behaviour"
-      class="col-lg-4 col-sm-6"
-    >
+    <div *ngIf="config.OCCTAX.form_fields.behaviour" class="col-lg-4 col-sm-6">
       <pnx-nomenclature
         label="{{ 'Occtax.Taxon.OccBehaviour' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_behaviour')"
@@ -254,15 +244,14 @@
     >
       <pnx-nomenclature
         label="{{ 'Occtax.Taxon.StatusSource' | translate }}"
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_source_status')"
+        [parentFormControl]="
+          occurrenceForm.get('id_nomenclature_source_status')
+        "
         codeNomenclatureType="STATUT_SOURCE"
       ></pnx-nomenclature>
     </div>
 
-    <div
-      *ngIf="config.OCCTAX.form_fields.blurring"
-      class="col-lg-4 col-sm-6"
-    >
+    <div *ngIf="config.OCCTAX.form_fields.blurring" class="col-lg-4 col-sm-6">
       <pnx-nomenclature
         label="{{ 'Occtax.Taxon.Blurring' | translate }}"
         [parentFormControl]="occurrenceForm.get('id_nomenclature_blurring')"
@@ -292,11 +281,12 @@
       class="col-lg-4 col-sm-6"
       [ngClass]="{
         'd-none':
-          !displayProofFromElements && !occurrenceForm.get('digital_proof').hasError('proofNotNull')
+          !displayProofFromElements &&
+          !occurrenceForm.get('digital_proof').hasError('proofNotNull')
       }"
     >
       <div class="form-group">
-        <small>{{ 'Occtax.Taxon.DigitalProof' | translate }}</small>
+        <small>{{ "Occtax.Taxon.DigitalProof" | translate }}</small>
         <input
           [ngClass]="{
             'is-invalid':
@@ -313,7 +303,7 @@
         class="error"
         style="color: red"
       >
-        {{ 'Occtax.Taxon.Errors.ExistProofValidation' | translate }}
+        {{ "Occtax.Taxon.Errors.ExistProofValidation" | translate }}
       </small>
     </div>
     <div
@@ -326,7 +316,7 @@
       }"
     >
       <div class="form-group">
-        <small>{{ 'Taxon.NonDigitalProof' | translate }}</small>
+        <small>{{ "Taxon.NonDigitalProof" | translate }}</small>
         <input
           [ngClass]="{
             'is-invalid':
@@ -344,9 +334,15 @@
   <div
     *ngIf="occurrenceForm.hasError('proofRequired')"
     class="error"
-    style="color: red; margin-top: -0.8rem; margin-bottom: 0.5rem; font-size: 80%; font-weight: 400"
+    style="
+      color: red;
+      margin-top: -0.8rem;
+      margin-bottom: 0.5rem;
+      font-size: 80%;
+      font-weight: 400;
+    "
   >
-    {{ 'Occtax.Taxon.Errors.NoExistProofError' | translate }}
+    {{ "Occtax.Taxon.Errors.NoExistProofError" | translate }}
   </div>
   <div
     *ngIf="
@@ -354,9 +350,15 @@
       occurrenceForm.get('digital_proof').hasError('proofNotNull')
     "
     class="error"
-    style="color: red; margin-top: -0.8rem; margin-bottom: 0.5rem; font-size: 80%; font-weight: 400"
+    style="
+      color: red;
+      margin-top: -0.8rem;
+      margin-bottom: 0.5rem;
+      font-size: 80%;
+      font-weight: 400;
+    "
   >
-    {{ 'Occtax.Taxon.Errors.ExistproofError' | translate }}
+    {{ "Occtax.Taxon.Errors.ExistproofError" | translate }}
   </div>
 
   <div *ngIf="config.OCCTAX.form_fields.comment_occ">
@@ -377,11 +379,8 @@
 ></pnx-dynamic-form-generator>
 
 <h5 style="margin-top: 15px">
-  <span
-    [matBadge]="countings.length"
-    matBadgeOverlap="false"
-  >
-    {{ 'Occtax.Counting.Counting' | translate }}
+  <span [matBadge]="countings.length" matBadgeOverlap="false">
+    {{ "Occtax.Counting.Counting" | translate }}
     <ng-container *ngIf="countings.length > 1">s</ng-container>
   </span>
 </h5>
@@ -391,13 +390,10 @@
   class="error"
   style="color: red"
 >
-  {{ 'Occtax.Taxon.Errors.CountingRequiredError' | translate }}
+  {{ "Occtax.Taxon.Errors.CountingRequiredError" | translate }}
 </div>
 
-<mat-accordion
-  [multi]="true"
-  data-qa="pnx-occtax-taxon-form-count"
->
+<mat-accordion [multi]="true" data-qa="pnx-occtax-taxon-form-count">
   <div
     *ngFor="let counting of countings; index as i"
     class="blc-expansion-panel"
@@ -439,10 +435,14 @@
   <div></div>
 </mat-accordion>
 
-<pnx-occtax-profiles *ngIf="config.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
+<pnx-occtax-profiles
+  *ngIf="config.FRONTEND['ENABLE_PROFILES']"
+></pnx-occtax-profiles>
 
 <div class="bloc-button">
-  <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence | async); else modifButton">
+  <ng-container
+    *ngIf="!(occtaxFormOccurrenceService.occurrence | async); else modifButton"
+  >
     <button
       id="add-occ"
       data-qa="occurrence-add-btn"
@@ -491,10 +491,7 @@
   </ng-template>
 </div>
 
-<div
-  class="text-center"
-  style="margin-top: 10px"
->
+<div class="text-center" style="margin-top: 10px">
   <!-- <button 
       class="btn btn-danger"
       matTooltip="Raffraichir"
