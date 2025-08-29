@@ -45,6 +45,7 @@ from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
 from .fixtures import *
 from .fixtures import create_synthese, create_module, synthese_with_protected_status
 
+
 csv.field_size_limit(sys.maxsize)
 
 
@@ -107,6 +108,120 @@ def synthese_for_observers(source, datasets):
                     the_geom_local=func.st_transform(geom, 2154),
                 )
             )
+
+
+@pytest.fixture()
+def monitoring_sources():
+    """
+    Deux sources 'MONITORING_*' comme attendu par le filtre :
+    TSources.name_source == f"MONITORING_{proto_code.upper()}"
+    """
+    with db.session.begin_nested():
+        src_bat = TSources(name_source="MONITORING_BAT")
+        src_flora = TSources(name_source="MONITORING_FLORA")
+        db.session.add_all([src_bat, src_flora])
+    return {"BAT": src_bat, "FLORA": src_flora}
+
+
+@pytest.fixture()
+def monitoring_synthese_data(monitoring_sources, datasets):
+    """
+    Crée des observations avec additional_data.monitoring_observation contenant
+    divers types (bool, int, list via chaîne 'A,B', date ISO, string).
+    """
+    taxon = db.session.scalars(db.select(Taxref)).first()
+    geom = from_shape(Point(6.0, 45.0), srid=4326)
+    now = datetime.datetime(2025, 8, 1, 12, 0, 0)
+
+    def add_obs(src, adict):
+        s = Synthese(
+            id_source=src.id_source,
+            dataset=datasets["own_dataset"],
+            nom_cite=taxon.lb_nom,
+            cd_nom=taxon.cd_nom,
+            date_min=now,
+            date_max=now,
+            the_geom_4326=geom,
+            the_geom_point=geom,
+            # the_geom_local=func.st_transform(geom, 2154),
+            additional_data={"monitoring_observation": adict},
+        )
+        with db.session.begin_nested():
+            db.session.add(s)
+        return s
+
+    # BAT
+    bat_match = add_obs(
+        monitoring_sources["BAT"],
+        {
+            "has_cubs": True,  # bool
+            "count": 5,  # int
+            "tags": "A,B",  # liste encodée "A,B" -> string_to_array(col, ',')
+            "visit_date": "2025-08-01",  # date ISO, cast(Date)
+            "note": "hello",  # string exact
+        },
+    )
+    bat_wrong_count = add_obs(
+        monitoring_sources["BAT"],
+        {
+            "has_cubs": True,
+            "count": 3,
+            "tags": "A,B",
+            "visit_date": "2025-08-01",
+            "note": "hello",
+        },
+    )
+    bat_A_only = add_obs(
+        monitoring_sources["BAT"],
+        {
+            "has_cubs": True,
+            "count": 5,
+            "tags": "A",  # ne contient pas "B"
+            "visit_date": "2025-08-01",
+            "note": "hello",
+        },
+    )
+    bat_other_date = add_obs(
+        monitoring_sources["BAT"],
+        {
+            "has_cubs": True,
+            "count": 5,
+            "tags": "A,B",
+            "visit_date": "2025-07-31",
+            "note": "hello",
+        },
+    )
+
+    # FLORA
+    flora_match = add_obs(
+        monitoring_sources["FLORA"],
+        {
+            "flowering": True,
+            "count": 2,
+            "tags": "X,Y",
+            "visit_date": "2025-07-15",
+            "note": "flora",
+        },
+    )
+    flora_non_match = add_obs(
+        monitoring_sources["FLORA"],
+        {
+            "flowering": False,
+            "count": 2,
+            "tags": "X",
+            "visit_date": "2025-07-15",
+            "note": "flora",
+        },
+    )
+
+    return {
+        "bat_match": bat_match,
+        "bat_wrong_count": bat_wrong_count,
+        "bat_A_only": bat_A_only,
+        "bat_other_date": bat_other_date,
+        "flora_match": flora_match,
+        "flora_non_match": flora_non_match,
+    }
 
 
 # TODO : move and use those schemas in routes one day !
@@ -2183,3 +2298,171 @@ class TestSyntheseTaxonomicFilter:
                 url_for(route, cd_ref=202),
             )
             assert response.status_code == 403
+
+
+# ------------------------------
+#  ADDITIONAL FILTERS MONITORINGS tests
+# ------------------------------
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestSyntheseMonitoringFilters:
+    def _ids_from_resp(self, resp_json):
+        return {f["properties"]["id_synthese"] for f in resp_json["features"]}
+
+    def test_monitorings_all_types_and_and_semantics(
+        self, users, monitoring_sources, monitoring_synthese_data
+    ):
+        """
+        Tous les champs (bool, int, list, date dict, string) doivent matcher
+        sur le même protocole => ET logique à l'intérieur d'un protocole.
+        """
+        # from flask import url_for
+        # from pypnusershub.tests.utils import set_logged_user
+
+        set_logged_user(self.client, users["admin_user"])
+
+        filters = {
+            # limite la recherche aux sources MONITORING_BAT pour éviter le bruit
+            "id_source": [monitoring_sources["BAT"].id_source],
+            "MONITORINGS": {
+                "bat": {
+                    "has_cubs": True,  # bool -> cast(Boolean)
+                    "count": 5,  # int  -> cast(Integer)
+                    "tags": ["A", "B"],  # list -> string_to_array(col, ',') @> [...]
+                    "visit_date": {  # dict -> cast(Date)
+                        "year": 2025,
+                        "month": 8,
+                        "day": 1,
+                    },
+                    "note": "hello",  # string exact
+                }
+            },
+        }
+
+        r = self.client.post(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+
+        ids = self._ids_from_resp(r.json)
+        assert monitoring_synthese_data["bat_match"].id_synthese in ids
+        # Doivent être exclus (un champ diffère)
+        assert monitoring_synthese_data["bat_wrong_count"].id_synthese not in ids
+        assert monitoring_synthese_data["bat_A_only"].id_synthese not in ids
+        assert monitoring_synthese_data["bat_other_date"].id_synthese not in ids
+
+    def test_monitorings_list_operator_contains_all(
+        self, users, monitoring_sources, monitoring_synthese_data
+    ):
+        """
+        Vérifie bien le '@>' : la liste demandée doit être entièrement contenue
+        dans string_to_array(tags, ',') de l'observation.
+        """
+        # from flask import url_for
+        # from pypnusershub.tests.utils import set_logged_user
+
+        set_logged_user(self.client, users["admin_user"])
+
+        filters = {
+            "id_source": [monitoring_sources["BAT"].id_source],
+            "MONITORINGS": {
+                "bat": {
+                    "tags": ["A", "B"],
+                }
+            },
+        }
+
+        r = self.client.post(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+        ids = self._ids_from_resp(r.json)
+        assert monitoring_synthese_data["bat_match"].id_synthese in ids
+        assert monitoring_synthese_data["bat_A_only"].id_synthese not in ids
+
+    def test_monitorings_date_equals(self, users, monitoring_sources, monitoring_synthese_data):
+        """
+        Le champ date dict est casté en Date et doit matcher exactement.
+        """
+        from flask import url_for
+        from pypnusershub.tests.utils import set_logged_user
+
+        set_logged_user(self.client, users["admin_user"])
+
+        filters = {
+            "id_source": [monitoring_sources["BAT"].id_source],
+            "MONITORINGS": {
+                "bat": {
+                    "visit_date": {"year": 2025, "month": 8, "day": 1},
+                }
+            },
+        }
+
+        r = self.client.post(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+        ids = self._ids_from_resp(r.json)
+        assert monitoring_synthese_data["bat_match"].id_synthese in ids
+        assert monitoring_synthese_data["bat_other_date"].id_synthese not in ids
+
+    def test_monitorings_or_between_protocols(
+        self, users, monitoring_sources, monitoring_synthese_data
+    ):
+        """
+        Plusieurs protocoles => clauses OR au niveau global.
+        On doit récupérer les matches de BAT ET/OU FLORA.
+        """
+        from flask import url_for
+        from pypnusershub.tests.utils import set_logged_user
+
+        set_logged_user(self.client, users["admin_user"])
+
+        filters = {
+            "id_source": [
+                monitoring_sources["BAT"].id_source,
+                monitoring_sources["FLORA"].id_source,
+            ],
+            "MONITORINGS": {
+                "bat": {"count": 5},
+                "flora": {"flowering": True},
+            },
+        }
+
+        r = self.client.post(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+        ids = self._ids_from_resp(r.json)
+
+        assert monitoring_synthese_data["bat_match"].id_synthese in ids
+        assert monitoring_synthese_data["flora_match"].id_synthese in ids
+        # Non-matches exclus
+        assert monitoring_synthese_data["bat_wrong_count"].id_synthese not in ids
+        assert monitoring_synthese_data["flora_non_match"].id_synthese not in ids
+
+    def test_monitorings_ignores_none_and_empty_string(
+        self, users, monitoring_sources, monitoring_synthese_data
+    ):
+        """
+        Les valeurs None et "" sont ignorées par le back, ne doivent pas ajouter de contraintes.
+        """
+        from flask import url_for
+        from pypnusershub.tests.utils import set_logged_user
+
+        set_logged_user(self.client, users["admin_user"])
+
+        filters = {
+            "id_source": [monitoring_sources["BAT"].id_source],
+            "MONITORINGS": {
+                "bat": {
+                    "has_cubs": True,
+                    "count": None,  # ignoré
+                    "note": "",  # ignoré
+                }
+            },
+        }
+
+        r = self.client.post(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+        ids = self._ids_from_resp(r.json)
+
+        # has_cubs=True : 3 obs BAT ont True, mais seules celles de la source fournie
+        # Ici les 3 BAT ont has_cubs=True, donc on les retrouve toutes
+        assert monitoring_synthese_data["bat_match"].id_synthese in ids
+        assert monitoring_synthese_data["bat_wrong_count"].id_synthese in ids
+        assert monitoring_synthese_data["bat_A_only"].id_synthese in ids
+        assert monitoring_synthese_data["bat_other_date"].id_synthese in ids
