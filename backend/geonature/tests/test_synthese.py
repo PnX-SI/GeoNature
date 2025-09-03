@@ -1,3 +1,4 @@
+import logging
 from io import StringIO
 import sys
 import csv
@@ -1104,12 +1105,17 @@ class TestSynthese:
         # TODO: s'assurer qu'on ne récupère pas le dataset "associate_2_dataset_sensitive", car ne contient que des données sensibles, bien que l'utilisateur ait le scope nécessaire par ailleurs (scope 2, et ce dataset lui est associé)
         assert_export_metadata_results(user, dict_expected_datasets)
 
-    def test_general_stat(self, users):
+    def test_general_stat(self, synthese_data, users):
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for("gn_synthese.synthese_statistics.general_stats"))
 
         assert response.status_code == 200
+        data = response.get_json()
+        assert data["nb_data"] == 12
+        assert data["nb_dataset"] == 0
+        assert data["nb_observers"] == 1
+        assert data["nb_species"] == 3
 
     def test_taxon_stats(self, synthese_data, users):
         set_logged_user(self.client, users["stranger_user"])
