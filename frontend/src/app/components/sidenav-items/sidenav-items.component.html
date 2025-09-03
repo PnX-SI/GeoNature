@@ -1,121 +1,126 @@
-<mat-card
-  class="logo"
-  data-qa="gn-sidenav-mat-card"
->
-  <a
-    routerLink="/"
-    routerLinkActive="active"
+<div class="navigation-container">
+  <mat-card
+    class="logo"
+    data-qa="gn-sidenav-mat-card"
   >
-    <img
-      mat-card-image
-      src="{{ this.config.API_ENDPOINT }}{{ this.config.STATIC_URL }}/images/logo_sidebar.jpg"
-    />
-  </a>
-</mat-card>
-<mat-nav-list class="appnav">
-  <a href="#{{ home_page.module_url }}">
-    <mat-list-item
-      (click)="setHome()"
-      [routerLink]="home_page.module_url"
+    <a
+      routerLink="/"
       routerLinkActive="active"
-      class="sidenav-item"
     >
-      <i
-        class="fa {{ home_page.module_picto }} picto"
-        aria-hidden="true"
-      ></i>
-      <span class="module-name">{{ home_page.module_label }}</span>
-    </mat-list-item>
-  </a>
-  <ng-container *ngFor="let module of moduleService.getDisplayedModules(); let index = index">
-    <a
-      *ngIf="module.active_frontend"
-      [routerLink]="module.module_url"
-      [attr.data-qa]="'gn-sidenav-link-' + module.module_code"
-      [target]="module.module_target"
-    >
-      <mat-list-item
-        class="sidenav-item"
-        (click)="_sidenavService.toggleSideNav()"
+      <img
+        mat-card-image
+        src="{{ this.config.API_ENDPOINT }}{{ this.config.STATIC_URL }}/images/logo_sidebar.jpg"
+      />
+    </a>
+  </mat-card>
+
+  <div class="nav-content">
+    <mat-nav-list class="appnav">
+      <a href="#{{ home_page.module_url }}">
+        <mat-list-item
+          (click)="setHome()"
+          [routerLink]="home_page.module_url"
+          routerLinkActive="active"
+          class="sidenav-item"
+        >
+          <i
+            class="fa {{ home_page.module_picto }} picto"
+            aria-hidden="true"
+          ></i>
+          <span class="module-name">{{ home_page.module_label }}</span>
+        </mat-list-item>
+      </a>
+      <ng-container *ngFor="let module of moduleService.getDisplayedModules(); let index = index">
+        <a
+          *ngIf="module.active_frontend"
+          [routerLink]="module.module_url"
+          [attr.data-qa]="'gn-sidenav-link-' + module.module_code"
+          [target]="module.module_target"
+        >
+          <mat-list-item
+            class="sidenav-item"
+            (click)="_sidenavService.toggleSideNav()"
+          >
+            <i
+              class="fa {{ module.module_picto }} picto"
+              aria-hidden="true"
+            ></i>
+            <span class="module-name">{{ module.module_label }}</span>
+          </mat-list-item>
+        </a>
+
+        <a
+          *ngIf="!module.active_frontend"
+          href="{{ module.module_external_url }}"
+          [attr.data-qa]="'gn-sidenav-link-' + module.module_code"
+        >
+          <mat-list-item
+            class="sidenav-item"
+            (click)="_sidenavService.toggleSideNav()"
+          >
+            <i
+              class="fa {{ module.module_picto }} picto"
+              aria-hidden="true"
+            ></i>
+            <span class="module-name">{{ module.module_label }}</span>
+          </mat-list-item>
+        </a>
+      </ng-container>
+    </mat-nav-list>
+  </div>
+
+  <div class="navbar-footer">
+    <p class="p-small">
+      Réalisé avec
+      <a
+        target="_blank"
+        href="http://geonature.fr"
       >
-        <i
-          class="fa {{ module.module_picto }} picto"
-          aria-hidden="true"
-        ></i>
-        <span class="module-name">{{ module.module_label }}</span>
-      </mat-list-item>
-    </a>
-
-    <a
-      *ngIf="!module.active_frontend"
-      href="{{ module.module_external_url }}"
-      [attr.data-qa]="'gn-sidenav-link-' + module.module_code"
-    >
-      <mat-list-item
-        class="sidenav-item"
-        (click)="_sidenavService.toggleSideNav()"
+        GeoNature
+      </a>
+      version
+      <a
+        target="_blank"
+        href="https://github.com/PnX-SI/GeoNature/releases"
       >
-        <i
-          class="fa {{ module.module_picto }} picto"
-          aria-hidden="true"
-        ></i>
-        <span class="module-name">{{ module.module_label }}</span>
-      </mat-list-item>
-    </a>
-  </ng-container>
-</mat-nav-list>
+        {{ version }}
+      </a>
+      <mat-icon
+        [matMenuTriggerFor]="modulesMenu"
+        (menuOpened)="onMenuOpened()"
+        class="material-icons-outlined info-icon"
+        style="vertical-align: middle; cursor: pointer"
+      >
+        info
+      </mat-icon>
 
-<div class="navbar-footer">
-  <p class="p-small">
-    Réalisé avec
-    <a
-      target="_blank"
-      href="http://geonature.fr"
-    >
-      GeoNature
-    </a>
-    version
-    <a
-      target="_blank"
-      href="https://github.com/PnX-SI/GeoNature/releases"
-    >
-      {{ version }}
-    </a>
-    <mat-icon
-      [matMenuTriggerFor]="modulesMenu"
-      (menuOpened)="onMenuOpened()"
-      class="material-icons-outlined info-icon"
-      style="vertical-align: middle; cursor: pointer"
-    >
-      info
-    </mat-icon>
-
-    <mat-menu #modulesMenu="matMenu">
-      <div class="menu-content">
-        <b>Version des modules GeoNature:</b>
-        <br />
-        <div *ngIf="getModulesVersionTooltip()?.length > 0">
-          <div *ngFor="let module of getModulesVersionTooltip()">
-            <span *ngIf="module.version">{{ module.module_label }}: {{ module.version }}</span>
+      <mat-menu #modulesMenu="matMenu">
+        <div class="menu-content">
+          <b>Version des modules GeoNature:</b>
+          <br />
+          <div *ngIf="getModulesVersionTooltip()?.length > 0">
+            <div *ngFor="let module of getModulesVersionTooltip()">
+              <span *ngIf="module.version">{{ module.module_label }}: {{ module.version }}</span>
+            </div>
+          </div>
+          <b>Version des Référentiels:</b>
+          <br />
+          <div *ngIf="isRefVersionLoaded">
+            <div *ngFor="let referential of ref_data">
+              {{ referential.referencial_name }}: {{ referential.version }}
+            </div>
           </div>
         </div>
-        <b>Version des Référentiels:</b>
-        <br />
-        <div *ngIf="isRefVersionLoaded">
-          <div *ngFor="let referential of ref_data">
-            {{ referential.referencial_name }}: {{ referential.version }}
-          </div>
-        </div>
-      </div>
-    </mat-menu>
-  </p>
-  <p class="p-small">
-    Logiciel open source développé par une
-    <a
-      target="_blank"
-      href="http://docs.geonature.fr/authors.html"
-    >
-      communauté de structures
-    </a>
-  </p>
+      </mat-menu>
+    </p>
+    <p class="p-small">
+      Logiciel open source développé par une
+      <a
+        target="_blank"
+        href="http://docs.geonature.fr/authors.html"
+      >
+        communauté de structures
+      </a>
+    </p>
+  </div>
 </div>
