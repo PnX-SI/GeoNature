@@ -11,7 +11,6 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.utils.env import DB, db
 from utils_flask_sqla.response import json_resp
 
-
 from sqlalchemy import distinct, func, select, inspect
 from werkzeug.exceptions import BadRequest
 
@@ -164,6 +163,7 @@ def general_stats(permissions):
     for key, query in queries.items():
         synthese_query = SyntheseQuery(Synthese, query, {})
         synthese_query.filter_query_with_permissions(g.current_user, permissions)
+        synthese_query.build_query()
         results[key] = db.session.scalar(select(func.count("*")).select_from(synthese_query.query))
     data = {
         "nb_data": results["nb_obs"],

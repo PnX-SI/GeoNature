@@ -69,7 +69,7 @@ __all__ = [
     "sources_modules",
     "modules",
     "auto_validation_enabled",
-    "synthese_read_permissions",
+    "add_synthese_read_permissions",
     "synthese_module",
 ]
 
@@ -1089,8 +1089,8 @@ def synthese_module():
 
 
 @pytest.fixture()
-def synthese_read_permissions(synthese_module):
-    def _synthese_read_permissions(role, scope_value, action="R", **kwargs):
+def add_synthese_read_permissions(synthese_module):
+    def _add_synthese_read_permissions(role, scope_value, action="R", **kwargs):
         action = PermAction.query.filter_by(code_action=action).one()
         perm = Permission(
             role=role,
@@ -1103,4 +1103,4 @@ def synthese_read_permissions(synthese_module):
             db.session.add(perm)
         return perm
 
-    return _synthese_read_permissions
+    return _add_synthese_read_permissions

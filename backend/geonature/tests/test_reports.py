@@ -284,13 +284,13 @@ class TestReportsNotifications:
         data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
         return self.client.post(url_for(url), data=data)
 
-    def test_taxonomic_filter(self, synthese_data, synthese_read_permissions):
+    def test_taxonomic_filter(self, synthese_data, add_synthese_read_permissions):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
         taxon1 = synthese_data["obs1"].taxref
         taxon2 = synthese_data["obs2"].taxref.parent
-        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon1, taxon2])
+        add_synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon1, taxon2])
         set_logged_user(self.client, user)
 
         response = self.client.get(
@@ -299,7 +299,7 @@ class TestReportsNotifications:
         )
         assert response.status_code in (200, 204)
 
-    def test_geo_filter(self, synthese_data, synthese_read_permissions):
+    def test_geo_filter(self, synthese_data, add_synthese_read_permissions):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
@@ -308,7 +308,7 @@ class TestReportsNotifications:
             select(LAreas).where(LAreas.area_name == "Chambéry")
         ).scalar_one()
 
-        synthese_read_permissions(user, scope_value=None, areas_filter=[gap, chambery])
+        add_synthese_read_permissions(user, scope_value=None, areas_filter=[gap, chambery])
         set_logged_user(self.client, user)
 
         response = self.client.post(

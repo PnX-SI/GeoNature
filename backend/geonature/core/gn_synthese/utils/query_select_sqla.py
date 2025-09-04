@@ -9,6 +9,7 @@ much more efficient
 import datetime
 import unicodedata
 import uuid
+from enum import Enum
 
 from flask import current_app
 
@@ -23,7 +24,6 @@ from geoalchemy2.types import Geography, Geometry
 
 from geonature.utils.env import DB
 
-from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import (
     CorObserverSynthese,
     CorAreaSynthese,
@@ -49,6 +49,11 @@ from apptax.taxonomie.models import (
 from ref_geo.models import LAreas, BibAreasTypes
 from utils_flask_sqla_geo.schema import FeatureSchema, FeatureCollectionSchema
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
+
+
+class JoinType(str, Enum):
+    INNER = "inner"
+    LEFT = "left"
 
 
 class SyntheseQuery:
@@ -115,16 +120,20 @@ class SyntheseQuery:
             select(func.Find_SRID(LAreas.__table__.schema, LAreas.__table__.name, "geom"))
         )
 
-    def add_join(self, right_table, right_column, left_column, join_type="right"):
+    def add_join(
+        self, right_table, right_column, left_column, join_type: JoinType = JoinType.INNER
+    ):
         if self.first:
-            if join_type == "right":
+            if join_type == JoinType.INNER:
                 self.query_joins = self.model.__table__.join(
                     right_table, left_column == right_column
                 )
-            else:
+            elif join_type == JoinType.LEFT:
                 self.query_joins = self.model.__table__.outerjoin(
                     right_table, left_column == right_column
                 )
+            else:
+                raise NotImplemented(f"Type of join {join_type} not implemented yet")
             self.first = False
             self._already_joined_table.append(right_table)
         else:
@@ -211,8 +220,9 @@ class SyntheseQuery:
                 perm_filters.append(where_clause)
             if perm.taxons_filter:
                 # Does obs taxon path is an descendant of any path of taxons_filter?
-                self.add_join(TaxrefTree, self.model.cd_nom, TaxrefTree.cd_nom, join_type="right")
-
+                self.add_join(
+                    TaxrefTree, self.model.cd_nom, TaxrefTree.cd_nom, join_type=JoinType.INNER
+                )
                 where_clause = TaxrefTree.path.op("<@")(
                     sa.select(sa.func.array_agg(TaxrefTree.path))
                     .where(TaxrefTree.cd_nom.in_([t.cd_nom for t in perm.taxons_filter]))
