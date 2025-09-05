@@ -25,6 +25,7 @@ export class MediasComponent implements OnInit {
   @Input() hideDetailsFields: boolean = false;
 
   public bInitialized: boolean;
+  pendingDeletes: Media[] = [];
 
   constructor(
     public ms: MediaService,
@@ -75,17 +76,12 @@ export class MediasComponent implements OnInit {
 
   deleteMedia(index) {
     const media = this.parentFormControl.value.splice(index, 1)[0];
-
-    // si l upload est en cours
-    if (media.pendingRequest) {
-      media.pendingRequest.unsubscribe();
-      media.pendingRequest = null;
-    }
-
-    // si le media existe déjà en base => route DELETE
-    if (media.id_media) {
-      this.ms.deleteMedia(media.id_media).subscribe();
-    }
+    this.pendingDeletes.push(media);
     this.parentFormControl.patchValue(this.parentFormControl.value);
+  }
+
+  validateDeletions() {
+    this.ms.validateDeletions(this.pendingDeletes);
+    this.pendingDeletes = [];
   }
 }
