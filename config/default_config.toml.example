@@ -153,6 +153,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Activer l'affichage des informations liées aux profils de taxons (dans les modules Validation, Synthèse et Occtax)
     ENABLE_PROFILES = true
 
+# Configuration des paramètres des permissions
+[PERMISSIONS]
+    # Types d'area disponibles pour le filtrage géographique
+    GEOGRAPHIC_FILTER_AREA_TYPES = ["COM", "DEP", "REG"]
+
 # Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]
 
