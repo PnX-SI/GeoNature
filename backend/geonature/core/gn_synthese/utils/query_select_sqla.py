@@ -13,9 +13,10 @@ import uuid
 from flask import current_app
 
 import sqlalchemy as sa
-from sqlalchemy import func, or_, and_, select, distinct, inspect
+from sqlalchemy import func, or_, and_, select, distinct, inspect, cast, Date
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
+from sqlalchemy.types import Boolean, Integer
 from werkzeug.exceptions import BadRequest
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
@@ -30,6 +31,7 @@ from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     TReport,
     TSources,
+    Synthese,
 )
 from geonature.core.gn_meta.models import (
     CorDatasetActor,
@@ -566,6 +568,55 @@ class SyntheseQuery:
                         self.query = self.query.where(col == value)
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value)))
+        #TODO: NEED TO ADD BACKEND TEST
+        if "MONITORINGS" in self.filters and self.filters["MONITORINGS"]:
+            monitoring_filters = self.filters.pop("MONITORINGS") or {}
+
+            self.add_join(TSources, self.model.id_source, TSources.id_source)
+            synth = aliased(Synthese)
+            self.add_join(synth, synth.id_synthese, self.model.id_synthese)
+
+            proto_clauses = []
+            for proto_code, fields_dict in monitoring_filters.items():
+                if not fields_dict:
+                    continue
+
+                clause_parts = [TSources.name_source == f"MONITORING_{proto_code.upper()}"]
+
+                for colname, value in (fields_dict or {}).items():
+                    if value is None or value == "":
+                        continue
+                    col = synth.additional_data["monitoring_observation"][colname].astext
+
+                    if isinstance(value, bool):
+                        clause_parts.append(cast(col, Boolean) == value)
+                    elif isinstance(value, int):
+                        clause_parts.append(cast(col, Integer) == value)
+                    elif isinstance(value, list):
+                        if len(value) == 0:
+                            continue
+                        # this is needed to compare string array from filters and string values concatenated with ',' in json field or if it is an array of string in json field.
+                        filter_set = set(str(v).strip() for v in value)
+
+                        clause_parts.append(
+                            func.string_to_array(col, ",").op("@>")(list(filter_set))
+                        )
+
+                    elif (
+                        isinstance(value, dict)
+                        and "year" in value
+                        and "month" in value
+                        and "day" in value
+                    ):
+                        dt = datetime.date(value["year"], value["month"], value["day"])
+                        clause_parts.append(cast(col, Date) == dt)
+                    else:
+                        clause_parts.append(col == str(value))
+
+                proto_clauses.append(and_(*clause_parts))
+
+            if proto_clauses:
+                self.query = self.query.filter(or_(*proto_clauses))
 
     def apply_all_filters(self, user, permissions):
         if type(permissions) == int:  # scope

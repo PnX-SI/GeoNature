@@ -4,6 +4,7 @@ import {
   UntypedFormBuilder,
   UntypedFormControl,
   ValidatorFn,
+  FormGroup,
 } from '@angular/forms';
 import { HttpParams } from '@angular/common/http';
 
@@ -66,7 +67,7 @@ export class SyntheseFormService {
     private _api: DataFormService,
     private _common: CommonService
   ) {
-    this.searchForm = this._fb.group({
+    const baseForm = this._fb.group({
       cd_nom: null,
       observers: null,
       observers_list: null,
@@ -92,7 +93,17 @@ export class SyntheseFormService {
       taxonomy_group3_inpn: null,
       taxon_rank: null,
     });
+    if (config?.MONITORINGS) {
+      const monitoringCode = config.MONITORINGS?.MODULE_CODE;
+      const defs = config?.MONITORINGS?.DYNAMIC_FORM_DEF_MONITORING ?? {};
+      baseForm.addControl(monitoringCode, this._fb.group({}));
+      const monGroup = baseForm.get(monitoringCode) as FormGroup;
 
+      Object.keys(defs).forEach((protoCode) => {
+        monGroup.addControl(protoCode, this._fb.group({}));
+      });
+    }
+    this.searchForm = baseForm;
     this.searchForm.setValidators([this.periodValidator()]);
 
     // Add protection status filters defined in configuration parameters

@@ -115,4 +115,9 @@ export class SyntheseSearchComponent implements OnInit {
       keyboard: false,
     });
   }
+
+  shouldOpenDetails(protocole: any): boolean {
+  const local = protocole?.value?.show_advanced_filters;
+  return local
+}
 }

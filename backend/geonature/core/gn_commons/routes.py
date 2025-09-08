@@ -28,13 +28,14 @@ from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scope
 from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 import geonature.core.gn_commons.tasks  # noqa: F401
+from geonature.utils.config import get_entry_point
 
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
     GeonatureApiError,
 )
-
+import copy
 
 routes = Blueprint("gn_commons", __name__)
 
@@ -48,7 +49,17 @@ def config_route():
     """
     Returns geonature configuration
     """
-    return config_frontend
+    enricher = get_entry_point("gn_module", "form_def_enricher", "gn_module_monitoring")
+    config = copy.deepcopy(config_frontend)
+    if enricher:
+        try:
+            config["MONITORINGS"]["DYNAMIC_FORM_DEF_MONITORING"] = enricher(
+                config.get("MONITORINGS", {}).get("DYNAMIC_FORM_DEF_MONITORING", {})
+            )
+        except Exception as e:
+            current_app.logger.warning(f"Erreur enrichissement MONITORINGS: {e}")
+
+    return config
 
 
 @routes.route("/modules", methods=["GET"])
