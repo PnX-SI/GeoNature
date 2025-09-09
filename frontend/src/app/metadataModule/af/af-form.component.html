@@ -159,13 +159,13 @@
             label="Date début"
             [parentFormControl]="form.get('acquisition_framework_start_date')"
             data-qa="pnx-metadata-af-form-start-date"
-            [disableMaxDate]="true"
+            [noMaxDate]="true"
           ></pnx-date>
 
           <pnx-date
             label="Date fin"
             [parentFormControl]="form.get('acquisition_framework_end_date')"
-            [disableMaxDate]="true"
+            [noMaxDate]="true"
           ></pnx-date>
 
           <small
