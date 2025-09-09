@@ -60,9 +60,11 @@ export class DateComponent implements OnInit, OnDestroy {
     private _dateParser: NgbDateParserFormatter
   ) {
     this.elementRef = myElement;
+    // this.initializeDates();
   }
 
   ngOnInit() {
+    this.initializeDates();
     // Set a default value to form control
     if (!this.parentFormControl.value) {
       if (this.defaultToday) {
@@ -81,7 +83,6 @@ export class DateComponent implements OnInit, OnDestroy {
         this.onDelete.emit(null);
       }
     });
-    this.initializeDates();
   }
 
   private initializeDates() {
