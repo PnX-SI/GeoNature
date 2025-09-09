@@ -151,7 +151,6 @@ def general_stats(permissions):
     results = {"nb_allowed_datasets": nb_allowed_datasets}
     distinct_species_request = (
         select(distinct(Synthese.cd_nom))
-        .select_from(Synthese)
         .join(Taxref, Synthese.cd_nom == Taxref.cd_nom)
         .where(Taxref.cd_nom == Taxref.cd_ref)
     )
