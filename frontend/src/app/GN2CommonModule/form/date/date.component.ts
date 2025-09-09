@@ -46,6 +46,7 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() defaultToday = false;
   @Input() minDate = { year: 1735, month: 1, day: 1 };
   @Input() maxDate;
+  @Input() disableMaxDate: boolean = false;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   /**Event fired on datepicker click on or keyboard date change */
@@ -59,7 +60,6 @@ export class DateComponent implements OnInit, OnDestroy {
     private _dateParser: NgbDateParserFormatter
   ) {
     this.elementRef = myElement;
-    this.initializeDates();
   }
 
   ngOnInit() {
@@ -81,12 +81,13 @@ export class DateComponent implements OnInit, OnDestroy {
         this.onDelete.emit(null);
       }
     });
+    this.initializeDates();
   }
 
   private initializeDates() {
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
-    if (!this.maxDate) {
+    if (!this.maxDate && !this.disableMaxDate) {
       this.maxDate = this.today;
     }
   }
