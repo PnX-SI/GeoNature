@@ -61,23 +61,20 @@ export class TabMediaComponent extends Loadable implements OnInit {
         per_page: this.pagination.perPage,
       })
       .pipe(finalize(() => this.stopLoading()))
-      .subscribe(
-        (response) => {
-          this.medias = response.items;
-          this.pagination = {
-            totalItems: response.total,
-            currentPage: response.page,
-            perPage: response.per_page,
-          };
-          if (
-            !this.selectedMedia || !this.medias.some(
-              (media) => media.id_media == this.selectedMedia.id_media
-            )
-          ) {
-            this.selectedMedia = this.medias[selectedMediaIndex];
-          }
+      .subscribe((response) => {
+        this.medias = response.items;
+        this.pagination = {
+          totalItems: response.total,
+          currentPage: response.page,
+          perPage: response.per_page,
+        };
+        if (
+          !this.selectedMedia ||
+          !this.medias.some((media) => media.id_media == this.selectedMedia.id_media)
+        ) {
+          this.selectedMedia = this.medias[selectedMediaIndex];
         }
-      );
+      });
   }
 
   selectMedia(media: any) {

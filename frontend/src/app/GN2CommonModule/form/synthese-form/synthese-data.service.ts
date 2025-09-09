@@ -79,10 +79,9 @@ export class SyntheseDataService {
     });
   }
 
-  getIsAuthorizedCdRefForUser(cd_ref: number){
+  getIsAuthorizedCdRefForUser(cd_ref: number) {
     return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon/${cd_ref}/access`);
   }
-
 
   getSyntheseTaxonSheetObservers(
     cd_ref: number,
