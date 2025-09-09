@@ -80,19 +80,23 @@ export class RouteService implements CanActivate, CanActivateChild {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-
     if (!this._config.SYNTHESE.ENABLE_TAXON_SHEETS) {
       this._router.navigate(['/404'], { skipLocationChange: true });
       return false;
     }
-    const cd_ref = route.params.cd_ref
-    this._sds.getIsAuthorizedCdRefForUser(cd_ref).pipe(catchError((error: HttpErrorResponse) => {
-        if (error.status === 403) {
-          // Rediriger vers la page 404
-          this._router.navigate(['/404']);
-        }
-        return throwError(error);
-      })).subscribe()
+    const cd_ref = route.params.cd_ref;
+    this._sds
+      .getIsAuthorizedCdRefForUser(cd_ref)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 403) {
+            // Rediriger vers la page 404
+            this._router.navigate(['/404']);
+          }
+          return throwError(error);
+        })
+      )
+      .subscribe();
 
     // Apply a redirection if needed to the first enabled child.
     if (this._isComponentRootLevelRoute(route, state)) {

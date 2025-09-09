@@ -34,7 +34,7 @@ export class NavHomeComponent implements OnInit {
     private notificationDataService: NotificationDataService,
     private router: Router,
     public config: ConfigService,
-    public i18nService: I18nService,
+    public i18nService: I18nService
   ) {}
 
   get locale(): string {

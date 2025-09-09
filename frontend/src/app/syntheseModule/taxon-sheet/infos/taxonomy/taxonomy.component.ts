@@ -28,9 +28,8 @@ export class TaxonomyComponent {
       this._ds.getTaxonLinnaeanParents(this.taxon).subscribe((parents) => {
         this.linnaeanParents = parents['parents'];
       });
-    }
-    else {
-        this.linnaeanParents = [];
+    } else {
+      this.linnaeanParents = [];
     }
   }
 
