@@ -155,6 +155,7 @@ export class AuthService {
     localStorage.removeItem(this.prefix + 'id_token');
     localStorage.removeItem(this.prefix + 'expires_at');
     localStorage.removeItem('modules');
+    localStorage.removeItem('homePage.stats');
   }
 
   isAuthenticated(): boolean {
