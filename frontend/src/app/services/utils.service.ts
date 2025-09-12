@@ -21,8 +21,6 @@ export class UtilsService {
   getRefVersion(): Observable<ReferentialData[]> {
     return this._http
       .get<any>(`${this.config.API_ENDPOINT}/taxhub${this.config.TAXHUB.API_PREFIX}/taxref/version`)
-      .pipe(
-        map((response: ReferentialData) => [response])
-      );
+      .pipe(map((response: ReferentialData) => [response]));
   }
 }
