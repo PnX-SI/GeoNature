@@ -1114,7 +1114,7 @@ class TestSynthese:
         assert data["nb_data"] == 12
         assert data["nb_dataset"] == 0
         assert data["nb_observers"] == 1
-        assert data["nb_species"] == 3
+        assert data["nb_species"] == 4
 
     def test_taxon_stats(self, synthese_data, users):
         set_logged_user(self.client, users["stranger_user"])
