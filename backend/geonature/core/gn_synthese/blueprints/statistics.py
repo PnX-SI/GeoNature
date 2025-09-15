@@ -1,4 +1,6 @@
 from flask import Blueprint, Response, g, jsonify, request
+
+from apptax.taxonomie.models import Taxref
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.decorators import (
     login_required,
@@ -147,12 +149,15 @@ def general_stats(permissions):
         .where(TDatasets.filter_by_readable().whereclause)
     )
     results = {"nb_allowed_datasets": nb_allowed_datasets}
+    distinct_species_request = (
+        select(distinct(Taxref.cd_ref))
+        .select_from(Synthese)
+        .join(Taxref, Synthese.cd_nom == Taxref.cd_nom)
+    )
 
     queries = {
         "nb_obs": select(Synthese.id_synthese),
-        "nb_distinct_species": select(
-            func.distinct(Synthese.cd_nom),
-        ),
+        "nb_distinct_species": distinct_species_request,
         "nb_distinct_observer": select(func.distinct(Synthese.observers)),
     }
 
@@ -160,7 +165,6 @@ def general_stats(permissions):
         synthese_query = SyntheseQuery(Synthese, query, {})
         synthese_query.filter_query_with_permissions(g.current_user, permissions)
         results[key] = db.session.scalar(select(func.count("*")).select_from(synthese_query.query))
-
     data = {
         "nb_data": results["nb_obs"],
         "nb_species": results["nb_distinct_species"],
