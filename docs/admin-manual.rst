@@ -2512,6 +2512,11 @@ Les permissions du module TaxHub peuvent être reglées aux trois niveaux (objet
 - LISTES : permet de voir / créer / modifier / supprimer des listes de taxons
 - ATTRIBUTS : permet de voir / créer / modifier / supprimer des attributs de taxons
 
+Gestion du référentiel taxonomique
+""""""""""""""""""""""""""""""""""
+
+Le processus de mise à jour du référentiel taxonomique (Taxref) est décrit dans la `documentation de TaxHub <https://taxhub.readthedocs.io/fr/latest/update-taxref-version.html>`__
+
 Commandes TaxHub
 """"""""""""""""
 
