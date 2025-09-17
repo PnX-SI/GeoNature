@@ -207,6 +207,13 @@ class TRelevesOccurrence(DB.Model):
         foreign_keys=[id_dataset],
     )
 
+    t_vegetation_stratum = relationship(
+        "TVegetationStratum",
+        lazy="joined",
+        cascade="all, delete-orphan",
+        back_populates="releve",
+    )
+
     readonly_fields = ["id_releve_occtax", "t_occurrences_occtax", "observers"]
 
     def get_geofeature(self, fields=[], depth=None):
@@ -247,6 +254,24 @@ class TRelevesOccurrence(DB.Model):
             action: self.has_instance_permission(scope)
             for action, scope in get_scopes_by_action(**kwargs).items()
         }
+
+
+@serializable
+class TVegetationStratum(DB.Model):
+    __tablename__ = "t_vegetation_stratum"
+    __table_args__ = {"schema": "pr_occtax"}
+
+    id_vegetation_stratum = DB.Column(DB.Integer, primary_key=True)
+    id_releve_occtax = DB.Column(
+        DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
+    )
+    id_nomenclature_vegetation_stratum = DB.Column(DB.Integer)
+    min_height = DB.Column(DB.Numeric(5, 2))
+    max_height = DB.Column(DB.Numeric(5, 2))
+    average_height = DB.Column(DB.Numeric(5, 2))
+    percentage_cover_vegetation_stratum = DB.Column(DB.Integer)
+
+    releve = relationship("TRelevesOccurrence", back_populates="t_vegetation_stratum")
 
 
 @serializable
