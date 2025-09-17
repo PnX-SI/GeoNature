@@ -242,6 +242,13 @@ class TRelevesOccurrence(DB.Model):
         foreign_keys=[id_dataset],
     )
 
+    t_vegetation_stratum = relationship(
+        "TVegetationStratum",
+        lazy="joined",
+        cascade="all, delete-orphan",
+        back_populates="releve",
+    )
+
     readonly_fields = ["id_releve_occtax", "t_occurrences_occtax", "observers"]
 
     def get_geofeature(self, fields=[], depth=None):

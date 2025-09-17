@@ -165,6 +165,8 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
         except:
             pass
 
+    t_vegetation_stratum = fields.Nested(VegetationStratumSchema, many=True)
+
     @pre_load
     def make_releve(self, data, **kwargs):
         data["id_module"] = g.current_module.id_module
