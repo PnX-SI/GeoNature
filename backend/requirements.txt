@@ -77,7 +77,7 @@ cligj==0.7.2
     # via fiona
 contourpy==1.3.0
     # via bokeh
-cryptography==45.0.6
+cryptography==43.0.3
     # via authlib
 cssselect2==0.8.0
     # via weasyprint
@@ -150,7 +150,9 @@ flask-weasyprint==1.1.0
 flask-wtf==1.2.2
     # via -r requirements-common.in
 fonttools[woff]==4.59.0
-    # via weasyprint
+    # via
+    #   fonttools
+    #   weasyprint
 geoalchemy2==0.17.1
     # via utils-flask-sqlalchemy-geo
 geojson==3.2.0
@@ -340,7 +342,6 @@ tornado==6.5.2
 typing-extensions==4.14.1
     # via
     #   alembic
-    #   marshmallow
     #   marshmallow-sqlalchemy
     #   referencing
 tzdata==2025.2
@@ -351,7 +352,7 @@ urllib3==2.5.0
     # via
     #   requests
     #   taxhub
-utils-flask-sqlalchemy==0.4.2
+utils-flask-sqlalchemy==0.4.3
     # via
     #   -r requirements-dependencies.in
     #   pypn-habref-api
