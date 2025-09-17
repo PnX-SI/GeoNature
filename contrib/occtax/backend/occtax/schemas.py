@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import current_app, g
-from marshmallow import pre_load, post_load, pre_dump, post_dump, fields, ValidationError
+from marshmallow import pre_load, post_load, pre_dump, post_dump, fields, ValidationError, EXCLUDE
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
 from shapely.geometry import shape
 from geoalchemy2.shape import to_shape, from_shape
@@ -11,7 +11,12 @@ from geojson import Feature, FeatureCollection
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.utils.env import MA
-from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccurrence
+from .models import (
+    CorCountingOccurrence,
+    TOccurrencesOccurrence,
+    TRelevesOccurrence,
+    TVegetationStratum,
+)
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
@@ -104,6 +109,15 @@ class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
     taxref = MA.Nested(TaxrefSchema, dump_only=True)
 
 
+class VegetationStratumSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TVegetationStratum
+        load_instance = True
+        include_fk = True
+
+    id_vegetation_stratum = fields.Integer(allow_none=True)
+
+
 class ReleveSchema(MA.SQLAlchemyAutoSchema):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -139,6 +153,8 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
             self.fields["observers"].allow_none = observers_allow_none
         except:
             pass
+
+    t_vegetation_stratum = fields.Nested(VegetationStratumSchema, many=True)
 
     @pre_load
     def make_releve(self, data, **kwargs):
