@@ -1,0 +1,18 @@
+<div style="margin-top: 10px">
+  <button
+    type="button"
+    class="btn btn-outline-shadow btn-sm"
+    (click)="toggleState()"
+    data-qa="pnx-occtax-taxon-form-advanced"
+  >
+    <i
+      class="fa fa-cog"
+      aria-hidden="true"
+    ></i>
+    {{ 'Advanced' | translate }}
+  </button>
+</div>
+
+<div [@state]="state">
+  <ng-content />
+</div>

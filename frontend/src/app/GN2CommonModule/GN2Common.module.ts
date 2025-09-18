@@ -36,6 +36,7 @@ import { TreeModule } from '@circlon/angular-tree-component';
 
 // Components
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
+import { AdvancedSectionComponent } from '@geonature_common/form/advanced-section/advanced-section.component';
 import { AreasComponent } from '@geonature_common/form/areas/areas.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
@@ -82,7 +83,9 @@ import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/sy
 import { TaxaComponent } from '@geonature_common/form/taxa/taxa.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
+import { TogglableFormControlComponent } from '@geonature_common/form/togglable-form-control/togglable-form-control.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { UUIDComponent } from '@geonature_common/form/uuid/uuid.component';
 
 // Directives
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -145,6 +148,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
   ],
   declarations: [
     AcquisitionFrameworksComponent,
+    AdvancedSectionComponent,
     AreasComponent,
     NomenclatureComponent,
     ObserversComponent,
@@ -200,6 +204,8 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
     TaxonTreeComponent,
+    TogglableFormControlComponent,
+    UUIDComponent,
     IndividualsComponent,
     IndividualsCreateComponent,
   ],
@@ -219,6 +225,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
   ],
   exports: [
     AcquisitionFrameworksComponent,
+    AdvancedSectionComponent,
     AreasComponent,
     MunicipalitiesComponent,
     BadgeComponent,
@@ -306,7 +313,9 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
     TaxonTreeComponent,
+    TogglableFormControlComponent,
     TranslateModule,
+    UUIDComponent,
     IndividualsComponent,
   ],
 })

@@ -401,7 +401,19 @@ def datasetHandler(dataset, data):
         raise BadRequest(error.messages)
 
     db.session.add(dataset)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except IntegrityError as err:
+        db.session.rollback()
+
+        if isinstance(err.orig, UniqueViolation):
+            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
+            if not detail:
+                detail = str(err.orig).splitlines()[0]
+
+            raise Conflict(detail) from err
+        raise
     return dataset
 
 

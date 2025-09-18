@@ -1,0 +1,10 @@
+<div>
+  <small>{{ label }}</small>
+  <input
+    type="checkbox"
+    [(ngModel)]="toggled"
+  />
+</div>
+<div [disableControl]="!toggled">
+  <ng-content></ng-content>
+</div>

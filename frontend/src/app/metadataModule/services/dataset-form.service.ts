@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, filter, switchMap, map } from 'rxjs/operators';
 
 import { ActorFormService } from './actor-form.service';
+import { FormService } from '@geonature_common/form/form.service';
 
 @Injectable()
 export class DatasetFormService {
@@ -17,7 +18,8 @@ export class DatasetFormService {
   constructor(
     private fb: UntypedFormBuilder,
     private _toaster: ToastrService,
-    private actorFormS: ActorFormService
+    private actorFormS: ActorFormService,
+    private formS: FormService
   ) {
     this.initForm();
     this.setObservables();
@@ -74,6 +76,7 @@ export class DatasetFormService {
           this.actorFormS.checkDoublonsValidator.bind(this.actorFormS),
         ]
       ),
+      unique_dataset_id: [null, [this.formS.uuidValidator()]],
     });
     this.genericActorForm = this.fb.array(
       [],
