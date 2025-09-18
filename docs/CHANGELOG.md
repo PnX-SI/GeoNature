@@ -4,19 +4,22 @@
 
 ### 🚀 Nouveautés
 
-- [Général] Ajout d'une modal contenant les versions des référentiels et des modules dans la sidebar (#3664 par @Christophe-Ramet)
-- [Général] Installation par défaut de la v18 de taxref et du référenciel de sensibilitée (#3705 par @Pierre-Narcisi)
-- [METADATA] Ajout d'un champ pour la saisie de l'UUID pour les cadres d'acquisitions (#3583 par @andriacap)
-- [TaxHub] Ajout d'une permission pour l'export de TaxHub (#3712 par @amandine-sahl)
+- [Général] Affichage des versions des modules et des référentiels dans le bas du menu latéral (#3664 par @Christophe-Ramet)
+- [Général] La version [18](https://inpn.mnhn.fr/telechargement/referentielEspece/taxref/18.0/menu) de Taxref et du référentiel de sensibilité est installé par défaut (#3705 par @Pierre-Narcisi)
+- [Métadonnées] Ajout d'un champ de saisie d'UUID dans le formulaire de création de cadre d'acquisition (#3583 par @andriacap)
+- [TaxHub] Ajout de la fonctionnalité d'export dans la liste de taxons (#3712 par @amandine-sahl)
+- [TaxHub] Ajout d'une fiche d'info sur TaxHub et Taxref dans un nouvel onglet "Informations" (#3717 par @amandine-sahl)
 
 ### 🐛 Corrections
 
-- [Général] Correction de l'affichage de la barre de navigation (#3694 par @Christophe-Ramet)
-- [Général] Suppression du local storage à la déconnexion (#3687 par @Christophe-Ramet)
-- [Général] Correction permettant à prettier de s'exécuter sur les fichiers de type ts (#3702 par @jacquesfize)
-- [Accueil] Correction du compte de taxon observé sur la page d'accueil, prise en compte des permission taxonomiques (#3696 par @Christophe-Ramet)
-- [Accueil] Correction du compte de taxon observé sur la page d'accueil, statistiques basé sur le cd_ref et non le cd_nom (#3695 par @Christophe-Ramet)
-- [Utils-FlaskSQLA] Correction de la valeur retournée dans total_filtered (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/issues/62 par @jacquesfize)
+- [Général] Correction de l'affichage de la liste de module dans la barre de navigation latérale (#3694 par @Christophe-Ramet)
+- [Général] Suppression de la variable `homePage.stats` dans le local storage à la déconnexion (#3687 par @Christophe-Ramet)
+- [Général] Correction de le commande `npm run format` permettant d'intégrer les fichiers TypeScript dans le formatage (#3702 par @jacquesfize)
+- [Accueil] Correction du nombre d'espèces observés sur la page d'accueil (par @Christophe-Ramet et @jacquesfize)
+  - Prise en compte des permission taxonomiques (#3696)
+  - Utilisation de `cd_ref` pour compter le nombre d'espèces (#3695)
+- [Développement] Correction de la valeur retournée dans total_filtered dans `Utils-Flask-SQLAlchemy` (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/issues/62 par @jacquesfize)
+- [Occhab] Suppression du champ `id_habitat` dans l'import Occhab (#3716 par @jacquesfize)
 
 ## 2.16.2 (2025-08-11)
 
