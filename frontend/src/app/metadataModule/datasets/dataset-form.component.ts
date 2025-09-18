@@ -11,6 +11,7 @@ import { DatasetFormService } from '../services/dataset-form.service';
 import { ActorFormService } from '../services/actor-form.service';
 import { MetadataService } from '../services/metadata.service';
 import { MetadataDataService } from '../services/metadata-data.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-datasets-form',
@@ -23,6 +24,7 @@ export class DatasetFormComponent implements OnInit {
   //observable pour la liste déroulantes HTML des AF
   public acquisitionFrameworks: Observable<any>;
   public taxaBibList: number;
+  public uuidEditionEnabled: boolean = true;
 
   constructor(
     private _route: ActivatedRoute,
@@ -33,7 +35,8 @@ export class DatasetFormComponent implements OnInit {
     public moduleService: ModuleService,
     private actorFormS: ActorFormService,
     private metadataS: MetadataService,
-    private metadataDataS: MetadataDataService
+    private metadataDataS: MetadataDataService,
+    private _config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -51,6 +54,7 @@ export class DatasetFormComponent implements OnInit {
     this._dfs.getTaxaBibList().subscribe((d) => (this.taxaBibList = d));
 
     this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworksList();
+    this.uuidEditionEnabled = this._config.METADATA.ENABLE_UUID_EDITION_FIELD;
   }
 
   genericActorFormSubmit(result) {
@@ -78,16 +82,27 @@ export class DatasetFormComponent implements OnInit {
     if (this.form.invalid || this.datasetFormS.genericActorForm.invalid) return;
 
     let api: Observable<any>;
+
+    const base = {
+      ...this.datasetFormS.dataset.getValue(),
+      ...this.form.value,
+    };
+
+    const dataset =
+      this.form.value.unique_dataset_id != null
+        ? {
+            ...base,
+            unique_dataset_id: this.form.value.unique_dataset_id,
+          }
+        : base;
+    this.mergeActors(dataset, this.datasetFormS.genericActorForm.value);
+
     //UPDATE
     if (this.datasetFormS.dataset.getValue() !== null) {
       //si modification on assign les valeurs du formulaire au dataset modifié
-      const dataset = Object.assign(this.datasetFormS.dataset.getValue(), this.form.value);
-      this.mergeActors(dataset, this.datasetFormS.genericActorForm.value);
       api = this.metadataDataS.updateDataset(dataset.id_dataset, dataset);
     } else {
       //si creation on envoie le contenu du formulaire
-      const dataset = Object.assign({}, this.form.value);
-      this.mergeActors(dataset, this.datasetFormS.genericActorForm.value);
       api = this.metadataDataS.createDataset(dataset);
     }
 

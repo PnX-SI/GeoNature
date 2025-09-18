@@ -11,18 +11,19 @@ import { ActorFormService } from '../services/actor-form.service';
 import { AcquisitionFrameworkFormService } from '../services/af-form.service';
 import { MetadataService } from '../services/metadata.service';
 import { MetadataDataService } from '../services/metadata-data.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-af-form',
   templateUrl: './af-form.component.html',
   styleUrls: ['../form.component.scss'],
-  providers: [AcquisitionFrameworkFormService],
+  providers: [AcquisitionFrameworkFormService, ConfigService],
 })
 export class AfFormComponent implements OnInit {
   public form: UntypedFormGroup;
   //observable pour la liste déroulantes HTML des AF parents
   public acquisitionFrameworkParents: Observable<any>;
-  public isUUIDInput = false;
+  public uuidEditionEnabled: boolean = true;
 
   constructor(
     private _dfs: DataFormService,
@@ -33,7 +34,8 @@ export class AfFormComponent implements OnInit {
     public afFormS: AcquisitionFrameworkFormService,
     private actorFormS: ActorFormService,
     public metadataS: MetadataService,
-    private metadataDataS: MetadataDataService
+    private metadataDataS: MetadataDataService,
+    private _config: ConfigService
   ) {}
   ngOnInit() {
     // get the id from the route
@@ -53,6 +55,8 @@ export class AfFormComponent implements OnInit {
     this._dfs.getAcquisitionFrameworks({ is_parent: 'true' }).subscribe((afParent) => {
       this.acquisitionFrameworkParents = afParent;
     });
+
+    this.uuidEditionEnabled = this._config.METADATA.ENABLE_UUID_EDITION_FIELD;
   }
 
   getAcquisitionFramework(id_af, param) {
@@ -87,9 +91,13 @@ export class AfFormComponent implements OnInit {
       ...this.form.value,
     };
 
-    const af = this.form.value.unique_acquisition_framework_id != null
-      ? { ...base, unique_acquisition_framework_id: this.form.value.unique_acquisition_framework_id }
-      : base;
+    const af =
+      this.form.value.unique_acquisition_framework_id != null
+        ? {
+            ...base,
+            unique_acquisition_framework_id: this.form.value.unique_acquisition_framework_id,
+          }
+        : base;
 
     af.acquisition_framework_start_date = this.dateParser.format(
       af.acquisition_framework_start_date
@@ -129,22 +137,4 @@ export class AfFormComponent implements OnInit {
         }
       );
   }
-  updateUuidValidator(): void {
-    const uuidControl = this.form.get('unique_acquisition_framework_id');
-    if (!uuidControl) return;
-
-    if (this.isUUIDInput) {
-      uuidControl.addValidators(Validators.required);
-    } else {
-      uuidControl.removeValidators(Validators.required);
-    }
-
-    uuidControl.updateValueAndValidity();
-  }
-
-  onIsParentCheckboxChange(checked: boolean): void {
-    this.isUUIDInput = checked;
-    this.updateUuidValidator();
-  }
-
 }

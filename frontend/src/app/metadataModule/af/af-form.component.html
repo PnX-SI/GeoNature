@@ -167,35 +167,20 @@
             [parentFormControl]="form.get('acquisition_framework_end_date')"
             [noMaxDate]="true"
           ></pnx-date>
-          <div>
-            <small>Je renseigne mon propre Identifiant SINP (UUID)</small>
-            <input
-              type="checkbox"
-              (change)="onIsParentCheckboxChange($event.target.checked)"
-            />
-          </div>
-          <div *ngIf="isUUIDInput">
-            <small>Identifiant SINP du cadre d'acquisition (UUID)</small>
-            <input
-              class="form-control form-control-sm"
-              type="text"
+
+          <!-- *ngIf="uuidEditionEnabled" -> top be move to pnx-togglable form control if other entries are added to the advanced section -->
+          <pnx-advanced-section *ngIf="uuidEditionEnabled">
+            <pnx-togglable-form-control
               [formControl]="form.get('unique_acquisition_framework_id')"
-            />
-            <div
-              *ngIf="
-                form.get('unique_acquisition_framework_id')?.hasError('invalidUuid') &&
-                (form.get('unique_acquisition_framework_id')?.touched ||
-                  form.get('unique_acquisition_framework_id')?.dirty)
-              "
+              label="Je renseigne mon propre Identifiant SINP (UUID)"
             >
-              <small
-                class="error"
-                style="color: red"
-              >
-                Le champ doit contenir un UUID valide.
-              </small>
-            </div>
-          </div>
+              <pnx-uuid
+                [formControl]="form.get('unique_acquisition_framework_id')"
+                label="Identifiant SINP du cadre d'acquisition (UUID)"
+              ></pnx-uuid>
+            </pnx-togglable-form-control>
+          </pnx-advanced-section>
+
           <small
             *ngIf="form.errors?.invalidDate"
             class="error"
