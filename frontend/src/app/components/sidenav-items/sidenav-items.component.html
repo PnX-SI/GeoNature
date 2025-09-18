@@ -96,14 +96,14 @@
 
       <mat-menu #modulesMenu="matMenu">
         <div class="menu-content">
-          <b>Version des modules GeoNature:</b>
+          <b>Version des modules GeoNature :</b>
           <br />
           <div *ngIf="getModulesVersionTooltip()?.length > 0">
             <div *ngFor="let module of getModulesVersionTooltip()">
               <span *ngIf="module.version">{{ module.module_label }}: {{ module.version }}</span>
             </div>
           </div>
-          <b>Version des Référentiels:</b>
+          <b>Version des Référentiels :</b>
           <br />
           <div *ngIf="isRefVersionLoaded">
             <div *ngFor="let referential of ref_data">
