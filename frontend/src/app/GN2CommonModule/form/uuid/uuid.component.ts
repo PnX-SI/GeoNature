@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'pnx-uuid',
+  selector: 'gn-uuid',
   templateUrl: './uuid.component.html',
 })
 export class UUIDComponent {
