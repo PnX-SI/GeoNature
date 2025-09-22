@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'pnx-togglable-form-control',
+  selector: 'gn-togglable-form-control',
   templateUrl: './togglable-form-control.component.html',
 })
 export class TogglableFormControlComponent {
