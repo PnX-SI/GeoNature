@@ -14,7 +14,7 @@ from sqlalchemy.exc import DatabaseError
 from sqlalchemy.sql import text, select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden
+from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError
 from werkzeug.datastructures import MultiDict
 from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.exc import IntegrityError
@@ -55,7 +55,6 @@ import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
 
 from ref_geo.models import LAreas
-
 
 # FIXME: remove any reference to external modules from GeoNature core
 if "OCCHAB" in config:
@@ -413,7 +412,7 @@ def datasetHandler(dataset, data):
                 detail = str(err.orig).splitlines()[0]
 
             raise Conflict(detail) from err
-        raise
+        raise InternalServerError("An error occured while creating/updating a dataset !")
     return dataset
 
 
@@ -824,7 +823,7 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework):
                 detail = str(err.orig).splitlines()[0]
 
             raise Conflict(detail) from err
-        raise
+        raise InternalServerError("An error occured while creating/updating a dataset !")
 
     return acquisition_framework
 
