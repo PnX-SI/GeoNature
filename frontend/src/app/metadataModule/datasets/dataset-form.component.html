@@ -251,12 +251,12 @@
           <pnx-advanced-section *ngIf="uuidEditionEnabled">
             <pnx-togglable-form-control
               [formControl]="form.get('unique_dataset_id')"
-              label="Je renseigne mon propre Identifiant SINP (UUID)"
+              label="{{ 'MetaData.Actions.FillOwnUUID' | translate }}"
             >
               <pnx-uuid
                 [formControl]="form.get('unique_dataset_id')"
-                label="Identifiant SINP du jeux de données
-                (UUID)"
+                placeholder="Si non renseignée, identifiant généré lors de la création du JDD"
+                label="{{ 'MetaData.UUIDField' | translate: { entity: 'Jeux de données' } }}"
               ></pnx-uuid>
             </pnx-togglable-form-control>
           </pnx-advanced-section>

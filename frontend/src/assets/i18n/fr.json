@@ -208,8 +208,10 @@
       "EditDataset": "Éditer le jeu de données",
       "DeleteDataset": "Supprimer le jeu de données",
       "ResetSearch": "Réinitialiser la recherche",
-      "SeeAFSheet": "Voir la fiche du cadre d'acquisition"
+      "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
+      "FillOwnUUID": "Saisie manuelle de l'UUID"
     },
+    "UUIDField": "UUID du {{ entity }}",
     "AdvancedSearch": "Recherche avancée",
     "AFAndDatasetsList": "Liste des cadres d'acquisition et des jeux de données associés",
     "CreationDate": "Date de lancement",
