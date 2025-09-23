@@ -88,6 +88,15 @@ def load_admin_views(app, admin):
     )
 
     admin.add_view(
+        CruvedProtectedTMediasView(
+            TMedias,
+            db.session,
+            name="Médias",
+            category="TaxHub",
+            static_folder=static_folder,
+        )
+    )
+    admin.add_view(
         CruvedProtectedSummaryView(
             name="Informations",
             endpoint="summary",
