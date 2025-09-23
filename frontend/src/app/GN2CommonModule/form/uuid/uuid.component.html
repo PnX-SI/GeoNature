@@ -2,8 +2,10 @@
 <input
   class="form-control form-control-sm"
   type="text"
+  placeholder="Si absent, l'identifiant UUID est généré automatiquement."
   [formControl]="formControl"
 />
+<!-- mettre le placeholder dans les fichiers de traductions -->
 <div *ngIf="formControl?.hasError('invalidUuid') && (formControl?.touched || formControl?.dirty)">
   <small
     class="error"

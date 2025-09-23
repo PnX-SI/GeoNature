@@ -1,5 +1,5 @@
 <div>
-  <small>{{ label }}</small>
+  <small style="font-weight: bold">{{ label }}</small>
   <input
     type="checkbox"
     [(ngModel)]="toggled"
@@ -7,5 +7,6 @@
   />
 </div>
 <div [disableControl]="!toggled">
+  <!-- [hidden]="!toggled" -->
   <ng-content></ng-content>
 </div>

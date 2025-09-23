@@ -172,15 +172,10 @@
            pnx-togglable form control if other entries are
            added to the advanced section -->
           <gn-advanced-section *ngIf="uuidEditionEnabled">
-            <gn-togglable-form-control
+            <gn-uuid
               [formControl]="form.get('unique_acquisition_framework_id')"
-              label="Je renseigne mon propre Identifiant SINP (UUID)"
-            >
-              <gn-uuid
-                [formControl]="form.get('unique_acquisition_framework_id')"
-                label="Identifiant SINP du cadre d'acquisition (UUID)"
-              ></gn-uuid>
-            </gn-togglable-form-control>
+              label="{{ 'MetaData.UUIDField' | translate }}"
+            ></gn-uuid>
           </gn-advanced-section>
 
           <small
