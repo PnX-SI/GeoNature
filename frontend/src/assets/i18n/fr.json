@@ -198,7 +198,8 @@
       "NoStakeholder": "Aucun acteur renseigné",
       "FiledAF": "Le cadre d'acquisition a déjà été déposé",
       "EmptyAF": "Le cadre d'acquisition est vide",
-      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher."
+      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
+      "UUIDFormPlaceHolder": "Si non renseignée, l'identifiant est généré lors de la création du JDD"
     },
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",

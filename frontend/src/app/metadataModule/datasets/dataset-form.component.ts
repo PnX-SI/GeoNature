@@ -12,6 +12,7 @@ import { ActorFormService } from '../services/actor-form.service';
 import { MetadataService } from '../services/metadata.service';
 import { MetadataDataService } from '../services/metadata-data.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@librairies/@ngx-translate/core';
 
 @Component({
   selector: 'pnx-datasets-form',
@@ -25,6 +26,7 @@ export class DatasetFormComponent implements OnInit {
   public acquisitionFrameworks: Observable<any>;
   public taxaBibList: number;
   public uuidEditionEnabled: boolean = true;
+  public entityLabel: string;
 
   constructor(
     private _route: ActivatedRoute,
@@ -36,7 +38,8 @@ export class DatasetFormComponent implements OnInit {
     private actorFormS: ActorFormService,
     private metadataS: MetadataService,
     private metadataDataS: MetadataDataService,
-    private _config: ConfigService
+    private _config: ConfigService,
+    private translation_service: TranslateService
   ) {}
 
   ngOnInit() {
@@ -55,6 +58,7 @@ export class DatasetFormComponent implements OnInit {
 
     this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworksList();
     this.uuidEditionEnabled = this._config.METADATA.ENABLE_UUID_EDITION_FIELD;
+    this.entityLabel = this.translation_service.instant('Dataset');
   }
 
   genericActorFormSubmit(result) {

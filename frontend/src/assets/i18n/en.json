@@ -198,7 +198,8 @@
       "NoStakeholder": "No stakeholder provided",
       "FiledAF": "The acquisition framework has already been filed",
       "EmptyAF": "The acquisition framework is empty",
-      "NoMetadata": "Oops! There is no metadata to display."
+      "NoMetadata": "Oops! There is no metadata to display.",
+      "UUIDFormPlaceHolder": "If not specified, identifier will be generated when the JDD is created."
     },
     "Actions": {
       "AddDataset": "Add a dataset",
