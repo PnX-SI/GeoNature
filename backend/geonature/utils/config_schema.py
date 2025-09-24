@@ -155,7 +155,7 @@ class MetadataConfig(Schema):
             {"label": "Régions", "type_code": "REG"},
         ],
     )
-    ENABLE_UUID_EDITION_FIELD = fields.Boolean(load_default=True)
+    ENABLE_UUID_EDITION_FIELD = fields.Boolean(load_default=False)
 
 
 class AuthenticationConfig(Schema):

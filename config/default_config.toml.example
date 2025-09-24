@@ -614,7 +614,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         { "label" = "Régions", "type_code"= "REG" }
     ]
     # Activer le champs pour permettre l'édition des uuids des cadres d'acquisition et des jeux de données
-    ENABLE_UUID_EDITION_FIELD = true
+    ENABLE_UUID_EDITION_FIELD = false
 
 # Page d’accueil
 [HOME]
