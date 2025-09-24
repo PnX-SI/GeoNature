@@ -9,6 +9,7 @@ export enum AdvancedSectionState {
 @Component({
   selector: 'gn-advanced-section',
   templateUrl: 'advanced-section.component.html',
+  styleUrls: ['./advanced-section.component.css'],
   animations: [
     trigger('state', [
       state(
