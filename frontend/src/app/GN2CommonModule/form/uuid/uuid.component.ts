@@ -8,6 +8,8 @@ import { FormControl } from '@angular/forms';
 export class UUIDComponent {
   @Input()
   label: string = 'UUID';
+  @Input()
+  placeholder: string = '';
 
   @Input()
   formControl: FormControl = null;
