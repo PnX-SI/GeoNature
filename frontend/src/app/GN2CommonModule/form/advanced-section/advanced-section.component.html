@@ -1,4 +1,4 @@
-<div style="margin-top: 10px">
+<div *ngIf="!hideParent">
   <button
     type="button"
     class="btn btn-outline-shadow btn-sm"
@@ -13,6 +13,9 @@
   </button>
 </div>
 
-<div [@state]="state">
+<div
+  [@state]="state"
+  [id]="advancedPanelID"
+>
   <ng-content />
 </div>
