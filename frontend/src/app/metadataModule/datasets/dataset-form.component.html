@@ -195,6 +195,16 @@
                 data-qa="pnx-dataset-form-resource-type"
               ></pnx-nomenclature>
             </div>
+            <!-- *ngIf="uuidEditionEnabled" -> top be move to pnx-togglable form control if other entries are added to the advanced section -->
+            <div class="col-12">
+              <gn-advanced-section *ngIf="uuidEditionEnabled">
+                <gn-uuid
+                  [formControl]="form.get('unique_dataset_id')"
+                  placeholder="{{ 'MetaData.Messages.UUIDFormPlaceHolder' }}"
+                  label="{{ 'MetaData.UUIDField' | translate: { entity: 'Jeux de données' } }}"
+                ></gn-uuid>
+              </gn-advanced-section>
+            </div>
           </div>
 
           <h5 style="margin-top: 10px">
@@ -246,20 +256,6 @@
               {{ list.nom_liste }}
             </option>
           </select>
-
-          <!-- *ngIf="uuidEditionEnabled" -> top be move to pnx-togglable form control if other entries are added to the advanced section -->
-          <pnx-advanced-section *ngIf="uuidEditionEnabled">
-            <pnx-togglable-form-control
-              [formControl]="form.get('unique_dataset_id')"
-              label="{{ 'MetaData.Actions.FillOwnUUID' | translate }}"
-            >
-              <pnx-uuid
-                [formControl]="form.get('unique_dataset_id')"
-                placeholder="Si non renseignée, identifiant généré lors de la création du JDD"
-                label="{{ 'MetaData.UUIDField' | translate: { entity: 'Jeux de données' } }}"
-              ></pnx-uuid>
-            </pnx-togglable-form-control>
-          </pnx-advanced-section>
         </div>
       </div>
     </div>
