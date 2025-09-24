@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewChecked, Component, Input, OnInit } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 export enum AdvancedSectionState {
@@ -30,9 +30,17 @@ export enum AdvancedSectionState {
     ]),
   ],
 })
-export class AdvancedSectionComponent {
+export class AdvancedSectionComponent implements AfterViewChecked {
   @Input()
   state: AdvancedSectionState = AdvancedSectionState.COLLAPSED;
+
+  hideParent: boolean = false;
+  advancedPanelID: string = 'advancedSection-' + window.crypto.randomUUID().slice(0, 5);
+
+  ngAfterViewChecked() {
+    // Hide the Advanced button if no forms (or anything else) in the advanced section
+    this.hideParent = document.getElementById(this.advancedPanelID)?.childElementCount < 1;
+  }
 
   toggleState() {
     this.state =
