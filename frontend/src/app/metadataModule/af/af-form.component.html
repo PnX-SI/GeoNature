@@ -174,7 +174,11 @@
           <gn-advanced-section *ngIf="uuidEditionEnabled">
             <gn-uuid
               [formControl]="form.get('unique_acquisition_framework_id')"
-              placeholder="{{ 'MetaData.Messages.UUIDFormPlaceHolder' }}"
+              [placeholder]="
+                translation_service.instant('MetaData.Messages.UUIDFormPlaceHolder', {
+                  entity: entityLabel
+                })
+              "
               label="{{ 'MetaData.UUIDField' | translate: { entity: entityLabel } }}"
             ></gn-uuid>
           </gn-advanced-section>

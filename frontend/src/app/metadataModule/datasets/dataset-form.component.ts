@@ -39,7 +39,7 @@ export class DatasetFormComponent implements OnInit {
     private metadataS: MetadataService,
     private metadataDataS: MetadataDataService,
     private _config: ConfigService,
-    private translation_service: TranslateService
+    public translation_service: TranslateService
   ) {}
 
   ngOnInit() {

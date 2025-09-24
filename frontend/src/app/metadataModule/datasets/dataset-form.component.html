@@ -200,8 +200,12 @@
               <gn-advanced-section *ngIf="uuidEditionEnabled">
                 <gn-uuid
                   [formControl]="form.get('unique_dataset_id')"
-                  placeholder="{{ 'MetaData.Messages.UUIDFormPlaceHolder' }}"
-                  label="{{ 'MetaData.UUIDField' | translate: { entity: 'Jeux de données' } }}"
+                  [placeholder]="
+                    translation_service.instant('MetaData.Messages.UUIDFormPlaceHolder', {
+                      entity: entityLabel
+                    })
+                  "
+                  label="{{ 'MetaData.UUIDField' | translate: { entity: entityLabel } }}"
                 ></gn-uuid>
               </gn-advanced-section>
             </div>

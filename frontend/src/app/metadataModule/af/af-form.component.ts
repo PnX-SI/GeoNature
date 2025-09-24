@@ -37,7 +37,7 @@ export class AfFormComponent implements OnInit {
     private actorFormS: ActorFormService,
     public metadataS: MetadataService,
     private metadataDataS: MetadataDataService,
-    private translation_service: TranslateService
+    public translation_service: TranslateService
   ) {}
   ngOnInit() {
     // get the id from the route
