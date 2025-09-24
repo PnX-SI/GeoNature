@@ -12,6 +12,8 @@ import { OcctaxTaxaListService } from '../taxa-list/taxa-list.service';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigService } from '@geonature/services/config.service';
+import { ViewChild } from '@angular/core';
+import { OcctaxFormCountingComponent } from '../counting/counting.component';
 
 @Component({
   selector: 'pnx-occtax-form-occurrence',
@@ -42,7 +44,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public advanced: string = 'collapsed';
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
-
+  @ViewChild(OcctaxFormCountingComponent) countingComp: OcctaxFormCountingComponent;
   get taxref(): any {
     return this.occtaxFormOccurrenceService.taxref.getValue();
   }
@@ -191,6 +193,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     document.getElementById('taxonInput').focus();
     if (this.occtaxFormOccurrenceService.form.valid) {
       this.occtaxFormOccurrenceService.submitOccurrence();
+      this.countingComp.validateMediasDeletions()
     }
   }
 
