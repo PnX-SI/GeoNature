@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2.16.3 (2025-09-25)
+
+### 🚀 Nouveautés
+
+- [TaxHub] Mise à jour de TaxHub en version [2.2.3](https://github.com/PnX-SI/TaxHub/releases) incluant diverses évolutions et corrections
+- [Général] Affichage des versions des modules et des référentiels dans le bas du menu latéral (#3664 par @Christophe-Ramet)
+- [Général] La version [18](https://inpn.mnhn.fr/telechargement/referentielEspece/taxref/18.0/menu) de Taxref et du référentiel de sensibilité est désormais installée par défaut lors des nouvelles installations (#3680 par @Pierre-Narcisi)
+- [Métadonnées] Ajout d'un champ de saisie d'UUID dans le formulaire de création de cadre d'acquisition (#3664 par @andriacap, @edelclaux et @jacquesfize)
+- [TaxHub] Ajout de la fonctionnalité d'export dans la liste de taxons (#3712 par @amandine-sahl)
+- [TaxHub] Ajout d'une fiche d'info sur TaxHub et Taxref dans un nouvel onglet "Informations" (#3717 par @amandine-sahl)
+
+### 🐛 Corrections
+
+- [Général] Amélioration de l'affichage responsive de la liste des modules dans la barre de navigation latérale (#3690 par @Christophe-Ramet)
+- [Général] Suppression de la variable `homePage.stats` dans le local storage à la déconnexion (#3687 par @Christophe-Ramet)
+- [Général] Correction de le commande `npm run format` permettant d'intégrer les fichiers TypeScript dans le formatage (#3702 par @jacquesfize)
+- [Accueil] Correction du nombre d'espèces observées sur la page d'accueil (par @Christophe-Ramet et @jacquesfize)
+  - Prise en compte des permissions taxonomiques (#3679)
+  - Utilisation des `cd_ref` plutôt que les `cd_nom` pour compter le nombre d'espèces observées (#3677)
+- [Développement] Correction de la valeur retournée par la propriété `total_filtered` dans Utils-Flask-SQLAlchemy, corrigeant une régression de GeoNature 2.16.0 avec GN2PG (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/issues/62, par @jacquesfize)
+- [Occhab] Suppression du champ `id_habitat` dans l'import Occhab (#3716 par @jacquesfize)
+
+- ### ⚠️ Notes de version
+
+- La version 2.2.3 de TaxHub inclut des corrections de commandes qu'il peut être nécessaire que vous appliquiez depuis le venv de GeoNature (https://github.com/PnX-SI/TaxHub/releases)
+
 ## 2.16.2 (2025-08-11)
 
 ### 🐛 Corrections
