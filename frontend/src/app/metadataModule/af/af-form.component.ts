@@ -18,7 +18,7 @@ import { TranslateService } from '@librairies/@ngx-translate/core';
   selector: 'pnx-af-form',
   templateUrl: './af-form.component.html',
   styleUrls: ['../form.component.scss'],
-  providers: [AcquisitionFrameworkFormService, ConfigService],
+  providers: [AcquisitionFrameworkFormService],
 })
 export class AfFormComponent implements OnInit {
   public form: UntypedFormGroup;
@@ -37,7 +37,8 @@ export class AfFormComponent implements OnInit {
     private actorFormS: ActorFormService,
     public metadataS: MetadataService,
     private metadataDataS: MetadataDataService,
-    public translation_service: TranslateService
+    public translation_service: TranslateService,
+    private configService: ConfigService
   ) {}
   ngOnInit() {
     // get the id from the route
@@ -58,7 +59,7 @@ export class AfFormComponent implements OnInit {
       this.acquisitionFrameworkParents = afParent;
     });
 
-    this.uuidEditionEnabled = this.metadataDataS.config.METADATA.ENABLE_UUID_EDITION_FIELD;
+    this.uuidEditionEnabled = this.configService.METADATA.ENABLE_UUID_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('AcquisitionFramework');
   }
 
