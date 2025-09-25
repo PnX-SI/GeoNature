@@ -708,6 +708,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # URL d'accès au module d'import
     MODULE_URL = "/import"
 
-    # Taille des `batch` de données importées en même temps
+    # Taille des `batch` de données importées simultanément
     DATAFRAME_BATCH_SIZE = 10000
 
