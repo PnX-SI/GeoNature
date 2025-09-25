@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-alembic==1.16.4
+alembic==1.16.5
     # via
     #   flask-migrate
     #   pypn-ref-geo
@@ -18,7 +18,7 @@ attrs==25.3.0
     #   fiona
     #   jsonschema
     #   referencing
-authlib==1.6.1
+authlib==1.6.4
     # via pypnusershub
 babel==2.17.0
     # via flask-babel
@@ -29,7 +29,7 @@ backports-entry-points-selectable==1.3.0
     #   taxhub
 bcrypt==4.3.0
     # via pypnusershub
-billiard==4.2.1
+billiard==4.2.2
     # via celery
 blinker==1.9.0
     # via
@@ -46,7 +46,7 @@ certifi==2025.8.3
     #   fiona
     #   pyproj
     #   requests
-cffi==1.17.1
+cffi==2.0.0
     # via
     #   cryptography
     #   weasyprint
@@ -85,7 +85,7 @@ fiona==1.10.1
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
-flask==3.1.1
+flask==3.1.2
     # via
     #   -r requirements-common.in
     #   flask-admin
@@ -149,7 +149,7 @@ flask-weasyprint==1.1.0
     # via -r requirements-common.in
 flask-wtf==1.2.2
     # via -r requirements-common.in
-fonttools[woff]==4.59.0
+fonttools[woff]==4.60.0
     # via
     #   fonttools
     #   weasyprint
@@ -181,13 +181,13 @@ jinja2==3.1.6
     #   bokeh
     #   flask
     #   flask-babel
-jsonschema==4.25.0
+jsonschema==4.25.1
     # via -r requirements-common.in
-jsonschema-specifications==2025.4.1
+jsonschema-specifications==2025.9.1
     # via jsonschema
 kombu[redis]==5.5.4
     # via celery
-lxml==6.0.0
+lxml==6.0.2
     # via -r requirements-common.in
 mako==1.3.10
     # via alembic
@@ -230,7 +230,7 @@ packaging==25.0
     #   gunicorn
     #   kombu
     #   marshmallow
-pandas==2.3.1
+pandas==2.3.2
     # via
     #   -r requirements-common.in
     #   bokeh
@@ -240,7 +240,7 @@ pillow==11.3.0
     #   bokeh
     #   taxhub
     #   weasyprint
-prompt-toolkit==3.0.51
+prompt-toolkit==3.0.52
     # via click-repl
 psycopg2==2.9.10
     # via
@@ -250,7 +250,7 @@ psycopg2==2.9.10
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
-pycparser==2.22
+pycparser==2.23
     # via cffi
 pydyf==0.11.0
     # via weasyprint
@@ -258,7 +258,7 @@ pyphen==0.17.2
     # via weasyprint
 pypn-habref-api==0.4.2
     # via -r requirements-dependencies.in
-pypn-ref-geo==1.5.5
+pypn-ref-geo==1.5.6
     # via
     #   -r requirements-dependencies.in
     #   taxhub
@@ -294,11 +294,11 @@ referencing==0.36.2
     # via
     #   jsonschema
     #   jsonschema-specifications
-requests==2.32.4
+requests==2.32.5
     # via
     #   pypn-habref-api
     #   pypnusershub
-rpds-py==0.27.0
+rpds-py==0.27.1
     # via
     #   jsonschema
     #   referencing
@@ -339,9 +339,10 @@ tomli==2.2.1
     # via alembic
 tornado==6.5.2
     # via bokeh
-typing-extensions==4.14.1
+typing-extensions==4.15.0
     # via
     #   alembic
+    #   marshmallow
     #   marshmallow-sqlalchemy
     #   referencing
 tzdata==2025.2
@@ -370,7 +371,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-wcwidth==0.2.13
+wcwidth==0.2.14
     # via prompt-toolkit
 weasyprint==66.0
     # via
@@ -395,7 +396,7 @@ wtforms==3.1.2
     #   wtforms-sqlalchemy
 wtforms-sqlalchemy==0.4.2
     # via -r requirements-common.in
-xmltodict==0.14.2
+xmltodict==1.0.2
     # via
     #   -r requirements-common.in
     #   pypnusershub
