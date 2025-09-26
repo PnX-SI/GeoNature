@@ -587,17 +587,19 @@ def get_import_invalid_rows_as_csv(scope, imprt):
 
     filename = imprt.full_file_name.rsplit(".", 1)[0]  # remove extension
     filename = f"{filename}_errors.csv"
+    sourcefile = TextIOWrapper(BytesIO(imprt.source_file), encoding=imprt.encoding)
+    erroneous_row = imprt.erroneous_rows
 
     @stream_with_context
     def generate_invalid_rows_csv():
-        sourcefile = TextIOWrapper(BytesIO(imprt.source_file), encoding=imprt.encoding)
+
         destfile = StringIO()
         csvreader = csv.reader(sourcefile, delimiter=imprt.separator)
         csvwriter = csv.writer(destfile, dialect=csvreader.dialect, lineterminator="\n")
         line_no = 1
         for row in csvreader:
             # line_no == 1 → csv header
-            if line_no == 1 or line_no in imprt.erroneous_rows:
+            if line_no == 1 or line_no in erroneous_row:
                 csvwriter.writerow(row)
                 destfile.seek(0)
                 yield destfile.read().encode(imprt.encoding)
