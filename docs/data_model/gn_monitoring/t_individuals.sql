@@ -1,5 +1,4 @@
 
-\restrict OQeq024cqvCjCP0gNUPD9UlF2gS5JIxn80S145Oz1C3NCKLCZlX6d9wtT6NbaHf
 
 CREATE TABLE gn_monitoring.t_individuals (
     id_individual integer NOT NULL,
@@ -38,5 +37,4 @@ ALTER TABLE ONLY gn_monitoring.t_individuals
 ALTER TABLE ONLY gn_monitoring.t_individuals
     ADD CONSTRAINT t_individuals_id_nomenclature_sex_fkey FOREIGN KEY (id_nomenclature_sex) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature);
 
-\unrestrict OQeq024cqvCjCP0gNUPD9UlF2gS5JIxn80S145Oz1C3NCKLCZlX6d9wtT6NbaHf
 

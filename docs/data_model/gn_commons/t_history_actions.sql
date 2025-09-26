@@ -1,5 +1,4 @@
 
-\restrict UG4ZYNOSPN43hw0BOm4fGhqTWJExUWSy5n7VNnwu4tGHVNNvBtVTfRt5WKfmzeZ
 
 CREATE TABLE gn_commons.t_history_actions (
     id_history_action integer NOT NULL,
@@ -36,5 +35,4 @@ ALTER TABLE ONLY gn_commons.t_history_actions
 ALTER TABLE ONLY gn_commons.t_history_actions
     ADD CONSTRAINT fk_t_history_actions_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES gn_commons.bib_tables_location(id_table_location) ON UPDATE CASCADE;
 
-\unrestrict UG4ZYNOSPN43hw0BOm4fGhqTWJExUWSy5n7VNnwu4tGHVNNvBtVTfRt5WKfmzeZ
 

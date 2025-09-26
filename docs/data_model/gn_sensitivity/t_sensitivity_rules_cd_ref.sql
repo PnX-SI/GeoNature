@@ -1,5 +1,4 @@
 
-\restrict vy7BbjQMHqfn0aQ9dcGrxg5AAEEjmOWZ5TVFdcVqsAmfTxfN7vlzgmiqIB5NqhK
 
 CREATE MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref AS
  WITH RECURSIVE r(cd_ref) AS (
@@ -56,5 +55,4 @@ CREATE MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref AS
    FROM r
   WITH NO DATA;
 
-\unrestrict vy7BbjQMHqfn0aQ9dcGrxg5AAEEjmOWZ5TVFdcVqsAmfTxfN7vlzgmiqIB5NqhK
 

@@ -1,5 +1,4 @@
 
-\restrict HS29nTjjCMpMwwSvHs9lgFdq6vO8rk8GefiudPs8UAEHFV92Djg1EJMDJfwbwgf
 
 CREATE VIEW gn_synthese.v_color_taxon_area AS
  SELECT v_area_taxon.cd_nom,
@@ -12,5 +11,4 @@ CREATE VIEW gn_synthese.v_color_taxon_area AS
         END AS color
    FROM gn_synthese.v_area_taxon;
 
-\unrestrict HS29nTjjCMpMwwSvHs9lgFdq6vO8rk8GefiudPs8UAEHFV92Djg1EJMDJfwbwgf
 

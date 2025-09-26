@@ -1,5 +1,4 @@
 
-\restrict G6CNEBWopBh3DRdfXbbvQcJYBMMuJolq60rR2bVOTHLtDt3T9qS9LjsL6OCtWc5
 
 CREATE MATERIALIZED VIEW taxonomie.vm_classe AS
  SELECT DISTINCT tx.classe
@@ -8,5 +7,4 @@ CREATE MATERIALIZED VIEW taxonomie.vm_classe AS
 
 CREATE UNIQUE INDEX i_unique_classe ON taxonomie.vm_classe USING btree (classe);
 
-\unrestrict G6CNEBWopBh3DRdfXbbvQcJYBMMuJolq60rR2bVOTHLtDt3T9qS9LjsL6OCtWc5
 

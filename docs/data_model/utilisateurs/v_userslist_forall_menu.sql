@@ -1,5 +1,4 @@
 
-\restrict TpTgs6YmnXuwlTy0yQVZAihFebdnDl1fFA2OyaSH1eKefSkxbcp2dHcSQCvccXL
 
 CREATE VIEW utilisateurs.v_userslist_forall_menu AS
  SELECT a.groupe,
@@ -65,5 +64,4 @@ CREATE VIEW utilisateurs.v_userslist_forall_menu AS
              LEFT JOIN utilisateurs.bib_organismes o ON ((o.id_organisme = u.id_organisme)))
           WHERE ((u.groupe = false) AND (u.active = true))) a;
 
-\unrestrict TpTgs6YmnXuwlTy0yQVZAihFebdnDl1fFA2OyaSH1eKefSkxbcp2dHcSQCvccXL
 

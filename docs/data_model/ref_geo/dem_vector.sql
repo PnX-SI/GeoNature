@@ -1,5 +1,4 @@
 
-\restrict GtfSEbcctvrUmoGjO2nFyXcVeeAYkjCbVQd578WIN6t58eazkWea3Ga8tsHTzyb
 
 CREATE TABLE ref_geo.dem_vector (
     gid integer NOT NULL,
@@ -22,5 +21,4 @@ ALTER TABLE ONLY ref_geo.dem_vector
 
 CREATE INDEX index_dem_vector_geom ON ref_geo.dem_vector USING gist (geom);
 
-\unrestrict GtfSEbcctvrUmoGjO2nFyXcVeeAYkjCbVQd578WIN6t58eazkWea3Ga8tsHTzyb
 

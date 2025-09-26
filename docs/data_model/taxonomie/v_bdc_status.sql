@@ -1,5 +1,4 @@
 
-\restrict 2g932E77svCaNcxWEoEMyaKHcoAVJtFWHddJ1jd6rd4OPS9Fq4dn3e2yOpOJfw6
 
 CREATE VIEW taxonomie.v_bdc_status AS
  SELECT s.cd_nom,
@@ -27,5 +26,4 @@ CREATE VIEW taxonomie.v_bdc_status AS
      JOIN taxonomie.bdc_statut_type ty ON (((ty.cd_type_statut)::text = (t.cd_type_statut)::text)))
   WHERE (t.enable = true);
 
-\unrestrict 2g932E77svCaNcxWEoEMyaKHcoAVJtFWHddJ1jd6rd4OPS9Fq4dn3e2yOpOJfw6
 

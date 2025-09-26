@@ -1,5 +1,4 @@
 
-\restrict FK2p8CaCAxQ4dssynzzkCJxffdRhQWj68UM9bxStwpCFdye7V3lW6HlZAsR9rEm
 
 CREATE TABLE gn_meta.cor_acquisition_framework_publication (
     id_acquisition_framework integer NOT NULL,
@@ -17,5 +16,4 @@ ALTER TABLE ONLY gn_meta.cor_acquisition_framework_publication
 ALTER TABLE ONLY gn_meta.cor_acquisition_framework_publication
     ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_publication) REFERENCES gn_meta.sinp_datatype_publications(id_publication) ON UPDATE CASCADE ON DELETE CASCADE;
 
-\unrestrict FK2p8CaCAxQ4dssynzzkCJxffdRhQWj68UM9bxStwpCFdye7V3lW6HlZAsR9rEm
 

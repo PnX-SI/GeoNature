@@ -1,5 +1,4 @@
 
-\restrict XzXda35E6lpzHmKyP6Iuq6IZzpKOGcuDw4UIokmMZLYIg2MNNb3kl5Jlngqcz5r
 
 CREATE TABLE ref_nomenclatures.t_nomenclatures (
     id_nomenclature integer NOT NULL,
@@ -52,5 +51,4 @@ ALTER TABLE ONLY ref_nomenclatures.t_nomenclatures
 ALTER TABLE ONLY ref_nomenclatures.t_nomenclatures
     ADD CONSTRAINT fk_t_nomenclatures_id_type FOREIGN KEY (id_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(id_type) ON UPDATE CASCADE;
 
-\unrestrict XzXda35E6lpzHmKyP6Iuq6IZzpKOGcuDw4UIokmMZLYIg2MNNb3kl5Jlngqcz5r
 

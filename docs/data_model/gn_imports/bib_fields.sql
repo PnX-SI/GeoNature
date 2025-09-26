@@ -1,5 +1,4 @@
 
-\restrict qbqXPiedxGmd9t8aaKiepjjrMt1o89Ji96ImnAZe6HcGMxCSz9k8nUmdeUtP1PS
 
 CREATE TABLE gn_imports.bib_fields (
     id_field integer NOT NULL,
@@ -50,5 +49,4 @@ ALTER TABLE ONLY gn_imports.bib_fields
 
 ALTER TABLE ONLY gn_imports.bib_fields
 
-\unrestrict qbqXPiedxGmd9t8aaKiepjjrMt1o89Ji96ImnAZe6HcGMxCSz9k8nUmdeUtP1PS
 

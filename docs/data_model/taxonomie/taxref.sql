@@ -1,5 +1,4 @@
 
-\restrict x8b0TAcd0Qms0xKeGVIneUyucQpf8NMflJEpm55xcNp4BxQwz7v7AzNcdZL0ln7
 
 CREATE TABLE taxonomie.taxref (
     cd_nom integer NOT NULL,
@@ -63,5 +62,4 @@ ALTER TABLE ONLY taxonomie.taxref
 ALTER TABLE ONLY taxonomie.taxref
     ADD CONSTRAINT taxref_id_statut_fkey FOREIGN KEY (id_statut) REFERENCES taxonomie.bib_taxref_statuts(id_statut) ON UPDATE CASCADE;
 
-\unrestrict x8b0TAcd0Qms0xKeGVIneUyucQpf8NMflJEpm55xcNp4BxQwz7v7AzNcdZL0ln7
 

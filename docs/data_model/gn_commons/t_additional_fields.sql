@@ -1,5 +1,4 @@
 
-\restrict oU2bfCpnqfsqBsu5lQQjgE2z56qU2sfW5TYscsBvsHhTaj6ajOODLCCfYmuBxKU
 
 CREATE TABLE gn_commons.t_additional_fields (
     id_field integer NOT NULL,
@@ -37,5 +36,4 @@ ALTER TABLE ONLY gn_commons.t_additional_fields
 ALTER TABLE ONLY gn_commons.t_additional_fields
     ADD CONSTRAINT fk_t_additional_fields_id_widget FOREIGN KEY (id_widget) REFERENCES gn_commons.bib_widgets(id_widget) ON UPDATE CASCADE ON DELETE CASCADE;
 
-\unrestrict oU2bfCpnqfsqBsu5lQQjgE2z56qU2sfW5TYscsBvsHhTaj6ajOODLCCfYmuBxKU
 

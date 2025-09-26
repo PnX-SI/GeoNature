@@ -1,5 +1,4 @@
 
-\restrict BakDFDGLvwP70IefB8zDN4zm9n1HoJzTbxvhc0WrranlBbak24zFwV8dFn2ah9L
 
 CREATE TABLE gn_permissions.t_objects (
     id_object integer NOT NULL,
@@ -23,5 +22,4 @@ ALTER TABLE ONLY gn_permissions.t_objects
 ALTER TABLE ONLY gn_permissions.t_objects
     ADD CONSTRAINT unique_t_objects UNIQUE (code_object);
 
-\unrestrict BakDFDGLvwP70IefB8zDN4zm9n1HoJzTbxvhc0WrranlBbak24zFwV8dFn2ah9L
 

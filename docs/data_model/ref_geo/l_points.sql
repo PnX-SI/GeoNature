@@ -1,5 +1,4 @@
 
-\restrict nfwRKIXeVXCywbFpGlrXJTaMdcdIx0kZzRUgPZyuthLUriqTz3MsxlezbXQeaLC
 
 CREATE TABLE ref_geo.l_points (
     id_point integer NOT NULL,
@@ -34,5 +33,4 @@ ALTER TABLE ONLY ref_geo.l_points
 ALTER TABLE ONLY ref_geo.l_points
     ADD CONSTRAINT fk_ref_geo_l_points_id_type FOREIGN KEY (id_type) REFERENCES ref_geo.bib_points_types(id_type) ON UPDATE CASCADE;
 
-\unrestrict nfwRKIXeVXCywbFpGlrXJTaMdcdIx0kZzRUgPZyuthLUriqTz3MsxlezbXQeaLC
 

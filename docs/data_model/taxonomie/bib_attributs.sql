@@ -1,5 +1,4 @@
 
-\restrict kCqm0jKZyhiDLVD5p5vAd6VWogI9UmDzR4y0ni8FSo1BFnG5uyeAhG9Le5F1jrU
 
 CREATE TABLE taxonomie.bib_attributs (
     id_attribut integer DEFAULT nextval('taxonomie.bib_attributs_id_attribut_seq'::regclass) NOT NULL,
@@ -25,5 +24,4 @@ ALTER TABLE ONLY taxonomie.bib_attributs
 ALTER TABLE ONLY taxonomie.bib_attributs
     ADD CONSTRAINT bib_attributs_id_theme_fkey FOREIGN KEY (id_theme) REFERENCES taxonomie.bib_themes(id_theme);
 
-\unrestrict kCqm0jKZyhiDLVD5p5vAd6VWogI9UmDzR4y0ni8FSo1BFnG5uyeAhG9Le5F1jrU
 

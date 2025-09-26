@@ -1,5 +1,4 @@
 
-\restrict FdOeck3XLsFH2hvTDYJj1ZiZQm9OhALKAZQUFqXWcxymxyABcwUdUePMTiiG3RQ
 
 CREATE VIEW gn_synthese.v_synthese_for_web_app AS
  SELECT s.id_synthese,
@@ -85,5 +84,4 @@ CREATE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN gn_meta.t_datasets d ON ((d.id_dataset = s.id_dataset)))
      JOIN gn_synthese.t_sources sources ON ((sources.id_source = s.id_source)));
 
-\unrestrict FdOeck3XLsFH2hvTDYJj1ZiZQm9OhALKAZQUFqXWcxymxyABcwUdUePMTiiG3RQ
 

@@ -1,5 +1,4 @@
 
-\restrict e9LTWgPtJZLcFgnFmGN6YzwOPUb4pU1TM4ZxS1Yac1AZqrkqz2fcZ49ocmJJpbD
 
 CREATE TABLE pr_occtax.t_releves_occtax (
     id_releve_occtax bigint NOT NULL,
@@ -106,5 +105,4 @@ ALTER TABLE ONLY pr_occtax.t_releves_occtax
 ALTER TABLE ONLY pr_occtax.t_releves_occtax
     ADD CONSTRAINT fk_t_releves_occtax_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
-\unrestrict e9LTWgPtJZLcFgnFmGN6YzwOPUb4pU1TM4ZxS1Yac1AZqrkqz2fcZ49ocmJJpbD
 

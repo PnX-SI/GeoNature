@@ -1,5 +1,4 @@
 
-\restrict 4gHeb0sotgZWkDc9J8kiPZ2LKiK8pQVCZMYoVX8x6jMbXtAnkpz9OfSaf7Cg4Yg
 
 CREATE TABLE ref_habitats.bib_habref_statuts (
     statut character varying(1) NOT NULL,
@@ -13,5 +12,4 @@ COMMENT ON TABLE ref_habitats.bib_habref_statuts IS 'Bibliothèque des types sta
 ALTER TABLE ONLY ref_habitats.bib_habref_statuts
     ADD CONSTRAINT pk_bib_habref_statuts PRIMARY KEY (statut);
 
-\unrestrict 4gHeb0sotgZWkDc9J8kiPZ2LKiK8pQVCZMYoVX8x6jMbXtAnkpz9OfSaf7Cg4Yg
 

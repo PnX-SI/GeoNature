@@ -1,5 +1,4 @@
 
-\restrict CY7dUhAMg6AsMtREydgABMwFnuFyx8EiqNOfbfStQXkzmJLmLwLcf0gGJqi02Mv
 
 CREATE TABLE utilisateurs.t_profils (
     id_profil integer NOT NULL,
@@ -23,5 +22,4 @@ ALTER SEQUENCE utilisateurs.t_profils_id_profil_seq OWNED BY utilisateurs.t_prof
 ALTER TABLE ONLY utilisateurs.t_profils
     ADD CONSTRAINT pk_t_profils PRIMARY KEY (id_profil);
 
-\unrestrict CY7dUhAMg6AsMtREydgABMwFnuFyx8EiqNOfbfStQXkzmJLmLwLcf0gGJqi02Mv
 

@@ -1,5 +1,4 @@
 
-\restrict db6fhaVUHp8xF3bxltjvefOKH82XIgBUd4DwgVGvf1BJmEMWDG2oHwe8oasMKnf
 
 CREATE TABLE pr_occhab.cor_station_observer (
     id_cor_station_observer integer NOT NULL,
@@ -29,5 +28,4 @@ ALTER TABLE ONLY pr_occhab.cor_station_observer
 ALTER TABLE ONLY pr_occhab.cor_station_observer
     ADD CONSTRAINT fk_cor_station_observer_t_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
-\unrestrict db6fhaVUHp8xF3bxltjvefOKH82XIgBUd4DwgVGvf1BJmEMWDG2oHwe8oasMKnf
 

@@ -1,5 +1,4 @@
 
-\restrict 168TCk0IZW6EmxLDe25q2a0A2tbByhTKXdZdKCMk6EfDzhIeovyU66HRZ2SRAQu
 
 CREATE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese,
@@ -116,5 +115,4 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON ((s.id_nomenclature_biogeo_status = n22.id_nomenclature)))
      LEFT JOIN ref_habitats.habref hab ON ((hab.cd_hab = s.cd_hab)));
 
-\unrestrict 168TCk0IZW6EmxLDe25q2a0A2tbByhTKXdZdKCMk6EfDzhIeovyU66HRZ2SRAQu
 

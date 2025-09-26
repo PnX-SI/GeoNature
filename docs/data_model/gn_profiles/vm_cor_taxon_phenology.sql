@@ -1,5 +1,4 @@
 
-\restrict 7dFsaVCZWLoYeQQ17P5mmyY7ZLerIzWha7azgBBb1vqMJqb7C91zJM0QHZsogVY
 
 CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology AS
  WITH exlude_live_stage AS (
@@ -53,5 +52,4 @@ CREATE INDEX index_vm_cor_taxon_phenology_cd_ref ON gn_profiles.vm_cor_taxon_phe
 
 CREATE UNIQUE INDEX vm_cor_taxon_phenology_cd_ref_period_id_nomenclature_life_s_idx ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref, doy_min, doy_max, id_nomenclature_life_stage);
 
-\unrestrict 7dFsaVCZWLoYeQQ17P5mmyY7ZLerIzWha7azgBBb1vqMJqb7C91zJM0QHZsogVY
 

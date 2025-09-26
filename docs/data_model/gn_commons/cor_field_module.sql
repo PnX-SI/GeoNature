@@ -1,5 +1,4 @@
 
-\restrict 1ztQpyuQKlyRPBi13qJlbdVgcZX7zEno2NBSWzTlQ6TvlWKyXxc6gxMLdeqgz8L
 
 CREATE TABLE gn_commons.cor_field_module (
     id_field integer NOT NULL,
@@ -15,5 +14,4 @@ ALTER TABLE ONLY gn_commons.cor_field_module
 ALTER TABLE ONLY gn_commons.cor_field_module
     ADD CONSTRAINT fk_cor_field_module_field FOREIGN KEY (id_field) REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
-\unrestrict 1ztQpyuQKlyRPBi13qJlbdVgcZX7zEno2NBSWzTlQ6TvlWKyXxc6gxMLdeqgz8L
 

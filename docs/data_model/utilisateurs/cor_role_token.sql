@@ -1,5 +1,4 @@
 
-\restrict mmLdfX80bh6J0lNItyptJgqPxcONdNYRgHNvZv4XMgfbt03c6dDYHpJTxgedqsn
 
 CREATE TABLE utilisateurs.cor_role_token (
     id_role integer NOT NULL,
@@ -12,5 +11,4 @@ ALTER TABLE ONLY utilisateurs.cor_role_token
 ALTER TABLE ONLY utilisateurs.cor_role_token
     ADD CONSTRAINT cor_role_token_fk_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
 
-\unrestrict mmLdfX80bh6J0lNItyptJgqPxcONdNYRgHNvZv4XMgfbt03c6dDYHpJTxgedqsn
 

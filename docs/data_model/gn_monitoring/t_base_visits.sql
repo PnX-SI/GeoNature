@@ -1,5 +1,4 @@
 
-\restrict I1qolmbn5TdiO9AoT8dlnDcDPgYLbSqtN5xa5gZj4qo77kG4muQ2ISXsiyckykV
 
 CREATE TABLE gn_monitoring.t_base_visits (
     id_base_visit integer NOT NULL,
@@ -63,5 +62,4 @@ ALTER TABLE ONLY gn_monitoring.t_base_visits
 ALTER TABLE ONLY gn_monitoring.t_base_visits
     ADD CONSTRAINT fk_t_base_visits_t_datasets FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
-\unrestrict I1qolmbn5TdiO9AoT8dlnDcDPgYLbSqtN5xa5gZj4qo77kG4muQ2ISXsiyckykV
 

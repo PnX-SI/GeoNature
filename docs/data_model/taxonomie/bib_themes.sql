@@ -1,5 +1,4 @@
 
-\restrict 1rEp8vnZ3Z1wiDueQFQhhoaqv1eEYlR8EIAfpcKGjZp0SGQf6By1W9PhzKoggS0
 
 CREATE TABLE taxonomie.bib_themes (
     id_theme integer NOT NULL,
@@ -23,5 +22,4 @@ ALTER TABLE ONLY taxonomie.bib_themes
 ALTER TABLE ONLY taxonomie.bib_themes
     ADD CONSTRAINT unique_bib_themes_nom_theme UNIQUE (nom_theme);
 
-\unrestrict 1rEp8vnZ3Z1wiDueQFQhhoaqv1eEYlR8EIAfpcKGjZp0SGQf6By1W9PhzKoggS0
 

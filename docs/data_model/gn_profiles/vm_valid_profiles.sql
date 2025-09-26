@@ -1,5 +1,4 @@
 
-\restrict GAKo1OiYUFmuXtioE6ZgfIm5E5vkzrnsAe1srs9kZEZFBfHuTdhctCZX7XHt36b
 
 CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
  SELECT DISTINCT vsfp.cd_ref,
@@ -16,5 +15,4 @@ CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
 
 CREATE UNIQUE INDEX index_vm_valid_profiles_cd_ref ON gn_profiles.vm_valid_profiles USING btree (cd_ref);
 
-\unrestrict GAKo1OiYUFmuXtioE6ZgfIm5E5vkzrnsAe1srs9kZEZFBfHuTdhctCZX7XHt36b
 

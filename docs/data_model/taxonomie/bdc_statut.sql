@@ -1,5 +1,4 @@
 
-\restrict rwxwg49TTfQz7xvdDKZThW6eLel2JGoGF8vtz2rOkqL7B23iLxQGrAdKnYj5Hze
 
 CREATE TABLE taxonomie.bdc_statut (
     id integer NOT NULL,
@@ -53,5 +52,4 @@ CREATE INDEX bdc_statut_id_idx ON taxonomie.bdc_statut USING btree (id);
 
 CREATE INDEX bdc_statut_label_statut_idx ON taxonomie.bdc_statut USING btree (label_statut);
 
-\unrestrict rwxwg49TTfQz7xvdDKZThW6eLel2JGoGF8vtz2rOkqL7B23iLxQGrAdKnYj5Hze
 

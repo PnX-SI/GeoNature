@@ -1,5 +1,4 @@
 
-\restrict pba0TzPTEQTv4patmvwPEcabw4H4jMIXJCfD9yfXcF2i2AXfO4LZ2LUli3RrFnj
 
 CREATE TABLE pr_occhab.defaults_nomenclatures_value (
     mnemonique_type character varying(255) NOT NULL,
@@ -19,5 +18,4 @@ ALTER TABLE ONLY pr_occhab.defaults_nomenclatures_value
 ALTER TABLE ONLY pr_occhab.defaults_nomenclatures_value
     ADD CONSTRAINT fk_pr_occhab_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
 
-\unrestrict pba0TzPTEQTv4patmvwPEcabw4H4jMIXJCfD9yfXcF2i2AXfO4LZ2LUli3RrFnj
 

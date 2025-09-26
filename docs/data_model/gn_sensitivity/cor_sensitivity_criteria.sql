@@ -1,5 +1,4 @@
 
-\restrict LtzgGQ1X8yER2Sg3Rq43HHvpwtNYlE1BNVy4eEFu8pfiuZShoZtcm3b8g5YT3oc
 
 CREATE TABLE gn_sensitivity.cor_sensitivity_criteria (
     id_sensitivity integer,
@@ -20,5 +19,4 @@ ALTER TABLE ONLY gn_sensitivity.cor_sensitivity_criteria
 ALTER TABLE ONLY gn_sensitivity.cor_sensitivity_criteria
     ADD CONSTRAINT criteria_id_type_nomenclature_fkey FOREIGN KEY (id_type_nomenclature) REFERENCES ref_nomenclatures.bib_nomenclatures_types(id_type);
 
-\unrestrict LtzgGQ1X8yER2Sg3Rq43HHvpwtNYlE1BNVy4eEFu8pfiuZShoZtcm3b8g5YT3oc
 

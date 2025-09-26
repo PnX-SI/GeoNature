@@ -1,5 +1,4 @@
 
-\restrict k2r7YG52DsqxnuSyP8loYt16cN62UjYAOLD1EBaFmeInVtjxGdPw1mJUoeTtscK
 
 CREATE VIEW ref_nomenclatures.v_statut_valid AS
  SELECT ctn.regne,
@@ -15,5 +14,4 @@ CREATE VIEW ref_nomenclatures.v_statut_valid AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'STATUT_VALID'::text) AND (n.active = true));
 
-\unrestrict k2r7YG52DsqxnuSyP8loYt16cN62UjYAOLD1EBaFmeInVtjxGdPw1mJUoeTtscK
 

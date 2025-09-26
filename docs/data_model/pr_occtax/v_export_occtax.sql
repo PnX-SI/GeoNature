@@ -1,5 +1,4 @@
 
-\restrict UALdkub0skBJLHFENl7hSyxI6EtcjRrqZKfq2jZp8HhJK2p4l4wPAfnAmHEpdis
 
 CREATE VIEW pr_occtax.v_export_occtax AS
  SELECT rel.unique_id_sinp_grp AS "idSINPRegroupement",
@@ -74,5 +73,4 @@ CREATE VIEW pr_occtax.v_export_occtax AS
      LEFT JOIN ref_habitats.habref hab ON ((hab.cd_hab = rel.cd_hab)))
   GROUP BY ccc.id_counting_occtax, occ.id_occurrence_occtax, rel.id_releve_occtax, d.id_dataset, tax.cd_ref, tax.lb_nom, tax.nom_vern, hab.cd_hab, hab.lb_code, hab.lb_hab_fr;
 
-\unrestrict UALdkub0skBJLHFENl7hSyxI6EtcjRrqZKfq2jZp8HhJK2p4l4wPAfnAmHEpdis
 

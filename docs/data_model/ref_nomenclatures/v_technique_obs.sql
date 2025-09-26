@@ -1,5 +1,4 @@
 
-\restrict HxME79YHWL2OuUo8h3PCKjnQ2erKFbVqakuqwZuUFgzknfrfXIvII4R68r0FbMr
 
 CREATE VIEW ref_nomenclatures.v_technique_obs AS
  SELECT ctn.regne,
@@ -14,5 +13,4 @@ CREATE VIEW ref_nomenclatures.v_technique_obs AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ((ctn.id_nomenclature = n.id_nomenclature)))
   WHERE ((n.mnemonique)::text = 'TECHNIQUE_OBS'::text);
 
-\unrestrict HxME79YHWL2OuUo8h3PCKjnQ2erKFbVqakuqwZuUFgzknfrfXIvII4R68r0FbMr
 

@@ -1,5 +1,4 @@
 
-\restrict 6n1OIEQAVwLscFSQxtuLuzwc2RMeXM76tP9BKh6CnHpjQxLhBUkOF72JbhgwD7R
 
 CREATE VIEW ref_nomenclatures.v_statut_obs AS
  SELECT ctn.regne,
@@ -15,5 +14,4 @@ CREATE VIEW ref_nomenclatures.v_statut_obs AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'STATUT_OBS'::text) AND (n.active = true));
 
-\unrestrict 6n1OIEQAVwLscFSQxtuLuzwc2RMeXM76tP9BKh6CnHpjQxLhBUkOF72JbhgwD7R
 

@@ -1,5 +1,4 @@
 
-\restrict hmsoyrKfwdcdjMYzWbTLeJCL72eAyrHTf5EdiCTGEm2GGfy2ja647eAj8Rpo2LF
 
 CREATE TABLE gn_commons.bib_tables_location (
     id_table_location integer NOT NULL,
@@ -25,5 +24,4 @@ ALTER TABLE ONLY gn_commons.bib_tables_location
 ALTER TABLE ONLY gn_commons.bib_tables_location
     ADD CONSTRAINT unique_bib_tables_location_schema_name_table_name UNIQUE (schema_name, table_name);
 
-\unrestrict hmsoyrKfwdcdjMYzWbTLeJCL72eAyrHTf5EdiCTGEm2GGfy2ja647eAj8Rpo2LF
 

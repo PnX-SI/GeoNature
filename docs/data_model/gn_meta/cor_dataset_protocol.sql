@@ -1,5 +1,4 @@
 
-\restrict dM2CzbuH1wMQy7PlClMgdHMwZIwiN05d2jl8yJCrQJNiEGFTXlobPgJjCZ7QmGl
 
 CREATE TABLE gn_meta.cor_dataset_protocol (
     id_dataset integer NOT NULL,
@@ -17,5 +16,4 @@ ALTER TABLE ONLY gn_meta.cor_dataset_protocol
 ALTER TABLE ONLY gn_meta.cor_dataset_protocol
     ADD CONSTRAINT fk_cor_dataset_protocol_id_protocol FOREIGN KEY (id_protocol) REFERENCES gn_meta.sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE;
 
-\unrestrict dM2CzbuH1wMQy7PlClMgdHMwZIwiN05d2jl8yJCrQJNiEGFTXlobPgJjCZ7QmGl
 

@@ -1,5 +1,4 @@
 
-\restrict bS6m2eKBbLeYd0O7h1LrUgrlYjbdzrM5TG7yQg7ZFPF1f3Y0pOp7E6NC2kJOvoU
 
 CREATE VIEW ref_nomenclatures.v_meth_determin AS
  SELECT ctn.regne,
@@ -15,5 +14,4 @@ CREATE VIEW ref_nomenclatures.v_meth_determin AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'METH_DETERMIN'::text) AND (n.active = true));
 
-\unrestrict bS6m2eKBbLeYd0O7h1LrUgrlYjbdzrM5TG7yQg7ZFPF1f3Y0pOp7E6NC2kJOvoU
 

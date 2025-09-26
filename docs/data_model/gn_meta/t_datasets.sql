@@ -1,5 +1,4 @@
 
-\restrict 2MRT8ihrMcisR1ATL8lfBihBXLHr2M84NGy7Uu4ivzs3dz26XJVkUzXDhSRYveF
 
 CREATE TABLE gn_meta.t_datasets (
     id_dataset integer NOT NULL,
@@ -135,5 +134,4 @@ ALTER TABLE ONLY gn_meta.t_datasets
 ALTER TABLE ONLY gn_meta.t_datasets
     ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (id_acquisition_framework) REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE;
 
-\unrestrict 2MRT8ihrMcisR1ATL8lfBihBXLHr2M84NGy7Uu4ivzs3dz26XJVkUzXDhSRYveF
 

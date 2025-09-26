@@ -1,5 +1,4 @@
 
-\restrict YUHxkS8UqV3jTJrhxZFqUcZ4xWxZPHmZkjZuECey3eemxb6bRLWc5d1b7oIBqdP
 
 CREATE VIEW gn_profiles.v_synthese_for_profiles AS
  WITH excluded_live_stage AS (
@@ -43,5 +42,4 @@ COMMENT ON VIEW gn_profiles.v_synthese_for_profiles IS 'View containing synthese
  id_nomenclature_life_stage fields are mandatory.
  WHERE clauses have to apply your t_parameters filters (valid_status)';
 
-\unrestrict YUHxkS8UqV3jTJrhxZFqUcZ4xWxZPHmZkjZuECey3eemxb6bRLWc5d1b7oIBqdP
 

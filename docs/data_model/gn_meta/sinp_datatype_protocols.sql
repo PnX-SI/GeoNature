@@ -1,5 +1,4 @@
 
-\restrict 7daJgKFeg1pfk41jP7txORqbHrKBMbRlo31rbkW08AK2dkKexcOgEdJfXZuRepa
 
 CREATE TABLE gn_meta.sinp_datatype_protocols (
     id_protocol integer NOT NULL,
@@ -42,5 +41,4 @@ ALTER TABLE ONLY gn_meta.sinp_datatype_protocols
 ALTER TABLE ONLY gn_meta.sinp_datatype_protocols
     ADD CONSTRAINT unique_sinp_datatype_protocols_uuid UNIQUE (unique_protocol_id);
 
-\unrestrict 7daJgKFeg1pfk41jP7txORqbHrKBMbRlo31rbkW08AK2dkKexcOgEdJfXZuRepa
 

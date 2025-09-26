@@ -1,5 +1,4 @@
 
-\restrict aRbLkVWrtAaR6jaHFHeVLAuKMIPM0XAWhCm1KgMilnhwT6hvCyCHlYBUlicTHkU
 
 CREATE TABLE gn_commons.t_validations (
     id_validation integer NOT NULL,
@@ -46,5 +45,4 @@ ALTER TABLE ONLY gn_commons.t_validations
 ALTER TABLE ONLY gn_commons.t_validations
     ADD CONSTRAINT fk_t_validations_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-\unrestrict aRbLkVWrtAaR6jaHFHeVLAuKMIPM0XAWhCm1KgMilnhwT6hvCyCHlYBUlicTHkU
 

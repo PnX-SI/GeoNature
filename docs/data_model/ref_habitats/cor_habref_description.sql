@@ -1,5 +1,4 @@
 
-\restrict hDirjgbRdY0J0K1jnbIRVAEeio7zI5Dju2kjmUukDbyR8ZF75caXUZBbD51SNI0
 
 CREATE TABLE ref_habitats.cor_habref_description (
     cd_hab_description integer NOT NULL,
@@ -22,5 +21,4 @@ ALTER TABLE ONLY ref_habitats.cor_habref_description
 ALTER TABLE ONLY ref_habitats.cor_habref_description
     ADD CONSTRAINT fk_cor_habref_description_cd_hab_field FOREIGN KEY (cd_hab_field) REFERENCES ref_habitats.typoref_fields(cd_hab_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
-\unrestrict hDirjgbRdY0J0K1jnbIRVAEeio7zI5Dju2kjmUukDbyR8ZF75caXUZBbD51SNI0
 

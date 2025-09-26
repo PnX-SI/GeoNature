@@ -1,5 +1,4 @@
 
-\restrict jQl3n6rW43cxxtkfyI8ZPGiaqAFxSMMi9jJOsucbCLH2mMN30a0KeHInAn9XUVa
 
 CREATE TABLE gn_meta.t_bibliographical_references (
     id_bibliographic_reference bigint DEFAULT nextval('gn_meta.t_bibliographical_references_id_bibliographic_reference_seq'::regclass) NOT NULL,
@@ -16,5 +15,4 @@ ALTER TABLE ONLY gn_meta.t_bibliographical_references
 ALTER TABLE ONLY gn_meta.t_bibliographical_references
     ADD CONSTRAINT t_bibliographical_references_id_acquisition_framework_fkey FOREIGN KEY (id_acquisition_framework) REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON DELETE CASCADE;
 
-\unrestrict jQl3n6rW43cxxtkfyI8ZPGiaqAFxSMMi9jJOsucbCLH2mMN30a0KeHInAn9XUVa
 

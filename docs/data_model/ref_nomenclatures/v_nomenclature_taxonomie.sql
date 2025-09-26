@@ -1,5 +1,4 @@
 
-\restrict 3aeC8LnPiUZHXmJ5qFNSL7bQuutjCzxszCNWl3jwNvDNE5lLjsnXE1xnmoeo0O8
 
 CREATE VIEW ref_nomenclatures.v_nomenclature_taxonomie AS
  SELECT tn.id_type,
@@ -40,5 +39,4 @@ CREATE VIEW ref_nomenclatures.v_nomenclature_taxonomie AS
   WHERE (n.active = true)
   ORDER BY tn.id_type, ctn.regne, ctn.group2_inpn, n.id_nomenclature;
 
-\unrestrict 3aeC8LnPiUZHXmJ5qFNSL7bQuutjCzxszCNWl3jwNvDNE5lLjsnXE1xnmoeo0O8
 

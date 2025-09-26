@@ -1,5 +1,4 @@
 
-\restrict QjC6ACYnoiU5hHiwOVs92ohICwdsfQw37MrKHVTItXjtl7hUT5Ym3tPty4XXHGH
 
 CREATE VIEW gn_synthese.v_metadata_for_export AS
  WITH count_nb_obs AS (
@@ -24,5 +23,4 @@ CREATE VIEW gn_synthese.v_metadata_for_export AS
      JOIN count_nb_obs ON ((count_nb_obs.id_dataset = d.id_dataset)))
   GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, af.unique_acquisition_framework_id, count_nb_obs.nb_obs;
 
-\unrestrict QjC6ACYnoiU5hHiwOVs92ohICwdsfQw37MrKHVTItXjtl7hUT5Ym3tPty4XXHGH
 

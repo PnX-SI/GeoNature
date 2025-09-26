@@ -1,5 +1,4 @@
 
-\restrict KuUSslviGRTJICcD33ExXtd9B7nVJkcmGDjYUgnqrjR9dwp8GdKzgP8nijBkcjY
 
 CREATE MATERIALIZED VIEW taxonomie.vm_regne AS
  SELECT DISTINCT tx.regne
@@ -8,5 +7,4 @@ CREATE MATERIALIZED VIEW taxonomie.vm_regne AS
 
 CREATE UNIQUE INDEX i_unique_regne ON taxonomie.vm_regne USING btree (regne);
 
-\unrestrict KuUSslviGRTJICcD33ExXtd9B7nVJkcmGDjYUgnqrjR9dwp8GdKzgP8nijBkcjY
 

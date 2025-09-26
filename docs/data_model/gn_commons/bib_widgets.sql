@@ -1,5 +1,4 @@
 
-\restrict eFBRmvfr4RSIorDYMcM1g7olp0mMUuS0vxfo9fSEtg36aNRyeHqf4vgREhtN1ep
 
 CREATE TABLE gn_commons.bib_widgets (
     id_widget integer NOT NULL,
@@ -19,5 +18,4 @@ ALTER SEQUENCE gn_commons.bib_widgets_id_widget_seq OWNED BY gn_commons.bib_widg
 ALTER TABLE ONLY gn_commons.bib_widgets
     ADD CONSTRAINT pk_bib_widgets PRIMARY KEY (id_widget);
 
-\unrestrict eFBRmvfr4RSIorDYMcM1g7olp0mMUuS0vxfo9fSEtg36aNRyeHqf4vgREhtN1ep
 

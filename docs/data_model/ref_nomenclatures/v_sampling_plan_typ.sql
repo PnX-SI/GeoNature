@@ -1,5 +1,4 @@
 
-\restrict ixsf3xTWKRs4YzVuxVAcnefCSagdeSlF5M4gWlc7evQPeLsiOMQZ1uGctMPTr2A
 
 CREATE VIEW ref_nomenclatures.v_sampling_plan_typ AS
  SELECT n.id_nomenclature,
@@ -12,5 +11,4 @@ CREATE VIEW ref_nomenclatures.v_sampling_plan_typ AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'SAMPLING_PLAN_TYP'::text) AND (n.active = true));
 
-\unrestrict ixsf3xTWKRs4YzVuxVAcnefCSagdeSlF5M4gWlc7evQPeLsiOMQZ1uGctMPTr2A
 

@@ -1,5 +1,4 @@
 
-\restrict Uf3YLhfBsFDYNGf6tN21I3CGigZSsEbCybuRuplUTcMkrPlFzN3ePn8nfxwK03U
 
 CREATE TABLE ref_habitats.cor_hab_source (
     cd_hab_lien_source integer NOT NULL,
@@ -19,5 +18,4 @@ ALTER TABLE ONLY ref_habitats.cor_hab_source
 ALTER TABLE ONLY ref_habitats.cor_hab_source
     ADD CONSTRAINT fk_cor_cor_hab_source_cd_source FOREIGN KEY (cd_source) REFERENCES ref_habitats.habref_sources(cd_source) ON UPDATE CASCADE ON DELETE CASCADE;
 
-\unrestrict Uf3YLhfBsFDYNGf6tN21I3CGigZSsEbCybuRuplUTcMkrPlFzN3ePn8nfxwK03U
 

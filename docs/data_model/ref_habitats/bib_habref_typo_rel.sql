@@ -1,5 +1,4 @@
 
-\restrict dQKqtJfPUgBcGOzEdwJ8m27KRW6L0CnffVBMBJbkNYseAfoPjLBdoEU2mZ2Zkqu
 
 CREATE TABLE ref_habitats.bib_habref_typo_rel (
     cd_type_rel integer NOT NULL,
@@ -17,5 +16,4 @@ COMMENT ON TABLE ref_habitats.bib_habref_typo_rel IS 'Bibliothèque des types de
 ALTER TABLE ONLY ref_habitats.bib_habref_typo_rel
     ADD CONSTRAINT pk_bib_habref_typo_rel PRIMARY KEY (cd_type_rel);
 
-\unrestrict dQKqtJfPUgBcGOzEdwJ8m27KRW6L0CnffVBMBJbkNYseAfoPjLBdoEU2mZ2Zkqu
 

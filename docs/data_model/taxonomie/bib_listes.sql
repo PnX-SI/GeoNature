@@ -1,5 +1,4 @@
 
-\restrict VhHnPlvjhAHaWXc8clmOPViUlBkKgdf3Fd8UTgYZckEyVWneVSCw95oz6jmfgLI
 
 CREATE TABLE taxonomie.bib_listes (
     id_liste integer NOT NULL,
@@ -28,5 +27,4 @@ ALTER TABLE ONLY taxonomie.bib_listes
 ALTER TABLE ONLY taxonomie.bib_listes
     ADD CONSTRAINT unique_bib_listes_nom_liste UNIQUE (nom_liste);
 
-\unrestrict VhHnPlvjhAHaWXc8clmOPViUlBkKgdf3Fd8UTgYZckEyVWneVSCw95oz6jmfgLI
 

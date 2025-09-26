@@ -1,5 +1,4 @@
 
-\restrict m3SN25rivorHdbf0bqp5lbXk2jHUeoMNeNAGefxDaNiD1ThNNpQfFpqgZdaFgC5
 
 CREATE MATERIALIZED VIEW taxonomie.vm_taxref_tree AS
  WITH RECURSIVE biota AS (
@@ -34,5 +33,4 @@ CREATE UNIQUE INDEX taxref_tree_cd_nom_idx ON taxonomie.vm_taxref_tree USING btr
 
 CREATE INDEX taxref_tree_path_idx ON taxonomie.vm_taxref_tree USING gist (path);
 
-\unrestrict m3SN25rivorHdbf0bqp5lbXk2jHUeoMNeNAGefxDaNiD1ThNNpQfFpqgZdaFgC5
 

@@ -1,5 +1,4 @@
 
-\restrict lYAPfDh5cZGBE6jVEMgPhlaUI9Eh1YGGtmqTSJGkUk7VXs5uEgjRImidEM8nkIE
 
 CREATE VIEW ref_nomenclatures.v_resource_typ AS
  SELECT n.id_nomenclature,
@@ -12,5 +11,4 @@ CREATE VIEW ref_nomenclatures.v_resource_typ AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'RESOURCE_TYP'::text) AND (n.active = true));
 
-\unrestrict lYAPfDh5cZGBE6jVEMgPhlaUI9Eh1YGGtmqTSJGkUk7VXs5uEgjRImidEM8nkIE
 

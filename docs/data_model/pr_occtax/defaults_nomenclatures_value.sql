@@ -1,5 +1,4 @@
 
-\restrict fePQ1FYD9wf3JYkc4xyUJXVuUg57xTItbJqeujtJSWKkvdF05DxQgPR9b0uVLjF
 
 CREATE TABLE pr_occtax.defaults_nomenclatures_value (
     mnemonique_type character varying(255) NOT NULL,
@@ -30,5 +29,4 @@ ALTER TABLE ONLY pr_occtax.defaults_nomenclatures_value
 ALTER TABLE ONLY pr_occtax.defaults_nomenclatures_value
     ADD CONSTRAINT fk_pr_occtax_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
 
-\unrestrict fePQ1FYD9wf3JYkc4xyUJXVuUg57xTItbJqeujtJSWKkvdF05DxQgPR9b0uVLjF
 

@@ -1,5 +1,4 @@
 
-\restrict blqVvssx4Sk9dXoh2O2JXxPXLIQvm32JVjxoWrcniXb6OgSKEoqU3h6w8crsvLw
 
 CREATE TABLE ref_habitats.typoref (
     cd_typo integer NOT NULL,
@@ -43,5 +42,4 @@ ALTER SEQUENCE ref_habitats.typoref_cd_typo_seq OWNED BY ref_habitats.typoref.cd
 ALTER TABLE ONLY ref_habitats.typoref
     ADD CONSTRAINT pk_typoref PRIMARY KEY (cd_typo);
 
-\unrestrict blqVvssx4Sk9dXoh2O2JXxPXLIQvm32JVjxoWrcniXb6OgSKEoqU3h6w8crsvLw
 

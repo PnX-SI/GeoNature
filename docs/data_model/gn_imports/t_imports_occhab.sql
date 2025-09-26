@@ -1,5 +1,4 @@
 
-\restrict DfUE0xCI6AdTtMg92yS8U9XAVEcnJODZmJoj6pAEL0yZENVJ6GdhbdSFD6H2vXk
 
 CREATE TABLE gn_imports.t_imports_occhab (
     id_import integer NOT NULL,
@@ -122,5 +121,4 @@ ALTER TABLE ONLY gn_imports.t_imports_occhab
 ALTER TABLE ONLY gn_imports.t_imports_occhab
     ADD CONSTRAINT t_imports_occhab_id_nomenclature_type_sol_fkey FOREIGN KEY (id_nomenclature_type_sol) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature);
 
-\unrestrict DfUE0xCI6AdTtMg92yS8U9XAVEcnJODZmJoj6pAEL0yZENVJ6GdhbdSFD6H2vXk
 

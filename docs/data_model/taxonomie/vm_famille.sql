@@ -1,5 +1,4 @@
 
-\restrict pjk1fXHerLNhVWlrxvLn0GosUOOZ7dbwwQvqhDTbOq5G7a21rgoFHVDxAPdhW5D
 
 CREATE MATERIALIZED VIEW taxonomie.vm_famille AS
  SELECT DISTINCT tx.famille
@@ -8,5 +7,4 @@ CREATE MATERIALIZED VIEW taxonomie.vm_famille AS
 
 CREATE UNIQUE INDEX i_unique_famille ON taxonomie.vm_famille USING btree (famille);
 
-\unrestrict pjk1fXHerLNhVWlrxvLn0GosUOOZ7dbwwQvqhDTbOq5G7a21rgoFHVDxAPdhW5D
 

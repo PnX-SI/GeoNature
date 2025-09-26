@@ -1,5 +1,4 @@
 
-\restrict mjbNDSTjd1hF2wI167IOGgnnwkyE6m02ouwfkWS59dyCK7JLVG2vYpAnubdxHle
 
 CREATE TABLE taxonomie.bdc_statut_cor_text_area (
     id_text integer NOT NULL,
@@ -15,5 +14,4 @@ ALTER TABLE ONLY taxonomie.bdc_statut_cor_text_area
 ALTER TABLE ONLY taxonomie.bdc_statut_cor_text_area
     ADD CONSTRAINT fk_bdc_statut_cor_text_area_id_text FOREIGN KEY (id_text) REFERENCES taxonomie.bdc_statut_text(id_text) ON UPDATE CASCADE;
 
-\unrestrict mjbNDSTjd1hF2wI167IOGgnnwkyE6m02ouwfkWS59dyCK7JLVG2vYpAnubdxHle
 

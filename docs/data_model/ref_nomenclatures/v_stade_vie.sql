@@ -1,5 +1,4 @@
 
-\restrict d4UfHxdm24hAomF21ZXYz0o7TPhES6Yes0lhft26sS1kWXVQdfzLFFajrUUgDB8
 
 CREATE VIEW ref_nomenclatures.v_stade_vie AS
  SELECT ctn.regne,
@@ -15,5 +14,4 @@ CREATE VIEW ref_nomenclatures.v_stade_vie AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'STADE_VIE'::text) AND (n.active = true));
 
-\unrestrict d4UfHxdm24hAomF21ZXYz0o7TPhES6Yes0lhft26sS1kWXVQdfzLFFajrUUgDB8
 

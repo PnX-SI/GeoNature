@@ -1,5 +1,4 @@
 
-\restrict BEwCbrRZLya1VByYLpGgc2PoqbQA6cs7DN7HJCciIm4fzjKh7idMdGkXokBYhDc
 
 CREATE VIEW ref_nomenclatures.v_preuve_exist AS
  SELECT ctn.regne,
@@ -14,5 +13,4 @@ CREATE VIEW ref_nomenclatures.v_preuve_exist AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ((ctn.id_nomenclature = n.id_nomenclature)))
   WHERE (((n.mnemonique)::text = 'PREUVE_EXIST'::text) AND (n.active = true));
 
-\unrestrict BEwCbrRZLya1VByYLpGgc2PoqbQA6cs7DN7HJCciIm4fzjKh7idMdGkXokBYhDc
 

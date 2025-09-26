@@ -1,5 +1,4 @@
 
-\restrict ZIXdcyUzBEYPkZsHVuQ1UcOb0Gv8sVDyBWXPZ08LpS3bNIE9F87EORvE5gl0Ajk
 
 CREATE TABLE gn_synthese.synthese (
     id_synthese integer NOT NULL,
@@ -279,5 +278,4 @@ ALTER TABLE ONLY gn_synthese.synthese
 ALTER TABLE ONLY gn_synthese.synthese
     ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES gn_synthese.t_sources(id_source) ON UPDATE CASCADE;
 
-\unrestrict ZIXdcyUzBEYPkZsHVuQ1UcOb0Gv8sVDyBWXPZ08LpS3bNIE9F87EORvE5gl0Ajk
 

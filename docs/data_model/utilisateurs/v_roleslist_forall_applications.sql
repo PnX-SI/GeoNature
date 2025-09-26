@@ -1,5 +1,4 @@
 
-\restrict lm4MD4MEUjaLh6AmbWDahR4DRZf9WAZ6G7aE1VaYJEYORjXRD69b47IxjX0FFr4
 
 CREATE VIEW utilisateurs.v_roleslist_forall_applications AS
  SELECT a.groupe,
@@ -67,5 +66,4 @@ CREATE VIEW utilisateurs.v_roleslist_forall_applications AS
   WHERE (a.active = true)
   GROUP BY a.groupe, a.active, a.id_role, a.identifiant, a.nom_role, a.prenom_role, a.desc_role, a.pass, a.pass_plus, a.email, a.id_organisme, a.organisme, a.id_unite, a.remarques, a.date_insert, a.date_update, a.id_application;
 
-\unrestrict lm4MD4MEUjaLh6AmbWDahR4DRZf9WAZ6G7aE1VaYJEYORjXRD69b47IxjX0FFr4
 

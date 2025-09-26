@@ -1,5 +1,4 @@
 
-\restrict 4e26sQhGckeC19FSJnB9EQ2MiYxBvfhdLOL0JZarLdzSFmnGEnvIT8NueRj4CUa
 
 CREATE VIEW gn_commons.v_meta_actions_on_object AS
  WITH insert_a AS (
@@ -39,5 +38,4 @@ CREATE VIEW gn_commons.v_meta_actions_on_object AS
      LEFT JOIN last_update_a u ON ((i.uuid_attached_row = u.uuid_attached_row)))
      LEFT JOIN delete_a d ON ((i.uuid_attached_row = d.uuid_attached_row)));
 
-\unrestrict 4e26sQhGckeC19FSJnB9EQ2MiYxBvfhdLOL0JZarLdzSFmnGEnvIT8NueRj4CUa
 

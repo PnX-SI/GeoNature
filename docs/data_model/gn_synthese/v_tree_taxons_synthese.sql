@@ -1,5 +1,4 @@
 
-\restrict 2ZadXQwsHlx3RCIoDdqVkQ0RP2RryMc1hAvwqY7NohXub0zm6MQBWx5B7eWe3qV
 
 CREATE VIEW gn_synthese.v_tree_taxons_synthese AS
  WITH cd_famille AS (
@@ -59,5 +58,4 @@ CREATE VIEW gn_synthese.v_tree_taxons_synthese AS
 
 COMMENT ON VIEW gn_synthese.v_tree_taxons_synthese IS 'Vue destinée à l''arbre taxonomique de la synthese. S''arrête  à la famille pour des questions de performances';
 
-\unrestrict 2ZadXQwsHlx3RCIoDdqVkQ0RP2RryMc1hAvwqY7NohXub0zm6MQBWx5B7eWe3qV
 

@@ -1,5 +1,4 @@
 
-\restrict p5LyhrQY7sJcjFmhXLYeXtw1KgZ1FMOZkruOCVUdKf4QQMj2pNVH6Hyb33hN05n
 
 CREATE TABLE ref_habitats.habref_corresp_hab (
     cd_corresp_hab integer NOT NULL,
@@ -30,5 +29,4 @@ ALTER TABLE ONLY ref_habitats.habref_corresp_hab
 ALTER TABLE ONLY ref_habitats.habref_corresp_hab
     ADD CONSTRAINT fk_habref_corresp_hab_cd_type_rel FOREIGN KEY (cd_type_relation) REFERENCES ref_habitats.bib_habref_typo_rel(cd_type_rel) ON UPDATE CASCADE;
 
-\unrestrict p5LyhrQY7sJcjFmhXLYeXtw1KgZ1FMOZkruOCVUdKf4QQMj2pNVH6Hyb33hN05n
 

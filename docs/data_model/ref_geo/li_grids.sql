@@ -1,5 +1,4 @@
 
-\restrict mdoL4bXLF0NhpybgbjHiTtPLQGKA6Gy2a2lsctl9ep9ijWFuNdMVH4ij4xSx7BY
 
 CREATE TABLE ref_geo.li_grids (
     id_grid character varying(50) NOT NULL,
@@ -18,5 +17,4 @@ CREATE INDEX index_li_grids_id_area ON ref_geo.li_grids USING btree (id_area);
 ALTER TABLE ONLY ref_geo.li_grids
     ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE ON DELETE CASCADE;
 
-\unrestrict mdoL4bXLF0NhpybgbjHiTtPLQGKA6Gy2a2lsctl9ep9ijWFuNdMVH4ij4xSx7BY
 

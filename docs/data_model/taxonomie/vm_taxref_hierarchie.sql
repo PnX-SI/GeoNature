@@ -1,5 +1,4 @@
 
-\restrict Ce1CWDfKpxZP568DBmxWpW9EmoEfer9d7cuTfLRifNnvyDgSvlBo0PbaYIzqXRS
 
 CREATE TABLE taxonomie.vm_taxref_hierarchie (
     regne character varying(20),
@@ -21,5 +20,4 @@ CREATE TABLE taxonomie.vm_taxref_hierarchie (
 ALTER TABLE ONLY taxonomie.vm_taxref_hierarchie
     ADD CONSTRAINT vm_taxref_hierarchie_pkey PRIMARY KEY (cd_nom);
 
-\unrestrict Ce1CWDfKpxZP568DBmxWpW9EmoEfer9d7cuTfLRifNnvyDgSvlBo0PbaYIzqXRS
 

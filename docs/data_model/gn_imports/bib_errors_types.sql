@@ -1,5 +1,4 @@
 
-\restrict N6owmyCkq6sVWgaytVIniBYQOJuQ20AIevo0b8WOvgLaTinpfAN15mc4ClDaG8v
 
 CREATE TABLE gn_imports.bib_errors_types (
     id_error integer NOT NULL,
@@ -25,5 +24,4 @@ ALTER TABLE ONLY gn_imports.bib_errors_types
 ALTER TABLE ONLY gn_imports.bib_errors_types
     ADD CONSTRAINT t_user_errors_name_key UNIQUE (name);
 
-\unrestrict N6owmyCkq6sVWgaytVIniBYQOJuQ20AIevo0b8WOvgLaTinpfAN15mc4ClDaG8v
 

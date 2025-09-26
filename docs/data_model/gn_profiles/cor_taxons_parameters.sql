@@ -1,5 +1,4 @@
 
-\restrict sg50SZjTe6LqE9ndW8RifU98OpmgGiQ1lOyyds61MsxXd1VNswVOHB9ObJugubv
 
 CREATE TABLE gn_profiles.cor_taxons_parameters (
     cd_nom integer NOT NULL,
@@ -14,5 +13,4 @@ ALTER TABLE ONLY gn_profiles.cor_taxons_parameters
 ALTER TABLE ONLY gn_profiles.cor_taxons_parameters
     ADD CONSTRAINT fk_cor_taxons_parameters_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
-\unrestrict sg50SZjTe6LqE9ndW8RifU98OpmgGiQ1lOyyds61MsxXd1VNswVOHB9ObJugubv
 

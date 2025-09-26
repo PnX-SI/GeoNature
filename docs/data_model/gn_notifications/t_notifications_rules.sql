@@ -1,5 +1,4 @@
 
-\restrict z2UHSaas18PqbGz5AGDpWqcr7SnhKcbGmruPdu4nO1Cwt1TV50CAiBGs0abvMvT
 
 CREATE TABLE gn_notifications.t_notifications_rules (
     id integer NOT NULL,
@@ -36,5 +35,4 @@ ALTER TABLE ONLY gn_notifications.t_notifications_rules
 ALTER TABLE ONLY gn_notifications.t_notifications_rules
     ADD CONSTRAINT t_notifications_rules_id_role_fkey FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role);
 
-\unrestrict z2UHSaas18PqbGz5AGDpWqcr7SnhKcbGmruPdu4nO1Cwt1TV50CAiBGs0abvMvT
 

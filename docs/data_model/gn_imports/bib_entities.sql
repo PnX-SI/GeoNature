@@ -1,5 +1,4 @@
 
-\restrict mMJYrF5YFuQfl3mIhtvL4keBjpeMDlQ8SSnQsTOiIboRc5dHearragkwgUAI2XY
 
 CREATE TABLE gn_imports.bib_entities (
     id_entity integer NOT NULL,
@@ -36,5 +35,4 @@ ALTER TABLE ONLY gn_imports.bib_entities
 ALTER TABLE ONLY gn_imports.bib_entities
     ADD CONSTRAINT bib_entities_id_unique_column_fkey FOREIGN KEY (id_unique_column) REFERENCES gn_imports.bib_fields(id_field);
 
-\unrestrict mMJYrF5YFuQfl3mIhtvL4keBjpeMDlQ8SSnQsTOiIboRc5dHearragkwgUAI2XY
 

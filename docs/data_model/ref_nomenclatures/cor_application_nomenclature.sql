@@ -1,5 +1,4 @@
 
-\restrict khyMLdWsHP4Vac3sifeACN0NgYxbxC6GfsPN2G754FwwvBNdb7ljh7rn0rmd3nv
 
 CREATE TABLE ref_nomenclatures.cor_application_nomenclature (
     id_nomenclature integer NOT NULL,
@@ -17,5 +16,4 @@ ALTER TABLE ONLY ref_nomenclatures.cor_application_nomenclature
 ALTER TABLE ONLY ref_nomenclatures.cor_application_nomenclature
     ADD CONSTRAINT fk_cor_application_nomenclature_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-\unrestrict khyMLdWsHP4Vac3sifeACN0NgYxbxC6GfsPN2G754FwwvBNdb7ljh7rn0rmd3nv
 

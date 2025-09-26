@@ -1,5 +1,4 @@
 
-\restrict PuLpYdFEtfPqUpaCtiPhdd0SwA6sgIxPUYHxXH0qvCKNmPTpMvZyWzWD7NQC11H
 
 CREATE TABLE gn_notifications.bib_notifications_categories (
     code character varying NOT NULL,
@@ -22,5 +21,4 @@ ALTER TABLE ONLY gn_notifications.bib_notifications_categories
 ALTER TABLE ONLY gn_notifications.bib_notifications_categories
     ADD CONSTRAINT bib_notifications_categories_id_object_fkey FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object);
 
-\unrestrict PuLpYdFEtfPqUpaCtiPhdd0SwA6sgIxPUYHxXH0qvCKNmPTpMvZyWzWD7NQC11H
 

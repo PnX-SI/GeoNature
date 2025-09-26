@@ -1,5 +1,4 @@
 
-\restrict rDo2eC2RRuUPNTgbSJQTtDEyuxZ8I9bC6YGC1w8waN018loQFxEfd9plo04X08K
 
 CREATE TABLE gn_permissions.t_permissions (
     id_permission integer NOT NULL,
@@ -42,5 +41,4 @@ ALTER TABLE ONLY gn_permissions.t_permissions
 ALTER TABLE ONLY gn_permissions.t_permissions
     ADD CONSTRAINT t_permissions_scope_value_fkey FOREIGN KEY (scope_value) REFERENCES gn_permissions.bib_filters_scope(value);
 
-\unrestrict rDo2eC2RRuUPNTgbSJQTtDEyuxZ8I9bC6YGC1w8waN018loQFxEfd9plo04X08K
 

@@ -1,5 +1,4 @@
 
-\restrict knKb6YLB1SoGO6fYZt4vjWAqBuErKsPupcHcchr1oaKPQzg8Md91ioaJwZPLphK
 
 CREATE TABLE gn_imports.t_imports (
     id_import integer NOT NULL,
@@ -52,5 +51,4 @@ ALTER TABLE ONLY gn_imports.t_imports
 ALTER TABLE ONLY gn_imports.t_imports
     ADD CONSTRAINT t_imports_id_destination_fkey FOREIGN KEY (id_destination) REFERENCES gn_imports.bib_destinations(id_destination) ON DELETE RESTRICT;
 
-\unrestrict knKb6YLB1SoGO6fYZt4vjWAqBuErKsPupcHcchr1oaKPQzg8Md91ioaJwZPLphK
 

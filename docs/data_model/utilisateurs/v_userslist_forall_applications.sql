@@ -1,5 +1,4 @@
 
-\restrict CU4lrwdVE6dcDtmcCcDwbchbJi5DNn6VyHKcXm1equ31ZdRgPlDuqSXahBqDwyP
 
 CREATE VIEW utilisateurs.v_userslist_forall_applications AS
  SELECT d.groupe,
@@ -23,5 +22,4 @@ CREATE VIEW utilisateurs.v_userslist_forall_applications AS
    FROM utilisateurs.v_roleslist_forall_applications d
   WHERE (d.groupe = false);
 
-\unrestrict CU4lrwdVE6dcDtmcCcDwbchbJi5DNn6VyHKcXm1equ31ZdRgPlDuqSXahBqDwyP
 

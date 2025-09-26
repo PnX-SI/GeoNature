@@ -1,5 +1,4 @@
 
-\restrict 8UBDBeLJwJfkLhkXKv27ZEwDaeNbe7SUnHxC4tBcpjJX3LTM0tshiqKCZ1Zwyse
 
 CREATE TABLE ref_nomenclatures.bib_nomenclatures_types (
     id_type integer NOT NULL,
@@ -41,5 +40,4 @@ ALTER TABLE ONLY ref_nomenclatures.bib_nomenclatures_types
 
 CREATE TRIGGER tri_meta_dates_change_bib_nomenclatures_types BEFORE INSERT OR UPDATE ON ref_nomenclatures.bib_nomenclatures_types FOR EACH ROW EXECUTE FUNCTION public.fct_trg_meta_dates_change();
 
-\unrestrict 8UBDBeLJwJfkLhkXKv27ZEwDaeNbe7SUnHxC4tBcpjJX3LTM0tshiqKCZ1Zwyse
 

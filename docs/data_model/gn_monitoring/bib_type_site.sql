@@ -1,5 +1,4 @@
 
-\restrict DEtJnF67LV0gDFk7fZcKyy6Y1khuRamWSkTdLksiB2vIqd1QNpJGPVDXvPtTNq5
 
 CREATE TABLE gn_monitoring.bib_type_site (
     id_nomenclature_type_site integer NOT NULL,
@@ -17,5 +16,4 @@ ALTER TABLE gn_monitoring.bib_type_site
 ALTER TABLE ONLY gn_monitoring.bib_type_site
     ADD CONSTRAINT fk_t_nomenclatures_id_nomenclature_type_site FOREIGN KEY (id_nomenclature_type_site) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature);
 
-\unrestrict DEtJnF67LV0gDFk7fZcKyy6Y1khuRamWSkTdLksiB2vIqd1QNpJGPVDXvPtTNq5
 

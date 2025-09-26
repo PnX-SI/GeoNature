@@ -1,5 +1,4 @@
 
-\restrict LIZuHX60JlrbmGp3otGmpEKL1RZCfoSd1v7Iw9zW5ukFpzUayeQPBRGm7VPFs9h
 
 CREATE VIEW ref_nomenclatures.v_objet_denbr AS
  SELECT ctn.regne,
@@ -15,5 +14,4 @@ CREATE VIEW ref_nomenclatures.v_objet_denbr AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'OBJ_DENBR'::text) AND (n.active = true));
 
-\unrestrict LIZuHX60JlrbmGp3otGmpEKL1RZCfoSd1v7Iw9zW5ukFpzUayeQPBRGm7VPFs9h
 

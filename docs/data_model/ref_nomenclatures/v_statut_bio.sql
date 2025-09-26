@@ -1,5 +1,4 @@
 
-\restrict KSQIx2hNgaAmjDOAR2ckehdIDo9qxyGduZ1DDk5tuSx0DN52kC64rfqZ8eQgdw3
 
 CREATE VIEW ref_nomenclatures.v_statut_bio AS
  SELECT ctn.regne,
@@ -15,5 +14,4 @@ CREATE VIEW ref_nomenclatures.v_statut_bio AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'STATUT_BIO'::text) AND (n.active = true));
 
-\unrestrict KSQIx2hNgaAmjDOAR2ckehdIDo9qxyGduZ1DDk5tuSx0DN52kC64rfqZ8eQgdw3
 

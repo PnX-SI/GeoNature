@@ -1,5 +1,4 @@
 
-\restrict lcUyJdQACrum1pDzO5zeb7snOiKsTgBpyb13gthLYbcDHuPheSthIZvI2DV0UOs
 
 CREATE VIEW ref_nomenclatures.v_type_denbr AS
  SELECT ctn.regne,
@@ -15,5 +14,4 @@ CREATE VIEW ref_nomenclatures.v_type_denbr AS
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'TYP_DENBR'::text) AND (n.active = true));
 
-\unrestrict lcUyJdQACrum1pDzO5zeb7snOiKsTgBpyb13gthLYbcDHuPheSthIZvI2DV0UOs
 

@@ -1,5 +1,4 @@
 
-\restrict caMa5OQmmPgW4ShceHU545O9LSqq22ZhwJFaUuofACiuFgwi1IEq0IHqfvIMXNa
 
 CREATE TABLE gn_meta.cor_acquisition_framework_voletsinp (
     id_acquisition_framework integer NOT NULL,
@@ -20,5 +19,4 @@ ALTER TABLE ONLY gn_meta.cor_acquisition_framework_voletsinp
 ALTER TABLE ONLY gn_meta.cor_acquisition_framework_voletsinp
     ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_nomenclature_voletsin FOREIGN KEY (id_nomenclature_voletsinp) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-\unrestrict caMa5OQmmPgW4ShceHU545O9LSqq22ZhwJFaUuofACiuFgwi1IEq0IHqfvIMXNa
 
