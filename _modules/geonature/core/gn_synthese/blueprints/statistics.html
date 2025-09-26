@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_synthese.blueprints.statistics - Documentation GeoNature 2.16.2</title>
+        <title>geonature.core.gn_synthese.blueprints.statistics - Documentation GeoNature 2.16.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.2</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -445,6 +445,8 @@
         <article role="main" id="furo-main-content">
           <h1>Code source de geonature.core.gn_synthese.blueprints.statistics</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">Response</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span>
+
+<span class="kn">from</span> <span class="nn">apptax.taxonomie.models</span> <span class="kn">import</span> <span class="n">Taxref</span>
 <span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="n">TDatasets</span>
 <span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.decorators</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">login_required</span><span class="p">,</span>
@@ -454,7 +456,6 @@
 <span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.utils.query_select_sqla</span> <span class="kn">import</span> <span class="n">SyntheseQuery</span>
 <span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span><span class="p">,</span> <span class="n">db</span>
 <span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="kn">import</span> <span class="n">json_resp</span>
-
 
 <span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">distinct</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">inspect</span>
 <span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">BadRequest</span>
@@ -610,20 +611,23 @@
         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_readable</span><span class="p">()</span><span class="o">.</span><span class="n">whereclause</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nb_allowed_datasets&quot;</span><span class="p">:</span> <span class="n">nb_allowed_datasets</span><span class="p">}</span>
+    <span class="n">distinct_species_request</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">distinct</span><span class="p">(</span><span class="n">Taxref</span><span class="o">.</span><span class="n">cd_ref</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Taxref</span><span class="p">,</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span> <span class="o">==</span> <span class="n">Taxref</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">)</span>
+    <span class="p">)</span>
 
     <span class="n">queries</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;nb_obs&quot;</span><span class="p">:</span> <span class="n">select</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">),</span>
-        <span class="s2">&quot;nb_distinct_species&quot;</span><span class="p">:</span> <span class="n">select</span><span class="p">(</span>
-            <span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">),</span>
-        <span class="p">),</span>
+        <span class="s2">&quot;nb_distinct_species&quot;</span><span class="p">:</span> <span class="n">distinct_species_request</span><span class="p">,</span>
         <span class="s2">&quot;nb_distinct_observer&quot;</span><span class="p">:</span> <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">observers</span><span class="p">)),</span>
     <span class="p">}</span>
 
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">queries</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">synthese_query</span> <span class="o">=</span> <span class="n">SyntheseQuery</span><span class="p">(</span><span class="n">Synthese</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">synthese_query</span><span class="o">.</span><span class="n">filter_query_with_permissions</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span> <span class="n">permissions</span><span class="p">)</span>
+        <span class="n">synthese_query</span><span class="o">.</span><span class="n">build_query</span><span class="p">()</span>
         <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">synthese_query</span><span class="o">.</span><span class="n">query</span><span class="p">))</span>
-
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;nb_data&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;nb_obs&quot;</span><span class="p">],</span>
         <span class="s2">&quot;nb_species&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;nb_distinct_species&quot;</span><span class="p">],</span>
@@ -664,7 +668,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=831053d0"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=2768d7c9"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

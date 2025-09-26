@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_commons.routes - Documentation GeoNature 2.16.2</title>
+        <title>geonature.core.gn_commons.routes - Documentation GeoNature 2.16.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.2</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -448,14 +448,12 @@
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">or_</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">url_for</span>
-<span class="kn">from</span> <span class="nn">flask.json</span> <span class="kn">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">url_for</span>
 <span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Forbidden</span><span class="p">,</span> <span class="n">Conflict</span>
-<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span>
 
-<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="kn">import</span> <span class="n">json_resp</span>
+
 <span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.utilsgeometry</span> <span class="kn">import</span> <span class="n">remove_third_dimension</span>
 
 <span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="p">(</span>
@@ -465,22 +463,24 @@
     <span class="n">TPlaces</span><span class="p">,</span>
     <span class="n">TAdditionalFields</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.repositories</span> <span class="kn">import</span> <span class="n">TMediaRepository</span>
 <span class="kn">from</span> <span class="nn">geonature.core.gn_commons.repositories</span> <span class="kn">import</span> <span class="n">get_table_location_id</span>
-<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">BACKEND_DIR</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
 <span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config_frontend</span><span class="p">,</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions</span> <span class="kn">import</span> <span class="n">decorators</span> <span class="k">as</span> <span class="n">permissions</span>
 <span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
-<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.tools</span> <span class="kn">import</span> <span class="n">get_scope</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.tools</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_scope</span><span class="p">,</span>
+    <span class="n">get_user_permissions</span><span class="p">,</span>
+    <span class="n">get_permissions</span><span class="p">,</span>
+    <span class="n">has_any_permissions</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">geonature.core.gn_commons.schemas</span> <span class="kn">import</span> <span class="n">TAdditionalFieldsSchema</span>
 <span class="kn">import</span> <span class="nn">geonature.core.gn_commons.tasks</span>  <span class="c1"># noqa: F401</span>
 
 <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">shape</span>
 <span class="kn">from</span> <span class="nn">geoalchemy2.shape</span> <span class="kn">import</span> <span class="n">from_shape</span>
-<span class="kn">from</span> <span class="nn">geonature.utils.errors</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">GeonatureApiError</span><span class="p">,</span>
-<span class="p">)</span>
 
+<span class="kn">from</span> <span class="nn">...utils.module</span> <span class="kn">import</span> <span class="n">get_module_version</span>
+<span class="kn">from</span> <span class="nn">apptax.taxonomie.models</span> <span class="kn">import</span> <span class="n">TMetaTaxref</span>
 
 <div class="viewcode-block" id="routes">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.routes">[docs]</a>
@@ -514,7 +514,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
-
     <span class="n">exclude</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;DISABLED_MODULES&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">if</span> <span class="s2">&quot;exclude&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
         <span class="n">exclude</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s2">&quot;exclude&quot;</span><span class="p">))</span>
@@ -568,6 +567,10 @@
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">obj_dict</span><span class="p">[</span><span class="s2">&quot;cruved&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
                 <span class="n">module_allowed</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_objects&quot;</span><span class="p">][</span><span class="n">obj_code</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_dict</span>
+        <span class="k">if</span> <span class="n">has_any_permissions</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;ADMIN&quot;</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="s2">&quot;MODULES&quot;</span><span class="p">):</span>
+            <span class="n">module_allowed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">:=</span> <span class="n">get_module_version</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">):</span>
+            <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
         <span class="k">if</span> <span class="n">module_allowed</span><span class="p">:</span>
             <span class="n">allowed_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module_dict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">allowed_modules</span><span class="p">)</span></div>
@@ -823,7 +826,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=831053d0"></script>
+</div><script src="../../../../_static/documentation_options.js?v=2768d7c9"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

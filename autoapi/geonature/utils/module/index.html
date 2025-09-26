@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../search.html" /><link rel="next" title="geonature.utils.schema" href="../schema/index.html" /><link rel="prev" title="geonature.utils.metaclass_utils" href="../metaclass_utils/index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.utils.module - Documentation GeoNature 2.16.2</title>
+        <title>geonature.utils.module - Documentation GeoNature 2.16.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.2</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -478,6 +478,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.utils.module.module_db_upgrade" title="geonature.utils.module.module_db_upgrade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">module_db_upgrade</span></code></a>(module_dist[, directory, sql, tag, ...])</p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.utils.module.get_module_version" title="geonature.utils.module.get_module_version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_module_version</span></code></a>(module_code)</p></td>
+<td><p>Get the module version from the module_code. We check what python package is installed.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -521,6 +524,13 @@ Useful to find all revisions of a given branch.</p>
 <dt class="sig sig-object py" id="geonature.utils.module.module_db_upgrade">
 <span class="sig-prename descclassname"><span class="pre">geonature.utils.module.</span></span><span class="sig-name descname"><span class="pre">module_db_upgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sql</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/geonature/utils/module.html#module_db_upgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.utils.module.module_db_upgrade" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.utils.module.get_module_version">
+<span class="sig-prename descclassname"><span class="pre">geonature.utils.module.</span></span><span class="sig-name descname"><span class="pre">get_module_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/geonature/utils/module.html#get_module_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.utils.module.get_module_version" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Get the module version from the module_code. We check what python package is installed.
+If no package is found, we return None.</p>
+</dd></dl>
 
 </section>
 </section>
@@ -590,6 +600,7 @@ Useful to find all revisions of a given branch.</p>
 <li><a class="reference internal" href="#geonature.utils.module.iterate_revisions"><code class="docutils literal notranslate"><span class="pre">iterate_revisions()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.utils.module.alembic_branch_in_use"><code class="docutils literal notranslate"><span class="pre">alembic_branch_in_use()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.utils.module.module_db_upgrade"><code class="docutils literal notranslate"><span class="pre">module_db_upgrade()</span></code></a></li>
+<li><a class="reference internal" href="#geonature.utils.module.get_module_version"><code class="docutils literal notranslate"><span class="pre">get_module_version()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -603,7 +614,7 @@ Useful to find all revisions of a given branch.</p>
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=831053d0"></script>
+</div><script src="../../../../_static/documentation_options.js?v=2768d7c9"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

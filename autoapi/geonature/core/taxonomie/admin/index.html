@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../search.html" /><link rel="next" title="geonature.core.taxonomie.schemas" href="../schemas/index.html" /><link rel="prev" title="geonature.core.taxonomie" href="../index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.taxonomie.admin - Documentation GeoNature 2.16.2</title>
+        <title>geonature.core.taxonomie.admin - Documentation GeoNature 2.16.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.2</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -472,6 +472,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.taxonomie.admin.CruvedProtectedBibThemes" title="geonature.core.taxonomie.admin.CruvedProtectedBibThemes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CruvedProtectedBibThemes</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.taxonomie.admin.CruvedProtectedSummaryView" title="geonature.core.taxonomie.admin.CruvedProtectedSummaryView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CruvedProtectedSummaryView</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -575,6 +578,22 @@
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.taxonomie.admin.CruvedProtectedSummaryView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.taxonomie.admin.</span></span><span class="sig-name descname"><span class="pre">CruvedProtectedSummaryView</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/taxonomie/admin.html#CruvedProtectedSummaryView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.taxonomie.admin.CruvedProtectedSummaryView" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.CruvedProtectedMixin" title="geonature.core.admin.utils.CruvedProtectedMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.CruvedProtectedMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.admin.admin_view.SummaryView</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.taxonomie.admin.CruvedProtectedSummaryView.module_code">
+<span class="sig-name descname"><span class="pre">module_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TAXHUB'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/taxonomie/admin.html#CruvedProtectedSummaryView.module_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.taxonomie.admin.CruvedProtectedSummaryView.module_code" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.taxonomie.admin.CruvedProtectedSummaryView.object_code">
+<span class="sig-name descname"><span class="pre">object_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TAXONS'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/taxonomie/admin.html#CruvedProtectedSummaryView.object_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.taxonomie.admin.CruvedProtectedSummaryView.object_code" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.taxonomie.admin.load_admin_views">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.taxonomie.admin.</span></span><span class="sig-name descname"><span class="pre">load_admin_views</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">admin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/taxonomie/admin.html#load_admin_views"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.taxonomie.admin.load_admin_views" title="Lien vers cette définition">¶</a></dt>
@@ -668,6 +687,11 @@
 <li><a class="reference internal" href="#geonature.core.taxonomie.admin.CruvedProtectedBibThemes.object_code"><code class="docutils literal notranslate"><span class="pre">CruvedProtectedBibThemes.object_code</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#geonature.core.taxonomie.admin.CruvedProtectedSummaryView"><code class="docutils literal notranslate"><span class="pre">CruvedProtectedSummaryView</span></code></a><ul>
+<li><a class="reference internal" href="#geonature.core.taxonomie.admin.CruvedProtectedSummaryView.module_code"><code class="docutils literal notranslate"><span class="pre">CruvedProtectedSummaryView.module_code</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.taxonomie.admin.CruvedProtectedSummaryView.object_code"><code class="docutils literal notranslate"><span class="pre">CruvedProtectedSummaryView.object_code</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#geonature.core.taxonomie.admin.load_admin_views"><code class="docutils literal notranslate"><span class="pre">load_admin_views()</span></code></a></li>
 </ul>
 </li>
@@ -682,7 +706,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=831053d0"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=2768d7c9"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../../search.html" /><link rel="next" title="geonature.core.gn_synthese.utils.taxon_sheet" href="../taxon_sheet/index.html" /><link rel="prev" title="geonature.core.gn_synthese.utils.process" href="../process/index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_synthese.utils.query_select_sqla - Documentation GeoNature 2.16.2</title>
+        <title>geonature.core.gn_synthese.utils.query_select_sqla - Documentation GeoNature 2.16.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.2</div></a>
+      <a href="../../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -462,7 +462,10 @@ much more efficient</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery" title="geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyntheseQuery</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.JoinType" title="geonature.core.gn_synthese.utils.query_select_sqla.JoinType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JoinType</span></code></a></p></td>
+<td><p>str(object='') -&gt; str</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery" title="geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyntheseQuery</span></code></a></p></td>
 <td><p>class for building synthese query and manage join</p></td>
 </tr>
 </tbody>
@@ -483,6 +486,31 @@ much more efficient</p>
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.query_select_sqla.JoinType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.utils.query_select_sqla.</span></span><span class="sig-name descname"><span class="pre">JoinType</span></span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#JoinType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.JoinType" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(disponible dans Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>str(object=””) -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.__str__() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to “strict”.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.query_select_sqla.JoinType.INNER">
+<span class="sig-name descname"><span class="pre">INNER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'inner'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#JoinType.INNER"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.JoinType.INNER" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.query_select_sqla.JoinType.LEFT">
+<span class="sig-name descname"><span class="pre">LEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'left'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#JoinType.LEFT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.JoinType.LEFT" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.utils.query_select_sqla.</span></span><span class="sig-name descname"><span class="pre">SyntheseQuery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_synthese_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id_synthese'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_dataset_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id_dataset'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observers_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'observers'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_digitiser_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id_digitiser'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_generic_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_joins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#SyntheseQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery" title="Lien vers cette définition">¶</a></dt>
@@ -542,7 +570,7 @@ query_joins = SQLA Join object</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.add_join">
-<span class="sig-name descname"><span class="pre">add_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">join_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#SyntheseQuery.add_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.add_join" title="Lien vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">join_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.JoinType" title="geonature.core.gn_synthese.utils.query_select_sqla.JoinType"><span class="pre">JoinType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">JoinType.INNER</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/query_select_sqla.html#SyntheseQuery.add_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.add_join" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -707,6 +735,11 @@ aggrégée de façon à tester le nombre puis jointer sur le département de la 
 <li><a class="reference internal" href="#classes">Classes</a></li>
 <li><a class="reference internal" href="#functions">Functions</a></li>
 <li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.JoinType"><code class="docutils literal notranslate"><span class="pre">JoinType</span></code></a><ul>
+<li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.JoinType.INNER"><code class="docutils literal notranslate"><span class="pre">JoinType.INNER</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.JoinType.LEFT"><code class="docutils literal notranslate"><span class="pre">JoinType.LEFT</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery</span></code></a><ul>
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.query"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.query</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery.filters"><code class="docutils literal notranslate"><span class="pre">SyntheseQuery.filters</span></code></a></li>
@@ -744,7 +777,7 @@ aggrégée de façon à tester le nombre puis jointer sur le département de la 
       
     </aside>
   </div>
-</div><script src="../../../../../../_static/documentation_options.js?v=831053d0"></script>
+</div><script src="../../../../../../_static/documentation_options.js?v=2768d7c9"></script>
     <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

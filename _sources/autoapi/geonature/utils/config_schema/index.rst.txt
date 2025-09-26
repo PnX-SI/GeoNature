@@ -278,6 +278,9 @@ Module Contents
    .. py:attribute:: METADATA_AREA_FILTERS
 
 
+   .. py:attribute:: ENABLE_UUID_EDITION_FIELD
+
+
 .. py:class:: AuthenticationConfig
 
    Bases: :py:obj:`marshmallow.Schema`

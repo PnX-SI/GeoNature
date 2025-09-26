@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.taxonomie.admin - Documentation GeoNature 2.16.2</title>
+        <title>geonature.core.taxonomie.admin - Documentation GeoNature 2.16.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.2</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -451,6 +451,7 @@
     <span class="n">TMediasView</span><span class="p">,</span>
     <span class="n">BibAttributsView</span><span class="p">,</span>
     <span class="n">BibThemesView</span><span class="p">,</span>
+    <span class="n">SummaryView</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
 
@@ -533,6 +534,20 @@
 
 
 
+<div class="viewcode-block" id="CruvedProtectedSummaryView">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/taxonomie/admin/index.html#geonature.core.taxonomie.admin.CruvedProtectedSummaryView">[docs]</a>
+<span class="k">class</span> <span class="nc">CruvedProtectedSummaryView</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">SummaryView</span><span class="p">):</span>
+<div class="viewcode-block" id="CruvedProtectedSummaryView.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/taxonomie/admin/index.html#geonature.core.taxonomie.admin.CruvedProtectedSummaryView.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;TAXHUB&quot;</span></div>
+
+<div class="viewcode-block" id="CruvedProtectedSummaryView.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/taxonomie/admin/index.html#geonature.core.taxonomie.admin.CruvedProtectedSummaryView.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;TAXONS&quot;</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="load_admin_views">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/taxonomie/admin/index.html#geonature.core.taxonomie.admin.load_admin_views">[docs]</a>
 <span class="k">def</span> <span class="nf">load_admin_views</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">admin</span><span class="p">):</span>
@@ -585,6 +600,14 @@
             <span class="n">category</span><span class="o">=</span><span class="s2">&quot;TaxHub&quot;</span><span class="p">,</span>
             <span class="n">static_folder</span><span class="o">=</span><span class="n">static_folder</span><span class="p">,</span>
         <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+        <span class="n">CruvedProtectedSummaryView</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Informations&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;summary&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;TaxHub&quot;</span><span class="p">,</span>
+            <span class="n">static_folder</span><span class="o">=</span><span class="n">static_folder</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span></div>
 
 </pre></div>
@@ -619,7 +642,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=831053d0"></script>
+</div><script src="../../../../_static/documentation_options.js?v=2768d7c9"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

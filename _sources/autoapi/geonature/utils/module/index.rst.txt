@@ -16,6 +16,7 @@ Functions
    geonature.utils.module.iterate_revisions
    geonature.utils.module.alembic_branch_in_use
    geonature.utils.module.module_db_upgrade
+   geonature.utils.module.get_module_version
 
 
 Module Contents
@@ -41,4 +42,10 @@ Module Contents
 
 
 .. py:function:: module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[])
+
+.. py:function:: get_module_version(module_code: str)
+
+   Get the module version from the module_code. We check what python package is installed.
+   If no package is found, we return None.
+
 

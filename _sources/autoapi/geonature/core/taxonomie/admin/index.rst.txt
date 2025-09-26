@@ -14,6 +14,7 @@ Classes
    geonature.core.taxonomie.admin.CruvedProtectedTMediasView
    geonature.core.taxonomie.admin.CruvedProtectedBibAttributsView
    geonature.core.taxonomie.admin.CruvedProtectedBibThemes
+   geonature.core.taxonomie.admin.CruvedProtectedSummaryView
 
 
 Functions
@@ -102,6 +103,21 @@ Module Contents
 
    .. py:attribute:: object_code
       :value: 'THEMES'
+
+
+
+.. py:class:: CruvedProtectedSummaryView
+
+   Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`apptax.admin.admin_view.SummaryView`
+
+
+   .. py:attribute:: module_code
+      :value: 'TAXHUB'
+
+
+
+   .. py:attribute:: object_code
+      :value: 'TAXONS'
 
 
 

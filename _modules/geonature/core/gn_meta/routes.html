@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.gn_meta.routes - Documentation GeoNature 2.16.2</title>
+        <title>geonature.core.gn_meta.routes - Documentation GeoNature 2.16.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.2</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -460,9 +460,11 @@
 <span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">text</span><span class="p">,</span> <span class="n">select</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.sql.functions</span> <span class="kn">import</span> <span class="n">func</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Load</span><span class="p">,</span> <span class="n">joinedload</span><span class="p">,</span> <span class="n">undefer</span>
-<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Conflict</span><span class="p">,</span> <span class="n">BadRequest</span><span class="p">,</span> <span class="n">Forbidden</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Conflict</span><span class="p">,</span> <span class="n">BadRequest</span><span class="p">,</span> <span class="n">Forbidden</span><span class="p">,</span> <span class="n">InternalServerError</span>
 <span class="kn">from</span> <span class="nn">werkzeug.datastructures</span> <span class="kn">import</span> <span class="n">MultiDict</span>
 <span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">EXCLUDE</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.exc</span> <span class="kn">import</span> <span class="n">IntegrityError</span>
+<span class="kn">from</span> <span class="nn">psycopg2.errors</span> <span class="kn">import</span> <span class="n">UniqueViolation</span>
 
 
 <span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
@@ -873,7 +875,19 @@
         <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span>
 
     <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">IntegrityError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="n">UniqueViolation</span><span class="p">):</span>
+            <span class="n">detail</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="s2">&quot;message_detail&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">detail</span><span class="p">:</span>
+                <span class="n">detail</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">orig</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="n">detail</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="k">raise</span> <span class="n">InternalServerError</span><span class="p">(</span><span class="s2">&quot;An error occured while creating/updating a dataset !&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">dataset</span></div>
 
 
@@ -1271,6 +1285,9 @@
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.acquisitionFrameworkHandler">[docs]</a>
 <span class="k">def</span> <span class="nf">acquisitionFrameworkHandler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">acquisition_framework</span><span class="p">):</span>
     <span class="c1"># Test des droits d&#39;édition du acquisition framework si modification</span>
+
+    <span class="c1"># 🔎 Récupération des données brutes du body</span>
+
     <span class="k">if</span> <span class="n">acquisition_framework</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">user_cruved</span> <span class="o">=</span> <span class="n">get_scopes_by_action</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
 
@@ -1297,7 +1314,18 @@
         <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span>
 
     <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">acquisition_framework</span><span class="p">)</span>
-    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">IntegrityError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="n">UniqueViolation</span><span class="p">):</span>
+            <span class="n">detail</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="s2">&quot;message_detail&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">detail</span><span class="p">:</span>
+                <span class="n">detail</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">orig</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="n">detail</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="k">raise</span> <span class="n">InternalServerError</span><span class="p">(</span><span class="s2">&quot;An error occured while creating/updating a dataset !&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">acquisition_framework</span></div>
 
@@ -1447,7 +1475,7 @@
 
 
 <span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/publish/&lt;int:af_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
-<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
 <span class="nd">@json_resp</span>
 <div class="viewcode-block" id="publish_acquisition_framework">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.publish_acquisition_framework">[docs]</a>
@@ -1534,7 +1562,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=831053d0"></script>
+</div><script src="../../../../_static/documentation_options.js?v=2768d7c9"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Gestion de la sensibilité - Documentation GeoNature 2.16.2</title>
+        <title>Gestion de la sensibilité - Documentation GeoNature 2.16.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.16.2</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -555,6 +555,15 @@ de sensibilité :</p>
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré ou mis à jour avec l’une ou l’autre des commandes suivantes (selon votre version de Taxref) :</p>
 <dl>
+<dt>Taxref v18 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v18 20250904&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV18_20250904.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--zipfile<span class="w"> </span>RefSensibiliteV18_20250904.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>--csvfile<span class="w"> </span>RefSensibilite_18.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">         </span>--encoding<span class="o">=</span>utf-8
+</pre></div>
+</div>
+</dd>
 <dt>Taxref v17 :</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
 <span class="w">         </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v17 20240325&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">         </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip<span class="w"> </span><span class="se">\</span>
@@ -594,6 +603,8 @@ intégré ou mis à jour avec l’une ou l’autre des commandes suivantes (selo
 </dl>
 <p>Le jeu de règles est fourni pour chaque version précise de Taxref, certaines
 espèces sensibles pouvant voir leur <em>cd_nom</em> changer d’une version à l’autre.</p>
+<p>La commande de mise à jour ne supprime pas l’ancien référentiel.
+Pour le supprimer il faut utiliser la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">remove-referential</span></code> en précisant la source.</p>
 <p>Si vous mettez à jour votre version du référentiel de sensibilité, il faut ensuite relancer
 le calcul des règles de sensibilité avec la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">refresh-rules-cache</span></code>.</p>
 </section>
@@ -786,7 +797,7 @@ que l’observation est floutée au département par exemple.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=831053d0"></script>
+</div><script src="_static/documentation_options.js?v=2768d7c9"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
