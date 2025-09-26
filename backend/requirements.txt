@@ -27,7 +27,7 @@ backports-entry-points-selectable==1.3.0
     #   pypn-ref-geo
     #   pypnnomenclature
     #   taxhub
-bcrypt==4.3.0
+bcrypt==5.0.0
     # via pypnusershub
 billiard==4.2.2
     # via celery
@@ -85,7 +85,7 @@ fiona==1.10.1
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
-flask==3.1.2
+flask==3.1.1
     # via
     #   -r requirements-common.in
     #   flask-admin
@@ -286,7 +286,7 @@ pytz==2025.2
     # via
     #   flask-babel
     #   pandas
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via bokeh
 redis==5.2.1
     # via kombu
