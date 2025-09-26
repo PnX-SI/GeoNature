@@ -1,4 +1,6 @@
 
+\restrict yTYbBGW3NLSL8XjglnMD0d7qORtfMNdV24TZmxkR4e5DOH3FHNOI4ikLeOOr4gU
+
 CREATE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
  SELECT DISTINCT ref.nom_valide,
     ref.cd_ref,
@@ -15,4 +17,6 @@ CREATE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
    FROM ((gn_synthese.synthese s
      JOIN taxonomie.taxref t ON ((s.cd_nom = t.cd_nom)))
      JOIN taxonomie.taxref ref ON ((t.cd_ref = ref.cd_nom)));
+
+\unrestrict yTYbBGW3NLSL8XjglnMD0d7qORtfMNdV24TZmxkR4e5DOH3FHNOI4ikLeOOr4gU
 

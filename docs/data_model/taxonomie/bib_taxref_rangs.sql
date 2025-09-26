@@ -1,4 +1,6 @@
 
+\restrict nbZyAhPJovjShoJSlXwZ1EnnhtZz3GXnrr8Rjd7HkQgdyYw5feC7EuRqucLbwPK
+
 CREATE TABLE taxonomie.bib_taxref_rangs (
     id_rang character(4) NOT NULL,
     nom_rang character varying(50) NOT NULL,
@@ -8,4 +10,6 @@ CREATE TABLE taxonomie.bib_taxref_rangs (
 
 ALTER TABLE ONLY taxonomie.bib_taxref_rangs
     ADD CONSTRAINT pk_bib_taxref_rangs PRIMARY KEY (id_rang);
+
+\unrestrict nbZyAhPJovjShoJSlXwZ1EnnhtZz3GXnrr8Rjd7HkQgdyYw5feC7EuRqucLbwPK
 

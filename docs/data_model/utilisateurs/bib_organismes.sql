@@ -1,4 +1,6 @@
 
+\restrict xazkg9UWr1A588lEcQlfjYucL0ldaidaAGMvc5o09WgmQ9qtfmjG9xP8qskY0y0
+
 CREATE TABLE utilisateurs.bib_organismes (
     id_organisme integer NOT NULL,
     uuid_organisme uuid DEFAULT public.uuid_generate_v4() NOT NULL,
@@ -37,4 +39,6 @@ CREATE TRIGGER tri_meta_dates_change_organisms BEFORE INSERT OR UPDATE ON utilis
 
 ALTER TABLE ONLY utilisateurs.bib_organismes
     ADD CONSTRAINT fk_bib_organismes_id_parent FOREIGN KEY (id_parent) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+
+\unrestrict xazkg9UWr1A588lEcQlfjYucL0ldaidaAGMvc5o09WgmQ9qtfmjG9xP8qskY0y0
 

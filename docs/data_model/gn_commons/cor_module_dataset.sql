@@ -1,4 +1,6 @@
 
+\restrict fiILNDeBoYY5c899vDrywiAzvlAXRgk9p56bffHrSHnVZacFOvwzxx4LpjvRDYY
+
 CREATE TABLE gn_commons.cor_module_dataset (
     id_module integer NOT NULL,
     id_dataset integer NOT NULL
@@ -14,4 +16,6 @@ ALTER TABLE ONLY gn_commons.cor_module_dataset
 
 ALTER TABLE ONLY gn_commons.cor_module_dataset
     ADD CONSTRAINT fk_cor_module_dataset_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE;
+
+\unrestrict fiILNDeBoYY5c899vDrywiAzvlAXRgk9p56bffHrSHnVZacFOvwzxx4LpjvRDYY
 

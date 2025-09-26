@@ -1,4 +1,6 @@
 
+\restrict yGtTGVgIFo9tVqK4hNvLfGLQn8EoufpSHmE5Yht8Cx1vH6nSlseeBclrcQVsMlJ
+
 CREATE TABLE ref_geo.l_areas (
     id_area integer NOT NULL,
     id_type integer NOT NULL,
@@ -53,4 +55,6 @@ CREATE TRIGGER tri_transform_geom_update BEFORE UPDATE ON ref_geo.l_areas FOR EA
 
 ALTER TABLE ONLY ref_geo.l_areas
     ADD CONSTRAINT fk_l_areas_id_type FOREIGN KEY (id_type) REFERENCES ref_geo.bib_areas_types(id_type) ON UPDATE CASCADE;
+
+\unrestrict yGtTGVgIFo9tVqK4hNvLfGLQn8EoufpSHmE5Yht8Cx1vH6nSlseeBclrcQVsMlJ
 

@@ -1,4 +1,6 @@
 
+\restrict Y958RlsDaY5IYuEdIhLVpUcUOi4OM3oJlgxrhDZZYpTmUkG9DejaAVrPbLO5Vzr
+
 CREATE TABLE ref_habitats.cor_habref_terr_statut (
     cd_hab_ter integer NOT NULL,
     cd_hab integer NOT NULL,
@@ -18,4 +20,6 @@ ALTER TABLE ONLY ref_habitats.cor_habref_terr_statut
 
 ALTER TABLE ONLY ref_habitats.cor_habref_terr_statut
     ADD CONSTRAINT fk_cor_habref_terr_statut_cd_statut_presence FOREIGN KEY (cd_statut_presence) REFERENCES ref_habitats.bib_habref_statuts(statut) ON UPDATE CASCADE;
+
+\unrestrict Y958RlsDaY5IYuEdIhLVpUcUOi4OM3oJlgxrhDZZYpTmUkG9DejaAVrPbLO5Vzr
 

@@ -1,4 +1,6 @@
 
+\restrict Qyx3D0TCKCmJ4AI25fuNz8OqsqjtRim54Wm8kB7E0xhTiZiDSbXkOOmV5sKpmHO
+
 CREATE TABLE gn_commons.t_parameters (
     id_parameter integer NOT NULL,
     id_organism integer,
@@ -29,4 +31,6 @@ CREATE UNIQUE INDEX i_unique_t_parameters_parameter_name_with_id_organism_null O
 
 ALTER TABLE ONLY gn_commons.t_parameters
     ADD CONSTRAINT fk_t_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+
+\unrestrict Qyx3D0TCKCmJ4AI25fuNz8OqsqjtRim54Wm8kB7E0xhTiZiDSbXkOOmV5sKpmHO
 

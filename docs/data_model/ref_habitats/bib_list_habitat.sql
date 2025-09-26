@@ -1,4 +1,6 @@
 
+\restrict VsoBLEURjjDE7zc1wel3S1bHvVmHyHOxeSP7vSbaRHieyPCyazZa0ZZz0n5RxhW
+
 CREATE TABLE ref_habitats.bib_list_habitat (
     id_list integer NOT NULL,
     list_name character varying(255) NOT NULL
@@ -18,4 +20,6 @@ ALTER SEQUENCE ref_habitats.bib_list_habitat_id_list_seq OWNED BY ref_habitats.b
 
 ALTER TABLE ONLY ref_habitats.bib_list_habitat
     ADD CONSTRAINT pk_bib_list_habitat PRIMARY KEY (id_list);
+
+\unrestrict VsoBLEURjjDE7zc1wel3S1bHvVmHyHOxeSP7vSbaRHieyPCyazZa0ZZz0n5RxhW
 

@@ -1,4 +1,6 @@
 
+\restrict WNG2kynU78DA9rU6fGeqzhLS5atuvBrCbnXCF4w382sSYzhtMGXAIa3rDNX8UPX
+
 CREATE TABLE taxonomie.taxref_changes (
     cd_nom integer NOT NULL,
     num_version_init character varying(5),
@@ -11,4 +13,6 @@ CREATE TABLE taxonomie.taxref_changes (
 
 ALTER TABLE ONLY taxonomie.taxref_changes
     ADD CONSTRAINT pk_taxref_changes PRIMARY KEY (cd_nom, champ);
+
+\unrestrict WNG2kynU78DA9rU6fGeqzhLS5atuvBrCbnXCF4w382sSYzhtMGXAIa3rDNX8UPX
 

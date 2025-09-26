@@ -1,4 +1,6 @@
 
+\restrict FBCsajxJvl5Rc7bab24bAtFDbuT1gPEH5GtaS1nMIumgQ4zrxu4K7ZwMQb24B2g
+
 CREATE TABLE gn_imports.cor_role_import (
     id_role integer NOT NULL,
     id_import integer NOT NULL
@@ -15,4 +17,6 @@ ALTER TABLE ONLY gn_imports.cor_role_import
 
 ALTER TABLE ONLY gn_imports.cor_role_import
     ADD CONSTRAINT fk_utilisateurs_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+
+\unrestrict FBCsajxJvl5Rc7bab24bAtFDbuT1gPEH5GtaS1nMIumgQ4zrxu4K7ZwMQb24B2g
 

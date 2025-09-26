@@ -1,4 +1,6 @@
 
+\restrict YUHxkS8UqV3jTJrhxZFqUcZ4xWxZPHmZkjZuECey3eemxb6bRLWc5d1b7oIBqdP
+
 CREATE VIEW gn_profiles.v_synthese_for_profiles AS
  WITH excluded_live_stage AS (
          SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE'::character varying, '0'::character varying) AS id_n_excluded
@@ -40,4 +42,6 @@ COMMENT ON VIEW gn_profiles.v_synthese_for_profiles IS 'View containing synthese
  cd_ref, date_min, date_max, the_geom_local, altitude_min, altitude_max and
  id_nomenclature_life_stage fields are mandatory.
  WHERE clauses have to apply your t_parameters filters (valid_status)';
+
+\unrestrict YUHxkS8UqV3jTJrhxZFqUcZ4xWxZPHmZkjZuECey3eemxb6bRLWc5d1b7oIBqdP
 

@@ -1,4 +1,6 @@
 
+\restrict HzfInOfM8XqPBdawfS6yKHwbtv6vGgqQ9s0OoX3L7Kh0TU0hTJg0heDOUB9jHNs
+
 CREATE TABLE gn_commons.t_medias (
     id_media integer NOT NULL,
     unique_id_media uuid DEFAULT public.uuid_generate_v4() NOT NULL,
@@ -49,4 +51,6 @@ ALTER TABLE ONLY gn_commons.t_medias
 
 ALTER TABLE ONLY gn_commons.t_medias
     ADD CONSTRAINT fk_t_medias_media_type FOREIGN KEY (id_nomenclature_media_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+\unrestrict HzfInOfM8XqPBdawfS6yKHwbtv6vGgqQ9s0OoX3L7Kh0TU0hTJg0heDOUB9jHNs
 

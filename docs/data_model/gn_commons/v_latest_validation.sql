@@ -1,4 +1,6 @@
 
+\restrict O0LUA96l5hJ411oXErzbA6iHYa0btzOYibP7DiNkzdbI1ZqFgWblOk7ZE8stTlm
+
 CREATE VIEW gn_commons.v_latest_validation AS
  SELECT v.id_validation,
     v.uuid_attached_row,
@@ -12,4 +14,6 @@ CREATE VIEW gn_commons.v_latest_validation AS
             max(t_validations.validation_date) AS max_date
            FROM gn_commons.t_validations
           GROUP BY t_validations.uuid_attached_row) last_val ON (((v.uuid_attached_row = last_val.uuid_attached_row) AND (v.validation_date = last_val.max_date))));
+
+\unrestrict O0LUA96l5hJ411oXErzbA6iHYa0btzOYibP7DiNkzdbI1ZqFgWblOk7ZE8stTlm
 

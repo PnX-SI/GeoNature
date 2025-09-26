@@ -1,4 +1,6 @@
 
+\restrict FehNtO5EPQp0hgxAwTaEc4A6mluUVIsWUJC86ylZpKRIh35afCBmOpI0KanEXLy
+
 CREATE TABLE gn_commons.t_mobile_apps (
     id_mobile_app integer NOT NULL,
     app_code character varying(30),
@@ -26,4 +28,6 @@ ALTER TABLE ONLY gn_commons.t_mobile_apps
 
 ALTER TABLE ONLY gn_commons.t_mobile_apps
     ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
+
+\unrestrict FehNtO5EPQp0hgxAwTaEc4A6mluUVIsWUJC86ylZpKRIh35afCBmOpI0KanEXLy
 

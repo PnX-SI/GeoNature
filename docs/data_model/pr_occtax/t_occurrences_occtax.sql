@@ -1,4 +1,6 @@
 
+\restrict w2t4MwmaFk4b4CK1TqRRtba5zjnAsOwcIlBuV05srSrNudK6X7j4KBjX0B7JKx1
+
 CREATE TABLE pr_occtax.t_occurrences_occtax (
     id_occurrence_occtax bigint NOT NULL,
     unique_id_occurence_occtax uuid DEFAULT public.uuid_generate_v4() NOT NULL,
@@ -158,4 +160,6 @@ ALTER TABLE ONLY pr_occtax.t_occurrences_occtax
 
 ALTER TABLE ONLY pr_occtax.t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_taxref FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
+
+\unrestrict w2t4MwmaFk4b4CK1TqRRtba5zjnAsOwcIlBuV05srSrNudK6X7j4KBjX0B7JKx1
 

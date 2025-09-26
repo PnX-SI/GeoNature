@@ -1,4 +1,6 @@
 
+\restrict 4ZfZDVReEOwjB5Gkz5zMRi2d2UqSWta3qNUHjVxRH7OrkCKoRjzVDsFq4SBxyLw
+
 CREATE TABLE gn_sensitivity.cor_sensitivity_area (
     id_sensitivity integer,
     id_area integer
@@ -13,4 +15,6 @@ ALTER TABLE ONLY gn_sensitivity.cor_sensitivity_area
 
 ALTER TABLE ONLY gn_sensitivity.cor_sensitivity_area
     ADD CONSTRAINT fk_cor_sensitivity_area_id_sensitivity_fkey FOREIGN KEY (id_sensitivity) REFERENCES gn_sensitivity.t_sensitivity_rules(id_sensitivity) ON UPDATE CASCADE ON DELETE CASCADE;
+
+\unrestrict 4ZfZDVReEOwjB5Gkz5zMRi2d2UqSWta3qNUHjVxRH7OrkCKoRjzVDsFq4SBxyLw
 

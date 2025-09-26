@@ -1,4 +1,6 @@
 
+\restrict Avf7l9AljbUb73dZMSIaeOae3PrcxdHaCd4KbwihyAAf96Pb5ldauBWSqKJMCBm
+
 CREATE TABLE gn_permissions.t_permissions_available (
     id_module integer NOT NULL,
     id_object integer NOT NULL,
@@ -21,4 +23,6 @@ ALTER TABLE ONLY gn_permissions.t_permissions_available
 
 ALTER TABLE ONLY gn_permissions.t_permissions_available
     ADD CONSTRAINT t_permissions_available_id_object_fkey FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object);
+
+\unrestrict Avf7l9AljbUb73dZMSIaeOae3PrcxdHaCd4KbwihyAAf96Pb5ldauBWSqKJMCBm
 

@@ -1,4 +1,6 @@
 
+\restrict SnVDI2oh7NCjqSUnmSj0XSPGUFIxiYCfd0kzr8RHWo6BMkg6U3TqavmpMcOz6MY
+
 CREATE TABLE ref_geo.t_linear_groups (
     id_group integer NOT NULL,
     name character varying(250) NOT NULL,
@@ -20,4 +22,6 @@ ALTER TABLE ONLY ref_geo.t_linear_groups
 
 ALTER TABLE ONLY ref_geo.t_linear_groups
     ADD CONSTRAINT t_linear_groups_code_key UNIQUE (code);
+
+\unrestrict SnVDI2oh7NCjqSUnmSj0XSPGUFIxiYCfd0kzr8RHWo6BMkg6U3TqavmpMcOz6MY
 

@@ -1,4 +1,6 @@
 
+\restrict q1W8ThAajIaUkj6U5m1YWcz9nFJYIMN58HhJPdXeo3zMt02YN9gnld3Xk58ige2
+
 CREATE TABLE gn_commons.t_modules (
     id_module integer NOT NULL,
     module_code character varying(50) NOT NULL,
@@ -49,4 +51,6 @@ ALTER TABLE ONLY gn_commons.t_modules
     ADD CONSTRAINT unique_t_modules_module_path UNIQUE (module_path);
 
 CREATE TRIGGER tri_meta_dates_change_t_modules BEFORE INSERT OR UPDATE ON gn_commons.t_modules FOR EACH ROW EXECUTE FUNCTION public.fct_trg_meta_dates_change();
+
+\unrestrict q1W8ThAajIaUkj6U5m1YWcz9nFJYIMN58HhJPdXeo3zMt02YN9gnld3Xk58ige2
 

@@ -1,4 +1,6 @@
 
+\restrict lKuLDdUhWqFUD3b8FX0dGaV2UXPczgjTKduiCDVsr6W3JA9pq6JbKnvJzofeUir
+
 CREATE VIEW gn_synthese.v_area_taxon AS
  SELECT s.cd_nom,
     c.id_area,
@@ -10,4 +12,6 @@ CREATE VIEW gn_synthese.v_area_taxon AS
      JOIN ref_geo.bib_areas_types bat ON ((bat.id_type = la.id_type)))
      JOIN gn_commons.t_parameters tp ON ((((tp.parameter_name)::text = 'occtaxmobile_area_type'::text) AND (tp.parameter_value = (bat.type_code)::text))))
   GROUP BY c.id_area, s.cd_nom;
+
+\unrestrict lKuLDdUhWqFUD3b8FX0dGaV2UXPczgjTKduiCDVsr6W3JA9pq6JbKnvJzofeUir
 

@@ -1,4 +1,6 @@
 
+\restrict 0p7dNoGkfF2gZ3WK0unvaFBVHuSWfxyaZ0ek1pYAOQwCIQSeD0xo8uYz39n3fsO
+
 CREATE TABLE gn_permissions.bib_filters_scope (
     value integer NOT NULL,
     label character varying,
@@ -17,4 +19,6 @@ ALTER SEQUENCE gn_permissions.bib_filters_scope_value_seq OWNED BY gn_permission
 
 ALTER TABLE ONLY gn_permissions.bib_filters_scope
     ADD CONSTRAINT bib_filters_scope_pkey PRIMARY KEY (value);
+
+\unrestrict 0p7dNoGkfF2gZ3WK0unvaFBVHuSWfxyaZ0ek1pYAOQwCIQSeD0xo8uYz39n3fsO
 

@@ -1,4 +1,6 @@
 
+\restrict OylEx1moPfvO8nPePPP7HVVoyzSpINJwiiAQhrJCzO9DGJgAO0I8xqePjHJ6tKp
+
 CREATE TABLE ref_geo.bib_areas_types (
     id_type integer NOT NULL,
     type_name character varying(200) NOT NULL,
@@ -32,4 +34,6 @@ ALTER TABLE ONLY ref_geo.bib_areas_types
     ADD CONSTRAINT unique_bib_areas_types_type_code UNIQUE (type_code);
 
 CREATE UNIQUE INDEX i_unique_bib_areas_types_type_code ON ref_geo.bib_areas_types USING btree (type_code);
+
+\unrestrict OylEx1moPfvO8nPePPP7HVVoyzSpINJwiiAQhrJCzO9DGJgAO0I8xqePjHJ6tKp
 

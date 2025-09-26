@@ -1,4 +1,6 @@
 
+\restrict Gp82c3tqOK2KoN0p1sKiAlXNQcvRuSC2XCBciuDqrqqos8GXhho8Ystro3cbG5N
+
 CREATE TABLE pr_occtax.cor_counting_occtax (
     id_counting_occtax bigint NOT NULL,
     unique_id_sinp_occtax uuid DEFAULT public.uuid_generate_v4() NOT NULL,
@@ -85,4 +87,6 @@ ALTER TABLE ONLY pr_occtax.cor_counting_occtax
 
 ALTER TABLE ONLY pr_occtax.cor_counting_occtax
     ADD CONSTRAINT fk_cor_stage_number_id_taxon FOREIGN KEY (id_occurrence_occtax) REFERENCES pr_occtax.t_occurrences_occtax(id_occurrence_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
+
+\unrestrict Gp82c3tqOK2KoN0p1sKiAlXNQcvRuSC2XCBciuDqrqqos8GXhho8Ystro3cbG5N
 

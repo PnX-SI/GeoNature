@@ -1,4 +1,6 @@
 
+\restrict XRFbayuFhhZB99Jap9HLaqnqbrQgXh6S9oUcqjmb0KPSpr0E4I0tNEndyHjTFns
+
 CREATE TABLE gn_meta.t_acquisition_frameworks (
     id_acquisition_framework integer NOT NULL,
     unique_acquisition_framework_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
@@ -79,4 +81,6 @@ CREATE TRIGGER tri_meta_dates_change_t_acquisition_frameworks BEFORE INSERT OR U
 
 ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
     ADD CONSTRAINT fk_t_acquisition_frameworks_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
+\unrestrict XRFbayuFhhZB99Jap9HLaqnqbrQgXh6S9oUcqjmb0KPSpr0E4I0tNEndyHjTFns
 

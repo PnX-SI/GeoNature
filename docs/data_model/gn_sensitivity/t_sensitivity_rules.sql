@@ -1,4 +1,6 @@
 
+\restrict tzcpqsBUl7ue9ezdPqn5GWEmFYwOvToQpXxGBcbGBaBLLb11CVHJz2tRntCQcqF
+
 CREATE TABLE gn_sensitivity.t_sensitivity_rules (
     id_sensitivity integer NOT NULL,
     cd_nom integer NOT NULL,
@@ -41,4 +43,6 @@ ALTER TABLE ONLY gn_sensitivity.t_sensitivity_rules
 
 ALTER TABLE ONLY gn_sensitivity.t_sensitivity_rules
     ADD CONSTRAINT fk_t_sensitivity_rules_id_nomenclature_sensitivity FOREIGN KEY (id_nomenclature_sensitivity) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+\unrestrict tzcpqsBUl7ue9ezdPqn5GWEmFYwOvToQpXxGBcbGBaBLLb11CVHJz2tRntCQcqF
 

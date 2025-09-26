@@ -1,4 +1,6 @@
 
+\restrict 6lfJ74OdrdjBicrmbGXUSX5sA5mJuBqGFwDsyQq1EJvQwGEOz79jT07m0Bu5brd
+
 CREATE VIEW ref_nomenclatures.v_sexe AS
  SELECT ctn.regne,
     ctn.group2_inpn,
@@ -12,4 +14,6 @@ CREATE VIEW ref_nomenclatures.v_sexe AS
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ((ctn.id_nomenclature = n.id_nomenclature)))
      LEFT JOIN ref_nomenclatures.bib_nomenclatures_types t ON ((t.id_type = n.id_type)))
   WHERE (((t.mnemonique)::text = 'SEXE'::text) AND (n.active = true));
+
+\unrestrict 6lfJ74OdrdjBicrmbGXUSX5sA5mJuBqGFwDsyQq1EJvQwGEOz79jT07m0Bu5brd
 

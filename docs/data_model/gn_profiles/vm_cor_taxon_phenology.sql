@@ -1,4 +1,6 @@
 
+\restrict 7dFsaVCZWLoYeQQ17P5mmyY7ZLerIzWha7azgBBb1vqMJqb7C91zJM0QHZsogVY
+
 CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology AS
  WITH exlude_live_stage AS (
          SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE'::character varying, '0'::character varying) AS id_n_excluded
@@ -50,4 +52,6 @@ COMMENT ON MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology IS 'View contain
 CREATE INDEX index_vm_cor_taxon_phenology_cd_ref ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref);
 
 CREATE UNIQUE INDEX vm_cor_taxon_phenology_cd_ref_period_id_nomenclature_life_s_idx ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref, doy_min, doy_max, id_nomenclature_life_stage);
+
+\unrestrict 7dFsaVCZWLoYeQQ17P5mmyY7ZLerIzWha7azgBBb1vqMJqb7C91zJM0QHZsogVY
 

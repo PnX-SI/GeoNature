@@ -1,4 +1,6 @@
 
+\restrict P9d5TwytwcqyWc8UfRCvDiT7Dd16rmpSg3F5YAtiktMCdSNCNjcwmFnqakCn7eh
+
 CREATE VIEW gn_profiles.v_consistancy_data AS
  SELECT s.id_synthese,
     s.unique_id_sinp AS id_sinp,
@@ -12,4 +14,6 @@ CREATE VIEW gn_profiles.v_consistancy_data AS
      JOIN taxonomie.taxref t ON ((s.cd_nom = t.cd_nom)))
      JOIN gn_profiles.vm_valid_profiles p ON ((p.cd_ref = t.cd_ref)))
      LEFT JOIN ref_nomenclatures.t_nomenclatures n ON ((s.id_nomenclature_valid_status = n.id_nomenclature)));
+
+\unrestrict P9d5TwytwcqyWc8UfRCvDiT7Dd16rmpSg3F5YAtiktMCdSNCNjcwmFnqakCn7eh
 

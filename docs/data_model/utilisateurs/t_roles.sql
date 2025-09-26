@@ -1,4 +1,6 @@
 
+\restrict 1fvQ1h49gloH2orgvIe4WkXPXifTxcPU5WtviIUdmVTXizlL6RJUddtz0rNZmR0
+
 CREATE TABLE utilisateurs.t_roles (
     groupe boolean DEFAULT false NOT NULL,
     id_role integer NOT NULL,
@@ -46,4 +48,6 @@ CREATE TRIGGER tri_modify_date_update_t_roles BEFORE UPDATE ON utilisateurs.t_ro
 
 ALTER TABLE ONLY utilisateurs.t_roles
     ADD CONSTRAINT t_roles_id_organisme_fkey FOREIGN KEY (id_organisme) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+
+\unrestrict 1fvQ1h49gloH2orgvIe4WkXPXifTxcPU5WtviIUdmVTXizlL6RJUddtz0rNZmR0
 

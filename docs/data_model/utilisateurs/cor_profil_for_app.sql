@@ -1,4 +1,6 @@
 
+\restrict bnyjqel4pg7qS9cOzRCwZjmMU61xI9lWBOnofzHD8b1gBrmhjPjKiQkaOXamUGq
+
 CREATE TABLE utilisateurs.cor_profil_for_app (
     id_profil integer NOT NULL,
     id_application integer NOT NULL
@@ -14,4 +16,6 @@ ALTER TABLE ONLY utilisateurs.cor_profil_for_app
 
 ALTER TABLE ONLY utilisateurs.cor_profil_for_app
     ADD CONSTRAINT fk_cor_profil_for_app_id_profil FOREIGN KEY (id_profil) REFERENCES utilisateurs.t_profils(id_profil) ON UPDATE CASCADE;
+
+\unrestrict bnyjqel4pg7qS9cOzRCwZjmMU61xI9lWBOnofzHD8b1gBrmhjPjKiQkaOXamUGq
 

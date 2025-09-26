@@ -1,4 +1,6 @@
 
+\restrict vy7BbjQMHqfn0aQ9dcGrxg5AAEEjmOWZ5TVFdcVqsAmfTxfN7vlzgmiqIB5NqhK
+
 CREATE MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref AS
  WITH RECURSIVE r(cd_ref) AS (
          SELECT t.cd_ref,
@@ -53,4 +55,6 @@ CREATE MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref AS
     r.meta_update_date
    FROM r
   WITH NO DATA;
+
+\unrestrict vy7BbjQMHqfn0aQ9dcGrxg5AAEEjmOWZ5TVFdcVqsAmfTxfN7vlzgmiqIB5NqhK
 

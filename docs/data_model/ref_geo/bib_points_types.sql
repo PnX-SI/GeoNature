@@ -1,4 +1,6 @@
 
+\restrict KsHiDzZ5a63IzeY0og8HHAc3kf5t6Emo6bCKvkpJHNotpYBapOejOCcrdMoUaYL
+
 CREATE TABLE ref_geo.bib_points_types (
     id_type integer NOT NULL,
     type_name character varying(200) NOT NULL,
@@ -26,4 +28,6 @@ ALTER TABLE ONLY ref_geo.bib_points_types
 
 ALTER TABLE ONLY ref_geo.bib_points_types
     ADD CONSTRAINT pk_ref_geo_bib_points_types_id_type PRIMARY KEY (id_type);
+
+\unrestrict KsHiDzZ5a63IzeY0og8HHAc3kf5t6Emo6bCKvkpJHNotpYBapOejOCcrdMoUaYL
 

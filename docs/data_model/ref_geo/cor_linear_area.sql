@@ -1,4 +1,6 @@
 
+\restrict eADvi6rSfAjKAZOnpXGntu58TCPUNkMQcPwXz3i7SbHHhosCZ74Z1VJ5xPcHk1u
+
 CREATE TABLE ref_geo.cor_linear_area (
     id_linear integer,
     id_area integer
@@ -13,4 +15,6 @@ ALTER TABLE ONLY ref_geo.cor_linear_area
 
 ALTER TABLE ONLY ref_geo.cor_linear_area
     ADD CONSTRAINT fk_ref_geo_cor_linear_id_lineair_group FOREIGN KEY (id_linear) REFERENCES ref_geo.l_linears(id_linear) ON UPDATE CASCADE ON DELETE CASCADE;
+
+\unrestrict eADvi6rSfAjKAZOnpXGntu58TCPUNkMQcPwXz3i7SbHHhosCZ74Z1VJ5xPcHk1u
 

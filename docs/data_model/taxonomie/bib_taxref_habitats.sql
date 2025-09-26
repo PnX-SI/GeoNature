@@ -1,4 +1,6 @@
 
+\restrict uxBfSfcAows7NAX4pmKSgeLEcfi5lzDyMAeQIxBTxLRLxPKBHChr8ZJBQsQZk11
+
 CREATE TABLE taxonomie.bib_taxref_habitats (
     id_habitat integer NOT NULL,
     nom_habitat character varying(50) NOT NULL,
@@ -7,4 +9,6 @@ CREATE TABLE taxonomie.bib_taxref_habitats (
 
 ALTER TABLE ONLY taxonomie.bib_taxref_habitats
     ADD CONSTRAINT pk_bib_taxref_habitats PRIMARY KEY (id_habitat);
+
+\unrestrict uxBfSfcAows7NAX4pmKSgeLEcfi5lzDyMAeQIxBTxLRLxPKBHChr8ZJBQsQZk11
 

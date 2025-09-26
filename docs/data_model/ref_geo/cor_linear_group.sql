@@ -1,4 +1,6 @@
 
+\restrict imBBZ3Dc0k1TFSlhLxHZzcBPeqZgLVGr0oOX6tOnuaAhOSyNWgsQrgYCdVTiZRI
+
 CREATE TABLE ref_geo.cor_linear_group (
     id_group integer NOT NULL,
     id_linear integer NOT NULL
@@ -12,4 +14,6 @@ ALTER TABLE ONLY ref_geo.cor_linear_group
 
 ALTER TABLE ONLY ref_geo.cor_linear_group
     ADD CONSTRAINT fk_ref_geo_cor_linear_group_id_linear FOREIGN KEY (id_linear) REFERENCES ref_geo.l_linears(id_linear) ON UPDATE CASCADE ON DELETE CASCADE;
+
+\unrestrict imBBZ3Dc0k1TFSlhLxHZzcBPeqZgLVGr0oOX6tOnuaAhOSyNWgsQrgYCdVTiZRI
 

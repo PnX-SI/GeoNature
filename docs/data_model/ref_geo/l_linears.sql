@@ -1,4 +1,6 @@
 
+\restrict dNbkVdb1NrTte9dCFiCxAZAk3R8M6zLlrnX33uCZJANerwO29vzwXY9OphpMYrz
+
 CREATE TABLE ref_geo.l_linears (
     id_linear integer NOT NULL,
     id_type integer NOT NULL,
@@ -33,4 +35,6 @@ CREATE INDEX ref_geo_l_linears_geom_idx ON ref_geo.l_linears USING gist (geom);
 
 ALTER TABLE ONLY ref_geo.l_linears
     ADD CONSTRAINT fk_ref_geo_l_linears_id_type FOREIGN KEY (id_type) REFERENCES ref_geo.bib_linears_types(id_type) ON UPDATE CASCADE;
+
+\unrestrict dNbkVdb1NrTte9dCFiCxAZAk3R8M6zLlrnX33uCZJANerwO29vzwXY9OphpMYrz
 

@@ -1,4 +1,6 @@
 
+\restrict eA251JooPIJpKMqdmXhlGHKSJFsASXXxQk2YX9DaLWLRrnxOHFOXPqZp2NLMf0m
+
 CREATE TABLE gn_imports.cor_entity_field (
     id_entity integer NOT NULL,
     id_field integer NOT NULL,
@@ -19,4 +21,6 @@ ALTER TABLE ONLY gn_imports.cor_entity_field
 
 ALTER TABLE ONLY gn_imports.cor_entity_field
     ADD CONSTRAINT cor_entity_field_id_theme_fkey FOREIGN KEY (id_theme) REFERENCES gn_imports.bib_themes(id_theme);
+
+\unrestrict eA251JooPIJpKMqdmXhlGHKSJFsASXXxQk2YX9DaLWLRrnxOHFOXPqZp2NLMf0m
 

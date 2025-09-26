@@ -1,4 +1,6 @@
 
+\restrict ulh8eYDBMeWEqWkXN8N47UkkRpeOSYuyhn0vhbx58A4zCsg90qXLDxqJ62WvmTN
+
 CREATE TABLE gn_permissions.backup_bib_filters_type (
     id_filter_type integer NOT NULL,
     code_filter_type character varying(50) NOT NULL,
@@ -8,4 +10,6 @@ CREATE TABLE gn_permissions.backup_bib_filters_type (
 
 ALTER TABLE ONLY gn_permissions.backup_bib_filters_type
     ADD CONSTRAINT backup_bib_filters_type_pkey PRIMARY KEY (id_filter_type);
+
+\unrestrict ulh8eYDBMeWEqWkXN8N47UkkRpeOSYuyhn0vhbx58A4zCsg90qXLDxqJ62WvmTN
 

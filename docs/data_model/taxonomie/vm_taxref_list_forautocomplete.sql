@@ -1,4 +1,6 @@
 
+\restrict zRxnhbhnqauaTuqa5hQ5NYFv2Sf9bSCPd1GEcehzC1Mt70Vx1d9vzSpkWACdMb0
+
 CREATE MATERIALIZED VIEW taxonomie.vm_taxref_list_forautocomplete AS
  SELECT row_number() OVER () AS gid,
     t.cd_nom,
@@ -40,4 +42,6 @@ CREATE INDEX i_tri_vm_taxref_list_forautocomplete_search_name ON taxonomie.vm_ta
 CREATE INDEX i_vm_taxref_list_forautocomplete_cd_nom ON taxonomie.vm_taxref_list_forautocomplete USING btree (cd_nom);
 
 CREATE UNIQUE INDEX i_vm_taxref_list_forautocomplete_gid ON taxonomie.vm_taxref_list_forautocomplete USING btree (gid);
+
+\unrestrict zRxnhbhnqauaTuqa5hQ5NYFv2Sf9bSCPd1GEcehzC1Mt70Vx1d9vzSpkWACdMb0
 

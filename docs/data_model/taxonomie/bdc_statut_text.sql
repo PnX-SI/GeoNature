@@ -1,4 +1,6 @@
 
+\restrict Ujk7bSOUZG6EUVUgz0Tf6Pu4ncERRjEGQWfVl2HpEJIrhPJTiawAoVKqgNJSWLp
+
 CREATE TABLE taxonomie.bdc_statut_text (
     id_text integer NOT NULL,
     cd_st_text character varying(50),
@@ -35,4 +37,6 @@ CREATE INDEX idx_bstxt_cd_type_statut ON taxonomie.bdc_statut_text USING btree (
 
 ALTER TABLE ONLY taxonomie.bdc_statut_text
     ADD CONSTRAINT bdc_statut_text_fkey FOREIGN KEY (cd_type_statut) REFERENCES taxonomie.bdc_statut_type(cd_type_statut) ON UPDATE CASCADE ON DELETE CASCADE;
+
+\unrestrict Ujk7bSOUZG6EUVUgz0Tf6Pu4ncERRjEGQWfVl2HpEJIrhPJTiawAoVKqgNJSWLp
 

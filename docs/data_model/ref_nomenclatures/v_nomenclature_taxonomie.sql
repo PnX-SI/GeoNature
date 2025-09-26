@@ -1,4 +1,6 @@
 
+\restrict 3aeC8LnPiUZHXmJ5qFNSL7bQuutjCzxszCNWl3jwNvDNE5lLjsnXE1xnmoeo0O8
+
 CREATE VIEW ref_nomenclatures.v_nomenclature_taxonomie AS
  SELECT tn.id_type,
     tn.label_default AS type_label,
@@ -37,4 +39,6 @@ CREATE VIEW ref_nomenclatures.v_nomenclature_taxonomie AS
      JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ((ctn.id_nomenclature = n.id_nomenclature)))
   WHERE (n.active = true)
   ORDER BY tn.id_type, ctn.regne, ctn.group2_inpn, n.id_nomenclature;
+
+\unrestrict 3aeC8LnPiUZHXmJ5qFNSL7bQuutjCzxszCNWl3jwNvDNE5lLjsnXE1xnmoeo0O8
 

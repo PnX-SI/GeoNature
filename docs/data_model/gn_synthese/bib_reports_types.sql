@@ -1,4 +1,6 @@
 
+\restrict H6FN7byRO6vgxAngb3haVy3h1HHrNgfpimtGq0gkpkMyWUprrF8RewwQMiSXbfw
+
 CREATE TABLE gn_synthese.bib_reports_types (
     id_type integer NOT NULL,
     type character varying NOT NULL
@@ -16,4 +18,6 @@ ALTER SEQUENCE gn_synthese.bib_reports_types_id_type_seq OWNED BY gn_synthese.bi
 
 ALTER TABLE ONLY gn_synthese.bib_reports_types
     ADD CONSTRAINT bib_reports_types_pkey PRIMARY KEY (id_type);
+
+\unrestrict H6FN7byRO6vgxAngb3haVy3h1HHrNgfpimtGq0gkpkMyWUprrF8RewwQMiSXbfw
 

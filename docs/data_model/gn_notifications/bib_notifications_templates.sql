@@ -1,4 +1,6 @@
 
+\restrict JTItYAPiryMNxA9zzrlOPmhiIFHfZjji0xVcgsCLfaPAo6AUZYoAkA7nVjBW6bT
+
 CREATE TABLE gn_notifications.bib_notifications_templates (
     code_category character varying NOT NULL,
     code_method character varying NOT NULL,
@@ -13,4 +15,6 @@ ALTER TABLE ONLY gn_notifications.bib_notifications_templates
 
 ALTER TABLE ONLY gn_notifications.bib_notifications_templates
     ADD CONSTRAINT bib_notifications_templates_code_method_fkey FOREIGN KEY (code_method) REFERENCES gn_notifications.bib_notifications_methods(code);
+
+\unrestrict JTItYAPiryMNxA9zzrlOPmhiIFHfZjji0xVcgsCLfaPAo6AUZYoAkA7nVjBW6bT
 
