@@ -8,15 +8,19 @@ import { finalize, skip } from 'rxjs/operators';
 import { ImportProcessService } from '../../import-process.service';
 import { Cruved, toBooleanCruved } from '@geonature/modules/imports/models/cruved.model';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ImportDataService } from '@geonature/modules/imports/services/data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
 @Component({
+  standalone: true,
   selector: 'pnx-mapping-selection',
   templateUrl: './mapping-selection.component.html',
   styleUrls: ['./mapping-selection.component.scss'],
+  imports: [CommonModule, GN2CommonModule, NgbModule],
 })
 export class MappingSelectionComponent implements OnInit {
   public userFieldMappings: Array<FieldMapping> = [];
@@ -52,14 +56,9 @@ export class MappingSelectionComponent implements OnInit {
     });
     this.fieldMappingForm.setValue(null);
     this._fm.currentFieldMapping.next(null);
-    this.fieldMappingSub = this.fieldMappingForm.valueChanges
-      .pipe(
-        // skip first empty value to avoid reseting the field form if importData as mapping:
-        skip(this._importProcessService.getImportData().fieldmapping === null ? 0 : 1)
-      )
-      .subscribe((mapping: FieldMapping) => {
-        this.onNewMappingSelected(mapping);
-      });
+    this.fieldMappingSub = this.fieldMappingForm.valueChanges.subscribe((mapping: FieldMapping) => {
+      this.onNewMappingSelected(mapping);
+    });
   }
 
   ngOnDestroy() {

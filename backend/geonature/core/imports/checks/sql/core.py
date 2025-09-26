@@ -26,7 +26,7 @@ def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
     entities = (
         Entity.query.filter_by(destination=imprt.destination).order_by(sa.desc(Entity.order)).all()
     )
-    # Set validity=NULL (not parcicipating in the entity) for all rows
+    # Set validity=NULL (not participating in the entity) for all rows
     db.session.execute(
         sa.update(transient_table)
         .where(transient_table.c.id_import == imprt.id_import)
@@ -35,11 +35,17 @@ def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
     # Multi-entity fields are ignored for entity identification, but this is not an issue
     # as rows with multi-entity field only will raise an ORPHAN_ROW error
     selected_fields_names = []
+    constant_fields = []
     for field_name, source_field in imprt.fieldmapping.items():
-        if type(source_field) == list:
-            selected_fields_names.extend(set(source_field) & set(imprt.columns))
-        elif source_field in imprt.columns:
-            selected_fields_names.append(field_name)
+        column_src = source_field.get("column_src", None)
+        if column_src:
+            if type(column_src) == list:
+                selected_fields_names.extend(set(column_src) & set(imprt.columns))
+            elif column_src in imprt.columns:
+                selected_fields_names.append(field_name)
+        else:
+            constant_fields.append(field_name)
+
     for entity in entities:
         # Select fields associated to this entity *and only to this entity*
         fields = (
@@ -50,8 +56,16 @@ def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
             .where(BibFields.name_field != dataset_name_field)
             .all()
         )
-
+        is_constant_field_indicated = db.session.scalar(
+            sa.exists(BibFields)
+            .where(BibFields.name_field.in_(constant_fields))
+            .where(BibFields.entities.any(EntityField.entity == entity))
+            .where(~BibFields.entities.any(EntityField.entity != entity))
+            .where(BibFields.name_field != dataset_name_field)
+            .select()
+        )
         if fields:
+
             db.session.execute(
                 sa.update(transient_table)
                 .where(transient_table.c.id_import == imprt.id_import)
@@ -62,17 +76,24 @@ def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
                 )
                 .values({entity.validity_column: True})
             )
+        elif is_constant_field_indicated:
+            db.session.execute(
+                sa.update(transient_table)
+                .where(transient_table.c.id_import == imprt.id_import)
+                .values({entity.validity_column: True})
+            )
 
 
-def check_orphan_rows(imprt):
+def check_orphan_rows(imprt: TImports):
     transient_table = imprt.destination.get_transient_table()
     # TODO: handle multi-source fields
     # This is actually not a big issue as multi-source fields are unlikely to also be multi-entity fields.
     selected_fields_names = []
     for field_name, source_field in imprt.fieldmapping.items():
-        if type(source_field) == list:
-            selected_fields_names.extend(set(source_field) & set(imprt.columns))
-        elif source_field in imprt.columns:
+        column_src = source_field.get("column_src", None)
+        if type(column_src) == list:
+            selected_fields_names.extend(set(column_src) & set(imprt.columns))
+        elif column_src in imprt.columns:
             selected_fields_names.append(field_name)
     # Select fields associated to multiple entities
     AllEntityField = sa.orm.aliased(EntityField)
