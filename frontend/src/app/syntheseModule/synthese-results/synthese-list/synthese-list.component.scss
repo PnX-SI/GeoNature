@@ -1,14 +1,6 @@
 .selected {
   background-color: red;
 }
-ngx-datatable {
-  // position: absolute;
-  // left:0;
-  // bottom:0;
-  // right:0;
-  // top:0;
-  // overflow:scroll;
-}
 
 :host ::ng-deep .datatable-body-row.active .datatable-row-group {
   background-color: rgb(117, 227, 118) !important;
@@ -20,13 +12,25 @@ ngx-datatable {
 
 :host ::ng-deep .datatable-body-cell {
   font-size: 12px !important;
-  //padding: 5px 5px !important;
   padding-bottom: 15px !important;
   padding-top: 8px !important;
   padding-left: 15px !important;
 }
 :host ::ng-deep .datatable-body-cell i {
   font-size: 12px;
+}
+
+:host ::ng-deep .datatable-body-cell .btn-map-criteria {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  text-align: center;
+  vertical-align: baseline;
+  padding: 0;
+}
+
+:host ::ng-deep .datatable-body-cell .btn-map-criteria i {
+  vertical-align: text-top;
 }
 
 :host ::ng-deep .datatable-body {
