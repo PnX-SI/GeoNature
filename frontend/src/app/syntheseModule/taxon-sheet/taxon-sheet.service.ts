@@ -8,7 +8,7 @@ import {
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { Loadable } from './loadable';
+import { Loadable } from '../sheets/loadable';
 
 @Injectable()
 export class TaxonSheetService extends Loadable {

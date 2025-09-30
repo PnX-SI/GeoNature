@@ -1,4 +1,18 @@
-<layout>
+<gn-page-layout>
+  <gn-sheet-layout>
+    <infos infos />
+    <gn-indicators-layout indicators>
+      <taxon-image class="TaxonSheetImage"/>
+      <gn-indicator
+        *ngFor="let indicator of indicators"
+        [indicator]="indicator"
+      />
+    </gn-indicators-layout>
+    <gn-tabs-layout tabs [tabs]="routes.TAB_LINKS" />
+  </gn-sheet-layout>
+</gn-page-layout>
+
+<!-- <layout>
   <div
     class="TaxonSheet"
     [ngClass]="{ 'TaxonSheet--placeholder': isLoadingTaxon }"
@@ -48,4 +62,4 @@
       </mat-tab-nav-panel>
     </div>
   </div>
-</layout>
+</layout> -->

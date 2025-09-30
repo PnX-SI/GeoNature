@@ -15,10 +15,10 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { TranslateService } from '@ngx-translate/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { MatSliderModule } from '@angular/material/slider';
-import { Loadable } from '../loadable';
+import { Loadable } from '../../sheets/loadable';
 import { finalize } from 'rxjs/operators';
 import { CommonService } from '@geonature_common/service/common.service';
-import { Router } from '@librairies/@angular/router';
+import { Router } from '@angular/router';
 
 interface MapAreasStyle {
   color: string;

@@ -1,5 +1,3 @@
-import { TaxonStats } from '@geonature_common/form/synthese-form/synthese-data.service';
-
 export interface Indicator {
   name: string;
   matIcon: string;
@@ -16,11 +14,13 @@ export interface IndicatorDescription {
   type: IndicatorRawType;
 }
 
+type Stats = Record<string, string>;
+
 const DEFAULT_VALUE = '-';
 const DEFAULT_SEPARATOR = '-';
 
-function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: TaxonStats) {
-  if (stats && stats[field] != undefined) {
+function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: Stats) {
+  if (stats && stats[field]) {
     let valueAsString = '';
     switch (indicatorConfig.type) {
       case 'number':
@@ -40,7 +40,7 @@ function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: 
 
 export function computeIndicatorFromDescription(
   indicatorDescription: IndicatorDescription,
-  stats: TaxonStats
+  stats?: Stats
 ): Indicator {
   let value = DEFAULT_VALUE;
   if (stats) {

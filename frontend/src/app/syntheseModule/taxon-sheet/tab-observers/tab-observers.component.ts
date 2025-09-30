@@ -14,7 +14,7 @@ import {
   SORT_ORDER,
   SyntheseDataSortItem,
 } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
-import { Loadable } from '../loadable';
+import { Loadable } from '../../sheets/loadable';
 import { finalize } from 'rxjs/operators';
 @Component({
   standalone: true,

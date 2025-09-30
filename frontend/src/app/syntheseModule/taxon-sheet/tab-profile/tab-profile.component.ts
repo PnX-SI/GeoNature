@@ -8,8 +8,7 @@ import {
   computeIndicatorFromDescription,
   Indicator,
   IndicatorDescription,
-} from '../indicator/indicator';
-import { IndicatorComponent } from '../indicator/indicator.component';
+} from '@geonature_common/others/indicator/indicator';
 import { TaxonSheetService } from '../taxon-sheet.service';
 
 const INDICATORS: Array<IndicatorDescription> = [
@@ -42,10 +41,9 @@ const INDICATORS: Array<IndicatorDescription> = [
 
 @Component({
   standalone: true,
-  selector: 'tab-profile',
   templateUrl: 'tab-profile.component.html',
   styleUrls: ['tab-profile.component.scss'],
-  imports: [GN2CommonModule, CommonModule, IndicatorComponent],
+  imports: [GN2CommonModule, CommonModule],
 })
 export class TabProfileComponent implements OnInit {
   indicators: Array<Indicator>;

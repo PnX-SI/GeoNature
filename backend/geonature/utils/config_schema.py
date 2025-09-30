@@ -300,6 +300,13 @@ class TaxonSheet(Schema):
     ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
 
 
+class ObserverSheet(Schema):
+    # --------------------------------------------------------------------
+    # SYNTHESE - OBSERVER_SHEET
+    # Permet d'activer ou non l'onglet "Media"
+    ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
+
+
 class Synthese(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - SEARCH FORM
@@ -461,6 +468,11 @@ class Synthese(Schema):
 
     # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
     FIELD_OBSERVERS_SEPARATORS = fields.List(fields.String(), load_default=[","])
+
+    # --------------------------------------------------------------------
+    # SYNTHESE - OBSERVER_SHEET
+    ENABLE_OBSERVER_SHEETS = fields.Boolean(load_default=True)
+    OBSERVER_SHEET = fields.Nested(ObserverSheet, load_default=ObserverSheet().load({}))
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):

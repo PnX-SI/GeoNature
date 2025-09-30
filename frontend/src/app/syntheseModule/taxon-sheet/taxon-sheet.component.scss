@@ -1,50 +1,43 @@
-.TaxonSheet {
-  display: flex;
-  flex-flow: column;
-  justify-content: flex-start;
-  padding: 0.9rem;
-  row-gap: 0.9rem;
-  width: 100%;
-  height: calc(100vh - 80px); // TODO Magic number: toolbar height
-  &--placeholder {
-    opacity: 0.2;
-  }
+// .TaxonSheet {
+//   display: flex;
+//   flex-flow: column;
+//   justify-content: flex-start;
+//   row-gap: 1.25rem;
+//   height: 100%;
+//   // height: calc(100vh - 80px); // TODO Magic number: toolbar height
+//   &--placeholder {
+//     opacity: 0.2;
+//   }
 
-  &__indicators {
-    align-self: center;
+//   &__indicators {
+//     align-self: center;
+//     width: 80%;
 
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    gap: 1em;
+//     display: flex;
+//     flex-flow: row wrap;
+//     justify-content: space-evenly;
+//     gap: 1rem;
 
-    &--loader {
-      margin: auto;
-    }
+//     &--loader {
+//       margin: auto;
+//     }
+//   }
+  // .AvancedInfos {
+  //   &__navBar {
+  //     a {
+  //       font-size: 0.9em;
+  //       border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  //     }
+  //     a:hover {
+  //       text-decoration: none;
+  //     }
+  //   }
 
-    indicator,
-    taxon-image {
-      height: 6em;
-    }
-  }
-  .AvancedInfos {
-    flex-grow: 1;
-    overflow: auto;
-    &__navBar {
-      a {
-        font-size: 0.9em;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-      }
-      a:hover {
-        text-decoration: none;
-      }
-    }
-
-    &__content {
-      padding: 1em;
-      height: 100%;
-      max-height: 100%;
-      overflow: auto;
-    }
-  }
-}
+  //   &__content {
+  //     max-height: 54vh;
+  //     height: 54vh;
+  //     overflow: auto;
+  //     padding: 1rem;
+  //   }
+  // }
+// }

@@ -13,18 +13,12 @@ import { TabProfileComponent } from './tab-profile/tab-profile.component';
 import { TabTaxonomyComponent } from './tab-taxonomy/tab-taxonomy.component';
 import { TabMediaComponent } from './tab-media/tab-media.component';
 import { TabObserversComponent } from './tab-observers/tab-observers.component';
+import { TabDescription } from '@geonature_common/layouts/tabs-layout/tabs-layout.component';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { throwError } from '@librairies/rxjs';
 import { HttpErrorResponse } from '@librairies/@angular/common/http';
 
-interface Tab {
-  label: string;
-  path: string;
-  configEnabledField: string;
-  component: any;
-}
-
-export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
+export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<TabDescription> = [
   {
     label: 'Observations',
     path: 'observations',
@@ -60,7 +54,7 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
 @Injectable({
   providedIn: 'root',
 })
-export class RouteService implements CanActivate, CanActivateChild {
+export class TaxonSheetRouteService implements CanActivate, CanActivateChild {
   readonly TAB_LINKS = [];
   constructor(
     private _config: ConfigService,

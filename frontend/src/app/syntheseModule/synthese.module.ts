@@ -17,7 +17,7 @@ import { DiscussionCardComponent } from '@geonature/shared/discussionCardModule/
 import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
 import {
-  RouteService,
+  TaxonSheetRouteService,
   ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES,
 } from './taxon-sheet/taxon-sheet.route.service';
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -41,8 +41,8 @@ const routes: Routes = [
   {
     path: 'taxon/:cd_ref',
     component: TaxonSheetComponent,
-    canActivate: [RouteService],
-    canActivateChild: [RouteService],
+    canActivate: [TaxonSheetRouteService],
+    canActivateChild: [TaxonSheetRouteService],
     children: [
       // The tabs are all optional. therefore, we can't apply redireciotn here.
       // A redirection from parent to child is apply in canActivate
@@ -86,7 +86,7 @@ const routes: Routes = [
     TaxonAdvancedStoreService,
     SyntheseFormService,
     NgbActiveModal,
-    RouteService,
+    TaxonSheetRouteService,
   ],
 })
 export class SyntheseModule {}

@@ -1,0 +1,23 @@
+.Sheet {
+  width: 100%;
+  height: 100%;
+  border: 2px solid green;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  row-gap: 0.9rem;
+
+  &__indicators {
+    align-self: center;
+
+    indicator,
+    taxon-image {
+      height: 6em;
+    }
+  }
+  &__tabs{
+    flex-grow: 1;
+    overflow: auto;
+  }
+}

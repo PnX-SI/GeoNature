@@ -8,21 +8,19 @@ import {
 } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { InfosComponent } from './infos/infos.component';
-import { LayoutComponent } from './layout/layout.component';
 import {
   computeIndicatorFromDescription,
   Indicator,
   IndicatorDescription,
-} from './indicator/indicator';
-import { TaxonImageComponent } from './infos/taxon-image/taxon-image.component';
-import { IndicatorComponent } from './indicator/indicator.component';
+} from '@geonature_common/others/indicator/indicator';
+import { TaxonImageComponent } from './taxon-image/taxon-image.component';
 import { CommonModule } from '@angular/common';
 import { TaxonStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonSheetService } from './taxon-sheet.service';
-import { RouteService } from './taxon-sheet.route.service';
+import { TaxonSheetRouteService } from './taxon-sheet.route.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { finalize } from 'rxjs/operators';
-import { Loadable } from './loadable';
+import { Loadable } from '../sheets/loadable';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
@@ -67,12 +65,7 @@ const INDICATORS: Array<IndicatorDescription> = [
   imports: [
     CommonModule,
     GN2CommonModule,
-    IndicatorComponent,
     InfosComponent,
-    LayoutComponent,
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
     TaxonImageComponent,
   ],
   providers: [TaxonSheetService],
@@ -87,18 +80,14 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
     return this.isLoading;
   }
 
-  readonly TAB_LINKS = [];
-
   indicators: Array<Indicator>;
 
   constructor(
-    private _router: Router,
     private _route: ActivatedRoute,
     private _tss: TaxonSheetService,
-    private _routes: RouteService
+    public routes: TaxonSheetRouteService
   ) {
     super();
-    this.TAB_LINKS = this._routes.TAB_LINKS;
   }
 
   ngOnInit() {
@@ -123,13 +112,9 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
     });
   }
 
-  setIndicators(stats: TaxonStats) {
+  setIndicators(stats: any) {
     this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
       computeIndicatorFromDescription(indicatorConfig, stats)
     );
-  }
-
-  goToPath(path: string) {
-    this._router.navigate([path], { relativeTo: this._route });
   }
 }

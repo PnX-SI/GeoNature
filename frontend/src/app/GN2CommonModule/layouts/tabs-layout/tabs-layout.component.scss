@@ -1,0 +1,21 @@
+.Tabs {
+  height: 100%;
+  width: 100%;
+  border: 2px solid red;
+  &__navBar {
+    a {
+      font-size: 0.9em;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    a:hover {
+      text-decoration: none;
+    }
+  }
+
+  &__content {
+      padding: 1em;
+      height: 100%;
+      max-height: 100%;
+      overflow: auto;
+  }
+}

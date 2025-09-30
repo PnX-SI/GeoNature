@@ -79,6 +79,18 @@ export class SyntheseDataService {
     });
   }
 
+  getSyntheseObserverSheetStats(id_role: number, areaType: string = 'COM') {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_stats/${id_role}`, {
+      params: new HttpParams().append('area_type', areaType),
+    });
+  }
+
+  getObserverMedias(id_role: number, params?: {}): Observable<any> {
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/observer_medias/${id_role}`, {
+      params,
+    });
+  }
+
   getIsAuthorizedCdRefForUser(cd_ref: number) {
     return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon/${cd_ref}/access`);
   }
