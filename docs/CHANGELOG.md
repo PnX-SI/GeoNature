@@ -31,7 +31,7 @@
   - Utilisation des `cd_ref` plutôt que les `cd_nom` pour compter le nombre d'espèces observées (#3677)
 - [Développement] Correction de la valeur retournée par la propriété `total_filtered` dans Utils-Flask-SQLAlchemy, corrigeant une régression de GeoNature 2.16.0 avec GN2PG (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/issues/62, par @jacquesfize)
 - [Occhab] Suppression du champ `id_habitat` dans l'import Occhab (#3716 par @jacquesfize)
-- [Métadonnées] Les dates de début et de fin ne sont plus limités (#3675 par @jacquesfize)
+- [Métadonnées] Les dates de début et de fin ne sont plus limitées (#3675 par @jacquesfize)
 - [Développement] Correction de la fonction `getNomenclature` (#3661 par @jbrieuclp)
 - [Développement] Mise à jour du fichier `.editorconfig` (#3683 par @jpm-cbna)
 
