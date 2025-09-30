@@ -17,15 +17,15 @@
   <div class="modal-body">
     <p>Degrés décimaux (WGS84)</p>
     <div class="form-inline">
-      <div class="form-group">
+      <div class="form-group d-flex w-100">
         <input
-          class="form-control col-sm-6 col-md-6"
+          class="form-control w-50"
           placeholder="X"
           [(ngModel)]="x"
           type="number"
         />
         <input
-          class="form-control col-sm-6 col-md-6"
+          class="form-control w-50"
           placeholder="Y"
           [(ngModel)]="y"
           type="number"
@@ -36,7 +36,7 @@
         <input
           type="text"
           class="form-control w-100"
-          placeholder="Longitude, Latitude (Y,X)"
+          placeholder="Latitude, Longitude (Y,X)"
           [(ngModel)]="coordsInput"
           (ngModelChange)="onCoordsInputChange($event)"
           ngbTooltip="Exemple : 47.619, -3.425"

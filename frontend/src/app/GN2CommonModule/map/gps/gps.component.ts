@@ -20,7 +20,7 @@ export class GPSComponent extends MarkerComponent implements OnInit {
   @ViewChild('modalContent', { static: false }) public modalContent: any;
   public x: number;
   public y: number;
-  public coordsInput = '';
+  public coordsInput: string = '';
   constructor(
     public mapService: MapService,
     public modalService: NgbModal,
@@ -36,60 +36,36 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     this.enableGps();
   }
   enableGps() {
+    // Add leaflet button
     const GPSLegend = this.mapService.addCustomLegend('topleft', 'GPSLegend');
     this.map.addControl(new GPSLegend());
+
+    // Fetch control and customize its appearance
     const gpsElement: HTMLElement = document.getElementById('GPSLegend');
     L.DomEvent.disableClickPropagation(gpsElement);
     gpsElement.innerHTML = '<span> <b> GPS </span> <b>';
     gpsElement.style.paddingLeft = '3px';
+
+    // Bind the open modal functionality
     gpsElement.onclick = () => {
       this.modalService.open(this.modalContent);
     };
   }
 
-   onCoordsInputChange(value: string) {
-    const currentValue = value || '';
-    this.coordsInput = currentValue;
-
-    const tokens = currentValue
-      .split(/[\s,]+/)
+  onCoordsInputChange(value: string) {
+    if (!value) {
+      return;
+    }
+    const tokens = value
+      .split(',')
       .map((token) => token.trim())
-      .filter((token) => token.length > 0);
+      .filter((token) => token.length > 0 && !Number.isNaN(token));
 
-    if (tokens.length < 2) {
-      return;
-    }
+    if (tokens.length < 2) return;
 
-    const parsedY = this.normalizeCoordinate(tokens[0]);
-    const parsedX = this.normalizeCoordinate(tokens[1]);
-
-    if (parsedX === null || parsedY === null) {
-      return;
-    }
-
-    this.x = parsedX;
-    this.y = parsedY;
-    this.coordsInput = this.formatCoordsInput(parsedY,parsedX );
-  }
-
-  private normalizeCoordinate(value: string | number | null | undefined): number | null {
-    if (typeof value === 'number') {
-      return Number.isFinite(value) ? value : null;
-    }
-
-    if (value === null || value === undefined) {
-      return null;
-    }
-
-    const trimmed = String(value).trim();
-
-    if (!trimmed) {
-      return null;
-    }
-
-    const parsed = Number(trimmed);
-
-    return Number.isFinite(parsed) ? parsed : null;
+    this.x = parseFloat(tokens[1]);
+    this.y = parseFloat(tokens[0]);
+    this.coordsInput = this.formatCoordsInput(this.x, this.y);
   }
 
   private formatCoordsInput(x: number, y: number): string {
@@ -97,16 +73,7 @@ export class GPSComponent extends MarkerComponent implements OnInit {
   }
 
   setMarkerFromGps(x, y) {
-    const parsedX = this.normalizeCoordinate(x);
-    const parsedY = this.normalizeCoordinate(y);
-
-    if (parsedX === null || parsedY === null) {
-      return;
-    }
-
-    this.x = parsedX;
-    this.y = parsedY;
-    this.coordsInput = this.formatCoordsInput(parsedX, parsedY);
+    this.coordsInput = this.formatCoordsInput(this.x, this.y);
 
     super.generateMarkerAndEvent(x, y);
     // remove others layers
