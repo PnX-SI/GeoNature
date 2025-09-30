@@ -163,7 +163,7 @@ export class MapComponent implements OnInit {
           position: 'topright',
           watch: true,
           setView: 'always',
-          flyTo: true,
+          flyTo: false,
           showPopup: false
         }).addTo(this.map);
     }
