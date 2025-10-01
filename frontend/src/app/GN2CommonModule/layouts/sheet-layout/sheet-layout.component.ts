@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 @Component({
-  selector: 'gn-sheet-layout',
+  selector: 'pnx-sheet-layout',
   templateUrl: 'sheet-layout.component.html',
   styleUrls: ['sheet-layout.component.scss'],
 })

@@ -7,9 +7,7 @@ import { SharedSyntheseModule } from '@geonature/shared/syntheseSharedModule/syn
 
 @Component({
   standalone: true,
-  selector: 'tab-taxonomy',
   templateUrl: 'tab-taxonomy.component.html',
-  styleUrls: ['tab-taxonomy.component.scss'],
   imports: [GN2CommonModule, CommonModule, SharedSyntheseModule],
 })
 export class TabTaxonomyComponent implements OnInit {

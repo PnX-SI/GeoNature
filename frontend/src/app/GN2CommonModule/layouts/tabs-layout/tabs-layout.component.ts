@@ -8,7 +8,7 @@ export interface TabDescription {
 }
 
 @Component({
-  selector: 'gn-tabs-layout',
+  selector: 'pnx-tabs-layout',
   templateUrl: 'tabs-layout.component.html',
   styleUrls: ['tabs-layout.component.scss'],
 })

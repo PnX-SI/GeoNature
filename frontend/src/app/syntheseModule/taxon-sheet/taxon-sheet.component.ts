@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
   ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
 } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { InfosComponent } from './infos/infos.component';
@@ -19,7 +15,6 @@ import { TaxonStats } from '@geonature_common/form/synthese-form/synthese-data.s
 import { TaxonSheetService } from './taxon-sheet.service';
 import { TaxonSheetRouteService } from './taxon-sheet.route.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { finalize } from 'rxjs/operators';
 import { Loadable } from '../sheets/loadable';
 
 const INDICATORS: Array<IndicatorDescription> = [
@@ -61,7 +56,6 @@ const INDICATORS: Array<IndicatorDescription> = [
   standalone: true,
   selector: 'pnx-taxon-sheet',
   templateUrl: 'taxon-sheet.component.html',
-  styleUrls: ['taxon-sheet.component.scss'],
   imports: [
     CommonModule,
     GN2CommonModule,

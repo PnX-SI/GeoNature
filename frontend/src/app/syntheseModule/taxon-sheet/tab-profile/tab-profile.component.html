@@ -5,13 +5,13 @@
   <small class="Profile__disclaimer text-muted">
     {{ 'Synthese.FicheTaxon.Messages.MessageProfil' | translate }}
   </small>
-  <gn-indicators-layout>
-    <gn-indicator
+  <pnx-indicators-layout>
+    <pnx-indicator
       *ngFor="let indicator of indicators"
       [indicator]="indicator"
       [small]="true"
     />
-  </gn-indicators-layout>
+  </pnx-indicators-layout>
   <div class="Profile__map">
     <pnx-map height="100%">
       <pnx-geojson

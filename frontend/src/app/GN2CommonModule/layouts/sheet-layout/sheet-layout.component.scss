@@ -1,7 +1,6 @@
 .Sheet {
-  width: 100%;
-  height: 100%;
-  border: 2px solid green;
+  height: calc(100vh - 80px);
+  padding: 0.9rem;
 
   display: flex;
   flex-flow: column;
@@ -9,15 +8,19 @@
   row-gap: 0.9rem;
 
   &__indicators {
+    $indicator-height: 6rem;
     align-self: center;
-
-    indicator,
-    taxon-image {
-      height: 6em;
+    height: $indicator-height;
+    // prevent weird sizing behavior
+    ::ng-deep mat-spinner {
+      height: $indicator-height !important;
     }
+
   }
   &__tabs{
-    flex-grow: 1;
+    height: 100%;
+    flex-grow: 2;
+    flex-shrink: 2;
     overflow: auto;
   }
 }

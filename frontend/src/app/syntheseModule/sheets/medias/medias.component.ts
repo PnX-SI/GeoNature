@@ -13,7 +13,7 @@ enum Direction {
 
 @Component({
   standalone: true,
-  selector: 'gn-medias',
+  selector: 'sheet-medias',
   templateUrl: './medias.component.html',
   styleUrls: ['./medias.component.scss'],
   imports: [GN2CommonModule, CommonModule],

@@ -90,7 +90,7 @@ export class TabObservationsComponent extends Loadable implements OnInit {
       if (!taxon) {
         return;
       }
-      this.updateTabGeographic();
+      this.updateTabObservations();
     });
 
     this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
@@ -116,7 +116,7 @@ export class TabObservationsComponent extends Loadable implements OnInit {
     this.yearInterval = { ...this.yearIntervalBoundaries };
   }
 
-  updateTabGeographic() {
+  updateTabObservations() {
     this.startLoading();
 
     const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
@@ -232,7 +232,7 @@ export class TabObservationsComponent extends Loadable implements OnInit {
 
         switchBtn.onclick = () => {
           this.areasEnable = switchBtn.checked;
-          this.updateTabGeographic();
+          this.updateTabObservations();
 
           if (this.areasEnable) {
             this.addAreasLegend();
