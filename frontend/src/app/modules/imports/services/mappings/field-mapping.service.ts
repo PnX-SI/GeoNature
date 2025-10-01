@@ -337,12 +337,14 @@ export class FieldMappingService {
       this._importProcessService.getImportData()?.fieldmapping
     );
     this.mappingFormGroup.reset();
+
     Object.entries(mappingvalues as FieldMappingValues).forEach(async ([target, source]) => {
       const control = this.mappingFormGroup.get(target);
-      if (control) {
+      if (control && source) {
         control.setValue(source);
       }
     });
+
     this.mappingFormGroup.markAsPristine();
   }
 
