@@ -17,10 +17,9 @@ down_revision = "ea261b6185b3"
 branch_labels = None
 depends_on = None
 
-
 MODIFICATIONS = {
     "ALTI_MIN_SUP_ALTI_MAX": {
-        "NEW": "Une des altitudes minimums fournies est supérieure à l'altitude maximum.",
+        "NEW": "Une des altitudes minimales fournies est supérieure à l'altitude maximale.",
         "OLD": "Une des alititudes minimales fournies est supérieure à l'altitude maximale  ",
     },
     "CD_HAB_NOT_FOUND": {
@@ -33,11 +32,11 @@ MODIFICATIONS = {
     },
     "CONDITIONAL_INVALID_DATA": {"NEW": "Erreur de valeur", "OLD": "Erreur de valeur"},
     "CONDITIONAL_MANDATORY_FIELD_ERROR": {
-        "NEW": "Un champs rendu obligatoire par la présence d’un autre champs n’a pas été rempli. Par exemple, si profondeur_max est indiqué, profondeur_min doit être donné.",
+        "NEW": "Un champ rendu obligatoire par la présence d’un autre champ n’a pas été rempli. Par exemple, si profondeur_max est indiqué, profondeur_min doit être donné.",
         "OLD": "Champs obligatoires conditionnels manquants. Il existe des ensembles de champs liés à un concept qui sont “obligatoires conditionnels”, c’est à dire que si l'un des champs du concept est utilisé, alors d'autres champs du concept deviennent obligatoires.",
     },
     "COUNT_MIN_SUP_COUNT_MAX": {
-        "NEW": "Incohérence entre des champs dénombrement. La valeur de denombrement_min est supérieure à celle de denombrement _max ou la valeur de denombrement _max est inférieur à denombrement_min.",
+        "NEW": "Incohérence entre les champs dénombrement. La valeur de dénombrement_min est supérieure à celle de dénombrement_max ou la valeur de dénombrement_max est inférieure à dénombrement_min.",
         "OLD": "Incohérence entre les champs dénombrement. La valeur de denombrement_min est supérieure à celle de denombrement _max ou la valeur de denombrement _max est inférieur à denombrement_min.",
     },
     "DATASET_NOT_ACTIVE": {
@@ -57,7 +56,7 @@ MODIFICATIONS = {
         "OLD": "La date de fin est dans le futur",
     },
     "DATE_MAX_TOO_LOW": {
-        "NEW": "La date de fin est inférieur à 1900.",
+        "NEW": "La date de fin est inférieure à 1900.",
         "OLD": "La date de fin est inférieur à 1900",
     },
     "DATE_MIN_SUP_DATE_MAX": {
@@ -65,15 +64,15 @@ MODIFICATIONS = {
         "OLD": "date_min > date_max",
     },
     "DATE_MIN_TOO_HIGH": {
-        "NEW": "La date de début est supérieur à la date d'exécution de l'import.",
+        "NEW": "La date de début est supérieure à la date d'exécution de l'import.",
         "OLD": "La date de début est dans le futur",
     },
     "DATE_MIN_TOO_LOW": {
-        "NEW": "La date de début est inférieur à 1900.",
+        "NEW": "La date de début est inférieure à 1900.",
         "OLD": "La date de début est inférieur à 1900",
     },
     "DEPTH_MIN_SUP_ALTI_MAX": {
-        "NEW": "Une des profondeur minimums fournies est supérieure à sa profondeur maximum.",
+        "NEW": "Une des profondeurs minimales fournies est supérieure à sa profondeur maximale.",
         "OLD": "profondeur min > profondeur max",
     },
     "DUPLICATE_ENTITY_SOURCE_PK": {
@@ -81,7 +80,7 @@ MODIFICATIONS = {
         "OLD": "Deux lignes du fichier ont la même clé primaire d’origine ; les clés primaires du fichier source ne peuvent pas être dupliquées.",
     },
     "DUPLICATE_UUID": {
-        "NEW": "Un ou plusieurs UUID sont utilisés plusieurs fois pour identifier différentes entités dans le fichier fourni.",
+        "NEW": "Un ou plusieurs UUID sont utilisés pour identifier différentes entités dans le fichier fourni.",
         "OLD": "L'identificant sinp n'est pas unique dans le fichier fournis",
     },
     "EMPTY_FILE": {"NEW": "Le fichier fourni est vide.", "OLD": "Le fichier fournit est vide"},
@@ -102,11 +101,11 @@ MODIFICATIONS = {
         "OLD": "Une erreur de chargement s'est produite, probablement à cause d'un mauvais séparateur dans le fichier.",
     },
     "EXISTING_UUID": {
-        "NEW": "L'identifiant UUID fourni existe déjà en base. Il faut en fournir une autre ou laisser la valeur vide pour une attribution automatique.",
+        "NEW": "L'identifiant UUID fourni existe déjà en base. Il faut en fournir un autre UUID ou laisser la valeur vide pour que l'attribution d'UUID soit automatique.",
         "OLD": "L'identifiant SINP fourni existe déjà en base.  Il faut en fournir une autre ou laisser la valeur vide pour une attribution automatique.",
     },
     "FILE_EXTENSION_ERROR": {
-        "NEW": "L'extension du fichier téléversé est incorrect.",
+        "NEW": "L'extension du fichier téléversé est incorrecte.",
         "OLD": "L'extension de fichier fournie n'est pas correct",
     },
     "FILE_FORMAT_ERROR": {
@@ -134,7 +133,7 @@ MODIFICATIONS = {
         "OLD": "La géométrie se trouve à l'extérieur du territoire renseigné",
     },
     "GEOMETRY_OUT_OF_BOX": {
-        "NEW": "Coordonnées géographiques en dehors du périmètre géographique de l'instance",
+        "NEW": "Coordonnées géographiques en dehors du périmètre géographique de l'instance.",
         "OLD": "Coordonnées géographiques en dehors du périmètre géographique de l'instance",
     },
     "HEADER_COLUMN_EMPTY": {
@@ -150,7 +149,7 @@ MODIFICATIONS = {
         "OLD": "id_digitizer n'existe pas dans la table \"t_roles",
     },
     "INCOHERENT_DATA": {
-        "NEW": "Pour une même entité (e.g. un site), des différences ont été observées sur l’ensemble des lignes du fichiers faisant mention de cette dernière.",
+        "NEW": "Pour une même entité (e.g. un site), des incohérences ont été trouvées sur les valeurs d'une ou plusieurs colonnes. Par exemple, des géométries différentes pour un même site.",
         "OLD": "Les données indiquées pour une ou plusieurs entités sont incohérentes sur différentes lignes.",
     },
     "INVALID_ATTACHMENT_CODE": {
@@ -167,14 +166,14 @@ MODIFICATIONS = {
     },
     "INVALID_DATE": {
         "NEW": "Le format de date est incorrect dans une colonne de type Datetime. Le format attendu est YYYY-MM-DD ou DD-MM-YYYY (les heures sont acceptées sous ce format : HH:MM:SS) - Les séparateurs / . : sont également acceptés.",
-        "OLD": "Le format de date est incorrect dans une colonne de type Datetime. Le format attendu est YYYY-MM-DD ou DD-MM-YYYY (les heures sont acceptées sous ce format: HH:MM:SS) - Les séparateurs / . : sont également acceptés",
+        "OLD": "Le format de date est incorrect dans une colonne de type Datetime. Le format attendu est YYYY-MM-DD ou DD-MM-YYYY (les heures sont acceptées sous ce format : HH:MM:SS) - Les séparateurs / . : sont également acceptés",
     },
     "INVALID_EXISTING_PROOF_VALUE": {
         "NEW": "Incohérence entre les champs de preuve. Si le champ “preuveExistante” vaut oui, alors l’un des deux champs “preuveNumérique” ou “preuveNonNumérique” doit être rempli. A l’inverse, si l’un de ces deux champs est rempli, alors “preuveExistante” ne doit pas prendre une autre valeur que “oui” (code 1).",
         "OLD": "Incohérence entre les champs de preuve ; si le champ “preuveExistante” vaut oui, alors l’un des deux champs “preuveNumérique” ou “preuveNonNumérique” doit être rempli. A l’inverse, si l’un de ces deux champs est rempli, alors “preuveExistante” ne doit pas prendre une autre valeur que “oui” (code 1).",
     },
     "INVALID_GEOMETRY": {
-        "NEW": "La géométrie indiqué n'est pas valide. Si le format attendu son des coordonnées en (latitude,longitude), vérifier que les valeurs données sont bien des nombres réels. Si la géométrie provient d'un WKT, vérifier que ces dernières respectent les normes de validités listées dans la documentation de PostGIS https://postgis.net/docs/using_postgis_dbmanagement.html#OGC_Validity .",
+        "NEW": "La géométrie indiquée n'est pas valide. Si le format attendu est des coordonnées en (latitude, longitude), vérifier que les valeurs données sont bien des nombres réels. Si la géométrie provient d'un WKT, vérifier que ces dernières respectent les normes de validités listées dans la documentation de PostGIS https://postgis.net/docs/using_postgis_dbmanagement.html#OGC_Validity .",
         "OLD": "Géométrie invalide",
     },
     "INVALID_GEOM_CODE": {
@@ -222,7 +221,7 @@ MODIFICATIONS = {
         "OLD": "Géoréférencement manquant ; un géoréférencement doit être fourni, c’est à dire qu’il faut livrer : soit une géométrie, soit une ou plusieurs commune(s), ou département(s), ou maille(s), dont le champ “typeInfoGeo” est indiqué à 1.",
     },
     "MISSING_VALUE": {
-        "NEW": "Valeur manquante dans un champs obligatoire.",
+        "NEW": "Valeur manquante dans un champ obligatoire.",
         "OLD": "Valeur manquante dans un champs obligatoire",
     },
     "MULTIPLE_ATTACHMENT_TYPE_CODE": {
@@ -265,6 +264,7 @@ MODIFICATIONS = {
     },
     "UNKNOWN_ERROR": {"NEW": "Erreur inconnue.", "OLD": ""},
 }
+
 
 
 def upgrade():
