@@ -44,6 +44,14 @@
   &__button {
     color: #c2c2c2;
     border-color: #c2c2c2;
+    height: 36px;
+    padding: 5px;
+    display: flex;
+    background-color: white;
+;
+    /* flex-direction: row; */
+    align-content: center;
+    flex-wrap: wrap;
     &--selected {
       color: var(--purple);
       border-color: var(--purple);
