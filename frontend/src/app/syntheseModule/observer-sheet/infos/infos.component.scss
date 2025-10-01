@@ -1,0 +1,8 @@
+.Infos {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  &__name {
+    font-weight: 700;
+  }
+}
