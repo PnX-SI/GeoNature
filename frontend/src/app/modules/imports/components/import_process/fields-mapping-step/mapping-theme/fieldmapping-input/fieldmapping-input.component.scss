@@ -22,9 +22,11 @@
   display: flex;
   flex-flow: row nowrap;
   column-gap: 0.25rem;
+
   ng-select,
   gn-dynamic-form-wrapper {
     flex-grow: 2;
+    width: 100px;
   }
 
   .ng-select {
