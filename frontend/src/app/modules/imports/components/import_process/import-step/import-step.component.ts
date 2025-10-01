@@ -33,7 +33,7 @@ export class ImportStepComponent implements OnInit {
   public errorStatus: ImportStepComponentsError = ImportStepComponentsError.NONE;
   private timeout: number = 100;
   private runningTimeout: any;
-  public modalData:ModalData; 
+  public modalData: ModalData;
 
   @ViewChild('modalRedir') modalRedir: any;
   @ViewChild('editModal') editModal: TemplateRef<any>;
@@ -45,7 +45,7 @@ export class ImportStepComponent implements OnInit {
     private _commonService: CommonService,
     public _csvExport: CsvExportService,
     public config: ConfigService,
-    private _modalService: NgbModal,
+    private _modalService: NgbModal
   ) {}
 
   //
@@ -198,35 +198,35 @@ export class ImportStepComponent implements OnInit {
     this._router.navigate([this.config.IMPORT.MODULE_URL]);
   }
 
-  checkBeforeNextStep(){
-        if (this.importProcessService.isImportCompleted) {
-           this.openModal(this.editModal);
-            return;
-          }
-          else{
-            this.onImport();
-          }
+  checkBeforeNextStep() {
+    if (this.importProcessService.isImportCompleted) {
+      this.openModal(this.editModal);
+      return;
+    } else {
+      this.onImport();
+    }
   }
-  
+
   openModal(editModal: TemplateRef<any>) {
-        this.modalData = {
-          title: 'Modification',
-          bodyMessage: 'Des données ont déjà été importées. Si vous continuez ces dernières seront supprimées.',
-          additionalMessage: 'Êtes-vous sûr de continuer ?',
-          cancelButtonText: 'Annuler',
-          confirmButtonText: 'Confirmer',
-          confirmButtonColor: 'warn',
-          headerDataQa: 'import-modal-edit',
-          confirmButtonDataQa: 'modal-edit-validate',
-        };  
-        this._modalService.open(editModal);
+    this.modalData = {
+      title: 'Modification',
+      bodyMessage:
+        'Des données ont déjà été importées. Si vous continuez ces dernières seront supprimées.',
+      additionalMessage: 'Êtes-vous sûr de continuer ?',
+      cancelButtonText: 'Annuler',
+      confirmButtonText: 'Confirmer',
+      confirmButtonColor: 'warn',
+      headerDataQa: 'import-modal-edit',
+      confirmButtonDataQa: 'modal-edit-validate',
+    };
+    this._modalService.open(editModal);
   }
-  
+
   handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
-        if (event.confirmed) {
-          if (event.actionType === 'edit') {
-            this.onImport();
-          }
-        }
+    if (event.confirmed) {
+      if (event.actionType === 'edit') {
+        this.onImport();
+      }
+    }
   }
 }

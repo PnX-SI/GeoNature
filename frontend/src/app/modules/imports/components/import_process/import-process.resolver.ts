@@ -30,7 +30,7 @@ export class ImportProcessResolver implements Resolve<Import> {
     // Check that import in this destination is authorized
     const fetchDestination = this.ds.getDestinations('C');
     fetchDestination.subscribe((destinations) => {
-      if(!destinations.find(item => item?.code == destination)){
+      if (!destinations.find((item) => item?.code == destination)) {
         this.router.navigate([this.config.IMPORT.MODULE_URL]);
         return EMPTY;
       }
