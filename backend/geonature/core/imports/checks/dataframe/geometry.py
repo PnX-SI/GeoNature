@@ -163,7 +163,7 @@ def check_geometry(
         wkt_mask = pd.Series(False, index=df.index)
     if latitude_col and latitude_col in df and longitude_col and longitude_col in df:
         # take xy when no wkt and xy are not null
-        xy_mask = df[latitude_col].notnull() & df[longitude_col].notnull()
+        xy_mask = df[latitude_col].notnull() & df[longitude_col].notnull() & df[wkt_col].notnull()
         if xy_mask.any():
             geom.loc[xy_mask] = df[xy_mask].apply(
                 lambda row: xy_to_geometry(row[longitude_col], row[latitude_col]), axis=1
@@ -179,14 +179,14 @@ def check_geometry(
         xy_mask = pd.Series(False, index=df.index)
 
     # Check multiple geo-referencement
-    multiple_georef = df[wkt_mask & xy_mask]
-    if len(multiple_georef):
-        geom[wkt_mask & xy_mask] = None
-        yield {
-            "error_code": ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE,
-            "column": "Champs géométriques",
-            "invalid_rows": multiple_georef,
-        }
+    # multiple_georef = df[wkt_mask & xy_mask]
+    # if len(multiple_georef):
+    #     geom[wkt_mask & xy_mask] = None
+    #     yield {
+    #         "error_code": ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE,
+    #         "column": "Champs géométriques",
+    #         "invalid_rows": multiple_georef,
+    #     }
 
     # Check out-of-bound geo-referencement
     for mask, column in [(wkt_mask, "WKT"), (xy_mask, "longitude")]:
