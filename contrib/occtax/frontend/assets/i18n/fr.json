@@ -39,6 +39,11 @@
       "Exposure": "Exposition",
       "LocationType": "Type de localisation",
       "AreaAttachement": "Rattachement à une localisation existante",
+      "Stratum": "Strate",
+      "Cover": "Recouvrement (%)",
+      "HeightAvg": "Hauteur moy. (m)",
+      "HeightMin": "Hauteur inf. (m)",
+      "HeightMax": "Hauteur sup. (m)",
       "Errors": {
         "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
         "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
