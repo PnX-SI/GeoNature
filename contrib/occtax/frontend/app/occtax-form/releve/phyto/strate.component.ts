@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { Subscription } from 'rxjs';
+
 
 interface IStrate {
     id_vegetation_stratum: number | null;
@@ -17,9 +19,12 @@ interface IStrate {
     templateUrl: './strate.component.html',
     styleUrls: ['./strate.component.scss']
 })
-export class PhytoStratumComponent implements OnInit {
+export class PhytoStratumComponent implements OnInit, OnDestroy {
     @ViewChild('strateTable', { static: true }) table: MatTable<any>;
     @Input() parentFormControl: FormArray;
+
+    private valueChangesSub: Subscription;
+
 
     stratesLabels: { [index: string]: string } = {};
     displayedColumns: string[] = [
@@ -37,9 +42,15 @@ export class PhytoStratumComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadStrateTable();
-        this.parentFormControl.valueChanges.subscribe(() => {
+        this.valueChangesSub = this.parentFormControl.valueChanges.subscribe(() => {
             this.loadStrateTable();
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.valueChangesSub) {
+            this.valueChangesSub.unsubscribe();
+        }
     }
 
     loadStrateTable() {
@@ -74,7 +85,7 @@ export class PhytoStratumComponent implements OnInit {
                 // Put emitEvent to false to avoid infinite loop, as valueChanges subscription on parentFormControl
                 this.parentFormControl.clear({ emitEvent: false });
                 strateFormGroups.forEach(strate => this.parentFormControl.push(strate, { emitEvent: false }));
-                // 
+
                 this.table.renderRows();
             });
     }
