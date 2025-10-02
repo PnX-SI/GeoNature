@@ -109,6 +109,7 @@ export class OcctaxFormReleveService {
       id_nomenclature_location_type: null,
       id_area_attachement: null,
       additional_fields: this.fb.group({}),
+      t_vegetation_stratum: this.fb.array([]),
     });
 
     this.propertiesForm.patchValue(this.initialValues);

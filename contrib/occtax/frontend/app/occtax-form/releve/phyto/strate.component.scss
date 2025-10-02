@@ -1,0 +1,67 @@
+.compact-input {
+  max-width: 76px;
+  min-width: 20px;
+  margin: 0;
+  padding: 10;
+}
+
+.compact-input .mat-mdc-input-element {
+  font-size: 0.85rem !important;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper,
+::ng-deep .mat-mdc-form-field-bottom-align {
+  min-height: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 0 !important;
+}
+
+.compact-table .mat-mdc-row,
+.compact-table .mdc-data-table__row,
+.compact-table .mat-mdc-header-row {
+  min-height: flex !important;
+  height: flex !important;
+}
+
+.compact-table .mat-mdc-cell,
+.compact-table .mat-mdc-header-cell,
+.compact-table .mdc-data-table__cell,
+.compact-table .mdc-data-table__header-cell {
+  padding: 0 4px !important;
+  height: flex !important;
+  font-size: 0.8rem !important;
+  line-height: 0.8rem !important;
+  vertical-align: middle !important;
+  text-align: center;
+}
+
+::ng-deep .compact-table mat-form-field .mat-mdc-text-field-wrapper {
+  height: 40px !important;
+  min-height: 40px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+// Pour masquer les flèches sur les champs de type "number"
+
+// Pour les navigateurs basés sur WebKit (Chrome, Safari, Edge, Opera)
+.no-spinners::-webkit-outer-spin-button,
+.no-spinners::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+// Pour Firefox
+.no-spinners {
+  -moz-appearance: textfield;
+}

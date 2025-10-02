@@ -20,6 +20,7 @@ import { OcctaxFormTaxaListComponent } from './occtax-form/taxa-list/taxa-list.c
 import { OcctaxFormCountingComponent } from './occtax-form/counting/counting.component';
 import { OcctaxProfilesComponent } from './occtax-form/occurrence/profiles.component';
 import { OcctaxFormParamDialog } from './occtax-form/form-param/form-param.dialog';
+import { PhytoStratumComponent } from './occtax-form/releve/phyto/strate.component';
 
 // Service
 import { OcctaxDataService } from './services/occtax-data.service';
@@ -30,6 +31,10 @@ import { OcctaxFormParamService } from './occtax-form/form-param/form-param.serv
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { ConfigService } from '@geonature/services/config.service';
 import { CustomTranslateLoader } from '@geonature/shared/translate/custom-loader';
 import { I18nService } from '@geonature/shared/translate/i18n-service';
@@ -81,6 +86,11 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     CommonModule,
     MatSlideToggleModule,
     MatTabsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
     NgbModule,
     GNPanelModule,
   ],
@@ -96,6 +106,7 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     OcctaxFormCountingComponent,
     OcctaxProfilesComponent,
     OcctaxFormParamDialog,
+    PhytoStratumComponent
   ],
   providers: [OcctaxDataService, MapListService, OcctaxFormMapService, OcctaxFormParamService],
 })
