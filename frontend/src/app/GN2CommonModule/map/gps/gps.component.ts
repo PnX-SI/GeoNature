@@ -18,6 +18,9 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class GPSComponent extends MarkerComponent implements OnInit {
   @ViewChild('modalContent', { static: false }) public modalContent: any;
+  public x: number;
+  public y: number;
+  public coordsInput = '';
   constructor(
     public mapService: MapService,
     public modalService: NgbModal,
@@ -44,7 +47,67 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     };
   }
 
+   onCoordsInputChange(value: string) {
+    const currentValue = value || '';
+    this.coordsInput = currentValue;
+
+    const tokens = currentValue
+      .split(/[\s,]+/)
+      .map((token) => token.trim())
+      .filter((token) => token.length > 0);
+
+    if (tokens.length < 2) {
+      return;
+    }
+
+    const parsedY = this.normalizeCoordinate(tokens[0]);
+    const parsedX = this.normalizeCoordinate(tokens[1]);
+
+    if (parsedX === null || parsedY === null) {
+      return;
+    }
+
+    this.x = parsedX;
+    this.y = parsedY;
+    this.coordsInput = this.formatCoordsInput(parsedY,parsedX );
+  }
+
+  private normalizeCoordinate(value: string | number | null | undefined): number | null {
+    if (typeof value === 'number') {
+      return Number.isFinite(value) ? value : null;
+    }
+
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    const trimmed = String(value).trim();
+
+    if (!trimmed) {
+      return null;
+    }
+
+    const parsed = Number(trimmed);
+
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  private formatCoordsInput(x: number, y: number): string {
+    return `${x}, ${y}`;
+  }
+
   setMarkerFromGps(x, y) {
+    const parsedX = this.normalizeCoordinate(x);
+    const parsedY = this.normalizeCoordinate(y);
+
+    if (parsedX === null || parsedY === null) {
+      return;
+    }
+
+    this.x = parsedX;
+    this.y = parsedY;
+    this.coordsInput = this.formatCoordsInput(parsedX, parsedY);
+
     super.generateMarkerAndEvent(x, y);
     // remove others layers
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
