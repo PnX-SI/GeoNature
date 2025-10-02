@@ -80,7 +80,7 @@ jobs:
         run: |
           psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
         env:
-          PGPASSWORD: geonatpasswd
+          PGPASSWORD: 'geonatadmin'
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
