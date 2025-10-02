@@ -395,8 +395,19 @@
         label="Habitat"
         placeholder="Tapez les premières lettres..."
       ></pnx-autocomplete>
-    </div>
   </div>
+</div>
+
+<div class="row">
+    <div
+      *ngIf="module === 'PHYTO'"
+      class="col-8"
+    >
+      <phyto-vegetation-stratum
+        [parentFormControl]="propertiesForm.get('t_vegetation_stratum')"
+      ></phyto-vegetation-stratum>
+      </div>
+    </div>
 
   <div class="row">
     <div
