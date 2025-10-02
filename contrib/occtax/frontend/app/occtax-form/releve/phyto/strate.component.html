@@ -1,0 +1,147 @@
+<small class="title">Strates de végétation</small>
+<table
+  mat-table
+  [dataSource]="parentFormControl.controls"
+  class="mat-elevation-z2 compact-table"
+  #strateTable
+>
+  <!-- Nom de la strate -->
+  <ng-container matColumnDef="label_default">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+    >
+      {{ 'Occtax.Releve.Stratum' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+    >
+      {{ stratesLabels[row.get('id_nomenclature_vegetation_stratum').value] }}
+    </td>
+  </ng-container>
+
+  <!-- Recouvrement (%) -->
+  <ng-container matColumnDef="percentage_cover_vegetation_stratum">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+    >
+      {{ 'Occtax.Releve.Cover' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      [formGroup]="row"
+    >
+      <mat-form-field
+        appearance="outline"
+        class="compact-input"
+      >
+        <input
+          matInput
+          type="number"
+          class="no-spinners"
+          formControlName="percentage_cover_vegetation_stratum"
+        />
+        <!-- Pour récupérer label_default via stratesLabels et transmettre au backend -->
+        <input
+          matInput
+          [class.cdk-visually-hidden]="true"
+          formControlName="id_nomenclature_vegetation_stratum"
+        />
+      </mat-form-field>
+    </td>
+  </ng-container>
+
+  <!-- Hauteur moy. (m) -->
+  <ng-container matColumnDef="average_height">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+    >
+      {{ 'Occtax.Releve.HeightAvg' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      [formGroup]="row"
+    >
+      <mat-form-field
+        appearance="outline"
+        class="compact-input"
+      >
+        <input
+          matInput
+          type="number"
+          class="no-spinners"
+          formControlName="average_height"
+        />
+      </mat-form-field>
+    </td>
+  </ng-container>
+
+  <!-- Hauteur inf. (m) -->
+  <ng-container matColumnDef="min_height">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+    >
+      {{ 'Occtax.Releve.HeightMin' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      [formGroup]="row"
+    >
+      <mat-form-field
+        appearance="outline"
+        class="compact-input"
+      >
+        <input
+          matInput
+          type="number"
+          class="no-spinners"
+          formControlName="min_height"
+        />
+      </mat-form-field>
+    </td>
+  </ng-container>
+
+  <!-- Hauteur sup. (m) -->
+  <ng-container matColumnDef="max_height">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+    >
+      {{ 'Occtax.Releve.HeightMax' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      [formGroup]="row"
+    >
+      <mat-form-field
+        appearance="outline"
+        class="compact-input"
+      >
+        <input
+          matInput
+          type="number"
+          class="no-spinners"
+          formControlName="max_height"
+        />
+      </mat-form-field>
+    </td>
+  </ng-container>
+
+  <tr
+    mat-header-row
+    *matHeaderRowDef="displayedColumns"
+  ></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    [formGroup]="row"
+  ></tr>
+</table>

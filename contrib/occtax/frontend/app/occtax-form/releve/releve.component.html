@@ -1,10 +1,11 @@
-<div
-  *ngIf="occtaxFormService.disabled"
-  id="overlay"
-  data-qa="overlay"
-  class="disabled-form"
-  (click)="formDisabled()"
-></div>
+<div id="form-container">
+  <div
+    *ngIf="occtaxFormService.disabled"
+    id="overlay"
+    data-qa="overlay"
+    class="disabled-form"
+    (click)="formDisabled()"
+  ></div>
 
 <div class="row">
   <!-- PRECISION -->
@@ -28,7 +29,6 @@
     *ngIf="config.OCCTAX.form_fields.code_releve"
     class="col-xl-4 col-md-6 col-sm-8 col-11"
   >
-    <small>{{ 'Occtax.Releve.CodeReleve' | translate }}</small>
     <small>{{ 'Occtax.Releve.CodeReleve' | translate }}</small>
     <input
       type="text"
@@ -241,23 +241,23 @@
     />
   </div>
 
-  <div
-    class="col-1 align-self-end"
-    style="padding-left: 0px"
-  >
-    <pnx-areas-intersected-modal
-      *ngIf="geojson"
-      [geojson]="geojson"
-    ></pnx-areas-intersected-modal>
+    <div
+      class="col-1 align-self-end"
+      style="padding-left: 0px"
+    >
+      <pnx-areas-intersected-modal
+        *ngIf="geojson"
+        [geojson]="geojson"
+      ></pnx-areas-intersected-modal>
+    </div>
   </div>
-</div>
-<div
-  *ngIf="propertiesForm.hasError('invalidAlt')"
-  class="error"
-  style="color: red; font-size: 80%; font-weight: 400"
->
-  {{ 'Occtax.Releve.Errors.AltitudeError' | translate }}
-</div>
+  <div
+    *ngIf="propertiesForm.hasError('invalidAlt')"
+    class="error"
+    style="color: red; font-size: 80%; font-weight: 400"
+  >
+    {{ 'Occtax.Releve.Errors.AltitudeError' | translate }}
+  </div>
 
 <div class="row">
   <div class="col-xl-4 col-md-6 col-sm-8 col-10">
@@ -291,49 +291,49 @@
   {{ 'Occtax.Releve.Errors.DepthError' | translate }}
 </div>
 
-<div class="row">
-  <!-- AREA -->
-  <div
-    *ngIf="config.OCCTAX.form_fields.area"
-    class="col-xl-4 col-md-6 col-sm-8 col-10"
-  >
-    <small>{{ 'Occtax.Releve.Area' | translate }}</small>
-    <input
-      type="number"
-      [formControl]="propertiesForm.get('area')"
-      class="form-control form-control-sm"
-      placeholder="Surface en m² du relevé. Possibilité de stocker des valeurs < 1 m dans le cas de relevés bryologiques, lichenologiques"
-    />
-  </div>
-</div>
-
-<div class="row">
-  <!-- SLOPE -->
-  <div
-    *ngIf="config.OCCTAX.form_fields.slope"
-    class="col-xl-4 col-md-6 col-sm-8 col-10"
-  >
-    <small>{{ 'Occtax.Releve.Slope' | translate }}</small>
-    <input
-      type="number"
-      [formControl]="propertiesForm.get('slope')"
-      class="form-control form-control-sm"
-      placeholder="Pente ou déclivité en degrés du terrain sur l’aire du relevé"
-    />
+  <div class="row">
+    <!-- AREA -->
+    <div
+      *ngIf="config.OCCTAX.form_fields.area"
+      class="col-xl-4 col-md-6 col-sm-8 col-10"
+    >
+      <small>{{ 'Occtax.Releve.Area' | translate }}</small>
+      <input
+        type="number"
+        [formControl]="propertiesForm.get('area')"
+        class="form-control form-control-sm"
+        placeholder="Surface en m² du relevé. Possibilité de stocker des valeurs < 1 m dans le cas de relevés bryologiques, lichenologiques"
+      />
+    </div>
   </div>
 
-  <!-- EXPOSITION -->
-  <div
-    *ngIf="config.OCCTAX.form_fields.exposition"
-    class="col-xl-4 col-md-6 col-sm-8 col-10"
-  >
-    <pnx-nomenclature
-      label="{{ 'Occtax.Releve.Exposure' | translate }}"
-      [parentFormControl]="propertiesForm.get('id_nomenclature_exposure')"
-      codeNomenclatureType="EXPOSITION"
-    ></pnx-nomenclature>
+  <div class="row">
+    <!-- SLOPE -->
+    <div
+      *ngIf="config.OCCTAX.form_fields.slope"
+      class="col-xl-4 col-md-6 col-sm-8 col-10"
+    >
+      <small>{{ 'Occtax.Releve.Slope' | translate }}</small>
+      <input
+        type="number"
+        [formControl]="propertiesForm.get('slope')"
+        class="form-control form-control-sm"
+        placeholder="Pente ou déclivité en degrés du terrain sur l’aire du relevé"
+      />
+    </div>
+
+    <!-- EXPOSITION -->
+    <div
+      *ngIf="config.OCCTAX.form_fields.exposition"
+      class="col-xl-4 col-md-6 col-sm-8 col-10"
+    >
+      <pnx-nomenclature
+        label="{{ 'Occtax.Releve.Exposure' | translate }}"
+        [parentFormControl]="propertiesForm.get('id_nomenclature_exposure')"
+        codeNomenclatureType="EXPOSITION"
+      ></pnx-nomenclature>
+    </div>
   </div>
-</div>
 
 <div class="row">
   <div class="col-xl-4 col-md-5">
@@ -378,25 +378,36 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-6">
-    <pnx-autocomplete
-      *ngIf="occtaxConfig.moduleConf.form_fields.habitat"
-      apiEndPoint="{{ config.API_ENDPOINT }}/habref/habitats/autocomplete"
-      [searchAsParameter]="false"
-      [parentFormControl]="occtaxFormReleveService.habitatForm"
-      queryParamSearch="search_name"
-      [othersGetParams]="{
-        cd_typo: occtaxConfig.moduleConf?.CD_TYPO_HABITAT,
-        id_list: occtaxConfig.moduleConf?.ID_LIST_HABITAT
-      }"
-      keyValue="search_name"
-      [formatter]="formatter"
-      label="Habitat"
-      placeholder="Tapez les premières lettres..."
-    ></pnx-autocomplete>
+  <div class="row">
+    <div class="col-6">
+      <pnx-autocomplete
+        *ngIf="occtaxConfig.moduleConf.form_fields.habitat"
+        apiEndPoint="{{ config.API_ENDPOINT }}/habref/habitats/autocomplete"
+        [searchAsParameter]="false"
+        [parentFormControl]="occtaxFormReleveService.habitatForm"
+        queryParamSearch="search_name"
+        [othersGetParams]="{
+          cd_typo: occtaxConfig.moduleConf?.CD_TYPO_HABITAT,
+          id_list: occtaxConfig.moduleConf?.ID_LIST_HABITAT
+        }"
+        keyValue="search_name"
+        [formatter]="formatter"
+        label="Habitat"
+        placeholder="Tapez les premières lettres..."
+      ></pnx-autocomplete>
+    </div>
   </div>
-</div>
+
+  <div class="row">
+    <div
+      *ngIf="module === 'PHYTO'"
+      class="col-8"
+    >
+      <phyto-vegetation-stratum
+        [parentFormControl]="propertiesForm.get('t_vegetation_stratum')"
+      ></phyto-vegetation-stratum>
+    </div>
+  </div>
 
 <!-- COMMENTAIRE -->
 <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_releve">
@@ -412,43 +423,44 @@
   [formsDefinition]="additionalFieldsForm"
 ></pnx-dynamic-form-generator>
 
-<div
-  class="text-center"
-  style="margin-top: 10px"
->
-  <ng-container>
+  <div
+    class="text-center"
+    style="margin-top: 10px"
+  >
+    <ng-container>
+      <button
+        mat-raised-button
+        color="warn"
+        class="uppercase mr-1"
+        [routerLink]="['/' + moduleService.currentModule.module_path]"
+      >
+        Annuler
+      </button>
+      <button
+        mat-raised-button
+        data-qa="pnx-occtax-releve-submit-btn"
+        class="button-success uppercase"
+        matTooltip="Enregistrer le relevé et saisir les taxons"
+        [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"
+        (click)="submitReleveForm()"
+      >
+        <mat-spinner
+          *ngIf="occtaxFormReleveService.waiting"
+          diameter="25"
+          strokeWidth="2"
+        ></mat-spinner>
+        Enregistrer et saisir des taxons
+      </button>
+    </ng-container>
+    <!-- <ng-template #modifButton>
     <button
-      mat-raised-button
-      color="warn"
-      class="uppercase mr-1"
-      [routerLink]="['/' + moduleService.currentModule.module_path]"
-    >
-      Annuler
-    </button>
-    <button
-      mat-raised-button
-      data-qa="pnx-occtax-releve-submit-btn"
-      class="button-success uppercase"
-      matTooltip="Enregistrer le relevé et saisir les taxons"
-      [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"
-      (click)="submitReleveForm()"
-    >
-      <mat-spinner
-        *ngIf="occtaxFormReleveService.waiting"
-        diameter="25"
-        strokeWidth="2"
-      ></mat-spinner>
-      Enregistrer et saisir des taxons
-    </button>
-  </ng-container>
-  <!-- <ng-template #modifButton>
-    <button 
       class="btn"
       [ngClass]="releveForm.dirty ? 'btn-primary' : 'btn-light'"
       matTooltip="Modifier le relevé"
       [disabled]="releveForm.invalid || occtaxFormReleveService.waiting || ((occtaxFormService.editionMode|async) && releveForm.pristine)"
       (click)="submitReleveForm()">
       Modifier le relevé
-    </button> 
+    </button>
   </ng-template> -->
+  </div>
 </div>

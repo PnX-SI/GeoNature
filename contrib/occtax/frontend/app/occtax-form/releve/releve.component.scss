@@ -28,6 +28,10 @@ button .mat-spinner {
   z-index: 1000;
 }
 
+#form-container {
+  position: relative;
+}
+
 .disabled-form {
   background-color: #00000061;
   cursor: not-allowed;

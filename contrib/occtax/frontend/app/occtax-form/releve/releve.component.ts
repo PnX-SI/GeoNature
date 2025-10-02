@@ -28,6 +28,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public releveForm: UntypedFormGroup;
   public routeSub: Subscription;
   private _subscriptions: Subscription[] = [];
+  public module: string;
 
   get additionalFieldsForm(): any[] {
     return this.occtaxFormReleveService.additionalFieldsForm;
@@ -47,6 +48,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.module = this.moduleService.currentModule.module_code;
     this.releveForm = this.occtaxFormReleveService.releveForm;
     // pass route to releve.service to navigate
     this.occtaxFormReleveService.route = this.route;
