@@ -13,6 +13,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
 
 export interface ObservedTaxon extends Taxon {
   nom_cite?: string;
@@ -98,6 +99,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   // default tab
   private defaultTab: string = 'details';
 
+  public criteriaInfos;
+
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
@@ -110,7 +113,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     public config: ConfigService,
     private _router: Router,
     private _route: ActivatedRoute,
-    private _location: Location
+    private _location: Location,
+    public criteriaService: SyntheseCriteriaService
   ) {}
 
   ngOnInit() {
@@ -171,10 +175,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
+        // TODO: use pipe inside template to translate date to FR/EN/CZ ...
         const date_min = new Date(this.selectedObs.date_min);
-        this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
+        this.selectedObs.date_min_fr = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);
-        this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
+        this.selectedObs.date_max_fr = date_max.toLocaleDateString('fr-FR');
         for (let actor of this.selectedObs.dataset.cor_dataset_actor) {
           if (actor.role) actor.display_name = actor.role.nom_complet;
           else if (actor.organism) actor.display_name = actor.organism.nom_organisme;
@@ -229,11 +234,19 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.filterTabs();
         this.selectedTab = this.selectedTab ? this.selectedTab : this.defaultTab;
         this.selectTab(this.selectedTab);
+
+        this.extractCriteriaInfos();
       });
 
     this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe((dataChecks) => {
       this.profileDataChecks = dataChecks;
     });
+  }
+
+  private extractCriteriaInfos() {
+    if (this.useFrom == 'synthese' && this.criteriaService.isCriteriaDisplay()) {
+      this.criteriaInfos = this.criteriaService.getCriteriaStyle(this.selectedObs);
+    }
   }
 
   sendMail() {
