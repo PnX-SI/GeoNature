@@ -311,6 +311,9 @@
       "SpecificGeonature": "Specific GeoNature",
       "RequiredToImportAndEnterData": "Required to enter or import data in the dataset"
     },
+    "AcquisitionFrameworkCard": {
+      "AdditionalInformation": "Additional information"
+    },
     "AcquisitionFrameworkForm": {},
     "Actors": {
       "Person": "Person",
