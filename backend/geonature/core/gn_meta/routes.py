@@ -9,6 +9,7 @@ from lxml import etree as ET
 
 from flask import Blueprint, current_app, request, Response, g, render_template
 
+import requests
 from sqlalchemy import inspect
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.sql import text, select
@@ -698,6 +699,18 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
             "%d-%m-%Y %H:%M"
         )
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
+
+    # Retrieve labels for additional fields
+    if acquisition_framework["additional_data"]:
+        url_additional_fields = f"{current_app.config['API_ENDPOINT']}/gn_commons/additional_fields?module_code=METADATA"
+        list_additional_fields = requests.get(url_additional_fields).json()
+        for dict_additional_field in list_additional_fields:
+            label_additional_field = dict_additional_field["field_label"]
+            name_additional_field = dict_additional_field["field_name"]
+            # Replace name with label for the additional_field
+            acquisition_framework["additional_data"][label_additional_field] = (
+                acquisition_framework["additional_data"].pop(name_additional_field)
+            )
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("acquisition_framework_template_pdf.html", acquisition_framework)

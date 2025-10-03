@@ -592,6 +592,13 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Taille maximale pour l'upload des médias
     MEDIAS_SIZE_MAX = 10000
 
+
+# Champs additionnels
+[ADDITIONAL_FIELDS]
+    IMPLEMENTED_MODULES = ["OCCTAX", "METADATA"]
+    IMPLEMENTED_OBJECTS = ["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT", "METADATA_CADRE_ACQUISITION"]
+
+
 # Module métadonnées
 [METADATA]
     # Nombre de cadre d'acquisition affiché sur la liste
