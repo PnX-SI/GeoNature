@@ -113,7 +113,7 @@ $icon-size: 19px;
 
     &__button {
       $button-disabled-opacity: 0.2;
-      padding: $icon-size / 4;
+      padding: calc($icon-size / 4);
       height: 2 * $icon-size !important;
       width: 2 * $icon-size !important;
 
