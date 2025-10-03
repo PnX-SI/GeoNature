@@ -23,6 +23,7 @@ from psycopg2.errors import UniqueViolation
 
 from geonature.utils.config import config
 from geonature.utils.env import db
+from geonature.core.gn_commons.routes import _get_additional_fields
 from geonature.core.gn_synthese.models import (
     Synthese,
     CorAreaSynthese,
@@ -698,6 +699,23 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
             "%d-%m-%Y %H:%M"
         )
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
+
+    # Retrieve labels for additional fields
+    if acquisition_framework["additional_data"]:
+        updated_additional_data = {}
+        list_additional_fields = _get_additional_fields(
+            module_code="METADATA", object_code="METADATA_CADRE_ACQUISITION"
+        )
+        for dict_additional_field in list_additional_fields:
+            label_additional_field = dict_additional_field["field_label"]
+            name_additional_field = dict_additional_field["field_name"]
+            updated_additional_data[label_additional_field] = ""
+            if acquisition_framework["additional_data"].get(name_additional_field):
+                # Replace name with label for the additional_field
+                updated_additional_data[label_additional_field] = acquisition_framework[
+                    "additional_data"
+                ][name_additional_field]
+        acquisition_framework["additional_data"] = updated_additional_data
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("acquisition_framework_template_pdf.html", acquisition_framework)
