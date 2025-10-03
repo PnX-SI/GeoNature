@@ -72,7 +72,6 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   @Input()
   value: FieldMappingItem | null = null;
   writeValue(value: FieldMappingItem | null): void {
-    console.log(this.value, value);
     if (this.value == value) {
       return;
     }
@@ -272,15 +271,18 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   switchInputType() {
     if (this.inputState == InputStackState.INPUT_FILE) {
       this.inputState = InputStackState.CONSTANT;
-      this.csvColumn = null;
+      this.value = this.constantValue ? { constant_value: this.constantValue } : null;
     } else if (this.inputState == InputStackState.CONSTANT) {
       this.inputState = InputStackState.INPUT_FILE;
-      this.constantValue = null;
+      this.value = this._csvColumn ? { column_src: this._csvColumn } : null;
     } else {
-      // Should never beNever reached
-      this.constantValue = null;
       this.inputState = InputStackState.INPUT_FILE;
+      this._csvColumn = null;
+      this.constantValue = null;
+      this.value = null;
     }
+    this.onChanged(this.value);
+    this.onTouched(true);
   }
 
   getTooltip() {
