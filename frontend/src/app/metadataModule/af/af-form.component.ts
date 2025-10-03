@@ -77,6 +77,14 @@ export class AfFormComponent implements OnInit {
     );
   }
 
+  get propertiesForm(): any {
+    return this.form;
+  }
+
+  get additionalFieldsForm(): any[] {
+    return this.afFormS.additionalFieldsForm;
+  }
+
   addContact(formArray: UntypedFormArray, mainContact: boolean) {
     let value = null;
     if (mainContact) {
