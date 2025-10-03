@@ -31,7 +31,7 @@ export class DataFormService {
   constructor(
     private _http: HttpClient,
     public config: ConfigService
-  ) { }
+  ) {}
 
   getTaxhubAPI() {
     return `${this.config.API_ENDPOINT}/taxhub${this.config.TAXHUB.API_PREFIX}`;
@@ -569,7 +569,7 @@ export class DataFormService {
           this._blob = event.body;
         }
       },
-      (e: HttpErrorResponse) => { },
+      (e: HttpErrorResponse) => {},
       // response OK
       () => {
         const date = new Date();
