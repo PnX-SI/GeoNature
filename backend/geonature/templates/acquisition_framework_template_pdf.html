@@ -253,6 +253,19 @@
                 </div>
                 {% endif %}
 
+                {% if data['additional_data']: %}
+                <div class="information">
+                    <p class="info-titre">Données additionnelles</p>
+                    <p class="info-contenu">
+                        {% for label, value in data['additional_data'].items() -%}
+                            {{ label }} : {{ value }}
+                            {% if loop.nextitem: %}
+                                <br />
+                            {% endif %}
+                        {%- endfor %}
+                    </p>
+                </div>
+                {% endif %}
             </div>
             <div class="right-block">
 
