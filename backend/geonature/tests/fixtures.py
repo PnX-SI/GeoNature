@@ -430,6 +430,9 @@ def acquisition_frameworks(users):
     }
     afs["child_af"] = create_af("child_af", users["user"], False, afs["parent_af"])
 
+    # Add additional data to "af_1"
+    afs["af_1"].additional_data = {"used_field": "test"}
+
     return afs
 
 
