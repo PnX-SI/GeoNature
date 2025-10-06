@@ -3,6 +3,9 @@ import uuid
 from io import StringIO
 from unittest.mock import MagicMock
 
+from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
+from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_permissions.models import PermObject
 import pytest
 from flask import url_for, Flask
 from kombu.asynchronous.http import Response
@@ -93,6 +96,28 @@ def synthese_corr():
         "jourDatefin": "date_max",
         "observateurIdentite": "observers",
     }
+
+
+@pytest.fixture(scope="function")
+def additional_fields(app):
+    module = db.session.execute(
+        select(TModules).where(TModules.module_code == "METADATA")
+    ).scalar_one()
+    obj = db.session.execute(
+        select(PermObject).where(PermObject.code_object == "METADATA_CADRE_ACQUISITION")
+    ).scalar_one()
+    for name in ["used_field", "not_used_field"]:
+        additional_field = TAdditionalFields(
+            field_name=name,
+            field_label=name,
+            required=True,
+            id_widget=1,
+            modules=[module],
+            objects=[obj],
+        )
+        with db.session.begin_nested():
+            db.session.add(additional_field)
+    return additional_field
 
 
 def get_csv_from_response(data):
@@ -531,7 +556,7 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_get_export_pdf_acquisition_frameworks_with_data(
-        self, users, acquisition_frameworks, datasets
+        self, users, acquisition_frameworks, datasets, additional_fields
     ):
         af_id = acquisition_frameworks["af_1"].id_acquisition_framework
 
