@@ -89,7 +89,7 @@
     *ngIf="!formGroup.controls[field.name_field]?.errors?.required && field.mandatory_conditions"
   >
     <small class="hint-condition">
-      {{ 'Import.FieldMapping.RequiredIf' | translate }}
+      {{ 'RequiredIf' | translate }}
       ({{ mandatoryFieldLabels.join(', ') }})
       {{ field.mandatory_conditions?.length > 1 ? 'sont renseignées' : 'est renseignée' }}
     </small>
