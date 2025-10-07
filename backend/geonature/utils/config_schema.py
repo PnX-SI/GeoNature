@@ -116,9 +116,15 @@ class AlembicConfig(Schema):
 
 
 class AdditionalFields(Schema):
-    IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
+    IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX", "METADATA"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(), load_default=["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
+        fields.String(),
+        load_default=[
+            "OCCTAX_RELEVE",
+            "OCCTAX_OCCURENCE",
+            "OCCTAX_DENOMBREMENT",
+            "METADATA_CADRE_ACQUISITION",
+        ],
     )
 
 

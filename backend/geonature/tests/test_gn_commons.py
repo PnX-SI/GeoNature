@@ -487,7 +487,8 @@ class TestCommons:
         assert not db.session.scalar(exists().where(TPlaces.id_place == place.id_place).select())
 
     def test_get_additional_fields(self, datasets, additional_field):
-        query_string = {"module_code": "SYNTHESE", "object_code": "ALL"}
+        id_dataset = datasets["own_dataset"].id_dataset
+        query_string = {"module_code": "SYNTHESE", "object_code": "ALL", "id_dataset": id_dataset}
         response = self.client.get(
             url_for("gn_commons.get_additional_fields"), query_string=query_string
         )
@@ -529,6 +530,35 @@ class TestCommons:
         data = response.json
         # TODO: Do better than that:
         assert len(data) == 0
+
+    def test_get_additional_fields_multi_datasets(self, datasets, additional_field):
+        list_id_dataset = ",".join(
+            [str(datasets[name].id_dataset) for name in list(datasets.keys())[:2]]
+        )
+        response = self.client.get(
+            url_for("gn_commons.get_additional_fields"),
+            query_string={"id_dataset": list_id_dataset},
+        )
+
+        assert response.status_code == 200
+
+    def test_get_additional_fields_multi_objects(self, additional_field):
+
+        response = self.client.get(
+            url_for("gn_commons.get_additional_fields"),
+            query_string={"object_code": "ALL,UNKNOWN_OBJECT"},
+        )
+
+        assert response.status_code == 200
+
+    def test_get_additional_fields_no_dataset(self, datasets, additional_field):
+        response = self.client.get(
+            url_for("gn_commons.get_additional_fields"),
+            query_string={"id_dataset": "null"},
+        )
+
+        assert response.status_code == 200
+        assert len(response.json) == 0
 
     def test_additional_field_admin(self, app, users, module, perm_object):
         set_logged_user(self.client, users["admin_user"])
