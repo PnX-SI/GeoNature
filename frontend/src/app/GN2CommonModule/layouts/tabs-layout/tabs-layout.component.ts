@@ -1,11 +1,5 @@
 import { Component, Input } from '@angular/core';
-
-export interface TabDescription {
-  label: string;
-  path: string;
-  configEnabledField?: string;
-  component: any;
-}
+import { ChildRouteDescription } from '@geonature/routing/childRouteDescription';
 
 @Component({
   selector: 'pnx-tabs-layout',
@@ -14,5 +8,5 @@ export interface TabDescription {
 })
 export class TabsLayoutComponent {
   @Input()
-  tabs: Array<TabDescription> = [];
+  tabs: Array<ChildRouteDescription> = [];
 }

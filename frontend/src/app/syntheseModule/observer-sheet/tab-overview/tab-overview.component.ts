@@ -6,19 +6,24 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { FeatureCollection } from 'geojson';
 import { ObserverSheetService } from '../observer-sheet.service';
 import { Observer } from '../observer';
+import { ConfigService } from '@geonature/services/config.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   standalone: true,
-  selector: 'tab-geographic-overview',
-  templateUrl: 'tab-geographic-overview.component.html',
-  imports: [GN2CommonModule, CommonModule],
+  selector: 'tab-overview',
+  templateUrl: 'tab-overview.component.html',
+  styleUrls: ['tab-overview.component.scss'],
+  imports: [GN2CommonModule, CommonModule, RouterModule],
 })
-export class TabGeographicOverviewComponent implements OnInit {
+export class TabOverviewComponent implements OnInit {
   observations: FeatureCollection | null = null;
   constructor(
     private _syntheseDataService: SyntheseDataService,
     private _oss: ObserverSheetService,
-    public mapListService: MapListService
+    public mapListService: MapListService,
+    public config: ConfigService,
+    private _router: Router
   ) {}
 
   ngOnInit() {
@@ -31,14 +36,29 @@ export class TabGeographicOverviewComponent implements OnInit {
         .getSyntheseData(
           {
             observers: observer.nom_complet,
-            id_role: observer.id_role
+            id_role: observer.id_role,
+            limit: 100,
           },
           {}
         )
         .subscribe((data) => {
-          // Store geojson
-          this.observations = data;
+          this.observations = data.features.map((feature) => feature.properties);
+          console.log(this.observations);
         });
     });
+  }
+
+  openObservation(id_synthese) {
+    this._router.navigate(['/synthese/occurrence/' + id_synthese]);
+  }
+
+  backToModule(url_source, id_pk_source) {
+    const link = document.createElement('a');
+    link.target = '_blank';
+    link.href = url_source + '/' + id_pk_source;
+    link.setAttribute('visibility', 'hidden');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 }

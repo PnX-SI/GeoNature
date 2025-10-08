@@ -4,8 +4,8 @@ import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@ang
 import { CommonModule } from '@angular/common';
 import { ObserverSheetService } from './observer-sheet.service';
 import { InfosComponent } from './infos/infos.component';
-import { computeIndicatorFromDescription, Indicator, IndicatorDescription } from '@geonature_common/others/indicator/indicator';
-import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { computeIndicatorFromStats, Indicator, IndicatorDescription } from '@geonature_common/others/indicator/indicator';
+import { ObserverStats, Stats, SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { ObserverSheetRouteService } from './observer-sheet.route.service';
 import { Loadable } from '../sheets/loadable';
 
@@ -43,7 +43,6 @@ const INDICATORS: Array<IndicatorDescription> = [
   templateUrl: 'observer-sheet.component.html',
   styleUrls: ['observer-sheet.component.scss'],
   imports: [CommonModule, GN2CommonModule, InfosComponent],
-  providers: [ObserverSheetService],
 })
 export class ObserverSheetComponent extends Loadable implements OnInit {
   indicators: Array<Indicator>;
@@ -54,7 +53,6 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
 
   constructor(
     private _route: ActivatedRoute,
-    private _oss: ObserverSheetService,
     private _sds: SyntheseDataService,
     public routes: ObserverSheetRouteService
   ) {
@@ -67,7 +65,6 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
       if (id_role) {
         this.startLoading();
         this.setIndicators(null);
-        this._oss.updateObserverByIdRole(id_role);
         this._sds.getSyntheseObserverSheetStats(id_role).subscribe((stats) => {
           if (stats) {
             this.stopLoading();
@@ -78,9 +75,9 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
     });
   }
 
-  setIndicators(stats: any) {
+  setIndicators(stats: ObserverStats) {
     this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
-      computeIndicatorFromDescription(indicatorConfig, stats)
+      computeIndicatorFromStats(indicatorConfig, stats as Stats)
     );
   }
 }

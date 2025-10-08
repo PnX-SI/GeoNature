@@ -8,13 +8,21 @@ import {
   HttpEvent,
 } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
 
-export interface TaxonStats {
+
+export type Stats = Record<string, any>
+export interface ObserverStats extends Stats {
+  area_count?: number;
+  date_max?: string;
+  date_min?: string;
+  observation_count?: number;
+  taxa_count?: number;
+}
+export interface TaxonStats extends Stats {
   cd_ref?: number;
   altitude_max?: number;
   altitude_min?: number;
@@ -67,6 +75,12 @@ export class SyntheseDataService {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/general_stats`);
   }
 
+  getSyntheseObserverSheetStats(id_role: number, areaType: string = 'COM'): Observable<ObserverStats> {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_stats/${id_role}`, {
+      params: new HttpParams().append('area_type', areaType),
+    });
+  }
+
   getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM'): Observable<TaxonStats> {
     return this._api.get<TaxonStats>(`${this.config.API_ENDPOINT}/synthese/taxon/${cd_ref}`, {
       params: new HttpParams().append('area_type', areaType),
@@ -76,12 +90,6 @@ export class SyntheseDataService {
   getTaxonMedias(cdRef: number, params?: {}): Observable<any> {
     return this._api.get(`${this.config.API_ENDPOINT}/synthese/taxon/${cdRef}/medias`, {
       params,
-    });
-  }
-
-  getSyntheseObserverSheetStats(id_role: number, areaType: string = 'COM') {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_stats/${id_role}`, {
-      params: new HttpParams().append('area_type', areaType),
     });
   }
 

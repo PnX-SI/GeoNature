@@ -303,7 +303,8 @@ class TaxonSheet(Schema):
 class ObserverSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - OBSERVER_SHEET
-    # Permet d'activer ou non l'onglet "Media"
+    ENABLE_TAB_OBSERVATIONS = fields.Boolean(load_default=True)
+    ENABLE_TAB_OVERVIEW = fields.Boolean(load_default=True)
     ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
 
 

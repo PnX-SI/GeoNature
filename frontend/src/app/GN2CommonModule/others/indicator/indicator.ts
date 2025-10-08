@@ -1,3 +1,5 @@
+import { Stats } from "@geonature_common/form/synthese-form/synthese-data.service";
+
 export interface Indicator {
   name: string;
   matIcon: string;
@@ -13,8 +15,6 @@ export interface IndicatorDescription {
   separator?: string;
   type: IndicatorRawType;
 }
-
-type Stats = Record<string, string>;
 
 const DEFAULT_VALUE = '-';
 const DEFAULT_SEPARATOR = '-';
@@ -38,7 +38,7 @@ function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: 
   return DEFAULT_VALUE;
 }
 
-export function computeIndicatorFromDescription(
+export function computeIndicatorFromStats(
   indicatorDescription: IndicatorDescription,
   stats?: Stats
 ): Indicator {

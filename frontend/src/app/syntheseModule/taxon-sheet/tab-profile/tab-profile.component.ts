@@ -5,7 +5,7 @@ import { DataFormService, Profile } from '@geonature_common/form/data-form.servi
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { CommonService } from '@geonature_common/service/common.service';
 import {
-  computeIndicatorFromDescription,
+  computeIndicatorFromStats,
   Indicator,
   IndicatorDescription,
 } from '@geonature_common/others/indicator/indicator';
@@ -83,7 +83,7 @@ export class TabProfileComponent implements OnInit {
   set profile(profile: Profile | null) {
     this._profile = profile;
     this.indicators = INDICATORS.map((indicatorRaw: IndicatorDescription) =>
-      computeIndicatorFromDescription(indicatorRaw, profile?.properties)
+      computeIndicatorFromStats(indicatorRaw, profile?.properties)
     );
   }
 }

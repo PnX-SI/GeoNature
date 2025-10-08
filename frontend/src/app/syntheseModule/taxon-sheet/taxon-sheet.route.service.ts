@@ -13,12 +13,15 @@ import { TabProfileComponent } from './tab-profile/tab-profile.component';
 import { TabTaxonomyComponent } from './tab-taxonomy/tab-taxonomy.component';
 import { TabMediaComponent } from './tab-media/tab-media.component';
 import { TabObserversComponent } from './tab-observers/tab-observers.component';
-import { TabDescription } from '@geonature_common/layouts/tabs-layout/tabs-layout.component';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { throwError } from '@librairies/rxjs';
 import { HttpErrorResponse } from '@librairies/@angular/common/http';
+import {
+  navigateToFirstAvailableChild,
+  ChildRouteDescription,
+} from '@geonature/routing/childRouteDescription';
 
-export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<TabDescription> = [
+export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
     label: 'Observations',
     path: 'observations',
@@ -69,7 +72,7 @@ export class TaxonSheetRouteService implements CanActivate, CanActivateChild {
     }
   }
 
-  _isComponentRootLevelRoute(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  _isRootLevelRoute(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     return state.url.endsWith(route.params.cd_ref);
   }
 
@@ -92,14 +95,11 @@ export class TaxonSheetRouteService implements CanActivate, CanActivateChild {
       )
       .subscribe();
 
-    // Apply a redirection if needed to the first enabled child.
-    if (this._isComponentRootLevelRoute(route, state)) {
-      if (this.TAB_LINKS.length) {
-        const redirectionTab = this.TAB_LINKS[0];
-        this._router.navigate([state.url + '/' + redirectionTab.path]);
-        return true;
-      }
+    if (this._isRootLevelRoute(route, state)) {
+      return !navigateToFirstAvailableChild(route, state, this._router, this.TAB_LINKS);
     }
+
+    return true;
   }
 
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {

@@ -5,7 +5,7 @@ import {
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { InfosComponent } from './infos/infos.component';
 import {
-  computeIndicatorFromDescription,
+  computeIndicatorFromStats,
   Indicator,
   IndicatorDescription,
 } from '@geonature_common/others/indicator/indicator';
@@ -62,7 +62,6 @@ const INDICATORS: Array<IndicatorDescription> = [
     InfosComponent,
     TaxonImageComponent,
   ],
-  providers: [TaxonSheetService],
 })
 export class TaxonSheetComponent extends Loadable implements OnInit {
   taxon: Taxon | null = null;
@@ -108,7 +107,7 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
 
   setIndicators(stats: any) {
     this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
-      computeIndicatorFromDescription(indicatorConfig, stats)
+      computeIndicatorFromStats(indicatorConfig, stats)
     );
   }
 }

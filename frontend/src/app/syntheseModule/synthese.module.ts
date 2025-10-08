@@ -27,6 +27,8 @@ import {
   ObserverSheetRouteService,
 } from './observer-sheet/observer-sheet.route.service';
 import { ObserverSheetComponent } from './observer-sheet/observer-sheet.component';
+import { ObserverSheetService } from './observer-sheet/observer-sheet.service';
+import { TaxonSheetService } from './taxon-sheet/taxon-sheet.service';
 
 const routes: Routes = [
   {
@@ -66,11 +68,8 @@ const routes: Routes = [
     canActivate: [ObserverSheetRouteService],
     canActivateChild: [ObserverSheetRouteService],
     children: [
-      {
-        path: '',
-        redirectTo: ALL_OBSERVERS_ADVANCED_INFOS_ROUTES[0].path,
-        pathMatch: 'prefix',
-      },
+      // The tabs are all optional. therefore, we can't apply redireciotn here.
+      // A redirection from parent to child is apply in canActivate
       ...ALL_OBSERVERS_ADVANCED_INFOS_ROUTES.map((tab) => {
         return {
           path: tab.path,
@@ -111,7 +110,10 @@ const routes: Routes = [
     TaxonAdvancedStoreService,
     SyntheseFormService,
     NgbActiveModal,
+    ObserverSheetRouteService,
+    ObserverSheetService,
     TaxonSheetRouteService,
+    TaxonSheetService,
   ],
 })
 export class SyntheseModule {}
