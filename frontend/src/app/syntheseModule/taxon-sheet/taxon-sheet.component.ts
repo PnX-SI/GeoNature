@@ -16,6 +16,7 @@ import { TaxonSheetService } from './taxon-sheet.service';
 import { TaxonSheetRouteService } from './taxon-sheet.route.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { Loadable } from '../sheets/loadable';
+import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
@@ -54,21 +55,13 @@ const INDICATORS: Array<IndicatorDescription> = [
 
 @Component({
   standalone: true,
-  selector: 'pnx-taxon-sheet',
   templateUrl: 'taxon-sheet.component.html',
-  imports: [
-    CommonModule,
-    GN2CommonModule,
-    InfosComponent,
-    TaxonImageComponent,
-  ],
+  imports: [CommonModule, GN2CommonModule, InfosComponent, TaxonImageComponent],
+  providers: [ObservationsFiltersService, TaxonSheetService],
 })
 export class TaxonSheetComponent extends Loadable implements OnInit {
   taxon: Taxon | null = null;
 
-  get isLoadingTaxon() {
-    return this._tss.isLoading;
-  }
   get isLoadingIndicators() {
     return this.isLoading;
   }
@@ -89,9 +82,7 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
     });
 
     this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
-      if (stats) {
-        this.stopLoading();
-      }
+      this.stopLoading();
       this.setIndicators(stats);
     });
 
@@ -100,7 +91,7 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
       if (cd_ref) {
         this.startLoading();
         this.setIndicators(null);
-        this._tss.updateTaxonByCdRef(cd_ref);
+        this._tss.fetchTaxonByCdRef(cd_ref);
       }
     });
   }

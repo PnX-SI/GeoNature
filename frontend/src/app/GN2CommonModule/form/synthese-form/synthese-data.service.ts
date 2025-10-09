@@ -14,22 +14,19 @@ import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
 
 
-export type Stats = Record<string, any>
-export interface ObserverStats extends Stats {
+export type SheetStats = {
   area_count?: number;
   date_max?: string;
   date_min?: string;
   observation_count?: number;
+}
+export interface ObserverStats extends SheetStats {
   taxa_count?: number;
 }
-export interface TaxonStats extends Stats {
+export interface TaxonStats extends SheetStats {
   cd_ref?: number;
   altitude_max?: number;
   altitude_min?: number;
-  area_count?: number;
-  date_max?: string;
-  date_min?: string;
-  observation_count?: number;
   observer_count?: number;
 }
 export const FormatMapMime = new Map([

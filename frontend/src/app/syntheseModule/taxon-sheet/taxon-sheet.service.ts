@@ -9,6 +9,7 @@ import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { Loadable } from '../sheets/loadable';
+import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
 
 @Injectable()
 export class TaxonSheetService extends Loadable {
@@ -18,12 +19,13 @@ export class TaxonSheetService extends Loadable {
   constructor(
     private _ds: DataFormService,
     public config: ConfigService,
-    private _sds: SyntheseDataService
+    private _sds: SyntheseDataService,
+    private _os: ObservationsFiltersService
   ) {
     super();
   }
 
-  updateTaxonByCdRef(cd_ref: number) {
+  fetchTaxonByCdRef(cd_ref: number) {
     const taxon = this.taxon.getValue();
     if (taxon && taxon.cd_ref == cd_ref) {
       return;
@@ -39,12 +41,17 @@ export class TaxonSheetService extends Loadable {
           return this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut);
         });
         this.taxon.next(taxon);
+        this._os.filters.next({
+          cd_ref: [taxon.cd_ref],
+          cd_ref_parent: [taxon.cd_ref],
+        });
         this.fetchTaxonStats(cd_ref);
       });
   }
 
   fetchTaxonStats(cd_ref: number) {
     this._sds.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats: TaxonStats) => {
+      this._os.udpateFromSheetStats(stats);
       this.taxonStats.next(stats);
     });
   }

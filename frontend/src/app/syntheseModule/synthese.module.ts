@@ -27,8 +27,6 @@ import {
   ObserverSheetRouteService,
 } from './observer-sheet/observer-sheet.route.service';
 import { ObserverSheetComponent } from './observer-sheet/observer-sheet.component';
-import { ObserverSheetService } from './observer-sheet/observer-sheet.service';
-import { TaxonSheetService } from './taxon-sheet/taxon-sheet.service';
 
 const routes: Routes = [
   {
@@ -111,9 +109,7 @@ const routes: Routes = [
     SyntheseFormService,
     NgbActiveModal,
     ObserverSheetRouteService,
-    ObserverSheetService,
     TaxonSheetRouteService,
-    TaxonSheetService,
   ],
 })
 export class SyntheseModule {}

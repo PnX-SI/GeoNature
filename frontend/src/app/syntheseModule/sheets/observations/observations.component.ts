@@ -1,14 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import {
-  SyntheseDataService,
-  TaxonStats,
+  SyntheseDataService
 } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { FeatureCollection } from 'geojson';
-import { TaxonSheetService } from '../taxon-sheet.service';
+
 import { ConfigService } from '@geonature/services/config.service';
 import * as L from 'leaflet';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
@@ -19,6 +17,7 @@ import { Loadable } from '../../sheets/loadable';
 import { finalize } from 'rxjs/operators';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Router } from '@angular/router';
+import { Filters, ObservationsFiltersService, YearInterval } from './observations-filters.service';
 
 interface MapAreasStyle {
   color: string;
@@ -27,30 +26,22 @@ interface MapAreasStyle {
   fillColor?: string;
 }
 
-interface YearInterval {
-  min: number;
-  max: number;
-}
-
 @Component({
   standalone: true,
-  selector: 'tab-geographic-overview',
-  templateUrl: 'tab-observations.component.html',
-  styleUrls: ['tab-observations.component.scss'],
+  selector: 'observations',
+  templateUrl: 'observations.component.html',
+  styleUrls: ['observations.component.scss'],
   imports: [GN2CommonModule, CommonModule, MatSliderModule],
 })
-export class TabObservationsComponent extends Loadable implements OnInit {
+export class ObservationsComponent extends Loadable implements OnInit {
   observations: FeatureCollection | null = null;
   areasEnable: boolean;
   areasLegend: any;
-  taxon: Taxon | null = null;
   private _areasLabelSwitchBtn;
   styleTabGeoJson: {};
 
-  yearIntervalBoundaries: YearInterval | null = null;
   yearInterval: YearInterval | null = null;
-
-  private isSuperiorToSyntheseLimit: Boolean = false;
+  yearIntervalBoundaries: YearInterval | null = null;
 
   mapAreasStyle: MapAreasStyle = {
     color: '#FFFFFF',
@@ -66,14 +57,14 @@ export class TabObservationsComponent extends Loadable implements OnInit {
 
   constructor(
     private _syntheseDataService: SyntheseDataService,
-    private _tss: TaxonSheetService,
     public mapListService: MapListService,
     public config: ConfigService,
     public formService: SyntheseFormService,
     public translateService: TranslateService,
     private _ms: MapService,
     private _commonService: CommonService,
-    private _router: Router
+    private _router: Router,
+    private _os: ObservationsFiltersService
   ) {
     super();
 
@@ -85,62 +76,38 @@ export class TabObservationsComponent extends Loadable implements OnInit {
   }
 
   ngOnInit() {
-    this._tss.taxon.subscribe((taxon: Taxon | null) => {
-      this.taxon = taxon;
-      if (!taxon) {
+    this._os.filters.subscribe((filters: Filters | null) => {
+      if (!filters) {
         return;
       }
-      this.updateTabObservations();
+      this.updateObservations();
     });
 
-    this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
-      this.updateTaxonStats(stats);
+    this._os.yearIntervalBoundaries.subscribe((boundaries: YearInterval | null) => {
+      // reset boundaries
+      this.yearIntervalBoundaries = boundaries;
+      this.yearInterval = boundaries ? { ...boundaries } : null;
     });
     this.initializeFormWithMapParams();
   }
 
-  updateTaxonStats(stats: TaxonStats | null) {
-    if (!stats) {
-      this.yearIntervalBoundaries = null;
-      this.yearInterval = null;
-      return;
-    }
-    this.isSuperiorToSyntheseLimit =
-      stats.observation_count > this.config['SYNTHESE']['NB_MAX_OBS_MAP'];
-
-    this.yearIntervalBoundaries = {
-      min: new Date(stats.date_min).getFullYear(),
-      max: new Date(stats.date_max).getFullYear(),
-    };
-
-    this.yearInterval = { ...this.yearIntervalBoundaries };
-  }
-
-  updateTabObservations() {
+  updateObservations() {
     this.startLoading();
 
     const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
 
-    const filter: {
-      cd_ref: number[];
-      cd_ref_parent: number[];
-      date_min?: string;
-      date_max?: string;
-    } = {
-      cd_ref: [this.taxon.cd_ref],
-      cd_ref_parent: [this.taxon.cd_ref],
-    };
+    const filters: Filters = this._os.filters.getValue();
     if (this.yearInterval) {
-      filter.date_min = `${this.yearInterval.min}-01-01`;
-      filter.date_max = `${this.yearInterval.max}-12-31`;
+      filters.date_min = `${this.yearInterval.min}-01-01`;
+      filters.date_max = `${this.yearInterval.max}-12-31`;
     }
     const limit = this.areasEnable ? -1 : undefined;
-
     this._syntheseDataService
-      .getSyntheseData({ ...filter }, { format, limit })
+      .getSyntheseData({ ...filters }, { format, limit })
       .pipe(finalize(() => this.stopLoading()))
-      .subscribe((data) => {
-        if (!this.areasEnable && this.isSuperiorToSyntheseLimit) {
+      .subscribe(
+        (data) => {
+        if (!this.areasEnable && this._os.isSuperiorToSyntheseLimit) {
           this._commonService.regularToaster(
             'warning',
             `Pour des raisons de performances, le nombre d'observations affichées est limité à ${this.config['SYNTHESE']['NB_MAX_OBS_MAP']}`
@@ -148,7 +115,6 @@ export class TabObservationsComponent extends Loadable implements OnInit {
         }
         this.styleTabGeoJson = undefined;
         const map = this._ms.map;
-
         map.eachLayer((layer) => {
           if (!(layer instanceof L.TileLayer)) {
             map.removeLayer(layer);
@@ -232,7 +198,7 @@ export class TabObservationsComponent extends Loadable implements OnInit {
 
         switchBtn.onclick = () => {
           this.areasEnable = switchBtn.checked;
-          this.updateTabObservations();
+          this.updateObservations();
 
           if (this.areasEnable) {
             this.addAreasLegend();

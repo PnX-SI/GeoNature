@@ -6,16 +6,16 @@
   box-shadow: none;
   /* font-size:2; */
 }
-::ng-deep .tab-geographic-overview {
-  background-color: rgba(255, 255, 255, 0.8);
+::ng-deep .Observations .custom-control {
+  background-color: rgba(255, 255, 255);
 }
-::ng-deep .tab-geographic-overview .custom-control-label {
+::ng-deep .Observations .custom-control-label {
   margin: 0.2rem;
 }
-::ng-deep .tab-geographic-overview .custom-control-label::before {
+::ng-deep .Observations .custom-control-label::before {
   top: 0.05rem;
 }
-::ng-deep .tab-geographic-overview .custom-control-label::after {
+::ng-deep .Observations .custom-control-label::after {
   top: calc(0.05rem + 2px);
 }
 ::ng-deep .legend {
@@ -38,7 +38,7 @@
   opacity: 1;
 }
 
-.TabObservations {
+.Observations {
   position: relative;
   display: flex;
   flex-flow: column;

@@ -8,25 +8,25 @@ import {
 } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
-import { TabObservationsComponent } from './tab-observations/tab-observations.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
 import { TabTaxonomyComponent } from './tab-taxonomy/tab-taxonomy.component';
 import { TabMediaComponent } from './tab-media/tab-media.component';
 import { TabObserversComponent } from './tab-observers/tab-observers.component';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { throwError } from '@librairies/rxjs';
-import { HttpErrorResponse } from '@librairies/@angular/common/http';
+import { throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   navigateToFirstAvailableChild,
   ChildRouteDescription,
 } from '@geonature/routing/childRouteDescription';
+import { ObservationsComponent } from '../sheets/observations/observations.component';
 
 export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
     label: 'Observations',
     path: 'observations',
     configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
-    component: TabObservationsComponent,
+    component: ObservationsComponent,
   },
   {
     label: 'Taxonomie',

@@ -7,20 +7,20 @@ import {
   CanActivateChild,
 } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
-import { TabObservationsComponent } from './tab-observations/tab-observations.component';
 import { TabMediaComponent } from './tab-media/tab-media.component';
 import { TabOverviewComponent } from './tab-overview/tab-overview.component';
-import { ObserverSheetService } from './observer-sheet.service';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChildRouteDescription, navigateToFirstAvailableChild } from '@geonature/routing/childRouteDescription';
+import { ObservationsComponent } from '../sheets/observations/observations.component';
+import { UserDataService } from '@geonature/userModule/services';
 
 export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
     label: 'Observations',
     path: 'observations',
-    component: TabObservationsComponent,
+    component: ObservationsComponent,
     configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
   },
   {
@@ -45,7 +45,7 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
   constructor(
     private _config: ConfigService,
     private _router: Router,
-    private _observerSheetService: ObserverSheetService
+    private _userDataService: UserDataService
   ) {
     if (this._config['SYNTHESE']?.['OBSERVER_SHEET']) {
       const config = this._config['SYNTHESE']['OBSERVER_SHEET'];
@@ -65,8 +65,8 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
       return of(false);
     }
     const id_role = route.params.id_role ?? -1;
-    this._observerSheetService
-      .fetchObserver(id_role)
+    this._userDataService
+      .getRole(id_role)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           this._router.navigate(['/404'], { skipLocationChange: true });
