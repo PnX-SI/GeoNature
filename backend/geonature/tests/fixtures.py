@@ -131,6 +131,11 @@ def app(_app, _session):
     return _app
 
 
+@pytest.fixture()
+def client(app):
+    return app.test_client()
+
+
 def create_module(module_code, module_label, module_path, active_frontend, active_backend):
     return TModules(
         module_code=module_code,
