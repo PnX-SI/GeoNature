@@ -50,6 +50,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public mailto: string;
   public moduleInfos: any;
 
+  public observers: {
+    name: string;
+    id_role: number | null;
+  }
+
   public profile: any;
   public phenology: any[];
   public alertOpen: boolean;
@@ -212,6 +217,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut)
           );
 
+          // Process mail if possible
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers
               .map((el) => el.email)
@@ -219,6 +225,23 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
               .join();
             this.mailto = this.formatMailContent(this.email);
           }
+          else {
+            this.email = null;
+            this.mailto = null;
+          }
+
+          // Process observers: merge observers and cor_observer
+          // Use observers string field, and associates to id_role if found in cor_observer, based on nom_complet comparaison
+          this.observers = this.selectedObs.observers
+            .split(this.config.SYNTHESE.FIELD_OBSERVERS_SEPARATORS)
+            .map((observer) => observer.trim())
+            .map((observer) => ({
+              name: observer,
+              id_role: this.selectedObs.cor_observers.find(
+                (cor_observer) => cor_observer?.nom_complet == observer
+              )?.id_role,
+            }));
+
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe((profile) => {
             this.profile = profile;
