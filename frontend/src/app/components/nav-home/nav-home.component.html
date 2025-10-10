@@ -41,7 +41,7 @@
       />
 
       <span class="toolbar-spacer"></span>
-      <div></div>
+
       <span id="appName">
         <h3>{{ config.appName }}</h3>
       </span>
@@ -87,6 +87,18 @@
             {{ currentUser?.user_login }}
           </span>
         </ng-template>
+
+        <!-- add observer sheet link only if observer sheet enabled -->
+        <ng-container *ngIf="config.SYNTHESE.ENABLE_OBSERVER_SHEETS">
+          <a
+            class="mx-2 mat-elevation-z1"
+            mat-icon-button
+            matTooltip="Accéder à ma fiche observateur"
+            (click)="openObserverSheet()"
+          >
+            <mat-icon>table_eye</mat-icon>
+          </a>
+        </ng-container>
 
         <!-- add notification only if notification enabled -->
         <ng-container *ngIf="config.NOTIFICATIONS_ENABLED == true">

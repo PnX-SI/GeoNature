@@ -94,4 +94,8 @@ export class NavHomeComponent implements OnInit {
     this.updateNotificationCount();
     this.router.navigate(['/notification']);
   }
+
+  openObserverSheet() {
+    this.router.navigate(['/synthese/observer/' + this.currentUser.id_role]);
+  }
 }
