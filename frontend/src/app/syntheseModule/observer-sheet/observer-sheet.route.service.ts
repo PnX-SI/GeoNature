@@ -12,7 +12,7 @@ import { TabOverviewComponent } from './tab-overview/tab-overview.component';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChildRouteDescription, navigateToFirstAvailableChild } from '@geonature/routing/childRouteDescription';
+import { ChildRouteDescription } from '@geonature/routing/childRouteDescription';
 import { ObservationsComponent } from '../sheets/observations/observations.component';
 import { UserDataService } from '@geonature/userModule/services';
 
@@ -21,7 +21,7 @@ export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> =
     label: 'Observations',
     path: 'observations',
     component: ObservationsComponent,
-    configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
+    configEnabledField: null, // make it always available !
   },
   {
     label: 'Overview',
@@ -33,7 +33,7 @@ export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> =
     label: 'Medias',
     path: 'medias',
     component: TabMediaComponent,
-    configEnabledField: 'ENABLE_TAB_MEDIA', // make it always available !
+    configEnabledField: 'ENABLE_TAB_MEDIA',
   },
 ];
 
@@ -41,7 +41,7 @@ export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> =
   providedIn: 'root',
 })
 export class ObserverSheetRouteService implements CanActivate, CanActivateChild {
-  readonly TAB_LINKS = [];
+  readonly TAB_LINKS: Array<ChildRouteDescription> = [];
   constructor(
     private _config: ConfigService,
     private _router: Router,
@@ -53,10 +53,6 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
         (tab) => !tab.configEnabledField || config[tab.configEnabledField]
       );
     }
-  }
-
-  _isRootLevelRoute(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return state.url.endsWith(route.params.id_role);
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
@@ -80,12 +76,6 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
         if (!isValidObserver) {
           this._router.navigate(['/404'], { skipLocationChange: true });
           return false;
-        }
-        // valid
-        else {
-          if (this._isRootLevelRoute(route, state)) {
-            return !navigateToFirstAvailableChild(route, state, this._router, this.TAB_LINKS);
-          }
         }
         return true;
       });

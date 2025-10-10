@@ -16,7 +16,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
-  navigateToFirstAvailableChild,
   ChildRouteDescription,
 } from '@geonature/routing/childRouteDescription';
 import { ObservationsComponent } from '../sheets/observations/observations.component';
@@ -25,7 +24,7 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription>
   {
     label: 'Observations',
     path: 'observations',
-    configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
+    configEnabledField: null, // make it always available !
     component: ObservationsComponent,
   },
   {
@@ -58,7 +57,7 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription>
   providedIn: 'root',
 })
 export class TaxonSheetRouteService implements CanActivate, CanActivateChild {
-  readonly TAB_LINKS = [];
+  readonly TAB_LINKS: Array<ChildRouteDescription> = [];
   constructor(
     private _config: ConfigService,
     private _router: Router,
@@ -70,10 +69,6 @@ export class TaxonSheetRouteService implements CanActivate, CanActivateChild {
         (tab) => !tab.configEnabledField || config[tab.configEnabledField]
       );
     }
-  }
-
-  _isRootLevelRoute(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return state.url.endsWith(route.params.cd_ref);
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
@@ -94,10 +89,6 @@ export class TaxonSheetRouteService implements CanActivate, CanActivateChild {
         })
       )
       .subscribe();
-
-    if (this._isRootLevelRoute(route, state)) {
-      return !navigateToFirstAvailableChild(route, state, this._router, this.TAB_LINKS);
-    }
 
     return true;
   }

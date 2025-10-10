@@ -293,7 +293,6 @@ class ExportObservationSchema(Schema):
 class TaxonSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
-    ENABLE_TAB_OBSERVATIONS = fields.Boolean(load_default=True)
     ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
     ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
     ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
@@ -303,7 +302,6 @@ class TaxonSheet(Schema):
 class ObserverSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - OBSERVER_SHEET
-    ENABLE_TAB_OBSERVATIONS = fields.Boolean(load_default=True)
     ENABLE_TAB_OVERVIEW = fields.Boolean(load_default=True)
     ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
 

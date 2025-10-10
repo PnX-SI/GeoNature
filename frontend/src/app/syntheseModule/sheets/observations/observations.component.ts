@@ -105,8 +105,7 @@ export class ObservationsComponent extends Loadable implements OnInit {
     this._syntheseDataService
       .getSyntheseData({ ...filters }, { format, limit })
       .pipe(finalize(() => this.stopLoading()))
-      .subscribe(
-        (data) => {
+      .subscribe((data) => {
         if (!this.areasEnable && this._os.isSuperiorToSyntheseLimit) {
           this._commonService.regularToaster(
             'warning',
