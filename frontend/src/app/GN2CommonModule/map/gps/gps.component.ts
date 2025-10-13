@@ -36,6 +36,10 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     this.enableGps();
   }
   enableGps() {
+    const currentGpsElement: HTMLElement = document.getElementById('GPSLegend');
+    if (currentGpsElement) {
+      currentGpsElement.remove();
+    }
     // Add leaflet button
     const GPSLegend = this.mapService.addCustomLegend('topleft', 'GPSLegend');
     this.map.addControl(new GPSLegend());
