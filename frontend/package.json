@@ -37,7 +37,7 @@
     "@swimlane/ngx-datatable": "^20.1.0",
     "@tmcw/togeojson": "^5.8.1",
     "@types/geojson": "^7946.0.14",
-    "@types/leaflet": "^1.9.14",
+    "@types/leaflet": "^1.9.21",
     "@types/leaflet-draw": "^1.0.11",
     "@types/leaflet.markercluster": "^1.5.5",
     "bootstrap": "4.3.1",
