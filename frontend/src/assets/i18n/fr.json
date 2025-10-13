@@ -295,7 +295,7 @@
       "ResourceType": "Type de ressource",
       "FacultativeTaxaList": "Liste de taxons (facultatif)",
       "SpecificGeonature": "Spécifique GeoNature",
-      "ActiveOnEntry": "Actif à la saisie"
+      "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"
     },
     "AcquisitionFrameworkForm": {},
     "Actors": {

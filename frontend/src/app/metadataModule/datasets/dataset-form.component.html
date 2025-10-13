@@ -223,7 +223,14 @@
                 id="active"
               />
               <label for="active">
-                {{ 'MetaData.DatasetForm.ActiveOnEntry' | translate }}
+                {{ 'Active' | translate }}
+                <mat-icon
+                  aria-hidden="false"
+                  style="font-size: 1rem"
+                  matTooltip="{{ 'MetaData.DatasetForm.RequiredToImportAndEnterData' | translate }}"
+                >
+                  info
+                </mat-icon>
               </label>
             </div>
             <div class="checkbox">
