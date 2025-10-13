@@ -169,6 +169,9 @@
                       [acquisitionFramework]="af"
                       buttonType="Toolbar"
                       (click)="$event.stopPropagation()"
+                      [attr.data-qa]="
+                        'pnx-metadata-af-delete-name-' + af.acquisition_framework_name
+                      "
                     />
                     <button
                       *ngIf="config.METADATA?.ENABLE_CLOSE_AF"
