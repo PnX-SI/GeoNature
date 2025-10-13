@@ -159,13 +159,15 @@ export class MapComponent implements OnInit {
 
     //  GEOLOCATION
     if (this.geolocation && this.config.MAPCONFIG.GEOLOCATION) {
-       (L.control as any).locate({
+      (L.control as any)
+        .locate({
           position: 'topright',
           watch: true,
           setView: 'always',
           flyTo: false,
-          showPopup: false
-        }).addTo(this.map);
+          showPopup: false,
+        })
+        .addTo(this.map);
     }
 
     // --- LAYERS CONTROL
