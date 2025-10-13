@@ -294,6 +294,7 @@ export const DYNAMIC_FORM_DEF = [
     required: false,
     designStyle: 'bootstrap',
     multiple: true,
+    orderBy: 'asc',
   },
   {
     type_widget: 'datalist',
