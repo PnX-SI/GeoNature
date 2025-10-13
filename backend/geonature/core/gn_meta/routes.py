@@ -1028,3 +1028,23 @@ def publish_acquisition_framework(af_id):
         db.session.commit()  # On commit que si tout a bien fonctionné
 
     return af.as_dict()
+
+
+@routes.route("/depobio_dossiers", methods=["GET"])
+@json_resp
+def get_depobio_dossiers():
+    mocked_list = [
+        {
+            "num_dossier": 1,
+            "nom_dossier": "dossier 1",
+        },
+        {
+            # "num_dossier": 2,
+            "nom_dossier": "dossier 2",
+        },
+        {
+            "num_dossier": 3,
+            "nom_dossier": "dossier 3",
+        },
+    ]
+    return mocked_list

@@ -39,7 +39,7 @@ class TAdditionalFields(DB.Model):
     field_order = DB.Column(DB.Integer)
     type_widget = DB.relationship("BibWidgets")
     bib_nomenclature_type = DB.relationship("BibNomenclaturesTypes")
-    additional_attributes = DB.Column(JSONB)
+    # additional_attributes = DB.Column(JSONB)
     multiselect = DB.Column(DB.Boolean)
     api = DB.Column(DB.String)
     default_value = DB.Column(DB.String)

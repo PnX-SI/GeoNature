@@ -76,11 +76,11 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       .filter(
         (v) =>
           !this.search || this.displayLabel(v).toLowerCase().includes(this.search.toLowerCase())
-      )
-      // remove doublons (keyValue)
-      .filter(
-        (item, pos, self) => self.findIndex((i) => i[this.keyValue] === item[this.keyValue]) === pos
       );
+    // remove doublons (keyValue)
+    // .filter(
+    //   (item, pos, self) => self.findIndex((i) => i[this.keyValue] === item[this.keyValue]) === pos
+    // );
 
     for (const key of Object.keys(this.filters || [])) {
       const filter_ = this.filters[key];
@@ -166,7 +166,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   getData() {
-    if (!this.values && this.api) {
+    if (!Object.keys(this.values).length && this.api) {
       this._dfs
         .getDataList(this.api, this.application, this.params, this.data)
         .subscribe((data) => {
