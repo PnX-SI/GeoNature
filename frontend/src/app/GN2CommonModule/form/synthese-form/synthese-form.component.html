@@ -149,7 +149,24 @@
       [apiEndPoint]="taxonApiEndPoint"
       (onChange)="formService.getCurrentTaxon($event)"
     ></pnx-taxonomy>
-
+    <div
+      id="modif"
+      class="form-check"
+    >
+      <input
+        id="modif_checkbox"
+        class="form-check-input"
+        value="true"
+        [formControl]="formService.searchForm.get('fetchChildrenTaxon')"
+        type="checkbox"
+      />
+      <label
+        for="modif_checkbox"
+        class="form-check-label"
+      >
+        <small>Récupérer les taxons enfants</small>
+      </label>
+    </div>
     <div
       *ngIf="formService.selectedtaxonFromComponent.length > 0"
       class="alert alert-warning search-alert mt-2"

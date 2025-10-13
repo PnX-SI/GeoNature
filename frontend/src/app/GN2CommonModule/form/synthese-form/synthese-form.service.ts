@@ -91,6 +91,7 @@ export class SyntheseFormService {
       taxonomy_group2_inpn: null,
       taxonomy_group3_inpn: null,
       taxon_rank: null,
+      fetchChildrenTaxon: null,
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
@@ -186,7 +187,8 @@ export class SyntheseFormService {
     }
 
     if (this.selectedtaxonFromComponent.length > 0) {
-      updatedParams['cd_ref'] = this.selectedtaxonFromComponent.map((taxon) => taxon.cd_ref);
+      const key = this.searchForm.controls['fetchChildrenTaxon'].value ? 'cd_ref_parent' : 'cd_ref';
+      updatedParams[key] = this.selectedtaxonFromComponent.map((taxon) => taxon.cd_ref);
     }
     if (this.selectedCdRefFromTree.length > 0 || this.selectedTaxonFromRankInput.length > 0) {
       updatedParams['cd_ref_parent'] = [
