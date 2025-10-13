@@ -342,7 +342,11 @@
           </div>
           <ng-container *ngFor="let additionalField of additionalFields">
             <div *ngIf="additionalField.type_widget != 'html'">
-              <div class="a">
+              <!-- <div class="a" data-qa="pnx-metadata-additional-field-{{ additionalField.attribut_name }}"> -->
+              <div
+                class="a"
+                [attr.data-qa]="'pnx-metadata-additional-field-' + additionalField.attribut_name"
+              >
                 <b>{{ additionalField.attribut_label }} :</b>
                 {{ af?.additional_data[additionalField.attribut_name] }}
               </div>
