@@ -38,6 +38,7 @@ from pypnusershub.login_manager import login_manager
 
 csv.field_size_limit(config["IMPORT"]["CSV_FIELD_SIZE_LIMIT"])
 
+
 @migrate.configure
 def configure_alembic(alembic_config):
     """
