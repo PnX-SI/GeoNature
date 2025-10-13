@@ -6,7 +6,7 @@ le frontend de GeoNature.
 
 L'écriture de tests frontend dans GeoNature se base sur l'outil `Cypress <https://www.cypress.io/>`_ dont il est necessaire de maitriser et comprendre le fonctionnement.
 
-Le lancement des tests cypress nécessite la présence de données en base. Les branches alembic suivantes doivent être montées : `occtax-samples-test`, `occhab-samples`. Le contenu du fichier `config/test_config.toml` doit également être utilisé.
+Le lancement des tests cypress nécessite la présence de données en base. La branche alembic suivante doit être montée : `cypress-samples-test`. Le contenu du fichier `config/test_config.toml` doit également être utilisé.
 
 
 
