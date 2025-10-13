@@ -198,7 +198,8 @@
       "NoStakeholder": "No stakeholder provided",
       "FiledAF": "The acquisition framework has already been filed",
       "EmptyAF": "The acquisition framework is empty",
-      "NoMetadata": "Oops! There is no metadata to display."
+      "NoMetadata": "Oops! There is no metadata to display.",
+      "UUIDFormPlaceHolder": "If not specified, identifier will be generated when the JDD is created."
     },
     "Actions": {
       "AddDataset": "Add a dataset",
@@ -208,8 +209,10 @@
       "EditDataset": "Edit the dataset",
       "DeleteDataset": "Delete the dataset",
       "ResetSearch": "Reset search",
-      "SeeAFSheet": "View the acquisition framework sheet"
+      "SeeAFSheet": "View the acquisition framework sheet",
+      "FillOwnUUID": "I indicate my own SINP UUID"
     },
+    "UUIDField": "UUID ID",
     "AdvancedSearch": "Advanced search",
     "AFAndDatasetsList": "List of acquisition frameworks and associated datasets",
     "CreationDate": "Launch date",

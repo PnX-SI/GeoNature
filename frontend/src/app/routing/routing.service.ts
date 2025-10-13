@@ -22,7 +22,7 @@ export class RoutingService {
           canActivate: [ModuleGuardService],
           data: {
             module_code: module.module_code,
-            module_label: module.module_label
+            module_label: module.module_label,
           },
         };
         // insert at the begining otherwise pagenotfound component is first matched

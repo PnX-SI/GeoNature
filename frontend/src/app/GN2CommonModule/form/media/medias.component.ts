@@ -36,13 +36,10 @@ export class MediasComponent implements OnInit {
       this.initMedias();
       // Subscribe sur la valeur du composant formulaire
       //  cas ou l'initialisation des valeurs du formulaire est asynchrone
-      this.parentFormControl.valueChanges.pipe(
-        distinctUntilChanged()
-      ).subscribe(value => {
-         this.initMedias();
+      this.parentFormControl.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
+        this.initMedias();
       });
     });
-
   }
 
   initMedias() {

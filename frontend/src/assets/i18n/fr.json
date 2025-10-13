@@ -198,7 +198,8 @@
       "NoStakeholder": "Aucun acteur renseigné",
       "FiledAF": "Le cadre d'acquisition a déjà été déposé",
       "EmptyAF": "Le cadre d'acquisition est vide",
-      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher."
+      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
+      "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}"
     },
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
@@ -208,8 +209,10 @@
       "EditDataset": "Éditer le jeu de données",
       "DeleteDataset": "Supprimer le jeu de données",
       "ResetSearch": "Réinitialiser la recherche",
-      "SeeAFSheet": "Voir la fiche du cadre d'acquisition"
+      "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
+      "FillOwnUUID": "Saisie manuelle de l'UUID"
     },
+    "UUIDField": "UUID du {{ entity }}",
     "AdvancedSearch": "Recherche avancée",
     "AFAndDatasetsList": "Liste des cadres d'acquisition et des jeux de données associés",
     "CreationDate": "Date de lancement",
