@@ -13,6 +13,12 @@
     {{ value ? value : '-' }}
   </ng-template>
 
+  <ng-template
+    #cellNameTemplate
+    let-value="value"
+  >
+    {{ value | titlecase }}
+  </ng-template>
 
   <ngx-datatable
     #table
@@ -33,15 +39,15 @@
     [loadingIndicator]="isLoading"
   >
     <ngx-datatable-column
-      name="cd_nom"
-      [prop]="PROP_CD_NOM"
+      name="Taxon"
+      [prop]="PROP_NOM"
     >
       <ng-template
         ngx-datatable-cell-template
         let-row="row"
       >
         <ng-template
-          *ngTemplateOutlet="cellNumberTemplate; context: { value: row[PROP_CD_NOM] }"
+          *ngTemplateOutlet="cellNameTemplate; context: { value: row[PROP_NOM] }"
         ></ng-template>
       </ng-template>
     </ngx-datatable-column>

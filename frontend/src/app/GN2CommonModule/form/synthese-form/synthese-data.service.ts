@@ -72,14 +72,29 @@ export class SyntheseDataService {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/general_stats`);
   }
 
-  getSyntheseObserverSheetStats(id_role: number, areaType: string = 'COM'): Observable<ObserverStats> {
+  getSyntheseObserverSheetStats(
+    id_role: number,
+    areaType: string = 'COM'
+  ): Observable<ObserverStats> {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_stats/${id_role}`, {
       params: new HttpParams().append('area_type', areaType),
     });
   }
 
-  getSyntheseObserverSheetOverview(id_role: number, areaType: string = 'COM'): Observable<any> {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_overview/${id_role}`);
+  getSyntheseObserverSheetOverview(
+    id_role: number,
+    pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
+    sort: SyntheseDataSortItem = DEFAULT_SORT
+  ): Observable<any> {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_overview/${id_role}`,
+      {
+        params: {
+          per_page: pagination.perPage,
+          page: pagination.currentPage,
+          sort_by: sort.sortBy,
+          sort_order: sort.sortOrder,
+        },
+      });
   }
 
   getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM'): Observable<TaxonStats> {

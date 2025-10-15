@@ -22,6 +22,7 @@ import { finalize } from '@librairies/rxjs/operators';
 })
 export class TabOverviewComponent extends Loadable implements OnInit {
   readonly PROP_CD_NOM = 'cd_nom';
+  readonly PROP_NOM = 'nom';
   readonly PROP_DATE_MIN = 'date_min';
   readonly PROP_DATE_MAX = 'date_max';
   readonly PROP_OBSERVATION_COUNT = 'observation_count';
@@ -29,7 +30,7 @@ export class TabOverviewComponent extends Loadable implements OnInit {
 
   readonly DEFAULT_SORT = {
     ...DEFAULT_SORT,
-    sortBy: this.PROP_CD_NOM,
+    sortBy: this.PROP_OBSERVATION_COUNT,
     sortOrder: SORT_ORDER.ASC,
   };
   items: any[] = [];
@@ -76,18 +77,18 @@ export class TabOverviewComponent extends Loadable implements OnInit {
   }
 
   async fetchObservations() {
-      this.startLoading();
-      const observer = this._oss.observer.getValue();
-      this.items = [];
-      if (!observer) {
-        this.pagination = DEFAULT_PAGINATION;
-        this.sort = this.DEFAULT_SORT;
-        this.stopLoading();
-        return;
-      }
+    this.startLoading();
+    const observer = this._oss.observer.getValue();
+    this.items = [];
+    if (!observer) {
+      this.pagination = DEFAULT_PAGINATION;
+      this.sort = this.DEFAULT_SORT;
+      this.stopLoading();
+      return;
+    }
 
     this._syntheseDataService
-      .getSyntheseObserverSheetOverview(observer.id_role)
+      .getSyntheseObserverSheetOverview(observer.id_role, this.pagination, this.sort)
       .pipe(finalize(() => this.stopLoading()))
       .subscribe((data) => {
         // Store result
@@ -98,5 +99,5 @@ export class TabOverviewComponent extends Loadable implements OnInit {
           perPage: data.per_page,
         };
       });
-    }
+  }
 }
