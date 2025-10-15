@@ -290,7 +290,7 @@
       "ResourceType": "Resource type",
       "FacultativeTaxaList": "Taxon list (optional)",
       "SpecificGeonature": "Specific GeoNature",
-      "RequiredToImportAndEnterData": "Required to enter or import data in ;the dataset"
+      "RequiredToImportAndEnterData": "Required to enter or import data in the dataset"
     },
     "AcquisitionFrameworkForm": {},
     "Actors": {
