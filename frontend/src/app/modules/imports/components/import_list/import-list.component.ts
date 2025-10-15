@@ -42,8 +42,8 @@ export class ImportListComponent implements OnInit {
   private destinationCode: string;
   public searchString: string = '';
 
-  public editModalData:ModalData;
-  public deleteModalData:ModalData;
+  public editModalData: ModalData;
+  public deleteModalData: ModalData;
   constructor(
     public _cruvedStore: CruvedStoreService,
     private _ds: ImportDataService,
@@ -179,38 +179,40 @@ export class ImportListComponent implements OnInit {
 
   openModal(modalTemplate: TemplateRef<any>, actionType: 'edit' | 'delete', row: Import) {
     this.selectedRow = row;
-      // Prépare les données de la modale en fonction de l'action
-      if (actionType === 'edit') {
-        let additionalMessage:string;
-        if(this.importProcessService.checkImportDone(this.selectedRow)) {
-          additionalMessage = 'Attention : Vous vous apprêtez à modifier un import terminé. Toute modification entraînera la suppression des données importées.'
-        } else {
-          additionalMessage = 'Attention : à chaque confirmation de chaque étape de cet import en cours , les données seront écrasées.'
-        }
-        this.editModalData = {
-          title: 'Modification',
-          bodyMessage: `Modifier cet import commencé le ${this.selectedRow.date_create_import}?`,
-          additionalMessage: additionalMessage,
-          cancelButtonText: 'Annuler',
-          confirmButtonText: 'Confirmer',
-          confirmButtonColor: 'warn',
-          headerDataQa: 'import-modal-edit',
-          confirmButtonDataQa: 'modal-edit-validate',
-        };
-      } else if (actionType === 'delete') {
-        this._ds.setDestination(this.selectedRow.destination.code);
-        this.deleteModalData = {
-          title: 'Suppression',
-          bodyMessage: `Supprimer cet import commencé le ${row.date_create_import}?`,
-          additionalMessage: this.selectedRow.date_end_import
-            ? 'Attention : cela supprimera aussi les données importées.'
-            : '',
-          cancelButtonText: 'Annuler',
-          confirmButtonText: 'Supprimer',
-          confirmButtonColor: 'warn',
-          headerDataQa: 'import-modal-delete',
-          confirmButtonDataQa: 'modal-delete-validate',
-        };
+    // Prépare les données de la modale en fonction de l'action
+    if (actionType === 'edit') {
+      let additionalMessage: string;
+      if (this.importProcessService.checkImportDone(this.selectedRow)) {
+        additionalMessage =
+          'Attention : Vous vous apprêtez à modifier un import terminé. Toute modification entraînera la suppression des données importées.';
+      } else {
+        additionalMessage =
+          'Attention : à chaque confirmation de chaque étape de cet import en cours , les données seront écrasées.';
+      }
+      this.editModalData = {
+        title: 'Modification',
+        bodyMessage: `Modifier cet import commencé le ${this.selectedRow.date_create_import}?`,
+        additionalMessage: additionalMessage,
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Confirmer',
+        confirmButtonColor: 'warn',
+        headerDataQa: 'import-modal-edit',
+        confirmButtonDataQa: 'modal-edit-validate',
+      };
+    } else if (actionType === 'delete') {
+      this._ds.setDestination(this.selectedRow.destination.code);
+      this.deleteModalData = {
+        title: 'Suppression',
+        bodyMessage: `Supprimer cet import commencé le ${row.date_create_import}?`,
+        additionalMessage: this.selectedRow.date_end_import
+          ? 'Attention : cela supprimera aussi les données importées.'
+          : '',
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Supprimer',
+        confirmButtonColor: 'warn',
+        headerDataQa: 'import-modal-delete',
+        confirmButtonDataQa: 'modal-delete-validate',
+      };
     }
     this._modalService.open(modalTemplate);
   }
@@ -219,7 +221,7 @@ export class ImportListComponent implements OnInit {
       if (event.actionType === 'edit') {
         this.onFinishImport(event.data);
       } else if (event.actionType === 'delete') {
-        this.onImportList({offset :this.offset, search: this.searchString});
+        this.onImportList({ offset: this.offset, search: this.searchString });
       }
     }
   }
