@@ -739,36 +739,12 @@ class FieldMapping(MappingTemplate):
             if not fields_of_ent:
                 continue
 
-            def fetch_all_id_field_name(entity, entity_field_attribute="uuid_column") -> Set[str]:
-                """
-                Fetch all field `name_field` contained in a BibFields typed attribute of an entity and its parents.
-
-                Parameters
-                ----------
-                entity : Entity
-                    entity
-                entity_field_attribute : str
-                    Entity attribute linked to a BibFields object
-                Returns
-                -------
-                set
-                    set of name_field
-                """
-
-                ent = entity
-                assert hasattr(ent, entity_field_attribute)
-                fields = [getattr(ent, entity_field_attribute).name_field]
-                while ent.parent and hasattr(ent.parent, entity_field_attribute):
-                    ent = ent.parent
-                    fields.append(getattr(ent, entity_field_attribute).name_field)
-                return set(fields)
-
-            # pas propre a bien refactoriser
-            uuid_field = fetch_all_id_field_name(entity, "uuid_column")
-            id_fields = fetch_all_id_field_name(entity, "unique_column")
+            uuid_field = set([entity.uuid_column.name_field])
+            uuid_parent = set([entity.parent.uuid_column.name_field]) if entity.parent else None
+            id_fields = set([entity.unique_column.name_field])
             name_fields = set([f.name_field for f in fields_of_ent])
             # if the only column corresponds to id_columns, we only do the validation on the latter
-            if id_fields == name_fields or name_fields == uuid_field:
+            if id_fields == name_fields or uuid_field == name_fields or uuid_parent == name_fields:
                 fields.extend(fields_of_ent)
             else:
                 # if other columns than the id_columns are used, we need to check every fields of this entity
