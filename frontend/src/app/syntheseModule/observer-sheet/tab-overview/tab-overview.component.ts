@@ -8,6 +8,10 @@ import { ObserverSheetService } from '../observer-sheet.service';
 import { Observer } from '../observer';
 import { ConfigService } from '@geonature/services/config.service';
 import { Router, RouterModule } from '@angular/router';
+import { Loadable } from '@geonature/syntheseModule/sheets/loadable';
+import { DEFAULT_SORT, SORT_ORDER, SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
+import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import { finalize } from '@librairies/rxjs/operators';
 
 @Component({
   standalone: true,
@@ -16,7 +20,22 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['tab-overview.component.scss'],
   imports: [GN2CommonModule, CommonModule, RouterModule],
 })
-export class TabOverviewComponent implements OnInit {
+export class TabOverviewComponent extends Loadable implements OnInit {
+  readonly PROP_CD_NOM = 'cd_nom';
+  readonly PROP_DATE_MIN = 'date_min';
+  readonly PROP_DATE_MAX = 'date_max';
+  readonly PROP_OBSERVATION_COUNT = 'observation_count';
+  readonly PROP_DATASET_COUNT = 'dataset_count';
+
+  readonly DEFAULT_SORT = {
+    ...DEFAULT_SORT,
+    sortBy: this.PROP_CD_NOM,
+    sortOrder: SORT_ORDER.ASC,
+  };
+  items: any[] = [];
+  pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION;
+  sort: SyntheseDataSortItem = this.DEFAULT_SORT;
+
   observations: FeatureCollection | null = null;
   constructor(
     private _syntheseDataService: SyntheseDataService,
@@ -24,7 +43,9 @@ export class TabOverviewComponent implements OnInit {
     public mapListService: MapListService,
     public config: ConfigService,
     private _router: Router
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this._oss.observer.subscribe((observer: Observer | null) => {
@@ -32,33 +53,50 @@ export class TabOverviewComponent implements OnInit {
         this.observations = null;
         return;
       }
-      this._syntheseDataService
-        .getSyntheseData(
-          {
-            observers: observer.nom_complet,
-            id_role: observer.id_role,
-            limit: 100,
-          },
-          {}
-        )
-        .subscribe((data) => {
-          this.observations = data.features.map((feature) => feature.properties);
-          console.log(this.observations);
-        });
+
+      this.fetchObservations();
     });
   }
 
-  openObservation(id_synthese) {
-    this._router.navigate(['/synthese/occurrence/' + id_synthese]);
+  renderDate(date: string): string {
+    return new Date(date).toLocaleDateString();
   }
 
-  backToModule(url_source, id_pk_source) {
-    const link = document.createElement('a');
-    link.target = '_blank';
-    link.href = url_source + '/' + id_pk_source;
-    link.setAttribute('visibility', 'hidden');
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+  onChangePage(event) {
+    this.pagination.currentPage = event.offset + 1;
+    this.fetchObservations();
   }
+
+  onSort(event) {
+    this.sort = {
+      sortBy: event.column.prop,
+      sortOrder: event.newValue,
+    };
+    this.fetchObservations();
+  }
+
+  async fetchObservations() {
+      this.startLoading();
+      const observer = this._oss.observer.getValue();
+      this.items = [];
+      if (!observer) {
+        this.pagination = DEFAULT_PAGINATION;
+        this.sort = this.DEFAULT_SORT;
+        this.stopLoading();
+        return;
+      }
+
+    this._syntheseDataService
+      .getSyntheseObserverSheetOverview(observer.id_role)
+      .pipe(finalize(() => this.stopLoading()))
+      .subscribe((data) => {
+        // Store result
+        this.items = data.items;
+        this.pagination = {
+          totalItems: data.total,
+          currentPage: data.page,
+          perPage: data.per_page,
+        };
+      });
+    }
 }

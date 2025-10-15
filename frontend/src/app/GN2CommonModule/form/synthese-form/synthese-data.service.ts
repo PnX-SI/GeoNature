@@ -78,6 +78,10 @@ export class SyntheseDataService {
     });
   }
 
+  getSyntheseObserverSheetOverview(id_role: number, areaType: string = 'COM'): Observable<any> {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_overview/${id_role}`);
+  }
+
   getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM'): Observable<TaxonStats> {
     return this._api.get<TaxonStats>(`${this.config.API_ENDPOINT}/synthese/taxon/${cd_ref}`, {
       params: new HttpParams().append('area_type', areaType),

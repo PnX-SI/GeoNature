@@ -7,7 +7,6 @@ class ObserverSheetUtils:
 
     @staticmethod
     def get_observers_subquery(id_role: int) -> Query:
-        # Subquery to fetch areas based on area_type
         return (
             select(Synthese.id_synthese)
             .join(

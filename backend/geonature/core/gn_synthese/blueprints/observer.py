@@ -24,6 +24,7 @@ from utils_flask_sqla.response import json_resp
 
 from sqlalchemy import distinct, func, select
 from werkzeug.exceptions import BadRequest
+from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheet, TaxonSheetUtils, SortOrder
 
 observer_info_routes = Blueprint("synthese_observer_info", __name__)
 
@@ -100,31 +101,80 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
 
         return data
 
-    @observer_info_routes.route("/observer_medias/<int:id_role>", methods=["GET"])
-    @login_required
-    @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-    @json_resp
-    def observer_medias(scope, id_role):
-        per_page = request.args.get("per_page", 10, int)
-        page = request.args.get("page", 1, int)
+    if app.config["SYNTHESE"]["OBSERVER_SHEET"]["ENABLE_TAB_MEDIA"]:
 
-        observer_subquery = ObserverSheetUtils.get_observers_subquery(id_role)
-        query = (
-            select(TMedias)
-            .select_from(Synthese)
-            .join(Synthese.medias)
-            .join(CorObserverSynthese, Synthese.id_synthese == CorObserverSynthese.id_synthese)
-            .order_by(TMedias.meta_create_date.desc())
-            .join(observer_subquery, observer_subquery.c.id_synthese == Synthese.id_synthese)
-        )
+        @observer_info_routes.route("/observer_medias/<int:id_role>", methods=["GET"])
+        @login_required
+        @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+        @json_resp
+        def observer_medias(scope, id_role):
+            per_page = request.args.get("per_page", 10, int)
+            page = request.args.get("page", 1, int)
 
-        synthese_query_obj = SyntheseQuery(Synthese, query, {})
-        synthese_query_obj.filter_query_with_cruved(g.current_user, scope)
+            observer_subquery = ObserverSheetUtils.get_observers_subquery(id_role)
+            query = (
+                select(TMedias)
+                .select_from(Synthese)
+                .join(Synthese.medias)
+                .join(CorObserverSynthese, Synthese.id_synthese == CorObserverSynthese.id_synthese)
+                .order_by(TMedias.meta_create_date.desc())
+                .join(observer_subquery, observer_subquery.c.id_synthese == Synthese.id_synthese)
+            )
 
-        pagination = DB.paginate(synthese_query_obj.query, page=page, per_page=per_page)
-        return {
-            "total": pagination.total,
-            "page": pagination.page,
-            "per_page": pagination.per_page,
-            "items": [media.as_dict() for media in pagination.items],
-        }
+            synthese_query_obj = SyntheseQuery(Synthese, query, {})
+            synthese_query_obj.filter_query_with_cruved(g.current_user, scope)
+
+            pagination = DB.paginate(synthese_query_obj.query, page=page, per_page=per_page)
+
+            return {
+                "total": pagination.total,
+                "page": pagination.page,
+                "per_page": pagination.per_page,
+                "items": [media.as_dict() for media in pagination.items],
+            }
+
+    if app.config["SYNTHESE"]["OBSERVER_SHEET"]["ENABLE_TAB_OVERVIEW"]:
+
+        @observer_info_routes.route("/observer_overview/<int:id_role>", methods=["GET"])
+        @permissions.permissions_required("R", module_code="SYNTHESE")
+        @json_resp
+        def observer_overview(permissions, id_role):
+            per_page = request.args.get("per_page", 10, int)
+            page = request.args.get("page", 1, int)
+            sort_by = request.args.get("sort_by", "observation_count")
+            sort_order = request.args.get("sort_order", SortOrder.DESC, SortOrder)
+
+            observer_subquery = ObserverSheetUtils.get_observers_subquery(id_role)
+            query = (
+                db.session.query(
+                    Synthese.cd_nom.label("cd_nom"),
+                    func.min(Synthese.date_min).label("date_min"),
+                    func.max(Synthese.date_max).label("date_max"),
+                    func.count(distinct(Synthese.id_synthese)).label("observation_count"),
+                    func.count(distinct(Synthese.id_dataset)).label("dataset_count"),
+                )
+                .select_from(Synthese)
+                .group_by(Synthese.cd_nom)
+                .join(CorObserverSynthese, Synthese.id_synthese == CorObserverSynthese.id_synthese)
+                .join(observer_subquery, observer_subquery.c.id_synthese == Synthese.id_synthese)
+            )
+            synthese_query_obj = SyntheseQuery(Synthese, query, {})
+            synthese_query_obj.filter_query_with_permissions(g.current_user, permissions)
+            query = TaxonSheetUtils.update_query_with_sorting(query, sort_by, sort_order)
+            pagination = synthese_query_obj.query.paginate(page=page, per_page=per_page)
+
+            return {
+                "items": [
+                    {
+                        "cd_nom": item[0],
+                        "date_min": item[1],
+                        "date_max": item[2],
+                        "observation_count": item[3],
+                        "dataset_count": item[4],
+                    }
+                    for item in pagination.items
+                ],
+                "total": pagination.total,
+                "per_page": per_page,
+                "page": page,
+            }
