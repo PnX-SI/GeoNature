@@ -25,7 +25,7 @@ from utils_flask_sqla.generic import GenericTable
 from utils_flask_sqla.response import json_resp
 
 
-from sqlalchemy import desc, distinct, func, select, join, exists
+from sqlalchemy import and_, desc, distinct, func, select, join, exists, true
 from sqlalchemy.orm import Query
 from werkzeug.exceptions import BadRequest, Forbidden
 
@@ -243,7 +243,9 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
     def taxon_stats(permissions, cd_ref, sheet):
         """Return stats for a specific taxon"""
         area_type = request.args.get("area_type")
-
+        field_separators = request.args.get(
+            "field_separators", app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"]
+        )
         if not sheet.has_instance_permission(permissions=permissions):
             raise Forbidden
         if not area_type:
@@ -254,12 +256,28 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
         areas_subquery = TaxonSheetUtils.get_area_selectquery(area_type)
         taxon_subquery = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
+        field_separators_as_regexp = rf"[{''.join(field_separators)}]+"
+        observer_split = (
+            select(
+                func.nullif(
+                    func.lower(
+                        func.trim(
+                            func.regexp_split_to_table(
+                                func.coalesce(Synthese.observers, ""),
+                                field_separators_as_regexp,
+                            )
+                        )
+                    ),
+                    "",
+                ).label("observer")
+            )
+        ).lateral()
 
         # Main query to fetch stats
         query = (
             select(
                 func.count(distinct(Synthese.id_synthese)).label("observation_count"),
-                func.count(distinct(Synthese.observers)).label("observer_count"),
+                func.count(distinct(observer_split.c.observer)).label("observer_count"),
                 func.count(distinct(areas_subquery.c.id_area)).label("area_count"),
                 func.min(Synthese.altitude_min).label("altitude_min"),
                 func.max(Synthese.altitude_max).label("altitude_max"),
@@ -272,6 +290,7 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
             .outerjoin(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
             .outerjoin(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
             .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
+            .outerjoin(observer_split, true())
         )
 
         synthese_query = TaxonSheetUtils.get_synthese_query_with_permissions(
