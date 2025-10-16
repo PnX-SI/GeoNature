@@ -1,3 +1,5 @@
+from flask import url_for
+
 from contextlib import contextmanager
 from enum import Enum
 from functools import wraps
@@ -35,12 +37,13 @@ class MODULE:
 
 
 def create_user(user_spec: dict, organisme: Optional[Organisme] = None) -> User:
-    user = User(**user_spec)
-    if organisme:
-        if isfunction(organisme):
-            organisme = organisme()
-        user.id_organisme = organisme.id_organisme
-    db.session.add(user)
+    with db.session.begin_nested():
+        user = User(**user_spec)
+        if organisme:
+            if isfunction(organisme):
+                organisme = organisme()
+            user.id_organisme = organisme.id_organisme
+        db.session.add(user)
     return user
 
 
@@ -61,9 +64,10 @@ def create_permission(
         action=action, module=module, object=object_, taxons_filter=taxons, areas_filter=areas
     )
     if scope_value and 0 < scope_value < 3:
-        dict_params["scope_value"] = PermScope.query.filter_by(value=scope_value).one()
+        dict_params["scope_value"] = scope_value
     perm = Permission(role=user, **dict_params, **kwargs)
-
+    with db.session.begin_nested():
+        db.session.add(perm)
     return perm
 
 
@@ -81,45 +85,6 @@ def create_organisme(orga_dict):
     return org
 
 
-def with_dynamic_users(user_specs):
-    """Décorateur compatible avec les fixtures pytest"""
-
-    def decorator(test_func):
-        @wraps(test_func)
-        def wrapper(client, *args, **kwargs):
-            created_users = []
-            with db.session.begin_nested():
-                for spec in user_specs:
-                    org= None
-                    if orga_dict := spec.get("organisme"):
-                        org = create_organisme(orga_dict)
- 
-                    user = create_user(user_spec=spec["user"],organisme=org)
-
-                    created_users.append(user)
-
-                    for perm_spec in spec.get("perm", []): 
-                        if "areas" in perm_spec:
-                            perm_spec["areas"] = perm_spec["areas"]()
-                        if "taxons" in perm_spec:
-                            perm_spec["taxons"] = perm_spec["taxons"]()
-                        perm = create_permission(user, **perm_spec)
-                        db.session.add(perm)
-
-            for user in created_users:
-                test_name = f"user_{user.id_role}"
-                
-                marked_test = pytest.mark.user(test_name)(test_func)
-                print(f"🧪 Exécution du test pour {test_name}")
-                with set_logged_user_context(client, user):
-                    result = marked_test(client, *args, **kwargs)  # Passe client et user
-            return result
-
-        return wrapper
-
-    return decorator
-
-
 @contextmanager
 def set_logged_user_context(client, user):
     try:
@@ -128,3 +93,43 @@ def set_logged_user_context(client, user):
     finally:
         unset_logged_user(client)
 
+
+def dec_permissions(expected_result=None):
+    def decorator(test_func):
+        @wraps(test_func)
+        def wrapper(user, client, permissions, *args, **kwargs):
+            # Appliquer les permissions au user
+            for p in permissions:
+                areas = p.get("areas", [])
+                if callable(areas):
+                    areas = areas()
+                taxons = p.get("taxons", [])
+                if callable(taxons):
+                    taxons = taxons()
+
+                create_permission(
+                    user,
+                    module_code=p["module_code"],
+                    action_code=p["action_code"],
+                    object_code=p["object_code"],
+                    scope_value=p.get("scope_value", 1),
+                    taxons=taxons,
+                    areas=areas,
+                )
+
+            # Déterminer le résultat attendu
+            if expected_result is not None:
+                if isinstance(expected_result, dict):
+                    # on prend le bon résultat selon la clé de paramétrage (ex: perm1)
+                    key = kwargs.get("perm_name")
+                    setattr(user, "expected_result", expected_result.get(key))
+                else:
+                    setattr(user, "expected_result", expected_result)
+
+            # Contexte utilisateur connecté
+            with set_logged_user_context(client, user):
+                return test_func(user, client, permissions, *args, **kwargs)
+
+        return wrapper
+
+    return decorator
