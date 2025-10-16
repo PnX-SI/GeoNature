@@ -237,9 +237,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             .map((observer) => observer.trim())
             .map((observer) => ({
               name: observer,
-              id_role: this.selectedObs.cor_observers.find(
-                (cor_observer) => cor_observer?.nom_complet == observer
-              )?.id_role,
+              id_role: this.config.SYNTHESE.ENABLE_OBSERVER_SHEETS ? this.selectedObs.cor_observers.find(
+                    (cor_observer) => cor_observer?.nom_complet == observer
+                  )?.id_role
+                : null,
             }));
 
 
