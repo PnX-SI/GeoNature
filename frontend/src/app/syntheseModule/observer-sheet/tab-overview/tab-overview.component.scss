@@ -17,5 +17,24 @@
         overflow-x: hidden;
       }
     }
+
+    ::ng-deep .datatable-header-cell,
+    ::ng-deep .datatable-footer .datatable-footer-inner {
+      display: flex;
+      align-items: center;
+    }
+    ::ng-deep .datatable-body-row .datatable-body-cell {
+      display: flex;
+      align-items: center;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+    ::ng-deep .datatable-body-cell .datatable-body-cell-label {
+      display: block;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }

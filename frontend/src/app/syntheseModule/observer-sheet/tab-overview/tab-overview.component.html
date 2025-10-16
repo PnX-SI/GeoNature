@@ -32,7 +32,7 @@
     [externalPaging]="true"
     [count]="pagination.totalItems"
     [limit]="pagination.perPage"
-    rowHeight="auto"
+    [rowHeight]="44"
     [externalSorting]="true"
     (sort)="onSort($event)"
     [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
