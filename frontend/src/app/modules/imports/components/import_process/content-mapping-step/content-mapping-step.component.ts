@@ -42,7 +42,7 @@ export class ContentMappingStepComponent implements OnInit {
   public renameMappingFormVisible: boolean = false;
   public mappedFields: Set<string> = new Set<string>(); // TODO
   public unmappedFields: Set<string> = new Set<string>(); // TODO
-  public modalData:ModalData;
+  public modalData: ModalData;
 
   @ViewChild('modalConfirm') modalConfirm: any;
   @ViewChild('modalRedir') modalRedir: any;
@@ -59,8 +59,7 @@ export class ContentMappingStepComponent implements OnInit {
     private _route: ActivatedRoute,
     private _modalService: NgbModal,
     public cruvedStore: CruvedStoreService,
-    private importProcessService: ImportProcessService,
-
+    private importProcessService: ImportProcessService
   ) {}
 
   ngOnInit() {
@@ -319,35 +318,35 @@ export class ContentMappingStepComponent implements OnInit {
     return values;
   }
 
-    checkBeforeNextStep(){
-      if (this.importData?.contentmapping) {
-         this.openModal(this.editModal);
-          return;
-        }
-        else{
-          this.onNextStep();
-        }
+  checkBeforeNextStep() {
+    if (this.importData?.contentmapping) {
+      this.openModal(this.editModal);
+      return;
+    } else {
+      this.onNextStep();
     }
-    
-    openModal(editModal: TemplateRef<any>) {
-      this.modalData = {
-        title: 'Modification',
-        bodyMessage:'Des modifications ont été apportées à la correspondances des nomenclatures. L\'ancienne correspondance des nomenclatures sera supprimé.',
-        additionalMessage: 'Êtes-vous sûr de continuer ?',
-        cancelButtonText: 'Annuler',
-        confirmButtonText: 'Confirmer',
-        confirmButtonColor: 'warn',
-        headerDataQa: 'import-modal-edit',
-        confirmButtonDataQa: 'modal-edit-validate',
-      };  
-      this._modalService.open(editModal);
-    }
-  
-    handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
-      if (event.confirmed) {
-        if (event.actionType === 'edit') {
-          this.onNextStep();
-        }
+  }
+
+  openModal(editModal: TemplateRef<any>) {
+    this.modalData = {
+      title: 'Modification',
+      bodyMessage:
+        "Des modifications ont été apportées à la correspondances des nomenclatures. L'ancienne correspondance des nomenclatures sera supprimé.",
+      additionalMessage: 'Êtes-vous sûr de continuer ?',
+      cancelButtonText: 'Annuler',
+      confirmButtonText: 'Confirmer',
+      confirmButtonColor: 'warn',
+      headerDataQa: 'import-modal-edit',
+      confirmButtonDataQa: 'modal-edit-validate',
+    };
+    this._modalService.open(editModal);
+  }
+
+  handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
+    if (event.confirmed) {
+      if (event.actionType === 'edit') {
+        this.onNextStep();
       }
     }
+  }
 }

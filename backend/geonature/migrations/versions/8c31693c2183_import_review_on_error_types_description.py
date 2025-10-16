@@ -266,7 +266,6 @@ MODIFICATIONS = {
 }
 
 
-
 def upgrade():
     metadata = MetaData(bind=op.get_bind())
     import_user_error = Table("bib_errors_types", metadata, schema="gn_imports", autoload=True)
