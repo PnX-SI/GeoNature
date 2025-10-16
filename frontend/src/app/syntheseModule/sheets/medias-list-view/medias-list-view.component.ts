@@ -18,14 +18,13 @@ enum Direction {
   styleUrls: ['./medias-list-view.component.scss'],
   imports: [GN2CommonModule, CommonModule],
 })
-export class MediasListViewComponent extends Loadable {
+export class MediasListViewComponent {
   medias: any[] = [];
   pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION;
   selectedMedia: any = {};
   mediaIndexToSelectOnUpdate: number = 0;
 
   constructor(public ms: MediaService) {
-    super();
   }
 
   @Input()
