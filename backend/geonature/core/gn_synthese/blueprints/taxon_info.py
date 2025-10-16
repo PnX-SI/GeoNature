@@ -346,8 +346,8 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
                 ).label("observer"),
                 func.min(Synthese.date_min).label("date_min"),
                 func.max(Synthese.date_max).label("date_max"),
-                func.count(Synthese.id_synthese).label("observation_count"),
-                func.count(TMedias.id_media).label("media_count"),
+                func.count(distinct(Synthese.id_synthese)).label("observation_count"),
+                func.count(distinct(TMedias.id_media)).label("media_count"),
             )
             .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
             .group_by("observer")
