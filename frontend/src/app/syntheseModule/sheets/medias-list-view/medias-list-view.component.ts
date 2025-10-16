@@ -13,19 +13,19 @@ enum Direction {
 
 @Component({
   standalone: true,
-  selector: 'sheet-medias',
-  templateUrl: './medias.component.html',
-  styleUrls: ['./medias.component.scss'],
+  selector: 'medias-list-view',
+  templateUrl: './medias-list-view.component.html',
+  styleUrls: ['./medias-list-view.component.scss'],
   imports: [GN2CommonModule, CommonModule],
 })
-export class MediasComponent  extends Loadable {
+export class MediasListViewComponent extends Loadable {
   medias: any[] = [];
   pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION;
   selectedMedia: any = {};
   mediaIndexToSelectOnUpdate: number = 0;
 
   constructor(public ms: MediaService) {
-        super();
+    super();
   }
 
   @Input()

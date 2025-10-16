@@ -8,14 +8,14 @@ import {
   DEFAULT_PAGINATION,
   SyntheseDataPaginationItem,
 } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
-import { MediasComponent } from '@geonature/syntheseModule/sheets/medias/medias.component';
+import { MediasListViewComponent } from '@geonature/syntheseModule/sheets/medias-list-view/medias-list-view.component';
 import { Loadable } from '@geonature/syntheseModule/sheets/loadable';
 import { finalize } from 'rxjs/operators';
 
 @Component({
   standalone: true,
   templateUrl: './tab-media.component.html',
-  imports: [GN2CommonModule, CommonModule, MediasComponent],
+  imports: [GN2CommonModule, CommonModule, MediasListViewComponent],
 })
 export class TabMediaComponent extends Loadable implements OnInit {
   public medias: {

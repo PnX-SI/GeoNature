@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { Observer } from '../observer';
 import { ObserverSheetService } from '../observer-sheet.service';
-import { MediasComponent } from '@geonature/syntheseModule/sheets/medias/medias.component';
+import { MediasListViewComponent } from '@geonature/syntheseModule/sheets/medias-list-view/medias-list-view.component';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { Loadable } from '@geonature/syntheseModule/sheets/loadable';
 import { finalize } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { finalize } from 'rxjs/operators';
 @Component({
   standalone: true,
   templateUrl: './tab-media.component.html',
-  imports: [GN2CommonModule, CommonModule, MediasComponent],
+  imports: [GN2CommonModule, CommonModule, MediasListViewComponent],
 })
 export class TabMediaComponent extends Loadable implements OnInit {
   public medias: {
