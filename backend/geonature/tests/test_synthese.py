@@ -1201,6 +1201,194 @@ class TestSynthese:
         assert response.status_code == 200
         assert response.get_json() == CD_REF_VALID_STATS
 
+    def test_observer_stats_parameters(self, synthese_data, users):
+        set_logged_user(self.client, users["admin_user"])
+        url = url_for(
+            "gn_synthese.synthese_observer_info.observer_stats",
+            id_role=users["admin_user"].id_role,
+        )
+
+        # area_type required
+        response = self.client.get(url)
+        assert response.status_code == 400
+
+        # area_type value check
+        response = self.client.get(url, query_string={"area_type": "UNKNOWN"})
+        assert response.status_code == 400
+
+    @pytest.mark.parametrize(
+        "logged_user_name,observer_user_name,stats",
+        [
+            (
+                "stranger_user", # logged
+                "stranger_user", # stats
+                {
+                    "area_count": 0,
+                    "date_max": None,
+                    "date_min": None,
+                    "id_role": -1,
+                    "observation_count": 0,
+                    "taxa_count": 0,
+                },
+            ),
+            (
+                "stranger_user", # logged
+                "user",          # stats
+                {
+                    "area_count": 4,
+                    "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "id_role": -1,
+                    "observation_count": 7,
+                    "taxa_count": 3,
+                },
+            ),
+            (
+                "user", # logged
+                "user", # stats
+                {
+                    "area_count": 4,
+                    "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "id_role": -1,
+                    "observation_count": 11,
+                    "taxa_count": 4,
+                },
+            ),
+        ],
+    )
+    def test_observer_stats(self, synthese_data, users, logged_user_name, observer_user_name, stats):
+
+        stats["id_role"] = users[observer_user_name].id_role
+
+        set_logged_user(self.client, users[logged_user_name])
+
+        AREA_TYPE_VALID = "COM"
+
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese_observer_info.observer_stats",
+                id_role=users[observer_user_name].id_role,
+                area_type=AREA_TYPE_VALID,
+            ),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == stats
+
+    @pytest.mark.parametrize(
+        "logged_user_name,observer_user_name, overview",
+        [
+            (
+                "stranger_user",  # logged
+                "stranger_user",  # stats
+                {
+                    "total": 0,
+                    "per_page": 2,
+                    "page": 1,
+                    "items": [],
+                },
+            ),
+            (
+                "user",  # logged
+                "user",  # stats
+                {
+                    "total": 4,
+                    "per_page": 2,
+                    "page": 1,
+                    "items": [
+                        {
+                            "cd_nom": 2497,
+                            "dataset_count": 4,
+                            "date_max": "Fri, 04 Oct 2024 17:04:09 GMT",
+                            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "nom": "Aigrette garzette",
+                            "observation_count": 6,
+                        },
+                        {
+                            "cd_nom": 212,
+                            "dataset_count": 3,
+                            "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
+                            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "nom": "Sonneur à ventre jaune (Le)",
+                            "observation_count": 4,
+                        },
+                    ],
+                },
+            ),
+            (
+                "user",  # logged
+                "user",  # stats
+                {
+                    "total": 4,
+                    "per_page": 2,
+                    "page": 2,
+                    "items": [
+                        {
+                            "cd_nom": 2852,
+                            "dataset_count": 1,
+                            "date_max": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "nom": "Gypaète barbu",
+                            "observation_count": 1,
+                        },
+                        {
+                            "cd_nom": 713776,
+                            "dataset_count": 1,
+                            "date_max": "Fri, 04 Oct 2024 17:04:09 GMT",
+                            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "nom": "Ashmeadopria",
+                            "observation_count": 1,
+                        },
+                    ],
+                },
+            ),
+        ],
+    )
+    def test_observer_overview(self, synthese_data, users, logged_user_name, observer_user_name, overview):
+        set_logged_user(self.client, users[logged_user_name])
+        url = url_for(
+            "gn_synthese.synthese_observer_info.observer_overview",
+            id_role=users[logged_user_name].id_role,
+        )
+        response = self.client.get(url, query_string={"per_page": overview["per_page"], "page": overview["page"]})
+        assert response.status_code == 200
+        assert response.get_json() == overview
+
+    @pytest.mark.parametrize(
+        "logged_user_name,observer_user_name,medias",
+        [
+            (
+                "stranger_user",  # logged
+                "stranger_user",  # stats
+                {
+                    "total": 0,
+                    "per_page": 2,
+                    "page": 1,
+                    "items": [],
+                },
+            ),
+            (
+                "admin_user",  # logged
+                "admin_user",  # stats
+                {
+                    "total": 0,
+                    "per_page": 2,
+                    "page": 1,
+                    "items": []
+                },
+            ),
+        ],
+    )
+    def test_observer_medias(self, synthese_data, users, logged_user_name, observer_user_name, medias):
+        set_logged_user(self.client, users[logged_user_name])
+        url = url_for(
+            "gn_synthese.synthese_observer_info.observer_medias",
+            id_role=users[logged_user_name].id_role,
+        )
+        response = self.client.get(url, query_string={"per_page": medias["per_page"], "page": medias["page"]})
+        assert response.status_code == 200
+        assert response.get_json() == medias
+
     def test_get_one_synthese_record(self, app, users, synthese_data):
         response = self.client.get(
             url_for(
