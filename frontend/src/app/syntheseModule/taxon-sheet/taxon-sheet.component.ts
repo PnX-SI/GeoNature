@@ -13,7 +13,7 @@ import { TaxonImageComponent } from './taxon-image/taxon-image.component';
 import { CommonModule } from '@angular/common';
 import { TaxonStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonSheetService } from './taxon-sheet.service';
-import { TaxonSheetRouteService } from './taxon-sheet.route.service';
+import { CD_REF_PARAM_NAME, TaxonSheetRouteService } from './taxon-sheet.route.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { Loadable } from '../sheets/loadable';
 import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
@@ -87,7 +87,7 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
     });
 
     this._route.params.subscribe((params) => {
-      const cd_ref = params['cd_ref'];
+      const cd_ref = params[CD_REF_PARAM_NAME];
       if (cd_ref) {
         this.startLoading();
         this.setIndicators(null);

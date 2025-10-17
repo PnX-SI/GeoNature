@@ -37,6 +37,8 @@ export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> =
   },
 ];
 
+export const ID_ROLE_PARAM_NAME = "id_role";
+
 @Injectable({
   providedIn: 'root',
 })
@@ -60,7 +62,7 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
       this._router.navigate(['/404'], { skipLocationChange: true });
       return of(false);
     }
-    const id_role = route.params.id_role ?? -1;
+    const id_role = route.params[ID_ROLE_PARAM_NAME] ?? -1;
     this._userDataService
       .getRole(id_role)
       .pipe(

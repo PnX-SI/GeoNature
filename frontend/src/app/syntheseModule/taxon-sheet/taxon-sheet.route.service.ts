@@ -53,6 +53,8 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription>
   },
 ];
 
+export const CD_REF_PARAM_NAME = "cd_ref";
+
 @Injectable({
   providedIn: 'root',
 })
@@ -76,7 +78,7 @@ export class TaxonSheetRouteService implements CanActivate, CanActivateChild {
       this._router.navigate(['/404'], { skipLocationChange: true });
       return false;
     }
-    const cd_ref = route.params.cd_ref;
+    const cd_ref = route.params[CD_REF_PARAM_NAME];
     this._sds
       .getIsAuthorizedCdRefForUser(cd_ref)
       .pipe(

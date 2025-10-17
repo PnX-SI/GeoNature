@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { InfosComponent } from './infos/infos.component';
 import { computeIndicatorFromStats, Indicator, IndicatorDescription } from '@geonature_common/others/indicator/indicator';
 import { ObserverStats } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { ObserverSheetRouteService } from './observer-sheet.route.service';
+import { ID_ROLE_PARAM_NAME, ObserverSheetRouteService } from './observer-sheet.route.service';
 import { Loadable } from '../sheets/loadable';
 import { ObserverSheetService } from './observer-sheet.service';
 import { Observer } from './observer';
@@ -42,7 +42,6 @@ const INDICATORS: Array<IndicatorDescription> = [
 @Component({
   standalone: true,
   templateUrl: 'observer-sheet.component.html',
-  styleUrls: ['observer-sheet.component.scss'],
   imports: [CommonModule, GN2CommonModule, InfosComponent],
   providers: [ObservationsFiltersService, ObserverSheetService],
 })
@@ -76,7 +75,7 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
     });
 
     this._route.params.subscribe((params) => {
-      const id_role = params['id_role'];
+      const id_role = params[ID_ROLE_PARAM_NAME];
       if (id_role) {
         this.startLoading();
         this.setIndicators(null);
