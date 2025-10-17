@@ -37,7 +37,7 @@ export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> =
   },
 ];
 
-export const ID_ROLE_PARAM_NAME = "id_role";
+export const ID_ROLE_PARAM_NAME = 'id_role';
 
 @Injectable({
   providedIn: 'root',

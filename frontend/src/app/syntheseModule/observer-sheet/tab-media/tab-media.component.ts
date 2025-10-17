@@ -5,7 +5,10 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { Observer } from '../observer';
 import { ObserverSheetService } from '../observer-sheet.service';
 import { MediasListViewComponent } from '@geonature/syntheseModule/sheets/medias-list-view/medias-list-view.component';
-import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import {
+  DEFAULT_PAGINATION,
+  SyntheseDataPaginationItem,
+} from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { Loadable } from '@geonature/syntheseModule/sheets/loadable';
 import { finalize } from 'rxjs/operators';
 
@@ -23,7 +26,6 @@ export class TabMediaComponent extends Loadable implements OnInit {
     pagination: DEFAULT_PAGINATION,
   };
   observer: Observer | null = null;
-
 
   constructor(
     private _oss: ObserverSheetService,
@@ -51,8 +53,8 @@ export class TabMediaComponent extends Loadable implements OnInit {
 
     this._syntheseDataService
       .getObserverMedias(this.observer.id_role, {
-          page: pagination.currentPage,
-          per_page: pagination.perPage,
+        page: pagination.currentPage,
+        per_page: pagination.perPage,
       })
       .pipe(finalize(() => this.stopLoading()))
       .subscribe((response) => {
@@ -63,7 +65,7 @@ export class TabMediaComponent extends Loadable implements OnInit {
             currentPage: response.page,
             perPage: response.per_page,
           },
-        }
+        };
       });
   }
 }

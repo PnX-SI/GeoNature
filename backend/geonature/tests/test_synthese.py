@@ -1220,8 +1220,8 @@ class TestSynthese:
         "logged_user_name,observer_user_name,stats",
         [
             (
-                "stranger_user", # logged
-                "stranger_user", # stats
+                "stranger_user",  # logged
+                "stranger_user",  # stats
                 {
                     "area_count": 0,
                     "date_max": None,
@@ -1232,8 +1232,8 @@ class TestSynthese:
                 },
             ),
             (
-                "stranger_user", # logged
-                "user",          # stats
+                "stranger_user",  # logged
+                "user",  # stats
                 {
                     "area_count": 4,
                     "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
@@ -1244,8 +1244,8 @@ class TestSynthese:
                 },
             ),
             (
-                "user", # logged
-                "user", # stats
+                "user",  # logged
+                "user",  # stats
                 {
                     "area_count": 4,
                     "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
@@ -1257,7 +1257,9 @@ class TestSynthese:
             ),
         ],
     )
-    def test_observer_stats(self, synthese_data, users, logged_user_name, observer_user_name, stats):
+    def test_observer_stats(
+        self, synthese_data, users, logged_user_name, observer_user_name, stats
+    ):
 
         stats["id_role"] = users[observer_user_name].id_role
 
@@ -1344,13 +1346,17 @@ class TestSynthese:
             ),
         ],
     )
-    def test_observer_overview(self, synthese_data, users, logged_user_name, observer_user_name, overview):
+    def test_observer_overview(
+        self, synthese_data, users, logged_user_name, observer_user_name, overview
+    ):
         set_logged_user(self.client, users[logged_user_name])
         url = url_for(
             "gn_synthese.synthese_observer_info.observer_overview",
             id_role=users[logged_user_name].id_role,
         )
-        response = self.client.get(url, query_string={"per_page": overview["per_page"], "page": overview["page"]})
+        response = self.client.get(
+            url, query_string={"per_page": overview["per_page"], "page": overview["page"]}
+        )
         assert response.status_code == 200
         assert response.get_json() == overview
 
@@ -1370,22 +1376,21 @@ class TestSynthese:
             (
                 "admin_user",  # logged
                 "admin_user",  # stats
-                {
-                    "total": 0,
-                    "per_page": 2,
-                    "page": 1,
-                    "items": []
-                },
+                {"total": 0, "per_page": 2, "page": 1, "items": []},
             ),
         ],
     )
-    def test_observer_medias(self, synthese_data, users, logged_user_name, observer_user_name, medias):
+    def test_observer_medias(
+        self, synthese_data, users, logged_user_name, observer_user_name, medias
+    ):
         set_logged_user(self.client, users[logged_user_name])
         url = url_for(
             "gn_synthese.synthese_observer_info.observer_medias",
             id_role=users[logged_user_name].id_role,
         )
-        response = self.client.get(url, query_string={"per_page": medias["per_page"], "page": medias["page"]})
+        response = self.client.get(
+            url, query_string={"per_page": medias["per_page"], "page": medias["page"]}
+        )
         assert response.status_code == 200
         assert response.get_json() == medias
 

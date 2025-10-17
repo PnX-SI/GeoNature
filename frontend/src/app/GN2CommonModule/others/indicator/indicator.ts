@@ -1,4 +1,4 @@
-import { SheetStats } from "@geonature_common/form/synthese-form/synthese-data.service";
+import { SheetStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 export interface Indicator {
   name: string;

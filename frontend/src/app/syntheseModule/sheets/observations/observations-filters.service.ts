@@ -3,7 +3,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { SheetStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { BehaviorSubject } from 'rxjs';
 
-export type Filters = Record<string, string|number|number[]>;
+export type Filters = Record<string, string | number | number[]>;
 
 export interface YearInterval {
   min: number;

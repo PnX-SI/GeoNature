@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+import { ActivatedRoute } from '@angular/router';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
 import { CommonModule } from '@angular/common';
 import { InfosComponent } from './infos/infos.component';
-import { computeIndicatorFromStats, Indicator, IndicatorDescription } from '@geonature_common/others/indicator/indicator';
+import {
+  computeIndicatorFromStats,
+  Indicator,
+  IndicatorDescription,
+} from '@geonature_common/others/indicator/indicator';
 import { ObserverStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { ID_ROLE_PARAM_NAME, ObserverSheetRouteService } from './observer-sheet.route.service';
 import { Loadable } from '../sheets/loadable';

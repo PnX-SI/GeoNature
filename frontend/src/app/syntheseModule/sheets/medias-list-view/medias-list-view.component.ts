@@ -3,7 +3,10 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
-import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import {
+  DEFAULT_PAGINATION,
+  SyntheseDataPaginationItem,
+} from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { Loadable } from '@geonature/syntheseModule/sheets/loadable';
 
 enum Direction {
@@ -24,8 +27,7 @@ export class MediasListViewComponent {
   selectedMedia: any = {};
   mediaIndexToSelectOnUpdate: number = 0;
 
-  constructor(public ms: MediaService) {
-  }
+  constructor(public ms: MediaService) {}
 
   @Input()
   set mediaCollection(value: { items: any[]; pagination: SyntheseDataPaginationItem }) {

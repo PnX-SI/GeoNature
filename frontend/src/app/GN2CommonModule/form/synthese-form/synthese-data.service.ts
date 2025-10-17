@@ -13,13 +13,12 @@ import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
 
-
 export type SheetStats = {
   area_count?: number;
   date_max?: string;
   date_min?: string;
   observation_count?: number;
-}
+};
 export interface ObserverStats extends SheetStats {
   taxa_count?: number;
 }
@@ -86,15 +85,14 @@ export class SyntheseDataService {
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
     sort: SyntheseDataSortItem = DEFAULT_SORT
   ): Observable<any> {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_overview/${id_role}`,
-      {
-        params: {
-          per_page: pagination.perPage,
-          page: pagination.currentPage,
-          sort_by: sort.sortBy,
-          sort_order: sort.sortOrder,
-        },
-      });
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_overview/${id_role}`, {
+      params: {
+        per_page: pagination.perPage,
+        page: pagination.currentPage,
+        sort_by: sort.sortBy,
+        sort_order: sort.sortOrder,
+      },
+    });
   }
 
   getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM'): Observable<TaxonStats> {

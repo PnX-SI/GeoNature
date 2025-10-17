@@ -15,9 +15,7 @@ import { TabObserversComponent } from './tab-observers/tab-observers.component';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  ChildRouteDescription,
-} from '@geonature/routing/childRouteDescription';
+import { ChildRouteDescription } from '@geonature/routing/childRouteDescription';
 import { ObservationsComponent } from '../sheets/observations/observations.component';
 
 export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
@@ -53,7 +51,7 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription>
   },
 ];
 
-export const CD_REF_PARAM_NAME = "cd_ref";
+export const CD_REF_PARAM_NAME = 'cd_ref';
 
 @Injectable({
   providedIn: 'root',

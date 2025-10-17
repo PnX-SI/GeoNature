@@ -143,33 +143,37 @@
     <span class="font-xs mb-2">
       <div>
         <span *ngIf="selectedObs?.place_name">
-          <b>{{ 'Synthese.LocationName' | translate }} : </b>
+          <b>{{ 'Synthese.LocationName' | translate }} :</b>
           {{ selectedObs?.place_name }}
         </span>
         <span *ngIf="selectedObs?.precision">
-          <b>{{ 'Synthese.Accuracy' | translate }} : </b>
+          <b>{{ 'Synthese.Accuracy' | translate }} :</b>
           {{ selectedObs?.precision }}
         </span>
       </div>
-      <b>{{ 'Observation' | translate }} {{ 'Of' | translate }} : </b>
-      <ng-container data-qa="synthese-info-obs-observateur" *ngFor="let observer of observers; let last = last">
-        <a *ngIf="observer.id_role != null; else esleObserver"
+      <b>{{ 'Observation' | translate }} {{ 'Of' | translate }} :</b>
+      <ng-container
+        data-qa="synthese-info-obs-observateur"
+        *ngFor="let observer of observers; let last = last"
+      >
+        <a
+          *ngIf="observer.id_role != null; else esleObserver"
           [routerLink]="'/synthese/observer/' + observer.id_role"
           target="_blank"
           class="Link"
         >
-          {{observer.name}}
+          {{ observer.name }}
         </a>
-        <ng-template #esleObserver>{{observer.name}}</ng-template>
-        <span *ngIf="!last">, </span>
+        <ng-template #esleObserver>{{ observer.name }}</ng-template>
+        <span *ngIf="!last">,</span>
       </ng-container>
       <br />
       <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
-        <b>{{ 'Date' | translate }} : </b>
+        <b>{{ 'Date' | translate }} :</b>
         <span>{{ selectedObs?.date_min }} -> {{ selectedObs?.date_max }}</span>
       </span>
       <ng-template #elseBlock>
-        <b>{{ 'Date' | translate }} : </b>
+        <b>{{ 'Date' | translate }} :</b>
         <span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min }}</span>
       </ng-template>
       <br />
@@ -181,11 +185,11 @@
       <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
         <b>{{ 'DepthMin' | translate }}</b>
         : {{ selectedObs?.depth_min }} m -
-        <b>{{ 'DepthMax' | translate }} : </b>
+        <b>{{ 'DepthMax' | translate }} :</b>
         {{ selectedObs?.depth_max }} m
         <br />
       </span>
-      <b>{{ 'Synthese.UidObs' | translate }} : </b>
+      <b>{{ 'Synthese.UidObs' | translate }} :</b>
       {{ selectedObs?.unique_id_sinp }}
       <br />
       <span *ngIf="selectedObs?.habitat">

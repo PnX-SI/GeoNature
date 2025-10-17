@@ -9,8 +9,15 @@ import { Observer } from '../observer';
 import { ConfigService } from '@geonature/services/config.service';
 import { Router, RouterModule } from '@angular/router';
 import { Loadable } from '@geonature/syntheseModule/sheets/loadable';
-import { DEFAULT_SORT, SORT_ORDER, SyntheseDataSortItem } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
-import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
+import {
+  DEFAULT_SORT,
+  SORT_ORDER,
+  SyntheseDataSortItem,
+} from '@geonature_common/form/synthese-form/synthese-data-sort-item';
+import {
+  DEFAULT_PAGINATION,
+  SyntheseDataPaginationItem,
+} from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { finalize } from '@librairies/rxjs/operators';
 
 @Component({

@@ -4,5 +4,4 @@ import { Component } from '@angular/core';
   templateUrl: 'sheet-layout.component.html',
   styleUrls: ['sheet-layout.component.scss'],
 })
-export class SheetLayoutComponent {
-}
+export class SheetLayoutComponent {}

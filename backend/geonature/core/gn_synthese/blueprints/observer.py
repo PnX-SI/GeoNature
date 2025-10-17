@@ -147,9 +147,7 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
             query = (
                 db.session.query(
                     Taxref.cd_nom,
-                    func.coalesce(Taxref.nom_vern, Taxref.lb_nom, Taxref.nom_valide).label(
-                        "nom"
-                    ),
+                    func.coalesce(Taxref.nom_vern, Taxref.lb_nom, Taxref.nom_valide).label("nom"),
                     func.min(Synthese.date_min).label("date_min"),
                     func.max(Synthese.date_max).label("date_max"),
                     func.count(distinct(Synthese.id_synthese)).label("observation_count"),

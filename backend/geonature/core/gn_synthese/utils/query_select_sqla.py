@@ -531,7 +531,9 @@ class SyntheseQuery:
         if "id_role" in self.filters:
             id_role = self.filters.pop("id_role")
             observer_subquery = ObserverSheetUtils.get_observers_subquery(id_role)
-            self.add_join(observer_subquery, observer_subquery.c.id_synthese, self.model.id_synthese)
+            self.add_join(
+                observer_subquery, observer_subquery.c.id_synthese, self.model.id_synthese
+            )
 
         # generic filters
         for colname, value in self.filters.items():

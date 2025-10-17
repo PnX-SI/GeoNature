@@ -53,7 +53,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public observers: {
     name: string;
     id_role: number | null;
-  }
+  };
 
   public profile: any;
   public phenology: any[];
@@ -224,8 +224,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
               .filter((v) => v)
               .join();
             this.mailto = this.formatMailContent(this.email);
-          }
-          else {
+          } else {
             this.email = null;
             this.mailto = null;
           }
@@ -237,12 +236,12 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             .map((observer) => observer.trim())
             .map((observer) => ({
               name: observer,
-              id_role: this.config.SYNTHESE.ENABLE_OBSERVER_SHEETS ? this.selectedObs.cor_observers.find(
+              id_role: this.config.SYNTHESE.ENABLE_OBSERVER_SHEETS
+                ? this.selectedObs.cor_observers.find(
                     (cor_observer) => cor_observer?.nom_complet == observer
                   )?.id_role
                 : null,
             }));
-
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe((profile) => {
             this.profile = profile;
