@@ -13,6 +13,7 @@
     "Singular": "Action",
     "Plural": "Actions",
     "Add": "Add",
+    "Edit": "Edit",
     "Filter": "Filter",
     "Download": "Download",
     "Delete": "Delete",
@@ -150,6 +151,9 @@
   "HourFormat": "hh:mm",
   "Label": "Label",
   "Keywords": "Keywords",
+
+  "Detail": "Detail",
+  "Details": "Details",
 
   "Downloading": "Downloading",
 
