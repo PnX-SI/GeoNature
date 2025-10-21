@@ -1157,7 +1157,7 @@ class TestSynthese:
             "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
             "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
             "observation_count": 5,
-            "observer_count": 1,
+            "observer_count": 2,
         }
 
         # Missing area_type parameter
