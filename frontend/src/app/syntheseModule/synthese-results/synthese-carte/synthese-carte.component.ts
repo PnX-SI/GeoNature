@@ -322,6 +322,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         : new L.FeatureGroup();
       const geojsonLayer = new L.GeoJSON(change.inputSyntheseData.currentValue, {
         pointToLayer: (feature, latlng) => {
+          const maxBounds = L.latLngBounds(L.latLng(-90, -180), L.latLng(90, 180));
+          if (!maxBounds.contains(latlng)) {
+            return;
+          }
           const circleMarker = L.circleMarker(latlng);
           let countObs = feature.properties.observations.id_synthese.length;
           (circleMarker as any).nb_obs = countObs;
@@ -343,7 +347,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         try {
           // try to fit bound on layer. catch error if no layer in feature group
           if (this.enableFitBounds) {
-            this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+            const maxBounds = L.latLngBounds(L.latLng(-90, -180), L.latLng(90, 180));
+            const computedBounds = this.cluserOrSimpleFeatureGroup.getBounds();
+            if (Object.keys(computedBounds).length && maxBounds.contains(computedBounds)) {
+              this._ms.map.fitBounds(computedBounds);
+            } else {
+              this._ms.map.fitBounds(maxBounds);
+            }
           } else {
             this.enableFitBounds = true;
           }
