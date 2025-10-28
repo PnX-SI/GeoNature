@@ -6,7 +6,11 @@ from apptax.taxonomie.models import Taxref
 from bokeh.embed.standalone import StandaloneEmbedJson
 from flask import current_app
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.models import (
+    CorObserverSynthese,
+    Synthese,
+    TSources,
+)
 from geonature.core.imports.actions import (
     ImportActions,
     ImportInputUrl,
@@ -52,7 +56,8 @@ from geonature.core.imports.utils import (
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
 from sqlalchemy import distinct, func, select
-
+from sqlalchemy.orm import aliased
+from sqlalchemy.dialects.postgresql import JSONB
 from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
 
@@ -320,6 +325,75 @@ class SyntheseImportActions(ImportActions):
             )
 
     @staticmethod
+    def bind_found_observers_to_synthese(imprt: TImports) -> None:
+        """
+        Bind observers to entities.
+
+        This function takes an Import object and binds the observers specified in the
+        import data to the corresponding entities.
+
+        The binding is done by matching the observer string with the corresponding id_role
+        in the CorObserverSynthese table.
+
+        Parameters
+        ----------
+        imprt : TImports
+            The import object containing the data to be bound.
+
+        Returns
+        -------
+        None
+        """
+        observers_jsonb = (
+            func.jsonb_each(TImports.observermapping.cast(JSONB))
+            .table_valued("key", "value")
+            .alias("observer_jsonb")
+        )
+
+        observer_string_id_role = (
+            select(
+                sa.literal_column("observer_jsonb.key").label("observer_string"),
+                sa.cast(sa.literal_column("(observer_jsonb.value->>'id_role')"), sa.Integer).label(
+                    "id_role"
+                ),
+            )
+            .select_from(
+                TImports,
+                observers_jsonb,
+            )
+            .where(TImports.id_import == imprt.id_import)
+            .cte("observer_string_id_role")
+        )
+
+        synthese_observers = (
+            select(
+                Synthese.id_synthese,
+                func.unnest(func.string_to_array(Synthese.observers, ",")).label("observer"),
+            )
+            .where(Synthese.id_import == imprt.id_import)
+            .cte("synthese_observers")
+        )
+
+        stmt = (
+            select(
+                synthese_observers.c.id_synthese,
+                observer_string_id_role.c.id_role,
+            )
+            .select_from(synthese_observers)
+            .distinct()
+            .join(
+                observer_string_id_role,
+                observer_string_id_role.c.observer_string == synthese_observers.c.observer,
+            )
+        )
+
+        insert_stmt = sa.insert(CorObserverSynthese).from_select(
+            names=["id_synthese", "id_role"],
+            select=stmt,
+        )
+        db.session.execute(insert_stmt)
+
+    @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
         module = db.session.execute(
             sa.select(TModules).filter_by(module_code="IMPORT")
@@ -402,17 +476,15 @@ class SyntheseImportActions(ImportActions):
             max_line_no = (batch + 1) * batch_size
             insert_stmt = sa.insert(Synthese).from_select(
                 names=names,
-                select=select_stmt.filter(
+                select=select_stmt.where(
                     transient_table.c["line_no"] >= min_line_no,
                     transient_table.c["line_no"] < max_line_no,
                 ),
             )
             db.session.execute(insert_stmt)
             yield (batch + 1) / batch_count
-        insert_stmt = sa.insert(Synthese).from_select(
-            names=names,
-            select=select_stmt,
-        )
+
+        SyntheseImportActions.bind_found_observers_to_synthese(imprt)
 
         # TODO: Improve this
         imprt.statistics = {
