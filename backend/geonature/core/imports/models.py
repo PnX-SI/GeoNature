@@ -379,7 +379,7 @@ class TImports(InstancePermissionMixin, db.Model):
     source_count = db.Column(db.Integer, nullable=True)
     erroneous_rows = deferred(db.Column(ARRAY(db.Integer), nullable=True))
     statistics = db.Column(
-        MutableDict.as_mutable(JSON), nullable=False, server_default="'{}'::jsonb"
+        MutableDict.as_mutable(JSON), nullable=False, server_default=sa.text("'{}'::jsonb")
     )
     date_min_data = db.Column(db.DateTime, nullable=True)
     date_max_data = db.Column(db.DateTime, nullable=True)
@@ -397,6 +397,7 @@ class TImports(InstancePermissionMixin, db.Model):
     # keys are target names, values are source names
     fieldmapping = db.Column(MutableDict.as_mutable(JSON))
     contentmapping = db.Column(MutableDict.as_mutable(JSON))
+    observermapping = db.Column(MutableDict.as_mutable(JSON))
     task_id = db.Column(sa.String(155))
 
     errors = db.relationship(
@@ -864,3 +865,20 @@ class ContentMapping(MappingTemplate):
             validate_json(values, schema)
         except JSONValidationError as e:
             raise ValueError(e.message)
+
+
+@serializable
+class ObserverMapping(MappingTemplate):
+    __tablename__ = "t_observermappings"
+    __table_args__ = {"schema": "gn_imports"}
+
+    id = db.Column(db.Integer, ForeignKey(MappingTemplate.id), primary_key=True)
+    values = db.Column(MutableDict.as_mutable(JSON))
+
+    __mapper_args__ = {
+        "polymorphic_identity": "OBSERVER",
+    }
+
+    @staticmethod
+    def validate_values(values, destination=None):
+        return True
