@@ -6,6 +6,8 @@ import unicodedata
 
 from flask import request, current_app, jsonify, g, stream_with_context, send_file
 from flask_login import current_user
+from geonature.core.imports.checks.sql.user import user_matching
+from geonature.core.imports.schemas import ImportSchema
 from marshmallow import EXCLUDE
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, Gone, NotFound
 
@@ -347,6 +349,20 @@ def load_import(scope, imprt):
         line_no = insert_import_data_in_transient_table(imprt)
     if not line_no:
         raise BadRequest("File with 0 lines.")
+
+    fields = db.session.scalars(
+        select(BibFields).where(
+            BibFields.name_field.in_(imprt.fieldmapping.keys()),
+            BibFields.type_field == "observers",
+        )
+    ).all()
+
+    for field in fields:
+        mapping = imprt.fieldmapping[field.name_field]
+        if mapping.get("column_src", None) is not None:
+            field.column_src = mapping["column_src"]
+            user_matching(imprt, field)
+
     imprt.source_count = line_no
     imprt.loaded = True
     db.session.commit()
