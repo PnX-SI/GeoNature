@@ -6,6 +6,7 @@ import unicodedata
 
 from flask import request, current_app, jsonify, g, stream_with_context, send_file
 from flask_login import current_user
+from marshmallow import EXCLUDE
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, Gone, NotFound
 
 # url_quote was deprecated in werkzeug 3.0 https://stackoverflow.com/a/77222063/5807438
@@ -215,7 +216,39 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
         imprt.source_file = input_file.read()
         imprt.full_file_name = input_file.filename
 
-    # commùit changes
+    # commit changes
+    db.session.commit()
+
+    return jsonify(imprt.as_dict())
+
+
+@blueprint.route("/<destination>/imports/<int:import_id>/update", methods=["PUT"])
+@permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
+def update_import(scope, imprt, destination=None):  # destination is set when imprt is None
+    """
+    .. :quickref: Import; Add an import or update an existing import.
+
+    Add an import or update an existing import.
+
+    :form file: file to import
+    """
+    if imprt:
+        if not imprt.has_instance_permission(scope, action_code="C"):
+            raise Forbidden
+        destination = imprt.destination
+    else:
+        raise BadRequest("Import with id {} does not exist")
+
+    data = request.get_json()
+    if not data:
+        raise BadRequest(description="No data provided")
+
+    try:
+        ImportSchema().load(data, unknown=EXCLUDE)
+    except Exception as e:
+        raise BadRequest(description=f"{e}")
+
+    # commit changes
     db.session.commit()
 
     return jsonify(imprt.as_dict())
