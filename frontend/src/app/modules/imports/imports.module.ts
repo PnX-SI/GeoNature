@@ -32,6 +32,7 @@ import { DestinationsComponent } from './components/destinations/destinations.co
 import { ModalActionImport } from './components/action-modal/action-modal.component';
 import { MappingThemeComponent } from './components/import_process/fields-mapping-step/mapping-theme/mapping-theme.component';
 import { MappingSelectionComponent } from './components/import_process/fields-mapping-step/mapping-selection/mapping-selection.component';
+import { ObserverMappingStepComponent } from './components/import_process/observer-mapping-step/observer-mapping-step.component';
 
 const routes: Routes = [
   { path: '', component: ImportListComponent },
@@ -80,6 +81,12 @@ const routes: Routes = [
         resolve: { importData: ImportProcessResolver },
       },
       {
+        path: ':id_import/observermapping',
+        component: ObserverMappingStepComponent,
+        data: { step: Step.ObserverMapping },
+        resolve: { importData: ImportProcessResolver },
+      },
+      {
         path: ':id_import/import',
         component: ImportStepComponent,
         data: { step: Step.Import },
@@ -106,6 +113,7 @@ const routes: Routes = [
     ImportProcessComponent,
     ImportReportComponent,
     DestinationsComponent,
+    ObserverMappingStepComponent,
   ],
   imports: [
     MappingThemeComponent,

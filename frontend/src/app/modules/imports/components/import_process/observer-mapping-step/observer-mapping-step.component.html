@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="card mb-3">
+    <div class="card-header"><h5>Mise en correspondance d'observateur</h5></div>
+
+    <div class="card-body">
+      <div
+        class="oneMapping row"
+        *ngFor="let item of importData.observermapping | keyvalue"
+      >
+        <div class="col-6">
+          <label for="">{{ item.key }}</label>
+        </div>
+        <div class="col-6">
+          <pnx-observers
+            *ngIf="observerMappingForm.controls[item.key]"
+            [parentFormControl]="observerMappingForm.controls[item.key]"
+            [bindAllItem]="true"
+          ></pnx-observers>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-row justify-content-between">
+  <button
+    class="btn btn-secondary box-shadow d-flex justify-content-center align-content-between"
+    (click)="onPreviousStep()"
+    mat-raised-button
+    color="primary"
+    data-qa="import-contentmapping-back-btn"
+  >
+    <mat-icon>navigate_before</mat-icon>
+    {{ 'Previous' | translate }}
+  </button>
+  <button
+    class="btn btn-success box-shadow d-flex justify-content-center align-content-between"
+    [disabled]="!isNextStepAvailable()"
+    (click)="onNextStep()"
+    mat-raised-button
+    color="primary"
+    data-qa="import-contentmapping-model-validate"
+  >
+    {{ 'Next' | translate }}
+    <mat-icon>navigate_next</mat-icon>
+  </button>
+</div>
