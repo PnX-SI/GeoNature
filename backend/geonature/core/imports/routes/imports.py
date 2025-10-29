@@ -21,6 +21,7 @@ from sqlalchemy.sql.expression import collate, exists
 
 
 from geonature.utils.env import db
+from geonature.utils.config import config
 from geonature.utils.sentry import start_sentry_child
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
@@ -350,18 +351,21 @@ def load_import(scope, imprt):
     if not line_no:
         raise BadRequest("File with 0 lines.")
 
-    fields = db.session.scalars(
-        select(BibFields).where(
-            BibFields.name_field.in_(imprt.fieldmapping.keys()),
-            BibFields.type_field == "observers",
-        )
-    ).all()
+    ##### USER MATCHING PROCESS
+    if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+        fields = db.session.scalars(
+            select(BibFields).where(
+                BibFields.name_field.in_(imprt.fieldmapping.keys()),
+                BibFields.type_field == "observers",
+            )
+        ).all()
 
-    for field in fields:
-        mapping = imprt.fieldmapping[field.name_field]
-        if mapping.get("column_src", None) is not None:
-            field.column_src = mapping["column_src"]
-            user_matching(imprt, field)
+        imprt.observermapping = {}
+        for field in fields:
+            mapping = imprt.fieldmapping[field.name_field]
+            if mapping.get("column_src", None) is not None:
+                field.column_src = mapping["column_src"]
+                imprt.observermapping.update(user_matching(imprt, field))
 
     imprt.source_count = line_no
     imprt.loaded = True

@@ -83,8 +83,4 @@ def user_matching(imprt: TImports, field: BibFields):
         unknown="exclude",
     ).dump(db.session.execute(query).all())
 
-    imprt.observermapping = {res["user_to_match"]: res for res in result}
-
-    db.session.commit()
-
-    return imprt.observermapping
+    return {res["user_to_match"]: res for res in result}
