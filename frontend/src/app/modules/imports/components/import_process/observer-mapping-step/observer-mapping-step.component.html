@@ -1,23 +1,30 @@
 <div class="container">
   <div class="card mb-3">
-    <div class="card-header"><h5>Mise en correspondance d'observateur</h5></div>
+    <div class="card-header">
+      <h5>{{ 'Import.ObserverMapping.Title' | translate }}</h5>
+    </div>
 
     <div class="card-body">
-      <div
-        class="oneMapping row"
-        *ngFor="let item of importData.observermapping | keyvalue"
-      >
-        <div class="col-6">
-          <label for="">{{ item.key }}</label>
-        </div>
-        <div class="col-6">
-          <pnx-observers
-            *ngIf="observerMappingForm.controls[item.key]"
-            [parentFormControl]="observerMappingForm.controls[item.key]"
-            [bindAllItem]="true"
-          ></pnx-observers>
-        </div>
-      </div>
+      <table class="table matching-table">
+        <thead>
+          <tr>
+            <th>{{ 'Import.ObserverMapping.Table.InTheFile' | translate }}</th>
+            <th>{{ 'Import.ObserverMapping.Table.InDatabase' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of importData.observermapping | keyvalue">
+            <td>{{ item.key }}</td>
+            <td>
+              <pnx-observers
+                *ngIf="observerMappingForm.controls[item.key]"
+                [parentFormControl]="observerMappingForm.controls[item.key]"
+                [bindAllItem]="true"
+              ></pnx-observers>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

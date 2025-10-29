@@ -476,6 +476,13 @@
         "CreateOrUpdateMappingModel?": "The correspondence model has been modified; do you want to update the existing model or create a new model?"
       }
     },
+    "ObserverMapping": {
+      "Title": "Observer mapping",
+      "Table": {
+        "InTheFile": "In the file",
+        "InDatabase": "In GeoNature"
+      }
+    },
     "Errors": {
       "Title": "The import module encountered a problem",
       "Remark": "This is a problem independent of data control.",

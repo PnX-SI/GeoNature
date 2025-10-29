@@ -66,7 +66,7 @@ export class ObserverMappingStepComponent implements OnInit {
         if (!id_roles_authorized.includes(value.id_role)) {
           value = null;
         }
-        this.observerMappingForm.addControl(key, new FormControl(value, Validators.required));
+        this.observerMappingForm.addControl(key, new FormControl(value));
       });
     });
   }
