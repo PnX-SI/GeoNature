@@ -30,6 +30,7 @@
       Correspondance des nomenclatures
     </li>
     <li
+      *ngIf="config.IMPORT.ALLOW_USER_MAPPING"
       [ngClass]="{ done: step > Step.ContentMapping, current: step == Step.ObserverMapping }"
       (click)="importProcessService.navigateToStep(Step.ObserverMapping)"
       data-qa="import-observemapping-step-btn"
