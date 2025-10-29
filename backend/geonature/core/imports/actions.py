@@ -6,6 +6,10 @@ import sqlalchemy as sa
 from sqlalchemy.inspection import inspect
 from werkzeug.exceptions import Conflict
 
+from sqlalchemy import func, select
+from sqlalchemy.dialects.postgresql import JSONB
+
+
 import typing
 
 
@@ -218,3 +222,65 @@ class ImportActions:
         """
 
         raise NotImplementedError
+
+    @staticmethod
+    def bind_matched_observers(
+        imprt: TImports,
+        model,
+        model_user_column: str,
+        model_id_column: str,
+        correspondence_model,
+        correspondence_model_columns: typing.List[str],
+    ) -> None:
+
+        observers_jsonb = (
+            func.jsonb_each(TImports.observermapping.cast(JSONB))
+            .table_valued("key", "value")
+            .alias("observer_jsonb")
+        )
+
+        observer_string_id_role = (
+            select(
+                sa.literal_column("observer_jsonb.key").label("observer_string"),
+                sa.cast(sa.literal_column("(observer_jsonb.value->>'id_role')"), sa.Integer).label(
+                    "id_role"
+                ),
+            )
+            .select_from(
+                TImports,
+                observers_jsonb,
+            )
+            .where(TImports.id_import == imprt.id_import)
+            .cte("observer_string_id_role")
+        )
+
+        model_observers = (
+            select(
+                getattr(model, model_id_column),
+                func.unnest(func.string_to_array(getattr(model, model_user_column), ",")).label(
+                    "observer"
+                ),
+            )
+            .where(model.id_import == imprt.id_import)
+            .cte("model_observers")
+        )
+
+        stmt = (
+            select(
+                model_observers.c[model_id_column],
+                observer_string_id_role.c.id_role,
+            )
+            .select_from(model_observers)
+            .distinct()
+            .join(
+                observer_string_id_role,
+                observer_string_id_role.c.observer_string == model_observers.c.observer,
+            )
+            .where(observer_string_id_role.c.id_role != None)
+        )
+
+        insert_stmt = sa.insert(correspondence_model).from_select(
+            names=correspondence_model_columns,
+            select=stmt,
+        )
+        db.session.execute(insert_stmt)

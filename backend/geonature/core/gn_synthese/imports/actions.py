@@ -1,6 +1,7 @@
 import typing
 from math import ceil
 
+from geonature.utils.config import config
 import sqlalchemy as sa
 from apptax.taxonomie.models import Taxref
 from bokeh.embed.standalone import StandaloneEmbedJson
@@ -325,75 +326,6 @@ class SyntheseImportActions(ImportActions):
             )
 
     @staticmethod
-    def bind_found_observers_to_synthese(imprt: TImports) -> None:
-        """
-        Bind observers to entities.
-
-        This function takes an Import object and binds the observers specified in the
-        import data to the corresponding entities.
-
-        The binding is done by matching the observer string with the corresponding id_role
-        in the CorObserverSynthese table.
-
-        Parameters
-        ----------
-        imprt : TImports
-            The import object containing the data to be bound.
-
-        Returns
-        -------
-        None
-        """
-        observers_jsonb = (
-            func.jsonb_each(TImports.observermapping.cast(JSONB))
-            .table_valued("key", "value")
-            .alias("observer_jsonb")
-        )
-
-        observer_string_id_role = (
-            select(
-                sa.literal_column("observer_jsonb.key").label("observer_string"),
-                sa.cast(sa.literal_column("(observer_jsonb.value->>'id_role')"), sa.Integer).label(
-                    "id_role"
-                ),
-            )
-            .select_from(
-                TImports,
-                observers_jsonb,
-            )
-            .where(TImports.id_import == imprt.id_import)
-            .cte("observer_string_id_role")
-        )
-
-        synthese_observers = (
-            select(
-                Synthese.id_synthese,
-                func.unnest(func.string_to_array(Synthese.observers, ",")).label("observer"),
-            )
-            .where(Synthese.id_import == imprt.id_import)
-            .cte("synthese_observers")
-        )
-
-        stmt = (
-            select(
-                synthese_observers.c.id_synthese,
-                observer_string_id_role.c.id_role,
-            )
-            .select_from(synthese_observers)
-            .distinct()
-            .join(
-                observer_string_id_role,
-                observer_string_id_role.c.observer_string == synthese_observers.c.observer,
-            )
-        )
-
-        insert_stmt = sa.insert(CorObserverSynthese).from_select(
-            names=["id_synthese", "id_role"],
-            select=stmt,
-        )
-        db.session.execute(insert_stmt)
-
-    @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
         module = db.session.execute(
             sa.select(TModules).filter_by(module_code="IMPORT")
@@ -484,7 +416,15 @@ class SyntheseImportActions(ImportActions):
             db.session.execute(insert_stmt)
             yield (batch + 1) / batch_count
 
-        SyntheseImportActions.bind_found_observers_to_synthese(imprt)
+        if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+            ImportActions.bind_matched_observers(
+                imprt,
+                Synthese,
+                "observers",
+                "id_synthese",
+                CorObserverSynthese,
+                ["id_synthese", "id_role"],
+            )
 
         # TODO: Improve this
         imprt.statistics = {

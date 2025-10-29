@@ -36,7 +36,7 @@ def user_matching(imprt: TImports, field: BibFields):
     nom_complet of the users in the `utilisateurs.t_roles` table.
     """
     transient_table = imprt.destination.get_transient_table()
-    column_transient = transient_table.c[field.source_field]
+    column_transient = transient_table.c[field.source_column]
     cte_user_to_match = (
         sa.select(
             sa.func.distinct(sa.func.unnest(sa.func.string_to_array(column_transient, ","))).label(
