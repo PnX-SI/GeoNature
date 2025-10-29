@@ -6,7 +6,14 @@ from flask import jsonify
 from geonature.utils.env import db
 
 
-def user_matching(imprt: TImports, csv_column: BibFields):
+class UserMatchingSchema(Schema):
+    user_to_match = fields.String()
+    id_role = fields.Integer()
+    identifiant = fields.String()
+    nom_complet = fields.String()
+
+
+def user_matching(imprt: TImports, field: BibFields):
     """
     Find matching user for a given transient table and csv column.
 
@@ -14,24 +21,22 @@ def user_matching(imprt: TImports, csv_column: BibFields):
     ----------
     imprt : TImports
         The import object which contains the transient table.
-    csv_column : BibFields
-        The csv column to use for matching.
+    field : BibFields
+        field use to fetch user name strings
 
     Returns
     -------
     dict
-        A dictionary of user_to_match as key and a dictionary of matching information as value.
+        A dictionary of users name (as it apears in the source file) as key and a dictionary of matching information as value.
         The matching information contains id_role, identifiant, nom_complet.
 
     Notes
     -----
-    The matching is done by computing the similarity between the user_to_match and the nom_complet of the users.
-    The similarity is computed using the Levenshtein distance.
-    The matching is done by selecting the user with the highest similarity.
-    If multiple users have the same highest similarity, the first one is selected.
+    The matching is done by computing the similarity between the source file usernames and the
+    nom_complet of the users in the `utilisateurs.t_roles` table.
     """
     transient_table = imprt.destination.get_transient_table()
-    column_transient = transient_table.c[csv_column.source_field]
+    column_transient = transient_table.c[field.source_field]
     cte_user_to_match = (
         sa.select(
             sa.func.distinct(sa.func.unnest(sa.func.string_to_array(column_transient, ","))).label(
@@ -68,22 +73,18 @@ def user_matching(imprt: TImports, csv_column: BibFields):
         .label("rang"),
     ).cte()
 
-    query = sa.select(matches).where(matches.c.rang == 1, matches.c.similarity > 0.5)
+    query = sa.select(matches).where(
+        matches.c.rang == 1,
+        matches.c.similarity > 0.5,
+    )
 
-    result = db.session.execute(query).all()
+    result = UserMatchingSchema(
+        many=True,
+        unknown="exclude",
+    ).dump(db.session.execute(query).all())
 
-    class UserMatchingSchema(Schema):
-        user_to_match = fields.String()
-        id_role = fields.Integer()
-        identifiant = fields.String()
-        nom_complet = fields.String()
+    imprt.observermapping = {res["user_to_match"]: res for res in result}
 
-    result = UserMatchingSchema(many=True, unknown="exclude").dump(result)
-    final = {}
-    for res in result:
-        final[res["user_to_match"]] = res
-
-    imprt.observermapping = final
     db.session.commit()
 
-    return final
+    return imprt.observermapping
