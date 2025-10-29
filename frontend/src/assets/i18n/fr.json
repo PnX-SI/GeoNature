@@ -481,6 +481,9 @@
       "Table": {
         "InTheFile": "Dans le fichier source",
         "InDatabase": "Dans GeoNature"
+      },
+      "Messages": {
+        "NoObserverMapping": "Aucun champ lié à des observateurs n'a été mappé (ou la colonne dans le fichier source est vide)."
       }
     },
     "Errors": {

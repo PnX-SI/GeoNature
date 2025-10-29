@@ -359,7 +359,8 @@ def load_import(scope, imprt):
                 BibFields.type_field == "observers",
             )
         ).all()
-
+        if len(fields) == 0:
+            imprt.observermapping = {}
         for field in fields:
             mapping = imprt.fieldmapping[field.name_field]
             if mapping.get("column_src", None) is not None:

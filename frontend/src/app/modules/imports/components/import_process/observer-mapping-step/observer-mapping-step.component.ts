@@ -50,7 +50,13 @@ export class ObserverMappingStepComponent implements OnInit {
   ngOnInit() {
     this.step = this._route.snapshot.data.step;
     this.importData = this.importProcessService.getImportData();
-
+    if (Object.keys(this.importData.observermapping).length === 0) {
+      this._commonService.translateToaster(
+        'info',
+        'Import.ObserverMapping.Messages.NoObserverMapping'
+      );
+      this.processNextStep();
+    }
     this.populateObserverMappingFormGroup();
   }
 

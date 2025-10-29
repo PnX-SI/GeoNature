@@ -481,6 +481,9 @@
       "Table": {
         "InTheFile": "In the file",
         "InDatabase": "In GeoNature"
+      },
+      "Messages": {
+        "NoObserverMapping": "No field linked to observers has been mapped (or the column in the file is empty)."
       }
     },
     "Errors": {
