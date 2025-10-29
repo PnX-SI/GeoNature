@@ -33,7 +33,23 @@ def upgrade():
         schema="gn_imports",
     )
 
+    op.execute(
+        """
+        UPDATE gn_imports.bib_fields
+        SET type_field = 'observers'
+        WHERE name_field = 'observers' AND id_destination = (SELECT id_destination FROM gn_imports.bib_destinations WHERE code = 'synthese');
+    """
+    )
+
 
 def downgrade():
+
+    op.execute(
+        """
+        UPDATE gn_imports.bib_fields
+        SET type_field = 'textarea'
+        WHERE name_field = 'observers' AND id_destination = (SELECT id_destination FROM gn_imports.bib_destinations WHERE code = 'synthese');
+    """
+    )
     op.drop_table("t_observermappings", schema="gn_imports")
     op.drop_column("t_imports", column_name="observermapping", schema="gn_imports")
