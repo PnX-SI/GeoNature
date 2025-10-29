@@ -360,11 +360,9 @@ def load_import(scope, imprt):
             )
         ).all()
 
-        imprt.observermapping = {}
         for field in fields:
             mapping = imprt.fieldmapping[field.name_field]
             if mapping.get("column_src", None) is not None:
-                field.column_src = mapping["column_src"]
                 imprt.observermapping.update(user_matching(imprt, field))
 
     imprt.source_count = line_no
