@@ -9,7 +9,7 @@ import 'leaflet.markercluster';
 import { CommonService } from '../service/common.service';
 import { CustomMarkerIcon } from '@geonature_common/map/marker/marker.component';
 import { ConfigService } from '@geonature/services/config.service';
-
+import { GeoJSONOverlapped } from "./leaflet.geojsonOverlapped"
 @Injectable()
 export class MapService {
   public map: Map;
@@ -171,8 +171,9 @@ export class MapService {
     };
   }
 
+
   createGeojson(geojson, asCluster: boolean, onEachFeature?, style?): GeoJSON {
-    const geojsonLayer = L.geoJSON(geojson?.features || geojson, {
+    const geojsonLayer = new GeoJSONOverlapped(geojson?.features || geojson, {
       style: (feature) => {
         switch (feature.geometry.type) {
           // No color nor opacity for linestrings
