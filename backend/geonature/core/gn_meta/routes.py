@@ -709,13 +709,12 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         for dict_additional_field in list_additional_fields:
             label_additional_field = dict_additional_field["field_label"]
             name_additional_field = dict_additional_field["field_name"]
+            updated_additional_data[label_additional_field] = ""
             if acquisition_framework["additional_data"].get(name_additional_field):
                 # Replace name with label for the additional_field
                 updated_additional_data[label_additional_field] = acquisition_framework[
                     "additional_data"
                 ][name_additional_field]
-            else:
-                updated_additional_data[label_additional_field] = ""
         acquisition_framework["additional_data"] = updated_additional_data
 
     # Appel de la methode pour generer un pdf
