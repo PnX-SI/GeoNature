@@ -162,8 +162,8 @@ def _get_additional_fields(id_dataset=None, module_code=None, object_code=None):
             query = query.where(
                 or_(
                     *[
-                        TAdditionalFields.datasets.any(id_dataset=id_dastaset_i)
-                        for id_dastaset_i in id_dataset
+                        TAdditionalFields.datasets.any(id_dataset=id_dataset_i)
+                        for id_dataset_i in id_dataset
                     ]
                 )
             )
