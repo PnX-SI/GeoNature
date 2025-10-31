@@ -1,15 +1,14 @@
-from geonature.core.imports.models import Entity, TImports
+from geonature.core.imports.models import BibFields, Entity, TImports
 
 from bokeh.embed.standalone import StandaloneEmbedJson
 from geonature.utils.env import db
+from pypnusershub.db.models import User
 import sqlalchemy as sa
 from sqlalchemy.inspection import inspect
 from werkzeug.exceptions import Conflict
 
 from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import JSONB
-
-
 import typing
 
 
@@ -224,14 +223,9 @@ class ImportActions:
         raise NotImplementedError
 
     @staticmethod
-    def bind_matched_observers(
-        imprt: TImports,
-        model,
-        model_user_column: str,
-        model_id_column: str,
-        correspondence_model,
-        correspondence_model_columns: typing.List[str],
-    ) -> None:
+    def bind_matched_observers_without_correspondance_table(
+        imprt: TImports, observer_field: BibFields
+    ):
 
         observers_jsonb = (
             func.jsonb_each(TImports.observermapping.cast(JSONB))
@@ -254,33 +248,95 @@ class ImportActions:
             .cte("observer_string_id_role")
         )
 
+        transient_table = imprt.destination.get_transient_table()
+
         model_observers = (
             select(
-                getattr(model, model_id_column),
-                func.unnest(func.string_to_array(getattr(model, model_user_column), ",")).label(
-                    "observer"
+                getattr(transient_table.c, "line_no"),
+                func.unnest(
+                    func.string_to_array(
+                        getattr(transient_table.c, observer_field.source_column), ","
+                    )
+                ).label("observer"),
+                sa.func.row_number().over(
+                    partition_by=getattr(transient_table.c, "line_no"),
+                    order_by=sa.desc(getattr(transient_table.c, "line_no")),  # pas ouf
                 ),
+            )
+            .where(transient_table.c.id_import == imprt.id_import)
+            .cte("model_observers")
+        )
+
+        update_stmt = (
+            sa.update(transient_table)
+            .values({observer_field.dest_column: observer_string_id_role.c.id_role})
+            .where(
+                transient_table.c.line_no == model_observers.c.line_no,
+                model_observers.c.observer == observer_string_id_role.c.observer_string,
+                observer_string_id_role.c.id_role != None,
+            )
+        )
+
+        db.session.execute(update_stmt)
+
+    @staticmethod
+    def bind_matched_observers(
+        imprt: TImports,
+        model,
+        model_user_column: str,
+        model_id_column: str,
+        correspondence_model,
+        correspondence_model_columns: typing.List[str],
+    ) -> None:
+        # --- 1. Déplier le JSON mapping pour avoir (observer_string, id_role) ---
+        observers_jsonb = (
+            func.jsonb_each(TImports.observermapping.cast(JSONB))
+            .table_valued("key", "value")
+            .alias("observer_jsonb")
+        )
+
+        observer_string_id_role = (
+            select(
+                sa.literal_column("observer_jsonb.key").label("observer_string"),
+                sa.cast(sa.literal_column("(observer_jsonb.value->>'id_role')"), sa.Integer).label(
+                    "id_role"
+                ),
+            )
+            .select_from(TImports, observers_jsonb)
+            .where(TImports.id_import == imprt.id_import)
+            .cte("observer_string_id_role")
+        )
+
+        # --- 2. Déplier les observateurs dans le modèle principal ---
+        model_observers = (
+            select(
+                getattr(model, model_id_column).label(model_id_column),
+                func.trim(
+                    func.unnest(func.string_to_array(getattr(model, model_user_column), ","))
+                ).label("observer"),
             )
             .where(model.id_import == imprt.id_import)
             .cte("model_observers")
         )
 
-        stmt = (
+        # --- 3. Associer les observateurs à leur id_role si mappé ---
+        matched = (
             select(
                 model_observers.c[model_id_column],
                 observer_string_id_role.c.id_role,
             )
             .select_from(model_observers)
-            .distinct()
             .join(
                 observer_string_id_role,
                 observer_string_id_role.c.observer_string == model_observers.c.observer,
             )
             .where(observer_string_id_role.c.id_role != None)
+            .distinct()
         )
 
+        # --- 4. Insérer les correspondances dans correspondence_model ---
         insert_stmt = sa.insert(correspondence_model).from_select(
             names=correspondence_model_columns,
-            select=stmt,
+            select=matched,
         )
         db.session.execute(insert_stmt)

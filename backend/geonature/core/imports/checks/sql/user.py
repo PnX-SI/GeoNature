@@ -44,6 +44,7 @@ def user_matching(imprt: TImports, field: BibFields):
             )
         )
         .where(column_transient != None)
+        .where(transient_table.c.id_import == imprt.id_import)
         .cte("cte_user_to_match")
     )
 
@@ -75,7 +76,6 @@ def user_matching(imprt: TImports, field: BibFields):
 
     query = sa.select(matches).where(
         matches.c.rang == 1,
-        matches.c.similarity > 0.5,
     )
 
     result = UserMatchingSchema(

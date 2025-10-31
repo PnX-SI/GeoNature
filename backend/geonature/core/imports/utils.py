@@ -294,6 +294,7 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
         imprt.destination.actions.preprocess_transient_data(imprt, df)
 
         records = df.to_dict(orient="records")
+        print(records)
         db.session.execute(insert(transient_table).values(records))
 
     return 1 + chunk.index[-1]  # +1 because chunk.index start at 0
