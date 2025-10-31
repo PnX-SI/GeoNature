@@ -106,18 +106,25 @@ def additional_fields(app):
     obj = db.session.execute(
         select(PermObject).where(PermObject.code_object == "METADATA_CADRE_ACQUISITION")
     ).scalar_one()
-    for name in ["used_field", "not_used_field"]:
+    for name, id_widget in [
+        ("select_field_used", 1),
+        ("nomenclature_field_used", 3),
+        ("text_field_used", 4),
+        ("date_field_used", 9),
+        ("number_field_used", 11),
+        ("text_field_not_used", 4),
+    ]:
         additional_field = TAdditionalFields(
             field_name=name,
             field_label=name,
             required=True,
-            id_widget=1,
+            id_widget=id_widget,
             modules=[module],
             objects=[obj],
         )
         with db.session.begin_nested():
             db.session.add(additional_field)
-    return additional_field
+    return None
 
 
 def get_csv_from_response(data):
