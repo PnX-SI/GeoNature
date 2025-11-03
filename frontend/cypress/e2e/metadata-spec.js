@@ -43,7 +43,7 @@ describe('Testing metadata', () => {
 
   it('should download the export PDF file of the first "cadre d\'acquisition"', () => {
     cy.get(caSelector).click();
-    cy.wait(1000);
+    cy.wait(5000);
     cy.get('[data-qa="pnx-metadata-export-af"]')
       .should('be.visible')
       .then(() => {
