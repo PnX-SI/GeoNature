@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -20,7 +20,7 @@ import { TranslateService } from '@librairies/@ngx-translate/core';
   styleUrls: ['../form.component.scss'],
   providers: [AcquisitionFrameworkFormService],
 })
-export class AfFormComponent implements OnInit {
+export class AfFormComponent implements OnInit, AfterViewInit {
   public form: UntypedFormGroup;
   //observable pour la liste déroulantes HTML des AF parents
   public acquisitionFrameworkParents: Observable<any>;
@@ -61,6 +61,18 @@ export class AfFormComponent implements OnInit {
 
     this.uuidEditionEnabled = this.configService.METADATA.ENABLE_UUID_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('AcquisitionFramework');
+  }
+
+  ngAfterViewInit() {
+    this.setFromQueryParams();
+  }
+
+  setFromQueryParams() {
+    this._route.queryParams.subscribe((params) => {
+      this.afFormS.queryParamsSource.next(params);
+    });
+
+    // TODO?: Clean route from unsupported query params ?
   }
 
   handleDates(af, isParseElseFormat = false) {
