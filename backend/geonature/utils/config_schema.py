@@ -156,6 +156,7 @@ class MetadataConfig(Schema):
         ],
     )
     ENABLE_UUID_EDITION_FIELD = fields.Boolean(load_default=False)
+    ROUTE_ADD_AF = fields.String(load_default="/metadata/af")
 
 
 class AuthenticationConfig(Schema):
