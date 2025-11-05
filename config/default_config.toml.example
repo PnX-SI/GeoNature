@@ -475,6 +475,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Options dédiées à la fiche observateur
         # Permet d'activer ou non la section "Medias"
         ENABLE_TAB_MEDIA = true
+        # Affiche la section overview
+        ENABLE_TAB_OVERVIEW = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
