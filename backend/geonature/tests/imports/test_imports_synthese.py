@@ -1000,6 +1000,8 @@ class TestImportsSynthese:
             url_for("import.get_import_invalid_rows_as_csv", import_id=imprt.id_import)
         ) as r:
             assert r.status_code == 200, r.data
+            csv = r.data.decode("utf-8")
+            assert len(csv.split("\n")) - 1 > 0
 
         # Import step
         r = self.client.post(url_for("import.import_valid_data", import_id=imprt.id_import))

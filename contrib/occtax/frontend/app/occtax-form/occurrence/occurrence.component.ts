@@ -14,34 +14,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfigService } from '@geonature/services/config.service';
 import { ViewChild } from '@angular/core';
 import { OcctaxFormCountingComponent } from '../counting/counting.component';
+import { AdvancedSectionState } from '@geonature_common/form/advanced-section/advanced-section.component';
 
 @Component({
   selector: 'pnx-occtax-form-occurrence',
   templateUrl: './occurrence.component.html',
   styleUrls: ['./occurrence.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state(
-        'collapsed',
-        style({
-          height: '0px',
-          minHeight: '0',
-          margin: '-1px',
-          overflow: 'hidden',
-          padding: '0',
-          display: 'none',
-        })
-      ),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('250ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public occurrenceForm: UntypedFormGroup;
   public taxonForm: UntypedFormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
-  public advanced: string = 'collapsed';
+  public advancedSectionState: AdvancedSectionState = AdvancedSectionState.COLLAPSED;
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
   @ViewChild(OcctaxFormCountingComponent) countingComp: OcctaxFormCountingComponent;
@@ -79,7 +63,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         )
         .subscribe((display: boolean) => (this.displayProofFromElements = display))
     );
-    this.advanced = this.config.OCCTAX.EXPANDED_TAXON_ADVANCED_DETAILS ? 'expanded' : 'collapsed';
+    this.advancedSectionState = this.config.OCCTAX.EXPANDED_TAXON_ADVANCED_DETAILS ? AdvancedSectionState.EXPANDED : AdvancedSectionState.COLLAPSED;
     this.initTaxrefSearch();
   }
 
@@ -221,9 +205,5 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       document.getElementById('add-occ').focus();
     }, 50);
-  }
-
-  collapse() {
-    this.advanced = this.advanced === 'collapsed' ? 'expanded' : 'collapsed';
   }
 }

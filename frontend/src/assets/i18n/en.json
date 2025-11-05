@@ -13,6 +13,7 @@
     "Singular": "Action",
     "Plural": "Actions",
     "Add": "Add",
+    "Edit": "Edit",
     "Filter": "Filter",
     "Download": "Download",
     "Delete": "Delete",
@@ -151,6 +152,9 @@
   "Label": "Label",
   "Keywords": "Keywords",
 
+  "Detail": "Detail",
+  "Details": "Details",
+
   "Downloading": "Downloading",
 
   "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
@@ -198,7 +202,8 @@
       "NoStakeholder": "No stakeholder provided",
       "FiledAF": "The acquisition framework has already been filed",
       "EmptyAF": "The acquisition framework is empty",
-      "NoMetadata": "Oops! There is no metadata to display."
+      "NoMetadata": "Oops! There is no metadata to display.",
+      "UUIDFormPlaceHolder": "If not specified, identifier will be generated when the JDD is created."
     },
     "Actions": {
       "AddDataset": "Add a dataset",
@@ -208,8 +213,10 @@
       "EditDataset": "Edit the dataset",
       "DeleteDataset": "Delete the dataset",
       "ResetSearch": "Reset search",
-      "SeeAFSheet": "View the acquisition framework sheet"
+      "SeeAFSheet": "View the acquisition framework sheet",
+      "FillOwnUUID": "I indicate my own SINP UUID"
     },
+    "UUIDField": "UUID ID",
     "AdvancedSearch": "Advanced search",
     "AFAndDatasetsList": "List of acquisition frameworks and associated datasets",
     "CreationDate": "Launch date",
@@ -287,7 +294,7 @@
       "ResourceType": "Resource type",
       "FacultativeTaxaList": "Taxon list (optional)",
       "SpecificGeonature": "Specific GeoNature",
-      "ActiveOnEntry": "Active on entry"
+      "RequiredToImportAndEnterData": "Required to enter or import data in the dataset"
     },
     "AcquisitionFrameworkForm": {},
     "Actors": {

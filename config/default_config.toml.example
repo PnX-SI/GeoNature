@@ -21,7 +21,7 @@ SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monpor
 SQLALCHEMY_TRACK_MODIFICATIONS = true
 
 # Ce paramètre permet de configurer la connexion de SQLAlchemy avec la base de données
-# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine` 
+# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine`
 # de SQLAlchemy : https://docs.sqlalchemy.org/en/14/core/engines.html#sqlalchemy.create_engine
 SQLALCHEMY_ENGINE_OPTIONS = {}
 
@@ -613,6 +613,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         { "label" = "Départements", "type_code"= "DEP" },
         { "label" = "Régions", "type_code"= "REG" }
     ]
+    # Activer le champs pour permettre l'édition des uuids des cadres d'acquisition et des jeux de données
+    ENABLE_UUID_EDITION_FIELD = false
 
 # Page d’accueil
 [HOME]
@@ -706,6 +708,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # URL d'accès au module d'import
     MODULE_URL = "/import"
 
-    # Taille des `batch` de données importées en même temps
+    # Taille des `batch` de données importées simultanément
     DATAFRAME_BATCH_SIZE = 10000
 

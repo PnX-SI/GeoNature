@@ -18,6 +18,9 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class GPSComponent extends MarkerComponent implements OnInit {
   @ViewChild('modalContent', { static: false }) public modalContent: any;
+  public x: number;
+  public y: number;
+  public coordsInput: string = '';
   constructor(
     public mapService: MapService,
     public modalService: NgbModal,
@@ -33,18 +36,49 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     this.enableGps();
   }
   enableGps() {
+    const currentGpsElement: HTMLElement = document.getElementById('GPSLegend');
+    if (currentGpsElement) {
+      currentGpsElement.remove();
+    }
+    // Add leaflet button
     const GPSLegend = this.mapService.addCustomLegend('topleft', 'GPSLegend');
     this.map.addControl(new GPSLegend());
+
+    // Fetch control and customize its appearance
     const gpsElement: HTMLElement = document.getElementById('GPSLegend');
     L.DomEvent.disableClickPropagation(gpsElement);
     gpsElement.innerHTML = '<span> <b> GPS </span> <b>';
     gpsElement.style.paddingLeft = '3px';
+
+    // Bind the open modal functionality
     gpsElement.onclick = () => {
       this.modalService.open(this.modalContent);
     };
   }
 
+  onCoordsInputChange(value: string) {
+    if (!value) {
+      return;
+    }
+    const tokens = value
+      .split(',')
+      .map((token) => token.trim())
+      .filter((token) => token.length > 0 && !Number.isNaN(token));
+
+    if (tokens.length < 2) return;
+
+    this.x = parseFloat(tokens[1]);
+    this.y = parseFloat(tokens[0]);
+    this.coordsInput = this.formatCoordsInput(this.x, this.y);
+  }
+
+  private formatCoordsInput(x: number, y: number): string {
+    return `${x}, ${y}`;
+  }
+
   setMarkerFromGps(x, y) {
+    this.coordsInput = this.formatCoordsInput(this.x, this.y);
+
     super.generateMarkerAndEvent(x, y);
     // remove others layers
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);

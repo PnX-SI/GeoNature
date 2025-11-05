@@ -112,6 +112,16 @@ Le référentiel de sensibilité fourni par le SINP est normalement intégré
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré ou mis à jour avec l’une ou l’autre des commandes suivantes (selon votre version de Taxref) :
 
+Taxref v18 :
+   .. code-block:: bash
+
+      geonature sensitivity add-referential \
+               --source-name "Référentiel sensibilité TAXREF v18 20250904" \
+               --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV18_20250904.zip \
+               --zipfile RefSensibiliteV18_20250904.zip \
+               --csvfile RefSensibilite_18.csv  \
+               --encoding=utf-8
+
 Taxref v17 :
    .. code-block:: bash
 
@@ -154,6 +164,9 @@ Taxref v14 :
 
 Le jeu de règles est fourni pour chaque version précise de Taxref, certaines
 espèces sensibles pouvant voir leur *cd_nom* changer d’une version à l’autre.
+
+La commande de mise à jour ne supprime pas l'ancien référentiel. 
+Pour le supprimer il faut utiliser la commande ``geonature sensitivity remove-referential`` en précisant la source.
 
 Si vous mettez à jour votre version du référentiel de sensibilité, il faut ensuite relancer 
 le calcul des règles de sensibilité avec la commande ``geonature sensitivity refresh-rules-cache``.

@@ -39,6 +39,8 @@ do
     sed -i '/SET/d' $schema/$table.sql
     # Remove consecutive empty lines
     sed -i '/^$/N;/\n$/D' $schema/$table.sql
+    sed -i '/^\\restrict/d' $schema/$table.sql
+    sed -i '/^\\unrestrict/d' $schema/$table.sql
 
   done
 

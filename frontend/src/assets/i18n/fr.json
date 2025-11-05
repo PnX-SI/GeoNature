@@ -13,6 +13,7 @@
     "Singular": "Action",
     "Plural": "Actions",
     "Add": "Ajouter",
+    "Edit": "Éditer",
     "Filter": "Filtrer",
     "Download": "Télécharger",
     "Delete": "Supprimer",
@@ -151,6 +152,9 @@
   "Label": "Libellé",
   "Keywords": "Mots-clés",
 
+  "Detail": "Détail",
+  "Details": "Détails",
+
   "Downloading": "Téléchargement en cours",
 
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
@@ -198,7 +202,8 @@
       "NoStakeholder": "Aucun acteur renseigné",
       "FiledAF": "Le cadre d'acquisition a déjà été déposé",
       "EmptyAF": "Le cadre d'acquisition est vide",
-      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher."
+      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
+      "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}"
     },
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
@@ -208,8 +213,10 @@
       "EditDataset": "Éditer le jeu de données",
       "DeleteDataset": "Supprimer le jeu de données",
       "ResetSearch": "Réinitialiser la recherche",
-      "SeeAFSheet": "Voir la fiche du cadre d'acquisition"
+      "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
+      "FillOwnUUID": "Saisie manuelle de l'UUID"
     },
+    "UUIDField": "UUID du {{ entity }}",
     "AdvancedSearch": "Recherche avancée",
     "AFAndDatasetsList": "Liste des cadres d'acquisition et des jeux de données associés",
     "CreationDate": "Date de lancement",
@@ -287,7 +294,7 @@
       "ResourceType": "Type de ressource",
       "FacultativeTaxaList": "Liste de taxons (facultatif)",
       "SpecificGeonature": "Spécifique GeoNature",
-      "ActiveOnEntry": "Actif à la saisie"
+      "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"
     },
     "AcquisitionFrameworkForm": {},
     "Actors": {
