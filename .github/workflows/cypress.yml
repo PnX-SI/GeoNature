@@ -86,7 +86,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: generate frontend config
         run: |
-          cp ./config/settings.ini.sample ./config/settings.ini 
+          cp ./config/settings.ini.sample ./config/settings.ini
           ./install/05_install_frontend.sh --ci
         env:
           GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
@@ -95,7 +95,7 @@ jobs:
           geonature install-gn-module contrib/occtax OCCTAX --build=false --upgrade-db=false
           geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false --upgrade-db=false
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false --upgrade-db=false
-          geonature db upgrade occtax-samples-test@head 
+          geonature db upgrade occtax-samples-test@head
           geonature db upgrade occhab-samples@head
           geonature db upgrade import-samples@head
           geonature db autoupgrade

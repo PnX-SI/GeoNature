@@ -57,7 +57,7 @@
             <h5>
               <b class="text-muted">Observateur(s) :</b>
             </h5>
-            <div *ngIf="station?.properties.observers; else elseBlock">
+            <div *ngIf="station?.properties.observers?.length > 0; else elseBlock">
               <p *ngFor="let obs of station.properties.observers; let last = last">
                 {{ obs.nom_role }} {{ obs.prenom_role }}
                 <span *ngIf="!last">,</span>
