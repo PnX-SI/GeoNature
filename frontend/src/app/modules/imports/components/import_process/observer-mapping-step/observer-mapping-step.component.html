@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5>{{ 'Import.ObserverMapping.Title' | translate }}</h5>
+    </div>
+
+    <div class="card-body">
+      <table class="table matching-table">
+        <thead>
+          <tr>
+            <th>{{ 'Import.ObserverMapping.Table.InTheFile' | translate }}</th>
+            <th>{{ 'Import.ObserverMapping.Table.InDatabase' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of importData.observermapping | keyvalue">
+            <td>{{ item.key }}</td>
+            <td>
+              <pnx-observers
+                *ngIf="observerMappingForm.controls[item.key]"
+                [parentFormControl]="observerMappingForm.controls[item.key]"
+                [bindAllItem]="true"
+              ></pnx-observers>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-row justify-content-between">
+  <button
+    class="btn btn-secondary box-shadow d-flex justify-content-center align-content-between"
+    (click)="onPreviousStep()"
+    mat-raised-button
+    color="primary"
+    data-qa="import-contentmapping-back-btn"
+  >
+    <mat-icon>navigate_before</mat-icon>
+    {{ 'Previous' | translate }}
+  </button>
+  <button
+    class="btn btn-success box-shadow d-flex justify-content-center align-content-between"
+    [disabled]="!isNextStepAvailable()"
+    (click)="onNextStep()"
+    mat-raised-button
+    color="primary"
+    data-qa="import-contentmapping-model-validate"
+  >
+    {{ 'Next' | translate }}
+    <mat-icon>navigate_next</mat-icon>
+  </button>
+</div>

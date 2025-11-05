@@ -63,8 +63,9 @@ REGISTER_POST_ACTION_FCT.update(
 
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
+@routes.route("/menu/", methods=["GET"])
 @json_resp
-def get_roles_by_menu_id(id_menu):
+def get_roles_by_menu_id(id_menu=None):
     """
     Retourne la liste des roles associés à un menu
 
@@ -74,11 +75,12 @@ def get_roles_by_menu_id(id_menu):
     :type id_menu: int
     :query str nom_complet: begenning of complet name of the role
     """
-    query = select(VUserslistForallMenu).filter_by(id_menu=id_menu)
+    query = select(VUserslistForallMenu)
 
-    parameters = request.args
-    nom_complet = parameters.get("nom_complet")
-    if nom_complet:
+    if id_menu:
+        query = query.filter_by(id_menu=id_menu)
+
+    if nom_complet := request.args.get("nom_complet"):
         query = query.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
 
     data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()

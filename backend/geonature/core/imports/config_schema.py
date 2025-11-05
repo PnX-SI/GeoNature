@@ -78,6 +78,7 @@ class ImportConfigSchema(Schema):
     ALLOWED_EXTENSIONS = fields.List(fields.String, load_default=ALLOWED_EXTENSIONS)
     DEFAULT_COUNT_VALUE = fields.Integer(load_default=DEFAULT_COUNT_VALUE)
     ALLOW_VALUE_MAPPING = fields.Boolean(load_default=ALLOW_VALUE_MAPPING)
+    ALLOW_USER_MAPPING = fields.Boolean(load_default=True)
     DEFAULT_VALUE_MAPPING_ID = fields.Integer(
         load_default=DEFAULT_VALUE_MAPPING_ID
     )  # FIXME: unused

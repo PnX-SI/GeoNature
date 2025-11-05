@@ -91,7 +91,7 @@ export class ImportDataService {
   }
 
   updateImport(idImport, data): Observable<Import> {
-    return this._http.post<Import>(
+    return this._http.put<Import>(
       `${this.getUrlApiForADestination()}/imports/${idImport}/update`,
       data
     );

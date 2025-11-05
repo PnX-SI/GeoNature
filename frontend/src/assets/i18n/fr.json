@@ -476,6 +476,16 @@
         "CreateOrUpdateMappingModel?": "Le modèle de correspondance a été modifié ; souhaitez-vous mettre à jour le modèle existant ou créer un nouveau modèle ?"
       }
     },
+    "ObserverMapping": {
+      "Title": "Correspondance des observateurs",
+      "Table": {
+        "InTheFile": "Dans le fichier source",
+        "InDatabase": "Dans GeoNature"
+      },
+      "Messages": {
+        "NoObserverMapping": "Aucun champ lié à des observateurs n'a été mappé (ou la colonne dans le fichier source est vide)."
+      }
+    },
     "Errors": {
       "Title": "Le module d'import a rencontré un problème",
       "Remark": "Il s'agit d'un problème indépendant du controle des données.",

@@ -59,6 +59,9 @@ export class ImportProcessService {
     if (!this.config.IMPORT.ALLOW_VALUE_MAPPING && previousStep === Step.ContentMapping) {
       previousStep -= 1;
     }
+    if (!this.config.IMPORT.ALLOW_USER_MAPPING && previousStep === Step.ObserverMapping) {
+      previousStep -= 1;
+    }
     return previousStep;
   }
 
@@ -66,6 +69,9 @@ export class ImportProcessService {
   getNextStep(step: Step): Step {
     let nextStep = step + 1;
     if (!this.config.IMPORT.ALLOW_VALUE_MAPPING && nextStep === Step.ContentMapping) {
+      nextStep += 1;
+    }
+    if (!this.config.IMPORT.ALLOW_USER_MAPPING && nextStep === Step.ObserverMapping) {
       nextStep += 1;
     }
 

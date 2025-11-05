@@ -27,9 +27,13 @@ cor_station_observer = db.Table(
     db.Column("id_cor_station_observer", db.Integer, primary_key=True),
     db.Column("id_station", db.Integer, ForeignKey("pr_occhab.t_stations.id_station")),
     db.Column("id_role", db.Integer, ForeignKey(User.id_role)),
-    UniqueConstraint("id_station", "id_role"),  # , "unique_cor_station_observer"),
+    UniqueConstraint("id_station", "id_role"),
     schema="pr_occhab",
 )
+
+
+class CorStationObserver(db.Model):
+    __table__ = cor_station_observer
 
 
 class Station(NomenclaturesMixin, db.Model):

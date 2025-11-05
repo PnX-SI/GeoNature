@@ -6,7 +6,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 
 /**
  * Ce composant permet d'afficher un input de type "autocomplete" sur un liste d'observateur définit dans le schéma ``utilisateur.t_menus`` et ``utilisateurs.cor_role_menu``.
- * Il permet de séléctionner plusieurs utilisateurs dans le même input.
+ * Il permet de sélectionner plusieurs utilisateurs dans le même input.
  * Renvoie l'objet: ```{
     "nom_complet": "ADMINISTRATEUR test",
     "nom_role": "Administrateur",
@@ -62,6 +62,8 @@ export class ObserversComponent extends GenericFormComponent {
           return data;
         })
       );
+    } else {
+      this.observers = this._dfService.getObservers();
     }
   }
 
