@@ -9,6 +9,8 @@ import { OcctaxFormCountingService } from './counting.service';
 import { ConfigService } from '@geonature/services/config.service';
 
 import { ValidationErrorsId } from '@geonature/services/validators';
+import { ViewChild } from '@angular/core';
+import { MediasComponent } from '@geonature_common/form/media/medias.component';
 
 @Component({
   selector: 'pnx-occtax-form-counting',
@@ -18,7 +20,7 @@ import { ValidationErrorsId } from '@geonature/services/validators';
 })
 export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
   public data: any;
-
+  @ViewChild(MediasComponent) mediasComp: MediasComponent;
   @Input('value')
   set counting(value: any) {
     this.occtaxFormCountingService.counting.next(value);
@@ -49,6 +51,9 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
       .subscribe((idNomenclatureLifeStage) => {
         this.occtaxFormOccurrenceService.lifeStage.next(idNomenclatureLifeStage);
       });
+  }
+  validateMediasDeletions() {
+    this.mediasComp.validateDeletions();
   }
 
   ngOnDestroy() {
