@@ -288,14 +288,14 @@ class ImportActions:
         correspondence_model,
         correspondence_model_columns: typing.List[str],
     ) -> None:
-        # --- 1. Déplier le JSON mapping pour avoir (observer_string, id_role) ---
+
         observers_jsonb = (
             func.jsonb_each(TImports.observermapping.cast(JSONB))
             .table_valued("key", "value")
             .alias("observer_jsonb")
         )
 
-        observer_string_id_role = (
+        observer_mapping = (
             select(
                 sa.literal_column("observer_jsonb.key").label("observer_string"),
                 sa.cast(sa.literal_column("(observer_jsonb.value->>'id_role')"), sa.Integer).label(
@@ -304,39 +304,61 @@ class ImportActions:
             )
             .select_from(TImports, observers_jsonb)
             .where(TImports.id_import == imprt.id_import)
-            .cte("observer_string_id_role")
+            .cte("observer_mapping")
         )
 
-        # --- 2. Déplier les observateurs dans le modèle principal ---
         model_observers = (
             select(
-                getattr(model, model_id_column).label(model_id_column),
+                getattr(model, model_id_column),
                 func.trim(
                     func.unnest(func.string_to_array(getattr(model, model_user_column), ","))
-                ).label("observer"),
+                ).label("observer_string"),
             )
             .where(model.id_import == imprt.id_import)
             .cte("model_observers")
         )
 
-        # --- 3. Associer les observateurs à leur id_role si mappé ---
-        matched = (
+        matched_observers = (
             select(
                 model_observers.c[model_id_column],
-                observer_string_id_role.c.id_role,
+                observer_mapping.c.id_role,
+                func.coalesce(model_observers.c.observer_string, User.nom_complet).label(
+                    "observer_display_name"
+                ),
             )
             .select_from(model_observers)
             .join(
-                observer_string_id_role,
-                observer_string_id_role.c.observer_string == model_observers.c.observer,
+                observer_mapping,
+                observer_mapping.c.observer_string == model_observers.c.observer_string,
+                isouter=True,
             )
-            .where(observer_string_id_role.c.id_role != None)
-            .distinct()
+            .join(User, User.id_role == observer_mapping.c.id_role, isouter=True)
         )
 
-        # --- 4. Insérer les correspondances dans correspondence_model ---
+        aggregated_observers = db.session.execute(
+            sa.select(
+                matched_observers.c[model_id_column],
+                func.string_agg(matched_observers.c.observer_display_name, ", "),
+            )
+            .select_from(matched_observers)
+            .group_by(matched_observers.c[model_id_column])
+        ).all()
+
+        ## Insert into corresponding table
         insert_stmt = sa.insert(correspondence_model).from_select(
             names=correspondence_model_columns,
-            select=matched,
+            select=matched_observers.with_only_columns(
+                [getattr(matched_observers.c, col) for col in correspondence_model_columns]
+            )
+            .where(matched_observers.c.id_role != None)
+            .distinct(),
         )
+
         db.session.execute(insert_stmt)
+        # Correct observers_txt column if non mapped observers still exists
+        for model_id, observers_text in aggregated_observers:
+            db.session.execute(
+                sa.update(model)
+                .where(getattr(model, model_id_column) == model_id)
+                .values({model_user_column: observers_text})
+            )
