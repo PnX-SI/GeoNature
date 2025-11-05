@@ -103,6 +103,19 @@ export class MediaService {
     return this._http.delete(`${this.config.API_ENDPOINT}/gn_commons/media/${idMedia}`);
   }
 
+  validateDeletions(mediasToDelete: Media[]): void {
+    mediasToDelete.forEach((media) => {
+      // si l upload est en cours
+      if (media.pendingRequest) {
+        media.pendingRequest.unsubscribe();
+        media.pendingRequest = null;
+      }
+      if (media.id_media) {
+        this.deleteMedia(media.id_media).subscribe();
+      }
+    });
+  }
+
   getIdTableLocation(schemaDotTable): Observable<number> {
     let idTableLocation = this.idTableLocations[schemaDotTable];
     if (idTableLocation) {
