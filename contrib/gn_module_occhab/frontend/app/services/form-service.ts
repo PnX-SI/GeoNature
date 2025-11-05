@@ -328,7 +328,13 @@ export class OcchabFormService {
   formatStationBeforePost(): StationFeature {
     let formData = Object.assign({}, this.stationForm.value);
     let observers = formData.observers;
-    formData.observers = [observers];
+    if (observers == null) {
+      formData.observers = [];
+    }
+    else {
+      formData.observers = [observers];
+    }
+
     //format cd_hab
     formData.habitats.forEach((element) => {
       if (element.habref) {
