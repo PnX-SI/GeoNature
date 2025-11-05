@@ -66,13 +66,11 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
         # Main query to fetch stats
         query = (
             select(
-                [
                     func.count(distinct(Synthese.id_synthese)).label("observation_count"),
                     func.count(distinct(Synthese.cd_nom)).label("taxa_count"),
                     func.count(distinct(areas_subquery.c.id_area)).label("area_count"),
                     func.min(Synthese.date_min).label("date_min"),
                     func.max(Synthese.date_max).label("date_max"),
-                ]
             )
             .select_from(Synthese)
             .join(observer_subquery, observer_subquery.c.id_synthese == Synthese.id_synthese)
