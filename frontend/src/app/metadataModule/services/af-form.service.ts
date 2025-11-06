@@ -136,7 +136,7 @@ export class AcquisitionFrameworkFormService {
         switchMap((acquisition_framework) => {
           let additionnalFieldsObservable: Observable<any>;
           additionnalFieldsObservable = this.getAdditionalFields(['METADATA_CADRE_ACQUISITION']);
-          return forkJoin(of(acquisition_framework), additionnalFieldsObservable);
+          return forkJoin([of(acquisition_framework), additionnalFieldsObservable]);
         }),
         map(([acquisition_framework, additional_data]) => {
           additional_data.forEach((field) => {
