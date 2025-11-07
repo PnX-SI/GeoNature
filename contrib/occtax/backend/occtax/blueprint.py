@@ -54,6 +54,11 @@ from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 
 from occtax.commands import add_submodule_permissions
 
+import sys
+sys.path.append("/home/geonatureadmin/geonature/contrib/gn_module_validation/backend")
+from gn_module_validation.blueprint import notify_validator_on_data_modified
+from geonature.core.gn_synthese.models import Synthese
+
 blueprint = Blueprint("pr_occtax", __name__, cli_group="occtax")
 blueprint.cli.add_command(add_submodule_permissions)
 
