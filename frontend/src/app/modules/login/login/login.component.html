@@ -73,7 +73,7 @@
                       Se connecter
                     </button>
                   </form>
-                  <hr />
+                  <hr/>
                 </ng-container>
 
                 <ng-container *ngIf="isOtherProviders">
@@ -101,7 +101,7 @@
                   </div>
                 </ng-container>
 
-                <br />
+                <br/>
 
                 <div *ngIf="enable_sign_up">
                   <div class="inscription">
@@ -130,7 +130,7 @@
                     <small style="color: white !important">
                       Veuillez renseigner votre adresse email utilisée lors de votre inscription.
                     </small>
-                    <br />
+                    <br/>
                     <small style="color: white !important">
                       Un message y sera envoyé avec votre identifiant et la possibilité de
                       renouveler votre votre mot de passe.
@@ -152,10 +152,16 @@
                         placeholder="Adresse mail"
                         autofocus
                         required
+                        email
+                        #emailModel="ngModel"
                       />
+                      <div *ngIf="emailModel.invalid && emailModel.touched" class="text-danger">
+                        <small *ngIf="emailModel.errors?.required">L'adresse email est obligatoire.</small>
+                        <small *ngIf="emailModel.errors?.email">Veuillez saisir une adresse email valide.</small>
+                      </div>
                     </div>
                     <button
-                      [disabled]="disableSubmit"
+                      [disabled]="disableSubmit || identifiantForm.invalid"
                       class="btn btn-lg btn-success btn-block text-uppercase"
                       type="submit"
                     >
