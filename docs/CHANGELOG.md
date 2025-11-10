@@ -221,7 +221,7 @@ Si vous les aviez défini, enlevez les paramètres `INSTANCE_BOUNDING_BOX`, `ENA
 - [Import] Correction de la sélection des champs `auto_generate` (#3293, par @Pierre-Narcisi)
 - [Import] Correction du template des notifications d'un import terminé (#3310 par @jacquesfize)
 
-## 2.15.0 - Pavo cristatus 🦚 (2025-12-11)
+## 2.15.0 - Pavo cristatus 🦚 (2024-12-11)
 
 ### ⏩ En bref
 
