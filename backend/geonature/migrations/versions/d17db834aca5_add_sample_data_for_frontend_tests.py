@@ -16,6 +16,8 @@ down_revision = None
 branch_labels = ("cypress-samples-test",)
 depends_on = (
     "1f223c509a80",  # geonature@1f223c509a80 - "add additional_fields support for acquisition frameworks"
+    "a81f74d0a518",  # import-samples@a81f74d0a518 - "insert_import_sample_data"
+    "21f661247023",  # occhab-samples@2984569d5df6 - "insert occhab sample data"
     "2a0ab7644e1c",  # occtax-samples-test@2a0ab7644e1c - "occtax sample test"
 )
 
