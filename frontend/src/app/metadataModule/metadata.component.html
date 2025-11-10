@@ -11,7 +11,7 @@
       <div class="row ml-4 mb-4">
         <button
           *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== 0"
-          [routerLink]="config.METADATA?.ROUTE_ADD_AF"
+          [routerLink]="config.METADATA?.ROUTE_ADD_AF ?? '/metadata/af'"
           class="uppercase mr-1"
           mat-raised-button
           color="primary"
