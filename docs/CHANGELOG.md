@@ -7,7 +7,7 @@
 - [TaxHub] Mise à jour de TaxHub en version [2.2.3](https://github.com/PnX-SI/TaxHub/releases) incluant diverses évolutions et corrections
 - [Général] Affichage des versions des modules et des référentiels dans le bas du menu latéral (#3664 par @Christophe-Ramet)
 - [Général] La version [18](https://inpn.mnhn.fr/telechargement/referentielEspece/taxref/18.0/menu) de Taxref et du référentiel de sensibilité est désormais installée par défaut lors des nouvelles installations (#3680 par @Pierre-Narcisi)
-- [Métadonnées] Ajout d'un champ de saisie d'UUID dans le formulaire de création de cadre d'acquisition, activable avec le paramètre `ENABLE_UUID_EDITION_FIELD`, mais non activé par défaut car il n'est pas toujours souhaité de pouvoir saisir ou modifier les UUID des métadonnées (#3583 par @andriacap, @edelclaux et @jacquesfize)
+- [Métadonnées] Ajout d'un champ de saisie d'UUID dans le formulaire de création de cadre d'acquisition et de jeu de données, activable avec le paramètre `ENABLE_UUID_EDITION_FIELD`, mais non activé par défaut car il n'est pas toujours souhaité de pouvoir saisir ou modifier les UUID des métadonnées (#3583 par @andriacap, @edelclaux et @jacquesfize)
 - [TaxHub] Ajout de la fonctionnalité d'export dans la liste de taxons (#3712 par @amandine-sahl)
 - [TaxHub] Ajout d'une fiche d'info sur TaxHub et Taxref dans un nouvel onglet "Informations" (#3717 par @amandine-sahl)
 
@@ -27,7 +27,7 @@
 
 ### ⚠️ Notes de version
 
-- La version 2.2.3 de TaxHub inclut des corrections de commandes qu'il peut être nécessaire que vous appliquiez depuis le venv de GeoNature (https://github.com/PnX-SI/TaxHub/releases)
+- La version 2.2.3 de TaxHub inclut des corrections de commandes qu'il peut être nécessaire que vous appliquiez depuis le venv de GeoNature (voir les notes de version de TaxHub sur https://github.com/PnX-SI/TaxHub/releases)
 
 ## 2.16.2 (2025-08-11)
 
