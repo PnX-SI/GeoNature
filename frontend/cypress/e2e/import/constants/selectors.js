@@ -48,13 +48,41 @@ export const getSelectorsForStep = (stepName) => {
 
 export const SELECTOR_IMPORT_MODAL_DELETE = '[data-qa=import-modal-delete]';
 export const SELECTOR_IMPORT_MODAL_DELETE_VALIDATE = '[data-qa=modal-delete-validate]';
+
+export const SELECTOR_IMPORT_MODAL_EDIT = '[data-qa=import-modal-edit]';
+export const SELECTOR_IMPORT_MODAL_EDIT_VALIDATE = '[data-qa=modal-edit-validate]';
+
 export const SELECTOR_IMPORT_MODAL_DESTINATION_START = '[data-qa=import-modal-destination-start]';
 export const SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN = '[data-qa=import-fieldmapping-theme-date_min]';
 export const SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS =
   '[data-qa=import-fieldmapping-theme-observers]';
 export const SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE = '[data-qa=import-fieldmapping-theme-nom_cite]';
 export const SELECTOR_IMPORT_FIELDMAPPING_WKT = '[data-qa=import-fieldmapping-theme-WKT]';
+export const SELECTOR_IMPORT_FIELDMAPPING_CD_HAB = '[data-qa=import-fieldmapping-theme-cd_hab]';
 export const SELECTOR_IMPORT_FIELDMAPPING_CD_NOM = '[data-qa=import-fieldmapping-theme-cd_nom]';
+export const SELECTOR_IMPORT_FIELDMAPPING_DATASET =
+  '[data-qa=import-fieldmapping-theme-unique_dataset_id]';
+
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_ALTITUDE_MAX =
+  '[data-qa=import-fieldmapping-theme-constant-altitude_max] input';
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOM_CITE =
+  '[data-qa=import-fieldmapping-theme-constant-nom_cite] input';
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATE_MIN =
+  '[data-qa=import-fieldmapping-theme-constant-date_min] input';
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOMENCLATURE_GEO_OBJECT_NATURE =
+  '[data-qa=import-fieldmapping-theme-constant-id_nomenclature_geo_object_nature] ng-select';
+
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_STATION_NAME =
+  '[data-qa=import-fieldmapping-theme-constant-station_name] textarea';
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOMENCLATURE_DETERMINATION_TYPE =
+  '[data-qa=import-fieldmapping-theme-constant-id_nomenclature_determination_type] ng-select';
+
+export const SELECTOR_IMPORT_FIELDMAPPING_SWITCH_DATASET =
+  '[data-qa=import-fieldmapping-theme-switch-unique_dataset_id]';
+
+export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATASET =
+  '[data-qa=field-dataset-unique_dataset_id] ng-select';
+
 export const SELECTOR_IMPORT_FIELDMAPPING_VALIDATE =
   '[data-qa=import-new-fieldmapping-model-validate]';
 export const SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE =
@@ -70,6 +98,8 @@ export const SELECTOR_IMPORT_FIELDMAPPING_SELECTION_RENAME_OK =
 export const SELECTOR_IMPORT_FIELDMAPPING_SELECTION_RENAME_TEXT =
   '[data-qa=import-fieldmapping-selection-rename-text]';
 export const SELECTOR_IMPORT_FIELDMAPPING_MODAL = '[data-qa=import-fieldmapping-saving-modal]';
+export const SELECTOR_IMPORT_FIELDMAPPING_MODAL_CANCEL =
+  '[data-qa=import-fieldmapping-saving-modal-cancel]';
 export const SELECTOR_IMPORT_FIELDMAPPING_MODAL_CLOSE =
   '[data-qa=import-fieldmapping-saving-modal-close]';
 export const SELECTOR_IMPORT_FIELDMAPPING_MODAL_OK =
@@ -88,7 +118,6 @@ export const SELECTOR_IMPORT_LIST_TOOLBAR_DESTINATIONS =
 export const SELECTOR_IMPORT_LIST_TOOLBAR_SEARCH = '[data-qa=import-list-toolbar-search]';
 export const SELECTOR_DESTINATIONS = '[data-qa=destinations]';
 export const SELECTOR_IMPORT = '[data-qa=gn-sidenav-link-IMPORT]';
-export const SELECTOR_IMPORT_UPLOAD_DATASET = '[data-qa=import-new-upload-datasets]';
 export const SELECTOR_IMPORT_UPLOAD_FILE = '[data-qa=import-new-upload-file]';
 export const SELECTOR_IMPORT_UPLOAD_VALIDATE = '[data-qa=import-new-upload-validate]';
 export const SELECTOR_IMPORT_CONTENTMAPPING_STEP_BUTTON =

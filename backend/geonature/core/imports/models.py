@@ -1,7 +1,7 @@
 from datetime import datetime
 from collections.abc import Mapping
 import re
-from typing import Any, Iterable, List, Optional
+from typing import Any, Iterable, List, Optional, Set
 from packaging import version
 
 from flask import g
@@ -29,7 +29,6 @@ from geonature.utils.env import db
 from geonature.utils.celery import celery_app
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import TDatasets
 from pypnnomenclature.models import BibNomenclaturesTypes
 from pypnusershub.db.models import User
 
@@ -116,6 +115,7 @@ class Destination(db.Model):
     code = db.Column(db.String(64), unique=True)
     label = db.Column(db.String(128))
     table_name = db.Column(db.String(64))
+    active = sa.Column("active", sa.Boolean, server_default=sa.true())
 
     module = relationship(TModules, backref="destination")
     entities = relationship("Entity", back_populates="destination")
@@ -139,8 +139,13 @@ class Destination(db.Model):
 
     @property
     def actions(self):
+        # TODO Find a proper way to type the return of the function
+        # Imported here to avoid circular dependencies
+        from geonature.core.imports.actions import ImportActions
+
         try:
-            return self.module.__import_actions__
+            _actions: ImportActions = self.module.__import_actions__
+            return _actions
         except AttributeError as exc:
             """
             This error is likely to occurs when you have some imports to a destination
@@ -174,7 +179,9 @@ class Destination(db.Model):
             user = g.current_user
 
         # Retrieve all destinations
-        all_destination = db.session.scalars(sa.select(Destination)).all()
+        all_destination = db.session.scalars(
+            sa.select(Destination).where(Destination.active == True)
+        ).all()
         return [dest for dest in all_destination if dest.has_instance_permission(user, action_code)]
 
     @qfilter
@@ -214,9 +221,16 @@ class Destination(db.Model):
         if not user:
             user = g.current_user
 
-        max_scope = get_scopes_by_action(id_role=user.id_role, module_code=self.module.module_code)[
-            action_code
-        ]
+        scopes = [0]
+        for entity in self.entities:
+            scopes.append(
+                get_scopes_by_action(
+                    id_role=user.id_role,
+                    module_code=self.module.module_code,
+                    object_code=entity.object.code_object,
+                )[action_code]
+            )
+        max_scope = max(scopes)
         return max_scope > 0
 
     def __repr__(self):
@@ -274,12 +288,18 @@ class Entity(db.Model):
     id_unique_column = db.Column(
         db.Integer, db.ForeignKey("gn_imports.bib_fields.id_field"), primary_key=True
     )
+    id_uuid_column = db.Column(
+        db.Integer, db.ForeignKey("gn_imports.bib_fields.id_field"), primary_key=True
+    )
     id_parent = db.Column(db.Integer, ForeignKey("gn_imports.bib_entities.id_entity"))
 
     parent = relationship("Entity", back_populates="childs", remote_side=[id_entity])
     childs = relationship("Entity", back_populates="parent")
     fields = relationship("EntityField", back_populates="entity")
-    unique_column = relationship("BibFields")
+    unique_column = relationship("BibFields", foreign_keys=[id_unique_column])
+    uuid_column = relationship("BibFields", foreign_keys=[id_uuid_column])
+    id_object = db.Column(db.Integer, db.ForeignKey("gn_permissions.t_objects.id_object"))
+    object = relationship("PermObject")
 
     def get_destination_table(self):
         return Table(
@@ -289,6 +309,9 @@ class Entity(db.Model):
             autoload_with=db.session.connection(),
             schema=self.destination_table_schema,
         )
+
+    def __repr__(self):
+        return f"{self.label}, {self.code}, {self.validity_column}"
 
 
 class InstancePermissionMixin:
@@ -319,8 +342,6 @@ cor_role_import = db.Table(
 @serializable(
     fields=[
         "authors.nom_complet",
-        "dataset.dataset_name",
-        "dataset.active",
         "destination.code",
         "destination.label",
         "destination.statistics_labels",
@@ -352,7 +373,6 @@ class TImports(InstancePermissionMixin, db.Model):
     detected_encoding = db.Column(db.Unicode, nullable=True)
     # import_table = db.Column(db.Unicode, nullable=True)
     full_file_name = db.Column(db.Unicode, nullable=True)
-    id_dataset = db.Column(db.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), nullable=True)
     date_create_import = db.Column(db.DateTime, default=datetime.now)
     date_update_import = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     date_end_import = db.Column(db.DateTime, nullable=True)
@@ -372,7 +392,6 @@ class TImports(InstancePermissionMixin, db.Model):
     )
     loaded = db.Column(db.Boolean, nullable=False, default=False)
     processed = db.Column(db.Boolean, nullable=False, default=False)
-    dataset = db.relationship(TDatasets, lazy="joined")
     source_file = deferred(db.Column(db.LargeBinary))
     columns = db.Column(ARRAY(db.Unicode))
     # keys are target names, values are source names
@@ -482,6 +501,7 @@ class BibFields(db.Model):
     fr_label = db.Column(db.Unicode, nullable=False)
     eng_label = db.Column(db.Unicode, nullable=True)
     type_field = db.Column(db.Unicode, nullable=True)
+    type_field_params = db.Column(MutableDict.as_mutable(JSON))
     mandatory = db.Column(db.Boolean, nullable=False)
     autogenerated = db.Column(db.Boolean, nullable=False)
     mnemonique = db.Column(db.Unicode, db.ForeignKey(BibNomenclaturesTypes.mnemonique))
@@ -501,8 +521,8 @@ class BibFields(db.Model):
     def dest_column(self):
         return self.dest_field if self.dest_field else self.source_field
 
-    def __str__(self):
-        return self.fr_label
+    def __repr__(self):
+        return f"{self.name_field}"
 
 
 cor_role_mapping = db.Table(
@@ -611,7 +631,7 @@ def optional_conditions_to_jsonschema(name_field: str, optional_conditions: Iter
                 "if": {
                     "not": {
                         "properties": {
-                            field_opt: {"type": "string"} for field_opt in optional_conditions
+                            field_opt: {"type": "object"} for field_opt in optional_conditions
                         }
                     }
                 },
@@ -710,13 +730,21 @@ class FieldMapping(MappingTemplate):
                     sa.or_(
                         ~BibFields.entities.any(EntityField.entity != entity),
                         BibFields.name_field == entity.unique_column.name_field,
+                        BibFields.name_field.ilike("uuid%"),
                     ),
                     BibFields.name_field.in_(field_mapping_json.keys()),
                 ),
             )
+            # no field --> nothing to check. next entity !
+            if not fields_of_ent:
+                continue
 
+            uuid_field = set([entity.uuid_column.name_field])
+            uuid_parent = set([entity.parent.uuid_column.name_field]) if entity.parent else None
+            id_fields = set([entity.unique_column.name_field])
+            name_fields = set([f.name_field for f in fields_of_ent])
             # if the only column corresponds to id_columns, we only do the validation on the latter
-            if [entity.unique_column.name_field] == [f.name_field for f in fields_of_ent]:
+            if id_fields == name_fields or uuid_field == name_fields or uuid_parent == name_fields:
                 fields.extend(fields_of_ent)
             else:
                 # if other columns than the id_columns are used, we need to check every fields of this entity
@@ -736,17 +764,35 @@ class FieldMapping(MappingTemplate):
             "type": "object",
             "properties": {
                 field.name_field: {
-                    "type": (
-                        "boolean" if field.autogenerated else ("array" if field.multi else "string")
-                    ),
+                    "type": "object",
+                    "properties": {
+                        "column_src": {
+                            "type": ("array" if field.multi else "string"),
+                        },
+                        "constant_value": {
+                            "oneOf": [
+                                {"type": "boolean"},
+                                {"type": "number"},
+                                {"type": "string"},
+                                {"type": "array"},
+                            ]
+                        },
+                    },
+                    "required": [],
+                    "additionalProperties": False,
+                    "oneOf": [{"required": ["column_src"]}, {"required": ["constant_value"]}],
                 }
                 for field in fields
             },
-            "required": [
-                field.name_field
-                for field in fields
-                if field.mandatory and not field.optional_conditions
-            ],
+            "required": list(
+                set(
+                    [
+                        field.name_field
+                        for field in fields
+                        if field.mandatory and not field.optional_conditions
+                    ]
+                )
+            ),
             "dependentRequired": {
                 field.name_field: field.mandatory_conditions
                 for field in fields
@@ -757,11 +803,11 @@ class FieldMapping(MappingTemplate):
         optional_conditions = [
             optional_conditions_to_jsonschema(field.name_field, field.optional_conditions)
             for field in fields
-            if field.optional_conditions
+            if type(field.optional_conditions) == list
         ]
+
         if optional_conditions:
             schema["allOf"] = optional_conditions
-
         try:
             validate_json(field_mapping_json, schema)
         except JSONValidationError as e:

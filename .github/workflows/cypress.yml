@@ -5,13 +5,14 @@ on:
       - master
       - hotfixes
       - develop
-      - feat/import
+      - feat/import-monitorings
+      - fix-cypress-monitorings
   pull_request:
     branches:
       - master
       - hotfixes
       - develop
-      - feat/import
+      - feat/import-monitorings
 
 jobs:
   mount_app_and_run_cypress:
@@ -88,7 +89,7 @@ jobs:
           cp ./config/settings.ini.sample ./config/settings.ini
           ./install/05_install_frontend.sh --ci
         env:
-          GEONATURE_CONFIG_FILE: '${{ github.workspace }}/config/test_config.toml'
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Install core modules
         run: |
           geonature install-gn-module contrib/occtax OCCTAX --build=false --upgrade-db=false
@@ -99,6 +100,7 @@ jobs:
           geonature db upgrade import-samples@head
           geonature db autoupgrade
           geonature permissions supergrant --group --nom "Grp_admin" --yes
+          geonature db autoupgrade
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
@@ -109,7 +111,7 @@ jobs:
         run: celery -A geonature.celery_app:app worker &
         working-directory: ./backend/geonature/
         env:
-          GEONATURE_CONFIG_FILE: '${{ github.workspace }}/config/test_config.toml'
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:

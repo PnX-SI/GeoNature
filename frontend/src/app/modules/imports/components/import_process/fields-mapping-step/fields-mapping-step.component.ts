@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ImportDataService } from '../../../services/data.service';
 import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
-import { FieldMappingModalComponent } from './field-mapping-modal/field-mapping-modal.component';
 import { Cruved, toBooleanCruved } from '@geonature/modules/imports/models/cruved.model';
 import { Step } from '@geonature/modules/imports/models/enums.model';
 import { ActivatedRoute } from '@angular/router';
 import { ImportProcessService } from '../import-process.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { concatMap, finalize, first, flatMap, skip, take } from 'rxjs/operators';
-import { Observable, Subscription, of } from 'rxjs';
+import { concatMap, flatMap, skip, take } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Import } from '@geonature/modules/imports/models/import.model';
 import {
@@ -18,7 +17,7 @@ import {
 import { ConfigService } from '@geonature/services/config.service';
 import { FormControl } from '@angular/forms';
 import { AuthService } from '@geonature/components/auth/auth.service';
-
+import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
 @Component({
   selector: 'pnx-fields-mapping-step',
   templateUrl: './fields-mapping-step.component.html',
@@ -26,6 +25,7 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 })
 export class FieldsMappingStepComponent implements OnInit {
   @ViewChild('saveMappingModal') saveMappingModal;
+  @ViewChild('editModal') editModal: TemplateRef<any>;
   public targetFields;
   public sourceFields: Array<string> = [];
   public isReady: boolean = false;
@@ -34,7 +34,7 @@ export class FieldsMappingStepComponent implements OnInit {
   public updateAvailable: boolean = false;
   public step: Step;
   public modalCreateMappingForm = new FormControl('');
-
+  public modalData: ModalData;
   constructor(
     public _fieldMappingService: FieldMappingService,
     private _route: ActivatedRoute,
@@ -98,7 +98,8 @@ export class FieldsMappingStepComponent implements OnInit {
     }
 
     // Mapping stored data
-    let mappingValue = this._fieldMappingService.currentFieldMapping.value;
+    const fieldmapping = this._fieldMappingService.currentFieldMapping.value;
+
     // is mapping update right for the current user is at admin level
     const hasAdminUpdateMappingRight =
       this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved.U > 2;
@@ -108,26 +109,25 @@ export class FieldsMappingStepComponent implements OnInit {
     const currentUser = this._authService.getCurrentUser();
 
     if (this._fieldMappingService.mappingFormGroup.dirty && this.cruved.C) {
-      if (mappingValue) {
-        const intersectMappingOwnerUser = mappingValue['owners'].filter((x) =>
-          x.identifiant == currentUser.user_login ? mappingValue['owners'] : false
+      if (fieldmapping) {
+        const intersectMappingOwnerUser = fieldmapping['owners'].filter((x) =>
+          x.identifiant == currentUser.user_login ? fieldmapping['owners'] : false
         );
 
         if (
-          mappingValue.public &&
+          fieldmapping.public &&
           (hasAdminUpdateMappingRight ||
             (hasOwnMappingUpdateRight && intersectMappingOwnerUser.length > 0))
         ) {
           this.updateAvailable = true;
-          this.modalCreateMappingForm.setValue(mappingValue.label);
-        } else if (!mappingValue.public) {
+          this.modalCreateMappingForm.setValue(fieldmapping.label);
+        } else if (!fieldmapping.public) {
           this.updateAvailable = true;
-          this.modalCreateMappingForm.setValue(mappingValue.label);
+          this.modalCreateMappingForm.setValue(fieldmapping.label);
         } else {
           this.updateAvailable = false;
         }
       } else {
-        console.log(4);
         this.updateAvailable = false;
       }
       this._modalService.open(this.saveMappingModal, { size: 'lg' });
@@ -137,12 +137,15 @@ export class FieldsMappingStepComponent implements OnInit {
   }
 
   getFieldMappingValues(): FieldMappingValues {
-    let values: FieldMappingValues = {};
-    for (let [key, value] of Object.entries(this._fieldMappingService.mappingFormGroup.value)) {
-      if (value != null) {
-        values[key] = Array.isArray(value) ? value : (value as string);
-      }
-    }
+    const values: FieldMappingValues = {};
+    this._fieldMappingService
+      .flattenTargetFieldData(this.targetFields)
+      .forEach(({ name_field }) => {
+        const formValue = this._fieldMappingService.mappingFormGroup.get(name_field).value;
+        if (formValue) {
+          values[name_field] = formValue;
+        }
+      });
     return values;
   }
 
@@ -262,5 +265,37 @@ export class FieldsMappingStepComponent implements OnInit {
 
   getUnmappedFields() {
     return this._fieldMappingService.getUnmappedFields();
+  }
+
+  checkBeforeNextStep() {
+    if (this.importData?.fieldmapping) {
+      this.openModal(this.editModal);
+      return;
+    } else {
+      this.onNextStep();
+    }
+  }
+
+  openModal(editModal: TemplateRef<any>) {
+    this.modalData = {
+      title: 'Modification',
+      bodyMessage:
+        "Des modifications ont été apportées à la correspondances des champs. L'ancienne correspondance des champs sera supprimée",
+      additionalMessage: 'Êtes-vous sûr de continuer ?',
+      cancelButtonText: 'Annuler',
+      confirmButtonText: 'Confirmer',
+      confirmButtonColor: 'warn',
+      headerDataQa: 'import-modal-edit',
+      confirmButtonDataQa: 'modal-edit-validate',
+    };
+    this._modalService.open(editModal);
+  }
+
+  handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
+    if (event.confirmed) {
+      if (event.actionType === 'edit') {
+        this.onNextStep();
+      }
+    }
   }
 }

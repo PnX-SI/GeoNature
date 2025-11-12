@@ -1,4 +1,4 @@
-<form>
+<form *ngIf="userFieldMappings.length; else placeholder">
   <fieldset>
     <div
       *ngIf="userFieldMappings.length > 0"
@@ -99,7 +99,9 @@
     </div>
   </fieldset>
 </form>
-
+<ng-template #placeholder>
+  <div class="text text-muted">Aucune correspondance des champs prédéfinie n'a été trouvée.</div>
+</ng-template>
 <!-- MODALS -->
 
 <!-- DELETE MODAL -->

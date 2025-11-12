@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ImportDataService } from '../../../services/data.service';
@@ -8,6 +8,10 @@ import { Step } from '../../../models/enums.model';
 import { Destination, Import } from '../../../models/import.model';
 import { ImportProcessService } from '../import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { NgbModal } from '@librairies/@ng-bootstrap/ng-bootstrap';
+import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
+import { FieldMappingValues } from '@geonature/modules/imports/models/mapping.model';
+import { FieldMappingPresetUtils } from '@geonature/modules/imports/utils/fieldmapping-preset-utils';
 
 @Component({
   selector: 'upload-file-step',
@@ -15,6 +19,7 @@ import { ConfigService } from '@geonature/services/config.service';
   templateUrl: 'upload-file-step.component.html',
 })
 export class UploadFileStepComponent implements OnInit {
+  @ViewChild('editModal') editModal!: TemplateRef<any>;
   public step: Step;
   public importData: Import;
   public uploadForm: FormGroup;
@@ -27,6 +32,8 @@ export class UploadFileStepComponent implements OnInit {
   public maxFileNameLength: number = 255;
   public acceptedExtensions: string = null;
   public destination: Destination = null;
+  public modalData: ModalData;
+  public paramsFieldMapping: FieldMappingValues;
 
   constructor(
     private ds: ImportDataService,
@@ -34,7 +41,8 @@ export class UploadFileStepComponent implements OnInit {
     private fb: FormBuilder,
     private importProcessService: ImportProcessService,
     private route: ActivatedRoute,
-    public config: ConfigService
+    public config: ConfigService,
+    private modal: NgbModal
   ) {
     this.acceptedExtensions = this.config.IMPORT.ALLOWED_EXTENSIONS.toString();
     this.maxFileSize = this.config.IMPORT.MAX_FILE_SIZE;
@@ -42,32 +50,34 @@ export class UploadFileStepComponent implements OnInit {
     this.uploadForm = this.fb.group({
       file: [null, Validators.required],
       fileName: [null, [Validators.required, Validators.maxLength(this.maxFileNameLength)]],
-      dataset: [null, Validators.required],
     });
   }
 
   ngOnInit() {
-    this.setupDatasetSelect();
-    this.step = this.route.snapshot.data.step;
-    this.importData = this.importProcessService.getImportData();
-
-    if (this.importData) {
-      this.uploadForm.patchValue({ dataset: this.importData.id_dataset });
-      this.fileName = this.importData.full_file_name;
-    } else {
-      const idDatasetQueryParams = this.route.snapshot.queryParamMap.get('datasetId');
-      if (idDatasetQueryParams) {
-        this.uploadForm.patchValue({ dataset: parseInt(idDatasetQueryParams) });
-      }
-    }
+    this.processRouteInformations();
   }
 
-  setupDatasetSelect() {
-    this.route.parent.params.subscribe((params) => {
-      this.ds.getDestination(params['destination']).subscribe((dest) => {
-        this.destination = dest;
+  processRouteInformations() {
+    // Process destination
+    this.route.parent?.params.subscribe((params) => {
+      this.ds.getDestination(params['destination']).subscribe((destination) => {
+        this.destination = destination;
       });
     });
+
+    // Process fieldmapping preset in query params
+    this.route.parent?.queryParams.subscribe((queryParams) => {
+      this.paramsFieldMapping = Object.keys(queryParams).length
+        ? FieldMappingPresetUtils.formatQueryParamsToFieldMapping(queryParams)
+        : null;
+    });
+
+    this.step = this.route.snapshot.data.step;
+
+    this.importData = this.importProcessService.getImportData();
+    if (this.importData) {
+      this.fileName = this.importData.full_file_name;
+    }
   }
 
   isNextStepAvailable() {
@@ -97,13 +107,28 @@ export class UploadFileStepComponent implements OnInit {
   }
   onSaveData(): Observable<Import> {
     if (this.importData) {
-      return this.ds.updateFile(this.importData.id_import, this.file);
+      return this.ds.updateFile(this.importData.id_import, this.file, this.paramsFieldMapping);
     } else {
-      return this.ds.addFile(this.uploadForm.get('dataset').value, this.file);
+      return this.ds.addFile(this.file, this.paramsFieldMapping);
     }
   }
+
+  get isFileModified(): boolean {
+    return !this.uploadForm.pristine;
+  }
+
+  get isFieldMappingPresetModified(): boolean {
+    return !(
+      this.importData &&
+      this.paramsFieldMapping &&
+      this.importData.fieldmapping != this.paramsFieldMapping
+    );
+  }
+
   onNextStep() {
-    if (this.uploadForm.pristine) {
+    // At this stage, both form and preset can be modified
+
+    if (!this.isFileModified && !this.isFieldMappingPresetModified) {
       this.importProcessService.navigateToNextStep(this.step);
       return;
     }
@@ -127,5 +152,36 @@ export class UploadFileStepComponent implements OnInit {
         }
       }
     );
+  }
+
+  checkBeforeNextStep() {
+    if (this.importData?.fieldmapping) {
+      this.openModal(this.editModal);
+      return;
+    } else {
+      this.onNextStep();
+    }
+  }
+
+  openModal(editModal: TemplateRef<any>) {
+    this.modalData = {
+      title: 'Modification',
+      bodyMessage: 'Le fichier existant en base de données sera supprimé !',
+      additionalMessage: 'Êtes-vous sûr de continuer ?',
+      cancelButtonText: 'Annuler',
+      confirmButtonText: 'Confirmer',
+      confirmButtonColor: 'warn',
+      headerDataQa: 'import-modal-edit',
+      confirmButtonDataQa: 'modal-edit-validate',
+    };
+    this.modal.open(editModal);
+  }
+
+  handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
+    if (event.confirmed) {
+      if (event.actionType === 'edit') {
+        this.onNextStep();
+      }
+    }
   }
 }

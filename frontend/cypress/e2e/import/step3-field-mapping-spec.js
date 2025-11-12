@@ -7,6 +7,8 @@ import {
   SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE,
   SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE_OK,
   SELECTOR_IMPORT_FIELDMAPPING_CD_NOM,
+  SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATASET,
+  SELECTOR_IMPORT_FIELDMAPPING_DATASET,
   SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN,
   SELECTOR_IMPORT_FIELDMAPPING_MODAL,
   SELECTOR_IMPORT_FIELDMAPPING_MODAL_CLOSE,
@@ -19,6 +21,7 @@ import {
   SELECTOR_IMPORT_FIELDMAPPING_SELECTION_RENAME,
   SELECTOR_IMPORT_FIELDMAPPING_SELECTION_RENAME_OK,
   SELECTOR_IMPORT_FIELDMAPPING_SELECTION_RENAME_TEXT,
+  SELECTOR_IMPORT_FIELDMAPPING_SWITCH_DATASET,
   SELECTOR_IMPORT_FIELDMAPPING_VALIDATE,
   SELECTOR_IMPORT_FIELDMAPPING_WKT,
 } from './constants/selectors';
@@ -76,25 +79,14 @@ function fillTheFormRaw() {
   selectField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
   selectField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
   selectField(SELECTOR_IMPORT_FIELDMAPPING_CD_NOM, 'date_debut');
+  selectField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_debut');
 }
 
 function fillTheForm() {
   // Fill in the form with mandatory field
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist');
 
-  selectField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_debut');
-  cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('not.be.enabled');
-
-  selectField(SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS, 'date_debut');
-  cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('not.be.enabled');
-  selectField;
-  selectField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
-  cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('not.be.enabled');
-
-  selectField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
-  cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('not.be.enabled');
-
-  selectField(SELECTOR_IMPORT_FIELDMAPPING_CD_NOM, 'date_debut');
+  fillTheFormRaw();
 
   // Every mandatory field is filled: should be able to validate
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('be.enabled').click();
@@ -113,20 +105,19 @@ function fillTheForm() {
   cy.wait(TIMEOUT_WAIT);
 }
 
-function runTheProcess(user) {
+function runTheProcess() {
   cy.visitImport();
   cy.startImport();
   cy.pickDestination();
-  cy.pickDataset(user.dataset);
   cy.loadImportFile(FILES.synthese.valid.fixture);
   cy.configureImportFile();
 }
 
-function restartTheProcess(user) {
+function restartTheProcess() {
   cy.wait(TIMEOUT_WAIT);
   cy.deleteCurrentImport();
   cy.wait(TIMEOUT_WAIT);
-  runTheProcess(user);
+  runTheProcess();
 }
 
 function checkThatMappingCanBeSaved() {
@@ -169,8 +160,18 @@ describe('Import - Field mapping step', () => {
     beforeEach(() => {
       cy.viewport(VIEWPORT.width, VIEWPORT.height);
       cy.geonatureLogin(USER_ADMIN.login.username, USER_ADMIN.login.password);
-      runTheProcess(USER_ADMIN);
+      runTheProcess();
       cy.get('[data-qa="import-new-fieldmapping-form"]').should('exist');
+    });
+
+    it('Should access jdd only filtered based on permissions  ', () => {
+      cy.get(SELECTOR_IMPORT_FIELDMAPPING_SWITCH_DATASET).click();
+      cy.get(SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATASET)
+        .click()
+        .get('.ng-option')
+        .should('have.length', 2)
+        .should('contain', USER_ADMIN.dataset)
+        .should('contain', USER_AGENT.dataset);
     });
 
     it('Should be able to create a new field mapping, rename it, and delete it', () => {
@@ -253,7 +254,7 @@ describe('Import - Field mapping step', () => {
       cy.deleteCurrentImport();
       cy.geonatureLogout();
       cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);
-      runTheProcess(USER_AGENT);
+      runTheProcess();
 
       // Check that field mapping does not exist
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_SELECTION)
@@ -268,7 +269,7 @@ describe('Import - Field mapping step', () => {
       cy.deleteCurrentImport();
       cy.geonatureLogout();
       cy.geonatureLogin(USER_ADMIN.login.username, USER_ADMIN.login.password);
-      runTheProcess(USER_ADMIN);
+      runTheProcess();
 
       // Check that field mapping does exist
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_SELECTION)
@@ -289,7 +290,7 @@ describe('Import - Field mapping step', () => {
       cy.deleteCurrentImport();
       cy.geonatureLogout();
       cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);
-      runTheProcess(USER_AGENT);
+      runTheProcess();
 
       // Create a mapping
       fillTheForm();
@@ -298,7 +299,7 @@ describe('Import - Field mapping step', () => {
       cy.deleteCurrentImport();
       cy.geonatureLogout();
       cy.geonatureLogin(USER_ADMIN.login.username, USER_ADMIN.login.password);
-      runTheProcess(USER_ADMIN);
+      runTheProcess();
 
       // Check that field mapping does exist
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_SELECTION)
@@ -317,7 +318,7 @@ describe('Import - Field mapping step', () => {
     it('Should be able to modifiy the default mapping if user got rights. A save to alternative should be offered to the user.', () => {
       // Mapping Synthese
       selectMapping(DEFAULT_FIELDMAPPINGS[0]);
-      selectField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_fin');
+      selectField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_fin');
       checkThatMappingCanBeSaved();
 
       restartTheProcess(USER_ADMIN);
@@ -328,9 +329,9 @@ describe('Import - Field mapping step', () => {
     it('Should not be able to modifiy the default mapping if user does not got rights', () => {
       cy.geonatureLogout();
       cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);
-      runTheProcess(USER_AGENT);
+      runTheProcess();
       selectMapping(DEFAULT_FIELDMAPPINGS[0]);
-      selectField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_fin');
+      selectField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_fin');
       checkThatMappingCanNotBeSaved();
     });
 

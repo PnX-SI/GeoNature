@@ -5,6 +5,7 @@ jsonschema_definitions = {
             "label": {
                 "type": "string",
             },
+            "object": {"type": "object"},
         },
         "required": [
             "label",
@@ -36,7 +37,16 @@ jsonschema_definitions = {
                 ],
             },
             "type_field": {
-                "type": "string",
+                "type": [
+                    "string",
+                    "null",
+                ],
+            },
+            "type_field_params": {
+                "type": [
+                    "object",
+                    "null",
+                ],
             },
             "synthese_field": {
                 "type": "boolean",
@@ -200,7 +210,6 @@ jsonschema_definitions = {
             "detected_encoding": {"type": ["string", "null"]},
             # "import_table": {"type": ["string", "null"]},
             "full_file_name": {"type": ["string", "null"]},
-            "id_dataset": {"type": ["integer", "null"]},
             "date_create_import": {"type": "string"},
             "date_update_import": {"type": "string"},
             "source_count": {"type": ["integer", "null"]},
@@ -236,7 +245,6 @@ jsonschema_definitions = {
             "detected_encoding",
             # "import_table",
             "full_file_name",
-            "id_dataset",
             "date_create_import",
             "date_update_import",
             "source_count",
@@ -343,6 +351,12 @@ jsonschema_definitions = {
                 "type": ["integer", "null"],
             },
             "id_unique_column": {
+                "type": ["integer", "null"],
+            },
+            "id_uuid_column": {
+                "type": ["integer", "null"],
+            },
+            "id_object": {
                 "type": ["integer", "null"],
             },
         },

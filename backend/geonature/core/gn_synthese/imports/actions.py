@@ -57,6 +57,10 @@ from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
 
 
+def get_boolean_value(bib_field: BibFields, default_value: bool) -> bool:
+    return bib_field.get("constant_value", default_value)
+
+
 class SyntheseImportActions(ImportActions):
 
     @staticmethod
@@ -67,7 +71,7 @@ class SyntheseImportActions(ImportActions):
         ]
 
     @staticmethod
-    def preprocess_transient_data(imprt: TImports, df) -> set:
+    def preprocess_transient_data(imprt: TImports, df) -> None:
         pass
 
     @staticmethod
@@ -88,7 +92,8 @@ class SyntheseImportActions(ImportActions):
         selected_fields = {
             field_name: fields[field_name]
             for field_name, source_field in imprt.fieldmapping.items()
-            if source_field in imprt.columns
+            if source_field.get("column_src", None) in imprt.columns
+            or source_field.get("constant_value", None) is not None
         }
         init_rows_validity(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
@@ -218,7 +223,15 @@ class SyntheseImportActions(ImportActions):
         do_nomenclatures_mapping(
             imprt,
             entity,
-            selected_fields,
+            {
+                field_name: fields[field_name]
+                for field_name, mapping in imprt.fieldmapping.items()
+                if field_name in fields
+                and (
+                    mapping.get("column_src", None) in imprt.columns
+                    or mapping.get("constant_value") is not None
+                )
+            },
             fill_with_defaults=current_app.config["IMPORT"][
                 "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
             ],
@@ -238,7 +251,6 @@ class SyntheseImportActions(ImportActions):
                 entity,
                 fields["id_nomenclature_blurring"],
                 fields["id_dataset"],
-                fields["unique_dataset_id"],
             )
         if current_app.config["IMPORT"]["CHECK_REF_BIBLIO_LITTERATURE"]:
             check_nomenclature_source_status(
@@ -257,7 +269,11 @@ class SyntheseImportActions(ImportActions):
         if "entity_source_pk_value" in selected_fields:
             check_duplicate_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
 
-        if imprt.fieldmapping.get("altitudes_generate", False):
+        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
+        if altitudes_generate_field and get_boolean_value(
+            altitudes_generate_field,
+            False,
+        ):
             generate_altitudes(
                 imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
             )
@@ -268,17 +284,21 @@ class SyntheseImportActions(ImportActions):
         if "unique_id_sinp" in selected_fields:
             check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp"])
             if current_app.config["IMPORT"]["PER_DATASET_UUID_CHECK"]:
-                whereclause = Synthese.id_dataset == imprt.id_dataset
+                check_existing_uuid(
+                    imprt,
+                    entity,
+                    selected_fields["unique_id_sinp"],
+                    id_dataset_field=fields["id_dataset"],
+                )
             else:
-                whereclause = sa.true()
-            check_existing_uuid(
-                imprt,
-                entity,
-                selected_fields["unique_id_sinp"],
-                whereclause=whereclause,
-            )
-        if imprt.fieldmapping.get(
-            "unique_id_sinp_generate",
+                check_existing_uuid(
+                    imprt,
+                    entity,
+                    selected_fields["unique_id_sinp"],
+                )
+        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
+        if unique_id_sinp_generate_field and get_boolean_value(
+            unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             generate_missing_uuid(imprt, entity, fields["unique_id_sinp"])
@@ -326,34 +346,43 @@ class SyntheseImportActions(ImportActions):
             fields["the_geom_local"],
             fields["the_geom_point"],
             fields["id_area_attachment"],  # XXX sure?
+            fields["id_dataset"],
         }
-        if imprt.fieldmapping.get(
-            "unique_id_sinp_generate",
+
+        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
+        if unique_id_sinp_generate_field and get_boolean_value(
+            unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             insert_fields |= {fields["unique_id_sinp"]}
-        if imprt.fieldmapping.get("altitudes_generate", False):
+
+        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
+        if altitudes_generate_field and get_boolean_value(
+            altitudes_generate_field,
+            False,
+        ):
             insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
 
         for field_name, source_field in imprt.fieldmapping.items():
             if field_name not in fields:  # not a destination field
                 continue
             field = fields[field_name]
+            column_src = source_field.get("column_src", None)
             if field.multi:
-                if not set(source_field).isdisjoint(imprt.columns):
+                if not set(column_src).isdisjoint(imprt.columns):
                     insert_fields |= {field}
             else:
-                if source_field in imprt.columns:
+                if (
+                    column_src in imprt.columns
+                    or source_field.get("constant_value", None) is not None
+                ):
                     insert_fields |= {field}
-
-        insert_fields -= {fields["unique_dataset_id"]}  # Column only used for filling `id_dataset`
 
         select_stmt = (
             sa.select(
                 *[transient_table.c[field.dest_field] for field in insert_fields],
                 sa.literal(source.id_source),
                 sa.literal(source.module.id_module),
-                sa.literal(imprt.id_dataset),
                 sa.literal(imprt.id_import),
                 sa.literal("I"),
             )
@@ -363,7 +392,6 @@ class SyntheseImportActions(ImportActions):
         names = [field.dest_field for field in insert_fields] + [
             "id_source",
             "id_module",
-            "id_dataset",
             "id_import",
             "last_action",
         ]
@@ -398,14 +426,14 @@ class SyntheseImportActions(ImportActions):
         }
 
     @staticmethod
-    def remove_data_from_destination(imprt: TImports) -> None:
-        with start_sentry_child(op="task", description="clean imported data"):
-            db.session.execute(sa.delete(Synthese).where(Synthese.id_import == imprt.id_import))
-
-    @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:
         return taxon_distribution_plot(imprt)
 
     @staticmethod
     def compute_bounding_box(imprt: TImports):
-        return compute_bounding_box(imprt, "observation", "the_geom_4326")
+        return compute_bounding_box(
+            imprt=imprt,
+            geom_entity_code="observation",
+            geom_4326_field_name__transient="the_geom_4326",
+            geom_4326_field_name__destination="the_geom_4326",
+        )

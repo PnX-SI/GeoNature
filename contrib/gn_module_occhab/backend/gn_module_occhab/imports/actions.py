@@ -7,6 +7,8 @@ from geonature.core.imports.checks.sql.extra import (
     disable_duplicated_rows,
     generate_missing_uuid_for_id_origin,
     generate_missing_uuid,
+    generate_entity_id,
+    set_parent_id_from_line_no,
 )
 from geonature.core.imports.checks.sql.utils import report_erroneous_rows, print_transient_table
 import sqlalchemy as sa
@@ -59,8 +61,6 @@ from geonature.core.imports.checks.sql.core import (
 )
 from .checks import (
     check_existing_station_permissions,
-    generate_id_station,
-    set_id_station_from_line_no,
 )
 from bokeh.embed.standalone import StandaloneEmbedJson
 
@@ -80,8 +80,7 @@ class OcchabImportActions(ImportActions):
         ]
 
     @staticmethod
-    def preprocess_transient_data(imprt: TImports, df) -> set:
-        updated_cols = set()
+    def preprocess_transient_data(imprt: TImports, df) -> None:
         date_min_field = db.session.execute(
             sa.select(BibFields)
             .where(BibFields.destination == imprt.destination)
@@ -93,14 +92,13 @@ class OcchabImportActions(ImportActions):
             .where(BibFields.name_field == "date_max")
         ).scalar_one()
         if date_min_field.source_field in df and date_max_field.source_field in df:
-            updated_cols |= concat_dates(
+            concat_dates(
                 df,
                 datetime_min_col=date_min_field.source_field,
                 datetime_max_col=date_max_field.source_field,
                 date_min_col=date_min_field.source_field,
                 date_max_col=date_max_field.source_field,
             )
-        return updated_cols
 
     @staticmethod
     def dataframe_checks(imprt, df, entity, fields, selected_fields):
@@ -187,7 +185,7 @@ class OcchabImportActions(ImportActions):
         set_id_parent_from_destination(
             imprt,
             parent_entity=entity_station,
-            child_entity=entity_habitat,
+            entity=entity_habitat,
             id_field=fields["id_station"],
             fields=[
                 selected_fields.get("unique_id_sinp_station"),
@@ -198,8 +196,7 @@ class OcchabImportActions(ImportActions):
         set_parent_line_no(
             imprt,
             parent_entity=entity_station,
-            child_entity=entity_habitat,
-            id_parent="id_station",
+            entity=entity_habitat,
             parent_line_no="station_line_no",
             fields=[
                 selected_fields.get("id_station_source"),
@@ -207,10 +204,11 @@ class OcchabImportActions(ImportActions):
             ],
         )
 
+        # Check habitat parents
         check_no_parent_entity(
             imprt,
             parent_entity=entity_station,
-            child_entity=entity_habitat,
+            entity=entity_habitat,
             id_parent="id_station",
             parent_line_no="station_line_no",
         )
@@ -218,7 +216,7 @@ class OcchabImportActions(ImportActions):
         check_erroneous_parent_entities(
             imprt,
             parent_entity=entity_station,
-            child_entity=entity_habitat,
+            entity=entity_habitat,
             parent_line_no="station_line_no",
         )
 
@@ -326,13 +324,19 @@ class OcchabImportActions(ImportActions):
             geom_4326_field=fields["geom_4326"],
             geom_local_field=fields["geom_local"],
         )
-        if imprt.fieldmapping.get("altitudes_generate", False):
-            # TODO@TestImportsOcchab.test_import_valid_file: add testcase
+
+        # Process altitude generate field
+        # TODO@TestImportsOcchab.test_import_valid_file: add testcase
+        default_altitude_generate = True
+        altitudes_generate = default_altitude_generate
+        altitudes_generate_bib_field = imprt.fieldmapping.get("altitudes_generate", None)
+        if altitudes_generate_bib_field:
+            altitudes_generate = altitudes_generate_bib_field.get(
+                "constant_value", default_altitude_generate
+            )
+        if altitudes_generate:
             generate_altitudes(
-                imprt,
-                fields["the_geom_local"],
-                fields["altitude_min"],
-                fields["altitude_max"],
+                imprt, fields["geom_local"], fields["altitude_min"], fields["altitude_max"]
             )
         check_altitudes(
             imprt,
@@ -454,58 +458,66 @@ class OcchabImportActions(ImportActions):
                 .all()
             )
         }
+        entity_station = entities["station"]
+        entity_habitat = entities["habitat"]
+
+        #     """
+        #     We need the id_station in transient table to use it when inserting habitats.
+        #     I have tried to use RETURNING after inserting the stations to update transient table, roughly:
+        #     WITH (INSERT pr_occhab.t_stations FROM SELECT ... RETURNING transient_table.line_no, id_station) AS insert_cte
+        #     UPDATE transient_table SET id_station = insert_cte.id_station WHERE transient_table.line_no = insert_cte.line_no
+        #     but RETURNING clause can only contains columns from INSERTed table so we can not return line_no.
+        #     Consequently, we generate id_station directly in transient table before inserting the stations.
+        #     """
+        generate_entity_id(
+            imprt, entity_station, "pr_occhab", "t_stations", "unique_id_sinp_station", "id_station"
+        )
+        generate_entity_id(
+            imprt, entity_habitat, "pr_occhab", "t_habitats", "unique_id_sinp_hab", "id_habitat"
+        )
+
+        set_parent_id_from_line_no(
+            imprt,
+            entity=entity_habitat,
+            parent_line_no_field_name="station_line_no",
+            parent_id_field_name="id_station",
+        )
+
         for entity in entities.values():
-            if entity.code == "station":
-                """
-                We need the id_station in transient table to use it when inserting habitats.
-                I have tried to use RETURNING after inserting the stations to update transient table, roughly:
-                WITH (INSERT pr_occhab.t_stations FROM SELECT ... RETURNING transient_table.line_no, id_station) AS insert_cte
-                UPDATE transient_table SET id_station = insert_cte.id_station WHERE transient_table.line_no = insert_cte.line_no
-                but RETURNING clause can only contains columns from INSERTed table so we can not return line_no.
-                Consequently, we generate id_station directly in transient table before inserting the stations.
-                """
-                generate_id_station(imprt, entity)
-            else:
-                set_id_station_from_line_no(
-                    imprt,
-                    habitat_entity=entities["habitat"],
-                )
 
             fields = {
                 ef.field.name_field: ef.field for ef in entity.fields if ef.field.dest_field != None
             }
             insert_fields = {fields["id_station"]}
-            for field_name, source_field in imprt.fieldmapping.items():
+            for field_name, mapping in imprt.fieldmapping.items():
                 if field_name not in fields:  # not a destination field
                     continue
                 field = fields[field_name]
+                column_src = mapping.get("column_src", None)
                 if field.multi:
                     # TODO@TestImportsOcchab.test_import_valid_file: add testcase
-                    if not set(source_field).isdisjoint(imprt.columns):
+                    if not set(column_src).isdisjoint(imprt.columns):
                         insert_fields |= {field}
                 else:
-                    if source_field in imprt.columns:
+                    if (
+                        column_src in imprt.columns
+                        or mapping.get("constant_value", None) is not None
+                    ):
                         insert_fields |= {field}
             if entity.code == "station":
-                # unique_dataset_id is replaced with id_dataset
-                insert_fields -= {fields["unique_dataset_id"]}
                 insert_fields |= {fields["id_dataset"]}
                 insert_fields |= {fields["geom_4326"], fields["geom_local"]}
                 # TODO@TestImportsOcchab.test_import_valid_file: add testcase
                 if imprt.fieldmapping.get("altitudes_generate", False):
                     insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
-                # FIXME:
-                # if not selected_fields.get("unique_id_sinp_generate", False):
-                #    # even if not selected, add uuid column to force insert of NULL values instead of default generation of uuid
-                #    insert_fields |= {fields["unique_id_sinp_station"]}
+                # The field is either generated, or marked as mandatory
+                insert_fields |= {fields["unique_id_sinp_station"]}
             elif entity.code == "habitat":  # habitat
                 # These fields are associated with habitat as necessary to find the corresponding station,
                 # but they are not inserted in habitat destination so we need to manually remove them.
                 insert_fields -= {fields["unique_id_sinp_station"], fields["id_station_source"]}
-                # FIXME:
-                # if not selected_fields.get("unique_id_sinp_generate", False):
-                #    # even if not selected, add uuid column to force insert of NULL values instead of default generation of uuid
-                #    insert_fields |= {fields["unique_id_sinp_habitat"]}
+                # The field is either generated, or marked as mandatory
+                insert_fields |= {fields["unique_id_sinp_habitat"]}
             names = ["id_import"] + [field.dest_field for field in insert_fields]
             select_stmt = (
                 sa.select(
@@ -535,49 +547,6 @@ class OcchabImportActions(ImportActions):
             imprt.statistics.update({f"{entity.code}_count": row_count})
 
     @staticmethod
-    def remove_data_from_destination(imprt: TImports) -> None:
-        """
-        This function should be integrated in import core as usable for any
-        multi-entities (and mono-entity) destination.
-        Note: entities must have a single primary key.
-        """
-        entities = db.session.scalars(
-            sa.select(Entity)
-            .where(Entity.destination == imprt.destination)
-            .order_by(sa.desc(Entity.order))
-        ).all()
-        for entity in entities:
-            parent_table = entity.get_destination_table()
-            if entity.childs:
-                for child in entity.childs:
-                    child_table = child.get_destination_table()
-                    (parent_pk,) = inspect(parent_table).primary_key.columns
-                    (child_pk,) = inspect(child_table).primary_key.columns
-                    # Looking for parent rows belonging to this import with child rows
-                    # not belonging to this import.
-                    # We use is_distinct_from to match rows with NULL id_import.
-                    query = (
-                        sa.select(parent_pk, sa.func.array_agg(child_pk))
-                        .select_from(parent_table.join(child_table))
-                        .where(
-                            parent_table.c.id_import == imprt.id_import,
-                            child_table.c.id_import.is_distinct_from(imprt.id_import),
-                        )
-                        .group_by(parent_pk)
-                    )
-                    orphans = db.session.execute(query).fetchall()
-                    if orphans:
-                        description = "L’import ne peut pas être supprimé car cela provoquerai la suppression de données ne provenant pas de cet import :"
-                        description += "<ul>"
-                        for id_parent, ids_child in orphans:
-                            description += f"<li>{entity.label} {id_parent} : {child.label}s {*ids_child, }</li>"
-                        description += "</ul>"
-                        raise Conflict(description)
-            db.session.execute(
-                sa.delete(parent_table).where(parent_table.c.id_import == imprt.id_import)
-            )
-
-    @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:
         return distribution_plot(imprt)
 
@@ -587,6 +556,7 @@ class OcchabImportActions(ImportActions):
         return compute_bounding_box(
             imprt=imprt,
             geom_entity_code="station",
-            geom_4326_field_name="geom_4326",
+            geom_4326_field_name__transient="geom_4326",
+            geom_4326_field_name__destination="geom_4326",
             child_entity_code="habitat",
         )

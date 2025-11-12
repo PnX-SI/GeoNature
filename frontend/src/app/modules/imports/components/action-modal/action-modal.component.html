@@ -1,0 +1,42 @@
+<div
+  class="modal-header"
+  [attr.data-qa]="modalData.headerDataQa"
+>
+  <h4 class="modal-title pull-left">{{ modalData.title }}</h4>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="c()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p>{{ modalData.bodyMessage }}</p>
+  <p
+    *ngIf="modalData.additionalMessage"
+    class="attention-message"
+  >
+    {{ modalData.additionalMessage }}
+  </p>
+
+  <button
+    type="button"
+    (click)="c()"
+    mat-raised-button
+    class="mr-1"
+  >
+    {{ modalData.cancelButtonText || 'Annuler' }}
+  </button>
+
+  <button
+    type="button"
+    (click)="performAction()"
+    mat-raised-button
+    [color]="modalData.confirmButtonColor || 'primary'"
+    [attr.data-qa]="modalData.confirmButtonDataQa"
+  >
+    {{ modalData.confirmButtonText || 'Confirmer' }}
+  </button>
+</div>

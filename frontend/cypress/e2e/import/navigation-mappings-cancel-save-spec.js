@@ -7,11 +7,13 @@ import {
   SELECTOR_IMPORT_CONTENTMAPPING_STEP_BUTTON,
   SELECTOR_IMPORT_FIELDMAPPING_CD_NOM,
   SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN,
+  SELECTOR_IMPORT_FIELDMAPPING_DATASET,
   SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE,
   SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS,
   SELECTOR_IMPORT_FIELDMAPPING_WKT,
   SELECTOR_IMPORT_FOOTER_DELETE,
   SELECTOR_IMPORT_FOOTER_SAVE,
+  SELECTOR_IMPORT_MODAL_EDIT_VALIDATE,
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -22,14 +24,13 @@ function runTheProcessUntilFieldMapping(user) {
   cy.visitImport();
   cy.startImport();
   cy.pickDestination();
-  cy.pickDataset(user.dataset);
   cy.loadImportFile(FILES.synthese.valid.fixture);
   cy.configureImportFile();
 }
 
 function runTheProcessUntilContentMapping(user) {
   runTheProcessUntilFieldMapping(user);
-  cy.configureImportFieldMapping();
+  cy.configureImportFieldMapping(user.dataset);
   cy.wait(500);
 }
 
@@ -48,6 +49,7 @@ function checkImportIsNotFirstInList(importId) {
 
 function clickOnFirstLineEdit() {
   cy.get(getSelectorImportListTableRowEdit(0)).click();
+  cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
   cy.wait(TIMEOUT_WAIT);
 }
 
@@ -67,14 +69,14 @@ function selectContentMappingField(dataQa, value) {
   cy.get(`[data-qa=import-contentmapping-theme-${dataQa}]`).should('exist').select(value);
 }
 
-function fillTheFieldMappingFormRaw() {
+function fillTheFieldMappingFormRaw(datasetName) {
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_CD_NOM, 'date_debut');
+  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_debut');
 }
-
 // ////////////////////////////////////////////////////////////////////////////
 // Create a mapping with dummy values
 // ////////////////////////////////////////////////////////////////////////////
@@ -97,7 +99,7 @@ describe('Navigation - cancel and save', () => {
           const parts = url.split('/');
           const importID = parts[parts.length - 2]; // Get the penultimate element
 
-          fillTheFieldMappingFormRaw();
+          fillTheFieldMappingFormRaw(user.dataset);
           cy.get(SELECTOR_IMPORT_FOOTER_DELETE).should('be.enabled').click();
           cy.wait(TIMEOUT_WAIT);
           cy.checkCurrentPageIsImport();
@@ -112,7 +114,7 @@ describe('Navigation - cancel and save', () => {
           const parts = url.split('/');
           const importID = parts[parts.length - 2]; // Get the penultimate element
 
-          fillTheFieldMappingFormRaw();
+          fillTheFieldMappingFormRaw(user.dataset);
           cy.visitImport();
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
@@ -133,7 +135,7 @@ describe('Navigation - cancel and save', () => {
           // Extract the ID using string manipulation
           const parts = url.split('/');
           const importID = parts[parts.length - 2]; // Get the penultimate element
-          fillTheFieldMappingFormRaw();
+          fillTheFieldMappingFormRaw(user.dataset);
           cy.get(SELECTOR_IMPORT_FOOTER_SAVE).should('be.enabled').click();
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();

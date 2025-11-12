@@ -1,0 +1,3 @@
+id_inventor,id_digitiser ,id_dataset,id_base_site,uuid_base_site,base_site_code,base_site_name,base_site_description,first_use_date,types_site,visit_date_min,comments,utilisation_type_n1,id_base_visit,uuid_base_visit,cd_nom,id_nomenclature_abondance_braunblanquet,id_nomenclature_life_stage
+3,3,1,1,d59278f8-71a8-4601-b767-b4a85f027cfd,Site 1,Site,description site 1,2025-02-14,585,2025-02-15,comments visit 1,culture,1,ff80738f-a368-4288-9be3-0402499c6e23,69971,1,2
+3,3,1,1,d59278f8-71a8-4601-b767-b4a85f027cfd,Site 1,Site,description site 1,2025-02-14,585,2025-02-15,comments visit 1,culture,1,ff80738f-a368-4288-9be3-0402499c6e23,69973,1,2

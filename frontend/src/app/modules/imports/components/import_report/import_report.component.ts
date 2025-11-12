@@ -14,7 +14,6 @@ import {
   ImportError,
   Nomenclature,
   NomenclatureType,
-  TaxaDistribution,
   ThemesFields,
 } from '../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
@@ -57,7 +56,6 @@ export class ImportReportComponent implements OnInit {
   public importErrors: Array<ImportError> = [];
   public importWarnings: Array<ImportError> = [];
   public nbTotalErrors: number = 0;
-  public datasetName: string = '';
   public rank: string = null;
   public loadingChart: boolean;
   public options: any = {
@@ -94,7 +92,6 @@ export class ImportReportComponent implements OnInit {
     this.importData = this.importProcessService.getImportData();
     // Load additionnal data if imported data
     this.loadValidData(this.importData);
-    this.loadDatasetName();
     // Add property to show errors lines. Need to do this to
     // show line per line...
     this.loadErrors();
@@ -118,7 +115,7 @@ export class ImportReportComponent implements OnInit {
    */
   loadValidData(importData: Import | null) {
     if (importData) {
-      if (importData.date_end_import && importData.id_source) {
+      if (this.importProcessService.isImportCompleted && importData.id_source) {
         this._dataService.getBbox(importData.id_source).subscribe((data) => {
           this.validBbox = data;
         });
@@ -127,14 +124,6 @@ export class ImportReportComponent implements OnInit {
           this.validBbox = data.valid_bbox;
         });
       }
-    }
-  }
-
-  loadDatasetName() {
-    if (this.importData) {
-      this._dataService.getDatasetFromId(this.importData.id_dataset).subscribe((data) => {
-        this.datasetName = data.dataset_name;
-      });
     }
   }
 
@@ -224,7 +213,7 @@ export class ImportReportComponent implements OnInit {
     if (this.importData?.task_progress === -1) {
       this.importStatus = 'EN ERREUR';
       this.importStatusClass = 'inerror';
-    } else if (this.importData?.date_end_import) {
+    } else if (this.importProcessService.isImportCompleted) {
       this.importStatus = 'TERMINE';
       this.importStatusClass = 'importdone';
     }
@@ -261,10 +250,12 @@ export class ImportReportComponent implements OnInit {
 
   mapField(listField: Field[], fieldMapping: FieldMappingValues): Array<CorrespondancesField> {
     const mappedFields: Array<CorrespondancesField> = listField.map((field) => {
+      const mapping = fieldMapping[field.name_field];
       return {
-        source: fieldMapping[field.name_field],
+        source: mapping?.column_src,
         description: field.comment,
         destination: field.name_field,
+        constant_value: mapping?.constant_value,
       };
     });
     return mappedFields;

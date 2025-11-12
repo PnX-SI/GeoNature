@@ -457,7 +457,9 @@
       "Actions": {
         "SelectMapping": "Please select a mapping",
         "SaveMapping": "Save the model",
-        "ConfirmMappingDeletion": "Delete the model"
+        "ConfirmMappingDeletion": "Delete the model",
+        "DefineUniqueValue": "Set a unique value",
+        "SelectASourceFileColumn": "Select a file column"
       }
     },
     "ContentMapping": {

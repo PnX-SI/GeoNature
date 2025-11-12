@@ -4,6 +4,7 @@ from functools import partial
 from operator import or_
 from functools import reduce
 import csv
+import json
 
 from geonature.core.imports.checks.errors import ImportCodeError
 import pytest
@@ -23,7 +24,7 @@ from geonature.core.gn_permissions.tools import (
 )
 from geonature.core.gn_permissions.models import PermAction, Permission, PermObject
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.gn_synthese.models import Synthese
 from geonature.tests.fixtures import synthese_data, celery_eager
 
@@ -34,15 +35,11 @@ from ref_geo.models import LAreas
 
 from geonature.core.imports.models import (
     TImports,
-    FieldMapping,
     ContentMapping,
-    BibFields,
 )
-from geonature.core.imports.utils import insert_import_data_in_transient_table
 
 from .jsonschema_definitions import jsonschema_definitions
 from .utils import assert_import_errors as _assert_import_errors
-
 
 tests_path = Path(__file__).parent
 
@@ -60,245 +57,72 @@ def assert_import_errors(imprt, expected_errors):
     return _assert_import_errors(imprt, expected_errors, entity_code="observation")
 
 
+# ######################################################################################
+# Fixtures -- default values to be overriden
+# ######################################################################################
+
+
 @pytest.fixture(scope="class")
-def g_permissions():
-    """
-    Fixture to initialize flask g variable
-    Mandatory if we want to run this test file standalone
-    """
-    g._permissions_by_user = {}
-    g._permissions = {}
+def fieldmapping_preset_name():
+    return "Synthese GeoNature"
 
 
-@pytest.fixture()
-def sample_area():
-    return LAreas.query.filter(LAreas.area_name == "Bouches-du-Rhône").one()
+@pytest.fixture(scope="class")
+def contentmapping_preset_name():
+    return "Nomenclatures SINP (labels)"
+
+
+@pytest.fixture(scope="class")
+def module_code():
+    return "SYNTHESE"
+
+
+@pytest.fixture(scope="class")
+def testfiles_folder():  # provide with a default value - should bve overriden
+    return "synthese"
 
 
 @pytest.fixture(scope="function")
-def imports(synthese_destination, users):
-    def create_import(authors=[]):
-        with db.session.begin_nested():
-            imprt = TImports(destination=synthese_destination, authors=authors)
-            db.session.add(imprt)
-        return imprt
-
+def fieldmapping_unique_dataset_id(import_dataset):
     return {
-        "own_import": create_import(authors=[users["user"]]),
-        "associate_import": create_import(authors=[users["associate_user"]]),
-        "stranger_import": create_import(authors=[users["stranger_user"]]),
-        "orphan_import": create_import(),
+        "constant_value": str(import_dataset.unique_dataset_id),
+    }
+
+
+@pytest.fixture(scope="function")
+def override_in_importfile(import_datasets):
+    return {
+        "@USER_DATASET_UUID@": str(import_datasets["user"].unique_dataset_id),
+        "@DATASET_NOT_FOUND@": "03905a03-c7fa-4642-b143-5005fa805377",
+        "@DATASET_NOT_AUTHORIZED@": str(import_datasets["admin"].unique_dataset_id),
+        "@DATASET_INACTIVE@": str(import_datasets["user--inactive"].unique_dataset_id),
+        "@PRIVATE_DATASET_UUID@": str(import_datasets["user--private"].unique_dataset_id),
     }
 
 
 @pytest.fixture()
-def small_batch(monkeypatch):
-    monkeypatch.setitem(current_app.config["IMPORT"], "DATAFRAME_BATCH_SIZE", 3)
+def per_dataset_uuid_check(monkeypatch):
+    monkeypatch.setitem(current_app.config["IMPORT"], "PER_DATASET_UUID_CHECK", True)
 
 
-@pytest.fixture
-def check_private_jdd(monkeypatch):
-    monkeypatch.setitem(current_app.config["IMPORT"], "CHECK_PRIVATE_JDD_BLURING", True)
-
-
-@pytest.fixture()
-def no_default_nomenclatures(monkeypatch):
-    monkeypatch.setitem(
-        current_app.config["IMPORT"], "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE", False
-    )
-
-
-@pytest.fixture()
-def area_restriction(monkeypatch, sample_area):
-    monkeypatch.setitem(current_app.config["IMPORT"], "ID_AREA_RESTRICTION", sample_area.id_area)
-
-
-@pytest.fixture()
-def import_file_name():
-    return "valid_file.csv"
-
-
-@pytest.fixture()
-def autogenerate():
-    return True
-
-
-@pytest.fixture()
-def import_dataset(datasets, import_file_name):
-    ds = datasets["own_dataset"]
-    if import_file_name == "nomenclatures_file.csv":
-        previous_data_origin = ds.nomenclature_data_origin
-        ds.nomenclature_data_origin = TNomenclatures.query.filter(
-            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "DS_PUBLIQUE"),
-            TNomenclatures.mnemonique == "Privée",
-        ).one()
-    yield ds
-    if import_file_name == "nomenclatures_file.csv":
-        ds.nomenclature_data_origin = previous_data_origin
-
-
-@pytest.fixture()
-def new_import(synthese_destination, users, import_dataset):
-    with db.session.begin_nested():
-        imprt = TImports(
-            destination=synthese_destination,
-            authors=[users["user"]],
-            id_dataset=import_dataset.id_dataset,
-        )
-        db.session.add(imprt)
-    return imprt
-
-
-@pytest.fixture()
-def uploaded_import(new_import, datasets, import_file_name):
-    with db.session.begin_nested():
-        with open(tests_path / "files" / "synthese" / import_file_name, "rb") as f:
-            f.seek(0)
-            content = f.read()
-            if import_file_name == "jdd_to_import_file.csv":
-                content = content.replace(
-                    b"VALID_DATASET_UUID",
-                    datasets["own_dataset"].unique_dataset_id.hex.encode("ascii"),
-                )
-                content = content.replace(
-                    b"FORBIDDEN_DATASET_UUID",
-                    datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
-                )
-                content = content.replace(
-                    b"PRIVATE_DATASET_UUID",
-                    datasets["private"].unique_dataset_id.hex.encode("ascii"),
-                )
-                new_import.full_file_name = "jdd_to_import_file.csv"
-            else:
-                new_import.full_file_name = "valid_file.csv"
-            new_import.source_file = content
-    return new_import
-
-
-@pytest.fixture()
-def decoded_import(client, uploaded_import):
-    set_logged_user(client, uploaded_import.authors[0])
-    r = client.post(
-        url_for(
-            "import.decode_file",
-            import_id=uploaded_import.id_import,
-        ),
-        data={
-            "encoding": "utf-8",
-            "format": "csv",
-            "srid": 4326,
-            "separator": ";",
-        },
-    )
-    assert r.status_code == 200, r.data
-    unset_logged_user(client)
-    db.session.refresh(uploaded_import)
-    return uploaded_import
-
-
-@pytest.fixture()
-def fieldmapping(import_file_name, autogenerate):
-    if import_file_name in ["valid_file.csv", "jdd_to_import_file.csv"]:
-        return (
-            db.session.execute(sa.select(FieldMapping).filter_by(label="Synthese GeoNature"))
-            .unique()
-            .scalar_one()
-            .values
-        )
-    else:
-        bib_fields = db.session.scalars(sa.select(BibFields).filter_by(display=True)).unique().all()
-        return {
-            field.name_field: (
-                autogenerate
-                if field.autogenerated
-                else ([field.name_field, "additional_data2"] if field.multi else field.name_field)
-            )
-            for field in bib_fields
-        }
-
-
-@pytest.fixture()
-def field_mapped_import(client, decoded_import, fieldmapping):
-    with db.session.begin_nested():
-        decoded_import.fieldmapping = fieldmapping
-    return decoded_import
-
-
-@pytest.fixture()
-def loaded_import(client, field_mapped_import):
-    with db.session.begin_nested():
-        field_mapped_import.source_count = insert_import_data_in_transient_table(
-            field_mapped_import
-        )
-        field_mapped_import.loaded = True
-    return field_mapped_import
-
-
-@pytest.fixture()
-def content_mapped_import(client, import_file_name, loaded_import):
-    with db.session.begin_nested():
-        loaded_import.contentmapping = (
-            db.session.scalars(
-                sa.select(ContentMapping).filter_by(label="Nomenclatures SINP (labels)")
-            )
-            .unique()
-            .one()
-            .values
-        )
-        if import_file_name == "empty_nomenclatures_file.csv":
-            loaded_import.contentmapping["STADE_VIE"].update(
-                {
-                    "": "17",  # Alevin
-                }
-            )
-    return loaded_import
-
-
-@pytest.fixture()
-def prepared_import(client, content_mapped_import, small_batch, check_private_jdd):
-    set_logged_user(client, content_mapped_import.authors[0])
-    r = client.post(url_for("import.prepare_import", import_id=content_mapped_import.id_import))
-    assert r.status_code == 200, r.data
-    unset_logged_user(client)
-    db.session.refresh(content_mapped_import)
-    return content_mapped_import
-
-
-@pytest.fixture()
-def imported_import(client, prepared_import):
-    set_logged_user(client, prepared_import.authors[0])
-    r = client.post(url_for("import.import_valid_data", import_id=prepared_import.id_import))
-    assert r.status_code == 200, r.data
-    unset_logged_user(client)
-    db.session.refresh(prepared_import)
-    return prepared_import
-
-
-@pytest.fixture()
-def sample_taxhub_list():
-    nom = Taxref.query.filter_by(cd_nom=67111).one()
-    with db.session.begin_nested():
-        taxa_list = BibListes(nom_liste="test", code_liste="test", noms=[nom])
-        db.session.add(taxa_list)
-    return taxa_list
-
-
-@pytest.fixture()
-def change_id_list_conf(monkeypatch, sample_taxhub_list):
-    monkeypatch.setitem(
-        current_app.config["IMPORT"], "ID_LIST_TAXA_RESTRICTION", sample_taxhub_list.id_liste
-    )
+# ######################################################################################
+# Tests -- imports
+# ######################################################################################
 
 
 @pytest.mark.usefixtures(
     "client_class",
     "temporary_transaction",
     "celery_eager",
-    "default_synthese_destination",
-    "display_unique_dataset_id",
+    "import_destination",
+    "default_import_destination",
+    "module_code",
+    "fieldmapping_preset_name",
+    "testfiles_folder",
+    "contentmapping_preset_name",
 )
 class TestImportsSynthese:
-    def test_import_permissions(self, g_permissions, synthese_destination):
+    def test_import_permissions(self, g_permissions, import_destination):
         with db.session.begin_nested():
             organisme = Organisme(nom_organisme="test_import")
             db.session.add(organisme)
@@ -315,7 +139,7 @@ class TestImportsSynthese:
 
             user.groups.append(group)
 
-            imprt = TImports(destination=synthese_destination)
+            imprt = TImports(destination=import_destination)
             db.session.add(imprt)
 
         get_scopes_by_action = partial(
@@ -412,7 +236,7 @@ class TestImportsSynthese:
         assert scope == 3
         assert imprt.has_instance_permission(scope, user=user, action_code="U") is True
 
-        # Should be always true
+        # Should be always True
         assert imprt.has_instance_permission(scope, user=user, action_code="R") is True
 
     def test_list_imports(self, imports, users):
@@ -456,16 +280,6 @@ class TestImportsSynthese:
         import_ids_asc = [imprt["id_import"] for imprt in r_asc.get_json()["imports"]]
         assert import_ids_des == import_ids_asc[-1::-1]
 
-    def test_order_import_foreign(self, users, imports, uploaded_import):
-        set_logged_user(self.client, users["user"])
-        response = self.client.get(url_for("import.get_import_list") + "?sort=dataset.dataset_name")
-        assert response.status_code == 200, response.data
-        imports = response.get_json()["imports"]
-        for a, b in zip(imports[:1], imports[1:]):
-            assert (a["dataset"] is None) or (
-                a["dataset"]["dataset_name"] <= b["dataset"]["dataset_name"]
-            )
-
     def test_get_import(self, users, imports):
         def get(import_name):
             return self.client.get(
@@ -507,11 +321,11 @@ class TestImportsSynthese:
         )
         assert transient_rows_count == 0
 
-    def test_import_upload(self, users, datasets):
+    def test_import_upload(self, users):
+
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
             data = {
                 "file": (f, "simple_file.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
             }
             r = self.client.post(
                 url_for("import.upload_file"),
@@ -524,7 +338,6 @@ class TestImportsSynthese:
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
             data = {
                 "file": (f, "simple_file.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
             }
             r = self.client.post(
                 url_for("import.upload_file"),
@@ -536,38 +349,18 @@ class TestImportsSynthese:
 
         set_logged_user(self.client, users["user"])
 
-        unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+        # test missing file
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
-            data = {
-                "file": (f, "simple_file.csv"),
-                "datasetId": unexisting_id,
-            }
+            data = {}
             r = self.client.post(
                 url_for("import.upload_file"),
                 data=data,
                 headers=Headers({"Content-Type": "multipart/form-data"}),
             )
             assert r.status_code == BadRequest.code, r.data
-            assert r.json["description"] == f"Dataset '{unexisting_id}' does not exist."
 
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
-            data = {
-                "file": (f, "simple_file.csv"),
-                "datasetId": datasets["stranger_dataset"].id_dataset,
-            }
-            r = self.client.post(
-                url_for("import.upload_file"),
-                data=data,
-                headers=Headers({"Content-Type": "multipart/form-data"}),
-            )
-            assert r.status_code == Forbidden.code, r.data
-            assert "jeu de données" in r.json["description"]  # this is a DS issue
-
-        with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
-            data = {
-                "file": (f, "simple_file.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
-            }
+            data = {"file": (f, "simple_file.csv")}
             r = self.client.post(
                 url_for("import.upload_file"),
                 data=data,
@@ -579,13 +372,10 @@ class TestImportsSynthese:
         assert imprt.source_file is not None
         assert imprt.full_file_name == "simple_file.csv"
 
-    def test_import_error(self, users, datasets):
+    def test_import_error(self, users, import_datasets):
         set_logged_user(self.client, users["user"])
         with open(tests_path / "files" / "synthese" / "empty.csv", "rb") as f:
-            data = {
-                "file": (f, "empty.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
-            }
+            data = {"file": (f, "empty.csv")}
             r = self.client.post(
                 url_for("import.upload_file"),
                 data=data,
@@ -593,11 +383,9 @@ class TestImportsSynthese:
             )
             assert r.status_code == 400, r.data
             assert r.json["description"] == "Impossible to upload empty files"
+
         with open(tests_path / "files" / "synthese" / "starts_with_empty_line.csv", "rb") as f:
-            data = {
-                "file": (f, "starts_with_empty_line.csv"),
-                "datasetId": datasets["own_dataset"].id_dataset,
-            }
+            data = {"file": (f, "starts_with_empty_line.csv")}
             r = self.client.post(
                 url_for("import.upload_file"),
                 data=data,
@@ -614,7 +402,6 @@ class TestImportsSynthese:
         with open(tests_path / "files" / "synthese" / "utf8_file.csv", "rb") as f:
             data = {
                 "file": (f, "utf8_file.csv"),
-                "datasetId": imprt.id_dataset,
             }
             r = self.client.put(
                 url_for("import.upload_file", import_id=imprt.id_import),
@@ -631,8 +418,9 @@ class TestImportsSynthese:
         assert imprt.columns == None
         assert len(imprt.errors) == 0
 
-    def test_import_decode(self, users, new_import):
-        imprt = new_import
+    def test_import_decode(self, users, uploaded_import):
+
+        imprt = uploaded_import
         data = {
             "encoding": "utf-16",
             "format": "csv",
@@ -640,6 +428,8 @@ class TestImportsSynthese:
             "separator": ";",
         }
 
+        unset_logged_user(self.client)
+        db.session.flush()
         r = self.client.post(url_for("import.decode_file", import_id=imprt.id_import), data=data)
         assert r.status_code == Unauthorized.code, r.data
 
@@ -647,10 +437,13 @@ class TestImportsSynthese:
         r = self.client.post(url_for("import.decode_file", import_id=imprt.id_import), data=data)
         assert r.status_code == Forbidden.code, r.data
 
-        set_logged_user(self.client, users["user"])
+        set_logged_user(self.client, imprt.authors[0])
         r = self.client.post(url_for("import.decode_file", import_id=imprt.id_import), data=data)
         assert r.status_code == BadRequest.code, r.data
-        assert "first upload" in r.json["description"]
+        assert (
+            "Erreur d’encodage lors de la lecture du fichier source. Avez-vous sélectionné le bon encodage de votre fichier ?"
+            == r.json["description"]
+        )
 
         imprt.full_file_name = "import.csv"
         imprt.detected_encoding = "utf-8"
@@ -688,6 +481,7 @@ class TestImportsSynthese:
 
         with open(tests_path / "files" / "synthese" / "utf8_file.csv", "rb") as f:
             imprt.source_file = f.read()
+        db.session.flush()
         r = self.client.post(url_for("import.decode_file", import_id=imprt.id_import), data=data)
         assert r.status_code == 200, r.data
 
@@ -864,17 +658,15 @@ class TestImportsSynthese:
         )
         assert len(r.json) == len(valid_file_expected_errors)
 
-    def test_import_valid_file(self, users, datasets):
+    def test_import_valid_file(self, users, fieldmapping, import_file_name):
         set_logged_user(self.client, users["user"])
 
         # Upload step
-        test_file_name = "valid_file.csv"
-        with open(tests_path / "files" / "synthese" / test_file_name, "rb") as f:
+        with open(tests_path / "files" / "synthese" / import_file_name, "rb") as f:
             test_file_line_count = sum(1 for line in f) - 1  # remove headers
             f.seek(0)
             data = {
-                "file": (f, test_file_name),
-                "datasetId": datasets["own_dataset"].id_dataset,
+                "file": (f, import_file_name),
             }
             r = self.client.post(
                 url_for("import.upload_file"),
@@ -890,8 +682,7 @@ class TestImportsSynthese:
         assert imprt_json["detected_encoding"] == "utf-8"
         assert imprt_json["detected_format"] == "csv"
         assert imprt_json["detected_separator"] == ";"
-        assert imprt_json["full_file_name"] == test_file_name
-        assert imprt_json["id_dataset"] == datasets["own_dataset"].id_dataset
+        assert imprt_json["full_file_name"] == import_file_name
 
         # Decode step
         data = {
@@ -922,21 +713,18 @@ class TestImportsSynthese:
         assert transient_rows_count == 0
 
         # Field mapping step
-        fieldmapping = (
-            db.session.execute(sa.select(FieldMapping).filter_by(label="Synthese GeoNature"))
-            .unique()
-            .scalar_one()
-        )
+        fieldmapping_values = fieldmapping.copy()
+        fieldmapping_values["count_max"] = {"constant_value": 5}
         r = self.client.post(
             url_for("import.set_import_field_mapping", import_id=imprt.id_import),
-            data=fieldmapping.values,
+            data=fieldmapping_values,
         )
         assert r.status_code == 200, r.data
         validate_json(
             r.json,
             {"definitions": jsonschema_definitions, "$ref": "#/definitions/import"},
         )
-        assert r.json["fieldmapping"] == fieldmapping.values
+        assert r.json["fieldmapping"] == fieldmapping_values
 
         # Loading step
         r = self.client.post(url_for("import.load_import", import_id=imprt.id_import))
@@ -1030,8 +818,9 @@ class TestImportsSynthese:
         r = self.client.delete(url_for("import.delete_import", import_id=imprt.id_import))
         assert r.status_code == 200, r.data
 
-    @pytest.mark.parametrize("import_file_name", ["geom_file.csv"])
-    @pytest.mark.parametrize("autogenerate", [False])
+    @pytest.mark.parametrize(
+        "autogenerate, import_file_name,fieldmapping_preset_name", [(False, "geom_file.csv", None)]
+    )
     def test_import_geometry_file(self, area_restriction, prepared_import):
         assert_import_errors(
             prepared_import,
@@ -1053,7 +842,7 @@ class TestImportsSynthese:
             },
         )
 
-    @pytest.mark.parametrize("import_file_name", ["cd_file.csv"])
+    @pytest.mark.parametrize("import_file_name,fieldmapping_preset_name", [("cd_file.csv", None)])
     def test_import_cd_file(self, change_id_list_conf, prepared_import):
         assert_import_errors(
             prepared_import,
@@ -1066,7 +855,9 @@ class TestImportsSynthese:
             },
         )
 
-    @pytest.mark.parametrize("import_file_name", ["source_pk_file.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("source_pk_file.csv", None)]
+    )
     def test_import_source_pk_file(self, prepared_import):
         assert_import_errors(
             prepared_import,
@@ -1079,7 +870,9 @@ class TestImportsSynthese:
             },
         )
 
-    @pytest.mark.parametrize("import_file_name", ["altitude_file.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("altitude_file.csv", None)]
+    )
     def test_import_altitude_file(self, prepared_import):
         french_dem = has_french_dem()
         if french_dem:
@@ -1116,8 +909,27 @@ class TestImportsSynthese:
             ]
             assert altitudes == expected_altitudes
 
-    @pytest.mark.parametrize("import_file_name", ["uuid_file.csv"])
-    def test_import_uuid_file(self, synthese_data, prepared_import):
+    @pytest.mark.parametrize("import_file_name,fieldmapping_preset_name", [("uuid_file.csv", None)])
+    def test_import_uuid_file_per_dataset_uuid(
+        self, per_dataset_uuid_check, import_datasets, synthese_data, prepared_import
+    ):
+        assert_import_errors(
+            prepared_import,
+            {
+                (ImportCodeError.DUPLICATE_UUID, "unique_id_sinp", frozenset([3, 4])),
+                (ImportCodeError.INVALID_UUID, "unique_id_sinp", frozenset([6])),
+            },
+        )
+        transient_table = prepared_import.destination.get_transient_table()
+        unique_id_sinp = db.session.execute(
+            select([transient_table.c.unique_id_sinp])
+            .where(transient_table.c.id_import == prepared_import.id_import)
+            .where(transient_table.c.line_no == 7)
+        ).scalar()
+        assert unique_id_sinp != None
+
+    @pytest.mark.parametrize("import_file_name,fieldmapping_preset_name", [("uuid_file.csv", None)])
+    def test_import_uuid_file(self, import_datasets, synthese_data, prepared_import):
         assert_import_errors(
             prepared_import,
             {
@@ -1134,7 +946,7 @@ class TestImportsSynthese:
         ).scalar()
         assert unique_id_sinp != None
 
-    @pytest.mark.parametrize("import_file_name", ["dates.csv"])
+    @pytest.mark.parametrize("import_file_name,fieldmapping_preset_name", [("dates.csv", None)])
     def test_import_dates_file(self, prepared_import):
         assert_import_errors(
             prepared_import,
@@ -1150,7 +962,9 @@ class TestImportsSynthese:
             },
         )
 
-    @pytest.mark.parametrize("import_file_name", ["digital_proof.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("digital_proof.csv", None)]
+    )
     def test_import_digital_proofs_file(self, prepared_import):
         assert_import_errors(
             prepared_import,
@@ -1164,7 +978,7 @@ class TestImportsSynthese:
             },
         )
 
-    @pytest.mark.parametrize("import_file_name", ["depth.csv"])
+    @pytest.mark.parametrize("import_file_name,fieldmapping_preset_name", [("depth.csv", None)])
     def test_import_depth_file(self, prepared_import):
         assert_import_errors(
             prepared_import,
@@ -1173,7 +987,9 @@ class TestImportsSynthese:
             },
         )
 
-    @pytest.mark.parametrize("import_file_name", ["nomenclatures_file.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("nomenclatures_file.csv", None)]
+    )
     def test_import_nomenclatures_file(self, prepared_import):
         assert_import_errors(
             prepared_import,
@@ -1196,7 +1012,9 @@ class TestImportsSynthese:
             },
         )
 
-    @pytest.mark.parametrize("import_file_name", ["additional_data.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("additional_data.csv", None)]
+    )
     def test_import_additional_data(self, imported_import):
         assert_import_errors(
             imported_import,
@@ -1222,7 +1040,9 @@ class TestImportsSynthese:
             {"a": "A", "additional_data2": ""},
         ]
 
-    @pytest.mark.parametrize("import_file_name", ["empty_nomenclatures_file.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("empty_nomenclatures_file.csv", None)]
+    )
     def test_import_empty_nomenclatures_file(self, imported_import):
         assert_import_errors(
             imported_import,
@@ -1246,7 +1066,9 @@ class TestImportsSynthese:
         # et ne pas l’écraser avec la valeur par défaut
         assert obs3.nomenclature_life_stage.label_default == "Alevin"
 
-    @pytest.mark.parametrize("import_file_name", ["empty_nomenclatures_file.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("empty_nomenclatures_file.csv", None)]
+    )
     def test_import_empty_nomenclatures_file_no_default(
         self, no_default_nomenclatures, imported_import
     ):
@@ -1273,7 +1095,9 @@ class TestImportsSynthese:
         # et ne pas l’écraser avec la valeur par défaut
         assert obs3.nomenclature_life_stage.label_default == "Alevin"
 
-    @pytest.mark.parametrize("import_file_name", ["multiline_comment_file.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("multiline_comment_file.csv", None)]
+    )
     def test_import_multiline_comment_file(self, users, imported_import):
         assert_import_errors(
             imported_import,
@@ -1321,6 +1145,9 @@ class TestImportsSynthese:
     def test_get_import_source_file(self, users, uploaded_import):
         url = url_for("import.get_import_source_file", import_id=uploaded_import.id_import)
 
+        unset_logged_user(self.client)
+        db.session.flush()
+
         resp = self.client.get(url)
         assert resp.status_code == Unauthorized.code
 
@@ -1328,7 +1155,7 @@ class TestImportsSynthese:
         resp = self.client.get(url)
         assert resp.status_code == Forbidden.code
 
-        set_logged_user(self.client, users["user"])
+        set_logged_user(self.client, uploaded_import.authors[0])
         resp = self.client.get(url)
         assert resp.status_code == 200
         assert resp.content_length > 0
@@ -1345,7 +1172,9 @@ class TestImportsSynthese:
             for nomenclature in resp.json.values()
         )
 
-    @pytest.mark.parametrize("import_file_name", ["multiline_comment_file.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_preset_name", [("multiline_comment_file.csv", None)]
+    )
     def test_import_compare_error_line_with_csv(self, users, imported_import, import_file_name):
         """
         This test verify generated errors csv file contains right rows from source file.
@@ -1377,19 +1206,47 @@ class TestImportsSynthese:
             # and this is the test purpose assert:
             assert error_row == source_row
 
-    @pytest.mark.parametrize("import_file_name", ["jdd_to_import_file.csv"])
+    @pytest.mark.parametrize(
+        "import_file_name,fieldmapping_unique_dataset_id",
+        [
+            (
+                "jdd_to_import_file.csv",
+                {
+                    "column_src": "unique_dataset_id",
+                },
+            )
+        ],
+    )
     def test_import_jdd_file(self, imported_import, users):
         assert_import_errors(
             imported_import,
             {
-                # id_dataset errors
-                # The line 2 should not be error (should be the one selected jdd default)
-                (ImportCodeError.DATASET_NOT_AUTHORIZED, "unique_dataset_id", frozenset({2, 4, 6})),
+                (ImportCodeError.INVALID_UUID, "unique_dataset_id", frozenset({4})),
                 (ImportCodeError.DATASET_NOT_FOUND, "unique_dataset_id", frozenset({5})),
+                (ImportCodeError.DATASET_NOT_ACTIVE, "unique_dataset_id", frozenset({6})),
+                (ImportCodeError.DATASET_NOT_AUTHORIZED, "unique_dataset_id", frozenset({7})),
                 (
                     ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
                     "floutage_dee",
-                    frozenset({6}),
+                    frozenset({8}),
                 ),
             },
         )
+
+    @pytest.mark.parametrize(
+        "preset_fieldmapping",
+        [
+            {
+                "__preset__": {
+                    "nom_cite": {"constant_value": "test_nomcite"},
+                    "altitude_max": {"constant_value": 10},
+                    "id_nomenclature_geo_object_nature": {
+                        "constant_value": "Inventoriel",
+                    },
+                }
+            }
+        ],
+    )
+    def test_import_upload_preset(self, field_mapped_import, preset_fieldmapping):
+        for key, value in preset_fieldmapping["__preset__"].items():
+            assert field_mapped_import.fieldmapping[key] == value
