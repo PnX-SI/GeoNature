@@ -72,27 +72,33 @@ export class SyntheseDataService {
   }
 
   getSyntheseObserverSheetStats(
-    id_role: number,
+    observer: string,
     areaType: string = 'COM'
   ): Observable<ObserverStats> {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_stats/${id_role}`, {
-      params: new HttpParams().append('area_type', areaType),
-    });
+    return this._api.get<any>(
+      `${this.config.API_ENDPOINT}/synthese/observer_stats/${encodeURIComponent(observer)}`,
+      {
+        params: new HttpParams().append('area_type', areaType),
+      }
+    );
   }
 
   getSyntheseObserverSheetTaxa(
-    id_role: number,
+    observer: string,
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
     sort: SyntheseDataSortItem = DEFAULT_SORT
   ): Observable<any> {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_overview/${id_role}`, {
-      params: {
-        per_page: pagination.perPage,
-        page: pagination.currentPage,
-        sort_by: sort.sortBy,
-        sort_order: sort.sortOrder,
-      },
-    });
+    return this._api.get<any>(
+      `${this.config.API_ENDPOINT}/synthese/observer_overview/${encodeURIComponent(observer)}`,
+      {
+        params: {
+          per_page: pagination.perPage,
+          page: pagination.currentPage,
+          sort_by: sort.sortBy,
+          sort_order: sort.sortOrder,
+        },
+      }
+    );
   }
 
   getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM'): Observable<TaxonStats> {
@@ -107,10 +113,13 @@ export class SyntheseDataService {
     });
   }
 
-  getObserverMedias(id_role: number, params?: {}): Observable<any> {
-    return this._api.get(`${this.config.API_ENDPOINT}/synthese/observer_medias/${id_role}`, {
-      params,
-    });
+  getObserverMedias(observer: string, params?: {}): Observable<any> {
+    return this._api.get(
+      `${this.config.API_ENDPOINT}/synthese/observer_medias/${encodeURIComponent(observer)}`,
+      {
+        params,
+      }
+    );
   }
 
   getIsAuthorizedCdRefForUser(cd_ref: number) {

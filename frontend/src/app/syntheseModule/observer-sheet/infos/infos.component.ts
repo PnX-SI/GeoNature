@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ObserverSheetService } from '../observer-sheet.service';
-import { Observer } from '../observer';
 @Component({
   standalone: true,
   selector: 'infos',
@@ -10,12 +9,12 @@ import { Observer } from '../observer';
   imports: [CommonModule],
 })
 export class InfosComponent implements OnInit {
-  observer: Observer | null = null;
+  observer: string | null = null;
 
   constructor(private _oss: ObserverSheetService) {}
 
   ngOnInit() {
-    this._oss.observer.subscribe((observer: Observer | null) => {
+    this._oss.observer.subscribe((observer: string | null) => {
       this.observer = observer;
     });
   }

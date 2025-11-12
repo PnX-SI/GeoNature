@@ -198,6 +198,16 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     return 'row-sm clickable';
   }
 
+  getObserverList(observers: string | null | undefined): string[] {
+    if (!observers) {
+      return [];
+    }
+    return observers
+      .split(',')
+      .map((observer) => observer.trim())
+      .filter((observer) => !!observer);
+  }
+
   getDate(date) {
     function pad(s) {
       return s < 10 ? '0' + s : s;

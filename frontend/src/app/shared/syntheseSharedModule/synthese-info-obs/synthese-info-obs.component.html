@@ -157,14 +157,14 @@
         *ngFor="let observer of observers; let last = last"
       >
         <a
-          *ngIf="observer.id_role != null; else esleObserver"
+          *ngIf="observer.id_role != null; else elseObserver"
           [routerLink]="'/synthese/observer/' + observer.id_role"
           target="_blank"
           class="Link"
         >
           {{ observer.name }}
         </a>
-        <ng-template #esleObserver>{{ observer.name }}</ng-template>
+        <ng-template #elseObserver>{{ observer.name }}</ng-template>
         <span *ngIf="!last">,</span>
       </ng-container>
       <br />

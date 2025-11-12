@@ -78,27 +78,35 @@
             >
               {{ 'MyAccount.MyAccount' | translate }}
             </a>
+            <a
+              *ngIf="hasObserverSheet()"
+              mat-menu-item
+              matTooltip="Accéder à ma fiche observateur"
+              matTooltipPosition="before"
+              [routerLink]="getObserverSheetUrl(currentUser?.nom_complet)">
+              {{ 'MyAccount.MyObserverSheet' | translate }}
+            </a>
           </mat-menu>
         </ng-container>
 
         <ng-template #noUserManagement>
-          <mat-icon>person</mat-icon>
-          <span class="user-name">
-            {{ currentUser?.user_login }}
-          </span>
+          <ng-container *ngIf="hasObserverSheet(); else userDisplay">
+            <a class="Link"
+              matTooltip="Accéder à ma fiche observateur"
+              [routerLink]="getObserverSheetUrl(currentUser?.nom_complet)">
+              <ng-container *ngTemplateOutlet="userDisplay"></ng-container>
+            </a>
+          </ng-container>
         </ng-template>
 
-        <!-- add observer sheet link only if observer sheet enabled -->
-        <ng-container *ngIf="config.SYNTHESE.ENABLE_OBSERVER_SHEETS">
-          <a
-            class="mx-2 mat-elevation-z1"
-            mat-icon-button
-            matTooltip="Accéder à ma fiche observateur"
-            (click)="openObserverSheet()"
-          >
-            <mat-icon>table_eye</mat-icon>
-          </a>
-        </ng-container>
+        <ng-template #userDisplay>
+          <div class="UserDisplay">
+            <mat-icon>person</mat-icon>
+            <span class="user-name">
+              {{ currentUser?.user_login }}
+            </span>
+          </div>
+        </ng-template>
 
         <!-- add notification only if notification enabled -->
         <ng-container *ngIf="config.NOTIFICATIONS_ENABLED == true">

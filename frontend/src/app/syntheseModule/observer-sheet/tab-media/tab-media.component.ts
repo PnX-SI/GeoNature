@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { Observer } from '../observer';
 import { ObserverSheetService } from '../observer-sheet.service';
 import { MediasListViewComponent } from '@geonature/syntheseModule/sheets/medias-list-view/medias-list-view.component';
 import {
@@ -25,7 +24,7 @@ export class TabMediaComponent extends Loadable implements OnInit {
     items: [],
     pagination: DEFAULT_PAGINATION,
   };
-  observer: Observer | null = null;
+  observer: string | null = null;
 
   constructor(
     private _oss: ObserverSheetService,
@@ -35,8 +34,8 @@ export class TabMediaComponent extends Loadable implements OnInit {
   }
 
   ngOnInit() {
-    this._oss.observer.subscribe((taxon) => {
-      this.observer = taxon;
+    this._oss.observer.subscribe((observer) => {
+      this.observer = observer;
       if (!this.observer) {
         this.medias = {
           items: [],
@@ -52,7 +51,7 @@ export class TabMediaComponent extends Loadable implements OnInit {
     this.startLoading();
 
     this._syntheseDataService
-      .getObserverMedias(this.observer.id_role, {
+      .getObserverMedias(this.observer, {
         page: pagination.currentPage,
         per_page: pagination.perPage,
       })

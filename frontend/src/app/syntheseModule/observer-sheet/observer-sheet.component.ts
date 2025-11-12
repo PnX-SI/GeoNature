@@ -10,10 +10,9 @@ import {
   IndicatorDescription,
 } from '@geonature_common/others/indicator/indicator';
 import { ObserverStats } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { ID_ROLE_PARAM_NAME, ObserverSheetRouteService } from './observer-sheet.route.service';
+import { ObserverSheetRouteService } from './observer-sheet.route.service';
 import { Loadable } from '../sheets/loadable';
 import { ObserverSheetService } from './observer-sheet.service';
-import { Observer } from './observer';
 import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
 
 const INDICATORS: Array<IndicatorDescription> = [
@@ -51,7 +50,7 @@ const INDICATORS: Array<IndicatorDescription> = [
   providers: [ObservationsFiltersService, ObserverSheetService],
 })
 export class ObserverSheetComponent extends Loadable implements OnInit {
-  observer: Observer | null = null;
+  observer: string | null = null;
 
   indicators: Array<Indicator>;
 
@@ -68,7 +67,7 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
   }
 
   ngOnInit() {
-    this._oss.observer.subscribe((observer: Observer | null) => {
+    this._oss.observer.subscribe((observer: string | null) => {
       this.observer = observer;
     });
 
@@ -80,11 +79,11 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
     });
 
     this._route.params.subscribe((params) => {
-      const id_role = params[ID_ROLE_PARAM_NAME];
-      if (id_role) {
+      const name = params["name"];
+      if (name) {
         this.startLoading();
         this.setIndicators(null);
-        this._oss.fetchObserverByIdRole(id_role);
+        this._oss.setObserver(name);
       }
     });
   }

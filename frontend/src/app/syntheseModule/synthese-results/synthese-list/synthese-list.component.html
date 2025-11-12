@@ -108,6 +108,11 @@
             <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
           </a>
         </div>
+        <div *ngSwitchCase="'observers'">
+          <ng-container *ngIf="config.SYNTHESE.ENABLE_OBSERVER_SHEETS; else cellDefault">
+            <ng-container *ngTemplateOutlet="cellObservers; context: { observers: getObserverList(row['observers']) }"></ng-container>
+          </ng-container>
+        </div>
         <div *ngSwitchCase="'dataset_name'">
           <a
             class="Link"
@@ -123,6 +128,21 @@
         </ng-container>
       </span>
       <ng-template #cellDefault>{{ row[col.prop] }}</ng-template>
+      <ng-template
+        #cellObservers
+        let-observers="observers"
+      >
+        <ng-container *ngFor="let observer of observers; let last = last">
+          <a
+            class="Link"
+            [routerLink]="['observer/' + observer]"
+            matTooltip="Afficher la fiche de l'observateur"
+          >
+            {{ observer }}
+          </a>
+          <span *ngIf="!last">, </span>
+        </ng-container>
+      </ng-template>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

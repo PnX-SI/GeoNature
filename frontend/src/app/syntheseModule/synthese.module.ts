@@ -67,9 +67,8 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'observer/:id_role',
+    path: 'observer/:name',
     component: ObserverSheetComponent,
-    canActivate: [ObserverSheetRouteService],
     canActivateChild: [ObserverSheetRouteService],
     children: [
       // auto redirect to the first mandatory tab

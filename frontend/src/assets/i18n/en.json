@@ -55,6 +55,7 @@
   },
   "MyAccount": {
     "MyAccount": "My Account",
+    "MyObserverSheet": "My Observer Sheet",
 
     "Messages": {
       "AutoAccountEmailConfirmation": "An email has just been sent to you to activate your account",

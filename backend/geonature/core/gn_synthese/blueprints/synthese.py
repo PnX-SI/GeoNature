@@ -78,7 +78,6 @@ def get_observations_for_web(permissions):
     :qparam str *_protection_status: filtre générique de statuts (BdC Statuts). Filtre sur les types. Voir config.
     :qparam str observers: Filter on observer
     :qparam str id_organism: Filter on organism
-    :qparam str id_role: Filter on id_role
     :qparam str date_min: Start date
     :qparam str date_max: End date
     :qparam str id_acquisition_framework: *tbd*

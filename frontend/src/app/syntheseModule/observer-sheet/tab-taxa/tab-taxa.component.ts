@@ -5,7 +5,6 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { FeatureCollection } from 'geojson';
 import { ObserverSheetService } from '../observer-sheet.service';
-import { Observer } from '../observer';
 import { ConfigService } from '@geonature/services/config.service';
 import { Router, RouterModule } from '@angular/router';
 import { Loadable } from '@geonature/syntheseModule/sheets/loadable';
@@ -56,7 +55,7 @@ export class TabTaxaComponent extends Loadable implements OnInit {
   }
 
   ngOnInit() {
-    this._oss.observer.subscribe((observer: Observer | null) => {
+    this._oss.observer.subscribe((observer: string | null) => {
       if (!observer) {
         this.observations = null;
         return;
@@ -95,7 +94,7 @@ export class TabTaxaComponent extends Loadable implements OnInit {
     }
 
     this._syntheseDataService
-      .getSyntheseObserverSheetTaxa(observer.id_role, this.pagination, this.sort)
+      .getSyntheseObserverSheetTaxa(observer, this.pagination, this.sort)
       .pipe(finalize(() => this.stopLoading()))
       .subscribe((data) => {
         // Store result

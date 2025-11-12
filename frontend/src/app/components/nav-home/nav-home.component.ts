@@ -10,6 +10,7 @@ import { ModuleService } from '../../services/module.service';
 import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { I18nService } from '@geonature/shared/translate/i18n-service';
+import { getObserverSheetRoute } from '@geonature/syntheseModule/observer-sheet/observer-sheet.route.service';
 
 @Component({
   selector: 'pnx-nav-home',
@@ -95,7 +96,11 @@ export class NavHomeComponent implements OnInit {
     this.router.navigate(['/notification']);
   }
 
-  openObserverSheet() {
-    this.router.navigate(['/synthese/observer/' + this.currentUser.id_role]);
+  hasObserverSheet(): boolean {
+    return this.config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS'] ?? false;
+  }
+
+  getObserverSheetUrl(observer: string): [string] {
+    return getObserverSheetRoute(observer);
   }
 }
