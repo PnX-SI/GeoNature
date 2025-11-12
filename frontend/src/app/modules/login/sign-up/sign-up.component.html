@@ -254,6 +254,8 @@
             <ngb-alert
               type="danger"
               *ngIf="errorMsg"
+              style="margin-top: 5px"
+              [dismissible]="false"
             >
               {{ errorMsg }}
             </ngb-alert>

@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RoutingService } from '@geonature/routing/routing.service';
 import { Provider } from '../providers';
 import { LoginDialog } from './external-login-dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-login',
@@ -32,6 +33,8 @@ export class LoginComponent implements OnInit {
   public authProviders: Array<Provider>;
   public localProviderEnabled: boolean = true;
   public isOtherProviders: boolean = false;
+  public errorMsg = '';
+
   constructor(
     public _authService: AuthService, //FIXME : change to private (html must be modified)
     private _commonService: CommonService,
@@ -40,7 +43,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private _routingService: RoutingService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private translate: TranslateService
   ) {
     this.enablePublicAccess = this.config.PUBLIC_ACCESS_USERNAME;
     this.APP_NAME = this.config.appName;
@@ -93,11 +97,31 @@ export class LoginComponent implements OnInit {
 
   loginOrPwdRecovery(data) {
     this.disableSubmit = true;
+    this.errorMsg = '';
     this._authService
       .loginOrPwdRecovery(data)
-      .subscribe(() => {
-        this._commonService.translateToaster('info', 'MyAccount.Messages.PasswordAndLoginRecovery');
-      })
+      .subscribe(
+        () => {
+          this._commonService.translateToaster(
+            'info',
+            'MyAccount.Messages.PasswordAndLoginRecovery'
+          );
+        },
+        (error) => {
+          if (error.status === 400) {
+            // Ajouter une clé de traduction
+            this.translate
+              .get('Authentication.Errors.WrongMailAddress')
+              .subscribe((translation) => {
+                this.errorMsg = translation;
+              });
+          } else {
+            this.translate.get('Authentication.Errors.UnexpectedError').subscribe((translation) => {
+              this.errorMsg = translation;
+            });
+          }
+        }
+      )
       .add(() => {
         this.disableSubmit = false;
       });
