@@ -50,6 +50,7 @@ from ref_geo.models import LAreas, BibAreasTypes
 from utils_flask_sqla_geo.schema import FeatureSchema, FeatureCollectionSchema
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
+
 class JoinType(str, Enum):
     INNER = "inner"
     LEFT = "left"

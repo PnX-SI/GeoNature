@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ConfigService } from '@geonature/services/config.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { TaxonSheetService } from '../taxon-sheet.service';
-import { getObserverSheetRoute } from '../../observer-sheet/observer-sheet.route.service'
+import { getObserverSheetRoute } from '../../observer-sheet/observer-sheet.route.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import {
   DEFAULT_PAGINATION,
@@ -45,7 +45,6 @@ export class TabObserversComponent extends Loadable implements OnInit {
     private _syntheseDataService: SyntheseDataService,
     private _tss: TaxonSheetService,
     private _config: ConfigService
-
   ) {
     super();
   }

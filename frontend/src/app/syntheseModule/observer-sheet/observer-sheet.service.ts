@@ -26,7 +26,7 @@ export class ObserverSheetService extends Loadable {
         return;
       }
       this._os.filters.next({
-        observers: observer
+        observers: observer,
       });
       this.fetchObserverStats();
     });
@@ -36,11 +36,12 @@ export class ObserverSheetService extends Loadable {
     this.observer.next(decodeURIComponent(name_raw));
   }
 
-
   fetchObserverStats() {
-    this._sds.getSyntheseObserverSheetStats(this.observer.getValue()).subscribe((stats: ObserverStats) => {
-      this._os.udpateFromSheetStats(stats);
-      this.observerStats.next(stats);
-    });
+    this._sds
+      .getSyntheseObserverSheetStats(this.observer.getValue())
+      .subscribe((stats: ObserverStats) => {
+        this._os.udpateFromSheetStats(stats);
+        this.observerStats.next(stats);
+      });
   }
 }

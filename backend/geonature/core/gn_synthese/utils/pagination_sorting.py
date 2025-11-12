@@ -3,6 +3,7 @@ from sqlalchemy.orm import Query
 from flask_sqlalchemy.pagination import Pagination
 from enum import Enum
 
+
 class PaginationSortingUtils:
 
     class SortOrder(Enum):

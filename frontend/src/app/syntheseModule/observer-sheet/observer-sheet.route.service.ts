@@ -43,9 +43,12 @@ export class ObserverSheetRouteService implements CanActivateChild {
   readonly TAB_LINKS: Array<ChildRouteDescription> = [];
   constructor(
     private _config: ConfigService,
-    private _router: Router,
+    private _router: Router
   ) {
-    if (this._config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS'] && this._config['SYNTHESE']?.['OBSERVER_SHEET']) {
+    if (
+      this._config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS'] &&
+      this._config['SYNTHESE']?.['OBSERVER_SHEET']
+    ) {
       const config = this._config['SYNTHESE']['OBSERVER_SHEET'];
       this.TAB_LINKS = ALL_OBSERVERS_ADVANCED_INFOS_ROUTES.filter(
         (tab) => !tab.configEnabledField || config[tab.configEnabledField]

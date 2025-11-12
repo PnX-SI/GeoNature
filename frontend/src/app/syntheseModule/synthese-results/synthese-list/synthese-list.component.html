@@ -110,7 +110,12 @@
         </div>
         <div *ngSwitchCase="'observers'">
           <ng-container *ngIf="config.SYNTHESE.ENABLE_OBSERVER_SHEETS; else cellDefault">
-            <ng-container *ngTemplateOutlet="cellObservers; context: { observers: getObserverList(row['observers']) }"></ng-container>
+            <ng-container
+              *ngTemplateOutlet="
+                cellObservers;
+                context: { observers: getObserverList(row['observers']) }
+              "
+            ></ng-container>
           </ng-container>
         </div>
         <div *ngSwitchCase="'dataset_name'">
@@ -140,7 +145,7 @@
           >
             {{ observer }}
           </a>
-          <span *ngIf="!last">, </span>
+          <span *ngIf="!last">,</span>
         </ng-container>
       </ng-template>
     </ng-template>

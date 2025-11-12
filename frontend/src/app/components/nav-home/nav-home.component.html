@@ -83,7 +83,8 @@
               mat-menu-item
               matTooltip="Accéder à ma fiche observateur"
               matTooltipPosition="before"
-              [routerLink]="getObserverSheetUrl(currentUser?.nom_complet)">
+              [routerLink]="getObserverSheetUrl(currentUser?.nom_complet)"
+            >
               {{ 'MyAccount.MyObserverSheet' | translate }}
             </a>
           </mat-menu>
@@ -91,9 +92,11 @@
 
         <ng-template #noUserManagement>
           <ng-container *ngIf="hasObserverSheet(); else userDisplay">
-            <a class="Link"
+            <a
+              class="Link"
               matTooltip="Accéder à ma fiche observateur"
-              [routerLink]="getObserverSheetUrl(currentUser?.nom_complet)">
+              [routerLink]="getObserverSheetUrl(currentUser?.nom_complet)"
+            >
               <ng-container *ngTemplateOutlet="userDisplay"></ng-container>
             </a>
           </ng-container>

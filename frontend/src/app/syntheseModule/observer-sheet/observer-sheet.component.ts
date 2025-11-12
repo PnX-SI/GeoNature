@@ -79,7 +79,7 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
     });
 
     this._route.params.subscribe((params) => {
-      const name = params["name"];
+      const name = params['name'];
       if (name) {
         this.startLoading();
         this.setIndicators(null);

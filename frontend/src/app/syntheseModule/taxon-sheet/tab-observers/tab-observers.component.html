@@ -24,14 +24,14 @@
     #cellObserverTemplate
     let-value="value"
   >
-    <a *ngIf="hasObserverSheet(); else cellNameTemplate"
+    <a
+      *ngIf="hasObserverSheet(); else cellNameTemplate"
       class="Link"
-      [routerLink]="getObserverSheetUrl(value)">
+      [routerLink]="getObserverSheetUrl(value)"
+    >
       {{ value | titlecase }}
     </a>
-
   </ng-template>
-
 
   <ng-template
     #cellDefaultTemplate
