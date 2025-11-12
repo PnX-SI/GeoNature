@@ -275,32 +275,28 @@ class SyntheseQuery:
         Returns:
             -Tuple: the SQLAlchemy query and the filter dictionnary
         """
-        cd_ref_childs = []
+        where_clauses= []
         if "cd_ref_parent" in self.filters:
-            # find all taxon child from cd_ref parent
-            cd_ref_parent_int = list(map(lambda x: int(x), self.filters.pop("cd_ref_parent")))
-            sql = text(
-                """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
-            )
-            result = DB.engine.execute(sql, id_parent=cd_ref_parent_int)
-            if result:
-                cd_ref_childs = [r[0] for r in result]
-
-        cd_ref_selected = []
+            self.add_join(
+                    TaxrefTree, self.model.cd_nom, TaxrefTree.cd_nom, join_type=JoinType.INNER
+                )
+            where_clauses.append(TaxrefTree.path.op("<@")(
+                sa.select(sa.func.array_agg(TaxrefTree.path))
+                .where(TaxrefTree.cd_nom.in_(self.filters["cd_ref_parent"]))
+                .scalar_subquery()
+            ))
         if "cd_ref" in self.filters:
-            cd_ref_selected = self.filters.pop("cd_ref")
-
-        # concat cd_ref child and just selected cd_ref
-        cd_ref_childs.extend(cd_ref_selected)
-
-        if len(cd_ref_childs) > 0:
             self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-            self.query = self.query.where(Taxref.cd_ref.in_(cd_ref_childs))
+            cd_ref_selected = self.filters.pop("cd_ref")
+            where_clauses.append( Taxref.cd_ref == cd_ref_selected[0])
+        
         if "taxonomy_id_hab" in self.filters:
             self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-            self.query = self.query.where(
-                Taxref.id_habitat.in_(self.filters.pop("taxonomy_id_hab"))
-            )
+            where_clauses.append(Taxref.id_habitat.in_(self.filters.pop("taxonomy_id_hab")))
+
+        if where_clauses:
+            self.query = self.query.where(*where_clauses)
+
 
         aliased_cor_taxon_attr = {}
         protection_status_value = []
