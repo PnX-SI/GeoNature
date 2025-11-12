@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Indicator } from './indicator';
 
 @Component({
-  selector: 'pnx-indicator',
+  selector: 'gn-indicator',
   templateUrl: 'indicator.component.html',
   styleUrls: ['indicator.component.scss'],
 })
