@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from typing import IO, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 from flask import current_app, render_template
+from pypnusershub.db.models import User
 import sqlalchemy as sa
 from sqlalchemy import func, select, delete
 from chardet.universaldetector import UniversalDetector
@@ -14,6 +15,7 @@ from sqlalchemy.sql.expression import select, insert
 import pandas as pd
 import numpy as np
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from werkzeug.exceptions import BadRequest
 from geonature.utils.env import db
 from weasyprint import HTML
@@ -164,6 +166,7 @@ def detect_separator(file_: IO, encoding: str) -> Optional[str]:
 
 
 def preprocess_value(
+    imprt: TImports,
     dataframe: pd.DataFrame,
     field: BibFields,
     source_col: Optional[Union[str, List[str]]],
@@ -222,7 +225,20 @@ def preprocess_value(
             dataframe[source_field] = None
 
         if constant_value is not None:
-            dataframe[source_field] = [constant_value] * len(dataframe)
+            if field.type_field == "observers":
+                transient_table = imprt.destination.get_transient_table()
+                type_dest_col = transient_table.c[field.dest_column].type
+                if not isinstance(constant_value, list):  # constant is an array of user(dict)
+                    constant_value = [constant_value]
+                if isinstance(type_dest_col, ARRAY):
+                    constant_value = [role["id_role"] for role in constant_value]
+                elif isinstance(type_dest_col, JSONB):
+                    constant_value = constant_value
+                else:
+                    constant_value = constant_value[0]["nom_complet"]
+                dataframe[field.dest_column] = [constant_value] * len(dataframe)
+            else:
+                dataframe[source_field] = [constant_value] * len(dataframe)
             # handle array repeated in single dataframe column
 
         col = dataframe[source_field]
@@ -272,6 +288,7 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
         data.update(
             {
                 dest_field: preprocess_value(
+                    imprt,
                     chunk,
                     mapping["field"],
                     mapping.get("column_src", None),

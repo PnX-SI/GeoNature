@@ -365,6 +365,12 @@ def load_import(scope, imprt):
             mapping = imprt.fieldmapping[field.name_field]
             if mapping.get("column_src", None) is not None:
                 imprt.observermapping.update(user_matching(imprt, field))
+            # elif constant := mapping.get("constant_value", None) is not None:
+            #     if isinstance(constant, list):
+            #         imprt.observermapping.update({})
+            #         pass
+            #     else:
+            #         pass
 
     imprt.source_count = line_no
     imprt.loaded = True

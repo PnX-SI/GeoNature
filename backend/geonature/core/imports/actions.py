@@ -223,63 +223,6 @@ class ImportActions:
         raise NotImplementedError
 
     @staticmethod
-    def bind_matched_observers_without_correspondance_table(
-        imprt: TImports, observer_field: BibFields
-    ):
-
-        observers_jsonb = (
-            func.jsonb_each(TImports.observermapping.cast(JSONB))
-            .table_valued("key", "value")
-            .alias("observer_jsonb")
-        )
-
-        observer_string_id_role = (
-            select(
-                sa.literal_column("observer_jsonb.key").label("observer_string"),
-                sa.cast(sa.literal_column("(observer_jsonb.value->>'id_role')"), sa.Integer).label(
-                    "id_role"
-                ),
-            )
-            .select_from(
-                TImports,
-                observers_jsonb,
-            )
-            .where(TImports.id_import == imprt.id_import)
-            .cte("observer_string_id_role")
-        )
-
-        transient_table = imprt.destination.get_transient_table()
-
-        model_observers = (
-            select(
-                getattr(transient_table.c, "line_no"),
-                func.unnest(
-                    func.string_to_array(
-                        getattr(transient_table.c, observer_field.source_column), ","
-                    )
-                ).label("observer"),
-                sa.func.row_number().over(
-                    partition_by=getattr(transient_table.c, "line_no"),
-                    order_by=sa.desc(getattr(transient_table.c, "line_no")),  # pas ouf
-                ),
-            )
-            .where(transient_table.c.id_import == imprt.id_import)
-            .cte("model_observers")
-        )
-
-        update_stmt = (
-            sa.update(transient_table)
-            .values({observer_field.dest_column: observer_string_id_role.c.id_role})
-            .where(
-                transient_table.c.line_no == model_observers.c.line_no,
-                model_observers.c.observer == observer_string_id_role.c.observer_string,
-                observer_string_id_role.c.id_role != None,
-            )
-        )
-
-        db.session.execute(update_stmt)
-
-    @staticmethod
     def bind_matched_observers(
         imprt: TImports,
         model,
