@@ -49,7 +49,7 @@ from apptax.taxonomie.models import (
 from ref_geo.models import LAreas, BibAreasTypes
 from utils_flask_sqla_geo.schema import FeatureSchema, FeatureCollectionSchema
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
-from .observer_sheet import ObserverSheetUtils
+from .observers import ObserversUtils
 
 
 class JoinType(str, Enum):
@@ -530,7 +530,7 @@ class SyntheseQuery:
 
         if "id_role" in self.filters:
             id_role = self.filters.pop("id_role")
-            observer_subquery = ObserverSheetUtils.get_observers_subquery(id_role)
+            observer_subquery = ObserversUtils.get_observers_subquery(id_role)
             self.add_join(
                 observer_subquery, observer_subquery.c.id_synthese, self.model.id_synthese
             )

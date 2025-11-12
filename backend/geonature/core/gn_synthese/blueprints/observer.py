@@ -15,7 +15,7 @@ from geonature.core.gn_synthese.models import (
     CorObserverSynthese,
 )
 from geonature.core.gn_commons.models import TMedias
-from geonature.core.gn_synthese.utils.observer_sheet import ObserverSheetUtils
+from geonature.core.gn_synthese.utils.observers import ObserversUtils
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from ref_geo.models import BibAreasTypes, LAreas
@@ -60,7 +60,7 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
         )
 
         # Observer subquery
-        observer_subquery = ObserverSheetUtils.get_observers_subquery(id_role)
+        observer_subquery = ObserversUtils.get_observers_subquery(id_role)
 
         # Main query to fetch stats
         query = (
@@ -109,7 +109,7 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
             per_page = request.args.get("per_page", 10, int)
             page = request.args.get("page", 1, int)
 
-            observer_subquery = ObserverSheetUtils.get_observers_subquery(id_role)
+            observer_subquery = ObserversUtils.get_observers_subquery(id_role)
             query = (
                 select(TMedias)
                 .select_from(Synthese)
@@ -140,7 +140,7 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
             sort_by = request.args.get("sort_by", "observation_count")
             sort_order = request.args.get("sort_order", SortOrder.DESC, SortOrder)
 
-            observer_subquery = ObserverSheetUtils.get_observers_subquery(id_role)
+            observer_subquery = ObserversUtils.get_observers_subquery(id_role)
             query = (
                 db.session.query(
                     Taxref.cd_nom,

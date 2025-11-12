@@ -3,7 +3,7 @@ from sqlalchemy import select, and_
 from sqlalchemy.orm import Query
 
 
-class ObserverSheetUtils:
+class ObserversUtils:
 
     @staticmethod
     def get_observers_subquery(id_role: int) -> Query:
