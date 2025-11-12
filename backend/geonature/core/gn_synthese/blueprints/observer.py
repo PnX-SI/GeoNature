@@ -12,7 +12,6 @@ from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
     Synthese,
-    CorObserverSynthese,
 )
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_synthese.utils.observers import ObserversUtils
