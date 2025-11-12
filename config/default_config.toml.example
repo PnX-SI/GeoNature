@@ -476,7 +476,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Permet d'activer ou non la section "Medias"
         ENABLE_TAB_MEDIA = true
         # Affiche la section overview
-        ENABLE_TAB_OVERVIEW = true
+        ENABLE_TAB_TAXA = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]

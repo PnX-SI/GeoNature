@@ -22,12 +22,12 @@ import { finalize } from '@librairies/rxjs/operators';
 
 @Component({
   standalone: true,
-  selector: 'tab-overview',
-  templateUrl: 'tab-overview.component.html',
-  styleUrls: ['tab-overview.component.scss'],
+  selector: 'tab-taxa',
+  templateUrl: 'tab-taxa.component.html',
+  styleUrls: ['tab-taxa.component.scss'],
   imports: [GN2CommonModule, CommonModule, RouterModule],
 })
-export class TabOverviewComponent extends Loadable implements OnInit {
+export class TabTaxaComponent extends Loadable implements OnInit {
   readonly PROP_CD_NOM = 'cd_nom';
   readonly PROP_NOM = 'nom';
   readonly PROP_DATE_MIN = 'date_min';
@@ -95,7 +95,7 @@ export class TabOverviewComponent extends Loadable implements OnInit {
     }
 
     this._syntheseDataService
-      .getSyntheseObserverSheetOverview(observer.id_role, this.pagination, this.sort)
+      .getSyntheseObserverSheetTaxa(observer.id_role, this.pagination, this.sort)
       .pipe(finalize(() => this.stopLoading()))
       .subscribe((data) => {
         // Store result

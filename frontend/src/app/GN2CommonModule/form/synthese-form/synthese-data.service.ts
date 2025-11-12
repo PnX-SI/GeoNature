@@ -80,7 +80,7 @@ export class SyntheseDataService {
     });
   }
 
-  getSyntheseObserverSheetOverview(
+  getSyntheseObserverSheetTaxa(
     id_role: number,
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
     sort: SyntheseDataSortItem = DEFAULT_SORT

@@ -8,7 +8,7 @@ import {
 } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
 import { TabMediaComponent } from './tab-media/tab-media.component';
-import { TabOverviewComponent } from './tab-overview/tab-overview.component';
+import { TabTaxaComponent } from './tab-taxa/tab-taxa.component';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,10 +24,10 @@ export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> =
     configEnabledField: null, // make it always available !
   },
   {
-    label: 'Overview',
-    path: 'overview',
-    component: TabOverviewComponent,
-    configEnabledField: 'ENABLE_TAB_OVERVIEW',
+    label: 'Taxons',
+    path: 'taxa',
+    component: TabTaxaComponent,
+    configEnabledField: 'ENABLE_TAB_TAXA',
   },
   {
     label: 'Medias',

@@ -129,7 +129,7 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
                 "items": [media.as_dict() for media in pagination.items],
             }
 
-    if app.config["SYNTHESE"]["OBSERVER_SHEET"]["ENABLE_TAB_OVERVIEW"]:
+    if app.config["SYNTHESE"]["OBSERVER_SHEET"]["ENABLE_TAB_TAXA"]:
 
         @observer_info_routes.route("/observer_overview/<int:id_role>", methods=["GET"])
         @permissions.permissions_required("R", module_code="SYNTHESE")
