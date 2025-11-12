@@ -44,11 +44,10 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
             raise BadRequest("Missing area_type parameter")
 
         # Ensure area_type is valid
-        valid_area_type = (
-            db.session.query(BibAreasTypes.type_code)
+        valid_area_type = db.session.scalar(
+            select(BibAreasTypes.type_code)
+            .where(BibAreasTypes.type_code == area_type)
             .distinct()
-            .filter(BibAreasTypes.type_code == area_type)
-            .scalar()
         )
         if not valid_area_type:
             raise BadRequest("Invalid area_type")
