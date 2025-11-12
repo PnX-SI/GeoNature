@@ -1,21 +1,21 @@
-<pnx-page-layout>
-  <pnx-sheet-layout>
+<gn-page-layout>
+  <gn-sheet-layout>
     <infos infos />
-    <pnx-loadable-layout
+    <gn-loadable-layout
       indicators
       [isLoading]="isLoadingIndicators"
     >
-      <pnx-indicators-layout>
+      <gn-indicators-layout>
         <taxon-image />
         <pnx-indicator
           *ngFor="let indicator of indicators"
           [indicator]="indicator"
         />
-      </pnx-indicators-layout>
-    </pnx-loadable-layout>
-    <pnx-tabs-layout
+      </gn-indicators-layout>
+    </gn-loadable-layout>
+    <gn-tabs-layout
       tabs
       [tabs]="routes.TAB_LINKS"
     />
-  </pnx-sheet-layout>
-</pnx-page-layout>
+  </gn-sheet-layout>
+</gn-page-layout>

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ChildRouteDescription } from '@geonature/routing/childRouteDescription';
 
 @Component({
-  selector: 'pnx-tabs-layout',
+  selector: 'gn-tabs-layout',
   templateUrl: 'tabs-layout.component.html',
   styleUrls: ['tabs-layout.component.scss'],
 })
