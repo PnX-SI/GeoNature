@@ -17,6 +17,7 @@ from geonature.core.gn_synthese.models import (
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_synthese.utils.observers import ObserversUtils
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
+from geonature.core.gn_synthese.utils.pagination_sorting import PaginationSortingUtils
 
 from ref_geo.models import BibAreasTypes, LAreas
 from utils_flask_sqla.response import json_resp
@@ -24,7 +25,6 @@ from utils_flask_sqla.response import json_resp
 
 from sqlalchemy import distinct, func, select
 from werkzeug.exceptions import BadRequest
-from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheet, TaxonSheetUtils, SortOrder
 from apptax.taxonomie.models import Taxref
 
 observer_info_routes = Blueprint("synthese_observer_info", __name__)
@@ -138,7 +138,11 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
             per_page = request.args.get("per_page", 10, int)
             page = request.args.get("page", 1, int)
             sort_by = request.args.get("sort_by", "observation_count")
-            sort_order = request.args.get("sort_order", SortOrder.DESC, SortOrder)
+            sort_order = request.args.get(
+                "sort_order",
+                PaginationSortingUtils.SortOrder.DESC,
+                PaginationSortingUtils.SortOrder,
+            )
 
             observer_subquery = ObserversUtils.get_observers_subquery(id_role)
             query = (
@@ -159,8 +163,8 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
             synthese_query_obj = SyntheseQuery(Synthese, query, {})
             synthese_query_obj.filter_query_with_permissions(g.current_user, permissions)
 
-            query = TaxonSheetUtils.update_query_with_sorting(query, sort_by, sort_order)
-            results = TaxonSheetUtils.paginate(query, page, per_page)
+            query = PaginationSortingUtils.update_query_with_sorting(query, sort_by, sort_order)
+            results = PaginationSortingUtils.paginate(query, page, per_page)
 
             return jsonify(
                 {

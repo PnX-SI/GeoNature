@@ -15,7 +15,8 @@ from geonature.core.gn_synthese.models import (
     VColorAreaTaxon,
 )
 from geonature.core.gn_commons.models import TMedias
-from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheet, TaxonSheetUtils, SortOrder
+from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheet, TaxonSheetUtils
+from geonature.core.gn_synthese.utils.pagination_sorting import PaginationSortingUtils
 from pypnusershub.db import User
 from geonature.core.gn_synthese.utils.orm import is_already_joined
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
@@ -325,7 +326,9 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
         per_page = request.args.get("per_page", 10, int)
         page = request.args.get("page", 1, int)
         sort_by = request.args.get("sort_by", "observer")
-        sort_order = request.args.get("sort_order", SortOrder.ASC, SortOrder)
+        sort_order = request.args.get(
+            "sort_order", PaginationSortingUtils.SortOrder.ASC, PaginationSortingUtils.SortOrder
+        )
         field_separators = request.args.get(
             "field_separators", app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"]
         )
@@ -356,8 +359,8 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
         query = TaxonSheetUtils.get_synthese_query_with_permissions(
             g.current_user, permissions, query
         )
-        query = TaxonSheetUtils.update_query_with_sorting(query, sort_by, sort_order)
-        results = TaxonSheetUtils.paginate(query, page, per_page)
+        query = PaginationSortingUtils.update_query_with_sorting(query, sort_by, sort_order)
+        results = PaginationSortingUtils.paginate(query, page, per_page)
 
         return jsonify(
             {
