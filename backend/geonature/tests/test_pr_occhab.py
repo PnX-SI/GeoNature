@@ -7,7 +7,7 @@ from copy import deepcopy
 import json
 
 import pandas as pd
-from flask import url_for
+from flask import url_for, current_app
 from werkzeug.datastructures import TypeConversionDict
 from werkzeug.exceptions import Unauthorized, Forbidden, BadRequest
 from shapely.geometry import Point
@@ -237,7 +237,11 @@ class TestOcchab:
         response = self.client.get(url)
         assert response.status_code == 200
 
-    def test_create_station(self, users, datasets, station):
+    @pytest.mark.parametrize("withObserversAsTXT", [True, False])
+    def test_create_station(self, users, datasets, station, withObserversAsTXT, monkeypatch):
+
+        monkeypatch.setitem(current_app.config["OCCHAB"], "OBSERVERS_AS_TXT", withObserversAsTXT)
+
         url = url_for("occhab.create_or_update_station")
         point = Point(3.634, 44.399)
         nomenc_nat_obj_geo = db.session.execute(
@@ -257,17 +261,24 @@ class TestOcchab:
             )
         ).scalar_one()
         habref = db.session.scalars(sa.select(Habref).limit(1)).first()
+        observer = (
+            {
+                "observers": [
+                    {
+                        "id_role": users["user"].id_role,
+                    },
+                ]
+            }
+            if not withObserversAsTXT
+            else {"observers_txt": "test"}
+        )
         feature = Feature(
             geometry=point,
             properties={
                 "id_dataset": datasets["own_dataset"].id_dataset,
                 "id_nomenclature_geographic_object": nomenc_nat_obj_geo.id_nomenclature,
                 "comment": "Une station",
-                "observers": [
-                    {
-                        "id_role": users["user"].id_role,
-                    },
-                ],
+                **observer,
                 "habitats": [
                     {
                         "cd_hab": habref.cd_hab,
@@ -296,9 +307,12 @@ class TestOcchab:
         assert len(new_station.habitats) == 1
         habitat = new_station.habitats[0]
         assert habitat.nom_cite == "prairie"
-        assert len(new_station.observers) == 1
-        observer = new_station.observers[0]
-        assert observer.id_role == users["user"].id_role
+        if not withObserversAsTXT:
+            assert len(new_station.observers) == 1
+            observer = new_station.observers[0]
+            assert observer.id_role == users["user"].id_role
+        else:
+            assert len(new_station.observers_txt) > 0
 
         # Test unexisting id dataset
         data = deepcopy(feature)
@@ -317,11 +331,12 @@ class TestOcchab:
         FeatureSchema().load(response.json)["id"] != station.id_station  # new id for new station
 
         # Try leveraging observers to modify existing user
-        data = deepcopy(feature)
-        data["properties"]["observers"][0]["nom_role"] = "nouveau nom"
-        response = self.client.post(url, data=data)
-        assert response.status_code == 200, response.json
-        assert users["user"].nom_role != "nouveau nom"
+        if not withObserversAsTXT:
+            data = deepcopy(feature)
+            data["properties"]["observers"][0]["nom_role"] = "nouveau nom"
+            response = self.client.post(url, data=data)
+            assert response.status_code == 200, response.json
+            assert users["user"].nom_role != "nouveau nom"
 
         # Try associate other station habitat to this station
         data = deepcopy(feature)
