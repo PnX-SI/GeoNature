@@ -108,7 +108,10 @@
             <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
           </a>
         </div>
-        <gn-observers-with-link *ngSwitchCase="'observers'" [observers]="row['observers']"></gn-observers-with-link>
+        <gn-observers-with-link
+          *ngSwitchCase="'observers'"
+          [observers]="row['observers']"
+        ></gn-observers-with-link>
         <div *ngSwitchCase="'dataset_name'">
           <a
             class="Link"

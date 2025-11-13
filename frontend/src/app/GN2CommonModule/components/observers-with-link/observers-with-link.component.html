@@ -1,12 +1,8 @@
 <ng-container *ngIf="isObserverSheetEnabled; else templateObserversAsText">
-  <ng-container
-    *ngTemplateOutlet="templateObserversAsLink"
-  ></ng-container>
+  <ng-container *ngTemplateOutlet="templateObserversAsLink"></ng-container>
 </ng-container>
 
-<ng-template
-  #templateObserversAsLink
->
+<ng-template #templateObserversAsLink>
   <ng-container *ngFor="let observer of observersAsList; let last = last">
     <a
       class="Link"
@@ -16,7 +12,7 @@
     >
       {{ observer }}
     </a>
-    <span *ngIf="!last">, </span>
+    <span *ngIf="!last">,</span>
   </ng-container>
 </ng-template>
 

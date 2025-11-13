@@ -152,7 +152,10 @@
         </span>
       </div>
       <b>{{ 'Observation' | translate }} {{ 'Of' | translate }} :</b>
-      <gn-observers-with-link [observers]="selectedObs?.observers" target="_blank"></gn-observers-with-link>
+      <gn-observers-with-link
+        [observers]="selectedObs?.observers"
+        target="_blank"
+      ></gn-observers-with-link>
       <br />
       <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
         <b>{{ 'Date' | translate }} :</b>
