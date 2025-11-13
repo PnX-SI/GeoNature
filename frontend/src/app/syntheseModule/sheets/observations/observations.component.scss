@@ -44,7 +44,7 @@
   flex-flow: column;
   justify-content: flex-start;
   height: 100%;
-  &__spinner {
+  &__loader {
     position: absolute;
     left: 0;
     right: 0;
@@ -52,14 +52,14 @@
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
-    z-index: 1001; // leaflet-bottom: 1000
+    z-index: 5000; // keep above Leaflet panes, toolbars, and dialogs
 
     .mat-mdc-progress-spinner {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 1002; // leaflet-bottom: 1000
+      z-index: 5001;
     }
   }
   &__map {

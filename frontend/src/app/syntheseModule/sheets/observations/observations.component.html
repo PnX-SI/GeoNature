@@ -1,4 +1,10 @@
 <div class="Observations">
+  <div
+    *ngIf="isLoading"
+    class="Observations__loader"
+  >
+    <mat-spinner></mat-spinner>
+  </div>
   <pnx-map
     class="Observations__map"
     height="100%"
