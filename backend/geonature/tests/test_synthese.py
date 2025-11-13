@@ -1261,7 +1261,7 @@ class TestSynthese:
         self, synthese_data, users, logged_user_name, observer_user_name, stats
     ):
 
-        stats["id_role"] = users[observer_user_name].id_role
+        stats["observer"] = users[observer_user_name].nom_complet
 
         set_logged_user(self.client, users[logged_user_name])
 
