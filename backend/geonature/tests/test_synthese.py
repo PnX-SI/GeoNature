@@ -1205,7 +1205,7 @@ class TestSynthese:
         set_logged_user(self.client, users["admin_user"])
         url = url_for(
             "gn_synthese.synthese_observer_info.observer_stats",
-            id_role=users["admin_user"].id_role,
+            observer=users["admin_user"].nom_complet,
         )
 
         # area_type required
@@ -1270,7 +1270,7 @@ class TestSynthese:
         response = self.client.get(
             url_for(
                 "gn_synthese.synthese_observer_info.observer_stats",
-                id_role=users[observer_user_name].id_role,
+                observer=users[observer_user_name].nom_complet,
                 area_type=AREA_TYPE_VALID,
             ),
         )
@@ -1352,7 +1352,7 @@ class TestSynthese:
         set_logged_user(self.client, users[logged_user_name])
         url = url_for(
             "gn_synthese.synthese_observer_info.observer_overview",
-            id_role=users[logged_user_name].id_role,
+            observer=users[logged_user_name].nom_complet,
         )
         response = self.client.get(
             url, query_string={"per_page": overview["per_page"], "page": overview["page"]}
@@ -1386,7 +1386,7 @@ class TestSynthese:
         set_logged_user(self.client, users[logged_user_name])
         url = url_for(
             "gn_synthese.synthese_observer_info.observer_medias",
-            id_role=users[logged_user_name].id_role,
+            observer=users[logged_user_name].nom_complet,
         )
         response = self.client.get(
             url, query_string={"per_page": medias["per_page"], "page": medias["page"]}
