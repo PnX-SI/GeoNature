@@ -108,16 +108,7 @@
             <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
           </a>
         </div>
-        <div *ngSwitchCase="'observers'">
-          <ng-container *ngIf="config.SYNTHESE.ENABLE_OBSERVER_SHEETS; else cellDefault">
-            <ng-container
-              *ngTemplateOutlet="
-                cellObservers;
-                context: { observers: getObserverList(row['observers']) }
-              "
-            ></ng-container>
-          </ng-container>
-        </div>
+        <gn-observers-with-link *ngSwitchCase="'observers'" [observers]="row['observers']"></gn-observers-with-link>
         <div *ngSwitchCase="'dataset_name'">
           <a
             class="Link"

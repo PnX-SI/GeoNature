@@ -99,7 +99,6 @@ const routes: Routes = [
     CommonModule,
     TreeModule,
     NgbModule,
-    TaxonSheetComponent,
   ],
   declarations: [
     SyntheseComponent,

@@ -152,21 +152,7 @@
         </span>
       </div>
       <b>{{ 'Observation' | translate }} {{ 'Of' | translate }} :</b>
-      <ng-container
-        data-qa="synthese-info-obs-observateur"
-        *ngFor="let observer of observers; let last = last"
-      >
-        <a
-          *ngIf="observer.id_role != null; else elseObserver"
-          [routerLink]="'/synthese/observer/' + observer.id_role"
-          target="_blank"
-          class="Link"
-        >
-          {{ observer.name }}
-        </a>
-        <ng-template #elseObserver>{{ observer.name }}</ng-template>
-        <span *ngIf="!last">,</span>
-      </ng-container>
+      <gn-observers-with-link [observers]="selectedObs?.observers" target="_blank"></gn-observers-with-link>
       <br />
       <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
         <b>{{ 'Date' | translate }} :</b>

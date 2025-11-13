@@ -1,0 +1,23 @@
+<ng-container *ngIf="isObserverSheetEnabled; else templateObserversAsText">
+  <ng-container
+    *ngTemplateOutlet="templateObserversAsLink"
+  ></ng-container>
+</ng-container>
+
+<ng-template
+  #templateObserversAsLink
+>
+  <ng-container *ngFor="let observer of observersAsList; let last = last">
+    <a
+      class="Link"
+      [routerLink]="['/synthese', 'observer', observer]"
+      matTooltip="Afficher la fiche de l'observateur"
+      [target]="target"
+    >
+      {{ observer }}
+    </a>
+    <span *ngIf="!last">, </span>
+  </ng-container>
+</ng-template>
+
+<ng-template #templateObserversAsText>{{ observersAsText }}</ng-template>
