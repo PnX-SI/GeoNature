@@ -18,6 +18,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChildRouteDescription } from '@geonature/routing/childRouteDescription';
 import { ObservationsComponent } from '../sheets/observations/observations.component';
 
+export function getTaxonSheetRoute(cd_nom: number): [string] {
+  return [`/synthese/taxon/${cd_nom}`];
+}
+
 export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
     label: 'Observations',

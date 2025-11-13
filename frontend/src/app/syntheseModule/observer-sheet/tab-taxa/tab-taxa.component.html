@@ -14,6 +14,20 @@
   </ng-template>
 
   <ng-template
+    #cellTaxaTemplate
+    let-label="label"
+    let-cd_nom="cd_nom"
+  >
+    <a
+      *ngIf="hasTaxonSheet(); else cellNameTemplate"
+      class="Link"
+      [routerLink]="getTaxonSheetUrl(cd_nom)"
+    >
+      <ng-template *ngTemplateOutlet="cellNameTemplate; context: { value: label }"></ng-template>
+    </a>
+  </ng-template>
+
+  <ng-template
     #cellNameTemplate
     let-value="value"
   >
@@ -47,7 +61,10 @@
         let-row="row"
       >
         <ng-template
-          *ngTemplateOutlet="cellNameTemplate; context: { value: row[PROP_NOM] }"
+          *ngTemplateOutlet="
+            cellTaxaTemplate;
+            context: { label: row[PROP_NOM], cd_nom: row[PROP_CD_NOM] }
+          "
         ></ng-template>
       </ng-template>
     </ngx-datatable-column>

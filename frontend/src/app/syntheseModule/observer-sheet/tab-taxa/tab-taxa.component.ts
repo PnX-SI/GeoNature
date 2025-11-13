@@ -18,6 +18,7 @@ import {
   SyntheseDataPaginationItem,
 } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { finalize } from '@librairies/rxjs/operators';
+import { getTaxonSheetRoute } from '@geonature/syntheseModule/taxon-sheet/taxon-sheet.route.service';
 
 @Component({
   standalone: true,
@@ -105,5 +106,13 @@ export class TabTaxaComponent extends Loadable implements OnInit {
           perPage: data.per_page,
         };
       });
+  }
+
+  hasTaxonSheet(): boolean {
+    return this.config['SYNTHESE']?.['ENABLE_TAXON_SHEETS'] ?? false;
+  }
+
+  getTaxonSheetUrl(cd_nom: number): [string] {
+    return getTaxonSheetRoute(cd_nom);
   }
 }
