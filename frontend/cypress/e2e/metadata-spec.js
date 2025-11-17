@@ -45,6 +45,7 @@ describe('Testing metadata', () => {
     cy.get(caSelector).click();
     cy.wait(30000);
     cy.get('[data-qa="pnx-metadata-export-af"]')
+      .scrollIntoView()
       .should('be.visible')
       .then(() => {
         cy.get('[data-qa="pnx-metadata-export-af"]')
