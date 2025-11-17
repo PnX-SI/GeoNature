@@ -704,3 +704,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Taille des `batch` de données importées simultanément
     DATAFRAME_BATCH_SIZE = 10000
 
+    # Modifier la limite de taille du champ CSV
+    CSV_FIELD_SIZE_LIMIT = 1000000
+

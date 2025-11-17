@@ -5,6 +5,7 @@ Démarrage de l'application
 import logging, warnings, sys
 from itertools import chain
 from importlib import import_module
+import csv
 
 if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
@@ -34,6 +35,8 @@ from geonature.middlewares import SchemeFix, RequestID
 from pypnusershub.db.models import Application
 from pypnusershub.auth import auth_manager
 from pypnusershub.login_manager import login_manager
+
+csv.field_size_limit(config["IMPORT"]["CSV_FIELD_SIZE_LIMIT"])
 
 
 @migrate.configure
