@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.users.register_post_actions - Documentation GeoNature 2.16.3</title>
+        <title>geonature.core.users.register_post_actions - Documentation GeoNature 2.16.4</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.16.4</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.4</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -454,7 +454,7 @@
 <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">url_for</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">select</span>
 <span class="kn">from</span> <span class="nn">markupsafe</span> <span class="kn">import</span> <span class="n">Markup</span>
-<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">CorRoleToken</span><span class="p">,</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">pypnusershub.db.models_register</span> <span class="kn">import</span> <span class="n">TempUser</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">func</span>
 
@@ -473,7 +473,7 @@
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/users/register_post_actions/index.html#geonature.core.users.register_post_actions.validators_emails">[docs]</a>
 <span class="k">def</span> <span class="nf">validators_emails</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    On souhaite récupérer une liste de mails</span>
+<span class="sd">    Returns a list of validators emails</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">emails</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">][</span><span class="s2">&quot;VALIDATOR_EMAIL&quot;</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">emails</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">emails</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">emails</span><span class="p">]</span></div>
@@ -486,28 +486,28 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Send an email after the action of account creation.</span>
 
-<span class="sd">    :param admin_validation_required: if True an admin will receive an</span>
-<span class="sd">    email to validate the account creation else the user himself</span>
-<span class="sd">    receive the email.</span>
-<span class="sd">    :type admin_validation_required: bool</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        Must contain the token of the temp user. Example : {&quot;token&quot;: &quot;iamavalidtoken&quot;}</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">token</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="n">user</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">TempUser</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TempUser</span><span class="o">.</span><span class="n">token_role</span> <span class="o">==</span> <span class="n">token</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{token}</span><span class="s2">: ce token n&#39;est pas associé à un compte temporaire&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">)</span>
-        <span class="p">}</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> is not associated to a temp user&quot;</span><span class="p">)</span>
     <span class="n">user_dict</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
     <span class="n">subject</span> <span class="o">=</span> <span class="s2">&quot;Demande de création de compte GeoNature&quot;</span>
+    <span class="n">url_validation</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;URL_APPLICATION&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/#/confirm?token=</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">][</span><span class="s2">&quot;AUTO_ACCOUNT_CREATION&quot;</span><span class="p">]:</span>
         <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;email_self_validate_account.html&quot;</span>
         <span class="n">recipients</span> <span class="o">=</span> <span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;email_admin_validate_account.html&quot;</span>
         <span class="n">recipients</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">][</span><span class="s2">&quot;VALIDATOR_EMAIL&quot;</span><span class="p">]</span>
-    <span class="n">url_validation</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;users.confirmation&quot;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">token_role</span><span class="p">,</span> <span class="n">_external</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
+        <span class="n">url_validation</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&amp;asValidator=true&quot;</span>
     <span class="n">additional_fields</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">user_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;champs_addi&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">]</span>
@@ -521,17 +521,23 @@
 
     <span class="n">send_mail</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">msg_html</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;ok&quot;</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 
 <div class="viewcode-block" id="execute_actions_after_validation">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/users/register_post_actions/index.html#geonature.core.users.register_post_actions.execute_actions_after_validation">[docs]</a>
 <span class="k">def</span> <span class="nf">execute_actions_after_validation</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute post actions after a temp user has been validated.</span>
+<span class="sd">    If AUTO_DATASET_CREATION is set to True, create a personal JDD and AF</span>
+<span class="sd">    for the user. Then, send an email to the user to inform him of the</span>
+<span class="sd">    creation of his account.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">][</span><span class="s2">&quot;AUTO_DATASET_CREATION&quot;</span><span class="p">]:</span>
         <span class="n">create_dataset_user</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">inform_user</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;ok&quot;</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 
@@ -539,9 +545,15 @@
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/users/register_post_actions/index.html#geonature.core.users.register_post_actions.create_dataset_user">[docs]</a>
 <span class="k">def</span> <span class="nf">create_dataset_user</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    After dataset validation, add a personnal AF and JDD so the user</span>
-<span class="sd">    can add new user.</span>
+<span class="sd">    After dataset validation, add a personal Acquisition Framework and Dataset</span>
+<span class="sd">    so the user can add new datasets.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    user : dict</span>
+<span class="sd">        The user data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">af_desc_and_name</span> <span class="o">=</span> <span class="s2">&quot;Cadre d&#39;acquisition personnel de </span><span class="si">{name}</span><span class="s2"> </span><span class="si">{surname}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;nom_role&quot;</span><span class="p">],</span> <span class="n">surname</span><span class="o">=</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;prenom_role&quot;</span><span class="p">]</span>
     <span class="p">)</span>
@@ -609,6 +621,11 @@
 <span class="k">def</span> <span class="nf">inform_user</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Send an email to inform the user that his account was validate.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    user : dict</span>
+<span class="sd">        The user data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">app_name</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;appName&quot;</span><span class="p">]</span>
     <span class="n">app_url</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span>
@@ -632,34 +649,31 @@
 
 <div class="viewcode-block" id="send_email_for_recovery">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/users/register_post_actions/index.html#geonature.core.users.register_post_actions.send_email_for_recovery">[docs]</a>
-<span class="k">def</span> <span class="nf">send_email_for_recovery</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">send_email_for_recovery</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Send an email with the login of the role and the possibility to reset</span>
 <span class="sd">    its password</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    user : dict</span>
+<span class="sd">        The user data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span>
-    <span class="n">url_password</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/#/login/new-password?token=&quot;</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
-    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No user was given&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">token</span> <span class="o">:=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CorRoleToken</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span><span class="o">.</span><span class="n">token</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No token is associated to </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id_role</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">msg_html</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span>
         <span class="s2">&quot;email_login_and_new_pass.html&quot;</span><span class="p">,</span>
-        <span class="n">identifiant</span><span class="o">=</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;identifiant&quot;</span><span class="p">],</span>
-        <span class="n">url_password</span><span class="o">=</span><span class="n">url_password</span><span class="p">,</span>
+        <span class="n">identifiant</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">identifiant</span><span class="p">,</span>
+        <span class="n">url_password</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/#/login/new-password?token=&quot;</span> <span class="o">+</span> <span class="n">token</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">subject</span> <span class="o">=</span> <span class="s2">&quot;Confirmation changement Identifiant / mot de passe&quot;</span>
-    <span class="n">send_mail</span><span class="p">([</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]],</span> <span class="n">subject</span><span class="p">,</span> <span class="n">msg_html</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;ok&quot;</span><span class="p">}</span></div>
-
-
-
-<div class="viewcode-block" id="function_dict">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/register_post_actions/index.html#geonature.core.users.register_post_actions.function_dict">[docs]</a>
-<span class="n">function_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;create_temp_user&quot;</span><span class="p">:</span> <span class="n">validate_temp_user</span><span class="p">,</span>
-    <span class="s2">&quot;valid_temp_user&quot;</span><span class="p">:</span> <span class="n">execute_actions_after_validation</span><span class="p">,</span>
-    <span class="s2">&quot;create_cor_role_token&quot;</span><span class="p">:</span> <span class="n">send_email_for_recovery</span><span class="p">,</span>
-<span class="p">}</span></div>
+    <span class="n">send_mail</span><span class="p">([</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span> <span class="n">subject</span><span class="p">,</span> <span class="n">msg_html</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 </pre></div>
         </article>
@@ -693,7 +707,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=2768d7c9"></script>
+</div><script src="../../../../_static/documentation_options.js?v=ece14704"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

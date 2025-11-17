@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Recherche" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.utils.config_schema - Documentation GeoNature 2.16.3</title>
+        <title>geonature.utils.config_schema - Documentation GeoNature 2.16.4</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
+      <a href="../../../index.html"><div class="brand">Documentation GeoNature 2.16.4</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.4</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -989,8 +989,8 @@
 <a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.unwrap_usershub">[docs]</a>
     <span class="k">def</span> <span class="nf">unwrap_usershub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        On met la section [USERSHUB] à la racine de la conf</span>
-<span class="sd">        pour compatibilité et simplicité ave le sous-module d&#39;authentif</span>
+<span class="sd">        On met la section [USERSHUB] à la racine de la configuration</span>
+<span class="sd">        pour compatibilité et simplicité ave le sous-module d&#39;authentification</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -1006,18 +1006,6 @@
         <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_SIGN_UP&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">data</span><span class="p">[</span>
             <span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span>
         <span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_USER_MANAGEMENT&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;URL_USERSHUB&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
-                <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ADMIN_APPLICATION_LOGIN&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
-                <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ADMIN_APPLICATION_PASSWORD&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="p">):</span>
-                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
-                    <span class="p">(</span>
-                        <span class="s2">&quot;URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True &quot;</span>
-                        <span class="s2">&quot;ou si ENABLE_USER_MANAGEMENT=True&quot;</span>
-                    <span class="p">),</span>
-                    <span class="s2">&quot;URL_USERSHUB&quot;</span><span class="p">,</span>
-                <span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;MAIL_CONFIG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MAIL_SERVER&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
                     <span class="s2">&quot;Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True&quot;</span><span class="p">,</span>
@@ -1717,6 +1705,11 @@
                 <span class="s2">&quot;Le paramètre API_TAXHUB n&#39;est plus utilisé depuis la version 2.15.&quot;</span><span class="p">,</span>
                 <span class="ne">Warning</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;USERSHUB&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Le paramètre USERSHUB n&#39;est plus utilisé depuis la version 2.16.4&quot;</span><span class="p">,</span>
+                <span class="ne">Warning</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
 
@@ -1779,7 +1772,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=2768d7c9"></script>
+</div><script src="../../../_static/documentation_options.js?v=ece14704"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

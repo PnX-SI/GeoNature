@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../search.html" /><link rel="next" title="geonature.core.users.routes" href="../routes/index.html" /><link rel="prev" title="geonature.core.users.models" href="../models/index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.users.register_post_actions - Documentation GeoNature 2.16.3</title>
+        <title>geonature.core.users.register_post_actions - Documentation GeoNature 2.16.4</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.4</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.4</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -453,39 +453,27 @@
           <section id="module-geonature.core.users.register_post_actions">
 <span id="geonature-core-users-register-post-actions"></span><h1>geonature.core.users.register_post_actions<a class="headerlink" href="#module-geonature.core.users.register_post_actions" title="Lien vers cette rubrique">¶</a></h1>
 <p>Action triggered after register action (create temp user, change password etc…)</p>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Lien vers cette rubrique">¶</a></h2>
-<div class="table-wrapper autosummary longtable docutils container">
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.register_post_actions.function_dict" title="geonature.core.users.register_post_actions.function_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function_dict</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Lien vers cette rubrique">¶</a></h2>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.register_post_actions.validators_emails" title="geonature.core.users.register_post_actions.validators_emails"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validators_emails</span></code></a>()</p></td>
-<td><p>On souhaite récupérer une liste de mails</p></td>
+<td><p>Returns a list of validators emails</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.register_post_actions.validate_temp_user" title="geonature.core.users.register_post_actions.validate_temp_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_temp_user</span></code></a>(data)</p></td>
 <td><p>Send an email after the action of account creation.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.register_post_actions.execute_actions_after_validation" title="geonature.core.users.register_post_actions.execute_actions_after_validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute_actions_after_validation</span></code></a>(data)</p></td>
-<td><p></p></td>
+<td><p>Execute post actions after a temp user has been validated.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.register_post_actions.create_dataset_user" title="geonature.core.users.register_post_actions.create_dataset_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_dataset_user</span></code></a>(user)</p></td>
-<td><p>After dataset validation, add a personnal AF and JDD so the user</p></td>
+<td><p>After dataset validation, add a personal Acquisition Framework and Dataset</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.register_post_actions.inform_user" title="geonature.core.users.register_post_actions.inform_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inform_user</span></code></a>(user)</p></td>
 <td><p>Send an email to inform the user that his account was validate.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.register_post_actions.send_email_for_recovery" title="geonature.core.users.register_post_actions.send_email_for_recovery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_email_for_recovery</span></code></a>(data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.register_post_actions.send_email_for_recovery" title="geonature.core.users.register_post_actions.send_email_for_recovery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_email_for_recovery</span></code></a>(user)</p></td>
 <td><p>Send an email with the login of the role and the possibility to reset</p></td>
 </tr>
 </tbody>
@@ -497,52 +485,71 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.register_post_actions.validators_emails">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.register_post_actions.</span></span><span class="sig-name descname"><span class="pre">validators_emails</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/register_post_actions.html#validators_emails"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.register_post_actions.validators_emails" title="Lien vers cette définition">¶</a></dt>
-<dd><p>On souhaite récupérer une liste de mails</p>
+<dd><p>Returns a list of validators emails</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.register_post_actions.validate_temp_user">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.register_post_actions.</span></span><span class="sig-name descname"><span class="pre">validate_temp_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/register_post_actions.html#validate_temp_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.register_post_actions.validate_temp_user" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Send an email after the action of account creation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>admin_validation_required</strong> – if True an admin will receive an</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>data<span class="classifier">dict</span></dt><dd><p>Must contain the token of the temp user. Example : {« token »: « iamavalidtoken »}</p>
 </dd>
 </dl>
-<p>email to validate the account creation else the user himself
-receive the email.
-:type admin_validation_required: bool</p>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.register_post_actions.execute_actions_after_validation">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.register_post_actions.</span></span><span class="sig-name descname"><span class="pre">execute_actions_after_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/register_post_actions.html#execute_actions_after_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.register_post_actions.execute_actions_after_validation" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Execute post actions after a temp user has been validated.
+If AUTO_DATASET_CREATION is set to True, create a personal JDD and AF
+for the user. Then, send an email to the user to inform him of the
+creation of his account.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.register_post_actions.create_dataset_user">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.register_post_actions.</span></span><span class="sig-name descname"><span class="pre">create_dataset_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/register_post_actions.html#create_dataset_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.register_post_actions.create_dataset_user" title="Lien vers cette définition">¶</a></dt>
-<dd><p>After dataset validation, add a personnal AF and JDD so the user
-can add new user.</p>
+<dd><p>After dataset validation, add a personal Acquisition Framework and Dataset
+so the user can add new datasets.</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>user<span class="classifier">dict</span></dt><dd><p>The user data</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.register_post_actions.inform_user">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.register_post_actions.</span></span><span class="sig-name descname"><span class="pre">inform_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/register_post_actions.html#inform_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.register_post_actions.inform_user" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Send an email to inform the user that his account was validate.</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>user<span class="classifier">dict</span></dt><dd><p>The user data</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.register_post_actions.send_email_for_recovery">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.users.register_post_actions.</span></span><span class="sig-name descname"><span class="pre">send_email_for_recovery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/register_post_actions.html#send_email_for_recovery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.register_post_actions.send_email_for_recovery" title="Lien vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">geonature.core.users.register_post_actions.</span></span><span class="sig-name descname"><span class="pre">send_email_for_recovery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/register_post_actions.html#send_email_for_recovery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.register_post_actions.send_email_for_recovery" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Send an email with the login of the role and the possibility to reset
 its password</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>user<span class="classifier">dict</span></dt><dd><p>The user data</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="geonature.core.users.register_post_actions.function_dict">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.users.register_post_actions.</span></span><span class="sig-name descname"><span class="pre">function_dict</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/users/register_post_actions.html#function_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.register_post_actions.function_dict" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
 
 </section>
 </section>
@@ -603,7 +610,6 @@ its password</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">geonature.core.users.register_post_actions</a><ul>
-<li><a class="reference internal" href="#attributes">Attributes</a></li>
 <li><a class="reference internal" href="#functions">Functions</a></li>
 <li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
 <li><a class="reference internal" href="#geonature.core.users.register_post_actions.validators_emails"><code class="docutils literal notranslate"><span class="pre">validators_emails()</span></code></a></li>
@@ -612,7 +618,6 @@ its password</p>
 <li><a class="reference internal" href="#geonature.core.users.register_post_actions.create_dataset_user"><code class="docutils literal notranslate"><span class="pre">create_dataset_user()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.register_post_actions.inform_user"><code class="docutils literal notranslate"><span class="pre">inform_user()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.register_post_actions.send_email_for_recovery"><code class="docutils literal notranslate"><span class="pre">send_email_for_recovery()</span></code></a></li>
-<li><a class="reference internal" href="#geonature.core.users.register_post_actions.function_dict"><code class="docutils literal notranslate"><span class="pre">function_dict</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -626,7 +631,7 @@ its password</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=2768d7c9"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=ece14704"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

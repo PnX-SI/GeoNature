@@ -388,8 +388,8 @@ Module Contents
 
    .. py:method:: unwrap_usershub(data, **kwargs)
 
-      On met la section [USERSHUB] à la racine de la conf
-      pour compatibilité et simplicité ave le sous-module d'authentif
+      On met la section [USERSHUB] à la racine de la configuration
+      pour compatibilité et simplicité ave le sous-module d'authentification
 
 
 

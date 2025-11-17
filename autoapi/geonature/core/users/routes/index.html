@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Recherche" href="../../../../../search.html" /><link rel="next" title="geonature.middlewares" href="../../../middlewares/index.html" /><link rel="prev" title="geonature.core.users.register_post_actions" href="../register_post_actions/index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>geonature.core.users.routes - Documentation GeoNature 2.16.3</title>
+        <title>geonature.core.users.routes - Documentation GeoNature 2.16.4</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.16.4</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.4</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -482,10 +482,10 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.get_roles_by_menu_id" title="geonature.core.users.routes.get_roles_by_menu_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_roles_by_menu_id</span></code></a>(id_menu)</p></td>
-<td><p>Retourne la liste des roles associés à un menu</p></td>
+<td><p>Returns the list of roles associated with a menu</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.routes.get_roles_by_menu_code" title="geonature.core.users.routes.get_roles_by_menu_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_roles_by_menu_code</span></code></a>(code_liste)</p></td>
-<td><p>Retourne la liste des roles associés à une liste (identifiée par son code)</p></td>
+<td><p>Returns the list of roles associated with a user list (identified by its code)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.get_listes" title="geonature.core.users.routes.get_listes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_listes</span></code></a>()</p></td>
 <td><p></p></td>
@@ -502,26 +502,26 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.get_organismes_jdd" title="geonature.core.users.routes.get_organismes_jdd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_organismes_jdd</span></code></a>()</p></td>
 <td><p>Get all organisms and the JDD where there are actor and where</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.routes.inscription" title="geonature.core.users.routes.inscription"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inscription</span></code></a>()</p></td>
-<td><p>Ajoute un utilisateur à utilisateurs.temp_user à partir de l'interface geonature</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.routes.check_sign_up_enabled" title="geonature.core.users.routes.check_sign_up_enabled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_sign_up_enabled</span></code></a>(key)</p></td>
+<td><p>Decorator to check if a user management feature is enabled.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.login_recovery" title="geonature.core.users.routes.login_recovery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">login_recovery</span></code></a>()</p></td>
-<td><p>Call UsersHub API to create a TOKEN for a user</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.inscription" title="geonature.core.users.routes.inscription"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inscription</span></code></a>()</p></td>
+<td><p>Add a user to temporary users table from the GeoNature interface</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.routes.confirmation" title="geonature.core.users.routes.confirmation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">confirmation</span></code></a>()</p></td>
-<td><p>Validate a account after a demande (this action is triggered by the link in the email)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.routes.login_recovery" title="geonature.core.users.routes.login_recovery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">login_recovery</span></code></a>()</p></td>
+<td><p>Send an email with the user login and a link to reset its password</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.after_confirmation" title="geonature.core.users.routes.after_confirmation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">after_confirmation</span></code></a>()</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.confirmation" title="geonature.core.users.routes.confirmation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">confirmation</span></code></a>()</p></td>
+<td><p>Validate a user account after a request (this action is triggered by the link in the email)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.routes.update_role" title="geonature.core.users.routes.update_role"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_role</span></code></a>()</p></td>
-<td><p>Modifie le role de l'utilisateur du token en cours</p></td>
+<td><p>Modify the role of the user associated with the current token.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.change_password" title="geonature.core.users.routes.change_password"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_password</span></code></a>()</p></td>
-<td><p>Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.users.routes.change_password_route" title="geonature.core.users.routes.change_password_route"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_password_route</span></code></a>()</p></td>
+<td><p>Change the password of the connected user</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.users.routes.new_password" title="geonature.core.users.routes.new_password"><code class="xref py py-obj docutils literal notranslate"><span class="pre">new_password</span></code></a>()</p></td>
-<td><p>Modifie le mdp d'un utilisateur apres que celui-ci ai demander un renouvelement</p></td>
+<td><p>Changes the password of a user after they requested a password recovery</p></td>
 </tr>
 </tbody>
 </table>
@@ -557,29 +557,45 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.routes.get_roles_by_menu_id">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">get_roles_by_menu_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_menu</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#get_roles_by_menu_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.get_roles_by_menu_id" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Retourne la liste des roles associés à un menu</p>
-<dl class="field-list simple">
-<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>id_menu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><em>int</em></a>) – the id of user list (utilisateurs.bib_list)</p>
+<dd><p>Returns the list of roles associated with a menu</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>id_menu<span class="classifier">int</span></dt><dd><p>The id of user list (utilisateurs.bib_list)</p>
 </dd>
-<dt class="field-even">Query str nom_complet<span class="colon">:</span></dt>
-<dd class="field-even"><p>begenning of complet name of the role</p>
+<dt>nom_complet<span class="classifier">str, optional</span></dt><dd><p>Beginning of complete name of the role</p>
 </dd>
 </dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>list of dict</dt><dd><p>List of roles associated with the menu</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.routes.get_roles_by_menu_code">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">get_roles_by_menu_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code_liste</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#get_roles_by_menu_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.get_roles_by_menu_code" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Retourne la liste des roles associés à une liste (identifiée par son code)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>code_liste</strong> (<em>string</em>) – the code of user list (utilisateurs.t_lists)</p>
+<dd><p>Returns the list of roles associated with a user list (identified by its code)</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>code_liste<span class="classifier">str</span></dt><dd><p>The code of user list (utilisateurs.t_lists)</p>
 </dd>
-<dt class="field-even">Query str nom_complet<span class="colon">:</span></dt>
-<dd class="field-even"><p>begenning of complet name of the role</p>
+<dt>nom_complet<span class="classifier">str, optional</span></dt><dd><p>Beginning of complete name of the role, default None</p>
 </dd>
 </dl>
+</section>
+<section id="id2">
+<h3>Returns<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>list</dt><dd><p>A list of roles associated with the user list</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -591,11 +607,20 @@
 <dt class="sig sig-object py" id="geonature.core.users.routes.get_role">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">get_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#get_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.get_role" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Get role detail</p>
-<dl class="field-list simple">
-<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><em>int</em></a>) – the id user</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>id_role<span class="classifier">int</span></dt><dd><p>the id user</p>
 </dd>
 </dl>
+</section>
+<section id="id4">
+<h3>Returns<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>dict</dt><dd><p>A dictionary containing the role detail</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -618,52 +643,57 @@ the current user hase autorization with its cruved</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.users.routes.check_sign_up_enabled">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">check_sign_up_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#check_sign_up_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.check_sign_up_enabled" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Decorator to check if a user management feature is enabled.</p>
+<section id="id5">
+<h3>Parameters<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>key<span class="classifier">str</span></dt><dd><p>The key of the feature. Must be one of:
+ENABLE_SIGN_UP, ENABLE_ACCOUNT_MANAGEMENT, AUTO_ACCOUNT_CREATION</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.routes.inscription">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">inscription</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#inscription"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.inscription" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Ajoute un utilisateur à utilisateurs.temp_user à partir de l’interface geonature
-Fonctionne selon l’autorisation “ENABLE_SIGN_UP” dans la config.
-Fait appel à l’API UsersHub</p>
+<dd><p>Add a user to temporary users table from the GeoNature interface
+Works according to the “ENABLE_SIGN_UP” authorization in the config.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.routes.login_recovery">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">login_recovery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#login_recovery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.login_recovery" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Call UsersHub API to create a TOKEN for a user
-A post_action send an email with the user login and a link to reset its password
-Work only if “ENABLE_SIGN_UP” is set to True</p>
+<dd><p>Send an email with the user login and a link to reset its password
+Only works if “ENABLE_SIGN_UP” is enabled</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.routes.confirmation">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">confirmation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#confirmation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.confirmation" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Validate a account after a demande (this action is triggered by the link in the email)
-Create a personnal JDD as post_action if the parameter AUTO_DATASET_CREATION is set to True
-Fait appel à l’API UsersHub</p>
+<dd><p>Validate a user account after a request (this action is triggered by the link in the email)
+Create a personal JDD as post_action if the parameter AUTO_DATASET_CREATION is set to True</p>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="geonature.core.users.routes.after_confirmation">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">after_confirmation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#after_confirmation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.after_confirmation" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.routes.update_role">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">update_role</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#update_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.update_role" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Modifie le role de l’utilisateur du token en cours</p>
+<dd><p>Modify the role of the user associated with the current token.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="geonature.core.users.routes.change_password">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">change_password</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#change_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.change_password" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Modifie le mot de passe de l’utilisateur connecté et de son ancien mdp
-Fait appel à l’API UsersHub</p>
+<dt class="sig sig-object py" id="geonature.core.users.routes.change_password_route">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">change_password_route</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#change_password_route"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.change_password_route" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Change the password of the connected user</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.users.routes.new_password">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.users.routes.</span></span><span class="sig-name descname"><span class="pre">new_password</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/users/routes.html#new_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.users.routes.new_password" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Modifie le mdp d’un utilisateur apres que celui-ci ai demander un renouvelement
-Necessite un token envoyer par mail a l’utilisateur</p>
+<dd><p>Changes the password of a user after they requested a password recovery
+Requires a token sent by mail to the user</p>
 </dd></dl>
 
 </section>
@@ -740,12 +770,12 @@ Necessite un token envoyer par mail a l’utilisateur</p>
 <li><a class="reference internal" href="#geonature.core.users.routes.get_roles"><code class="docutils literal notranslate"><span class="pre">get_roles()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.routes.get_organismes"><code class="docutils literal notranslate"><span class="pre">get_organismes()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.routes.get_organismes_jdd"><code class="docutils literal notranslate"><span class="pre">get_organismes_jdd()</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.users.routes.check_sign_up_enabled"><code class="docutils literal notranslate"><span class="pre">check_sign_up_enabled()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.routes.inscription"><code class="docutils literal notranslate"><span class="pre">inscription()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.routes.login_recovery"><code class="docutils literal notranslate"><span class="pre">login_recovery()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.routes.confirmation"><code class="docutils literal notranslate"><span class="pre">confirmation()</span></code></a></li>
-<li><a class="reference internal" href="#geonature.core.users.routes.after_confirmation"><code class="docutils literal notranslate"><span class="pre">after_confirmation()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.routes.update_role"><code class="docutils literal notranslate"><span class="pre">update_role()</span></code></a></li>
-<li><a class="reference internal" href="#geonature.core.users.routes.change_password"><code class="docutils literal notranslate"><span class="pre">change_password()</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.users.routes.change_password_route"><code class="docutils literal notranslate"><span class="pre">change_password_route()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.users.routes.new_password"><code class="docutils literal notranslate"><span class="pre">new_password()</span></code></a></li>
 </ul>
 </li>
@@ -760,7 +790,7 @@ Necessite un token envoyer par mail a l’utilisateur</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=2768d7c9"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=ece14704"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=5fa4622c"></script>

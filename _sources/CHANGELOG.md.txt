@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.16.4 (2025-11-17)
+
+### 🚀 Nouveautés
+
+- Mise à jour de UsersHub-authentification-module en 3.1.0 (par @jacquesfize)
+
+### 🐛 Corrections
+
+- Amélioration de la sécurité du processus de création de compte GeoNature ainsi que du renouvellement de mot de passe ([UsersHub-authentification-module#124](https://github.com/PnX-SI/UsersHub-authentification-module/pull/124), [#125](https://github.com/PnX-SI/UsersHub-authentification-module/pull/125) par @Christophe-Ramet et @jacquesfize)
+
 ## 2.16.3 (2025-09-26)
 
 ### 🚀 Nouveautés

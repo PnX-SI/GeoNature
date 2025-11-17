@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="FAQ" href="FAQ.html" /><link rel="prev" title="Manuel administrateur" href="admin-manual.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Développement - Documentation GeoNature 2.16.3</title>
+        <title>Développement - Documentation GeoNature 2.16.4</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.16.3</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.16.4</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.16.3</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.16.4</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -1469,12 +1469,12 @@ Si l’utilisateur n’est pas connecté, <code class="docutils literal notransl
 <dd><dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Type d’action effectuée par la route
+<li><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Type d’action effectuée par la route
 (Create, Read, Update, Validate, Export, Delete)</p></li>
-<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a>) – Code du module sur lequel on veut vérifier les permissions.</p></li>
-<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet sur lequel on veut vérifier les permissions.
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a>) – Code du module sur lequel on veut vérifier les permissions.</p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet sur lequel on veut vérifier les permissions.
 Si non fourni, on vérifie la portée sur l’objet <code class="docutils literal notranslate"><span class="pre">ALL</span></code>.</p></li>
-<li><p><strong>get_scope</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – si <code class="docutils literal notranslate"><span class="pre">True</span></code>, ajoute le scope aux kwargs de la vue</p></li>
+<li><p><strong>get_scope</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – si <code class="docutils literal notranslate"><span class="pre">True</span></code>, ajoute le scope aux kwargs de la vue</p></li>
 </ul>
 </dd>
 </dl>
@@ -1513,11 +1513,11 @@ scope.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>action_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Code de l’action.</p></li>
-<li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
+<li><p><strong>action_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Code de l’action.</p></li>
+<li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
 (nécessite de se trouver dans une route authentifiée).</p></li>
-<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Code du module. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code></p></li>
-<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_object</span></code>,
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Code du module. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code></p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_object</span></code>,
 <code class="docutils literal notranslate"><span class="pre">ALL</span></code> à défaut.</p></li>
 </ul>
 </dd>
@@ -1525,7 +1525,7 @@ scope.</p>
 <dd class="field-even"><p>Valeur du scope</p>
 </dd>
 <dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)">int</a>[0, 1, 2, 3]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.14)">int</a>[0, 1, 2, 3]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1539,18 +1539,18 @@ pour un utilisateur et un module donné (et éventuellement un objet précis).</
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><em>int</em></a>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
+<li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.14)"><em>int</em></a>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
 (nécessite de se trouver dans une route authentifiée).</p></li>
-<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a>) – Code du module. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code>
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a>) – Code du module. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code>
 si définie, <code class="docutils literal notranslate"><span class="pre">GEONATURE</span></code> sinon.</p></li>
-<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a>) – Code de l’objet. <code class="docutils literal notranslate"><span class="pre">ALL</span></code> si non précisé.</p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a>) – Code de l’objet. <code class="docutils literal notranslate"><span class="pre">ALL</span></code> si non précisé.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Renvoie<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dictionnaire de scope pour chaque action du CRUVED.</p>
 </dd>
 <dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.13)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)">int</a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.14)">int</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1571,10 +1571,10 @@ si définie, <code class="docutils literal notranslate"><span class="pre">GEONAT
 <dd><dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Type d’action effectuée par la route
+<li><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Type d’action effectuée par la route
 (Create, Read, Update, Validate, Export, Delete)</p></li>
-<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a>) – Code du module sur lequel on veut vérifier les permissions.</p></li>
-<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet sur lequel on veut vérifier les permissions.
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a>) – Code du module sur lequel on veut vérifier les permissions.</p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet sur lequel on veut vérifier les permissions.
 Si non fourni, on vérifie la portée sur l’objet <code class="docutils literal notranslate"><span class="pre">ALL</span></code>.</p></li>
 </ul>
 </dd>
@@ -1619,11 +1619,11 @@ celle-ci recevant le jeu de permissions en argument.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>action_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Code de l’action.</p></li>
-<li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
+<li><p><strong>action_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Code de l’action.</p></li>
+<li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
 (nécessite de se trouver dans une route authentifiée).</p></li>
-<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Code du module. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code></p></li>
-<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_object</span></code>,
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Code du module. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code></p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_object</span></code>,
 <code class="docutils literal notranslate"><span class="pre">ALL</span></code> à défaut.</p></li>
 </ul>
 </dd>
@@ -1631,7 +1631,7 @@ celle-ci recevant le jeu de permissions en argument.</p>
 <dd class="field-even"><p>Liste de permissions</p>
 </dd>
 <dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(disponible dans Python v3.13)">list</a>[<a class="reference internal" href="autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_permissions.models.Permission" title="geonature.core.gn_permissions.models.Permission">Permission</a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(disponible dans Python v3.14)">list</a>[<a class="reference internal" href="autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_permissions.models.Permission" title="geonature.core.gn_permissions.models.Permission">Permission</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2798,7 +2798,7 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=2768d7c9"></script>
+</div><script src="_static/documentation_options.js?v=ece14704"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
