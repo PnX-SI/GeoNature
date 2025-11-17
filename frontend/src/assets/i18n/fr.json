@@ -1,6 +1,5 @@
 {
   "Home": "Accueil",
-
   "LanguageSelection": "Choisissez la langue de l'interface",
   "Language": "Langue",
   "Languages": "Langues",
@@ -50,13 +49,18 @@
       "ActivateAccountValidator": "Activer le compte"
     },
     "Errors": {
-      "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect"
+      "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect",
+      "WrongMailAddress": "Une erreur est survenue. Veuillez vérifier le mail fournis.",
+      "AccountCreationError": "L'adresse mail ou l'identifiant renseigné existe déjà.",
+      "UnexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
     },
     "Messages": {
       "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
       "ActivateAccountConfirmation": "Pour activer votre compte, cliquez sur le bouton ci-dessous",
       "ActivateAccountConfirmationValidator": "Pour activer ce compte, cliquez sur le bouton ci-dessous",
-      "PasswordChanged": "Votre mot de passe a bien été changé"
+      "PasswordChanged": "Votre mot de passe a bien été changé",
+      "MailMandatory": "L'adresse email est obligatoire.",
+      "InvalidMail": "Veuillez saisir une adresse email valide."
     }
   },
   "MyAccount": {
@@ -118,7 +122,6 @@
   "Discussion": "Discussion",
   "Status": "Statut",
   "Source": "Source",
-
   "Mandatory": "Obligatoire",
   "Optional": "Facultatif",
   "OptionalIf": "Optionnel si",

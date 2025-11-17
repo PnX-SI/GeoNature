@@ -7,6 +7,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 
 import { AuthService } from '../../../components/auth/auth.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@librairies/@ngx-translate/core';
 @Component({
   selector: 'pnx-signup',
   templateUrl: './sign-up.component.html',
@@ -25,7 +26,8 @@ export class SignUpComponent implements OnInit {
     private _authService: AuthService,
     private _router: Router,
     private _commonService: CommonService,
-    public config: ConfigService
+    public config: ConfigService,
+    private translate: TranslateService
   ) {
     this.FORM_CONFIG = this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
     if (!(this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
@@ -78,9 +80,21 @@ export class SignUpComponent implements OnInit {
             this._router.navigate(['/login']);
           },
           (error) => {
-            // affichage de l'erreur renvoyé par l'api
             if (error.error.msg) {
               this.errorMsg = error.error.msg;
+            } else if (error.status === 400) {
+              // Ajouter une clé de traduction
+              this.translate
+                .get('Authentication.Errors.AccountCreationError')
+                .subscribe((translation) => {
+                  this.errorMsg = translation;
+                });
+            } else {
+              this.translate
+                .get('Authentication.Errors.UnexpectedError')
+                .subscribe((translation) => {
+                  this.errorMsg = translation;
+                });
             }
           }
         )
