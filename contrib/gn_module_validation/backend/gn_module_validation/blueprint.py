@@ -379,3 +379,36 @@ def notify_validation_state_change(synthese, validation, status):
             "status": status,
         },
     )
+
+def notify_validator_on_data_modified(synthese):
+    """
+    Notifie le validateur si une donnée déjà validée a été modifiée après sa validation.
+    """
+    try:
+        # Récupération du dernier enregistrement de validation lié à la synthèse
+        last_validation = db.session.scalar(
+            sa.select(TValidations)
+            .where(TValidations.uuid_attached_row == synthese.unique_id_sinp)
+            .order_by(TValidations.validation_date.desc())
+            .limit(1)
+        )
+
+        if not last_validation or not getattr(last_validation, "id_validator", None):
+            return 
+
+        # Envoi de la notification
+        dispatch_notifications(
+            code_categories=["VALIDATION-DATA-MODIFIED%"],
+            id_roles=[last_validation.id_validator],
+            title="Donnée validée modifiée",
+            url=f"{current_app.config['URL_APPLICATION']}/#/synthese/occurrence/{synthese.id_synthese}",
+            context={
+                "synthese": synthese,
+                "last_validation": last_validation,
+            },
+        )
+
+        db.session.commit()
+
+    except Exception:
+        pass
