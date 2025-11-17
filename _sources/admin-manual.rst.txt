@@ -1503,6 +1503,7 @@ Demande de création de compte
 """""""""""""""""""""""""""""
 
 .. admonition:: Version de GeoNature < 2.16.4
+  
   Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisateur. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'authentification de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature.
 
   Pour des raisons de sécurité, l'API de création de compte est réservée aux utilisateurs "admin" grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu'administrateur à UsersHub pour éxecuter les requêtes d'administration de compte.
