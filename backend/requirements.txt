@@ -264,7 +264,7 @@ pypn-ref-geo==1.5.6
     #   taxhub
 pypnnomenclature==1.6.5
     # via -r requirements-dependencies.in
-pypnusershub==3.0.3
+pypnusershub==3.1.0
     # via
     #   -r requirements-dependencies.in
     #   taxhub
@@ -342,7 +342,6 @@ tornado==6.5.2
 typing-extensions==4.15.0
     # via
     #   alembic
-    #   marshmallow
     #   marshmallow-sqlalchemy
     #   referencing
 tzdata==2025.2

@@ -96,10 +96,7 @@ export class LoginComponent implements OnInit {
     this._authService
       .loginOrPwdRecovery(data)
       .subscribe(() => {
-        this._commonService.translateToaster(
-          'info',
-          'MyAccount.Authentication.PasswordAndLoginRecovery'
-        );
+        this._commonService.translateToaster('info', 'MyAccount.Messages.PasswordAndLoginRecovery');
       })
       .add(() => {
         this.disableSubmit = false;

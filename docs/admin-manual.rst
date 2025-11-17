@@ -1502,20 +1502,22 @@ Authentification
 Demande de création de compte
 """""""""""""""""""""""""""""
 
-Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisateur. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'authentification de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature.
+.. admonition:: Version de GeoNature < 2.16.4
+  Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisateur. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'authentification de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature.
 
-Pour des raisons de sécurité, l'API de création de compte est réservée aux utilisateurs "admin" grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu'administrateur à UsersHub pour éxecuter les requêtes d'administration de compte.
-Renseigner les paramètres suivants dans le fichier de configuration (``geonature_config.toml``). L'utilisateur doit avoir des droits 6 dans UsersHub
+  Pour des raisons de sécurité, l'API de création de compte est réservée aux utilisateurs "admin" grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu'administrateur à UsersHub pour éxecuter les requêtes d'administration de compte.
+  Renseigner les paramètres suivants dans le fichier de configuration (``geonature_config.toml``). L'utilisateur doit avoir des droits 6 dans UsersHub
 
-.. code:: toml
+  .. code:: toml
 
-    [USERSHUB]
-        URL_USERSHUB = 'http://mon_adresse_usershub.fr' # sans slash final
-        # Administrateur de mon application
-        ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
-        ADMIN_APPLICATION_PASSWORD = "password_admin_usershub
+      [USERSHUB]
+          URL_USERSHUB = 'http://mon_adresse_usershub.fr' # sans slash final
+          # Administrateur de mon application
+          ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
+          ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
 
-Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour vérifier l'identité des demandeurs de compte. Il est donc nécessaire d'avoir un serveur SMTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration. La description détaillées des paramètres de configuration d'envoie des emails est disponible dans `la documentation de Flask-Mail <https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail>`_. Exemple :
+
+Tout d'abord, les fonctionnalités de création de compte nécessitent l'envoi d'emails pour vérifier l'identité des demandeurs de compte. Il est donc nécessaire d'avoir un serveur SMTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration. La description détaillées des paramètres de configuration d'envoie des emails est disponible dans `la documentation de Flask-Mail <https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail>`_. Exemple :
 
 .. code:: toml
 
@@ -1529,38 +1531,37 @@ Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour v
         MAIL_DEFAULT_SENDER = 'mon_email@email.io'
         MAIL_ASCII_ATTACHMENTS = false
 
-Pour activer cette fonctionnalité (qui est par défaut désactivée), modifier le fichier de configuration de la manière suivante :
+Pour activer la fonctionnalité de création de compte (qui est par défaut désactivée), modifier la section ``[ACCOUNT_MANAGEMENT]`` dans le fichier de configuration de la manière suivante :
 
-NB : tous les paramètres décrits ci-dessous doivent être dans la rubrique ``[ACCOUNT_MANAGEMENT]``
 
 .. code:: toml
 
     [ACCOUNT_MANAGEMENT]
         ENABLE_SIGN_UP = true
 
-Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accepté et un compte lui est créé après une confirmation de son email, soit un mail est envoyé à un administrateur pour confirmer la demande. Le compte ne sera crée qu'après validation par l'administrateur. Le paramètre ``AUTO_ACCOUNT_CREATION`` contrôle ce comportement (par défaut le compte créé sans validation par un administrateur: true). Dans le mode "création de compte validé par administrateur", il est indispensable de renseigner un email où seront envoyés les emails de validation (paramètre ``VALIDATOR_EMAIL``)
+Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accepté et son compte est créé après une confirmation de son email, soit un mail est envoyé à un administrateur pour confirmer la demande. Le compte ne sera crée qu'après validation par l'administrateur. Le paramètre ``AUTO_ACCOUNT_CREATION`` contrôle ce comportement (par défaut le compte créé sans validation par un administrateur: true). Dans le mode "création de compte validé par administrateur", il est indispensable de renseigner un email où seront envoyés les emails de validation (paramètre ``VALIDATOR_EMAIL``)
 
 .. code:: toml
 
-    # automatique
+    # Sans validation d'un administrateur
     [ACCOUNT_MANAGEMENT]
         ENABLE_SIGN_UP = true
         AUTO_ACCOUNT_CREATION = true
 
-    # validé par admin
+    # Validation par administrateur
     [ACCOUNT_MANAGEMENT]
         ENABLE_SIGN_UP = true
         AUTO_ACCOUNT_CREATION = false
         VALIDATOR_EMAIL = 'email@validateur.io'
 
-L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API.
+L'utilisateur qui demande la création de compte est automatiquement mis dans un groupe (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API.
 
 .. warning::
 
   Si vous effectuez une migration depuis une version de GeoNature < 2.2.0, aucun groupe par défaut n'est défini, vous devez définir à la main le groupe par défaut pour l'application GeoNature dans la table ``utilisateurs.cor_role_app_profil``.
 
 Dans le mode "création de compte validé par administrateur", lorsque l'inscription est validée par un administrateur, un email est envoyé à l'utilisateur pour lui indiquer la confirmation de son inscription.
-Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l'aide du paramètre ``ADDON_USER_EMAIL`` (toujours à ajouter à la rubrique ``[ACCOUNT_MANAGEMENT]``).
+Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l'aide du paramètre ``ADDON_USER_EMAIL``.
 Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 
 .. code:: toml

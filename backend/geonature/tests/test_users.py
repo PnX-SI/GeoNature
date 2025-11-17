@@ -1,9 +1,10 @@
 import uuid
 
+from pypnusershub.db.models_register import TempUser
 import pytest
 from flask import url_for, current_app
 from sqlalchemy import select
-from pypnusershub.db.models import Organisme
+from pypnusershub.db.models import Application, CorRoleToken, Organisme
 
 # Apparently: need to import both?
 from geonature.tests.fixtures import acquisition_frameworks, datasets, module
@@ -19,7 +20,31 @@ def organisms():
     return db.session.scalars(select(Organisme).order_by(Organisme.id_organisme)).all()
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.fixture
+def add_mail_to_user(users):
+    """
+    Add a mail to the current user
+    """
+    with db.session.begin_nested():
+        users["admin_user"].email = "Xp6dM@example.com"
+        db.session.add(users["admin_user"])
+
+
+@pytest.fixture
+def fake_smtp(monkeypatch):
+
+    monkeypatch.setattr(
+        "geonature.core.users.register_post_actions.send_mail",
+        lambda *args, **kwargs: True,
+        raising=False,
+    )
+
+    monkeypatch.setattr(
+        "geonature.utils.utilsmails.send_mail", lambda *args, **kwargs: True, raising=False
+    )
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction", "add_mail_to_user", "fake_smtp")
 class TestUsers:
     def test_get_organismes(self, users, organisms):
         set_logged_user(self.client, users["admin_user"])
@@ -119,4 +144,134 @@ class TestUsers:
         response = self.client.post(url_for("users.inscription"))
 
         assert response.status_code == 404
-        assert response.json["message"] == "Page introuvable"
+        assert response.json["description"] == "Page not found"
+
+    def test_inscription_enabled_and_disabled(self):
+        """
+        Test POST /inscription when ENABLE_SIGN_UP is enabled and disabled.
+        """
+        # Disabled case: expect 404
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"] = False
+        response = self.client.post(url_for("users.inscription"))
+        assert response.status_code == 404
+        assert response.json["description"] == "Page not found"
+
+        # Enabled case: expect 200
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"] = True
+        current_app.config["CODE_APPLICATION"] = "GN"
+
+        # Get an existing application
+        app = db.session.execute(select(Application)).scalars().first()
+        assert app, "There must be at least one Application in DB"
+
+        data = {
+            "identifiant": "temp_user",
+            "email": "temp@example.com",
+            "password": "12345",
+            "password_confirmation": "12345",
+            "nom_role": "Temp",
+            "prenom_role": "User",
+            "champs_addi": {"champ1": "valeur1", "champ2": "valeur2"},
+        }
+        response = self.client.post(url_for("users.inscription"), json=data)
+        assert response.status_code == 200
+
+    def test_login_recovery_enabled_and_disabled(self, users):
+        """
+        Test POST /login/recovery when ENABLE_USER_MANAGEMENT is enabled and disabled.
+        """
+        url = url_for("users.login_recovery")
+        payload = {"email": users["admin_user"].email}
+
+        # Disabled case
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = False
+        response = self.client.post(url, json=payload)
+        assert response.status_code == 404
+
+        # Enabled case
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
+        response = self.client.post(url, json=payload)
+        assert response.status_code == 200
+
+    def test_confirmation_route(self):
+        """
+        Test GET /confirmation behavior with and without token.
+        """
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"] = True
+        current_app.config["CODE_APPLICATION"] = "GN"
+
+        # Missing token -> BadRequest
+        resp = self.client.get(url_for("users.confirmation"))
+        assert resp.status_code == 400
+        assert "Token not found" in resp.json["description"]
+
+        resp = self.client.post(
+            url_for("users.inscription"),
+            json={
+                "identifiant": "temp_user",
+                "email": "temp@example.com",
+                "password": "12345",
+                "password_confirmation": "12345",
+                "nom_role": "Temp",
+                "prenom_role": "User",
+                "champs_addi": {"champ1": "valeur1", "champ2": "valeur2"},
+            },
+        )
+        assert resp.status_code == 200
+
+        token = (
+            db.session.execute(select(TempUser).where(TempUser.email == "temp@example.com"))
+            .scalar_one()
+            .token_role
+        )
+
+        resp = self.client.get(url_for("users.confirmation", token=token))
+        assert resp.status_code == 200
+
+        resp = self.client.get(url_for("users.confirmation", token="badtoken"))
+        assert resp.status_code == 400
+
+    def test_update_role_fields(self, users):
+        """
+        Test PUT /role updates allowed fields only.
+        """
+        set_logged_user(self.client, users["admin_user"])
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
+
+        data = {
+            "nom_role": "New Admin Name",
+            "active": False,  # blacklisted, should not change
+        }
+
+        resp = self.client.put(url_for("users.update_role"), json=data)
+        assert resp.status_code == 200
+
+        assert resp.json["nom_role"] == "New Admin Name"
+        assert resp.json["active"] == True
+
+    def test_password_new_cases(self, users):
+        """
+        Test PUT /password/new for missing token and with token.
+        """
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
+
+        # Missing token
+        resp = self.client.put(
+            url_for("users.new_password"), json={"password": "x", "password_confirmation": "x"}
+        )
+        assert resp.status_code == 400
+        assert resp.json["description"] == "No token provided"
+
+        with db.session.begin_nested():
+            cor_role_token = CorRoleToken(
+                token="jesuisuntokennul", id_role=users["admin_user"].id_role
+            )
+            db.session.add(cor_role_token)
+
+        resp = self.client.put(
+            url_for("users.new_password"),
+            json={"token": "jesuisuntokennul", "password": "x", "password_confirmation": "x"},
+        )
+        assert resp.status_code == 200
+
+        assert resp.json["message"] == "Password changed with success"

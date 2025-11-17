@@ -69,6 +69,12 @@ export class AuthService {
     return this._http.put<any>(`${this.config.API_ENDPOINT}/users/password/new`, data);
   }
 
+  confirmToken(data: any): Observable<any> {
+    return this._http.get<any>(
+      `${this.config.API_ENDPOINT}/users/confirmation?token=${data.token}`
+    );
+  }
+
   manageUser(data): any {
     this.setSession(data);
     if (!data.user.providers) {

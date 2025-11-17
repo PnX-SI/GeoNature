@@ -190,7 +190,6 @@ def create_app(with_external_mods=True):
 
     for blueprint_path, url_prefix in [
         ("pypn_habref_api.routes:routes", "/habref"),
-        ("pypnusershub.routes_register:bp", "/pypn/register"),
         ("pypnnomenclature.routes:routes", "/nomenclatures"),
         ("ref_geo.routes:routes", "/geo"),
         ("geonature.core.health.routes:routes", "/"),

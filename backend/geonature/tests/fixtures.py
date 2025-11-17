@@ -302,7 +302,11 @@ def users(app):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
         with db.session.begin_nested():
             user = User(
-                groupe=False, active=True, identifiant=username, password=username, **kwargs
+                groupe=False,
+                active=True,
+                identifiant=username,
+                password=username,
+                **kwargs,
             )
             db.session.add(user)
             user.organisme = organisme

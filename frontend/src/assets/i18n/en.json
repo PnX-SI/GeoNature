@@ -44,13 +44,18 @@
     "LogIn": "Login",
     "LogOut": "Logout",
     "Actions": {
-      "CreateAccount": "Create an account"
+      "CreateAccount": "Create an account",
+      "ActivateAccount": "Activate my account",
+      "ActivateAccountValidator": "Activate this account"
     },
     "Errors": {
       "WrongLoginOrPassword": "Incorrect username or password"
     },
     "Messages": {
-      "ForgotPasswordOrLogin": "Forgot username or password?"
+      "ForgotPasswordOrLogin": "Forgot username or password?",
+      "ActivateAccountConfirmation": "To activate your account, click on the button below",
+      "ActivateAccountConfirmationValidator": "To activate this account, click on the button below",
+      "PasswordChanged": "Your password has been changed"
     }
   },
   "MyAccount": {

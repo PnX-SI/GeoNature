@@ -236,8 +236,8 @@ class GnPySchemaConf(Schema):
     @post_load()
     def unwrap_usershub(self, data, **kwargs):
         """
-        On met la section [USERSHUB] à la racine de la conf
-        pour compatibilité et simplicité ave le sous-module d'authentif
+        On met la section [USERSHUB] à la racine de la configuration
+        pour compatibilité et simplicité ave le sous-module d'authentification
         """
         for key, value in data["USERSHUB"].items():
             data[key] = value
@@ -250,18 +250,6 @@ class GnPySchemaConf(Schema):
         if data["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False) or data[
             "ACCOUNT_MANAGEMENT"
         ].get("ENABLE_USER_MANAGEMENT", False):
-            if (
-                data["USERSHUB"].get("URL_USERSHUB", None) is None
-                or data["USERSHUB"].get("ADMIN_APPLICATION_LOGIN", None) is None
-                or data["USERSHUB"].get("ADMIN_APPLICATION_PASSWORD", None) is None
-            ):
-                raise ValidationError(
-                    (
-                        "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True "
-                        "ou si ENABLE_USER_MANAGEMENT=True"
-                    ),
-                    "URL_USERSHUB",
-                )
             if data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None:
                 raise ValidationError(
                     "Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True",
@@ -626,6 +614,11 @@ class GnGeneralSchemaConf(Schema):
         if "API_TAXHUB" in data:
             warnings.warn(
                 "Le paramètre API_TAXHUB n'est plus utilisé depuis la version 2.15.",
+                Warning,
+            )
+        if "USERSHUB" in data:
+            warnings.warn(
+                "Le paramètre USERSHUB n'est plus utilisé depuis la version 2.16.4",
                 Warning,
             )
         return data

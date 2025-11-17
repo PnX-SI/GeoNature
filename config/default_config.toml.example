@@ -74,13 +74,6 @@ NOTIFICATIONS_ENABLED = true
 
 MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
-[USERSHUB]
-    # URL de l'application Usershub
-    URL_USERSHUB = "http://127.0.0.1:5001"
-    # Identifiant et mot de passe d'un compte 'Administrateur' dans UsersHub
-    ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
-    ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
-
 # Configuration de l'envoi d'email pour FlaskMail et l'envoi par email des logs d'erreur
 # Cf. https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail
 [MAIL_CONFIG]

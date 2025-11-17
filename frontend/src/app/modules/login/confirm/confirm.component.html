@@ -1,0 +1,16 @@
+<div
+  class="confirm-body"
+  style="background: url({{ background_url }}) center; background-size:cover;"
+>
+  <div class="modal-container">
+    {{ confirmationDivMessage }}
+    <button
+      mat-raised-button
+      color="primary"
+      class="activate-button"
+      (click)="submit()"
+    >
+      {{ confirmationButtonLabel }}
+    </button>
+  </div>
+</div>

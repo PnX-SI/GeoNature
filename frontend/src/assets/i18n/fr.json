@@ -44,13 +44,18 @@
     "Actions": {
       "LogIn": "Connexion",
       "LogOut": "Déconnexion",
-      "CreateAccount": "Créer un compte"
+      "CreateAccount": "Créer un compte",
+      "ActivateAccount": "Activer mon compte",
+      "ActivateAccountValidator": "Activer le compte"
     },
     "Errors": {
       "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect"
     },
     "Messages": {
-      "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?"
+      "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
+      "ActivateAccountConfirmation": "Pour activer votre compte, cliquez sur le bouton ci-dessous",
+      "ActivateAccountConfirmationValidator": "Pour activer ce compte, cliquez sur le bouton ci-dessous",
+      "PasswordChanged": "Votre mot de passe a bien été changé"
     }
   },
   "MyAccount": {

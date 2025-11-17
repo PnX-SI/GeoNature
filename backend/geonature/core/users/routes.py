@@ -1,34 +1,38 @@
-import logging
-import requests
 import json
+import logging
+from functools import wraps
 
-
-from flask import Blueprint, request, current_app, Response, redirect, g, render_template
-from sqlalchemy.sql import distinct, and_
-from sqlalchemy import distinct, and_, select, exists
-from werkzeug.exceptions import NotFound, BadRequest, Forbidden
-
-from geonature.utils.env import DB
-from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
-from geonature.core.users.models import (
-    VUserslistForallMenu,
-    CorRole,
+import requests
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    g,
+    render_template,
+    request,
 )
-from geonature.utils.config import config
-from pypnusershub.db.models import Organisme, User, UserList
+from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.users.models import CorRole, VUserslistForallMenu
 from geonature.core.users.register_post_actions import (
-    validate_temp_user,
     execute_actions_after_validation,
     send_email_for_recovery,
+    validate_temp_user,
 )
+from geonature.utils.config import config
+from geonature.utils.env import DB, db
+from pypnusershub.auth.subscribe import (
+    change_password,
+    create_cor_role_token,
+    create_temp_user,
+    valid_temp_user,
+)
+from pypnusershub.db.models import Application, Organisme, User, UserList
 
-from pypnusershub.env import REGISTER_POST_ACTION_FCT
-from pypnusershub.db.models import User, Application
-from pypnusershub.db.models_register import TempUser
-from pypnusershub.routes_register import bp as user_api
+from sqlalchemy import and_, select
+from sqlalchemy.sql import and_
 from utils_flask_sqla.response import json_resp
-
+from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
 
 routes = Blueprint("users", __name__, template_folder="templates")
 log = logging.getLogger()
@@ -52,27 +56,24 @@ organism_fields = {
     "nom_organisme",
 }
 
-# configuration of post_request actions for registrations
-REGISTER_POST_ACTION_FCT.update(
-    {
-        "create_temp_user": validate_temp_user,
-        "valid_temp_user": execute_actions_after_validation,
-        "create_cor_role_token": send_email_for_recovery,
-    }
-)
-
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
 @json_resp
 def get_roles_by_menu_id(id_menu):
     """
-    Retourne la liste des roles associés à un menu
+    Returns the list of roles associated with a menu
 
-    .. :quickref: User;
+    Parameters
+    ----------
+    id_menu : int
+        The id of user list (utilisateurs.bib_list)
+    nom_complet : str, optional
+        Beginning of complete name of the role
 
-    :param id_menu: the id of user list (utilisateurs.bib_list)
-    :type id_menu: int
-    :query str nom_complet: begenning of complet name of the role
+    Returns
+    -------
+    list of dict
+        List of roles associated with the menu
     """
     query = select(VUserslistForallMenu).filter_by(id_menu=id_menu)
 
@@ -89,13 +90,19 @@ def get_roles_by_menu_id(id_menu):
 @json_resp
 def get_roles_by_menu_code(code_liste):
     """
-    Retourne la liste des roles associés à une liste (identifiée par son code)
+    Returns the list of roles associated with a user list (identified by its code)
 
-    .. :quickref: User;
+    Parameters
+    ----------
+    code_liste : str
+        The code of user list (utilisateurs.t_lists)
+    nom_complet : str, optional
+        Beginning of complete name of the role, default None
 
-    :param code_liste: the code of user list (utilisateurs.t_lists)
-    :type code_liste: string
-    :query str nom_complet: begenning of complet name of the role
+    Returns
+    -------
+    list
+        A list of roles associated with the user list
     """
 
     query = select(VUserslistForallMenu).join(
@@ -130,10 +137,15 @@ def get_role(id_role):
     """
     Get role detail
 
-    .. :quickref: User;
+    Parameters
+    ----------
+    id_role : int
+        the id user
 
-    :param id_role: the id user
-    :type id_role: int
+    Returns
+    -------
+    dict
+        A dictionary containing the role detail
     """
     user = DB.get_or_404(User, id_role)
     fields = user_fields.copy()
@@ -152,16 +164,16 @@ def get_roles():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = select(User)
+    query = select(User)
     if "group" in params:
-        q = q.where(User.groupe == params["group"])
+        query = query.where(User.groupe == params["group"])
     if "orderby" in params:
         try:
             order_col = getattr(User.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
+            query = query.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [user.as_dict(fields=user_fields) for user in DB.session.scalars(q).all()]
+    return [user.as_dict(fields=user_fields) for user in DB.session.scalars(query).all()]
 
 
 @routes.route("/organisms", methods=["GET"])
@@ -215,22 +227,46 @@ def get_organismes_jdd():
     ]
 
 
-#########################
+###################################
 ### ACCOUNT_MANAGEMENT ROUTES #####
-#########################
+###################################
 
 
-# TODO: let frontend call UsersHub directly?
+def check_sign_up_enabled(key):
+    """
+    Decorator to check if a user management feature is enabled.
+
+    Parameters
+    ----------
+    key : str
+        The key of the feature. Must be one of:
+        ENABLE_SIGN_UP, ENABLE_ACCOUNT_MANAGEMENT, AUTO_ACCOUNT_CREATION
+    """
+
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            valid_keys = ["ENABLE_SIGN_UP", "ENABLE_USER_MANAGEMENT", "AUTO_ACCOUNT_CREATION"]
+            if key not in valid_keys:
+                raise KeyError(f"{key} is not a valid feature key. Must be one of {valid_keys}")
+
+            if not current_app.config["ACCOUNT_MANAGEMENT"].get(key, False):
+                raise NotFound("Page not found")
+
+            return f(*args, **kwargs)
+
+        return decorated_function
+
+    return decorator
+
+
 @routes.route("/inscription", methods=["POST"])
+@check_sign_up_enabled("ENABLE_SIGN_UP")
 def inscription():
     """
-    Ajoute un utilisateur à utilisateurs.temp_user à partir de l'interface geonature
-    Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
-    Fait appel à l'API UsersHub
+    Add a user to temporary users table from the GeoNature interface
+    Works according to the 'ENABLE_SIGN_UP' authorization in the config.
     """
-    # test des droits
-    if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
-        return {"message": "Page introuvable"}, 404
 
     data = request.get_json()
     # ajout des valeurs non présentes dans le form
@@ -242,52 +278,50 @@ def inscription():
         .id_application
     )
     data["groupe"] = False
-    data["confirmation_url"] = config["API_ENDPOINT"] + "/users/after_confirmation"
 
-    r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user",
-        json=data,
-    )
+    try:
+        token_data = create_temp_user(data)
+        validate_temp_user(token_data)
+    except Exception as e:
+        raise BadRequest(str(e))
 
-    return Response(r), r.status_code
+    return {"message": "Subscription created"}, 200
 
 
-# TODO supprimer si non utilisé
 @routes.route("/login/recovery", methods=["POST"])
+@check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
 def login_recovery():
     """
-    Call UsersHub API to create a TOKEN for a user
-    A post_action send an email with the user login and a link to reset its password
-    Work only if 'ENABLE_SIGN_UP' is set to True
+    Send an email with the user login and a link to reset its password
+    Only works if 'ENABLE_SIGN_UP' is enabled
     """
-    # test des droits
+
     if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_USER_MANAGEMENT", False):
-        return {"msg": "Page introuvable"}, 404
+        raise NotFound("Page not found")
 
     data = request.get_json()
-
-    r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_cor_role_token",
-        json=data,
-    )
-
-    return Response(r), r.status_code
+    try:
+        create_cor_role_token(data["email"])
+        user = db.session.execute(
+            select(User).where(User.email == data["email"]),
+        ).scalar_one()
+        send_email_for_recovery(user)
+    except Exception as e:
+        raise BadRequest(str(e))
+    return {"message": "Token created"}, 200
 
 
 @routes.route("/confirmation", methods=["GET"])
+@check_sign_up_enabled("ENABLE_SIGN_UP")
 def confirmation():
     """
-    Validate a account after a demande (this action is triggered by the link in the email)
-    Create a personnal JDD as post_action if the parameter AUTO_DATASET_CREATION is set to True
-    Fait appel à l'API UsersHub
+    Validate a user account after a request (this action is triggered by the link in the email)
+    Create a personal JDD as post_action if the parameter AUTO_DATASET_CREATION is set to True
     """
-    # test des droits
-    if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
-        return {"message": "Page introuvable"}, 404
 
     token = request.args.get("token", None)
     if token is None:
-        return {"message": "Token introuvable"}, 404
+        raise BadRequest("Token not found")
 
     data = {
         "token": token,
@@ -297,51 +331,27 @@ def confirmation():
         .scalar_one()
         .id_application,
     }
+    try:
+        user_data = valid_temp_user(data)
+        execute_actions_after_validation(user_data)
+    except Exception as e:
+        raise BadRequest(str(e))
 
-    r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
-        json=data,
-    )
-
-    if r.status_code != 200:
-        if r.json() and r.json().get("msg"):
-            return r.json().get("msg"), r.status_code
-        return Response(r), r.status_code
-
-    new_user = r.json()
-    return render_template(
-        "account_created.html", user=new_user, redirect_url=config["URL_APPLICATION"]
-    )
-
-
-@routes.route("/after_confirmation", methods=["POST"])
-def after_confirmation():
-    data = dict(request.get_json())
-    type_action = "valid_temp_user"
-    after_confirmation_fn = REGISTER_POST_ACTION_FCT.get(type_action, None)
-    result = after_confirmation_fn(data)
-    if result != 0 and result["msg"] != "ok":
-        msg = f"Problem in GeoNature API after confirmation {type_action} : {result['msg']}"
-        return json.dumps({"msg": msg}), 500
-    else:
-        return json.dumps(result)
+    return {"message": "Account validated"}, 200
 
 
 @routes.route("/role", methods=["PUT"])
 @permissions.login_required
 @json_resp
+@check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
 def update_role():
     """
-    Modifie le role de l'utilisateur du token en cours
+    Modify the role of the user associated with the current token.
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
-        return {"message": "Page introuvable"}, 404
-
     data = dict(request.get_json())
 
     user = g.current_user
 
-    # Prevent public-access user from updating its own information
     if user.is_public:
         raise Forbidden
 
@@ -375,75 +385,55 @@ def update_role():
 @routes.route("/password/change", methods=["PUT"])
 @permissions.login_required
 @json_resp
-def change_password():
+@check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
+def change_password_route():
     """
-    Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp
-    Fait appel à l'API UsersHub
+    Change the password of the connected user
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
-        return {"message": "Page introuvable"}, 404
-
     user = g.current_user
     data = request.get_json()
 
     init_password = data.get("init_password", None)
-    # if not init_passwork provided(passwork forgotten) -> check if token exist
+
     if not init_password:
         if not data.get("token", None):
-            return {"msg": "Erreur serveur"}, 500
+            raise BadRequest("No Token was found")
     else:
         if not user.check_password(data.get("init_password", None)):
-            return {"msg": "Le mot de passe initial est invalide"}, 400
+            raise BadRequest("Initial password is incorrect")
 
-        # recuperation du token usershub API
-        # send request to get the token (enable_post_action = False to NOT sent email)
-        resp = s.post(
-            url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_cor_role_token",
-            json={"email": user.email, "enable_post_action": False},
-        )
-        if resp.status_code != 200:
-            # comme concerne le password, on explicite pas le message
-            return {"msg": "Erreur lors de la génération du token"}, 500
+        try:
+            new_token = create_cor_role_token(user.email)["token"]
+        except Exception as e:
+            raise InternalServerError(f"Error when creating a new token: {str(e)}")
+        data["token"] = new_token
 
-        data["token"] = resp.json()["token"]
+    required_fields = ["password", "password_confirmation", "token"]
+    if not all(field in data for field in required_fields):
+        raise InternalServerError("Missing required fields for password change")
 
-    if (
-        not data.get("password", None)
-        or not data.get("password_confirmation", None)
-        or not data.get("token", None)
-    ):
-        return {"msg": "Erreur serveur"}, 500
-    r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
-        json=data,
-    )
+    try:
+        change_password(data.get("token"), data.get("password"), data.get("password_confirmation"))
+    except Exception as e:
+        raise BadRequest("An error occurred while changing the password")
 
-    if r.status_code != 200:
-        # comme concerne le password, on explicite pas le message
-        return {"msg": "Erreur serveur"}, 500
-    return {"msg": "Mot de passe modifié avec succès"}, 200
+    return {"message": "Password changed with success"}, 200
 
 
 @routes.route("/password/new", methods=["PUT"])
 @json_resp
+@check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
 def new_password():
     """
-    Modifie le mdp d'un utilisateur apres que celui-ci ai demander un renouvelement
-    Necessite un token envoyer par mail a l'utilisateur
+    Changes the password of a user after they requested a password recovery
+    Requires a token sent by mail to the user
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
-        return {"message": "Page introuvable"}, 404
 
     data = dict(request.get_json())
     if not data.get("token", None):
-        return {"msg": "Erreur serveur"}, 500
-
-    r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
-        json=data,
-    )
-
-    if r.status_code != 200:
-        # comme concerne le password, on explicite pas le message
-        return {"msg": "Erreur serveur"}, 500
-    return {"msg": "Mot de passe modifié avec succès"}, 200
+        raise BadRequest("No token provided")
+    try:
+        change_password(data.get("token"), data.get("password"), data.get("password_confirmation"))
+    except Exception as e:
+        raise BadRequest(str(e))
+    return {"message": "Password changed with success"}, 200
