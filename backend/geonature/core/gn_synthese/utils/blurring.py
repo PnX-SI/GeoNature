@@ -113,6 +113,7 @@ def build_blurred_precise_geom_queries(
         sa.literal(1).label("priority"),
         Synthese.id_synthese.label("id_synthese"),
         Synthese.the_geom_4326.label("geom"),
+        sa.literal(False).label("is_blurred"),
     ]
     # Size hierarchy can be used here to filter on it in
     # a grid mode scenario.
@@ -147,6 +148,7 @@ def build_blurred_precise_geom_queries(
         sa.literal(2).label("priority"),
         Synthese.id_synthese.label("id_synthese"),
         geom,
+        sa.literal(True).label("is_blurred"),
     ]
     # size hierarchy is the size of the joined blurring area
     if select_size_hierarchy:
