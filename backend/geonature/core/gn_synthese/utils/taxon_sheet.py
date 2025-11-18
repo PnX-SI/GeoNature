@@ -15,11 +15,6 @@ from flask_sqlalchemy.pagination import Pagination
 from enum import Enum
 
 
-class SortOrder(Enum):
-    ASC = "asc"
-    DESC = "desc"
-
-
 class TaxonSheet:
 
     def __init__(self, cd_ref):
@@ -53,18 +48,6 @@ class TaxonSheet:
 
 class TaxonSheetUtils:
 
-    @staticmethod
-    def update_query_with_sorting(query: Query, sort_by: str, sort_order: SortOrder) -> Query:
-        if sort_order == SortOrder.ASC:
-            return query.order_by(asc(sort_by))
-
-        return query.order_by(desc(sort_by))
-
-    @staticmethod
-    def paginate(query: Query, page: int, per_page: int) -> Pagination:
-        return query.paginate(page=page, per_page=per_page, error_out=False)
-
-    #
     @staticmethod
     def get_cd_nom_list_from_cd_ref(cd_ref: int) -> typing.List[int]:
         return db.session.scalars(select(Taxref.cd_nom).where(Taxref.cd_ref == cd_ref))

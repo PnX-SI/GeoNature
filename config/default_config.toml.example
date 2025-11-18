@@ -459,9 +459,17 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Permet d'activer ou non la section "Medias"
         ENABLE_TAB_MEDIA = true
 
-
     # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
     FIELD_OBSERVERS_SEPARATORS =  [","]
+
+    # Activer l'affichage de la fiche observateur dans la synthèse
+    ENABLE_OBSERVER_SHEETS = true
+    [SYNTHESE.OBSERVER_SHEET]
+        # Options dédiées à la fiche observateur
+        # Permet d'activer ou non la section "Medias"
+        ENABLE_TAB_MEDIA = true
+        # Affiche la section overview
+        ENABLE_TAB_TAXA = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]

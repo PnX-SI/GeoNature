@@ -10,6 +10,11 @@
         height: 80% !important;
         overflow-y: scroll;
         overflow-x: hidden;
+        white-space: pre-wrap;
+        .Link {
+          color: var(--purple);
+          filter: brightness(70%);
+        }
       }
     }
   }

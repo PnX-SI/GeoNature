@@ -27,3 +27,14 @@
 #logo-structure {
   max-height: 60px;
 }
+
+.Link {
+  color: var(--purple);
+  filter: brightness(70%);
+}
+
+.UserDisplay {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}

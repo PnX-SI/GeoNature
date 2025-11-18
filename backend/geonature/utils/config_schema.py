@@ -282,10 +282,16 @@ class ExportObservationSchema(Schema):
 class TaxonSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
-    ENABLE_TAB_OBSERVATIONS = fields.Boolean(load_default=True)
     ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
     ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
     ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
+    ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
+
+
+class ObserverSheet(Schema):
+    # --------------------------------------------------------------------
+    # SYNTHESE - OBSERVER_SHEET
+    ENABLE_TAB_TAXA = fields.Boolean(load_default=True)
     ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
 
 
@@ -450,6 +456,11 @@ class Synthese(Schema):
 
     # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
     FIELD_OBSERVERS_SEPARATORS = fields.List(fields.String(), load_default=[","])
+
+    # --------------------------------------------------------------------
+    # SYNTHESE - OBSERVER_SHEET
+    ENABLE_OBSERVER_SHEETS = fields.Boolean(load_default=True)
+    OBSERVER_SHEET = fields.Nested(ObserverSheet, load_default=ObserverSheet().load({}))
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):

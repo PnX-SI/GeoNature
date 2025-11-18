@@ -94,7 +94,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button
-          *ngIf="selectedObs?.cor_observers?.length > 0 && config.FRONTEND.DISPLAY_EMAIL_INFO_OBS"
+          *ngIf="config.FRONTEND.DISPLAY_EMAIL_INFO_OBS && email"
           mat-mini-fab
           ngbTooltip="{{ 'Synthese.Actions.Mailto' | translate }}"
           placement="bottom"
@@ -152,9 +152,13 @@
         </span>
       </div>
       <b>{{ 'Observation' | translate }} {{ 'Of' | translate }} :</b>
-      <span data-qa="synthese-info-obs-observateur">
-        {{ selectedObs?.observers }}
-      </span>
+      <gn-observers-with-link
+        [observers]="selectedObs?.observers"
+        target="_blank"
+        data-qa="synthese-info-obs-observateur"
+      >
+        >
+      </gn-observers-with-link>
       <br />
       <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
         <b>{{ 'Date' | translate }} :</b>

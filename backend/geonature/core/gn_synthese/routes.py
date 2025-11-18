@@ -14,6 +14,7 @@ from geonature.core.gn_synthese.blueprints import (
     synthese_routes,
     statistics_routes,
     taxon_info_routes,
+    observer_info_routes,
     other_routes,
     export_routes,
 )
@@ -24,6 +25,7 @@ routes.register_blueprint(reports_blueprint, url_prefix="/reports")
 routes.register_blueprint(synthese_routes, url_prefix="/")
 routes.register_blueprint(statistics_routes, url_prefix="/")
 routes.register_blueprint(taxon_info_routes, url_prefix="/")
+routes.register_blueprint(observer_info_routes, url_prefix="/")
 routes.register_blueprint(other_routes, url_prefix="/")
 routes.register_blueprint(export_routes, url_prefix="/")
 

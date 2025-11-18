@@ -1,0 +1,52 @@
+<div
+  class="MediaContainer MediaContainer--empty"
+  *ngIf="medias.length === 0"
+>
+  <p class="no-media">Aucun média</p>
+</div>
+<div
+  class="MediaContainer"
+  *ngIf="medias.length !== 0"
+  (keydown)="onKeydown($event)"
+>
+  <div class="MediaContainer__list">
+    <div class="List">
+      <ng-container *ngFor="let media of medias">
+        <div
+          class="List__item"
+          (click)="selectMedia(media)"
+        >
+          <img
+            *ngIf="ms.typeMedia(media) === 'Photo'"
+            [src]="ms.href(media, 100)"
+            alt="Miniature"
+            [ngClass]="
+              media.id_media == selectedMedia.id_media
+                ? 'Media Media--thumbnail Media--selected'
+                : 'Media Media--thumbnail'
+            "
+          />
+          <div
+            *ngIf="ms.typeMedia(media) !== 'Photo'"
+            [ngClass]="media.id_media == selectedMedia.id_media ? 'Media Media--selected' : 'Media'"
+          >
+            <mat-icon>{{ ms.icon(media) }}</mat-icon>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [pageSize]="pagination.perPage"
+      [length]="pagination.totalItems"
+      [pageIndex]="pagination.currentPage - 1"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
+  </div>
+
+  <pnx-media-card
+    class="MediaContainer__view"
+    [inputMedia]="selectedMedia"
+  ></pnx-media-card>
+</div>

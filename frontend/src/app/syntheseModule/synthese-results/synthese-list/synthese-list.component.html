@@ -98,7 +98,7 @@
         <div *ngSwitchCase="'nom_vern_or_lb_nom'">
           <a
             class="Link"
-            [routerLink]="['taxon/' + row.cd_nom]"
+            [routerLink]="getTaxonSheetUrl(row.cd_nom)"
             *ngIf="
               config.SYNTHESE.ENABLE_TAXON_SHEETS && row.hasOwnProperty('cd_nom');
               else cellDefault
@@ -108,6 +108,10 @@
             <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
           </a>
         </div>
+        <gn-observers-with-link
+          *ngSwitchCase="'observers'"
+          [observers]="row['observers']"
+        ></gn-observers-with-link>
         <div *ngSwitchCase="'dataset_name'">
           <a
             class="Link"
@@ -123,6 +127,21 @@
         </ng-container>
       </span>
       <ng-template #cellDefault>{{ row[col.prop] }}</ng-template>
+      <ng-template
+        #cellObservers
+        let-observers="observers"
+      >
+        <ng-container *ngFor="let observer of observers; let last = last">
+          <a
+            class="Link"
+            [routerLink]="['observer/' + observer]"
+            matTooltip="Afficher la fiche de l'observateur"
+          >
+            {{ observer }}
+          </a>
+          <span *ngIf="!last">,</span>
+        </ng-container>
+      </ng-template>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

@@ -1,0 +1,100 @@
+::ng-deep .leaflet-tooltip-pane .number-obs {
+  color: rgb(0, 0, 0);
+  /* font-weight: bold; */
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  /* font-size:2; */
+}
+::ng-deep .Observations .custom-control {
+  background-color: rgba(255, 255, 255);
+}
+::ng-deep .Observations .custom-control-label {
+  margin: 0.2rem;
+}
+::ng-deep .Observations .custom-control-label::before {
+  top: 0.05rem;
+}
+::ng-deep .Observations .custom-control-label::after {
+  top: calc(0.05rem + 2px);
+}
+::ng-deep .legend {
+  line-height: 10px;
+  font-size: 14px;
+  color: #555;
+  background-color: white;
+  opacity: 0.7;
+  padding: 5px;
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+::ng-deep .legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+}
+::ng-deep .legend:hover {
+  opacity: 1;
+}
+
+.Observations {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  height: 100%;
+  &__loader {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    z-index: 5000; // keep above Leaflet panes, toolbars, and dialogs
+
+    .mat-mdc-progress-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5001;
+    }
+  }
+  &__map {
+    flex-grow: 2;
+  }
+  &__toolbar {
+    &Item {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      column-gap: 0.5rem;
+      max-width: 99%; // DateSlider has an issue with 100% and horizontal overflow
+      .Label {
+        display: flex;
+        flex-flow: row nowrap;
+        column-gap: 0.2rem;
+        &__text {
+          white-space: nowrap;
+          &--highlighted {
+            font-weight: bold;
+          }
+        }
+        &--placeholder {
+          padding-top: 0.5rem;
+        }
+      }
+      .DateSlider {
+        --mdc-slider-handle-width: 15px;
+        --mdc-slider-handle-height: 15px;
+        --mdc-slider-inactive-track-height: 3px;
+        --mdc-slider-active-track-height: var(--mdc-slider-inactive-track-height);
+        flex-grow: 2;
+        z-index: 1001; // leaflet-bottom: 1000
+      }
+    }
+  }
+}

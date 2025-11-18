@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Taxon, TaxonParents } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { RouterModule } from '@librairies/@angular/router';
-import { RouteService } from '../../taxon-sheet.route.service';
+import { TaxonSheetRouteService } from '../../taxon-sheet.route.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class TaxonomyComponent {
   }
 
   constructor(
-    private _rs: RouteService,
+    private _rs: TaxonSheetRouteService,
     private _ds: DataFormService
   ) {}
 

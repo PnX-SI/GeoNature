@@ -8,28 +8,26 @@ import {
 } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
-import { TabObservationsComponent } from './tab-observations/tab-observations.component';
 import { TabProfileComponent } from './tab-profile/tab-profile.component';
 import { TabTaxonomyComponent } from './tab-taxonomy/tab-taxonomy.component';
 import { TabMediaComponent } from './tab-media/tab-media.component';
 import { TabObserversComponent } from './tab-observers/tab-observers.component';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { throwError } from '@librairies/rxjs';
-import { HttpErrorResponse } from '@librairies/@angular/common/http';
+import { throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChildRouteDescription } from '@geonature/routing/childRouteDescription';
+import { ObservationsComponent } from '../sheets/observations/observations.component';
 
-interface Tab {
-  label: string;
-  path: string;
-  configEnabledField: string;
-  component: any;
+export function getTaxonSheetRoute(cd_nom: number): [string] {
+  return [`/synthese/taxon/${cd_nom}`];
 }
 
-export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
+export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
     label: 'Observations',
     path: 'observations',
-    configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
-    component: TabObservationsComponent,
+    configEnabledField: null, // make it always available !
+    component: ObservationsComponent,
   },
   {
     label: 'Taxonomie',
@@ -57,11 +55,13 @@ export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<Tab> = [
   },
 ];
 
+export const CD_REF_PARAM_NAME = 'cd_ref';
+
 @Injectable({
   providedIn: 'root',
 })
-export class RouteService implements CanActivate, CanActivateChild {
-  readonly TAB_LINKS = [];
+export class TaxonSheetRouteService implements CanActivate, CanActivateChild {
+  readonly TAB_LINKS: Array<ChildRouteDescription> = [];
   constructor(
     private _config: ConfigService,
     private _router: Router,
@@ -75,16 +75,12 @@ export class RouteService implements CanActivate, CanActivateChild {
     }
   }
 
-  _isComponentRootLevelRoute(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return state.url.endsWith(route.params.cd_ref);
-  }
-
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (!this._config.SYNTHESE.ENABLE_TAXON_SHEETS) {
       this._router.navigate(['/404'], { skipLocationChange: true });
       return false;
     }
-    const cd_ref = route.params.cd_ref;
+    const cd_ref = route.params[CD_REF_PARAM_NAME];
     this._sds
       .getIsAuthorizedCdRefForUser(cd_ref)
       .pipe(
@@ -98,14 +94,7 @@ export class RouteService implements CanActivate, CanActivateChild {
       )
       .subscribe();
 
-    // Apply a redirection if needed to the first enabled child.
-    if (this._isComponentRootLevelRoute(route, state)) {
-      if (this.TAB_LINKS.length) {
-        const redirectionTab = this.TAB_LINKS[0];
-        this._router.navigate([state.url + '/' + redirectionTab.path]);
-        return true;
-      }
-    }
+    return true;
   }
 
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
