@@ -294,6 +294,10 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # de surcharger les navigateurs des clients (question de performances).
     ENABLE_LEAFLET_CLUSTER = true
 
+    # Disable Leaflet clusters on the map at this zoom level
+    # ⚠ WARNING: check if all search results are working !
+    LEALET_CLUSTER_DISABLE_ZOOM = 16
+
     # Nombre d'observations maximum à afficher sur la carte après une recherche
     NB_MAX_OBS_MAP = 50000
 
