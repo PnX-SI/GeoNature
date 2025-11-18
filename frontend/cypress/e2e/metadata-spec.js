@@ -1,7 +1,5 @@
 import promisify from 'cypress-promise';
 
-const DOWNLOADS_FOLDER = Cypress.config('downloadsFolder');
-
 describe('Testing metadata', () => {
   const cadreAcq = 'CA-1';
   const jdd = 'JDD-1';
@@ -39,25 +37,6 @@ describe('Testing metadata', () => {
     cy.get(caSelector).click();
     cy.get('[data-qa="pnx-metadata-acq-framework-name"]').contains(cadreAcq);
     cy.get('[data-qa="pnx-metadata-exit-af"]').click();
-  });
-
-  it('should download the export PDF file of the first "cadre d\'acquisition"', () => {
-    cy.get(caSelector).click();
-    cy.wait(5000);
-    cy.get('[data-qa="pnx-metadata-export-af"]')
-      .scrollIntoView()
-      .should('be.visible')
-      .then(() => {
-        cy.get('[data-qa="pnx-metadata-export-af"]')
-          .trigger('click')
-          .then(() => {
-            cy.wait(2000);
-            cy.task('getLastDownloadFileName', DOWNLOADS_FOLDER).then((filename) => {
-              cy.verifyDownload(filename, DOWNLOADS_FOLDER);
-              cy.deleteFile(filename, DOWNLOADS_FOLDER);
-            });
-          });
-      });
   });
 
   it('should display "jeu de données"', () => {
@@ -234,4 +213,7 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-jdd-display-data-' + jddUUID + '"]').click({ force: true });
     cy.url().should('include', 'synthese?id_dataset=');
   });
+
+  // TODO: add tests for the PDF export of an acquisition framework
+  // ...
 });

@@ -104,14 +104,7 @@
                   class="af-title"
                   style="margin-top: 2.5%; margin-bottom: 1.2%"
                 >
-                  <div
-                    class="col-md-1"
-                    [attr.data-qa]="
-                      'pnx-metadata-acq-framework-id-for-uuid-' + af.unique_acquisition_framework_id
-                    "
-                  >
-                    {{ af.id_acquisition_framework }}
-                  </div>
+                  <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
                   <div class="col-md-2">
                     <a
                       [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
