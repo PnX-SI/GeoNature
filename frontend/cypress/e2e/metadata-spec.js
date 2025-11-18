@@ -213,7 +213,4 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-jdd-display-data-' + jddUUID + '"]').click({ force: true });
     cy.url().should('include', 'synthese?id_dataset=');
   });
-
-  // TODO: add tests for the PDF export of an acquisition framework
-  // ...
 });
