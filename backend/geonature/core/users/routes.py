@@ -148,10 +148,12 @@ def get_role(id_role):
         A dictionary containing the role detail
     """
     user = DB.get_or_404(User, id_role)
-    fields = user_fields.copy()
     if g.current_user == user:
+        fields = user_fields.copy()
         fields.add("email")
-    return user.as_dict(fields=fields)
+        fields.add("champs_addi")
+        return user.as_dict(fields=fields)
+    raise Forbidden("Vous souhaitez accéder aux données d'un autre utilisateur !")
 
 
 @routes.route("/roles", methods=["GET"])
