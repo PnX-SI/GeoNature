@@ -54,7 +54,7 @@ describe('Testing occhab', () => {
 
       cy.get('#validateButton').click();
     });
-    
+
     const listHabit = await promisify(
       cy.get(
         '[data-qa="pnx-occhab-map-list-datatable"] > div > datatable-body > datatable-selection > datatable-scroller'

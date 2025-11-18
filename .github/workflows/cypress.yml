@@ -129,3 +129,4 @@ jobs:
           name: cypress-screenshots
           path: frontend/cypress/screenshots
           if-no-files-found: ignore
+          retention-days: 1
