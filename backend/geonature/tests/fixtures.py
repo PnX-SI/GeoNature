@@ -434,6 +434,15 @@ def acquisition_frameworks(users):
     }
     afs["child_af"] = create_af("child_af", users["user"], False, afs["parent_af"])
 
+    # Add additional data to "af_1"
+    afs["af_1"].additional_data = {
+        "select_field_used": "value1",
+        "nomenclature_field_used": "Valeur De Nomenclature",
+        "text_field_used": "test",
+        "date_field_used": {"day": 31, "year": 2025, "month": 10},
+        "number_field_used": 1,
+    }
+
     return afs
 
 
