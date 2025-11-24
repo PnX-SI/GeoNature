@@ -6,6 +6,7 @@ import { similarValidator } from '@geonature/services/validators/validators';
 import { CommonService } from '@geonature_common/service/common.service';
 
 import { AuthService } from '../../../components/auth/auth.service';
+import { PasswordService } from '../../../userModule/services/password.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { TranslateService } from '@librairies/@ngx-translate/core';
 @Component({
@@ -27,7 +28,8 @@ export class SignUpComponent implements OnInit {
     private _router: Router,
     private _commonService: CommonService,
     public config: ConfigService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private passwordService: PasswordService
   ) {
     this.FORM_CONFIG = this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
     if (!(this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
@@ -48,13 +50,25 @@ export class SignUpComponent implements OnInit {
         '',
         [Validators.pattern('^[+a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required],
       ],
-      password: ['', [Validators.required]],
+      password: ['', [this.passwordService.passwordValidator()]],
       password_confirmation: ['', [Validators.required]],
       remarques: ['', null],
       organisme: ['', null],
     });
     this.form.setValidators([similarValidator('password', 'password_confirmation')]);
     this.dynamicFormGroup = this.fb.group({});
+  }
+
+  getPasswordErrors(): string[] {
+    const control = this.form.get('password');
+    if (!control || !control.errors) {
+      return [];
+    }
+
+    return Object.keys(control.errors).map((errorKey) => {
+      const error = control.errors[errorKey];
+      return error.message || 'Erreur inconnue';
+    });
   }
 
   save() {

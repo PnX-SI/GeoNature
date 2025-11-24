@@ -151,12 +151,13 @@
                     placeholder="Mot de passe"
                     formControlName="password"
                   />
-                  <small
-                    *ngIf="
-                      form.get('password').hasError('required') && form.get('password').touched
-                    "
-                  >
-                    Ce champ est nécessaire
+                  <small *ngFor="let error of getPasswordErrors()">
+                    <span
+                      *ngIf="form.get('password').touched && form.get('password').dirty"
+                      style="display: block"
+                    >
+                      {{ error }}
+                    </span>
                   </small>
                 </div>
               </div>
