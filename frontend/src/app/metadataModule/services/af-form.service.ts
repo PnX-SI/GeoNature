@@ -187,7 +187,7 @@ export class AcquisitionFrameworkFormService {
     const supportedQueryParams = {
       basicFields: [
         'acquisition_framework_name',
-        'acquisition_framework_description',
+        'acquisition_framework_desc',
         'acquisition_framework_end_date',
       ],
       actorFields: ['id_role', 'id_organism'],
