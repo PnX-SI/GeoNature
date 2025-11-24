@@ -5,6 +5,7 @@ import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms
 import { similarValidator } from '@geonature/services/validators';
 
 import { AuthService } from '../../../components/auth/auth.service';
+import { PasswordService } from '../../../userModule/services/password.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { CommonService } from '@geonature_common/service/common.service';
 
@@ -25,7 +26,8 @@ export class NewPasswordComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public config: ConfigService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private passwordService: PasswordService
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
       let token = params['token'];
@@ -42,10 +44,22 @@ export class NewPasswordComponent implements OnInit {
 
   setForm() {
     this.form = this.fb.group({
-      password: ['', [Validators.required]],
+      password: ['', [this.passwordService.passwordValidator()]],
       password_confirmation: ['', [Validators.required]],
     });
     this.form.setValidators([similarValidator('password', 'password_confirmation')]);
+  }
+
+  getPasswordErrors(): string[] {
+    const control = this.form.get('password');
+    if (!control || !control.errors) {
+      return [];
+    }
+
+    return Object.keys(control.errors).map((errorKey) => {
+      const error = control.errors[errorKey];
+      return error.message || 'Erreur inconnue';
+    });
   }
 
   submit() {
