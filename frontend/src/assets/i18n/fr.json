@@ -52,7 +52,14 @@
       "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect",
       "WrongMailAddress": "Une erreur est survenue. Veuillez vérifier le mail fournis.",
       "AccountCreationError": "L'adresse mail ou l'identifiant renseigné existe déjà.",
-      "UnexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
+      "UnexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
+      "Password": {
+        "MinLength": "Le mot de passe doit contenir au moins {{ requiredLength }} caractères (actuellement {{ actualLength }}).",
+        "UpperCase": "Le mot de passe doit contenir au moins une majuscule.",
+        "LowerCase": "Le mot de passe doit contenir au moins une minuscule.",
+        "Digit": "Le mot de passe doit contenir au moins un chiffre.",
+        "SpecialChar": "Le mot de passe doit contenir au moins un caractère spécial."
+      }
     },
     "Messages": {
       "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
