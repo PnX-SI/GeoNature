@@ -50,7 +50,17 @@
       "ActivateAccountValidator": "Activate this account"
     },
     "Errors": {
-      "WrongLoginOrPassword": "Incorrect username or password"
+      "WrongLoginOrPassword": "Incorrect username or password.",
+      "WrongMailAddress": "An error occurred. Please verify the provided email address.",
+      "AccountCreationError": "The provided email address or username already exists.",
+      "UnexpectedError": "An unexpected error occurred. Please try again later.",
+      "Password": {
+        "MinLength": "The password must be at least {{ requiredLength }} characters long (currently {{ actualLength }}).",
+        "UpperCase": "The password must contain at least one uppercase letter.",
+        "LowerCase": "The password must contain at least one lowercase letter.",
+        "Digit": "The password must contain at least one digit.",
+        "SpecialChar": "The password must contain at least one special character."
+      }
     },
     "Messages": {
       "ForgotPasswordOrLogin": "Forgot username or password?",
