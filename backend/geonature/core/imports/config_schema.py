@@ -65,9 +65,10 @@ DEFAULT_COUNT_VALUE = 1
 
 ALLOW_VALUE_MAPPING = True
 
-
-# If VALUE MAPPING is not allowed, you must specify the DEFAULT_VALUE_MAPPING_ID
-DEFAULT_VALUE_MAPPING_ID = 3
+DEFAULT_VALUE_MAPPINGS = [
+    {"destination": "synthese", "id_mapping": "3"},
+    {"destination": "occhab", "id_mapping": "5"},
+]
 
 # Parameter to define the rank shown in the doughnut chart in the import report
 # must be in ['regne', 'phylum', 'classe', 'ordre', 'famille', 'sous_famille', 'tribu', 'group1_inpn', 'group2_inpn']
@@ -84,9 +85,7 @@ class ImportConfigSchema(Schema):
     ALLOWED_EXTENSIONS = fields.List(fields.String, load_default=ALLOWED_EXTENSIONS)
     DEFAULT_COUNT_VALUE = fields.Integer(load_default=DEFAULT_COUNT_VALUE)
     ALLOW_VALUE_MAPPING = fields.Boolean(load_default=ALLOW_VALUE_MAPPING)
-    DEFAULT_VALUE_MAPPING_ID = fields.Integer(
-        load_default=DEFAULT_VALUE_MAPPING_ID
-    )  # FIXME: unused
+    DEFAULT_VALUE_MAPPINGS = fields.List(fields.Dict, load_default=DEFAULT_VALUE_MAPPINGS)
     FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE = fields.Boolean(load_default=True)
     DISPLAY_MAPPED_VALUES = fields.Boolean(load_default=True)  # FIXME: unused
     # When setting PER_DATASET_UUID_CHECK=True (used for import in synthese):
