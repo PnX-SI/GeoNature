@@ -71,8 +71,6 @@ export class AfFormComponent implements OnInit, AfterViewInit {
     this._route.queryParams.subscribe((params) => {
       this.afFormS.queryParamsSource.next(params);
     });
-
-    // TODO?: Clean route from unsupported query params ?
   }
 
   handleDates(af, isParseElseFormat = false) {
