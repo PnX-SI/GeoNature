@@ -80,6 +80,13 @@ class CeleryConfig(Schema):
     timezone = fields.String(load_default=None)
 
 
+class PasswordManagement(Schema):
+    MIN_PASSWORD_LENGTH = fields.Integer(load_default=8)
+    REQUIRE_SPECIAL_CHARACTER = fields.Boolean(load_default=True)
+    REQUIRE_DIGIT = fields.Boolean(load_default=True)
+    REQUIRE_MULTIPLE_CASE = fields.Boolean(load_default=True)
+
+
 class AccountManagement(Schema):
     # Config for sign-up
     ENABLE_SIGN_UP = fields.Boolean(load_default=False)
@@ -93,6 +100,9 @@ class AccountManagement(Schema):
     EXTERNAL_LINKS = fields.List(
         fields.Dict,
         load_default=[],
+    )
+    PASSWORD_MANAGEMENT = fields.Nested(
+        PasswordManagement, load_default=PasswordManagement().load({})
     )
 
 

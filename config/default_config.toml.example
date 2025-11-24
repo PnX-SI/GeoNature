@@ -479,7 +479,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Créer automatiquement (=true) un nouveau jeu de données pour chaque
     # compte utilisateur
     AUTO_DATASET_CREATION = true
-
+    [ACCOUNT_MANAGEMENT.PASSWORD_MANAGEMENT]
+         MIN_PASSWORD_LENGTH = 8
+         REQUIRE_SPECIAL_CHARACTER = true
+         REQUIRE_DIGIT = true
+         REQUIRE_MULTIPLE_CASE = true
     # Ajouter des liens sur la page de connexion de GeoNature,
     # peut être utile lors d'une externalisation des services de connexion
     # Chaque [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]] correspond à un lien
