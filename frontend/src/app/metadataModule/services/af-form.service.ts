@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormArray, UntypedFormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { tap, filter, switchMap, map } from 'rxjs/operators';
+import { BehaviorSubject, ConnectableObservable, forkJoin, Observable, of } from 'rxjs';
+import { tap, filter, switchMap, map, publish } from 'rxjs/operators';
 
 import { ActorFormService } from './actor-form.service';
 import { FormService } from '@geonature_common/form/form.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
+
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable()
 export class AcquisitionFrameworkFormService {
@@ -14,13 +16,15 @@ export class AcquisitionFrameworkFormService {
   public acquisition_framework: BehaviorSubject<any> = new BehaviorSubject(null);
   // Custom additional fields
   public additionalFieldsForm: Array<any> = [];
+  public queryParamsSource: BehaviorSubject<Object> = new BehaviorSubject({});
 
   constructor(
     private fb: UntypedFormBuilder,
     private actorFormS: ActorFormService,
     private formS: FormService,
     private dataFormService: DataFormService,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    private dateParser: NgbDateParserFormatter
   ) {
     this.initForm();
     this.setObservables();
@@ -104,58 +108,69 @@ export class AcquisitionFrameworkFormService {
    **/
   private setObservables() {
     //Observable de this.dataset pour adapter le formulaire selon la donnée
-    this.acquisition_framework
-      .asObservable()
-      .pipe(
-        tap(() => this.reset()),
-        tap(() => {
-          this.additionalFieldsForm = [];
-        }),
-        switchMap((af) =>
-          af !== null ? this.acquisition_framework.asObservable() : this.initialValues
-        ),
-        map((value) => {
-          if (value.cor_af_actor) {
-            if (this.actorFormS.nbMainContact(value.cor_af_actor) == 0) {
-              value.cor_af_actor.push({
-                id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature('1'),
-              });
-            }
-            value.cor_af_actor.forEach((actor) => {
-              this.addActor(this.actors, actor);
-            });
-          }
-          if (value.bibliographical_references) {
-            value.bibliographical_references.forEach((e) => {
-              this.addBibliographicalReferences();
-            });
-          }
-          return value;
-        }),
-        // Get additional fields from acquisition framework
-        switchMap((acquisition_framework) => {
-          let additionnalFieldsObservable: Observable<any>;
-          additionnalFieldsObservable = this.getAdditionalFields(['METADATA_CADRE_ACQUISITION']);
-          return forkJoin([of(acquisition_framework), additionnalFieldsObservable]);
-        }),
-        map(([acquisition_framework, additional_data]) => {
-          additional_data.forEach((field) => {
-            // Set value of field
-            if (acquisition_framework.additional_data[field.attribut_name] !== undefined) {
-              field.value = acquisition_framework.additional_data[field.attribut_name];
-            }
-          });
 
-          return [acquisition_framework, additional_data];
-        }),
-        // Set the additional fields form
-        tap(([acquisition_framework, additional_data]) => {
-          this.additionalFieldsForm = additional_data;
-        }),
-        // Map to return acquisition framework data only
-        map(([acquisition_framework, additional_data]) => acquisition_framework)
-      )
-      .subscribe((value: any) => this.form.patchValue(value));
+    const afSource = this.acquisition_framework.asObservable().pipe(
+      tap(() => this.reset()),
+      tap(() => {
+        this.additionalFieldsForm = [];
+      }),
+      switchMap((af) =>
+        af !== null ? this.acquisition_framework.asObservable() : this.initialValues
+      ),
+      map((value) => {
+        if (value.cor_af_actor) {
+          if (this.actorFormS.nbMainContact(value.cor_af_actor) == 0) {
+            value.cor_af_actor.push({
+              id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature('1'),
+            });
+          }
+          value.cor_af_actor.forEach((actor) => {
+            this.addActor(this.actors, actor);
+          });
+        }
+        if (value.bibliographical_references) {
+          value.bibliographical_references.forEach((e) => {
+            this.addBibliographicalReferences();
+          });
+        }
+        return value;
+      }),
+      // Get additional fields from acquisition framework
+      switchMap((acquisition_framework) => {
+        let additionnalFieldsObservable: Observable<any>;
+        additionnalFieldsObservable = this.getAdditionalFields(['METADATA_CADRE_ACQUISITION']);
+        return forkJoin([of(acquisition_framework), additionnalFieldsObservable]);
+      }),
+      map(([acquisition_framework, additional_data]) => {
+        additional_data.forEach((field) => {
+          // Set value of field
+          if (acquisition_framework.additional_data[field.attribut_name] !== undefined) {
+            field.value = acquisition_framework.additional_data[field.attribut_name];
+          }
+        });
+
+        return [acquisition_framework, additional_data];
+      }),
+      // Set the additional fields form
+      tap(([acquisition_framework, additional_data]) => {
+        this.additionalFieldsForm = additional_data;
+      }),
+      // Map to return acquisition framework data only
+      map(([acquisition_framework, additional_data]) => acquisition_framework),
+      tap((value) => {
+        this.form.patchValue(value);
+      })
+    );
+
+    const queryParamsSourceAfterFormInit = this.queryParamsSource
+      .asObservable()
+      .pipe(publish()) as ConnectableObservable<any>;
+
+    queryParamsSourceAfterFormInit.subscribe((params) => {
+      this.setFromParams(params);
+    });
+
+    afSource.subscribe(queryParamsSourceAfterFormInit.connect.bind(queryParamsSourceAfterFormInit));
 
     //gère lactivation/désactivation de la zone de saisie du framework Parent
     this.form.get('is_parent').valueChanges.subscribe((value: boolean) => {
@@ -164,6 +179,40 @@ export class AcquisitionFrameworkFormService {
       } else {
         this.form.get('acquisition_framework_parent_id').enable();
       }
+    });
+  }
+
+  setFromParams(params: any) {
+    // Supported query params
+    const supportedQueryParams = {
+      basicFields: [
+        'acquisition_framework_name',
+        'acquisition_framework_desc',
+        'acquisition_framework_end_date',
+      ],
+      actorFields: ['id_role', 'id_organism'],
+    };
+
+    Object.keys(params).forEach((key) => {
+      // Basic fields
+      const keyAsBasicField = supportedQueryParams.basicFields.find((field) => field == key);
+      if (keyAsBasicField) {
+        let value = params[key];
+        if (keyAsBasicField == 'acquisition_framework_end_date') {
+          value = this.dateParser.parse(value);
+        }
+        this.form.get(keyAsBasicField).setValue(value);
+      }
+      // Contact principal
+      const keyAsActorField = supportedQueryParams.actorFields.find((field) => field == key);
+      if (keyAsActorField) {
+        this.form.get('cor_af_actor').patchValue([{ [keyAsActorField]: +params[key] }]);
+      }
+      // Additional fields
+      //  /!\ Tested only for Number field type
+      setTimeout(() => {
+        this.form.get('additional_data').patchValue({ [key]: params[key] });
+      }, 0);
     });
   }
 
