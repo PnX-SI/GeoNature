@@ -11,6 +11,7 @@ from geonature.core.imports.models import (
     MappingTemplate,
     FieldMapping,
     ContentMapping,
+    ObserverMapping,
 )
 
 from geonature.core.imports.blueprint import blueprint
@@ -94,7 +95,11 @@ def add_mapping(destination, mappingtype, scope):
     ):
         raise Conflict(description="Un mapping de ce type portant ce nom existe déjà")
 
-    MappingClass = FieldMapping if mappingtype == "FIELD" else ContentMapping
+    MappingClass = FieldMapping
+    if mappingtype == "CONTENT":
+        MappingClass = ContentMapping
+    elif mappingtype == "OBSERVER":
+        MappingClass = ObserverMapping
     try:
         MappingClass.validate_values(request.json)
     except ValueError as e:
@@ -140,15 +145,16 @@ def update_mapping(mapping, scope):
             mapping.validate_values(request.json)
         except ValueError as e:
             raise BadRequest(*e.args)
-        if mapping.type == "FIELD":
-            mapping.values.update(request.json)
-        elif mapping.type == "CONTENT":
+
+        if mapping.type == "CONTENT":
             for key, value in request.json.items():
                 if key not in mapping.values:
                     mapping.values[key] = value
                 else:
                     mapping.values[key].update(value)
             flag_modified(mapping, "values")  # nested dict modification not detected by MutableDict
+        else:  # FIELD and OBSERVER
+            mapping.values.update(request.json)
     db.session.commit()
     return jsonify(mapping.as_dict())
 

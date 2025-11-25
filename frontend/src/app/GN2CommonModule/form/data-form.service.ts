@@ -125,8 +125,8 @@ export class DataFormService {
   //   );
   // }
 
-  getObservers(idMenu) {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu/${idMenu}`);
+  getObservers(idMenu: number | null = null) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu/` + (idMenu ? idMenu : ''));
   }
 
   getObserversFromCode(codeList) {

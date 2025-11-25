@@ -3,5 +3,6 @@ export enum Step {
   Decode,
   FieldMapping,
   ContentMapping,
+  ObserverMapping,
   Import,
 }

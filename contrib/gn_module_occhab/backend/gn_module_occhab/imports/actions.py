@@ -1,5 +1,7 @@
 from math import ceil
 from flask import current_app
+from geonature.utils.config import config
+from gn_module_occhab.models import CorStationObserver, Station
 from werkzeug.exceptions import Conflict
 
 from geonature.core.imports.checks.sql.extra import (
@@ -545,6 +547,16 @@ class OcchabImportActions(ImportActions):
                 row_count += db.session.execute(insert_stmt).rowcount
                 yield (batch + 1) / batch_count
             imprt.statistics.update({f"{entity.code}_count": row_count})
+
+        if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+            ImportActions.bind_matched_observers(
+                imprt,
+                Station,
+                "observers_txt",
+                "id_station",
+                CorStationObserver,
+                ["id_station", "id_role"],
+            )
 
     @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:

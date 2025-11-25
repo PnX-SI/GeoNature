@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from typing import IO, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 from flask import current_app, render_template
+from pypnusershub.db.models import User
 import sqlalchemy as sa
 from sqlalchemy import func, select, delete
 from chardet.universaldetector import UniversalDetector
@@ -14,6 +15,7 @@ from sqlalchemy.sql.expression import select, insert
 import pandas as pd
 import numpy as np
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from werkzeug.exceptions import BadRequest
 from geonature.utils.env import db
 from weasyprint import HTML
@@ -164,6 +166,7 @@ def detect_separator(file_: IO, encoding: str) -> Optional[str]:
 
 
 def preprocess_value(
+    imprt: TImports,
     dataframe: pd.DataFrame,
     field: BibFields,
     source_col: Optional[Union[str, List[str]]],
@@ -187,6 +190,8 @@ def preprocess_value(
         The preprocessed value.
 
     """
+    col_name = None  # if dest column changed
+    col_value = None
 
     def build_additional_data(columns: dict):
         try:
@@ -214,20 +219,32 @@ def preprocess_value(
         for col in source_col:
             if col not in dataframe.columns:
                 dataframe[col] = None
-        col = dataframe[source_col].apply(build_additional_data, axis=1)
+        col_value = dataframe[source_col].apply(build_additional_data, axis=1)
     else:
         source_field = source_col if source_col is not None else field.source_field
 
         if source_field not in dataframe.columns:
             dataframe[source_field] = None
+        col_value = dataframe[source_field]
 
         if constant_value is not None:
-            dataframe[source_field] = [constant_value] * len(dataframe)
-            # handle array repeated in single dataframe column
+            if field.type_field == "observers":
+                transient_table = imprt.destination.get_transient_table()
+                type_dest_col = transient_table.c[field.dest_column].type
+                if not isinstance(constant_value, list):  # constant is an array of user(dict)
+                    constant_value = [constant_value]
+                if isinstance(type_dest_col, ARRAY):
+                    constant_value = [role["id_role"] for role in constant_value]
+                elif isinstance(type_dest_col, JSONB) or isinstance(type_dest_col, db.JSON):
+                    constant_value = constant_value[0]
+                elif isinstance(type_dest_col, db.Integer):
+                    constant_value = constant_value[0]["id_role"]
+                else:
+                    constant_value = constant_value[0]["nom_complet"]
+                col_name = field.dest_field
+            col_value = pd.Series([constant_value] * len(dataframe))
 
-        col = dataframe[source_field]
-
-    return col
+    return col_name, col_value
 
 
 def insert_import_data_in_transient_table(imprt: TImports) -> int:
@@ -269,17 +286,20 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
             "id_import": np.full(len(chunk), imprt.id_import),
             "line_no": 1 + 1 + chunk.index,  # header + start line_no at 1 instead of 0
         }
-        data.update(
-            {
-                dest_field: preprocess_value(
-                    chunk,
-                    mapping["field"],
-                    mapping.get("column_src", None),
-                    mapping.get("constant_value", None),
-                )
-                for dest_field, mapping in fieldmapping.items()
-            }
-        )
+
+        for dest_field, mapping in fieldmapping.items():
+            col, processed_data = preprocess_value(
+                imprt,
+                chunk,
+                mapping["field"],
+                mapping.get("column_src", None),
+                mapping.get("constant_value", None),
+            )
+            data.update({dest_field: processed_data})
+            if col and col != dest_field:
+
+                data.update({col: processed_data})
+
         # XXX keep extra_fields in t_imports_synthese? or add config argument?
         if extra_columns and "extra_fields" in transient_table.c:
             data.update(

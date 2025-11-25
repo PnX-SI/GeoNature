@@ -1,12 +1,17 @@
 import typing
 from math import ceil
 
+from geonature.utils.config import config
 import sqlalchemy as sa
 from apptax.taxonomie.models import Taxref
 from bokeh.embed.standalone import StandaloneEmbedJson
 from flask import current_app
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.models import (
+    CorObserverSynthese,
+    Synthese,
+    TSources,
+)
 from geonature.core.imports.actions import (
     ImportActions,
     ImportInputUrl,
@@ -52,7 +57,8 @@ from geonature.core.imports.utils import (
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
 from sqlalchemy import distinct, func, select
-
+from sqlalchemy.orm import aliased
+from sqlalchemy.dialects.postgresql import JSONB
 from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
 
@@ -402,17 +408,23 @@ class SyntheseImportActions(ImportActions):
             max_line_no = (batch + 1) * batch_size
             insert_stmt = sa.insert(Synthese).from_select(
                 names=names,
-                select=select_stmt.filter(
+                select=select_stmt.where(
                     transient_table.c["line_no"] >= min_line_no,
                     transient_table.c["line_no"] < max_line_no,
                 ),
             )
             db.session.execute(insert_stmt)
             yield (batch + 1) / batch_count
-        insert_stmt = sa.insert(Synthese).from_select(
-            names=names,
-            select=select_stmt,
-        )
+
+        if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+            ImportActions.bind_matched_observers(
+                imprt,
+                Synthese,
+                "observers",
+                "id_synthese",
+                CorObserverSynthese,
+                ["id_synthese", "id_role"],
+            )
 
         # TODO: Improve this
         imprt.statistics = {
