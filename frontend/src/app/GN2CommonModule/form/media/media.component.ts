@@ -24,6 +24,8 @@ export class MediaComponent implements OnInit {
 
   public bValidSizeMax = true;
 
+  public tmpMedia: Media;
+
   public errorMsg: string;
 
   @Input() schemaDotTable: string;
@@ -38,6 +40,8 @@ export class MediaComponent implements OnInit {
   @Output() validMediaChange = new EventEmitter<boolean>();
 
   @Input() details = [];
+
+  @Output() cancelMedia = new EventEmitter<Media>();
 
   /* fix #1083 Cacher les champs présents dans details */
   @Input() hideDetailsFields: boolean = false;
@@ -197,6 +201,9 @@ export class MediaComponent implements OnInit {
   }
 
   onFormChange(value) {
+    if (this.media.valid()) {
+      this.tmpMedia = this.media;
+    }
     if (this.mediaFormInitialized) {
       this.media.sent = false;
     }
@@ -281,6 +288,7 @@ export class MediaComponent implements OnInit {
           this.media.uploadPercentDone = Math.round((100 * event.loaded) / event.total);
           // this.mediaChange.emit(this.media);
         } else if (event instanceof HttpResponse) {
+          console.log('event.body : ', event.body);
           this.media.setValues(event.body);
           this.mediaForm.patchValue({ ...this.media, file: null });
           this.media.bLoading = false;
@@ -320,5 +328,15 @@ export class MediaComponent implements OnInit {
   round(val, dec) {
     const decPow = Math.pow(10, dec);
     return Math.round(val * decPow) / decPow;
+  }
+
+  cancel() {
+    if (this.tmpMedia) {
+      this.tmpMedia.sent = true;
+      this.cancelMedia.emit(this.tmpMedia);
+      this.setValue(this.tmpMedia);
+    } else {
+      this.cancelMedia.emit(this.media);
+    }
   }
 }

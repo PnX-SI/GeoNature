@@ -77,6 +77,7 @@
           <pnx-media
             [(media)]="parentFormControl.value[i]"
             (mediaChange)="onMediaChange()"
+            (cancelMedia)="cancelMedia($event, i)"
             [schemaDotTable]="schemaDotTable"
             [sizeMax]="sizeMax"
             [default]="default"
@@ -103,8 +104,8 @@
       id="add-media-btn"
       class="btn-add-media color-add-media"
       (click)="addMedia()"
-      [disabled]="!validOrLoadingMedias() || disabled"
     >
+      <!-- [disabled]="!validOrLoadingMedias() || disabled" -->
       <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.Actions.Add' | translate) }}">
         add
       </mat-icon>

@@ -84,4 +84,20 @@ export class MediasComponent implements OnInit {
     this.ms.validateDeletions(this.pendingDeletes);
     this.pendingDeletes = [];
   }
+
+  cancelMedia(media, index) {
+    console.log('media: ', media);
+    if (!media.valid()) {
+      this.parentFormControl.value.splice(index, 1)[0];
+    } else {
+      media.closed = true;
+      console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa');
+      console.log('this.parentFormControl.value[index] 1: ', this.parentFormControl.value[index]);
+      console.log('this.parentFormControl 1: ', this.parentFormControl);
+      this.parentFormControl.patchValue({ [index]: media });
+      console.log('this.parentFormControl.value[index] 2: ', this.parentFormControl.value[index]);
+      console.log('this.parentFormControl 2: ', this.parentFormControl);
+      //   { emitEvent: false }
+    }
+  }
 }
