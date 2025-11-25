@@ -100,7 +100,7 @@ export class NavHomeComponent implements OnInit {
     return this.config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS'] ?? false;
   }
 
-  getObserverSheetUrl(observer: string): [string] {
-    return getObserverSheetRoute(observer);
+  getObserverSheetUrl(): [string] {
+    return getObserverSheetRoute(this.currentUser.id_role);
   }
 }
