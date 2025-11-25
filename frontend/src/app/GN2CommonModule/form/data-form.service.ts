@@ -450,6 +450,14 @@ export class DataFormService {
     });
   }
 
+  createOrganism(organismData: any) {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/organism/new`, organismData);
+  }
+
+  getOrganism(id_organisme: number) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/organism/${id_organisme}`);
+  }
+
   getRole(id: number) {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/role/${id}`);
   }
