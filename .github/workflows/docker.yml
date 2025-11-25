@@ -5,6 +5,7 @@ on:
     branches:
       - develop
       - feat/import-monitorings
+      - feat/add-observer-control
   release:
     types: [published]
 
