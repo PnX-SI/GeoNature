@@ -27,6 +27,8 @@ import {
   ObserverSheetRouteService,
 } from './observer-sheet/observer-sheet.route.service';
 import { ObserverSheetComponent } from './observer-sheet/observer-sheet.component';
+import { ObserverSheetService } from './observer-sheet/observer-sheet.service';
+import { ObservationsFiltersService } from './sheets/observations/observations-filters.service';
 
 const routes: Routes = [
   {
@@ -67,8 +69,9 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'observer/:name',
+    path: 'observer/:observer',
     component: ObserverSheetComponent,
+    canActivate: [ObserverSheetRouteService],
     canActivateChild: [ObserverSheetRouteService],
     children: [
       // auto redirect to the first mandatory tab
@@ -120,6 +123,8 @@ const routes: Routes = [
     TaxonAdvancedStoreService,
     SyntheseFormService,
     NgbActiveModal,
+    ObservationsFiltersService,
+    ObserverSheetService,
     ObserverSheetRouteService,
     TaxonSheetRouteService,
   ],

@@ -10,6 +10,7 @@ import {
 } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { Loadable } from '@geonature/syntheseModule/sheets/loadable';
 import { finalize } from 'rxjs/operators';
+import { Observer } from '../observer';
 
 @Component({
   standalone: true,
@@ -24,7 +25,7 @@ export class TabMediaComponent extends Loadable implements OnInit {
     items: [],
     pagination: DEFAULT_PAGINATION,
   };
-  observer: string | null = null;
+  observer: Observer;
 
   constructor(
     private _oss: ObserverSheetService,

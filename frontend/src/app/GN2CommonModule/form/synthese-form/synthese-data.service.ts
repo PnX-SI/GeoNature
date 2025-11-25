@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
+import { Observer } from '@geonature/syntheseModule/observer-sheet/observer';
 
 export type SheetStats = {
   area_count?: number;
@@ -72,11 +73,11 @@ export class SyntheseDataService {
   }
 
   getSyntheseObserverSheetStats(
-    observer: string,
+    observer: Observer,
     areaType: string = 'COM'
   ): Observable<ObserverStats> {
     return this._api.get<any>(
-      `${this.config.API_ENDPOINT}/synthese/observer_stats/${encodeURIComponent(observer)}`,
+      `${this.config.API_ENDPOINT}/synthese/observer_stats/${encodeURIComponent(observer.nom_complet)}`,
       {
         params: new HttpParams().append('area_type', areaType),
       }
@@ -84,12 +85,12 @@ export class SyntheseDataService {
   }
 
   getSyntheseObserverSheetTaxa(
-    observer: string,
+    observer: Observer,
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
     sort: SyntheseDataSortItem = DEFAULT_SORT
   ): Observable<any> {
     return this._api.get<any>(
-      `${this.config.API_ENDPOINT}/synthese/observer_overview/${encodeURIComponent(observer)}`,
+      `${this.config.API_ENDPOINT}/synthese/observer_overview/${encodeURIComponent(observer.nom_complet)}`,
       {
         params: {
           per_page: pagination.perPage,
@@ -113,9 +114,9 @@ export class SyntheseDataService {
     });
   }
 
-  getObserverMedias(observer: string, params?: {}): Observable<any> {
+  getObserverMedias(observer: Observer, params?: {}): Observable<any> {
     return this._api.get(
-      `${this.config.API_ENDPOINT}/synthese/observer_medias/${encodeURIComponent(observer)}`,
+      `${this.config.API_ENDPOINT}/synthese/observer_medias/${encodeURIComponent(observer.nom_complet)}`,
       {
         params,
       }

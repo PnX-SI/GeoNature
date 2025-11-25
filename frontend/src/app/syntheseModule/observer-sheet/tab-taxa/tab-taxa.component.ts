@@ -19,6 +19,7 @@ import {
 } from '@geonature_common/form/synthese-form/synthese-data-pagination-item';
 import { finalize } from '@librairies/rxjs/operators';
 import { getTaxonSheetRoute } from '@geonature/syntheseModule/taxon-sheet/taxon-sheet.route.service';
+import { Observer } from '../observer';
 
 @Component({
   standalone: true,
@@ -50,13 +51,12 @@ export class TabTaxaComponent extends Loadable implements OnInit {
     private _oss: ObserverSheetService,
     public mapListService: MapListService,
     public config: ConfigService,
-    private _router: Router
   ) {
     super();
   }
 
   ngOnInit() {
-    this._oss.observer.subscribe((observer: string | null) => {
+    this._oss.observer.subscribe((observer: Observer) => {
       if (!observer) {
         this.observations = null;
         return;

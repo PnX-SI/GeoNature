@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { CommonModule } from '@angular/common';
 import { InfosComponent } from './infos/infos.component';
@@ -14,6 +15,7 @@ import { ObserverSheetRouteService } from './observer-sheet.route.service';
 import { Loadable } from '../sheets/loadable';
 import { ObserverSheetService } from './observer-sheet.service';
 import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
+import { Observer } from './observer';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
@@ -47,10 +49,9 @@ const INDICATORS: Array<IndicatorDescription> = [
   standalone: true,
   templateUrl: 'observer-sheet.component.html',
   imports: [CommonModule, GN2CommonModule, InfosComponent],
-  providers: [ObservationsFiltersService, ObserverSheetService],
 })
 export class ObserverSheetComponent extends Loadable implements OnInit {
-  observer: string | null = null;
+  observer: Observer;
 
   indicators: Array<Indicator>;
 
@@ -58,8 +59,9 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
     return this.isLoading;
   }
 
+  private readonly _destroy$ = new Subject<void>();
+
   constructor(
-    private _route: ActivatedRoute,
     public routes: ObserverSheetRouteService,
     private _oss: ObserverSheetService
   ) {
@@ -67,25 +69,25 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
   }
 
   ngOnInit() {
-    this._oss.observer.subscribe((observer: string | null) => {
+    this._oss.observer.pipe(takeUntil(this._destroy$)).subscribe((observer: Observer) => {
       this.observer = observer;
+      if (observer) {
+        this.startLoading();
+        this.setIndicators(null);
+      }
     });
 
-    this._oss.observerStats.subscribe((stats: ObserverStats | null) => {
+    this._oss.observerStats.pipe(takeUntil(this._destroy$)).subscribe((stats: ObserverStats | null) => {
       if (stats) {
         this.stopLoading();
       }
       this.setIndicators(stats);
     });
+  }
 
-    this._route.params.subscribe((params) => {
-      const name = params['name'];
-      if (name) {
-        this.startLoading();
-        this.setIndicators(null);
-        this._oss.setObserver(name);
-      }
-    });
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   setIndicators(stats: ObserverStats) {

@@ -7,11 +7,12 @@ import {
 } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { Loadable } from '../sheets/loadable';
 import { finalize } from 'rxjs/operators';
+import { Observer } from './observer';
 
 @Injectable()
 export class ObserverSheetService extends Loadable {
-  observer: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
-  observerStats: BehaviorSubject<ObserverStats | null> = new BehaviorSubject<ObserverStats | null>(
+  observer: BehaviorSubject<Observer> = new BehaviorSubject<Observer>(null);
+  observerStats: BehaviorSubject<ObserverStats> = new BehaviorSubject<ObserverStats>(
     null
   );
 
@@ -20,20 +21,20 @@ export class ObserverSheetService extends Loadable {
     private _sds: SyntheseDataService
   ) {
     super();
-    this.observer.pipe(finalize(() => this.stopLoading())).subscribe((observer: string | null) => {
+    this.observer.pipe(finalize(() => this.stopLoading())).subscribe((observer: Observer) => {
       this.startLoading();
       if (!observer) {
         return;
       }
       this._os.filters.next({
-        observers: observer,
+        observers: observer.nom_complet,
       });
       this.fetchObserverStats();
     });
   }
 
-  setObserver(name_raw: string) {
-    this.observer.next(decodeURIComponent(name_raw));
+  setObserver(observer: Observer) {
+    this.observer.next(observer);
   }
 
   fetchObserverStats() {
