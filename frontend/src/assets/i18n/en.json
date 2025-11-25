@@ -309,8 +309,29 @@
         "EnterOrganization": "Enter an organization only",
         "EnterPerson": "Enter a person only",
         "EnterOrganizationPerson": "Enter an organization and a person",
-        "DeleteActor": "Delete this stakeholder"
+        "DeleteActor": "Delete this stakeholder",
+        "CreateOrganism": "Create an organism"
       }
+    },
+    "Organisms": {
+      "CreateOrganism": "Create an organism",
+      "OrganismName": "Organism name",
+      "Address": "Address",
+      "PostalCode": "Postal code",
+      "City": "City",
+      "Telephone": "Telephone",
+      "Fax": "Fax",
+      "Email": "Email",
+      "WebsiteURL": "Website URL",
+      "LogoURL": "Logo URL",
+      "NameRequired": "Organism name is required",
+      "InvalidEmail": "Please enter a valid email address",
+      "SimilarNamesWarning": "Warning: Similar organism names already exist:",
+      "NoAdditionalInfo": "No additional information available for this organism.",
+      "ShowingResults": "Showing results",
+      "Of": "of",
+      "PreviousPage": "Previous page",
+      "NextPage": "Next page"
     }
   },
   "Filters": {
@@ -500,5 +521,6 @@
   },
   "Releve": {
     "InfoGeo": "Geographical information of the survey"
-  }
+  },
+  "ColonCharSpaced": ": "
 }

@@ -312,8 +312,29 @@
         "EnterOrganization": "Renseigner un organisme uniquement",
         "EnterPerson": "Renseigner une personne uniquement",
         "EnterOrganizationPerson": "Renseigner un organisme et un personne",
-        "DeleteActor": "Supprimer cet acteur"
+        "DeleteActor": "Supprimer cet acteur",
+        "CreateOrganism": "Créer un organisme"
       }
+    },
+    "Organisms": {
+      "CreateOrganism": "Créer un organisme",
+      "OrganismName": "Nom de l'organisme",
+      "Address": "Adresse",
+      "PostalCode": "Code postal",
+      "City": "Ville",
+      "Telephone": "Téléphone",
+      "Fax": "Fax",
+      "Email": "Email",
+      "WebsiteURL": "URL du site web",
+      "LogoURL": "URL du logo",
+      "NameRequired": "Le nom de l'organisme est obligatoire",
+      "InvalidEmail": "Veuillez saisir une adresse email valide",
+      "SimilarNamesWarning": "Attention : Des organismes avec des noms similaires existent déjà :",
+      "NoAdditionalInfo": "Aucune information supplémentaire disponible pour cet organisme.",
+      "ShowingResults": "Affichage des résultats",
+      "Of": "sur",
+      "PreviousPage": "Page précédente",
+      "NextPage": "Page suivante"
     }
   },
   "Filters": {
@@ -503,5 +524,6 @@
   },
   "Releve": {
     "InfoGeo": "Information géographique du relevé"
-  }
+  },
+  "ColonCharSpaced": " : "
 }

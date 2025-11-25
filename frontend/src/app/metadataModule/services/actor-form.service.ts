@@ -59,6 +59,31 @@ export class ActorFormService {
       .subscribe((role_types: any[]) => this._role_types.next(role_types));
   }
 
+  createAndRefreshOrganism(organismData: any) {
+    return this.dfs.createOrganism(organismData).pipe(
+      map((newOrganism) => {
+        // Refresh the organisms list
+        this.dfs.getOrganisms().subscribe((organisms: any[]) => this._organisms.next(organisms));
+        return newOrganism;
+      })
+    );
+  }
+
+  // Store for organism form values
+  private savedOrganismFormValues: any = null;
+
+  saveOrganismFormValues(values: any): void {
+    this.savedOrganismFormValues = values;
+  }
+
+  getSavedOrganismFormValues(): any {
+    return this.savedOrganismFormValues;
+  }
+
+  clearSavedOrganismFormValues(): void {
+    this.savedOrganismFormValues = null;
+  }
+
   createForm(): UntypedFormGroup {
     //FORM
     const form = this.fb.group({

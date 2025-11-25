@@ -1,0 +1,313 @@
+<h2 mat-dialog-title>{{ 'MetaData.Organisms.CreateOrganism' | translate }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="organismForm">
+    <!-- Organism Name (Required) -->
+    <br />
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>{{ 'MetaData.Organisms.OrganismName' | translate }} *</mat-label>
+      <input
+        matInput
+        formControlName="nom_organisme"
+        required
+      />
+      <mat-error *ngIf="organismForm.get('nom_organisme').hasError('required')">
+        {{ 'MetaData.Organisms.NameRequired' | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Warning for similar organism names -->
+    <div
+      *ngIf="showSimilarWarning"
+      class="similar-warning"
+    >
+      <mat-icon class="warning-icon">warning</mat-icon>
+      <div class="warning-content">
+        <strong>{{ 'MetaData.Organisms.SimilarNamesWarning' | translate }}</strong>
+
+        <!-- Pagination info -->
+        <div
+          class="pagination-info"
+          *ngIf="totalPages > 1"
+        >
+          {{ 'MetaData.Organisms.ShowingResults' | translate }}
+          {{ currentPage * pageSize + 1 }} -
+          {{ Math.min((currentPage + 1) * pageSize, similarOrganisms.length) }}
+          {{ 'MetaData.Organisms.Of' | translate }} {{ similarOrganisms.length }}
+        </div>
+
+        <ul class="similar-list">
+          <li *ngFor="let org of paginatedSimilarOrganisms">
+            <a
+              href="javascript:void(0)"
+              class="organism-link"
+              (click)="viewOrganismDetails(org)"
+              [class.active]="selectedOrganism?.id_organisme === org.id_organisme"
+            >
+              {{ org.nom_organisme }}
+              <mat-icon class="expand-icon">
+                {{
+                  selectedOrganism?.id_organisme === org.id_organisme
+                    ? 'expand_less'
+                    : 'expand_more'
+                }}
+              </mat-icon>
+            </a>
+
+            <!-- Organism details panel -->
+            <div
+              *ngIf="selectedOrganism?.id_organisme === org.id_organisme"
+              class="organism-details"
+            >
+              <!-- Loading indicator -->
+              <div
+                *ngIf="loadingOrganismDetails"
+                class="loading-details"
+              >
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>{{ 'Loading' | translate }}...</span>
+              </div>
+
+              <!-- Organism details -->
+              <div *ngIf="!loadingOrganismDetails">
+                <!-- Message when no additional info -->
+                <div
+                  *ngIf="!hasAdditionalInfo()"
+                  class="no-info-message"
+                >
+                  <mat-icon>info</mat-icon>
+                  <span>{{ 'MetaData.Organisms.NoAdditionalInfo' | translate }}</span>
+                </div>
+
+                <!-- Organism details -->
+                <div *ngIf="hasAdditionalInfo()">
+                  <div
+                    class="detail-row"
+                    *ngIf="selectedOrganism.adresse_organisme"
+                  >
+                    <span class="detail-label">
+                      {{ 'MetaData.Organisms.Address' | translate
+                      }}{{ 'ColonCharSpaced' | translate }}
+                    </span>
+                    <span class="detail-value">{{ selectedOrganism.adresse_organisme }}</span>
+                  </div>
+                  <div
+                    class="detail-row"
+                    *ngIf="selectedOrganism.cp_organisme || selectedOrganism.ville_organisme"
+                  >
+                    <span class="detail-label">
+                      {{ 'MetaData.Organisms.City' | translate }}{{ 'ColonCharSpaced' | translate }}
+                    </span>
+                    <span class="detail-value">
+                      {{ selectedOrganism.cp_organisme ? selectedOrganism.cp_organisme + ' ' : ''
+                      }}{{ selectedOrganism.ville_organisme }}
+                    </span>
+                  </div>
+                  <div
+                    class="detail-row"
+                    *ngIf="selectedOrganism.tel_organisme"
+                  >
+                    <span class="detail-label">
+                      {{ 'MetaData.Organisms.Telephone' | translate
+                      }}{{ 'ColonCharSpaced' | translate }}
+                    </span>
+                    <span class="detail-value">{{ selectedOrganism.tel_organisme }}</span>
+                  </div>
+                  <div
+                    class="detail-row"
+                    *ngIf="selectedOrganism.fax_organisme"
+                  >
+                    <span class="detail-label">
+                      {{ 'MetaData.Organisms.Fax' | translate }}{{ 'ColonCharSpaced' | translate }}
+                    </span>
+                    <span class="detail-value">{{ selectedOrganism.fax_organisme }}</span>
+                  </div>
+                  <div
+                    class="detail-row"
+                    *ngIf="selectedOrganism.email_organisme"
+                  >
+                    <span class="detail-label">
+                      {{ 'MetaData.Organisms.Email' | translate
+                      }}{{ 'ColonCharSpaced' | translate }}
+                    </span>
+                    <span class="detail-value">{{ selectedOrganism.email_organisme }}</span>
+                  </div>
+                  <div
+                    class="detail-row"
+                    *ngIf="selectedOrganism.url_organisme"
+                  >
+                    <span class="detail-label">
+                      {{ 'MetaData.Organisms.WebsiteURL' | translate
+                      }}{{ 'ColonCharSpaced' | translate }}
+                    </span>
+                    <span class="detail-value">
+                      <a
+                        href="{{ selectedOrganism.url_organisme }}"
+                        target="_blank"
+                      >
+                        {{ selectedOrganism.url_organisme }}
+                      </a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Pagination controls -->
+        <div
+          class="pagination-controls"
+          *ngIf="totalPages > 1"
+        >
+          <button
+            mat-icon-button
+            (click)="previousPage()"
+            [disabled]="!hasPreviousPage"
+            matTooltip="{{ 'MetaData.Organisms.PreviousPage' | translate }}"
+          >
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+
+          <span class="page-indicator">{{ currentPage + 1 }} / {{ totalPages }}</span>
+
+          <button
+            mat-icon-button
+            (click)="nextPage()"
+            [disabled]="!hasNextPage"
+            matTooltip="{{ 'MetaData.Organisms.NextPage' | translate }}"
+          >
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>{{ 'MetaData.Organisms.Address' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="adresse_organisme"
+      />
+    </mat-form-field>
+
+    <!-- Postal Code and City (on same row) -->
+    <div class="row-fields">
+      <mat-form-field
+        appearance="outline"
+        class="half-width"
+      >
+        <mat-label>{{ 'MetaData.Organisms.PostalCode' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="cp_organisme"
+        />
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        class="half-width"
+      >
+        <mat-label>{{ 'MetaData.Organisms.City' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="ville_organisme"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Telephone and Fax (on same row) -->
+    <div class="row-fields">
+      <mat-form-field
+        appearance="outline"
+        class="half-width"
+      >
+        <mat-label>{{ 'MetaData.Organisms.Telephone' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="tel_organisme"
+        />
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        class="half-width"
+      >
+        <mat-label>{{ 'MetaData.Organisms.Fax' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="fax_organisme"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Email -->
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>{{ 'MetaData.Organisms.Email' | translate }}</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="email_organisme"
+      />
+      <mat-error *ngIf="organismForm.get('email_organisme').hasError('email')">
+        {{ 'MetaData.Organisms.InvalidEmail' | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Website URL -->
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>{{ 'MetaData.Organisms.WebsiteURL' | translate }}</mat-label>
+      <input
+        matInput
+        type="url"
+        formControlName="url_organisme"
+      />
+    </mat-form-field>
+
+    <!-- Logo URL -->
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>{{ 'MetaData.Organisms.LogoURL' | translate }}</mat-label>
+      <input
+        matInput
+        type="url"
+        formControlName="url_logo"
+      />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-raised-button
+    color="warn"
+    (click)="onCancel()"
+    data-qa="organism-dialog-cancel"
+  >
+    {{ 'Actions.Cancel' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    class="button-success"
+    (click)="onSubmit()"
+    [disabled]="!organismForm.valid"
+    data-qa="organism-dialog-save"
+  >
+    {{ 'Actions.Validate' | translate }}
+  </button>
+</mat-dialog-actions>

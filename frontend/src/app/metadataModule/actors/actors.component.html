@@ -92,7 +92,19 @@
           </div>
         </ng-template>
       </ng-select>
+      <button
+        *ngIf="canCreateOrganism"
+        mat-raised-button
+        color="primary"
+        matTooltip="{{ 'MetaData.Actors.Actions.CreateOrganism' | translate }}"
+        (click)="createOrganism()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ 'MetaData.Actors.Actions.CreateOrganism' | translate }}
+      </button>
     </ng-container>
+
+    <br />
 
     <!-- Personnes -->
     <ng-container *ngIf="toggleButtonValue == 'person' || toggleButtonValue == 'all'">
