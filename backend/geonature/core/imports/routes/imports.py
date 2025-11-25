@@ -357,6 +357,7 @@ def load_import(scope, imprt):
             select(BibFields).where(
                 BibFields.name_field.in_(imprt.fieldmapping.keys()),
                 BibFields.type_field == "observers",
+                BibFields.id_destination == imprt.destination.id_destination,
             )
         ).all()
         if len(fields) == 0:

@@ -7,6 +7,7 @@ from geonature.utils.env import db
 from marshmallow import Schema, fields
 from pypnusershub.db.models import User
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
+from geonature.utils.config import config
 
 
 class UserMatchingSchema(Schema):
@@ -30,7 +31,7 @@ def user_matching(imprt: TImports, field: BibFields):
     Returns
     -------
     dict
-        A dictionary of users name (as it apears in the source file) as key and a dictionary of matching information as value.
+        A dictionary of users name (as it appears in the source file) as key and a dictionary of matching information as value.
         The matching information contains id_role, identifiant, nom_complet.
 
     Notes
@@ -41,8 +42,11 @@ def user_matching(imprt: TImports, field: BibFields):
     transient_table = imprt.destination.get_transient_table()
     column_transient = transient_table.c[field.source_column]
     if isinstance(column_transient.type, JSONB):
-        return {}
-    select_ = sa.func.string_to_array(column_transient, ",")
+        column_transient = sa.cast(column_transient, db.Unicode)
+
+    select_ = sa.func.string_to_array(
+        column_transient, config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"][0]
+    )
 
     cte_user_to_match = (
         sa.select(sa.func.distinct(sa.func.unnest(select_)).label("user_to_match"))
@@ -120,6 +124,7 @@ def map_observer_matching(imprt: TImports, entity: Entity, observer_field: BibFi
         sa.update(transient_table)
         .where(
             transient_table.c.id_import == imprt.id_import,
+            transient_table.c[observer_field.dest_column] == None,
             transient_table.c[observer_field.source_column]
             == observer_string_id_role.c.observer_string,
         )
@@ -131,7 +136,7 @@ def map_observer_matching(imprt: TImports, entity: Entity, observer_field: BibFi
     report_erroneous_rows(
         imprt,
         entity,
-        error_type=ImportCodeError.INVALID_ATTACHMENT_CODE,
+        error_type=ImportCodeError.UNKNOWN_ERROR,
         error_column=observer_field.name_field,
         whereclause=(transient_table.c[observer_field.dest_column] == None),
     )

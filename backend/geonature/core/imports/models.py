@@ -776,6 +776,7 @@ class FieldMapping(MappingTemplate):
                                 {"type": "number"},
                                 {"type": "string"},
                                 {"type": "array"},
+                                {"type": "object"},
                             ]
                         },
                     },
