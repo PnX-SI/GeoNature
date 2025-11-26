@@ -21,14 +21,8 @@ from geonature.core.users.register_post_actions import (
 )
 from geonature.utils.config import config
 from geonature.utils.env import DB, db
-from pypnusershub.auth.subscribe import (
-    change_password,
-    create_cor_role_token,
-    create_temp_user,
-    valid_temp_user,
-)
 from pypnusershub.db.models import Application, Organisme, User, UserList
-
+from pypnusershub.auth import user_manager
 from sqlalchemy import and_, select
 from sqlalchemy.sql import and_
 from utils_flask_sqla.response import json_resp
@@ -280,7 +274,7 @@ def inscription():
     data["groupe"] = False
 
     try:
-        token_data = create_temp_user(data)
+        token_data = user_manager.create_temp_user(data)
         validate_temp_user(token_data)
     except Exception as e:
         raise BadRequest(str(e))
@@ -301,7 +295,7 @@ def login_recovery():
 
     data = request.get_json()
     try:
-        create_cor_role_token(data["email"])
+        user_manager.create_cor_role_token(data["email"])
         user = db.session.execute(
             select(User).where(User.email == data["email"]),
         ).scalar_one()
@@ -332,7 +326,7 @@ def confirmation():
         .id_application,
     }
     try:
-        user_data = valid_temp_user(data)
+        user_data = user_manager.valid_temp_user(data)
         execute_actions_after_validation(user_data)
     except Exception as e:
         raise BadRequest(str(e))
@@ -403,7 +397,7 @@ def change_password_route():
             raise BadRequest("Initial password is incorrect")
 
         try:
-            new_token = create_cor_role_token(user.email)["token"]
+            new_token = user_manager.create_cor_role_token(user.email)["token"]
         except Exception as e:
             raise InternalServerError(f"Error when creating a new token: {str(e)}")
         data["token"] = new_token
@@ -413,9 +407,11 @@ def change_password_route():
         raise InternalServerError("Missing required fields for password change")
 
     try:
-        change_password(data.get("token"), data.get("password"), data.get("password_confirmation"))
-    except Exception as e:
-        raise BadRequest("An error occurred while changing the password")
+        user_manager.change_password(
+            data.get("token"), data.get("password"), data.get("password_confirmation")
+        )
+    except user_manager.PrintableException as printable_exception:
+        raise BadRequest(str(printable_exception))
 
     return {"message": "Password changed with success"}, 200
 
@@ -433,7 +429,9 @@ def new_password():
     if not data.get("token", None):
         raise BadRequest("No token provided")
     try:
-        change_password(data.get("token"), data.get("password"), data.get("password_confirmation"))
-    except Exception as e:
-        raise BadRequest(str(e))
+        user_manager.change_password(
+            data.get("token"), data.get("password"), data.get("password_confirmation")
+        )
+    except user_manager.PrintableException as printable_exception:
+        raise BadRequest(str(printable_exception))
     return {"message": "Password changed with success"}, 200
