@@ -1,5 +1,6 @@
 import uuid
 
+from pypnusershub.auth import user_manager
 from pypnusershub.db.models_register import TempUser
 import pytest
 from flask import url_for, current_app
@@ -32,7 +33,6 @@ def add_mail_to_user(users):
 
 @pytest.fixture
 def fake_smtp(monkeypatch):
-
     monkeypatch.setattr(
         "geonature.core.users.register_post_actions.send_mail",
         lambda *args, **kwargs: True,
@@ -46,6 +46,16 @@ def fake_smtp(monkeypatch):
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "add_mail_to_user", "fake_smtp")
 class TestUsers:
+    example_user_data = {
+        "identifiant": "temp_user",
+        "email": "temp@example.com",
+        "password": "P@ssword1234",
+        "password_confirmation": "P@ssword1234",
+        "nom_role": "Temp",
+        "prenom_role": "User",
+        "champs_addi": {"champ1": "valeur1", "champ2": "valeur2"},
+    }
+
     def test_get_organismes(self, users, organisms):
         set_logged_user(self.client, users["admin_user"])
 
@@ -152,7 +162,8 @@ class TestUsers:
         """
         # Disabled case: expect 404
         current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"] = False
-        response = self.client.post(url_for("users.inscription"))
+        url = url_for("users.inscription")
+        response = self.client.post(url)
         assert response.status_code == 404
         assert response.json["description"] == "Page not found"
 
@@ -164,17 +175,22 @@ class TestUsers:
         app = db.session.execute(select(Application)).scalars().first()
         assert app, "There must be at least one Application in DB"
 
-        data = {
-            "identifiant": "temp_user",
-            "email": "temp@example.com",
-            "password": "12345",
-            "password_confirmation": "12345",
-            "nom_role": "Temp",
-            "prenom_role": "User",
-            "champs_addi": {"champ1": "valeur1", "champ2": "valeur2"},
-        }
-        response = self.client.post(url_for("users.inscription"), json=data)
+        response = self.client.post(url, json=self.example_user_data)
         assert response.status_code == 200
+
+    def test_inscription_invalid_password(self):
+        current_app.config["CODE_APPLICATION"] = "GN"
+
+        # Get an existing application
+        app = db.session.execute(select(Application)).scalars().first()
+        assert app, "There must be at least one Application in DB"
+
+        data = self.example_user_data.copy()
+        data["password"] = "invalid_password"
+        data["password_confirmation"] = "invalid_password"
+        response = self.client.post(url_for("users.inscription"), json=data)
+        assert response.status_code == 400
+        assert response.json["description"] == "Le mot de passe ne respècte pas les critères"
 
     def test_login_recovery_enabled_and_disabled(self, users):
         """
@@ -199,23 +215,16 @@ class TestUsers:
         """
         current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"] = True
         current_app.config["CODE_APPLICATION"] = "GN"
-
+        url_confirmation = url_for("users.confirmation")
+        url_inscription = url_for("users.inscription")
         # Missing token -> BadRequest
-        resp = self.client.get(url_for("users.confirmation"))
+        resp = self.client.get(url_confirmation)
         assert resp.status_code == 400
         assert "Token not found" in resp.json["description"]
 
         resp = self.client.post(
-            url_for("users.inscription"),
-            json={
-                "identifiant": "temp_user",
-                "email": "temp@example.com",
-                "password": "12345",
-                "password_confirmation": "12345",
-                "nom_role": "Temp",
-                "prenom_role": "User",
-                "champs_addi": {"champ1": "valeur1", "champ2": "valeur2"},
-            },
+            url_inscription,
+            json=self.example_user_data,
         )
         assert resp.status_code == 200
 
@@ -225,10 +234,10 @@ class TestUsers:
             .token_role
         )
 
-        resp = self.client.get(url_for("users.confirmation", token=token))
+        resp = self.client.get(url_confirmation, query_string={"token": token})
         assert resp.status_code == 200
 
-        resp = self.client.get(url_for("users.confirmation", token="badtoken"))
+        resp = self.client.get(url_confirmation, query_string={"token": "badtoken"})
         assert resp.status_code == 400
 
     def test_update_role_fields(self, users):
@@ -236,8 +245,6 @@ class TestUsers:
         Test PUT /role updates allowed fields only.
         """
         set_logged_user(self.client, users["admin_user"])
-        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
-
         data = {
             "nom_role": "New Admin Name",
             "active": False,  # blacklisted, should not change
@@ -253,12 +260,9 @@ class TestUsers:
         """
         Test PUT /password/new for missing token and with token.
         """
-        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
-
         # Missing token
-        resp = self.client.put(
-            url_for("users.new_password"), json={"password": "x", "password_confirmation": "x"}
-        )
+        url = url_for("users.new_password")
+        resp = self.client.put(url, json={"password": "x", "password_confirmation": "x"})
         assert resp.status_code == 400
         assert resp.json["description"] == "No token provided"
 
@@ -269,9 +273,52 @@ class TestUsers:
             db.session.add(cor_role_token)
 
         resp = self.client.put(
-            url_for("users.new_password"),
-            json={"token": "jesuisuntokennul", "password": "x", "password_confirmation": "x"},
+            url,
+            json={
+                "token": "jesuisuntokennul",
+                "password": "doesnt respect password criterium",
+                "password_confirmation": "doesnt respect password criterium",
+            },
+        )
+        assert resp.status_code == 400
+        assert resp.json["description"] == "Le mot de passe ne respècte pas les critères"
+
+        resp = self.client.put(
+            url,
+            json={
+                "token": "jesuisuntokennul",
+                "password": "P@ssword1234",
+                "password_confirmation": "P@ssword1234",
+            },
         )
         assert resp.status_code == 200
+        assert resp.json["message"] == "Password changed with success"
 
+    def test_change_password_route(self, users):
+        user = users["admin_user"]
+        user.password = "x"
+        token = user_manager.create_cor_role_token(user.email)
+        set_logged_user(self.client, user)
+        url = url_for("users.change_password_route")
+        resp = self.client.put(
+            url,
+            json={
+                "init_password": "x",
+                "password": "y",
+                "password_confirmation": "y",
+                "token": token,
+            },
+        )
+        assert resp.status_code == 400
+        assert resp.json["description"] == "Le mot de passe ne respècte pas les critères"
+        resp = self.client.put(
+            url,
+            json={
+                "init_password": "x",
+                "password": "P@ssword1234",
+                "password_confirmation": "P@ssword1234",
+                "token": token,
+            },
+        )
+        assert resp.status_code == 200
         assert resp.json["message"] == "Password changed with success"
