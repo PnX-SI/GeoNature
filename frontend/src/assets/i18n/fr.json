@@ -50,7 +50,7 @@
     },
     "Errors": {
       "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect",
-      "WrongMailAddress": "Une erreur est survenue. Veuillez vérifier le mail fournis.",
+      "WrongMailAddress": "Une erreur est survenue. Veuillez vérifier le mail fourni.",
       "AccountCreationError": "L'adresse mail ou l'identifiant renseigné existe déjà.",
       "UnexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
     },
