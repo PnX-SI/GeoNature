@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <h5
+    id="modalLabel"
+    class="modal-title"
+  >
+    {{ 'Synthese.Messages.ModalWindowTitle' | translate }}
+  </h5>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div *ngIf="hasBlurredSensitiveObs">
+    <h5 class="modal-title">{{ 'Synthese.Messages.BlurredSensitiveObsTitle' | translate }}</h5>
+    <div
+      class="alert alert-warning"
+      [innerHtml]="'Synthese.Messages.BlurredSensitiveObsTxt' | translate"
+    ></div>
+  </div>
+
+  <hr *ngIf="hasBlurredSensitiveObs && hasTooManyObs" />
+
+  <div *ngIf="hasTooManyObs">
+    <h5 class="modal-title">{{ 'Synthese.Messages.LimitTitle' | translate }}</h5>
+
+    <div
+      class="alert alert-danger"
+      role="alert"
+      [innerHtml]="'Synthese.Messages.LimitIntro' | translate"
+    ></div>
+
+    <div
+      class="alert alert-warning"
+      role="alert"
+      [innerHtml]="'Synthese.Messages.LimitTxt' | translate: limitMsgParams"
+    ></div>
+
+    <div
+      *ngIf="syntheseConfig.NB_MAX_OBS_EXPORT > syntheseConfig.NB_MAX_OBS_MAP"
+      class="alert alert-warning"
+      role="alert"
+      [innerHtml]="'Synthese.Messages.LimitExport' | translate: limitMsgParams"
+    ></div>
+  </div>
+</div>
