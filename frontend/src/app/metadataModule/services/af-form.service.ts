@@ -1,20 +1,26 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormArray, UntypedFormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { tap, filter, switchMap, map } from 'rxjs/operators';
 
 import { ActorFormService } from './actor-form.service';
 import { FormService } from '@geonature_common/form/form.service';
+import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Injectable()
 export class AcquisitionFrameworkFormService {
   public form: UntypedFormGroup;
   public acquisition_framework: BehaviorSubject<any> = new BehaviorSubject(null);
+  // Custom additional fields
+  public additionalFieldsForm: Array<any> = [];
 
   constructor(
     private fb: UntypedFormBuilder,
     private actorFormS: ActorFormService,
-    private formS: FormService
+    private formS: FormService,
+    private dataFormService: DataFormService,
+    private _moduleService: ModuleService
   ) {
     this.initForm();
     this.setObservables();
@@ -36,6 +42,7 @@ export class AcquisitionFrameworkFormService {
           cor_volets_sinp: [],
           cor_territories: [],
           cor_af_actor: [{ id_nomenclature_actor_role: id_nomenclature }],
+          additional_data: {},
         };
       })
     );
@@ -69,6 +76,7 @@ export class AcquisitionFrameworkFormService {
       ),
       bibliographical_references: this.fb.array([]),
       unique_acquisition_framework_id: [null, [this.formS.uuidValidator()]],
+      additional_data: this.fb.group({}),
     });
 
     this.form.setValidators([
@@ -77,6 +85,18 @@ export class AcquisitionFrameworkFormService {
         this.form.get('acquisition_framework_end_date')
       ),
     ]);
+  }
+
+  getAdditionalFields(object_code: Array<string>): Observable<any> {
+    return this.dataFormService
+      .getadditionalFields({
+        module_code: [this._moduleService.currentModule.module_code],
+        object_code: object_code,
+      })
+      .catch((error) => {
+        console.error('Error while getting additional fields', error);
+        return of([]);
+      });
   }
 
   /**
@@ -88,6 +108,9 @@ export class AcquisitionFrameworkFormService {
       .asObservable()
       .pipe(
         tap(() => this.reset()),
+        tap(() => {
+          this.additionalFieldsForm = [];
+        }),
         switchMap((af) =>
           af !== null ? this.acquisition_framework.asObservable() : this.initialValues
         ),
@@ -108,7 +131,29 @@ export class AcquisitionFrameworkFormService {
             });
           }
           return value;
-        })
+        }),
+        // Get additional fields from acquisition framework
+        switchMap((acquisition_framework) => {
+          let additionnalFieldsObservable: Observable<any>;
+          additionnalFieldsObservable = this.getAdditionalFields(['METADATA_CADRE_ACQUISITION']);
+          return forkJoin([of(acquisition_framework), additionnalFieldsObservable]);
+        }),
+        map(([acquisition_framework, additional_data]) => {
+          additional_data.forEach((field) => {
+            // Set value of field
+            if (acquisition_framework.additional_data[field.attribut_name] !== undefined) {
+              field.value = acquisition_framework.additional_data[field.attribut_name];
+            }
+          });
+
+          return [acquisition_framework, additional_data];
+        }),
+        // Set the additional fields form
+        tap(([acquisition_framework, additional_data]) => {
+          this.additionalFieldsForm = additional_data;
+        }),
+        // Map to return acquisition framework data only
+        map(([acquisition_framework, additional_data]) => acquisition_framework)
       )
       .subscribe((value: any) => this.form.patchValue(value));
 
