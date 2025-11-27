@@ -169,6 +169,14 @@ RUN --mount=type=cache,target=/root/.cache \
     pip install *.whl
 RUN rm -f *.whl
 
+FROM wheels AS prod-with-sentry
+
+WORKDIR /dist/geonature
+RUN --mount=type=cache,target=/root/.cache \
+    pip install *.whl
+RUN --mount=type=cache,target=/root/.cache \
+    pip install sentry_sdk[flask]
+RUN rm -f *.whl
 
 FROM wheels AS prod
 

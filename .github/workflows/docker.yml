@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-backend:
-    name: Build backend image
+    name: Build backend images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -63,9 +63,29 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta-prod.outputs.tags }}
           labels: ${{ steps.meta-prod.outputs.labels }}
+      -
+        name: Generate metadata for 'prod with Sentry' image
+        id: meta-prod-with-sentry
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/geonature-backend-with-sentry
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+      -
+        name: Build and export 'prod with Sentry' image
+        id: build-prod-with-sentry
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./backend/Dockerfile
+          target: prod-with-sentry
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta-prod-with-sentry.outputs.tags }}
+          labels: ${{ steps.meta-prod-with-sentry.outputs.labels }}
 
   build-frontend:
-    name: Build frontend image
+    name: Build frontend images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
