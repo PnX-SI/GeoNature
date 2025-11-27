@@ -526,6 +526,7 @@ class SyntheseQuery:
             except ValueError as e:
                 raise BadRequest(str(e))
             self.query = self.query.where(self.model.unique_id_sinp == uuid_filter)
+
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):

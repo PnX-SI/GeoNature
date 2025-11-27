@@ -28,6 +28,7 @@ import { ModuleService } from '@geonature/services/module.service';
 import { FormArray, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { fromEvent } from 'rxjs';
+import { getTaxonSheetRoute } from '@geonature/syntheseModule/taxon-sheet/taxon-sheet.route.service';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -216,5 +217,9 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       // reset page 0 when new data appear
       this.table.offset = 0;
     }
+  }
+
+  getTaxonSheetUrl(cd_nom: number): [string] {
+    return getTaxonSheetRoute(cd_nom);
   }
 }

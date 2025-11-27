@@ -5,11 +5,10 @@ import { DataFormService, Profile } from '@geonature_common/form/data-form.servi
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { CommonService } from '@geonature_common/service/common.service';
 import {
-  computeIndicatorFromDescription,
+  computeIndicatorFromStats,
   Indicator,
   IndicatorDescription,
-} from '../indicator/indicator';
-import { IndicatorComponent } from '../indicator/indicator.component';
+} from '@geonature_common/others/indicator/indicator';
 import { TaxonSheetService } from '../taxon-sheet.service';
 
 const INDICATORS: Array<IndicatorDescription> = [
@@ -42,10 +41,9 @@ const INDICATORS: Array<IndicatorDescription> = [
 
 @Component({
   standalone: true,
-  selector: 'tab-profile',
   templateUrl: 'tab-profile.component.html',
   styleUrls: ['tab-profile.component.scss'],
-  imports: [GN2CommonModule, CommonModule, IndicatorComponent],
+  imports: [GN2CommonModule, CommonModule],
 })
 export class TabProfileComponent implements OnInit {
   indicators: Array<Indicator>;
@@ -85,7 +83,7 @@ export class TabProfileComponent implements OnInit {
   set profile(profile: Profile | null) {
     this._profile = profile;
     this.indicators = INDICATORS.map((indicatorRaw: IndicatorDescription) =>
-      computeIndicatorFromDescription(indicatorRaw, profile?.properties)
+      computeIndicatorFromStats(indicatorRaw, profile?.properties)
     );
   }
 }

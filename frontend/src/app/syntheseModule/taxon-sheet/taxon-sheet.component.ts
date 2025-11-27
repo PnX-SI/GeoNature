@@ -1,28 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { InfosComponent } from './infos/infos.component';
-import { LayoutComponent } from './layout/layout.component';
 import {
-  computeIndicatorFromDescription,
+  computeIndicatorFromStats,
   Indicator,
   IndicatorDescription,
-} from './indicator/indicator';
-import { TaxonImageComponent } from './infos/taxon-image/taxon-image.component';
-import { IndicatorComponent } from './indicator/indicator.component';
+} from '@geonature_common/others/indicator/indicator';
+import { TaxonImageComponent } from './taxon-image/taxon-image.component';
 import { CommonModule } from '@angular/common';
 import { TaxonStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonSheetService } from './taxon-sheet.service';
-import { RouteService } from './taxon-sheet.route.service';
+import { CD_REF_PARAM_NAME, TaxonSheetRouteService } from './taxon-sheet.route.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { finalize } from 'rxjs/operators';
-import { Loadable } from './loadable';
+import { Loadable } from '../sheets/loadable';
+import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
@@ -61,44 +53,25 @@ const INDICATORS: Array<IndicatorDescription> = [
 
 @Component({
   standalone: true,
-  selector: 'pnx-taxon-sheet',
   templateUrl: 'taxon-sheet.component.html',
-  styleUrls: ['taxon-sheet.component.scss'],
-  imports: [
-    CommonModule,
-    GN2CommonModule,
-    IndicatorComponent,
-    InfosComponent,
-    LayoutComponent,
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    TaxonImageComponent,
-  ],
-  providers: [TaxonSheetService],
+  imports: [CommonModule, GN2CommonModule, InfosComponent, TaxonImageComponent],
+  providers: [ObservationsFiltersService, TaxonSheetService],
 })
 export class TaxonSheetComponent extends Loadable implements OnInit {
   taxon: Taxon | null = null;
 
-  get isLoadingTaxon() {
-    return this._tss.isLoading;
-  }
   get isLoadingIndicators() {
     return this.isLoading;
   }
 
-  readonly TAB_LINKS = [];
-
   indicators: Array<Indicator>;
 
   constructor(
-    private _router: Router,
     private _route: ActivatedRoute,
     private _tss: TaxonSheetService,
-    private _routes: RouteService
+    public routes: TaxonSheetRouteService
   ) {
     super();
-    this.TAB_LINKS = this._routes.TAB_LINKS;
   }
 
   ngOnInit() {
@@ -107,29 +80,23 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
     });
 
     this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
-      if (stats) {
-        this.stopLoading();
-      }
+      this.stopLoading();
       this.setIndicators(stats);
     });
 
     this._route.params.subscribe((params) => {
-      const cd_ref = params['cd_ref'];
+      const cd_ref = params[CD_REF_PARAM_NAME];
       if (cd_ref) {
         this.startLoading();
         this.setIndicators(null);
-        this._tss.updateTaxonByCdRef(cd_ref);
+        this._tss.fetchTaxonByCdRef(cd_ref);
       }
     });
   }
 
-  setIndicators(stats: TaxonStats) {
+  setIndicators(stats: any) {
     this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
-      computeIndicatorFromDescription(indicatorConfig, stats)
+      computeIndicatorFromStats(indicatorConfig, stats)
     );
-  }
-
-  goToPath(path: string) {
-    this._router.navigate([path], { relativeTo: this._route });
   }
 }

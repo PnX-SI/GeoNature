@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-import { CommonModule, TitleCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ConfigService } from '@geonature/services/config.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { TaxonSheetService } from '../taxon-sheet.service';
+import { getObserverSheetRoute } from '../../observer-sheet/observer-sheet.route.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import {
   DEFAULT_PAGINATION,
@@ -14,14 +15,15 @@ import {
   SORT_ORDER,
   SyntheseDataSortItem,
 } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
-import { Loadable } from '../loadable';
+import { Loadable } from '../../sheets/loadable';
 import { finalize } from 'rxjs/operators';
+import { RouterModule } from '@librairies/@angular/router';
 @Component({
   standalone: true,
   selector: 'tab-observers',
   templateUrl: 'tab-observers.component.html',
   styleUrls: ['tab-observers.component.scss'],
-  imports: [GN2CommonModule, CommonModule],
+  imports: [GN2CommonModule, CommonModule, RouterModule],
 })
 export class TabObserversComponent extends Loadable implements OnInit {
   readonly PROP_OBSERVER = 'observer';
@@ -41,7 +43,8 @@ export class TabObserversComponent extends Loadable implements OnInit {
 
   constructor(
     private _syntheseDataService: SyntheseDataService,
-    private _tss: TaxonSheetService
+    private _tss: TaxonSheetService,
+    private _config: ConfigService
   ) {
     super();
   }
@@ -91,5 +94,13 @@ export class TabObserversComponent extends Loadable implements OnInit {
           perPage: data.per_page,
         };
       });
+  }
+
+  hasObserverSheet(): boolean {
+    return this._config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS'] ?? false;
+  }
+
+  getObserverSheetUrl(observer: string): [string] {
+    return getObserverSheetRoute(observer);
   }
 }
