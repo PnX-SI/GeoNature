@@ -24,6 +24,7 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
 
 import { FormArray, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -63,7 +64,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public _cruvedStore: CruvedStoreService,
     public config: ConfigService,
     private _moduleService: ModuleService,
-    private _router: Router
+    public criteriaService: SyntheseCriteriaService,
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
     const currentModule = this._moduleService.currentModule;

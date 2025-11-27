@@ -396,7 +396,13 @@
       }
     },
     "Map": {
-      "AreasToggleBtn": "Mailles"
+      "AreasToggleBtn": "Mailles",
+      "SeveralValues": "Valeurs multiples",
+      "UnknownValue": "Autres valeurs",
+      "Criteria": {
+        "default": "Affichage par défaut",
+        "area-aggregation": "Densité d'observations"
+      }
     }
   },
   "Media": {

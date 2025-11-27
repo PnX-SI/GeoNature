@@ -6,6 +6,8 @@
   box-shadow: none;
   /* font-size:2; */
 }
+
+// Synthese map criteria toggle button
 ::ng-deep .synthese-map-areas {
   background-color: rgba(255, 255, 255, 0.8);
 }
@@ -18,8 +20,10 @@
 ::ng-deep .synthese-map-areas .custom-control-label::after {
   top: calc(0.05rem + 2px);
 }
+
+// Synthese map legend
 ::ng-deep .legend {
-  line-height: 10px;
+  line-height: 24px;
   font-size: 14px;
   color: #555;
   background-color: white;
@@ -28,12 +32,61 @@
   border-radius: 4px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
-::ng-deep .legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
-}
 ::ng-deep .legend:hover {
   opacity: 1;
+}
+::ng-deep .legend i.legend-color {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+::ng-deep .legend.criteria i.legend-color {
+  border-radius: 10px;
+}
+::ng-deep .legend.areas i.legend-color {
+  border-radius: 2px;
+}
+::ng-deep .legend i.legend-symbol {
+  display: inline-block;
+  font-size: inherit !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+// Synthese map criteria list
+::ng-deep .synthese-map-criteria.leaflet-bar {
+  padding-left: 0;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+::ng-deep .synthese-map-criteria .criteria-control-toggle {
+  width: 44px;
+  height: 44px;
+  background-image: url(../../../../assets/images/map_criteria.png);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+::ng-deep .synthese-map-criteria .criteria-control-list-separator {
+  height: 0;
+  border-top: 1px solid #ddd;
+  margin: 5px -10px 5px -6px;
+}
+::ng-deep .synthese-map-criteria .criteria-control-list {
+  display: none;
+}
+::ng-deep .synthese-map-criteria.criteria-control-list-expanded {
+  padding: 6px 10px 6px 6px;
+}
+::ng-deep .synthese-map-criteria.criteria-control-list-expanded .criteria-control-toggle {
+  display: none;
+}
+::ng-deep .synthese-map-criteria.criteria-control-list-expanded .criteria-control-list {
+  display: block;
+  position: relative;
+}
+::ng-deep .synthese-map-criteria .criteria-control-selector {
+  margin-top: 2px;
+  position: relative;
+  top: 1px;
 }
