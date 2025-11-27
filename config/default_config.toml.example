@@ -608,6 +608,12 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     ]
     # Activer le champs pour permettre l'édition des uuids des cadres d'acquisition et des jeux de données
     ENABLE_UUID_EDITION_FIELD = false
+    # Spécifier une liste de modules à pré-remplir pour le champs de sélection des modules à associer dans le formulaire de saisie de JDD
+    #   C'est le code du module qui est utilisé, i.e. les valeurs du champs `gn_commons.t_modules.module_code`
+    #   Exemple : LIST_MODULES_AUTOMATIC_ASSOCIATION_DATASET = ["Import", "Synthese"]
+    #   Liste des modules possibles : "GEONATURE", "ADMIN", "METADATA", "IMPORT", "TAXHUB", "SYNTHESE", "OCCTAX", "VALIDATION", "OCCHAB"
+    #   Autres modules si installés : "DASHBOARD", "EXPORTS", "MONITORINGS"
+    LIST_MODULES_AUTOMATIC_ASSOCIATION_DATASET = []
 
 # Page d’accueil
 [HOME]

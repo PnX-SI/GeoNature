@@ -6,6 +6,9 @@ import { tap, filter, switchMap, map } from 'rxjs/operators';
 
 import { ActorFormService } from './actor-form.service';
 import { FormService } from '@geonature_common/form/form.service';
+import { ConfigService } from '@geonature/services/config.service';
+import { ActivatedRoute } from '@librairies/@angular/router';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Injectable()
 export class DatasetFormService {
@@ -19,7 +22,10 @@ export class DatasetFormService {
     private fb: UntypedFormBuilder,
     private _toaster: ToastrService,
     private actorFormS: ActorFormService,
-    private formS: FormService
+    private formS: FormService,
+    private _config: ConfigService,
+    private _route: ActivatedRoute,
+    public moduleService: ModuleService
   ) {
     this.initForm();
     this.setObservables();
@@ -106,6 +112,18 @@ export class DatasetFormService {
             this.addActor(actor);
           });
           delete value.cor_dataset_actor;
+          // Pre-fill associated modules from config
+          //  but only for the creation a new DS and not for the update of an existing one
+          this._route.params.subscribe((params) => {
+            const isCreateAndNotUpdate = !params.hasOwnProperty('id');
+            if (isCreateAndNotUpdate) {
+              value.modules = this.moduleService.modules.filter((module) => {
+                return this._config.METADATA.LIST_MODULES_AUTOMATIC_ASSOCIATION_DATASET.includes(
+                  module.module_code
+                );
+              });
+            }
+          });
           return value;
         })
       )
