@@ -23,7 +23,7 @@ import { ActivatedRoute } from '@angular/router';
 @Injectable()
 export class ImportDataService {
   private urlApi = null;
-  private destination: string = null;
+  public destination: string = null;
 
   constructor(
     private _http: HttpClient,

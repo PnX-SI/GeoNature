@@ -650,8 +650,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Activer ou non l'étape du mapping des valeurs
     ALLOW_VALUE_MAPPING = true
 
-    # Si le mapping des valeurs est désactivé, specifier l'identifiant du mapping qui doit être utilisé
-    DEFAULT_VALUE_MAPPING_ID = 3
+    # Si le mapping des valeurs est désactivé, spécifier les identifiants des mappings qui doivent être utilisés, pour chacune des destinations
+    DEFAULT_VALUE_MAPPINGS = [
+        { "destination" = "synthese", "id_mapping"= "3" },
+        { "destination" = "occhab", "id_mapping"= "5" },
+    ]
 
     # rempli les valeurs de nomenclature erroné par la valeur par defaut
     # Leve un warning et non une erreur sur les lignes concernées

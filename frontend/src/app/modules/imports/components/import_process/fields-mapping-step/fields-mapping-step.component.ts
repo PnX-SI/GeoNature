@@ -172,16 +172,20 @@ export class FieldsMappingStepComponent implements OnInit {
           (mappingSelected || formgroup.dirty) &&
           !this._configService.IMPORT.ALLOW_VALUE_MAPPING
         ) {
-          return this._importDataService
-            .getContentMapping(this._configService.IMPORT.DEFAULT_VALUE_MAPPING_ID)
-            .pipe(
-              flatMap((mapping: ContentMapping) => {
-                return this._importDataService.setImportContentMapping(
-                  importData.id_import,
-                  mapping.values
-                );
-              })
-            );
+          const destination = this._importDataService.destination;
+          const id_default_value_mapping = this._configService.IMPORT.DEFAULT_VALUE_MAPPINGS.filter(
+            (value_mapping) => {
+              return value_mapping.destination === destination;
+            }
+          )[0].id_mapping;
+          return this._importDataService.getContentMapping(id_default_value_mapping).pipe(
+            flatMap((mapping: ContentMapping) => {
+              return this._importDataService.setImportContentMapping(
+                importData.id_import,
+                mapping.values
+              );
+            })
+          );
         } else {
           return of(importData);
         }
