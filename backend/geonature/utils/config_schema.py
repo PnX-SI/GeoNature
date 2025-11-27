@@ -442,6 +442,13 @@ class Synthese(Schema):
     )
     # Activate the blurring of sensitive observations. Otherwise, exclude them
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
+    # Name of the column in the Synthese export file containing the nomenclature
+    # information DEE_FLOU.
+    # By default: "floutage_dee".
+    # The presence of this column is not mandatory.
+    # If present, its value is forced to 'OUI' if the data has been blurred
+    # by the level of sensitivity.
+    EXPORT_FIELD_BLURRING = fields.String(load_default="floutage_dee")
 
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET

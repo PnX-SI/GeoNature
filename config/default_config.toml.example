@@ -437,6 +437,15 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         { min = 0, color = "#FFEDA0" }
     ]
 
+    # Active le floutage des observations sensibles si TRUE, sinon avec FALSE, elles sont exclues.
+    BLUR_SENSITIVE_OBSERVATIONS = true
+    # Nom de la colonne du fichier d'export de la Synthese contenant les informations
+    # de la nomenclature DEE_FLOU. Par défaut: "floutage_dee".
+    # La présence de cette colonne n'est pas obligatoire.
+    # Si présente, sa valeur est forcée a OUI si la donnée a été floutée par le niveau de
+    # sensibilité.
+    EXPORT_FIELD_BLURRING = "floutage_dee"
+
     [SYNTHESE.DEFAULT_FILTERS]
         # Tous les statuts de validation sauf invalide '4'
         # Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)
