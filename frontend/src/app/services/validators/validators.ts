@@ -60,7 +60,7 @@ export function similarValidator(
     if (passControl && confirmPassControl && passControl.value === confirmPassControl.value) {
       return null;
     }
-    return buildValidationErrors(ValidationErrorsId.IS_OBJECT_ERROR);
+    return buildValidationErrors(ValidationErrorsId.SIMILAR_ERROR);
   };
 }
 

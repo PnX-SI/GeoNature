@@ -11,7 +11,7 @@ import { UserDataService } from '../services/user-data.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
 import { CommonService } from '@geonature_common/service/common.service';
-
+import { PasswordService } from '../services/password.service';
 @Component({
   selector: 'pnx-user-password',
   templateUrl: './password.component.html',
@@ -24,6 +24,7 @@ export class PasswordComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private router: Router,
     private userService: UserDataService,
+    private passwordService: PasswordService,
     private _commonService: CommonService
   ) {}
 
@@ -34,10 +35,22 @@ export class PasswordComponent implements OnInit {
   initForm() {
     this.form = this.fb.group({
       init_password: ['', Validators.required],
-      password: ['', Validators.required],
+      password: ['', [this.passwordService.passwordValidator()]],
       password_confirmation: ['', Validators.required],
     });
     this.form.setValidators([similarValidator('password', 'password_confirmation')]);
+  }
+
+  getPasswordErrors(): string[] {
+    const control = this.form.get('password');
+    if (!control || !control.errors) {
+      return [];
+    }
+
+    return Object.keys(control.errors).map((errorKey) => {
+      const error = control.errors[errorKey];
+      return error.message || 'Erreur inconnue';
+    });
   }
 
   save() {
