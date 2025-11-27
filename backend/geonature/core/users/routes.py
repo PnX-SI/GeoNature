@@ -227,8 +227,81 @@ def get_organismes_jdd():
     ]
 
 
+@routes.route("/organism/<int:id_organisme>", methods=["GET"])
+@permissions.login_required
+@json_resp
+def get_organism(id_organisme):
+    """
+    Get complete organism details by ID
+
+    .. :quickref: User;
+
+    Returns:
+        dict: Complete organism information including all fields
+    """
+    organism = DB.session.get(Organisme, id_organisme)
+    if not organism:
+        raise NotFound("Organism not found")
+
+    return organism.as_dict()
+
+
+@routes.route("/organism/new", methods=["POST"])
+@permissions.check_cruved_scope("C", module_code="METADATA", object_code="ORGANISM")
+@json_resp
+def create_organism():
+    """
+    Create a new organism
+
+    .. :quickref: User;
+
+    Request body should contain:
+    - nom_organisme (required): organism name
+    - adresse_organisme (optional): address
+    - cp_organisme (optional): postal code
+    - ville_organisme (optional): city
+    - tel_organisme (optional): telephone
+    - fax_organisme (optional): fax
+    - email_organisme (optional): email
+    - url_organisme (optional): website URL
+    - url_logo (optional): logo URL
+
+    Returns:
+        dict: The created organism with its ID
+    """
+    data = request.get_json()
+
+    # Validate required fields
+    if not data.get("nom_organisme"):
+        raise BadRequest("nom_organisme is required")
+
+    # Create new organism
+    new_organism = Organisme(
+        nom_organisme=data.get("nom_organisme"),
+        adresse_organisme=data.get("adresse_organisme"),
+        cp_organisme=data.get("cp_organisme"),
+        ville_organisme=data.get("ville_organisme"),
+        tel_organisme=data.get("tel_organisme"),
+        fax_organisme=data.get("fax_organisme"),
+        email_organisme=data.get("email_organisme"),
+        url_organisme=data.get("url_organisme"),
+        url_logo=data.get("url_logo"),
+    )
+
+    try:
+        DB.session.add(new_organism)
+        DB.session.commit()
+        DB.session.flush()
+
+        return new_organism.as_dict(fields=organism_fields | {"url_organisme", "url_logo"})
+    except Exception as e:
+        DB.session.rollback()
+        log.error(f"Error creating organism: {str(e)}")
+        raise InternalServerError(f"Error creating organism: {str(e)}")
+
+
 ###################################
-### ACCOUNT_MANAGEMENT ROUTES #####
+### ACCOUNT_MANAGEMENT ROUTES #####
 ###################################
 
 

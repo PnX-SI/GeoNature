@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { ActorFormService } from '../services/actor-form.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { OrganismFormDialogComponent } from '../organisms/organism-form-dialog.component';
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 
 @Component({
   selector: 'pnx-metadata-actor',
@@ -86,10 +88,19 @@ export class ActorComponent implements OnInit {
 
   @Input() parentFormArray: UntypedFormArray;
 
+  // Check if user has permission to create organisms
+  get canCreateOrganism(): boolean {
+    const metadataObjectsPerm = this._cruvedStore.cruved.METADATA.module_objects;
+    return (
+      metadataObjectsPerm.hasOwnProperty('ORGANISM') && metadataObjectsPerm.ORGANISM.cruved.C !== 0
+    );
+  }
+
   constructor(
     public dialog: MatDialog,
     private actorFormS: ActorFormService,
-    public config: ConfigService
+    public config: ConfigService,
+    public _cruvedStore: CruvedStoreService
   ) {}
 
   ngOnInit() {
@@ -158,6 +169,28 @@ export class ActorComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.actorFormRemove.emit(true);
+      }
+    });
+  }
+
+  createOrganism() {
+    const dialogRef = this.dialog.open(OrganismFormDialogComponent, {
+      width: '600px',
+      disableClose: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // User clicked save and form is valid
+        this.actorFormS.createAndRefreshOrganism(result).subscribe(
+          (newOrganism) => {
+            // Automatically select the newly created organism
+            this.actorForm.patchValue({ id_organism: newOrganism.id_organisme });
+          },
+          (error) => {
+            console.error('Error creating organism:', error);
+          }
+        );
       }
     });
   }

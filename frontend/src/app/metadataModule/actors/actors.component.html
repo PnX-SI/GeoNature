@@ -6,19 +6,19 @@
   >
     <mat-button-toggle
       value="organism"
-      matTooltip="{{ 'MetaData.Actors.EnterOrganization' | translate }}"
+      matTooltip="{{ 'MetaData.Actors.Actions.EnterOrganization' | translate }}"
     >
       <mat-icon>domain</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="person"
-      matTooltip="{{ 'MetaData.Actors.EnterPerson' | translate }}"
+      matTooltip="{{ 'MetaData.Actors.Actions.EnterPerson' | translate }}"
     >
       <mat-icon>person</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="all"
-      matTooltip="{{ 'MetaData.Actors.EnterOrganizationPerson' | translate }}"
+      matTooltip="{{ 'MetaData.Actors.Actions.EnterOrganizationPerson' | translate }}"
     >
       <mat-icon>domain</mat-icon>
       <mat-icon>person</mat-icon>
@@ -28,7 +28,7 @@
     *ngIf="isRemovable"
     mat-icon-button
     color="warn"
-    matTooltip="{{ 'MetaData.Actors.DeleteActor' | translate }}"
+    matTooltip="{{ 'MetaData.Actors.Actions.DeleteActor' | translate }}"
     (click)="remove()"
   >
     <mat-icon>clear</mat-icon>
@@ -92,7 +92,19 @@
           </div>
         </ng-template>
       </ng-select>
+      <button
+        *ngIf="canCreateOrganism"
+        mat-raised-button
+        color="primary"
+        matTooltip="{{ 'MetaData.Actors.Actions.CreateOrganism' | translate }}"
+        (click)="createOrganism()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ 'MetaData.Actors.Actions.CreateOrganism' | translate }}
+      </button>
     </ng-container>
+
+    <br />
 
     <!-- Personnes -->
     <ng-container *ngIf="toggleButtonValue == 'person' || toggleButtonValue == 'all'">
