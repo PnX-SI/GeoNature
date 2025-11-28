@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { startWith } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
@@ -103,13 +103,12 @@ export class ActorComponent implements OnInit {
     }
 
     this.setToggleButtonValue();
+  }
 
-    combineLatest([
-      this.actorForm.get('id_organism').valueChanges.pipe(startWith(null)),
-      this.actorForm.get('id_role').valueChanges.pipe(startWith(null)),
-    ]).subscribe((_) => {
+  ngAfterViewInit() {
+    this.actorFormS.paramsSetComplete.pipe(filter((complete) => complete)).subscribe(() => {
       const btn = this.computeButtonValue();
-      this._toggleButtonValue.next(btn);
+      this.toggleActorOrganismChoiceChange({ value: btn });
     });
   }
 

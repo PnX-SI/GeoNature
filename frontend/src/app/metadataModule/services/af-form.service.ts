@@ -214,6 +214,9 @@ export class AcquisitionFrameworkFormService {
         this.form.get('additional_data').patchValue({ [key]: params[key] });
       }, 0);
     });
+    setTimeout(() => {
+      this.actorFormS.notifyParamsSetComplete();
+    });
   }
 
   get actors(): UntypedFormArray {
