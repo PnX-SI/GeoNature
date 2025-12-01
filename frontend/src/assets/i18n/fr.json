@@ -324,11 +324,11 @@
         "EnterPerson": "Renseigner une personne uniquement",
         "EnterOrganizationPerson": "Renseigner un organisme et un personne",
         "DeleteActor": "Supprimer cet acteur",
-        "CreateOrganism": "Créer un organisme"
+        "CreateOrganism": "Ajouter un organisme"
       }
     },
     "Organisms": {
-      "CreateOrganism": "Créer un organisme",
+      "CreateOrganism": "Ajouter un organisme",
       "OrganismName": "Nom de l'organisme",
       "Address": "Adresse",
       "PostalCode": "Code postal",

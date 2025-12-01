@@ -324,11 +324,11 @@
         "EnterPerson": "Enter a person only",
         "EnterOrganizationPerson": "Enter an organization and a person",
         "DeleteActor": "Delete this stakeholder",
-        "CreateOrganism": "Create an organism"
+        "CreateOrganism": "Add an organism"
       }
     },
     "Organisms": {
-      "CreateOrganism": "Create an organism",
+      "CreateOrganism": "Add an organism",
       "OrganismName": "Organism name",
       "Address": "Address",
       "PostalCode": "Postal code",

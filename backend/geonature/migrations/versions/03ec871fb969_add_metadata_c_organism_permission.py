@@ -54,7 +54,7 @@ def upgrade():
             v.label
         FROM (
             VALUES
-            ('METADATA', 'ORGANISM', 'C', False, 'Créer des organismes')
+            ('METADATA', 'ORGANISM', 'C', False, 'Ajouter des organismes')
         ) AS v (module_code, object_code, action_code, scope_filter, label)
         JOIN gn_commons.t_modules m ON m.module_code = v.module_code
         JOIN gn_permissions.t_objects o ON o.code_object = v.object_code
