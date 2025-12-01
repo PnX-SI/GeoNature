@@ -1,4 +1,4 @@
-"""add metadata c organism permission
+"""add geonature c organism permission
 
 Revision ID: 03ec871fb969
 Revises: b955b6d95d25
@@ -25,14 +25,14 @@ def upgrade():
         INSERT INTO gn_permissions.t_objects
         (code_object, description_object)
         VALUES
-        ('ORGANISM', 'Gestion des organismes dans le module METADATA');
+        ('ORGANISM', 'Gestion des organismes');
 
-        -- Link ORGANISM object to METADATA module
+        -- Link ORGANISM object to GEONATURE module
         INSERT INTO gn_permissions.cor_object_module
         (id_object, id_module)
         SELECT 
             _to.id_object, 
-            (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'METADATA')
+            (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'GEONATURE')
         FROM (
             VALUES ('ORGANISM')
         ) AS o (object_code)
@@ -54,12 +54,11 @@ def upgrade():
             v.label
         FROM (
             VALUES
-            ('METADATA', 'ORGANISM', 'C', False, 'Ajouter des organismes')
+            ('GEONATURE', 'ORGANISM', 'C', False, 'Ajouter des organismes')
         ) AS v (module_code, object_code, action_code, scope_filter, label)
         JOIN gn_commons.t_modules m ON m.module_code = v.module_code
         JOIN gn_permissions.t_objects o ON o.code_object = v.object_code
-        JOIN gn_permissions.bib_actions a ON a.code_action = v.action_code
-        WHERE m.module_code = 'METADATA';
+        JOIN gn_permissions.bib_actions a ON a.code_action = v.action_code;
         """
         )
     )
@@ -68,21 +67,21 @@ def upgrade():
 def downgrade():
     op.execute(
         """
-        -- Remove "C" permission for METADATA module and ORGANISM object
+        -- Remove "C" permission for GEONATURE module and ORGANISM object
         DELETE FROM gn_permissions.t_permissions 
-        WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'METADATA')
+        WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'GEONATURE')
         AND id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'ORGANISM')
         AND id_action = (SELECT id_action FROM gn_permissions.bib_actions WHERE code_action = 'C');
         
-        -- Remove "C" available permission for METADATA module and ORGANISM object
+        -- Remove "C" available permission for GEONATURE module and ORGANISM object
         DELETE FROM gn_permissions.t_permissions_available 
-        WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'METADATA')
+        WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'GEONATURE')
         AND id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'ORGANISM')
         AND id_action = (SELECT id_action FROM gn_permissions.bib_actions WHERE code_action = 'C');
         
-        -- Remove (METADAT, ORGANISM) from cor_object_module
+        -- Remove (GEONATURE, ORGANISM) from cor_object_module
         DELETE FROM gn_permissions.cor_object_module 
-        WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'METADATA')
+        WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'GEONATURE')
         AND id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'ORGANISM');
         
         -- Remove ORGANISM object

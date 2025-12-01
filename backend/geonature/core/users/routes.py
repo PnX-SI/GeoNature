@@ -241,7 +241,7 @@ def get_organism(id_organisme):
 
 
 @routes.route("/organism/new", methods=["POST"])
-@permissions.check_cruved_scope("C", module_code="METADATA", object_code="ORGANISM")
+@permissions.check_cruved_scope("C", module_code="GEONATURE", object_code="ORGANISM")
 @json_resp
 def create_organism():
     """

@@ -91,9 +91,10 @@ export class ActorComponent implements OnInit {
 
   // Check if user has permission to create organisms
   get canCreateOrganism(): boolean {
-    const metadataObjectsPerm = this._cruvedStore.cruved.METADATA.module_objects;
+    const geaonatureObjectsPerm = this._cruvedStore.cruved.GEONATURE.module_objects;
     return (
-      metadataObjectsPerm.hasOwnProperty('ORGANISM') && metadataObjectsPerm.ORGANISM.cruved.C !== 0
+      geaonatureObjectsPerm.hasOwnProperty('ORGANISM') &&
+      geaonatureObjectsPerm.ORGANISM.cruved.C !== 0
     );
   }
 
