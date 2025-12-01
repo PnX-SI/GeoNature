@@ -5,6 +5,7 @@ import { ActorFormService } from '../services/actor-form.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { distance } from 'fastest-levenshtein';
 
 @Component({
   selector: 'pnx-organism-form-dialog',
@@ -109,7 +110,7 @@ export class OrganismFormDialogComponent implements OnInit, OnDestroy {
    * Check if the entered name is similar to existing organism names
    */
   checkSimilarNames(inputName: string): void {
-    if (!inputName || inputName.trim().length < 3) {
+    if (!inputName) {
       this.similarOrganisms = [];
       this.showSimilarWarning = false;
       return;
@@ -123,37 +124,24 @@ export class OrganismFormDialogComponent implements OnInit, OnDestroy {
       .map((org) => {
         const normalizedOrgName = this.normalizeString(org.nom_organisme);
 
-        // Check for exact match (case-sensitive)
+        // Set exact match - case-sensitive - as most similar
         if (
           org.nom_organisme.trim().replace(/\s+/g, ' ') == inputName.trim().replace(/\s+/g, ' ')
         ) {
           return { organism: org, distance: -1 };
         }
 
-        // Check for exact match (case-insensitive)
-        if (normalizedOrgName === normalizedInput) {
-          return { organism: org, distance: 0 };
-        }
-
-        // Check if one contains the other
-        if (normalizedOrgName.includes(normalizedInput)) {
-          return { organism: org, distance: normalizedOrgName.length - normalizedInput.length };
-        }
-
-        if (normalizedInput.includes(normalizedOrgName)) {
-          return { organism: org, distance: normalizedInput.length - normalizedOrgName.length };
-        }
-
-        // Calculate Levenshtein distance for similar names
-        const distance = this.levenshteinDistance(normalizedInput, normalizedOrgName);
-        const maxLength = Math.max(normalizedInput.length, normalizedOrgName.length);
-        const similarity = 1 - distance / maxLength;
+        // Calculate similarity score based on Levenshtein distance
+        const distanceLevenshtein = distance(normalizedInput, normalizedOrgName);
 
         // Consider similar if similarity is above 70%
+        const maxLength = Math.max(normalizedInput.length, normalizedOrgName.length);
+        const similarity = 1 - distanceLevenshtein / maxLength;
         if (similarity > 0.7) {
-          return { organism: org, distance: distance };
+          return { organism: org, distance: distanceLevenshtein };
         }
 
+        // For no match or too low similarity, return null
         return null;
       })
       .filter((item) => item !== null);
@@ -175,36 +163,6 @@ export class OrganismFormDialogComponent implements OnInit, OnDestroy {
    */
   private normalizeString(str: string): string {
     return str.toLowerCase().trim().replace(/\s+/g, ' ');
-  }
-
-  /**
-   * Calculate Levenshtein distance between two strings
-   */
-  private levenshteinDistance(str1: string, str2: string): number {
-    const len1 = str1.length;
-    const len2 = str2.length;
-    const matrix: number[][] = [];
-
-    for (let i = 0; i <= len1; i++) {
-      matrix[i] = [i];
-    }
-
-    for (let j = 0; j <= len2; j++) {
-      matrix[0][j] = j;
-    }
-
-    for (let i = 1; i <= len1; i++) {
-      for (let j = 1; j <= len2; j++) {
-        const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j] + 1, // deletion
-          matrix[i][j - 1] + 1, // insertion
-          matrix[i - 1][j - 1] + cost // substitution
-        );
-      }
-    }
-
-    return matrix[len1][len2];
   }
 
   /**

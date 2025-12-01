@@ -22,7 +22,9 @@ from geonature.core.users.register_post_actions import (
 from geonature.utils.config import config
 from geonature.utils.env import DB, db
 from pypnusershub.db.models import Application, Organisme, User, UserList
+from pypnusershub.organisms_manager import insert_or_update_organism
 from pypnusershub.auth import user_manager
+
 from sqlalchemy import and_, select
 from sqlalchemy.sql import and_
 from utils_flask_sqla.response import json_resp
@@ -243,7 +245,7 @@ def get_organism(id_organisme):
 @routes.route("/organism/new", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="GEONATURE", object_code="ORGANISM")
 @json_resp
-def create_organism():
+def create_organism() -> dict:
     """
     Create a new organism
 
@@ -265,31 +267,25 @@ def create_organism():
     """
     data = request.get_json()
 
-    # Validate required fields
     if not data.get("nom_organisme"):
-        raise BadRequest("nom_organisme is required")
+        raise BadRequest("Organism name is required")
 
-    # Create new organism
-    new_organism = Organisme(
-        nom_organisme=data.get("nom_organisme"),
-        adresse_organisme=data.get("adresse_organisme"),
-        cp_organisme=data.get("cp_organisme"),
-        ville_organisme=data.get("ville_organisme"),
-        tel_organisme=data.get("tel_organisme"),
-        fax_organisme=data.get("fax_organisme"),
-        email_organisme=data.get("email_organisme"),
-        url_organisme=data.get("url_organisme"),
-        url_logo=data.get("url_logo"),
-    )
+    new_organism = {
+        "nom_organisme": data.get("nom_organisme"),
+        "adresse_organisme": data.get("adresse_organisme"),
+        "cp_organisme": data.get("cp_organisme"),
+        "ville_organisme": data.get("ville_organisme"),
+        "tel_organisme": data.get("tel_organisme"),
+        "fax_organisme": data.get("fax_organisme"),
+        "email_organisme": data.get("email_organisme"),
+        "url_organisme": data.get("url_organisme"),
+        "url_logo": data.get("url_logo"),
+    }
 
     try:
-        DB.session.add(new_organism)
-        DB.session.commit()
-        DB.session.flush()
-
-        return new_organism.as_dict(fields=organism_fields | {"url_organisme", "url_logo"})
+        new_organism_add = insert_or_update_organism(new_organism)
+        return new_organism_add
     except Exception as e:
-        DB.session.rollback()
         log.error(f"Error creating organism: {str(e)}")
         raise InternalServerError(f"Error creating organism: {str(e)}")
 
