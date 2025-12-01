@@ -123,6 +123,13 @@ export class OrganismFormDialogComponent implements OnInit, OnDestroy {
       .map((org) => {
         const normalizedOrgName = this.normalizeString(org.nom_organisme);
 
+        // Check for exact match (case-sensitive)
+        if (
+          org.nom_organisme.trim().replace(/\s+/g, ' ') == inputName.trim().replace(/\s+/g, ' ')
+        ) {
+          return { organism: org, distance: -1 };
+        }
+
         // Check for exact match (case-insensitive)
         if (normalizedOrgName === normalizedInput) {
           return { organism: org, distance: 0 };
