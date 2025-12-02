@@ -25,7 +25,6 @@ def upgrade():
                 AS
                 $update_cor_area_synthese$
                 DECLARE
-                    arow          RECORD;
                     count_delete  INT;
                     count_inserts INT;
                 BEGIN
