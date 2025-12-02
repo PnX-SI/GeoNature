@@ -142,14 +142,10 @@ export class SyntheseComponent implements OnInit {
 
   private initializeStores(rawGeojson) {
     this.syntheseStore.clearData();
-    this.syntheseStore.setData(this.getCurrentStoreType(), rawGeojson);
+    this.syntheseStore.setData(this.formService.getCurrentStoreType(), rawGeojson);
     this.mapListService.idName = 'id_synthese';
     this.mapListService.tableData = [];
     this.noGeomMessage = false;
-  }
-
-  private getCurrentStoreType() {
-    return this.formService.selectors.get('format') == 'grouped_geom_by_areas' ? 'grid' : 'point';
   }
 
   private extractIds(observation) {
@@ -196,7 +192,7 @@ export class SyntheseComponent implements OnInit {
   private displayMessageGeomAbsence() {
     if (this.noGeomMessage) {
       this.toasterService.warning(
-        "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible"
+        "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur géométrie est invalide - possiblement car hors des limites mondiales - ou car leur maille d’aggrégation n'est pas disponible"
       );
     }
   }

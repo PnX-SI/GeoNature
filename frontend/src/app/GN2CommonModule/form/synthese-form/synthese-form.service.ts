@@ -313,4 +313,8 @@ export class SyntheseFormService {
       })
     );
   }
+
+  getCurrentStoreType() {
+    return this.selectors.get('format') == 'grouped_geom_by_areas' ? 'grid' : 'point';
+  }
 }
