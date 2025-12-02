@@ -317,8 +317,8 @@
       [multiSelect]="formDef.multi_select"
       [moduleCode]="formDef.module_code"
       [creatableInModule]="formDef.creatable_in_module"
-      [bindValue]="formDef.bind_value"
       [attr.data-qa]="'field-dataset' + '-' + formDefComp['attribut_name']"
+      [bindValue]="formDef.bind_value ?? 'id_dataset'"
     ></pnx-datasets>
 
     <pnx-observers
