@@ -81,16 +81,24 @@ def user_matching(imprt: TImports, field: BibFields):
         .label("rang"),
     ).cte()
 
-    query = sa.select(matches).where(
-        matches.c.rang == 1,
-    )
+    query = sa.select(matches).where(matches.c.rang == 1, matches.c.similarity > 0.7)
 
     result = UserMatchingSchema(
         many=True,
         unknown="exclude",
     ).dump(db.session.execute(query).all())
 
-    return {res["user_to_match"]: res for res in result}
+    sim_match = {res["user_to_match"]: res for res in result}
+
+    non_match = db.session.execute(
+        sa.select(cte_user_to_match.c.user_to_match)
+        .where(cte_user_to_match.c.user_to_match.notin_(sim_match.keys()))
+        .where(cte_user_to_match.c.user_to_match != None)
+    ).all()
+
+    sim_match.update({res["user_to_match"]: {} for res in non_match})
+
+    return sim_match
 
 
 def map_observer_matching(imprt: TImports, entity: Entity, observer_field: BibFields):
@@ -133,10 +141,10 @@ def map_observer_matching(imprt: TImports, entity: Entity, observer_field: BibFi
 
     db.session.execute(query)
 
-    report_erroneous_rows(
-        imprt,
-        entity,
-        error_type=ImportCodeError.UNKNOWN_ERROR,
-        error_column=observer_field.name_field,
-        whereclause=(transient_table.c[observer_field.dest_column] == None),
-    )
+    # report_erroneous_rows(
+    #     imprt,
+    #     entity,
+    #     error_type=ImportCodeError.UNKNOWN_ERROR,
+    #     error_column=observer_field.name_field,
+    #     whereclause=(transient_table.c[observer_field.dest_column] == None),
+    # )
