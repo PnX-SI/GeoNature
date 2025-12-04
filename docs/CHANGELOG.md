@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.17.0 (unreleased)
+
+### 🚀 Nouveautés
+
+- [Général] Ajout d'un trigger sur les mises à jour de ref_geo.l_areas permettant la mise à jour automatique de gn_synthese.cor_area_synthese (fix #3814).
+
+
 ## 2.16.4 (2025-11-17)
 
 ### 🚀 Nouveautés
