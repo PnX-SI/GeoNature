@@ -20,6 +20,11 @@ describe('Testing metadata', () => {
     description: 'description de mon jdd',
   };
 
+  const newOrganism = {
+    name: 'Ma structure 2',
+    email: 'mastructure2@example.com',
+  };
+
   beforeEach(() => {
     cy.geonatureLogin();
     cy.visit('/#/metadata');
@@ -65,6 +70,23 @@ describe('Testing metadata', () => {
     // cy.visit('/#/metadata');
 
     cy.get('[data-qa="pnx-metadata-add-af"]').click();
+
+    // Create a new organism, later used for the creation of the new JDD
+    cy.get('pnx-metadata-actor > div > form > button').click();
+    cy.get('[data-qa="pnx-organism-form-dialog-name"]').type(newOrganism.name);
+    //    Verify that the organism 'ma structure test' is displayed in the list of similar organisms
+    cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] li').should('have.length', 1);
+    const similarOrganismDiv = cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] span');
+    similarOrganismDiv.should('have.text', 'ma structure test');
+    similarOrganismDiv.click();
+    const similarOrganismAddress = cy.get(
+      '[data-qa="pnx-organism-form-dialog-similar-org-address"]'
+    );
+    similarOrganismAddress.should('have.text', ' Rue des bois ');
+    //    Complete the form with an email, and submit
+    cy.get('mat-dialog-content').scrollTo('bottom');
+    cy.get('[data-qa="pnx-organism-form-dialog-email"]').type(newOrganism.email, { force: true });
+    cy.get('[data-qa="organism-dialog-save"]').click();
 
     cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
     cy.get('[data-qa="pnx-metadata-organism-ALL"]').click();
@@ -124,6 +146,12 @@ describe('Testing metadata', () => {
 
     cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
     cy.get('[data-qa="pnx-metadata-organism-ALL"]').click();
+    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+
+    // Add a second main contact, the new organism created before from AF form
+    cy.get('[data-qa="pnx-dataset-form-add-main-contact"]').click();
+    cy.get('pnx-metadata-actor').eq(1).find('ng-select > div > div > div.ng-input').click();
+    cy.get('[data-qa="pnx-metadata-organism-' + newOrganism.name + '"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
     cy.get('[data-qa="pnx-dataset-form-select-cadre-acq"]').click();
@@ -214,6 +242,34 @@ describe('Testing metadata', () => {
       .click();
     cy.get('[data-qa="pnx-metadata-dataset-name-' + jdd + '"]').should('be.visible');
     cy.get('[data-qa="pnx-metadata-dataset-name-' + newJdd.name + '"]').should('not.exist');
+  });
+
+  it('should delete the new organism', () => {
+    // Step 1: Get the organism ID
+    let organismId;
+    cy.request({
+      method: 'GET',
+      url: Cypress.env('apiEndpoint') + 'users/organisms',
+    })
+      .then((response) => {
+        const organism = response.body.find((org) => org.nom_organisme === newOrganism.name);
+        expect(organism).to.not.be.undefined;
+        organismId = organism.id_organisme;
+
+        // Step 2: Delete the organism
+        return cy.request({
+          method: 'DELETE',
+          url: Cypress.env('apiEndpoint') + 'users/organism/' + organismId,
+          failOnStatusCode: false,
+        });
+      })
+      .then((deleteResponse) => {
+        expect(deleteResponse.status).to.equal(200);
+        expect(deleteResponse.body).to.have.property('message');
+        expect(deleteResponse.body.message).to.equal(
+          'Organism ' + organismId + ' deleted successfully'
+        );
+      });
   });
 
   it('should delete the new "cadre d\'acquisition"', () => {

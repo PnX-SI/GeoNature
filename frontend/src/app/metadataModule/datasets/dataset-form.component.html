@@ -308,6 +308,7 @@
             matTooltip="Ajouter un autre contact principal"
             (click)="addMainContact()"
             [disabled]="!(datasetFormS.genericActorForm.valid && datasetFormS.actors.valid)"
+            data-qa="pnx-dataset-form-add-main-contact"
           >
             <mat-icon>add</mat-icon>
           </button>
