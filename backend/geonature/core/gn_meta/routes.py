@@ -7,7 +7,7 @@ import json
 import logging
 from lxml import etree as ET
 
-from flask import Blueprint, current_app, request, Response, g, render_template
+from flask import Blueprint, current_app, request, Response, g, render_template, jsonify
 
 from sqlalchemy import inspect
 from sqlalchemy.exc import DatabaseError
@@ -499,7 +499,11 @@ def get_acquisition_frameworks():
     Use for AF select in form
     Get the GeoNature CRUVED
     """
+    # TODO use only get_acquisition_frameworks and delete get_acquisition_frameworks_list
     only = ["+cruved"]
+    per_page = request.args.get("per_page", 50, type=int)
+    page = request.args.get("page", 1, type=int)
+
     # QUERY
     af_list = TAcquisitionFramework.filter_by_readable()
     if request.is_json:
@@ -521,6 +525,7 @@ def get_acquisition_frameworks():
             ),
         ),
     )
+
     if request.args.get("datasets", default=False, type=int):
         only.extend(
             [
@@ -560,8 +565,25 @@ def get_acquisition_frameworks():
                     ),
                 ),
             )
-    af_schema = AcquisitionFrameworkSchema(only=only)
-    return af_schema.jsonify(db.session.scalars(af_list).unique().all(), many=True)
+
+    af_schema = AcquisitionFrameworkSchema(only=only, many=True)
+    pagination = db.paginate(
+        select=af_list,
+        page=page,
+        per_page=per_page,
+    )
+
+    result = {
+        "items": af_schema.dump(pagination.items),
+        "total": pagination.total,
+        "page": pagination.page,
+        "pages": pagination.pages,
+        "per_page": pagination.per_page,
+        "has_next": pagination.has_next,
+        "has_prev": pagination.has_prev,
+    }
+
+    return jsonify(result)
 
 
 @routes.route("/list/acquisition_frameworks", methods=["GET"])
