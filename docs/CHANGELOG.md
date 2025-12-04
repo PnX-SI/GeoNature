@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2.16.5 (unreleased)
+## 2.17.0 (unreleased)
 
 ### 🚀 Nouveautés
 
