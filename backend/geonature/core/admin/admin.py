@@ -30,6 +30,9 @@ from pypnnomenclature.admin import (
     TNomenclaturesAdmin,
 )
 
+from pypnusershub.db.models import Organisme
+from pypnusershub.db.admin import BibOrganismesAdmin
+
 from .utils import CruvedProtectedMixin
 
 
@@ -151,6 +154,15 @@ admin.add_view(
         db.session,
         name="Modules",
         category="Autres",
+    )
+)
+
+admin.add_view(
+    BibOrganismesAdmin(
+        Organisme,
+        db.session,
+        name="Organismes",
+        category="Organismes",
     )
 )
 
