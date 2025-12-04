@@ -17,6 +17,14 @@ export interface ParamsDict {
   [key: string]: any;
 }
 
+interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  per_page: number;
+  total_pages: number;
+}
+
 export type Profile = GeoJSON.Feature;
 
 export const FormatMapMime = new Map([
@@ -28,6 +36,7 @@ export const FormatMapMime = new Map([
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
+
   constructor(
     private _http: HttpClient,
     public config: ConfigService
@@ -381,15 +390,21 @@ export class DataFormService {
     });
   }
 
-  getAcquisitionFrameworksList(selectors = {}, params = {}) {
+  getAcquisitionFrameworksList(selectors = {}, params = {}, page = 1, per_page = 10) {
     let queryString: HttpParams = new HttpParams();
     for (let key in selectors) {
       queryString = queryString.set(key, selectors[key]);
     }
+    queryString = queryString.set('page', page);
+    queryString = queryString.set('per_page', per_page);
 
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/meta/acquisition_frameworks`, params, {
-      params: queryString,
-    });
+    return this._http.post<PaginatedResponse<any>>(
+      `${this.config.API_ENDPOINT}/meta/acquisition_frameworks`,
+      params,
+      {
+        params: queryString,
+      }
+    );
   }
 
   /**
@@ -579,6 +594,7 @@ export class DataFormService {
       }
     );
   }
+
   saveBlob(blob, filename) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -591,10 +607,12 @@ export class DataFormService {
   getPlaces() {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/places`);
   }
+
   //Ajouter lieu
   addPlace(place) {
     return this._http.post<any>(`${this.config.API_ENDPOINT}/gn_commons/places`, place);
   }
+
   // Supprimer lieu
   deletePlace(idPlace) {
     return this._http.delete<any>(`${this.config.API_ENDPOINT}/gn_commons/places/${idPlace}`);

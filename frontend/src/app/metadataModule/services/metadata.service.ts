@@ -7,8 +7,19 @@ import { tap, catchError } from 'rxjs/operators';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { PageEvent } from '@angular/material/paginator';
 
 const SELECTORS = { datasets: 0, creator: 1, actors: 1 };
+
+interface MetadataSearchForm {
+  selector?: string;
+  uuid?: string | null;
+  name?: string | null;
+  date?: string | null;
+  organism?: string | null;
+  person?: string | null;
+  [key: `area_${string}`]: Array<any>;
+}
 
 @Injectable()
 export class MetadataService {
@@ -26,7 +37,9 @@ export class MetadataService {
   pageSizeOptions: number[] = [10, 25, 50, 100];
   pageSize: BehaviorSubject<number> = null;
   pageIndex: BehaviorSubject<number> = new BehaviorSubject(0);
-  activePage: BehaviorSubject<number> = new BehaviorSubject(0);
+  public totalItems: number = 0;
+  public totalPages: number = 0;
+  public currentPage: number = 1;
 
   constructor(
     private _fb: UntypedFormBuilder,
@@ -55,30 +68,51 @@ export class MetadataService {
     this.formBuilded = true;
   }
 
-  // FIXME: remove any!!!
-  search(formValue: any) {
+  search(formValue: MetadataSearchForm) {
     return this.getMetadataObservable(formValue).pipe(
-      tap((afs) => {
-        this.acquisitionFrameworks.next(afs);
-        this.pageIndex.next(0);
+      tap((response) => {
+        this.acquisitionFrameworks.next(response.items);
+        this.totalItems = response.total;
+        this.totalPages = response.total_pages;
+        this.currentPage = response.page;
       })
     );
   }
+
+  changePage(page_index: number, page_size: number = this.pageSize.value) {
+    this.currentPage = page_index;
+    this.pageSize.next(page_size);
+    this.getMetadata();
+  }
+  changePageEvent(pageEvent: PageEvent) {
+    this.changePage(pageEvent.pageIndex + 1, pageEvent.pageSize);
+  }
+
   //recuperation cadres d'acquisition
   getMetadataObservable(params = {}, selectors = SELECTORS) {
     this.isLoading = true;
     this.acquisitionFrameworks.next([]);
-
+    // TODO changer ici aussi
     //forkJoin pour lancer les 2 requetes simultanément
-    return this.dataFormService.getAcquisitionFrameworksList(selectors, params).pipe(
-      catchError(() => of([])),
-      tap(() => (this.isLoading = false))
-    );
+    return this.dataFormService
+      .getAcquisitionFrameworksList(selectors, params, this.currentPage, this.pageSize.value)
+      .pipe(
+        catchError(() =>
+          of({
+            items: [],
+            total: 0,
+            page: 1,
+            per_page: this.pageSize.value,
+            total_pages: 0,
+          })
+        ),
+        tap(() => (this.isLoading = false))
+      );
   }
 
   getMetadata(params = {}, selectors = SELECTORS) {
     this.getMetadataObservable(params, selectors).subscribe(
-      (afs) => this.acquisitionFrameworks.next(afs),
+      (response) => this.acquisitionFrameworks.next(response.items),
       (err) => (this.isLoading = false)
     );
   }

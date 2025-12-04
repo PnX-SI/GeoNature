@@ -91,6 +91,9 @@ export class MetadataComponent implements OnInit {
             if (term === '') {
               delete this.searchTerms.search;
             } else {
+              // Quand on lance une nouvelle recherche on retourne à la première page car pas de garantie qu'il existe
+              // autant de page de résultats avec les nouveaux paramètres
+              this.metadataService.changePage(1);
               this.searchTerms = { ...this.searchTerms, search: this.rapidSearchControl.value };
             }
           }
@@ -171,12 +174,6 @@ export class MetadataComponent implements OnInit {
       this.metadataService.addDatasetToAcquisitionFramework(af, params, queryStrings);
     }
   }
-
-  changePaginator(event: PageEvent) {
-    this.metadataService.pageSize.next(event.pageSize);
-    this.metadataService.pageIndex.next(event.pageIndex);
-  }
-
   deleteAf(af_id) {
     this._dfs.deleteAf(af_id).subscribe((res) => this.metadataService.getMetadata());
   }
@@ -200,6 +197,18 @@ export class MetadataComponent implements OnInit {
     );
 
     this.modal.dismissAll();
+  }
+
+  get totalItems(): number {
+    return this.metadataService.totalItems;
+  }
+
+  get totalPages(): number {
+    return this.metadataService.totalPages;
+  }
+
+  changePaginator(event: PageEvent) {
+    this.metadataService.changePageEvent(event);
   }
 
   displayMetaAreaFilters = () =>
