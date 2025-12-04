@@ -567,21 +567,32 @@ def get_acquisition_frameworks():
             )
 
     af_schema = AcquisitionFrameworkSchema(only=only, many=True)
-    pagination = db.paginate(
-        select=af_list,
-        page=page,
-        per_page=per_page,
-    )
-
-    result = {
-        "items": af_schema.dump(pagination.items),
-        "total": pagination.total,
-        "page": pagination.page,
-        "pages": pagination.pages,
-        "per_page": pagination.per_page,
-        "has_next": pagination.has_next,
-        "has_prev": pagination.has_prev,
-    }
+    if per_page == -1:
+        items = db.session.scalars(af_list).unique().all()
+        result = {
+            "items": af_schema.dump(items),
+            "total": len(items),
+            "page": 1,
+            "pages": 1,
+            "per_page": len(items),
+            "has_next": False,
+            "has_prev": False,
+        }
+    else:
+        pagination = db.paginate(
+            select=af_list,
+            page=page,
+            per_page=per_page,
+        )
+        result = {
+            "items": af_schema.dump(pagination.items),
+            "total": pagination.total,
+            "page": pagination.page,
+            "pages": pagination.pages,
+            "per_page": pagination.per_page,
+            "has_next": pagination.has_next,
+            "has_prev": pagination.has_prev,
+        }
 
     return jsonify(result)
 

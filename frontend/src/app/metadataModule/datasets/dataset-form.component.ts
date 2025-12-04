@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap, map } from 'rxjs/operators';
 
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -56,7 +56,9 @@ export class DatasetFormComponent implements OnInit {
 
     this._dfs.getTaxaBibList().subscribe((d) => (this.taxaBibList = d));
 
-    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworksList();
+    this.acquisitionFrameworks = this._dfs
+      .getAcquisitionFrameworksList({}, {}, 1, -1)
+      .pipe(map((response) => response.items));
     this.uuidEditionEnabled = this._config.METADATA.ENABLE_UUID_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('Dataset');
   }
@@ -74,6 +76,7 @@ export class DatasetFormComponent implements OnInit {
       id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature('1'),
     });
   }
+
   addGenericContact() {
     this.datasetFormS.genericActorForm.push(this.actorFormS.createForm());
   }

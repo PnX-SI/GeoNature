@@ -21,9 +21,18 @@
         <div class="card-body">
           <div>
             <small>{{ 'AcquisitionFramework' | translate }}</small>
+
+            <div
+              *ngIf="!(acquisitionFrameworks | async)"
+              class="d-flex justify-content-center"
+            >
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
+
             <ng-select
+              *ngIf="acquisitionFrameworks | async as frameworks"
               [formControl]="form.get('id_acquisition_framework')"
-              [items]="acquisitionFrameworks | async"
+              [items]="frameworks"
               bindLabel="acquisition_framework_name"
               bindValue="id_acquisition_framework"
               [disabled]="true"
