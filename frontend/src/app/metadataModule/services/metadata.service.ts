@@ -92,8 +92,6 @@ export class MetadataService {
   getMetadataObservable(params = {}, selectors = SELECTORS) {
     this.isLoading = true;
     this.acquisitionFrameworks.next([]);
-    // TODO changer ici aussi
-    //forkJoin pour lancer les 2 requetes simultanément
     return this.dataFormService
       .getAcquisitionFrameworksList(selectors, params, this.currentPage, this.pageSize.value)
       .pipe(

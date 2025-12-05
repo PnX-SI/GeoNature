@@ -14,7 +14,6 @@ from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
     cruved_ds_filter,
-    get_metadata_list,
 )
 from geonature.core.gn_meta.routes import get_af_from_id
 from geonature.core.gn_meta.schemas import DatasetSchema
@@ -1330,6 +1329,3 @@ class TestRepository:
         assert not cruved_af_filter(
             acquisition_frameworks["associate_af"], users["stranger_user"], 1
         )
-
-    def test_metadata_list(self):
-        get_metadata_list

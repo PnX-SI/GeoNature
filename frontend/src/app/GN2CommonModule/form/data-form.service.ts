@@ -375,21 +375,6 @@ export class DataFormService {
     );
   }
 
-  /**
-   *
-   * @param params: dict of paramters
-   */
-  getAcquisitionFrameworks(params = {}) {
-    let queryString: HttpParams = new HttpParams();
-    for (let key in params) {
-      queryString = queryString.set(key, params[key]);
-    }
-
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/meta/list/acquisition_frameworks`, {
-      params: queryString,
-    });
-  }
-
   getAcquisitionFrameworksList(selectors = {}, params = {}, page = 1, per_page = 10) {
     let queryString: HttpParams = new HttpParams();
     for (let key in selectors) {

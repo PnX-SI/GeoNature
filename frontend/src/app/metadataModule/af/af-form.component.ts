@@ -54,11 +54,10 @@ export class AfFormComponent implements OnInit, AfterViewInit {
 
     this.form = this.afFormS.form;
 
-    // get acquisistion frameworks parent
-    this._dfs.getAcquisitionFrameworks({ is_parent: 'true' }).subscribe((afParent) => {
-      this.acquisitionFrameworkParents = afParent;
-    });
-
+    // get acquisition frameworks parent
+    this.acquisitionFrameworkParents = this._dfs
+      .getAcquisitionFrameworksList({ is_parent: 'true' }, {}, 1, -1)
+      .pipe(map((response) => response.items));
     this.uuidEditionEnabled = this.configService.METADATA.ENABLE_UUID_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('AcquisitionFramework');
   }

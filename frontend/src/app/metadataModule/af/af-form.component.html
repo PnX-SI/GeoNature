@@ -70,7 +70,7 @@
             >
               <option [ngValue]="null"></option>
               <option
-                *ngFor="let ac of acquisitionFrameworkParents"
+                *ngFor="let ac of acquisitionFrameworkParents | async"
                 [ngValue]="ac.id_acquisition_framework"
               >
                 {{ ac.acquisition_framework_name }}

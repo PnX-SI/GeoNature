@@ -13,6 +13,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
  * label="{{ 'AcquisitionFramework' | translate}}"
  * </pnx-acquisition-frameworks>
  */
+
 @Component({
   selector: 'pnx-acquisition-frameworks',
   templateUrl: './acquisition-frameworks.component.html',
@@ -29,10 +30,10 @@ export class AcquisitionFrameworksComponent extends GenericFormComponent impleme
   }
 
   getAcquisitionFrameworks() {
-    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworks().pipe(
+    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworksList({}, {}, 1, -1).pipe(
       map((data) => {
         const c = new Intl.Collator();
-        return data.sort((a, b) =>
+        return data.items.sort((a, b) =>
           c.compare(a.acquisition_framework_name, b.acquisition_framework_name)
         );
       })
