@@ -1,4 +1,4 @@
-"""add geonature c organism permission
+"""add c and d organism permissions
 
 Revision ID: 03ec871fb969
 Revises: b955b6d95d25
@@ -38,7 +38,7 @@ def upgrade():
         ) AS o (object_code)
         JOIN gn_permissions.t_objects _to ON _to.code_object = o.object_code;
 
-        -- Insert available permission "C" for ORGANISM object
+        -- Insert available permissions "C" and "D" for ORGANISM object
         INSERT INTO gn_permissions.t_permissions_available (
             id_module,
             id_object,
@@ -54,7 +54,8 @@ def upgrade():
             v.label
         FROM (
             VALUES
-            ('GEONATURE', 'ORGANISM', 'C', False, 'Ajouter des organismes')
+            ('GEONATURE', 'ORGANISM', 'C', False, 'Ajouter des organismes'),
+            ('GEONATURE', 'ORGANISM', 'D', False, 'Supprimer des organismes')
         ) AS v (module_code, object_code, action_code, scope_filter, label)
         JOIN gn_commons.t_modules m ON m.module_code = v.module_code
         JOIN gn_permissions.t_objects o ON o.code_object = v.object_code
@@ -78,6 +79,18 @@ def downgrade():
         WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'GEONATURE')
         AND id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'ORGANISM')
         AND id_action = (SELECT id_action FROM gn_permissions.bib_actions WHERE code_action = 'C');
+
+        -- Remove "D" permission for GEONATURE module and ORGANISM object
+        DELETE FROM gn_permissions.t_permissions 
+        WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'GEONATURE')
+        AND id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'ORGANISM')
+        AND id_action = (SELECT id_action FROM gn_permissions.bib_actions WHERE code_action = 'D');
+        
+        -- Remove "D" available permission for GEONATURE module and ORGANISM object
+        DELETE FROM gn_permissions.t_permissions_available 
+        WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'GEONATURE')
+        AND id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'ORGANISM')
+        AND id_action = (SELECT id_action FROM gn_permissions.bib_actions WHERE code_action = 'D');
         
         -- Remove (GEONATURE, ORGANISM) from cor_object_module
         DELETE FROM gn_permissions.cor_object_module 

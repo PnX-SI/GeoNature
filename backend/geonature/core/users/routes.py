@@ -22,7 +22,10 @@ from geonature.core.users.register_post_actions import (
 from geonature.utils.config import config
 from geonature.utils.env import DB, db
 from pypnusershub.db.models import Application, Organisme, User, UserList
-from pypnusershub.organisms_manager import insert_or_update_organism
+from pypnusershub.organisms_manager import (
+    insert_or_update_organism,
+    delete_organism as delete_organism_db,
+)
 from pypnusershub.auth import user_manager
 
 from sqlalchemy import and_, select
@@ -288,6 +291,31 @@ def create_organism() -> dict:
     except Exception as e:
         log.error(f"Error creating organism: {str(e)}")
         raise InternalServerError(f"Error creating organism: {str(e)}")
+
+
+@routes.route("/organism/<int:id_organisme>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", module_code="GEONATURE", object_code="ORGANISM")
+@json_resp
+def delete_organism(id_organisme: int) -> dict:
+    """
+    Delete an organism by ID
+
+    .. :quickref: User;
+
+    Parameters:
+        id_organisme (int): The ID of the organism to delete
+
+    Returns:
+        dict: Success message confirming deletion
+    """
+    try:
+        delete_organism_db(id_organisme)
+        return {"message": f"Organism {id_organisme} deleted successfully"}
+    except ValueError as e:
+        raise NotFound(str(e))
+    except Exception as e:
+        log.error(f"Error deleting organism: {str(e)}")
+        raise InternalServerError(f"Error deleting organism: {str(e)}")
 
 
 ###################################
