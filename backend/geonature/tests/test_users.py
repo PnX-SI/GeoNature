@@ -322,3 +322,201 @@ class TestUsers:
         )
         assert resp.status_code == 200
         assert resp.json["message"] == "Password changed with success"
+
+    def test_get_organism(self, users, organisms):
+        """
+        Test GET /organism/<id> returns organism details
+        """
+        set_logged_user(self.client, users["admin_user"])
+        # Cannot take organisms[0] because its ID is -1, and would raise a 404
+        organism = organisms[1]
+
+        response = self.client.get(
+            url_for("users.get_organism", id_organisme=organism.id_organisme)
+        )
+
+        assert response.status_code == 200
+        assert response.json["id_organisme"] == organism.id_organisme
+        assert response.json["nom_organisme"] == organism.nom_organisme
+
+    def test_get_organism_not_found(self, users, organisms):
+        """
+        Test GET /organism/<id> returns 404 for non-existent organism
+        """
+        set_logged_user(self.client, users["admin_user"])
+        id_organism = max([org.id_organisme for org in organisms]) + 1
+
+        response = self.client.get(url_for("users.get_organism", id_organisme=id_organism))
+
+        assert response.status_code == 404
+        assert "Organism not found" in response.json["description"]
+
+    def test_get_organism_no_auth(self, organisms):
+        """
+        Test GET /organism/<id> requires authentication
+        """
+        # Cannot take organisms[0] because its ID is -1, and would raise a 404
+        organism = organisms[1]
+
+        response = self.client.get(
+            url_for("users.get_organism", id_organisme=organism.id_organisme)
+        )
+
+        assert response.status_code == 401
+
+    def test_create_organism(self, users):
+        """
+        Test POST /organism/new creates a new organism
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        new_organism_data = {
+            "nom_organisme": "Test Organism",
+            "adresse_organisme": "123 Test Street",
+            "cp_organisme": "12345",
+            "ville_organisme": "Test City",
+            "tel_organisme": "0123456789",
+            "email_organisme": "test@example.com",
+            "url_organisme": "https://test.example.com",
+            "url_logo": "https://test.example.com/logo.png",
+        }
+
+        response = self.client.post(url_for("users.create_organism"), json=new_organism_data)
+
+        assert response.status_code == 200
+        assert response.json["nom_organisme"] == "Test Organism"
+        assert response.json["adresse_organisme"] == "123 Test Street"
+        assert response.json["email_organisme"] == "test@example.com"
+        assert "id_organisme" in response.json
+
+    def test_create_organism_missing_name(self, users):
+        """
+        Test POST /organism/new returns 400 when organism name is missing
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        new_organism_data = {
+            "adresse_organisme": "123 Test Street",
+        }
+
+        response = self.client.post(url_for("users.create_organism"), json=new_organism_data)
+
+        assert response.status_code == 400
+        assert response.json["description"] == "Organism name is required"
+
+    def test_create_organism_no_permission(self, users):
+        """
+        Test POST /organism/new requires CREATE permission
+        """
+        set_logged_user(self.client, users["noright_user"])
+
+        new_organism_data = {
+            "nom_organisme": "Test Organism",
+        }
+
+        response = self.client.post(url_for("users.create_organism"), json=new_organism_data)
+
+        assert response.status_code == 403
+
+    def test_create_organism_internal_error(self, users, monkeypatch):
+        """
+        Test POST /organism/new handles internal errors gracefully
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        # Mock insert_or_update_organism to raise an exception
+        def mock_insert_error(*args, **kwargs):
+            raise Exception("Database connection error")
+
+        monkeypatch.setattr(
+            "geonature.core.users.routes.insert_or_update_organism", mock_insert_error
+        )
+
+        new_organism_data = {
+            "nom_organisme": "Test Organism",
+        }
+
+        response = self.client.post(url_for("users.create_organism"), json=new_organism_data)
+
+        assert response.status_code == 500
+        # We check `response.data` since `response.json` is None
+        assert (
+            b'"description": "Error creating organism: Database connection error"' in response.data
+        )
+
+    def test_delete_organism(self, users):
+        """
+        Test DELETE /organism/<id> deletes an organism
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        # Set URLs for API calls before the first call
+        #   to avoid the problem of duplicate "/geonature/api" prefixes generated
+        post_url = url_for("users.create_organism")
+        delete_url = url_for("users.delete_organism", id_organisme=organism_id)
+        get_url = url_for("users.get_organism", id_organisme=organism_id)
+
+        # First create an organism to delete
+        new_organism_data = {
+            "nom_organisme": "Organism to delete",
+        }
+        create_response = self.client.post(post_url, json=new_organism_data)
+        assert create_response.status_code == 200
+        organism_id = create_response.json["id_organisme"]
+
+        # Now delete it
+        delete_response = self.client.delete(delete_url)
+
+        assert delete_response.status_code == 200
+        assert delete_response.json["message"] == f"Organism {organism_id} deleted successfully"
+
+        # Verify it's actually deleted
+        get_response = self.client.get(get_url)
+        assert get_response.status_code == 404
+
+    def test_delete_organism_not_found(self, users, organisms):
+        """
+        Test DELETE /organism/<id> returns 404 for non-existent organism
+        """
+        set_logged_user(self.client, users["admin_user"])
+        id_organism = max([org.id_organisme for org in organisms]) + 1
+
+        response = self.client.delete(url_for("users.delete_organism", id_organisme=id_organism))
+
+        assert response.status_code == 404
+
+    def test_delete_organism_no_permission(self, users, organisms):
+        """
+        Test DELETE /organism/<id> requires DELETE permission
+        """
+        set_logged_user(self.client, users["noright_user"])
+        # Cannot take organisms[0] because its ID is -1, and would raise a 404
+        organism = organisms[1]
+
+        response = self.client.delete(
+            url_for("users.delete_organism", id_organisme=organism.id_organisme)
+        )
+
+        assert response.status_code == 403
+
+    def test_delete_organism_internal_error(self, users, monkeypatch):
+        """
+        Test DELETE /organism/<id> handles internal errors gracefully
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        # Mock delete_organism_db to raise an exception
+        def mock_insert_error(*args, **kwargs):
+            raise Exception("Database connection error")
+
+        monkeypatch.setattr("geonature.core.users.routes.delete_organism_db", mock_insert_error)
+
+        response = self.client.delete(
+            url_for("users.delete_organism", id_organisme=1),
+        )
+
+        assert response.status_code == 500
+        # We check `response.data` since `response.json` is None
+        assert (
+            b'"description": "Error deleting organism: Database connection error"' in response.data
+        )
