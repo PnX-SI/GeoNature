@@ -485,6 +485,7 @@ def get_export_pdf_dataset(id_dataset, scope):
 
 
 # Pertinent de garder post et get ? On pourrait tout faire en post pour permettre de passer bcp d'arguments
+# ou faire un endpoint get avec pagination et un post /search poutr les recherches complexes
 @routes.route("/acquisition_frameworks", methods=["GET", "POST"])
 @login_required
 def get_acquisition_frameworks():
@@ -495,16 +496,32 @@ def get_acquisition_frameworks():
     Use for AF select in form
     Get the GeoNature CRUVED
     """
+
+    def safe_get(data, key, default=None, type=None):
+        value = data.get(key, default)
+        if value is None:
+            return default
+        try:
+            return type(value) if type else value
+        except (ValueError, TypeError):
+            return default
+
     only = ["+cruved"]
-    per_page = request.args.get("per_page", 50, type=int)
-    page = request.args.get("page", 1, type=int)
+
     # QUERY
     af_list = TAcquisitionFramework.filter_by_readable()
-    if params := (request.json if request.json else request.args.to_dict()):
-        params.pop("datasets", None)  # create a conflict with datasets param in filter by param
-        params.pop("per_page", None)
-        params.pop("page", None)
-        af_list = TAcquisitionFramework.filter_by_params(params, query=af_list)
+    params = request.get_json(silent=True) if request.method == "POST" else request.args
+    if params:
+        params_for_filter = params.copy()
+        params_for_filter.pop(
+            "datasets", None
+        )  # create a conflict with datasets param in filter by param
+        params_for_filter.pop("per_page", None)
+        params_for_filter.pop("page", None)
+        af_list = TAcquisitionFramework.filter_by_params(params_for_filter, query=af_list)
+
+    per_page = safe_get(params, "per_page", 50, type=int)
+    page = safe_get(params, "page", 1, type=int)
 
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
         Load(TAcquisitionFramework).raiseload("*"),
@@ -523,16 +540,16 @@ def get_acquisition_frameworks():
         ),
     )
 
-    if request.args.get("datasets", default=False, type=int):
+    if safe_get(params, "datasets", default=False, type=int):
         only.extend(
             [
                 "datasets.+cruved",
             ]
         )
-    if request.args.get("creator", default=False, type=int):
+    if safe_get(params, "creator", default=False, type=int):
         only.append("creator")
         af_list = af_list.options(joinedload(TAcquisitionFramework.creator))
-    if request.args.get("actors", default=False, type=int):
+    if safe_get(params, "actors", default=False, type=int):
         only.extend(
             [
                 "cor_af_actor",
@@ -546,7 +563,7 @@ def get_acquisition_frameworks():
                 joinedload(CorAcquisitionFrameworkActor.nomenclature_actor_role),
             ),
         )
-        if request.args.get("datasets", default=False, type=int):
+        if safe_get(params, "datasets", default=False, type=int):
             only.extend(
                 [
                     "datasets.cor_dataset_actor",

@@ -376,19 +376,19 @@ export class DataFormService {
   }
 
   getAcquisitionFrameworksList(selectors = {}, params = {}, page = 1, per_page = 10) {
-    let queryString: HttpParams = new HttpParams();
     for (let key in selectors) {
-      queryString = queryString.set(key, selectors[key]);
+      params[key] = selectors[key];
     }
-    queryString = queryString.set('page', page);
-    queryString = queryString.set('per_page', per_page);
+    const requestBody = {
+      ...params,
+      ...selectors,
+      page: page,
+      per_page: per_page,
+    };
 
     return this._http.post<PaginatedResponse<any>>(
       `${this.config.API_ENDPOINT}/meta/acquisition_frameworks`,
-      params,
-      {
-        params: queryString,
-      }
+      requestBody
     );
   }
 
