@@ -133,10 +133,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         });
         this._ms.map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 18 });
       } else {
-        let warningMessage =
-          "L'observation sélectionnée a une géométrie invalide, possiblement car hors des limites mondiales";
+        let warningMessage = this.translateService.instant('Synthese.Map.Messages.InvalidGeometry');
         if (this.formService.getCurrentStoreType() == 'grid') {
-          warningMessage += ", ou n'est présente dans aucune maille";
+          warningMessage += this.translateService.instant(
+            'Synthese.Map.Messages.InvalidGeometryGrid'
+          );
         }
         this._commonService.regularToaster('warning', warningMessage);
       }

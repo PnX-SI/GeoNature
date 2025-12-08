@@ -358,7 +358,8 @@
     },
     "Messages": {
       "Copied": "Copied to clipboard!",
-      "DeleteSuccess": "Observation deleted successfully"
+      "DeleteSuccess": "Observation deleted successfully",
+      "GeometryAbsence": "Some observation(s) could not be displayed on the map because their geometry is invalid - possibly because it is outside world boundaries - or because their aggregation grid cell is not available"
     },
     "Errors": {
       "PeriodCompleteness": "The 'start period' and 'end period' fields must be filled if you want to search by period"
@@ -407,7 +408,11 @@
       }
     },
     "Map": {
-      "AreasToggleBtn": "Grid cells"
+      "AreasToggleBtn": "Grid cells",
+      "Messages": {
+        "InvalidGeometry": "The selected observation has an invalid geometry, possibly because it is outside world boundaries",
+        "InvalidGeometryGrid": ", or is not present in any grid cell"
+      }
     }
   },
   "Media": {

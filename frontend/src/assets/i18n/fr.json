@@ -358,7 +358,8 @@
     },
     "Messages": {
       "Copied": "Copié dans le presse-papier !",
-      "DeleteSuccess": "Observation supprimée avec succès"
+      "DeleteSuccess": "Observation supprimée avec succès",
+      "GeometryAbsence": "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur géométrie est invalide - possiblement car hors des limites mondiales - ou car leur maille d'aggrégation n'est pas disponible"
     },
     "Errors": {
       "PeriodCompleteness": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
@@ -407,7 +408,11 @@
       }
     },
     "Map": {
-      "AreasToggleBtn": "Mailles"
+      "AreasToggleBtn": "Mailles",
+      "Messages": {
+        "InvalidGeometry": "L'observation sélectionnée a une géométrie invalide, possiblement car hors des limites mondiales",
+        "InvalidGeometryGrid": ", ou n'est présente dans aucune maille"
+      }
     }
   },
   "Media": {
