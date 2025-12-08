@@ -40,6 +40,7 @@
             />
           </div>
         </div>
+
         <div class="form-group row">
           <label
             for="email"
@@ -50,14 +51,28 @@
           <div class="col-sm-9 col-xl-5">
             <input
               type="text"
-              [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
+              class="form-control-plaintext non-editable"
               id="email"
               placeholder="Email"
-              formControlName="email"
+              [value]="form.get('email').value"
+              readonly
             />
           </div>
         </div>
       </div>
+      <div
+        class="text-center"
+        *ngIf="form.disabled"
+      >
+        <a
+          routerLink="mail_address"
+          mat-raised-button
+          color="primary"
+        >
+          Changer d'adresse mail
+        </a>
+      </div>
+      <br />
       <mat-divider></mat-divider>
 
       <div class="mt-1">

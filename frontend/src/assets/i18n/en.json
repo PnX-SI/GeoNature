@@ -76,7 +76,8 @@
     "Messages": {
       "AutoAccountEmailConfirmation": "An email has just been sent to you to activate your account",
       "AdminAccountEmailConfirmation": "Your account creation request has been taken into account, it will be evaluated by an administrator",
-      "PasswordAndLoginRecovery": "An email has just been sent to you to recover your username and/or renew your password"
+      "PasswordAndLoginRecovery": "An email has just been sent to you to recover your username and/or renew your password",
+      "ChangeMailConfirmation": "Click on the link received by email within 24 hours to confirm your email address change"
     }
   },
 

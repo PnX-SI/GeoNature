@@ -1,18 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Role } from './form.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Injectable()
 export class UserDataService {
   constructor(
     private _http: HttpClient,
-    public config: ConfigService
+    public config: ConfigService,
+    private authService: AuthService
   ) {}
 
-  getRole(id: number) {
+  getCurrentUserRole(): Observable<Role> {
+    return this.getRole(this.authService.getCurrentUser().id_role);
+  }
+
+  getRole(id: number): Observable<Role> {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/role/${id}`);
   }
 
@@ -35,7 +41,9 @@ export class UserDataService {
       })
     );
   }
-
+  requestEmailChange(data: any): Observable<any> {
+    return of({ success: true, msg: 'Email change request simulated' });
+  }
   putPassword(role: Role): Observable<any> {
     const options = role;
     return this._http.put<any>(`${this.config.API_ENDPOINT}/users/password/change`, options).pipe(

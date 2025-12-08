@@ -1,0 +1,86 @@
+<div class="card card-page center-in-div">
+  <div class="card-header">
+    <h3 class="underlined main-color">Changement d'adresse mail</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="alert alert-info mb-4">
+      <p>
+        La modification de votre adresse email nécessite une validation. Un lien de confirmation
+        sera envoyé à votre nouvelle adresse email et le changement d'adresse sera pris en compte
+        après avoir cliqué sur le lien reçu.
+      </p>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-5 col-form-label text-right">Adresse email actuelle</label>
+      <div class="col-sm-7 col-xl-5">
+        <input
+          type="email"
+          class="form-control"
+          [value]="currentEmail"
+          readonly
+          disabled
+        />
+      </div>
+    </div>
+
+    <form [formGroup]="form">
+      <div class="form-group row">
+        <label
+          for="new_email"
+          class="col-sm-5 col-form-label text-right"
+        >
+          Nouvelle adresse email
+        </label>
+        <div class="col-sm-7 col-xl-5">
+          <input
+            type="email"
+            class="form-control"
+            id="new_email"
+            placeholder="Nouvelle adresse email"
+            formControlName="new_email"
+          />
+          <small
+            *ngIf="form.get('new_email').hasError('required') && form.get('new_email').touched"
+            class="text-danger"
+          >
+            Ce champ est nécessaire
+          </small>
+          <small
+            *ngIf="form.get('new_email').hasError('email') && form.get('new_email').touched"
+            class="text-danger"
+          >
+            Format d'email invalide
+          </small>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <a
+          mat-raised-button
+          color="warn"
+          routerLink="../"
+        >
+          Annuler
+        </a>
+        <span
+          matTooltip="{{
+            !form.valid
+              ? 'Veuillez remplir tous les champs correctement'
+              : 'Demander le changement d\'email'
+          }}"
+        >
+          <button
+            mat-raised-button
+            class="button-success ml-1"
+            (click)="save()"
+            [disabled]="!form.valid"
+          >
+            Envoyer la demande
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+</div>
