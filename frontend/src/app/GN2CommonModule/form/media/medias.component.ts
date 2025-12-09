@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { Media } from './media';
+import { MatExpansionPanel } from '@angular/material/expansion';
+
 import { MediaService } from '@geonature_common/service/media.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { distinctUntilChanged } from '@librairies/rxjs/operators';
@@ -11,6 +13,8 @@ import { distinctUntilChanged } from '@librairies/rxjs/operators';
   styleUrls: ['./media.scss'],
 })
 export class MediasComponent implements OnInit {
+  @ViewChildren(MatExpansionPanel) expansionPanels: QueryList<MatExpansionPanel>;
+
   @Input() schemaDotTable: string;
   @Input() sizeMax: number;
 
@@ -86,18 +90,14 @@ export class MediasComponent implements OnInit {
   }
 
   cancelMedia(media, index) {
-    console.log('media: ', media);
     if (!media.valid()) {
       this.parentFormControl.value.splice(index, 1)[0];
     } else {
-      media.closed = true;
-      console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa');
-      console.log('this.parentFormControl.value[index] 1: ', this.parentFormControl.value[index]);
-      console.log('this.parentFormControl 1: ', this.parentFormControl);
-      this.parentFormControl.patchValue({ [index]: media });
-      console.log('this.parentFormControl.value[index] 2: ', this.parentFormControl.value[index]);
-      console.log('this.parentFormControl 2: ', this.parentFormControl);
-      //   { emitEvent: false }
+      const panels = this.expansionPanels.toArray();
+      if (panels.length > 0 && panels[index]) {
+        panels[index].close();
+      }
+      this.parentFormControl.patchValue(this.parentFormControl.value);
     }
   }
 }

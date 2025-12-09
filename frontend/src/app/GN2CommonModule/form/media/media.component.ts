@@ -26,6 +26,8 @@ export class MediaComponent implements OnInit {
 
   public tmpMedia: Media;
 
+  private isRestoringState = false;
+
   public errorMsg: string;
 
   @Input() schemaDotTable: string;
@@ -202,10 +204,12 @@ export class MediaComponent implements OnInit {
 
   onFormChange(value) {
     if (this.media.valid()) {
-      this.tmpMedia = this.media;
+      this.tmpMedia = new Media(JSON.parse(JSON.stringify(this.media)));
     }
-    if (this.mediaFormInitialized) {
+    if (this.mediaFormInitialized && !this.isRestoringState) {
       this.media.sent = false;
+    } else {
+      this.isRestoringState = false;
     }
 
     this.bValidSizeMax = !(value.file && this.sizeMax) || value.file.size / 1000 < this.sizeMax;
@@ -288,7 +292,6 @@ export class MediaComponent implements OnInit {
           this.media.uploadPercentDone = Math.round((100 * event.loaded) / event.total);
           // this.mediaChange.emit(this.media);
         } else if (event instanceof HttpResponse) {
-          console.log('event.body : ', event.body);
           this.media.setValues(event.body);
           this.mediaForm.patchValue({ ...this.media, file: null });
           this.media.bLoading = false;
@@ -332,9 +335,10 @@ export class MediaComponent implements OnInit {
 
   cancel() {
     if (this.tmpMedia) {
+      this.isRestoringState = true;
       this.tmpMedia.sent = true;
-      this.cancelMedia.emit(this.tmpMedia);
       this.setValue(this.tmpMedia);
+      this.cancelMedia.emit(this.tmpMedia);
     } else {
       this.cancelMedia.emit(this.media);
     }
