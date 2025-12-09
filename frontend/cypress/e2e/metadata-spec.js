@@ -12,6 +12,7 @@ describe('Testing metadata', () => {
     // name:'Mon cadre d\'acquisition',
     description: "description de mon cadre d'acquisition",
     startDate: '17/03/2022',
+    testAdditionalFieldValue: 'test de valeur',
   };
   const newJdd = {
     name: 'Mon jeu de données',
@@ -38,7 +39,7 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-exit-af"]').click();
   });
 
-  it('should display "jeux de données"', () => {
+  it('should display "jeu de données"', () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     cy.get('[data-qa="pnx-metadata-jdd-actif-' + jddUUID + '"]').click();
@@ -59,7 +60,7 @@ describe('Testing metadata', () => {
     });
   });
 
-  it('should create a new "cardre d\'acquisition"', () => {
+  it('should create a new "cadre d\'acquisition"', () => {
     // cy.visit('/#/metadata');
 
     cy.get('[data-qa="pnx-metadata-add-af"]').click();
@@ -101,11 +102,20 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-af-form-start-date"] [data-qa="input-date"]')
       .click()
       .type(newCadreAcq.startDate);
+
+    cy.get("[data-qa='pnx-dynamic-form-text-test_champs_additionnel']")
+      .click()
+      .type(newCadreAcq.testAdditionalFieldValue);
+
     cy.get("[data-qa='pnx-metadata-save-af']").click();
+
     cy.get('[data-qa="pnx-metadata-acq-framework-name"]').contains(newCadreAcq.name);
+    cy.get('[data-qa="pnx-metadata-additional-field-test_champs_additionnel"]').contains(
+      newCadreAcq.testAdditionalFieldValue
+    );
   });
 
-  it('should create a new "jeux de données"', () => {
+  it('should create a new "jeu de données"', () => {
     cy.visit('/#/metadata');
     cy.get('[data-qa="pnx-metadata-add-jdd"]').click();
 
@@ -168,15 +178,33 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-exit-jdd"]').click();
   });
 
-  it('should delete the new "jeux de données"', () => {
+  it('should delete the new "jeu de données"', () => {
     cy.get('[data-qa="pnx-metadata-search"]').clear();
     cy.get('[data-qa="pnx-metadata-search"]').type(newJdd.name);
-    cy.wait(2000);
+    cy.wait(200);
     cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-dataset-name-' + newJdd.name + '"] td > button').click({
       multiple: true,
       force: true,
     });
+    cy.get('[data-qa="confirmation-dialog-yes"]').click({ multiple: true, force: true });
+    cy.wait(200);
+  });
+
+  it('should delete the new "cadre d\'acquisition"', () => {
+    cy.visit('/#/metadata');
+    cy.get('[data-qa="pnx-metadata-search"]').clear();
+    cy.get('[data-qa="pnx-metadata-search"]').type(newCadreAcq.name);
+    cy.wait(200);
+    cy.get('[data-qa="pnx-metadata-af-delete-name-' + newCadreAcq.name + '"]')
+      .find('button')
+      .click({
+        multiple: true,
+        force: true,
+      });
+    cy.wait(200);
+    cy.get('[data-qa="confirmation-dialog-yes"]').click({ multiple: true, force: true });
+    cy.wait(200);
   });
 
   it('should display data of the dataset in synthese', () => {

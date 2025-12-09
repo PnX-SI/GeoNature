@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -20,7 +20,7 @@ import { TranslateService } from '@librairies/@ngx-translate/core';
   styleUrls: ['../form.component.scss'],
   providers: [AcquisitionFrameworkFormService],
 })
-export class AfFormComponent implements OnInit {
+export class AfFormComponent implements OnInit, AfterViewInit {
   public form: UntypedFormGroup;
   //observable pour la liste déroulantes HTML des AF parents
   public acquisitionFrameworkParents: Observable<any>;
@@ -63,18 +63,50 @@ export class AfFormComponent implements OnInit {
     this.entityLabel = this.translation_service.instant('AcquisitionFramework');
   }
 
+  ngAfterViewInit() {
+    this.setFromQueryParams();
+  }
+
+  setFromQueryParams() {
+    this._route.queryParams.subscribe((params) => {
+      this.afFormS.queryParamsSource.next(params);
+    });
+  }
+
+  handleDates(af, isParseElseFormat = false) {
+    const handlingFunction = isParseElseFormat ? this.dateParser.parse : this.dateParser.format;
+
+    af.acquisition_framework_start_date = handlingFunction(af.acquisition_framework_start_date);
+
+    if (af.acquisition_framework_end_date) {
+      af.acquisition_framework_end_date = handlingFunction(af.acquisition_framework_end_date);
+    }
+
+    // Additional fields - Format dates
+    this.additionalFieldsForm.forEach((fieldForm: any) => {
+      if (fieldForm.type_widget == 'date') {
+        af.additional_data[fieldForm.attribut_name] = handlingFunction(
+          af.additional_data[fieldForm.attribut_name]
+        );
+      }
+    });
+  }
+
   getAcquisitionFramework(id_af, param) {
     return this._dfs.getAcquisitionFramework(id_af, param).pipe(
       map((af: any) => {
-        af.acquisition_framework_start_date = this.dateParser.parse(
-          af.acquisition_framework_start_date
-        );
-        af.acquisition_framework_end_date = this.dateParser.parse(
-          af.acquisition_framework_end_date
-        );
+        this.handleDates(af, true);
         return af;
       })
     );
+  }
+
+  get propertiesForm(): any {
+    return this.form;
+  }
+
+  get additionalFieldsForm(): any[] {
+    return this.afFormS.additionalFieldsForm;
   }
 
   addContact(formArray: UntypedFormArray, mainContact: boolean) {
@@ -103,13 +135,8 @@ export class AfFormComponent implements OnInit {
           }
         : base;
 
-    af.acquisition_framework_start_date = this.dateParser.format(
-      af.acquisition_framework_start_date
-    );
+    this.handleDates(af);
 
-    if (af.acquisition_framework_end_date) {
-      af.acquisition_framework_end_date = this.dateParser.format(af.acquisition_framework_end_date);
-    }
     //UPDATE
     if (this.afFormS.acquisition_framework.getValue() !== null) {
       //si modification on assigne les valeurs du formulaire au CA modifié
