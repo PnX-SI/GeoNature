@@ -1,7 +1,7 @@
 """add additional_fields support for acquisition frameworks
 
 Revision ID: 1f223c509a80
-Revises: cad98c048b5e
+Revises: b955b6d95d25
 Create Date: 2025-10-01 15:38:19.615874
 
 """
@@ -13,7 +13,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = "1f223c509a80"
-down_revision = "cad98c048b5e"
+down_revision = "b955b6d95d25"
 branch_labels = None
 depends_on = None
 
