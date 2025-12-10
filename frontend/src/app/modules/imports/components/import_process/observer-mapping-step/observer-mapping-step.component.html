@@ -17,6 +17,7 @@
             <td>{{ item.key }}</td>
             <td>
               <pnx-observers
+                data-qa="import-observersmapping-observers-form"
                 *ngIf="observerMappingForm.controls[item.key]"
                 [parentFormControl]="observerMappingForm.controls[item.key]"
                 [bindAllItem]="true"
@@ -35,7 +36,7 @@
     (click)="onPreviousStep()"
     mat-raised-button
     color="primary"
-    data-qa="import-contentmapping-back-btn"
+    data-qa="import-observersmapping-back-btn"
   >
     <mat-icon>navigate_before</mat-icon>
     {{ 'Previous' | translate }}
@@ -46,7 +47,7 @@
     (click)="onNextStep()"
     mat-raised-button
     color="primary"
-    data-qa="import-contentmapping-model-validate"
+    data-qa="import-observersmapping-model-validate"
   >
     {{ 'Next' | translate }}
     <mat-icon>navigate_next</mat-icon>

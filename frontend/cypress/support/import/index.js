@@ -25,3 +25,4 @@ import './triggerImportVerification';
 import './verifyDownload';
 import './verifyImport';
 import './visitImport';
+import './setObserverMapping';

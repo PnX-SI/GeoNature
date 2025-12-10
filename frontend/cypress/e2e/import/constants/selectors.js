@@ -21,6 +21,11 @@ export const SELECTORS_NAVIGATION = {
       step_btn_selector: '[data-qa="import-contentmapping-step-btn"]',
       next_btn_selector: '[data-qa="import-new-contentmapping-model-validate"]',
     },
+    observersmapping: {
+      back_btn_selector: '[data-qa="import-observersmapping-back-btn"]',
+      step_btn_selector: '[data-qa="import-observersmapping-step-btn"]',
+      next_btn_selector: '[data-qa="import-observersmapping-model-validate"]',
+    },
     import: {
       back_btn_selector: '[data-qa="import-data-back-btn"]',
       step_btn_selector: '[data-qa="import-data-step-btn"]',
@@ -146,6 +151,10 @@ export const SELECTOR_IMPORT_CONTENTMAPPING_SELECTION_RENAME_OK =
   '[data-qa=import-contentmapping-selection-rename-ok]';
 export const SELECTOR_IMPORT_CONTENTMAPPING_SELECTION_TEXT =
   '[data-qa=import-contentmapping-selection-rename-text]';
+
+export const SELECTOR_IMPORT_OBSERVERSMAPPING_OBSERVERS_FORM =
+  '[data-qa=import-observersmapping-observers-form]';
+
 export const SELECTOR_IMPORT_NEW_VERIFICATION_START = '[data-qa=import-new-verification-start]';
 
 export const SELECTOR_IMPORT_RECAPITULATIF = '[data-qa=import-recapitulatif]';
