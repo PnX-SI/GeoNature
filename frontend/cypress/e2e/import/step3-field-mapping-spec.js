@@ -79,7 +79,7 @@ function fillTheFormRaw() {
   selectField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
   selectField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
   selectField(SELECTOR_IMPORT_FIELDMAPPING_CD_NOM, 'date_debut');
-  selectField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_debut');
+  cy.selectDataset();
 }
 
 function fillTheForm() {
@@ -162,10 +162,10 @@ describe('Import - Field mapping step', () => {
       cy.geonatureLogin(USER_ADMIN.login.username, USER_ADMIN.login.password);
       runTheProcess();
       cy.get('[data-qa="import-new-fieldmapping-form"]').should('exist');
+      cy.selectDataset();
     });
 
     it('Should access jdd only filtered based on permissions  ', () => {
-      cy.get(SELECTOR_IMPORT_FIELDMAPPING_SWITCH_DATASET).click();
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATASET)
         .click()
         .get('.ng-option')
@@ -318,7 +318,6 @@ describe('Import - Field mapping step', () => {
     it('Should be able to modifiy the default mapping if user got rights. A save to alternative should be offered to the user.', () => {
       // Mapping Synthese
       selectMapping(DEFAULT_FIELDMAPPINGS[0]);
-      selectField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_fin');
       checkThatMappingCanBeSaved();
 
       restartTheProcess(USER_ADMIN);
@@ -331,7 +330,7 @@ describe('Import - Field mapping step', () => {
       cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);
       runTheProcess();
       selectMapping(DEFAULT_FIELDMAPPINGS[0]);
-      selectField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_fin');
+      cy.selectDataset();
       checkThatMappingCanNotBeSaved();
     });
 

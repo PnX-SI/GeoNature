@@ -27,6 +27,7 @@ describe('Import - create a new import', () => {
     cy.configureImportFile();
     cy.configureImportFieldMapping(USER.dataset);
     cy.configureImportContentMapping();
+    cy.configureImportObserverMapping();
     cy.verifyImport();
     cy.executeImport();
     cy.backToImportList();

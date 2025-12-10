@@ -26,6 +26,7 @@ import {
   SELECTOR_IMPORT_FIELDMAPPING_CD_HAB,
   SELECTOR_IMPORT_FIELDMAPPING_VALIDATE,
   SELECTOR_IMPORT_FIELDMAPPING_MODAL_CANCEL,
+  SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATASET,
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -134,7 +135,7 @@ function runTheProcessForOcchab(user) {
   cy.configureImportFile();
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
-  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_debut');
+  cy.selectDataset();
   cy.get('#mat-tab-label-0-1').click();
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_CD_HAB, 'date_debut');
