@@ -52,8 +52,6 @@ authlib==1.6.5
     # via pypnusershub
 babel==2.17.0
     # via flask-babel
-backports-datetime-fromisoformat==2.0.3
-    # via marshmallow
 backports-entry-points-selectable==1.3.0
     # via
     #   pypn-ref-geo
@@ -252,7 +250,7 @@ markupsafe==3.0.3
     #   werkzeug
     #   wtforms
     #   wtforms-components
-marshmallow==4.0.1
+marshmallow==3.26.1
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
@@ -287,6 +285,7 @@ packaging==25.0
     #   geoalchemy2
     #   gunicorn
     #   kombu
+    #   marshmallow
 pandas==2.3.3
     # via
     #   -r requirements-common.in
@@ -396,7 +395,6 @@ typing-extensions==4.15.0
     #   alembic
     #   black
     #   exceptiongroup
-    #   marshmallow
     #   marshmallow-sqlalchemy
     #   referencing
 tzdata==2025.2
