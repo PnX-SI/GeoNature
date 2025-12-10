@@ -2,12 +2,17 @@ name: pytest
 
 on:
   push:
+    paths:
+      - "backend/**"
+      - "contrib/**/backend/**"
     branches:
       - master
       - hotfixes
       - develop
-      - hotfix/geonature2_16_4
   pull_request:
+    paths:
+      - "backend/**"
+      - "contrib/**/backend/**"
     branches:
       - master
       - hotfixes
