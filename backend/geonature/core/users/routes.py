@@ -73,7 +73,7 @@ def get_roles_by_menu_id(id_menu=None):
 
     :param id_menu: the id of user list (utilisateurs.bib_list)
     :type id_menu: int
-    :query str nom_complet: begenning of complet name of the role
+    :query str nom_complet: beginning of complet name of the role
     """
     query = select(VUserslistForallMenu)
 
