@@ -507,13 +507,29 @@ def content_mapped_import(loaded_import, contentmapping):
 
 
 @pytest.fixture()
-def prepared_import(client, content_mapped_import, small_batch, check_private_jdd):
-    set_logged_user(client, content_mapped_import.authors[0])
-    r = client.post(url_for("import.prepare_import", import_id=content_mapped_import.id_import))
+def observers_mapping(users):
+    return {
+        "import user": {"id_role": users["user"].id_role},
+        "import user2": {"id_role": users["user"].id_role},
+    }
+
+
+@pytest.fixture()
+def observers_mapped_import(content_mapped_import, observers_mapping):
+    with db.session.begin_nested():
+        content_mapped_import.observermapping = observers_mapping
+    db.session.flush()
+    return content_mapped_import
+
+
+@pytest.fixture()
+def prepared_import(client, observers_mapped_import, small_batch, check_private_jdd):
+    set_logged_user(client, observers_mapped_import.authors[0])
+    r = client.post(url_for("import.prepare_import", import_id=observers_mapped_import.id_import))
     assert r.status_code == 200, r.data
     unset_logged_user(client)
-    db.session.refresh(content_mapped_import)
-    return content_mapped_import
+    db.session.refresh(observers_mapped_import)
+    return observers_mapped_import
 
 
 @pytest.fixture()

@@ -75,7 +75,7 @@ function fillTheFieldMappingFormRaw(datasetName) {
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_CD_NOM, 'date_debut');
-  selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATASET, 'date_debut');
+  cy.selectDataset();
 }
 // ////////////////////////////////////////////////////////////////////////////
 // Create a mapping with dummy values

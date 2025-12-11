@@ -48,9 +48,11 @@ export interface Import {
   loaded: boolean;
   processed: boolean;
   errors_count: null | number;
+  columns: null | [string];
+
   fieldmapping: FieldMappingValues;
   contentmapping: ContentMappingValues;
-  columns: null | [string];
+  observermapping: Record<string, any>;
 
   authors_name: string;
   available_encodings?: [string];

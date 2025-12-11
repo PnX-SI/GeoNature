@@ -71,3 +71,16 @@ class TestImportsRoute:
             assert (a["destination"] is None) or (
                 a["destination"]["code"] <= b["destination"]["code"]
             )
+
+    def test_update_import(self, users, imports_all):
+        set_logged_user(self.client, users["user"])
+        imprt = imports_all["own_import"]["SYNTHESE"]
+        r = self.client.put(
+            url_for(
+                "import.update_import",
+                **{"import_id": imprt.id_import, "destination": imprt.destination.code}
+            ),
+            data={"id_import": imprt.id_import, "detected_encoding": "utf-8"},
+        )
+        assert r.status_code == 200, r.data
+        assert r.json["detected_encoding"] == "utf-8"

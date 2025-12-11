@@ -6,6 +6,9 @@ import unicodedata
 
 from flask import request, current_app, jsonify, g, stream_with_context, send_file
 from flask_login import current_user
+from geonature.core.imports.checks.sql.user import user_matching
+from geonature.core.imports.schemas import ImportSchema
+from marshmallow import EXCLUDE
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, Gone, NotFound
 
 # url_quote was deprecated in werkzeug 3.0 https://stackoverflow.com/a/77222063/5807438
@@ -18,6 +21,7 @@ from sqlalchemy.sql.expression import collate, exists
 
 
 from geonature.utils.env import db
+from geonature.utils.config import config
 from geonature.utils.sentry import start_sentry_child
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
@@ -215,7 +219,39 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
         imprt.source_file = input_file.read()
         imprt.full_file_name = input_file.filename
 
-    # commùit changes
+    # commit changes
+    db.session.commit()
+
+    return jsonify(imprt.as_dict())
+
+
+@blueprint.route("/<destination>/imports/<int:import_id>/update", methods=["PUT"])
+@permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
+def update_import(scope, imprt, destination=None):  # destination is set when imprt is None
+    """
+    .. :quickref: Import; Add an import or update an existing import.
+
+    Add an import or update an existing import.
+
+    :form file: file to import
+    """
+    if imprt:
+        if not imprt.has_instance_permission(scope, action_code="C"):
+            raise Forbidden
+        destination = imprt.destination
+    else:
+        raise BadRequest("Import with id {} does not exist")
+
+    data = request.get_json()
+    if not data:
+        raise BadRequest(description="No data provided")
+
+    try:
+        ImportSchema().load(data, unknown=EXCLUDE)
+    except Exception as e:
+        raise BadRequest(description=f"{e}")
+
+    # commit changes
     db.session.commit()
 
     return jsonify(imprt.as_dict())
@@ -314,6 +350,29 @@ def load_import(scope, imprt):
         line_no = insert_import_data_in_transient_table(imprt)
     if not line_no:
         raise BadRequest("File with 0 lines.")
+
+    ##### USER MATCHING PROCESS
+    if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+        fields = db.session.scalars(
+            select(BibFields).where(
+                BibFields.name_field.in_(imprt.fieldmapping.keys()),
+                BibFields.type_field == "observers",
+                BibFields.id_destination == imprt.destination.id_destination,
+            )
+        ).all()
+        if len(fields) == 0:
+            imprt.observermapping = {}
+        for field in fields:
+            mapping = imprt.fieldmapping[field.name_field]
+            if mapping.get("column_src", None) is not None:
+                imprt.observermapping.update(user_matching(imprt, field))
+            # elif constant := mapping.get("constant_value", None) is not None:
+            #     if isinstance(constant, list):
+            #         imprt.observermapping.update({})
+            #         pass
+            #     else:
+            #         pass
+
     imprt.source_count = line_no
     imprt.loaded = True
     db.session.commit()
