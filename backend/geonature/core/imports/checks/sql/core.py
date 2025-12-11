@@ -45,7 +45,6 @@ def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
                 selected_fields_names.append(field_name)
         else:
             constant_fields.append(field_name)
-
     for entity in entities:
         # Select fields associated to this entity *and only to this entity*
         fields = (
@@ -64,19 +63,25 @@ def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
             .where(BibFields.name_field != dataset_name_field)
             .select()
         )
-        if fields:
 
+        if fields:
             db.session.execute(
                 sa.update(transient_table)
                 .where(transient_table.c.id_import == imprt.id_import)
                 .where(
                     sa.or_(
-                        *[transient_table.c[field.source_column].isnot(None) for field in fields]
+                        *[
+                            sa.or_(
+                                transient_table.c[field.source_column].isnot(None),
+                                transient_table.c[field.dest_column].isnot(None),
+                            )
+                            for field in fields
+                        ]
                     )
                 )
                 .values({entity.validity_column: True})
             )
-        elif is_constant_field_indicated:
+        if is_constant_field_indicated:
             db.session.execute(
                 sa.update(transient_table)
                 .where(transient_table.c.id_import == imprt.id_import)

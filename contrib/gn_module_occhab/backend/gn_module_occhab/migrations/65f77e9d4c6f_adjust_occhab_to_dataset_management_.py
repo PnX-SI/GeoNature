@@ -1,4 +1,4 @@
-"""Adjust occhab to datasate management modification in import
+"""Adjust occhab to dataset management modification in import
 
 Revision ID: 65f77e9d4c6f
 Revises: e43f039b5ff1

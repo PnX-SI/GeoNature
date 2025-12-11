@@ -545,6 +545,8 @@ def check_types(entity: Entity, df: pd.DataFrame, fields: Dict[str, BibFields]) 
             continue
         if field.mnemonique:  # set from content mapping
             continue
+        if field.type_field == "observers":
+            continue
         assert entity in [ef.entity for ef in field.entities]  # FIXME
         if field.dest_field in destination_table.c:
             field_type = destination_table.c[field.dest_field].type

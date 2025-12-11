@@ -195,6 +195,12 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
       this.constantValue = this._configService.IMPORT.DEFAULT_GENERATE_MISSING_UUID;
       this.updateValue();
     }
+    // TODO && FIXME: maybe the default state must be indicated in bib_fields ?
+    if (this._field.type_field === 'dataset') {
+      if (this.inputState == InputStackState.INPUT_FILE && this._csvColumn == null) {
+        this.inputState = InputStackState.CONSTANT;
+      }
+    }
   }
   get field(): BibField {
     return this._field;

@@ -45,6 +45,10 @@ cor_visit_observer = DB.Table(
 )
 
 
+class CorVisitObserver(DB.Model):
+    __table__ = cor_visit_observer
+
+
 cor_site_module = DB.Table(
     "cor_site_module",
     DB.Column(

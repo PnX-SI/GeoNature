@@ -314,7 +314,7 @@
       [listLength]="20"
       [attr.data-qa]="'field-taxonomy' + '-' + formDefComp['attribut_name']"
     ></pnx-taxonomy>
-
+    <!-- FIX ME -> bindValue def -->
     <pnx-datasets
       *ngSwitchCase="'dataset'"
       [label]="formDef.attribut_label"
@@ -322,8 +322,8 @@
       [multiSelect]="formDef.multi_select"
       [moduleCode]="formDef.module_code"
       [creatableInModule]="formDef.creatable_in_module"
-      [bindValue]="formDef.bind_value"
       [attr.data-qa]="'field-dataset' + '-' + formDefComp['attribut_name']"
+      [bindValue]="formDef.bind_value ?? 'id_dataset'"
     ></pnx-datasets>
 
     <pnx-observers

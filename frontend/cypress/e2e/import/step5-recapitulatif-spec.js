@@ -21,6 +21,7 @@ function runTheProcess(user) {
   cy.configureImportFile();
   cy.configureImportFieldMapping(user.dataset);
   cy.configureImportContentMapping();
+  cy.configureImportObserverMapping();
   cy.triggerImportVerification();
 }
 
