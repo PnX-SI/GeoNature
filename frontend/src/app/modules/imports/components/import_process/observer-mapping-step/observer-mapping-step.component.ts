@@ -69,7 +69,7 @@ export class ObserverMappingStepComponent implements OnInit {
     this._dataFormService.getObservers().subscribe((observers) => {
       const id_roles_authorized = observers.map((observer) => observer.id_role);
       Object.entries(observerMapping).forEach(([key, value]) => {
-        if (!id_roles_authorized.includes(value.id_role)) {
+        if (!id_roles_authorized.includes(value?.id_role)) {
           value = null;
         }
         this.observerMappingForm.addControl(key, new FormControl(value));

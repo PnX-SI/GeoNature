@@ -25,7 +25,7 @@ from geonature.core.gn_permissions.tools import (
 from geonature.core.gn_permissions.models import PermAction, Permission, PermObject
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
-from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_synthese.models import CorObserverSynthese, Synthese
 from geonature.tests.fixtures import synthese_data, celery_eager
 
 from pypnusershub.db.models import User, Organisme
@@ -238,6 +238,15 @@ class TestImportsSynthese:
 
         # Should be always True
         assert imprt.has_instance_permission(scope, user=user, action_code="R") is True
+
+    def test_observer_mapping_results(self, imported_import):
+        nb_correspondance = db.session.execute(
+            sa.select(CorObserverSynthese)
+            .join(Synthese, Synthese.id_synthese == CorObserverSynthese.id_synthese)
+            .where(Synthese.id_import == imported_import.id_import)
+        ).all()
+
+        assert len(nb_correspondance) >= valid_file_taxa_count
 
     def test_list_imports(self, imports, users):
         r = self.client.get(url_for("import.get_import_list"))
