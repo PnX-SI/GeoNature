@@ -22,6 +22,8 @@ import {
 } from './taxon-sheet/taxon-sheet.route.service';
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseObsModalWrapperComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs-container.component';
+import { SyntheseModalMessagesComponent } from './synthese-results/modal-messages/modal-messages.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -71,11 +73,13 @@ const routes: Routes = [
     SyntheseListComponent,
     SyntheseCarteComponent,
     SyntheseModalDownloadComponent,
+    SyntheseModalMessagesComponent,
   ],
   entryComponents: [
     SyntheseComponent,
     SyntheseInfoObsComponent,
     SyntheseModalDownloadComponent,
+    SyntheseModalMessagesComponent,
     DiscussionCardComponent,
     AlertInfoComponent,
     SyntheseObsModalWrapperComponent,

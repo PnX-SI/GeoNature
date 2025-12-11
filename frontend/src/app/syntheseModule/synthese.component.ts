@@ -13,7 +13,8 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { SyntheseStoreService } from './services/store.service';
-import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
+import { CommonService } from '@geonature_common/service/common.service';
+import { SyntheseModalMessagesComponent } from './synthese-results/modal-messages/modal-messages.component';
 
 @Component({
   selector: 'pnx-synthese',
@@ -24,7 +25,9 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 export class SyntheseComponent implements OnInit {
   private idsByFeature: Set<number>;
   public firstLoad = true;
-  private noGeomMessage: boolean;
+  private hasNoGeom: boolean;
+  private hasBlurredSensitiveObs: boolean;
+  private isNewSearch: boolean;
 
   public isSearchBarReduced = false;
 
@@ -36,6 +39,7 @@ export class SyntheseComponent implements OnInit {
     private formService: SyntheseFormService,
     private syntheseStore: SyntheseStoreService,
     private toasterService: ToastrService,
+    private commonService: CommonService,
     private route: ActivatedRoute,
     private ngModal: NgbModal,
     private changeDetector: ChangeDetectorRef,
@@ -107,15 +111,13 @@ export class SyntheseComponent implements OnInit {
     this.searchService.getSyntheseData(formParams, this.formService.selectors).subscribe(
       (data) => {
         this.parseGeoJson(data);
-        this.displayMessageLimitNumberObservationsReached(formParams);
+        this.displayMessages();
         this.searchService.dataLoaded = true;
       },
       () => {
         this.searchService.dataLoaded = true;
       }
     );
-
-    this.displayMessageLastObsLimit();
   }
 
   private parseGeoJson(rawGeojson) {
@@ -129,13 +131,13 @@ export class SyntheseComponent implements OnInit {
       feature.properties.observations.forEach((obs) => {
         this.extractIds(obs);
         this.addObservationToDataTable(cloneDeep(obs));
+        this.checkBlurredGeom(obs);
       });
 
       // WARNING: needs to return the updated object here !
       feature.properties.observations = this.buildObservationsProperty();
     });
 
-    this.displayMessageGeomAbsence();
     this.orderDataTableByDates();
     this.mapListService.geojsonData = geojson;
   }
@@ -145,7 +147,8 @@ export class SyntheseComponent implements OnInit {
     this.syntheseStore.setData(this.getCurrentStoreType(), rawGeojson);
     this.mapListService.idName = 'id_synthese';
     this.mapListService.tableData = [];
-    this.noGeomMessage = false;
+    this.hasNoGeom = false;
+    this.hasBlurredSensitiveObs = false;
   }
 
   private getCurrentStoreType() {
@@ -175,7 +178,13 @@ export class SyntheseComponent implements OnInit {
 
   private checkGeomAbsence(feature) {
     if (!feature.geometry) {
-      this.noGeomMessage = true;
+      this.hasNoGeom = true;
+    }
+  }
+
+  private checkBlurredGeom(obs) {
+    if (obs['is_blurred'] && obs.is_blurred === true) {
+      this.hasBlurredSensitiveObs = true;
     }
   }
 
@@ -183,25 +192,19 @@ export class SyntheseComponent implements OnInit {
     return { id_synthese: Array.from(this.idsByFeature) };
   }
 
-  private displayMessageLimitNumberObservationsReached(formParams) {
-    if (this.syntheseStore.idSyntheseList.size >= this.config.SYNTHESE.NB_MAX_OBS_MAP) {
-      const modalRef = this.modalService.open(SyntheseModalDownloadComponent, {
-        size: 'lg',
-      });
-      modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formParams);
-      modalRef.componentInstance.tooManyObs = true;
-    }
+  private orderDataTableByDates() {
+    this.mapListService.tableData = this.mapListService.tableData.sort((a, b) => {
+      return (new Date(b.date_min).valueOf() as any) - new Date(a.date_min).valueOf();
+    });
   }
 
-  private displayMessageGeomAbsence() {
-    if (this.noGeomMessage) {
-      this.toasterService.warning(
-        "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible"
-      );
-    }
+  private displayMessages() {
+    this.displayMessageMostRecentObs();
+    this.displayMessageGeomAbsence();
+    this.displayMessagesInModal();
   }
 
-  private displayMessageLastObsLimit() {
+  private displayMessageMostRecentObs() {
     if (this.firstLoad && this.formService.selectors.has('limit')) {
       let limit = this.formService.selectors.get('limit');
       this.toasterService.info(`Les ${limit} dernières observations de la synthèse`, '');
@@ -209,10 +212,27 @@ export class SyntheseComponent implements OnInit {
     this.firstLoad = false;
   }
 
-  private orderDataTableByDates() {
-    this.mapListService.tableData = this.mapListService.tableData.sort((a, b) => {
-      return (new Date(b.date_min).valueOf() as any) - new Date(a.date_min).valueOf();
-    });
+  private displayMessageGeomAbsence() {
+    if (this.hasNoGeom) {
+      this.commonService.translateToaster('warning', 'Synthese.Messages.NoGeomTxt');
+    }
+  }
+
+  private displayMessagesInModal() {
+    let hasTooManyObs =
+      this.syntheseStore.idSyntheseList.size >= this.config.SYNTHESE.NB_MAX_OBS_MAP ? true : false;
+    console.log(
+      `SyntheseComponent: hasTooManyObs = ${hasTooManyObs}, hasBlurredSensitiveObs = ${this.hasBlurredSensitiveObs}`
+    );
+
+    if (this.isNewSearch && (hasTooManyObs || this.hasBlurredSensitiveObs)) {
+      const modalRef = this.modalService.open(SyntheseModalMessagesComponent, {
+        size: 'lg',
+      });
+      modalRef.componentInstance.hasTooManyObs = hasTooManyObs;
+      modalRef.componentInstance.hasBlurredSensitiveObs = this.hasBlurredSensitiveObs;
+    }
+    this.isNewSearch = false;
   }
 
   fetchOrRenderData(mapDisplayType: EventToggle) {
@@ -226,6 +246,7 @@ export class SyntheseComponent implements OnInit {
   }
 
   onSearchEvent() {
+    this.isNewSearch = true;
     // Remove limit
     this.formService.selectors = this.formService.selectors.delete('limit');
     // On search button click, clean cache and call loadAndStoreData
