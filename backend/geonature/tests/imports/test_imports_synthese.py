@@ -7,6 +7,8 @@ import csv
 import json
 
 from geonature.core.imports.checks.errors import ImportCodeError
+from geonature.core.imports.checks.sql.user import user_matching
+from geonature.core.imports.utils import insert_import_data_in_transient_table
 import pytest
 from flask import g, url_for, current_app
 from werkzeug.datastructures import Headers
@@ -37,6 +39,8 @@ from geonature.core.imports.models import (
     TImports,
     ContentMapping,
 )
+
+from geonature.core.imports.models import BibFields
 
 from .jsonschema_definitions import jsonschema_definitions
 from .utils import assert_import_errors as _assert_import_errors
@@ -1259,3 +1263,34 @@ class TestImportsSynthese:
     def test_import_upload_preset(self, field_mapped_import, preset_fieldmapping):
         for key, value in preset_fieldmapping["__preset__"].items():
             assert field_mapped_import.fieldmapping[key] == value
+
+    def test_user_matching_process(self, field_mapped_import):
+        """
+        This function test the user_matching function !!
+
+        """
+        with db.session.begin_nested():
+            user1 = User(identifiant="user1", nom_role="import", prenom_role="user")
+            user2 = User(identifiant="user2", nom_role="import", prenom_role="user2")
+            db.session.add(user1)
+            db.session.add(user2)
+
+        line_no = insert_import_data_in_transient_table(field_mapped_import)
+        assert line_no > 0
+        fields = db.session.scalars(
+            select(BibFields).where(
+                BibFields.name_field.in_(field_mapped_import.fieldmapping.keys()),
+                BibFields.type_field == "observers",
+                BibFields.id_destination == field_mapped_import.destination.id_destination,
+            )
+        ).all()
+        assert len(fields) > 0
+        for field in fields:
+            mapping = field_mapped_import.fieldmapping[field.name_field]
+            if mapping.get("column_src", None) is not None:
+                field_mapped_import.observermapping.update(
+                    user_matching(field_mapped_import, field)
+                )
+        assert len(field_mapped_import.observermapping) == 2
+        assert field_mapped_import.observermapping["import user"]["id_role"] == user1.id_role
+        assert field_mapped_import.observermapping[" import user2"]["id_role"] == user2.id_role
