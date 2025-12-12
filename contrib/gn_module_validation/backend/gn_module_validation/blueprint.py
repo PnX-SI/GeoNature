@@ -1,6 +1,4 @@
 import logging
-import datetime
-import json
 
 from flask import Blueprint, request, jsonify, current_app, g
 from flask.json import jsonify
@@ -24,27 +22,24 @@ from geonature.core.gn_commons.models.base import TValidations
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.notifications.utils import dispatch_notifications
-import gn_module_validation.tasks
+import gn_module_validation.tasks  # Dont remove it !!!!!!!!
 
 from marshmallow import Schema, fields
 
 
 class LastValidationSchema(Schema):
-    # Champs de Synthese
     id_synthese = fields.Int()
     nom_cite = fields.Str(allow_none=True)
     observers = fields.Str(allow_none=True)
     date_min = fields.DateTime(allow_none=True)
     date_max = fields.DateTime(allow_none=True)
 
-    # Champs de TValidations
     id_validation = fields.Int()
     validation_date = fields.DateTime()
     validation_auto = fields.Boolean()
     validation_comment = fields.Str(allow_none=True)
     validator = fields.Str()
 
-    # Champs de TNomenclatures (avec les labels définis dans la requête)
     nomenclature_cd_nomenclature = fields.Str()
     nomenclature_mnemonique = fields.Str()
     nomenclature_label_default = fields.Str()
@@ -238,7 +233,7 @@ def _build_synthese_query(params, permissions):
     return selectable, syntheseQueryStatement, fields, relationships, aliases, lateral_join
 
 
-@blueprint.route("", methods=["GET", "POST"])
+@blueprint.route("/geojson", methods=["GET", "POST"])
 @permissions_required("C", module_code="VALIDATION")
 def get_synthese_geojson(permissions):
     """
@@ -286,12 +281,11 @@ def get_synthese_geojson(permissions):
     return jsonify(query.as_geofeaturecollection(fields=fields))
 
 
-@blueprint.route("/last_validations", methods=["GET", "POST"])
+@blueprint.route("/", methods=["GET", "POST"])
 @permissions_required("C", module_code="VALIDATION")
-def get_last_validations(permissions):
+def get_validations(permissions):
     """
-    Return synthese and t_validations data as JSON with pagination filtered by form params
-    Params must have same synthese fields names
+    Return last validations
 
     .. :quickref: Validation;
 

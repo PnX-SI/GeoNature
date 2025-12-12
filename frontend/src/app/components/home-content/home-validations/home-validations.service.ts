@@ -88,18 +88,15 @@ export class HomeValidationsService {
     pagination: SyntheseDataPaginationItem,
     sort: SyntheseDataSortItem
   ): Observable<ValidationCollection> {
-    return this._http.get<ValidationCollection>(
-      `${this._config.API_ENDPOINT}/validation/last_validations`,
-      {
-        params: {
-          page: pagination.currentPage.toString(),
-          per_page: pagination.perPage.toString(),
-          sort: sort.sortOrder,
-          order_by: sort.sortBy,
-          format: 'json',
-          no_auto: true,
-        },
-      }
-    );
+    return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation/`, {
+      params: {
+        page: pagination.currentPage.toString(),
+        per_page: pagination.perPage.toString(),
+        sort: sort.sortOrder,
+        order_by: sort.sortBy,
+        format: 'json',
+        no_auto: true,
+      },
+    });
   }
 }
