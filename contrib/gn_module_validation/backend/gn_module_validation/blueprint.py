@@ -4,6 +4,8 @@ import json
 
 from flask import Blueprint, request, jsonify, current_app, g
 from flask.json import jsonify
+from geonature.core.gn_meta.models.datasets import TDatasets
+from pypnusershub.db.models import User
 from werkzeug.exceptions import Forbidden
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased, contains_eager, selectinload
@@ -23,6 +25,30 @@ from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.notifications.utils import dispatch_notifications
 import gn_module_validation.tasks
+
+from marshmallow import Schema, fields
+
+
+class LastValidationSchema(Schema):
+    # Champs de Synthese
+    id_synthese = fields.Int()
+    nom_cite = fields.Str(allow_none=True)
+    observers = fields.Str(allow_none=True)
+    date_min = fields.DateTime(allow_none=True)
+    date_max = fields.DateTime(allow_none=True)
+
+    # Champs de TValidations
+    id_validation = fields.Int()
+    validation_date = fields.DateTime()
+    validation_auto = fields.Boolean()
+    validation_comment = fields.Str(allow_none=True)
+    validator = fields.Str()
+
+    # Champs de TNomenclatures (avec les labels définis dans la requête)
+    nomenclature_cd_nomenclature = fields.Str()
+    nomenclature_mnemonique = fields.Str()
+    nomenclature_label_default = fields.Str()
+
 
 blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
@@ -53,65 +79,18 @@ DEFAULT_PROFILE_FIELDS = {
 }
 
 
-@blueprint.route("", methods=["GET", "POST"])
-@permissions_required("C", module_code="VALIDATION")
-def get_synthese_data(permissions):
+def _get_fields(params):
     """
-    Return synthese and t_validations data filtered by form params
-    Params must have same synthese fields names
+    Construit l'ensemble des champs à retourner en fonction des paramètres
 
-    .. :quickref: Validation;
+    Args:
+        params: Dictionnaire des paramètres de la requête
 
-    Parameters:
-    ------------
-    :query str sort: str<'asc', 'desc'> trier dans l'ordre ascendant ou descendant (optionnel, 'order')
-    :query str order_by: champs sur lequel appliquer le tri de données (optionnel. lié à 'sort')
-    :query int page: numéro de page (optionnel, lié à 'per_page')
-    :query int per_page: nombre d'élément par page (optionnel, lié à 'page')
-    :query str format: str<'json', 'geojson'> format de la sortie
-    Returns
-    -------
-    FeatureCollection | json
+    Returns:
+        set: Ensemble des champs à inclure dans la réponse
     """
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
-
-    params = (request.json if request.is_json else None) or {}
-    params.update(request.args)
-
-    # Sorting parameter
-    sort = params.get("sort", "desc")
-    order_by = sa.text(request.args.get("order_by", "last_validation.validation_date", str))
-    sorting_active = sort != "" and order_by != ""
-    # Pagination parameter
-    page = int(params.get("page", 0))
-    per_page = int(params.get("per_page", 0))
-    pagination_active = page > 0 and per_page > 0
-    limit = params.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
-
-    # Profile parameters
-    score = params.pop("score", None)
-    valid_distribution = params.pop("valid_distribution", None)
-    valid_altitude = params.pop("valid_altitude", None)
-    valid_phenology = params.pop("valid_phenology", None)
-    use_profile_filter = valid_altitude or valid_distribution or valid_phenology
-
-    # Format: output format
-    format = params.pop("format", "geojson")
-
-    no_auto = params.pop("no_auto", False)
     fields_as_str = params.pop("fields", None)
-
-    if format not in ["json", "geojson"]:
-        raise BadRequest("Invalid format parameter")
-
-    # Check pagination is active for json
-    if format == "json" and not pagination_active:
-        raise BadRequest("Pagination must be active when requesting json object")
-
-    if format == "geojson" and pagination_active:
-        raise BadRequest("Pagination can't be active when requesting geojson object")
-
-    # Fields: Setup fields as route parameters with default behavior
 
     fields = set()
     if fields_as_str:
@@ -121,8 +100,32 @@ def get_synthese_data(permissions):
         if enable_profile:
             fields.update(DEFAULT_PROFILE_FIELDS)
 
-    # Fields: add config parameters
+    # Add config parameters
     fields.update({col["column_name"] for col in blueprint.config["COLUMN_LIST"]})
+
+    return fields
+
+
+def _build_synthese_query(params, permissions):
+    """
+    Fonction utilitaire pour construire la requête de base pour les données de synthèse
+
+    Returns:
+        tuple: (query, fields, lateral_join)
+    """
+    enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
+
+    # Profile parameters
+    score = params.pop("score", None)
+    valid_distribution = params.pop("valid_distribution", None)
+    valid_altitude = params.pop("valid_altitude", None)
+    valid_phenology = params.pop("valid_phenology", None)
+    use_profile_filter = valid_altitude or valid_distribution or valid_phenology
+
+    no_auto = params.pop("no_auto", False)
+
+    # Fields: Setup fields
+    fields = _get_fields(params)
 
     lateral_join = {}
     """
@@ -182,9 +185,6 @@ def get_synthese_data(permissions):
     for alias in lateral_join.keys():
         query = query.outerjoin(alias, sa.true())
 
-    if format == "geojson":
-        query = query.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
-
     # filter with profile
     if enable_profile and use_profile_filter:
         if score is not None:
@@ -203,7 +203,6 @@ def get_synthese_data(permissions):
         query = query.where(last_validation.validation_auto == False)
 
     # Filter only validable dataset
-
     query = query.where(dataset_alias.validable == True)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
@@ -212,7 +211,7 @@ def get_synthese_data(permissions):
     selectable = SyntheseQuery(
         Synthese,
         query.selectable,
-        params,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
+        params,
     ).filter_query_all_filters(g.current_user, permissions)
 
     # Step 3: Construct Synthese model from query result
@@ -235,7 +234,45 @@ def get_synthese_data(permissions):
         syntheseQueryStatement = syntheseQueryStatement.options(
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
-    query = selectable
+
+    return selectable, syntheseQueryStatement, fields, relationships, aliases, lateral_join
+
+
+@blueprint.route("", methods=["GET", "POST"])
+@permissions_required("C", module_code="VALIDATION")
+def get_synthese_geojson(permissions):
+    """
+    Return synthese and t_validations data as GeoJSON filtered by form params
+    Params must have same synthese fields names
+
+    .. :quickref: Validation;
+
+    Parameters:
+    ------------
+    :query str sort: str<'asc', 'desc'> trier dans l'ordre ascendant ou descendant (optionnel, 'order')
+    :query str order_by: champs sur lequel appliquer le tri de données (optionnel. lié à 'sort')
+    Returns
+    -------
+    FeatureCollection (GeoJSON)
+    """
+    params = (request.json if request.is_json else None) or {}
+    params.update(request.args)
+
+    # Sorting parameter
+    sort = params.get("sort", "desc")
+    order_by = sa.text(request.args.get("order_by", "last_validation.validation_date", str))
+    sorting_active = sort != "" and order_by != ""
+
+    limit = params.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
+
+    # Get fields
+    fields = _get_fields(params)
+
+    selectable, syntheseQueryStatement, _, relationships, aliases, lateral_join = (
+        _build_synthese_query(params, permissions)
+    )
+
+    query = selectable.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
 
     # Sort
     if sorting_active:
@@ -244,25 +281,103 @@ def get_synthese_data(permissions):
         else:
             query = query.order_by(sa.desc(order_by))
 
-    if pagination_active:
-        offset = (page - 1) * per_page
-        query = syntheseQueryStatement.from_statement(query.limit(per_page).offset(offset))
-    else:
-        query = syntheseQueryStatement.from_statement(query.limit(limit))
+    query = syntheseQueryStatement.from_statement(query.limit(limit))
 
-    # The raise option ensure that we have correctly retrived relationships data at step 3
-    if format == "geojson":
-        return jsonify(query.as_geofeaturecollection(fields=fields))
-    elif format == "json":
-        count = db.session.scalar(selectable.with_only_columns([sa.func.count()]).order_by(None))
-        return jsonify(
-            {
-                "items": [item.as_dict(fields=fields) for item in query.all()],
-                "total": count,
-                "per_page": per_page,
-                "page": page,
-            }
+    return jsonify(query.as_geofeaturecollection(fields=fields))
+
+
+@blueprint.route("/last_validations", methods=["GET", "POST"])
+@permissions_required("C", module_code="VALIDATION")
+def get_last_validations(permissions):
+    """
+    Return synthese and t_validations data as JSON with pagination filtered by form params
+    Params must have same synthese fields names
+
+    .. :quickref: Validation;
+
+    Parameters:
+    ------------
+    :query str sort: str<'asc', 'desc'> trier dans l'ordre ascendant ou descendant (optionnel, 'order')
+    :query str order_by: champs sur lequel appliquer le tri de données (optionnel. lié à 'sort')
+    :query int page: numéro de page (requis)
+    :query int per_page: nombre d'élément par page (requis)
+    Returns
+    -------
+    json with items, total, per_page, page
+    """
+    params = (request.json if request.is_json else None) or {}
+    params.update(request.args)
+
+    # Sorting parameter
+    sort = params.get("sort", "desc")
+    order_by = sa.text(request.args.get("order_by", "validation_date", str))
+    sorting_active = sort != "" and order_by != ""
+
+    # Pagination parameter (mandatory for JSON format)
+    page = int(params.get("page", 0))
+    per_page = int(params.get("per_page", 0))
+
+    if page <= 0 or per_page <= 0:
+        raise BadRequest(
+            "Pagination is required for JSON format: 'page' and 'per_page' must be positive integers"
         )
+
+    nomenclature_valid_status = aliased(TNomenclatures, name="nomenclature_valid_status")
+
+    # Construire la requête
+    new_query = (
+        sa.select(
+            # Les champs demandés dans l'URL
+            Synthese.id_synthese,
+            Synthese.nom_cite,
+            Synthese.observers,
+            Synthese.date_min,
+            Synthese.date_max,
+            TValidations.id_validation,
+            TValidations.validation_date,
+            TValidations.validation_auto,
+            TValidations.validation_comment,
+            User.nom_complet.label("validator"),
+            nomenclature_valid_status.cd_nomenclature.label("nomenclature_cd_nomenclature"),
+            nomenclature_valid_status.mnemonique.label("nomenclature_mnemonique"),
+            nomenclature_valid_status.label_default.label("nomenclature_label_default"),
+        )
+        .select_from(TValidations)
+        .join(User, TValidations.id_validator == User.id_role)
+        .join(Synthese, TValidations.uuid_attached_row == Synthese.unique_id_sinp)
+        .join(TDatasets, Synthese.id_dataset == TDatasets.id_dataset)
+        .join(
+            nomenclature_valid_status,
+            nomenclature_valid_status.id_nomenclature == TValidations.id_nomenclature_valid_status,
+        )
+        .where(TValidations.validation_auto == False)
+        .where(TDatasets.validable == True)
+    )
+
+    selectable = SyntheseQuery(Synthese, new_query, params)
+    new_query = selectable.filter_query_all_filters(g.current_user, permissions)
+
+    # Sort
+    if sorting_active:
+        if sort == "asc":
+            new_query = new_query.order_by(sa.asc(order_by))
+        else:
+            new_query = new_query.order_by(sa.desc(order_by))
+
+    offset = (page - 1) * per_page
+    query = new_query.limit(per_page).offset(offset)
+
+    count = db.session.scalar(new_query.with_only_columns([sa.func.count()]).order_by(None))
+
+    schema = LastValidationSchema(many=True)
+    return jsonify(
+        {
+            "items": schema.dump(db.session.execute(query).all()),
+            "total": count,
+            "per_page": per_page,
+            "page": page,
+        }
+    )
 
 
 @blueprint.route("/statusNames", methods=["GET"])
