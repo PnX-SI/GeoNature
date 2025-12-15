@@ -208,6 +208,11 @@ export class AcquisitionFrameworkFormService {
       if (keyAsActorField) {
         this.form.get('cor_af_actor').patchValue([{ [keyAsActorField]: +params[key] }]);
       }
+      // Additional fields
+      //  /!\ Tested only for Number field type
+      setTimeout(() => {
+        this.form.get('additional_data').patchValue({ [key]: params[key] });
+      }, 0);
     });
     setTimeout(() => {
       this.actorFormS.notifyParamsSetComplete();
