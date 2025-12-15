@@ -12,9 +12,7 @@ import { Observer } from './observer';
 @Injectable()
 export class ObserverSheetService extends Loadable {
   observer: BehaviorSubject<Observer> = new BehaviorSubject<Observer>(null);
-  observerStats: BehaviorSubject<ObserverStats> = new BehaviorSubject<ObserverStats>(
-    null
-  );
+  observerStats: BehaviorSubject<ObserverStats> = new BehaviorSubject<ObserverStats>(null);
 
   constructor(
     private _os: MapObservationsService,

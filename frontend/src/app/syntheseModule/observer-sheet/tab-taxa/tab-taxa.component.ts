@@ -50,7 +50,7 @@ export class TabTaxaComponent extends Loadable implements OnInit {
     private _syntheseDataService: SyntheseDataService,
     private _oss: ObserverSheetService,
     public mapListService: MapListService,
-    public config: ConfigService,
+    public config: ConfigService
   ) {
     super();
   }

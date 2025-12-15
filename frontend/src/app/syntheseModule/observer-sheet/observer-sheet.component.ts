@@ -77,12 +77,14 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
       }
     });
 
-    this._oss.observerStats.pipe(takeUntil(this._destroy$)).subscribe((stats: ObserverStats | null) => {
-      if (stats) {
-        this.stopLoading();
-      }
-      this.setIndicators(stats);
-    });
+    this._oss.observerStats
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((stats: ObserverStats | null) => {
+        if (stats) {
+          this.stopLoading();
+        }
+        this.setIndicators(stats);
+      });
   }
 
   ngOnDestroy(): void {
