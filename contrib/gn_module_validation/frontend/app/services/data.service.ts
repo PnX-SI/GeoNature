@@ -13,7 +13,7 @@ export class ValidationDataService {
   ) {}
 
   getSyntheseData(params: any) {
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/validation/geojson`, params);
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/validation/observations`, params);
   }
 
   postStatus(data: any, endpoint: Array<number>) {

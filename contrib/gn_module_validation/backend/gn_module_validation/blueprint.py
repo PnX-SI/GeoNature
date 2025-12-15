@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify, current_app, g
 from flask.json import jsonify
 from geonature.core.gn_meta.models.datasets import TDatasets
 from pypnusershub.db.models import User
+from utils_flask_sqla_geo.utils import rows_to_geojson
 from werkzeug.exceptions import Forbidden
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased, contains_eager, selectinload
@@ -27,7 +28,7 @@ import gn_module_validation.tasks  # Dont remove it !!!!!!!!
 from marshmallow import Schema, fields
 
 
-class LastValidationSchema(Schema):
+class ValidationSchema(Schema):
     id_synthese = fields.Int()
     nom_cite = fields.Str(allow_none=True)
     observers = fields.Str(allow_none=True)
@@ -72,6 +73,8 @@ DEFAULT_PROFILE_FIELDS = {
     "profile.valid_altitude",
     "profile.valid_distribution",
 }
+
+MAX_PER_PAGE = 10000
 
 
 def _get_fields(params):
@@ -185,11 +188,11 @@ def _build_synthese_query(params, permissions):
         if score is not None:
             query = query.where(profile.score == score)
         if valid_distribution is not None:
-            query = query.where(profile.valid_distribution == bool(valid_distribution))
+            query = query.where(profile.valid_distribution.is_(bool(valid_distribution)))
         if valid_altitude is not None:
-            query = query.where(profile.valid_altitude == bool(valid_altitude))
+            query = query.where(profile.valid_altitude.is_((bool(valid_altitude))))
         if valid_phenology is not None:
-            query = query.where(profile.valid_phenology == bool(valid_phenology))
+            query = query.where(profile.valid_phenology.is_(bool(valid_phenology)))
 
     if params.pop("modif_since_validation", None):
         query = query.where(Synthese.meta_update_date > last_validation.validation_date)
@@ -233,9 +236,9 @@ def _build_synthese_query(params, permissions):
     return selectable, syntheseQueryStatement, fields, relationships, aliases, lateral_join
 
 
-@blueprint.route("/geojson", methods=["GET", "POST"])
+@blueprint.route("/observations", methods=["GET", "POST"])
 @permissions_required("C", module_code="VALIDATION")
-def get_synthese_geojson(permissions):
+def get_observations_last_validations(permissions):
     """
     Return synthese and t_validations data as GeoJSON filtered by form params
     Params must have same synthese fields names
@@ -302,6 +305,70 @@ def get_validations(permissions):
     params = (request.json if request.is_json else None) or {}
     params.update(request.args)
 
+    limit = params.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
+
+    DEFAULT_FIELDS = [
+        TValidations.id_validation,
+        TValidations.validation_date,
+        TValidations.validation_auto,
+        TValidations.validation_comment,
+        TNomenclatures.cd_nomenclature.label("nomenclature_cd_nomenclature"),
+        TNomenclatures.mnemonique.label("nomenclature_mnemonique"),
+        TNomenclatures.label_default.label("nomenclature_label_default"),
+    ]
+
+    FIELDS_AUTHORIZED = {
+        "observation": (
+            Synthese,
+            TValidations.uuid_attached_row == Synthese.unique_id_sinp,
+            [
+                Synthese.id_synthese,
+                Synthese.nom_cite,
+                Synthese.observers,
+                Synthese.date_min,
+                Synthese.date_max,
+            ],
+        ),
+        "user_info": (
+            User,
+            TValidations.id_validator == User.id_role,
+            [User.nom_complet.label("validator")],
+        ),
+    }
+
+    selected = DEFAULT_FIELDS
+    fields = params.get("fields", None)
+    fields = fields.split(",") if fields else []
+
+    format_ = params.get("format", "json")
+
+    if "user_info" in fields:
+        selected += FIELDS_AUTHORIZED["user_info"][2]
+    if "observation" in fields or format_ == "geojson":
+        selected += FIELDS_AUTHORIZED["observation"][2]
+
+    if format_ == "geojson":
+        selected += [sa.func.ST_AsGeoJSON(Synthese.the_geom_4326).label("the_geom_4326")]
+
+    new_query = (
+        sa.select(selected)
+        .select_from(TValidations)
+        .join(Synthese, TValidations.uuid_attached_row == Synthese.unique_id_sinp)
+        .join(TDatasets, Synthese.id_dataset == TDatasets.id_dataset)
+        .join(
+            TNomenclatures,
+            TValidations.id_nomenclature_valid_status == TNomenclatures.id_nomenclature,
+        )
+        .where(TValidations.validation_auto == False)
+        .where(TDatasets.validable == True)
+    )
+
+    if "user_info" in fields:
+        new_query = new_query.join(*FIELDS_AUTHORIZED["user_info"][:2])
+
+    if limit and not per_page:
+        new_query.limit(limit)
+
     # Sorting parameter
     sort = params.get("sort", "desc")
     order_by = sa.text(request.args.get("order_by", "validation_date", str))
@@ -315,38 +382,6 @@ def get_validations(permissions):
         raise BadRequest(
             "Pagination is required for JSON format: 'page' and 'per_page' must be positive integers"
         )
-
-    nomenclature_valid_status = aliased(TNomenclatures, name="nomenclature_valid_status")
-
-    # Construire la requête
-    new_query = (
-        sa.select(
-            # Les champs demandés dans l'URL
-            Synthese.id_synthese,
-            Synthese.nom_cite,
-            Synthese.observers,
-            Synthese.date_min,
-            Synthese.date_max,
-            TValidations.id_validation,
-            TValidations.validation_date,
-            TValidations.validation_auto,
-            TValidations.validation_comment,
-            User.nom_complet.label("validator"),
-            nomenclature_valid_status.cd_nomenclature.label("nomenclature_cd_nomenclature"),
-            nomenclature_valid_status.mnemonique.label("nomenclature_mnemonique"),
-            nomenclature_valid_status.label_default.label("nomenclature_label_default"),
-        )
-        .select_from(TValidations)
-        .join(User, TValidations.id_validator == User.id_role)
-        .join(Synthese, TValidations.uuid_attached_row == Synthese.unique_id_sinp)
-        .join(TDatasets, Synthese.id_dataset == TDatasets.id_dataset)
-        .join(
-            nomenclature_valid_status,
-            nomenclature_valid_status.id_nomenclature == TValidations.id_nomenclature_valid_status,
-        )
-        .where(TValidations.validation_auto == False)
-        .where(TDatasets.validable == True)
-    )
 
     selectable = SyntheseQuery(Synthese, new_query, params)
     new_query = selectable.filter_query_all_filters(g.current_user, permissions)
@@ -363,10 +398,13 @@ def get_validations(permissions):
 
     count = db.session.scalar(new_query.with_only_columns([sa.func.count()]).order_by(None))
 
-    schema = LastValidationSchema(many=True)
+    if format_ == "geojson":
+        data = rows_to_geojson(db.session.execute(query).all(), "the_geom_4326")
+    else:
+        data = ValidationSchema(many=True).dump(db.session.execute(query).all())
     return jsonify(
         {
-            "items": schema.dump(db.session.execute(query).all()),
+            "items": data,
             "total": count,
             "per_page": per_page,
             "page": page,

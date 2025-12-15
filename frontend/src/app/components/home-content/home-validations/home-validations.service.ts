@@ -96,6 +96,7 @@ export class HomeValidationsService {
         order_by: sort.sortBy,
         format: 'json',
         no_auto: true,
+        fields: 'user_info,observation',
       },
     });
   }

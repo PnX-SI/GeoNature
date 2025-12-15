@@ -56,10 +56,10 @@ def validation_with_max_score_and_wait_validation_status():
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "app")
 class TestValidation:
     def test_get_synthese_geojson(self, users, synthese_data):
-        response = self.client.get(url_for("validation.get_synthese_geojson"))
+        response = self.client.get(url_for("validation.get_observations_last_validations"))
         assert response.status_code == Unauthorized.code
         set_logged_user(self.client, users["self_user"])
-        response = self.client.get(url_for("validation.get_synthese_geojson"))
+        response = self.client.get(url_for("validation.get_observations_last_validations"))
         assert response.status_code == 200
         assert len(response.json["features"]) >= len(synthese_data)
 
