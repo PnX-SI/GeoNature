@@ -137,9 +137,16 @@ def _build_synthese_query(params, permissions, limit=MAX_PER_PAGE):
     to use to populate relationships models.
     """
 
-    # Create a limited subquery of Synthese with only 100 elements
     synthese_subquery = (
-        sa.select(Synthese).limit(limit).order_by(Synthese.date_min.desc()).subquery()
+        sa.select(Synthese)
+        .order_by(Synthese.date_min.desc())
+        .join(
+            TDatasets,
+            TDatasets.id_dataset == Synthese.id_dataset,
+        )
+        .where(TDatasets.validable == True)
+        .limit(limit)
+        .subquery()
     )
     synthese_alias = aliased(Synthese, synthese_subquery)
 
@@ -175,13 +182,9 @@ def _build_synthese_query(params, permissions, limit=MAX_PER_PAGE):
         }
     )
 
-    # Get dataset relationship : filter only validable dataset
-    dataset_index = relationships.index("dataset")
-
     # Use synthese_alias to get relationship attributes
     base_relationships = [getattr(Synthese, rel) for rel in relationships]
     aliases = [aliased(rel.property.mapper.class_) for rel in base_relationships]
-    dataset_alias = aliases[dataset_index]
 
     # Use synthese_alias instead of Synthese
     query = db.session.query(synthese_alias, *aliases, *lateral_join.keys())
@@ -209,9 +212,6 @@ def _build_synthese_query(params, permissions, limit=MAX_PER_PAGE):
 
     if no_auto:
         query = query.where(last_validation.validation_auto == False)
-
-    # Filter only validable dataset
-    query = query.where(dataset_alias.validable == True)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
     assert len(query.selectable.get_final_froms()) <= 2
@@ -290,7 +290,6 @@ def get_observations_last_validations(permissions):
             query = query.order_by(sa.desc(order_by))
 
     query = syntheseQueryStatement.from_statement(query)
-    print(query.statement.compile(compile_kwargs={"literal_binds": True}))
     return jsonify(query.as_geofeaturecollection(fields=fields))
 
 
