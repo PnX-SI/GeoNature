@@ -61,7 +61,7 @@ export class MediaItem {
   }
 
   get hasDiaporama() {
-    return this.diaporamaMedia && this.diaporamaMedia.length > 1;
+    return this.diaporamaMedia && this.diaporamaMedia.length >= 1;
   }
 
   openDiaporamaDialog() {
