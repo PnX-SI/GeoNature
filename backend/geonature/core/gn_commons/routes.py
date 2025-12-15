@@ -151,10 +151,18 @@ def get_one_parameter(param_name, id_org=None):
     return [data.as_dict()]
 
 
-def _get_additional_fields(id_dataset=None, module_code=None, object_code=None):
-    query = select(TAdditionalFields).order_by(TAdditionalFields.field_order)
+@routes.route("/additional_fields", methods=["GET"])
+def get_additional_fields():
+    params = request.args
 
-    if id_dataset:
+    query = select(TAdditionalFields).order_by(TAdditionalFields.field_order)
+    parse_param_value = lambda param: param.split(",") if len(param.split(",")) > 1 else param
+    params = {
+        param_key: parse_param_value(param_values) for param_key, param_values in params.items()
+    }
+
+    if "id_dataset" in params:
+        id_dataset = params["id_dataset"]
         if id_dataset == "null":
             # ~ operator means NOT EXISTS
             query = query.where(~TAdditionalFields.datasets.any())
@@ -162,15 +170,16 @@ def _get_additional_fields(id_dataset=None, module_code=None, object_code=None):
             query = query.where(
                 or_(
                     *[
-                        TAdditionalFields.datasets.any(id_dataset=id_dataset_i)
-                        for id_dataset_i in id_dataset
+                        TAdditionalFields.datasets.any(id_dataset=id_dastaset_i)
+                        for id_dastaset_i in id_dataset
                     ]
                 )
             )
         else:
             query = query.where(TAdditionalFields.datasets.any(id_dataset=id_dataset))
 
-    if module_code:
+    if "module_code" in params:
+        module_code = params["module_code"]
         if isinstance(module_code, list) and len(module_code) > 1:
             query = query.where(
                 *[
@@ -181,7 +190,8 @@ def _get_additional_fields(id_dataset=None, module_code=None, object_code=None):
         else:
             query = query.where(TAdditionalFields.modules.any(module_code=module_code))
 
-    if object_code:
+    if "object_code" in params:
+        object_code = params["object_code"]
         if isinstance(object_code, list) and len(object_code) > 1:
             query = query.where(
                 *[
@@ -192,26 +202,11 @@ def _get_additional_fields(id_dataset=None, module_code=None, object_code=None):
         else:
             query = query.where(TAdditionalFields.objects.any(code_object=object_code))
 
+    #
     schema = TAdditionalFieldsSchema(
         only=["bib_nomenclature_type", "modules", "objects", "datasets", "type_widget"], many=True
     )
-    return schema.dump(db.session.scalars(query).all())
-
-
-@routes.route("/additional_fields", methods=["GET"])
-def get_additional_fields():
-    params = request.args
-
-    parse_param_value = lambda param: param.split(",") if len(param.split(",")) > 1 else param
-    params = {
-        param_key: parse_param_value(param_values) for param_key, param_values in params.items()
-    }
-
-    id_dataset = params.get("id_dataset", None)
-    module_code = params.get("module_code", None)
-    object_code = params.get("object_code", None)
-
-    return jsonify(_get_additional_fields(id_dataset, module_code, object_code))
+    return jsonify(schema.dump(db.session.scalars(query).all()))
 
 
 @routes.route("/t_mobile_apps", methods=["GET"])

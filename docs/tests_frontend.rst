@@ -4,21 +4,18 @@ Tests frontend
 Cette documentation a pour objectif d'expliquer comment écrire des tests pour 
 le frontend de GeoNature.
 
-L'écriture de tests frontend dans GeoNature se base sur l'outil `Cypress <https://www.cypress.io/>`_ dont il est nécessaire de maitriser et comprendre le fonctionnement.
+L'écriture de tests frontend dans GeoNature se base sur l'outil `Cypress <https://www.cypress.io/>`_ dont il est necessaire de maitriser et comprendre le fonctionnement.
 
-Pré-requis
-**********
+Le lancement des tests cypress nécessite la présence de données en base. Les branches alembic suivantes doivent être montées : `occtax-samples-test`, `occhab-samples`. Le contenu du fichier `config/test_config.toml` doit également être utilisé.
 
-Le lancement des tests Cypress nécessite la présence de données en base : la branche Alembic `cypress-samples-test` doit être upgraded. 
 
-Il faut également utiliser le contenu du fichier `config/test_config.toml`.
+
+Principe de base ; Un test doit être concis. 
+Il vaut mieux écrire plusieurs tests pour tester différentes configurations plutôt qu'un seul les testant toutes d'un coup. 
+Cela permet d'identifier plus précisément le test qui n'a pas fonctionné.
 
 Rédaction
 *********
-
-Principe de base : un test doit être concis. 
-Il vaut mieux écrire plusieurs tests pour tester différentes configurations plutôt qu'un seul les testant toutes d'un coup. 
-Cela permet d'identifier plus précisément le test qui n'a pas fonctionné.
 
 La rédaction des fichiers de tests se fait dans le dossier frontend/cypress/e2e.
 

@@ -73,40 +73,18 @@ export class AfFormComponent implements OnInit, AfterViewInit {
     });
   }
 
-  handleDates(af, isParseElseFormat = false) {
-    const handlingFunction = isParseElseFormat ? this.dateParser.parse : this.dateParser.format;
-
-    af.acquisition_framework_start_date = handlingFunction(af.acquisition_framework_start_date);
-
-    if (af.acquisition_framework_end_date) {
-      af.acquisition_framework_end_date = handlingFunction(af.acquisition_framework_end_date);
-    }
-
-    // Additional fields - Format dates
-    this.additionalFieldsForm.forEach((fieldForm: any) => {
-      if (fieldForm.type_widget == 'date') {
-        af.additional_data[fieldForm.attribut_name] = handlingFunction(
-          af.additional_data[fieldForm.attribut_name]
-        );
-      }
-    });
-  }
-
   getAcquisitionFramework(id_af, param) {
     return this._dfs.getAcquisitionFramework(id_af, param).pipe(
       map((af: any) => {
-        this.handleDates(af, true);
+        af.acquisition_framework_start_date = this.dateParser.parse(
+          af.acquisition_framework_start_date
+        );
+        af.acquisition_framework_end_date = this.dateParser.parse(
+          af.acquisition_framework_end_date
+        );
         return af;
       })
     );
-  }
-
-  get propertiesForm(): any {
-    return this.form;
-  }
-
-  get additionalFieldsForm(): any[] {
-    return this.afFormS.additionalFieldsForm;
   }
 
   addContact(formArray: UntypedFormArray, mainContact: boolean) {
@@ -135,8 +113,13 @@ export class AfFormComponent implements OnInit, AfterViewInit {
           }
         : base;
 
-    this.handleDates(af);
+    af.acquisition_framework_start_date = this.dateParser.format(
+      af.acquisition_framework_start_date
+    );
 
+    if (af.acquisition_framework_end_date) {
+      af.acquisition_framework_end_date = this.dateParser.format(af.acquisition_framework_end_date);
+    }
     //UPDATE
     if (this.afFormS.acquisition_framework.getValue() !== null) {
       //si modification on assigne les valeurs du formulaire au CA modifié
