@@ -104,7 +104,7 @@ def _get_fields(params):
     return fields
 
 
-def _build_synthese_query(params, permissions):
+def _build_synthese_query(params, permissions, limit=MAX_PER_PAGE):
     """
     Fonction utilitaire pour construire la requête de base pour les données de synthèse
 
@@ -112,7 +112,6 @@ def _build_synthese_query(params, permissions):
         tuple: (query, fields, lateral_join)
     """
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
-
     # Profile parameters
     score = params.pop("score", None)
     valid_distribution = params.pop("valid_distribution", None)
@@ -137,9 +136,16 @@ def _build_synthese_query(params, permissions):
     and given to contains_eager at step 3 to correctly identify columns
     to use to populate relationships models.
     """
+
+    # Create a limited subquery of Synthese with only 100 elements
+    synthese_subquery = (
+        sa.select(Synthese).limit(limit).order_by(Synthese.date_min.desc()).subquery()
+    )
+    synthese_alias = aliased(Synthese, synthese_subquery)
+
     last_validation_subquery = (
         sa.select(TValidations)
-        .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
+        .where(TValidations.uuid_attached_row == synthese_alias.unique_id_sinp)
         .order_by(TValidations.validation_date.desc())
         .limit(1)
         .subquery()
@@ -151,14 +157,14 @@ def _build_synthese_query(params, permissions):
     if enable_profile and use_profile_filter:
         profile_subquery = (
             sa.select(VConsistancyData)
-            .where(VConsistancyData.id_synthese == Synthese.id_synthese)
+            .where(VConsistancyData.id_synthese == synthese_alias.id_synthese)
             .limit(1)
             .subquery()
             .lateral("profile")
         )
 
         profile = aliased(VConsistancyData, profile_subquery)
-        lateral_join[profile] = Synthese.profile
+        lateral_join[profile] = synthese_alias.profile
 
     relationships = list(
         {
@@ -171,14 +177,18 @@ def _build_synthese_query(params, permissions):
 
     # Get dataset relationship : filter only validable dataset
     dataset_index = relationships.index("dataset")
-    relationships = [getattr(Synthese, rel) for rel in relationships]
-    aliases = [aliased(rel.property.mapper.class_) for rel in relationships]
+
+    # Use synthese_alias to get relationship attributes
+    base_relationships = [getattr(Synthese, rel) for rel in relationships]
+    aliases = [aliased(rel.property.mapper.class_) for rel in base_relationships]
     dataset_alias = aliases[dataset_index]
 
-    query = db.session.query(Synthese, *aliases, *lateral_join.keys())
+    # Use synthese_alias instead of Synthese
+    query = db.session.query(synthese_alias, *aliases, *lateral_join.keys())
 
-    for rel, alias in zip(relationships, aliases):
-        query = query.outerjoin(rel.of_type(alias))
+    # Join using the base Synthese relationships but querying from synthese_alias
+    for base_rel, alias in zip(base_relationships, aliases):
+        query = query.outerjoin(alias, getattr(synthese_alias, base_rel.key))
 
     for alias in lateral_join.keys():
         query = query.outerjoin(alias, sa.true())
@@ -195,7 +205,7 @@ def _build_synthese_query(params, permissions):
             query = query.where(profile.valid_phenology.is_(bool(valid_phenology)))
 
     if params.pop("modif_since_validation", None):
-        query = query.where(Synthese.meta_update_date > last_validation.validation_date)
+        query = query.where(synthese_alias.meta_update_date > last_validation.validation_date)
 
     if no_auto:
         query = query.where(last_validation.validation_auto == False)
@@ -207,14 +217,17 @@ def _build_synthese_query(params, permissions):
     assert len(query.selectable.get_final_froms()) <= 2
 
     selectable = SyntheseQuery(
-        Synthese,
+        synthese_alias,
         query.selectable,
         params,
     ).filter_query_all_filters(g.current_user, permissions)
 
     # Step 3: Construct Synthese model from query result
-    syntheseQueryStatement = Synthese.query.options(
-        *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
+    syntheseQueryStatement = synthese_alias.query.options(
+        *[
+            contains_eager(base_rel, alias=alias)
+            for base_rel, alias in zip(base_relationships, aliases)
+        ]
     ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
 
     # to pass alert reports infos with synthese to validation list
@@ -232,8 +245,9 @@ def _build_synthese_query(params, permissions):
         syntheseQueryStatement = syntheseQueryStatement.options(
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
+    query = selectable.where(synthese_alias.the_geom_4326.isnot(None))
 
-    return selectable, syntheseQueryStatement, fields, relationships, aliases, lateral_join
+    return selectable, syntheseQueryStatement
 
 
 @blueprint.route("/observations", methods=["GET", "POST"])
@@ -266,11 +280,7 @@ def get_observations_last_validations(permissions):
     # Get fields
     fields = _get_fields(params)
 
-    selectable, syntheseQueryStatement, _, relationships, aliases, lateral_join = (
-        _build_synthese_query(params, permissions)
-    )
-
-    query = selectable.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
+    query, syntheseQueryStatement = _build_synthese_query(params, permissions, limit=limit)
 
     # Sort
     if sorting_active:
@@ -279,8 +289,8 @@ def get_observations_last_validations(permissions):
         else:
             query = query.order_by(sa.desc(order_by))
 
-    query = syntheseQueryStatement.from_statement(query.limit(limit))
-
+    query = syntheseQueryStatement.from_statement(query)
+    print(query.statement.compile(compile_kwargs={"literal_binds": True}))
     return jsonify(query.as_geofeaturecollection(fields=fields))
 
 
@@ -365,9 +375,6 @@ def get_validations(permissions):
 
     if "user_info" in fields:
         new_query = new_query.join(*FIELDS_AUTHORIZED["user_info"][:2])
-
-    if limit and not per_page:
-        new_query.limit(limit)
 
     # Sorting parameter
     sort = params.get("sort", "desc")
