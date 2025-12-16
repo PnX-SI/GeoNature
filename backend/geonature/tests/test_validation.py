@@ -413,8 +413,9 @@ class TestValidationRoutes:
 
         for filter_name, filter_value in filters:
             response = self.client.get(
-                url_for("validation.get_observations_last_validations"),
-                **{filter_name: filter_value},
+                url_for(
+                    "validation.get_observations_last_validations", **{filter_name: filter_value}
+                ),
             )
             assert response.status_code == 200
 
