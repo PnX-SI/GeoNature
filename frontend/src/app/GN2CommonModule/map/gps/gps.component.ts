@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild , OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MarkerComponent } from '../marker/marker.component';
 import { MapService } from '../map.service';
 import { MapListService } from '../../map-list/map-list.service';
@@ -38,7 +38,6 @@ export class GPSComponent extends MarkerComponent implements OnInit, OnDestroy {
     this.enableGps();
   }
   enableGps() {
-
     // Add leaflet button
     const GPSLegend = this.mapService.addCustomLegend('topleft', 'GPSLegend');
     this.gpsControls = new GPSLegend();
