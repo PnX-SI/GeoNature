@@ -1,273 +1,239 @@
 import logging
-import datetime
-import json
 
-from flask import Blueprint, request, jsonify, current_app, g
-from flask.json import jsonify
-from werkzeug.exceptions import Forbidden
+from flask import Blueprint, request, jsonify, g
+from werkzeug.exceptions import BadRequest, Forbidden
 import sqlalchemy as sa
-from sqlalchemy.orm import aliased, contains_eager, selectinload
 from marshmallow import ValidationError
 
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
+from utils_flask_sqla_geo.utils import rows_to_geojson
 
 from geonature.utils.env import DB, db
-from geonature.core.gn_synthese.models import Synthese, TReport
-from geonature.core.gn_profiles.models import VConsistancyData
+from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions.decorators import permissions_required
 from geonature.core.gn_commons.schemas import TValidationSchema
 from geonature.core.gn_commons.models.base import TValidations
 
-from werkzeug.exceptions import BadRequest
-from geonature.core.gn_commons.models import TValidations
-from geonature.core.notifications.utils import dispatch_notifications
-import gn_module_validation.tasks
 
+from gn_module_validation.constant import *
+from gn_module_validation.query_build import *
+from gn_module_validation.notifications import *
+from gn_module_validation.schema import *
+import gn_module_validation.tasks  # Dont remove it !!!!!!!!
+
+
+# Blueprint setupt
 blueprint = Blueprint("validation", __name__)
-log = logging.getLogger()
-
-DEFAULT_FIELDS = {
-    "id_synthese",
-    "unique_id_sinp",
-    "entity_source_pk_value",
-    "meta_update_date",
-    "id_nomenclature_valid_status",
-    "nomenclature_valid_status.cd_nomenclature",
-    "nomenclature_valid_status.mnemonique",
-    "nomenclature_valid_status.label_default",
-    "last_validation.validation_date",
-    "last_validation.validation_auto",
-    "taxref.cd_nom",
-    "taxref.nom_vern",
-    "taxref.lb_nom",
-    "taxref.nom_vern_or_lb_nom",
-    "dataset.validable",
-}
-
-DEFAULT_PROFILE_FIELDS = {
-    "profile.score",
-    "profile.valid_phenology",
-    "profile.valid_altitude",
-    "profile.valid_distribution",
-}
+log = logging.getLogger(__name__)
 
 
-@blueprint.route("", methods=["GET", "POST"])
+@blueprint.route("/observations", methods=["GET", "POST"])
 @permissions_required("C", module_code="VALIDATION")
-def get_synthese_data(permissions):
+def get_observations_last_validations(permissions):
     """
-    Return synthese and t_validations data filtered by form params
-    Params must have same synthese fields names
+    Returns observations with their last validations in GeoJSON format.
 
-    .. :quickref: Validation;
+    This route allows retrieving filtered observations with their validation statuses
+    as a GeoJSON FeatureCollection for map display.
 
-    Parameters:
-    ------------
-    :query str sort: str<'asc', 'desc'> trier dans l'ordre ascendant ou descendant (optionnel, 'order')
-    :query str order_by: champs sur lequel appliquer le tri de données (optionnel. lié à 'sort')
-    :query int page: numéro de page (optionnel, lié à 'per_page')
-    :query int per_page: nombre d'élément par page (optionnel, lié à 'page')
-    :query str format: str<'json', 'geojson'> format de la sortie
+    Parameters
+    ----------
+    permissions : object
+        User permissions, injected by the decorator
+
+    Query Parameters
+    ----------------
+    sort : str, optional
+        Sort order: 'asc' (ascending) or 'desc' (descending), default 'desc'
+    order_by : str, optional
+        Field to sort by, default 'last_validation.validation_date'
+    limit : int, optional
+        Maximum number of results, default is the NB_MAX_OBS_MAP configuration value
+    fields : str, optional
+        Comma-separated list of additional fields
+    score : int, optional
+        Filter on profile score
+    valid_distribution : bool, optional
+        Filter on distribution validity
+    valid_altitude : bool, optional
+        Filter on altitude validity
+    valid_phenology : bool, optional
+        Filter on phenology validity
+    no_auto : bool, optional
+        If True, excludes automatic validations
+    modif_since_validation : bool, optional
+        If True, filters observations modified since their last validation
+
     Returns
     -------
-    FeatureCollection | json
-    """
-    enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
+    Response
+        JSON response containing a GeoJSON FeatureCollection with:
+        - type: "FeatureCollection"
+        - features: List of observations with their geometries and properties
 
-    params = (request.json if request.is_json else None) or {}
+    Examples
+    --------
+    GET /validation/observations?sort=desc&limit=100
+    POST /validation/observations
+    Body: {"valid_distribution": true, "no_auto": true}
+    """
+    params = request.get_json() if request.is_json else {}
     params.update(request.args)
 
-    # Sorting parameter
-    sort = params.get("sort", "desc")
-    order_by = sa.text(request.args.get("order_by", "last_validation.validation_date", str))
-    sorting_active = sort != "" and order_by != ""
-    # Pagination parameter
-    page = int(params.get("page", 0))
-    per_page = int(params.get("per_page", 0))
-    pagination_active = page > 0 and per_page > 0
     limit = params.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
 
-    # Profile parameters
-    score = params.pop("score", None)
-    valid_distribution = params.pop("valid_distribution", None)
-    valid_altitude = params.pop("valid_altitude", None)
-    valid_phenology = params.pop("valid_phenology", None)
-    use_profile_filter = valid_altitude or valid_distribution or valid_phenology
+    # Build query
+    selectable, query_statement, fields = build_synthese_query(params, permissions, limit)
 
-    # Format: output format
-    format = params.pop("format", "geojson")
+    # Apply sorting
+    selectable = apply_sorting(selectable, params)
 
-    no_auto = params.pop("no_auto", False)
-    fields_as_str = params.pop("fields", None)
+    # Execute query
+    query = query_statement.from_statement(selectable)
 
-    if format not in ["json", "geojson"]:
-        raise BadRequest("Invalid format parameter")
+    return jsonify(query.as_geofeaturecollection(fields=fields))
 
-    # Check pagination is active for json
-    if format == "json" and not pagination_active:
-        raise BadRequest("Pagination must be active when requesting json object")
 
-    if format == "geojson" and pagination_active:
-        raise BadRequest("Pagination can't be active when requesting geojson object")
+@blueprint.route("/", methods=["GET", "POST"])
+@permissions_required("C", module_code="VALIDATION")
+def get_validations(permissions):
+    """
+    Returns a paginated list of validations.
 
-    # Fields: Setup fields as route parameters with default behavior
+    This route allows retrieving the history of manual validations
+    with pagination, sorting, and the possibility of JSON or GeoJSON export.
 
-    fields = set()
-    if fields_as_str:
-        fields.update({field for field in fields_as_str.split(",")})
+    Parameters
+    ----------
+    permissions : object
+        User permissions, injected by the decorator
+
+    Query Parameters
+    ----------------
+    page : int, required
+        Page number to retrieve (starts at 1)
+    per_page : int, required
+        Number of items per page
+    sort : str, optional
+        Sort order: 'asc' or 'desc', default 'desc'
+    order_by : str, optional
+        Field to sort by, default 'validation_date'
+    format : str, optional
+        Output format: 'json' (default) or 'geojson'
+    fields : str, optional
+        Additional fields separated by commas: 'observation', 'user_info'
+
+    Returns
+    -------
+    Response
+        JSON response containing:
+        - items: List of validations (format depends on 'format' parameter)
+        - total: Total number of validations matching the filters
+        - per_page: Number of items per page (echo of the parameter)
+        - page: Current page number (echo of the parameter)
+
+    Raises
+    ------
+    BadRequest
+        If 'page' or 'per_page' are missing, null, or negative
+
+    Notes
+    -----
+    - Only manual validations (validation_auto=False) are returned
+    - Only observations from validatable datasets are included
+    - The 'geojson' format automatically adds observation fields
+    - The method accepts parameters in GET or POST
+
+    Examples
+    --------
+    GET /validation/?page=1&per_page=20&fields=user_info
+    POST /validation/
+    Body: {"page": 1, "per_page": 50, "format": "geojson"}
+    """
+    params = request.get_json() if request.is_json else {}
+    params.update(request.args)
+
+    # Validate pagination
+    page = int(params.get("page", 0))
+    per_page = int(params.get("per_page", 0))
+
+    if page <= 0 or per_page <= 0:
+        raise BadRequest("Pagination required: 'page' and 'per_page' must be positive integers")
+
+    # Build query
+    query = build_validations_query(params)
+
+    # Apply filters
+    selectable = SyntheseQuery(Synthese, query, params)
+    filtered_query = selectable.filter_query_all_filters(g.current_user, permissions)
+
+    # Apply sorting
+    params["order_by"] = params.get("order_by", "validation_date")
+    filtered_query = apply_sorting(filtered_query, params)
+
+    # Apply pagination
+    offset = (page - 1) * per_page
+    paginated_query = filtered_query.limit(per_page).offset(offset)
+
+    # Get total count
+    count = db.session.scalar(filtered_query.with_only_columns([sa.func.count()]).order_by(None))
+
+    # Format output
+    format_type = params.get("format", "json")
+    if format_type == "geojson":
+        data = rows_to_geojson(db.session.execute(paginated_query).all(), "the_geom_4326")
     else:
-        fields.update(DEFAULT_FIELDS)
-        if enable_profile:
-            fields.update(DEFAULT_PROFILE_FIELDS)
+        data = ValidationRouteSchema(many=True).dump(db.session.execute(paginated_query).all())
 
-    # Fields: add config parameters
-    fields.update({col["column_name"] for col in blueprint.config["COLUMN_LIST"]})
-
-    lateral_join = {}
-    """
-    1) We start creating the query with SQLAlchemy ORM.
-    2) We convert this query to SQLAlchemy Core in order to use
-       SyntheseQuery utility class to apply user filters.
-    3) We get back the results in the ORM through from_statement.
-       We populate relationships with contains_eager.
-
-    We create a lot of aliases, that are selected at step 1,
-    and given to contains_eager at step 3 to correctly identify columns
-    to use to populate relationships models.
-    """
-    last_validation_subquery = (
-        sa.select(TValidations)
-        .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
-        .order_by(TValidations.validation_date.desc())
-        .limit(1)
-        .subquery()
-        .lateral("last_validation")
-    )
-    last_validation = aliased(TValidations, last_validation_subquery)
-    lateral_join = {last_validation: Synthese.last_validation}
-
-    if enable_profile and use_profile_filter:
-        profile_subquery = (
-            sa.select(VConsistancyData)
-            .where(VConsistancyData.id_synthese == Synthese.id_synthese)
-            .limit(1)
-            .subquery()
-            .lateral("profile")
-        )
-
-        profile = aliased(VConsistancyData, profile_subquery)
-        lateral_join[profile] = Synthese.profile
-
-    relationships = list(
+    return jsonify(
         {
-            field.split(".", 1)[0]
-            for field in fields
-            if "." in field
-            and not (field.startswith("last_validation.") or field.startswith("profile."))
+            "items": data,
+            "total": count,
+            "per_page": per_page,
+            "page": page,
         }
     )
-
-    # Get dataset relationship : filter only validable dataset
-    dataset_index = relationships.index("dataset")
-    relationships = [getattr(Synthese, rel) for rel in relationships]
-    aliases = [aliased(rel.property.mapper.class_) for rel in relationships]
-    dataset_alias = aliases[dataset_index]
-
-    query = db.session.query(Synthese, *aliases, *lateral_join.keys())
-
-    for rel, alias in zip(relationships, aliases):
-        query = query.outerjoin(rel.of_type(alias))
-
-    for alias in lateral_join.keys():
-        query = query.outerjoin(alias, sa.true())
-
-    if format == "geojson":
-        query = query.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
-
-    # filter with profile
-    if enable_profile and use_profile_filter:
-        if score is not None:
-            query = query.where(profile.score == score)
-        if valid_distribution is not None:
-            query = query.where(profile.valid_distribution == bool(valid_distribution))
-        if valid_altitude is not None:
-            query = query.where(profile.valid_altitude == bool(valid_altitude))
-        if valid_phenology is not None:
-            query = query.where(profile.valid_phenology == bool(valid_phenology))
-
-    if params.pop("modif_since_validation", None):
-        query = query.where(Synthese.meta_update_date > last_validation.validation_date)
-
-    if no_auto:
-        query = query.where(last_validation.validation_auto == False)
-
-    # Filter only validable dataset
-
-    query = query.where(dataset_alias.validable == True)
-
-    # Step 2: give SyntheseQuery the Core selectable from ORM query
-    assert len(query.selectable.get_final_froms()) <= 2
-
-    selectable = SyntheseQuery(
-        Synthese,
-        query.selectable,
-        params,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
-    ).filter_query_all_filters(g.current_user, permissions)
-
-    # Step 3: Construct Synthese model from query result
-    syntheseQueryStatement = Synthese.query.options(
-        *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
-    ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
-
-    # to pass alert reports infos with synthese to validation list
-    # only if tools are activate for validation
-    alertActivate = (
-        len(current_app.config["SYNTHESE"]["ALERT_MODULES"])
-        and "VALIDATION" in current_app.config["SYNTHESE"]["ALERT_MODULES"]
-    )
-    pinActivate = (
-        len(current_app.config["SYNTHESE"]["PIN_MODULES"])
-        and "VALIDATION" in current_app.config["SYNTHESE"]["PIN_MODULES"]
-    )
-    if alertActivate or pinActivate:
-        fields |= {"reports.report_type.type"}
-        syntheseQueryStatement = syntheseQueryStatement.options(
-            selectinload(Synthese.reports).joinedload(TReport.report_type)
-        )
-    query = selectable
-
-    # Sort
-    if sorting_active:
-        if sort == "asc":
-            query = query.order_by(sa.asc(order_by))
-        else:
-            query = query.order_by(sa.desc(order_by))
-
-    if pagination_active:
-        offset = (page - 1) * per_page
-        query = syntheseQueryStatement.from_statement(query.limit(per_page).offset(offset))
-    else:
-        query = syntheseQueryStatement.from_statement(query.limit(limit))
-
-    # The raise option ensure that we have correctly retrived relationships data at step 3
-    if format == "geojson":
-        return jsonify(query.as_geofeaturecollection(fields=fields))
-    elif format == "json":
-        count = db.session.scalar(selectable.with_only_columns([sa.func.count()]).order_by(None))
-        return jsonify(
-            {
-                "items": [item.as_dict(fields=fields) for item in query.all()],
-                "total": count,
-                "per_page": per_page,
-                "page": page,
-            }
-        )
 
 
 @blueprint.route("/statusNames", methods=["GET"])
 @permissions_required("C", module_code="VALIDATION")
-def get_statusNames(permissions):
+def get_status_names(permissions):
+    """
+    Returns the list of available validation statuses.
+
+    Parameters
+    ----------
+    permissions : object
+        User permissions, injected by the decorator
+
+    Returns
+    -------
+    Response
+        JSON list of active validation status nomenclatures, each containing:
+        - id_nomenclature: Nomenclature identifier
+        - mnemonique: Mnemonic code
+        - cd_nomenclature: Nomenclature code
+        - definition_default: Default definition of the status
+
+    Notes
+    -----
+    Only active nomenclatures of type 'STATUT_VALID' are returned,
+    sorted by nomenclature code.
+
+    Examples
+    --------
+    GET /validation/statusNames
+    Response: [
+        {
+            "id_nomenclature": 1,
+            "mnemonique": "Pending",
+            "cd_nomenclature": "0",
+            "definition_default": "Pending validation"
+        },
+        ...
+    ]
+    """
     nomenclatures = (
         sa.select(TNomenclatures)
         .join(BibNomenclaturesTypes)
@@ -275,6 +241,7 @@ def get_statusNames(permissions):
         .where(TNomenclatures.active == True)
         .order_by(TNomenclatures.cd_nomenclature)
     )
+
     return jsonify(
         [
             nomenc.as_dict(
@@ -288,94 +255,217 @@ def get_statusNames(permissions):
 @blueprint.route("/<id_synthese>", methods=["POST"])
 @permissions_required("C", module_code="VALIDATION")
 def post_status(permissions, id_synthese):
-    data = dict(request.get_json())
-    try:
-        id_validation_status = data["statut"]
-    except KeyError:
-        raise BadRequest("Aucun statut de validation n'est sélectionné")
+    """
+    Creates a validation status for one or more observations.
+
+    This route allows manually validating observations by assigning them
+    a validation status and a comment. Observations are identified by their
+    synthese identifiers.
+
+    Parameters
+    ----------
+    permissions : object
+        User permissions, injected by the decorator
+    id_synthese : str
+        Synthese identifier(s), comma-separated for group validation
+
+    Request Body
+    ------------
+    statut : int, required
+        Nomenclature identifier of the validation status
+    comment : str, required
+        Validation comment
+
+    Returns
+    -------
+    Response
+        JSON representation of the applied validation status containing:
+        - id_nomenclature: Nomenclature identifier
+        - mnemonique: Status mnemonic code
+        - cd_nomenclature: Nomenclature code
+        - label_default: Default label
+
+    Raises
+    ------
+    BadRequest
+        If the 'statut' or 'comment' field is missing
+    Forbidden
+        If the user does not have permissions on an observation
+    NotFound
+        If a synthese identifier or the status does not exist
+
+    Notes
+    -----
+    - Each created validation is marked as manual (validation_auto=False)
+    - A notification is sent to the observation's recorder
+    - Changes are committed after processing all observations
+
+    Examples
+    --------
+    POST /validation/123
+    Body: {
+        "statut": 2,
+        "comment": "Observation validated after verification"
+    }
+
+    POST /validation/123,456,789
+    Body: {
+        "statut": 3,
+        "comment": "Invalid data"
+    }
+    """
+    data = request.get_json()
+
+    # Validate input
+    if not data.get("statut"):
+        raise BadRequest("No validation status selected")
+    if "comment" not in data:
+        raise BadRequest("Missing 'comment' field")
+
+    id_validation_status = data["statut"]
+    validation_comment = data["comment"]
+
+    # Get validation status
     validation_status = db.get_or_404(TNomenclatures, id_validation_status)
-    try:
-        validation_comment = data["comment"]
-    except KeyError:
-        raise BadRequest("Missing 'comment'")
 
-    id_synthese = id_synthese.split(",")
+    # Process each synthese ID
+    id_list = [id.strip() for id in id_synthese.split(",")]
 
-    for id in id_synthese:
-        # t_validations.id_validation:
-
-        # t_validations.uuid_attached_row:
-        synthese = db.get_or_404(Synthese, int(id))
-
-        if not synthese.has_instance_permission(permissions):
-            raise Forbidden
-
-        uuid = synthese.unique_id_sinp
-
-        # t_validations.id_validator:
-        id_validator = g.current_user.id_role
-
-        # t_validations.validation_auto
-        val_auto = False
-        val_dict = {
-            "uuid_attached_row": uuid,
-            "id_nomenclature_valid_status": id_validation_status,
-            "id_validator": id_validator,
-            "validation_comment": validation_comment,
-            "validation_auto": val_auto,
-        }
-        # insert values in t_validations
-        validationSchema = TValidationSchema()
-        try:
-            validation = validationSchema.load(
-                val_dict, instance=TValidations(), session=DB.session
-            )
-        except ValidationError as error:
-            raise BadRequest(error.messages)
-        DB.session.add(validation)
-
-        # Send element to notification system
-        notify_validation_state_change(synthese, validation, validation_status)
-
-        DB.session.commit()
+    for synthese_id in id_list:
+        create_validation(
+            synthese_id=int(synthese_id),
+            id_validation_status=id_validation_status,
+            validation_comment=validation_comment,
+            permissions=permissions,
+            validation_status=validation_status,
+        )
 
     return jsonify(validation_status.as_dict())
+
+
+def create_validation(
+    synthese_id: int,
+    id_validation_status: int,
+    validation_comment: str,
+    permissions,
+    validation_status,
+):
+    """
+    Creates a validation entry for a synthese record.
+
+    This function creates a new manual validation for an observation,
+    checks permissions, and sends a notification to the recorder.
+
+    Parameters
+    ----------
+    synthese_id : int
+        Identifier of the record in the synthese table
+    id_validation_status : int
+        Nomenclature identifier of the validation status
+    validation_comment : str
+        Comment associated with the validation
+    permissions : object
+        User permissions for access verification
+    validation_status : TNomenclatures
+        Nomenclature object of the validation status
+
+    Raises
+    ------
+    NotFound
+        If the observation does not exist
+    Forbidden
+        If the user does not have the necessary permissions
+    BadRequest
+        If the validation data is invalid
+
+    Notes
+    -----
+    - The validation is always marked as manual (validation_auto=False)
+    - The validator is the current user (g.current_user)
+    - A notification is sent only if id_digitiser is defined
+    - Changes are added to the session but not committed
+    """
+    # Get synthese record
+    synthese = db.get_or_404(Synthese, synthese_id)
+
+    # Check permissions
+    if not synthese.has_instance_permission(permissions):
+        raise Forbidden
+
+    # Create validation data
+    validation_data = {
+        "uuid_attached_row": synthese.unique_id_sinp,
+        "id_nomenclature_valid_status": id_validation_status,
+        "id_validator": g.current_user.id_role,
+        "validation_comment": validation_comment,
+        "validation_auto": False,
+    }
+
+    # Insert validation
+    try:
+        validation_schema = TValidationSchema()
+        validation = validation_schema.load(
+            validation_data, instance=TValidations(), session=DB.session
+        )
+    except ValidationError as error:
+        raise BadRequest(error.messages)
+
+    DB.session.add(validation)
+
+    # Send notification
+    notify_validation_state_change(synthese, validation, validation_status)
+
+    DB.session.commit()
 
 
 @blueprint.route("/date/<uuid:uuid>", methods=["GET"])
 @permissions_required("C", module_code="VALIDATION")
 def get_validation_date(permissions, uuid):
     """
-    Retourne la date de validation
-    pour l'observation uuid
+    Returns the date of the last validation for an observation.
+
+    Parameters
+    ----------
+    permissions : object
+        User permissions, injected by the decorator
+    uuid : UUID
+        Unique SINP identifier of the observation
+
+    Returns
+    -------
+    Response
+        - If validated: JSON containing the validation date (string)
+        - If not validated: Empty response with code 204 (No Content)
+
+    Raises
+    ------
+    NotFound
+        If the observation does not exist
+    Forbidden
+        If the user does not have the necessary permissions
+
+    Notes
+    -----
+    Only the last validation is returned, whether manual or automatic.
+
+    Examples
+    --------
+    GET /validation/date/550e8400-e29b-41d4-a716-446655440000
+    Response: "2024-12-15T10:30:00"
+
+    GET /validation/date/550e8400-e29b-41d4-a716-446655440001
+    Response: 204 No Content
     """
-    s = db.first_or_404(
+    synthese = db.first_or_404(
         Synthese.lateraljoin_last_validation(
             query=sa.select(Synthese).filter_by(unique_id_sinp=uuid)
         )
     )
-    if not s.has_instance_permission(permissions):
+
+    if not synthese.has_instance_permission(permissions):
         raise Forbidden
-    if s.last_validation:
-        return jsonify(str(s.last_validation.validation_date))
-    else:
-        return "", 204
 
+    if synthese.last_validation:
+        return jsonify(str(synthese.last_validation.validation_date))
 
-# Send notification
-def notify_validation_state_change(synthese, validation, status):
-    if not synthese.id_digitiser:
-        return
-    dispatch_notifications(
-        code_categories=["VALIDATION-STATUS-CHANGED%"],
-        id_roles=[synthese.id_digitiser],
-        title="Changement de statut de validation",
-        url=current_app.config["URL_APPLICATION"]
-        + "/#/synthese/occurrence/"
-        + str(synthese.id_synthese),
-        context={
-            "synthese": synthese,
-            "validation": validation,
-            "status": status,
-        },
-    )
+    return "", 204

@@ -21,9 +21,9 @@ import {
 
 interface ValidationItemEnhanced {
   id_synthese: number;
-  'last_validation.validation_date': string;
-  'nomenclature_valid_status.label_default': string;
-  'last_validation.validation_comment': string;
+  validation_date: string;
+  nomenclature_label_default: string;
+  validation_comment: string;
   validator: string;
   observation: string;
 }
@@ -38,10 +38,10 @@ interface ValidationItemEnhanced {
 })
 export class HomeValidationsComponent implements OnInit, OnDestroy {
   readonly PROP_VALIDATOR = 'validator';
-  readonly PROP_VALIDATION_DATE = 'last_validation.validation_date';
-  readonly PROP_VALIDATION_STATUS = 'nomenclature_valid_status.mnemonique';
-  readonly PROP_VALIDATION_CODE = 'nomenclature_valid_status.cd_nomenclature';
-  readonly PROP_VALIDATION_MESSAGE = 'last_validation.validation_comment';
+  readonly PROP_VALIDATION_DATE = 'validation_date';
+  readonly PROP_VALIDATION_STATUS = 'nomenclature_mnemonique';
+  readonly PROP_VALIDATION_CODE = 'nomenclature_cd_nomenclature';
+  readonly PROP_VALIDATION_MESSAGE = 'validation_comment';
   readonly PROP_OBSERVATION = 'observation';
   readonly DEFAULT_SORTING: SyntheseDataSortItem = {
     sortOrder: SORT_ORDER.DESC,
@@ -113,13 +113,12 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   private _transformValidations(validations: ValidationItem[]): ValidationItemEnhanced[] {
     return validations.map((validation: ValidationItem) => ({
       id_synthese: validation.id_synthese,
-      'last_validation.validation_date': validation.last_validation?.validation_date,
-      'last_validation.validation_auto': validation.last_validation?.validation_auto,
-      'nomenclature_valid_status.cd_nomenclature':
-        validation.nomenclature_valid_status.cd_nomenclature,
-      'nomenclature_valid_status.mnemonique': validation.nomenclature_valid_status.mnemonique,
-      'nomenclature_valid_status.label_default': validation.nomenclature_valid_status.label_default,
-      'last_validation.validation_comment': validation.last_validation?.validation_comment,
+      validation_date: validation?.validation_date,
+      validation_auto: validation?.validation_auto,
+      nomenclature_cd_nomenclature: validation.nomenclature_cd_nomenclature,
+      nomenclature_mnemonique: validation.nomenclature_mnemonique,
+      nomenclature_label_default: validation?.nomenclature_label_default,
+      validation_comment: validation?.validation_comment,
       validator: validation.validator ?? 'Auto',
       observation: this._formatObservation(validation),
     }));
