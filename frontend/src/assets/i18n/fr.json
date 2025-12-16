@@ -311,6 +311,9 @@
       "SpecificGeonature": "Spécifique GeoNature",
       "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"
     },
+    "AcquisitionFrameworkCard": {
+      "AdditionalInformation": "Informations additionnelles"
+    },
     "AcquisitionFrameworkForm": {},
     "Actors": {
       "Person": "Personne",

@@ -4,7 +4,7 @@ from io import StringIO
 from unittest.mock import MagicMock
 
 from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
-from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_commons.models.base import TModules, BibWidgets
 from geonature.core.gn_permissions.models import PermObject
 import pytest
 from flask import url_for, Flask
@@ -106,19 +106,28 @@ def additional_fields(app):
     obj = db.session.execute(
         select(PermObject).where(PermObject.code_object == "METADATA_CADRE_ACQUISITION")
     ).scalar_one()
-    for name, id_widget in [
-        ("select_field_used", 1),
-        ("nomenclature_field_used", 3),
-        ("text_field_used", 4),
-        ("date_field_used", 9),
-        ("number_field_used", 11),
-        ("text_field_not_used", 4),
+
+    # Retrieve widget IDs from database
+    widget_ids = {}
+    for widget_name in ["select", "nomenclature", "text", "date", "number"]:
+        widget = db.session.execute(
+            select(BibWidgets).where(BibWidgets.widget_name == widget_name)
+        ).scalar_one()
+        widget_ids[widget_name] = widget.id_widget
+
+    for name, widget_name in [
+        ("select_field_used", "select"),
+        ("nomenclature_field_used", "nomenclature"),
+        ("text_field_used", "text"),
+        ("date_field_used", "date"),
+        ("number_field_used", "number"),
+        ("text_field_not_used", "text"),
     ]:
         additional_field = TAdditionalFields(
             field_name=name,
             field_label=name,
             required=True,
-            id_widget=id_widget,
+            id_widget=widget_ids[widget_name],
             modules=[module],
             objects=[obj],
         )

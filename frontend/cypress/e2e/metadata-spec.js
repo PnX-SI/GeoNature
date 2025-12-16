@@ -200,7 +200,6 @@ describe('Testing metadata', () => {
       .find('button')
       .click({
         multiple: true,
-        force: true,
       });
     cy.wait(200);
     cy.get('[data-qa="confirmation-dialog-yes"]').click({ multiple: true, force: true });

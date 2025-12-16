@@ -338,7 +338,7 @@
             class="b"
             *ngIf="additionalFields"
           >
-            Informations additionnelles
+            {{ 'MetaData.AcquisitionFrameworkCard.AdditionalInformation' | translate }}
           </div>
           <ng-container *ngFor="let additionalField of additionalFields">
             <div *ngIf="additionalField.type_widget != 'html'">
