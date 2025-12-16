@@ -64,10 +64,10 @@ class TestValidation:
         assert len(response.json["features"]) >= len(synthese_data)
 
     def test_get_status_names(self, users, synthese_data):
-        response = self.client.get(url_for("validation.get_statusNames"))
+        response = self.client.get(url_for("validation.get_status_names"))
         assert response.status_code == Unauthorized.code
         set_logged_user(self.client, users["user"])
-        response = self.client.get(url_for("validation.get_statusNames"))
+        response = self.client.get(url_for("validation.get_status_names"))
         assert response.status_code == 200
 
     def test_add_validation_status(self, users, synthese_data):
