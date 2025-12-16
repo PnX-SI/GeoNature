@@ -6,6 +6,7 @@ import {
   EventEmitter,
   AfterViewInit,
   OnChanges,
+  OnDestroy,
 } from '@angular/core';
 import { MapService } from '../map.service';
 import { Map } from 'leaflet';
@@ -18,7 +19,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'pnx-leaflet-filelayer',
   templateUrl: './filelayer.component.html',
 })
-export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChanges {
+export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   public map: Map;
   public Le: any;
   // previous layer loaded with filelayer
@@ -151,5 +152,8 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
         this.map.removeLayer(this.previousLayer);
       }
     }
+  }
+  ngOnDestroy() {
+    this.map.removeControl(this.fileLayerControl);
   }
 }
