@@ -55,7 +55,7 @@ const INDICATORS: Array<IndicatorDescription> = [
   standalone: true,
   templateUrl: 'taxon-sheet.component.html',
   imports: [CommonModule, GN2CommonModule, InfosComponent, TaxonImageComponent],
-  providers: [ObservationsFiltersService, TaxonSheetService],
+  providers: [TaxonSheetService],
 })
 export class TaxonSheetComponent extends Loadable implements OnInit {
   taxon: Taxon | null = null;
