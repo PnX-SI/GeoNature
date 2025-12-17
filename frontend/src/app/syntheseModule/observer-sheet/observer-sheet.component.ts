@@ -14,7 +14,6 @@ import { ObserverStats } from '@geonature_common/form/synthese-form/synthese-dat
 import { ObserverSheetRouteService } from './observer-sheet.route.service';
 import { Loadable } from '../sheets/loadable';
 import { ObserverSheetService } from './observer-sheet.service';
-import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
 import { Observer } from './observer';
 
 const INDICATORS: Array<IndicatorDescription> = [
