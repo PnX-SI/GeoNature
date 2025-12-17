@@ -1,51 +1,21 @@
-<layout>
-  <div
-    class="TaxonSheet"
-    [ngClass]="{ 'TaxonSheet--placeholder': isLoadingTaxon }"
-  >
-    <infos class="TaxonSheet__infos" />
-    <div
-      class="TaxonSheet__indicators"
-      *ngIf="!isLoadingIndicators"
+<gn-page-layout>
+  <gn-sheet-layout>
+    <infos infos />
+    <gn-loadable-layout
+      indicators
+      [isLoading]="isLoadingIndicators"
     >
-      <taxon-image />
-      <indicator
-        *ngFor="let indicator of indicators"
-        [indicator]="indicator"
-      />
-    </div>
-    <div
-      class="TaxonSheet__indicators--loader"
-      *ngIf="isLoadingIndicators"
-    >
-      <mat-spinner></mat-spinner>
-    </div>
-    <div
-      class="card AvancedInfos"
-      *ngIf="TAB_LINKS.length > 0"
-    >
-      <nav
-        mat-tab-nav-bar
-        class="AvancedInfos__navBar"
-        [tabPanel]="tabPanel"
-      >
-        <a
-          *ngFor="let tab of TAB_LINKS"
-          mat-tab-link
-          [routerLink]="tab.path"
-          routerLinkActive
-          #rla="routerLinkActive"
-          [active]="rla.isActive"
-        >
-          {{ tab.label }}
-        </a>
-      </nav>
-      <mat-tab-nav-panel
-        #tabPanel
-        class="AvancedInfos__content"
-      >
-        <router-outlet></router-outlet>
-      </mat-tab-nav-panel>
-    </div>
-  </div>
-</layout>
+      <gn-indicators-layout>
+        <taxon-image />
+        <gn-indicator
+          *ngFor="let indicator of indicators"
+          [indicator]="indicator"
+        />
+      </gn-indicators-layout>
+    </gn-loadable-layout>
+    <gn-tabs-layout
+      tabs
+      [tabs]="routes.TAB_LINKS"
+    />
+  </gn-sheet-layout>
+</gn-page-layout>

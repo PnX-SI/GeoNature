@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { ConfigService } from '@geonature/services/config.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { TaxonSheetService } from '../../taxon-sheet.service';
+import { TaxonSheetService } from '../taxon-sheet.service';
 
 @Component({
   standalone: true,

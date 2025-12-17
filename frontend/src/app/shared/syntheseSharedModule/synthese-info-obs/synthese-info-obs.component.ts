@@ -212,12 +212,16 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut)
           );
 
+          // Process mail if possible
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers
               .map((el) => el.email)
               .filter((v) => v)
               .join();
             this.mailto = this.formatMailContent(this.email);
+          } else {
+            this.email = null;
+            this.mailto = null;
           }
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe((profile) => {

@@ -1,4 +1,4 @@
-import { TaxonStats } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { SheetStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 export interface Indicator {
   name: string;
@@ -19,8 +19,8 @@ export interface IndicatorDescription {
 const DEFAULT_VALUE = '-';
 const DEFAULT_SEPARATOR = '-';
 
-function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: TaxonStats) {
-  if (stats && stats[field] != undefined) {
+function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: SheetStats) {
+  if (stats && stats[field]) {
     let valueAsString = '';
     switch (indicatorConfig.type) {
       case 'number':
@@ -38,9 +38,9 @@ function getValue(field: string, indicatorConfig: IndicatorDescription, stats?: 
   return DEFAULT_VALUE;
 }
 
-export function computeIndicatorFromDescription(
+export function computeIndicatorFromStats(
   indicatorDescription: IndicatorDescription,
-  stats: TaxonStats
+  stats?: SheetStats
 ): Indicator {
   let value = DEFAULT_VALUE;
   if (stats) {

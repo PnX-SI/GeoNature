@@ -1,24 +1,18 @@
-<div class="TabGeographic">
+<div class="Observations">
   <div
     *ngIf="isLoading"
-    class="TabGeographic__spinner"
+    class="Observations__loader"
   >
     <mat-spinner></mat-spinner>
   </div>
   <pnx-map
-    class="TabGeographic__map"
+    class="Observations__map"
     height="100%"
   >
-    <pnx-geojson
-      [geojson]="observations"
-      [zoomOnFirstTime]="true"
-      [style]="styleTabGeoJson"
-      [asCluster]="true"
-    ></pnx-geojson>
   </pnx-map>
-  <div class="TabGeographic__toolbar">
+  <div class="Observations__toolbar">
     <div
-      class="TabGeographic__toolbarItem"
+      class="Observations__toolbarItem"
       *ngIf="
         yearIntervalBoundaries &&
           yearInterval &&
@@ -45,19 +39,19 @@
         discrete
       >
         <input
-          (change)="updateTabGeographic()"
+          (change)="updateObservations()"
           [(ngModel)]="yearInterval.min"
           matSliderStartThumb
         />
         <input
-          (change)="updateTabGeographic()"
+          (change)="updateObservations()"
           [(ngModel)]="yearInterval.max"
           matSliderEndThumb
         />
       </mat-slider>
     </div>
     <ng-template #yearSliderPlaceholder>
-      <div class="TabGeographic__toolbarItem">
+      <div class="Observations__toolbarItem">
         <div class="Label Label--placeholder text-muted">
           <span class="Label__text">Année d'observation(s) :</span>
           <span class="Label__text Label__text--highlighted">

@@ -94,7 +94,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button
-          *ngIf="selectedObs?.cor_observers?.length > 0 && config.FRONTEND.DISPLAY_EMAIL_INFO_OBS"
+          *ngIf="config.FRONTEND.DISPLAY_EMAIL_INFO_OBS && email"
           mat-mini-fab
           ngbTooltip="{{ 'Synthese.Actions.Mailto' | translate }}"
           placement="bottom"
