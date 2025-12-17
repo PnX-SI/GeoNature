@@ -41,6 +41,11 @@ export class TaxonSheetService extends Loadable {
           return this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.includes(v.id_attribut);
         });
         this.taxon.next(taxon);
+        this.taxonStats.next(null);
+        if (!taxon) {
+          return;
+        }
+        // trigger observation tab content update
         this._os.filters.next({
           cd_ref: [taxon.cd_ref],
           cd_ref_parent: [taxon.cd_ref],

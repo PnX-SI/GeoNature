@@ -21,9 +21,11 @@ export class ObserverSheetService extends Loadable {
     super();
     this.observer.pipe(finalize(() => this.stopLoading())).subscribe((observer: Observer) => {
       this.startLoading();
+      this.observerStats.next(null);
       if (!observer) {
         return;
       }
+      // trigger observation tab content update
       this._os.filters.next({
         observers: observer.nom_complet,
       });
