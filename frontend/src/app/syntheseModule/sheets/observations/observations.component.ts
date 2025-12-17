@@ -32,7 +32,6 @@ interface MapAreasStyle {
   imports: [GN2CommonModule, CommonModule, MatSliderModule],
 })
 export class ObservationsComponent extends Loadable implements OnInit {
-  observations: FeatureCollection | null = null;
   areasEnable: boolean;
   areasLegend: any;
   private _areasLabelSwitchBtn;
@@ -76,6 +75,8 @@ export class ObservationsComponent extends Loadable implements OnInit {
   ngOnInit() {
     this._os.filters.subscribe((filters: Filters | null) => {
       if (!filters) {
+        this.styleTabGeoJson = undefined;
+        this.clearObservationLayers();
         return;
       }
       this.updateObservations();
@@ -111,12 +112,7 @@ export class ObservationsComponent extends Loadable implements OnInit {
           );
         }
         this.styleTabGeoJson = undefined;
-        const map = this._ms.map;
-        map.eachLayer((layer) => {
-          if (!(layer instanceof L.TileLayer)) {
-            map.removeLayer(layer);
-          }
-        });
+        this.clearObservationLayers();
 
         if (data) {
           const geoJSON = L.geoJSON(data, {
@@ -283,5 +279,14 @@ export class ObservationsComponent extends Loadable implements OnInit {
         return legendClass.color;
       }
     }
+  }
+
+  private clearObservationLayers() {
+    const map = this._ms.map;
+    map.eachLayer((layer) => {
+      if (!(layer instanceof L.TileLayer)) {
+        map.removeLayer(layer);
+      }
+    });
   }
 }

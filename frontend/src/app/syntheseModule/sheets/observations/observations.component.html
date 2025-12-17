@@ -9,13 +9,6 @@
     class="Observations__map"
     height="100%"
   >
-    <pnx-geojson
-      *ngIf="observations"
-      [geojson]="observations"
-      [zoomOnFirstTime]="true"
-      [style]="styleTabGeoJson"
-      [asCluster]="true"
-    ></pnx-geojson>
   </pnx-map>
   <div class="Observations__toolbar">
     <div
