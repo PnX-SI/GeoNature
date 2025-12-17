@@ -24,6 +24,10 @@ export class ObservationsFiltersService {
 
   constructor(private _config: ConfigService) {}
 
+  reset() {
+    this.filters.next(null);
+    this.yearIntervalBoundaries.next(null);
+  }
   updateFromSheetStats(stats: SheetStats) {
     this.yearIntervalBoundaries.next({
       min: new Date(stats.date_min).getFullYear(),

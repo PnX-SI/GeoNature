@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from '@librairies/rxjs';
-import { ObservationsFiltersService as MapObservationsService } from '../sheets/observations/observations-filters.service';
+import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
 import {
   ObserverStats,
   SyntheseDataService,
@@ -15,12 +15,13 @@ export class ObserverSheetService extends Loadable {
   observerStats: BehaviorSubject<ObserverStats> = new BehaviorSubject<ObserverStats>(null);
 
   constructor(
-    private _os: MapObservationsService,
+    private _os: ObservationsFiltersService,
     private _sds: SyntheseDataService
   ) {
     super();
     this.observer.pipe(finalize(() => this.stopLoading())).subscribe((observer: Observer) => {
       this.startLoading();
+      this._os.reset();
       this.observerStats.next(null);
       if (!observer) {
         return;
@@ -29,6 +30,7 @@ export class ObserverSheetService extends Loadable {
       this._os.filters.next({
         observers: observer.nom_complet,
       });
+
       this.fetchObserverStats();
     });
   }
