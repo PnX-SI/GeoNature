@@ -99,5 +99,6 @@ export class MediasComponent implements OnInit {
       }
       this.parentFormControl.patchValue(this.parentFormControl.value);
     }
+    this.parentFormControl.updateValueAndValidity();
   }
 }
