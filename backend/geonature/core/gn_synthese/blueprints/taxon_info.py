@@ -257,8 +257,27 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
         areas_subquery = TaxonSheetUtils.get_area_selectquery(area_type)
         taxon_subquery = TaxonSheetUtils.get_taxon_selectquery(cd_ref)
+
+        # Main query to fetch stats
+        query = (
+            select(
+                func.count(distinct(Synthese.id_synthese)).label("observation_count"),
+                func.count(distinct(areas_subquery.c.id_area)).label("area_count"),
+                func.min(Synthese.altitude_min).label("altitude_min"),
+                func.max(Synthese.altitude_max).label("altitude_max"),
+                func.min(Synthese.date_min).label("date_min"),
+                func.max(Synthese.date_max).label("date_max"),
+            )
+            .select_from(Synthese)
+            .outerjoin(CorAreaSynthese, Synthese.id_synthese == CorAreaSynthese.id_synthese)
+            .outerjoin(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area)
+            .outerjoin(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
+            .outerjoin(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
+            .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
+        )
+
         field_separators_as_regexp = rf"[{''.join(field_separators)}]+"
-        observer_split = (
+        cte_observer = (
             select(
                 func.nullif(
                     func.lower(
@@ -272,26 +291,14 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
                     "",
                 ).label("observer")
             )
-        ).lateral()
-
-        # Main query to fetch stats
-        query = (
-            select(
-                func.count(distinct(Synthese.id_synthese)).label("observation_count"),
-                func.count(distinct(observer_split.c.observer)).label("observer_count"),
-                func.count(distinct(areas_subquery.c.id_area)).label("area_count"),
-                func.min(Synthese.altitude_min).label("altitude_min"),
-                func.max(Synthese.altitude_max).label("altitude_max"),
-                func.min(Synthese.date_min).label("date_min"),
-                func.max(Synthese.date_max).label("date_max"),
-            )
             .select_from(Synthese)
-            .outerjoin(CorAreaSynthese, Synthese.id_synthese == CorAreaSynthese.id_synthese)
-            .outerjoin(areas_subquery, CorAreaSynthese.id_area == areas_subquery.c.id_area)
-            .outerjoin(LAreas, CorAreaSynthese.id_area == LAreas.id_area)
-            .outerjoin(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
             .join(taxon_subquery, taxon_subquery.c.cd_nom == Synthese.cd_nom)
-            .outerjoin(observer_split, true())
+        ).cte()
+
+        observer_count = db.session.scalar(
+            select(
+                func.count(distinct(cte_observer.c.observer)).label("observation_count"),
+            )
         )
 
         synthese_query = TaxonSheetUtils.get_synthese_query_with_permissions(
@@ -303,7 +310,7 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
         data = {
             "cd_ref": cd_ref,
             "observation_count": synthese_stats["observation_count"],
-            "observer_count": synthese_stats["observer_count"],
+            "observer_count": observer_count,
             "area_count": synthese_stats["area_count"],
             "altitude_min": synthese_stats["altitude_min"],
             "altitude_max": synthese_stats["altitude_max"],
