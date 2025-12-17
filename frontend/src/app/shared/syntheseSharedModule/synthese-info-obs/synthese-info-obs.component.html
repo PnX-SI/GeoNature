@@ -7,18 +7,38 @@
   *ngIf="header"
   class="modal-header padding-md-all"
 >
-  <h5
-    *ngIf="!alertOpen"
-    class="my-3 ml-3"
+  <span
+    *ngIf="!alertOpen && criteriaService.isCriteriaDisplay() && criteriaInfos"
+    [ngbTooltip]="criteriaService.buildCriteriaTxt(criteriaInfos)"
+    class="map-criteria-badge"
+    style="
+        background-color: {{ criteriaInfos.color }};
+        color: {{ criteriaInfos?.icon?.color }} !important;
+      "
+    aria-hidden="false"
+    [aria-label]="criteriaInfos.label"
   >
-    {{ 'Synthese.ModalTitle' | translate }}
+    <i
+      *ngIf="criteriaInfos?.icon?.font.startsWith('material')"
+      class="{{ criteriaInfos?.icon?.font }}"
+    >
+      {{ criteriaInfos?.icon?.name }}
+    </i>
+    <i
+      *ngIf="criteriaInfos?.icon?.font.startsWith('fa')"
+      class="{{ criteriaInfos?.icon?.font }} {{ criteriaInfos?.icon?.name }}"
+      aria-hidden="false"
+      [aria-label]="criteriaInfos.label"
+    ></i>
+  </span>
+
+  <h5 class="my-3 ml-3">
+    <ng-container *ngIf="!alertOpen; else alertTitle">
+      {{ 'Synthese.ModalTitle' | translate }}
+    </ng-container>
+    <ng-template #alertTitle>Signalement</ng-template>
   </h5>
-  <h5
-    *ngIf="alertOpen"
-    class="my-3 ml-3"
-  >
-    Signalement
-  </h5>
+
   <button
     type="button"
     class="close"
@@ -156,13 +176,13 @@
         {{ selectedObs?.observers }}
       </span>
       <br />
-      <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
+      <span *ngIf="selectedObs?.date_min_fr != selectedObs?.date_max_fr; else elseBlock">
         <b>{{ 'Date' | translate }} :</b>
-        <span>{{ selectedObs?.date_min }} -> {{ selectedObs?.date_max }}</span>
+        <span>{{ selectedObs?.date_min_fr }} -> {{ selectedObs?.date_max_fr }}</span>
       </span>
       <ng-template #elseBlock>
         <b>{{ 'Date' | translate }} :</b>
-        <span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min }}</span>
+        <span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min_fr }}</span>
       </ng-template>
       <br />
       <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">

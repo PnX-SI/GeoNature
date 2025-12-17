@@ -140,6 +140,11 @@ def get_observations_for_web(permissions):
     for column in param_column_list:
         columns += [column, getattr(VSyntheseForWebApp, column)]
 
+    # Add additional field(s) to output
+    additional_fields = request.args.getlist("with_field")
+    for column in additional_fields:
+        columns += [column, getattr(VSyntheseForWebApp, column)]
+
     observations_columns = func.json_build_object(*columns).label("obs_as_json")
 
     # Need to check if there are blurring permissions so that the blurring process
