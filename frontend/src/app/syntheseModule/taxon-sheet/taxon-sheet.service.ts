@@ -51,7 +51,7 @@ export class TaxonSheetService extends Loadable {
 
   fetchTaxonStats(cd_ref: number) {
     this._sds.getSyntheseTaxonSheetStat(cd_ref).subscribe((stats: TaxonStats) => {
-      this._os.udpateFromSheetStats(stats);
+      this._os.updateFromSheetStats(stats);
       this.taxonStats.next(stats);
     });
   }

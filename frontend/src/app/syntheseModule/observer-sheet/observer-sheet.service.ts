@@ -39,7 +39,7 @@ export class ObserverSheetService extends Loadable {
     this._sds
       .getSyntheseObserverSheetStats(this.observer.getValue())
       .subscribe((stats: ObserverStats) => {
-        this._os.udpateFromSheetStats(stats);
+        this._os.updateFromSheetStats(stats);
         this.observerStats.next(stats);
       });
   }

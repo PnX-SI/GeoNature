@@ -24,7 +24,7 @@ export class ObservationsFiltersService {
 
   constructor(private _config: ConfigService) {}
 
-  udpateFromSheetStats(stats: SheetStats) {
+  updateFromSheetStats(stats: SheetStats) {
     this.yearIntervalBoundaries.next({
       min: new Date(stats.date_min).getFullYear(),
       max: new Date(stats.date_max).getFullYear(),
