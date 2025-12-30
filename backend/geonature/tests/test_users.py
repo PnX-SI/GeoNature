@@ -453,8 +453,6 @@ class TestUsers:
         # Set URLs for API calls before the first call
         #   to avoid the problem of duplicate "/geonature/api" prefixes generated
         post_url = url_for("users.create_organism")
-        delete_url = url_for("users.delete_organism", id_organisme=organism_id)
-        get_url = url_for("users.get_organism", id_organisme=organism_id)
 
         # First create an organism to delete
         new_organism_data = {
@@ -463,6 +461,9 @@ class TestUsers:
         create_response = self.client.post(post_url, json=new_organism_data)
         assert create_response.status_code == 200
         organism_id = create_response.json["id_organisme"]
+
+        delete_url = url_for("users.delete_organism", id_organisme=organism_id)
+        get_url = url_for("users.get_organism", id_organisme=organism_id)
 
         # Now delete it
         delete_response = self.client.delete(delete_url)
