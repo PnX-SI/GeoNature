@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MarkerComponent } from '../marker/marker.component';
 import { MapService } from '../map.service';
 import { MapListService } from '../../map-list/map-list.service';
@@ -16,11 +16,13 @@ import { ConfigService } from '@geonature/services/config.service';
   selector: 'pnx-gps',
   templateUrl: 'gps.component.html',
 })
-export class GPSComponent extends MarkerComponent implements OnInit {
+export class GPSComponent extends MarkerComponent implements OnInit, OnDestroy {
   @ViewChild('modalContent', { static: false }) public modalContent: any;
   public x: number;
   public y: number;
   public coordsInput: string = '';
+  private gpsControls: L.Control;
+
   constructor(
     public mapService: MapService,
     public modalService: NgbModal,
@@ -36,13 +38,10 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     this.enableGps();
   }
   enableGps() {
-    const currentGpsElement: HTMLElement = document.getElementById('GPSLegend');
-    if (currentGpsElement) {
-      currentGpsElement.remove();
-    }
     // Add leaflet button
     const GPSLegend = this.mapService.addCustomLegend('topleft', 'GPSLegend');
-    this.map.addControl(new GPSLegend());
+    this.gpsControls = new GPSLegend();
+    this.map.addControl(this.gpsControls);
 
     // Fetch control and customize its appearance
     const gpsElement: HTMLElement = document.getElementById('GPSLegend');
@@ -86,5 +85,10 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.fileLayerFeatureGroup);
     // zoom on layer
     this._mapListServive.zoomOnSelectedLayer(this.mapService.map, this.mapService.marker);
+  }
+
+  ngOnDestroy() {
+    // Remove GPS control from the map
+    this.map.removeControl(this.gpsControls);
   }
 }
