@@ -490,35 +490,32 @@ def notify_validation_state_change(synthese, validation, status):
     )
 
 
-def notify_validator_on_data_modified(synthese):
+def notify_validator_on_data_modified(observation: Synthese):
     """
-    Notifie le validateur si une donnée déjà validée a été modifiée après sa validation.
+    Notify the validator if an observation have been modified after the last validation.
     """
-    try:
-        # Récupération du dernier enregistrement de validation lié à la synthèse
-        last_validation = db.session.scalar(
-            sa.select(TValidations)
-            .where(TValidations.uuid_attached_row == synthese.unique_id_sinp)
-            .order_by(TValidations.validation_date.desc())
-            .limit(1)
-        )
 
-        if not last_validation or not getattr(last_validation, "id_validator", None):
-            return
+    # Fetch last validation attached to the observation
+    last_validation_id_validator = db.session.scalar(
+        sa.select(TValidations.id_validator)
+        .where(TValidations.uuid_attached_row == observation.unique_id_sinp)
+        .order_by(TValidations.validation_date.desc())
+        .limit(1)
+    )
 
-        # Envoi de la notification
-        dispatch_notifications(
-            code_categories=["VALIDATION-DATA-MODIFIED%"],
-            id_roles=[last_validation.id_validator],
-            title="Donnée validée modifiée",
-            url=f"{current_app.config['URL_APPLICATION']}/#/synthese/occurrence/{synthese.id_synthese}",
-            context={
-                "synthese": synthese,
-                "last_validation": last_validation,
-            },
-        )
+    if not last_validation_id_validator:
+        return
 
-        db.session.commit()
+    # Send Notification
+    dispatch_notifications(
+        code_categories=["VALIDATION-DATA-MODIFIED%"],
+        id_roles=[last_validation_id_validator.id_validator],
+        title="Donnée validée modifiée",
+        url=f"{current_app.config['URL_APPLICATION']}/#/synthese/occurrence/{observation.id_synthese}",
+        context={
+            "synthese": observation,
+            "last_validation": last_validation_id_validator,
+        },
+    )
 
-    except Exception:
-        pass
+    db.session.commit()
