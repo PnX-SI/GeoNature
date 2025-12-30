@@ -78,7 +78,7 @@ def list_stations(scope):
     stations = Station.filter_by_params(request.args).where(Station.filter_by_scope(scope=scope))
     stations = stations.order_by(Station.date_min.desc()).options(
         raiseload("*"),
-        joinedload(Station.observers),
+        joinedload(Station.observers).options(joinedload(User.organisme)),
         joinedload(Station.dataset).options(*joinedload_when_scope),
     )
     only = ["observers", "dataset", "+cruved"]
