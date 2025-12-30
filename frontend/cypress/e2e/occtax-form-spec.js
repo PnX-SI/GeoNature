@@ -35,7 +35,7 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
     cy.get("div#toast-container .toast-warning div[role='alert']").should('exist');
   });
 
-  it('should add a marker on map, remove overlay and btn sumbit still disabe', () => {
+  it('should add a marker on map, remove overlay and btn submit still disable', () => {
     // Après un zoom sur la carte suffisant sur la carte et la sélection d'un point ou la sélection d'une géométrie, le recouvrement des champs de saisie n'existe plus
     cy.get(
       'pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in'
