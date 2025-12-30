@@ -174,7 +174,9 @@ class Station(NomenclaturesMixin, db.Model):
         if scope == 0:
             return False
         elif scope in (1, 2):
-            ds_list = Dataset.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
+            ds_list = Dataset.filter_by_scope(scope, user=user).with_only_columns(
+                Dataset.id_dataset
+            )
 
             return sa.or_(
                 Station.observers.any(id_role=user.id_role),
