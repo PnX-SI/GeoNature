@@ -508,10 +508,8 @@ if "VALIDATION" in config:
                     .where(Synthese.entity_source_pk_value == str(id_counting))
                     .where(Synthese.id_module == occtax_id_module)
                 )
-
                 if not synthese_record:
                     continue
-
                 # Verify if the update date is greater than the validation date
                 if (
                     synthese_record.meta_validation_date
