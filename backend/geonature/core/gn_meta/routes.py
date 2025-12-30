@@ -51,6 +51,8 @@ import geonature.utils.filemanager as fm
 
 from ref_geo.models import LAreas
 
+from geonature.utils.flask import safe_get
+
 # FIXME: remove any reference to external modules from GeoNature core
 if "OCCHAB" in config:
     from gn_module_occhab.models import OccurenceHabitat, Station
@@ -484,8 +486,6 @@ def get_export_pdf_dataset(id_dataset, scope):
     return current_app.response_class(pdf_file, content_type="application/pdf")
 
 
-# Pertinent de garder post et get ? On pourrait tout faire en post pour permettre de passer bcp d'arguments
-# ou faire un endpoint get avec pagination et un post /search poutr les recherches complexes
 @routes.route("/acquisition_frameworks", methods=["GET", "POST"])
 @login_required
 def get_acquisition_frameworks():
@@ -496,15 +496,6 @@ def get_acquisition_frameworks():
     Use for AF select in form
     Get the GeoNature CRUVED
     """
-
-    def safe_get(data, key, default=None, type=None):
-        value = data.get(key, default)
-        if value is None:
-            return default
-        try:
-            return type(value) if type else value
-        except (ValueError, TypeError):
-            return default
 
     only = ["+cruved"]
 
