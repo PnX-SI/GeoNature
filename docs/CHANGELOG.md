@@ -2,10 +2,21 @@
 
 ## 2.17.0 (unreleased)
 
+### En bref
+
+- Import Monitoring
+- Constantes d'import
+- Correspondance des utilisateurs
+- Fiche observateurs
+
 ### 🚀 Nouveautés
 
-- [Général] Ajout d'un trigger sur les mises à jour de ref_geo.l_areas permettant la mise à jour automatique de gn_synthese.cor_area_synthese (fix #3814).
-
+- [Général] Ajout d'un trigger sur les mises à jour de ref_geo.l_areas permettant la mise à jour automatique de gn_synthese.cor_area_synthese (#3814).
+- [Import] Ajout des destinations Monitoring et ses sous-modules, permettant de faire des imports dans les sous-modules de suivi du module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457, 
+- [Import] Possibilité de choisir des valeurs constantes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
+- [Import] Possibilité de faire des imports multi-JDD et déplacement de la selection du JDD à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
+- [Import] Ajout d'une étape de mapping des observateurs. Seulement activé sur les imports Monitoring pour le moment ? Et Occhab ? En attendant de clarifier le fonctionnement côté Synthèse (entre le champs texte des observateurs et la table de correspondance..) ? (#3775 par @jacquesfize)
+- [Synthèse] Fiche observateur accessible à chaque utilisateur depuis son compte (#2982 par @edelclaux)
 
 ## 2.16.4 (2025-11-17)
 
