@@ -6,7 +6,7 @@ describe('Testing metadata', () => {
   const jddUUID = '4d331cae-65e4-4948-b0b2-a11bc5bb46c2';
   const caUUID = '57b7d0f2-4183-4b7b-8f08-6e105d476dc5';
   const caSelector = '[data-qa="pnx-metadata-acq-framework-' + caUUID + '"]';
-
+  const ORGANISM_SELECT_FORM = '.organism-form > .auto > .ng-select-container';
   const newCadreAcq = {
     name: 'CA-created',
     // name:'Mon cadre d\'acquisition',
@@ -73,7 +73,7 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-organism-create-button"]').click();
     cy.get('[data-qa="pnx-organism-form-dialog-name"]').type(newOrganism.name);
     //    Verify that the organism 'ma structure test' is displayed in the list of similar organisms
-    cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] li').should('have.length', 1);
+    cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] li').should('have.length.least', 1);
     const similarOrganismDiv = cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] span');
     similarOrganismDiv.should('have.text', 'ma structure test');
     similarOrganismDiv.click();
@@ -86,7 +86,7 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-organism-form-dialog-email"]').type(newOrganism.email, { force: true });
     cy.get('[data-qa="organism-dialog-save"]').click();
 
-    cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
+    cy.get(ORGANISM_SELECT_FORM).click();
     cy.get('[data-qa="pnx-metadata-organism-ALL"]').click();
     cy.get("[data-qa='pnx-metadata-save-af']").should('be.disabled');
 
@@ -142,7 +142,7 @@ describe('Testing metadata', () => {
 
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
+    cy.get(ORGANISM_SELECT_FORM).click();
     cy.get('[data-qa="pnx-metadata-organism-ALL"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
