@@ -54,8 +54,7 @@ def upgrade():
             v.label
         FROM (
             VALUES
-            ('GEONATURE', 'ORGANISM', 'C', False, 'Ajouter des organismes'),
-            ('GEONATURE', 'ORGANISM', 'D', False, 'Supprimer des organismes')
+            ('GEONATURE', 'ORGANISM', 'C', False, 'Ajouter des organismes')
         ) AS v (module_code, object_code, action_code, scope_filter, label)
         JOIN gn_commons.t_modules m ON m.module_code = v.module_code
         JOIN gn_permissions.t_objects o ON o.code_object = v.object_code
