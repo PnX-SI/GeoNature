@@ -16,3 +16,21 @@ form.ng-invalid {
   border-bottom: solid;
   color: black;
 }
+.organism-form{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1em;
+
+  ng-select{
+    flex-grow: 1;
+  }
+  button{
+    border: none;
+    border-radius: 5px;
+    padding-left: 1em;
+    padding-right: 1em;
+
+  }
+}
+
