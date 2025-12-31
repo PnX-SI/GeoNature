@@ -15,7 +15,7 @@ from sqlalchemy.sql import text, select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError
-from werkzeug.datastructures import MultiDict
+from werkzeug.datastructures import MultiDict, TypeConversionDict
 from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
@@ -50,8 +50,6 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 import geonature.utils.filemanager as fm
 
 from ref_geo.models import LAreas
-
-from geonature.utils.flask import safe_get
 
 # FIXME: remove any reference to external modules from GeoNature core
 if "OCCHAB" in config:
@@ -501,7 +499,9 @@ def get_acquisition_frameworks():
 
     # QUERY
     af_list = TAcquisitionFramework.filter_by_readable()
-    params = request.get_json(silent=True) if request.method == "POST" else request.args
+    params = TypeConversionDict(
+        request.get_json(silent=True) if request.method == "POST" else request.args
+    )
     if params:
         params_for_filter = params.copy()
         params_for_filter.pop(
@@ -511,8 +511,8 @@ def get_acquisition_frameworks():
         params_for_filter.pop("page", None)
         af_list = TAcquisitionFramework.filter_by_params(params_for_filter, query=af_list)
 
-    per_page = safe_get(params, "per_page", 50, type=int)
-    page = safe_get(params, "page", 1, type=int)
+    per_page = params.get("per_page", default=50, type=int)
+    page = params.get("page", default=1, type=int)
 
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
         Load(TAcquisitionFramework).raiseload("*"),
@@ -530,17 +530,16 @@ def get_acquisition_frameworks():
             ),
         ),
     )
-
-    if safe_get(params, "datasets", default=False, type=int):
+    if params.get("datasets", default=False, type=int):
         only.extend(
             [
                 "datasets.+cruved",
             ]
         )
-    if safe_get(params, "creator", default=False, type=int):
+    if params.get("creator", default=False, type=int):
         only.append("creator")
         af_list = af_list.options(joinedload(TAcquisitionFramework.creator))
-    if safe_get(params, "actors", default=False, type=int):
+    if params.get("actors", default=False, type=int):
         only.extend(
             [
                 "cor_af_actor",
@@ -554,7 +553,7 @@ def get_acquisition_frameworks():
                 joinedload(CorAcquisitionFrameworkActor.nomenclature_actor_role),
             ),
         )
-        if safe_get(params, "datasets", default=False, type=int):
+        if params.get("datasets", default=False, type=int):
             only.extend(
                 [
                     "datasets.cor_dataset_actor",
