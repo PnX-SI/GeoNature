@@ -45,7 +45,6 @@ describe('Testing metadata', () => {
   });
 
   it('should display "jeu de données"', () => {
-  it('should display "jeu de données"', () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     cy.get('[data-qa="pnx-metadata-jdd-actif-' + jddUUID + '"]').click();
@@ -65,14 +64,13 @@ describe('Testing metadata', () => {
       cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     });
   });
-
   it('should create a new "cadre d\'acquisition"', () => {
     // cy.visit('/#/metadata');
 
     cy.get('[data-qa="pnx-metadata-add-af"]').click();
 
     // Create a new organism, later used for the creation of the new JDD
-    cy.get('pnx-metadata-actor > div > form > button').click();
+    cy.get('[data-qa="pnx-organism-create-button"]').click();
     cy.get('[data-qa="pnx-organism-form-dialog-name"]').type(newOrganism.name);
     //    Verify that the organism 'ma structure test' is displayed in the list of similar organisms
     cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] li').should('have.length', 1);
@@ -242,34 +240,6 @@ describe('Testing metadata', () => {
       .click();
     cy.get('[data-qa="pnx-metadata-dataset-name-' + jdd + '"]').should('be.visible');
     cy.get('[data-qa="pnx-metadata-dataset-name-' + newJdd.name + '"]').should('not.exist');
-  });
-
-  it('should delete the new organism', () => {
-    // Step 1: Get the organism ID
-    let organismId;
-    cy.request({
-      method: 'GET',
-      url: Cypress.env('apiEndpoint') + 'users/organisms',
-    })
-      .then((response) => {
-        const organism = response.body.find((org) => org.nom_organisme === newOrganism.name);
-        expect(organism).to.not.be.undefined;
-        organismId = organism.id_organisme;
-
-        // Step 2: Delete the organism
-        return cy.request({
-          method: 'DELETE',
-          url: Cypress.env('apiEndpoint') + 'users/organism/' + organismId,
-          failOnStatusCode: false,
-        });
-      })
-      .then((deleteResponse) => {
-        expect(deleteResponse.status).to.equal(200);
-        expect(deleteResponse.body).to.have.property('message');
-        expect(deleteResponse.body.message).to.equal(
-          'Organism ' + organismId + ' deleted successfully'
-        );
-      });
   });
 
   it('should delete the new "cadre d\'acquisition"', () => {
