@@ -412,15 +412,33 @@ class AreaAjaxModelLoader(QueryAjaxModelLoader):
             return self.session.get(self.model, pk)
 
     def get_query(self):
-        return (
+        search = request.args.get("query")
+        query = (
             super()
             .get_query()
             .join(LAreas.area_type)
             .where(
                 BibAreasTypes.type_code.in_(config["PERMISSIONS"]["GEOGRAPHIC_FILTER_AREA_TYPES"])
             )
-            .order_by(BibAreasTypes.id_type, LAreas.area_name)
         )
+
+        if search:
+            search = search.strip()
+            score = sa.case(
+                # 1. Match parfait (ex: "Ain")
+                (LAreas.area_name.ilike(search), 1),
+                # 2. Commence par (ex: "Ain - Département")
+                (LAreas.area_name.ilike(f"{search}%"), 2),
+                else_=3,
+            ).label("relevance_score")
+
+            query = query.order_by(
+                score, sa.desc(sa.func.similarity(LAreas.area_name, search)), LAreas.area_name
+            )
+        else:
+            query = query.order_by(BibAreasTypes.id_type, LAreas.area_name)
+
+        return query
 
 
 class TaxrefAjaxModelLoader(QueryAjaxModelLoader):
