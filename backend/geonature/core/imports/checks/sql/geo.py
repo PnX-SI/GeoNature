@@ -88,16 +88,16 @@ def convert_geom_columns(
     file_srid = imprt.srid
     local_srid = db.session.execute(sa.func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()
     dest_srid = None
-    if file_srid == local_srid:
-        # dataframe check defined geom_local, we must use it to define geom_4326
-        source_col = geom_local_field.dest_field
-        dest_col = geom_4326_field.dest_field
-        dest_srid = 4326
-    elif file_srid == 4326:
+    if file_srid == 4326:
         # dataframe check defined geom_4326, we must use it to define geom_local
         source_col = geom_4326_field.dest_field
         dest_col = geom_local_field.dest_field
         dest_srid = local_srid
+    elif file_srid == local_srid:
+        # dataframe check defined geom_local, we must use it to define geom_4326
+        source_col = geom_local_field.dest_field
+        dest_col = geom_4326_field.dest_field
+        dest_srid = 4326
     else:
         # dataframe check has already defined geom_4326 and geom_local
         pass
