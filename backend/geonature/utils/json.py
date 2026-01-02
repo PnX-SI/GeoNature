@@ -29,5 +29,7 @@ class MyJSONProvider(DefaultJSONProvider):
                 "total": o.total,
                 "prev_num": o.prev_num,
                 "next_num": o.next_num,
+                "has_next": o.has_next,
+                "has_prev": o.has_prev,
             }
         return DefaultJSONProvider.default(o)

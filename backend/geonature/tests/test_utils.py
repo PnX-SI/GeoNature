@@ -145,8 +145,20 @@ pagination_schema = {
         "total": {"type": "number"},
         "prev_num": {"type": ["number", "null"]},
         "next_num": {"type": ["number", "null"]},
+        "has_next": {"type": "boolean"},
+        "has_prev": {"type": "boolean"},
     },
-    "required": ["items", "page", "per_page", "pages", "total", "prev_num", "next_num"],
+    "required": [
+        "items",
+        "page",
+        "per_page",
+        "pages",
+        "total",
+        "prev_num",
+        "next_num",
+        "has_next",
+        "has_prev",
+    ],
 }
 
 
