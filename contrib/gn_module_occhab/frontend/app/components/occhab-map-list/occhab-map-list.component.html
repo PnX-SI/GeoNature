@@ -4,17 +4,20 @@
 ></div>
 
 <div class="float-btns">
-  <button
-    id="add-btn"
-    mat-raised-button
-    color="primary"
-    class="button-success hard-shadow btn-action uppercase"
-    [routerLink]="['add']"
-    matTooltip="Ajouter une nouvelle station d'habitat"
-  >
-    {{ 'Actions.Add' | translate }}
-    <mat-icon>add_circle_outline</mat-icon>
-  </button>
+  <ng-container *ngIf="userCruved?.C != '0'">
+    <a
+      id="add-btn"
+      mat-raised-button
+      color="primary"
+      class="button-success hard-shadow btn-action uppercase"
+      [routerLink]="['add']"
+      matTooltip="Ajouter une nouvelle station d'habitat"
+    >
+      {{ 'Actions.Add' | translate }}
+      <mat-icon>add_circle_outline</mat-icon>
+    </a>
+  </ng-container>
+
   <button
     (click)="isCollapseFilter = !isCollapseFilter"
     [attr.aria-expanded]="!isCollapseFilter"
@@ -142,8 +145,8 @@
                 let-row="row"
                 ngx-datatable-cell-template
               >
-                <a
-                  class="link-dark"
+                <button
+                  class="btn btn-row"
                   [matTooltip]="row.id_station"
                   [routerLink]="['info', row.id_station]"
                 >
@@ -151,7 +154,7 @@
                     class="fa fa-info-circle"
                     aria-hidden="true"
                   ></i>
-                </a>
+                </button>
               </ng-template>
             </ngx-datatable-column>
 
@@ -163,8 +166,8 @@
                 let-row="row"
                 ngx-datatable-cell-template
               >
-                <a
-                  class="link-dark"
+                <button
+                  class="btn btn-row"
                   [routerLink]="['edit', row.id_station]"
                   [disabled]="!row.cruved.U"
                 >
@@ -172,7 +175,7 @@
                     class="fa fa-pencil-square-o"
                     aria-hidden="true"
                   ></i>
-                </a>
+                </button>
               </ng-template>
             </ngx-datatable-column>
 
@@ -184,8 +187,8 @@
                 let-row="row"
                 ngx-datatable-cell-template
               >
-                <a
-                  class="link-dark"
+                <button
+                  class="btn btn-row"
                   (click)="openDeleteModal(row, deleteModal)"
                   [disabled]="!row.cruved.D"
                 >
@@ -193,7 +196,7 @@
                     class="fa fa-trash-o"
                     aria-hidden="true"
                   ></i>
-                </a>
+                </button>
               </ng-template>
             </ngx-datatable-column>
 
@@ -254,16 +257,18 @@
           </button>
         </div>
         <div class="col-auto">
-          <button
-            id="download-btn"
-            mat-raised-button
-            color="primary"
-            class="btn-action uppercase"
-            (click)="openModal()"
-          >
-            {{ 'Actions.Download' | translate }}
-            <mat-icon>file_download</mat-icon>
-          </button>
+          <ng-container *ngIf="userCruved?.E != '0'">
+            <a
+              id="download-btn"
+              mat-raised-button
+              color="primary"
+              class="btn-action uppercase"
+              (click)="openModal()"
+            >
+              {{ 'Actions.Download' | translate }}
+              <mat-icon>file_download</mat-icon>
+            </a>
+          </ng-container>
         </div>
       </div>
     </div>

@@ -187,35 +187,20 @@
               let-row="row"
               ngx-datatable-cell-template
             >
-              <ng-container *ngIf="row.rights.U; else disabledEditBlc">
-                <a
-                  data-qa="edit-releve"
-                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
-                  [routerLink]="['form/releve', row.id_releve_occtax]"
-                >
-                  <i
-                    matTooltip="{{ 'Occtax.Releve.Actions.Edit' | translate }} {{
-                      row.id_releve_occtax
-                    }}"
-                    class="fa fa-pencil-square-o"
-                    aria-hidden="true"
-                  ></i>
-                </a>
-              </ng-container>
-              <ng-template #disabledEditBlc>
-                <button
-                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
-                  disabled="true"
-                >
-                  <i
-                    class="fa fa-pencil-square-o disabled"
-                    matTooltip="{{ 'Occtax.Releve.Actions.Edit' | translate }} {{
-                      row.id_releve_occtax
-                    }}"
-                    aria-hidden="true"
-                  ></i>
-                </button>
-              </ng-template>
+              <button
+                class="btn btn-row"
+                [routerLink]="['form/releve', row.id_releve_occtax]"
+                [disabled]="!row.rights.U"
+                data-qa="edit-releve"
+              >
+                <i
+                  matTooltip="{{ 'Occtax.Releve.Actions.Edit' | translate }} {{
+                    row.id_releve_occtax
+                  }}"
+                  class="fa fa-pencil-square-o"
+                  aria-hidden="true"
+                ></i>
+              </button>
             </ng-template>
           </ngx-datatable-column>
 
@@ -224,30 +209,18 @@
               let-row="row"
               ngx-datatable-cell-template
             >
-              <ng-container *ngIf="row.rights.R; else disabledInfoBlc">
-                <a
-                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
-                  [routerLink]="['info', row.id_releve_occtax]"
-                >
-                  <i
-                    matTooltip="{{ 'Occtax.Releve.Info' | translate }} {{ row.id_releve_occtax }}"
-                    class="fa fa-info-circle"
-                    aria-hidden="true"
-                  ></i>
-                </a>
-              </ng-container>
-              <ng-template #disabledInfoBlc>
-                <button
-                  class="btn btn-outline-shadow btn-no-padding btn-ghost"
-                  disabled="true"
-                >
-                  <i
-                    class="fa fa-info-circle disabled"
-                    matTooltip="{{ 'Releve.Info' | translate }} {{ row.id_releve_occtax }}"
-                    aria-hidden="true"
-                  ></i>
-                </button>
-              </ng-template>
+              <button
+                class="btn btn-row"
+                [matTooltip]="row.id_station"
+                [routerLink]="['info', row.id_releve_occtax]"
+                [disabled]="!row.rights.R"
+              >
+                <i
+                  matTooltip="{{ 'Occtax.Releve.Info' | translate }} {{ row.id_releve_occtax }}"
+                  class="fa fa-info-circle"
+                  aria-hidden="true"
+                ></i>
+              </button>
             </ng-template>
           </ngx-datatable-column>
 
@@ -258,7 +231,7 @@
               ngx-datatable-cell-template
             >
               <button
-                class="btn btn-outline-shadow btn-no-padding btn-ghost"
+                class="btn btn-row"
                 [disabled]="!row.rights.D"
                 (click)="openDeleteModal($event, modalConfirm, iElement, row)"
                 data-qa="pnx-occtax-delete-taxa"
