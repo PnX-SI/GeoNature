@@ -11,6 +11,31 @@ else:  # retro-compatibility SQLAlchemy 1.3
     from sqlalchemy.engine import RowProxy as Row
 
 
+from contextlib import contextmanager
+
+
+@contextmanager
+def pagination_schema(schema):
+    """
+    Context manager to set the pagination schema for a given model.
+
+    Parameters
+    ----------
+    schema : Model schema to use for pagination.
+
+    Notes
+    -----
+    Usage:
+        with pagination_schema(UserSchema):
+            return jsonify(pagination)
+    """
+    g.pagination_schema = schema
+    try:
+        yield
+    finally:
+        g.pop("pagination_schema", None)
+
+
 class MyJSONProvider(DefaultJSONProvider):
     @staticmethod
     def default(o):

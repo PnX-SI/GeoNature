@@ -29,6 +29,7 @@ from geonature.core.gn_synthese.models import (
 )
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.utils.errors import GeoNatureError
+from geonature.utils.json import pagination_schema
 
 from pypnnomenclature.models import TNomenclatures
 
@@ -583,15 +584,15 @@ def get_acquisition_frameworks():
             "has_next": False,
             "has_prev": False,
         }
+        return jsonify(result)
     else:
-        g.pagination_schema = af_schema
         result = db.paginate(
             select=af_list,
             page=page,
             per_page=per_page,
         )
-
-    return jsonify(result)
+        with pagination_schema(af_schema):
+            return jsonify(result)
 
 
 @routes.route(
