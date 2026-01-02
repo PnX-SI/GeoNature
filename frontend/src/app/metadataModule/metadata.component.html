@@ -213,8 +213,8 @@
           </ng-container>
         </mat-accordion>
         <mat-paginator
-          [length]="totalItems"
-          [pageSize]="metadataService.pageSize.value"
+          [length]="metadataService.totalItems | async"
+          [pageSize]="metadataService.pageSize | async"
           [pageSizeOptions]="metadataService.pageSizeOptions"
           [pageIndex]="metadataService.currentPage - 1"
           (page)="changePaginator($event)"
