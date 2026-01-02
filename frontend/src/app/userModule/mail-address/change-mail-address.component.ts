@@ -29,7 +29,7 @@ export class ChangeMailAddressComponent implements OnInit {
 
   initForm() {
     this.form = this.fb.group({
-      new_email: ['', [Validators.required, Validators.email]],
+      new_mail: ['', [Validators.required, Validators.email]],
     });
   }
 

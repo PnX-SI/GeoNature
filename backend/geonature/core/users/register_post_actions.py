@@ -211,3 +211,22 @@ def send_email_for_recovery(user):
     subject = "Confirmation changement Identifiant / mot de passe"
     send_mail([user.email], subject, msg_html)
     return True
+
+
+def send_email_for_mail_change(new_mail: str, user: User):
+    if not user:
+        raise KeyError(f"No user was given")
+    if not new_mail:
+        raise KeyError(f"No mail was given")
+
+    msg_html = render_template(
+        "email_mail_change.html",
+        identifiant=user.identifiant,
+        new_mail=new_mail,
+        old_mail=user.email,
+        url_new_mail=current_app.config["URL_APPLICATION"]
+        + f"/#/user/new-mail?new_mail={new_mail}&user={user.id_role}",
+    )
+    subject = "Confirmation changement adresse mail"
+    send_mail(new_mail, subject, msg_html)
+    return

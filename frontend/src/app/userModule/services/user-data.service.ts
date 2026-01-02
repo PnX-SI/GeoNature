@@ -41,8 +41,24 @@ export class UserDataService {
       })
     );
   }
+
   requestEmailChange(data: any): Observable<any> {
-    return of({ success: true, msg: 'Email change request simulated' });
+    return this._http.put<any>(`${this.config.API_ENDPOINT}/users/mail/change`, data).pipe(
+      map((res: Role) => {
+        return res;
+      })
+    );
+  }
+  validateEmailChange(newMail: string, userId: string): Observable<any> {
+    const data = {
+      new_mail: newMail,
+      user: userId,
+    };
+    return this._http.put<any>(`${this.config.API_ENDPOINT}/users/mail/new`, data).pipe(
+      map((res: Role) => {
+        return res;
+      })
+    );
   }
   putPassword(role: Role): Observable<any> {
     const options = role;

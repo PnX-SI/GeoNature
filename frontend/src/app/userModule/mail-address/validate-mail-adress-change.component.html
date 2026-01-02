@@ -1,0 +1,34 @@
+<div class="container-fluid d-flex justify-content-center align-items-center vh-100">
+  <div class="card card-page shadow-lg">
+    <div class="card-body text-center p-5">
+      <h3>Changement d'adresse mail</h3>
+      <br />
+      <div *ngIf="loading">
+        <i class="fa fa-spinner fa-spin fa-3x fa-fw mb-3 text-primary"></i>
+        <p class="mb-0">Validation de votre nouvelle adresse email en cours...</p>
+      </div>
+
+      <div
+        *ngIf="!loading && !hasError"
+        class="alert alert-success mb-0"
+      >
+        <i class="fa fa-check-circle mb-2 d-block fa-2x"></i>
+        Votre adresse email a été validée avec succès.
+        <br />
+        Redirection en cours...
+        <i class="fa fa-spinner fa-spin fa-fw mb-3 text-success"></i>
+      </div>
+
+      <div
+        *ngIf="hasError"
+        class="alert alert-danger mb-0"
+      >
+        <i class="fa fa-times-circle mb-2 d-block fa-2x"></i>
+        Une erreur s'est produite
+        <br />
+        Redirection en cours...
+        <i class="fa fa-spinner fa-spin fa-fw mb-3 text-error"></i>
+      </div>
+    </div>
+  </div>
+</div>

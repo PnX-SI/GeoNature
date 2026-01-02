@@ -28,7 +28,7 @@
     <form [formGroup]="form">
       <div class="form-group row">
         <label
-          for="new_email"
+          for="new_mail"
           class="col-sm-5 col-form-label text-right"
         >
           Nouvelle adresse email
@@ -37,18 +37,18 @@
           <input
             type="email"
             class="form-control"
-            id="new_email"
+            id="new_mail"
             placeholder="Nouvelle adresse email"
-            formControlName="new_email"
+            formControlName="new_mail"
           />
           <small
-            *ngIf="form.get('new_email').hasError('required') && form.get('new_email').touched"
+            *ngIf="form.get('new_mail').hasError('required') && form.get('new_mail').touched"
             class="text-danger"
           >
             Ce champ est nécessaire
           </small>
           <small
-            *ngIf="form.get('new_email').hasError('email') && form.get('new_email').touched"
+            *ngIf="form.get('new_mail').hasError('email') && form.get('new_mail').touched"
             class="text-danger"
           >
             Format d'email invalide
