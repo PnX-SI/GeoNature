@@ -1,12 +1,7 @@
-import datetime
-
 import sqlalchemy as sa
-import re
 from flask import g
 from geonature.core.gn_permissions.tools import get_scopes_by_action
-from geonature.utils.env import DB, db
 from pypnnomenclature.models import TNomenclatures
-from pypnusershub.db.models import User
 from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -277,6 +272,7 @@ class TAcquisitionFramework(db.Model):
         uuid = params.get("uuid")
         name = params.get("name")
         date = params.get("date")
+        is_parent = params.get("is_parent")
         query = (
             query.where(
                 TAcquisitionFramework.unique_acquisition_framework_id == uuid if uuid else True
@@ -287,6 +283,7 @@ class TAcquisitionFramework(db.Model):
                 else True
             )
             .where(TAcquisitionFramework.acquisition_framework_start_date == date if date else True)
+            .where(TAcquisitionFramework.is_parent == is_parent if is_parent is not None else True)
         )
 
         actors = []

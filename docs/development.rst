@@ -867,13 +867,14 @@ Voici quelques conseils sur l’envoi de réponse dans vos routes.
 
 - Renvoyer une liste et sa longueur dans une structure de données non conventionnelle est strictement inutile, il est très simple d’accéder à la longueur de la liste en javascript via l’attribut ``length``.
 
-- Pagination : Flask-SQLAlchemy fournit l’utilitaire `db.paginate <https://flask-sqlalchemy.readthedocs.io/en/stable/api/#flask_sqlalchemy.SQLAlchemy.paginate>`_. Notons qu’il n’est pas nécessaire de récupérer les paramètres ``page`` et ``per_page`` de la requête puisque cela est fait automatiquement par ``db.paginate``. Par ailleurs, l’objet `Pagination <https://flask-sqlalchemy.readthedocs.io/en/stable/api/#flask_sqlalchemy.pagination.Pagination>`_ créé par ``db.paginate`` peut directement être renvoyé passé à ``jsonify`` par votre route ; il sera sérialisé dans `une structure commune à l’ensemble de l’application <https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/utils/json.py>`_. Ce mécanisme nécessite que le schéma Marshmallow nécessaire à la sérialisation des objets paginés soit indiqué dans la variable ``g.pagination_schema``. À défaut, GeoNature essayera d’appeler la méthode ``as_dict()`` sur vos objets.
-    .. code-block:: python
+- Pagination : Flask-SQLAlchemy fournit l’utilitaire `db.paginate <https://flask-sqlalchemy.readthedocs.io/en/stable/api/#flask_sqlalchemy.SQLAlchemy.paginate>`_. Notons qu’il n’est pas nécessaire de récupérer les paramètres ``page`` et ``per_page`` de la requête puisque cela est fait automatiquement par ``db.paginate``. Par ailleurs, l’objet `Pagination <https://flask-sqlalchemy.readthedocs.io/en/stable/api/#flask_sqlalchemy.pagination.Pagination>`_ créé par ``db.paginate`` peut directement être renvoyé passé à ``jsonify`` par votre route ; il sera sérialisé dans `une structure commune à l’ensemble de l’application <https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/utils/json.py>`_. Ce mécanisme nécessite que le schéma Marshmallow nécessaire à la sérialisation des objets paginés soit indiqué dans la variable ``g.pagination_schema``. Pour cela, vous pouvez utiliser la fonction ``pagination_schema`` qui crée un contexte et stocke le schéma de sérialisation dans la variable ``g.pagination_schema`` et le supprime après. Sinon, modifiez la variable ``g.pagination_schema`` manuellement. À défaut, GeoNature essayera d’appeler la méthode ``as_dict()`` sur vos objets.
 
+    .. code-block:: python
+        from geonature.utils.json import pagination_schema
         def my_route():
             query = sa.select(Item).where(Item.a.like("%foo%"))
-            g.pagination_schema = ItemSchema(only=["a", "b"])
-            return jsonify(db.paginate(query))
+            with pagination_schema(ItemSchema(only=["a", "b"])):
+                return jsonify(db.paginate(query))
 
 - Traitement des erreurs : utiliser `les exceptions prévues à cet effet <https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/>`_ :
     .. code-block:: python

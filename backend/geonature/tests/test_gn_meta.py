@@ -14,7 +14,6 @@ from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
     cruved_ds_filter,
-    get_metadata_list,
 )
 from geonature.core.gn_meta.routes import get_af_from_id
 from geonature.core.gn_meta.schemas import DatasetSchema
@@ -145,6 +144,228 @@ def get_csv_from_response(data):
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGNMeta:
+
+    class TestGetAcquisitionFrameworkRoute:
+        def test_get_acquisition_frameworks(self, users):
+            acquisition_frameworks_url = url_for("gn_meta.get_acquisition_frameworks")
+            response = self.client.get(acquisition_frameworks_url)
+            assert response.status_code == Unauthorized.code
+
+            set_logged_user(self.client, users["admin_user"])
+            response = self.client.get(acquisition_frameworks_url)
+
+            assert response.status_code == 200
+            response = self.client.get(
+                acquisition_frameworks_url,
+                query_string={
+                    "datasets": "1",
+                    "creator": "1",
+                    "actors": "1",
+                },
+            )
+            assert response.status_code == 200
+
+        def test_get_acquisition_frameworks_list(self, users):
+            acquisition_frameworks_url = url_for("gn_meta.get_acquisition_frameworks")
+            response = self.client.get(acquisition_frameworks_url)
+            assert response.status_code == Unauthorized.code
+
+            set_logged_user(self.client, users["admin_user"])
+
+            response = self.client.get(acquisition_frameworks_url)
+            assert response.status_code == 200
+
+        def test_filter_acquisition_by_geo(self, synthese_data, users, commune_without_obs):
+            # security test already passed in previous tests
+            set_logged_user(self.client, users["admin_user"])
+            acquisition_frameworks_url = url_for("gn_meta.get_acquisition_frameworks")
+
+            # get 2 synthese observations in two differents AF and two differents communes
+            s1, s2 = synthese_data["p1_af1"], synthese_data["p3_af3"]
+            comm1, comm2 = getCommBySynthese(s1), getCommBySynthese(s2)
+
+            # prerequisite for the test:
+            assert (
+                s1.dataset.acquisition_framework != s2.dataset.acquisition_framework
+            )  # prerequisite for the test
+            assert comm1 != comm2
+
+            # search metadata in first commune
+            response = self.client.post(
+                acquisition_frameworks_url,
+                json={"areas": [comm1.id_area]},
+            )
+            ids = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert s1.dataset.id_acquisition_framework in ids
+            assert s2.dataset.id_acquisition_framework not in ids
+
+            # will test if an other CA is correctly return for an other synthese with diff location
+            # get commune for this id synthese
+            response = self.client.post(
+                acquisition_frameworks_url,
+                json={"areas": [comm2.id_area]},
+            )
+            ids = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert s1.dataset.id_acquisition_framework not in ids
+            assert s2.dataset.id_acquisition_framework in ids
+
+            # test no response if a commune have observations
+            response = self.client.post(
+                acquisition_frameworks_url,
+                json={"areas": [commune_without_obs.id_area]},
+            )
+            resp = response.json["items"]
+            # will return empty response
+            assert len(resp) == 0
+
+        def test_get_acquisition_framework(self, users, acquisition_frameworks):
+            af_id = acquisition_frameworks["orphan_af"].id_acquisition_framework
+            get_af_url = url_for(
+                "gn_meta.get_acquisition_framework", id_acquisition_framework=af_id
+            )
+
+            response = self.client.get(get_af_url)
+            assert response.status_code == Unauthorized.code
+
+            set_logged_user(self.client, users["self_user"])
+            response = self.client.get(get_af_url)
+            assert response.status_code == Forbidden.code
+
+            set_logged_user(self.client, users["admin_user"])
+            response = self.client.get(get_af_url)
+            assert response.status_code == 200
+
+        @pytest.mark.skip(reason="Problem with CI")
+        def test_get_acquisition_framework_add_only(self, users):
+            set_logged_user(self.client, users["admin_user"])
+            get_af_url = url_for(
+                "gn_meta.get_acquisition_frameworks", datasets=1, creator=1, actors=1
+            )
+
+            response = self.client.get(get_af_url)
+            assert response.status_code == 200
+            assert len(response.json) > 1
+            data = response.json["items"]
+            assert DatasetSchema(many=True).validate(data)
+            assert UserSchema().validate(data[0]["creator"])
+            assert all(["cor_af_actor" in af for af in data])
+
+        def test_get_acquisition_frameworks_search_af_name(
+            self, users, acquisition_frameworks, datasets
+        ):
+            set_logged_user(self.client, users["admin_user"])
+            af1 = acquisition_frameworks["af_1"]
+            af2 = acquisition_frameworks["af_2"]
+
+            get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+
+            response = self.client.post(get_af_url, json={"search": af1.acquisition_framework_name})
+            print(response.status_code)
+            print(response.json)
+            af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert af1.id_acquisition_framework in af_list
+            assert af2.id_acquisition_framework not in af_list
+
+        def test_get_acquisition_frameworks_search_ds_name(
+            self, users, acquisition_frameworks, datasets
+        ):
+            set_logged_user(self.client, users["admin_user"])
+            ds = datasets["belong_af_1"]
+            af1 = acquisition_frameworks["af_1"]
+            af2 = acquisition_frameworks["af_2"]
+            get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+
+            response = self.client.post(get_af_url, json={"search": ds.dataset_name})
+            assert response.status_code == 200
+
+            af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert af1.id_acquisition_framework in af_list
+            assert af2.id_acquisition_framework not in af_list
+
+        def test_get_acquisition_frameworks_search_af_uuid(self, users, acquisition_frameworks):
+            set_logged_user(self.client, users["admin_user"])
+
+            af1 = acquisition_frameworks["af_1"]
+
+            response = self.client.post(
+                url_for("gn_meta.get_acquisition_frameworks"),
+                json={"search": str(af1.unique_acquisition_framework_id)[:5]},
+            )
+
+            assert {af["id_acquisition_framework"] for af in response.json["items"]} == {
+                af1.id_acquisition_framework
+            }
+
+        def test_acquisition_framework_pagination(self, users):
+            """Test la pagination de la route acquisition_frameworks"""
+            acquisition_frameworks_url = url_for("gn_meta.get_acquisition_frameworks")
+            # Créer plusieurs AFs pour tester la pagination
+            for i in range(55):  # Créer 55 AFs pour tester sur plusieurs pages
+                af = TAcquisitionFramework(
+                    acquisition_framework_name=f"Test AF {i}",
+                    acquisition_framework_desc="Test description",
+                    id_digitizer=users["admin_user"].id_role,
+                )
+                db.session.add(af)
+            db.session.commit()
+            set_logged_user(self.client, users["admin_user"])
+            # Test pagination par défaut (50 éléments par page)
+            response = self.client.get(acquisition_frameworks_url)
+            assert response.status_code == 200
+            data = response.get_json()
+            assert len(data["items"]) == 50  # Vérifie le nombre d'éléments par défaut
+            assert data["page"] == 1
+            assert data["has_next"] == True
+            assert data["has_prev"] == False
+            assert data["per_page"] == 50
+
+            response = self.client.get(f"{acquisition_frameworks_url}?page=2")
+            assert response.status_code == 200
+            data = response.get_json()
+            assert len(data["items"]) >= 5
+            assert data["page"] == 2
+            assert data["has_next"] == False
+            assert data["has_prev"] == True
+
+            # Test personnalisation du nombre d'éléments par page
+            response = self.client.get(f"{acquisition_frameworks_url}?per_page=10")
+            assert response.status_code == 200
+            data = response.get_json()
+            assert len(data["items"]) == 10
+            assert data["per_page"] == 10
+            assert data["has_next"] == True
+
+            # Test récupération de tous les éléments (per_page=-1)
+            response = self.client.get(f"{acquisition_frameworks_url}?per_page=-1")
+            assert response.status_code == 200
+            data = response.get_json()
+            assert len(data["items"]) >= 55
+            assert data["page"] == 1
+            assert data["has_next"] == False
+            assert data["has_prev"] == False
+            assert data["pages"] == 1
+
+            # Test page inexistante
+            response = self.client.get(f"{acquisition_frameworks_url}?page=999")
+            assert response.status_code == 404
+
+        def test_get_acquisition_frameworks_search_af_date(self, users, acquisition_frameworks):
+            set_logged_user(self.client, users["admin_user"])
+
+            af1 = acquisition_frameworks["af_1"]
+
+            response = self.client.post(
+                url_for("gn_meta.get_acquisition_frameworks"),
+                json={"search": af1.acquisition_framework_start_date.strftime("%d/%m/%Y")},
+            )
+            assert response.status_code == 200
+
+            expected = {af1.id_acquisition_framework}
+            assert expected.issubset(
+                {af["id_acquisition_framework"] for af in response.json["items"]}
+            )
+            # TODO check another AF with another start_date (and no DS at search date) is not returned
+
     def test_acquisition_frameworks_permissions(self, app, acquisition_frameworks, datasets, users):
         af = acquisition_frameworks["own_af"]
         with app.test_request_context(headers=logged_user_headers(users["user"])):
@@ -379,186 +600,6 @@ class TestGNMeta:
             response.json["description"]
             == f"User {self_user.identifiant} cannot update acquisition framework {af.id_acquisition_framework}"
         )
-
-    def test_get_acquisition_frameworks(self, users):
-        response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
-        assert response.status_code == Unauthorized.code
-
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
-        response = self.client.get(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            query_string={
-                "datasets": "1",
-                "creator": "1",
-                "actors": "1",
-            },
-        )
-        assert response.status_code == 200
-
-    def test_get_acquisition_frameworks_list(self, users):
-        response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
-        assert response.status_code == Unauthorized.code
-
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
-        assert response.status_code == 200
-
-    def test_filter_acquisition_by_geo(self, synthese_data, users, commune_without_obs):
-        # security test already passed in previous tests
-        set_logged_user(self.client, users["admin_user"])
-
-        # get 2 synthese observations in two differents AF and two differents communes
-        s1, s2 = synthese_data["p1_af1"], synthese_data["p3_af3"]
-        comm1, comm2 = getCommBySynthese(s1), getCommBySynthese(s2)
-
-        # prerequisite for the test:
-        assert (
-            s1.dataset.acquisition_framework != s2.dataset.acquisition_framework
-        )  # prerequisite for the test
-        assert comm1 != comm2
-
-        # search metadata in first commune
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [comm1.id_area]},
-        )
-        ids = [af["id_acquisition_framework"] for af in response.json]
-        assert s1.dataset.id_acquisition_framework in ids
-        assert s2.dataset.id_acquisition_framework not in ids
-
-        # will test if an other CA is correctly return for an other synthese with diff location
-        # get commune for this id synthese
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [comm2.id_area]},
-        )
-        ids = [af["id_acquisition_framework"] for af in response.json]
-        assert s1.dataset.id_acquisition_framework not in ids
-        assert s2.dataset.id_acquisition_framework in ids
-
-        # test no response if a commune have observations
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [commune_without_obs.id_area]},
-        )
-        resp = response.json
-        # will return empty response
-        assert len(resp) == 0
-
-    def test_get_acquisition_frameworks_list_excluded_fields(self, users):
-        excluded = ["id_acquisition_framework", "id_digitizer"]
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(
-            url_for("gn_meta.get_acquisition_frameworks_list"),
-            query_string={"excluded_fields": ",".join(excluded), "nested": "true"},
-        )
-
-        for field in excluded:
-            assert all(field not in list(dic.keys()) for dic in response.json)
-
-    def test_get_acquisition_frameworks_list_excluded_fields_not_nested(self, users):
-        excluded = ["id_acquisition_framework", "id_digitizer"]
-
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(
-            url_for("gn_meta.get_acquisition_frameworks_list"),
-            query_string={"excluded_fields": ",".join(excluded), "nested": "true"},
-        )
-
-        # Test if a relationship is ignored
-        assert all("creator" not in dic for dic in response.json)
-
-    def test_get_acquisition_framework(self, users, acquisition_frameworks):
-        af_id = acquisition_frameworks["orphan_af"].id_acquisition_framework
-        get_af_url = url_for("gn_meta.get_acquisition_framework", id_acquisition_framework=af_id)
-
-        response = self.client.get(get_af_url)
-        assert response.status_code == Unauthorized.code
-
-        set_logged_user(self.client, users["self_user"])
-        response = self.client.get(get_af_url)
-        assert response.status_code == Forbidden.code
-
-        set_logged_user(self.client, users["admin_user"])
-        response = self.client.get(get_af_url)
-        assert response.status_code == 200
-
-    @pytest.mark.skip(reason="Problem with CI")
-    def test_get_acquisition_framework_add_only(self, users):
-        set_logged_user(self.client, users["admin_user"])
-        get_af_url = url_for("gn_meta.get_acquisition_frameworks", datasets=1, creator=1, actors=1)
-
-        response = self.client.get(get_af_url)
-        assert response.status_code == 200
-        assert len(response.json) > 1
-        data = response.json
-        assert DatasetSchema(many=True).validate(data)
-        assert UserSchema().validate(data[0]["creator"])
-        assert all(["cor_af_actor" in af for af in data])
-
-    def test_get_acquisition_frameworks_search_af_name(
-        self, users, acquisition_frameworks, datasets
-    ):
-        set_logged_user(self.client, users["admin_user"])
-        af1 = acquisition_frameworks["af_1"]
-        af2 = acquisition_frameworks["af_2"]
-        get_af_url = url_for("gn_meta.get_acquisition_frameworks")
-
-        response = self.client.post(get_af_url, json={"search": af1.acquisition_framework_name})
-
-        af_list = [af["id_acquisition_framework"] for af in response.json]
-        assert af1.id_acquisition_framework in af_list
-        assert af2.id_acquisition_framework not in af_list
-
-    def test_get_acquisition_frameworks_search_ds_name(
-        self, users, acquisition_frameworks, datasets
-    ):
-        set_logged_user(self.client, users["admin_user"])
-        ds = datasets["belong_af_1"]
-        af1 = acquisition_frameworks["af_1"]
-        af2 = acquisition_frameworks["af_2"]
-        get_af_url = url_for("gn_meta.get_acquisition_frameworks")
-
-        response = self.client.post(get_af_url, json={"search": ds.dataset_name})
-        assert response.status_code == 200
-
-        af_list = [af["id_acquisition_framework"] for af in response.json]
-        assert af1.id_acquisition_framework in af_list
-        assert af2.id_acquisition_framework not in af_list
-
-    def test_get_acquisition_frameworks_search_af_uuid(self, users, acquisition_frameworks):
-        set_logged_user(self.client, users["admin_user"])
-
-        af1 = acquisition_frameworks["af_1"]
-
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={"search": str(af1.unique_acquisition_framework_id)[:5]},
-        )
-
-        assert {af["id_acquisition_framework"] for af in response.json} == {
-            af1.id_acquisition_framework
-        }
-
-    def test_get_acquisition_frameworks_search_af_date(self, users, acquisition_frameworks):
-        set_logged_user(self.client, users["admin_user"])
-
-        af1 = acquisition_frameworks["af_1"]
-
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={"search": af1.acquisition_framework_start_date.strftime("%d/%m/%Y")},
-        )
-        assert response.status_code == 200
-
-        expected = {af1.id_acquisition_framework}
-        assert expected.issubset({af["id_acquisition_framework"] for af in response.json})
-        # TODO check another AF with another start_date (and no DS at search date) is not returned
 
     def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
         af_id = acquisition_frameworks["orphan_af"].id_acquisition_framework
@@ -1330,6 +1371,3 @@ class TestRepository:
         assert not cruved_af_filter(
             acquisition_frameworks["associate_af"], users["stranger_user"], 1
         )
-
-    def test_metadata_list(self):
-        get_metadata_list

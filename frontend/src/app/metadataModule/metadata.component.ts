@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, combineLatest } from 'rxjs';
 import { map, distinctUntilChanged, debounceTime, tap, switchMap, startWith } from 'rxjs/operators';
 import { omitBy } from 'lodash';
@@ -56,7 +56,8 @@ export class MetadataComponent implements OnInit {
     private modal: NgbModal,
     public metadataService: MetadataService,
     private _commonService: CommonService,
-    public config: ConfigService
+    public config: ConfigService,
+    public dateParser: NgbDateParserFormatter
   ) {}
 
   ngOnInit() {
@@ -68,14 +69,10 @@ export class MetadataComponent implements OnInit {
     this.afPublishModalContent = this.config.METADATA.CLOSED_MODAL_CONTENT;
 
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
-    this.acquisitionFrameworks = combineLatest(
-      this.metadataService.acquisitionFrameworks.pipe(distinctUntilChanged()),
-      this.metadataService.pageIndex.asObservable().pipe(distinctUntilChanged()),
-      this.metadataService.pageSize.asObservable().pipe(distinctUntilChanged())
-    ).pipe(
-      map(([afs, pageIndex, pageSize]) => {
+    this.acquisitionFrameworks = this.metadataService.acquisitionFrameworks.pipe(
+      distinctUntilChanged(),
+      tap((afs) => {
         this.acquisitionFrameworksLength = afs.length;
-        return afs.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
       })
     );
 
@@ -89,13 +86,17 @@ export class MetadataComponent implements OnInit {
         tap((term) => {
           if (term !== null) {
             if (term === '') {
-              delete this.searchTerms.search;
+              this.metadataService.form.patchValue({ search: null });
             } else {
-              this.searchTerms = { ...this.searchTerms, search: this.rapidSearchControl.value };
+              this.metadataService.form.patchValue({ search: term });
             }
           }
         }),
-        switchMap(() => this.metadataService.search(this.searchTerms))
+        switchMap(() => {
+          this.metadataService.changePage(0);
+          this.paginator?.firstPage(); // required
+          return this.metadataService.search(true);
+        })
       )
       .subscribe(() => {
         return;
@@ -119,10 +120,23 @@ export class MetadataComponent implements OnInit {
   refreshFilters() {
     this.metadataService.resetForm();
     this.rapidSearchControl.reset();
-    this.advancedSearch();
+    this.paginator?.firstPage();
+    this.metadataService.changePage(0);
+    this.metadataService.search();
     this.metadataService.expandAccordions = false;
   }
 
+  formatFormValue(formValue): any {
+    const formatedForm = {};
+    Object.keys(formValue).forEach((key) => {
+      if (key == 'date' && formValue['date']) {
+        formatedForm['date'] = this.dateParser.format(formValue['date']);
+      } else if (formValue[key]) {
+        formatedForm[key] = formValue[key];
+      }
+    });
+    return formatedForm;
+  }
   private advancedSearch() {
     let formValues = Object.fromEntries(
       Object.entries(this.metadataService.form.value).filter(([_, v]) => v != null)
@@ -145,9 +159,15 @@ export class MetadataComponent implements OnInit {
         search: this.rapidSearchControl.value,
       }),
     };
+
+    this.searchTerms = this.formatFormValue(this.searchTerms);
+
     this.metadataService.form.patchValue(this.searchTerms);
-    this.metadataService.formatFormValue(Object.assign({}, formValues));
-    this.metadataService.getMetadata(this.searchTerms);
+    this.paginator?.firstPage();
+    this.metadataService.changePage(0);
+    this.metadataService.search().subscribe(() => {
+      return;
+    });
   }
 
   openSearchModal(searchModal) {
@@ -171,12 +191,6 @@ export class MetadataComponent implements OnInit {
       this.metadataService.addDatasetToAcquisitionFramework(af, params, queryStrings);
     }
   }
-
-  changePaginator(event: PageEvent) {
-    this.metadataService.pageSize.next(event.pageSize);
-    this.metadataService.pageIndex.next(event.pageIndex);
-  }
-
   deleteAf(af_id) {
     this._dfs.deleteAf(af_id).subscribe((res) => this.metadataService.getMetadata());
   }
@@ -200,6 +214,18 @@ export class MetadataComponent implements OnInit {
     );
 
     this.modal.dismissAll();
+  }
+
+  get totalItems(): number {
+    return this.metadataService.totalItems.value;
+  }
+
+  get totalPages(): number {
+    return this.metadataService.totalPages.value;
+  }
+
+  changePaginator(event: PageEvent) {
+    this.metadataService.changePageEvent(event);
   }
 
   displayMetaAreaFilters = () =>

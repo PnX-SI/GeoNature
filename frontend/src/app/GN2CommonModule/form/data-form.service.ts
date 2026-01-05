@@ -17,6 +17,14 @@ export interface ParamsDict {
   [key: string]: any;
 }
 
+interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  per_page: number;
+  total_pages: number;
+}
+
 export type Profile = GeoJSON.Feature;
 
 export const FormatMapMime = new Map([
@@ -28,6 +36,7 @@ export const FormatMapMime = new Map([
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
+
   constructor(
     private _http: HttpClient,
     public config: ConfigService
@@ -366,30 +375,21 @@ export class DataFormService {
     );
   }
 
-  /**
-   *
-   * @param params: dict of paramters
-   */
-  getAcquisitionFrameworks(params = {}) {
-    let queryString: HttpParams = new HttpParams();
-    for (let key in params) {
-      queryString = queryString.set(key, params[key]);
-    }
-
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/meta/list/acquisition_frameworks`, {
-      params: queryString,
-    });
-  }
-
-  getAcquisitionFrameworksList(selectors = {}, params = {}) {
-    let queryString: HttpParams = new HttpParams();
+  getAcquisitionFrameworksList(selectors = {}, params = {}, page = 1, per_page = 10) {
     for (let key in selectors) {
-      queryString = queryString.set(key, selectors[key]);
+      params[key] = selectors[key];
     }
+    const requestBody = {
+      ...params,
+      ...selectors,
+      page: page,
+      per_page: per_page,
+    };
 
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/meta/acquisition_frameworks`, params, {
-      params: queryString,
-    });
+    return this._http.post<PaginatedResponse<any>>(
+      `${this.config.API_ENDPOINT}/meta/acquisition_frameworks`,
+      requestBody
+    );
   }
 
   /**
@@ -579,6 +579,7 @@ export class DataFormService {
       }
     );
   }
+
   saveBlob(blob, filename) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -591,10 +592,12 @@ export class DataFormService {
   getPlaces() {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/places`);
   }
+
   //Ajouter lieu
   addPlace(place) {
     return this._http.post<any>(`${this.config.API_ENDPOINT}/gn_commons/places`, place);
   }
+
   // Supprimer lieu
   deletePlace(idPlace) {
     return this._http.delete<any>(`${this.config.API_ENDPOINT}/gn_commons/places/${idPlace}`);

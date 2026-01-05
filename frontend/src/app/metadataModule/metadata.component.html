@@ -213,12 +213,12 @@
           </ng-container>
         </mat-accordion>
         <mat-paginator
-          #paginator
-          [length]="acquisitionFrameworksLength"
+          [length]="metadataService.totalItems | async"
           [pageSize]="metadataService.pageSize | async"
           [pageSizeOptions]="metadataService.pageSizeOptions"
-          [pageIndex]="metadataService.pageIndex | async"
+          [pageIndex]="metadataService.currentPage - 1"
           (page)="changePaginator($event)"
+          aria-label="Sélectionner une page"
         ></mat-paginator>
       </ng-container>
       <ng-template #noAcquisitionFrameworks>

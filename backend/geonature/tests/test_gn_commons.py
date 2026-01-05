@@ -49,7 +49,7 @@ def additional_field(app, datasets):
         field_name="test",
         field_label="Un label",
         required=True,
-        description="une descrption",
+        description="une description",
         quantitative=False,
         unity="degré C",
         field_values=[100, 200, 300],

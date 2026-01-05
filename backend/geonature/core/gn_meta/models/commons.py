@@ -31,6 +31,7 @@ class MetadataFilterSchema(ma.Schema):
     organism = ma.fields.Integer()
     areas = ma.fields.List(ma.fields.Integer())
     search = ma.fields.String()
+    is_parent = ma.fields.Boolean(allow_none=True)
 
     @ma.post_load(pass_many=False)
     def convert_date(self, data, **kwargs):
