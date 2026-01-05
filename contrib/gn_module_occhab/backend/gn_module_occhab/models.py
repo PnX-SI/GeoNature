@@ -119,6 +119,7 @@ class Station(NomenclaturesMixin, db.Model):
             return False
         elif scope in (1, 2):
             # L’utilisateur est observateur de la station
+            # ou numérisateur de la station
             # ou à les droits sur le JDD auquel est rattaché la station.
             return (
                 g.current_user in self.observers
