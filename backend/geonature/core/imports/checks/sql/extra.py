@@ -711,7 +711,6 @@ def generate_entity_id(
         entity
     """
     # Generate an id for the first occurence of each UUID
-
     transient_table = imprt.destination.get_transient_table()
     uuid_valid_cte = (
         sa.select(

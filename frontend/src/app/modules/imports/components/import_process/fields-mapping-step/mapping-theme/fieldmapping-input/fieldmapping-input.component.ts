@@ -281,12 +281,13 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
     } else if (this.inputState == InputStackState.CONSTANT) {
       this.inputState = InputStackState.INPUT_FILE;
       this.value = this._csvColumn ? { column_src: this._csvColumn } : null;
-    } else {
-      this.inputState = InputStackState.INPUT_FILE;
-      this._csvColumn = null;
-      this.constantValue = null;
-      this.value = null;
     }
+    // else {
+    //   this.inputState = InputStackState.INPUT_FILE;
+    //   this._csvColumn = null;
+    //   this.constantValue = null;
+    //   this.value = null;
+    // }
     this.onChanged(this.value);
     this.onTouched(true);
   }

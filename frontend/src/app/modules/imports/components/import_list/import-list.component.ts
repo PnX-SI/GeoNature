@@ -1,6 +1,6 @@
 // @ts-ignore
 
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { saveAs } from 'file-saver';

@@ -25,8 +25,6 @@ from geonature.utils.config import config
 from geonature.utils.sentry import start_sentry_child
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from pypnnomenclature.models import TNomenclatures
 
@@ -366,12 +364,6 @@ def load_import(scope, imprt):
             mapping = imprt.fieldmapping[field.name_field]
             if mapping.get("column_src", None) is not None:
                 imprt.observermapping.update(user_matching(imprt, field))
-            # elif constant := mapping.get("constant_value", None) is not None:
-            #     if isinstance(constant, list):
-            #         imprt.observermapping.update({})
-            #         pass
-            #     else:
-            #         pass
 
     imprt.source_count = line_no
     imprt.loaded = True

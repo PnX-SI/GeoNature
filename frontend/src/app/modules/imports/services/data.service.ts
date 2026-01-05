@@ -17,7 +17,6 @@ import {
   ContentMappingValues,
 } from '../models/mapping.model';
 import { ConfigService } from '@geonature/services/config.service';
-import { ActivatedRoute } from '@angular/router';
 
 @Injectable()
 export class ImportDataService {
