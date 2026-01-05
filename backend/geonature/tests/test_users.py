@@ -513,7 +513,7 @@ class TestUsers:
         resp = self.client.put(url, json=payload)
         assert resp.status_code == 404
 
-    def test_confirm_new_mail_route(self, users):
+    def test_confirm_new_mail_route(self, users, fake_smtp):
         """
         Test PUT /mail/new behavior.
         """
@@ -522,12 +522,16 @@ class TestUsers:
         set_logged_user(self.client, user)
         current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
 
+        old_email = user.email
         new_email = "new_email@example.com"
         payload = {"new_mail": new_email, "user": user.id_role}
         resp = self.client.put(url, json=payload)
         assert resp.status_code == 200
         assert resp.json["message"] == "Mail successfully changed"
         assert user.email == new_email
+        assert fake_smtp.called
+        args, kwargs = fake_smtp.call_args
+        assert old_email in args[0]
 
         resp = self.client.put(url, json={"user": user.id_role})
         assert resp.status_code == 400

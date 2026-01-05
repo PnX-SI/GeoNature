@@ -223,7 +223,19 @@ def send_email_for_mail_change(new_mail: str, user: User):
         "email_mail_change.html",
         url_new_mail=current_app.config["URL_APPLICATION"]
         + f"/#/user/new-mail?new_mail={new_mail}&user={user.id_role}",
+        appName=current_app.config["appName"],
     )
     subject = "Confirmation changement adresse mail"
     send_mail(new_mail, subject, msg_html)
-    return
+
+
+def send_email_to_old_mail(user: User):
+    if not user:
+        raise KeyError(f"No user was given")
+    if user.email:
+        msg_html = render_template(
+            "email_mail_changed.html",
+            appName=current_app.config["appName"],
+        )
+        subject = "Changement adresse mail"
+        send_mail([user.email], subject, msg_html)

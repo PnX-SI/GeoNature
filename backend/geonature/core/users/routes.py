@@ -19,6 +19,7 @@ from geonature.core.users.register_post_actions import (
     send_email_for_recovery,
     validate_temp_user,
     send_email_for_mail_change,
+    send_email_to_old_mail,
 )
 from geonature.utils.env import DB, db
 from pypnusershub.db.models import Application, Organisme, User, UserList
@@ -565,6 +566,6 @@ def confirm_new_mail():
 
     if not user.id_role == user_id:
         raise BadRequest(f"User id does not match user connected {user.id_role} != {user_id}")
-
+    send_email_to_old_mail(user)
     user_manager.change_mail(user.id_role, new_mail)
     return {"message": f"Mail successfully changed"}, 200
