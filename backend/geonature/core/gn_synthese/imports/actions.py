@@ -57,7 +57,6 @@ from geonature.core.imports.utils import (
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
 from sqlalchemy import distinct, func, select
-from sqlalchemy.orm import aliased
 from sqlalchemy.dialects.postgresql import JSONB
 from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot

@@ -48,7 +48,7 @@ export class ModalActionImport implements OnInit {
       .deleteImport(this.data.id_import)
       .pipe(finalize(() => this.c()))
       .subscribe(() => {
-        this._commonService.translateToaster('success', 'Import.ImportStatus.DeleteSuccessfully');
+        this._commonService.translateToaster('success', 'Import.Messages.DeleteSuccessfully');
         this.onAction.emit({ confirmed: true, actionType: this.actionType, data: this.data });
       });
   }

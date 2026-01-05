@@ -1,24 +1,16 @@
-import { Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Validators } from '@angular/forms';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-
-import { Observable, of } from 'rxjs';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { concatMap, finalize } from 'rxjs/operators';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { ImportDataService } from '../../../services/data.service';
 import { ContentMappingService } from '../../../services/mappings/content-mapping.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ContentMapping, ContentMappingValues } from '../../../models/mapping.model';
 import { Step } from '../../../models/enums.model';
-import { Import, ImportValues, Nomenclature } from '../../../models/import.model';
+import { Import } from '../../../models/import.model';
 import { ImportProcessService } from '../import-process.service';
 import _ from 'lodash';
-import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
 import { ConfigService } from '@geonature/services/config.service';
 import { HttpErrorResponse } from '@librairies/@angular/common/http';
 import { DataFormService } from '@geonature_common/form/data-form.service';

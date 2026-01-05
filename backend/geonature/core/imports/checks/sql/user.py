@@ -140,11 +140,3 @@ def map_observer_matching(imprt: TImports, entity: Entity, observer_field: BibFi
     )
 
     db.session.execute(query)
-
-    # report_erroneous_rows(
-    #     imprt,
-    #     entity,
-    #     error_type=ImportCodeError.UNKNOWN_ERROR,
-    #     error_column=observer_field.name_field,
-    #     whereclause=(transient_table.c[observer_field.dest_column] == None),
-    # )
