@@ -128,19 +128,3 @@ ngx-datatable {
   justify-content: flex-start;
   gap: 0.2rem;
 }
-
-.btn-row {
-  border: none;
-  padding: 0;
-  line-height: 0;
-  color: inherit;
-  cursor: pointer;
-  vertical-align: middle;
-  font-size: 0.7rem;
-  margin-bottom: 0.5vh;
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    color: #6c757d;
-  }
-}
