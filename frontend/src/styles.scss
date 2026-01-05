@@ -270,6 +270,22 @@ li.no-bullet {
   box-shadow: 0 0 0 2px hsla(0, 0%, 80%, 0.5);
 }
 
+.btn-row {
+  border: none;
+  padding: 0;
+  line-height: 0;
+  color: inherit;
+  cursor: pointer;
+  vertical-align: middle;
+  font-size: 0.7rem;
+  margin-bottom: 0.5vh;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    color: #6c757d;
+  }
+}
+
 .box-shadow {
   box-shadow:
     4px 5px 8px 0 rgba(0, 0, 0, 0.2),
