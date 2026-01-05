@@ -1,15 +1,27 @@
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
   <div class="card card-page shadow-lg">
     <div class="card-body text-center p-5">
-      <h3>Changement d'adresse mail</h3>
-      <br />
       <div *ngIf="loading">
         <i class="fa fa-spinner fa-spin fa-3x fa-fw mb-3 text-primary"></i>
         <p class="mb-0">Validation de votre nouvelle adresse email en cours...</p>
       </div>
 
+      <div *ngIf="!loading && !hasError && !validated">
+        <h3>Confirmer le changement d'adresse e-mail</h3>
+        <p>
+          Votre nouvelle adresse mail sera :
+          <b>{{ newMail }}</b>
+        </p>
+        <button
+          class="btn btn-primary"
+          (click)="onConfirmValidate()"
+        >
+          Valider
+        </button>
+      </div>
+
       <div
-        *ngIf="!loading && !hasError"
+        *ngIf="validated"
         class="alert alert-success mb-0"
       >
         <i class="fa fa-check-circle mb-2 d-block fa-2x"></i>

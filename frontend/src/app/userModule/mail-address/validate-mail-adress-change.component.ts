@@ -10,8 +10,11 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./validate-mail-adress-change.component.scss'],
 })
 export class ValidateMailAddressChangeComponent implements OnInit {
-  public loading = true;
+  public loading = false;
   public hasError = false;
+  public validated = false;
+  public newMail: string;
+  private userId: string;
 
   constructor(
     private _route: ActivatedRoute,
@@ -22,15 +25,19 @@ export class ValidateMailAddressChangeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const newMail = this._route.snapshot.queryParamMap.get('new_mail');
-    const userId = this._route.snapshot.queryParamMap.get('user');
-    this.validateMail(newMail, userId);
+    this.newMail = this._route.snapshot.queryParamMap.get('new_mail');
+    this.userId = this._route.snapshot.queryParamMap.get('user');
+  }
+
+  onConfirmValidate(): void {
+    this.validateMail(this.newMail, this.userId);
   }
 
   validateMail(newMail: string, userId: string): void {
     this.loading = true;
     this._userDataService.validateEmailChange(newMail, userId).subscribe({
       next: () => {
+        this.validated = true;
         this.loading = false;
         this._toastr.success('Email validé avec succès');
         setTimeout(() => {
