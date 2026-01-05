@@ -529,7 +529,7 @@ def new_password():
 @check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
 def new_mail():
     """
-    send a mail to the user with a link to confirm his new mail address
+    Send a mail to the user with a link to confirm his new mail address
     """
     user = g.current_user
     data = request.get_json()
@@ -549,8 +549,11 @@ def new_mail():
 @check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
 def confirm_new_mail():
     """
-    Change effectively the mail address of the user. This route is normally called after a first call to
-    new mail (but it's not necessary)
+    Change the email address of the user.
+
+    Notes
+    -----
+    Not required but this route is meant to be called after the `new mail` route.
     """
     user = g.current_user
     data = MultiDict(request.get_json())

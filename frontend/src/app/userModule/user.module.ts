@@ -10,6 +10,7 @@ import { ChangeMailAddressComponent } from './mail-address/change-mail-address.c
 import { RoleFormService, UserDataService } from './services';
 import { UserEditGuard, UserManagementGuard } from '@geonature/modules/login/routes-guard.service';
 import { ValidateMailAddressChangeComponent } from '@geonature/userModule/mail-address/validate-mail-adress-change.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   { path: '', component: UserComponent, canActivate: [UserEditGuard, UserManagementGuard] },
@@ -31,7 +32,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule],
+  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule, TranslateModule],
   declarations: [
     UserComponent,
     PasswordComponent,

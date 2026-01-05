@@ -1,19 +1,19 @@
 <div class="card card-page center-in-div">
   <div class="card-header">
-    <h3 class="underlined main-color">Changement d'adresse mail</h3>
+    <h3 class="underlined main-color">{{ 'MyAccount.EmailChangeTitle' | translate }}</h3>
   </div>
 
   <div class="card-body">
     <div class="alert alert-info mb-4">
       <p>
-        La modification de votre adresse email nécessite une validation. Un lien de confirmation
-        sera envoyé à votre nouvelle adresse email et le changement d'adresse sera pris en compte
-        après avoir cliqué sur le lien reçu.
+        {{ 'MyAccount.EmailChangeDescription' | translate }}
       </p>
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-5 col-form-label text-right">Adresse email actuelle</label>
+      <label class="col-sm-5 col-form-label text-right">
+        {{ 'MyAccount.CurrentEmail' | translate }}
+      </label>
       <div class="col-sm-7 col-xl-5">
         <input
           type="email"
@@ -31,27 +31,27 @@
           for="new_mail"
           class="col-sm-5 col-form-label text-right"
         >
-          Nouvelle adresse email
+          {{ 'MyAccount.NewEmail' | translate }}
         </label>
         <div class="col-sm-7 col-xl-5">
           <input
             type="email"
             class="form-control"
             id="new_mail"
-            placeholder="Nouvelle adresse email"
+            [placeholder]="'MyAccount.NewEmail' | translate"
             formControlName="new_mail"
           />
           <small
             *ngIf="form.get('new_mail').hasError('required') && form.get('new_mail').touched"
             class="text-danger"
           >
-            Ce champ est nécessaire
+            {{ 'MyAccount.Messages.FieldRequired' | translate }}
           </small>
           <small
             *ngIf="form.get('new_mail').hasError('email') && form.get('new_mail').touched"
             class="text-danger"
           >
-            Format d'email invalide
+            {{ 'MyAccount.Messages.InvalidEmailFormat' | translate }}
           </small>
         </div>
       </div>
@@ -62,13 +62,13 @@
           color="warn"
           routerLink="../"
         >
-          Annuler
+          {{ 'Actions.Cancel' | translate }}
         </a>
         <span
           matTooltip="{{
             !form.valid
-              ? 'Veuillez remplir tous les champs correctement'
-              : 'Demander le changement d\'email'
+              ? ('MyAccount.FormInvalidTooltip' | translate)
+              : ('MyAccount.RequestEmailChangeTooltip' | translate)
           }}"
         >
           <button
@@ -77,7 +77,7 @@
             (click)="save()"
             [disabled]="!form.valid"
           >
-            Envoyer la demande
+            {{ 'MyAccount.SendRequest' | translate }}
           </button>
         </span>
       </div>

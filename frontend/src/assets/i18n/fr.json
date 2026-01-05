@@ -73,14 +73,26 @@
   "MyAccount": {
     "MyAccount": "Mon compte",
     "MyObserverSheet": "Ma fiche observateur",
-
+    "EmailChangeTitle": "Changement d'adresse mail",
+    "EmailChangeDescription": "La modification de votre adresse email nécessite une validation. Un lien de confirmation sera envoyé à votre nouvelle adresse email et le changement d'adresse sera pris en compte après avoir cliqué sur le lien reçu.",
+        "EmailChangeValidationTitle": "Validation du changement d'adresse mail",
+    "EmailChangeConfirmationTitle": "Confirmer le changement d'adresse e-mail",
+    "EmailChangeConfirmationText": "Votre nouvelle adresse mail sera :",
+    "CurrentEmail": "Adresse email actuelle",
+    "NewEmail": "Nouvelle adresse email",
+    "SendRequest": "Envoyer la demande",
+    "FormInvalidTooltip": "Veuillez remplir tous les champs correctement",
+    "RequestEmailChangeTooltip": "Demander le changement d'email",
+    "RedirectionInProgress": "Redirection en cours...",
     "Messages": {
       "AutoAccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte",
       "AdminAccountEmailConfirmation": "Votre demande de création de compte a bien été prise en compte, elle va être évaluée par un administrateur",
       "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe",
-      "ChangeMailConfirmation": "Cliquez sur le lien reçu par mail dans les 24h pour confirmer la modification de votre adresse mail"
-
-
+      "ChangeMailConfirmation": "Cliquez sur le lien reçu par mail pour confirmer la modification de votre adresse mail",
+      "FieldRequired": "Ce champ est nécessaire",
+      "InvalidEmailFormat": "Format d'email invalide",
+      "EmailChangeSuccess": "Votre adresse email a été validée avec succès.",
+      "EmailChangeError": "Une erreur s'est produite"
     }
   },
 
