@@ -120,7 +120,11 @@ class Station(NomenclaturesMixin, db.Model):
         elif scope in (1, 2):
             # L’utilisateur est observateur de la station
             # ou à les droits sur le JDD auquel est rattaché la station.
-            return g.current_user in self.observers or self.dataset.has_instance_permission(scope)
+            return (
+                g.current_user in self.observers
+                or self.id_digitiser == g.current_user.id_role
+                or self.dataset.has_instance_permission(scope)
+            )
         elif scope == 3:
             return True
 
@@ -180,6 +184,7 @@ class Station(NomenclaturesMixin, db.Model):
 
             return sa.or_(
                 Station.observers.any(id_role=user.id_role),
+                Station.id_digitiser == user.id_role,
                 Station.id_dataset.in_([ds.id_dataset for ds in db.session.execute(ds_list).all()]),
             )
         return True
