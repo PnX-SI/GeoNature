@@ -1,3 +1,4 @@
+import typing
 from flask import url_for, has_app_context, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
@@ -420,6 +421,7 @@ class AreaAjaxModelLoader(QueryAjaxModelLoader):
             .where(
                 BibAreasTypes.type_code.in_(config["PERMISSIONS"]["GEOGRAPHIC_FILTER_AREA_TYPES"])
             )
+            .where(LAreas.area_name.is_not(None))
         )
 
         if search:
@@ -437,8 +439,16 @@ class AreaAjaxModelLoader(QueryAjaxModelLoader):
             )
         else:
             query = query.order_by(BibAreasTypes.id_type, LAreas.area_name)
-
         return query
+
+    def get_list(self, term: str, offset: int = 0, limit: int = 10) -> typing.Any:
+        # Must be override, otherwise the filters in get_query are not applied
+        query = self.get_query()
+
+        if self.order_by:
+            query = query.order_by(self.order_by)
+
+        return query.offset(offset).limit(limit).all()
 
 
 class TaxrefAjaxModelLoader(QueryAjaxModelLoader):
