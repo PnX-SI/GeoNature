@@ -1,13 +1,12 @@
 from io import BytesIO, StringIO
 from typing import List
 from geonature.core.gn_meta.models import TDatasets
-from pypnusershub.db.models import User, UserApplicationRight
 import pytest
 from copy import deepcopy
 import json
 
 import pandas as pd
-from flask import url_for, current_app
+from flask import url_for, current_app, g
 from werkzeug.datastructures import TypeConversionDict
 from werkzeug.exceptions import Unauthorized, Forbidden, BadRequest
 from shapely.geometry import Point
@@ -217,8 +216,14 @@ class TestOcchab:
         assert response.status_code == Forbidden.code
 
         set_logged_user(self.client, users["stranger_user"])
+
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
+
+        station.id_digitiser = users["stranger_user"].id_role
+        db.session.flush()
+        response = self.client.get(url)
+        assert response.status_code == 200
 
         set_logged_user(self.client, users["user"])
         response = self.client.get(url)
@@ -566,16 +571,105 @@ class TestOcchab:
             ]
         )
 
-    def test_filter_by_scope(self):
+    def test_filter_by_scope(self, stations, users, datasets):
+        user = users["stranger_user"]
+        station1 = stations["station_1"]
+
         res = (
             db.session.scalars(sa.select(Station).where(Station.filter_by_scope(scope=0)))
             .unique()
             .all()
         )
-        assert not len(res)  # <=> len(res) == 0
+        assert len(res) == 0
 
-    def test_has_instance_permission(self, stations):
-        assert not stations["station_1"].has_instance_permission(scope=0)
+        res = (
+            db.session.scalars(
+                sa.select(Station).where(Station.filter_by_scope(scope=3, user=user))
+            )
+            .unique()
+            .all()
+        )
+        assert len(res) >= 2
+
+        # No access
+        station1.id_digitiser = None
+        station1.observers = []
+        db.session.flush()
+        res = (
+            db.session.scalars(
+                sa.select(Station).where(Station.filter_by_scope(scope=1, user=user))
+            )
+            .unique()
+            .all()
+        )
+        assert station1 not in res
+
+        # Access because is observer
+        station1.observers = [user]
+
+        res = (
+            db.session.scalars(
+                sa.select(Station).where(Station.filter_by_scope(scope=1, user=user))
+            )
+            .unique()
+            .all()
+        )
+        assert station1 in res
+
+        # Access because is digitiser
+        station1.observers = []
+        station1.id_digitiser = user.id_role
+        db.session.flush()
+        res = (
+            db.session.scalars(
+                sa.select(Station).where(Station.filter_by_scope(scope=1, user=user))
+            )
+            .unique()
+            .all()
+        )
+        assert station1 in res
+
+        # Acces because has right on dataset
+        user = users["user"]
+        res = (
+            db.session.scalars(
+                sa.select(Station).where(Station.filter_by_scope(scope=1, user=user))
+            )
+            .unique()
+            .all()
+        )
+        assert station1 in res
+
+    def test_has_instance_permission_scopes(self, stations, users, datasets):
+        station_example = stations["station_1"]
+        user = users["stranger_user"]
+
+        # Scopes always true or false
+        assert station_example.has_instance_permission(scope=0) is False
+        assert station_example.has_instance_permission(scope=3) is True
+
+        g.current_user = user
+
+        # User has no right
+        station_example.observers = []
+        station_example.id_digitiser = None
+        assert station_example.has_instance_permission(scope=1) is False
+        assert station_example.has_instance_permission(scope=2) is False
+
+        # User is observer
+        station_example.observers = [user]
+        assert station_example.has_instance_permission(scope=1) is True
+        assert station_example.has_instance_permission(scope=2) is True
+
+        # User is digitiser
+        station_example.observers = []
+        station_example.id_digitiser = user.id_role
+        assert station_example.has_instance_permission(scope=1) is True
+
+        # User has right on dataset
+        g.current_user = users["user"]
+        station_example.id_digitiser = None
+        assert station_example.has_instance_permission(scope=1) is True
 
     def test_export_occhab(self, stations, users):
         """
