@@ -34,7 +34,7 @@ export class ObserversComponent extends GenericFormComponent {
   @Input() compareWith = (c1, c2) => {
     return c1.id_role === c2.id_role;
   };
-  public observers: Observable<Array<any>>;
+  @Input() observers: Observable<Array<any>>;
 
   constructor(private _dfService: DataFormService) {
     super();
@@ -49,21 +49,23 @@ export class ObserversComponent extends GenericFormComponent {
     if (this.idList) {
       this.idMenu = this.idList;
     }
-    // si idMenu
 
-    if (this.idMenu) {
-      this.observers = this._dfService.getObservers(this.idMenu);
-    } else if (this.codeList) {
-      this.observers = this._dfService.getObserversFromCode(this.codeList).pipe(
-        map((data) => {
-          if (this.parentFormControl.value) {
-            this.parentFormControl.setValue(this.parentFormControl.value);
-          }
-          return data;
-        })
-      );
-    } else {
-      this.observers = this._dfService.getObservers();
+    if (!this.observers) {
+      // si idMenu
+      if (this.idMenu) {
+        this.observers = this._dfService.getObservers(this.idMenu);
+      } else if (this.codeList) {
+        this.observers = this._dfService.getObserversFromCode(this.codeList).pipe(
+          map((data) => {
+            if (this.parentFormControl.value) {
+              this.parentFormControl.setValue(this.parentFormControl.value);
+            }
+            return data;
+          })
+        );
+      } else {
+        this.observers = this._dfService.getObservers();
+      }
     }
   }
 
