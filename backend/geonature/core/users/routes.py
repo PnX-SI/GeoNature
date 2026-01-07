@@ -78,7 +78,7 @@ def get_roles_by_menu_id(id_menu=None):
     :type id_menu: int
     :query str nom_complet: beginning of complet name of the role
     """
-    query = select(VUserslistForallMenu)
+    query = select(VUserslistForallMenu).distinct(VUserslistForallMenu.nom_complet)
 
     if id_menu:
         query = query.filter_by(id_menu=id_menu)
