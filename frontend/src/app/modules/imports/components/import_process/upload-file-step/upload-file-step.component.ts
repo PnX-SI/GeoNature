@@ -166,7 +166,8 @@ export class UploadFileStepComponent implements OnInit {
   openModal(editModal: TemplateRef<any>) {
     this.modalData = {
       title: 'Modification',
-      bodyMessage: 'Le fichier existant en base de données sera supprimé !',
+      bodyMessage:
+        "Le fichier existant sera supprimé ! Pour remplacer les données importées, terminer l'import à nouveau.",
       additionalMessage: 'Êtes-vous sûr de continuer ?',
       cancelButtonText: 'Annuler',
       confirmButtonText: 'Confirmer',
