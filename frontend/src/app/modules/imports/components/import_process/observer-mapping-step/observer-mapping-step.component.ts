@@ -44,23 +44,34 @@ export class ObserverMappingStepComponent implements OnInit {
   ngOnInit() {
     this.step = this._route.snapshot.data.step;
     this.importData = this.importProcessService.getImportData();
-    this._importDataService.generateUserMapping(this.importData.id_import).subscribe((mapping) => {
-      this.observerMapping = mapping;
-      if (Object.keys(this.observerMapping).length === 0) {
-        this._commonService.translateToaster(
-          'info',
-          'Import.ObserverMapping.Messages.NoObserverMapping'
-        );
-        this.processNextStep();
-        return;
-      }
-
+    if (Object.keys(this.importData.observermapping).length != 0) {
+      this.observerMapping = this.importData.observermapping;
       this._dataFormService.getObservers().subscribe((observers) => {
         this.observers = of(observers);
         this.populateObserverMappingFormGroup();
         this.isLoading = false;
       });
-    });
+    } else {
+      this._importDataService
+        .generateUserMapping(this.importData.id_import)
+        .subscribe((mapping) => {
+          this.observerMapping = mapping;
+          if (Object.keys(this.observerMapping).length === 0) {
+            this._commonService.translateToaster(
+              'info',
+              'Import.ObserverMapping.Messages.NoObserverMapping'
+            );
+            this.processNextStep();
+            return;
+          }
+
+          this._dataFormService.getObservers().subscribe((observers) => {
+            this.observers = of(observers);
+            this.populateObserverMappingFormGroup();
+            this.isLoading = false;
+          });
+        });
+    }
   }
 
   onPreviousStep() {
