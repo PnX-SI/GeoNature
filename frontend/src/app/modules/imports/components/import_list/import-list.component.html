@@ -96,6 +96,7 @@
                     <a
                       href="javascript:void(0)"
                       (click)="downloadSourceFile(row)"
+                      matTooltip="{{ row[col.prop] }}"
                     >
                       {{ row[col.prop] }}
                     </a>
@@ -104,7 +105,9 @@
                     {{ formattedRowCount(row) }}
                   </ng-container>
                   <ng-container *ngSwitchDefault>
-                    {{ row[col.prop] }}
+                    <p matTooltip="{{ row[col.prop] }}">
+                      {{ row[col.prop] }}
+                    </p>
                   </ng-container>
                 </ng-container>
               </div>
@@ -120,7 +123,12 @@
               let-row="row"
               ngx-datatable-cell-template
             >
-              <p *ngIf="row.destination">{{ row.destination.label }}</p>
+              <p
+                *ngIf="row.destination"
+                matTooltip="{{ row.destination.label }}"
+              >
+                {{ row.destination.label }}
+              </p>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
