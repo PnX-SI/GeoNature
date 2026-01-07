@@ -231,6 +231,12 @@ export class ImportDataService {
     );
   }
 
+  generateUserMapping(idImport: number): Observable<any> {
+    return this._http.get<any>(
+      `${this.getUrlApiForADestination()}/generate_user_matching/${idImport}`
+    );
+  }
+
   getNomencInfo(id_import: number) {
     return this._http.get<any>(
       `${this.getUrlApiForADestination()}/imports/${id_import}/contentMapping`

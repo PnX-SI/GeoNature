@@ -3,30 +3,35 @@
     <div class="card-header">
       <h5>{{ 'Import.ObserverMapping.Title' | translate }}</h5>
     </div>
-
-    <div class="card-body">
-      <table class="table matching-table">
-        <thead>
-          <tr>
-            <th>{{ 'Import.ObserverMapping.Table.InTheFile' | translate }}</th>
-            <th>{{ 'Import.ObserverMapping.Table.InDatabase' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of importData.observermapping | keyvalue">
-            <td>{{ item.key }}</td>
-            <td>
-              <pnx-observers
-                data-qa="import-observersmapping-observers-form"
-                *ngIf="observerMappingForm.controls[item.key]"
-                [parentFormControl]="observerMappingForm.controls[item.key]"
-                [bindAllItem]="true"
-              ></pnx-observers>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <gn-loadable-layout
+      [isLoading]="isLoading"
+      style="padding: 1em"
+    >
+      <div class="card-body">
+        <table class="table matching-table">
+          <thead>
+            <tr>
+              <th>{{ 'Import.ObserverMapping.Table.InTheFile' | translate }}</th>
+              <th>{{ 'Import.ObserverMapping.Table.InDatabase' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of observerMapping | keyvalue">
+              <td>{{ item.key }}</td>
+              <td>
+                <pnx-observers
+                  data-qa="import-observersmapping-observers-form"
+                  *ngIf="observerMappingForm.controls[item.key]"
+                  [parentFormControl]="observerMappingForm.controls[item.key]"
+                  [observers]="observers"
+                  [bindAllItem]="true"
+                ></pnx-observers>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </gn-loadable-layout>
   </div>
 </div>
 

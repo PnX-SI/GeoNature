@@ -349,22 +349,6 @@ def load_import(scope, imprt):
     if not line_no:
         raise BadRequest("File with 0 lines.")
 
-    ##### USER MATCHING PROCESS
-    if config["IMPORT"]["ALLOW_USER_MAPPING"]:
-        fields = db.session.scalars(
-            select(BibFields).where(
-                BibFields.name_field.in_(imprt.fieldmapping.keys()),
-                BibFields.type_field == "observers",
-                BibFields.id_destination == imprt.destination.id_destination,
-            )
-        ).all()
-        if len(fields) == 0:
-            imprt.observermapping = {}
-        for field in fields:
-            mapping = imprt.fieldmapping[field.name_field]
-            if mapping.get("column_src", None) is not None:
-                imprt.observermapping.update(user_matching(imprt, field))
-
     imprt.source_count = line_no
     imprt.loaded = True
     db.session.commit()
@@ -779,3 +763,28 @@ def report_plot(scope, imprt: TImports):
     if not imprt.has_instance_permission(scope, action_code="R"):
         raise Forbidden
     return json.dumps(imprt.destination.actions.report_plot(imprt))
+
+
+@blueprint.route("/<destination>/generate_user_matching/<int:import_id>", methods=["GET"])
+@permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
+def generate_matching(scope, imprt: TImports):
+    if not imprt.has_instance_permission(scope, action_code="C"):
+        raise Forbidden
+
+    if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+        fields = db.session.scalars(
+            select(BibFields).where(
+                BibFields.name_field.in_(imprt.fieldmapping.keys()),
+                BibFields.type_field == "observers",
+                BibFields.id_destination == imprt.destination.id_destination,
+            )
+        ).all()
+        if len(fields) == 0:
+            imprt.observermapping = {}
+        for field in fields:
+            mapping = imprt.fieldmapping[field.name_field]
+            if mapping.get("column_src", None) is not None:
+                imprt.observermapping.update(user_matching(imprt, field))
+        db.session.commit()
+
+    return jsonify(imprt.observermapping)
