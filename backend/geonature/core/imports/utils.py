@@ -309,6 +309,12 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
                     ),
                 }
             )
+
+        for col, values in data.items():
+            if isinstance(values, pd.Series):
+                values.reset_index(
+                    drop=True, inplace=True
+                )  # Reset index in-place instead of creating a new Series
         df = pd.DataFrame(data)
 
         imprt.destination.actions.preprocess_transient_data(imprt, df)
