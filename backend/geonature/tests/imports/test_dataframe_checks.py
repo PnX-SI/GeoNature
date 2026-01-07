@@ -14,7 +14,7 @@ from shapely.geometry import Point
 
 from geonature.core.imports.models import TImports, Destination, BibFields
 from geonature.core.imports.checks.dataframe import *
-from geonature.core.imports.checks.dataframe.cast import convert_to_datetime
+from geonature.core.imports.checks.dataframe.cast import convert_to_datetime, check_array_int_field
 from geonature.core.imports.checks.dataframe.geometry import (
     check_wkt_inside_area_id,
     check_geometry_inside_l_areas,
@@ -695,3 +695,42 @@ class TestChecks:
         )
 
         assert not check
+
+    def test_check_array_int_field(self):
+        # Cas 1: Toutes les valeurs sont valides (listes/tuples/ndarray d'entiers)
+        df1 = pd.DataFrame({"source": [[1, 2, 3], (4, 5), np.array([6, 7])]})
+        errors = list(check_array_int_field(df1, "source", "target", required=True))
+        assert len(errors) == 0  # Pas d'erreur
+        assert df1["target"].tolist() == [[1, 2, 3], [4, 5], [6, 7]]
+
+        # Cas 2: Valeurs invalides (non-liste ou non-entiers)
+        df2 = pd.DataFrame({"source": [[1, 2], "not a list", [3.5, 4], None, [5, "a"], np.nan]})
+        errors = list(check_array_int_field(df2, "source", "target", required=True))
+        assert len(errors) == 1
+        assert "not a list" in errors[0]["comment"]
+        assert df2["target"].isna().sum() == 5  # 5 valeurs invalides
+
+        # Cas 3: Champ non obligatoire, NaN ignorés
+        df3 = pd.DataFrame({"source": [[1, 2], None, np.nan, [3, 4]]})
+        errors = list(check_array_int_field(df3, "source", "target", required=False))
+        assert len(errors) == 0  # Pas d'erreur car NaN ignorés
+        assert df3["target"].tolist() == [[1, 2], None, np.nan, [3, 4]]
+
+        # Cas 4: Valeurs mixtes, champ obligatoire
+        df4 = pd.DataFrame({"source": [[1, 2], [3, "a"], [4, 5]]})
+        errors = list(check_array_int_field(df4, "source", "target", required=True))
+        assert len(errors) == 1
+        assert "[3, 'a']" in errors[0]["comment"]
+        assert df4["target"].isna().sum() == 1
+
+        # Cas 5: Liste vide (valide)
+        df5 = pd.DataFrame({"source": [[], [1, 2], []]})
+        errors = list(check_array_int_field(df5, "source", "target", required=True))
+        assert len(errors) == 0
+        assert df5["target"].tolist() == [[], [1, 2], []]
+
+        # Cas 6: Liste avec un seul entier (valide)
+        df6 = pd.DataFrame({"source": [[1], [2], [3]]})
+        errors = list(check_array_int_field(df6, "source", "target", required=True))
+        assert len(errors) == 0
+        assert df6["target"].tolist() == [[1], [2], [3]]
