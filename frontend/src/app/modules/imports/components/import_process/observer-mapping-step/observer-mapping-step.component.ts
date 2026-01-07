@@ -14,6 +14,7 @@ import _ from 'lodash';
 import { ConfigService } from '@geonature/services/config.service';
 import { HttpErrorResponse } from '@librairies/@angular/common/http';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { Observable, of } from '@librairies/rxjs';
 
 @Component({
   selector: 'observer-mapping-step',
@@ -25,7 +26,9 @@ export class ObserverMappingStepComponent implements OnInit {
   public step: Step;
   public observerMappingForm = new FormGroup({});
   public importData: Import;
-
+  public observerMapping: Record<string, any> = {};
+  public observers: Observable<Array<any>>;
+  public isLoading: boolean = true;
   // public
 
   constructor(
@@ -42,14 +45,23 @@ export class ObserverMappingStepComponent implements OnInit {
   ngOnInit() {
     this.step = this._route.snapshot.data.step;
     this.importData = this.importProcessService.getImportData();
-    if (Object.keys(this.importData.observermapping).length === 0) {
-      this._commonService.translateToaster(
-        'info',
-        'Import.ObserverMapping.Messages.NoObserverMapping'
-      );
-      this.processNextStep();
-    }
-    this.populateObserverMappingFormGroup();
+    this._importDataService.generateUserMapping(this.importData.id_import).subscribe((mapping) => {
+      this.observerMapping = mapping;
+      if (Object.keys(this.observerMapping).length === 0) {
+        this._commonService.translateToaster(
+          'info',
+          'Import.ObserverMapping.Messages.NoObserverMapping'
+        );
+        this.processNextStep();
+        return;
+      }
+
+      this._dataFormService.getObservers().subscribe((observers) => {
+        this.observers = of(observers);
+        this.populateObserverMappingFormGroup();
+        this.isLoading = false;
+      });
+    });
   }
 
   onPreviousStep() {
@@ -57,10 +69,9 @@ export class ObserverMappingStepComponent implements OnInit {
   }
 
   populateObserverMappingFormGroup() {
-    const observerMapping: Record<string, any> = this.importData.observermapping;
-    this._dataFormService.getObservers().subscribe((observers) => {
+    this.observers.subscribe((observers) => {
       const id_roles_authorized = observers.map((observer) => observer.id_role);
-      Object.entries(observerMapping).forEach(([key, value]) => {
+      Object.entries(this.observerMapping).forEach(([key, value]) => {
         if (!id_roles_authorized.includes(value?.id_role)) {
           value = null;
         }
