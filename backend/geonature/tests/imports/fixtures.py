@@ -510,7 +510,8 @@ def content_mapped_import(loaded_import, contentmapping):
 def observers_mapping(users):
     return {
         "import user": {"id_role": users["user"].id_role},
-        "import user2": {"id_role": users["user"].id_role},
+        "import user2": {"id_role": users["noright_user"].id_role},
+        "import user3": None,
     }
 
 
@@ -518,7 +519,7 @@ def observers_mapping(users):
 def observers_mapped_import(content_mapped_import, observers_mapping):
     with db.session.begin_nested():
         content_mapped_import.observermapping = observers_mapping
-    db.session.flush()
+    db.session.refresh(content_mapped_import)
     return content_mapped_import
 
 

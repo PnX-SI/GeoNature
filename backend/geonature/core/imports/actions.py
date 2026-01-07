@@ -7,7 +7,7 @@ import sqlalchemy as sa
 from sqlalchemy.inspection import inspect
 from werkzeug.exceptions import Conflict
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, case
 from sqlalchemy.dialects.postgresql import JSONB
 import typing
 
@@ -231,7 +231,6 @@ class ImportActions:
         correspondence_model,
         correspondence_model_columns: typing.List[str],
     ) -> None:
-
         observers_jsonb = (
             func.jsonb_each(TImports.observermapping.cast(JSONB))
             .table_valued("key", "value")
@@ -252,7 +251,7 @@ class ImportActions:
 
         model_observers = (
             select(
-                getattr(model, model_id_column),
+                getattr(model, model_id_column).label(model_id_column),
                 func.trim(
                     func.unnest(func.string_to_array(getattr(model, model_user_column), ","))
                 ).label("observer_string"),
@@ -265,9 +264,15 @@ class ImportActions:
             select(
                 model_observers.c[model_id_column],
                 observer_mapping.c.id_role,
-                func.coalesce(model_observers.c.observer_string, User.nom_complet).label(
-                    "observer_display_name"
-                ),
+                case(
+                    [
+                        (
+                            User.nom_complet != "",
+                            User.nom_complet,
+                        ),  # Null is associated to "" since it's a string...
+                    ],
+                    else_=model_observers.c.observer_string,
+                ).label("observer_display_name"),
             )
             .select_from(model_observers)
             .join(
@@ -286,6 +291,7 @@ class ImportActions:
             .select_from(matched_observers)
             .group_by(matched_observers.c[model_id_column])
         ).all()
+        print(aggregated_observers)
 
         ## Insert into corresponding table
         insert_stmt = sa.insert(correspondence_model).from_select(

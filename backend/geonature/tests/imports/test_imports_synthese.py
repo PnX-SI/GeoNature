@@ -1291,6 +1291,32 @@ class TestImportsSynthese:
                 field_mapped_import.observermapping.update(
                     user_matching(field_mapped_import, field)
                 )
-        assert len(field_mapped_import.observermapping) == 2
+        assert len(field_mapped_import.observermapping) == 3
         assert field_mapped_import.observermapping["import user"]["id_role"] == user1.id_role
         assert field_mapped_import.observermapping[" import user2"]["id_role"] == user2.id_role
+
+    def test_mixed_observer_mapping(self, imported_import, users):
+        """
+        This test aimed to check when observers are partially matched in an import
+        """
+        db.session.flush()
+        synthese = (
+            db.session.scalars(
+                select(Synthese).where(Synthese.id_import == imported_import.id_import)
+            )
+            .unique()
+            .all()
+        )
+        nom_complet = {
+            "user1": users["user"].nom_complet,
+            "user2": users["noright_user"].nom_complet,
+        }
+        assert len(synthese) > 0
+        assert set(map(lambda s: s.observers, synthese)) == set(
+            [
+                f"{nom_complet['user1']}, import user3",
+                f"{nom_complet['user1']}",
+                f"{nom_complet['user1']}, {nom_complet['user2']}",
+            ]
+        )
+        assert set(map(lambda s: len(s.cor_observers), synthese)) == set([1, 1, 2])
