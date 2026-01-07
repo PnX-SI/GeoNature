@@ -29,7 +29,6 @@ export class ObserverMappingStepComponent implements OnInit {
   public observerMapping: Record<string, any> = {};
   public observers: Observable<Array<any>>;
   public isLoading: boolean = true;
-  // public
 
   constructor(
     public _cm: ContentMappingService,
