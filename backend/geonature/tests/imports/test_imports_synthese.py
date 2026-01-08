@@ -1293,7 +1293,7 @@ class TestImportsSynthese:
                 )
         assert len(field_mapped_import.observermapping) == 3
         assert field_mapped_import.observermapping["import user"]["id_role"] == user1.id_role
-        assert field_mapped_import.observermapping[" import user2"]["id_role"] == user2.id_role
+        assert field_mapped_import.observermapping["import user2"]["id_role"] == user2.id_role
 
     def test_mixed_observer_mapping(self, imported_import, users):
         """
