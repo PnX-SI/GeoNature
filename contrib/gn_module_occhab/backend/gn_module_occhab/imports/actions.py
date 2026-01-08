@@ -548,14 +548,24 @@ class OcchabImportActions(ImportActions):
                 yield (batch + 1) / batch_count
             imprt.statistics.update({f"{entity.code}_count": row_count})
 
-        if config["IMPORT"]["ALLOW_USER_MAPPING"]:
-            ImportActions.bind_matched_observers(
-                imprt,
-                Station,
-                "observers_txt",
-                "id_station",
-                CorStationObserver,
-                ["id_station", "id_role"],
+        # To be consistent with the existing behavior
+        #  - OBSERVER_AS_TXT is false, observers are stored in correspondance table
+        #  - OBSERVER_AS_TXT is true, observers are stored in text field
+        # user mapping is only possible when OBSERVER_AS_TXT is false
+        if not config["OCCHAB"]["OBSERVER_AS_TXT"]:
+            if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+                ImportActions.bind_matched_observers(
+                    imprt,
+                    Station,
+                    "observers_txt",
+                    "id_station",
+                    CorStationObserver,
+                    ["id_station", "id_role"],
+                )
+            db.session.execute(
+                sa.update(Station)
+                .where(Station.id_import == imprt.id_import)
+                .values({Station.observers_txt: None})
             )
 
     @staticmethod
