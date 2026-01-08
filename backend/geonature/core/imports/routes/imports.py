@@ -181,6 +181,9 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
         imprt.authors.append(author)
         db.session.add(imprt)
 
+    else:
+        # If imprt exists, remove observer mapping
+        imprt.observermapping = {}
     # Process field mapping
     if input_fieldmapping_preset:
         fieldmapping_preset = json.loads(input_fieldmapping_preset)
