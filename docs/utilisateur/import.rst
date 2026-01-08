@@ -29,12 +29,8 @@ Pour réaliser un import dans une des destinations de GeoNature, vous devez :
     .. image:: images/import/import_steps/01_destination_choice.png
 
 3.  Une fois la destination choisie, vous serez redirigé vers une nouvelle page. 
-    Dans ce nouveau formulaire, choisissez le jeu de données qui sera associé aux données importées.  
-    Puis, téléverser le fichier contenant les données que vous souhaitez importer. À ce jour, seul le format de fichier CSV est accepté par GeoNature. Une fois les 
+    Dans ce nouveau formulaire, téléverser le fichier contenant les données que vous souhaitez importer. À ce jour, seul le format de fichier CSV est accepté par GeoNature. Une fois les 
     champs remplis, cliquez sur le bouton "Suivant". 
-
-    .. note:: 
-            Si aucun jeu de données n'apparait dans la liste déroulante, vérifier que le jeu de données souhaité est bien activé et associé à la destination souhaitée.
 
     .. image:: images/import/import_steps/02_upload_file.png
 
