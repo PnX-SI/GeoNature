@@ -61,7 +61,8 @@ acceptés
 MAX_FILE_SIZE                                  Taille maximale du fichier chargé (en Mo)                                                                                                                                   
 SRID                                           SRID autorisés pour les fichiers en entrée                                                                                                                                  
 ALLOWED_EXTENSIONS                             Extensions autorisées (seul le format CSV est accepté actuellement)                                                                                                                
-ALLOW_VALUE_MAPPING                            Activer ou non l'étape du mapping des valeurs                                                                                                                               
+ALLOW_VALUE_MAPPING                            Activer ou non l'étape de mise en correspondances des valeurs de nomenclatures              
+ALLOW_USER_MAPPING                             Activer ou non l'étape du mise en correspondances des utilisateurs                                                                                                                 
 DEFAULT_VALUE_MAPPING_ID                       Si le mapping des valeurs est désactivé, specifier l'identifiant du mapping qui doit être utilisé                                                                           
 FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE   Rempli les valeurs de nomenclature erronées par la valeur par défaut                                                                                                          
 CHECK_PRIVATE_JDD_BLURING                      Active la vérification de l'existence du champs "floutage" si le JDD est privé                                                                                              
