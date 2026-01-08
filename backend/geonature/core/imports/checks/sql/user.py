@@ -49,7 +49,7 @@ def user_matching(imprt: TImports, field: BibFields):
     )
 
     cte_user_to_match = (
-        sa.select(sa.func.distinct(sa.func.unnest(select_)).label("user_to_match"))
+        sa.select(sa.func.distinct(sa.func.trim(sa.func.unnest(select_))).label("user_to_match"))
         .where(column_transient != None)
         .where(transient_table.c.id_import == imprt.id_import)
         .cte("cte_user_to_match")

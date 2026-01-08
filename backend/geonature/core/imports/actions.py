@@ -291,7 +291,6 @@ class ImportActions:
             .select_from(matched_observers)
             .group_by(matched_observers.c[model_id_column])
         ).all()
-        print(aggregated_observers)
 
         ## Insert into corresponding table
         insert_stmt = sa.insert(correspondence_model).from_select(

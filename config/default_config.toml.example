@@ -730,3 +730,5 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Modifier la limite de taille du champ CSV
     CSV_FIELD_SIZE_LIMIT = 1000000
 
+    # Pour désactiver le mapping des utilisateurs
+    ALLOW_USER_MAPPING = true
