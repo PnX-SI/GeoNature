@@ -6,7 +6,7 @@ import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common
 
 // For Angular Dependencies
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 
@@ -55,6 +55,7 @@ import { NotificationDataService } from './components/notification/notification-
 
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 import { I18nService } from './shared/translate/i18n-service';
+import { CustomMissingTranslationHandler } from './utils/error';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -97,6 +98,10 @@ export function initApp(injector) {
         provide: TranslateLoader,
         useClass: CustomTranslateLoader,
         deps: [HttpClient, ConfigService],
+      },
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler,
       },
       isolate: false,
       extend: true,
