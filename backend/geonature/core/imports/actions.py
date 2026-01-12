@@ -231,6 +231,12 @@ class ImportActions:
         correspondence_model,
         correspondence_model_columns: typing.List[str],
     ) -> None:
+
+        def gettattr_(obj, attr):
+            if hasattr(obj, "c"):
+                return getattr(obj.c, attr)
+            return getattr(obj, attr)
+
         observers_jsonb = (
             func.jsonb_each(TImports.observermapping.cast(JSONB))
             .table_valued("key", "value")
@@ -251,12 +257,12 @@ class ImportActions:
 
         model_observers = (
             select(
-                getattr(model, model_id_column).label(model_id_column),
+                gettattr_(model, model_id_column).label(model_id_column),
                 func.trim(
-                    func.unnest(func.string_to_array(getattr(model, model_user_column), ","))
+                    func.unnest(func.string_to_array(gettattr_(model, model_user_column), ","))
                 ).label("observer_string"),
             )
-            .where(model.id_import == imprt.id_import)
+            .where(gettattr_(model, "id_import") == imprt.id_import)
             .cte("model_observers")
         )
 
@@ -304,9 +310,10 @@ class ImportActions:
 
         db.session.execute(insert_stmt)
         # Correct observers_txt column if non mapped observers still exists
+
         for model_id, observers_text in aggregated_observers:
             db.session.execute(
                 sa.update(model)
-                .where(getattr(model, model_id_column) == model_id)
+                .where(gettattr_(model, model_id_column) == model_id)
                 .values({model_user_column: observers_text})
             )
