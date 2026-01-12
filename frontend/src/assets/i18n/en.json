@@ -176,7 +176,7 @@
   "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
   "DynamicForm": {
     "Errors": {
-      "CheckBoxError": "Veuillez choisir au moins une option"
+      "CheckBoxError": "Please select at least one option"
     }
   },
   "Map": {
