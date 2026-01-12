@@ -110,11 +110,9 @@ def list_modules():
                 )
                 for action in "CRUVED"
             }
-            if any(obj_dict["cruved"].values()):
-                module_allowed = True
             module_dict["module_objects"][obj_code] = obj_dict
-        if has_any_permissions("R", module_code="ADMIN", object_code="MODULES"):
-            module_allowed = True
+            if has_any_permissions("R", module_code=module.module_code, object_code=obj_code):
+                module_allowed = True
         if version := get_module_version(module.module_code):
             module_dict["version"] = version
         if module_allowed:
