@@ -113,6 +113,7 @@ def list_modules():
             module_dict["module_objects"][obj_code] = obj_dict
             if has_any_permissions("R", module_code=module.module_code, object_code=obj_code):
                 module_allowed = True
+
         if version := get_module_version(module.module_code):
             module_dict["version"] = version
         if module_allowed:
