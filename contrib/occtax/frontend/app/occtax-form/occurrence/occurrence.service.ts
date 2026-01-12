@@ -335,12 +335,11 @@ export class OcctaxFormOccurrenceService {
 
   occurrenceFormValue() {
     let value = JSON.parse(JSON.stringify(this.form.value));
-
     /* Champs additionnels - formatter les dates et les nomenclatures */
     this.additionalFieldsForm.forEach((fieldForm: any) => {
       if (fieldForm.type_widget == 'date') {
-        value.properties.additional_fields[fieldForm.attribut_name] = this.dateParser.format(
-          value.properties.additional_fields[fieldForm.attribut_name]
+        value.additional_fields[fieldForm.attribut_name] = this.dateParser.format(
+          value.additional_fields[fieldForm.attribut_name]
         );
       }
     });
