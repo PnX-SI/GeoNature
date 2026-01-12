@@ -174,7 +174,11 @@
   "Downloading": "Downloading",
 
   "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
-
+  "DynamicForm": {
+    "Errors": {
+      "CheckBoxError": "Veuillez choisir au moins une option"
+    }
+  },
   "Map": {
     "Actions": {
       "SearchLocation": "Search for a location",
