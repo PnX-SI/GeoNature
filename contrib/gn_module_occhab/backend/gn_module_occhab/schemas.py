@@ -7,7 +7,6 @@ from marshmallow_sqlalchemy.fields import Nested
 from geonature.utils.env import db, ma
 from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_meta.schemas import DatasetSchema
-from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.utils.config import config
 
 from pypnusershub.schemas import UserSchema
@@ -52,6 +51,7 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
         allow_none=observers_as_txt_active,
     )
     dataset = Nested(DatasetSchema, dump_only=True)
+    id_digitiser = ma.auto_field(dump_only=True)
 
     # TODO@TestImportsOcchab.test_import_valid_file: maybe add testcase
     @validates_schema

@@ -206,6 +206,7 @@ def create_or_update_station(id_station=None):
             raise BadRequest("Unexisting dataset")
         if not dataset.has_instance_permission(scopes["C"]):
             raise Forbidden("You do not have access to this dataset.")
+    station.id_digitiser = g.current_user.id_role
     db.session.add(station)
     db.session.commit()
     return geojsonify(station_schema.dump(station))
