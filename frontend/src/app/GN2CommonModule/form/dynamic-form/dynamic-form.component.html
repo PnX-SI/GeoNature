@@ -167,7 +167,6 @@
           class="custom-control custom-checkbox"
           [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
         >
-          <!-- <span>{{ form.get(formDefComp['attribut_name']) | json }}</span> -->
           <input
             class="custom-control-input"
             type="checkbox"
@@ -184,6 +183,12 @@
             <span [innerHTML]="item.label"></span>
           </label>
         </div>
+        <span
+          class="text-danger"
+          *ngIf="form.get(formDefComp['attribut_name']).invalid"
+        >
+          {{ 'DynamicForm.Errors.CheckBoxError' | translate }}
+        </span>
       </ng-template>
     </div>
 

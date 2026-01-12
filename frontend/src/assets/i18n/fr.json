@@ -174,7 +174,11 @@
   "Downloading": "Téléchargement en cours",
 
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
-
+  "DynamicForm": {
+    "Errors": {
+      "CheckBoxError": "Veuillez choisir au moins une option"
+    }
+  },
   "Map": {
     "Actions": {
       "SearchLocation": "Rechercher un lieu",
