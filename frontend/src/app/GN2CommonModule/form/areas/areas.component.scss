@@ -1,0 +1,21 @@
+:host ::ng-deep .Option {
+  &__hint {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.2rem;
+    mat-icon {
+      font-size: 1rem;
+      height: 1rem;
+      width: 1rem;
+      min-width: 1rem;
+    }
+    span {
+      display: inline-block;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+}
