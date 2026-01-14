@@ -165,6 +165,47 @@ def update_content_report(id_report):
     db.session.commit()
 
 
+def sort_reports(query, orderby, sort="asc"):
+    """
+    Utility function. Sort a reports query according to given params,
+    or raise an error if these params are invalid.
+
+    Params
+    ------
+        query: `sa query`:
+            The query, sorted according to given params
+        orderby: `string`:
+            Field name to sort the query on. Must be one of
+            the fieldnames listed in SORT_COLUMNS.
+        sort: `string`:
+            The order of the sort. Default is ascending order.
+
+    Returns
+    -------
+        query: `sa query`:
+            The query, sorted according to given params
+    """
+    # Allowed columns for sort
+    SORT_COLUMNS = {
+        "user.nom_complet": User.nom_complet,
+        "content": TReport.content,
+        "creation_date": TReport.creation_date,
+    }
+
+    # Determine the sorting
+    if orderby in SORT_COLUMNS:
+        sort_column = SORT_COLUMNS[orderby]
+        if sort == "desc":
+            query = query.order_by(desc(sort_column))
+        else:
+            query = query.order_by(asc(sort_column))
+    else:
+        raise BadRequest("Bad orderby")
+
+    # Return sorted query
+    return query
+
+
 @reports_blueprint.route("", methods=["GET"])
 @permissions_required("R", module_code="SYNTHESE")
 def list_all_reports(permissions):
@@ -225,21 +266,8 @@ def list_all_reports(permissions):
     cte_synthese = synthese_query_obj.query.cte("cte_synthese")
     query = query.where(TReport.id_synthese == cte_synthese.c.id_synthese)
 
-    SORT_COLUMNS = {
-        "user.nom_complet": User.nom_complet,
-        "content": TReport.content,
-        "creation_date": TReport.creation_date,
-    }
-
     # Determine the sorting
-    if orderby in SORT_COLUMNS:
-        sort_column = SORT_COLUMNS[orderby]
-        if sort == "desc":
-            query = query.order_by(desc(sort_column))
-        else:
-            query = query.order_by(asc(sort_column))
-    else:
-        raise BadRequest("Bad orderby")
+    query = sort_reports(query, orderby, sort)
 
     # Pagination
     paginated_results = db.paginate(query, page=page, per_page=per_page)
@@ -281,7 +309,10 @@ def list_all_reports(permissions):
 @reports_blueprint.route("/<int:id_synthese>", methods=["GET"])
 @permissions_required("R", module_code="SYNTHESE")
 def list_reports(permissions, id_synthese):
+    # parameters
     type_name = request.args.get("type")
+    orderby = request.args.get("orderby", "creation_date")
+    sort = request.args.get("sort")
 
     synthese = db.get_or_404(Synthese, id_synthese)
     if not synthese.has_instance_permission(permissions):
@@ -307,6 +338,9 @@ def list_reports(permissions, id_synthese):
         joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
         joinedload(TReport.report_type),
     )
+
+    # Determine the sorting
+    query = sort_reports(query, orderby, sort)
 
     return ReportSchema(many=True, only=["+user.nom_role", "+user.prenom_role"]).dump(
         db.session.scalars(query).all()
