@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import * as cloneDeep from 'lodash/cloneDeep';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-
 import { ConfigService } from '@geonature/services/config.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -14,17 +14,23 @@ import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.co
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
+import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { SyntheseQueryParamsService } from './synthese-queryparams.service';
 
 @Component({
   selector: 'pnx-synthese',
   styleUrls: ['synthese.component.scss'],
   templateUrl: 'synthese.component.html',
-  providers: [MapListService],
+  providers: [MapListService, SyntheseQueryParamsService],
 })
 export class SyntheseComponent implements OnInit {
   private idsByFeature: Set<number>;
   public firstLoad = true;
   private noGeomMessage: boolean;
+
+  // Handling of cd_ref from query_params requires an extra processing step.
+  // Those are not directly control values.
+  private _cdRefFromQueryParams: Array<number> = [];
 
   public isSearchBarReduced = false;
 
@@ -39,7 +45,9 @@ export class SyntheseComponent implements OnInit {
     private route: ActivatedRoute,
     private ngModal: NgbModal,
     private changeDetector: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private location: Location,
+    private queryParamsService: SyntheseQueryParamsService
   ) {}
 
   ngOnInit() {
@@ -54,15 +62,7 @@ export class SyntheseComponent implements OnInit {
       );
 
     this.route.queryParamMap.subscribe((params) => {
-      if (params.get('id_dataset')) {
-        this.formService.searchForm.patchValue({ id_dataset: params.get('id_dataset') });
-      }
-
-      if (params.get('id_acquisition_framework')) {
-        this.formService.searchForm.patchValue({
-          id_acquisition_framework: params.get('id_acquisition_framework'),
-        });
-      }
+      this._cdRefFromQueryParams = this.queryParamsService.getCdRefsFromQueryParams(params);
 
       const idSynthese = this.route.snapshot.paramMap.get('id_synthese');
       if (idSynthese) {
@@ -88,11 +88,15 @@ export class SyntheseComponent implements OnInit {
     this.formService
       .processDefaultFilters(this.config.SYNTHESE.DEFAULT_FILTERS)
       .subscribe((processedDefaultFilters) => {
-        if (params.get('id_import')) {
-          processedDefaultFilters['id_import'] = params.get('id_import');
-        }
-        this.formService.searchForm.patchValue(processedDefaultFilters);
+        this.queryParamsService.applyQueryParamsToAdvancedFilters(params, processedDefaultFilters);
+        this.formService.searchForm.reset(processedDefaultFilters);
         this.formService.processedDefaultFilters = processedDefaultFilters;
+        this.queryParamsService.applyQueryParamsToFilters(params);
+        this.queryParamsService.applyQueryParamsTaxons(params, (taxons: Array<Taxon>, cdRefs) => {
+          this._cdRefFromQueryParams = cdRefs;
+          this.formService.selectedtaxonFromComponent = taxons;
+          this.changeDetector.detectChanges();
+        });
         this.changeDetector.detectChanges();
 
         this.loadData();
@@ -101,6 +105,9 @@ export class SyntheseComponent implements OnInit {
 
   loadData() {
     let formParams = this.formService.formatParams();
+    if (this._cdRefFromQueryParams.length && !formParams['cd_ref']) {
+      formParams = { ...formParams, cd_ref: this._cdRefFromQueryParams };
+    }
     this.searchService.dataLoaded = false;
     this.formService.searchForm.markAsPristine();
 
@@ -116,6 +123,15 @@ export class SyntheseComponent implements OnInit {
     );
 
     this.displayMessageLastObsLimit();
+  }
+
+  onResetFilters() {
+    this._cdRefFromQueryParams = [];
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      replaceUrl: true,
+    });
   }
 
   private parseGeoJson(rawGeojson) {
@@ -225,7 +241,17 @@ export class SyntheseComponent implements OnInit {
     }
   }
 
-  onSearchEvent() {
+  onSearchEvent(updatedParams?: Record<string, any>) {
+    // Process params to update the location with query_params (location --> update url without actually loading a page)
+    const formParams = updatedParams ?? this.formService.formatParams();
+    const queryParams = this.queryParamsService.buildQueryParams(formParams);
+    const urlTree = this.router.createUrlTree([], {
+      relativeTo: this.route,
+      queryParams,
+    });
+    this.location.go(this.router.serializeUrl(urlTree)); // Utilisation de location.go --> do not trigger the request, only modify url state
+    this._cdRefFromQueryParams = Array.isArray(formParams['cd_ref']) ? formParams['cd_ref'] : [];
+
     // Remove limit
     this.formService.selectors = this.formService.selectors.delete('limit');
     // On search button click, clean cache and call loadAndStoreData

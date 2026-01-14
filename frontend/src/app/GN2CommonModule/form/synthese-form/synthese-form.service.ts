@@ -7,7 +7,6 @@ import {
 } from '@angular/forms';
 import { HttpParams } from '@angular/common/http';
 
-import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
@@ -75,7 +74,6 @@ export class SyntheseFormService {
       id_import: null,
       id_acquisition_framework: null,
       id_nomenclature_valid_status: null,
-      modif_since_validation: [false, null],
       score: null,
       valid_distribution: null,
       valid_altitude: null,
@@ -129,6 +127,17 @@ export class SyntheseFormService {
       return this.config.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
     this.formBuilded = true;
+  }
+
+  configureValidationControls(displayValidation: boolean) {
+    const controlName = 'modif_since_validation';
+    if (displayValidation) {
+      if (!this.searchForm.contains(controlName)) {
+        this.searchForm.addControl(controlName, new UntypedFormControl(false));
+      }
+    } else if (this.searchForm.contains(controlName)) {
+      this.searchForm.removeControl(controlName);
+    }
   }
 
   getCurrentTaxon($event) {
@@ -252,6 +261,28 @@ export class SyntheseFormService {
         }
       })
     );
+  }
+
+  parseDateParam(value: string) {
+    const parsedDate = this._dateParser.parse(value);
+    if (parsedDate) {
+      return parsedDate;
+    }
+
+    const fallbackDate = new Date(value);
+    if (!isNaN(fallbackDate.getTime())) {
+      return {
+        year: fallbackDate.getUTCFullYear(),
+        month: fallbackDate.getUTCMonth() + 1,
+        day: fallbackDate.getUTCDate(),
+      };
+    }
+
+    return null;
+  }
+
+  parsePeriodParam(value: string) {
+    return this._periodFormatter.parse(value);
   }
 
   processDefaultFilters(filters): Observable<any> {

@@ -1,4 +1,13 @@
-import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  Output,
+  EventEmitter,
+  Input,
+  ViewEncapsulation,
+  SimpleChanges,
+} from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -6,7 +15,6 @@ import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
@@ -16,11 +24,10 @@ import { ConfigService } from '@geonature/services/config.service';
   providers: [],
   encapsulation: ViewEncapsulation.None,
 })
-export class SyntheseSearchComponent implements OnInit {
+export class SyntheseSearchComponent implements OnInit, OnChanges {
   public organisms: Array<any>;
   public taxonApiEndPoint = null;
   public validationStatus: Array<any>;
-  private params: any;
 
   public isCollapsePeriod = true;
   public isCollapseScore = true;
@@ -41,12 +48,8 @@ export class SyntheseSearchComponent implements OnInit {
     public mapService: MapService,
     private _storeService: TaxonAdvancedStoreService,
     private _api: DataFormService,
-    private route: ActivatedRoute,
     public config: ConfigService
   ) {
-    this.route.queryParams.subscribe((params) => {
-      this.params = params;
-    });
     this.taxonApiEndPoint = `${this.config.API_ENDPOINT}/synthese/taxons_autocomplete`;
   }
 
@@ -66,22 +69,21 @@ export class SyntheseSearchComponent implements OnInit {
       return area;
     });
 
+    this._handleDisplayValidation();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.displayValidation) {
+      this._handleDisplayValidation();
+    }
+  }
+
+  private _handleDisplayValidation() {
+    this.formService.configureValidationControls(this.displayValidation);
     if (this.displayValidation) {
       this._api.getNomenclatures(['STATUT_VALID']).subscribe((data) => {
         this.validationStatus = data[0].values;
       });
-    }
-
-    if (this.params) {
-      if (this.params.id_acquisition_framework) {
-        this.formService.searchForm.controls.id_acquisition_framework.setValue([
-          +this.params.id_acquisition_framework,
-        ]);
-      }
-
-      if (this.params.id_dataset) {
-        this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset]);
-      }
     }
   }
 
