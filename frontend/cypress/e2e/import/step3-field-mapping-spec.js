@@ -57,6 +57,13 @@ function selectMapping(mappingName) {
     });
 }
 
+function ensureMappingSelected(mappingName) {
+  selectMapping(mappingName);
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_SELECTION)
+    .find('.ng-value-label')
+    .should('contain.text', mappingName);
+}
+
 function deleteCurrentMapping() {
   // Delete the mapping
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE).should('exist').click();
@@ -108,9 +115,10 @@ function fillTheForm() {
     .should('exist')
     .clear()
     .type(FIELDMAPPING_TEST_NAME);
+  cy.intercept('POST', '**/fieldmappings/**').as('createFieldMapping');
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL_NEW_OK, { force: true }).should('be.enabled').click();
 
-  cy.wait(TIMEOUT_WAIT);
+  cy.wait('@createFieldMapping');
 }
 
 function runTheProcess(user) {
@@ -218,15 +226,20 @@ describe('Import - Field mapping step', () => {
       restartTheProcess(USER_ADMIN);
 
       // Check the import list, and select expected mapping
-      selectMapping(FIELDMAPPING_TEST_NAME);
+      ensureMappingSelected(FIELDMAPPING_TEST_NAME);
 
       // Change a mapping value and save
       selectField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_fin');
+      cy.get(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN)
+        .find('.ng-value-label')
+        .should('contain.text', 'date_fin');
 
+      cy.intercept('POST', '**/fieldmappings/**').as('updateFieldMapping');
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('be.enabled').click();
+      cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL).should('be.visible');
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL_OK, { force: true }).should('be.enabled').click();
 
-      cy.wait(TIMEOUT_WAIT);
+      cy.wait('@updateFieldMapping');
 
       // restart the process
       restartTheProcess(USER_ADMIN);
