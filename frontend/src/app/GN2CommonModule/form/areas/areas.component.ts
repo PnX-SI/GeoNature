@@ -8,6 +8,8 @@ import {
   tap,
   catchError,
   map,
+  filter,
+  take,
 } from 'rxjs/operators';
 
 import { DataFormService } from '../data-form.service';
@@ -106,7 +108,32 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
     this.params['without_geom'] = this.withoutGeom;
     this.valueFieldName = this.valueFieldName === undefined ? 'id_area' : this.valueFieldName;
 
-    this.getAreas();
+    const initialIds = this._normalizeSelectedAreaIds(this.parentFormControl?.value);
+    if (initialIds.length) {
+      this._loadDefaultItems(initialIds).subscribe((items) => {
+        this.defaultItems = items;
+        this.getAreas();
+      });
+    } else {
+      this.getAreas();
+      if (this.parentFormControl) {
+        this.parentFormControl.valueChanges
+          .pipe(
+            filter((value) => this._normalizeSelectedAreaIds(value).length > 0),
+            take(1)
+          )
+          .subscribe((value) => {
+            const selectedIds = this._normalizeSelectedAreaIds(value);
+            this._loadDefaultItems(selectedIds).subscribe((items) => {
+              if (!items.length) {
+                return;
+              }
+              this.defaultItems = items;
+              this.getAreas();
+            });
+          });
+      }
+    }
   }
 
   /**
@@ -170,5 +197,29 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
       });
     }
     return data;
+  }
+
+  private _normalizeSelectedAreaIds(values: any): Array<number> {
+    if (!Array.isArray(values)) {
+      return [];
+    }
+    return values
+      .map((value) => {
+        if (value && typeof value === 'object') {
+          return value[this.valueFieldName];
+        }
+        return value;
+      })
+      .map((value) => Number(value))
+      .filter((value) => !isNaN(value));
+  }
+
+  private _loadDefaultItems(ids: Array<number>): Observable<any> {
+    if (!ids.length) {
+      return of([]);
+    }
+    return this.dataService
+      .getAreas({ ...this.params, id_area: ids })
+      .pipe(map((data) => this.formatAreas(data)));
   }
 }
