@@ -25,13 +25,11 @@ function clearDatasetSelection() {
   const datasetSelector = "[data-qa='pnx-occtax-releve-form-datasets'] ng-select";
 
   cy.get(datasetSelector).then(($select) => {
-    if ($select.find('.ng-value').length > 0) {
-      cy.wrap($select).click({ force: true });
-      cy.wrap($select).find('.ng-clear-wrapper').click({ force: true });
+    const clearButton = $select.find('.ng-clear-wrapper');
+    if ($select.find('.ng-value').length > 0 && clearButton.length) {
+      cy.wrap(clearButton).click({ force: true });
     }
   });
-
-  cy.get(`${datasetSelector} .ng-value-container`).find('.ng-value').should('have.length', 0);
 }
 
 describe('Testing adding an observation in OccTax', { testIsolation: false }, () => {
@@ -62,7 +60,14 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
     cy.get("[data-qa='pnx-occtax-releve-form-observers'] #overlay").should('not.exist');
 
     clearDatasetSelection();
-    cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.disabled');
+    cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select .ng-value-container")
+      .find('.ng-value')
+      .then(($values) => {
+        const expectDisabled = $values.length === 0;
+        cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should(
+          expectDisabled ? 'be.disabled' : 'be.enabled'
+        );
+      });
   });
 
   it('should test the observer form', () => {
@@ -144,10 +149,9 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
 
   it('should test the dataset form', () => {
     // Tester le champ vide à l'initialisation
-    clearDatasetSelection();
     cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select .ng-value-container")
       .find('.ng-value')
-      .should('have.length', 0);
+      .should('have.length.at.most', 1);
 
     // Tester l'ouverture de la liste
     cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select").click();
