@@ -116,46 +116,13 @@ export class OrganismFormDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const normalizedInput = this.normalizeString(inputName);
-    const organisms = this.actorFormService.organisms;
+    this.dataFormService.getOrganisms(false, { search: inputName }).subscribe((response) => {
+      this.similarOrganisms = response;
+      // Reset to first page when results change
+      this.currentPage = 0;
 
-    // Filter and calculate distance for each organism
-    const organismsWithDistance = organisms
-      .map((org) => {
-        const normalizedOrgName = this.normalizeString(org.nom_organisme);
-
-        // Set exact match - case-sensitive - as most similar
-        if (
-          org.nom_organisme.trim().replace(/\s+/g, ' ') == inputName.trim().replace(/\s+/g, ' ')
-        ) {
-          return { organism: org, distance: -1 };
-        }
-
-        // Calculate similarity score based on Levenshtein distance
-        const distanceLevenshtein = distance(normalizedInput, normalizedOrgName);
-
-        // Consider similar if similarity is above 70%
-        const maxLength = Math.max(normalizedInput.length, normalizedOrgName.length);
-        const similarity = 1 - distanceLevenshtein / maxLength;
-        if (similarity > 0.7) {
-          return { organism: org, distance: distanceLevenshtein };
-        }
-
-        // For no match or too low similarity, return null
-        return null;
-      })
-      .filter((item) => item !== null);
-
-    // Sort by distance (ascending - most similar first)
-    organismsWithDistance.sort((a, b) => a.distance - b.distance);
-
-    // Extract just the organisms
-    this.similarOrganisms = organismsWithDistance.map((item) => item.organism);
-
-    // Reset to first page when results change
-    this.currentPage = 0;
-
-    this.showSimilarWarning = this.similarOrganisms.length > 0;
+      this.showSimilarWarning = this.similarOrganisms.length > 0;
+    });
   }
 
   /**

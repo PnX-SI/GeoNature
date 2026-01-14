@@ -430,10 +430,13 @@ export class DataFormService {
     );
   }
 
-  getOrganisms(orderByName = true) {
+  getOrganisms(orderByName = true, params: ParamsDict = {}) {
     let queryString: HttpParams = new HttpParams();
     if (orderByName) {
       queryString = this.addOrderBy(queryString, 'nom_organisme');
+    }
+    for (let key in params) {
+      queryString = queryString.set(key, params[key]);
     }
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/organisms`, {
       params: queryString,
@@ -451,7 +454,7 @@ export class DataFormService {
   }
 
   createOrganism(organismData: any) {
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/organism/new`, organismData);
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/organism`, organismData);
   }
 
   getOrganism(id_organisme: number) {

@@ -28,8 +28,7 @@ from pypnusershub.organisms_manager import (
 )
 from pypnusershub.auth import user_manager
 
-from sqlalchemy import and_, select
-from sqlalchemy.sql import and_
+from sqlalchemy import and_, select, func
 from utils_flask_sqla.response import json_resp
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
 
@@ -185,14 +184,29 @@ def get_organismes():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = select(Organisme)
+
+    query = select(Organisme)
+    order_by_cols = []
+
+    if "search" in params:
+        search = params.pop("search")
+        query = query.where(func.word_similarity(Organisme.nom_organisme, search) > 0.7)
+        order_by_cols = [func.word_similarity(Organisme.nom_organisme, search).desc()]
+
     if "orderby" in params:
+        order_params = params["orderby"].split(":")
         try:
-            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
+            order_col = getattr(Organisme.__table__.columns, order_params[0])
+            if len(order_params) > 1:
+                order_col = order_col.asc() if order_params[1] == "asc" else order_col.desc()
+            order_by_cols.append(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(q).all()]
+    if order_by_cols:
+        query = query.order_by(*order_by_cols)
+    return [
+        organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(query).all()
+    ]
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])
@@ -245,7 +259,7 @@ def get_organism(id_organisme):
     return organism.as_dict()
 
 
-@routes.route("/organism/new", methods=["POST"])
+@routes.route("/organism", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="GEONATURE", object_code="ORGANISM")
 @json_resp
 def create_organism() -> dict:
