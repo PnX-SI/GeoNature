@@ -1,5 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
 import { DEFAULT_FIELDMAPPINGS } from './constants/mappings';
 import { v4 as uuidv4 } from 'uuid';
@@ -66,11 +66,12 @@ function ensureMappingSelected(mappingName) {
 
 function deleteCurrentMapping() {
   // Delete the mapping
+  cy.intercept('DELETE', '**/fieldmappings/**').as('deleteFieldMapping');
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE).should('exist').click();
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE_OK, { force: true })
     .should('be.enabled')
     .click();
-  cy.wait(TIMEOUT_WAIT);
+  cy.wait('@deleteFieldMapping');
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -131,9 +132,8 @@ function runTheProcess(user) {
 }
 
 function restartTheProcess(user) {
-  cy.wait(TIMEOUT_WAIT);
   cy.deleteCurrentImport();
-  cy.wait(TIMEOUT_WAIT);
+  cy.get('[data-qa="import-list"]').should('exist');
   runTheProcess(user);
 }
 
@@ -195,9 +195,10 @@ describe('Import - Field mapping step', () => {
         .should('exist')
         .clear()
         .type(FIELDMAPPING_TEST_RENAME);
+      cy.intercept('POST', '**/fieldmappings/**').as('renameFieldMapping');
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_SELECTION_RENAME_OK).should('be.enabled').click();
 
-      cy.wait(TIMEOUT_WAIT);
+      cy.wait('@renameFieldMapping');
 
       // Reload the page
       cy.reload();
@@ -254,7 +255,6 @@ describe('Import - Field mapping step', () => {
 
       // delete current mapping
       deleteCurrentMapping();
-      cy.wait(TIMEOUT_WAIT);
     });
 
     it('Should not be able to access fieldmapping owned by a different user', () => {
@@ -262,7 +262,6 @@ describe('Import - Field mapping step', () => {
       fillTheForm();
 
       // Switch user
-      cy.wait(TIMEOUT_WAIT);
       cy.deleteCurrentImport();
       cy.geonatureLogout();
       cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);

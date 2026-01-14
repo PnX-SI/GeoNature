@@ -1,5 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import { SELECTOR_IMPORT_LIST_TABLE } from './constants/selectors';
 
 const COLUMN_NAME = 'Jeu de données';
@@ -25,13 +25,9 @@ describe('Test List import - Refer to JDD page', () => {
             cy.getCellValueByColumnName(SELECTOR_IMPORT_LIST_TABLE, COLUMN_NAME, cellValue).then(
               () => {
                 cy.get('@targetLink').click();
-                cy.wait(TIMEOUT_WAIT);
               }
             );
-            cy.location().then((loc) => {
-              cy.log('Current URL: ' + loc.href);
-              expect(loc.href).to.include('metadata/dataset_detail/');
-            });
+            cy.location('href').should('include', 'metadata/dataset_detail/');
           })
         );
       });

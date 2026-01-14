@@ -1,5 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
 import {
   SELECTOR_IMPORT_REPORT,
@@ -75,24 +75,19 @@ describe('Import - Report step', () => {
         const destination = parts[parts.length - 3];
 
         // PDF report
+        cy.intercept(
+          'POST',
+          `${Cypress.env('apiEndpoint')}/import/${destination}/export_pdf/${importID}`
+        ).as('exportPdf');
         cy.get(SELECTOR_IMPORT_REPORT_DOWNLOAD_PDF).click({
           force: true,
         });
-
+        cy.wait('@exportPdf');
         // https://github.com/cypress-io/cypress/issues/25443
-        cy.intercept(
-          {
-            method: 'POST',
-            url: `${Cypress.env('apiEndpoint')}/import/${destination}/export_pdf/${importID}`,
-          },
-          (req) => {
-            cy.wait(TIMEOUT_WAIT);
-            cy.task('getLastDownloadFileName', DOWNLOADS_FOLDER).then((filename) => {
-              cy.verifyDownload(filename, DOWNLOADS_FOLDER);
-              cy.deleteFile(filename, DOWNLOADS_FOLDER);
-            });
-          }
-        );
+        cy.task('getLastDownloadFileName', DOWNLOADS_FOLDER).then((filename) => {
+          cy.verifyDownload(filename, DOWNLOADS_FOLDER);
+          cy.deleteFile(filename, DOWNLOADS_FOLDER);
+        });
       });
     });
 

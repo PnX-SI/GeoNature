@@ -1,5 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -43,10 +43,12 @@ function selectMapping(mappingName) {
 
 function deleteCurrentMapping() {
   // Delete the mapping
+  cy.intercept('DELETE', '**/contentmappings/**').as('deleteContentMapping');
   cy.get(SELECTOR_IMPORT_CONTENTMAPPING_BUTTON_DELETE).should('exist').click();
   cy.get(SELECTOR_IMPORT_CONTENTMAPPING_MODAL_DELETE_OK, { force: true })
     .should('be.enabled')
     .click({ force: true });
+  cy.wait('@deleteContentMapping');
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -58,9 +60,11 @@ function saveTheForm() {
 
   // Validation modal appear
   cy.get(SELECTOR_IMPORT_CONTENTMAPPING_MODAL, { force: true }).should('exist');
+  cy.intercept('POST', '**/contentmappings/**').as('updateContentMapping');
   cy.get(SELECTOR_IMPORT_CONTENTMAPPING_MODAL_OK, { force: true })
     .should('be.enabled')
     .click({ force: true });
+  cy.wait('@updateContentMapping');
 }
 
 function saveTheNewForm() {
@@ -78,9 +82,11 @@ function saveTheNewForm() {
     .should('exist')
     .clear()
     .type(MAPPING_TEST_NAME);
+  cy.intercept('POST', '**/contentmappings/**').as('createContentMapping');
   cy.get(SELECTOR_IMPORT_CONTENTMAPPING_MODAL_NEW_OK, { force: true })
     .should('be.enabled')
     .click({ force: true });
+  cy.wait('@createContentMapping');
 }
 
 function checkThatMappingCanNotBeSaved() {
@@ -140,7 +146,7 @@ function runTheProcessForOcchab(user) {
 
 function restartTheProcess(user) {
   cy.deleteCurrentImport();
-  cy.wait(TIMEOUT_WAIT);
+  cy.get('[data-qa="import-list"]').should('exist');
   runTheProcess(user);
 }
 
@@ -185,7 +191,9 @@ describe('Import - Content mapping step', () => {
         .should('exist')
         .clear()
         .type(MAPPING_TEST_RENAME);
+      cy.intercept('POST', '**/contentmappings/**').as('renameContentMapping');
       cy.get(SELECTOR_IMPORT_CONTENTMAPPING_SELECTION_RENAME_OK).should('be.enabled').click();
+      cy.wait('@renameContentMapping');
 
       // Reload the page
       cy.reload();
