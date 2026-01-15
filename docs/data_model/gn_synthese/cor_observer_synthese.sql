@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_synthese.cor_observer_synthese (
     id_synthese integer NOT NULL,
     id_role integer NOT NULL
@@ -14,4 +15,5 @@ ALTER TABLE ONLY gn_synthese.cor_observer_synthese
 
 ALTER TABLE ONLY gn_synthese.cor_observer_synthese
     ADD CONSTRAINT fk_gn_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
+
 

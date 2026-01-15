@@ -1,0 +1,12 @@
+<div>
+  <small style="font-weight: bold">{{ label }}</small>
+  <input
+    type="checkbox"
+    [(ngModel)]="toggled"
+    class="ml-1"
+  />
+</div>
+<div [disableControl]="!toggled">
+  <!-- [hidden]="!toggled" -->
+  <ng-content></ng-content>
+</div>

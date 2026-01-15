@@ -16,9 +16,14 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 
 @Injectable()
 export class ActorFormService {
+  public paramsSetComplete: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   _organisms: BehaviorSubject<any[]> = new BehaviorSubject([]);
   get organisms() {
     return this._organisms.getValue();
+  }
+
+  notifyParamsSetComplete() {
+    this.paramsSetComplete.next(true);
   }
 
   _roles: BehaviorSubject<any[]> = new BehaviorSubject([]);

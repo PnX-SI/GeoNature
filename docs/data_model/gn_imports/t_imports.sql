@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_imports.t_imports (
     id_import integer NOT NULL,
     format_source_file character varying(10),
@@ -49,4 +50,5 @@ ALTER TABLE ONLY gn_imports.t_imports
 
 ALTER TABLE ONLY gn_imports.t_imports
     ADD CONSTRAINT t_imports_id_destination_fkey FOREIGN KEY (id_destination) REFERENCES gn_imports.bib_destinations(id_destination) ON DELETE RESTRICT;
+
 

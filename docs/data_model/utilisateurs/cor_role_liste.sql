@@ -1,4 +1,5 @@
 
+
 CREATE TABLE utilisateurs.cor_role_liste (
     id_role integer NOT NULL,
     id_liste integer NOT NULL
@@ -14,4 +15,5 @@ ALTER TABLE ONLY utilisateurs.cor_role_liste
 
 ALTER TABLE ONLY utilisateurs.cor_role_liste
     ADD CONSTRAINT fk_cor_role_liste_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
 

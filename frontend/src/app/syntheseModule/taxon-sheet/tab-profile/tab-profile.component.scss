@@ -6,13 +6,4 @@
   &__disclaimer {
     font-style: italic;
   }
-  &__indicators {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    gap: 0.5em;
-  }
-  &__map {
-    flex-grow: 2;
-  }
 }

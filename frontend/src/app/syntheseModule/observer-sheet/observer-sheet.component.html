@@ -1,0 +1,20 @@
+<gn-page-layout>
+  <gn-sheet-layout>
+    <infos infos />
+    <gn-loadable-layout
+      indicators
+      [isLoading]="isLoadingIndicators"
+    >
+      <gn-indicators-layout indicators>
+        <gn-indicator
+          *ngFor="let indicator of indicators"
+          [indicator]="indicator"
+        />
+      </gn-indicators-layout>
+    </gn-loadable-layout>
+    <gn-tabs-layout
+      tabs
+      [tabs]="routes.TAB_LINKS"
+    />
+  </gn-sheet-layout>
+</gn-page-layout>

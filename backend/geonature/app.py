@@ -5,6 +5,7 @@ Démarrage de l'application
 import logging, warnings, sys
 from itertools import chain
 from importlib import import_module
+import csv
 
 if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
@@ -32,8 +33,10 @@ from geonature.middlewares import SchemeFix, RequestID
 
 
 from pypnusershub.db.models import Application
-from pypnusershub.auth import auth_manager
+from pypnusershub.auth import auth_manager, user_manager
 from pypnusershub.login_manager import login_manager
+
+csv.field_size_limit(config["IMPORT"]["CSV_FIELD_SIZE_LIMIT"])
 
 
 @migrate.configure
@@ -122,6 +125,16 @@ def create_app(with_external_mods=True):
     auth_manager.init_app(app, providers_declaration=config["AUTHENTICATION"]["PROVIDERS"])
     auth_manager.home_page = config["URL_APPLICATION"]
 
+    if config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"]:
+        password_config = config["ACCOUNT_MANAGEMENT"]["PASSWORD_MANAGEMENT"]
+        user_config = {
+            "min_password_length": password_config["MIN_PASSWORD_LENGTH"],
+            "require_special_character": password_config["REQUIRE_SPECIAL_CHARACTER"],
+            "require_digit": password_config["REQUIRE_DIGIT"],
+            "require_multiple_case": password_config["REQUIRE_MULTIPLE_CASE"],
+        }
+        user_manager.init_user_manager(**user_config)
+
     if "CELERY" in app.config:
         from geonature.utils.celery import celery_app
 
@@ -190,7 +203,6 @@ def create_app(with_external_mods=True):
 
     for blueprint_path, url_prefix in [
         ("pypn_habref_api.routes:routes", "/habref"),
-        ("pypnusershub.routes_register:bp", "/pypn/register"),
         ("pypnnomenclature.routes:routes", "/nomenclatures"),
         ("ref_geo.routes:routes", "/geo"),
         ("geonature.core.health.routes:routes", "/"),

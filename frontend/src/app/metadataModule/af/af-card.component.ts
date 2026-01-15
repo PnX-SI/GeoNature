@@ -6,6 +6,7 @@ import { tap, map } from 'rxjs/operators';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Component({
   selector: 'pnx-af-card',
@@ -69,12 +70,15 @@ export class AfCardComponent implements OnInit {
 
   public spinner = true;
 
+  public additionalFields: Array<any> = [];
+
   constructor(
     private _dfs: DataFormService,
     private _route: ActivatedRoute,
     private _router: Router,
     private _commonService: CommonService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _moduleService: ModuleService
   ) {}
 
   ngOnInit() {
@@ -108,7 +112,27 @@ export class AfCardComponent implements OnInit {
         })
       )
       .subscribe(
-        (af) => (this.af = af),
+        (af) => {
+          this.af = af;
+          this._dfs
+            .getadditionalFields({
+              module_code: [this._moduleService.currentModule.module_code],
+            })
+            .subscribe((additionalFields) => {
+              additionalFields.forEach((field) => {
+                const map = {
+                  METADATA_CADRE_ACQUISITION: this.additionalFields,
+                };
+                if (field.type_widget != 'html') {
+                  field.objects.forEach((object) => {
+                    if (object.code_object in map) {
+                      map[object.code_object].push(field);
+                    }
+                  });
+                }
+              });
+            });
+        },
         (err) => {
           if (err.status === 404) {
             this._commonService.translateToaster('error', 'MetaData.Messages.AF404');

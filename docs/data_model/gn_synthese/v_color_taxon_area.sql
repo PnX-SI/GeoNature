@@ -1,4 +1,5 @@
 
+
 CREATE VIEW gn_synthese.v_color_taxon_area AS
  SELECT v_area_taxon.cd_nom,
     v_area_taxon.id_area,
@@ -9,4 +10,5 @@ CREATE VIEW gn_synthese.v_color_taxon_area AS
             ELSE 'red'::text
         END AS color
    FROM gn_synthese.v_area_taxon;
+
 

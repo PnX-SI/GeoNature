@@ -1,4 +1,5 @@
 
+
 CREATE VIEW pr_occhab.v_export_sinp AS
  SELECT s.id_station,
     s.id_dataset,
@@ -34,4 +35,5 @@ CREATE VIEW pr_occhab.v_export_sinp AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures nom5 ON ((nom5.id_nomenclature = s.id_nomenclature_exposure)))
      LEFT JOIN ref_nomenclatures.t_nomenclatures nom6 ON ((nom5.id_nomenclature = s.id_nomenclature_type_sol)))
   GROUP BY s.id_station, s.id_dataset, ds.unique_dataset_id, nom2.cd_nomenclature, h.technical_precision, h.cd_hab, h.nom_cite, nom3.cd_nomenclature, h.unique_id_sinp_hab, nom5.cd_nomenclature, nom6.cd_nomenclature;
+
 

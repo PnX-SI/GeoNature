@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_nomenclatures.t_nomenclatures (
     id_nomenclature integer NOT NULL,
     id_type integer NOT NULL,
@@ -49,4 +50,5 @@ ALTER TABLE ONLY ref_nomenclatures.t_nomenclatures
 
 ALTER TABLE ONLY ref_nomenclatures.t_nomenclatures
     ADD CONSTRAINT fk_t_nomenclatures_id_type FOREIGN KEY (id_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(id_type) ON UPDATE CASCADE;
+
 

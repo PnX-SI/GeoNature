@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_imports.matching_tables (
     id_matching_table integer NOT NULL,
     source_schema text NOT NULL,
@@ -20,4 +21,5 @@ ALTER SEQUENCE gn_imports.matching_tables_id_matching_table_seq OWNED BY gn_impo
 
 ALTER TABLE ONLY gn_imports.matching_tables
     ADD CONSTRAINT pk_matching_tables PRIMARY KEY (id_matching_table);
+
 

@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_habitats.cor_list_habitat (
     id_cor_list integer NOT NULL,
     id_list integer NOT NULL,
@@ -28,4 +29,5 @@ ALTER TABLE ONLY ref_habitats.cor_list_habitat
 
 ALTER TABLE ONLY ref_habitats.cor_list_habitat
     ADD CONSTRAINT fk_cor_list_habitat_id_list FOREIGN KEY (id_list) REFERENCES ref_habitats.bib_list_habitat(id_list) ON UPDATE CASCADE;
+
 

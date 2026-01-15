@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_meta.cor_acquisition_framework_objectif (
     id_acquisition_framework integer NOT NULL,
     id_nomenclature_objectif integer NOT NULL
@@ -17,4 +18,5 @@ ALTER TABLE ONLY gn_meta.cor_acquisition_framework_objectif
 
 ALTER TABLE ONLY gn_meta.cor_acquisition_framework_objectif
     ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_nomenclature_objectif FOREIGN KEY (id_nomenclature_objectif) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 

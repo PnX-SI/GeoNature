@@ -1,4 +1,5 @@
 
+
 CREATE VIEW utilisateurs.v_userslist_forall_menu AS
  SELECT a.groupe,
     a.id_role,
@@ -62,4 +63,5 @@ CREATE VIEW utilisateurs.v_userslist_forall_menu AS
              JOIN utilisateurs.cor_role_liste c ON ((c.id_role = g.id_role_groupe)))
              LEFT JOIN utilisateurs.bib_organismes o ON ((o.id_organisme = u.id_organisme)))
           WHERE ((u.groupe = false) AND (u.active = true))) a;
+
 

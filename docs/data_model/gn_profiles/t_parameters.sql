@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_profiles.t_parameters (
     id_parameter integer NOT NULL,
     name character varying(100) NOT NULL,
@@ -20,4 +21,5 @@ ALTER SEQUENCE gn_profiles.t_parameters_id_parameter_seq OWNED BY gn_profiles.t_
 
 ALTER TABLE ONLY gn_profiles.t_parameters
     ADD CONSTRAINT pk_parameters PRIMARY KEY (id_parameter);
+
 

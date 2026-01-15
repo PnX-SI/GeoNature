@@ -8,7 +8,7 @@ from warnings import warn
 from flask import render_template, current_app, url_for
 from sqlalchemy import select
 from markupsafe import Markup
-from pypnusershub.db.models import Application, User
+from pypnusershub.db.models import Application, CorRoleToken, User
 from pypnusershub.db.models_register import TempUser
 from sqlalchemy.sql import func
 
@@ -25,7 +25,7 @@ from geonature.utils.env import db, DB
 
 def validators_emails():
     """
-    On souhaite récupérer une liste de mails
+    Returns a list of validators emails
     """
     emails = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
     return emails if isinstance(emails, list) else [emails]
@@ -35,28 +35,28 @@ def validate_temp_user(data):
     """
     Send an email after the action of account creation.
 
-    :param admin_validation_required: if True an admin will receive an
-    email to validate the account creation else the user himself
-    receive the email.
-    :type admin_validation_required: bool
+    Parameters
+    ----------
+    data : dict
+        Must contain the token of the temp user. Example : {"token": "iamavalidtoken"}
+
     """
+
     token = data.get("token", None)
 
     user = DB.session.scalars(select(TempUser).where(TempUser.token_role == token).limit(1)).first()
     if not user:
-        return {
-            "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(token=token)
-        }
+        raise ValueError(f"Token {token} is not associated to a temp user")
     user_dict = user.as_dict()
     subject = "Demande de création de compte GeoNature"
+    url_validation = f"{current_app.config['URL_APPLICATION']}/#/confirm?token={token}"
     if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_ACCOUNT_CREATION"]:
         template = "email_self_validate_account.html"
         recipients = [user.email]
     else:
         template = "email_admin_validate_account.html"
         recipients = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
-    url_validation = url_for("users.confirmation", token=user.token_role, _external=True)
-
+        url_validation += f"&asValidator=true"
     additional_fields = [
         {"key": key, "value": value} for key, value in (user_dict.get("champs_addi") or {}).items()
     ]
@@ -70,21 +70,33 @@ def validate_temp_user(data):
 
     send_mail(recipients, subject, msg_html)
 
-    return {"msg": "ok"}
+    return True
 
 
 def execute_actions_after_validation(data):
+    """
+    Execute post actions after a temp user has been validated.
+    If AUTO_DATASET_CREATION is set to True, create a personal JDD and AF
+    for the user. Then, send an email to the user to inform him of the
+    creation of his account.
+    """
     if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_DATASET_CREATION"]:
         create_dataset_user(data)
     inform_user(data)
-    return {"msg": "ok"}
+    return True
 
 
 def create_dataset_user(user):
     """
-    After dataset validation, add a personnal AF and JDD so the user
-    can add new user.
+    After dataset validation, add a personal Acquisition Framework and Dataset
+    so the user can add new datasets.
+
+    Parameters
+    ----------
+    user : dict
+        The user data
     """
+
     af_desc_and_name = "Cadre d'acquisition personnel de {name} {surname}".format(
         name=user["nom_role"], surname=user["prenom_role"]
     )
@@ -149,6 +161,11 @@ def create_dataset_user(user):
 def inform_user(user):
     """
     Send an email to inform the user that his account was validate.
+
+    Parameters
+    ----------
+    user : dict
+        The user data
     """
     app_name = current_app.config["appName"]
     app_url = current_app.config["URL_APPLICATION"]
@@ -169,28 +186,28 @@ def inform_user(user):
     send_mail(recipients, subject, msg_html)
 
 
-def send_email_for_recovery(data):
+def send_email_for_recovery(user):
     """
     Send an email with the login of the role and the possibility to reset
     its password
+
+    Parameters
+    ----------
+    user : dict
+        The user data
     """
-    user = data["role"]
-    url_password = (
-        current_app.config["URL_APPLICATION"] + "/#/login/new-password?token=" + data["token"]
-    )
+
+    if not user:
+        raise KeyError(f"No user was given")
+
+    if not (token := db.session.get(CorRoleToken, user.id_role).token):
+        raise Exception(f"No token is associated to {user.id_role}")
 
     msg_html = render_template(
         "email_login_and_new_pass.html",
-        identifiant=user["identifiant"],
-        url_password=url_password,
+        identifiant=user.identifiant,
+        url_password=current_app.config["URL_APPLICATION"] + "/#/login/new-password?token=" + token,
     )
     subject = "Confirmation changement Identifiant / mot de passe"
-    send_mail([user["email"]], subject, msg_html)
-    return {"msg": "ok"}
-
-
-function_dict = {
-    "create_temp_user": validate_temp_user,
-    "valid_temp_user": execute_actions_after_validation,
-    "create_cor_role_token": send_email_for_recovery,
-}
+    send_mail([user.email], subject, msg_html)
+    return True

@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 
-import { ToastrService } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
 
 import { AuthService } from '../../../components/auth/auth.service';
+import { PasswordService } from '../../../userModule/services/password.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: 'pnx-new-password',
@@ -24,8 +25,9 @@ export class NewPasswordComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private _toasterService: ToastrService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _commonService: CommonService,
+    private passwordService: PasswordService
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
       let token = params['token'];
@@ -42,10 +44,22 @@ export class NewPasswordComponent implements OnInit {
 
   setForm() {
     this.form = this.fb.group({
-      password: ['', [Validators.required]],
+      password: ['', [this.passwordService.passwordValidator()]],
       password_confirmation: ['', [Validators.required]],
     });
     this.form.setValidators([similarValidator('password', 'password_confirmation')]);
+  }
+
+  getPasswordErrors(): string[] {
+    const control = this.form.get('password');
+    if (!control || !control.errors) {
+      return [];
+    }
+
+    return Object.keys(control.errors).map((errorKey) => {
+      const error = control.errors[errorKey];
+      return error.message || 'Erreur inconnue';
+    });
   }
 
   submit() {
@@ -54,16 +68,15 @@ export class NewPasswordComponent implements OnInit {
       data['token'] = this.token;
       this._authService.passwordChange(data).subscribe(
         (res) => {
-          this._toasterService.info(res.msg, '', {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 10000,
-          });
+          this._commonService.translateToaster(
+            'success',
+            'Authentication.Messages.PasswordChanged'
+          );
           this.router.navigate(['/login']);
         },
         // error callback
         (error) => {
-          this._toasterService.error(error.error.msg, '');
+          this._commonService.regularToaster('error', error.error.msg);
         }
       );
     }

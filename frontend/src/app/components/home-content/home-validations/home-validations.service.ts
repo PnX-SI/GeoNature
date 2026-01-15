@@ -17,14 +17,14 @@ export interface ValidationItem {
   date_max: string;
   date_min: string;
   observers: string;
-  nomenclature_valid_status: { label_default: string; [key: string]: string };
+  nomenclature_label_default: string;
+  nomenclature_mnemonique: string;
+  nomenclature_cd_nomenclature: string;
   validator: string;
-  last_validation: {
-    id_validation: number;
-    validation_comment: string;
-    validation_date: string;
-    validation_auto: string;
-  };
+  id_validation: number;
+  validation_comment: string;
+  validation_date: string;
+  validation_auto: string;
 }
 
 export interface ValidationCollection {
@@ -88,18 +88,16 @@ export class HomeValidationsService {
     pagination: SyntheseDataPaginationItem,
     sort: SyntheseDataSortItem
   ): Observable<ValidationCollection> {
-    return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation`, {
+    return this._http.get<ValidationCollection>(`${this._config.API_ENDPOINT}/validation/`, {
       params: {
         page: pagination.currentPage.toString(),
         per_page: pagination.perPage.toString(),
         sort: sort.sortOrder,
         order_by: sort.sortBy,
         format: 'json',
-        fields:
-          'id_synthese,nom_cite,observers,date_min,date_max,last_validation,nomenclature_valid_status.cd_nomenclature,nomenclature_valid_status.mnemonique,nomenclature_valid_status.label_default,validator',
         no_auto: true,
+        fields: 'user_info,observation',
       },
     });
   }
 }
-

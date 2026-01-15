@@ -1,4 +1,5 @@
 
+
 CREATE VIEW pr_occtax.v_export_occtax AS
  SELECT rel.unique_id_sinp_grp AS "idSINPRegroupement",
     ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
@@ -71,4 +72,5 @@ CREATE VIEW pr_occtax.v_export_occtax AS
      LEFT JOIN utilisateurs.bib_organismes o ON ((o.id_organisme = r.id_organisme)))
      LEFT JOIN ref_habitats.habref hab ON ((hab.cd_hab = rel.cd_hab)))
   GROUP BY ccc.id_counting_occtax, occ.id_occurrence_occtax, rel.id_releve_occtax, d.id_dataset, tax.cd_ref, tax.lb_nom, tax.nom_vern, hab.cd_hab, hab.lb_code, hab.lb_hab_fr;
+
 

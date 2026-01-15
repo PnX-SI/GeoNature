@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_habitats.typoref (
     cd_typo integer NOT NULL,
     cd_table character varying(255),
@@ -40,4 +41,5 @@ ALTER SEQUENCE ref_habitats.typoref_cd_typo_seq OWNED BY ref_habitats.typoref.cd
 
 ALTER TABLE ONLY ref_habitats.typoref
     ADD CONSTRAINT pk_typoref PRIMARY KEY (cd_typo);
+
 

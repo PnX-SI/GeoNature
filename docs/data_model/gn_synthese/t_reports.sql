@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_synthese.t_reports (
     id_report integer NOT NULL,
     id_synthese integer NOT NULL,
@@ -30,4 +31,5 @@ ALTER TABLE ONLY gn_synthese.t_reports
 
 ALTER TABLE ONLY gn_synthese.t_reports
     ADD CONSTRAINT fk_report_type FOREIGN KEY (id_type) REFERENCES gn_synthese.bib_reports_types(id_type) ON UPDATE CASCADE ON DELETE CASCADE;
+
 

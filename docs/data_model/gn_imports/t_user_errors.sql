@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_imports.t_user_errors (
     id_user_error integer NOT NULL,
     id_import integer NOT NULL,
@@ -34,4 +35,5 @@ ALTER TABLE ONLY gn_imports.t_user_errors
 
 ALTER TABLE ONLY gn_imports.t_user_errors
     ADD CONSTRAINT t_user_errors_id_entity_fkey FOREIGN KEY (id_entity) REFERENCES gn_imports.bib_entities(id_entity) ON UPDATE CASCADE ON DELETE CASCADE;
+
 

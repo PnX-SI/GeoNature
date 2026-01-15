@@ -12,8 +12,8 @@ export class ValidationDataService {
     public config: ConfigService
   ) {}
 
-  getSyntheseData(params) {
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/validation`, params);
+  getSyntheseData(params: any) {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/validation/observations`, params);
   }
 
   postStatus(data: any, endpoint: Array<number>) {

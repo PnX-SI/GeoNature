@@ -11,10 +11,12 @@
       {{ err.value }}
     </li>
   </ul>
-  <ng-container *ngIf="config.SYNTHESE.ENABLE_TAXON_SHEETS">
+  <ng-container
+    *ngIf="config.SYNTHESE.ENABLE_TAXON_SHEETS && config.SYNTHESE.TAXON_SHEET.ENABLE_PROFILES"
+  >
     <a
       target="_blank"
-      [routerLink]="['/synthese/taxon', taxon.cd_ref]"
+      [routerLink]="['/synthese/taxon', taxon.cd_ref, 'profile']"
     >
       <button mat-raised-button>Voir la fiche profil du taxon</button>
     </a>

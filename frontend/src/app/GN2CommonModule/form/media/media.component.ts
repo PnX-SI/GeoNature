@@ -24,6 +24,10 @@ export class MediaComponent implements OnInit {
 
   public bValidSizeMax = true;
 
+  public tmpMedia: Media;
+
+  private isRestoringState = false;
+
   public errorMsg: string;
 
   @Input() schemaDotTable: string;
@@ -38,6 +42,8 @@ export class MediaComponent implements OnInit {
   @Output() validMediaChange = new EventEmitter<boolean>();
 
   @Input() details = [];
+
+  @Output() cancelMedia = new EventEmitter<Media>();
 
   /* fix #1083 Cacher les champs présents dans details */
   @Input() hideDetailsFields: boolean = false;
@@ -197,8 +203,13 @@ export class MediaComponent implements OnInit {
   }
 
   onFormChange(value) {
-    if (this.mediaFormInitialized) {
+    if (this.media.valid()) {
+      this.tmpMedia = new Media(JSON.parse(JSON.stringify(this.media)));
+    }
+    if (this.mediaFormInitialized && !this.isRestoringState) {
       this.media.sent = false;
+    } else {
+      this.isRestoringState = false;
     }
 
     this.bValidSizeMax = !(value.file && this.sizeMax) || value.file.size / 1000 < this.sizeMax;
@@ -320,5 +331,16 @@ export class MediaComponent implements OnInit {
   round(val, dec) {
     const decPow = Math.pow(10, dec);
     return Math.round(val * decPow) / decPow;
+  }
+
+  cancel() {
+    if (this.tmpMedia) {
+      this.isRestoringState = true;
+      this.tmpMedia.sent = true;
+      this.setValue(this.tmpMedia);
+      this.cancelMedia.emit(this.tmpMedia);
+    } else {
+      this.cancelMedia.emit(this.media);
+    }
   }
 }

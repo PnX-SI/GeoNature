@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_permissions.bib_actions (
     id_action integer NOT NULL,
     code_action character varying(50) NOT NULL,
@@ -17,4 +18,5 @@ ALTER SEQUENCE gn_permissions.t_actions_id_action_seq OWNED BY gn_permissions.bi
 
 ALTER TABLE ONLY gn_permissions.bib_actions
     ADD CONSTRAINT pk_t_actions PRIMARY KEY (id_action);
+
 

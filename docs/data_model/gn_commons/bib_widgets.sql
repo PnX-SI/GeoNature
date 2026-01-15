@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_commons.bib_widgets (
     id_widget integer NOT NULL,
     widget_name character varying(50) NOT NULL
@@ -16,4 +17,5 @@ ALTER SEQUENCE gn_commons.bib_widgets_id_widget_seq OWNED BY gn_commons.bib_widg
 
 ALTER TABLE ONLY gn_commons.bib_widgets
     ADD CONSTRAINT pk_bib_widgets PRIMARY KEY (id_widget);
+
 

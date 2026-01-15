@@ -99,7 +99,10 @@ export class SyntheseFormService {
     this.statusFilters = Object.assign([], this.config.SYNTHESE.STATUS_FILTERS);
     this.statusFilters.forEach((status) => {
       const control_name = `${status.id}_protection_status`;
-      this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
+      this.searchForm.addControl(
+        control_name,
+        new UntypedFormControl(status.status_types.length == 1 ? null : new Array())
+      );
       status['control_name'] = control_name;
       status['control'] = this.searchForm.controls[control_name];
     });

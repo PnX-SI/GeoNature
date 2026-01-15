@@ -1,0 +1,32 @@
+.Indicator {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 0em;
+  padding: 1em;
+  height: 6rem;
+  width: auto;
+  min-width: 10rem;
+  &__icon {
+    $icon-size: 1.2rem;
+    font-size: $icon-size;
+    height: $icon-size;
+    width: $icon-size;
+    min-height: $icon-size;
+  }
+  &__value {
+    font-size: 1rem;
+    white-space: nowrap;
+    &Unit {
+      opacity: 0.5;
+    }
+  }
+  &__name {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  &--small {
+    border: none;
+  }
+}

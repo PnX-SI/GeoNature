@@ -3,9 +3,9 @@ from pathlib import Path
 import sys
 
 if sys.version_info < (3, 10):
-    from importlib_metadata import entry_points
+    from importlib_metadata import entry_points, PackageNotFoundError
 else:
-    from importlib.metadata import entry_points
+    from importlib.metadata import entry_points, PackageNotFoundError
 
 from alembic.script import ScriptDirectory
 from alembic.migration import MigrationContext
@@ -60,7 +60,7 @@ def get_dist_from_code(module_code):
     for dist in iter_modules_dist():
         if module_code == dist.entry_points["code"].load():
             return dist
-    raise Exception(f"Module with code {module_code} not installed in venv")
+    raise PackageNotFoundError(f"Module with code {module_code} not installed in venv")
 
 
 def iterate_revisions(script, base_revision):
@@ -152,3 +152,17 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
         revision = alembic_branch + "@head"
         db_upgrade(directory, revision, sql, tag, x_arg)
     return True
+
+
+def get_module_version(module_code: str):
+    """
+    Get the module version from the module_code. We check what python package is installed.
+    If no package is found, we return None.
+    """
+    try:
+        if module_code:
+            dist = get_dist_from_code(module_code)
+            return dist.version
+    except PackageNotFoundError:
+        return None
+    return None

@@ -70,12 +70,10 @@ export class MetadataService {
     this.acquisitionFrameworks.next([]);
 
     //forkJoin pour lancer les 2 requetes simultanément
-    return this.dataFormService
-      .getAcquisitionFrameworksList(selectors, params)
-      .pipe(
-        catchError(() => of([])),
-        tap(() => (this.isLoading = false)),
-      );
+    return this.dataFormService.getAcquisitionFrameworksList(selectors, params).pipe(
+      catchError(() => of([])),
+      tap(() => (this.isLoading = false))
+    );
   }
 
   getMetadata(params = {}, selectors = SELECTORS) {

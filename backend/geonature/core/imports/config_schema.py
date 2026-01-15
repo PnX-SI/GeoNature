@@ -123,3 +123,4 @@ class ImportConfigSchema(Schema):
         load_default="import_{id_import}_{date_create_import}_report.pdf"
     )
     INSERT_BATCH_SIZE = fields.Integer(load_default=1000)
+    CSV_FIELD_SIZE_LIMIT = fields.Integer(load_default=1000000)

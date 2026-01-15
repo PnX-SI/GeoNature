@@ -69,7 +69,7 @@ class TAcquisitionFramework(db.Model):
     )
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
-        lazy="joined",
+        # lazy="joined",
         # cascade="save-update, merge, delete, delete-orphan",
         cascade="all,delete-orphan",
         uselist=True,
@@ -104,7 +104,7 @@ class TAcquisitionFramework(db.Model):
     # FIXME: remove and use datasets instead
     t_datasets = DB.relationship(
         "TDatasets",
-        lazy="joined",  # DS required for permissions checks
+        # lazy="joined",  # DS required for permissions checks
         cascade="all,delete-orphan",
         uselist=True,
         back_populates="acquisition_framework",

@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_commons.t_validations (
     id_validation integer NOT NULL,
     uuid_attached_row uuid NOT NULL,
@@ -43,4 +44,5 @@ ALTER TABLE ONLY gn_commons.t_validations
 
 ALTER TABLE ONLY gn_commons.t_validations
     ADD CONSTRAINT fk_t_validations_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 

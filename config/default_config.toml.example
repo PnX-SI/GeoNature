@@ -21,7 +21,7 @@ SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monpor
 SQLALCHEMY_TRACK_MODIFICATIONS = true
 
 # Ce paramètre permet de configurer la connexion de SQLAlchemy avec la base de données
-# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine` 
+# Les paramètres de configuration de la connexion doivent correspondre à ceux utilisé dans la fonction `create_engine`
 # de SQLAlchemy : https://docs.sqlalchemy.org/en/14/core/engines.html#sqlalchemy.create_engine
 SQLALCHEMY_ENGINE_OPTIONS = {}
 
@@ -73,13 +73,6 @@ MAIL_ON_ERROR = false
 NOTIFICATIONS_ENABLED = true
 
 MEDIA_CLEAN_CRONTAB = "0 1 * * *"
-
-[USERSHUB]
-    # URL de l'application Usershub
-    URL_USERSHUB = "http://127.0.0.1:5001"
-    # Identifiant et mot de passe d'un compte 'Administrateur' dans UsersHub
-    ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
-    ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
 
 # Configuration de l'envoi d'email pour FlaskMail et l'envoi par email des logs d'erreur
 # Cf. https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail
@@ -152,6 +145,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # Activer l'affichage des informations liées aux profils de taxons (dans les modules Validation, Synthèse et Occtax)
     ENABLE_PROFILES = true
+
+# Configuration des paramètres des permissions
+[PERMISSIONS]
+    # Types de zonages accessibles pour les filtres géographiques
+    GEOGRAPHIC_FILTER_AREA_TYPES = ["COM", "DEP", "REG"]
 
 # Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]
@@ -461,9 +459,17 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         # Permet d'activer ou non la section "Medias"
         ENABLE_TAB_MEDIA = true
 
-
     # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
     FIELD_OBSERVERS_SEPARATORS =  [","]
+
+    # Activer l'affichage de la fiche observateur dans la synthèse
+    ENABLE_OBSERVER_SHEETS = true
+    [SYNTHESE.OBSERVER_SHEET]
+        # Options dédiées à la fiche observateur
+        # Permet d'activer ou non la section "Medias"
+        ENABLE_TAB_MEDIA = true
+        # Affiche la section overview
+        ENABLE_TAB_TAXA = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
@@ -481,7 +487,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Créer automatiquement (=true) un nouveau jeu de données pour chaque
     # compte utilisateur
     AUTO_DATASET_CREATION = true
-
+    [ACCOUNT_MANAGEMENT.PASSWORD_MANAGEMENT]
+         MIN_PASSWORD_LENGTH = 8
+         REQUIRE_SPECIAL_CHARACTER = true
+         REQUIRE_DIGIT = true
+         REQUIRE_MULTIPLE_CASE = true
     # Ajouter des liens sur la page de connexion de GeoNature,
     # peut être utile lors d'une externalisation des services de connexion
     # Chaque [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]] correspond à un lien
@@ -587,6 +597,13 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Taille maximale pour l'upload des médias
     MEDIAS_SIZE_MAX = 10000
 
+
+# Champs additionnels
+[ADDITIONAL_FIELDS]
+    IMPLEMENTED_MODULES = ["OCCTAX", "METADATA"]
+    IMPLEMENTED_OBJECTS = ["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT", "METADATA_CADRE_ACQUISITION"]
+
+
 # Module métadonnées
 [METADATA]
     # Nombre de cadre d'acquisition affiché sur la liste
@@ -608,6 +625,12 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         { "label" = "Départements", "type_code"= "DEP" },
         { "label" = "Régions", "type_code"= "REG" }
     ]
+    # Activer le champs pour permettre l'édition des uuids des cadres d'acquisition et des jeux de données
+    ENABLE_UUID_EDITION_FIELD = false
+    # Spécifier une liste de modules à pré-remplir pour le champs de sélection des modules à associer dans le formulaire de saisie de JDD
+    #   C'est le code du module qui est utilisé, i.e. les valeurs du champs `gn_commons.t_modules.module_code`
+    #   Exemple : DATASETS_DEFAULT_ASSOCIATED_MODULES = ["IMPORT", "SYNTHESE", "OCCHAB", "OCCTAX"]
+    DATASETS_DEFAULT_ASSOCIATED_MODULES = []
 
 # Page d’accueil
 [HOME]
@@ -701,6 +724,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # URL d'accès au module d'import
     MODULE_URL = "/import"
 
-    # Taille des `batch` de données importées en même temps
+    # Taille des `batch` de données importées simultanément
     DATAFRAME_BATCH_SIZE = 10000
+
+    # Modifier la limite de taille du champ CSV
+    CSV_FIELD_SIZE_LIMIT = 1000000
 

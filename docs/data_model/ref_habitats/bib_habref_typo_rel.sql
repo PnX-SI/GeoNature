@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_habitats.bib_habref_typo_rel (
     cd_type_rel integer NOT NULL,
     lb_type_rel character varying(200),
@@ -14,4 +15,5 @@ COMMENT ON TABLE ref_habitats.bib_habref_typo_rel IS 'Bibliothèque des types de
 
 ALTER TABLE ONLY ref_habitats.bib_habref_typo_rel
     ADD CONSTRAINT pk_bib_habref_typo_rel PRIMARY KEY (cd_type_rel);
+
 

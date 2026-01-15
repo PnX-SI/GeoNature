@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_habitats.typoref_fields (
     cd_hab_field integer NOT NULL,
     cd_typo integer NOT NULL,
@@ -14,4 +15,5 @@ CREATE TABLE ref_habitats.typoref_fields (
 
 ALTER TABLE ONLY ref_habitats.typoref_fields
     ADD CONSTRAINT pk_typoref_fields PRIMARY KEY (cd_hab_field);
+
 

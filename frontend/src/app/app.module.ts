@@ -139,7 +139,7 @@ export function initApp(injector) {
       deps: [Injector],
       multi: true,
     },
-    I18nService
+    I18nService,
   ],
   bootstrap: [AppComponent],
 })

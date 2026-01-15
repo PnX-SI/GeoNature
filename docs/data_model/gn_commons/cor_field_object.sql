@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_commons.cor_field_object (
     id_field integer NOT NULL,
     id_object integer NOT NULL
@@ -12,4 +13,5 @@ ALTER TABLE ONLY gn_commons.cor_field_object
 
 ALTER TABLE ONLY gn_commons.cor_field_object
     ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
+
 

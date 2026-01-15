@@ -134,6 +134,10 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
    * on teste s'il y a un changement entre this.myFormGroup.value et valueSaved;
    */
   hasValueChanged(newValue) {
+    // Deep equals doesn't work with File type
+    for (let key in newValue) {
+      if (newValue[key] instanceof File) if (newValue[key] !== this.oldValue[key]) return true;
+    }
     return !equal(newValue, this.oldValue);
   }
 

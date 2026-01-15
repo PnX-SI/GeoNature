@@ -1,4 +1,5 @@
 
+
 CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
  SELECT DISTINCT vsfp.cd_ref,
     public.st_union(public.st_buffer(vsfp.the_geom_local, (COALESCE(vsfp.spatial_precision, 1))::double precision)) AS valid_distribution,
@@ -13,4 +14,5 @@ CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
   WITH NO DATA;
 
 CREATE UNIQUE INDEX index_vm_valid_profiles_cd_ref ON gn_profiles.vm_valid_profiles USING btree (cd_ref);
+
 

@@ -388,7 +388,9 @@ class TIndividuals(DB.Model):
     )
 
     @classmethod
-    def filter_by_scope(cls, query, scope, user):
+    def filter_by_scope(cls, query, scope, user=None):
+        if user is None:
+            user = g.current_user
         if scope == 0:
             query = query.where(false())
         elif scope in (1, 2):

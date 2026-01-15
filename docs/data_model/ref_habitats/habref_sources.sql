@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_habitats.habref_sources (
     cd_source integer NOT NULL,
     cd_doc integer,
@@ -17,4 +18,5 @@ COMMENT ON TABLE ref_habitats.habref_sources IS 'Table des sources décrivant le
 
 ALTER TABLE ONLY ref_habitats.habref_sources
     ADD CONSTRAINT pk_habref_sources PRIMARY KEY (cd_source);
+
 

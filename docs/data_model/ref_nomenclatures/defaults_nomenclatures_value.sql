@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_nomenclatures.defaults_nomenclatures_value (
     mnemonique_type character varying(255) NOT NULL,
     id_organism integer NOT NULL,
@@ -19,4 +20,5 @@ ALTER TABLE ONLY ref_nomenclatures.defaults_nomenclatures_value
 
 ALTER TABLE ONLY ref_nomenclatures.defaults_nomenclatures_value
     ADD CONSTRAINT fk_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
+
 

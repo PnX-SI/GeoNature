@@ -14,13 +14,16 @@ from sqlalchemy.exc import DatabaseError
 from sqlalchemy.sql import text, select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden
+from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError
 from werkzeug.datastructures import MultiDict
 from marshmallow import ValidationError, EXCLUDE
+from sqlalchemy.exc import IntegrityError
+from psycopg2.errors import UniqueViolation
 
 
 from geonature.utils.config import config
 from geonature.utils.env import db
+from geonature.core.gn_commons.routes import _get_additional_fields
 from geonature.core.gn_synthese.models import (
     Synthese,
     CorAreaSynthese,
@@ -398,7 +401,19 @@ def datasetHandler(dataset, data):
         raise BadRequest(error.messages)
 
     db.session.add(dataset)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except IntegrityError as err:
+        db.session.rollback()
+
+        if isinstance(err.orig, UniqueViolation):
+            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
+            if not detail:
+                detail = str(err.orig).splitlines()[0]
+
+            raise Conflict(detail) from err
+        raise InternalServerError("An error occured while creating/updating a dataset !")
     return dataset
 
 
@@ -685,6 +700,23 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         )
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
 
+    # Retrieve labels for additional fields
+    if acquisition_framework["additional_data"]:
+        updated_additional_data = {}
+        list_additional_fields = _get_additional_fields(
+            module_code="METADATA", object_code="METADATA_CADRE_ACQUISITION"
+        )
+        for dict_additional_field in list_additional_fields:
+            label_additional_field = dict_additional_field["field_label"]
+            name_additional_field = dict_additional_field["field_name"]
+            updated_additional_data[label_additional_field] = ""
+            if acquisition_framework["additional_data"].get(name_additional_field):
+                # Replace name with label for the additional_field
+                updated_additional_data[label_additional_field] = acquisition_framework[
+                    "additional_data"
+                ][name_additional_field]
+        acquisition_framework["additional_data"] = updated_additional_data
+
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("acquisition_framework_template_pdf.html", acquisition_framework)
     return current_app.response_class(pdf_file, content_type="application/pdf")
@@ -769,6 +801,9 @@ def delete_acquisition_framework(scope, af_id):
 
 def acquisitionFrameworkHandler(request, *, acquisition_framework):
     # Test des droits d'édition du acquisition framework si modification
+
+    # 🔎 Récupération des données brutes du body
+
     if acquisition_framework.id_acquisition_framework is not None:
         user_cruved = get_scopes_by_action(module_code="METADATA")
 
@@ -795,7 +830,18 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework):
         raise BadRequest(error.messages)
 
     db.session.add(acquisition_framework)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError as err:
+        db.session.rollback()
+
+        if isinstance(err.orig, UniqueViolation):
+            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
+            if not detail:
+                detail = str(err.orig).splitlines()[0]
+
+            raise Conflict(detail) from err
+        raise InternalServerError("An error occured while creating/updating a dataset !")
 
     return acquisition_framework
 
@@ -929,7 +975,7 @@ def call_extended_af_publish(af_id):
 
 
 @routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
-@permissions.check_cruved_scope("E", module_code="METADATA")
+@permissions.check_cruved_scope("U", module_code="METADATA")
 @json_resp
 def publish_acquisition_framework(af_id):
     """

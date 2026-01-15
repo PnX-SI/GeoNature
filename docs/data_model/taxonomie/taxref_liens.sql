@@ -1,4 +1,5 @@
 
+
 CREATE TABLE taxonomie.taxref_liens (
     ct_name character varying(250) NOT NULL,
     ct_type character varying(250) NOT NULL,
@@ -15,4 +16,5 @@ ALTER TABLE ONLY taxonomie.taxref_liens
 
 ALTER TABLE ONLY taxonomie.taxref_liens
     ADD CONSTRAINT taxref_liens_cd_nom_fkey FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom);
+
 

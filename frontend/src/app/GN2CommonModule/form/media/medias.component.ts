@@ -1,8 +1,11 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { Media } from './media';
+import { MatExpansionPanel } from '@angular/material/expansion';
+
 import { MediaService } from '@geonature_common/service/media.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { distinctUntilChanged } from '@librairies/rxjs/operators';
 
 @Component({
   selector: 'pnx-medias',
@@ -10,8 +13,7 @@ import { ConfigService } from '@geonature/services/config.service';
   styleUrls: ['./media.scss'],
 })
 export class MediasComponent implements OnInit {
-  //  @Input() medias: Array<Media> = []; /** list of medias */
-  //  @Output() mediasChange = new EventEmitter<Array<Media>>();
+  @ViewChildren(MatExpansionPanel) expansionPanels: QueryList<MatExpansionPanel>;
 
   @Input() schemaDotTable: string;
   @Input() sizeMax: number;
@@ -27,6 +29,7 @@ export class MediasComponent implements OnInit {
   @Input() hideDetailsFields: boolean = false;
 
   public bInitialized: boolean;
+  pendingDeletes: Media[] = [];
 
   constructor(
     public ms: MediaService,
@@ -35,19 +38,27 @@ export class MediasComponent implements OnInit {
 
   ngOnInit() {
     this.ms.getNomenclatures().subscribe(() => {
-      this.bInitialized = true;
       this.initMedias();
+      // Subscribe sur la valeur du composant formulaire
+      //  cas ou l'initialisation des valeurs du formulaire est asynchrone
+      this.parentFormControl.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
+        this.initMedias();
+      });
     });
   }
 
   initMedias() {
-    if (!this.bInitialized) {
-      return;
-    }
-    for (const index in this.parentFormControl.value) {
-      if (!(this.parentFormControl.value[index] instanceof Media)) {
-        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);
+    // Initialisation des médias
+    // Si le form control à bien une valeur (array vide)
+    // Cast des objets en média
+    // le composant est considéré comme initialisé (bInitialized = true)
+    if (this.parentFormControl.value) {
+      for (const index in this.parentFormControl.value) {
+        if (!(this.parentFormControl.value[index] instanceof Media)) {
+          this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);
+        }
       }
+      this.bInitialized = true;
     }
   }
 
@@ -69,25 +80,25 @@ export class MediasComponent implements OnInit {
 
   deleteMedia(index) {
     const media = this.parentFormControl.value.splice(index, 1)[0];
-
-    // si l upload est en cours
-    if (media.pendingRequest) {
-      media.pendingRequest.unsubscribe();
-      media.pendingRequest = null;
-    }
-
-    // si le media existe déjà en base => route DELETE
-    if (media.id_media) {
-      this.ms.deleteMedia(media.id_media).subscribe();
-    }
+    this.pendingDeletes.push(media);
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    for (const propName of Object.keys(changes)) {
-      if (propName === 'parentFormControl') {
-        this.initMedias();
+  validateDeletions() {
+    this.ms.validateDeletions(this.pendingDeletes);
+    this.pendingDeletes = [];
+  }
+
+  cancelMedia(media, index) {
+    if (!media.valid()) {
+      this.parentFormControl.value.splice(index, 1)[0];
+    } else {
+      const panels = this.expansionPanels.toArray();
+      if (panels.length > 0 && panels[index]) {
+        panels[index].close();
       }
+      this.parentFormControl.patchValue(this.parentFormControl.value);
     }
+    this.parentFormControl.updateValueAndValidity();
   }
 }

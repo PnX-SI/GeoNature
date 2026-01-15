@@ -52,14 +52,14 @@ export class DataFormService {
     group3_inpn
       ? (params = params.set('group3_inpn', group3_inpn))
       : (params = params.set('group3_inpn', ''));
-    if (filters['orderby']) {
-      params = params.set('orderby', filters['orderby']);
+    if (filters?.orderby) {
+      params = params.set('orderby', filters.orderby);
     }
-    if (filters['order']) {
-      params = params.set('order', filters['order']);
+    if (filters?.order) {
+      params = params.set('order', filters.order);
     }
-    if (filters['cd_nomenclature'] && filters['cd_nomenclature'].length > 0) {
-      filters['cd_nomenclature'].forEach((cd) => {
+    if (filters?.cd_nomenclature && filters.cd_nomenclature.length > 0) {
+      filters.cd_nomenclature.forEach((cd) => {
         params = params.append('cd_nomenclature', cd);
       });
     }

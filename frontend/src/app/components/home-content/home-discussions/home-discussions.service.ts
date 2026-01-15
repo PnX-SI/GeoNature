@@ -36,9 +36,10 @@ export class HomeDiscussionsService {
       return false;
     }
 
-    return this.MODULES_PREVALENCE.some(module =>
-      this._isReadGrantedInModule(module) && this._isDiscussionsAvailableInModule(module)
-    )
+    return this.MODULES_PREVALENCE.some(
+      (module) =>
+        this._isReadGrantedInModule(module) && this._isDiscussionsAvailableInModule(module)
+    );
   }
 
   computeDiscussionsRedirectionUrl(id: number): Array<string> {

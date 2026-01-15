@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_permissions.bib_filters_type (
     id_filter_type integer NOT NULL,
     code_filter_type character varying(50) NOT NULL,
@@ -18,4 +19,5 @@ ALTER SEQUENCE gn_permissions.bib_filters_type_id_filter_type_seq OWNED BY gn_pe
 
 ALTER TABLE ONLY gn_permissions.bib_filters_type
     ADD CONSTRAINT pk_bib_filters_type PRIMARY KEY (id_filter_type);
+
 

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable } from 'rxjs';
@@ -11,6 +11,8 @@ import { ActorFormService } from '../services/actor-form.service';
 import { AcquisitionFrameworkFormService } from '../services/af-form.service';
 import { MetadataService } from '../services/metadata.service';
 import { MetadataDataService } from '../services/metadata-data.service';
+import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@librairies/@ngx-translate/core';
 
 @Component({
   selector: 'pnx-af-form',
@@ -18,10 +20,12 @@ import { MetadataDataService } from '../services/metadata-data.service';
   styleUrls: ['../form.component.scss'],
   providers: [AcquisitionFrameworkFormService],
 })
-export class AfFormComponent implements OnInit {
+export class AfFormComponent implements OnInit, AfterViewInit {
   public form: UntypedFormGroup;
   //observable pour la liste déroulantes HTML des AF parents
   public acquisitionFrameworkParents: Observable<any>;
+  public uuidEditionEnabled: boolean = true;
+  public entityLabel: string;
 
   constructor(
     private _dfs: DataFormService,
@@ -32,7 +36,9 @@ export class AfFormComponent implements OnInit {
     public afFormS: AcquisitionFrameworkFormService,
     private actorFormS: ActorFormService,
     public metadataS: MetadataService,
-    private metadataDataS: MetadataDataService
+    private metadataDataS: MetadataDataService,
+    public translation_service: TranslateService,
+    private configService: ConfigService
   ) {}
   ngOnInit() {
     // get the id from the route
@@ -52,20 +58,55 @@ export class AfFormComponent implements OnInit {
     this._dfs.getAcquisitionFrameworks({ is_parent: 'true' }).subscribe((afParent) => {
       this.acquisitionFrameworkParents = afParent;
     });
+
+    this.uuidEditionEnabled = this.configService.METADATA.ENABLE_UUID_EDITION_FIELD;
+    this.entityLabel = this.translation_service.instant('AcquisitionFramework');
+  }
+
+  ngAfterViewInit() {
+    this.setFromQueryParams();
+  }
+
+  setFromQueryParams() {
+    this._route.queryParams.subscribe((params) => {
+      this.afFormS.queryParamsSource.next(params);
+    });
+  }
+
+  handleDates(af, isParseElseFormat = false) {
+    const handlingFunction = isParseElseFormat ? this.dateParser.parse : this.dateParser.format;
+
+    af.acquisition_framework_start_date = handlingFunction(af.acquisition_framework_start_date);
+
+    if (af.acquisition_framework_end_date) {
+      af.acquisition_framework_end_date = handlingFunction(af.acquisition_framework_end_date);
+    }
+
+    // Additional fields - Format dates
+    this.additionalFieldsForm.forEach((fieldForm: any) => {
+      if (fieldForm.type_widget == 'date') {
+        af.additional_data[fieldForm.attribut_name] = handlingFunction(
+          af.additional_data[fieldForm.attribut_name]
+        );
+      }
+    });
   }
 
   getAcquisitionFramework(id_af, param) {
     return this._dfs.getAcquisitionFramework(id_af, param).pipe(
       map((af: any) => {
-        af.acquisition_framework_start_date = this.dateParser.parse(
-          af.acquisition_framework_start_date
-        );
-        af.acquisition_framework_end_date = this.dateParser.parse(
-          af.acquisition_framework_end_date
-        );
+        this.handleDates(af, true);
         return af;
       })
     );
+  }
+
+  get propertiesForm(): any {
+    return this.form;
+  }
+
+  get additionalFieldsForm(): any[] {
+    return this.afFormS.additionalFieldsForm;
   }
 
   addContact(formArray: UntypedFormArray, mainContact: boolean) {
@@ -81,15 +122,21 @@ export class AfFormComponent implements OnInit {
 
     let api: Observable<any>;
 
-    const af = Object.assign(this.afFormS.acquisition_framework.getValue() || {}, this.form.value);
+    const base = {
+      ...this.afFormS.acquisition_framework.getValue(),
+      ...this.form.value,
+    };
 
-    af.acquisition_framework_start_date = this.dateParser.format(
-      af.acquisition_framework_start_date
-    );
+    const af =
+      this.form.value.unique_acquisition_framework_id != null
+        ? {
+            ...base,
+            unique_acquisition_framework_id: this.form.value.unique_acquisition_framework_id,
+          }
+        : base;
 
-    if (af.acquisition_framework_end_date) {
-      af.acquisition_framework_end_date = this.dateParser.format(af.acquisition_framework_end_date);
-    }
+    this.handleDates(af);
+
     //UPDATE
     if (this.afFormS.acquisition_framework.getValue() !== null) {
       //si modification on assigne les valeurs du formulaire au CA modifié

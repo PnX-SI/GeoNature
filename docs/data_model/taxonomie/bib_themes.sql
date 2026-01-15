@@ -1,4 +1,5 @@
 
+
 CREATE TABLE taxonomie.bib_themes (
     id_theme integer NOT NULL,
     nom_theme character varying(20),
@@ -20,4 +21,5 @@ ALTER TABLE ONLY taxonomie.bib_themes
 
 ALTER TABLE ONLY taxonomie.bib_themes
     ADD CONSTRAINT unique_bib_themes_nom_theme UNIQUE (nom_theme);
+
 

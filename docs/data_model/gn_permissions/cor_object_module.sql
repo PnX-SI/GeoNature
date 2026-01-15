@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_permissions.cor_object_module (
     id_cor_object_module integer NOT NULL,
     id_object integer NOT NULL,
@@ -26,4 +27,5 @@ ALTER TABLE ONLY gn_permissions.cor_object_module
 
 ALTER TABLE ONLY gn_permissions.cor_object_module
     ADD CONSTRAINT fk_cor_object_module_id_object FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
+
 

@@ -1,4 +1,5 @@
 
+
 CREATE TABLE taxonomie.t_medias (
     id_media integer NOT NULL,
     cd_ref integer,
@@ -36,4 +37,5 @@ ALTER TABLE ONLY taxonomie.t_medias
 
 ALTER TABLE ONLY taxonomie.t_medias
     ADD CONSTRAINT fk_t_media_bib_types_media FOREIGN KEY (id_type) REFERENCES taxonomie.bib_types_media(id_type) MATCH FULL ON UPDATE CASCADE;
+
 

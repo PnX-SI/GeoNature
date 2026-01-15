@@ -7,17 +7,17 @@
   </ng-template>
 
   <ng-template
-    #cellNumberTemplate
-    let-value="value"
-  >
-    {{ value ? value : '-' }}
-  </ng-template>
-
-  <ng-template
     #cellNameTemplate
     let-value="value"
   >
     {{ value | titlecase }}
+  </ng-template>
+
+  <ng-template
+    #cellNumberTemplate
+    let-value="value"
+  >
+    {{ value ? value : '-' }}
   </ng-template>
 
   <ng-template

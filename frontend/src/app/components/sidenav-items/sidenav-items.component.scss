@@ -1,20 +1,33 @@
+.navigation-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.nav-content {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
 .appnav {
   margin-top: 10px;
-  max-height: 60vh;
+  height: 100%; // Adapt to disponible size
   overflow: auto;
 }
 
 .logo {
   margin-bottom: 0px;
   padding: 10px;
+  flex-shrink: 0;
 }
 
 .navbar-footer {
   padding: 5px;
-  position: absolute;
-  bottom: 0px;
   font-size: 11px;
   background-color: white;
+  flex-shrink: 0;
+  bottom: 0px;
 }
 
 .picto {
@@ -41,4 +54,21 @@ mat-card {
 
 a:hover {
   text-decoration: none;
+}
+
+.navbar-footer .p-small {
+  font-size: 11px;
+}
+
+.menu-content {
+  font-size: 11px;
+  padding: 8px;
+  color: inherit;
+  white-space: pre-line;
+}
+
+.navbar-footer .info-icon {
+  font-size: 11px;
+  vertical-align: middle;
+  cursor: pointer;
 }

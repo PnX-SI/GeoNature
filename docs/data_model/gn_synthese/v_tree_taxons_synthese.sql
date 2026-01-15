@@ -1,4 +1,5 @@
 
+
 CREATE VIEW gn_synthese.v_tree_taxons_synthese AS
  WITH cd_famille AS (
          SELECT t_1.cd_ref,
@@ -56,4 +57,5 @@ CREATE VIEW gn_synthese.v_tree_taxons_synthese AS
   ORDER BY t.id_regne, COALESCE(t.id_embranchement, t.id_regne), COALESCE(t.id_classe, t.id_embranchement), COALESCE(t.id_ordre, t.id_classe);
 
 COMMENT ON VIEW gn_synthese.v_tree_taxons_synthese IS 'Vue destinée à l''arbre taxonomique de la synthese. S''arrête  à la famille pour des questions de performances';
+
 

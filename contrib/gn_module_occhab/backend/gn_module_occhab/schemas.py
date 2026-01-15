@@ -8,6 +8,7 @@ from geonature.utils.env import db, ma
 from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.utils.config import config
 
 from pypnusershub.schemas import UserSchema
 from pypnnomenclature.utils import NomenclaturesConverter
@@ -35,12 +36,21 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
     __module_code__ = "OCCHAB"
 
     id_station = auto_field(allow_none=True)
-
+    observers_as_txt_active = config["OCCHAB"]["OBSERVER_AS_TXT"]
+    observers_txt = fields.Str(
+        required=observers_as_txt_active, allow_none=not observers_as_txt_active
+    )
     date_min = fields.DateTime("%Y-%m-%d")
     date_max = fields.DateTime("%Y-%m-%d")
-
     habitats = Nested("OccurenceHabitatSchema", unknown=EXCLUDE, many=True)
-    observers = Nested(UserSchema, exclude=["max_level_profil"], unknown=EXCLUDE, many=True)
+    # We don't need to supply observers if observers_as_txt_active is activated
+    observers = Nested(
+        UserSchema,
+        exclude=["max_level_profil"],
+        unknown=EXCLUDE,
+        many=True,
+        allow_none=observers_as_txt_active,
+    )
     dataset = Nested(DatasetSchema, dump_only=True)
 
     # TODO@TestImportsOcchab.test_import_valid_file: maybe add testcase

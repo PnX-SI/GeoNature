@@ -69,7 +69,7 @@ __all__ = [
     "sources_modules",
     "modules",
     "auto_validation_enabled",
-    "synthese_read_permissions",
+    "add_synthese_read_permissions",
     "synthese_module",
 ]
 
@@ -302,7 +302,11 @@ def users(app):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
         with db.session.begin_nested():
             user = User(
-                groupe=False, active=True, identifiant=username, password=username, **kwargs
+                groupe=False,
+                active=True,
+                identifiant=username,
+                password=username,
+                **kwargs,
             )
             db.session.add(user)
             user.organisme = organisme
@@ -429,6 +433,15 @@ def acquisition_frameworks(users):
         ]
     }
     afs["child_af"] = create_af("child_af", users["user"], False, afs["parent_af"])
+
+    # Add additional data to "af_1"
+    afs["af_1"].additional_data = {
+        "select_field_used": "value1",
+        "nomenclature_field_used": "Valeur De Nomenclature",
+        "text_field_used": "test",
+        "date_field_used": {"day": 31, "year": 2025, "month": 10},
+        "number_field_used": 1,
+    }
 
     return afs
 
@@ -591,6 +604,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
     point2 = Point(-1.54, 46.85)
     point3 = Point(-3.486786, 48.832182)
     point4 = Point(-1.62, 49.63)  # Cherbourg
+    point5 = Point(-39.10858154296876, 49.47072120233885)  # External
     date_1 = datetime.datetime(2024, 10, 2, 11, 22, 33)
     date_2 = datetime.datetime(2024, 10, 3, 8, 9, 10)
     date_3 = datetime.datetime(2024, 10, 4, 17, 4, 9)
@@ -739,6 +753,18 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 "obs_outside_gap",
                 2497,
                 point4,
+                datasets["belong_af_3"],
+                "p3_af3",
+                source,
+                date_2,
+                date_2,
+                altitude_2,
+                altitude_2,
+            ),
+            (
+                "obs_outside_france",
+                2497,
+                point5,
                 datasets["belong_af_3"],
                 "p3_af3",
                 source,
@@ -1076,8 +1102,8 @@ def synthese_module():
 
 
 @pytest.fixture()
-def synthese_read_permissions(synthese_module):
-    def _synthese_read_permissions(role, scope_value, action="R", **kwargs):
+def add_synthese_read_permissions(synthese_module):
+    def _add_synthese_read_permissions(role, scope_value, action="R", **kwargs):
         action = PermAction.query.filter_by(code_action=action).one()
         perm = Permission(
             role=role,
@@ -1090,4 +1116,4 @@ def synthese_read_permissions(synthese_module):
             db.session.add(perm)
         return perm
 
-    return _synthese_read_permissions
+    return _add_synthese_read_permissions

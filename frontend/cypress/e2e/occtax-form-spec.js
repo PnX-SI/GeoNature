@@ -307,18 +307,12 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
   });
 
   it('Should submit an occurrence and check occurrence list', () => {
-    cy.pause();
     cy.get("[data-qa='occurrence-add-btn']").click({ force: true });
-    cy.pause();
     //Should save the good taxa
     cy.get('[data-qa="pnx-occtax-taxon-form-taxa-head-0"]').as('cyTaxaHead');
-    cy.pause();
     cy.get('@cyTaxaHead').should('have.text', taxaNameRef);
-    cy.pause();
     cy.get('@cyTaxaHead').click();
-    cy.pause();
     cy.get('[data-qa="pnx-occtax-taxon-form-taxa-name-0"]').should('include.text', taxaNameRef);
-    cy.pause();
   });
 
   it('Should close observation', () => {

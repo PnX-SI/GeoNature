@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_nomenclatures.cor_taxref_nomenclature (
     id_nomenclature integer NOT NULL,
     regne character varying(255) NOT NULL,
@@ -24,4 +25,5 @@ CREATE TRIGGER tri_meta_dates_change_cor_taxref_nomenclature BEFORE INSERT OR UP
 
 ALTER TABLE ONLY ref_nomenclatures.cor_taxref_nomenclature
     ADD CONSTRAINT fk_cor_taxref_nomenclature_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 

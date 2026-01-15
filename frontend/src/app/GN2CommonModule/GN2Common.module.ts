@@ -36,13 +36,14 @@ import { TreeModule } from '@circlon/angular-tree-component';
 
 // Components
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
+import { AdvancedSectionComponent } from '@geonature_common/form/advanced-section/advanced-section.component';
 import { AreasComponent } from '@geonature_common/form/areas/areas.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
-import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
 import { BadgeComponent } from '@geonature_common/others/badge/badge.component';
 import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component';
+import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DateComponent } from './form/date/date.component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
@@ -53,6 +54,7 @@ import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-fo
 import { GeojsonComponent } from './map/geojson/geojson.component';
 import { GeometryFormComponent } from '@geonature_common/form/geometry-form/geometry-form.component';
 import { GPSComponent } from './map/gps/gps.component';
+import { IndicatorComponent } from '@geonature_common/others/indicator/indicator.component';
 import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component';
 import { LeafletFileLayerComponent } from './map/filelayer/filelayer.component';
 import { MapComponent } from './map/map.component';
@@ -82,7 +84,16 @@ import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/sy
 import { TaxaComponent } from '@geonature_common/form/taxa/taxa.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
+import { TogglableFormControlComponent } from '@geonature_common/form/togglable-form-control/togglable-form-control.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { UUIDComponent } from '@geonature_common/form/uuid/uuid.component';
+
+// Layouts
+import { IndicatorsLayoutComponent } from './layouts/indicators-layout/indicators-layout.component';
+import { LoadableLayoutComponent } from './layouts/loadable-layout/loadable-layout.component';
+import { PageLayoutComponent } from './layouts/page-layout/page-layout.component';
+import { SheetLayoutComponent } from './layouts/sheet-layout/sheet-layout.component';
+import { TabsLayoutComponent } from './layouts/tabs-layout/tabs-layout.component';
 
 // Directives
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -145,10 +156,15 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
   ],
   declarations: [
     AcquisitionFrameworksComponent,
+    AdvancedSectionComponent,
     AreasComponent,
     NomenclatureComponent,
     ObserversComponent,
     BadgeComponent,
+    IndicatorComponent,
+    IndicatorsLayoutComponent,
+    LoadableLayoutComponent,
+    PageLayoutComponent,
     BreadcrumbsComponent,
     DateComponent,
     TaxonomyComponent,
@@ -192,14 +208,18 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     PlacesListComponent,
     ReadablePropertiePipe,
     SafeHtmlPipe,
+    SheetLayoutComponent,
     SyntheseSearchComponent,
     SafeStripHtmlPipe,
     StatusBadgesComponent,
     StripHtmlPipe,
+    TabsLayoutComponent,
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
     TaxonTreeComponent,
+    TogglableFormControlComponent,
+    UUIDComponent,
     IndividualsComponent,
     IndividualsCreateComponent,
   ],
@@ -219,9 +239,14 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
   ],
   exports: [
     AcquisitionFrameworksComponent,
+    AdvancedSectionComponent,
     AreasComponent,
     MunicipalitiesComponent,
     BadgeComponent,
+    IndicatorComponent,
+    IndicatorsLayoutComponent,
+    LoadableLayoutComponent,
+    PageLayoutComponent,
     BreadcrumbsComponent,
     DynamicFormComponent,
     NomenclatureComponent,
@@ -301,12 +326,16 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     ReactiveFormsModule,
     ReadablePropertiePipe,
     SafeHtmlPipe,
+    SheetLayoutComponent,
     StatusBadgesComponent,
+    TabsLayoutComponent,
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
     TaxonTreeComponent,
+    TogglableFormControlComponent,
     TranslateModule,
+    UUIDComponent,
     IndividualsComponent,
   ],
 })

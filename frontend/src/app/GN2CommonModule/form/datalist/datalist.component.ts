@@ -26,6 +26,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   @Input() definition: boolean; // help
 
   @Input() filters = {}; // help
+  @Input() orderBy: 'asc' | 'desc';
 
   @Input() default;
   @Input() nullDefault;
@@ -87,6 +88,13 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       if (filter_.length) {
         values = filter_.map((f) => values.find((v) => v[key] === f)).filter((v) => !!v);
       }
+    }
+    if (this.orderBy) {
+      values = values.sort((value1, value2) =>
+        this.orderBy === 'desc'
+          ? value2[this.keyLabel].localeCompare(value1[this.keyLabel])
+          : value1[this.keyLabel].localeCompare(value2[this.keyLabel])
+      );
     }
 
     return values;

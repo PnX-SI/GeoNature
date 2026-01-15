@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_monitoring.cor_visit_observer (
     id_base_visit integer NOT NULL,
     id_role integer NOT NULL,
@@ -15,4 +16,5 @@ ALTER TABLE ONLY gn_monitoring.cor_visit_observer
 
 ALTER TABLE ONLY gn_monitoring.cor_visit_observer
     ADD CONSTRAINT fk_cor_visit_observer_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
 

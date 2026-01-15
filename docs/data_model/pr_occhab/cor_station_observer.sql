@@ -1,4 +1,5 @@
 
+
 CREATE TABLE pr_occhab.cor_station_observer (
     id_cor_station_observer integer NOT NULL,
     id_station integer NOT NULL,
@@ -26,4 +27,5 @@ ALTER TABLE ONLY pr_occhab.cor_station_observer
 
 ALTER TABLE ONLY pr_occhab.cor_station_observer
     ADD CONSTRAINT fk_cor_station_observer_t_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
 

@@ -1,4 +1,5 @@
 
+
 CREATE TABLE ref_geo.li_municipalities (
     id_municipality character varying(25) NOT NULL,
     id_area integer NOT NULL,
@@ -35,4 +36,5 @@ CREATE TRIGGER tri_meta_dates_change_li_municipalities BEFORE INSERT OR UPDATE O
 
 ALTER TABLE ONLY ref_geo.li_municipalities
     ADD CONSTRAINT fk_li_municipalities_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE ON DELETE CASCADE;
+
 

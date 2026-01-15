@@ -1,4 +1,5 @@
 
+
 CREATE TABLE utilisateurs.t_listes (
     id_liste integer NOT NULL,
     code_liste character varying(20) NOT NULL,
@@ -20,4 +21,5 @@ ALTER SEQUENCE utilisateurs.t_listes_id_liste_seq OWNED BY utilisateurs.t_listes
 
 ALTER TABLE ONLY utilisateurs.t_listes
     ADD CONSTRAINT pk_t_listes PRIMARY KEY (id_liste);
+
 

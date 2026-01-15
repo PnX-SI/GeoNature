@@ -1,4 +1,5 @@
 
+
 CREATE TABLE utilisateurs.t_providers (
     id_provider integer NOT NULL,
     name character varying NOT NULL,
@@ -21,4 +22,5 @@ ALTER SEQUENCE utilisateurs.t_providers_id_provider_seq OWNED BY utilisateurs.t_
 
 ALTER TABLE ONLY utilisateurs.t_providers
     ADD CONSTRAINT t_providers_pkey PRIMARY KEY (id_provider);
+
 

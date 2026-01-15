@@ -1,7 +1,7 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
@@ -62,11 +62,28 @@ export class AuthService {
   }
 
   loginOrPwdRecovery(data: any): Observable<any> {
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/login/recovery`, data);
+    // So error is not intercepted by interceptor and displayed in toaster
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'not-to-handle': 'true',
+      }),
+    };
+
+    return this._http.post<any>(
+      `${this.config.API_ENDPOINT}/users/login/recovery`,
+      data,
+      httpOptions
+    );
   }
 
   passwordChange(data: any): Observable<any> {
     return this._http.put<any>(`${this.config.API_ENDPOINT}/users/password/new`, data);
+  }
+
+  confirmToken(data: any): Observable<any> {
+    return this._http.get<any>(
+      `${this.config.API_ENDPOINT}/users/confirmation?token=${data.token}`
+    );
   }
 
   manageUser(data): any {
@@ -103,7 +120,13 @@ export class AuthService {
 
   signupUser(data: any): Observable<any> {
     const options = data;
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/inscription`, options);
+    // So error is not intercepted by interceptor and displayed in toaster
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'not-to-handle': 'true',
+      }),
+    };
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/inscription`, data, httpOptions);
   }
 
   decodeObjectCookies(val) {
@@ -155,6 +178,7 @@ export class AuthService {
     localStorage.removeItem(this.prefix + 'id_token');
     localStorage.removeItem(this.prefix + 'expires_at');
     localStorage.removeItem('modules');
+    localStorage.removeItem('homePage.stats');
   }
 
   isAuthenticated(): boolean {

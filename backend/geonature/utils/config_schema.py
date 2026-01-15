@@ -80,6 +80,13 @@ class CeleryConfig(Schema):
     timezone = fields.String(load_default=None)
 
 
+class PasswordManagement(Schema):
+    MIN_PASSWORD_LENGTH = fields.Integer(load_default=8)
+    REQUIRE_SPECIAL_CHARACTER = fields.Boolean(load_default=True)
+    REQUIRE_DIGIT = fields.Boolean(load_default=True)
+    REQUIRE_MULTIPLE_CASE = fields.Boolean(load_default=True)
+
+
 class AccountManagement(Schema):
     # Config for sign-up
     ENABLE_SIGN_UP = fields.Boolean(load_default=False)
@@ -93,6 +100,9 @@ class AccountManagement(Schema):
     EXTERNAL_LINKS = fields.List(
         fields.Dict,
         load_default=[],
+    )
+    PASSWORD_MANAGEMENT = fields.Nested(
+        PasswordManagement, load_default=PasswordManagement().load({})
     )
 
 
@@ -116,9 +126,15 @@ class AlembicConfig(Schema):
 
 
 class AdditionalFields(Schema):
-    IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
+    IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX", "METADATA"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(), load_default=["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
+        fields.String(),
+        load_default=[
+            "OCCTAX_RELEVE",
+            "OCCTAX_OCCURENCE",
+            "OCCTAX_DENOMBREMENT",
+            "METADATA_CADRE_ACQUISITION",
+        ],
     )
 
 
@@ -155,6 +171,9 @@ class MetadataConfig(Schema):
             {"label": "Régions", "type_code": "REG"},
         ],
     )
+    ENABLE_UUID_EDITION_FIELD = fields.Boolean(load_default=False)
+    ROUTE_ADD_AF = fields.String(load_default="/metadata/af")
+    DATASETS_DEFAULT_ASSOCIATED_MODULES = fields.List(fields.Str(), load_default=[])
 
 
 class AuthenticationConfig(Schema):
@@ -235,8 +254,8 @@ class GnPySchemaConf(Schema):
     @post_load()
     def unwrap_usershub(self, data, **kwargs):
         """
-        On met la section [USERSHUB] à la racine de la conf
-        pour compatibilité et simplicité ave le sous-module d'authentif
+        On met la section [USERSHUB] à la racine de la configuration
+        pour compatibilité et simplicité ave le sous-module d'authentification
         """
         for key, value in data["USERSHUB"].items():
             data[key] = value
@@ -249,18 +268,6 @@ class GnPySchemaConf(Schema):
         if data["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False) or data[
             "ACCOUNT_MANAGEMENT"
         ].get("ENABLE_USER_MANAGEMENT", False):
-            if (
-                data["USERSHUB"].get("URL_USERSHUB", None) is None
-                or data["USERSHUB"].get("ADMIN_APPLICATION_LOGIN", None) is None
-                or data["USERSHUB"].get("ADMIN_APPLICATION_PASSWORD", None) is None
-            ):
-                raise ValidationError(
-                    (
-                        "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True "
-                        "ou si ENABLE_USER_MANAGEMENT=True"
-                    ),
-                    "URL_USERSHUB",
-                )
             if data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None:
                 raise ValidationError(
                     "Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True",
@@ -292,10 +299,16 @@ class ExportObservationSchema(Schema):
 class TaxonSheet(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - TAXON_SHEET
-    ENABLE_TAB_OBSERVATIONS = fields.Boolean(load_default=True)
     ENABLE_TAB_OBSERVERS = fields.Boolean(load_default=True)
     ENABLE_TAB_PROFILE = fields.Boolean(load_default=True)
     ENABLE_TAB_TAXONOMY = fields.Boolean(load_default=True)
+    ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
+
+
+class ObserverSheet(Schema):
+    # --------------------------------------------------------------------
+    # SYNTHESE - OBSERVER_SHEET
+    ENABLE_TAB_TAXA = fields.Boolean(load_default=True)
     ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
 
 
@@ -461,6 +474,11 @@ class Synthese(Schema):
     # Le séparateur utilisé pour délimiter les observateurs à l'intérieur du champs observer
     FIELD_OBSERVERS_SEPARATORS = fields.List(fields.String(), load_default=[","])
 
+    # --------------------------------------------------------------------
+    # SYNTHESE - OBSERVER_SHEET
+    ENABLE_OBSERVER_SHEETS = fields.Boolean(load_default=True)
+    OBSERVER_SHEET = fields.Nested(ObserverSheet, load_default=ObserverSheet().load({}))
+
     @pre_load
     def warn_deprecated(self, data, **kwargs):
         deprecated = {
@@ -625,6 +643,11 @@ class GnGeneralSchemaConf(Schema):
         if "API_TAXHUB" in data:
             warnings.warn(
                 "Le paramètre API_TAXHUB n'est plus utilisé depuis la version 2.15.",
+                Warning,
+            )
+        if "USERSHUB" in data:
+            warnings.warn(
+                "Le paramètre USERSHUB n'est plus utilisé depuis la version 2.16.4",
                 Warning,
             )
         return data

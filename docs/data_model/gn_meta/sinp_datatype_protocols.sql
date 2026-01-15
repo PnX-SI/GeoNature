@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_meta.sinp_datatype_protocols (
     id_protocol integer NOT NULL,
     unique_protocol_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
@@ -39,4 +40,5 @@ ALTER TABLE ONLY gn_meta.sinp_datatype_protocols
 
 ALTER TABLE ONLY gn_meta.sinp_datatype_protocols
     ADD CONSTRAINT unique_sinp_datatype_protocols_uuid UNIQUE (unique_protocol_id);
+
 

@@ -1104,12 +1104,33 @@ class TestSynthese:
         # TODO: s'assurer qu'on ne récupère pas le dataset "associate_2_dataset_sensitive", car ne contient que des données sensibles, bien que l'utilisateur ait le scope nécessaire par ailleurs (scope 2, et ce dataset lui est associé)
         assert_export_metadata_results(user, dict_expected_datasets)
 
-    def test_general_stat(self, users):
+    def test_general_stat(self, synthese_data, users):
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for("gn_synthese.synthese_statistics.general_stats"))
 
         assert response.status_code == 200
+        data = response.get_json()
+        assert data["nb_data"] == 12
+        assert data["nb_dataset"] == 0
+        assert data["nb_observers"] == 1
+        assert data["nb_species"] == 4
+
+    def test_general_stat_user_with_taxa_filter(
+        self, synthese_data, users, add_synthese_read_permissions
+    ):
+        user = users["noright_user"]
+        # this taxon appears only once
+        taxon = synthese_data["obs1"].taxref
+        add_synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon])
+        set_logged_user(self.client, user)
+        response = self.client.get(url_for("gn_synthese.synthese_statistics.general_stats"))
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["nb_data"] == 1
+        assert data["nb_dataset"] == 0
+        assert data["nb_observers"] == 1
+        assert data["nb_species"] == 1
 
     def test_taxon_stats(self, synthese_data, users):
         set_logged_user(self.client, users["stranger_user"])
@@ -1135,8 +1156,8 @@ class TestSynthese:
             "cd_ref": CD_REF_VALID,
             "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
             "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
-            "observation_count": 4,
-            "observer_count": 1,
+            "observation_count": 5,
+            "observer_count": 2,
         }
 
         # Missing area_type parameter
@@ -1179,6 +1200,199 @@ class TestSynthese:
         response_json = response.get_json()
         assert response.status_code == 200
         assert response.get_json() == CD_REF_VALID_STATS
+
+    def test_observer_stats_parameters(self, synthese_data, users):
+        set_logged_user(self.client, users["admin_user"])
+        url = url_for(
+            "gn_synthese.synthese_observer_info.observer_stats",
+            observer=users["admin_user"].nom_complet,
+        )
+
+        # area_type required
+        response = self.client.get(url)
+        assert response.status_code == 400
+
+        # area_type value check
+        response = self.client.get(url, query_string={"area_type": "UNKNOWN"})
+        assert response.status_code == 400
+
+    @pytest.mark.parametrize(
+        "logged_user_name,observer_user_name,stats",
+        [
+            (
+                "stranger_user",  # logged
+                "stranger_user",  # stats
+                {
+                    "area_count": 0,
+                    "date_max": None,
+                    "date_min": None,
+                    "observer": "TO_REPLACE",
+                    "observation_count": 0,
+                    "taxa_count": 0,
+                },
+            ),
+            (
+                "stranger_user",  # logged
+                "user",  # stats
+                {
+                    "area_count": 4,
+                    "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "observer": "TO_REPLACE",
+                    "observation_count": 7,
+                    "taxa_count": 3,
+                },
+            ),
+            (
+                "user",  # logged
+                "user",  # stats
+                {
+                    "area_count": 4,
+                    "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
+                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                    "observer": "TO_REPLACE",
+                    "observation_count": 11,
+                    "taxa_count": 4,
+                },
+            ),
+        ],
+    )
+    def test_observer_stats(
+        self, synthese_data, users, logged_user_name, observer_user_name, stats
+    ):
+
+        stats["observer"] = users[observer_user_name].nom_complet
+
+        set_logged_user(self.client, users[logged_user_name])
+
+        AREA_TYPE_VALID = "COM"
+
+        response = self.client.get(
+            url_for(
+                "gn_synthese.synthese_observer_info.observer_stats",
+                observer=users[observer_user_name].nom_complet,
+                area_type=AREA_TYPE_VALID,
+            ),
+        )
+        assert response.status_code == 200
+        assert response.get_json() == stats
+
+    @pytest.mark.parametrize(
+        "logged_user_name,observer_user_name, overview",
+        [
+            (
+                "stranger_user",  # logged
+                "stranger_user",  # stats
+                {
+                    "total": 0,
+                    "per_page": 2,
+                    "page": 1,
+                    "items": [],
+                },
+            ),
+            (
+                "user",  # logged
+                "user",  # stats
+                {
+                    "total": 4,
+                    "per_page": 2,
+                    "page": 1,
+                    "items": [
+                        {
+                            "cd_nom": 2497,
+                            "dataset_count": 4,
+                            "date_max": "Fri, 04 Oct 2024 17:04:09 GMT",
+                            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "nom": "Aigrette garzette",
+                            "observation_count": 6,
+                        },
+                        {
+                            "cd_nom": 212,
+                            "dataset_count": 3,
+                            "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
+                            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "nom": "Sonneur à ventre jaune (Le)",
+                            "observation_count": 4,
+                        },
+                    ],
+                },
+            ),
+            (
+                "user",  # logged
+                "user",  # stats
+                {
+                    "total": 4,
+                    "per_page": 2,
+                    "page": 2,
+                    "items": [
+                        {
+                            "cd_nom": 2852,
+                            "dataset_count": 1,
+                            "date_max": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "nom": "Gypaète barbu",
+                            "observation_count": 1,
+                        },
+                        {
+                            "cd_nom": 713776,
+                            "dataset_count": 1,
+                            "date_max": "Fri, 04 Oct 2024 17:04:09 GMT",
+                            "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
+                            "nom": "Ashmeadopria",
+                            "observation_count": 1,
+                        },
+                    ],
+                },
+            ),
+        ],
+    )
+    def test_observer_overview(
+        self, synthese_data, users, logged_user_name, observer_user_name, overview
+    ):
+        set_logged_user(self.client, users[logged_user_name])
+        url = url_for(
+            "gn_synthese.synthese_observer_info.observer_overview",
+            observer=users[logged_user_name].nom_complet,
+        )
+        response = self.client.get(
+            url, query_string={"per_page": overview["per_page"], "page": overview["page"]}
+        )
+        assert response.status_code == 200
+        assert response.get_json() == overview
+
+    @pytest.mark.parametrize(
+        "logged_user_name,observer_user_name,medias",
+        [
+            (
+                "stranger_user",  # logged
+                "stranger_user",  # stats
+                {
+                    "total": 0,
+                    "per_page": 2,
+                    "page": 1,
+                    "items": [],
+                },
+            ),
+            (
+                "admin_user",  # logged
+                "admin_user",  # stats
+                {"total": 0, "per_page": 2, "page": 1, "items": []},
+            ),
+        ],
+    )
+    def test_observer_medias(
+        self, synthese_data, users, logged_user_name, observer_user_name, medias
+    ):
+        set_logged_user(self.client, users[logged_user_name])
+        url = url_for(
+            "gn_synthese.synthese_observer_info.observer_medias",
+            observer=users[logged_user_name].nom_complet,
+        )
+        response = self.client.get(
+            url, query_string={"per_page": medias["per_page"], "page": medias["page"]}
+        )
+        assert response.status_code == 200
+        assert response.get_json() == medias
 
     def test_get_one_synthese_record(self, app, users, synthese_data):
         response = self.client.get(
@@ -1273,14 +1487,14 @@ class TestSynthese:
                     "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 4,
+                    "observation_count": 5,
                     "observer": "administrateur test",
                 },
                 {
                     "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 4,
+                    "observation_count": 5,
                     "observer": "bob bobby",
                 },
             ],
@@ -1294,14 +1508,14 @@ class TestSynthese:
                     "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 4,
+                    "observation_count": 5,
                     "observer": "bob bobby",
                 },
                 {
                     "date_max": "Thu, 03 Oct 2024 08:09:10 GMT",
                     "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
                     "media_count": 0,
-                    "observation_count": 4,
+                    "observation_count": 5,
                     "observer": "administrateur test",
                 },
             ],
@@ -1674,12 +1888,12 @@ def assert_blurred_synthese(geojson, obs):
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSyntheseBlurring:
     def test_split_blurring_precise_permissions(
-        self, app, users, synthese_module, synthese_read_permissions
+        self, app, users, synthese_module, add_synthese_read_permissions
     ):
         current_user = users["self_user"]
 
-        blurring_perm = synthese_read_permissions(current_user, None, sensitivity_filter=True)
-        precise_perm = synthese_read_permissions(current_user, 2, sensitivity_filter=False)
+        blurring_perm = add_synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        precise_perm = add_synthese_read_permissions(current_user, 2, sensitivity_filter=False)
 
         with app.test_request_context(headers=logged_user_headers(current_user)):
             app.preprocess_request()
@@ -1701,13 +1915,13 @@ class TestSyntheseBlurring:
         users,
         synthese_sensitive_data,
         source,
-        synthese_read_permissions,
+        add_synthese_read_permissions,
         blur_sensitive_observations,
     ):
         current_user = users["stranger_user"]
         # None is 3
-        synthese_read_permissions(current_user, None, sensitivity_filter=True)
-        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+        add_synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        add_synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
         url = url_for("gn_synthese.synthese.get_observations_for_web")
@@ -1738,13 +1952,13 @@ class TestSyntheseBlurring:
         users,
         synthese_sensitive_data,
         source,
-        synthese_read_permissions,
+        add_synthese_read_permissions,
         exclude_sensitive_observations,
     ):
         current_user = users["stranger_user"]
         # None is 3
-        synthese_read_permissions(current_user, None, sensitivity_filter=True)
-        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+        add_synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        add_synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
 
@@ -1770,7 +1984,7 @@ class TestSyntheseBlurring:
         users,
         synthese_sensitive_data,
         source,
-        synthese_read_permissions,
+        add_synthese_read_permissions,
         monkeypatch,
     ):
         # So that all burred geoms will not appear on the aggregated areas
@@ -1779,8 +1993,8 @@ class TestSyntheseBlurring:
         current_user = users["noright_user"]
         set_logged_user(self.client, current_user)
         # None is 3
-        synthese_read_permissions(current_user, None, sensitivity_filter=True)
-        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+        add_synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        add_synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         response = self.client.get(
             url_for("gn_synthese.synthese.get_observations_for_web"),
@@ -1817,14 +2031,14 @@ class TestSyntheseBlurring:
         self,
         users,
         synthese_sensitive_data,
-        synthese_read_permissions,
+        add_synthese_read_permissions,
         blur_sensitive_observations,  # So that all burred geoms will not appear on the aggregated areas
     ):
         current_user = users["stranger_user"]
         sensitive_synthese = synthese_sensitive_data["obs_sensitive"]
         # None is 3
-        synthese_read_permissions(current_user, None, sensitivity_filter=True)
-        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+        add_synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        add_synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
         url = url_for(
@@ -1838,13 +2052,13 @@ class TestSyntheseBlurring:
         assert_blurred_synthese(geojson=response_json, obs=sensitive_synthese)
 
     def test_get_one_synthese_unsensitive(
-        self, users, synthese_sensitive_data, synthese_read_permissions
+        self, users, synthese_sensitive_data, add_synthese_read_permissions
     ):
         current_user = users["stranger_user"]
         unsensitive_synthese = synthese_sensitive_data["obs_not_sensitive"]
         # None is 3
-        synthese_read_permissions(current_user, None, sensitivity_filter=True)
-        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+        add_synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        add_synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
         url = url_for(
@@ -1859,14 +2073,14 @@ class TestSyntheseBlurring:
         self,
         users,
         synthese_sensitive_data,
-        synthese_read_permissions,
+        add_synthese_read_permissions,
         exclude_sensitive_observations,
     ):
         current_user = users["stranger_user"]
         sensitive_synthese = synthese_sensitive_data["obs_sensitive"]
         # None is 3
-        synthese_read_permissions(current_user, None, sensitivity_filter=True)
-        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+        add_synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        add_synthese_read_permissions(current_user, 1, sensitivity_filter=False)
 
         set_logged_user(self.client, current_user)
         url = url_for(
@@ -1978,9 +2192,9 @@ class TestSyntheseBlurring:
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestMediaTaxon:
-    def test_taxon_medias(self, synthese_read_permissions, users):
+    def test_taxon_medias(self, add_synthese_read_permissions, users):
         set_logged_user(self.client, users["self_user"])
-        synthese_read_permissions(users["self_user"], None, sensitivity_filter=True)
+        add_synthese_read_permissions(users["self_user"], None, sensitivity_filter=True)
 
         cd_ref = db.session.scalar(select(Taxref.cd_ref))
 
@@ -1996,7 +2210,7 @@ class TestMediaTaxon:
 class TestSyntheseGeographicFilter:
     @pytest.mark.parametrize("sensitivity_activated", (True, False))
     def test_geographic_filter_get_obs(
-        self, synthese_data, synthese_read_permissions, sensitivity_activated
+        self, synthese_data, add_synthese_read_permissions, sensitivity_activated
     ):
         with db.session.begin_nested():
             user = User()
@@ -2007,7 +2221,7 @@ class TestSyntheseGeographicFilter:
         guirec = db.session.execute(
             sa.select(LAreas).where(LAreas.area_name == "Perros-Guirec")
         ).scalar_one()
-        synthese_read_permissions(
+        add_synthese_read_permissions(
             user,
             scope_value=None,
             areas_filter=[chambery, guirec],
@@ -2038,7 +2252,7 @@ class TestSyntheseGeographicFilter:
 
     @pytest.mark.parametrize("sensitivity_activated", (True, False))
     def test_geographic_filter_list_obs(
-        self, synthese_data, synthese_read_permissions, sensitivity_activated
+        self, synthese_data, add_synthese_read_permissions, sensitivity_activated
     ):
         with db.session.begin_nested():
             user = User()
@@ -2049,7 +2263,7 @@ class TestSyntheseGeographicFilter:
         guirec = db.session.execute(
             sa.select(LAreas).where(LAreas.area_name == "Perros-Guirec")
         ).scalar_one()
-        synthese_read_permissions(
+        add_synthese_read_permissions(
             user,
             scope_value=None,
             areas_filter=[chambery, guirec],
@@ -2072,14 +2286,14 @@ class TestSyntheseGeographicFilter:
 class TestSyntheseTaxonomicFilter:
     @pytest.mark.parametrize("sensitivity_activated", (True, False))
     def test_taxonomic_filter_get_obs(
-        self, synthese_data, synthese_read_permissions, sensitivity_activated
+        self, synthese_data, add_synthese_read_permissions, sensitivity_activated
     ):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
         taxon1 = synthese_data["obs1"].taxref
         taxon2 = synthese_data["obs2"].taxref.parent
-        synthese_read_permissions(
+        add_synthese_read_permissions(
             user,
             scope_value=None,
             taxons_filter=[taxon1, taxon2],
@@ -2110,14 +2324,14 @@ class TestSyntheseTaxonomicFilter:
 
     @pytest.mark.parametrize("sensitivity_activated", (True, False))
     def test_taxonomic_filter_list_obs(
-        self, synthese_data, synthese_read_permissions, sensitivity_activated
+        self, synthese_data, add_synthese_read_permissions, sensitivity_activated
     ):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
         taxon1 = synthese_data["obs1"].taxref
         taxon2 = synthese_data["obs2"].taxref.parent
-        synthese_read_permissions(
+        add_synthese_read_permissions(
             user,
             scope_value=None,
             taxons_filter=[taxon1, taxon2],
@@ -2135,7 +2349,7 @@ class TestSyntheseTaxonomicFilter:
         assert synthese_data["obs2"].id_synthese in response_ids
         assert synthese_data["obs3"].id_synthese not in response_ids
 
-    def test_acces_taxon_sheet(self, synthese_read_permissions):
+    def test_acces_taxon_sheet(self, add_synthese_read_permissions):
 
         with db.session.begin_nested():
             user_group = User(identifiant="group_test", groupe=True)
@@ -2145,8 +2359,8 @@ class TestSyntheseTaxonomicFilter:
 
         taxon = Taxref.query.filter_by(cd_ref=60612).first()  # Lynx Boréal
         taxon2 = Taxref.query.filter_by(cd_ref=61098).first()  # Bouquetin des alpes
-        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon])
-        synthese_read_permissions(user_group, scope_value=None, taxons_filter=[taxon2])
+        add_synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon])
+        add_synthese_read_permissions(user_group, scope_value=None, taxons_filter=[taxon2])
 
         for taxon_cdref in [60612, 61098]:
             set_logged_user(self.client, user)
@@ -2156,13 +2370,13 @@ class TestSyntheseTaxonomicFilter:
             assert response.status_code == 200
 
     @pytest.mark.parametrize("cd_ref,parent", [(2852, None), (79303, 186233)])
-    def test_taxon_sheet(self, synthese_read_permissions, cd_ref, parent):
+    def test_taxon_sheet(self, add_synthese_read_permissions, cd_ref, parent):
         with db.session.begin_nested():
             user = User()
             db.session.add(user)
         cd_ref_perm = parent if parent else cd_ref
         taxon = Taxref.query.filter_by(cd_ref=cd_ref_perm).first()
-        synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon])
+        add_synthese_read_permissions(user, scope_value=None, taxons_filter=[taxon])
         set_logged_user(self.client, user)
 
         for route in [

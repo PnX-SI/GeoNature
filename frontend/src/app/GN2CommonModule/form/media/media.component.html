@@ -48,8 +48,19 @@
     class="btn-valid-media"
     (click)="postMedia()"
     [disabled]="!mediaFormReadyToSend()"
+    matTooltip="{{ 'Media.Actions.Valid' | translate }}"
   >
-    <mat-icon matTooltip="{{ 'Media.Actions.Valid' | translate }}">check</mat-icon>
+    <mat-icon>check</mat-icon>
+  </button>
+
+  <button
+    mat-mini-fab
+    color="primary"
+    class="btn-cancel-media"
+    (click)="cancel()"
+    matTooltip="{{ 'Media.Actions.Cancel' | translate }}"
+  >
+    <mat-icon>close</mat-icon>
   </button>
 
   <mat-progress-bar

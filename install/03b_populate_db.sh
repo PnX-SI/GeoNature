@@ -6,9 +6,9 @@ geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM taxonomie.taxref); END
 || if [ "$install_bdc_statuts" = true ];
 then
     geonature db upgrade ref_geo_fr_departments@head
-    geonature taxref import-v17 --taxref-region=${taxref_region:-fr}
+    geonature taxref import-v18 --taxref-region=${taxref_region:-fr}
 else
-    geonature taxref import-v17 --skip-bdc-statuts
+    geonature taxref import-v18 --skip-bdc-statuts
 fi
 geonature db upgrade nomenclatures_taxonomie_data@head
 
@@ -59,10 +59,10 @@ geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM gn_sensitivity.t_sensi
 then
     geonature db upgrade ref_geo_fr_departments@head
     geonature sensitivity add-referential \
-    --source-name "Référentiel sensibilité TAXREF v17 20240325" \
-    --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV17_20240325.zip \
-    --zipfile RefSensibiliteV17_20240325.zip \
-    --csvfile RefSensibilite_17.csv  \
+    --source-name "Référentiel sensibilité TAXREF v18 20250904" \
+    --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV18_20250904.zip \
+    --zipfile RefSensibiliteV18_20250904.zip \
+    --csvfile RefSensibilite_18.csv  \
     --encoding=utf-8
     geonature sensitivity refresh-rules-cache
 fi

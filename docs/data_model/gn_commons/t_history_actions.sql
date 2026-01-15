@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_commons.t_history_actions (
     id_history_action integer NOT NULL,
     id_table_location integer NOT NULL,
@@ -33,4 +34,5 @@ ALTER TABLE ONLY gn_commons.t_history_actions
 
 ALTER TABLE ONLY gn_commons.t_history_actions
     ADD CONSTRAINT fk_t_history_actions_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES gn_commons.bib_tables_location(id_table_location) ON UPDATE CASCADE;
+
 

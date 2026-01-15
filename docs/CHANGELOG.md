@@ -1,5 +1,78 @@
 # CHANGELOG
 
+## 2.17.0 (unreleased)
+
+### 🚀 Nouveautés
+
+- [Général] Ajout d'un trigger sur les mises à jour de ref_geo.l_areas permettant la mise à jour automatique de gn_synthese.cor_area_synthese (fix #3814).
+
+
+## 2.16.4 (2025-11-17)
+
+### 🚀 Nouveautés
+
+- Mise à jour de UsersHub-authentification-module en 3.1.0 (par @jacquesfize)
+
+### 🐛 Corrections
+
+- Amélioration de la sécurité du processus de création de compte GeoNature ainsi que du renouvellement de mot de passe ([UsersHub-authentification-module#124](https://github.com/PnX-SI/UsersHub-authentification-module/pull/124), [#125](https://github.com/PnX-SI/UsersHub-authentification-module/pull/125) par @Christophe-Ramet et @jacquesfize)
+
+## 2.16.3 (2025-09-26)
+
+### 🚀 Nouveautés
+
+- [TaxHub] Mise à jour de TaxHub en version [2.2.3](https://github.com/PnX-SI/TaxHub/releases) incluant diverses évolutions et corrections
+- [Général] Affichage des versions des modules et des référentiels dans le bas du menu latéral (#3664 par @Christophe-Ramet)
+- [Général] La version [18](https://inpn.mnhn.fr/telechargement/referentielEspece/taxref/18.0/menu) de Taxref et du référentiel de sensibilité est désormais installée par défaut lors des nouvelles installations (#3680 par @Pierre-Narcisi)
+- [Métadonnées] Ajout d'un champ de saisie d'UUID dans le formulaire de création de cadre d'acquisition et de jeu de données, activable avec le paramètre `ENABLE_UUID_EDITION_FIELD`, mais non activé par défaut car il n'est pas toujours souhaité de pouvoir saisir ou modifier les UUID des métadonnées (#3583 par @andriacap, @edelclaux et @jacquesfize)
+- [TaxHub] Ajout de la fonctionnalité d'export dans la liste de taxons (#3712 par @amandine-sahl)
+- [TaxHub] Ajout d'une fiche d'info sur TaxHub et Taxref dans un nouvel onglet "Informations" (#3717 par @amandine-sahl)
+
+### 🐛 Corrections
+
+- [Général] Amélioration de l'affichage responsive de la liste des modules dans la barre de navigation latérale (#3690 par @Christophe-Ramet)
+- [Général] Suppression de la variable `homePage.stats` dans le local storage à la déconnexion (#3687 par @Christophe-Ramet)
+- [Général] Correction de le commande `npm run format` permettant d'intégrer les fichiers TypeScript dans le formatage (#3702 par @jacquesfize)
+- [Accueil] Correction du nombre d'espèces observées sur la page d'accueil (par @Christophe-Ramet et @jacquesfize)
+  - Prise en compte des permissions taxonomiques (#3679)
+  - Utilisation des `cd_ref` plutôt que les `cd_nom` pour compter le nombre d'espèces observées (#3677)
+- [Développement] Correction de la valeur retournée par la propriété `total_filtered` dans Utils-Flask-SQLAlchemy, corrigeant une régression de GeoNature 2.16.0 avec GN2PG (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/issues/62, par @jacquesfize)
+- [Occhab] Suppression du champ `id_habitat` dans l'import Occhab (#3716 par @jacquesfize)
+- [Métadonnées] Les dates de début et de fin ne sont plus limitées (#3675 par @jacquesfize)
+- [Développement] Correction de la fonction `getNomenclature` (#3661 par @jbrieuclp)
+- [Développement] Mise à jour du fichier `.editorconfig` (#3683 par @jpm-cbna)
+
+### ⚠️ Notes de version
+
+- La version 2.2.3 de TaxHub inclut des corrections de commandes qu'il peut être nécessaire que vous appliquiez depuis le venv de GeoNature (voir les notes de version de TaxHub sur https://github.com/PnX-SI/TaxHub/releases)
+
+## 2.16.2 (2025-08-11)
+
+### 🐛 Corrections
+
+- [Synthèse] Correction de la navigation avec les flèches dans les fiches taxon (#3639 par @edelclaux)
+- [Général] Correction de l'affichage du bouton de suppression d'un média (#3641 par @amandine-sahl)
+- [Général] Correction de la détection de changement de fichier dans les _dynamic-forms_ (#3660 par @Pierre-Narcisi)
+- [Monitoring] Correction du filtre de portée de permission pour les individus (#3647 par @amandine-sahl)
+- [Synthèse] Correction de l'affichage des dates max dans la Synthèse (#3655 par @jbrieuclp)
+
+## 2.16.1 (2025-07-22)
+
+### 🚀 Nouveautés
+
+- [Métadonnées] Amélioration des performances du chargement des informations des jeux de données et des cadres d'acquisitions (#3617 par @TheoLechemia)
+- [Synthèse] Ajout d'un lien vers les détails d'une observation dans l'onglet "Observations" de la fiche Taxon (#3610 par @jacquesfize)
+
+### 🐛 Corrections
+
+- [Occtax] Correction du filtre "Observateurs" avec un R=2 (#3616 par @TheoLechemia)
+- [Occtax] Correction d'un lien vers la page d’accueil dans le contexte d'un module dupliqué de Occtax (#3610 @ch-cbna)
+- [Discussion] Correction de l'affichage des auteurs dans le bloc de la page d'accueil (#3618 par @TheoLechemia)
+- [Synthèse] Correction des statistiques calculées dans les fiches taxon si une observation n'est pas associée à une commune (#3631 par @Pierre-Narcisi)
+- [Synthèse] Les filtres de statut avec une seul valeur ne sont plus cochés par défaut (#3624 par @jacquesfize)
+- [Validation] Correction du lien généré dans la notification par mail (#3623 par @jacquesfize)
+- [Général] Correction permettant un chargement des médias asynchrones dans le composant `pnx-medias` (#3636 par @amandine-sahl)
+
 ## 2.16.0 - [Bombina variegata](https://inpn.mnhn.fr/espece/cd_nom/212) 🐸 (2025-07-08)
 
 ### ⏩ En bref
@@ -17,7 +90,7 @@
   - Ajout d'un fil d'ariane permettant de naviguer entre les rangs taxonomiques
   - Ajout du mode maille et d'un filtre temporel dans l'onglet "Observations" (anciennement "Synthèse géographique")
 - [Synthèse, Validation] Ajout de filtres de permission géographique et taxonomique (par @jpm-cbna, complété par @bouttier dans #3097)
-- [Permissions] Ajout de filtres temporels sur toutes les permissions
+- [Permissions] Ajout de filtres temporels sur toutes les permissions (#3099 par @jpm-cbna et @bouttier)
 - [Multilingue] Amélioration et enrichissement de la gestion du multilingue (#1551)
   - Enrichissement des traductions existantes dans différents modules (#1921 par @MathildeNS, complété dans #3484 par @jpm-cbna et @jacquesfize)
   - Possibilité de définir des fichiers de traduction pour chaque module (#1570 par @mvergez et @jpm-cbna)
@@ -30,7 +103,7 @@
 - [Occhab] Affiche de l'UUID des habitats dans les fiches détail des stations (#3467 par @Pierre-Narcisi)
 - [Notifications] Masquer certaines catégories de notifications de la liste des souscriptions selon les permissions de l'utilisateur (#3262 par @bouttier)
 - [Général] Mise à jour des dépendances
-  - TaxHub : [2.2.2](https://github.com/PnX-SI/TaxHub/releases/2.2.2), incluant notamment la migration vers Taxref v18
+  - TaxHub : [2.2.2](https://github.com/PnX-SI/TaxHub/releases/2.2.2), incluant notamment les scripts de migration vers Taxref v18
   - Utils-Flask-SQLAlchemy [0.4.2](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/0.4.2)
   - Utils-Flask-SQLAlchemy-Geo [0.3.3](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.3.3)
   - RefGeo [1.5.5](https://github.com/PnX-SI/RefGeo/releases/1.5.5)
@@ -43,11 +116,11 @@
 - [Benchmark] Ajout de nouveaux tests automatisés de performance (#3392 par @Christophe-Ramet)
 - [Accueil] Amélioration du _responsive_ de la page d'accueil (#3426 et #3428 par @Christophe-Ramet)
 - [Développement] Modification du `JSONProvider` prenant en compte les objets `Paginate` de `flask-sqlalchemy` (#3463 par @bouttier)
-- [Développement] Utilisation de la nouvelle méthode générique de tri de données `ordered` dans le module méta-données (#3465 par @bouttier)
+- [Développement] Utilisation de la nouvelle méthode générique de tri de données `ordered` dans le module Métadonnées (#3465 par @bouttier)
 - [Développement] Réorganisation du code des _blueprints_ Flask de la Synthèse (#3301 par @jacquesfize)
 - [Développement] Ajout de nouveaux champs dans la vue `gn_synthese.v_synthese_for_web_app` : `id_statut`, `id_rang`, `regne`, `phylum`, `classe`, `ordre`, `famille` et `sous_famille` (#3373 par @Pierre-Narcisi)
 - [Général] Suppression de la page intermédiaire pour l'accès au panneau d'administration de GeoNature (par @jacquesfize)
-- [MétaDonnées] Ajout des champs additional_data pour les JDD et AF (#3422 par @lpofredc)
+- [Métadonnées] Ajout des champs `additional_data` dans les tables des JDD et des CA (#3422 par @lpofredc)
 
 ### 🐛 Corrections
 
@@ -165,7 +238,7 @@ Si vous les aviez défini, enlevez les paramètres `INSTANCE_BOUNDING_BOX`, `ENA
 - [Import] Correction de la sélection des champs `auto_generate` (#3293, par @Pierre-Narcisi)
 - [Import] Correction du template des notifications d'un import terminé (#3310 par @jacquesfize)
 
-## 2.15.0 - Pavo cristatus 🦚 (2025-12-11)
+## 2.15.0 - Pavo cristatus 🦚 (2024-12-11)
 
 ### ⏩ En bref
 

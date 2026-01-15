@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_monitoring.t_base_sites (
     id_base_site integer NOT NULL,
     id_inventor integer,
@@ -54,4 +55,5 @@ ALTER TABLE ONLY gn_monitoring.t_base_sites
 
 ALTER TABLE ONLY gn_monitoring.t_base_sites
     ADD CONSTRAINT fk_t_base_sites_id_inventor FOREIGN KEY (id_inventor) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
 

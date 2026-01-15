@@ -40,8 +40,10 @@ describe('Testing homepage', () => {
     cy.visit('/#/');
     cy.title().should('eq', 'GeoNature2');
     cy.visit('/#/synthese');
+    cy.wait(500);
     cy.title().should('eq', 'GeoNature2 - Synthèse');
     cy.visit('/#/import');
+    cy.wait(500);
     cy.title().should('eq', 'GeoNature2 - Import');
   });
 

@@ -2,14 +2,12 @@ import json
 from operator import or_
 from pathlib import Path
 
-from flask import Blueprint, request, current_app, g, url_for
-from flask.json import jsonify
+from flask import Blueprint, current_app, g, url_for
 from werkzeug.exceptions import Forbidden, Conflict
-import requests
 from sqlalchemy.orm import joinedload
-from sqlalchemy import select, func
+from sqlalchemy import func
 
-from utils_flask_sqla.response import json_resp
+
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.core.gn_commons.models import (
@@ -19,22 +17,24 @@ from geonature.core.gn_commons.models import (
     TPlaces,
     TAdditionalFields,
 )
-from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
-from geonature.utils.env import DB, db, BACKEND_DIR
+from geonature.utils.env import db
 from geonature.utils.config import config_frontend, config
-from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_permissions.tools import get_scope
+from geonature.core.gn_permissions.tools import (
+    get_scope,
+    get_user_permissions,
+    get_permissions,
+    has_any_permissions,
+)
 from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 import geonature.core.gn_commons.tasks  # noqa: F401
 
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
-from geonature.utils.errors import (
-    GeonatureApiError,
-)
 
+from ...utils.module import get_module_version
+from apptax.taxonomie.models import TMetaTaxref
 
 routes = Blueprint("gn_commons", __name__)
 
@@ -60,7 +60,6 @@ def list_modules():
 
     """
     params = request.args
-
     exclude = current_app.config["DISABLED_MODULES"].copy()
     if "exclude" in params:
         exclude.extend(params.getlist("exclude"))
@@ -114,6 +113,10 @@ def list_modules():
             if any(obj_dict["cruved"].values()):
                 module_allowed = True
             module_dict["module_objects"][obj_code] = obj_dict
+        if has_any_permissions("R", module_code="ADMIN", object_code="MODULES"):
+            module_allowed = True
+        if version := get_module_version(module.module_code):
+            module_dict["version"] = version
         if module_allowed:
             allowed_modules.append(module_dict)
     return jsonify(allowed_modules)
@@ -148,18 +151,10 @@ def get_one_parameter(param_name, id_org=None):
     return [data.as_dict()]
 
 
-@routes.route("/additional_fields", methods=["GET"])
-def get_additional_fields():
-    params = request.args
-
+def _get_additional_fields(id_dataset=None, module_code=None, object_code=None):
     query = select(TAdditionalFields).order_by(TAdditionalFields.field_order)
-    parse_param_value = lambda param: param.split(",") if len(param.split(",")) > 1 else param
-    params = {
-        param_key: parse_param_value(param_values) for param_key, param_values in params.items()
-    }
 
-    if "id_dataset" in params:
-        id_dataset = params["id_dataset"]
+    if id_dataset:
         if id_dataset == "null":
             # ~ operator means NOT EXISTS
             query = query.where(~TAdditionalFields.datasets.any())
@@ -167,16 +162,15 @@ def get_additional_fields():
             query = query.where(
                 or_(
                     *[
-                        TAdditionalFields.datasets.any(id_dataset=id_dastaset_i)
-                        for id_dastaset_i in id_dataset
+                        TAdditionalFields.datasets.any(id_dataset=id_dataset_i)
+                        for id_dataset_i in id_dataset
                     ]
                 )
             )
         else:
             query = query.where(TAdditionalFields.datasets.any(id_dataset=id_dataset))
 
-    if "module_code" in params:
-        module_code = params["module_code"]
+    if module_code:
         if isinstance(module_code, list) and len(module_code) > 1:
             query = query.where(
                 *[
@@ -187,8 +181,7 @@ def get_additional_fields():
         else:
             query = query.where(TAdditionalFields.modules.any(module_code=module_code))
 
-    if "object_code" in params:
-        object_code = params["object_code"]
+    if object_code:
         if isinstance(object_code, list) and len(object_code) > 1:
             query = query.where(
                 *[
@@ -199,11 +192,26 @@ def get_additional_fields():
         else:
             query = query.where(TAdditionalFields.objects.any(code_object=object_code))
 
-    #
     schema = TAdditionalFieldsSchema(
         only=["bib_nomenclature_type", "modules", "objects", "datasets", "type_widget"], many=True
     )
-    return jsonify(schema.dump(db.session.scalars(query).all()))
+    return schema.dump(db.session.scalars(query).all())
+
+
+@routes.route("/additional_fields", methods=["GET"])
+def get_additional_fields():
+    params = request.args
+
+    parse_param_value = lambda param: param.split(",") if len(param.split(",")) > 1 else param
+    params = {
+        param_key: parse_param_value(param_values) for param_key, param_values in params.items()
+    }
+
+    id_dataset = params.get("id_dataset", None)
+    module_code = params.get("module_code", None)
+    object_code = params.get("object_code", None)
+
+    return jsonify(_get_additional_fields(id_dataset, module_code, object_code))
 
 
 @routes.route("/t_mobile_apps", methods=["GET"])

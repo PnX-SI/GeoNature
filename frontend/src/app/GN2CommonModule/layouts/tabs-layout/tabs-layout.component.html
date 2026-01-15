@@ -1,0 +1,24 @@
+<div class="card Tabs">
+  <nav
+    mat-tab-nav-bar
+    class="Tabs__navBar"
+    [tabPanel]="tabPanel"
+  >
+    <a
+      *ngFor="let tab of tabs"
+      mat-tab-link
+      [routerLink]="tab.path"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [active]="rla.isActive"
+    >
+      {{ tab.label }}
+    </a>
+  </nav>
+  <mat-tab-nav-panel
+    #tabPanel
+    class="Tabs__content"
+  >
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
+</div>

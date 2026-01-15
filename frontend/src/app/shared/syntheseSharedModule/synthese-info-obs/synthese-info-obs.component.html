@@ -94,7 +94,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button
-          *ngIf="selectedObs?.cor_observers?.length > 0 && config.FRONTEND.DISPLAY_EMAIL_INFO_OBS"
+          *ngIf="config.FRONTEND.DISPLAY_EMAIL_INFO_OBS && email"
           mat-mini-fab
           ngbTooltip="{{ 'Synthese.Actions.Mailto' | translate }}"
           placement="bottom"
@@ -120,7 +120,7 @@
             activatePin && pinExists() ? { 'background-color': '#3fb8a8', color: 'white' } : ''
           "
         >
-          <mat-icon fontSet="material-symbols-outlined">keep</mat-icon>
+          <mat-icon>push_pin</mat-icon>
         </button>
         <button
           mat-mini-fab
@@ -403,7 +403,7 @@
                   target="_blank"
                   [href]="mediaService.href(media)"
                 >
-                  {{ media.title_fr }}
+                  {{ media?.title_fr }}
                 </a>
               </td>
             </tr>

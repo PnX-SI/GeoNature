@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_meta.cor_acquisition_framework_actor (
     id_cafa integer NOT NULL,
     id_acquisition_framework integer NOT NULL,
@@ -45,4 +46,5 @@ ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
 
 ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
     ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+
 

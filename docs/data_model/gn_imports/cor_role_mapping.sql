@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_imports.cor_role_mapping (
     id_role integer NOT NULL,
     id_mapping integer NOT NULL
@@ -12,4 +13,5 @@ ALTER TABLE ONLY gn_imports.cor_role_mapping
 
 ALTER TABLE ONLY gn_imports.cor_role_mapping
     ADD CONSTRAINT fk_utilisateurs_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+
 

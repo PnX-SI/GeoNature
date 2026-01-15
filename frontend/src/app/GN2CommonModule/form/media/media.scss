@@ -16,7 +16,6 @@
 }
 
 .btn-clear {
-  position: absolute;
   color: #d40303;
 }
 
@@ -32,6 +31,12 @@
 .btn-valid-media {
   margin-top: 15px;
   background-color: green;
+}
+
+.btn-cancel-media {
+  margin-top: 15px;
+  margin-left: 15px;
+  background-color: red;
 }
 
 .float-right {

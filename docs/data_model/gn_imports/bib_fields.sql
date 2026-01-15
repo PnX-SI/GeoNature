@@ -1,4 +1,5 @@
 
+
 CREATE TABLE gn_imports.bib_fields (
     id_field integer NOT NULL,
     name_field character varying(100) NOT NULL,
@@ -47,4 +48,5 @@ ALTER TABLE ONLY gn_imports.bib_fields
     ADD CONSTRAINT bib_fields_id_destination_fkey FOREIGN KEY (id_destination) REFERENCES gn_imports.bib_destinations(id_destination) ON DELETE CASCADE;
 
 ALTER TABLE ONLY gn_imports.bib_fields
+
 

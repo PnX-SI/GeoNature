@@ -19,7 +19,7 @@
               >
                 <button
                   mat-mini-fab
-                  (click)="login_or_pass_recovery = false"
+                  (click)="login_or_pass_recovery = false; errorMsg = ''"
                 >
                   <mat-icon>arrow_back</mat-icon>
                 </button>
@@ -60,7 +60,7 @@
                     <div
                       *ngIf="enable_user_management"
                       class="forgot"
-                      (click)="login_or_pass_recovery = true"
+                      (click)="login_or_pass_recovery = true; _authService.loginError = false"
                     >
                       {{ 'Authentication.Messages.ForgotPasswordOrLogin' | translate }}
                     </div>
@@ -152,10 +152,23 @@
                         placeholder="Adresse mail"
                         autofocus
                         required
+                        email
+                        #emailModel="ngModel"
                       />
+                      <div
+                        *ngIf="emailModel.invalid && emailModel.touched"
+                        class="text-danger"
+                      >
+                        <small *ngIf="emailModel.errors?.required">
+                          {{ 'Authentication.Messages.MailMandatory' | translate }}
+                        </small>
+                        <small *ngIf="emailModel.errors?.email">
+                          {{ 'Authentication.Messages.InvalidMail' | translate }}
+                        </small>
+                      </div>
                     </div>
                     <button
-                      [disabled]="disableSubmit"
+                      [disabled]="disableSubmit || identifiantForm.invalid"
                       class="btn btn-lg btn-success btn-block text-uppercase"
                       type="submit"
                     >
@@ -166,12 +179,16 @@
               </ng-template>
 
               <p
-                *ngIf="_authService.loginError"
+                *ngIf="_authService.loginError || errorMsg"
                 class="alert alert-danger"
                 role="alert"
                 style="margin-top: 5px"
               >
-                <strong>{{ 'Authentication.Errors.WrongLoginOrPassword' | translate }}</strong>
+                <strong>
+                  {{
+                    errorMsg ? errorMsg : ('Authentication.Errors.WrongLoginOrPassword' | translate)
+                  }}
+                </strong>
               </p>
               <img
                 style="margin-left: 40%"

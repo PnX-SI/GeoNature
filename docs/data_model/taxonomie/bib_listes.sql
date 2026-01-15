@@ -1,4 +1,5 @@
 
+
 CREATE TABLE taxonomie.bib_listes (
     id_liste integer NOT NULL,
     code_liste character varying(50) NOT NULL,
@@ -25,4 +26,5 @@ ALTER TABLE ONLY taxonomie.bib_listes
 
 ALTER TABLE ONLY taxonomie.bib_listes
     ADD CONSTRAINT unique_bib_listes_nom_liste UNIQUE (nom_liste);
+
 

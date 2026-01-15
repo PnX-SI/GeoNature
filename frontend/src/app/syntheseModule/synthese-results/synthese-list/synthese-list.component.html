@@ -92,13 +92,13 @@
         [title]="row[col.prop]"
         [ngSwitch]="col.prop"
       >
-        <div *ngSwitchCase="'date_min' || 'date_max'">
+        <div *ngSwitchCase="['date_min', 'date_max'].includes(col.prop) ? col.prop : false">
           {{ getDate(row[col.prop]) }}
         </div>
         <div *ngSwitchCase="'nom_vern_or_lb_nom'">
           <a
             class="Link"
-            [routerLink]="['taxon/' + row.cd_nom]"
+            [routerLink]="getTaxonSheetUrl(row.cd_nom)"
             *ngIf="
               config.SYNTHESE.ENABLE_TAXON_SHEETS && row.hasOwnProperty('cd_nom');
               else cellDefault

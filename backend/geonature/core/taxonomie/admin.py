@@ -5,6 +5,7 @@ from apptax.admin.admin_view import (
     TMediasView,
     BibAttributsView,
     BibThemesView,
+    SummaryView,
 )
 from geonature.utils.env import db
 
@@ -37,6 +38,11 @@ class CruvedProtectedBibAttributsView(CruvedProtectedMixin, BibAttributsView):
 class CruvedProtectedBibThemes(CruvedProtectedMixin, BibThemesView):
     module_code = "TAXHUB"
     object_code = "THEMES"
+
+
+class CruvedProtectedSummaryView(CruvedProtectedMixin, SummaryView):
+    module_code = "TAXHUB"
+    object_code = "TAXONS"
 
 
 def load_admin_views(app, admin):
@@ -86,6 +92,14 @@ def load_admin_views(app, admin):
             TMedias,
             db.session,
             name="Médias",
+            category="TaxHub",
+            static_folder=static_folder,
+        )
+    )
+    admin.add_view(
+        CruvedProtectedSummaryView(
+            name="Informations",
+            endpoint="summary",
             category="TaxHub",
             static_folder=static_folder,
         )

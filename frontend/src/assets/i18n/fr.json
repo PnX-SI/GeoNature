@@ -1,6 +1,5 @@
 {
   "Home": "Accueil",
-
   "LanguageSelection": "Choisissez la langue de l'interface",
   "Language": "Langue",
   "Languages": "Langues",
@@ -13,7 +12,8 @@
     "Singular": "Action",
     "Plural": "Actions",
     "Add": "Ajouter",
-    "Filter": "Filter",
+    "Edit": "Éditer",
+    "Filter": "Filtrer",
     "Download": "Télécharger",
     "Delete": "Supprimer",
     "Cancel": "Annuler",
@@ -44,17 +44,35 @@
     "Actions": {
       "LogIn": "Connexion",
       "LogOut": "Déconnexion",
-      "CreateAccount": "Créer un compte"
+      "CreateAccount": "Créer un compte",
+      "ActivateAccount": "Activer mon compte",
+      "ActivateAccountValidator": "Activer le compte"
     },
     "Errors": {
-      "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect"
+      "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect",
+      "WrongMailAddress": "Une erreur est survenue. Veuillez vérifier le mail fourni.",
+      "AccountCreationError": "L'adresse mail ou l'identifiant renseigné existe déjà.",
+      "UnexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
+      "Password": {
+        "MinLength": "Le mot de passe doit contenir au moins {{ requiredLength }} caractères (actuellement {{ actualLength }}).",
+        "UpperCase": "Le mot de passe doit contenir au moins une majuscule.",
+        "LowerCase": "Le mot de passe doit contenir au moins une minuscule.",
+        "Digit": "Le mot de passe doit contenir au moins un chiffre.",
+        "SpecialChar": "Le mot de passe doit contenir au moins un caractère spécial."
+      }
     },
     "Messages": {
-      "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?"
+      "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
+      "ActivateAccountConfirmation": "Pour activer votre compte, cliquez sur le bouton ci-dessous",
+      "ActivateAccountConfirmationValidator": "Pour activer ce compte, cliquez sur le bouton ci-dessous",
+      "PasswordChanged": "Votre mot de passe a bien été changé",
+      "MailMandatory": "L'adresse email est obligatoire.",
+      "InvalidMail": "Veuillez saisir une adresse email valide."
     }
   },
   "MyAccount": {
     "MyAccount": "Mon compte",
+    "MyObserverSheet": "Ma fiche observateur",
 
     "Messages": {
       "AutoAccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte",
@@ -112,7 +130,6 @@
   "Discussion": "Discussion",
   "Status": "Statut",
   "Source": "Source",
-
   "Mandatory": "Obligatoire",
   "Optional": "Facultatif",
   "OptionalIf": "Optionnel si",
@@ -150,6 +167,9 @@
   "HourFormat": "hh:mm",
   "Label": "Libellé",
   "Keywords": "Mots-clés",
+
+  "Detail": "Détail",
+  "Details": "Détails",
 
   "Downloading": "Téléchargement en cours",
 
@@ -198,7 +218,8 @@
       "NoStakeholder": "Aucun acteur renseigné",
       "FiledAF": "Le cadre d'acquisition a déjà été déposé",
       "EmptyAF": "Le cadre d'acquisition est vide",
-      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher."
+      "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
+      "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}"
     },
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
@@ -208,8 +229,10 @@
       "EditDataset": "Éditer le jeu de données",
       "DeleteDataset": "Supprimer le jeu de données",
       "ResetSearch": "Réinitialiser la recherche",
-      "SeeAFSheet": "Voir la fiche du cadre d'acquisition"
+      "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
+      "FillOwnUUID": "Saisie manuelle de l'UUID"
     },
+    "UUIDField": "UUID du {{ entity }}",
     "AdvancedSearch": "Recherche avancée",
     "AFAndDatasetsList": "Liste des cadres d'acquisition et des jeux de données associés",
     "CreationDate": "Date de lancement",
@@ -287,7 +310,10 @@
       "ResourceType": "Type de ressource",
       "FacultativeTaxaList": "Liste de taxons (facultatif)",
       "SpecificGeonature": "Spécifique GeoNature",
-      "ActiveOnEntry": "Actif à la saisie"
+      "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"
+    },
+    "AcquisitionFrameworkCard": {
+      "AdditionalInformation": "Informations additionnelles"
     },
     "AcquisitionFrameworkForm": {},
     "Actors": {
@@ -391,6 +417,7 @@
       "Add": "Ajouter un Média",
       "Edit": "Editer le média",
       "Valid": "Valider le média",
+      "Cancel": "Annuler l'ajout du média",
       "Delete": "Supprimer le média",
       "Undo": "Rétablir le média",
       "Link": "Afficher le media",

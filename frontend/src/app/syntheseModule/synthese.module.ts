@@ -17,11 +17,19 @@ import { DiscussionCardComponent } from '@geonature/shared/discussionCardModule/
 import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
 import {
-  RouteService,
+  TaxonSheetRouteService,
   ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES,
 } from './taxon-sheet/taxon-sheet.route.service';
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseObsModalWrapperComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs-container.component';
+import {
+  ALL_OBSERVERS_ADVANCED_INFOS_ROUTES,
+  ObserverSheetRouteService,
+} from './observer-sheet/observer-sheet.route.service';
+import { ObserverSheetComponent } from './observer-sheet/observer-sheet.component';
+import { ObserverSheetService } from './observer-sheet/observer-sheet.service';
+import { ObservationsFiltersService } from './sheets/observations/observations-filters.service';
+
 const routes: Routes = [
   {
     path: '',
@@ -41,12 +49,42 @@ const routes: Routes = [
   {
     path: 'taxon/:cd_ref',
     component: TaxonSheetComponent,
-    canActivate: [RouteService],
-    canActivateChild: [RouteService],
+    canActivate: [TaxonSheetRouteService],
+    canActivateChild: [TaxonSheetRouteService],
     children: [
+      // auto redirect to the first mandatory tab
+      {
+        path: '',
+        redirectTo: ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.find(
+          (path) => path.configEnabledField === null
+        ).path,
+        pathMatch: 'full',
+      },
+      ...ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.map((tab) => {
+        return {
+          path: tab.path,
+          component: tab.component,
+        };
+      }),
+    ],
+  },
+  {
+    path: 'observer/:observer',
+    component: ObserverSheetComponent,
+    canActivate: [ObserverSheetRouteService],
+    canActivateChild: [ObserverSheetRouteService],
+    children: [
+      // auto redirect to the first mandatory tab
+      {
+        path: '',
+        redirectTo: ALL_OBSERVERS_ADVANCED_INFOS_ROUTES.find(
+          (path) => path.configEnabledField === null
+        ).path,
+        pathMatch: 'full',
+      },
       // The tabs are all optional. therefore, we can't apply redireciotn here.
       // A redirection from parent to child is apply in canActivate
-      ...ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.map((tab) => {
+      ...ALL_OBSERVERS_ADVANCED_INFOS_ROUTES.map((tab) => {
         return {
           path: tab.path,
           component: tab.component,
@@ -64,7 +102,6 @@ const routes: Routes = [
     CommonModule,
     TreeModule,
     NgbModule,
-    TaxonSheetComponent,
   ],
   declarations: [
     SyntheseComponent,
@@ -86,7 +123,10 @@ const routes: Routes = [
     TaxonAdvancedStoreService,
     SyntheseFormService,
     NgbActiveModal,
-    RouteService,
+    ObservationsFiltersService,
+    ObserverSheetService,
+    ObserverSheetRouteService,
+    TaxonSheetRouteService,
   ],
 })
 export class SyntheseModule {}

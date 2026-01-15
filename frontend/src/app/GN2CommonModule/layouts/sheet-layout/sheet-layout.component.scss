@@ -1,0 +1,25 @@
+.Sheet {
+  height: calc(100vh - 80px);
+  padding: 0.9rem;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  row-gap: 0.9rem;
+
+  &__indicators {
+    $indicator-height: 6rem;
+    align-self: center;
+    height: $indicator-height;
+    // prevent weird sizing behavior
+    ::ng-deep mat-spinner {
+      height: $indicator-height !important;
+    }
+  }
+  &__tabs {
+    height: 100%;
+    flex-grow: 2;
+    flex-shrink: 2;
+    overflow: auto;
+  }
+}

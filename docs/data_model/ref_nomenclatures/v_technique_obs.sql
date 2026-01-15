@@ -1,4 +1,5 @@
 
+
 CREATE VIEW ref_nomenclatures.v_technique_obs AS
  SELECT ctn.regne,
     ctn.group2_inpn,
@@ -11,4 +12,5 @@ CREATE VIEW ref_nomenclatures.v_technique_obs AS
    FROM (ref_nomenclatures.t_nomenclatures n
      LEFT JOIN ref_nomenclatures.cor_taxref_nomenclature ctn ON ((ctn.id_nomenclature = n.id_nomenclature)))
   WHERE ((n.mnemonique)::text = 'TECHNIQUE_OBS'::text);
+
 
