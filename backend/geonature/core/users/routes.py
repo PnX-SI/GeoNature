@@ -22,9 +22,13 @@ from geonature.core.users.register_post_actions import (
 from geonature.utils.config import config
 from geonature.utils.env import DB, db
 from pypnusershub.db.models import Application, Organisme, User, UserList
+from pypnusershub.organisms_manager import (
+    insert_or_update_organism,
+    delete_organism as delete_organism_db,
+)
 from pypnusershub.auth import user_manager
-from sqlalchemy import and_, select
-from sqlalchemy.sql import and_
+
+from sqlalchemy import and_, select, func
 from utils_flask_sqla.response import json_resp
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
 
@@ -180,14 +184,29 @@ def get_organismes():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = select(Organisme)
+
+    query = select(Organisme)
+    order_by_cols = []
+
+    if "search" in params:
+        search = params.pop("search")
+        query = query.where(func.word_similarity(Organisme.nom_organisme, search) > 0.7)
+        order_by_cols = [func.word_similarity(Organisme.nom_organisme, search).desc()]
+
     if "orderby" in params:
+        order_params = params["orderby"].split(":")
         try:
-            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
+            order_col = getattr(Organisme.__table__.columns, order_params[0])
+            if len(order_params) > 1:
+                order_col = order_col.asc() if order_params[1] == "asc" else order_col.desc()
+            order_by_cols.append(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(q).all()]
+    if order_by_cols:
+        query = query.order_by(*order_by_cols)
+    return [
+        organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(query).all()
+    ]
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])
@@ -221,8 +240,75 @@ def get_organismes_jdd():
     ]
 
 
+@routes.route("/organism/<int:id_organisme>", methods=["GET"])
+@permissions.login_required
+@json_resp
+def get_organism(id_organisme):
+    """
+    Get complete organism details by ID
+
+    .. :quickref: User;
+
+    Returns:
+        dict: Complete organism information including all fields
+    """
+    organism = DB.session.get(Organisme, id_organisme)
+    if not organism:
+        raise NotFound("Organism not found")
+
+    return organism.as_dict()
+
+
+@routes.route("/organism", methods=["POST"])
+@permissions.check_cruved_scope("C", module_code="GEONATURE", object_code="ORGANISM")
+@json_resp
+def create_organism() -> dict:
+    """
+    Create a new organism
+
+    .. :quickref: User;
+
+    Request body should contain:
+    - nom_organisme (required): organism name
+    - adresse_organisme (optional): address
+    - cp_organisme (optional): postal code
+    - ville_organisme (optional): city
+    - tel_organisme (optional): telephone
+    - fax_organisme (optional): fax
+    - email_organisme (optional): email
+    - url_organisme (optional): website URL
+    - url_logo (optional): logo URL
+
+    Returns:
+        dict: The created organism with its ID
+    """
+    data = request.get_json()
+
+    if not data.get("nom_organisme"):
+        raise BadRequest("Organism name is required")
+
+    new_organism = {
+        "nom_organisme": data.get("nom_organisme"),
+        "adresse_organisme": data.get("adresse_organisme"),
+        "cp_organisme": data.get("cp_organisme"),
+        "ville_organisme": data.get("ville_organisme"),
+        "tel_organisme": data.get("tel_organisme"),
+        "fax_organisme": data.get("fax_organisme"),
+        "email_organisme": data.get("email_organisme"),
+        "url_organisme": data.get("url_organisme"),
+        "url_logo": data.get("url_logo"),
+    }
+
+    try:
+        new_organism_add = insert_or_update_organism(new_organism)
+        return new_organism_add
+    except Exception as e:
+        log.error(f"Error creating organism: {str(e)}")
+        raise InternalServerError(f"Error creating organism: {str(e)}")
+
+
 ###################################
-### ACCOUNT_MANAGEMENT ROUTES #####
+### ACCOUNT_MANAGEMENT ROUTES #####
 ###################################
 
 

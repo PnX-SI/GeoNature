@@ -19,6 +19,7 @@ import { MetadataService } from './services/metadata.service';
 import { MetadataDataService } from './services/metadata-data.service';
 import { ActorFormService } from './services/actor-form.service';
 import { ButtonDeleteAfComponent } from './af/button-delete-af.component';
+import { OrganismFormDialogComponent } from './organisms/organism-form-dialog.component';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -72,6 +73,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     ActorComponent,
     AfCardComponent,
     ButtonDeleteAfComponent,
+    OrganismFormDialogComponent,
   ],
   providers: [
     MetadataService,
