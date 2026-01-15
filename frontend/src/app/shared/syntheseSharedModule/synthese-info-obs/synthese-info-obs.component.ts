@@ -13,6 +13,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { HttpParams } from '@angular/common/http';
 
 export interface ObservedTaxon extends Taxon {
   nom_cite?: string;
@@ -356,7 +357,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
    * This GET is required to get id_report autogenerate on creation, and DELETE with id_report next.
    */
   getReport(type) {
-    this._dataService.getReports(`type=${type}&sort=asc`, this.idSynthese).subscribe((data) => {
+    const params = new HttpParams().set('type', type).set('sort', 'asc');
+    this._dataService.getReports(params, this.idSynthese).subscribe((data) => {
       this[type] = data[0];
     });
   }
