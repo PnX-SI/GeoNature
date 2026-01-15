@@ -5,7 +5,6 @@ import { ActorFormService } from '../services/actor-form.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { distance } from 'fastest-levenshtein';
 
 @Component({
   selector: 'pnx-organism-form-dialog',
