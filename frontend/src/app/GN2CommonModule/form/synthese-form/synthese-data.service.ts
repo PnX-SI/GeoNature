@@ -310,10 +310,10 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
-  getReports(params, idSynthese = null) {
+  getReports(params: HttpParams, idSynthese = null) {
     const baseUrl = `${this.config.API_ENDPOINT}/synthese/reports`;
     const url = idSynthese ? `${baseUrl}/${idSynthese}` : baseUrl;
-    return this._api.get(`${url}?${params}`);
+    return this._api.get(`${url}`, { params: params });
   }
 
   createReport(params) {
