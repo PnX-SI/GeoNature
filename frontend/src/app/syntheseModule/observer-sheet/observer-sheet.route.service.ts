@@ -99,11 +99,11 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
     }
 
     return this._userDataService.getRole(observerId).pipe(
-      map((role: Observer) => {
+      map((role: any) => {
         if (role?.groupe) {
           throw new Error('Observer is a group');
         }
-        return role;
+        return role as Observer;
       })
     );
   }

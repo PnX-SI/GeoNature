@@ -6,6 +6,7 @@ import pytest
 from flask import url_for, current_app
 from sqlalchemy import select
 from pypnusershub.db.models import Application, CorRoleToken, Organisme
+from unittest.mock import MagicMock
 
 # Apparently: need to import both?
 from geonature.tests.fixtures import acquisition_frameworks, datasets, module
@@ -33,15 +34,14 @@ def add_mail_to_user(users):
 
 @pytest.fixture
 def fake_smtp(monkeypatch):
+    mock_send = MagicMock(return_value=True)
+
+    monkeypatch.setattr("geonature.utils.utilsmails.send_mail", mock_send)
     monkeypatch.setattr(
-        "geonature.core.users.register_post_actions.send_mail",
-        lambda *args, **kwargs: True,
-        raising=False,
+        "geonature.core.users.register_post_actions.send_mail", mock_send, raising=False
     )
 
-    monkeypatch.setattr(
-        "geonature.utils.utilsmails.send_mail", lambda *args, **kwargs: True, raising=False
-    )
+    return mock_send
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "add_mail_to_user", "fake_smtp")
@@ -489,3 +489,55 @@ class TestUsers:
         assert (
             b'"description": "Error creating organism: Database connection error"' in response.data
         )
+
+    def test_change_mail_route(self, users, fake_smtp):
+        url = url_for("users.new_mail")
+        user = users["admin_user"]
+        set_logged_user(self.client, user)
+
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
+        new_email = "new_email@example.com"
+        payload = {"new_mail": new_email}
+        resp = self.client.put(url, json=payload)
+        assert resp.status_code == 200
+        assert resp.json["message"] == "Confirmation mail sent to new_email@example.com"
+        assert fake_smtp.called
+        args, kwargs = fake_smtp.call_args
+        assert new_email in args[0]
+
+        resp = self.client.put(url, json={})
+        assert resp.status_code == 400
+        assert resp.json["description"] == "No new mail provided"
+
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = False
+        resp = self.client.put(url, json=payload)
+        assert resp.status_code == 404
+
+    def test_confirm_new_mail_route(self, users, fake_smtp):
+        """
+        Test PUT /mail/new behavior.
+        """
+        url = url_for("users.confirm_new_mail")
+        user = users["admin_user"]
+        set_logged_user(self.client, user)
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
+
+        old_email = user.email
+        new_email = "new_email@example.com"
+        payload = {"new_mail": new_email, "user": user.id_role}
+        resp = self.client.put(url, json=payload)
+        assert resp.status_code == 200
+        assert resp.json["message"] == "Mail successfully changed"
+        assert user.email == new_email
+        assert fake_smtp.called
+        args, kwargs = fake_smtp.call_args
+        assert old_email in args[0]
+
+        resp = self.client.put(url, json={"user": user.id_role})
+        assert resp.status_code == 400
+        assert resp.json["description"] == "No new mail provided"
+
+        payload_mismatch = {"new_mail": "another@example.com", "user": 99999}  # Wrong ID
+        resp = self.client.put(url, json=payload_mismatch)
+        assert resp.status_code == 400
+        assert "User id does not match user connected" in resp.json["description"]

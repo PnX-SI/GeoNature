@@ -13,13 +13,14 @@ from flask import (
 )
 from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.users.models import CorRole, VUserslistForallMenu
+from geonature.core.users.models import VUserslistForallMenu
 from geonature.core.users.register_post_actions import (
     execute_actions_after_validation,
     send_email_for_recovery,
     validate_temp_user,
+    send_email_for_mail_change,
+    send_email_to_old_mail,
 )
-from geonature.utils.config import config
 from geonature.utils.env import DB, db
 from pypnusershub.db.models import Application, Organisme, User, UserList
 from pypnusershub.organisms_manager import (
@@ -31,6 +32,7 @@ from pypnusershub.auth import user_manager
 from sqlalchemy import and_, select, func
 from utils_flask_sqla.response import json_resp
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
+from werkzeug.datastructures import MultiDict
 
 routes = Blueprint("users", __name__, template_folder="templates")
 log = logging.getLogger()
@@ -521,3 +523,49 @@ def new_password():
     except user_manager.PrintableException as printable_exception:
         raise BadRequest(str(printable_exception))
     return {"message": "Password changed with success"}, 200
+
+
+@routes.route("/mail/change", methods=["PUT"])
+@json_resp
+@check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
+def new_mail():
+    """
+    Send a mail to the user with a link to confirm his new mail address
+    """
+    user = g.current_user
+    data = request.get_json()
+
+    new_mail = data.get("new_mail", None)
+
+    if not new_mail:
+        raise BadRequest("No new mail provided")
+
+    send_email_for_mail_change(new_mail, user)
+
+    return {"message": f"Confirmation mail sent to {new_mail}"}, 200
+
+
+@routes.route("/mail/new", methods=["PUT"])
+@json_resp
+@check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
+def confirm_new_mail():
+    """
+    Change the email address of the user.
+
+    Notes
+    -----
+    Not required but this route is meant to be called after the `new mail` route.
+    """
+    user = g.current_user
+    data = MultiDict(request.get_json())
+
+    new_mail = data.get("new_mail", default=None)
+    user_id = data.get("user", default=None, type=int)
+    if not new_mail:
+        raise BadRequest("No new mail provided")
+
+    if not user.id_role == user_id:
+        raise BadRequest(f"User id does not match user connected {user.id_role} != {user_id}")
+    send_email_to_old_mail(user)
+    user_manager.change_mail(user.id_role, new_mail)
+    return {"message": f"Mail successfully changed"}, 200

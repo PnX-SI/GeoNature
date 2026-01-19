@@ -8,3 +8,13 @@ input.form-control-plaintext {
 input.form-control {
   color: #252525;
 }
+.non-editable {
+  pointer-events: none;
+  cursor: default;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+}

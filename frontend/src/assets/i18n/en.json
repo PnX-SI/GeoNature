@@ -70,13 +70,28 @@
     }
   },
   "MyAccount": {
-    "MyAccount": "My Account",
-    "MyObserverSheet": "My Observer Sheet",
-
+    "MyAccount": "My account",
+    "MyObserverSheet": "My observer sheet",
+    "EmailChangeTitle": "Change email address",
+    "EmailChangeDescription": "Changing your email address requires validation. A confirmation link will be sent to your new email address and the change will be effective after clicking on the link.",
+    "EmailChangeValidationTitle": "Email address change validation",
+    "EmailChangeConfirmationTitle": "Confirm email address change",
+    "EmailChangeConfirmationText": "Your new email address will be:",
+    "CurrentEmail": "Current email address",
+    "NewEmail": "New email address",
+    "SendRequest": "Send request",
+    "FormInvalidTooltip": "Please fill in all fields correctly",
+    "RequestEmailChangeTooltip": "Request email change",
+    "RedirectionInProgress": "Redirection in progress...",
     "Messages": {
       "AutoAccountEmailConfirmation": "An email has just been sent to you to activate your account",
-      "AdminAccountEmailConfirmation": "Your account creation request has been taken into account, it will be evaluated by an administrator",
-      "PasswordAndLoginRecovery": "An email has just been sent to you to recover your username and/or renew your password"
+      "AdminAccountEmailConfirmation": "Your account creation request has been received and will be evaluated by an administrator",
+      "PasswordAndLoginRecovery": "An email has just been sent to you to recover your login and/or renew your password",
+      "ChangeMailConfirmation": "Click on the link received by email to confirm your email address change",
+      "FieldRequired": "This field is required",
+      "InvalidEmailFormat": "Invalid email format",
+      "EmailChangeSuccess": "Your email address has been successfully validated.",
+      "EmailChangeError": "An error occurred"
     }
   },
 
