@@ -3,6 +3,7 @@
   class="SpinnerContainer"
 >
   <mat-spinner></mat-spinner>
+  <p *ngIf="message">{{ message }}</p>
 </div>
 <ng-template #content>
   <ng-content />
