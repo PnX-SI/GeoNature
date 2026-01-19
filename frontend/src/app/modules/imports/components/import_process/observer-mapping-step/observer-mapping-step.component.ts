@@ -85,11 +85,21 @@ export class ObserverMappingStepComponent implements OnInit {
         if (!id_roles_authorized.includes(value?.id_role)) {
           value = null;
         }
-        this.observerMappingForm.addControl(key, new FormControl(value));
+        if (this.observerMappingForm.controls[key]) {
+          this.observerMappingForm.controls[key].setValue(value);
+        } else {
+          this.observerMappingForm.addControl(key, new FormControl(value));
+        }
       });
     });
   }
+  clearMapping() {
+    this.observerMappingForm.reset();
+  }
 
+  resetMapping() {
+    this.populateObserverMappingFormGroup();
+  }
   isNextStepAvailable(): boolean {
     return this.observerMappingForm.valid;
   }

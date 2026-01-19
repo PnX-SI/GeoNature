@@ -6,3 +6,16 @@
 .matching-table {
   border: 2px solid #efefef;
 }
+.MappingBtn {
+  display: flex;
+  justify-content: end;
+  flex-grow: 1;
+button {
+  margin-left: 1em;
+}
+}
+
+.custom-card-header {
+  display: flex;
+  align-items: center;
+}
