@@ -32,7 +32,7 @@ from .models import (
     TOccurrencesOccurrence,
     CorCountingOccurrence,
     DefaultNomenclaturesValue,
-    TVegetationStratum,
+    TVegetationStratum,  ## import de la table TVegetationStratum dans le releveHandler ?
 )
 from .repositories import (
     ReleveRepository,
@@ -383,7 +383,7 @@ def insert_or_update_vegetation_strata(existing_strates, new_strates):
     return result
 
 
-def releveHandler(request, *, releve, scope):
+def releveHandler(request, *, releve, scope, module_code=None):
     releveSchema = ReleveSchema()
     # Modification de la requete geojson en releve
     json_req = request.get_json()
@@ -413,9 +413,15 @@ def releveHandler(request, *, releve, scope):
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
 
-    new_strates = properties_dict.get("t_vegetation_stratum", [])
-    existing_strates = getattr(releve, "t_vegetation_stratum", [])
-    releve.t_vegetation_stratum = insert_or_update_vegetation_strata(existing_strates, new_strates)
+    # Check if Phyto module is installed and called from "phyto" context
+    is_phyto_installed = "PHYTO" in current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"]
+    is_phyto_context = module_code and module_code.lower() == "phyto"
+    if is_phyto_installed and is_phyto_context:
+        new_strates = properties_dict.get("t_vegetation_stratum", [])
+        existing_strates = getattr(releve, "t_vegetation_stratum", [])
+        releve.t_vegetation_stratum = insert_or_update_vegetation_strata(
+            existing_strates, new_strates
+        )
 
     DB.session.add(releve)
     DB.session.commit()
@@ -425,7 +431,7 @@ def releveHandler(request, *, releve, scope):
 @blueprint.route("/<module_code>/only/releve", methods=["POST"])
 @blueprint.route("/only/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", get_scope=True)
-def createReleve(scope):
+def createReleve(scope, module_code=None):
     """
     Post one Occtax data (Releve + Occurrence + Counting)
 
@@ -455,7 +461,9 @@ def createReleve(scope):
     """
     # nouveau releve vide
     releve = TRelevesOccurrence()
-    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, scope=scope))
+    releve = ReleveSchema().dump(
+        releveHandler(request=request, releve=releve, scope=scope, module_code=module_code)
+    )
 
     return {
         "geometry": releve.pop("geom_4326", None),
@@ -467,7 +475,7 @@ def createReleve(scope):
 @blueprint.route("/<module_code>/only/releve/<int:id_releve>", methods=["POST"])
 @blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
 @permissions.check_cruved_scope("U", get_scope=True)
-def updateReleve(id_releve, scope):
+def updateReleve(id_releve, scope, module_code=None):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
@@ -478,7 +486,9 @@ def updateReleve(id_releve, scope):
     if not releve:
         return {"message": "not found"}, 404
 
-    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, scope=scope))
+    releve = ReleveSchema().dump(
+        releveHandler(request=request, releve=releve, scope=scope, module_code=module_code)
+    )
 
     return {
         "geometry": releve.pop("geom_4326", None),

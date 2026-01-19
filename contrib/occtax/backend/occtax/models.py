@@ -4,7 +4,7 @@ from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from werkzeug.exceptions import Forbidden
-from flask import g
+from flask import g, current_app
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
@@ -207,13 +207,6 @@ class TRelevesOccurrence(DB.Model):
         foreign_keys=[id_dataset],
     )
 
-    t_vegetation_stratum = relationship(
-        "TVegetationStratum",
-        lazy="joined",
-        cascade="all, delete-orphan",
-        back_populates="releve",
-    )
-
     readonly_fields = ["id_releve_occtax", "t_occurrences_occtax", "observers"]
 
     def get_geofeature(self, fields=[], depth=None):
@@ -262,9 +255,7 @@ class TVegetationStratum(DB.Model):
     __table_args__ = {"schema": "pr_occtax"}
 
     id_vegetation_stratum = DB.Column(DB.Integer, primary_key=True)
-    id_releve_occtax = DB.Column(
-        DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
-    )
+    id_releve_occtax = DB.Column(DB.Integer, ForeignKey(TRelevesOccurrence.id_releve_occtax))
     id_nomenclature_vegetation_stratum = DB.Column(DB.Integer)
     min_height = DB.Column(DB.Numeric(5, 2))
     max_height = DB.Column(DB.Numeric(5, 2))
@@ -272,6 +263,14 @@ class TVegetationStratum(DB.Model):
     percentage_cover_vegetation_stratum = DB.Column(DB.Integer)
 
     releve = relationship("TRelevesOccurrence", back_populates="t_vegetation_stratum")
+
+
+TRelevesOccurrence.t_vegetation_stratum = relationship(
+    "TVegetationStratum",
+    lazy="joined",
+    cascade="all, delete-orphan",
+    back_populates="releve",
+)
 
 
 @serializable
