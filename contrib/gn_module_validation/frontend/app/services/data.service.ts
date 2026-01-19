@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Nomenclature } from '@geonature_common/interfaces';
 import { ConfigService } from '@geonature/services/config.service';
 
@@ -33,8 +33,8 @@ export class ValidationDataService {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/synthese/taxons_tree`);
   }
 
-  getReports(params) {
-    return this._http.get(`${this.config.API_ENDPOINT}/synthese/reports?${params}`);
+  getReports(params:HttpParams) {
+    return this._http.get(`${this.config.API_ENDPOINT}/synthese/reports`, { params: params });
   }
 
   createReport(params) {

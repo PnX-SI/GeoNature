@@ -11,6 +11,7 @@ import {
   SORT_ORDER,
   SyntheseDataSortItem,
 } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   standalone: true,
@@ -95,15 +96,15 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   private _fetchDiscussions() {
     const params = this._buildQueryParams();
     this._syntheseApi
-      .getReports(params.toString())
+      .getReports(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe((response) => {
         this._setDiscussions(response);
       });
   }
 
-  private _buildQueryParams(): URLSearchParams {
-    const params = new URLSearchParams();
+  private _buildQueryParams(): HttpParams {
+    const params = new HttpParams();
     params.set('type', 'discussion');
     params.set('sort', this.sort.sortOrder);
     params.set('orderby', this.sort.sortBy);

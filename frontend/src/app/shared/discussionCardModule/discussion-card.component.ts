@@ -6,6 +6,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { isEmpty, uniqueId } from 'lodash';
 import * as moment from 'moment';
 import { ConfigService } from '@geonature/services/config.service';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'pnx-discussion-card',
@@ -21,7 +22,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   public currentUser: User;
   public discussions: any;
   public allow = false;
-  public sort = 'desc';
+  public sort = 'asc';
   constructor(
     private _authService: AuthService,
     private _formBuilder: UntypedFormBuilder,
@@ -122,7 +123,10 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
    * get all discussion by module and type
    */
   getDiscussions() {
-    const params = `type=discussion&sort=${this.sort}`;
+    const params = new HttpParams()
+      .set('type', 'discussion')
+      .set('orderby', 'creation_date')
+      .set('sort', this.sort);
     this._syntheseDataService.getReports(params, this.idSynthese).subscribe((response) => {
       this.setDiscussions(response);
     });
