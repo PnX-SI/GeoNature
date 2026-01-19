@@ -73,7 +73,7 @@ export class OcctaxFormReleveService {
 
   initPropertiesForm(): void {
     //FORM
-    this.propertiesForm = this.fb.group({
+    const formControls = {
       id_dataset: [null, Validators.required],
       id_digitiser: null,
       id_module: this.moduleService.currentModule.id_module,
@@ -108,9 +108,14 @@ export class OcctaxFormReleveService {
       id_nomenclature_exposure: null,
       id_nomenclature_location_type: null,
       id_area_attachement: null,
-      additional_fields: this.fb.group({}),
-      t_vegetation_stratum: this.fb.array([]),
-    });
+      additional_fields: this.fb.group({})
+    };
+    // add t_vegetation_stratum form array if in phyto module
+    if (this.moduleService.currentModule.module_code === 'PHYTO') {
+      formControls['t_vegetation_stratum'] = this.fb.array([]);
+    }
+    this.propertiesForm = this.fb.group(formControls);
+
 
     this.propertiesForm.patchValue(this.initialValues);
 
