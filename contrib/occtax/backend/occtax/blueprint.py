@@ -443,9 +443,15 @@ def releveHandler(request, *, releve, scope, module_code=None):
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
 
-    new_strates = properties_dict.get("t_vegetation_stratum", [])
-    existing_strates = getattr(releve, "t_vegetation_stratum", [])
-    releve.t_vegetation_stratum = insert_or_update_vegetation_strata(existing_strates, new_strates)
+    # Check if Phyto module is installed and called from "phyto" context
+    is_phyto_installed = "PHYTO" in current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"]
+    is_phyto_context = module_code and module_code.lower() == "phyto"
+    if is_phyto_installed and is_phyto_context:
+        new_strates = properties_dict.get("t_vegetation_stratum", [])
+        existing_strates = getattr(releve, "t_vegetation_stratum", [])
+        releve.t_vegetation_stratum = insert_or_update_vegetation_strata(
+            existing_strates, new_strates
+        )
 
     if not dataset.acquisition_framework.opened:
         raise Conflict("Cannot create or update a releve on a closed acquisition framework.")
