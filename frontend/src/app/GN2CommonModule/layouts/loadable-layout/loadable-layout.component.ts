@@ -8,4 +8,6 @@ import { Component, Input } from '@angular/core';
 export class LoadableLayoutComponent {
   @Input()
   isLoading: boolean = false;
+  @Input()
+  message: string = null;
 }

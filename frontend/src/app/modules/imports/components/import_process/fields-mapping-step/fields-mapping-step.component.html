@@ -6,11 +6,15 @@
     <div class="card-header">
       <h5 class="card-title">{{ 'Import.FieldMapping.Title' | translate }}</h5>
     </div>
-    <div class="card-body FieldmappingForm">
-      <pnx-mapping-selection></pnx-mapping-selection>
-      <ng-container *ngIf="isReady; else loadingBlock">
+    <gn-loadable-layout
+      [isLoading]="isLoading && importData"
+      style="padding: 1em"
+      [message]="loadingMessage"
+    >
+      <div class="card-body FieldmappingForm">
+        <pnx-mapping-selection></pnx-mapping-selection>
+
         <mat-tab-group
-          [(selectedIndex)]="selectedIndex"
           animationDuration="0ms"
           class="entities-tab"
         >
@@ -78,7 +82,7 @@
             {{ unmapped }}{{ isLast ? '.' : ',' }}
           </span>
         </mat-expansion-panel>
-        <div class="d-flex flex-row justify-content-between">
+        <div class="d-flex flex-row justify-content-between mt-3">
           <button
             mat-raised-button
             (click)="onPreviousStep()"
@@ -99,8 +103,8 @@
             <mat-icon>navigate_next</mat-icon>
           </button>
         </div>
-      </ng-container>
-    </div>
+      </div>
+    </gn-loadable-layout>
   </div>
 
   <ng-template
@@ -223,14 +227,3 @@
     ></import-action-modal>
   </ng-template>
 </div>
-
-<ng-template #loadingBlock>
-  <div class="row justify-content-center">
-    <mat-spinner
-      class="upload-spinner"
-      [color]="color"
-      [diameter]="150"
-      [strokeWidth]="12"
-    ></mat-spinner>
-  </div>
-</ng-template>

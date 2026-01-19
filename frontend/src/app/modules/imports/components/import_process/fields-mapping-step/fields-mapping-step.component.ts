@@ -28,7 +28,8 @@ export class FieldsMappingStepComponent implements OnInit {
   @ViewChild('editModal') editModal: TemplateRef<any>;
   public targetFields;
   public sourceFields: Array<string> = [];
-  public isReady: boolean = false;
+  public isLoading: boolean = true;
+  public loadingMessage: string = 'Chargement des champs...';
   public cruved: Cruved;
   public importData: Import;
   public updateAvailable: boolean = false;
@@ -61,7 +62,7 @@ export class FieldsMappingStepComponent implements OnInit {
         if (this.importData.fieldmapping) {
           this._fieldMappingService.fillFormWithMapping(this.importData.fieldmapping, false);
         }
-        this.isReady = true;
+        this.isLoading = false;
       });
     this.step = this._route.snapshot.data.step;
     this.cruved = toBooleanCruved(this._cruvedStore.cruved.IMPORT.module_objects.MAPPING.cruved);
@@ -150,6 +151,8 @@ export class FieldsMappingStepComponent implements OnInit {
   }
 
   onSaveData(loadImport = false): Observable<Import> {
+    this.isLoading = true;
+    this.loadingMessage = 'Préparation des données';
     const formgroup = this._fieldMappingService.mappingFormGroup;
     const mappingSelected = this._fieldMappingService.currentFieldMapping !== null;
     return of(this.importProcessService.getImportData()).pipe(
@@ -171,6 +174,7 @@ export class FieldsMappingStepComponent implements OnInit {
         }
       }),
       concatMap((importData: Import) => {
+        this.isLoading = false;
         if (
           (mappingSelected || formgroup.dirty) &&
           !this._configService.IMPORT.ALLOW_VALUE_MAPPING
