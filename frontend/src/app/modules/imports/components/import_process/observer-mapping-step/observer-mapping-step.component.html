@@ -1,7 +1,27 @@
 <div class="container">
   <div class="card mb-3">
-    <div class="card-header">
+    <div class="card-header custom-card-header">
       <h5>{{ 'Import.ObserverMapping.Title' | translate }}</h5>
+      <div class="MappingBtn">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="resetMapping()"
+          matTooltip=""
+        >
+          <mat-icon>refresh</mat-icon>
+          <span>{{ 'Import.ObserverMapping.Actions.ResetMapping' | translate }}</span>
+        </button>
+        <button
+          mat-flat-button
+          color="warn"
+          (click)="clearMapping()"
+          matTooltip=""
+        >
+          {{ 'Import.ObserverMapping.Actions.EmptyMapping' | translate }}
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </div>
     <gn-loadable-layout
       [isLoading]="isLoading"
