@@ -14,44 +14,26 @@ export class SyntheseQueryParamsService {
     private _dataFormService: DataFormService
   ) {}
 
-  applyQueryParamsToFilters(params: ParamMap) {
-    // Apply only query params that match existing form controls
-    const patches = {};
-    for (const key of params.keys) {
-      if (!this._formService.searchForm.contains(key)) {
-        continue;
-      }
-      const values = params.getAll(key).filter((value) => value !== null && value !== '');
-      if (!values.length) {
-        continue;
-      }
-      patches[key] = this._parseQueryParamValue(key, values);
-    }
-
-    if (Object.keys(patches).length) {
-      this._formService.searchForm.patchValue(patches);
-    }
-  }
-
-  applyQueryParamsToAdvancedFilters(
-    params: ParamMap,
-    processedDefaultFilters: Record<string, any>
-  ) {
+  processQueryParamsFilters(params: ParamMap): Record<string, any> {
+    const processedFilters: Record<string, any> = {};
     // Apply query params for advanced fields that are not part of the base form
     const advancedKeys = new Set(
       this._formService.dynamycFormDef.map((formDef) => formDef.attribut_name)
     );
 
     for (const key of params.keys) {
-      if (!advancedKeys.has(key)) {
+      const isStandardFilter = this._formService.searchForm.contains(key);
+      const isAdvancedFilter = advancedKeys.has(key);
+      if (!isStandardFilter && !isAdvancedFilter) {
         continue;
       }
       const values = params.getAll(key).filter((value) => value !== null && value !== '');
       if (!values.length) {
         continue;
       }
-      processedDefaultFilters[key] = this._parseQueryParamValue(key, values);
+      processedFilters[key] = this._parseQueryParamValue(key, values);
     }
+    return processedFilters;
   }
 
   getCdRefsFromQueryParams(params: ParamMap): Array<number> {

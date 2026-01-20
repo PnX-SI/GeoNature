@@ -88,18 +88,43 @@ export class SyntheseComponent implements OnInit {
     this.formService
       .processDefaultFilters(this.config.SYNTHESE.DEFAULT_FILTERS)
       .subscribe((processedDefaultFilters) => {
-        this.queryParamsService.applyQueryParamsToAdvancedFilters(params, processedDefaultFilters);
-        this.formService.searchForm.reset(processedDefaultFilters);
-        this.formService.processedDefaultFilters = processedDefaultFilters;
-        this.queryParamsService.applyQueryParamsToFilters(params);
-        this.queryParamsService.applyQueryParamsTaxons(params, (taxons: Array<Taxon>, cdRefs) => {
-          this._cdRefFromQueryParams = cdRefs;
-          this.formService.selectedtaxonFromComponent = taxons;
-          this.changeDetector.detectChanges();
-        });
-        this.changeDetector.detectChanges();
+        const processedQueryParamsFilters = this.queryParamsService.processQueryParamsFilters(params);
+        const processedFilters = {
+          ...processedDefaultFilters,
+          ...processedQueryParamsFilters,
+        };
+        this.formService.searchForm.reset(processedFilters);
+        this.formService.processedFilters = processedFilters;
 
-        this.loadData();
+        // Build the URL from the merged form state after all query params are applied.
+        // The url must be updated after cd_ref hydration so the URL represents the actual form state.
+        const finalize = () => {
+          const newQueryParams = this.queryParamsService.buildQueryParams(
+            this.formService.formatParams()
+          );
+          if (Object.keys(newQueryParams).length) {
+            const urlTree = this.router.createUrlTree([], {
+              relativeTo: this.route,
+              queryParams: newQueryParams,
+            });
+            this.location.go(this.router.serializeUrl(urlTree));
+          }
+          this.changeDetector.detectChanges();
+          this.loadData();
+        };
+
+        // Hydrate taxon selections from cd_ref query params before finalizing the URL.
+        const { cdRefs, taxons$ } = this.queryParamsService.getTaxonsFromQueryParams(params);
+        if (cdRefs.length) {
+          taxons$.subscribe((taxons) => {
+            this._cdRefFromQueryParams = cdRefs;
+            this.formService.selectedtaxonFromComponent = taxons;
+            finalize();
+          });
+        } else {
+          this._cdRefFromQueryParams = [];
+          finalize();
+        }
       });
   }
 
