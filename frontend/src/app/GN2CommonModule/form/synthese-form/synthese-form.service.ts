@@ -141,7 +141,10 @@ export class SyntheseFormService {
   }
 
   getCurrentTaxon($event) {
-    this.selectedtaxonFromComponent.push($event.item);
+    const cdRef = $event?.item?.cd_ref;
+    if (!this.selectedtaxonFromComponent.some((taxon) => taxon.cd_ref === cdRef)) {
+      this.selectedtaxonFromComponent.push($event.item);
+    }
     $event.preventDefault();
     this.searchForm.controls.cd_nom.reset();
   }

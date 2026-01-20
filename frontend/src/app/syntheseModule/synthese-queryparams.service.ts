@@ -37,10 +37,11 @@ export class SyntheseQueryParamsService {
   }
 
   getCdRefsFromQueryParams(params: ParamMap): Array<number> {
-    return params
+    const cdRefs = params
       .getAll('cd_ref')
       .map((value) => Number(value))
       .filter((value) => !isNaN(value));
+    return Array.from(new Set(cdRefs));
   }
 
   getTaxonsFromQueryParams(params: ParamMap): {
