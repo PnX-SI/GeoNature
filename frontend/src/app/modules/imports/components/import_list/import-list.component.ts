@@ -47,8 +47,6 @@ export class ImportListComponent implements OnInit {
   constructor(
     public _cruvedStore: CruvedStoreService,
     private _ds: ImportDataService,
-    private _router: Router,
-    private _commonService: CommonService,
     private _modalService: NgbModal,
     private importProcessService: ImportProcessService,
     public _csvExport: CsvExportService,

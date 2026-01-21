@@ -3,7 +3,6 @@ from flask import url_for
 from sqlalchemy import func, select
 from sqlalchemy.sql import and_
 
-from geonature.tests.fixtures import users
 from geonature.core.users.models import VUserslistForallMenu
 from geonature.utils.env import db
 

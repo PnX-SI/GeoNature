@@ -5,4 +5,4 @@ export const VIEWPORTS = [
   },
 ];
 
-export const TIMEOUT_WAIT = 500;
+export const TIMEOUT_WAIT = 1000;

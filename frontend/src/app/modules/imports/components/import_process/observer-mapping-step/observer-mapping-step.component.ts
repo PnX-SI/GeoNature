@@ -27,6 +27,7 @@ export class ObserverMappingStepComponent implements OnInit {
   public observerMappingForm = new FormGroup({});
   public importData: Import;
   public observerMapping: Record<string, any> = {};
+  public originalObserverMapping: Record<string, any> = {};
   public observers: Observable<Array<any>>;
   public isLoading: boolean = true;
 
@@ -46,6 +47,7 @@ export class ObserverMappingStepComponent implements OnInit {
     this.importData = this.importProcessService.getImportData();
     if (Object.keys(this.importData.observermapping).length != 0) {
       this.observerMapping = this.importData.observermapping;
+      this.originalObserverMapping = _.cloneDeep(this.importData.observermapping);
       this._dataFormService.getObservers().subscribe((observers) => {
         this.observers = of(observers);
         this.populateObserverMappingFormGroup();
@@ -56,6 +58,7 @@ export class ObserverMappingStepComponent implements OnInit {
         .generateUserMapping(this.importData.id_import)
         .subscribe((mapping) => {
           this.observerMapping = mapping;
+          this.originalObserverMapping = _.cloneDeep(mapping);
           if (Object.keys(this.observerMapping).length === 0) {
             this._commonService.translateToaster(
               'info',
@@ -98,6 +101,8 @@ export class ObserverMappingStepComponent implements OnInit {
   }
 
   resetMapping() {
+    // Restore original mapping and repopulate the form
+    this.observerMapping = _.cloneDeep(this.originalObserverMapping);
     this.populateObserverMappingFormGroup();
   }
   isNextStepAvailable(): boolean {

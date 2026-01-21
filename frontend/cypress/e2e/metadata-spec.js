@@ -20,7 +20,7 @@ describe('Testing metadata', () => {
     description: 'description de mon jdd',
   };
 
-  const newOrganism = {
+  let newOrganism = {
     name: 'Ma structure 2',
     email: 'mastructure2@example.com',
   };
@@ -67,7 +67,7 @@ describe('Testing metadata', () => {
   it('should create a new "cadre d\'acquisition"', () => {
     // cy.visit('/#/metadata');
     // Generate a new organism based on newOrganism but with a slight modification
-    const newOrganismWithInt = {
+    newOrganism = {
       name: newOrganism.name + (Math.floor(Math.random() * 100) + 1).toString(),
       email: newOrganism.email,
     };
@@ -76,7 +76,7 @@ describe('Testing metadata', () => {
 
     // Create a new organism, later used for the creation of the new JDD
     cy.get('[data-qa="pnx-organism-create-button"]').click();
-    cy.get('[data-qa="pnx-organism-form-dialog-name"]').type(newOrganismWithInt.name);
+    cy.get('[data-qa="pnx-organism-form-dialog-name"]').type(newOrganism.name);
     //    Verify that the organism 'ma structure test' is displayed in the list of similar organisms
     cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] li').should('have.length.least', 1);
     const similarOrganismDiv = cy
@@ -94,7 +94,7 @@ describe('Testing metadata', () => {
     similarOrganismAddress.should('be.visible');
     //    Complete the form with an email, and submit
     cy.get('mat-dialog-content').scrollTo('bottom');
-    cy.get('[data-qa="pnx-organism-form-dialog-email"]').type(newOrganismWithInt.email, {
+    cy.get('[data-qa="pnx-organism-form-dialog-email"]').type(newOrganism.email, {
       force: true,
     });
     cy.get('[data-qa="organism-dialog-save"]').click();
