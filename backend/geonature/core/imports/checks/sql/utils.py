@@ -8,6 +8,7 @@ from geonature.utils.env import db
 from geonature.core.imports.models import (
     ImportUserError,
     ImportUserErrorType,
+    TImports,
 )
 from geonature.core.imports.utils import generated_fields
 import pandas as pd
@@ -152,7 +153,18 @@ def report_erroneous_rows(
     db.session.execute(stmt)
 
 
-def print_transient_table(imprt, columns=None):
+def print_transient_table(imprt: TImports, columns=None):
+    """
+    Print the content of the transient table for a given import.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to print.
+    columns : list, optional
+        The columns to print. If None, all columns are printed.
+
+    """
     trans_table = imprt.destination.get_transient_table()
     res = db.session.execute(
         sa.select(*([trans_table.c[col] for col in columns] if columns else [trans_table]))

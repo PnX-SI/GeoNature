@@ -323,6 +323,7 @@ describe('Import - Field mapping step', () => {
       restartTheProcess(USER_ADMIN);
       selectMapping(DEFAULT_FIELDMAPPINGS[1]);
       fillTheFormRaw();
+      cy.selectDataset();
       checkThatMappingCanBeSaved();
     });
     it('Should not be able to modifiy the default mapping if user does not got rights', () => {

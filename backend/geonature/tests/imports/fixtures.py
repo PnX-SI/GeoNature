@@ -1,12 +1,18 @@
-import pytest
-from flask import g
-import sqlalchemy as sa
-from pathlib import Path
 import json
-from geonature.core.gn_commons.models import TModules
-from geonature.utils.env import db
+from pathlib import Path
 
-from geonature.core.imports.models import BibFields, Destination, FieldMapping
+import pytest
+import sqlalchemy as sa
+from flask import g, url_for
+from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets
+from geonature.core.imports.models import BibFields, Destination, FieldMapping, TImports
+from geonature.tests.utils import set_logged_user, unset_logged_user
+from geonature.utils.env import db
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
+from apptax.taxonomie.models import BibListes, Taxref
+from sqlalchemy.orm import joinedload
+
 
 tests_path = Path(__file__).parent
 
@@ -85,15 +91,6 @@ def all_modules_destination(list_all_module_dest_code):
 # ######################################################################################
 # Fixtures -- datasets
 # ######################################################################################
-
-from geonature.tests.utils import set_logged_user, unset_logged_user
-from flask import g, url_for
-from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
-from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
-from geonature.core.imports.models import (
-    TImports,
-    BibFields,
-)
 
 
 @pytest.fixture()
@@ -265,7 +262,6 @@ def fieldmapping(
 # ######################################################################################
 # Fixtures -- contentmapping
 # ######################################################################################
-from sqlalchemy.orm import joinedload
 
 
 @pytest.fixture(scope="class")
@@ -329,7 +325,6 @@ def contentmapping(add_in_contentmapping, import_destination, contentmapping_pre
 # ######################################################################################
 # Fixtures -- override config value
 # ######################################################################################
-from apptax.taxonomie.models import BibListes, Taxref
 
 
 @pytest.fixture()
@@ -385,16 +380,16 @@ def change_id_list_conf(monkeypatch, sample_taxhub_list):
 # ######################################################################################
 
 
-from flask import g, url_for, current_app
-from werkzeug.datastructures import Headers
-from geonature.core.imports.utils import insert_import_data_in_transient_table
+from flask import current_app, g, url_for
 from geonature.core.imports.models import (
-    TImports,
-    FieldMapping,
-    ContentMapping,
     BibFields,
+    ContentMapping,
+    FieldMapping,
+    TImports,
 )
+from geonature.core.imports.utils import insert_import_data_in_transient_table
 from ref_geo.models import LAreas
+from werkzeug.datastructures import Headers
 
 
 @pytest.fixture()

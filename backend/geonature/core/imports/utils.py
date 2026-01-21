@@ -228,6 +228,7 @@ def preprocess_value(
         col_value = dataframe[source_field]
 
         if constant_value is not None:
+            ## Dealing with special case of observers field
             if field.type_field == "observers":
                 transient_table = imprt.destination.get_transient_table()
                 type_dest_col = transient_table.c[field.dest_column].type

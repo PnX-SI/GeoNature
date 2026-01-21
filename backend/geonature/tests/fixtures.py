@@ -339,7 +339,6 @@ def users(app):
         return user
 
     users = {}
-
     organisme = Organisme(nom_organisme="test imports")
     db.session.add(organisme)
 

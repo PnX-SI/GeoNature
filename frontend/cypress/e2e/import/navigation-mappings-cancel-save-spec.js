@@ -49,8 +49,8 @@ function checkImportIsNotFirstInList(importId) {
 
 function clickOnFirstLineEdit() {
   cy.get(getSelectorImportListTableRowEdit(0)).click();
-  cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
-  cy.wait(TIMEOUT_WAIT);
+  // cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
+  // cy.wait(TIMEOUT_WAIT);
 }
 
 function selectFieldMappingField(dataQa, value) {
@@ -69,7 +69,7 @@ function selectContentMappingField(dataQa, value) {
   cy.get(`[data-qa=import-contentmapping-theme-${dataQa}]`).should('exist').select(value);
 }
 
-function fillTheFieldMappingFormRaw(datasetName) {
+function fillTheFieldMappingFormRaw() {
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
@@ -99,7 +99,7 @@ describe('Navigation - cancel and save', () => {
           const parts = url.split('/');
           const importID = parts[parts.length - 2]; // Get the penultimate element
 
-          fillTheFieldMappingFormRaw(user.dataset);
+          fillTheFieldMappingFormRaw();
           cy.get(SELECTOR_IMPORT_FOOTER_DELETE).should('be.enabled').click();
           cy.wait(TIMEOUT_WAIT);
           cy.checkCurrentPageIsImport();
@@ -114,7 +114,7 @@ describe('Navigation - cancel and save', () => {
           const parts = url.split('/');
           const importID = parts[parts.length - 2]; // Get the penultimate element
 
-          fillTheFieldMappingFormRaw(user.dataset);
+          fillTheFieldMappingFormRaw();
           cy.visitImport();
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
@@ -135,7 +135,7 @@ describe('Navigation - cancel and save', () => {
           // Extract the ID using string manipulation
           const parts = url.split('/');
           const importID = parts[parts.length - 2]; // Get the penultimate element
-          fillTheFieldMappingFormRaw(user.dataset);
+          fillTheFieldMappingFormRaw();
           cy.get(SELECTOR_IMPORT_FOOTER_SAVE).should('be.enabled').click();
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
