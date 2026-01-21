@@ -59,6 +59,8 @@ DEFAULT_COUNT_VALUE = 1
 
 ALLOW_VALUE_MAPPING = True
 
+DEFAULT_OBSERVER_FIELD_SEPARATORS = [";", ",", "|"]
+
 
 # If VALUE MAPPING is not allowed, you must specify the DEFAULT_VALUE_MAPPING_ID
 DEFAULT_VALUE_MAPPING_ID = 3
@@ -119,3 +121,7 @@ class ImportConfigSchema(Schema):
     )
     INSERT_BATCH_SIZE = fields.Integer(load_default=1000)
     CSV_FIELD_SIZE_LIMIT = fields.Integer(load_default=1000000)
+
+    OBSERVER_FIELD_SEPARATORS = fields.List(
+        fields.String(), load_default=DEFAULT_OBSERVER_FIELD_SEPARATORS
+    )

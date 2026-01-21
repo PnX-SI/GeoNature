@@ -1,6 +1,7 @@
 from geonature.core.imports.models import BibFields, Entity, TImports
 
 from bokeh.embed.standalone import StandaloneEmbedJson
+from geonature.utils.config import config
 from geonature.utils.env import db
 from pypnusershub.db.models import User
 import sqlalchemy as sa
@@ -254,12 +255,15 @@ class ImportActions:
             .where(TImports.id_import == imprt.id_import)
             .cte("observer_mapping")
         )
-
+        separators = config["IMPORT"]["OBSERVER_FIELD_SEPARATORS"]
+        field_separators_as_regexp = rf"[{''.join(separators)}]+"
         model_observers = (
             select(
                 gettattr_(model, model_id_column).label(model_id_column),
                 func.trim(
-                    func.unnest(func.string_to_array(gettattr_(model, model_user_column), ","))
+                    func.regexp_split_to_table(
+                        gettattr_(model, model_user_column), field_separators_as_regexp
+                    )
                 ).label("observer_string"),
             )
             .where(gettattr_(model, "id_import") == imprt.id_import)
