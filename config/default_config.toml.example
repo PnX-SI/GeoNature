@@ -732,3 +732,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # Pour désactiver le mapping des utilisateurs
     ALLOW_USER_MAPPING = true
+
+    # Permet de définir les séparateurs à utiliser pour séparer les observateurs dans le fichiers
+    OBSERVER_FIELD_SEPARATORS = [',',';','|']

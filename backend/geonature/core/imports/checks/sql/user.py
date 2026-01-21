@@ -43,13 +43,17 @@ def user_matching(imprt: TImports, field: BibFields):
     column_transient = transient_table.c[field.source_column]
     if isinstance(column_transient.type, JSONB):
         column_transient = sa.cast(column_transient, db.Unicode)
-
-    select_ = sa.func.string_to_array(
-        column_transient, config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"][0]
-    )
+    separators = config["IMPORT"]["OBSERVER_FIELD_SEPARATORS"]
+    field_separators_as_regexp = rf"[{''.join(separators)}]+"
 
     cte_user_to_match = (
-        sa.select(sa.func.distinct(sa.func.trim(sa.func.unnest(select_))).label("user_to_match"))
+        sa.select(
+            sa.func.distinct(
+                sa.func.trim(
+                    sa.func.regexp_split_to_table(column_transient, field_separators_as_regexp)
+                )
+            ).label("user_to_match")
+        )
         .where(column_transient != None)
         .where(transient_table.c.id_import == imprt.id_import)
         .cte("cte_user_to_match")
