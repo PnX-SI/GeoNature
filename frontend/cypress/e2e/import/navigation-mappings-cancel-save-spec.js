@@ -1,9 +1,10 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
 import {
   getSelectorImportListTableRowEdit,
   getSelectorImportListTableRowId,
+  SELECTOR_IMPORT_CONTENTMAPPING_FORM,
   SELECTOR_IMPORT_CONTENTMAPPING_STEP_BUTTON,
   SELECTOR_IMPORT_FIELDMAPPING_CD_NOM,
   SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN,
@@ -12,6 +13,7 @@ import {
   SELECTOR_IMPORT_FIELDMAPPING_WKT,
   SELECTOR_IMPORT_FOOTER_DELETE,
   SELECTOR_IMPORT_FOOTER_SAVE,
+  SELECTOR_IMPORT_LIST_TABLE,
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -30,12 +32,12 @@ function runTheProcessUntilFieldMapping(user) {
 function runTheProcessUntilContentMapping(user) {
   runTheProcessUntilFieldMapping(user);
   cy.configureImportFieldMapping();
-  cy.wait(500);
+  cy.get(SELECTOR_IMPORT_CONTENTMAPPING_FORM).should('exist');
 }
 
 function goToContentMappingPage() {
   cy.get(SELECTOR_IMPORT_CONTENTMAPPING_STEP_BUTTON).click();
-  cy.wait(500);
+  cy.get(SELECTOR_IMPORT_CONTENTMAPPING_FORM).should('exist');
 }
 
 function checkImportIsFirstInList(importId) {
@@ -48,7 +50,7 @@ function checkImportIsNotFirstInList(importId) {
 
 function clickOnFirstLineEdit() {
   cy.get(getSelectorImportListTableRowEdit(0)).click();
-  cy.wait(TIMEOUT_WAIT);
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN).should('exist');
 }
 
 function selectFieldMappingField(dataQa, value) {
@@ -99,8 +101,8 @@ describe('Navigation - cancel and save', () => {
 
           fillTheFieldMappingFormRaw();
           cy.get(SELECTOR_IMPORT_FOOTER_DELETE).should('be.enabled').click();
-          cy.wait(TIMEOUT_WAIT);
           cy.checkCurrentPageIsImport();
+          cy.get(SELECTOR_IMPORT_LIST_TABLE).should('be.visible');
           checkImportIsNotFirstInList(importID);
         });
       });
@@ -114,6 +116,7 @@ describe('Navigation - cancel and save', () => {
 
           fillTheFieldMappingFormRaw();
           cy.visitImport();
+          cy.get(SELECTOR_IMPORT_LIST_TABLE).should('be.visible');
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
           cy.url().then((url) => {
@@ -135,6 +138,7 @@ describe('Navigation - cancel and save', () => {
           const importID = parts[parts.length - 2]; // Get the penultimate element
           fillTheFieldMappingFormRaw();
           cy.get(SELECTOR_IMPORT_FOOTER_SAVE).should('be.enabled').click();
+          cy.get(SELECTOR_IMPORT_LIST_TABLE).should('be.visible');
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
 
@@ -155,8 +159,8 @@ describe('Navigation - cancel and save', () => {
           const parts = url.split('/');
           const importID = parts[parts.length - 2]; // Get the penultimate element
           cy.get(SELECTOR_IMPORT_FOOTER_DELETE).should('be.enabled').click();
-          cy.wait(TIMEOUT_WAIT);
           cy.checkCurrentPageIsImport();
+          cy.get(SELECTOR_IMPORT_LIST_TABLE).should('be.visible');
           checkImportIsNotFirstInList(importID);
         });
       });
@@ -171,7 +175,7 @@ describe('Navigation - cancel and save', () => {
           const importID = parts[parts.length - 2]; // Get the penultimate element
           selectContentMappingField(FIELD, VALUE);
           cy.visitImport();
-          cy.wait(500);
+          cy.get(SELECTOR_IMPORT_LIST_TABLE).should('be.visible');
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
           goToContentMappingPage();
@@ -187,7 +191,6 @@ describe('Navigation - cancel and save', () => {
             cy.deleteCurrentImport();
           });
         });
-        cy.wait(500);
       });
 
       it('contentmapping - save', () => {
@@ -203,7 +206,7 @@ describe('Navigation - cancel and save', () => {
           selectContentMappingField(FIELD, VALUE);
 
           cy.get(SELECTOR_IMPORT_FOOTER_SAVE).should('be.enabled').click();
-          cy.wait(TIMEOUT_WAIT);
+          cy.get(SELECTOR_IMPORT_LIST_TABLE).should('be.visible');
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
           goToContentMappingPage();

@@ -1,5 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
 import { DEFAULT_FIELDMAPPINGS } from './constants/mappings';
 import { v4 as uuidv4 } from 'uuid';
@@ -57,13 +57,21 @@ function selectMapping(mappingName) {
     });
 }
 
+function ensureMappingSelected(mappingName) {
+  selectMapping(mappingName);
+  cy.get(SELECTOR_IMPORT_FIELDMAPPING_SELECTION)
+    .find('.ng-value-label')
+    .should('contain.text', mappingName);
+}
+
 function deleteCurrentMapping() {
   // Delete the mapping
+  cy.intercept('DELETE', '**/fieldmappings/**').as('deleteFieldMapping');
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE).should('exist').click();
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_BUTTON_DELETE_OK, { force: true })
     .should('be.enabled')
     .click();
-  cy.wait(TIMEOUT_WAIT);
+  cy.wait('@deleteFieldMapping');
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -108,9 +116,10 @@ function fillTheForm() {
     .should('exist')
     .clear()
     .type(FIELDMAPPING_TEST_NAME);
+  cy.intercept('POST', '**/fieldmappings/**').as('createFieldMapping');
   cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL_NEW_OK, { force: true }).should('be.enabled').click();
 
-  cy.wait(TIMEOUT_WAIT);
+  cy.wait('@createFieldMapping');
 }
 
 function runTheProcess(user) {
@@ -123,9 +132,8 @@ function runTheProcess(user) {
 }
 
 function restartTheProcess(user) {
-  cy.wait(TIMEOUT_WAIT);
   cy.deleteCurrentImport();
-  cy.wait(TIMEOUT_WAIT);
+  cy.get('[data-qa="import-list"]').should('exist');
   runTheProcess(user);
 }
 
@@ -187,9 +195,10 @@ describe('Import - Field mapping step', () => {
         .should('exist')
         .clear()
         .type(FIELDMAPPING_TEST_RENAME);
+      cy.intercept('POST', '**/fieldmappings/**').as('renameFieldMapping');
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_SELECTION_RENAME_OK).should('be.enabled').click();
 
-      cy.wait(TIMEOUT_WAIT);
+      cy.wait('@renameFieldMapping');
 
       // Reload the page
       cy.reload();
@@ -218,15 +227,20 @@ describe('Import - Field mapping step', () => {
       restartTheProcess(USER_ADMIN);
 
       // Check the import list, and select expected mapping
-      selectMapping(FIELDMAPPING_TEST_NAME);
+      ensureMappingSelected(FIELDMAPPING_TEST_NAME);
 
       // Change a mapping value and save
       selectField(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN, 'date_fin');
+      cy.get(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN)
+        .find('.ng-value-label')
+        .should('contain.text', 'date_fin');
 
+      cy.intercept('POST', '**/fieldmappings/**').as('updateFieldMapping');
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_VALIDATE).should('exist').should('be.enabled').click();
+      cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL).should('be.visible');
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_MODAL_OK, { force: true }).should('be.enabled').click();
 
-      cy.wait(TIMEOUT_WAIT);
+      cy.wait('@updateFieldMapping');
 
       // restart the process
       restartTheProcess(USER_ADMIN);
@@ -241,7 +255,6 @@ describe('Import - Field mapping step', () => {
 
       // delete current mapping
       deleteCurrentMapping();
-      cy.wait(TIMEOUT_WAIT);
     });
 
     it('Should not be able to access fieldmapping owned by a different user', () => {
@@ -249,7 +262,6 @@ describe('Import - Field mapping step', () => {
       fillTheForm();
 
       // Switch user
-      cy.wait(TIMEOUT_WAIT);
       cy.deleteCurrentImport();
       cy.geonatureLogout();
       cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);

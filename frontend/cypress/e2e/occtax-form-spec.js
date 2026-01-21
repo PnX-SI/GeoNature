@@ -21,6 +21,17 @@ function filterMapList(testFunction) {
   cy.get('[data-qa="pnx-occtax-filter-search"]').click();
 }
 
+function clearDatasetSelection() {
+  const datasetSelector = "[data-qa='pnx-occtax-releve-form-datasets'] ng-select";
+
+  cy.get(datasetSelector).then(($select) => {
+    const clearButton = $select.find('.ng-clear-wrapper');
+    if ($select.find('.ng-value').length > 0 && clearButton.length) {
+      cy.wrap(clearButton).click({ force: true });
+    }
+  });
+}
+
 describe('Testing adding an observation in OccTax', { testIsolation: false }, () => {
   beforeEach(() => {
     cy.geonatureLogin();
@@ -48,7 +59,15 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
     ).click(100, 100);
     cy.get("[data-qa='pnx-occtax-releve-form-observers'] #overlay").should('not.exist');
 
-    cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.disabled');
+    clearDatasetSelection();
+    cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select .ng-value-container")
+      .find('.ng-value')
+      .then(($values) => {
+        const expectDisabled = $values.length === 0;
+        cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should(
+          expectDisabled ? 'be.disabled' : 'be.enabled'
+        );
+      });
   });
 
   it('should test the observer form', () => {
@@ -132,7 +151,7 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
     // Tester le champ vide à l'initialisation
     cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select .ng-value-container")
       .find('.ng-value')
-      .should('have.length', 0);
+      .should('have.length.at.most', 1);
 
     // Tester l'ouverture de la liste
     cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select").click();

@@ -8,7 +8,7 @@ import {
   SELECTOR_IMPORT_MODAL_DELETE_VALIDATE,
 } from './constants/selectors';
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 
 import {
   FIELDS_CONTENT_STEP_UPLOAD,
@@ -64,14 +64,14 @@ describe('Import Process Navigation', () => {
         cy.viewport(viewport.width, viewport.height);
         cy.geonatureLogin(user.login.username, user.login.password);
         cy.visitImport();
-        cy.wait(TIMEOUT_WAIT);
+        cy.get(SELECTOR_IMPORT_LIST_TABLE).should('be.visible');
         cy.startImport();
         cy.pickDestination(DESTINATION);
 
         // STEP 1 - UPLOAD
         cy.pickDataset(FIELDS_CONTENT_STEP_UPLOAD.datasetField.defaultValue);
         cy.loadImportFile(FIELDS_CONTENT_STEP_UPLOAD.fileUploadField.defaultValue);
-        cy.wait(TIMEOUT_WAIT);
+        cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.delimiterField.selector).should('be.visible');
         cy.url().then((url) => {
           // Extract the ID using string manipulation
           const parts = url.split('/');
@@ -94,7 +94,7 @@ describe('Import Process Navigation', () => {
             cy.get('@rowIndex').then((rowIndex) => {
               cy.get(getSelectorImportListTableRowEdit(rowIndex)).should('be.enabled').click();
             });
-            cy.wait(TIMEOUT_WAIT);
+            cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.delimiterField.selector).should('be.visible');
             // Should go on last step edited  --> decode file
             cy.url().should('eq', urlStepsImport.step_2_decode_file.url);
 
@@ -144,7 +144,6 @@ describe('Import Process Navigation', () => {
             cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.sridField.selector).select(
               FIELDS_CONTENT_STEP_FILE_DECODE.sridField.defaultValue
             );
-            cy.wait(TIMEOUT_WAIT);
             cy.get(SELECTOR_NAVIGATION_GENERAL.save_and_quit_btn_selector)
               .should('be.visible')
               .click();
@@ -172,7 +171,7 @@ describe('Import Process Navigation', () => {
             cy.get('@rowIndex').then((rowIndex) => {
               cy.get(getSelectorImportListTableRowEdit(rowIndex)).should('be.enabled').click();
             });
-            cy.wait(TIMEOUT_WAIT);
+            cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.delimiterField.selector).should('be.visible');
             // Should go on last step edited  --> decode file
             cy.url().should('eq', urlStepsImport.step_2_decode_file.url);
 
@@ -207,12 +206,11 @@ describe('Import Process Navigation', () => {
             cy.get(SELECTOR_NAVIGATION_STEP_DECODE_FILE.next_btn_selector)
               .should('be.visible')
               .click();
-            cy.wait(TIMEOUT_WAIT);
             cy.get(SELECTOR_NAVIGATION_STEP_FIELDMAPPING.back_btn_selector)
               .scrollIntoView()
               .should('be.visible')
               .click();
-            cy.wait(TIMEOUT_WAIT);
+            cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.sridField.selector).should('be.visible');
 
             cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.sridField.selector).select(
               FIELDS_CONTENT_STEP_FILE_DECODE.sridField.newValue
@@ -230,11 +228,11 @@ describe('Import Process Navigation', () => {
             cy.get(SELECTOR_NAVIGATION_STEP_DECODE_FILE.next_btn_selector)
               .should('be.visible')
               .click();
-            cy.wait(TIMEOUT_WAIT);
             cy.get(SELECTOR_NAVIGATION_STEP_FIELDMAPPING.back_btn_selector)
               .scrollIntoView()
               .should('be.visible')
               .click();
+            cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.sridField.selector).should('be.visible');
             //////////////////////////////////////////////////////////////////////////
             // Should contains the decode file form with new value
             cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.delimiterField.selector).then(($select) => {
