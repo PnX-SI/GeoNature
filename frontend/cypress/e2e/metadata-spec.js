@@ -66,24 +66,37 @@ describe('Testing metadata', () => {
   });
   it('should create a new "cadre d\'acquisition"', () => {
     // cy.visit('/#/metadata');
+    // Generate a new organism based on newOrganism but with a slight modification
+    const newOrganismWithInt = {
+      name: newOrganism.name + (Math.floor(Math.random() * 100) + 1).toString(),
+      email: newOrganism.email,
+    };
 
     cy.get('[data-qa="pnx-metadata-add-af"]').click();
 
     // Create a new organism, later used for the creation of the new JDD
     cy.get('[data-qa="pnx-organism-create-button"]').click();
-    cy.get('[data-qa="pnx-organism-form-dialog-name"]').type(newOrganism.name);
+    cy.get('[data-qa="pnx-organism-form-dialog-name"]').type(newOrganismWithInt.name);
     //    Verify that the organism 'ma structure test' is displayed in the list of similar organisms
     cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] li').should('have.length.least', 1);
-    const similarOrganismDiv = cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] span');
-    similarOrganismDiv.should('have.text', 'ma structure test');
+    const similarOrganismDiv = cy
+      .get('[data-qa="pnx-organism-form-dialog-similar-list"] span')
+      .filter((index, el) => {
+        return Cypress.$(el).text() === 'ma structure test';
+      });
     similarOrganismDiv.click();
-    const similarOrganismAddress = cy.get(
-      '[data-qa="pnx-organism-form-dialog-similar-org-address"]'
-    );
-    similarOrganismAddress.should('have.text', ' Rue des bois ');
+    const similarOrganismAddress = cy
+      .get('[data-qa="pnx-organism-form-dialog-similar-org-address"]')
+      .filter((index, el) => {
+        return Cypress.$(el).text() === ' Rue des bois ';
+      });
+
+    similarOrganismAddress.should('be.visible');
     //    Complete the form with an email, and submit
     cy.get('mat-dialog-content').scrollTo('bottom');
-    cy.get('[data-qa="pnx-organism-form-dialog-email"]').type(newOrganism.email, { force: true });
+    cy.get('[data-qa="pnx-organism-form-dialog-email"]').type(newOrganismWithInt.email, {
+      force: true,
+    });
     cy.get('[data-qa="organism-dialog-save"]').click();
 
     cy.get(ORGANISM_SELECT_FORM).click();
@@ -124,7 +137,7 @@ describe('Testing metadata', () => {
       .click()
       .type(newCadreAcq.startDate);
 
-    cy.get("[data-qa='pnx-dynamic-form-text-test_champs_additionnel']")
+    cy.get("[data-qa='field-text-test_champs_additionnel']")
       .click()
       .type(newCadreAcq.testAdditionalFieldValue);
 
