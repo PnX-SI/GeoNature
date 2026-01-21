@@ -61,8 +61,8 @@ paramètres seront automatiquement détectés par GeoNature. Une fois, les champ
     .. image:: images/import/import_steps/04_02_mapping_cols_validate.png
 
     .. note::
-        Depuis GeoNature 2.17.0, il est possible de définir une valeur fixe pour un champ. Pour cela, il suffit de cliquer sur le bouton à droite du formulaire et de renseigner la valeur souhaitée.
-        En fonction du type de données associé au champ (observateur, date, nombre, etc.), un formulaire spécifique sera affiché.
+        Depuis GeoNature 2.17.0, il est possible de définir une valeur fixe pour un champ plutôt que d'y faire correspondre une colonne du fichier source. Pour cela, il suffit de cliquer sur le bouton à droite du formulaire et de renseigner la valeur fixée souhaitée, qui sera alors appliquée à toutes les données importées.
+        En fonction du type de données associé au champ (observateur, date, nombre, taxon, jeu de données, nomenclature, etc.), un formulaire adapté sera affiché.
 
         .. image:: images/import/import_steps/04_03_mapping_fix_value.png
 
@@ -80,7 +80,7 @@ paramètres seront automatiquement détectés par GeoNature. Une fois, les champ
     source avec les noms complets des utilisateurs de la base de données. Si aucun utilisateur n'a été trouvé, plusieurs solutions sont envisageables :
      
     - Créer un nouvel utilisateur et revenir sur l'import pour faire la mise en correspondance.
-    - Ne pas faire de correspondance, dans ce cas, cet observateur sera uniquement indiqué dans le champ de l'entité (pour une observation dans la Synthèse, ``gn_synthese.synthese.observers``).
+    - Ne pas faire de correspondance, dans ce cas, cet observateur sera uniquement indiqué dans le champ texte de l'entité (pour une observation dans la Synthèse, ``gn_synthese.synthese.observers``).
     - L'utilisateur existe mais le processus de mise en correspondance automatique n'a pas fonctionné. Dans ce cas, sélectionner l'utilisateur ciblé.
 
     .. image:: images/import/import_steps/user_mapping_01.png
