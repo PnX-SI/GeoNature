@@ -517,19 +517,6 @@ def get_acquisition_frameworks():
 
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
         Load(TAcquisitionFramework).raiseload("*"),
-        # for permission checks:
-        joinedload(TAcquisitionFramework.creator),
-        joinedload(TAcquisitionFramework.cor_af_actor).options(
-            joinedload(CorAcquisitionFrameworkActor.role),
-            joinedload(CorAcquisitionFrameworkActor.organism),
-        ),
-        joinedload(TAcquisitionFramework.datasets).options(
-            joinedload(TDatasets.digitizer),
-            joinedload(TDatasets.cor_dataset_actor).options(
-                joinedload(CorDatasetActor.role),
-                joinedload(CorDatasetActor.organism),
-            ),
-        ),
     )
     if params.get("datasets", default=False, type=int):
         only.extend(
