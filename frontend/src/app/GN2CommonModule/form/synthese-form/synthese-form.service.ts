@@ -293,6 +293,9 @@ export class SyntheseFormService {
       mergeMap(() => {
         const defaultFilters = {};
         for (const [key, value] of Object.entries(filters)) {
+          if (key === 'my_observations') {
+            continue;
+          }
           // on ne prend pas en compte les filtres à 'null'
           if ([null, undefined, []].includes(value as any)) {
             continue;

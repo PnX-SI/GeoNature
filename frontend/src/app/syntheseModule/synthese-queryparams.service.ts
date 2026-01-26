@@ -6,12 +6,14 @@ import { catchError, map } from 'rxjs/operators';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Injectable()
 export class SyntheseQueryParamsService {
   constructor(
     private _formService: SyntheseFormService,
-    private _dataFormService: DataFormService
+    private _dataFormService: DataFormService,
+    private _authService: AuthService
   ) {}
 
   processQueryParamsFilters(params: ParamMap): Record<string, any> {
@@ -31,6 +33,14 @@ export class SyntheseQueryParamsService {
       if (!values.length) {
         continue;
       }
+      if (key === 'observers_list') {
+        const hydratedObservers = this._hydrateObserversFromIds(values);
+        if (hydratedObservers.length) {
+          processedFilters[key] = hydratedObservers;
+        }
+        continue;
+      }
+
       processedFilters[key] = this._parseQueryParamValue(key, values);
     }
     return processedFilters;
@@ -94,6 +104,18 @@ export class SyntheseQueryParamsService {
       }
 
       if (Array.isArray(value)) {
+        if (key === 'observers_list') {
+          const currentUser = this._authService.currentUser || this._authService.getCurrentUser();
+          if (currentUser?.id_role && value.length === 1) {
+            const observerId =
+              value[0] && typeof value[0] === 'object' ? value[0].id_role : value[0];
+            if (String(observerId) === String(currentUser.id_role)) {
+              queryParams[key] = [currentUser.id_role];
+            }
+          }
+          return;
+        }
+
         // Keep only primitives so the router can expand arrays into repeated query params.
         const sanitizedValues = value.filter((entry) => this._isQueryParamPrimitive(entry));
         if (sanitizedValues.length) {
@@ -165,6 +187,29 @@ export class SyntheseQueryParamsService {
     }
 
     return trimmedValue;
+  }
+
+  private _hydrateObserversFromIds(values: Array<string>) {
+    const observerIds = values
+      .map((value) => this._coerceParamValue(value))
+      .filter((value) => typeof value === 'number') as Array<number>;
+    if (!observerIds.length) {
+      return [];
+    }
+    const currentUser = this._authService.currentUser || this._authService.getCurrentUser();
+    if (currentUser?.id_role && observerIds.includes(Number(currentUser.id_role))) {
+      return [
+        {
+          id_role: currentUser.id_role,
+          nom_complet:
+            currentUser.nom_complet ||
+            `${currentUser.nom_role ?? ''} ${currentUser.prenom_role ?? ''}`.trim(),
+          nom_role: currentUser.nom_role,
+          prenom_role: currentUser.prenom_role,
+        },
+      ];
+    }
+    return [];
   }
 
   private _isQueryParamPrimitive(value: unknown): value is string | number | boolean {

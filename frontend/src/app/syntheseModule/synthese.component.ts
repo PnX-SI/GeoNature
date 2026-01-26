@@ -16,6 +16,7 @@ import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { SyntheseQueryParamsService } from './synthese-queryparams.service';
+import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Component({
   selector: 'pnx-synthese',
@@ -47,7 +48,8 @@ export class SyntheseComponent implements OnInit {
     private changeDetector: ChangeDetectorRef,
     private router: Router,
     private location: Location,
-    private queryParamsService: SyntheseQueryParamsService
+    private queryParamsService: SyntheseQueryParamsService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -88,6 +90,21 @@ export class SyntheseComponent implements OnInit {
     this.formService
       .processDefaultFilters(this.config.SYNTHESE.DEFAULT_FILTERS)
       .subscribe((processedDefaultFilters) => {
+        if (this.config.SYNTHESE?.DEFAULT_FILTERS?.my_observations) {
+          const currentUser = this.authService.currentUser;
+          if (currentUser?.id_role) {
+            processedDefaultFilters.observers_list = [
+              {
+                id_role: currentUser.id_role,
+                nom_complet:
+                  currentUser.nom_complet ||
+                  `${currentUser.nom_role ?? ''} ${currentUser.prenom_role ?? ''}`.trim(),
+                nom_role: currentUser.nom_role,
+                prenom_role: currentUser.prenom_role,
+              },
+            ];
+          }
+        }
         const processedQueryParamsFilters =
           this.queryParamsService.processQueryParamsFilters(params);
         const processedFilters = {
