@@ -88,7 +88,8 @@ export class SyntheseComponent implements OnInit {
     this.formService
       .processDefaultFilters(this.config.SYNTHESE.DEFAULT_FILTERS)
       .subscribe((processedDefaultFilters) => {
-        const processedQueryParamsFilters = this.queryParamsService.processQueryParamsFilters(params);
+        const processedQueryParamsFilters =
+          this.queryParamsService.processQueryParamsFilters(params);
         const processedFilters = {
           ...processedDefaultFilters,
           ...processedQueryParamsFilters,
