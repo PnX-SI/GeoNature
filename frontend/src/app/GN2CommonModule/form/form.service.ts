@@ -272,8 +272,8 @@ export class FormService {
         // Ne pas valider si le champ est vide (laissons required s'en charger)
         return null;
       }
-      // Based on https://datatracker.ietf.org/doc/html/draft-ietf-uuidrev-rfc4122bis#name-uuid-version-4
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      // Based on https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.1
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
       return uuidRegex.test(value) ? null : { invalidUuid: true };
     };
