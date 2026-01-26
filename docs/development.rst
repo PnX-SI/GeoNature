@@ -337,14 +337,14 @@ On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’u
         obj_list = MyModel.query.filter_by_scope(2).all()
 
 
-Serialisation des modèles avec Marshmallow
+Sérialisation des modèles avec Marshmallow
 ******************************************
 
-La bibliothèque `Marshmallow <https://marshmallow.readthedocs.io/en/stable/>`_ fournit des outils de sérialisation et desérialisation.
+La bibliothèque `Marshmallow <https://marshmallow.readthedocs.io/en/stable/>`_ fournit des outils de sérialisation et désérialisation.
 
 Elle est intégrée à GeoNature par la bibliothèque `Flask-Marshmallow <https://flask-marshmallow.readthedocs.io/en/latest/>`_ qui fournit l’objet ``ma`` à importer comme ceci : ``from geonature.utils.env import ma``.
 
-Cette bibliothèque ajoute notablement une méthode ``jsonify`` aux schémas.
+Cette bibliothèque ajoute notament une méthode ``jsonify`` aux schémas.
 
 Les schémas Marshmallow peuvent être facilement créés à partir des modèles SQLAlchemy grâce à la bibliothèque `Marshmallow-SQLAlchemy <https://marshmallow-sqlalchemy.readthedocs.io/en/latest/>`_.
 
@@ -361,7 +361,7 @@ Les schémas Marshmallow peuvent être facilement créés à partir des modèles
 Gestion des relationships
 """""""""""""""""""""""""
 
-L’option ``include_fk=True`` concerne les champs de type ``ForeignKey``, mais pas les ``relationships`` en elles-mêmes. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs ``Nested`` à notre schéma :
+L’option ``include_fk=True`` concerne les champs de type ``ForeignKey``, mais pas les ``relationships`` elles-mêmes. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs ``Nested`` à notre schéma :
 
 .. code:: python
 
@@ -575,7 +575,7 @@ Le préfixe ``+`` permet de spécifier que l’on souhaite rajouter le cruved au
 Création d’un objet
 """""""""""""""""""
 
-L’utilisation de ``load_instance=True`` permet, lors de l’appelle de la fonction ``load``, de directement récupérer un objet pouvant être ajouté à la session SQLAlchemy.
+L’utilisation de ``load_instance=True`` permet, lors de l’appel de la fonction ``load``, de directement récupérer un objet pouvant être ajouté à la session SQLAlchemy.
 
 .. code:: python
 
@@ -643,7 +643,7 @@ Exemple d’une relation vers plusieurs utilisateurs :
 One-to-Many
 ```````````
 
-Exemple d’une relation vers des modèles enfants, qui sont rattaché à un unique parent :
+Exemple d’une relation vers des modèles enfants rattachés à un unique parent :
 
 .. code:: python
 
@@ -694,7 +694,7 @@ Exemple d’une relation vers des modèles enfants, qui sont rattaché à un uni
 
 .. warning:: Prendre garde à ajouter une validation sur le modèle parent de l’appartenance des objets Child, sans quoi il devient possible de rattacher à un parent des objets Child appartenant à un autre parent !
 
-.. warning:: Le frontend doit systématiquement listé l’ensemble des childs, sans quoi ceux-ci seront supprimé.
+.. warning:: Le frontend doit systématiquement lister l’ensemble des childs, sans quoi ceux-ci seront supprimés.
 
 
 Serialisation des modèles avec le décorateur ``@serializable``
