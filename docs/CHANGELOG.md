@@ -12,11 +12,35 @@
 ### 🚀 Nouveautés
 
 - [Général] Ajout d'un trigger sur les mises à jour de ref_geo.l_areas permettant la mise à jour automatique de gn_synthese.cor_area_synthese (#3814).
-- [Import] Ajout des destinations Monitoring et ses sous-modules, permettant de faire des imports dans les sous-modules de suivi du module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457, 
+- [Import] Ajout des destinations Monitoring et ses sous-modules, permettant de faire des imports dans les sous-modules de suivi du module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457,
 - [Import] Possibilité de choisir des valeurs constantes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
 - [Import] Possibilité de faire des imports multi-JDD et déplacement de la selection du JDD à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
 - [Import] Ajout d'une étape de mapping des observateurs. Seulement activé sur les imports Monitoring pour le moment ? Et Occhab ? En attendant de clarifier le fonctionnement côté Synthèse (entre le champs texte des observateurs et la table de correspondance..) ? (#3775 par @jacquesfize)
 - [Synthèse] Fiche observateur accessible à chaque utilisateur depuis son compte (#2982 par @edelclaux)
+- [Occhab] Correction de l'utilisation du CRUVED dans les boutons de occhab (#3852 par @christophe-ramet)
+- [Permission] Amélioration de la recherche de zonages dans les permissions (par @christophe-ramet et @jacquesfize)
+- [Synthèse] Ajout de la fiche Observateur (#3768 par @edelclaux). Cette fonctionnalité permet d'afficher une synthèse des observations, des médias et des taxons observés que l'utilisateur a observé. Cette fonctionnalité est activable/désactivable à l'aide de la variable de configuration `ENABLE_OBSERVER_SHEETS`. Chaque onglet est désactivable à l'aide de `ENABLE_TAB_TAXA` et `ENABLE_TAB_MEDIA`.
+- [Validation] Amélioration des performances. Dans le bloc `Dernières Validations` de la page d'accueil, cette dernière affiche maintenant seulement les dernières validations et non les derniers taxons dont le statut de validation a changé. (par @jacquesfize)
+- [Authentification] Un email de confirmation est envoyé lors du changement de mail et de mot de passe (#3851 par @christophe-ramet)
+- [Métadonnées] Ajout de la possibilité de créer un organisme directement depuis le formulaire de création/modification de métadonnées (cadre d'acquisition et jeu de données) (#3803 par @VincentCauchois)
+- [Métadonnées] Ajout de la mécanique de champs additionnels dans les formulaires de cadre d'acquisition (#3744 par @VincentCauchois)
+- [Import] Correction de la prise en compte des géométries dans l'import de fichiers CSV si le SRID de l'instance GN était en 2146 (#3848 par @Pierre-Narcisi)
+- [Métadonnées] Ajout de la possibilité de préremplir le formulaire de création de cadre d'acquisition avec des valeurs prises dans l'url (#3781 par par @VincentCauchois)
+- [Media form] Ajout de la possibilité d'annuler l'ajout d'un média (#3829) (par @Pierre-Narcisi)
+
+### 🐛 Corrections
+
+- [Synthèse] La fenêtre ouverte lors d'un click sur un média fonctionne qu'importe le nombre de médias associées à une observation ({#3840} par @jacquesfize)
+- [Monitoring] Correction du bouton de géolocalisation ({#3689} par @Pierre-Narcisi et @jacquesfize)
+- [Occhab] Prise en compte dans le calcul des permissions de l'`id_digitizer` ({#3855} par @christophe-ramet)
+- [Dev] Correction de l'affichage d'erreur du dynamic form de type checkbox ({#3867} par @jacquesfize)
+- [Général] Amélioration de l'affichage des messages dans le formulaire de zonages (#3870 par @edelclaux)
+- [Synthèse] Tri chronologique des messages dans l'onglet Discussions de la fiche d'observation (#3873 par @PaulLabruyere)
+- [Métadonnées] Acceptation de différents types d'UUID dans le formulaire d'édition du cadre d'acquisition (#3882 par @christophe-ramet)
+- [Authentification] Correction des messages d'erreurs (#3790 par @christophe-ramet)
+- [Général] Correction de l'affichage des modules dans le menu latéral. Si un administrateur n'avait pas dans un module (par ex. Validation), le module était quand même affiché (jacques et pierre
+- [Général] Correction des icônes manquantes (#3761 par @jacquesfize)
+- [Général] Les médias ne sont supprimés que si le formulaire est validé (#3706 par @christophe-ramet)
 
 ## 2.16.4 (2025-11-17)
 
@@ -940,7 +964,6 @@ Si vous mettez à jour GeoNature :
 - Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire.
   Voir rubrique "5. Configurer les filtres des statuts de protection et des listes rouges" de https://docs.geonature.fr/admin-manual.html#module-synthese
 - Vous pouvez mettre à jour vos règles de sensibilité si vous utilisez TaxRef versions 14 ou 15 :
-
   - Désinstallez les règles fournies par Alembic :
     ```bash
     source ~/geonature/backend/venv/bin/activate
@@ -1157,7 +1180,6 @@ GeoNature :
 ### ⚠️ Notes de version
 
 - **Avant** de mettre à jour GeoNature :
-
   - Mettre à jour les versions de TaxHub (1.10.4) et UsersHub
     (2.3.1), sans la partie migration de la base de données avec
     Alembic (elle sera faite lors de la mise à jour de GeoNature)
@@ -1175,7 +1197,6 @@ GeoNature :
   - Supprimer les paramètres de configuration qui ont disparu s'ils
     sont présents dans votre fichier de configuration
     `geonature_config.toml` :
-
     - `LOCAL_SRID`
     - `CRUVED_SEARCH_WITH_OBSERVER_AS_TXT`
     - `id_area_type_municipality`
@@ -1665,7 +1686,6 @@ dépendances et ses modules principaux est disponible](https://geonature.fr/docu
   anciennes régions (branche Alembic `ref_geo_fr_regions_1970`) --
   l'installation de ces référentiels est automatique avec
   l’installation des règles de sensibilité.
-
   - Si vous possédez déjà le référentiel, vous pouvez l'indiquer à
     Alembic :
 
@@ -1808,7 +1828,6 @@ passage à la version 3 de Marshmallow.
   les schémas `taxonomie` et `utilisateurs`)
 
 - Suppression de `supervisor` :
-
   - Stopper GeoNature : `sudo supervisorctl stop geonature2`
   - Supprimer le fichier de configuration supervisor de GeoNature :
     `sudo rm /etc/supervisor/conf.d/geonature-service.conf`
@@ -1820,7 +1839,6 @@ passage à la version 3 de Marshmallow.
   (<http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application>)
 
 - Passage à `systemd` :
-
   - Copier le fichier `install/assets/geonature.service` dans
     `/etc/systemd/system/`
   - Éditer `/etc/systemd/system/geonature.service` et remplacer les
@@ -1858,7 +1876,6 @@ passage à la version 3 de Marshmallow.
   configuration : `sudo systemctl reload apache2`
 
 - Passage à Alembic :
-
   - S'assurer d'avoir une base de données de GeoNature en version
     2.7.5
   - Si vous avez UsersHub installé, ajoutez dans votre configuration
@@ -2449,7 +2466,7 @@ Si vous mettez à jour GeoNature :
   - exécuter le script SQL `data/medias/restore_medias.sql` qui va
     recréer les médias supprimés dans la table `gn_commons.t_medias`
   - exécuter le script BASH `data/medias/restore_medias.sh`
-    (`` bash /home/`whoami`/geonature/data/medias/restore_medias.sh ``
+    (``bash /home/`whoami`/geonature/data/medias/restore_medias.sh``
     en `sudo` si besoin) qui va renommer des fichiers supprimés en
     supprimant le préfixe `deleted_`
 
