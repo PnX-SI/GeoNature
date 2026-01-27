@@ -300,8 +300,7 @@
       "MarineAreaCoverage": "Couverture du territoire marin",
       "TermsReference": "Cadre de référence",
       "TitleAF": "Titre du cadre d'acquisition",
-      "IDAF": "Identifiant du cadre d'acquisition",
-      "CollectionProcess": "Processus de collecte"
+      "IDAF": "Identifiant du cadre d'acquisition"
     },
     "DatasetForm": {
       "Actions": {

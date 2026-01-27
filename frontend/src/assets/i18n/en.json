@@ -300,8 +300,7 @@
       "MarineAreaCoverage": "Marine territory coverage",
       "TermsReference": "Reference framework",
       "TitleAF": "Title of the acquisition framework",
-      "IDAF": "ID of the acquisition framework",
-      "CollectionProcess": "Collection process"
+      "IDAF": "ID of the acquisition framework"
     },
     "DatasetForm": {
       "Actions": {
