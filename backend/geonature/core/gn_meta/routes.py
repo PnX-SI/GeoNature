@@ -130,7 +130,7 @@ def get_datasets():
     # detect mobile app to enable retro-compatibility hacks
     user_agent = request.headers.get("User-Agent")
     mobile_app = user_agent and user_agent.split("/")[0].lower() == "okhttp"
-    dataset_schema.context["mobile_app"] = mobile_app
+    dataset_schema.mobile_app = mobile_app
     datasets = db.session.scalars(query).unique().all()
     return dataset_schema.jsonify(datasets, many=True)
 

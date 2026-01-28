@@ -17,8 +17,7 @@ from shapely.testing import assert_geometries_equal
 from shapely.geometry import Point
 from marshmallow import EXCLUDE, fields, Schema
 
-from utils_flask_sqla_geo.schema import FeatureSchema, GeometrySchema as GeoJSONSchema
-
+from utils_flask_sqla_geo.schema import FeatureSchema, FeatureSchema as GeoJSONSchema
 
 from geonature.utils.env import db
 from geonature.utils.config import config
