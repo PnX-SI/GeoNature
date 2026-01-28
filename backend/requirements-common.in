@@ -19,7 +19,7 @@ importlib_metadata==4.13.0;python_version<"3.10"
 importlib_metadata;python_version>"3.10"
 jsonschema
 lxml
-marshmallow<3.90.0
+marshmallow
 marshmallow-sqlalchemy
 pandas  # imports
 pillow
