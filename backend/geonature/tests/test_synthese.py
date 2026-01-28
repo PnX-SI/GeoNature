@@ -16,7 +16,8 @@ from geoalchemy2.shape import to_shape, from_shape
 from shapely.testing import assert_geometries_equal
 from shapely.geometry import Point
 from marshmallow import EXCLUDE, fields, Schema
-from marshmallow_geojson import FeatureSchema, GeoJSONSchema
+
+from utils_flask_sqla_geo.schema import FeatureSchema, GeometrySchema as GeoJSONSchema
 
 
 from geonature.utils.env import db
