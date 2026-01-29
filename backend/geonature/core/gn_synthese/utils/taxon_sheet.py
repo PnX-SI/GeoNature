@@ -32,7 +32,7 @@ class TaxonSheet:
                 TaxrefTree.path.op("<@")(
                     select(func.array_agg(TaxrefTree.path))
                     .where(TaxrefTree.cd_nom.in_(list_cd_nom))
-                    .subquery()
+                    .scalar_subquery()
                 )
             )
             .cte()
