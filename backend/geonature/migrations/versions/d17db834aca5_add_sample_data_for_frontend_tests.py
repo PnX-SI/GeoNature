@@ -28,7 +28,6 @@ branch_labels = ("cypress-samples-test",)
 
 _depends_on = [
     "1f223c509a80",  # geonature@1f223c509a80 - "add additional_fields support for acquisition frameworks"
-    "a81f74d0a518",  # import-samples@a81f74d0a518 - "insert_import_sample_data"
 ]
 
 # To prevent bug with verification of `depends_on` migrations associated with modules that are not installed
@@ -37,6 +36,8 @@ if is_module_installed("OCCHAB"):
     _depends_on.append("21f661247023")  # occhab-samples@2984569d5df6 - "insert occhab sample data"
 if is_module_installed("OCCTAX"):
     _depends_on.append("2a0ab7644e1c")  # occtax-samples-test@2a0ab7644e1c - "occtax sample test"
+if is_module_installed("OCCHAB") and is_module_installed("OCCTAX"):
+    _depends_on.append("a81f74d0a518")  # import-samples@a81f74d0a518 - "insert_import_sample_data"
 
 depends_on = tuple(_depends_on)
 
@@ -51,7 +52,10 @@ def upgrade():
         logger.warning(
             "⚠️ OCCTAX module is not installed, thus the upgrade of `d17db834aca5, add sample data for frontend tests` will be performed without upgrading the `occtax-samples-test` branch."
         )
-
+    if not is_module_installed("OCCHAB") and not is_module_installed("OCCTAX"):
+        logger.warning(
+            "⚠️ OCCTAX and OCCHAB modules are not installed, thus the upgrade of `a81f74d0a518, add sample data for frontend tests` will be performed without upgrading the `import-samples-test` branch."
+        )
     # Create a new additional field for test
     #   named "test_champs_additionnel"
     op.execute(
