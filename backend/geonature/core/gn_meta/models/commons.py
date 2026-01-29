@@ -33,7 +33,7 @@ class MetadataFilterSchema(ma.Schema):
     search = ma.fields.String()
     is_parent = ma.fields.Boolean(allow_none=True)
 
-    @ma.post_load(pass_many=False)
+    @ma.post_load(pass_collection=False)
     def convert_date(self, data, **kwargs):
         if "date" in data:
             date = data["date"]

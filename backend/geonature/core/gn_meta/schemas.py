@@ -68,7 +68,11 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
 
-    @post_dump(pass_many=False, pass_original=True)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.mobile_app = kwargs.get("mobile_app", False)
+
+    @post_dump(pass_collection=False, pass_original=True)
     def module_input(self, item, original, many, **kwargs):
         if "modules" in item:
             for i, module in enumerate(original.modules):
@@ -91,9 +95,9 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         return item
 
     # retro-compatibility with mobile app
-    @post_dump(pass_many=True, pass_original=True)
+    @post_dump(pass_collection=True, pass_original=True)
     def mobile_app_compat(self, data, original, many, **kwargs):
-        if self.context.get("mobile_app"):
+        if self.mobile_app:
             if many:
                 for ds, orig_ds in zip(data, original):
                     ds["meta_create_date"] = str(orig_ds.meta_create_date)

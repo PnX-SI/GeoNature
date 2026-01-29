@@ -6,7 +6,7 @@ import sqlalchemy as sa
 from marshmallow import ValidationError
 
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
-from utils_flask_sqla_geo.utils import rows_to_geojson
+from utils_flask_sqla_geo.utilsgeometry import rows_to_geojson
 
 from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import Synthese
