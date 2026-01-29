@@ -23,10 +23,8 @@ def upgrade():
     for column_name in varchar_column_to_extend:
         op.execute(
             f"""
-            update pg_attribute 
-            set atttypmod = 516
-            WHERE attrelid = 'gn_imports.bib_fields'::regclass
-            AND attname = '{column_name}';
+            ALTER TABLE gn_imports.bib_fields
+            ALTER COLUMN {column_name} TYPE varchar(512);
             """
         )
 
@@ -35,9 +33,7 @@ def downgrade():
     for column_name in varchar_column_to_extend:
         op.execute(
             f"""
-            update pg_attribute 
-            set atttypmod = 100
-            WHERE attrelid = 'gn_imports.bib_fields'::regclass
-            AND attname = '{column_name}';
+            ALTER TABLE gn_imports.bib_fields
+            ALTER COLUMN {column_name} TYPE varchar(96);
             """
         )
