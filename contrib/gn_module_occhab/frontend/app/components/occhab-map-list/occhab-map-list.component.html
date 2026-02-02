@@ -257,18 +257,17 @@
           </button>
         </div>
         <div class="col-auto">
-          <ng-container *ngIf="userCruved?.E != '0'">
-            <a
-              id="download-btn"
-              mat-raised-button
-              color="primary"
-              class="btn-action uppercase"
-              (click)="openModal()"
-            >
-              {{ 'Actions.Download' | translate }}
-              <mat-icon>file_download</mat-icon>
-            </a>
-          </ng-container>
+          <button
+            *ngIf="userCruved?.E != '0'"
+            id="download-btn"
+            mat-raised-button
+            color="primary"
+            class="btn-action uppercase"
+            (click)="openModal()"
+          >
+            {{ 'Actions.Download' | translate }}
+            <mat-icon>file_download</mat-icon>
+          </button>
         </div>
       </div>
     </div>
