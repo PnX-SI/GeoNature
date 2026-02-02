@@ -628,7 +628,7 @@ ngb-modal-backdrop {
 
 // To avoid unreadable tooltips when the text is too long
 .mat-mdc-tooltip .mdc-tooltip__surface {
-  max-width: 250px !important;
+  max-width: 30vw !important;
   white-space: normal !important;
   text-align: left;
 }
