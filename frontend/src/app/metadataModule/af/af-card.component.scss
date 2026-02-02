@@ -98,7 +98,6 @@ div.c {
   margin-left: 5px;
 }
 
-
 .statistic-card {
   display: flex;
   flex-direction: row;
@@ -111,7 +110,7 @@ div.c {
     height: 60px;
   }
 
-  .number-div{
+  .number-div {
     flex-grow: 1;
     justify-content: end;
     display: flex;
@@ -120,7 +119,7 @@ div.c {
     font-size: 1.5rem;
     color: white;
     background-color: #888;
-    border-radius:50%;
+    border-radius: 50%;
     width: 2.2rem;
     height: 2.2rem;
     display: flex;
