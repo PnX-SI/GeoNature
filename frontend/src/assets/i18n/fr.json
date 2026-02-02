@@ -75,7 +75,7 @@
     "MyObserverSheet": "Ma fiche observateur",
     "EmailChangeTitle": "Changement d'adresse mail",
     "EmailChangeDescription": "La modification de votre adresse email nécessite une validation. Un lien de confirmation sera envoyé à votre nouvelle adresse email et le changement d'adresse sera pris en compte après avoir cliqué sur le lien reçu.",
-        "EmailChangeValidationTitle": "Validation du changement d'adresse mail",
+    "EmailChangeValidationTitle": "Validation du changement d'adresse mail",
     "EmailChangeConfirmationTitle": "Confirmer le changement d'adresse e-mail",
     "EmailChangeConfirmationText": "Votre nouvelle adresse mail sera :",
     "CurrentEmail": "Adresse email actuelle",
@@ -99,6 +99,9 @@
   "Observer": "Observateur",
   "Observers": "Observateurs",
   "Observers?": "Observateur(s)",
+  "Observation": "Observation",
+  "Observations": "Observations",
+  "Observations?": "Observation(s)",
   "Digitiser": "Créateur",
   "Digitisers": "Créateurs",
   "Digitisers?": "Créateur(s)",
@@ -119,7 +122,6 @@
   "Datasets": "Jeux de données",
   "AcquisitionFramework": "Cadre d'acquisition",
   "AcquisitionFrameworks": "Cadres d'acquisition",
-  "Observations": "Observations",
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Espèces",
@@ -393,11 +395,15 @@
       "AddComment": "Ajouter un commentaire",
       "DeleteComment": "Supprimer un commentaire",
       "ChangeValidStatus": "Modifier le statut de validation",
-      "RedirectToModule": "Voir dans le module de saisie"
+      "RedirectToModule": "Voir dans le module de saisie",
+      "PinObservation": "Épingler l'observation",
+      "UnpinObservation": "Supprimer l'épingle sur l'observation"
     },
     "Messages": {
       "Copied": "Copié dans le presse-papier !",
-      "DeleteSuccess": "Observation supprimée avec succès"
+      "DeleteSuccess": "Observation supprimée avec succès",
+      "Pinned": "Épinglé avec succès",
+      "Unpinned": "Épingle supprimé avec succès"
     },
     "Errors": {
       "PeriodCompleteness": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
