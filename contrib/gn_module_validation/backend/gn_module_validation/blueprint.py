@@ -91,7 +91,6 @@ def get_observations_last_validations(permissions):
 
     # Execute query
     query = query_statement.from_statement(selectable)
-
     return jsonify(query.as_geofeaturecollection(fields=fields))
 
 
