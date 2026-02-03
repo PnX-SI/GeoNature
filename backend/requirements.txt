@@ -20,7 +20,7 @@ attrs==25.4.0
     #   referencing
 authlib==1.6.6
     # via pypnusershub
-babel==2.17.0
+babel==2.18.0
     # via flask-babel
 backports-datetime-fromisoformat==2.0.3
     # via marshmallow
@@ -171,7 +171,7 @@ gunicorn==23.0.0
     #   taxhub
 idna==3.11
     # via requests
-importlib-metadata==4.13.0 ; python_version < "3.10"
+importlib-metadata==8.7.1
     # via
     #   -r requirements-common.in
     #   fiona
@@ -377,7 +377,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-wcwidth==0.5.2
+wcwidth==0.5.3
     # via prompt-toolkit
 weasyprint==66.0
     # via
