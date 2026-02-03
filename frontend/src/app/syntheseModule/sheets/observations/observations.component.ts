@@ -79,7 +79,9 @@ export class ObservationsComponent extends Loadable implements OnInit {
         this.clearObservationLayers();
         return;
       }
-      this.updateObservations();
+      if (filters.cd_ref || filters.cd_ref_parent) {
+        this.updateObservations();
+      }
     });
 
     this._os.yearIntervalBoundaries.subscribe((boundaries: YearInterval | null) => {
