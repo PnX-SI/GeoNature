@@ -188,8 +188,8 @@ export class ImportListComponent implements OnInit {
       let additionalMessage: string;
       additionalMessage =
         'Attention : Vous vous apprêtez à modifier un import terminé.' +
-        'Toute modification entraînera la suppression des données importées' +
-        " jusqu'à ce que vous terminiez l'import à nouveau";
+        ' Toute modification entraînera la suppression des données importées' +
+        " jusqu'à ce que vous terminiez l'import à nouveau.";
 
       this.editModalData = {
         title: 'Modification',
