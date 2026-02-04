@@ -54,7 +54,7 @@ def user_matching(imprt: TImports, field: BibFields):
                 )
             ).label("user_to_match")
         )
-        .where(sa.and_(column_transient != None, column_transient != ""))
+        .where(sa.and_(column_transient != None, sa.func.trim(column_transient) != ""))
         .where(transient_table.c.id_import == imprt.id_import)
         .cte("cte_user_to_match")
     )
