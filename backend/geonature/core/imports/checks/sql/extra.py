@@ -310,10 +310,10 @@ def generate_missing_uuid_for_id_origin(
     transient_table = imprt.destination.get_transient_table()
     cte_generated_uuid = (
         sa.select(
-            transient_table.c[id_origin_field.source_field].label("id_source"),
+            transient_table.c[id_origin_field.source_column].label("id_source"),
             func.uuid_generate_v4().label("uuid"),
         )
-        .group_by(transient_table.c[id_origin_field.source_field])
+        .group_by(transient_table.c[id_origin_field.source_column])
         .cte("cte_generated_uuid")
     )
 
@@ -321,13 +321,13 @@ def generate_missing_uuid_for_id_origin(
         update(transient_table)
         .values(
             {
-                transient_table.c[uuid_field.dest_field]: cte_generated_uuid.c.uuid,
+                transient_table.c[uuid_field.dest_column]: cte_generated_uuid.c.uuid,
             }
         )
         .where(
             transient_table.c.id_import == imprt.id_import,
-            transient_table.c[id_origin_field.source_field] == cte_generated_uuid.c.id_source,
-            transient_table.c[uuid_field.source_field].is_(None),
+            transient_table.c[id_origin_field.source_column] == cte_generated_uuid.c.id_source,
+            transient_table.c[uuid_field.source_column].is_(None),
         )
     )
     db.session.execute(stmt)
@@ -364,7 +364,10 @@ def generate_missing_uuid(
         .where(
             transient_table.c.id_import == imprt.id_import,
             transient_table.c[entity.validity_column].is_not(None),
-            transient_table.c[uuid_field.source_field].is_(None),
+            sa.and_(
+                transient_table.c[uuid_field.source_column].is_(None),
+                transient_table.c[uuid_field.dest_column].is_(None),
+            ),
         )
     )
     if whereclause is not None:
@@ -716,6 +719,9 @@ def generate_entity_id(
         sa.select(
             sa.distinct(transient_table.c[uuid_field_name]).label(uuid_field_name),
             sa.func.min(transient_table.c.line_no).label("line_no"),
+            sa.func.nextval(f"{schema_name}.{table_name}_{id_field_name}_seq").label(
+                "generated_id"
+            ),
         )
         .where(transient_table.c.id_import == imprt.id_import)
         .where(transient_table.c[entity.validity_column].is_(True))
@@ -725,10 +731,10 @@ def generate_entity_id(
 
     db.session.execute(
         sa.update(transient_table)
-        .where(transient_table.c.line_no == uuid_valid_cte.c.line_no)
-        .values(
-            {f"{id_field_name}": sa.func.nextval(f"{schema_name}.{table_name}_{id_field_name}_seq")}
-        )
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(transient_table.c[entity.validity_column].is_(True))
+        .where(transient_table.c[uuid_field_name] == uuid_valid_cte.c[uuid_field_name])
+        .values({f"{id_field_name}": uuid_valid_cte.c.generated_id})
     )
 
 
