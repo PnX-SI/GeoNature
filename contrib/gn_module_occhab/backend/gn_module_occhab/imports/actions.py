@@ -60,7 +60,6 @@ from geonature.core.imports.checks.sql import (
 )
 from geonature.core.imports.checks.sql.core import (
     check_mandatory_field,
-    update_rows_validity,
 )
 from .checks import (
     check_existing_station_permissions,
@@ -419,8 +418,6 @@ class OcchabImportActions(ImportActions):
             )
         else:
             check_mandatory_field(imprt, entity_station, fields["unique_id_sinp_station"])
-
-        update_rows_validity(imprt, entity_station)
 
     @staticmethod
     def check_transient_data(task, logger, imprt: TImports):
