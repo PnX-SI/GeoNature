@@ -12,6 +12,7 @@ from sqlalchemy.dialects.postgresql import UUID as UUIDType
 
 from geonature.core.imports.models import BibFields, Entity
 from .utils import dataframe_check
+from utils_flask_sqla.utils import strtobool
 
 
 def convert_to_datetime(value_raw):
@@ -443,7 +444,7 @@ def check_boolean_field(df, source_col, dest_col, required):
         - INVALID_BOOL: the value is not a boolean.
 
     """
-    df[dest_col] = df[source_col].apply(int).apply(bool)
+    df[dest_col] = df[source_col].apply(lambda x: strtobool(x) if pd.notnull(x) else x)
 
     if required:  # FIXME: to remove as done in check_required_value
         invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and pd.isnull(x))
