@@ -147,7 +147,10 @@ export class FieldMappingService {
     return this.getUnmappedFields().length;
   }
   getUnmappedFields() {
-    return this.sourceFields.filter((field) => !this.getMappedSourceColumn().includes(field));
+    if (!this.sourceFields) return [];
+    return this.sourceFields.filter(
+      (field) => !this.getMappedSourceColumn().some((item) => item?.column_src?.includes(field))
+    );
   }
 
   initForm() {
@@ -366,6 +369,7 @@ export class FieldMappingService {
    * @return {string[]} An array of unique target field values that are not null
    */
   getMappedTargetFields() {
+    if (!this.mappingFormGroup) return [];
     let controls = this.mappingFormGroup.controls;
     let controlsKeys = Object.keys(controls);
 
