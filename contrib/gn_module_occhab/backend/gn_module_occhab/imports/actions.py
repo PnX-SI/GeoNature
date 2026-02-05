@@ -441,7 +441,7 @@ class OcchabImportActions(ImportActions):
         # check_types overriding generated values during SQL checks.
         OcchabImportActions.check_station_dataframe(imprt)
         OcchabImportActions.check_habitat_dataframe(imprt)
-
+        task.update_state(state="PROGRESS", meta={"progress": 0.5})
         OcchabImportActions.check_station_sql(imprt)
         OcchabImportActions.check_habitat_sql(imprt)
 
