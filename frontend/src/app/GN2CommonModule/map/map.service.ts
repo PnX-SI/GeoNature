@@ -366,6 +366,8 @@ export class MapService {
     let cfgLayer = JSON.parse(JSON.stringify(this.config.MAPCONFIG.REF_LAYERS));
     let layerAdded = cfgLayer.filter((o) => o.code === overlayer.configId)[0];
 
+    // If overlay definition is not in mapconfig
+    if (!layerAdded) return;
     if (['wms'].includes(layerAdded.type) || overlayer.getLayers().length) return;
 
     // Load geojson file or WFS - application/json only
