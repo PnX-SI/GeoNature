@@ -552,21 +552,27 @@ class OcchabImportActions(ImportActions):
         #  - OBSERVER_AS_TXT is false, observers are stored in correspondance table
         #  - OBSERVER_AS_TXT is true, observers are stored in text field
         # user mapping is only possible when OBSERVER_AS_TXT is false
-        if not config["OCCHAB"]["OBSERVER_AS_TXT"]:
-            if config["IMPORT"]["ALLOW_USER_MAPPING"]:
-                ImportActions.bind_matched_observers(
-                    imprt,
-                    Station,
-                    "observers_txt",
-                    "id_station",
-                    CorStationObserver,
-                    ["id_station", "id_role"],
-                )
+        if OcchabImportActions.is_observer_mapping_allowed():
+            ImportActions.bind_matched_observers(
+                imprt,
+                Station,
+                "observers_txt",
+                "id_station",
+                CorStationObserver,
+                ["id_station", "id_role"],
+            )
             db.session.execute(
                 sa.update(Station)
                 .where(Station.id_import == imprt.id_import)
                 .values({Station.observers_txt: None})
             )
+
+    @staticmethod
+    def is_observer_mapping_enabled() -> bool:
+        # if observer mapping is enable in the GN configureation and OBSERVER_AS_TXT is false, user mapping is allowed
+        return (
+            not config["OCCHAB"]["OBSERVER_AS_TXT"]
+        ) and ImportActions.is_observer_mapping_enabled()
 
     @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:

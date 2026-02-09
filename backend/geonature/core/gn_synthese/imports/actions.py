@@ -415,7 +415,7 @@ class SyntheseImportActions(ImportActions):
             db.session.execute(insert_stmt)
             yield (batch + 1) / batch_count
 
-        if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+        if SyntheseImportActions.is_observer_mapping_enabled():
             ImportActions.bind_matched_observers(
                 imprt,
                 Synthese,
