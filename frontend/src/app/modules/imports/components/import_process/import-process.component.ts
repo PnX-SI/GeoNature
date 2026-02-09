@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Step } from '../../models/enums.model';
+import { ImportDataService } from '../../services/data.service';
+import { Observable, of } from '@librairies/rxjs';
 
 @Component({
   selector: 'import-process',
@@ -11,11 +13,14 @@ import { Step } from '../../models/enums.model';
 export class ImportProcessComponent {
   public step: Step;
   public stepComponent;
+  public isObserverMappingAllowed: Observable<boolean> = of(false);
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public importDataService: ImportDataService
   ) {
+    this.isObserverMappingAllowed = this.importDataService.isObserverMappingAllowed();
     this.router.routeReuseStrategy.shouldReuseRoute = (
       future: ActivatedRouteSnapshot,
       current: ActivatedRouteSnapshot
