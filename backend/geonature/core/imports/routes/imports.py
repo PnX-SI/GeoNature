@@ -1,55 +1,51 @@
 import codecs
-from io import BytesIO, StringIO, TextIOWrapper
 import csv
 import json
 import unicodedata
-
-from flask import request, current_app, jsonify, g, stream_with_context, send_file
-from flask_login import current_user
-from geonature.core.imports.checks.sql.user import user_matching
-from geonature.core.imports.schemas import ImportSchema
-from marshmallow import EXCLUDE
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, Gone, NotFound
+from io import BytesIO, StringIO, TextIOWrapper
 
 # url_quote was deprecated in werkzeug 3.0 https://stackoverflow.com/a/77222063/5807438
 from urllib.parse import quote as url_quote
-from sqlalchemy import or_, func, desc, select, delete
-from sqlalchemy.inspection import inspect
-from sqlalchemy.orm import joinedload, Load, load_only, undefer, contains_eager
-from sqlalchemy.orm.attributes import set_committed_value
-from sqlalchemy.sql.expression import collate, exists
 
-
-from geonature.utils.env import db
-from geonature.utils.config import config
-from geonature.utils.sentry import start_sentry_child
+from flask import current_app, g, jsonify, request, send_file, stream_with_context
+from flask_login import current_user, login_required
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
-
-from pypnnomenclature.models import TNomenclatures
-
+from geonature.core.imports.blueprint import blueprint
+from geonature.core.imports.checks.sql.user import user_matching
 from geonature.core.imports.models import (
+    BibFields,
+    ContentMapping,
     Destination,
     Entity,
     EntityField,
-    TImports,
-    ImportUserError,
-    BibFields,
     FieldMapping,
-    ContentMapping,
+    ImportUserError,
+    TImports,
 )
-from pypnusershub.db.models import User
-from geonature.core.imports.blueprint import blueprint
+from geonature.core.imports.schemas import ImportSchema
+from geonature.core.imports.tasks import do_import_checks, do_import_in_destination
 from geonature.core.imports.utils import (
     ImportStep,
+    clean_import,
     detect_encoding,
     detect_separator,
-    insert_import_data_in_transient_table,
-    get_file_size,
-    clean_import,
     generate_pdf_from_template,
+    get_file_size,
+    insert_import_data_in_transient_table,
 )
-from geonature.core.imports.tasks import do_import_checks, do_import_in_destination
+from geonature.utils.config import config
+from geonature.utils.env import db
+from geonature.utils.sentry import start_sentry_child
+from marshmallow import EXCLUDE
+from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
+from sqlalchemy import delete, desc, func, or_, select
+from sqlalchemy.inspection import inspect
+from sqlalchemy.orm import Load, contains_eager, joinedload, load_only, undefer
+from sqlalchemy.orm.attributes import set_committed_value
+from sqlalchemy.sql.expression import collate, exists
+from werkzeug.exceptions import BadRequest, Conflict, Forbidden, Gone, NotFound
 
 IMPORTS_PER_PAGE = 15
 
@@ -774,7 +770,7 @@ def generate_matching(scope, imprt: TImports):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
 
-    if config["IMPORT"]["ALLOW_USER_MAPPING"]:
+    if imprt.destination.actions.is_observer_mapping_enabled():
         fields = db.session.scalars(
             select(BibFields).where(
                 BibFields.name_field.in_(imprt.fieldmapping.keys()),
@@ -789,5 +785,14 @@ def generate_matching(scope, imprt: TImports):
             if mapping.get("column_src", None) is not None:
                 imprt.observermapping.update(user_matching(imprt, field))
         db.session.commit()
+    elif imprt.observermapping != None:
+        imprt.observermapping = None
+        db.session.commit()
 
     return jsonify(imprt.observermapping)
+
+
+@blueprint.route("/<destination>/is_observer_mapping_enabled", methods=["GET"])
+@login_required
+def is_observer_mapping_enabled(destination):
+    return jsonify({"allowed": destination.actions.is_observer_mapping_enabled()})
