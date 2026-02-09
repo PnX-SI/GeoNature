@@ -576,7 +576,10 @@ class SyntheseQuery:
             areas = []
             for colname, value in self.filters.items():
                 if colname.startswith("area"):
-                    areas.append(value if isinstance(value, int) else value[0])
+                    if isinstance(value, list):
+                        areas.extend(value)
+                    else:
+                        areas.append(value)
 
             if len(areas) > 0:
                 self.add_join(
