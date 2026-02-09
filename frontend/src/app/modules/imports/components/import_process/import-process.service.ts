@@ -3,20 +3,26 @@ import { Router } from '@angular/router';
 import { Step } from '../../models/enums.model';
 import { Import } from '../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
+import { ImportDataService } from '../../services/data.service';
 
 @Injectable()
 export class ImportProcessService {
   private importData: Import | null = null;
   public importDataUpdated: EventEmitter<any> = new EventEmitter();
+  private isObserverMappingAllowed: boolean = false;
 
   constructor(
     private router: Router,
-    public config: ConfigService
+    public config: ConfigService,
+    private _importDataService: ImportDataService
   ) {}
 
   setImportData(importData: Import) {
     this.importData = importData;
-    this.importDataUpdated.emit();
+    this._importDataService.isObserverMappingAllowed().subscribe((isAllowed) => {
+      this.isObserverMappingAllowed = isAllowed;
+      this.importDataUpdated.emit();
+    });
   }
 
   getImportData(): Import | null {
@@ -41,8 +47,8 @@ export class ImportProcessService {
     this.importData = null;
   }
 
-  getRouterLinkForStep(step: Step) {
-    if (this.importData == null) return null;
+  getRouterLinkForStep(step: Step): any[] | null {
+    if (this.importData == null || this.importData.destination == null) return null;
     let stepName = Step[step].toLowerCase();
     let importId: number = this.importData.id_import;
     let destinationCode: string = this.importData.destination.code;
@@ -50,16 +56,19 @@ export class ImportProcessService {
   }
 
   navigateToStep(step: Step) {
-    this.router.navigate(this.getRouterLinkForStep(step));
+    const link = this.getRouterLinkForStep(step);
+    if (link) {
+      this.router.navigate(link);
+    }
   }
 
   // If some steps must be skipped, implement it here
   getPreviousStep(step: Step): Step {
     let previousStep = step - 1;
-    if (!this.config.IMPORT.ALLOW_VALUE_MAPPING && previousStep === Step.ContentMapping) {
+    if (!this.isObserverMappingAllowed && previousStep === Step.ContentMapping) {
       previousStep -= 1;
     }
-    if (!this.config.IMPORT.ALLOW_USER_MAPPING && previousStep === Step.ObserverMapping) {
+    if (!this.isObserverMappingAllowed && previousStep === Step.ObserverMapping) {
       previousStep -= 1;
     }
     return previousStep;
@@ -68,10 +77,10 @@ export class ImportProcessService {
   // If some steps must be skipped, implement it here
   getNextStep(step: Step): Step {
     let nextStep = step + 1;
-    if (!this.config.IMPORT.ALLOW_VALUE_MAPPING && nextStep === Step.ContentMapping) {
+    if (!this.isObserverMappingAllowed && nextStep === Step.ContentMapping) {
       nextStep += 1;
     }
-    if (!this.config.IMPORT.ALLOW_USER_MAPPING && nextStep === Step.ObserverMapping) {
+    if (!this.isObserverMappingAllowed && nextStep === Step.ObserverMapping) {
       nextStep += 1;
     }
 

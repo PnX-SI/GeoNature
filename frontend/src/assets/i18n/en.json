@@ -551,6 +551,7 @@
         "InDatabase": "In GeoNature"
       },
       "Messages": {
+        "MappingNotAllowed": "The mapping of observers is not allowed for this import destination.",
         "NoObserverMapping": "No field linked to observers has been mapped (or the column in the file is empty)."
       }
     },
