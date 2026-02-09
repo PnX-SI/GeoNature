@@ -484,13 +484,14 @@ class OcchabImportActions(ImportActions):
             parent_line_no_field_name="station_line_no",
             parent_id_field_name="id_station",
         )
-
         for entity in entities.values():
 
             fields = {
                 ef.field.name_field: ef.field for ef in entity.fields if ef.field.dest_field != None
             }
             insert_fields = {fields["id_station"]}
+            literals = [sa.literal(imprt.id_import).label("id_import")]
+            names = ["id_import"]
             for field_name, mapping in imprt.fieldmapping.items():
                 if field_name not in fields:  # not a destination field
                     continue
@@ -509,6 +510,13 @@ class OcchabImportActions(ImportActions):
             if entity.code == "station":
                 insert_fields |= {fields["id_dataset"]}
                 insert_fields |= {fields["geom_4326"], fields["geom_local"]}
+                # If not given in the mapping
+                if not "id_digitiser" in imprt.fieldmapping:
+
+                    names += ["id_digitiser"]
+                    literals += [
+                        sa.literal(imprt.authors[0].id_role).label("id_digitiser"),
+                    ]
                 # TODO@TestImportsOcchab.test_import_valid_file: add testcase
                 if imprt.fieldmapping.get("altitudes_generate", False):
                     insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
@@ -520,10 +528,11 @@ class OcchabImportActions(ImportActions):
                 insert_fields -= {fields["unique_id_sinp_station"], fields["id_station_source"]}
                 # The field is either generated, or marked as mandatory
                 insert_fields |= {fields["unique_id_sinp_habitat"]}
-            names = ["id_import"] + [field.dest_field for field in insert_fields]
+            names += [field.dest_field for field in insert_fields]
+
             select_stmt = (
                 sa.select(
-                    sa.literal(imprt.id_import).label("id_import"),
+                    *literals,
                     *[transient_table.c[field.dest_field] for field in insert_fields],
                 )
                 .where(transient_table.c.id_import == imprt.id_import)
