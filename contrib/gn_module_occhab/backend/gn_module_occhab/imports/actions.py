@@ -552,7 +552,7 @@ class OcchabImportActions(ImportActions):
         #  - OBSERVER_AS_TXT is false, observers are stored in correspondance table
         #  - OBSERVER_AS_TXT is true, observers are stored in text field
         # user mapping is only possible when OBSERVER_AS_TXT is false
-        if OcchabImportActions.is_observer_mapping_allowed():
+        if OcchabImportActions.is_observer_mapping_enabled():
             ImportActions.bind_matched_observers(
                 imprt,
                 Station,
