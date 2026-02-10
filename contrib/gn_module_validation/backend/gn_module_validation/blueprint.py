@@ -84,14 +84,16 @@ def get_observations_last_validations(permissions):
     limit = params.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
 
     # Build query
-    selectable, query_statement, fields = build_synthese_query(params, permissions, limit)
+    selectable = build_synthese_query(params, permissions, limit)
+    print(selectable.compile(compile_kwargs={"literal_binds": True}))
 
-    # Apply sorting
-    selectable = apply_sorting(selectable, params)
-
-    # Execute query
-    query = query_statement.from_statement(selectable)
-    return jsonify(query.as_geofeaturecollection(fields=fields))
+    return jsonify(
+        rows_to_geojson(
+            db.session.execute(selectable).all(),
+            geom_field="the_geom_4326",
+            unnest=True,
+        )
+    )
 
 
 @blueprint.route("/", methods=["GET", "POST"])
