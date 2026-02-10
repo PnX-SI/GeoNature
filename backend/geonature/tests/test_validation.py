@@ -367,7 +367,10 @@ class TestValidationRoutes:
     def test_get_observations_with_fields_parameter(self, users, synthese_data):
         set_logged_user(self.client, users["user"])
         response = self.client.get(
-            url_for("validation.get_observations_last_validations", fields="nomenclature_blurring")
+            url_for(
+                "validation.get_observations_last_validations",
+                fields="nomenclature_blurring.cd_nomenclature",
+            )
         )
         assert response.status_code == 200
         assert "features" in response.json
