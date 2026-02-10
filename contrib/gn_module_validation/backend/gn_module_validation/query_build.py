@@ -10,7 +10,7 @@ from pypnusershub.db.models import User
 from geonature.utils.env import db
 from geonature.core.gn_meta.models.datasets import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TReport
-from geonature.core.gn_profiles.models import VConsistancyData
+from geonature.core.gn_profiles.models import VConsistencyData
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_commons.models.base import TValidations
 
@@ -32,10 +32,6 @@ def get_fields_from_params(params: Dict) -> Set[str]:
     Set[str]
         Set of field names to include in the response
 
-    Notes
-    -----
-    If the 'fields' parameter is not provided, default fields are used.
-    Profile fields are automatically added if profiles are enabled in the configuration.
     """
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
     fields_str = params.pop("fields", None)
@@ -70,9 +66,6 @@ def extract_profile_filters(params: Dict) -> Dict[str, Optional[bool]]:
         - 'valid_altitude': Altitude validity
         - 'valid_phenology': Phenology validity
 
-    Notes
-    -----
-    Values are None if the parameter is not present in the request.
     """
     return {
         "score": params.pop("score", None),
@@ -123,13 +116,13 @@ def create_lateral_joins(synthese_alias, enable_profile: bool, use_profile_filte
     # Profile lateral join if enabled
     if enable_profile and use_profile_filter:
         profile_subquery = (
-            sa.select(VConsistancyData)
-            .where(VConsistancyData.id_synthese == synthese_alias.id_synthese)
+            sa.select(VConsistencyData)
+            .where(VConsistencyData.id_synthese == synthese_alias.id_synthese)
             .limit(1)
             .subquery()
             .lateral("profile")
         )
-        profile = aliased(VConsistancyData, profile_subquery)
+        profile = aliased(VConsistencyData, profile_subquery)
         lateral_joins[profile] = Synthese.profile
 
     return lateral_joins
@@ -193,10 +186,6 @@ def apply_profile_filters(query, profile_alias, profile_filters: Dict):
     Query
         SQLAlchemy query with profile filters applied
 
-    Notes
-    -----
-    Filters with None values are ignored. Boolean values are
-    explicitly converted to ensure correct type.
     """
     score = profile_filters.get("score")
     valid_distribution = profile_filters.get("valid_distribution")
@@ -242,14 +231,6 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
         - query_statement: ORM query with contains_eager for relationships
         - fields: Set of fields to include in the response
 
-    Notes
-    -----
-    The function automatically handles:
-    - Joins with validatable datasets
-    - Lateral joins for the last validation
-    - Profile joins if enabled and filtered
-    - Loading of alert reports if configured
-    - Filtering of observations without geometry
 
     Examples
     --------
@@ -349,12 +330,6 @@ def should_load_reports() -> bool:
     bool
         True if alerts or pins are enabled for the VALIDATION module,
         False otherwise
-
-    Notes
-    -----
-    Checks two configuration parameters:
-    - ALERT_MODULES: List of modules with alerts enabled
-    - PIN_MODULES: List of modules with pins enabled
     """
     config = current_app.config["SYNTHESE"]
     alert_active = len(config["ALERT_MODULES"]) > 0 and "VALIDATION" in config["ALERT_MODULES"]

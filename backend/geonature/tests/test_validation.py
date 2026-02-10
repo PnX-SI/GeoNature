@@ -7,7 +7,7 @@ from werkzeug.exceptions import Unauthorized, BadRequest, Forbidden, NotFound
 
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_commons.models import TValidations, VLatestValidations
-from geonature.core.gn_profiles.models import VConsistancyData
+from geonature.core.gn_profiles.models import VConsistencyData
 from geonature.utils.env import db
 from geonature.utils.config import config
 
@@ -38,17 +38,17 @@ def validation_with_max_score_and_wait_validation_status():
         sa.select(
             TValidations.id_validation,
             VLatestValidations.uuid_attached_row,
-            VConsistancyData.id_synthese,
+            VConsistencyData.id_synthese,
         )
         .join(TValidations, TValidations.id_validation == VLatestValidations.id_validation)
-        .join(VConsistancyData, VConsistancyData.id_sinp == VLatestValidations.uuid_attached_row)
+        .join(VConsistencyData, VConsistencyData.id_sinp == VLatestValidations.uuid_attached_row)
         .where(
             TValidations.validation_auto == True,
             VLatestValidations.id_nomenclature_valid_status == id_nomenclature_attente_validation,
             VLatestValidations.id_validator == None,
-            VConsistancyData.valid_phenology == True,
-            VConsistancyData.valid_altitude == True,
-            VConsistancyData.valid_distribution == True,
+            VConsistencyData.valid_phenology == True,
+            VConsistencyData.valid_altitude == True,
+            VConsistencyData.valid_distribution == True,
         )
     ).all()
     return validations_to_update
