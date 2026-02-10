@@ -14,7 +14,7 @@ from pypnnomenclature.models import TNomenclatures
 from geonature.core.gn_profiles.models import (
     VmCorTaxonPhenology,
     VmValidProfiles,
-    VConsistancyData,
+    VConsistencyData,
 )
 import geonature.core.gn_profiles.tasks  # noqa: F401
 from geonature.utils.env import DB
@@ -80,7 +80,7 @@ def get_consistancy_data(id_synthese):
 
     Return the validation score for a synthese data
     """
-    data = DB.get_or_404(VConsistancyData, id_synthese)
+    data = DB.get_or_404(VConsistencyData, id_synthese)
     return jsonify(data.as_dict())
 
 

@@ -52,7 +52,7 @@ class VmValidProfiles(DB.Model):
 
 
 @serializable
-class VConsistancyData(DB.Model):
+class VConsistencyData(DB.Model):
     __tablename__ = "v_consistancy_data"
     __table_args__ = {"schema": "gn_profiles"}
     id_synthese = DB.Column(DB.Integer, ForeignKey(Synthese.id_synthese), primary_key=True)
