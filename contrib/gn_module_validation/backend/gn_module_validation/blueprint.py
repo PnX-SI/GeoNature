@@ -91,7 +91,7 @@ def get_observations_last_validations(permissions):
         rows_to_geojson(
             db.session.execute(selectable).all(),
             geom_field="the_geom_4326",
-            unnest=True,
+            nest_properties=True,
         )
     )
 
