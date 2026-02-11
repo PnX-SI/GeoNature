@@ -85,8 +85,7 @@ def get_observations_last_validations(permissions):
 
     # Build query
     selectable = build_synthese_query(params, permissions, limit)
-    print(selectable.compile(compile_kwargs={"literal_binds": True}))
-
+    apply_sorting(selectable, params)
     return jsonify(
         rows_to_geojson(
             db.session.execute(selectable).all(),
