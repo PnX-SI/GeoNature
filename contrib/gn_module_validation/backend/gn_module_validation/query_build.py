@@ -172,6 +172,7 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
 
     queryB = SyntheseQuery(Synthese, query, params)
     queryB.apply_all_filters(g.current_user, permissions)
+    queryB.build_query()
     query = queryB.query
 
     # Last validation lateral join
