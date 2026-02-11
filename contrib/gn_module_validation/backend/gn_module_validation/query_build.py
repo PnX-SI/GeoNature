@@ -1,20 +1,20 @@
-from typing import Dict, Set, List, Optional
+from typing import Dict, Optional, Set
 
-from flask import current_app, g
 import sqlalchemy as sa
-from sqlalchemy.orm import aliased, contains_eager, selectinload, joinedload, raiseload, load_only
-
+from flask import current_app, g
+from geonature.core.gn_commons.models.base import TValidations
+from geonature.core.gn_meta.models.datasets import TDatasets
+from geonature.core.gn_profiles.models import VConsistencyData
+from geonature.core.gn_synthese.models import Synthese, TReport
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
+from gn_module_validation.constant import *
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
-
-from geonature.utils.env import db
-from geonature.core.gn_meta.models.datasets import TDatasets
-from geonature.core.gn_synthese.models import CorAreaSynthese, Synthese, TReport
-from geonature.core.gn_profiles.models import VConsistencyData
-from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-from geonature.core.gn_commons.models.base import TValidations
-
-from gn_module_validation.constant import *
+from sqlalchemy.orm import (
+    aliased,
+    joinedload,
+    raiseload,
+)
 
 
 def get_fields_from_params(params: Dict) -> Set[str]:
@@ -75,95 +75,6 @@ def extract_profile_filters(params: Dict) -> Dict[str, Optional[bool]]:
     }
 
 
-def create_lateral_joins(synthese_alias, enable_profile: bool, use_profile_filter: bool) -> Dict:
-    """
-    Creates lateral joins for the last validation and consistency profile.
-
-    Parameters
-    ----------
-    synthese_alias : aliased
-        Alias of the Synthese table on which to create the joins
-    enable_profile : bool
-        Indicates if profiles are enabled in the configuration
-    use_profile_filter : bool
-        Indicates if profile filters are applied
-
-    Returns
-    -------
-    Dict
-        Dictionary mapping join aliases to corresponding relation attributes
-
-    Notes
-    -----
-    Lateral joins allow efficient retrieval of:
-    - The last validation for each observation
-    - Consistency profile data (if enabled and used for filtering)
-    """
-    lateral_joins = {}
-
-    # Last validation lateral join
-    last_validation_subquery = (
-        sa.select(TValidations)
-        .where(TValidations.uuid_attached_row == synthese_alias.unique_id_sinp)
-        .order_by(TValidations.validation_date.desc())
-        .limit(1)
-        .subquery()
-        .lateral("last_validation")
-    )
-    last_validation = aliased(TValidations, last_validation_subquery)
-    lateral_joins[last_validation] = Synthese.last_validation
-
-    # Profile lateral join if enabled
-    if enable_profile and use_profile_filter:
-        profile_subquery = (
-            sa.select(VConsistencyData)
-            .where(VConsistencyData.id_synthese == synthese_alias.id_synthese)
-            .limit(1)
-            .subquery()
-            .lateral("profile")
-        )
-        profile = aliased(VConsistencyData, profile_subquery)
-        lateral_joins[profile] = Synthese.profile
-
-    return lateral_joins
-
-
-def get_relationships_from_fields(fields: Set[str]) -> List[str]:
-    """
-    Extracts relationship names to load from dotted field names.
-
-    Parameters
-    ----------
-    fields : Set[str]
-        Set of requested field names. Fields with dotted notation
-        (e.g., 'dataset.name') indicate a relationship to load.
-
-    Returns
-    -------
-    List[str]
-        List of unique relationship names to load (part before the dot)
-
-    Notes
-    -----
-    Fields starting with 'last_validation.' or 'profile.' are excluded as
-    these relationships are handled by lateral joins.
-
-    Examples
-    --------
-    >>> fields = {'id_synthese', 'dataset.name', 'taxref.cd_nom', 'profile.score'}
-    >>> get_relationships_from_fields(fields)
-    ['dataset', 'taxref']
-    """
-    return list(
-        {
-            field.split(".", 1)[0]
-            for field in fields
-            if "." in field
-            and not (field.startswith("last_validation.") or field.startswith("profile."))
-        }
-    )
-
-
 def apply_profile_filters(query, profile_alias, profile_filters: Dict):
     """
     Applies consistency profile-based filters to the query.
@@ -208,10 +119,6 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
     """
     Builds the main query to retrieve synthesis data with validations.
 
-    This function builds a complex query in three steps:
-    1. Creates an ORM SQLAlchemy query with joins
-    2. Converts to Core SQLAlchemy query to apply user filters
-    3. Returns to ORM with contains_eager to populate relationships
 
     Parameters
     ----------
@@ -225,17 +132,7 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
 
     Returns
     -------
-    tuple
-        Tuple containing:
-        - selectable: Core SQLAlchemy query with all filters applied
-        - query_statement: ORM query with contains_eager for relationships
-        - fields: Set of fields to include in the response
-
-
-    Examples
-    --------
-    >>> params = {'valid_distribution': True, 'no_auto': True}
-    >>> selectable, statement, fields = build_synthese_query(params, user_permissions)
+    query
     """
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
 
@@ -271,13 +168,7 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
         .where(Synthese.the_geom_4326.isnot(None))
         .limit(limit)
     )
-
-    # Charger les relations nécessaires
-    relationship_names = get_relationships_from_fields(fields)
-    base_relationships = [
-        getattr(Synthese, rel) for rel in relationship_names if hasattr(Synthese, rel)
-    ]
-    query = query.options(raiseload("*")).options(*[joinedload(rel) for rel in base_relationships])
+    query = query.options(raiseload("*"))
 
     queryB = SyntheseQuery(Synthese, query, params)
     queryB.apply_all_filters(g.current_user, permissions)
@@ -320,42 +211,32 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
         fields |= {"reports.report_type.type"}
         query = query.options(joinedload(Synthese.reports).joinedload(TReport.report_type))
 
-    # Gérer automatiquement les relations standard via leurs propriétés
     for relation_name in relation_fields.keys():
-        # Éviter les relations déjà gérées (lateral joins)
+        # ignore lateral joins
         if relation_name in relation_aliases:
             continue
 
-        # Vérifier si la relation existe sur le modèle Synthese
         if hasattr(Synthese, relation_name):
+            # Fetch relationship in the Synthese
             rel_property = getattr(Synthese.__mapper__.relationships, relation_name, None)
 
             if rel_property:
-                # Récupérer automatiquement le modèle de la relation
+                # Fetch the class of the model of the entities fetched by the relationship
                 related_model = rel_property.mapper.class_
 
-                # Créer un alias
+                # Required for the join
                 rel_alias = aliased(related_model)
                 relation_aliases[relation_name] = rel_alias
 
-                # Faire la jointure (vous devrez adapter la condition selon votre schéma)
-                # Exemple pour une relation simple :
-                local_col = list(rel_property.local_columns)[0]
-                remote_col = list(rel_property.remote_side)[0]
+                local_col = list(rel_property.local_columns)[0]  # for ex, synthese.id_dataset
+                remote_col = list(rel_property.remote_side)[0]  # for ex t_datasets.id_dataset
 
                 query = query.outerjoin(rel_alias, local_col == getattr(rel_alias, remote_col.name))
 
-    # Construire la liste finale de colonnes
-    final_columns = []
+    # Creating the list of columns in the final SELECT
+    final_columns = [col for col in synthese_columns]
 
-    # Ajouter les colonnes de Synthese
-    for col in synthese_columns:
-        if col.name == "the_geom_4326":
-            final_columns.append(sa.func.ST_AsGeoJSON(col).label("the_geom_4326"))
-        else:
-            final_columns.append(col)
-
-    # Ajouter les colonnes des relations
+    # add column fetched from relationships entities
     for relation_name, column_names in relation_fields.items():
         rel_alias = relation_aliases.get(relation_name)
 
@@ -366,7 +247,7 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
                         getattr(rel_alias, column_name).label(f"{relation_name}.{column_name}")
                     )
 
-    # Remplacer le SELECT avec uniquement les colonnes demandées
+    # Set columns
     query = query.with_only_columns(*final_columns + [Synthese.the_geom_4326])
 
     return query
