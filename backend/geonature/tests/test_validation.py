@@ -1,6 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 from uuid import uuid4
+from ref_geo.models import LAreas
 import sqlalchemy as sa
 from flask import url_for
 from werkzeug.exceptions import Unauthorized, BadRequest, Forbidden, NotFound
@@ -186,10 +187,6 @@ def synthese_data_with_validations(synthese_data, users, validation_status_nomen
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "app")
 class TestValidationRoutes:
     """Test suite for validation module routes."""
-
-    # ============================================================================
-    # Tests using synthese_data_with_validations fixture
-    # ============================================================================
 
     def test_fixture_validations_created(self, synthese_data_with_validations):
         """Test that the validation fixture creates validations correctly."""
@@ -380,6 +377,29 @@ class TestValidationRoutes:
         for field in DEFAULT_PROFILE_FIELDS:
             assert field.split(".")[0] in data
         assert "nomenclature_blurring" in data
+        assert response.status_code == 200
+
+    def test_get_observations_with_filters(self, users, synthese_data):
+        """Test observations retrieval with various filters."""
+        set_logged_user(self.client, users["users"])
+
+        filters = [
+            ("valid_distribution", True),
+            ("valid_altitude", True),
+            ("valid_phenology", True),
+            (
+                "area_DEP",
+                db.session.scalar(
+                    sa.select(LAreas.id_area).where(LAreas.area_name == "Hautes-Alpes")
+                ),
+            ),
+        ]
+        response = self.client.get(
+            url_for(
+                "validation.get_observations_last_validations",
+                **{filter_name: filter_value for filter_name, filter_value in filters},
+            ),
+        )
         assert response.status_code == 200
 
     def test_get_observations_unauthorized(self):
