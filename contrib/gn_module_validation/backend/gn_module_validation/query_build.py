@@ -163,17 +163,22 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
     query = (
         sa.select(Synthese)
         .order_by(Synthese.date_min.desc())
-        .join(TDatasets, TDatasets.id_dataset == Synthese.id_dataset)
         .where(TDatasets.validable == True)
         .where(Synthese.the_geom_4326.isnot(None))
         .limit(limit)
     )
     query = query.options(raiseload("*"))
 
-    queryB = SyntheseQuery(Synthese, query, params)
-    queryB.apply_all_filters(g.current_user, permissions)
-    queryB.build_query()
-    query = queryB.query
+    query_builder = SyntheseQuery(
+        Synthese,
+        query,
+        params,
+    )
+    query_builder.add_join(
+        TDatasets, TDatasets.id_dataset, Synthese.id_dataset
+    )  # prevent multiple same joins
+    query_builder.apply_all_filters(g.current_user, permissions)
+    query = query_builder.build_query()
 
     # Last validation lateral join
     last_validation_subquery = (

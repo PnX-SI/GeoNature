@@ -387,7 +387,7 @@ class TestValidationRoutes:
             ("valid_distribution", True),
             ("valid_altitude", True),
             ("valid_phenology", True),
-            (
+            ("id_acquisition_framework", [1])(
                 "area_DEP",
                 db.session.scalar(
                     sa.select(LAreas.id_area).where(LAreas.area_name == "Hautes-Alpes")
