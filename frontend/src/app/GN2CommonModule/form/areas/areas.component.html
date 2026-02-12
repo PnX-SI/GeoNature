@@ -18,10 +18,10 @@
   (change)="onSelectionChange.emit($event)"
 >
   <ng-template ng-typetosearch-tmp>
-    <div class="ng-option disabled">
-      <span class="bg-info text-light p-2 rounded">
-        <mat-icon inline>help_outline</mat-icon>
-        Commencer à saisir une zone ...
+    <div class="ng-option disabled Option">
+      <span class="bg-info text-light p-2 rounded Option__hint">
+        <mat-icon>help_outline</mat-icon>
+        <span>Commencer à saisir une zone</span>
       </span>
     </div>
   </ng-template>
@@ -30,14 +30,14 @@
     ng-notfound-tmp
     let-searchTerm="searchTerm"
   >
-    <div class="ng-option disabled">
+    <div class="ng-option disabled Option">
       <span
-        class="bg-warning p-2 rounded"
+        class="bg-warning p-2 rounded Option__hint"
         matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
         matTooltipPosition="after"
       >
-        <mat-icon inline>warning_amber</mat-icon>
-        Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»
+        <mat-icon>warning_amber</mat-icon>
+        <span>Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
       </span>
     </div>
   </ng-template>
@@ -47,13 +47,13 @@
     let-searchTerm="searchTerm"
   >
     <div
-      class="ng-option disabled"
+      class="ng-option disabled Option"
       matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
       matTooltipPosition="after"
     >
-      <span class="bg-info p-2 rounded">
-        <mat-icon inline>autorenew</mat-icon>
-        Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»
+      <span class="bg-info p-2 rounded Option__hint">
+        <mat-icon>autorenew</mat-icon>
+        <span>Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
       </span>
     </div>
   </ng-template>

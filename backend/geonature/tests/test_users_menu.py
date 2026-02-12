@@ -3,7 +3,6 @@ from flask import url_for
 from sqlalchemy import func, select
 from sqlalchemy.sql import and_
 
-from geonature.tests.fixtures import users
 from geonature.core.users.models import VUserslistForallMenu
 from geonature.utils.env import db
 
@@ -58,8 +57,9 @@ class TestApiUsersMenu:
     Test de l'api users/menu
     """
 
-    def test_menu_exists(self):
-        resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=1))
+    @pytest.mark.parametrize("id_menu", [None, 1])
+    def test_menu_exists(self, id_menu):
+        resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=id_menu))
         users = resp.json
         mandatory_attr = ["id_role", "nom_role", "prenom_role"]
         for user in users:
@@ -67,9 +67,18 @@ class TestApiUsersMenu:
                 assert attr in user.keys()
         assert resp.status_code == 200
 
-    def test_menu_by_id_with_nomcomplet(self):
+    def test_menu_by_id_with_nomcomplet(self, users, user_tlist):
+        nom_complet = users["user"].nom_complet
+
+        resp = self.client.get(url_for("users.get_roles_by_menu_id", nom_complet=nom_complet))
+        assert resp.status_code == 200
+
+        users_ = resp.json
+        assert len(users_) == 1
+
+        # need to lower since the nom_complet is modified by the view :/
         # (upper(a.nom_role::text) || ' '::text) || a.prenom_role::text AS nom_complet,
-        resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=1))
+        assert users_[0]["nom_complet"].lower() == nom_complet.lower()
 
     def test_menu_notexists(self, unavailable_menu_id):
         resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=unavailable_menu_id))

@@ -35,7 +35,7 @@
             >
               <mat-icon
                 *ngIf="nbObservations > 0; else elseblock"
-                matTooltip="{{ 'MetaData.DatasetCard.ErrorDeleteDataset' | translate }}"
+                matTooltip="{{ 'MetaData.DatasetCard.Errors.ErrorDeleteDataset' | translate }}"
               >
                 delete
               </mat-icon>
@@ -183,13 +183,13 @@
           </div>
           <br />
 
-          <div class="b">{{ 'MetaData.DatasetCard.CollectionProcess' | translate }}</div>
+          <div class="b">{{ 'MetaData.DatasetForm.CollectionMethod' | translate }}</div>
           <div class="a">
-            <b>{{ 'MetaData.DatasetCard.Label' | translate }} :</b>
+            <b>{{ 'Label' | translate }} :</b>
             {{ dataset?.nomenclature_collecting_method.label_default || 'Non renseigné' }}
           </div>
           <div class="a">
-            <b>{{ 'Media.description' | translate }} :</b>
+            <b>{{ 'Description' | translate }} :</b>
             {{ dataset?.nomenclature_collecting_method.definition_default || 'Non renseigné' }}
           </div>
 
@@ -416,7 +416,7 @@
               (click)="sensiReport(dataset.id_dataset)"
             >
               {{ 'MetaData.DatasetCard.SensitivityReport' | translate }}
-              <mat-icon fontSet="material-symbols-outlined">do_not_touch</mat-icon>
+              <mat-icon>do_not_touch</mat-icon>
             </button>
           </span>
 

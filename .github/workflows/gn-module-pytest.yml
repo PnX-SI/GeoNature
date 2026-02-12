@@ -4,18 +4,18 @@ on:
   workflow_call:
     inputs:
       geonature_ref:
-        description: 'La branche, tag ou SHA de GeoNature à utiliser'
-        default: 'master'
+        description: "La branche, tag ou SHA de GeoNature à utiliser"
+        default: "master"
         required: false
         type: string
       upload_coverage:
-        description: 'Téléverser la couverture de code sur Codecov'
+        description: "Téléverser la couverture de code sur Codecov"
         default: false
         required: false
         type: boolean
     secrets:
       codecov_token:
-        description: 'Token pour téléverser sur codecov'
+        description: "Token pour téléverser sur codecov"
         required: false
 
 jobs:
@@ -25,16 +25,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        debian-version: ['11', '12']
+        debian-version: ["11", "12"]
         include:
-          - debian-version: '11'
-            python-version: '3.9'
-            postgres-version: '13'
-            postgis-version: '3.2'
-          - debian-version: '12'
-            python-version: '3.11'
-            postgres-version: '15'
-            postgis-version: '3.3'
+          - debian-version: "11"
+            python-version: "3.9"
+            postgres-version: "13"
+            postgis-version: "3.2"
+          - debian-version: "12"
+            python-version: "3.11"
+            postgres-version: "15"
+            postgis-version: "3.3"
 
     name: Debian ${{ matrix.debian-version }}
 
@@ -80,12 +80,12 @@ jobs:
         run: |
           psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
         env:
-          PGPASSWORD: 'geonatadmin'
+          PGPASSWORD: "geonatadmin"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
+          cache: "pip"
       - name: Install GDAL
         run: |
           sudo apt update
@@ -136,7 +136,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Test with pytest
         run: |
-          pytest -v --cov --cov-report xml
+          pytest -v --cov=${{ env.MODULE_DIR }} --cov-report xml
         working-directory: ${{ env.MODULE_DIR }}
         env:
           GEONATURE_CONFIG_FILE: ${{ github.workspace }}/config/test_config.toml

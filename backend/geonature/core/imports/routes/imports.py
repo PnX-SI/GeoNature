@@ -1,54 +1,51 @@
 import codecs
-from io import BytesIO, StringIO, TextIOWrapper
 import csv
 import json
 import unicodedata
-
-from flask import request, current_app, jsonify, g, stream_with_context, send_file
-from flask_login import current_user
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, Gone, NotFound
+from io import BytesIO, StringIO, TextIOWrapper
 
 # url_quote was deprecated in werkzeug 3.0 https://stackoverflow.com/a/77222063/5807438
 from urllib.parse import quote as url_quote
-from sqlalchemy import or_, func, desc, select, delete
-from sqlalchemy.inspection import inspect
-from sqlalchemy.orm import joinedload, Load, load_only, undefer, contains_eager
-from sqlalchemy.orm.attributes import set_committed_value
-from sqlalchemy.sql.expression import collate, exists
 
-
-from geonature.utils.env import db
-from geonature.utils.sentry import start_sentry_child
+from flask import current_app, g, jsonify, request, send_file, stream_with_context
+from flask_login import current_user, login_required
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_permissions.tools import get_scopes_by_action
-from geonature.core.gn_meta.models import TDatasets
-
-from pypnnomenclature.models import TNomenclatures
-
+from geonature.core.imports.blueprint import blueprint
+from geonature.core.imports.checks.sql.user import user_matching
 from geonature.core.imports.models import (
+    BibFields,
+    ContentMapping,
     Destination,
     Entity,
     EntityField,
-    TImports,
-    ImportUserError,
-    BibFields,
     FieldMapping,
-    ContentMapping,
+    ImportUserError,
+    TImports,
 )
-from pypnusershub.db.models import User
-from geonature.core.imports.blueprint import blueprint
+from geonature.core.imports.schemas import ImportSchema
+from geonature.core.imports.tasks import do_import_checks, do_import_in_destination
 from geonature.core.imports.utils import (
     ImportStep,
+    clean_import,
     detect_encoding,
     detect_separator,
-    insert_import_data_in_transient_table,
-    get_file_size,
-    clean_import,
     generate_pdf_from_template,
+    get_file_size,
+    insert_import_data_in_transient_table,
 )
-from geonature.core.imports.tasks import do_import_checks, do_import_in_destination
+from geonature.utils.config import config
+from geonature.utils.env import db
+from geonature.utils.sentry import start_sentry_child
+from marshmallow import EXCLUDE
+from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
+from sqlalchemy import delete, desc, func, or_, select
+from sqlalchemy.inspection import inspect
+from sqlalchemy.orm import Load, contains_eager, joinedload, load_only, undefer
+from sqlalchemy.orm.attributes import set_committed_value
+from sqlalchemy.sql.expression import collate, exists
+from werkzeug.exceptions import BadRequest, Conflict, Forbidden, Gone, NotFound
 
 IMPORTS_PER_PAGE = 15
 
@@ -86,11 +83,6 @@ def get_import_list(scope, destination=None):
     if search:
         filters.append(TImports.full_file_name.ilike(f"%{search}%"))
         filters.append(
-            TImports.dataset.has(
-                func.lower(TDatasets.dataset_name).contains(func.lower(search)),
-            )
-        )
-        filters.append(
             TImports.authors.any(
                 or_(
                     User.prenom_role.ilike(f"%{search}%"),
@@ -114,11 +106,9 @@ def get_import_list(scope, destination=None):
     query = (
         select(TImports)
         .options(
-            contains_eager(TImports.dataset),
             contains_eager(TImports.authors),
             contains_eager(TImports.destination).contains_eager(Destination.module),
         )
-        .join(TImports.dataset, isouter=True)
         .join(TImports.authors, isouter=True)
         .join(Destination)
         .join(TModules)
@@ -165,59 +155,102 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
     Add an import or update an existing import.
 
     :form file: file to import
-    :form int datasetId: dataset ID to which import data
     """
     if imprt:
         if not imprt.has_instance_permission(scope, action_code="C"):
             raise Forbidden
-        if not imprt.dataset.active:
-            raise Forbidden("Le jeu de données est fermé.")
         destination = imprt.destination
     else:
         assert destination
-    author = g.current_user
-    f = request.files["file"]
-    size = get_file_size(f)
-    # value in config file is in Mo
-    max_file_size = current_app.config["IMPORT"]["MAX_FILE_SIZE"] * 1024 * 1024
-    if size > max_file_size:
-        raise BadRequest(
-            description=f"File too big ({size} > {max_file_size})."
-        )  # FIXME better error signaling?
-    if size == 0:
-        raise BadRequest(description="Impossible to upload empty files")
+
+    input_file = request.files.get("file", None)
+    input_fieldmapping_preset = request.form.get("fieldmapping", None)
+
+    # file must be set only when new import. otherwise, it's optional. it can also be a request to update the fieldmapping preset
+    if imprt is None and input_file is None:
+        raise BadRequest("File parameter is missig")
+
+    # Process destination
     if imprt is None:
-        try:
-            dataset_id = int(request.form["datasetId"])
-        except ValueError:
-            raise BadRequest(description="'datasetId' must be an integer.")
-        dataset = db.session.get(TDatasets, dataset_id)
-        if dataset is None:
-            raise BadRequest(description=f"Dataset '{dataset_id}' does not exist.")
-        ds_scope = get_scopes_by_action(
-            module_code=destination.module.module_code,
-            object_code="ALL",  # TODO object_code should be configurable by destination
-        )["C"]
-        if not dataset.has_instance_permission(ds_scope):
-            raise Forbidden(description="Vous n’avez pas les permissions sur ce jeu de données.")
-        if not dataset.active:
-            raise Forbidden("Le jeu de données est fermé.")
-        imprt = TImports(destination=destination, dataset=dataset)
+        imprt = TImports(destination=destination)
+        author = g.current_user
         imprt.authors.append(author)
         db.session.add(imprt)
-    else:
-        clean_import(imprt, ImportStep.UPLOAD)
-    with start_sentry_child(op="task", description="detect encoding"):
-        imprt.detected_encoding = detect_encoding(f)
-    with start_sentry_child(op="task", description="detect separator"):
-        imprt.detected_separator = detect_separator(
-            f,
-            encoding=imprt.encoding or imprt.detected_encoding,
-        )
-    imprt.source_file = f.read()
-    imprt.full_file_name = f.filename
 
+    else:
+        # If imprt exists, remove observer mapping
+        imprt.observermapping = {}
+    # Process field mapping
+    if input_fieldmapping_preset:
+        fieldmapping_preset = json.loads(input_fieldmapping_preset)
+        # NOTES: Pas possible d'utiliser le validate value ici
+        # try:
+        #     FieldMapping.validate_values(fields_to_map)
+        # except ValueError as e:
+        #     raise BadRequest(*e.args)
+        if imprt.fieldmapping is None:
+            imprt.fieldmapping = {}
+        imprt.fieldmapping.update(fieldmapping_preset)
+
+    # Process file
+    if input_file:
+        size = get_file_size(input_file)
+        # value in config file is in Mo
+        max_file_size = current_app.config["IMPORT"]["MAX_FILE_SIZE"] * 1024 * 1024
+        if size > max_file_size:
+            raise BadRequest(
+                description=f"File too big ({size} > {max_file_size})."
+            )  # FIXME better error signaling?
+        if size == 0:
+            raise BadRequest(description="Impossible to upload empty files")
+
+        else:
+            clean_import(imprt, ImportStep.UPLOAD)
+        with start_sentry_child(op="task", description="detect encoding"):
+            imprt.detected_encoding = detect_encoding(input_file)
+        with start_sentry_child(op="task", description="detect separator"):
+            imprt.detected_separator = detect_separator(
+                input_file,
+                encoding=imprt.encoding or imprt.detected_encoding,
+            )
+        imprt.source_file = input_file.read()
+        imprt.full_file_name = input_file.filename
+
+    # commit changes
     db.session.commit()
+
+    return jsonify(imprt.as_dict())
+
+
+@blueprint.route("/<destination>/imports/<int:import_id>/update", methods=["PUT"])
+@permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
+def update_import(scope, imprt, destination=None):  # destination is set when imprt is None
+    """
+    .. :quickref: Import; Add an import or update an existing import.
+
+    Add an import or update an existing import.
+
+    :form file: file to import
+    """
+    if imprt:
+        if not imprt.has_instance_permission(scope, action_code="C"):
+            raise Forbidden
+        destination = imprt.destination
+    else:
+        raise BadRequest("Import with id {} does not exist")
+
+    data = request.get_json()
+    if not data:
+        raise BadRequest(description="No data provided")
+
+    try:
+        ImportSchema().load(data, unknown=EXCLUDE)
+    except Exception as e:
+        raise BadRequest(description=f"{e}")
+
+    # commit changes
+    db.session.commit()
+
     return jsonify(imprt.as_dict())
 
 
@@ -226,8 +259,6 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
 def decode_file(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     if imprt.source_file is None:
         raise BadRequest(description="A file must be first uploaded.")
     if "encoding" not in request.json:
@@ -292,8 +323,6 @@ def decode_file(scope, imprt):
 def set_import_field_mapping(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     try:
         FieldMapping.validate_values(request.json)
     except ValueError as e:
@@ -309,8 +338,6 @@ def set_import_field_mapping(scope, imprt):
 def load_import(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     if imprt.source_file is None:
         raise BadRequest(description="A file must be first uploaded.")
     if imprt.fieldmapping is None:
@@ -320,6 +347,7 @@ def load_import(scope, imprt):
         line_no = insert_import_data_in_transient_table(imprt)
     if not line_no:
         raise BadRequest("File with 0 lines.")
+
     imprt.source_count = line_no
     imprt.loaded = True
     db.session.commit()
@@ -368,8 +396,11 @@ def get_import_values(scope, imprt):
             # this nomenclated field is not mapped
             continue
         source = imprt.fieldmapping[field.name_field]
-        if source not in imprt.columns:
-            # the file do not contain this field expected by the mapping
+        if (
+            source.get("column_src", None) not in imprt.columns
+            and source.get("constant_value", None) is None
+        ):
+            # the file do not contain this field expected by the mapping and there is no constant value
             continue
         # TODO: vérifier que l’on a pas trop de valeurs différentes ?
         column = field.source_column
@@ -401,8 +432,6 @@ def get_import_values(scope, imprt):
 def set_import_content_mapping(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     try:
         ContentMapping.validate_values(request.json)
     except ValueError as e:
@@ -421,8 +450,6 @@ def prepare_import(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
 
     # Check preconditions to execute this action
     if not imprt.loaded:
@@ -492,7 +519,7 @@ def preview_valid_data(scope, imprt):
             .unique()
             .all()
         )
-        columns = [{"prop": field.dest_column, "name": field.name_field} for field in fields]
+        columns = [{"prop": field.dest_column, "name": field.fr_label} for field in fields]
 
         id_field = (
             entity.unique_column.dest_field if entity.unique_column.dest_field in fields else None
@@ -632,8 +659,6 @@ def import_valid_data(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     if not imprt.processed:
         raise Forbidden("L’import n’a pas été préalablement vérifié.")
     transient_table = imprt.destination.get_transient_table()
@@ -667,8 +692,6 @@ def delete_import(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-    if not imprt.dataset.active:
-        raise Forbidden("Le jeu de données est fermé.")
     ImportUserError.query.filter_by(imprt=imprt).delete()
     transient_table = imprt.destination.get_transient_table()
     db.session.execute(
@@ -739,3 +762,37 @@ def report_plot(scope, imprt: TImports):
     if not imprt.has_instance_permission(scope, action_code="R"):
         raise Forbidden
     return json.dumps(imprt.destination.actions.report_plot(imprt))
+
+
+@blueprint.route("/<destination>/generate_user_matching/<int:import_id>", methods=["GET"])
+@permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
+def generate_matching(scope, imprt: TImports):
+    if not imprt.has_instance_permission(scope, action_code="C"):
+        raise Forbidden
+
+    if imprt.destination.actions.is_observer_mapping_enabled():
+        fields = db.session.scalars(
+            select(BibFields).where(
+                BibFields.name_field.in_(imprt.fieldmapping.keys()),
+                BibFields.type_field == "observers",
+                BibFields.id_destination == imprt.destination.id_destination,
+            )
+        ).all()
+        if len(fields) == 0:
+            imprt.observermapping = {}
+        for field in fields:
+            mapping = imprt.fieldmapping[field.name_field]
+            if mapping.get("column_src", None) is not None:
+                imprt.observermapping.update(user_matching(imprt, field))
+        db.session.commit()
+    elif imprt.observermapping != None:
+        imprt.observermapping = None
+        db.session.commit()
+
+    return jsonify(imprt.observermapping)
+
+
+@blueprint.route("/<destination>/is_observer_mapping_enabled", methods=["GET"])
+@login_required
+def is_observer_mapping_enabled(destination):
+    return jsonify({"allowed": destination.actions.is_observer_mapping_enabled()})

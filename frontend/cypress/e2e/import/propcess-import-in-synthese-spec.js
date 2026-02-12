@@ -23,11 +23,11 @@ describe('Import - create a new import', () => {
   it('Should be able to import a valid-file in synthese', () => {
     cy.startImport();
     cy.pickDestination();
-    cy.pickDataset(USER.dataset);
     cy.loadImportFile(FILES.synthese.valid.fixture);
     cy.configureImportFile();
-    cy.configureImportFieldMapping();
+    cy.configureImportFieldMapping(USER.dataset);
     cy.configureImportContentMapping();
+    cy.configureImportObserverMapping();
     cy.verifyImport();
     cy.executeImport();
     cy.backToImportList();

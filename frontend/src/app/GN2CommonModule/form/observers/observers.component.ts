@@ -6,7 +6,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 
 /**
  * Ce composant permet d'afficher un input de type "autocomplete" sur un liste d'observateur définit dans le schéma ``utilisateur.t_menus`` et ``utilisateurs.cor_role_menu``.
- * Il permet de séléctionner plusieurs utilisateurs dans le même input.
+ * Il permet de sélectionner plusieurs utilisateurs dans le même input.
  * Renvoie l'objet: ```{
     "nom_complet": "ADMINISTRATEUR test",
     "nom_role": "Administrateur",
@@ -34,7 +34,7 @@ export class ObserversComponent extends GenericFormComponent {
   @Input() compareWith = (c1, c2) => {
     return c1.id_role === c2.id_role;
   };
-  public observers: Observable<Array<any>>;
+  @Input() observers: Observable<Array<any>>;
 
   constructor(private _dfService: DataFormService) {
     super();
@@ -49,19 +49,23 @@ export class ObserversComponent extends GenericFormComponent {
     if (this.idList) {
       this.idMenu = this.idList;
     }
-    // si idMenu
 
-    if (this.idMenu) {
-      this.observers = this._dfService.getObservers(this.idMenu);
-    } else if (this.codeList) {
-      this.observers = this._dfService.getObserversFromCode(this.codeList).pipe(
-        map((data) => {
-          if (this.parentFormControl.value) {
-            this.parentFormControl.setValue(this.parentFormControl.value);
-          }
-          return data;
-        })
-      );
+    if (!this.observers) {
+      // si idMenu
+      if (this.idMenu) {
+        this.observers = this._dfService.getObservers(this.idMenu);
+      } else if (this.codeList) {
+        this.observers = this._dfService.getObserversFromCode(this.codeList).pipe(
+          map((data) => {
+            if (this.parentFormControl.value) {
+              this.parentFormControl.setValue(this.parentFormControl.value);
+            }
+            return data;
+          })
+        );
+      } else {
+        this.observers = this._dfService.getObservers();
+      }
     }
   }
 

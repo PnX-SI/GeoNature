@@ -134,8 +134,8 @@ export class DataFormService {
   //   );
   // }
 
-  getObservers(idMenu) {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu/${idMenu}`);
+  getObservers(idMenu: number | null = null) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu/` + (idMenu ? idMenu : ''));
   }
 
   getObserversFromCode(codeList) {
@@ -430,10 +430,13 @@ export class DataFormService {
     );
   }
 
-  getOrganisms(orderByName = true) {
+  getOrganisms(orderByName = true, params: ParamsDict = {}) {
     let queryString: HttpParams = new HttpParams();
     if (orderByName) {
       queryString = this.addOrderBy(queryString, 'nom_organisme');
+    }
+    for (let key in params) {
+      queryString = queryString.set(key, params[key]);
     }
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/organisms`, {
       params: queryString,
@@ -448,6 +451,14 @@ export class DataFormService {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/organisms_dataset_actor`, {
       params: queryString,
     });
+  }
+
+  createOrganism(organismData: any) {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/organism`, organismData);
+  }
+
+  getOrganism(id_organisme: number) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/organism/${id_organisme}`);
   }
 
   getRole(id: number) {

@@ -6,7 +6,7 @@ describe('Testing metadata', () => {
   const jddUUID = '4d331cae-65e4-4948-b0b2-a11bc5bb46c2';
   const caUUID = '57b7d0f2-4183-4b7b-8f08-6e105d476dc5';
   const caSelector = '[data-qa="pnx-metadata-acq-framework-' + caUUID + '"]';
-
+  const ORGANISM_SELECT_FORM = '.organism-form > .auto > .ng-select-container';
   const newCadreAcq = {
     name: 'CA-created',
     // name:'Mon cadre d\'acquisition',
@@ -18,6 +18,11 @@ describe('Testing metadata', () => {
     name: 'Mon jeu de données',
     shortname: 'Mon jdd',
     description: 'description de mon jdd',
+  };
+
+  let newOrganism = {
+    name: 'Ma structure 2',
+    email: 'mastructure2@example.com',
   };
 
   beforeEach(() => {
@@ -59,13 +64,42 @@ describe('Testing metadata', () => {
       cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     });
   });
-
   it('should create a new "cadre d\'acquisition"', () => {
     // cy.visit('/#/metadata');
+    // Generate a new organism based on newOrganism but with a slight modification
+    newOrganism = {
+      name: newOrganism.name + (Math.floor(Math.random() * 100) + 1).toString(),
+      email: newOrganism.email,
+    };
 
     cy.get('[data-qa="pnx-metadata-add-af"]').click();
 
-    cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
+    // Create a new organism, later used for the creation of the new JDD
+    cy.get('[data-qa="pnx-organism-create-button"]').click();
+    cy.get('[data-qa="pnx-organism-form-dialog-name"]').type(newOrganism.name);
+    //    Verify that the organism 'ma structure test' is displayed in the list of similar organisms
+    cy.get('[data-qa="pnx-organism-form-dialog-similar-list"] li').should('have.length.least', 1);
+    const similarOrganismDiv = cy
+      .get('[data-qa="pnx-organism-form-dialog-similar-list"] span')
+      .filter((index, el) => {
+        return Cypress.$(el).text() === 'ma structure test';
+      });
+    similarOrganismDiv.click();
+    const similarOrganismAddress = cy
+      .get('[data-qa="pnx-organism-form-dialog-similar-org-address"]')
+      .filter((index, el) => {
+        return Cypress.$(el).text() === ' Rue des bois ';
+      });
+
+    similarOrganismAddress.should('be.visible');
+    //    Complete the form with an email, and submit
+    cy.get('mat-dialog-content').scrollTo('bottom');
+    cy.get('[data-qa="pnx-organism-form-dialog-email"]').type(newOrganism.email, {
+      force: true,
+    });
+    cy.get('[data-qa="organism-dialog-save"]').click();
+
+    cy.get(ORGANISM_SELECT_FORM).click();
     cy.get('[data-qa="pnx-metadata-organism-ALL"]').click();
     cy.get("[data-qa='pnx-metadata-save-af']").should('be.disabled');
 
@@ -103,7 +137,7 @@ describe('Testing metadata', () => {
       .click()
       .type(newCadreAcq.startDate);
 
-    cy.get("[data-qa='pnx-dynamic-form-text-test_champs_additionnel']")
+    cy.get("[data-qa='field-text-test_champs_additionnel']")
       .click()
       .type(newCadreAcq.testAdditionalFieldValue);
 
@@ -121,8 +155,14 @@ describe('Testing metadata', () => {
 
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
+    cy.get(ORGANISM_SELECT_FORM).click();
     cy.get('[data-qa="pnx-metadata-organism-ALL"]').click();
+    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+
+    // Add a second main contact, the new organism created before from AF form
+    cy.get('[data-qa="pnx-dataset-form-add-main-contact"]').click();
+    cy.get('pnx-metadata-actor').eq(1).find('ng-select > div > div > div.ng-input').click();
+    cy.get('[data-qa="pnx-metadata-organism-' + newOrganism.name + '"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
     cy.get('[data-qa="pnx-dataset-form-select-cadre-acq"]').click();
@@ -179,31 +219,62 @@ describe('Testing metadata', () => {
   });
 
   it('should delete the new "jeu de données"', () => {
+    // Search for the parent CA
     cy.get('[data-qa="pnx-metadata-search"]').clear();
-    cy.get('[data-qa="pnx-metadata-search"]').type(newJdd.name);
-    cy.wait(200);
-    cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
+    cy.get('[data-qa="pnx-metadata-search"]').type(cadreAcq);
+
+    // Wait for the parent CA to display and click to display its JDD
+    cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]')
+      .should('be.visible')
+      .click();
+
+    // Search and click on the delete button for the new JDD
     cy.get('[data-qa="pnx-metadata-dataset-name-' + newJdd.name + '"] td > button').click({
       multiple: true,
       force: true,
     });
-    cy.get('[data-qa="confirmation-dialog-yes"]').click({ multiple: true, force: true });
-    cy.wait(200);
+
+    // Intercept the delete request to know when it completes
+    cy.intercept('DELETE', '**/meta/dataset/*').as('deleteDataset');
+
+    // Wait for and confirm the deletion dialog
+    cy.get('[data-qa="confirmation-dialog-yes"]').should('be.visible').click({
+      multiple: true,
+      force: true,
+    });
+
+    // Wait for the dialog to close and the API call to complete
+    cy.get('[data-qa="confirmation-dialog-yes"]').should('not.exist');
+    cy.wait('@deleteDataset');
+
+    // Verify the new JDD is no longer present while the remaining JDD is visible
+    cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]')
+      .should('be.visible')
+      .click();
+    cy.get('[data-qa="pnx-metadata-dataset-name-' + jdd + '"]').should('be.visible');
+    cy.get('[data-qa="pnx-metadata-dataset-name-' + newJdd.name + '"]').should('not.exist');
   });
 
   it('should delete the new "cadre d\'acquisition"', () => {
-    cy.visit('/#/metadata');
-    cy.get('[data-qa="pnx-metadata-search"]').clear();
-    cy.get('[data-qa="pnx-metadata-search"]').type(newCadreAcq.name);
-    cy.wait(200);
-    cy.get('[data-qa="pnx-metadata-af-delete-name-' + newCadreAcq.name + '"]')
-      .find('button')
+    // Find the panel that contains the CA name and click its delete button
+    cy.contains('mat-expansion-panel', newCadreAcq.name)
+      .find('[mattooltip="Supprimer le cadre d\'acquisition"]')
       .click({
+        force: true,
         multiple: true,
       });
-    cy.wait(200);
-    cy.get('[data-qa="confirmation-dialog-yes"]').click({ multiple: true, force: true });
-    cy.wait(200);
+
+    // Wait for and confirm the deletion dialog
+    cy.get('[data-qa="confirmation-dialog-yes"]').should('be.visible').click({
+      force: true,
+      multiple: true,
+    });
+    // Wait for the dialog to close
+    cy.get('[data-qa="confirmation-dialog-yes"]').should('not.exist');
+
+    // Verify the new CA is no longer present while the old CA is visible
+    cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').should('be.visible');
+    cy.contains('mat-expansion-panel', newCadreAcq.name).should('not.exist');
   });
 
   it('should display data of the dataset in synthese', () => {

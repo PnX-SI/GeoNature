@@ -113,8 +113,11 @@
         <button
           *ngIf="activatePin"
           mat-mini-fab
-          ngbTooltip="Epingler"
           placement="bottom"
+          matTooltip="{{
+            (pinExists() ? 'Synthese.Actions.UnpinObservation' : 'Synthese.Actions.PinObservation')
+              | translate
+          }}"
           (click)="pinSelectedObs()"
           [ngStyle]="
             activatePin && pinExists() ? { 'background-color': '#3fb8a8', color: 'white' } : ''

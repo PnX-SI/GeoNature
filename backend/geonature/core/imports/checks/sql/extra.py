@@ -241,7 +241,7 @@ def check_existing_uuid(
     imprt: TImports,
     entity: Entity,
     uuid_field: BibFields,
-    whereclause: Any = sa.true(),
+    id_dataset_field: BibFields = None,
     skip=False,
 ):
     """
@@ -254,25 +254,34 @@ def check_existing_uuid(
     entity : Entity
         The entity to check.
     uuid_field : BibFields
-        The field to check.
-    whereclause : BooleanClause
-        The WHERE clause to apply to the check.
+        The field to check
+    id_dataset_field : BibFields
+        if defnied, the uuid existence is checked for the given dataset. Otherwise, it is checked globally
+
     skip: Boolean
         Raise SKIP_EXISTING_UUID instead of EXISTING_UUID and set row validity to None (do not import)
     """
     transient_table = imprt.destination.get_transient_table()
     dest_table = entity.get_destination_table()
     error_type = "SKIP_EXISTING_UUID" if skip else "EXISTING_UUID"
+
+    whereclause = sa.and_(
+        transient_table.c[uuid_field.dest_field] == dest_table.c[uuid_field.dest_field],
+        transient_table.c[entity.validity_column].is_(True),
+    )
+
+    if id_dataset_field:
+        whereclause = whereclause & (
+            transient_table.c[id_dataset_field.dest_field]
+            == dest_table.c[id_dataset_field.dest_field]
+        )
+
     report_erroneous_rows(
         imprt,
         entity,
         error_type=error_type,
         error_column=uuid_field.name_field,
-        whereclause=sa.and_(
-            transient_table.c[uuid_field.dest_field] == dest_table.c[uuid_field.dest_field],
-            transient_table.c[entity.validity_column].is_(True),
-            whereclause,
-        ),
+        whereclause=whereclause,
         level_validity_mapping={"ERROR": False, "WARNING": None},
     )
 
@@ -301,10 +310,10 @@ def generate_missing_uuid_for_id_origin(
     transient_table = imprt.destination.get_transient_table()
     cte_generated_uuid = (
         sa.select(
-            transient_table.c[id_origin_field.source_field].label("id_source"),
+            transient_table.c[id_origin_field.source_column].label("id_source"),
             func.uuid_generate_v4().label("uuid"),
         )
-        .group_by(transient_table.c[id_origin_field.source_field])
+        .group_by(transient_table.c[id_origin_field.source_column])
         .cte("cte_generated_uuid")
     )
 
@@ -312,13 +321,13 @@ def generate_missing_uuid_for_id_origin(
         update(transient_table)
         .values(
             {
-                transient_table.c[uuid_field.dest_field]: cte_generated_uuid.c.uuid,
+                transient_table.c[uuid_field.dest_column]: cte_generated_uuid.c.uuid,
             }
         )
         .where(
             transient_table.c.id_import == imprt.id_import,
-            transient_table.c[id_origin_field.source_field] == cte_generated_uuid.c.id_source,
-            transient_table.c[uuid_field.source_field].is_(None),
+            transient_table.c[id_origin_field.source_column] == cte_generated_uuid.c.id_source,
+            transient_table.c[uuid_field.source_column].is_(None),
         )
     )
     db.session.execute(stmt)
@@ -355,7 +364,10 @@ def generate_missing_uuid(
         .where(
             transient_table.c.id_import == imprt.id_import,
             transient_table.c[entity.validity_column].is_not(None),
-            transient_table.c[uuid_field.source_field].is_(None),
+            sa.and_(
+                transient_table.c[uuid_field.source_column].is_(None),
+                transient_table.c[uuid_field.dest_column].is_(None),
+            ),
         )
     )
     if whereclause is not None:
@@ -680,4 +692,74 @@ def disable_duplicated_rows(imprt, entity, fields, grouping_field):
         .where(transient_table.c.line_no == duplicates.c.line_no)
         .where(duplicates.c.row_number > 1)  # keep first row
         .values({entity.validity_column: None})
+    )
+
+
+def generate_entity_id(
+    imprt: TImports,
+    entity: Entity,
+    schema_name: str,
+    table_name: str,
+    uuid_field_name: str,
+    id_field_name: str,
+) -> None:
+    """
+    Generate the id for each new valid entity
+
+    Parameters
+    ----------
+    imprt : TImports
+        _description_
+    entity : Entity
+        entity
+    """
+    # Generate an id for the first occurence of each UUID
+    transient_table = imprt.destination.get_transient_table()
+    uuid_valid_cte = (
+        sa.select(
+            sa.distinct(transient_table.c[uuid_field_name]).label(uuid_field_name),
+            sa.func.min(transient_table.c.line_no).label("line_no"),
+            sa.func.nextval(f"{schema_name}.{table_name}_{id_field_name}_seq").label(
+                "generated_id"
+            ),
+        )
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(transient_table.c[entity.validity_column].is_(True))
+        .group_by(transient_table.c[uuid_field_name])
+        .cte("uuid_valid_cte")
+    )
+
+    db.session.execute(
+        sa.update(transient_table)
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(transient_table.c[entity.validity_column].is_(True))
+        .where(transient_table.c[uuid_field_name] == uuid_valid_cte.c[uuid_field_name])
+        .values({f"{id_field_name}": uuid_valid_cte.c.generated_id})
+    )
+
+
+def set_parent_id_from_line_no(
+    imprt: TImports, entity: Entity, parent_line_no_field_name: str, parent_id_field_name: str
+) -> None:
+    """
+    Set the parent id of each entity in the transient table using the line_no of the corresponding parent.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import object containing the destination.
+    entity : Entity
+        entity
+    """
+    transient_entity = imprt.destination.get_transient_table()
+    transient_parent = aliased(transient_entity)
+    db.session.execute(
+        sa.update(transient_entity)
+        .where(
+            transient_entity.c.id_import == imprt.id_import,
+            transient_entity.c[entity.validity_column].is_(True),
+            transient_parent.c.id_import == imprt.id_import,
+            transient_parent.c.line_no == transient_entity.c[parent_line_no_field_name],
+        )
+        .values({parent_id_field_name: transient_parent.c[parent_id_field_name]})
     )

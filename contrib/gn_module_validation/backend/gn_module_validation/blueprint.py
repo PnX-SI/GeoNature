@@ -6,7 +6,7 @@ import sqlalchemy as sa
 from marshmallow import ValidationError
 
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
-from utils_flask_sqla_geo.utils import rows_to_geojson
+from utils_flask_sqla_geo.utilsgeometry import rows_to_geojson
 
 from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import Synthese
@@ -91,7 +91,6 @@ def get_observations_last_validations(permissions):
 
     # Execute query
     query = query_statement.from_statement(selectable)
-
     return jsonify(query.as_geofeaturecollection(fields=fields))
 
 

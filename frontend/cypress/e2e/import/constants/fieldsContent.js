@@ -1,9 +1,4 @@
 export const FIELDS_CONTENT_STEP_UPLOAD = {
-  datasetField: {
-    defaultValue: 'JDD-TEST-IMPORT-ADMIN',
-    newValue: 'JDD-TEST-IMPORT-2',
-    selector: 'ng-select',
-  },
   fileUploadField: {
     defaultValue: 'import/synthese/valid_file_test_link_list_import_synthese.csv',
     newValue: 'import/synthese/valid_file_import_synthese_test_changed.csv',

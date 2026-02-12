@@ -10,7 +10,7 @@ Parc national des Écrins
 * Jacques Fize
 * Camille Monchicourt
 
-.. image:: http://geonature.fr/img/logo-pne.jpg
+.. image:: https://geonature.fr/img/logo-pne.jpg
     :target: http://www.ecrins-parcnational.fr
 
 Parc national des Cevennes
@@ -20,8 +20,21 @@ Parc national des Cevennes
 * Frédéric Fidon
 * Joël Clément
 
-.. image:: http://geonature.fr/img/logo-pnc.jpg
+.. image:: https://geonature.fr/img/logo-pnc.jpg
     :target: http://www.cevennes-parcnational.fr
+
+PatriNat
+--------
+
+* Antoine Cecchi
+* Judith Panijel
+* Alain Laupin
+* Vincent Cauchois
+* Pierre Narcisi
+* Christophe Ramet
+
+.. image:: https://geonature.fr/img/logo-patrinat.jpg?
+    :target: https://www.patrinat.fr
 
 Contributeurs
 -------------
@@ -51,12 +64,6 @@ Contributeurs
 * Aboubakr Oudghiri (Ouidou)
 * Matthieu Etourneau (Geofit)
 * Florent Richard (Geofit)
-* Antoine Cecchi (PatriNat)
-* Judith Panijel (PatriNat)
-* Alain Laupin (PatriNat)
-* Vincent Cauchois (PatriNat)
-* Pierre Narcisi (PatriNat)
-* Christophe Ramet (PatriNat)
 * Ludovic Le Pontois (Parc national des Pyrénées)
 * Vincent Prunet (Parc national du Mercantour)
 * David Michallet (CEN 38)

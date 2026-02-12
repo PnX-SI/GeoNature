@@ -7,11 +7,13 @@ import {
   SELECTOR_IMPORT_CONTENTMAPPING_STEP_BUTTON,
   SELECTOR_IMPORT_FIELDMAPPING_CD_NOM,
   SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN,
+  SELECTOR_IMPORT_FIELDMAPPING_DATASET,
   SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE,
   SELECTOR_IMPORT_FIELDMAPPING_OBSERVERS,
   SELECTOR_IMPORT_FIELDMAPPING_WKT,
   SELECTOR_IMPORT_FOOTER_DELETE,
   SELECTOR_IMPORT_FOOTER_SAVE,
+  SELECTOR_IMPORT_MODAL_EDIT_VALIDATE,
 } from './constants/selectors';
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -22,14 +24,13 @@ function runTheProcessUntilFieldMapping(user) {
   cy.visitImport();
   cy.startImport();
   cy.pickDestination();
-  cy.pickDataset(user.dataset);
   cy.loadImportFile(FILES.synthese.valid.fixture);
   cy.configureImportFile();
 }
 
 function runTheProcessUntilContentMapping(user) {
   runTheProcessUntilFieldMapping(user);
-  cy.configureImportFieldMapping();
+  cy.configureImportFieldMapping(user.dataset);
   cy.wait(500);
 }
 
@@ -48,7 +49,8 @@ function checkImportIsNotFirstInList(importId) {
 
 function clickOnFirstLineEdit() {
   cy.get(getSelectorImportListTableRowEdit(0)).click();
-  cy.wait(TIMEOUT_WAIT);
+  // cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
+  // cy.wait(TIMEOUT_WAIT);
 }
 
 function selectFieldMappingField(dataQa, value) {
@@ -73,8 +75,8 @@ function fillTheFieldMappingFormRaw() {
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_NOM_CITE, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_WKT, 'date_debut');
   selectFieldMappingField(SELECTOR_IMPORT_FIELDMAPPING_CD_NOM, 'date_debut');
+  cy.selectDataset();
 }
-
 // ////////////////////////////////////////////////////////////////////////////
 // Create a mapping with dummy values
 // ////////////////////////////////////////////////////////////////////////////

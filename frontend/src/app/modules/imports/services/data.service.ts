@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
-  Dataset,
   Import,
   ImportError,
   ImportValues,
@@ -18,12 +17,12 @@ import {
   ContentMappingValues,
 } from '../models/mapping.model';
 import { ConfigService } from '@geonature/services/config.service';
-import { ActivatedRoute } from '@angular/router';
+import { map } from '@librairies/rxjs/operators';
 
 @Injectable()
 export class ImportDataService {
-  private urlApi = null;
-  private destination: string = null;
+  private urlApi: string | null = null;
+  public destination: string | null = null;
 
   constructor(
     private _http: HttpClient,
@@ -44,30 +43,37 @@ export class ImportDataService {
     return this._http.get<any>(`${this.getUrlApiForADestination()}/nomenclatures`);
   }
 
-  getImportList(values, destination: string = null): Observable<Array<Import>> {
+  getImportList(values: any, destination: string | null = null): Observable<Array<Import>> {
     let url =
       destination == null ? `${this.urlApi}/imports/` : `${this.urlApi}/${destination}/imports/`;
     let params = new HttpParams({ fromObject: values });
     return this._http.get<Array<Import>>(url, { params: params });
   }
 
-  getOneImport(id_import): Observable<Import> {
+  getOneImport(id_import: number): Observable<Import> {
     return this._http.get<Import>(`${this.getUrlApiForADestination()}/imports/${id_import}/`);
   }
 
-  addFile(datasetId: number, file: File): Observable<Import> {
-    let fd = new FormData();
+  addFile(file: File, fieldmapping: FieldMappingValues): Observable<Import> {
+    const fd = new FormData();
     fd.append('file', file, file.name);
-    fd.append('datasetId', String(datasetId));
+    if (fieldmapping) {
+      fd.append('fieldmapping', JSON.stringify(fieldmapping));
+    }
     const url = `${this.getUrlApiForADestination()}/imports/upload`;
     return this._http.post<Import>(url, fd);
   }
 
-  updateFile(importId: number, file: File): Observable<Import> {
-    let fd = new FormData();
-    fd.append('file', file, file.name);
+  updateFile(importId: number, file: File, fieldmapping: FieldMappingValues): Observable<Import> {
+    let formData = new FormData();
+    if (file) {
+      formData.append('file', file, file.name);
+    }
+    if (fieldmapping) {
+      formData.append('fieldmapping', JSON.stringify(fieldmapping));
+    }
     const url = `${this.getUrlApiForADestination()}/imports/${importId}/upload`;
-    return this._http.put<Import>(url, fd);
+    return this._http.put<Import>(url, formData);
   }
 
   decodeFile(
@@ -84,8 +90,8 @@ export class ImportDataService {
     return this._http.post<Import>(url, null);
   }
 
-  updateImport(idImport, data): Observable<Import> {
-    return this._http.post<Import>(
+  updateImport(idImport: number, data: any): Observable<Import> {
+    return this._http.put<Import>(
       `${this.getUrlApiForADestination()}/imports/${idImport}/update`,
       data
     );
@@ -226,6 +232,12 @@ export class ImportDataService {
     );
   }
 
+  generateUserMapping(idImport: number): Observable<any> {
+    return this._http.get<any>(
+      `${this.getUrlApiForADestination()}/generate_user_matching/${idImport}`
+    );
+  }
+
   getNomencInfo(id_import: number) {
     return this._http.get<any>(
       `${this.getUrlApiForADestination()}/imports/${id_import}/contentMapping`
@@ -288,10 +300,6 @@ export class ImportDataService {
     );
   }
 
-  getDatasetFromId(datasetId: number) {
-    return this._http.get<Dataset>(`${this.config.API_ENDPOINT}/meta/dataset/${datasetId}`);
-  }
-
   getPdf(importId, mapImg, chartImg) {
     const formData = new FormData();
     if (mapImg) {
@@ -328,5 +336,18 @@ export class ImportDataService {
     return this._http.get<any>(
       `${this.config.API_ENDPOINT}/import/${destinationCode}/report_plot/${importId}`
     );
+  }
+  /**
+   * Returns a promise that resolves to a boolean indicating whether
+   * observer mapping is allowed or not for the current import destination.
+   *
+   * @returns A promise that resolves to a boolean.
+   */
+  isObserverMappingAllowed(): Observable<boolean> {
+    return this._http
+      .get<{
+        allowed: boolean;
+      }>(`${this.getUrlApiForADestination()}/is_observer_mapping_enabled`)
+      .pipe(map((response) => response.allowed));
   }
 }

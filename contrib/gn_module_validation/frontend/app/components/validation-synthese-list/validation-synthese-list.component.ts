@@ -12,6 +12,7 @@ import {
   ChangeDetectorRef,
   EventEmitter,
 } from '@angular/core';
+import {HttpParams} from '@angular/common/http';
 import { MapService } from '@geonature_common/map/map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -303,8 +304,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
         this.oneSyntheseObs.id_synthese,
       ]);
       // get all reports
-      const params = `idSynthese=${this.oneSyntheseObs.id_synthese}`;
-      this._ds.getReports(params).subscribe((response) => {
+      this._ds.getReports( new HttpParams(),this.oneSyntheseObs.id_synthese).subscribe((response) => {
         // search alert in table to update and refresh UI
         this.mapListService.tableData[rowIndex].reports = response;
       });

@@ -1,0 +1,47 @@
+<div class="container-fluid d-flex justify-content-center align-items-center vh-90">
+  <div class="card card-page shadow-lg">
+    <div class="card-body text-center p-5">
+      <div *ngIf="loading">
+        <i class="fa fa-spinner fa-spin fa-3x fa-fw mb-3 text-primary"></i>
+        <p class="mb-0">{{ 'MyAccount.EmailChangeValidationTitle' | translate }}</p>
+      </div>
+
+      <div *ngIf="!loading && !hasError && !validated">
+        <h3>{{ 'MyAccount.EmailChangeConfirmationTitle' | translate }}</h3>
+        <p>
+          {{ 'MyAccount.EmailChangeConfirmationText' | translate }}
+          <b>{{ newMail }}</b>
+        </p>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="onConfirmValidate()"
+        >
+          {{ 'Actions.Validate' | translate }}
+        </button>
+      </div>
+
+      <div
+        *ngIf="validated"
+        class="alert alert-success mb-0"
+      >
+        <i class="fa fa-check-circle mb-2 d-block fa-2x"></i>
+        {{ 'MyAccount.Messages.EmailChangeSuccess' | translate }}
+        <br />
+        {{ 'MyAccount.RedirectionInProgress' | translate }}
+        <i class="fa fa-spinner fa-spin fa-fw mb-3 text-success"></i>
+      </div>
+
+      <div
+        *ngIf="hasError"
+        class="alert alert-danger mb-0"
+      >
+        <i class="fa fa-times-circle mb-2 d-block fa-2x"></i>
+        {{ 'MyAccount.Messages.EmailChangeError' | translate }}
+        <br />
+        {{ 'MyAccount.RedirectionInProgress' | translate }}
+        <i class="fa fa-spinner fa-spin fa-fw mb-3 text-error"></i>
+      </div>
+    </div>
+  </div>
+</div>

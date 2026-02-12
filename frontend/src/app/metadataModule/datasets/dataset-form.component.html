@@ -302,7 +302,7 @@
               "
             >
               <small class="mat-error">
-                {{ 'MetaData.DatasetForm.MainContactExists' | translate }}
+                {{ 'MetaData.DatasetForm.Messages.MainContactExists' | translate }}
               </small>
             </ng-container>
 
@@ -317,6 +317,7 @@
             matTooltip="Ajouter un autre contact principal"
             (click)="addMainContact()"
             [disabled]="!(datasetFormS.genericActorForm.valid && datasetFormS.actors.valid)"
+            data-qa="pnx-dataset-form-add-main-contact"
           >
             <mat-icon>add</mat-icon>
           </button>
@@ -344,7 +345,7 @@
               "
             >
               <small class="mat-error">
-                {{ 'MetaData.DatasetForm.StakeholderExists' | translate }}
+                {{ 'MetaData.DatasetForm.Messages.StakeholderExists' | translate }}
               </small>
             </ng-container>
 

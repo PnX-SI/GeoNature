@@ -154,6 +154,9 @@ front:
 celery:
 	source backend/venv/bin/activate && celery -A geonature.celery_app:app worker -c ${NB_CONCURRENT_WORKER_CELERY}
 
+celery_debug:
+	source backend/venv/bin/activate && watchmedo auto-restart --directory=../ --pattern='*.py' --recursive -- celery -A geonature.celery_app:app worker --loglevel=INFO
+
 db_status:
 	source backend/venv/bin/activate && geonature db status
 

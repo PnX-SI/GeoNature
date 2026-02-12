@@ -34,15 +34,6 @@
         <div class="card-body row">
           <div class="col-sm-5">
             <p>
-              <b>Jeu de données :</b>
-              <a
-                routerLink="/metadata/dataset_detail/{{ importData?.id_dataset }}"
-                matTooltip="Voir dans le module Metadonnées"
-              >
-                {{ datasetName }}
-              </a>
-            </p>
-            <p>
               <b>Fichier :</b>
               <a
                 [routerLink]=""
@@ -79,7 +70,12 @@
             </p>
             <div *ngIf="importStatus === 'TERMINE'">
               <div *ngFor="let item of importData?.destination.statistics_labels">
-                <ng-container *ngIf="importData?.statistics[item.key] !== null">
+                <ng-container
+                  *ngIf="
+                    importData?.statistics[item.key] !== null &&
+                    importData?.statistics[item.key] !== undefined
+                  "
+                >
                   <p>
                     <b>{{ item.value }} :</b>
                     {{ importData?.statistics[item.key] }}
@@ -129,14 +125,34 @@
                 <caption>{{ entity.entityLabel }}</caption>
                 <thead>
                   <tr>
+                    <th
+                      rowspan="1"
+                      colspan="2"
+                    >
+                      Source
+                    </th>
+                    <th
+                      rowspan="2"
+                      colspan="1"
+                    >
+                      Champ cible
+                    </th>
+                    <th
+                      rowspan="2"
+                      colspan="1"
+                    >
+                      Description
+                    </th>
+                  </tr>
+                  <tr>
                     <th>Champ source</th>
-                    <th>Champ cible</th>
-                    <th>Description</th>
+                    <th>Valeur constante</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let field of entity?.themes">
                     <td>{{ field.source }}</td>
+                    <td>{{ field.constant_value }}</td>
                     <td>{{ field.destination }}</td>
                     <td>{{ field.description }}</td>
                   </tr>
@@ -416,7 +432,7 @@
                 [routerLink]="'/' + this.importData.destination.module.module_path"
                 [queryParams]="{ id_import: this.importData.id_import }"
                 color="primary"
-                [disabled]="importData?.date_end_import === null"
+                [disabled]="!importProcessService.isImportCompleted"
               >
                 Afficher dans {{ this.importData.destination.label }}
               </a>

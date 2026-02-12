@@ -70,19 +70,37 @@
     }
   },
   "MyAccount": {
-    "MyAccount": "My Account",
-    "MyObserverSheet": "My Observer Sheet",
-
+    "MyAccount": "My account",
+    "MyObserverSheet": "My observer sheet",
+    "EmailChangeTitle": "Change email address",
+    "EmailChangeDescription": "Changing your email address requires validation. A confirmation link will be sent to your new email address and the change will be effective after clicking on the link.",
+    "EmailChangeValidationTitle": "Email address change validation",
+    "EmailChangeConfirmationTitle": "Confirm email address change",
+    "EmailChangeConfirmationText": "Your new email address will be:",
+    "CurrentEmail": "Current email address",
+    "NewEmail": "New email address",
+    "SendRequest": "Send request",
+    "FormInvalidTooltip": "Please fill in all fields correctly",
+    "RequestEmailChangeTooltip": "Request email change",
+    "RedirectionInProgress": "Redirection in progress...",
     "Messages": {
       "AutoAccountEmailConfirmation": "An email has just been sent to you to activate your account",
-      "AdminAccountEmailConfirmation": "Your account creation request has been taken into account, it will be evaluated by an administrator",
-      "PasswordAndLoginRecovery": "An email has just been sent to you to recover your username and/or renew your password"
+      "AdminAccountEmailConfirmation": "Your account creation request has been received and will be evaluated by an administrator",
+      "PasswordAndLoginRecovery": "An email has just been sent to you to recover your login and/or renew your password",
+      "ChangeMailConfirmation": "Click on the link received by email to confirm your email address change",
+      "FieldRequired": "This field is required",
+      "InvalidEmailFormat": "Invalid email format",
+      "EmailChangeSuccess": "Your email address has been successfully validated.",
+      "EmailChangeError": "An error occurred"
     }
   },
 
   "Observer": "Observer",
   "Observers?": "Observers",
   "Observers": "Observer(s)",
+  "Observation": "Observation",
+  "Observations": "Observations",
+  "Observations?": "Observation(s)",
   "Digitiser": "Creator",
   "Digitisers": "Creators",
   "Digitisers?": "Creator(s)",
@@ -103,7 +121,6 @@
   "Datasets": "Datasets",
   "AcquisitionFramework": "Acquisition Framework",
   "AcquisitionFrameworks": "Acquisition Frameworks",
-  "Observations": "Observations",
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Species",
@@ -285,8 +302,7 @@
       "MarineAreaCoverage": "Marine territory coverage",
       "TermsReference": "Reference framework",
       "TitleAF": "Title of the acquisition framework",
-      "IDAF": "ID of the acquisition framework",
-      "CollectionProcess": "Collection process"
+      "IDAF": "ID of the acquisition framework"
     },
     "DatasetForm": {
       "Actions": {
@@ -327,8 +343,29 @@
         "EnterOrganization": "Enter an organization only",
         "EnterPerson": "Enter a person only",
         "EnterOrganizationPerson": "Enter an organization and a person",
-        "DeleteActor": "Delete this stakeholder"
+        "DeleteActor": "Delete this stakeholder",
+        "CreateOrganism": "Add an organism"
       }
+    },
+    "Organisms": {
+      "CreateOrganism": "Add an organism",
+      "OrganismName": "Organism name",
+      "Address": "Address",
+      "PostalCode": "Postal code",
+      "City": "City",
+      "Telephone": "Telephone",
+      "Fax": "Fax",
+      "Email": "Email",
+      "WebsiteURL": "Website URL",
+      "LogoURL": "Logo URL",
+      "NameRequired": "Organism name is required",
+      "InvalidEmail": "Please enter a valid email address",
+      "SimilarNamesWarning": "Warning: Similar organism names already exist:",
+      "NoAdditionalInfo": "No additional information available for this organism.",
+      "ShowingResults": "Showing results",
+      "Of": "of",
+      "PreviousPage": "Previous page",
+      "NextPage": "Next page"
     }
   },
   "Filters": {
@@ -358,11 +395,15 @@
       "AddComment": "Add a comment",
       "DeleteComment": "Delete a comment",
       "ChangeValidStatus": "Change validation status",
-      "RedirectToModule": "View in the data entry module"
+      "RedirectToModule": "View in the data entry module",
+      "PinObservation": "Pin the observation",
+      "UnpinObservation": "Unpin the observation"
     },
     "Messages": {
       "Copied": "Copied to clipboard!",
-      "DeleteSuccess": "Observation deleted successfully"
+      "DeleteSuccess": "Observation deleted successfully",
+      "Pinned": "Pinned successfully",
+      "Unpinned": "Unpinned successfully"
     },
     "Errors": {
       "PeriodCompleteness": "The 'start period' and 'end period' fields must be filled if you want to search by period"
@@ -480,7 +521,9 @@
       "Actions": {
         "SelectMapping": "Please select a mapping",
         "SaveMapping": "Save the model",
-        "ConfirmMappingDeletion": "Delete the model"
+        "ConfirmMappingDeletion": "Delete the model",
+        "DefineUniqueValue": "Set a unique value",
+        "SelectASourceFileColumn": "Select a file column"
       }
     },
     "ContentMapping": {
@@ -501,6 +544,17 @@
         "CreateOrUpdateMappingModel?": "The correspondence model has been modified; do you want to update the existing model or create a new model?"
       }
     },
+    "ObserverMapping": {
+      "Title": "Observer mapping",
+      "Table": {
+        "InTheFile": "In the file",
+        "InDatabase": "In GeoNature"
+      },
+      "Messages": {
+        "MappingNotAllowed": "The mapping of observers is not allowed for this import destination.",
+        "NoObserverMapping": "No field linked to observers has been mapped (or the column in the file is empty)."
+      }
+    },
     "Errors": {
       "Title": "The import module encountered a problem",
       "Remark": "This is a problem independent of data control.",
@@ -518,5 +572,6 @@
   },
   "Releve": {
     "InfoGeo": "Geographical information of the survey"
-  }
+  },
+  "ColonCharSpaced": ": "
 }

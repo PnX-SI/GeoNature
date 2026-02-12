@@ -6,6 +6,7 @@ import pytest
 from flask import url_for, current_app
 from sqlalchemy import select
 from pypnusershub.db.models import Application, CorRoleToken, Organisme
+from unittest.mock import MagicMock
 
 # Apparently: need to import both?
 from geonature.tests.fixtures import acquisition_frameworks, datasets, module
@@ -33,15 +34,14 @@ def add_mail_to_user(users):
 
 @pytest.fixture
 def fake_smtp(monkeypatch):
+    mock_send = MagicMock(return_value=True)
+
+    monkeypatch.setattr("geonature.utils.utilsmails.send_mail", mock_send)
     monkeypatch.setattr(
-        "geonature.core.users.register_post_actions.send_mail",
-        lambda *args, **kwargs: True,
-        raising=False,
+        "geonature.core.users.register_post_actions.send_mail", mock_send, raising=False
     )
 
-    monkeypatch.setattr(
-        "geonature.utils.utilsmails.send_mail", lambda *args, **kwargs: True, raising=False
-    )
+    return mock_send
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "add_mail_to_user", "fake_smtp")
@@ -322,3 +322,222 @@ class TestUsers:
         )
         assert resp.status_code == 200
         assert resp.json["message"] == "Password changed with success"
+
+    def test_get_organism(self, users, organisms):
+        """
+        Test GET /organism/<id> returns organism details
+        """
+        set_logged_user(self.client, users["admin_user"])
+        # Cannot take organisms[0] because its ID is -1, and would raise a 404
+        organism = organisms[1]
+
+        response = self.client.get(
+            url_for("users.get_organism", id_organisme=organism.id_organisme)
+        )
+
+        assert response.status_code == 200
+        assert response.json["id_organisme"] == organism.id_organisme
+        assert response.json["nom_organisme"] == organism.nom_organisme
+
+    def test_get_organismes(self, users, organisms):
+        """
+        Test GET /organisms returns all organisms
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.get(url_for("users.get_organismes", orderby="nom_organisme:desc"))
+
+        assert response.status_code == 200
+        first_letter = [org["nom_organisme"][0] for org in response.json]
+        assert first_letter == sorted(first_letter, reverse=True)
+
+        response = self.client.get(url_for("users.get_organismes", orderby="nom_organisme"))
+
+        assert response.status_code == 200
+        first_letter = [org["nom_organisme"][0] for org in response.json]
+        assert first_letter == sorted(first_letter, reverse=False)
+
+    def test_get_organism_with_search_params(self, users, organisms):
+        """
+        Test GET /organisms with search params
+        """
+        set_logged_user(self.client, users["admin_user"])
+        # Cannot take organisms[0] because its ID is -1, and would raise a 404
+        organism = organisms[1]
+
+        response = self.client.get(url_for("users.get_organismes", search=organism.nom_organisme))
+
+        assert response.status_code == 200
+        assert response.json[0]["id_organisme"] == organism.id_organisme
+        assert response.json[0]["nom_organisme"] == organism.nom_organisme
+
+        organism = organisms[3]
+        for variation in [
+            organism.nom_organisme,
+            organism.nom_organisme.lower(),
+            organism.nom_organisme.upper(),
+            organism.nom_organisme.title(),
+            organism.nom_organisme[:-2],
+        ]:
+            response = self.client.get(url_for("users.get_organismes", search=variation))
+
+            assert response.status_code == 200
+            assert response.json[0]["id_organisme"] == organism.id_organisme
+            assert response.json[0]["nom_organisme"] == organism.nom_organisme
+
+    def test_get_organism_not_found(self, users, organisms):
+        """
+        Test GET /organism/<id> returns 404 for non-existent organism
+        """
+        set_logged_user(self.client, users["admin_user"])
+        id_organism = max([org.id_organisme for org in organisms]) + 1
+
+        response = self.client.get(url_for("users.get_organism", id_organisme=id_organism))
+
+        assert response.status_code == 404
+        assert "Organism not found" in response.json["description"]
+
+    def test_get_organism_no_auth(self, organisms):
+        """
+        Test GET /organism/<id> requires authentication
+        """
+        # Cannot take organisms[0] because its ID is -1, and would raise a 404
+        organism = organisms[1]
+
+        response = self.client.get(
+            url_for("users.get_organism", id_organisme=organism.id_organisme)
+        )
+
+        assert response.status_code == 401
+
+    def test_create_organism(self, users):
+        """
+        Test POST /organism creates a new organism
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        new_organism_data = {
+            "nom_organisme": "Test Organism",
+            "adresse_organisme": "123 Test Street",
+            "cp_organisme": "12345",
+            "ville_organisme": "Test City",
+            "tel_organisme": "0123456789",
+            "email_organisme": "test@example.com",
+            "url_organisme": "https://test.example.com",
+            "url_logo": "https://test.example.com/logo.png",
+        }
+
+        response = self.client.post(url_for("users.create_organism"), json=new_organism_data)
+
+        assert response.status_code == 200
+        assert response.json["nom_organisme"] == "Test Organism"
+        assert response.json["adresse_organisme"] == "123 Test Street"
+        assert response.json["email_organisme"] == "test@example.com"
+        assert "id_organisme" in response.json
+
+    def test_create_organism_missing_name(self, users):
+        """
+        Test POST /organism returns 400 when organism name is missing
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        new_organism_data = {
+            "adresse_organisme": "123 Test Street",
+        }
+
+        response = self.client.post(url_for("users.create_organism"), json=new_organism_data)
+
+        assert response.status_code == 400
+        assert response.json["description"] == "Organism name is required"
+
+    def test_create_organism_no_permission(self, users):
+        """
+        Test POST /organism requires CREATE permission
+        """
+        set_logged_user(self.client, users["noright_user"])
+
+        new_organism_data = {
+            "nom_organisme": "Test Organism",
+        }
+
+        response = self.client.post(url_for("users.create_organism"), json=new_organism_data)
+
+        assert response.status_code == 403
+
+    def test_create_organism_internal_error(self, users, monkeypatch):
+        """
+        Test POST /organism handles internal errors gracefully
+        """
+        set_logged_user(self.client, users["admin_user"])
+
+        # Mock insert_or_update_organism to raise an exception
+        def mock_insert_error(*args, **kwargs):
+            raise Exception("Database connection error")
+
+        monkeypatch.setattr(
+            "geonature.core.users.routes.insert_or_update_organism", mock_insert_error
+        )
+
+        new_organism_data = {
+            "nom_organisme": "Test Organism",
+        }
+
+        response = self.client.post(url_for("users.create_organism"), json=new_organism_data)
+
+        assert response.status_code == 500
+        # We check `response.data` since `response.json` is None
+        assert (
+            b'"description": "Error creating organism: Database connection error"' in response.data
+        )
+
+    def test_change_mail_route(self, users, fake_smtp):
+        url = url_for("users.new_mail")
+        user = users["admin_user"]
+        set_logged_user(self.client, user)
+
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
+        new_email = "new_email@example.com"
+        payload = {"new_mail": new_email}
+        resp = self.client.put(url, json=payload)
+        assert resp.status_code == 200
+        assert resp.json["message"] == "Confirmation mail sent to new_email@example.com"
+        assert fake_smtp.called
+        args, kwargs = fake_smtp.call_args
+        assert new_email in args[0]
+
+        resp = self.client.put(url, json={})
+        assert resp.status_code == 400
+        assert resp.json["description"] == "No new mail provided"
+
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = False
+        resp = self.client.put(url, json=payload)
+        assert resp.status_code == 404
+
+    def test_confirm_new_mail_route(self, users, fake_smtp):
+        """
+        Test PUT /mail/new behavior.
+        """
+        url = url_for("users.confirm_new_mail")
+        user = users["admin_user"]
+        set_logged_user(self.client, user)
+        current_app.config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"] = True
+
+        old_email = user.email
+        new_email = "new_email@example.com"
+        payload = {"new_mail": new_email, "user": user.id_role}
+        resp = self.client.put(url, json=payload)
+        assert resp.status_code == 200
+        assert resp.json["message"] == "Mail successfully changed"
+        assert user.email == new_email
+        assert fake_smtp.called
+        args, kwargs = fake_smtp.call_args
+        assert old_email in args[0]
+
+        resp = self.client.put(url, json={"user": user.id_role})
+        assert resp.status_code == 400
+        assert resp.json["description"] == "No new mail provided"
+
+        payload_mismatch = {"new_mail": "another@example.com", "user": 99999}  # Wrong ID
+        resp = self.client.put(url, json=payload_mismatch)
+        assert resp.status_code == 400
+        assert "User id does not match user connected" in resp.json["description"]

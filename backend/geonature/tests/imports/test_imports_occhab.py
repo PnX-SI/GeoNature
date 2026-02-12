@@ -26,6 +26,7 @@ from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from geonature.core.imports.models import Destination, TImports, BibFields
 from geonature.tests.imports.utils import assert_import_errors
 
+from geonature.tests.utils import set_logged_user, unset_logged_user
 
 occhab = pytest.importorskip("gn_module_occhab")
 
@@ -33,199 +34,69 @@ occhab = pytest.importorskip("gn_module_occhab")
 from gn_module_occhab.models import Station, OccurenceHabitat
 
 
-test_files_path = Path(__file__).parent / "files" / "occhab"
-
-
-@pytest.fixture(scope="session")
-def occhab_destination():
-    return Destination.query.filter(Destination.module.has(TModules.module_code == "OCCHAB")).one()
+# ######################################################################################
+# Fixtures -- override default values
+# ######################################################################################
 
 
 @pytest.fixture(scope="class")
-def default_occhab_destination(app, default_destination, occhab_destination):
-    """
-    This fixture set "occhab" as default destination when not specified in call to url_for.
-    """
-    g.default_destination = occhab_destination
-    yield
-    del g.default_destination
+def testfiles_folder():  # provide with a default value - should bve overriden
+    return "occhab"
+
+
+@pytest.fixture(scope="class")
+def module_code():
+    return "OCCHAB"
+
+
+@pytest.fixture(scope="class")
+def fieldmapping_preset_name():
+    return ""
 
 
 @pytest.fixture()
-def fieldmapping(occhab_destination):
-    fields = (
-        db.session.scalars(
-            sa.select(BibFields).filter_by(destination=occhab_destination, display=True)
-        )
-        .unique()
-        .all()
-    )
-    return {field.name_field: field.name_field for field in fields}
+def autogenerate():
+    return False
 
 
-@pytest.fixture()
-def contentmapping(occhab_destination):
-    """
-    This content mapping matches cd_nomenclature AND mnemonique.
-    """
-    fields = (
-        db.session.scalars(
-            sa.select(BibFields)
-            .filter_by(destination=occhab_destination, display=True)
-            .filter(BibFields.nomenclature_type != None)
-            .options(
-                joinedload(BibFields.nomenclature_type).joinedload(
-                    BibNomenclaturesTypes.nomenclatures
-                ),
-            )
-        )
-        .unique()
-        .all()
-    )
+@pytest.fixture(scope="function")
+def override_in_importfile(
+    import_datasets,
+    station,
+    station_stranger_dataset,
+    coord_station_test_file,
+    habitat,
+):
     return {
-        field.nomenclature_type.mnemonique: {
-            **{
-                nomenclature.mnemonique: nomenclature.cd_nomenclature
-                for nomenclature in field.nomenclature_type.nomenclatures
-            },
-            **{
-                nomenclature.cd_nomenclature: nomenclature.cd_nomenclature
-                for nomenclature in field.nomenclature_type.nomenclatures
-            },
-        }
-        for field in fields
+        "@EXISTING_STATION_UUID@": str(station.unique_id_sinp_station),
+        "@STRANGER_STATION_UUID@": str(station_stranger_dataset.unique_id_sinp_station),
+        "@EXISTING_HABITAT_UUID@": str(habitat.unique_id_sinp_hab),
+        "@VALID_DATASET_UUID@": str(import_datasets["user"].unique_dataset_id),
+        "@FORBIDDEN_DATASET_UUID@": str(import_datasets["admin"].unique_dataset_id),
+        "@INACTIVE_DATASET_UUID@": str(import_datasets["user--inactive"].unique_dataset_id),
+        "@DATASET_NOT_FOUND@": "03905a03-c7fa-4642-b143-5005fa805377",
+        "@COORD_STATION@": to_wkt(coord_station_test_file[0]),
     }
 
 
-@pytest.fixture()
-def uploaded_import(
-    client,
-    users,
-    datasets,
-    station,
-    station_stranger_dataset,
-    habitat,
-    import_file_name,
-    display_unique_dataset_id,
-    coord_station_test_file,
-):
-    with open(test_files_path / import_file_name, "rb") as f:
-        test_file_line_count = sum(1 for line in f) - 1  # remove headers
-        f.seek(0)
-        content = f.read()
-        content = content.replace(
-            b"EXISTING_STATION_UUID",
-            station.unique_id_sinp_station.hex.encode("ascii"),
-        )
-        content = content.replace(
-            b"STRANGER_STATION_UUID",
-            station_stranger_dataset.unique_id_sinp_station.hex.encode("ascii"),
-        )
-        content = content.replace(
-            b"EXISTING_HABITAT_UUID",
-            habitat.unique_id_sinp_hab.hex.encode("ascii"),
-        )
-        content = content.replace(
-            b"VALID_DATASET_UUID",
-            datasets["own_dataset"].unique_dataset_id.hex.encode("ascii"),
-        )
-        content = content.replace(
-            b"FORBIDDEN_DATASET_UUID",
-            datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
-        )
-        content = content.replace(
-            b"INACTIVE_DATASET_UUID",
-            datasets["own_dataset_not_activated"].unique_dataset_id.hex.encode("ascii"),
-        )
-        content = content.replace(
-            b"COORD_STATION",
-            to_wkt(coord_station_test_file[0]).encode("ascii"),
-        )
+@pytest.fixture(scope="class")
+def contentmapping_preset_name():
+    return None
 
-        f = BytesIO(content)
-        data = {
-            "file": (f, import_file_name),
-            "datasetId": datasets["own_dataset"].id_dataset,
-        }
-        with logged_user(client, users["user"]):
-            r = client.post(
-                url_for("import.upload_file"),
-                data=data,
-                headers=Headers({"Content-Type": "multipart/form-data"}),
-            )
-    assert r.status_code == 200, r.data
-    return TImports.query.get(r.json["id_import"])
+
+@pytest.fixture(scope="function")
+def add_in_contentmapping():
+    return {}
 
 
 @pytest.fixture()
-def decoded_import(client, uploaded_import):
-    imprt = uploaded_import
-    with logged_user(client, imprt.authors[0]):
-        r = client.post(
-            url_for("import.decode_file", import_id=imprt.id_import),
-            data={"encoding": "utf-8", "format": "csv", "srid": 4326, "separator": ";"},
-        )
-    assert r.status_code == 200, r.data
-    db.session.refresh(imprt)
-    return imprt
+def no_default_uuid(monkeypatch):
+    monkeypatch.setitem(current_app.config["IMPORT"], "DEFAULT_GENERATE_MISSING_UUID", False)
 
 
-@pytest.fixture()
-def field_mapped_import(client, decoded_import, fieldmapping):
-    imprt = decoded_import
-    with logged_user(client, imprt.authors[0]):
-        r = client.post(
-            url_for("import.set_import_field_mapping", import_id=imprt.id_import),
-            data=fieldmapping,
-        )
-    assert r.status_code == 200, r.data
-    db.session.refresh(imprt)
-    return imprt
-
-
-@pytest.fixture()
-def loaded_import(client, field_mapped_import, fieldmapping):
-    imprt = field_mapped_import
-    with logged_user(client, imprt.authors[0]):
-        r = client.post(url_for("import.load_import", import_id=imprt.id_import))
-    assert r.status_code == 200, r.data
-    db.session.refresh(imprt)
-    return imprt
-
-
-@pytest.fixture()
-def content_mapped_import(client, loaded_import, contentmapping):
-    imprt = loaded_import
-    with logged_user(client, imprt.authors[0]):
-        r = client.post(
-            url_for("import.set_import_content_mapping", import_id=imprt.id_import),
-            data=contentmapping,
-        )
-    assert r.status_code == 200, r.data
-    db.session.refresh(imprt)
-    return imprt
-
-
-@pytest.fixture()
-def prepared_import(client, content_mapped_import):
-    imprt = content_mapped_import
-    with logged_user(client, imprt.authors[0]):
-        r = client.post(url_for("import.prepare_import", import_id=imprt.id_import))
-    assert r.status_code == 200, r.data
-    db.session.refresh(imprt)
-    assert imprt.processed is True
-    return imprt
-
-
-@pytest.fixture()
-def imported_import(client, prepared_import):
-    imprt = prepared_import
-
-    with logged_user(client, imprt.authors[0]):
-        r = client.post(url_for("import.import_valid_data", import_id=imprt.id_import))
-    assert r.status_code == 200, r.data
-    db.session.refresh(imprt)
-    return imprt
+# ######################################################################################
+# Fixtures -- station
+# ######################################################################################
 
 
 @pytest.fixture(scope="function")
@@ -239,9 +110,9 @@ def coord_station():
 
 
 @pytest.fixture(scope="function")
-def station(datasets, coord_station):
+def station(import_datasets, coord_station):
     station = Station(
-        id_dataset=datasets["own_dataset"].id_dataset,
+        id_dataset=import_datasets["user"].id_dataset,
         date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
         geom_4326=from_shape(*coord_station),
     )
@@ -251,15 +122,20 @@ def station(datasets, coord_station):
 
 
 @pytest.fixture(scope="function")
-def station_stranger_dataset(datasets, coord_station):
+def station_stranger_dataset(import_datasets, coord_station):
     station = Station(
-        id_dataset=datasets["stranger_dataset"].id_dataset,
+        id_dataset=import_datasets["admin"].id_dataset,
         date_min=datetime.strptime("17/11/2023", "%d/%m/%Y"),
         geom_4326=from_shape(*coord_station),
     )
     with db.session.begin_nested():
         db.session.add(station)
     return station
+
+
+# ######################################################################################
+# Fixtures -- habitat
+# ######################################################################################
 
 
 @pytest.fixture(scope="function")
@@ -277,21 +153,25 @@ def habitat(station):
     return habitat
 
 
-@pytest.fixture()
-def no_default_uuid(monkeypatch):
-    monkeypatch.setitem(current_app.config["IMPORT"], "DEFAULT_GENERATE_MISSING_UUID", False)
+# ######################################################################################
+# TestImportsOcchab
+# ######################################################################################
 
 
 @pytest.mark.usefixtures(
     "client_class",
     "temporary_transaction",
     "celery_eager",
-    "default_occhab_destination",
+    "import_destination",
+    "default_import_destination",
+    "module_code",
+    "fieldmapping_preset_name",
+    "testfiles_folder",
+    "contentmapping_preset_name",
 )
 class TestImportsOcchab:
-    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
-    def test_import_valid_file(self, imported_import):
 
+    def test_import_valid_file(self, datasets, imported_import):
         assert_import_errors(
             imported_import,
             {
@@ -562,7 +442,6 @@ class TestImportsOcchab:
             == imported_import.statistics["habitat_count"]
         )
 
-    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
     def test_remove_import_with_manual_children(self, client, users, imported_import):
         """
         This test verifies that it is not possible to remove an import if an imported entity
@@ -586,7 +465,6 @@ class TestImportsOcchab:
         assert str(station.id_station) in r.json["description"]
         assert str(habitat.id_habitat) in r.json["description"]
 
-    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
     def test_bbox_computation(
         self,
         imported_import,
@@ -610,7 +488,6 @@ class TestImportsOcchab:
             ],
         }
 
-    @pytest.mark.parametrize("import_file_name", ["valid_file.csv"])
     def test_bbox_computation_transient(
         self,
         prepared_import,
@@ -657,3 +534,20 @@ class TestImportsOcchab:
 
         assert data_habitat["n_valid_data"] == valid_numbers["habitat_valid"]
         assert data_habitat["n_invalid_data"] == valid_numbers["habitat_invalid"]
+
+    @pytest.mark.parametrize(
+        "preset_fieldmapping",
+        [
+            {
+                "__preset__": {
+                    "id_nomenclature_determination_type": {
+                        "constant_value": "Inconnu",
+                    },
+                    "station_name": {"constant_value": "test_station_name"},
+                }
+            }
+        ],
+    )
+    def test_import_upload_preset(self, field_mapped_import, preset_fieldmapping):
+        for key, value in preset_fieldmapping["__preset__"].items():
+            assert field_mapped_import.fieldmapping[key] == value

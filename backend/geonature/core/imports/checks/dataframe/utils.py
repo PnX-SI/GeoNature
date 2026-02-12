@@ -7,7 +7,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from geonature.utils.env import db
 
-from geonature.core.imports.models import ImportUserError, ImportUserErrorType
+from geonature.core.imports.models import ImportUserError, ImportUserErrorType, TImports
 from geonature.core.imports.utils import generated_fields
 
 
@@ -101,7 +101,7 @@ def error_replace(old_code, old_columns, new_code, new_column=None):
     return _error_replace
 
 
-def report_error(imprt, entity, df, error):
+def report_error(imprt: TImports, entity, df, error):
     """
     Reports an error found in the dataframe, updates the validity column and insert
     the error in the `t_user_errors` table.
@@ -147,7 +147,7 @@ def report_error(imprt, entity, df, error):
     #        f'{error_type.name}'  # FIXME comment
     ordered_invalid_rows = sorted(invalid_rows["line_no"])
     column = generated_fields.get(error["column"], error["column"])
-    column = imprt.fieldmapping.get(column, column)
+    column = imprt.fieldmapping.get(column, {}).get("column_src", column)
     # If an error for same import, same column and of the same type already exists,
     # we concat existing erroneous rows with current rows.
     stmt = pg_insert(ImportUserError).values(

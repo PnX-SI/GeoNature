@@ -21,10 +21,6 @@ export interface ImportError {
   show?: boolean;
 }
 
-export interface Dataset {
-  dataset_name: string;
-  active: boolean;
-}
 export interface ImportStatistics {
   import_count: number;
   [propName: string]: any;
@@ -40,7 +36,6 @@ export interface Import {
   detected_encoding: string;
   import_table: string;
   full_file_name: string;
-  id_dataset: number;
   date_create_import: string;
   date_update_import: string;
   date_end_import: null | string;
@@ -53,9 +48,11 @@ export interface Import {
   loaded: boolean;
   processed: boolean;
   errors_count: null | number;
+  columns: null | [string];
+
   fieldmapping: FieldMappingValues;
   contentmapping: ContentMappingValues;
-  columns: null | [string];
+  observermapping: Record<string, any>;
 
   authors_name: string;
   available_encodings?: [string];
@@ -65,7 +62,6 @@ export interface Import {
   task_progress?: number;
   task_id?: string;
   errors?: [ImportError];
-  dataset?: Dataset;
   id_source?: number;
   id_destination: number;
   destination?: Destination;
@@ -139,11 +135,6 @@ export interface EntitiesThemesFields {
 export interface TaxaDistribution {
   count: number;
   group: string;
-}
-
-// minimal dataset model
-export interface Dataset {
-  dataset_name: string;
 }
 
 export interface ImportPreview {

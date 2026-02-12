@@ -1,4 +1,7 @@
-<div class="container-fluid mt-4">
+<div
+  class="container-fluid mt-4"
+  *ngIf="af"
+>
   <div class="row">
     <div class="col-5">
       <a
@@ -81,20 +84,13 @@
     <div class="col-3">
       <div class="card">
         <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Jeux de données</h5>
-              <br />
-              <div class="center">{{ stats.nb_dataset || 0 }}</div>
+          <div class="statistic-card">
+            <img src="./assets/images/JDD_icon.svg" />
+            <div class="label">
+              <h5>Jeu de données</h5>
             </div>
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/JDD_icon.svg"
-                width="60"
-              />
+            <div class="number-div">
+              <span class="number">{{ stats.nb_dataset }}</span>
             </div>
           </div>
         </div>
@@ -105,20 +101,13 @@
     <div class="col-3">
       <div class="card">
         <div class="card-body">
-          <div class="row">
-            <div class="col">
+          <div class="statistic-card">
+            <img src="./assets/images/Donnee_icon.svg" />
+            <div class="label">
               <h5>Observations</h5>
-              <br />
-              <div class="center">{{ stats.nb_observations }}</div>
             </div>
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/Donnee_icon.svg"
-                width="60"
-              />
+            <div class="number-div">
+              <span class="number">{{ stats.nb_observations }}</span>
             </div>
           </div>
         </div>
@@ -132,20 +121,13 @@
     >
       <div class="card">
         <div class="card-body">
-          <div class="row">
-            <div class="col">
+          <div class="statistic-card">
+            <img src="./assets/images/Taxon_icon.svg" />
+            <div class="label">
               <h5>Taxons</h5>
-              <br />
-              <div class="center">{{ stats.nb_taxons }}</div>
             </div>
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/Taxon_icon.svg"
-                width="60"
-              />
+            <div class="number-div">
+              <span class="number">{{ stats.nb_taxons }}</span>
             </div>
           </div>
         </div>
@@ -159,20 +141,13 @@
     >
       <div class="card">
         <div class="card-body">
-          <div class="row">
-            <div class="col">
+          <div class="statistic-card">
+            <img src="./assets/images/Habitat_icon.svg" />
+            <div class="label">
               <h5>Habitats</h5>
-              <br />
-              <div class="center">{{ stats.nb_habitats }}</div>
             </div>
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/Habitat_icon.svg"
-                width="60"
-              />
+            <div class="number-div">
+              <span class="number">{{ stats.nb_habitats }}</span>
             </div>
           </div>
         </div>

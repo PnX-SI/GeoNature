@@ -4,9 +4,10 @@ import csv
 import json
 from enum import IntEnum
 from datetime import datetime, timedelta
-from typing import IO, Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import IO, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 from flask import current_app, render_template
+from pypnusershub.db.models import User
 import sqlalchemy as sa
 from sqlalchemy import func, select, delete
 from chardet.universaldetector import UniversalDetector
@@ -14,6 +15,7 @@ from sqlalchemy.sql.expression import select, insert
 import pandas as pd
 import numpy as np
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from werkzeug.exceptions import BadRequest
 from geonature.utils.env import db
 from weasyprint import HTML
@@ -163,7 +165,13 @@ def detect_separator(file_: IO, encoding: str) -> Optional[str]:
     return dialect.delimiter
 
 
-def preprocess_value(dataframe: pd.DataFrame, field: BibFields, source_col: str) -> pd.Series:
+def preprocess_value(
+    imprt: TImports,
+    dataframe: pd.DataFrame,
+    field: BibFields,
+    source_col: Optional[Union[str, List[str]]],
+    constant_value: Optional[Any],
+) -> pd.Series:
     """
     Preprocesses values in a DataFrame depending if the field contains multiple values (e.g. additional_data) or not.
 
@@ -182,10 +190,19 @@ def preprocess_value(dataframe: pd.DataFrame, field: BibFields, source_col: str)
         The preprocessed value.
 
     """
+    col_name = None  # if dest column changed
+    col_value = None
 
     def build_additional_data(columns: dict):
+        try:
+            constant_values = json.loads(constant_value)
+        except Exception:
+            constant_values = {}
         result = {}
         for key, value in columns.items():
+            column_constant_value = constant_values.get(key, None)
+            if column_constant_value is not None:
+                value = column_constant_value
             if value is None:
                 continue
             try:
@@ -197,11 +214,38 @@ def preprocess_value(dataframe: pd.DataFrame, field: BibFields, source_col: str)
         return result
 
     if field.multi:
+        # multi --> muliple column from source_file to single column in dest
         assert type(source_col) is list
-        col = dataframe[source_col].apply(build_additional_data, axis=1)
+        for col in source_col:
+            if col not in dataframe.columns:
+                dataframe[col] = None
+        col_value = dataframe[source_col].apply(build_additional_data, axis=1)
     else:
-        col = dataframe[source_col]
-    return col
+        source_field = source_col if source_col is not None else field.source_field
+
+        if source_field not in dataframe.columns:
+            dataframe[source_field] = None
+        col_value = dataframe[source_field]
+
+        if constant_value is not None:
+            ## Dealing with special case of observers field
+            if field.type_field == "observers":
+                transient_table = imprt.destination.get_transient_table()
+                type_dest_col = transient_table.c[field.dest_column].type
+                if not isinstance(constant_value, list):  # constant is an array of user(dict)
+                    constant_value = [constant_value]
+                if isinstance(type_dest_col, ARRAY):
+                    constant_value = [role["id_role"] for role in constant_value]
+                elif isinstance(type_dest_col, JSONB) or isinstance(type_dest_col, db.JSON):
+                    constant_value = constant_value[0]
+                elif isinstance(type_dest_col, db.Integer):
+                    constant_value = constant_value[0]["id_role"]
+                else:
+                    constant_value = constant_value[0]["nom_complet"]
+                col_name = field.dest_field
+            col_value = pd.Series([constant_value] * len(dataframe))
+
+    return col_name, col_value
 
 
 def insert_import_data_in_transient_table(imprt: TImports) -> int:
@@ -236,18 +280,27 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
         iterator=True,
         chunksize=10000,
     )
+
     for chunk in reader:
         chunk.replace({"": None}, inplace=True)
         data = {
             "id_import": np.full(len(chunk), imprt.id_import),
             "line_no": 1 + 1 + chunk.index,  # header + start line_no at 1 instead of 0
         }
-        data.update(
-            {
-                dest_field: preprocess_value(chunk, source_field["field"], source_field["value"])
-                for dest_field, source_field in fieldmapping.items()
-            }
-        )
+
+        for dest_field, mapping in fieldmapping.items():
+            col, processed_data = preprocess_value(
+                imprt,
+                chunk,
+                mapping["field"],
+                mapping.get("column_src", None),
+                mapping.get("constant_value", None),
+            )
+            data.update({dest_field: processed_data})
+            if col and col != dest_field:
+
+                data.update({col: processed_data})
+
         # XXX keep extra_fields in t_imports_synthese? or add config argument?
         if extra_columns and "extra_fields" in transient_table.c:
             data.update(
@@ -257,6 +310,12 @@ def insert_import_data_in_transient_table(imprt: TImports) -> int:
                     ),
                 }
             )
+
+        for col, values in data.items():
+            if isinstance(values, pd.Series):
+                values.reset_index(
+                    drop=True, inplace=True
+                )  # Reset index in-place instead of creating a new Series
         df = pd.DataFrame(data)
 
         imprt.destination.actions.preprocess_transient_data(imprt, df)
@@ -293,21 +352,36 @@ def build_fieldmapping(
 
     for field in fields:
         if field.name_field in imprt.fieldmapping:
+            mapping = imprt.fieldmapping[field.name_field]
+            column_src = mapping.get("column_src", None)
+            constant_value = mapping.get("constant_value", None)
             if field.multi:
-                correct = list(set(columns) & set(imprt.fieldmapping[field.name_field]))
+                correct = list(set(columns) & set(column_src))
                 if len(correct) > 0:
-                    fieldmapping[field.source_column] = {
-                        "value": correct,
-                        "field": field,
-                    }
-                    used_columns.extend(correct)
+                    if column_src is not None:
+                        fieldmapping[field.source_column] = {
+                            "field": field,
+                            "column_src": correct,
+                        }
+                        used_columns.extend(correct)
+                    elif constant_value is not None:
+                        fieldmapping[field.source_column] = {
+                            "field": field,
+                            "constant_value": constant_value,
+                        }
             else:
-                if imprt.fieldmapping[field.name_field] in columns:
+                if column_src is not None:
                     fieldmapping[field.source_column] = {
-                        "value": imprt.fieldmapping[field.name_field],
                         "field": field,
+                        "column_src": column_src,
                     }
-                    used_columns.append(imprt.fieldmapping[field.name_field])
+                    used_columns.append(column_src)
+                elif constant_value is not None:
+                    fieldmapping[field.source_column] = {
+                        "field": field,
+                        "constant_value": constant_value,
+                    }
+
     return fieldmapping, used_columns
 
 
@@ -442,8 +516,12 @@ def get_mapping_data(import_: TImports, entity: Entity):
     fields = {ef.field.name_field: ef.field for ef in entity.fields}
     selected_fields = {
         field_name: fields[field_name]
-        for field_name, source_field in import_.fieldmapping.items()
-        if source_field in import_.columns and field_name in fields
+        for field_name, mapping in import_.fieldmapping.items()
+        if (
+            mapping.get("column_src") in import_.columns
+            or mapping.get("constant_value") is not None
+        )
+        and field_name in fields
     }
     source_cols = set()
     for field in selected_fields.values():
@@ -482,7 +560,8 @@ def get_required(import_: TImports, entity: Entity):
 def compute_bounding_box(
     imprt: TImports,
     geom_entity_code: str,
-    geom_4326_field_name: str,
+    geom_4326_field_name__transient: str,
+    geom_4326_field_name__destination: str,
     *,
     child_entity_code: str = None,
     transient_where_clause=None,
@@ -514,44 +593,48 @@ def compute_bounding_box(
         The bounding box of all entities in the given import, in GeoJSON format.
     """
 
-    def get_entities_hierarchy(parent_entity, child_entity) -> Iterable[Entity]:
+    def get_entities_hierarchy(entity, child_entity) -> Iterable[Entity]:
         """
         Get all entities between the parent_entity and the child_entity, in order from parent to child.
 
         Parameters
         ----------
-        parent_entity : Entity
-            The parent entity.
+        entity : Entity
+            The current entity.
         child_entity : Entity
             The child entity.
 
         Yields
         ------
         Entity
-            The entities between the parent and child entity, in order from parent to child.
+            The entities between the current and child entity, in order from parent to child.
         """
         current = child_entity
-        while current != parent_entity and current:
+        while current != entity and current:
             yield current
             current = current.parent
 
-    parent_entity: Entity = db.session.execute(
+    entity: Entity = db.session.execute(
         sa.select(Entity).filter_by(destination=imprt.destination, code=geom_entity_code)
     ).scalar_one()
-    parent_table = parent_entity.get_destination_table()
+
+    destination_table = entity.get_destination_table()
     transient_table = imprt.destination.get_transient_table()
 
     # If only one entity in an import destination
     if not child_entity_code:
+        field = None
         if imprt.date_end_import:
-            table = parent_table
+            table = destination_table
+            field = geom_4326_field_name__destination
         elif imprt.processed:
             table = transient_table
+            field = geom_4326_field_name__transient
         else:
             return None
 
-        assert geom_4326_field_name in table.columns
-        query = select(func.ST_AsGeojson(func.ST_Extent(table.c[geom_4326_field_name]))).where(
+        assert field in table.columns
+        query = select(func.ST_AsGeojson(func.ST_Extent(table.c[field]))).where(
             table.c.id_import == imprt.id_import
         )
         (valid_bbox,) = db.session.execute(query).fetchone()
@@ -565,11 +648,11 @@ def compute_bounding_box(
 
     # When the import is finished
     if imprt.date_end_import:
-        entities = list(get_entities_hierarchy(parent_entity, child_entity))
+        entities = list(get_entities_hierarchy(entity, child_entity))
         entities.reverse()
 
         # Geom entity linked to the current import based on their children (or grand-children, etc.)
-        query = sa.select(parent_table.c[geom_4326_field_name].label("geom"))
+        query = sa.select(destination_table.c[geom_4326_field_name__destination].label("geom"))
         or_where_clause = []
         for entity in entities:
             ent_table = entity.get_destination_table()
@@ -580,8 +663,8 @@ def compute_bounding_box(
         # Merge with geom entity with an id_import equal to the current import
         query = sa.union(
             query,
-            sa.select(parent_table.c[geom_4326_field_name].label("geom")).where(
-                parent_table.c.id_import == imprt.id_import
+            sa.select(destination_table.c[geom_4326_field_name__destination].label("geom")).where(
+                destination_table.c.id_import == imprt.id_import
             ),
         ).subquery()
         if destination_where_clause:
@@ -592,25 +675,27 @@ def compute_bounding_box(
         transient_table = imprt.destination.get_transient_table()
 
         # query all existing entities'geom
-        query = sa.select(parent_table.c[geom_4326_field_name].label("geom")).where(
+        query = sa.select(
+            destination_table.c[geom_4326_field_name__destination].label("geom")
+        ).where(
             transient_table.c.id_import == imprt.id_import,  # basic !
             sa.and_(  # Check that no parent entity is invalid
                 transient_table.c[entity.validity_column] != False
-                for entity in get_entities_hierarchy(parent_entity, child_entity)
+                for entity in get_entities_hierarchy(entity, child_entity)
             ),
-            transient_table.c[parent_entity.validity_column]
+            transient_table.c[entity.validity_column]
             == None,  # Check that parent entity already exists in DB
-            transient_table.c[parent_entity.unique_column.dest_field]
-            == parent_table.c[parent_entity.unique_column.dest_field],  # for join
+            transient_table.c[entity.unique_column.dest_field]
+            == destination_table.c[entity.unique_column.dest_field],  # for join
         )
 
         # UNION between existing geom in the DB and new entities'geom in the transient table
         query = sa.union(
             query,
-            sa.select(transient_table.c[geom_4326_field_name].label("geom")).where(
+            sa.select(transient_table.c[geom_4326_field_name__transient].label("geom")).where(
                 sa.and_(
                     transient_table.c.id_import == imprt.id_import,
-                    transient_table.c[parent_entity.validity_column] == True,
+                    transient_table.c[entity.validity_column] == True,
                 )
             ),
         ).subquery()

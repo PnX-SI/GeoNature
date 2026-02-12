@@ -5,14 +5,11 @@ on:
       - master
       - hotfixes
       - develop
-      - feat/import
-      - hotfix/geonature2_16_4
   pull_request:
     branches:
       - master
       - hotfixes
       - develop
-      - feat/import
 
 jobs:
   mount_app_and_run_cypress:
@@ -98,6 +95,7 @@ jobs:
           geonature db upgrade cypress-samples-test@head
           geonature db autoupgrade
           geonature permissions supergrant --group --nom "Grp_admin" --yes
+          geonature db autoupgrade
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend

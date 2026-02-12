@@ -44,6 +44,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 @Component({
   selector: 'pnx-areas',
   templateUrl: 'areas.component.html',
+  styleUrls: ['areas.component.scss'],
 })
 export class AreasComponent extends GenericFormComponent implements OnInit {
   /**

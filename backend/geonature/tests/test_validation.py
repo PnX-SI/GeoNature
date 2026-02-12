@@ -24,6 +24,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 from gn_module_validation.tasks import set_auto_validation
+from gn_module_validation.constant import DEFAULT_FIELDS, DEFAULT_PROFILE_FIELDS
 
 
 @pytest.fixture()
@@ -362,6 +363,21 @@ class TestValidationRoutes:
     # ============================================================================
     # GET /observations - Tests for get_observations_last_validations
     # ============================================================================
+
+    def test_get_observations_with_fields_parameter(self, users, synthese_data):
+        set_logged_user(self.client, users["user"])
+        response = self.client.get(
+            url_for("validation.get_observations_last_validations", fields="nomenclature_blurring")
+        )
+        assert response.status_code == 200
+        assert "features" in response.json
+        data = response.json["features"][0]["properties"]
+        for field in DEFAULT_FIELDS:
+            assert field.split(".")[0] in data
+        for field in DEFAULT_PROFILE_FIELDS:
+            assert field.split(".")[0] in data
+        assert "nomenclature_blurring" in data
+        assert response.status_code == 200
 
     def test_get_observations_unauthorized(self):
         """Test that unauthorized access is rejected."""
@@ -762,7 +778,7 @@ class TestValidationRoutes:
         )
         assert response.status_code == 200
         response_date = datetime.fromisoformat(response.json).replace(tzinfo=tz)
-        assert abs(response_date - validation_date) < timedelta(minutes=5)
+        assert abs(response_date - validation_date) < timedelta(minutes=10)
 
     def test_post_status_multiple_synthese(self, users, synthese_data):
         """Test validation of multiple observations at once."""

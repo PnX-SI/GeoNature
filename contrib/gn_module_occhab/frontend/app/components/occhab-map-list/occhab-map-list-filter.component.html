@@ -54,13 +54,11 @@
     mat-raised-button
     color="warn"
     (click)="resetFilterForm()"
-    matTooltip="Raffraichir les filtres"
+    matTooltip="{{ 'Filters.Actions.Refresh' | translate }}"
   >
     <i
       class="fa fa-refresh"
       aria-hidden="true"
     ></i>
   </button>
-
-  <!-- {{mapListFormService.searchForm.value |json}} -->
 </div>

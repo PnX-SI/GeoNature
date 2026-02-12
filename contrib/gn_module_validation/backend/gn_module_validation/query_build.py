@@ -40,16 +40,14 @@ def get_fields_from_params(params: Dict) -> Set[str]:
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
     fields_str = params.pop("fields", None)
 
-    if fields_str:
-        fields = {field.strip() for field in fields_str.split(",")}
-    else:
-        fields = DEFAULT_FIELDS.copy()
-        if enable_profile:
-            fields.update(DEFAULT_PROFILE_FIELDS)
+    fields = set(list(DEFAULT_FIELDS))
+    if enable_profile:
+        fields.update(DEFAULT_PROFILE_FIELDS)
 
+    if fields_str:
+        fields.update({field.strip() for field in fields_str.split(",")})
     # Add configured columns
     fields.update({col["column_name"] for col in current_app.config["VALIDATION"]["COLUMN_LIST"]})
-
     return fields
 
 

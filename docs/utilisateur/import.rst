@@ -29,12 +29,8 @@ Pour réaliser un import dans une des destinations de GeoNature, vous devez :
     .. image:: images/import/import_steps/01_destination_choice.png
 
 3.  Une fois la destination choisie, vous serez redirigé vers une nouvelle page. 
-    Dans ce nouveau formulaire, choisissez le jeu de données qui sera associé aux données importées.  
-    Puis, téléverser le fichier contenant les données que vous souhaitez importer. À ce jour, seul le format de fichier CSV est accepté par GeoNature. Une fois les 
+    Dans ce nouveau formulaire, téléverser le fichier contenant les données que vous souhaitez importer. À ce jour, seul le format de fichier CSV est accepté par GeoNature. Une fois les 
     champs remplis, cliquez sur le bouton "Suivant". 
-
-    .. note:: 
-            Si aucun jeu de données n'apparait dans la liste déroulante, vérifier que le jeu de données souhaité est bien activé et associé à la destination souhaitée.
 
     .. image:: images/import/import_steps/02_upload_file.png
 
@@ -64,28 +60,49 @@ paramètres seront automatiquement détectés par GeoNature. Une fois, les champ
     
     .. image:: images/import/import_steps/04_02_mapping_cols_validate.png
 
+    .. note::
+        Depuis GeoNature 2.17.0, il est possible de définir une valeur fixe pour un champ plutôt que d'y faire correspondre une colonne du fichier source. Pour cela, il suffit de cliquer sur le bouton à droite du formulaire et de renseigner la valeur fixée souhaitée, qui sera alors appliquée à toutes les données importées.
+        En fonction du type de données associé au champ (observateur, date, nombre, taxon, jeu de données, nomenclature, etc.), un formulaire adapté sera affiché.
+
+        .. image:: images/import/import_steps/04_03_mapping_fix_value.png
+
+
 6.  Si des champs de nomenclatures ont été mappés, chaque valeur distincte présente dans le fichier doit être mise en correspondance avec une nomenclature présente dans la base de données.
     Tout comme le mapping des colonnes, vous pouvez utiliser un mapping de valeur existant ou créer un nouveau.
     Une fois la correspondance terminée, cliquez sur le bouton "Suivant".
 
     .. image:: images/import/import_steps/05_mapping_value.png
 
+7.  Si le paramètre ``ALLOW_VALUE_MAPPING`` dans la configuration (section ``[IMPORT]``) est activé, il est possible de mettre en correspondance les noms des observateurs 
+    trouvés dans le fichier source avec les utilisateurs de la base de données. 
+    
+    Un premier mapping est effectué automatiquement en comparant les noms d'observateurs dans le fichier
+    source avec les noms complets des utilisateurs de la base de données. Si aucun utilisateur n'a été trouvé, plusieurs solutions sont envisageables :
+     
+    - Créer un nouvel utilisateur et revenir sur l'import pour faire la mise en correspondance.
+    - Ne pas faire de correspondance, dans ce cas, cet observateur sera uniquement indiqué dans le champ texte de l'entité (pour une observation dans la Synthèse, ``gn_synthese.synthese.observers``).
+    - L'utilisateur existe mais le processus de mise en correspondance automatique n'a pas fonctionné. Dans ce cas, sélectionner l'utilisateur ciblé.
 
-7. Pour pouvoir importer les données présentes dans le fichier source, il est nécessaire d'
+    .. image:: images/import/import_steps/user_mapping_01.png
+
+    .. danger::
+        **Le proccessus de mise en correspondance automatique n'est pas infaillible ! Il est important de vérifier que les correspondances soient correctes.**
+
+8. Pour pouvoir importer les données présentes dans le fichier source, il est nécessaire d'
 effectuer des contrôles sur les données : vérification des types, vérification des formats de données (dates),
 vérification de cohérence de données (date début < date fin), etc. Pour lancer, le contrôle de données cliquez
 sur le bouton "Lancer la vérification".
 
     .. image:: images/import/import_steps/06_01_control_data.png
 
-8. Une fois la vérification des données effectuée, un aperçu des données valides ainsi que leur emprise spatiale (*bounding box*) sont affichés.
+9. Une fois la vérification des données effectuée, un aperçu des données valides ainsi que leur emprise spatiale (*bounding box*) sont affichés.
    Si des erreurs sont présentes dans les données, un bouton "Rapport d'import/erreurs/avertissement" permet d'afficher les erreurs et d'ajuster votre fichier source ou les paramètres de l'import.
    De plus, il est possible de télécharge un fichier contenant unique les lignes contenant des erreurs.
    Si l'aperçu des données qui seront importées vous convient, cliquez sur le bouton "Importer les [n] entités valides".
 
     .. image:: images/import/import_steps/06_02_import_part1.png
 
-9.  Une fois l'import terminé, un rapport récapitulatif est affiché avec les différents paramètres
+10.  Une fois l'import terminé, un rapport récapitulatif est affiché avec les différents paramètres
 de l'import mais aussi plusieurs indicateurs statistiques sous forme de tableau et de graphique(s).
 Il est aussi possible d'exporter une version PDF de ce rapport.
 

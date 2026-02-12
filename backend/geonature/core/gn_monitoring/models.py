@@ -45,6 +45,10 @@ cor_visit_observer = DB.Table(
 )
 
 
+class CorVisitObserver(DB.Model):
+    __table__ = cor_visit_observer
+
+
 cor_site_module = DB.Table(
     "cor_site_module",
     DB.Column(
@@ -174,6 +178,8 @@ class TBaseVisits(DB.Model):
         foreign_keys=[id_dataset],
     )
 
+    id_import = DB.Column(DB.Integer, nullable=True)
+
 
 @serializable
 @geoserializable(geoCol="geom", idCol="id_base_site")
@@ -192,6 +198,7 @@ class TBaseSites(DB.Model):
     base_site_code = DB.Column(DB.Unicode)
     first_use_date = DB.Column(DB.DateTime)
     geom = DB.Column(Geometry("GEOMETRY", 4326))
+    geom_local = DB.Column(Geometry("GEOMETRY"))
     uuid_base_site = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
 
     meta_create_date = DB.Column(DB.DateTime)
@@ -216,6 +223,8 @@ class TBaseSites(DB.Model):
         secondaryjoin=(cor_site_module.c.id_module == TModules.id_module),
         foreign_keys=[cor_site_module.c.id_base_site, cor_site_module.c.id_module],
     )
+
+    id_import = DB.Column(DB.Integer, nullable=True)
 
 
 corIndividualModule = DB.Table(
@@ -249,7 +258,7 @@ class TObservations(DB.Model):
     cd_nom = DB.Column(DB.Integer, DB.ForeignKey("taxonomie.taxref.cd_nom"), nullable=False)
     comments = DB.Column(DB.String)
     uuid_observation = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
-
+    id_import = DB.Column(DB.Integer, nullable=True)
     id_individual = DB.Column(DB.ForeignKey("gn_monitoring.t_individuals.id_individual"))
 
 

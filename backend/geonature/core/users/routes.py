@@ -13,20 +13,26 @@ from flask import (
 )
 from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.users.models import CorRole, VUserslistForallMenu
+from geonature.core.users.models import VUserslistForallMenu
 from geonature.core.users.register_post_actions import (
     execute_actions_after_validation,
     send_email_for_recovery,
     validate_temp_user,
+    send_email_for_mail_change,
+    send_email_to_old_mail,
 )
-from geonature.utils.config import config
 from geonature.utils.env import DB, db
 from pypnusershub.db.models import Application, Organisme, User, UserList
+from pypnusershub.organisms_manager import (
+    insert_or_update_organism,
+    delete_organism as delete_organism_db,
+)
 from pypnusershub.auth import user_manager
-from sqlalchemy import and_, select
-from sqlalchemy.sql import and_
+
+from sqlalchemy import and_, select, func
 from utils_flask_sqla.response import json_resp
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
+from werkzeug.datastructures import MultiDict
 
 routes = Blueprint("users", __name__, template_folder="templates")
 log = logging.getLogger()
@@ -52,8 +58,9 @@ organism_fields = {
 
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
+@routes.route("/menu/", methods=["GET"])
 @json_resp
-def get_roles_by_menu_id(id_menu):
+def get_roles_by_menu_id(id_menu=None):
     """
     Returns the list of roles associated with a menu
 
@@ -64,16 +71,19 @@ def get_roles_by_menu_id(id_menu):
     nom_complet : str, optional
         Beginning of complete name of the role
 
-    Returns
-    -------
-    list of dict
-        List of roles associated with the menu
-    """
-    query = select(VUserslistForallMenu).filter_by(id_menu=id_menu)
+    GET parameters
+    --------------
 
-    parameters = request.args
-    nom_complet = parameters.get("nom_complet")
-    if nom_complet:
+    :param id_menu: the id of user list (utilisateurs.bib_list)
+    :type id_menu: int
+    :query str nom_complet: beginning of complet name of the role
+    """
+    query = select(VUserslistForallMenu).distinct(VUserslistForallMenu.nom_complet)
+
+    if id_menu:
+        query = query.filter_by(id_menu=id_menu)
+
+    if nom_complet := request.args.get("nom_complet"):
         query = query.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
 
     data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
@@ -180,14 +190,29 @@ def get_organismes():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = select(Organisme)
+
+    query = select(Organisme)
+    order_by_cols = []
+
+    if "search" in params:
+        search = params.pop("search")
+        query = query.where(func.word_similarity(Organisme.nom_organisme, search) > 0.7)
+        order_by_cols = [func.word_similarity(Organisme.nom_organisme, search).desc()]
+
     if "orderby" in params:
+        order_params = params["orderby"].split(":")
         try:
-            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
+            order_col = getattr(Organisme.__table__.columns, order_params[0])
+            if len(order_params) > 1:
+                order_col = order_col.asc() if order_params[1] == "asc" else order_col.desc()
+            order_by_cols.append(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(q).all()]
+    if order_by_cols:
+        query = query.order_by(*order_by_cols)
+    return [
+        organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(query).all()
+    ]
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])
@@ -221,8 +246,75 @@ def get_organismes_jdd():
     ]
 
 
+@routes.route("/organism/<int:id_organisme>", methods=["GET"])
+@permissions.login_required
+@json_resp
+def get_organism(id_organisme):
+    """
+    Get complete organism details by ID
+
+    .. :quickref: User;
+
+    Returns:
+        dict: Complete organism information including all fields
+    """
+    organism = DB.session.get(Organisme, id_organisme)
+    if not organism:
+        raise NotFound("Organism not found")
+
+    return organism.as_dict()
+
+
+@routes.route("/organism", methods=["POST"])
+@permissions.check_cruved_scope("C", module_code="GEONATURE", object_code="ORGANISM")
+@json_resp
+def create_organism() -> dict:
+    """
+    Create a new organism
+
+    .. :quickref: User;
+
+    Request body should contain:
+    - nom_organisme (required): organism name
+    - adresse_organisme (optional): address
+    - cp_organisme (optional): postal code
+    - ville_organisme (optional): city
+    - tel_organisme (optional): telephone
+    - fax_organisme (optional): fax
+    - email_organisme (optional): email
+    - url_organisme (optional): website URL
+    - url_logo (optional): logo URL
+
+    Returns:
+        dict: The created organism with its ID
+    """
+    data = request.get_json()
+
+    if not data.get("nom_organisme"):
+        raise BadRequest("Organism name is required")
+
+    new_organism = {
+        "nom_organisme": data.get("nom_organisme"),
+        "adresse_organisme": data.get("adresse_organisme"),
+        "cp_organisme": data.get("cp_organisme"),
+        "ville_organisme": data.get("ville_organisme"),
+        "tel_organisme": data.get("tel_organisme"),
+        "fax_organisme": data.get("fax_organisme"),
+        "email_organisme": data.get("email_organisme"),
+        "url_organisme": data.get("url_organisme"),
+        "url_logo": data.get("url_logo"),
+    }
+
+    try:
+        new_organism_add = insert_or_update_organism(new_organism)
+        return new_organism_add
+    except Exception as e:
+        log.error(f"Error creating organism: {str(e)}")
+        raise InternalServerError(f"Error creating organism: {str(e)}")
+
+
 ###################################
-### ACCOUNT_MANAGEMENT ROUTES #####
+### ACCOUNT_MANAGEMENT ROUTES #####
 ###################################
 
 
@@ -435,3 +527,49 @@ def new_password():
     except user_manager.PrintableException as printable_exception:
         raise BadRequest(str(printable_exception))
     return {"message": "Password changed with success"}, 200
+
+
+@routes.route("/mail/change", methods=["PUT"])
+@json_resp
+@check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
+def new_mail():
+    """
+    Send a mail to the user with a link to confirm his new mail address
+    """
+    user = g.current_user
+    data = request.get_json()
+
+    new_mail = data.get("new_mail", None)
+
+    if not new_mail:
+        raise BadRequest("No new mail provided")
+
+    send_email_for_mail_change(new_mail, user)
+
+    return {"message": f"Confirmation mail sent to {new_mail}"}, 200
+
+
+@routes.route("/mail/new", methods=["PUT"])
+@json_resp
+@check_sign_up_enabled("ENABLE_USER_MANAGEMENT")
+def confirm_new_mail():
+    """
+    Change the email address of the user.
+
+    Notes
+    -----
+    Not required but this route is meant to be called after the `new mail` route.
+    """
+    user = g.current_user
+    data = MultiDict(request.get_json())
+
+    new_mail = data.get("new_mail", default=None)
+    user_id = data.get("user", default=None, type=int)
+    if not new_mail:
+        raise BadRequest("No new mail provided")
+
+    if not user.id_role == user_id:
+        raise BadRequest(f"User id does not match user connected {user.id_role} != {user_id}")
+    send_email_to_old_mail(user)
+    user_manager.change_mail(user.id_role, new_mail)
+    return {"message": f"Mail successfully changed"}, 200
