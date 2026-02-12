@@ -91,6 +91,7 @@ def get_observations_last_validations(permissions):
             db.session.execute(selectable).all(),
             geom_field="the_geom_4326",
             nest_properties=True,
+            id_field="id_synthese",
         )
     )
 
