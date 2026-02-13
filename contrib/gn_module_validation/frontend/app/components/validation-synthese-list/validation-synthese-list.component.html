@@ -212,7 +212,7 @@
       ngx-datatable-cell-template
     >
       <div
-        *ngIf="row.profile"
+        *ngIf="row.profile && row.profile.score"
         [ngSwitch]="row.profile.score"
       >
         <mat-chip
@@ -252,7 +252,7 @@
           {{ row.profile.score }}/3
         </mat-chip>
       </div>
-      <div *ngIf="!row.profile">
+      <div *ngIf="!row.profile || !row.profile.score">
         <mat-chip
           class="chip-disabled"
           container="body"
