@@ -8,8 +8,26 @@ OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 OS_BITS="$(getconf LONG_BIT)"
 BASE_DIR=$(readlink -e "${0%/*}")
-export GEONATURE_DIR="${HOME}/geonature"
-export USERSHUB_DIR="${HOME}/usershub"
+
+if [ -n "${install_root_dir}" ]; then
+    install_root_dir="${install_root_dir%/}"
+fi
+
+if [ -n "${geonature_dir}" ]; then
+    export GEONATURE_DIR="${geonature_dir%/}"
+elif [ -n "${install_root_dir}" ]; then
+    export GEONATURE_DIR="${install_root_dir}/geonature"
+else
+    export GEONATURE_DIR="${HOME}/geonature"
+fi
+
+if [ -n "${usershub_dir}" ]; then
+    export USERSHUB_DIR="${usershub_dir%/}"
+elif [ -n "${install_root_dir}" ]; then
+    export USERSHUB_DIR="${install_root_dir}/usershub"
+else
+    export USERSHUB_DIR="${HOME}/usershub"
+fi
 
 
 # Test the server architecture
@@ -71,7 +89,9 @@ sudo systemctl restart apache2 || exit 1
 # Installing GeoNature with current user
 if [ ! -d "${GEONATURE_DIR}" ]; then
     echo "Téléchargement et installation de GeoNature ..."
-	cd "${HOME}"
+    sudo mkdir -p "$(dirname "${GEONATURE_DIR}")"
+    sudo chown "$(id -u):$(id -g)" "$(dirname "${GEONATURE_DIR}")"
+    cd "$(dirname "${GEONATURE_DIR}")"
     if [ "${mode}" = "dev" ]; then
         git clone https://github.com/PnX-SI/GeoNature "${GEONATURE_DIR}"
         cd "${GEONATURE_DIR}"
@@ -148,7 +168,9 @@ fi
 if [ "$install_usershub_app" = true ]; then
     if [ ! -d "${USERSHUB_DIR}" ]; then
         echo "Installation de l'application Usershub"
-        cd "${HOME}"
+        sudo mkdir -p "$(dirname "${USERSHUB_DIR}")"
+        sudo chown "$(id -u):$(id -g)" "$(dirname "${USERSHUB_DIR}")"
+        cd "$(dirname "${USERSHUB_DIR}")"
         if [ "${mode}" = "dev" ]; then
             git clone https://github.com/PnX-SI/UsersHub "${USERSHUB_DIR}" || exit 1
             cd "${USERSHUB_DIR}"

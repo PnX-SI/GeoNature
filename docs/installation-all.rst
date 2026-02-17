@@ -46,8 +46,11 @@ Configuration
   * ``my_url`` : l'URL (ou IP) de votre serveur (avec un ``/`` à la fin)
   * ``user_pg`` : l'utilisateur PostgreSQL que vous souhaitez voir créé
   * ``user_pg_pass`` : mot de passe de l'utilisateur PostgreSQL
+  * ``install_root_dir`` : racine d'installation des applications (recommandé : ``/opt``)
   
   Le script se chargera d'installer PostgreSQL, de crééer la base de donnée et de créer l'utilisateur que vous avez renseigné. 
+  Les répertoires d'installation effectifs sont ``geonature_dir`` et ``usershub_dir`` (déduits de ``install_root_dir`` par défaut).
+  NVM est installé en partagé système dans ``/usr/local/nvm`` par ``00_install_nvm.sh``.
 
 * Variable ``mode``
 
@@ -95,8 +98,8 @@ Si vous rencontrez une erreur, se reporter aux fichiers de logs ``/home/`whoami`
 
     Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (``/etc/apache2/sites-available/geonature.conf``) en modifiant l'alias :
 
-    - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
-    - Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
+    - Pour ``/``: ``Alias / /opt/geonature/frontend/dist``
+    - Pour ``/saisie`` : ``Alias /saisie /opt/geonature/frontend/dist``
 
 .. note::
 
