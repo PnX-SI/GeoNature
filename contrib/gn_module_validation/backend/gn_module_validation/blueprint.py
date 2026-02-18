@@ -1,5 +1,6 @@
 import logging
 
+from apptax.taxonomie.models import TaxrefTree
 from flask import Blueprint, request, jsonify, g
 from werkzeug.exceptions import BadRequest, Forbidden
 import sqlalchemy as sa
@@ -163,11 +164,16 @@ def get_validations(permissions):
         raise BadRequest("Pagination required: 'page' and 'per_page' must be positive integers")
 
     # Build query
-    query = build_validations_query(params)
+    query, initial_joins = build_validations_query(params)
 
-    # Apply filters
-    selectable = SyntheseQuery(Synthese, query, params)
-    filtered_query = selectable.filter_query_all_filters(g.current_user, permissions)
+    selectable = SyntheseQuery(
+        Synthese,
+        query,
+        params,
+        query_joins=initial_joins,
+    )
+    selectable.apply_all_filters(g.current_user, permissions)
+    filtered_query = selectable.build_query()
 
     # Apply sorting
     params["order_by"] = params.get("order_by", "validation_date")
