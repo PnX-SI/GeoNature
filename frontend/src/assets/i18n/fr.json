@@ -507,9 +507,9 @@
       "Title": "Correspondance des champs avec le modèle",
       "MappingName": "Nom du modèle",
       "Messages": {
-        "SourceFieldsMapped": "{{ mappedFieldsLength }} champs cibles ont été associés à un champs source.",
-        "SourceFieldsAllMapped": "L'ensemble des {{ sourceFieldsLength }} champs du fichier d’import ont été associés à un champs cible.",
-        "SourceFieldsUnmapped": "{{ unmappedFieldsLength }} champs du fichier d’import ne sont actuellement associés à aucun champs cible et seront donc ignorés.",
+        "SourceFieldsMapped": "{{ mappedFieldsLength }} champs cibles ont été associés à un champ source.",
+        "SourceFieldsAllMapped": "L'ensemble des {{ sourceFieldsLength }} champs du fichier d’import ont été associés à un champ cible.",
+        "SourceFieldsUnmapped": "{{ unmappedFieldsLength }} champs du fichier d’import ne sont actuellement associés à aucun champ cible et seront donc ignorés.",
         "MappingNameWarning": "Un nom doit être renseigné pour pouvoir créer un modèle",
         "MappingChangeNameWarning": "Changer de nom pour pouvoir enregistrer le modèle",
         "SinpUUIDWarning": "Attention les identifiants SINP ne seront pas générés",
