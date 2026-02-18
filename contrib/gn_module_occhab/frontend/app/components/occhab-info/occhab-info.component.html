@@ -16,7 +16,7 @@
           mat-mini-fab
           class="button-success float-right"
           type="button"
-          [disabled]="station?.properties.cruved.U == false"
+          [disabled]="station?.properties.cruved.U == false || !station.properties.dataset.acquisition_framework.opened"
           [routerLink]="['/occhab/edit', station?.id]"
         >
           <mat-icon>edit</mat-icon>

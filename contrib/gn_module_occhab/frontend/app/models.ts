@@ -13,6 +13,7 @@ export interface Station {
   id_station?: number;
   habitats: Array<OccurenceHabitat>;
   cruved: CRUVED;
+  dataset: any;
 }
 
 export interface StationFeature {
