@@ -81,7 +81,7 @@ def list_stations(scope):
         joinedload(Station.observers).options(joinedload(User.organisme)),
         joinedload(Station.dataset).options(*joinedload_when_scope),
     )
-    only = ["observers", "dataset", "+cruved"]
+    only = ["observers", "dataset", "+cruved", "dataset.acquisition_framework.opened"]
     if request.args.get("habitats", default=False, type=int):
         only.extend(
             [

@@ -169,7 +169,7 @@
                 <button
                   class="btn btn-row"
                   [routerLink]="['edit', row.id_station]"
-                  [disabled]="!row.cruved.U"
+                  [disabled]="!row.cruved.U || !row.dataset.acquisition_framework.opened"
                 >
                   <i
                     class="fa fa-pencil-square-o"
