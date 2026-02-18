@@ -47,6 +47,7 @@ Configuration
   * ``user_pg`` : l'utilisateur PostgreSQL que vous souhaitez voir créé
   * ``user_pg_pass`` : mot de passe de l'utilisateur PostgreSQL
   * ``install_root_dir`` : racine d'installation des applications (recommandé : ``/opt``)
+  * ``app_user`` / ``app_group`` : utilisateur et groupe propriétaires des dossiers applicatifs (laisser vide pour utiliser l'utilisateur courant)
   
   Le script se chargera d'installer PostgreSQL, de crééer la base de donnée et de créer l'utilisateur que vous avez renseigné. 
   Les répertoires d'installation effectifs sont ``geonature_dir`` et ``usershub_dir`` (déduits de ``install_root_dir`` par défaut).

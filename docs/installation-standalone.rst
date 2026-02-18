@@ -37,9 +37,10 @@ Récupération de l'application
 
   .. code:: shell 
 
-    sudo mkdir -p /opt
-    sudo chown `whoami`:`whoami` /opt
-    mv GeoNature-X.Y.Z /opt/geonature/
+    sudo mkdir -p /opt/geonature
+    sudo chown <app_user>:<app_group> /opt/geonature
+    cp -a GeoNature-X.Y.Z/. /opt/geonature/
+    rm -rf GeoNature-X.Y.Z
     cd /opt/geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
