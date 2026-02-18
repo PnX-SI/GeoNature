@@ -16,6 +16,7 @@ import { OccHabModalDownloadComponent } from './components/occhab-map-list/modal
 import { OcchabInfoComponent } from './components/occhab-info/occhab-info.component';
 import { ModalDeleteStation } from './components/delete-modal/delete-modal.component';
 import { OccHabDatasetMapOverlayComponent } from './components/occhab-map-form/dataset-map-overlay/dataset-map-overlay.component';
+import { IsAcquisitionFrameworkOpened } from './guards/is-acquisition-framework-opened.guard';
 import { StationResolver } from './resolvers/station.resolver';
 import { ConfigService } from '@geonature/services/config.service';
 import { CustomTranslateLoader } from '@geonature/shared/translate/custom-loader';
@@ -32,6 +33,7 @@ const routes: Routes = [
   {
     path: 'edit/:id_station',
     component: OccHabFormComponent,
+    canActivate: [IsAcquisitionFrameworkOpened],
     resolve: { station: StationResolver },
   },
   {
@@ -66,7 +68,13 @@ const routes: Routes = [
     NgbModule,
   ],
   entryComponents: [OccHabModalDownloadComponent],
-  providers: [OccHabDataService, OcchabStoreService, OccHabMapListService, StationResolver],
+  providers: [
+    OccHabDataService,
+    OcchabStoreService,
+    OccHabMapListService,
+    StationResolver,
+    IsAcquisitionFrameworkOpened,
+  ],
   bootstrap: [],
 })
 export class GeonatureModule {

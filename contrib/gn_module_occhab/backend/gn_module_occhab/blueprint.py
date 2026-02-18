@@ -162,6 +162,7 @@ def get_station(id_station, scope):
         *[f"habitats.{nomenclature}" for nomenclature in OccurenceHabitat.__nomenclatures__],
         "habitats.habref",
         "+cruved",
+        "dataset.acquisition_framework.opened",
     ]
     station_schema = StationSchema(as_geojson=True, only=only)
     return geojsonify(station_schema.dump(station))

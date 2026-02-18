@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { StationFeature, StationFeatureCollection } from '../models';
 
@@ -69,5 +70,11 @@ export class OccHabDataService {
       }
     );
     this._gnDataService.subscribeAndDownload(sub, 'export_hab', export_format);
+  }
+
+  isAcquisitionFrameworkOpened(stationId: string) {
+    return this._http
+      .get<StationFeature>(`${this.OCCHAB_API}/stations/${stationId}/`)
+      .pipe(map((station: any) => station.properties.dataset.acquisition_framework.opened));
   }
 }
