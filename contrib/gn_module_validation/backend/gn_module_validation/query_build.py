@@ -384,18 +384,21 @@ def build_validations_query(params: Dict):
     # Build query
     query = (
         sa.select(selected_fields)
-        .select_from(TValidations)
-        .join(Synthese, TValidations.uuid_attached_row == Synthese.unique_id_sinp)
+        .where(TValidations.validation_auto == False)
+        .where(TDatasets.validable == True)
+    )
+    initial_joins = (
+        Synthese.__table__.join(
+            TValidations, TValidations.uuid_attached_row == Synthese.unique_id_sinp
+        )
         .join(TDatasets, Synthese.id_dataset == TDatasets.id_dataset)
         .join(
             TNomenclatures,
             TValidations.id_nomenclature_valid_status == TNomenclatures.id_nomenclature,
         )
-        .where(TValidations.validation_auto == False)
-        .where(TDatasets.validable == True)
     )
 
     if "user_info" in requested_fields:
-        query = query.join(*fields_config["user_info"][:2])
+        initial_joins = initial_joins.join(User, TValidations.id_validator == User.id_role)
 
-    return query
+    return query, initial_joins

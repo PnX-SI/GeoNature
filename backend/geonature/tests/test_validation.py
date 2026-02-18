@@ -1,3 +1,6 @@
+from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_permissions.models import PermAction, Permission
+from pypnusershub.db.models import User
 import pytest
 from datetime import datetime, timedelta
 from uuid import uuid4
@@ -65,6 +68,31 @@ def validation_status_nomenclatures():
         .where(TNomenclatures.active == True)
     ).all()
     return {nom.mnemonique: nom for nom in nomenclatures}
+
+
+@pytest.fixture()
+def validation_module():
+    return TModules.query.filter_by(module_code="VALIDATION").one()
+
+
+@pytest.fixture()
+def add_validation_read_permissions(validation_module):
+    """Fixture to add read permissions on validation module."""
+
+    def _add_validation_read_permissions(role, scope_value, action="R", **kwargs):
+        action = PermAction.query.filter_by(code_action=action).one()
+        perm = Permission(
+            role=role,
+            action=action,
+            module=validation_module,
+            scope_value=scope_value,
+            **kwargs,
+        )
+        with db.session.begin_nested():
+            db.session.add(perm)
+        return perm
+
+    return _add_validation_read_permissions
 
 
 @pytest.fixture()
@@ -491,6 +519,63 @@ class TestValidationRoutes:
 
         assert response.status_code == 200
 
+    def test_get_observations_with_geo_permissions_filter(
+        self, users, synthese_data, add_validation_read_permissions
+    ):
+        """Test observations retrieval with geo permissions filter."""
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        chambery = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Chambéry")
+        ).scalar_one()
+        guirec = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Perros-Guirec")
+        ).scalar_one()
+        add_validation_read_permissions(
+            user,
+            scope_value=None,
+            action="C",
+            areas_filter=[chambery, guirec],
+        )
+
+        set_logged_user(self.client, user)
+
+        response = self.client.get(url_for("validation.get_observations_last_validations"))
+        assert response.status_code == 200
+
+    def test_get_observations_with_taxon_permissions_filter(
+        self, users, synthese_data, add_validation_read_permissions
+    ):
+        """Test observations retrieval with taxon permissions filter."""
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        taxon1 = synthese_data["obs1"].taxref
+        taxon2 = synthese_data["obs2"].taxref
+        add_validation_read_permissions(
+            user,
+            scope_value=None,
+            taxons_filter=[taxon1, taxon2],
+            action="C",
+        )
+
+        set_logged_user(self.client, user)
+
+        response = self.client.get(url_for("validation.get_observations_last_validations"))
+        data = response.json
+        assert (
+            len(
+                [
+                    feature
+                    for feature in data["features"]
+                    if feature["properties"]["taxref"]["cd_nom"] in [taxon1.cd_nom, taxon2.cd_nom]
+                ]
+            )
+            >= 2
+        )
+        assert response.status_code == 200
+
     # ============================================================================
     # GET / - Tests for get_validations
     # ============================================================================
@@ -651,6 +736,63 @@ class TestValidationRoutes:
         # Verify total is consistent
         if response_page1.json["total"] > 0:
             assert response_page1.json["total"] == response_page2.json["total"]
+
+    def test_get_validations_with_geo_permissions_filter(
+        self, users, synthese_data, add_validation_read_permissions
+    ):
+        """Test validations retrieval with geo permissions filter."""
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        chambery = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Chambéry")
+        ).scalar_one()
+        guirec = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Perros-Guirec")
+        ).scalar_one()
+        add_validation_read_permissions(
+            user,
+            scope_value=None,
+            action="C",
+            areas_filter=[chambery, guirec],
+        )
+
+        set_logged_user(self.client, user)
+
+        response = self.client.get(url_for("validation.get_observations_last_validations"))
+        assert response.status_code == 200
+
+    def test_get_validations_with_taxon_permissions_filter(
+        self, users, synthese_data, add_validation_read_permissions
+    ):
+        """Test validations retrieval with taxa permissions filter."""
+        with db.session.begin_nested():
+            user = User()
+            db.session.add(user)
+        taxon1 = synthese_data["obs1"].taxref
+        taxon2 = synthese_data["obs2"].taxref
+        add_validation_read_permissions(
+            user,
+            scope_value=None,
+            taxons_filter=[taxon1, taxon2],
+            action="C",
+        )
+
+        set_logged_user(self.client, user)
+
+        response = self.client.get(url_for("validation.get_observations_last_validations"))
+        data = response.json
+        assert (
+            len(
+                [
+                    feature
+                    for feature in data["features"]
+                    if feature["properties"]["taxref"]["cd_nom"] in [taxon1.cd_nom, taxon2.cd_nom]
+                ]
+            )
+            >= 2
+        )
+        assert response.status_code == 200
 
     # ============================================================================
     # GET /statusNames - Tests for get_status_names
