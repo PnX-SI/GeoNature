@@ -28,6 +28,9 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { OcctaxFormMapService } from './occtax-form/map/occtax-map.service';
 import { OcctaxFormParamService } from './occtax-form/form-param/form-param.service';
 
+// Guards
+import { IsAcquisitionFrameworkOpened } from './guards/is-acquisition-framework-opened.guard';
+
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ConfigService } from '@geonature/services/config.service';
@@ -47,10 +50,12 @@ const routes: Routes = [
       {
         path: 'releve/:id',
         component: OcctaxFormReleveComponent,
+        canActivate: [IsAcquisitionFrameworkOpened],
       },
       {
         path: ':id/taxons',
         component: OcctaxFormOccurrenceComponent,
+        canActivate: [IsAcquisitionFrameworkOpened],
       },
     ],
   },
@@ -97,7 +102,13 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     OcctaxProfilesComponent,
     OcctaxFormParamDialog,
   ],
-  providers: [OcctaxDataService, MapListService, OcctaxFormMapService, OcctaxFormParamService],
+  providers: [
+    OcctaxDataService,
+    MapListService,
+    OcctaxFormMapService,
+    OcctaxFormParamService,
+    IsAcquisitionFrameworkOpened,
+  ],
 })
 export class GeonatureModule {
   constructor(

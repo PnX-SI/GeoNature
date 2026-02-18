@@ -190,7 +190,7 @@
               <button
                 class="btn btn-row"
                 [routerLink]="['form/releve', row.id_releve_occtax]"
-                [disabled]="!row.rights.U"
+                [disabled]="!row.rights.U || !row.dataset.acquisition_framework.opened"
                 data-qa="edit-releve"
               >
                 <i

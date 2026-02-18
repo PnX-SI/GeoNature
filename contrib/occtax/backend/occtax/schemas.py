@@ -3,12 +3,15 @@ from datetime import datetime
 from flask import current_app, g
 from marshmallow import pre_load, post_load, pre_dump, post_dump, fields, ValidationError
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
+from marshmallow_sqlalchemy.schema import SQLAlchemyAutoSchema
 from shapely.geometry import shape
 from geoalchemy2.shape import to_shape, from_shape
 from geoalchemy2.types import Geometry as GeometryType
 from geojson import Feature, FeatureCollection
 
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
+from utils_flask_sqla.schema import SmartRelationshipsMixin
+from geonature.utils.schema import CruvedSchemaMixin
 
 from geonature.utils.env import MA
 from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccurrence
@@ -112,7 +115,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
         allow_none=config.get("OCCTAX", {}).get("observers_txt", True),
     )
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
-    dataset = MA.Nested(DatasetSchema, dump_only=True)
+    dataset = MA.Nested(DatasetSchema(only=["acquisition_framework"]), dump_only=True)
     habitat = MA.Nested(HabrefSchema, dump_only=True)
 
     @pre_load

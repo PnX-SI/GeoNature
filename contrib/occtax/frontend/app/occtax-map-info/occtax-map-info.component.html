@@ -37,7 +37,7 @@
                       color="primary"
                       matTooltip="Editez le relevé {{ id }}"
                       class="float-right mr-2"
-                      [disabled]="userReleveCruved?.U == false"
+                      [disabled]="userReleveCruved?.U == false || !releve.dataset.acquisition_framework.opened"
                       (click)="goToEdit(id)"
                     >
                       <mat-icon>edit</mat-icon>

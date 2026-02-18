@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -73,5 +74,13 @@ export class OcctaxDataService {
     return this._api.delete(
       `${this.config.API_ENDPOINT}/occtax/${this.currentModule.module_code}/occurrence/${id}`
     );
+  }
+
+  isAcquisitionFrameworkOpened(releveId: string) {
+    return this._api
+      .get<any>(
+        `${this.config.API_ENDPOINT}/occtax/${this.currentModule.module_code}/releve/${releveId}`
+      )
+      .pipe(map((releve: any) => releve.releve.properties.dataset.acquisition_framework.opened));
   }
 }

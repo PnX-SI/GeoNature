@@ -87,7 +87,9 @@ def getReleves(scope):
         Load(TRelevesOccurrence).raiseload("*"),
         joinedload(TRelevesOccurrence.observers),
         joinedload(TRelevesOccurrence.digitiser),
-        joinedload(TRelevesOccurrence.dataset),
+        joinedload(TRelevesOccurrence.dataset).options(
+            joinedload(TDatasets.acquisition_framework),
+        ),
         joinedload(TRelevesOccurrence.t_occurrences_occtax).options(
             joinedload(TOccurrencesOccurrence.taxref),
             joinedload(TOccurrencesOccurrence.cor_counting_occtax),
@@ -130,6 +132,7 @@ def getReleves(scope):
                 "observers",
                 "digitiser",
                 "dataset",
+                "dataset.acquisition_framework",
                 "t_occurrences_occtax.cor_counting_occtax.medias",
             ]
         )
@@ -198,8 +201,29 @@ def getOneReleve(id_releve, scope):
     :returns: Return a releve with its attached Cruved
     :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}`
     """
-    releveCruvedSchema = ReleveCruvedSchema()
-    releve = db.get_or_404(TRelevesOccurrence, id_releve)
+    releve = (
+        db.session.scalars(
+            select(TRelevesOccurrence)
+            .options(
+                raiseload("*"),
+                joinedload(TRelevesOccurrence.t_occurrences_occtax).options(
+                    joinedload(TOccurrencesOccurrence.cor_counting_occtax).options(
+                        joinedload(CorCountingOccurrence.medias)
+                    ),
+                    joinedload(TOccurrencesOccurrence.taxref),
+                ),
+                joinedload(TRelevesOccurrence.observers),
+                joinedload(TRelevesOccurrence.digitiser),
+                joinedload(TRelevesOccurrence.habitat),
+                joinedload(TRelevesOccurrence.dataset).options(
+                    joinedload(TDatasets.acquisition_framework),
+                ),
+            )
+            .where(TRelevesOccurrence.id_releve_occtax == id_releve)
+        )
+        .unique()
+        .one_or_none()
+    )
     if not releve.has_instance_permission(scope):
         raise Forbidden()
 
@@ -212,7 +236,7 @@ def getOneReleve(id_releve, scope):
         "cruved": releve.get_releve_cruved(),
     }
 
-    return releveCruvedSchema.dump(releve_cruved)
+    return ReleveCruvedSchema().dump(releve_cruved)
 
 
 @blueprint.route("/<module_code>/releve", methods=["POST"])
