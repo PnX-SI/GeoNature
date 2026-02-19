@@ -15,7 +15,7 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 
 # Note: import of SourceSchema is importent as it trigger import of synthese models
-# which define TDatasets.sources & TDatasets.synthese_records_count, and these must be
+# which define [TDatasets.sources, TDatasets.synthese_records_count, TDatasets.nb_observations_habitats, TDatasets.nb_observations], and these must be
 # defined before AutoSchema creation to be known by marshmallow!
 from geonature.core.gn_synthese.schemas import SourceSchema
 from geonature.core.gn_permissions.tools import get_scopes_by_action

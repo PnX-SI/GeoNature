@@ -53,8 +53,11 @@ from geonature.core.gn_commons.models import (
     TModules,
 )
 from geonature.core.gn_permissions.models import Permission
+from geonature.utils.config import config
 from geonature.utils.env import DB, db
 
+if "OCCHAB" in config:
+    from gn_module_occhab.models import OccurenceHabitat, Station
 
 sortable_columns = ["meta_last_action_date"]
 filterable_columns = ["id_synthese", "last_action", "meta_last_action_date"]
@@ -872,10 +875,30 @@ TDatasets.sources = db.relationship(
     secondary=source_subquery,
     viewonly=True,
 )
-TDatasets.synthese_records_count = column_property(
+request_nb_obs_synthese = (
     select(func.count(Synthese.id_synthese))
     .where(Synthese.id_dataset == TDatasets.id_dataset)
     .scalar_subquery()
-    .label("synthese_records_count"),
+)
+TDatasets.synthese_records_count = column_property(
+    request_nb_obs_synthese.label("nb_observations_synthese"),
+    deferred=True,
+)
+request_nb_observations = request_nb_obs_synthese
+if "OCCHAB" in config:
+    request_nb_obs_habitats = (
+        select(func.count("*"))
+        .select_from(OccurenceHabitat)
+        .join(Station)
+        .where(Station.id_dataset == TDatasets.id_dataset)
+        .scalar_subquery()
+    )
+    TDatasets.nb_observations_habitats = column_property(
+        request_nb_obs_habitats.label("nb_observations_habitats"),
+        deferred=True,
+    )
+    request_nb_observations += request_nb_obs_habitats
+TDatasets.nb_observations = column_property(
+    request_nb_observations.label("nb_observations"),
     deferred=True,
 )

@@ -73,7 +73,25 @@
   </ng-template>
 </td>
 <td [attr.data-qa]="'pnx-metadata-jdd-nb-obs-' + dataset.unique_dataset_id">
-  {{ dataset?.synthese_records_count }}
+  {{ dataset?.nb_observations }}
+  <i
+    class="fa fa-line-chart"
+    aria-hidden="true"
+    *ngIf="dataset.nb_observations"
+    [matTooltip]="
+      (dataset?.synthese_records_count
+        ? ('MetaData.ObservationsSyntheseTooltip' | translate) +
+          ': ' +
+          dataset?.synthese_records_count
+        : '') +
+      (dataset?.synthese_records_count && dataset?.nb_observations_habitats ? ' - ' : '') +
+      (dataset?.nb_observations_habitats
+        ? ('MetaData.ObservationsHabitatsTooltip' | translate) +
+          ': ' +
+          dataset?.nb_observations_habitats
+        : '')
+    "
+  ></i>
 </td>
 <td>
   <a

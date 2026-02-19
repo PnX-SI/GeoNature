@@ -263,7 +263,8 @@
     "DataAmount": "Nombre de données",
     "StakeholderOrganization": "Acteur (organisme)",
     "DataSources": "Sources des données",
-
+    "ObservationsSyntheseTooltip": "Synthèse ",
+    "ObservationsHabitatsTooltip": "Habitats ",
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Afficher les données"
