@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, g
 from urllib.parse import urljoin
 
 # nomenclatures fields
@@ -52,7 +52,7 @@ def as_dict_with_add_cols(
     export_view, row, additional_cols_key: str, addition_cols_to_export: list
 ):
     row_as_dict = export_view.as_dict(row)
-    if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
+    if g.module_conf["ADD_MEDIA_IN_EXPORT"]:
         row_as_dict["titreMedia"] = row.titreMedia
         row_as_dict["descMedia"] = row.descMedia
         if row.urlMedia:

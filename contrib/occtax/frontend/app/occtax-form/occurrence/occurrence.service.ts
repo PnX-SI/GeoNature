@@ -18,7 +18,7 @@ import { OcctaxDataService } from '../../services/occtax-data.service';
 import { OcctaxFormParamService } from '../form-param/form-param.service';
 import { OcctaxTaxaListService } from '../taxa-list/taxa-list.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -47,7 +47,7 @@ export class OcctaxFormOccurrenceService {
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private dateParser: NgbDateParserFormatter,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {
     this.initForm();
     this.setObservables();
@@ -166,7 +166,7 @@ export class OcctaxFormOccurrenceService {
           this.form
             .get('digital_proof')
             .setValidators(
-              this.config.OCCTAX.digital_proof_validator
+              this.occtaxConfig.moduleConf.digital_proof_validator
                 ? Validators.pattern('^(http://|https://|ftp://){1}.+$')
                 : []
             );

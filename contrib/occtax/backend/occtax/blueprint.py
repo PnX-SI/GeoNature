@@ -63,6 +63,11 @@ def set_current_module(endpoint, values):
         select(TModules).filter_by(module_code=requested_module),
         description=f"No module name {requested_module}",
     )
+    g.module_conf = (
+        current_app.config["OCCTAX"]
+        if requested_module == "OCCTAX"
+        else current_app.config["OCCTAX"]["MODULE_CONFS"][requested_module]
+    )
 
 
 @blueprint.route("/<module_code>/releves", methods=["GET"])
@@ -610,7 +615,7 @@ def export(scope):
         obs_txt_column=blueprint.config["export_observer_txt_column"],
     )
 
-    if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
+    if g.module_conf["ADD_MEDIA_IN_EXPORT"]:
         q, columns = releve_repository.add_media_in_export(q, columns)
 
     data = db.session.execute(q)

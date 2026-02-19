@@ -39,7 +39,7 @@
         ></mat-slide-toggle>
 
         <button
-          *ngIf="config.OCCTAX.ENABLE_SETTINGS_TOOLS"
+          *ngIf="occtaxConfig.moduleConf.ENABLE_SETTINGS_TOOLS"
           mat-icon-button
           class="setting-btn"
           (click)="openParametersDialog(modalComponent)"
