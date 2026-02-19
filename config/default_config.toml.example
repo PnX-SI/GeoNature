@@ -98,6 +98,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Les espaces présents en début et fin de chaine ainsi qu'avant et
     # après les virgules sont ignorés.
     ERROR_MAIL_TO = ["Prénom NOM <email@email.com>", "email2@email.com"]
+    # GRAPH_API_MAIL_TENANT_ID = "<TENANT_ID>"
+    # GRAPH_API_MAIL_CLIENT_ID = "<CLIENT_ID>"
+    # GRAPH_API_MAIL_CLIENT_SECRET = "<CLIENT_SECRET>"
+    # GRAPH_API_MAIL_SCOPE = "https://graph.microsoft.com/.default"
+
 
 [BDD]
     id_area_type_municipality = 25
