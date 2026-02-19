@@ -100,12 +100,12 @@
                   <div class="value">{{ occurrence?.taxref?.nom_complet }}</div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.determiner">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.determiner">
                   <div class="label">{{ 'Occtax.Taxon.Determiner' | translate }} :</div>
                   <div class="value">{{ occurrence?.determiner || '-' }}</div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.determination_method">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.determination_method">
                   <div class="label">{{ 'Occtax.Taxon.DeterminationMethod' | translate }} :</div>
                   <div class="value">
                     {{
@@ -116,7 +116,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.observation_status">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.observation_status">
                   <div class="label">{{ 'Occtax.Taxon.ObservationStatus' | translate }} :</div>
                   <div class="value">
                     {{
@@ -127,7 +127,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.obs_tech">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.obs_tech">
                   <div class="label">{{ 'Occtax.Taxon.ObsTech' | translate }} :</div>
                   <div
                     class="value"
@@ -141,7 +141,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.bio_condition">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.bio_condition">
                   <div class="label">{{ 'Occtax.Taxon.BiologicalCondition' | translate }} :</div>
                   <div
                     class="value"
@@ -155,7 +155,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.behaviour">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.behaviour">
                   <div class="label">{{ 'Occtax.Taxon.OccBehaviour' | translate }} :</div>
                   <div class="value">
                     {{
@@ -165,7 +165,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.naturalness">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.naturalness">
                   <div class="label">{{ 'Occtax.Taxon.Naturalness' | translate }} :</div>
                   <div class="value">
                     {{
@@ -176,7 +176,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.bio_status">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.bio_status">
                   <div class="label">{{ 'Occtax.Taxon.BiologicalStatus' | translate }} :</div>
                   <div class="value">
                     {{
@@ -187,7 +187,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.source_status">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.source_status">
                   <div class="label">{{ 'Occtax.Taxon.StatusSource' | translate }} :</div>
                   <div class="value">
                     {{
@@ -198,7 +198,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.blurring">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.blurring">
                   <div class="label">{{ 'Occtax.Taxon.Blurring' | translate }} :</div>
                   <div class="value">
                     {{
@@ -208,7 +208,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.exist_proof">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.exist_proof">
                   <div class="label">{{ 'Occtax.Taxon.ExistProof' | translate }} :</div>
                   <div class="value">
                     {{
@@ -226,14 +226,14 @@
                     ) === 1
                   "
                 >
-                  <div *ngIf="this.config.OCCTAX.form_fields.digital_proof">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.digital_proof">
                     <div class="label">{{ 'Occtax.Taxon.DigitalProof' | translate }} :</div>
                     <div class="value">
                       {{ occurrence?.digital_proof || '-' }}
                     </div>
                   </div>
 
-                  <div *ngIf="this.config.OCCTAX.form_fields.non_digital_proof">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.non_digital_proof">
                     <div class="label">{{ 'Occtax.Taxon.NonDigitalProof' | translate }} :</div>
                     <div class="value">
                       {{ occurrence?.non_digital_proof || '-' }}
@@ -241,7 +241,7 @@
                   </div>
                 </ng-container>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.comment_occ">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_occ">
                   <div class="label">{{ 'Comment' | translate }} :</div>
                   <div class="value">{{ occurrence?.comment || '-' }}</div>
                 </div>
@@ -374,7 +374,7 @@
                       {{ counting.unique_id_sinp_occtax }}
                     </div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.life_stage">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.life_stage">
                     <div class="label">{{ 'Occtax.Counting.LifeStage' | translate }} :</div>
                     <div class="value">
                       {{
@@ -383,7 +383,7 @@
                       }}
                     </div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.sex">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.sex">
                     <div class="label">{{ 'Sex' | translate }} :</div>
                     <div class="value">
                       {{
@@ -391,15 +391,15 @@
                       }}
                     </div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.count_min">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.count_min">
                     <div class="label">{{ 'Occtax.Counting.NumberMin' | translate }} :</div>
                     <div class="value">{{ counting.count_min || '-' }}</div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.count_max">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.count_max">
                     <div class="label">{{ 'Occtax.Counting.NumberMax' | translate }} :</div>
                     <div class="value">{{ counting.count_max || '-' }}</div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.obj_count">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.obj_count">
                     <div class="label">{{ 'Occtax.Counting.CountingObject' | translate }} :</div>
                     <div class="value">
                       {{
@@ -408,7 +408,7 @@
                       }}
                     </div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.type_count">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.type_count">
                     <div class="label">{{ 'Occtax.Counting.CountingType' | translate }} :</div>
                     <div class="value">
                       {{

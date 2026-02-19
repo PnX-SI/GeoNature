@@ -5,25 +5,25 @@
 >
   <pnx-marker
     [coordinates]="ms.markerCoordinates"
-    [zoomLevel]="config.OCCTAX['releve_map_zoom_level']"
+    [zoomLevel]="occtaxConfig.moduleConf['releve_map_zoom_level']"
   ></pnx-marker>
 
   <pnx-leaflet-draw
     [geojson]="ms.leafletDrawGeoJson"
     [options]="leafletDrawOptions"
-    [zoomLevel]="config.OCCTAX['releve_map_zoom_level']"
+    [zoomLevel]="occtaxConfig.moduleConf['releve_map_zoom_level']"
   ></pnx-leaflet-draw>
 
   <pnx-leaflet-filelayer
-    *ngIf="config.OCCTAX.ENABLE_UPLOAD_TOOL"
+    *ngIf="occtaxConfig.moduleConf.ENABLE_UPLOAD_TOOL"
     [editMode]="true"
     (onLoad)="infoMessageFileLayer()"
     [style]="{ color: 'green' }"
   ></pnx-leaflet-filelayer>
 
-  <pnx-gps *ngIf="config.OCCTAX.ENABLE_GPS_TOOL"></pnx-gps>
+  <pnx-gps *ngIf="occtaxConfig.moduleConf.ENABLE_GPS_TOOL"></pnx-gps>
 
-  <pnx-places *ngIf="config.OCCTAX.ENABLE_MY_PLACES"></pnx-places>
+  <pnx-places *ngIf="occtaxConfig.moduleConf.ENABLE_MY_PLACES"></pnx-places>
 
-  <pnx-placesList *ngIf="config.OCCTAX.ENABLE_MY_PLACES"></pnx-placesList>
+  <pnx-placesList *ngIf="occtaxConfig.moduleConf.ENABLE_MY_PLACES"></pnx-placesList>
 </pnx-map>
