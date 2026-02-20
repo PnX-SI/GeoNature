@@ -13,6 +13,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { MetadataDataService } from '../services/metadata-data.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TitleCasePipe } from '@librairies/@angular/common';
 
 @Component({
   selector: 'pnx-datasets-card',
@@ -26,6 +27,7 @@ export class DatasetCardComponent implements OnInit {
   public nbObservations: number = null;
   public bbox: any = null;
   public taxs;
+  public stats: any;
 
   @ViewChild(BaseChartDirective, { static: false }) public chart: BaseChartDirective;
 
@@ -71,6 +73,7 @@ export class DatasetCardComponent implements OnInit {
       this.id_dataset = params['id'];
       if (this.id_dataset) {
         this.getData();
+        this.getStats();
       }
     });
   }
@@ -172,5 +175,17 @@ export class DatasetCardComponent implements OnInit {
       },
     };
     this._router.navigate(['/synthese'], navigationExtras);
+  }
+
+  getStats() {
+    this._dfs.getDatasetStats(this.id_dataset).subscribe((res) => (this.stats = res));
+  }
+
+  getObservationCountTooltip(moduleCode) {
+    return `${this.translate.instant('MetaData.Statistics.Occurrences' + TitleCasePipe.prototype.transform(moduleCode))}`;
+  }
+
+  getNumberOfObservationsCountsDetails(dictNbObs) {
+    return Object.keys(dictNbObs).filter((moduleCode) => dictNbObs[moduleCode] > 0).length;
   }
 }

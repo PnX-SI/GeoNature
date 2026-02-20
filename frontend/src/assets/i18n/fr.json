@@ -415,6 +415,10 @@
       "Of": "sur",
       "PreviousPage": "Page précédente",
       "NextPage": "Page suivante"
+    },
+    "Statistics": {
+      "OccurrencesSynthese": "Occurrence(s) de taxon(s)",
+      "OccurrencesOcchab": "Occurrence(s) d'habitat(s)"
     }
   },
   "Filters": {

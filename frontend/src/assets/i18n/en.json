@@ -418,6 +418,10 @@
       "Of": "of",
       "PreviousPage": "Previous page",
       "NextPage": "Next page"
+    },
+    "Statistics": {
+      "OccurrencesSynthese": "Taxon(s) occurrence(s)",
+      "OccurrencesOcchab": "Habitat(s) occurrence(s)"
     }
   },
   "Filters": {
