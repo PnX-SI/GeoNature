@@ -292,7 +292,7 @@
     "Stakeholders": "Stakeholders",
     "DatasetName": "Dataset name",
     "AFName": "Acquisition framework name",
-    "DataAmount": "Amount of data",
+    "CountObservations": "Number of observations",
     "StakeholderOrganization": "Stakeholder (organization)",
     "DataSources": "Data sources",
     "DescriptiveForm": "Descriptive form",

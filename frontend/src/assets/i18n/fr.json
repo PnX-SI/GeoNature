@@ -288,7 +288,7 @@
     "Stakeholders": "Acteurs",
     "DatasetName": "Nom du jeu de données",
     "AFName": "Nom du cadre d'acquisition",
-    "DataAmount": "Nombre de données",
+    "CountObservations": "Nombre d'observations",
     "StakeholderOrganization": "Acteur (organisme)",
     "DataSources": "Sources des données",
     "DescriptiveForm": "Fiche descriptive",
