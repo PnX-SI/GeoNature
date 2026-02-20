@@ -1776,7 +1776,7 @@ Voici un exemple de requête SQL pour remplir la liste 100 avec tous les taxons 
 
 .. code-block:: sql
 
-    INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
+    INSERT INTO taxonomie.cor_nom_liste (id_liste,cd_nom)
     WITH tx as (select cd_nom, cd_ref, nom_vern
     FROM taxonomie.taxref
     WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL',
