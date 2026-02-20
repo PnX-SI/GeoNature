@@ -991,7 +991,7 @@ def publish_acquisition_framework(af_id):
         .select_from(TAcquisitionFramework)
         .where(
             TAcquisitionFramework.id_acquisition_framework == af_id,
-            TAcquisitionFramework.datasets.any(TDatasets.synthese_records.any()),
+            TAcquisitionFramework.datasets.any(TDatasets.nb_observations > 0),
         )
     ).scalar_one()
 
