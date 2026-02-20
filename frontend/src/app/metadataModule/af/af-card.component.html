@@ -90,7 +90,26 @@
                   alt="Icône Donnée"
                 />
                 <span>{{ 'Observations' | translate }}</span>
-                <span class="af-stat-badge__value">{{ stats.nb_observations }}</span>
+                <span class="af-stat-badge__value">{{ stats.total_nb_obs }}</span>
+                <div
+                  class="row mt-2 pt-2 border-top"
+                  *ngIf="stats.total_nb_obs > 0"
+                >
+                  <ng-container *ngFor="let item of stats.dict_nb_obs | keyvalue">
+                    <div
+                      [ngClass]="
+                        getNumberOfObservationsCountsDetails(stats.dict_nb_obs) > 1
+                          ? 'col-' + 12 / getNumberOfObservationsCountsDetails(stats.dict_nb_obs)
+                          : 'col-12'
+                      "
+                      class="text-center"
+                      *ngIf="item.value > 0"
+                    >
+                      <small class="text-muted">{{ getObservationCountTooltip(item.key) }}</small>
+                      <div>{{ item.value }}</div>
+                    </div>
+                  </ng-container>
+                </div>
               </span>
               <span
                 *ngIf="stats.nb_taxons"
@@ -102,17 +121,6 @@
                 />
                 <span>{{ 'Taxons' | translate }}</span>
                 <span class="af-stat-badge__value">{{ stats.nb_taxons }}</span>
-              </span>
-              <span
-                *ngIf="stats.nb_habitats"
-                class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge"
-              >
-                <img
-                  src="./assets/images/Habitat_icon.svg"
-                  alt="Icône Habitat"
-                />
-                <span>{{ 'Habitats' | translate }}</span>
-                <span class="af-stat-badge__value">{{ stats.nb_habitats }}</span>
               </span>
             </div>
           </div>
