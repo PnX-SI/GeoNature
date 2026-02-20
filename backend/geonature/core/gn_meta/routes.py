@@ -113,9 +113,9 @@ def get_datasets():
         "cor_dataset_actor.role",
     ]
 
-    if params.get("synthese_records_count", type=int, default=0):
-        query = query.options(undefer(TDatasets.synthese_records_count))
-        only.append("+synthese_records_count")
+    if params.get("nb_observations_synthese", type=int, default=0):
+        query = query.options(undefer(TDatasets.nb_observations_synthese))
+        only.append("+nb_observations_synthese")
 
     if "modules" in fields:
         query = query.options(joinedload(TDatasets.modules))

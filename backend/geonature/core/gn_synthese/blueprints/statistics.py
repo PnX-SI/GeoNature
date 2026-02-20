@@ -112,7 +112,7 @@ def observation_count_per_column(column):
 
     This function was used to count observations per dataset,
     but this usage have been replaced by
-    TDatasets.synthese_records_count.
+    TDatasets.nb_observations_synthese.
     Remove this function as it is very inefficient?
     """
     if column not in inspect(Synthese).column_attrs:
