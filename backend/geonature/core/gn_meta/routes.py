@@ -620,9 +620,9 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         .where(Synthese.id_dataset.in_(dataset_ids))
     )
     nb_taxons = db.session.scalar(query.distinct())
-    nb_observations = db.session.scalar(query)
+    nb_observations_synthese = db.session.scalar(query)
 
-    nb_habitat = 0
+    nb_observations_habitats = 0
 
     # Check if pr_occhab exist
     check_schema_query = (
@@ -638,13 +638,13 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
             + ")"
         )
 
-        nb_habitat = db.engine.execute(text(query)).first()[0]
+        nb_observations_habitats = db.engine.execute(text(query)).first()[0]
 
     acquisition_framework["stats"] = {
         "nb_data": nb_data,
         "nb_taxons": nb_taxons,
-        "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat,
+        "nb_observations_synthese": nb_observations_synthese,
+        "nb_observations_habitats": nb_observations_habitats,
     }
 
     if request.is_json and request.json is not None:
