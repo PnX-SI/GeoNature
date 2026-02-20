@@ -647,12 +647,13 @@ class TestGNMeta:
             )
         )
         data = response.json
+        data_dict_nb_obs = data["dict_nb_obs"]
 
         assert response.status_code == 200
         assert data["nb_dataset"] == len(af.datasets)
-        assert data["nb_habitats"] == 0
+        assert data_dict_nb_obs["OCCHAB"] == 0
         obs = [s for s in synthese_data.values() if s.dataset.acquisition_framework == af]
-        assert data["nb_observations"] == len(obs)
+        assert data_dict_nb_obs["SYNTHESE"] == len(obs)
         # Count of taxa :
         # Loop all the synthese entries, for each synthese
         # For each entry, take the max between count_min and count_max. And if
