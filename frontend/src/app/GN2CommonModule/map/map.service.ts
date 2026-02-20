@@ -193,6 +193,90 @@ export class MapService {
     return geojsonLayer;
   }
 
+  /**
+   * Create a geojson with adding layers following this order : polygon - line - point
+   * Point are clickable even if they are beyond a polygon
+   * the function add all geojsons in a FeatureGroup and add it to the map
+   * @returns L.FeatureGroup
+   */
+  createOrderedGeojson(geojson, asCluster: boolean, onEachFeature?, style?): FeatureGroup {
+    const features = geojson?.features || geojson;
+
+    // Single loop to distribute features by geometry type
+    const pointFeatures: any[] = [];
+    const lineFeatures: any[] = [];
+    const polygonFeatures: any[] = [];
+
+    for (const feature of features) {
+      const geometryType = feature.geometry?.type;
+      switch (geometryType) {
+        case 'Point':
+        case 'MultiPoint':
+          pointFeatures.push(feature);
+          break;
+        case 'LineString':
+        case 'MultiLineString':
+          lineFeatures.push(feature);
+          break;
+        case 'Polygon':
+        case 'MultiPolygon':
+          polygonFeatures.push(feature);
+          break;
+      }
+    }
+
+    // Helper function to create styled geojson layer
+    const createStyledGeojson = (geoms) => {
+      return L.geoJSON(geoms, {
+        style: (feature) => {
+          switch (feature.geometry.type) {
+            case 'LineString':
+            case 'MultiLineString':
+              return style || this.lineStyle();
+            default:
+              return style || this.defaultStyle();
+          }
+        },
+        pointToLayer: (feature, latlng) => {
+          return L.circleMarker(latlng);
+        },
+        onEachFeature: onEachFeature,
+      });
+    };
+
+    // Create the main feature group
+    const featureGroup = new L.FeatureGroup();
+
+    // Add layers in order: polygons → lines → points (so points are clickable and on top)
+    // Polygons (bottom)
+    if (polygonFeatures.length > 0) {
+      const polygonLayer = createStyledGeojson(polygonFeatures);
+      featureGroup.addLayer(polygonLayer);
+    }
+
+    // Lines (middle)
+    if (lineFeatures.length > 0) {
+      const lineLayer = createStyledGeojson(lineFeatures);
+      featureGroup.addLayer(lineLayer);
+    }
+
+    // Points (top)
+    if (pointFeatures.length > 0) {
+      const pointLayer = createStyledGeojson(pointFeatures);
+      if (asCluster) {
+        const clusteredPoints = (L as any).markerClusterGroup().addLayer(pointLayer);
+        featureGroup.addLayer(clusteredPoints);
+      } else {
+        featureGroup.addLayer(pointLayer);
+      }
+    }
+
+    // Add to map
+    this.map.addLayer(featureGroup);
+
+    return featureGroup;
+  }
+
   createWMS(layerCfg) {
     return L.tileLayer.wms(layerCfg.url, {
       ...layerCfg.params,
