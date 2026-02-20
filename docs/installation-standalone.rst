@@ -46,6 +46,9 @@ Récupération de l'application
     cp config/settings.ini.sample config/settings.ini
     nano config/settings.ini
 
+  Le paramètre ``url_application_prefix_path`` permet de choisir le préfixe d'URL dès la 1ère installation :
+  ``geonature`` (défaut), ``saisie`` ou vide pour servir à la racine ``/``.
+
 
 Installation de l'application
 -----------------------------
