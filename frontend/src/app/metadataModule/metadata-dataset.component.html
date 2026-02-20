@@ -141,9 +141,7 @@
     </button>
   </ng-template>
 
-  <ng-container
-    *ngIf="!dataset.cruved.D || (dataset?.synthese_records_count || 0) > 0; else elseblock"
-  >
+  <ng-container *ngIf="!dataset.cruved.D || (dataset?.nb_observations || 0) > 0; else elseblock">
     <button
       mat-icon-button
       [disabled]="true"
@@ -151,7 +149,7 @@
     >
       <mat-icon
         [matTooltip]="
-          (dataset?.synthese_records_count || 0) > 0
+          (dataset?.nb_observations || 0) > 0
             ? 'Ce jeu de données contient des données et ne peut pas être supprimé'
             : 'Vous n\'avez pas les droits nécessaires pour supprimer ce jeu de données'
         "
