@@ -919,6 +919,46 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     )
 
 
+@routes.route("/dataset/<id_dataset>/stats", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@json_resp
+def get_dataset_stats(id_dataset):
+    """
+    Get stats from one DS
+    .. :quickref: Metadata;
+    :param id_dataset: the ID of the dataset
+    :param type: int
+    """
+    nb_taxons = db.session.execute(
+        select(func.count(func.distinct(Synthese.cd_nom))).where(Synthese.id_dataset == id_dataset)
+    ).scalar_one()
+
+    nb_observations_synthese = db.session.execute(
+        select(func.count("*"))
+        .select_from(Synthese)
+        .where(Synthese.dataset.has(TDatasets.id_dataset == id_dataset))
+    ).scalar_one()
+
+    nb_observations_habitats = 0
+
+    if "OCCHAB" in config:
+        nb_observations_habitats = db.session.execute(
+            select(func.count("*"))
+            .select_from(OccurenceHabitat)
+            .join(Station)
+            .where(Station.id_dataset == id_dataset)
+        ).scalar_one()
+
+    nb_observations = nb_observations_synthese + nb_observations_habitats
+
+    return dict(
+        nb_taxons=nb_taxons,
+        nb_observations=nb_observations,
+        nb_observations_synthese=nb_observations_synthese,
+        nb_observations_habitats=nb_observations_habitats,
+    )
+
+
 @routes.route("/acquisition_framework/<id_acquisition_framework>/bbox", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="METADATA")
 @json_resp

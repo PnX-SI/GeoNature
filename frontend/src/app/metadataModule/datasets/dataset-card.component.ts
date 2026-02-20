@@ -26,6 +26,7 @@ export class DatasetCardComponent implements OnInit {
   public nbObservations: number = null;
   public bbox: any = null;
   public taxs;
+  public stats: any;
 
   @ViewChild(BaseChartDirective, { static: false }) public chart: BaseChartDirective;
 
@@ -71,6 +72,7 @@ export class DatasetCardComponent implements OnInit {
       this.id_dataset = params['id'];
       if (this.id_dataset) {
         this.getData();
+        this.getStats();
       }
     });
   }
@@ -172,5 +174,9 @@ export class DatasetCardComponent implements OnInit {
       },
     };
     this._router.navigate(['/synthese'], navigationExtras);
+  }
+
+  getStats() {
+    this.metadataDataS.getDatasetStats(this.id_dataset).subscribe((res) => (this.stats = res));
   }
 }

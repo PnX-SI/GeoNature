@@ -83,16 +83,14 @@
             </div>
           </div>
         </div>
-        <div
-          *ngIf="nbObservations"
-          class="col-6"
-        >
+        <div class="col-6">
           <div class="card">
             <div class="card-body">
               <div class="row">
                 <div class="col">
                   <h5>{{ 'Observations' | translate }}</h5>
-                  {{ nbObservations }}
+                  <br />
+                  <div class="center">{{ stats.nb_observations }}</div>
                 </div>
                 <div
                   class="col-auto"
@@ -102,6 +100,27 @@
                     src="./assets/images/Donnee_icon.svg"
                     width="64"
                   />
+                </div>
+              </div>
+              <div
+                class="row mt-2 pt-2 border-top"
+                *ngIf="stats.nb_observations_synthese > 0 || stats.nb_observations_habitats > 0"
+              >
+                <div
+                  [ngClass]="stats.nb_observations_habitats > 0 ? 'col-6 border-right' : 'col-12'"
+                  class="text-center"
+                  *ngIf="stats.nb_observations_synthese > 0"
+                >
+                  <small class="text-muted">Occurrence(s) de taxon(s)</small>
+                  <div>{{ stats.nb_observations_synthese }}</div>
+                </div>
+                <div
+                  [ngClass]="stats.nb_observations_synthese > 0 ? 'col-6' : 'col-12'"
+                  class="text-center"
+                  *ngIf="stats.nb_observations_habitats > 0"
+                >
+                  <small class="text-muted">Occurrence(s) d'habitat(s)</small>
+                  <div>{{ stats.nb_observations_habitats }}</div>
                 </div>
               </div>
             </div>

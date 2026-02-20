@@ -660,6 +660,31 @@ class TestGNMeta:
         # synthese is at least 1 taxon
         assert data["nb_taxons"] == len(set([s.cd_nom for s in obs]))
 
+    def test_get_dataset_stats(self, users, datasets, synthese_data):
+        # ds = synthese_data["obs1"].dataset
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.get(
+            url_for(
+                "gn_meta.get_dataset_stats",
+                id_dataset=ds.id_dataset,
+            )
+        )
+        data = response.json
+
+        assert response.status_code == 200
+        expected_nb_observations_habitats = 0
+        assert data["nb_observations_habitats"] == expected_nb_observations_habitats
+        obs = [s for s in synthese_data.values() if s.dataset == ds]
+        expected_nb_observations_synthese = len(obs)
+        assert data["nb_observations_synthese"] == expected_nb_observations_synthese
+        expected_nb_observations = (
+            expected_nb_observations_synthese + expected_nb_observations_habitats
+        )
+        assert data["nb_observations"] == expected_nb_observations
+        assert data["nb_taxons"] == len(set([s.cd_nom for s in obs]))
+
     def test_get_acquisition_framework_bbox(self, users, acquisition_frameworks, synthese_data):
         # this AF contains at least 2 obs at different locations
         af = synthese_data["p1_af1"].dataset.acquisition_framework
