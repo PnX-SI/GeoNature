@@ -29,7 +29,8 @@ Téléchargement
 
 .. warning::
   
-  L'installation globale fonctionne uniquement si les scripts sont placés à la racine du ``home`` de l'utilisateur courant.
+  Le script ``install_all.sh`` lit ``install_all.ini`` dans le répertoire courant.
+  Placez ces 2 fichiers dans le même dossier avant exécution.
 	
 
 Configuration
