@@ -94,16 +94,14 @@
             </div>
           </div>
         </div>
-        <div
-          *ngIf="nbObservations"
-          class="col-6"
-        >
+        <div class="col-6">
           <div class="card">
             <div class="card-body">
               <div class="row">
                 <div class="col">
                   <h5>{{ 'Observations' | translate }}</h5>
-                  {{ nbObservations }}
+                  <br />
+                  <div class="center">{{ stats.total_nb_obs }}</div>
                 </div>
                 <div
                   class="col-auto"
@@ -114,6 +112,25 @@
                     width="64"
                   />
                 </div>
+              </div>
+              <div
+                class="row mt-2 pt-2 border-top"
+                *ngIf="stats.total_nb_obs > 0"
+              >
+                <ng-container *ngFor="let item of stats.dict_nb_obs | keyvalue">
+                  <div
+                    [ngClass]="
+                      getNumberOfObservationsCountsDetails(stats.dict_nb_obs) > 1
+                        ? 'col-' + 12 / getNumberOfObservationsCountsDetails(stats.dict_nb_obs)
+                        : 'col-12'
+                    "
+                    class="text-center"
+                    *ngIf="item.value > 0"
+                  >
+                    <small class="text-muted">{{ getObservationCountTooltip(item.key) }}</small>
+                    <div>{{ item.value }}</div>
+                  </div>
+                </ng-container>
               </div>
             </div>
           </div>
