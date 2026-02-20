@@ -177,7 +177,7 @@ export class MetadataComponent implements OnInit {
   onOpenExpansionPanel(af: any) {
     if (af.t_datasets === undefined) {
       let params = {};
-      const queryStrings: ParamsDict = { synthese_records_count: 1 };
+      const queryStrings: ParamsDict = { nb_observations_synthese: 1 };
       if (this.searchTerms.selector === 'ds') {
         params = this.searchTerms;
       }
