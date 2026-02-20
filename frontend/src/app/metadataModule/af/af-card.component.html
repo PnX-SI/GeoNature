@@ -97,7 +97,7 @@
       </div>
     </div>
 
-    <!-- Nombre d'observation -->
+    <!-- Nombre d'observations -->
     <div class="col-3">
       <div class="card">
         <div class="card-body">
@@ -108,6 +108,27 @@
             </div>
             <div class="number-div">
               <span class="number">{{ stats.nb_observations }}</span>
+            </div>
+          </div>
+          <div
+            class="row mt-2 pt-2 border-top"
+            *ngIf="stats.nb_observations_synthese > 0 || stats.nb_observations_habitats > 0"
+          >
+            <div
+              [ngClass]="stats.nb_observations_habitats > 0 ? 'col-6 border-right' : 'col-12'"
+              class="text-center"
+              *ngIf="stats.nb_observations_synthese > 0"
+            >
+              <small class="text-muted">Occurrence(s) de taxon(s)</small>
+              <div>{{ stats.nb_observations_synthese }}</div>
+            </div>
+            <div
+              [ngClass]="stats.nb_observations_synthese > 0 ? 'col-6' : 'col-12'"
+              class="text-center"
+              *ngIf="stats.nb_observations_habitats > 0"
+            >
+              <small class="text-muted">Occurrence(s) d'habitat(s)</small>
+              <div>{{ stats.nb_observations_habitats }}</div>
             </div>
           </div>
         </div>
@@ -136,7 +157,7 @@
 
     <!-- Nombre d'habitats -->
     <div
-      *ngIf="stats.nb_habitats"
+      *ngIf="stats.nb_observations_habitats"
       class="col-3"
     >
       <div class="card">
@@ -147,7 +168,7 @@
               <h5>Habitats</h5>
             </div>
             <div class="number-div">
-              <span class="number">{{ stats.nb_habitats }}</span>
+              <span class="number">{{ stats.nb_observations_habitats }}</span>
             </div>
           </div>
         </div>

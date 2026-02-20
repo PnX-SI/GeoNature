@@ -895,27 +895,30 @@ def get_acquisition_framework_stats(id_acquisition_framework):
         )
     ).scalar_one()
 
-    nb_observations = db.session.execute(
+    nb_observations_synthese = db.session.execute(
         select(func.count("*"))
         .select_from(Synthese)
         .where(Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework))
     ).scalar_one()
 
-    nb_habitats = 0
+    nb_observations_habitats = 0
 
     if "OCCHAB" in config and nb_datasets > 0:
-        nb_habitats = db.session.execute(
+        nb_observations_habitats = db.session.execute(
             select(func.count("*"))
             .select_from(OccurenceHabitat)
             .join(Station)
             .where(Station.id_dataset.in_(dataset_ids))
         ).scalar_one()
 
+    nb_observations = nb_observations_synthese + nb_observations_habitats
+
     return dict(
         nb_dataset=nb_datasets,
         nb_taxons=nb_taxons,
         nb_observations=nb_observations,
-        nb_habitats=nb_habitats,
+        nb_observations_synthese=nb_observations_synthese,
+        nb_observations_habitats=nb_observations_habitats,
     )
 
 
