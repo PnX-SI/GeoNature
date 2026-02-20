@@ -868,10 +868,10 @@ class TestGNMeta:
         assert DatasetSchema().validate(response.json)
         assert response.json["id_dataset"] == ds.id_dataset
 
-    def test_get_datasets_synthese_records_count(self, users):
+    def test_get_datasets_nb_observations_synthese(self, users):
         # FIXME : verify content
         set_logged_user(self.client, users["admin_user"])
-        response = self.client.get(url_for("gn_meta.get_datasets", synthese_records_count=1))
+        response = self.client.get(url_for("gn_meta.get_datasets", nb_observations_synthese=1))
 
         assert response.status_code == 200
 

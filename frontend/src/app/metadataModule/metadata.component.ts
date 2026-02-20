@@ -183,7 +183,7 @@ export class MetadataComponent implements OnInit {
       let params = {};
       const queryStrings: ParamsDict = {
         nb_observations: 1,
-        synthese_records_count: 1,
+        nb_observations_synthese: 1,
       };
       if (this.config.OCCHAB) {
         queryStrings['nb_observations_habitats'] = 1;

@@ -79,12 +79,12 @@
     aria-hidden="true"
     *ngIf="dataset.nb_observations"
     [matTooltip]="
-      (dataset?.synthese_records_count
+      (dataset?.nb_observations_synthese
         ? ('MetaData.ObservationsSyntheseTooltip' | translate) +
           ': ' +
-          dataset?.synthese_records_count
+          dataset?.nb_observations_synthese
         : '') +
-      (dataset?.synthese_records_count && dataset?.nb_observations_habitats ? ' - ' : '') +
+      (dataset?.nb_observations_synthese && dataset?.nb_observations_habitats ? ' - ' : '') +
       (dataset?.nb_observations_habitats
         ? ('MetaData.ObservationsHabitatsTooltip' | translate) +
           ': ' +
@@ -104,13 +104,13 @@
 
   <a
     mat-icon-button
-    [disabled]="dataset?.synthese_records_count == 0"
+    [disabled]="dataset?.nb_observations_synthese == 0"
     [routerLink]="['/synthese']"
     [queryParams]="{ id_dataset: dataset.id_dataset }"
     [attr.data-qa]="'pnx-metadata-jdd-display-data-' + dataset.unique_dataset_id"
   >
     <mat-icon
-      *ngIf="dataset?.synthese_records_count == 0; else elseSynthese"
+      *ngIf="dataset?.nb_observations_synthese == 0; else elseSynthese"
       matTooltip="Ce jeu de données ne comporte aucune donnée dans la Synthèse"
     >
       room

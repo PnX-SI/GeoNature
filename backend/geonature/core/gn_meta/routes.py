@@ -119,7 +119,7 @@ def get_datasets():
 
     for item_nb_observations in [
         "nb_observations",
-        "synthese_records_count",
+        "nb_observations_synthese",
         "nb_observations_habitats",
     ]:
         if params.get(item_nb_observations, type=int, default=0):
