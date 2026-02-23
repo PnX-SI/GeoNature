@@ -206,12 +206,10 @@ marshmallow==4.0.1
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
-    #   marshmallow-geojson
     #   marshmallow-sqlalchemy
     #   pypn-habref-api
     #   utils-flask-sqlalchemy
-marshmallow-geojson==0.6.1
-    # via utils-flask-sqlalchemy-geo
+    #   utils-flask-sqlalchemy-geo
 marshmallow-sqlalchemy==1.4.2
     # via
     #   -r requirements-common.in
@@ -267,7 +265,7 @@ pypn-ref-geo==1.5.6
     #   taxhub
 pypnnomenclature==1.6.5
     # via -r requirements-dependencies.in
-pypnusershub==3.1.0
+pypnusershub==3.2.0
     # via
     #   -r requirements-dependencies.in
     #   taxhub
@@ -359,7 +357,7 @@ urllib3==2.6.3
     # via
     #   requests
     #   taxhub
-utils-flask-sqlalchemy==0.4.3
+utils-flask-sqlalchemy==0.4.5
     # via
     #   -r requirements-dependencies.in
     #   pypn-habref-api
@@ -368,7 +366,7 @@ utils-flask-sqlalchemy==0.4.3
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-utils-flask-sqlalchemy-geo==0.3.3
+utils-flask-sqlalchemy-geo==0.3.4
     # via
     #   -r requirements-dependencies.in
     #   pypn-ref-geo
