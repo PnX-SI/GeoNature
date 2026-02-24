@@ -306,6 +306,7 @@ class ImportActions:
                 isouter=True,
             )
             .join(User, User.id_role == observer_mapping.c.id_role, isouter=True)
+            .where(model_observers.c[model_id_column] != None)
         )
 
         aggregated_observers = db.session.execute(
