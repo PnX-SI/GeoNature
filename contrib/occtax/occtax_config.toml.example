@@ -198,3 +198,22 @@ MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_typ
     geo_object_nature = false
     place_name = false
     precision = false
+
+# Configuration addtionnelle pour qu'un duplicata d'OCCTAX le surcharge
+# Exemple si module_code = FLORE
+# [additional_confs.FLORE]
+# observers_txt = true
+# 
+# [additional_confs.FLORE.form_fields]
+# date_min = true
+# date_max = true
+# hour_min = true
+# ...
+# 
+# 
+# [additional_confs.FLORE.default_maplist_columns] = [
+#     { prop = "taxons", name = "Taxon(s)" },
+#     ...
+# ]
+# 
+# etc...

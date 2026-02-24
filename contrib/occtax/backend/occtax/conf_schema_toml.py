@@ -4,7 +4,46 @@ Fichier spécifiant les types des paramètres et leurs valeurs par défaut
 Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
 """
 
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields, missing, post_load
+
+import copy
+
+
+def make_override_schema(schema_cls: type[Schema], *, name=None, exclude=()):
+    cache = {}
+
+    def _make(schema_cls):
+        if schema_cls in cache:
+            return cache[schema_cls]
+
+        new_fields = {}
+
+        for field_name, field in schema_cls._declared_fields.items():
+            if field_name in exclude:
+                continue
+
+            # 🔥 deep copy au lieu de clone()
+            field_copy = copy.deepcopy(field)
+
+            # supprimer defaults
+            field_copy.load_default = missing
+            field_copy.dump_default = missing
+            field_copy.required = False
+
+            # gérer Nested récursivement
+            if isinstance(field_copy, fields.Nested):
+                nested_schema_cls = field_copy.schema.__class__
+                override_nested = _make(nested_schema_cls)
+                field_copy = fields.Nested(override_nested)
+
+            new_fields[field_name] = field_copy
+
+        new_schema = Schema.from_dict(new_fields, name=name or f"{schema_cls.__name__}Override")
+
+        cache[schema_cls] = new_schema
+        return new_schema
+
+    return _make(schema_cls)
 
 
 class MapListConfig(Schema):
@@ -192,3 +231,13 @@ class GnModuleSchemaConf(Schema):
     ID_LIST_HABITAT = fields.Integer(load_default=None)
     CD_TYPO_HABITAT = fields.Integer(load_default=None)
     EXPANDED_TAXON_ADVANCED_DETAILS = fields.Boolean(load_default=False)
+    additional_confs = fields.Dict(
+        keys=fields.String(),
+        values=fields.Nested(lambda: AdditionalGnModuleSchemaConf),
+        load_default=dict,
+    )
+
+
+AdditionalGnModuleSchemaConf = make_override_schema(
+    GnModuleSchemaConf, exclude=("additional_confs",)
+)

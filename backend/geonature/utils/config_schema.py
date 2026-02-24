@@ -25,8 +25,7 @@ from geonature.core.gn_synthese.synthese_config import (
 )
 from geonature.core.imports.config_schema import ImportConfigSchema
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
-from geonature.utils.module import iter_modules_dist, get_module_config, get_module_config_path
-from geonature.utils.utilstoml import load_and_validate_toml
+from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from pypnusershub.auth.authentication import ProviderConfigurationSchema
 from apptax.utils.config.config_schema import TaxhubAppConf
@@ -626,7 +625,6 @@ class GnGeneralSchemaConf(Schema):
         load_default=AuthenticationFrontendConfig().load({}),
         unknown=INCLUDE,
     )
-    OCCTAX_VARIANTS = fields.List(fields.String(), load_default=[])
 
     @validates_schema
     def validate_account_autovalidation(self, data, **kwargs):
@@ -663,27 +661,6 @@ class GnGeneralSchemaConf(Schema):
             if module_code in data["DISABLED_MODULES"]:
                 continue
             data[module_code] = get_module_config(dist)
-
-        variants = data.get("OCCTAX_VARIANTS", [])
-        if variants:
-            try:
-                from occtax.conf_schema_toml import GnModuleSchemaConf
-            except Exception:
-                GnModuleSchemaConf = None
-            if GnModuleSchemaConf:
-                for variant_code in variants:
-                    if not variant_code:
-                        continue
-                    variant_conf = load_and_validate_toml(
-                        get_module_config_path(variant_code.lower()), GnModuleSchemaConf
-                    )
-                    data[variant_code] = {
-                        "MODULE_CODE": variant_code,
-                        "MODULE_URL": f"/occtax/{variant_code.lower()}",
-                        "MODULE_API": f"/occtax/{variant_code.lower()}",
-                        **variant_conf,
-                    }
-
         return data
 
     @post_load
