@@ -366,6 +366,7 @@
     <pnx-datasets
       [displayOnlyActive]="false"
       [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
+      [fields]="['id_dataset', 'dataset_name']"
       [multiSelect]="true"
       [displayAll]="true"
       [parentFormControl]="formService.searchForm.controls.id_dataset"
