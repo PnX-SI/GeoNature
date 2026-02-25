@@ -12,6 +12,7 @@ from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.utils.env import MA
 from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccurrence
+from .utils import get_module_conf
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
@@ -106,6 +107,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     id_digitiser = MA.auto_field(dump_only=True)
 
     t_occurrences_occtax = MA.Nested(OccurrenceSchema, many=True)
+    observers = MA.Nested(ObserverSchema, many=True, allow_none=True)
     observers = MA.Nested(
         ObserverSchema,
         many=True,
@@ -114,6 +116,13 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)
     habitat = MA.Nested(HabrefSchema, dump_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        module_conf = get_module_conf()
+        observers_allow_none = module_conf.get("observers_txt", True)
+        if "observers" in self.fields:
+            self.fields["observers"].allow_none = observers_allow_none
 
     @pre_load
     def make_releve(self, data, **kwargs):
