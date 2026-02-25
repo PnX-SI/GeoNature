@@ -11,8 +11,8 @@
 
 ### 🚀 Nouveautés
 
-- [Général] Ajout d'un trigger sur les mises à jour de ref_geo.l_areas permettant la mise à jour automatique de gn_synthese.cor_area_synthese (#3814).
-- [Import] Ajout des destinations Monitoring et ses sous-modules, permettant de faire des imports dans les sous-modules de suivi du module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457,
+- [Général] Ajout d'un trigger sur les mises à jour de ref_geo.l_areas permettant la mise à jour automatique de gn_synthese.cor_area_synthese (#3814 par @lpofredc).
+- [Import] Ajout des destinations Monitoring et ses sous-modules, permettant de faire des imports dans les sous-modules de suivi du module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457)
 - [Import] Possibilité de choisir des valeurs constantes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
 - [Import] Possibilité de faire des imports multi-JDD et déplacement de la selection du JDD à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
 - [Import] Ajout d'une étape de mapping des observateurs. Seulement activé sur les imports Monitoring pour le moment ? Et Occhab ? En attendant de clarifier le fonctionnement côté Synthèse (entre le champs texte des observateurs et la table de correspondance..) ? (#3775 par @jacquesfize)
@@ -30,10 +30,10 @@
 
 ### 🐛 Corrections
 
-- [Synthèse] La fenêtre ouverte lors d'un click sur un média fonctionne qu'importe le nombre de médias associées à une observation ({#3840} par @jacquesfize)
-- [Monitoring] Correction du bouton de géolocalisation ({#3689} par @Pierre-Narcisi et @jacquesfize)
-- [Occhab] Prise en compte dans le calcul des permissions de l'`id_digitizer` ({#3855} par @christophe-ramet)
-- [Dev] Correction de l'affichage d'erreur du dynamic form de type checkbox ({#3867} par @jacquesfize)
+- [Synthèse] La fenêtre ouverte lors d'un click sur un média fonctionne qu'importe le nombre de médias associées à une observation (#3840 par @jacquesfize)
+- [Monitoring] Correction du bouton de géolocalisation (#3689 par @Pierre-Narcisi et @jacquesfize)
+- [Occhab] Prise en compte dans le calcul des permissions de l'`id_digitizer` (#3855 par @christophe-ramet)
+- [Dev] Correction de l'affichage d'erreur du dynamic form de type checkbox (#3867 par @jacquesfize)
 - [Général] Amélioration de l'affichage des messages dans le formulaire de zonages (#3870 par @edelclaux)
 - [Synthèse] Tri chronologique des messages dans l'onglet Discussions de la fiche d'observation (#3873 par @PaulLabruyere)
 - [Métadonnées] Acceptation de différents types d'UUID dans le formulaire d'édition du cadre d'acquisition (#3882 par @christophe-ramet)
