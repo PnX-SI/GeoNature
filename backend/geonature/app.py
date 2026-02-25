@@ -194,12 +194,13 @@ def create_app(with_external_mods=True):
         view_func=lambda filename: send_from_directory(config["MEDIA_FOLDER"], filename),
         endpoint="media",
     )
+
+    # Enable serving of media files for Taxhub
+    taxhub_folder = "taxhub"
     if app.config["TAXHUB"]["MEDIA_SUBFOLDER"]:
         taxhub_folder = "taxhub/" + app.config["TAXHUB"]["MEDIA_SUBFOLDER"]
-    else:
-        taxhub_folder = "taxhub"
     media_path = Path(app.config["MEDIA_FOLDER"], taxhub_folder).absolute()
-    # Enable serving of media files
+
     app.add_url_rule(
         f"{app.config['MEDIA_URL']}/{taxhub_folder}/<path:filename>",
         view_func=lambda filename: send_from_directory(media_path, filename),
