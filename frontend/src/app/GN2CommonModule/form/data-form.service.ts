@@ -422,6 +422,13 @@ export class DataFormService {
   }
 
   /**
+   * @param id_ds: ID of dataset
+   */
+  getDatasetStats(id_ds) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/meta/dataset/${id_ds}/stats`);
+  }
+
+  /**
    * @param id_af: id of acquisition_framework
    */
   getAcquisitionFrameworkBbox(id_af) {

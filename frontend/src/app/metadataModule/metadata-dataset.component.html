@@ -47,7 +47,13 @@
   </ng-template>
 </td>
 <td [attr.data-qa]="'pnx-metadata-jdd-nb-obs-' + dataset.unique_dataset_id">
-  {{ dataset?.synthese_records_count }}
+  {{ dataset?.dict_stats.total_nb_obs }}
+  <mat-icon
+    *ngIf="dataset.dict_stats.total_nb_obs"
+    [matTooltip]="getObservationsCountsTooltip(dataset.dict_stats.dict_nb_obs)"
+  >
+    more_horiz
+  </mat-icon>
 </td>
 <td>
   <a

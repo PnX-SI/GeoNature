@@ -346,6 +346,8 @@
     "AssociatedDatasets": "Jeux de données associés",
     "Reference": "Référence",
     "AdditionalInformation": "Informations additionnelles",
+    "ObservationsSyntheseTooltip": "Synthèse ",
+    "ObservationsOcchabTooltip": "Habitats ",
 
     "DatasetCard": {
       "Actions": {

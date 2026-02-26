@@ -349,6 +349,8 @@
     "AssociatedDatasets": "Associated datasets",
     "Reference": "Reference",
     "AdditionalInformation": "Additional information",
+    "ObservationsSyntheseTooltip": "Synthese",
+    "ObservationsOcchabTooltip": "Habitats",
 
     "DatasetCard": {
       "Actions": {
