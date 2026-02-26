@@ -9,7 +9,17 @@ from marshmallow import Schema, fields, missing, post_load
 import copy
 
 
-def make_override_schema(schema_cls: type[Schema], *, name=None, exclude=()):
+# Creates a partial version of a given Marshmallow schema.
+#
+# The generated schema:
+# - Makes all fields optional (required = False)
+# - Removes any load and dump default values
+# - Applies the transformation recursively to nested schemas
+# - Optionally excludes specific fields from the override process
+#
+# This is useful for defining partial configuration schemas where
+# provided values override a fully defined base configuration.
+def create_partial_schema(schema_cls: type[Schema], *, name=None, exclude=()):
     cache = {}
 
     def _make(schema_cls):
@@ -22,23 +32,21 @@ def make_override_schema(schema_cls: type[Schema], *, name=None, exclude=()):
             if field_name in exclude:
                 continue
 
-            # 🔥 deep copy au lieu de clone()
             field_copy = copy.deepcopy(field)
 
-            # supprimer defaults
             field_copy.load_default = missing
             field_copy.dump_default = missing
             field_copy.required = False
 
-            # gérer Nested récursivement
+            # Recursively override nested schemas
             if isinstance(field_copy, fields.Nested):
                 nested_schema_cls = field_copy.schema.__class__
-                override_nested = _make(nested_schema_cls)
-                field_copy = fields.Nested(override_nested)
+                partial_nested = _make(nested_schema_cls)
+                field_copy = fields.Nested(partial_nested)
 
             new_fields[field_name] = field_copy
 
-        new_schema = Schema.from_dict(new_fields, name=name or f"{schema_cls.__name__}Override")
+        new_schema = Schema.from_dict(new_fields, name=name or f"{schema_cls.__name__}Partial")
 
         cache[schema_cls] = new_schema
         return new_schema
@@ -237,7 +245,21 @@ class GnModuleSchemaConf(Schema):
         load_default=dict,
     )
 
+    # Shallow merge Occtax conf in all additional_confs
+    @post_load
+    def apply_occax_conf_to_additionals(self, data, **kwargs):
+        additional_confs = data.get("additional_confs")
+        if not additional_confs:
+            return data
 
-AdditionalGnModuleSchemaConf = make_override_schema(
+        root_defaults = {k: v for k, v in data.items() if k != "additional_confs"}
+
+        for key, conf in additional_confs.items():
+            additional_confs[key] = copy.deepcopy(root_defaults) | conf
+
+        return data
+
+
+AdditionalGnModuleSchemaConf = create_partial_schema(
     GnModuleSchemaConf, exclude=("additional_confs",)
 )

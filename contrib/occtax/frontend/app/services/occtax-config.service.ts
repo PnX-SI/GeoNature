@@ -14,15 +14,7 @@ export class OcctaxConfigService {
     const main = { ...this.config.OCCTAX };
     try {
       Object.entries(main.additional_confs).forEach(([key, value]) => {
-        const additional = { ...main, ...(value as any) };
-        additional.form_fields = additional.form_fields || {};
-        // TODO ? less config but more explanations
-        /* Object.entries(main.form_fields || {}).forEach(([key, value]) => {
-          if (typeof additional.form_fields[key] == "undefined") {
-            additional.form_fields[key] = value;
-          }
-        }); */
-        this.confs[key] = additional;
+        this.confs[key] = value;
       });
       delete main.additional_confs;
     } catch (error) {}

@@ -108,21 +108,17 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
 
     t_occurrences_occtax = MA.Nested(OccurrenceSchema, many=True)
     observers = MA.Nested(ObserverSchema, many=True, allow_none=True)
-    observers = MA.Nested(
-        ObserverSchema,
-        many=True,
-        allow_none=config.get("OCCTAX", {}).get("observers_txt", True),
-    )
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)
     habitat = MA.Nested(HabrefSchema, dump_only=True)
 
+    # __init__ is overridden because get_module_conf() depends on g.current_module,
+    # which is only available during a request context (i.e., at instantiation time), not at class definition time.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         module_conf = get_module_conf()
         observers_allow_none = module_conf.get("observers_txt", True)
-        if "observers" in self.fields:
-            self.fields["observers"].allow_none = observers_allow_none
+        self.fields["observers"].allow_none = observers_allow_none
 
     @pre_load
     def make_releve(self, data, **kwargs):

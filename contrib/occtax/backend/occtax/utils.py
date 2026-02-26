@@ -75,10 +75,7 @@ def get_module_conf():
         module_code = g.current_module.module_code
         if module_code == "OCCTAX":
             return current_app.config["OCCTAX"]
-        return {
-            **current_app.config["OCCTAX"],
-            **current_app.config["OCCTAX"].get("additional_confs", {}).get(module_code, {}),
-        }
-    except Exception as e:
+        return current_app.config["OCCTAX"]["additional_confs"][module_code]
+    except:
         pass
     return current_app.config["OCCTAX"]
