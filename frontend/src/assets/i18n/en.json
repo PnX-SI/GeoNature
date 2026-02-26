@@ -314,7 +314,8 @@
     "SpeciesDistribution": "Species distribution",
     "AssociatedDatasets": "Associated datasets",
     "Reference": "Reference",
-
+    "ObservationsSyntheseTooltip": "Synthese",
+    "ObservationsOcchabTooltip": "Habitats",
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Display data"

@@ -310,7 +310,8 @@
     "SpeciesDistribution": "Répartition des espèces",
     "AssociatedDatasets": "Jeux de données associés",
     "Reference": "Référence",
-
+    "ObservationsSyntheseTooltip": "Synthèse ",
+    "ObservationsOcchabTooltip": "Habitats ",
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Afficher les données"
