@@ -1,7 +1,7 @@
 
-Se connecter à d'autres fournisseurs d'identités
+Se connecter à d'autres fournisseurs d'identité
 """"""""""""""""""""""""""""""""""""""""""""""""
-Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l'aide de fournisseurs d'identités externes (comme Google, GitHub ou INPN).
+Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l'aide de fournisseurs d'identité externes (comme Google, GitHub ou INPN).
 Pour cela, il est nécessaire d'implémenter le protocole de connexion pour permettre à GeoNature de communiquer avec ces fournisseurs.
 Actuellement, GeoNature vient avec plusieurs protocoles de connexion implémentés, tels que :
 
@@ -12,11 +12,11 @@ Actuellement, GeoNature vient avec plusieurs protocoles de connexion implément�
 Ajouter un nouveau fournisseur d'identité
 ````````````````````````````````````````````
 
-Pour ajouter un nouveau fournisseur d'identités à votre instance de GeoNature, vous devez ajouter une section ``[[AUTHENTICATION.PROVIDERS]]`` dans la partie ``AUTHENTICATION`` de votre fichier de configuration.
+Pour ajouter un nouveau fournisseur d'identité à votre instance de GeoNature, vous devez ajouter une section ``[[AUTHENTICATION.PROVIDERS]]`` dans la partie ``AUTHENTICATION`` de votre fichier de configuration.
 Chaque section doit comporter deux variables obligatoires: ``module`` et ``id_provider``. La variable ``module`` indique le chemin vers la classe Python qui implémente le protocole de connexion, tandis que ``id_provider`` indique l'identifiant unique du fournisseur d'identité.
 Vous devez également ajouter les variables de configuration spécifiques au protocole de connexion correspondant.
 
-Dans l'exemple ci-dessous, on déclare deux fournisseurs d'identités : le premier est le fournisseur d'identité par défaut (local) et le deuxième permet de se connecter à l'INPN.
+Dans l'exemple ci-dessous, on déclare deux fournisseurs d'identité : le premier est le fournisseur d'identité par défaut (local) et le deuxième permet de se connecter à l'INPN.
 
 .. code:: toml
 
@@ -80,7 +80,7 @@ Si les protocoles de connexion que nous avons implémentés ne vous suffisent pa
         is_external = True # si redirection vers un portail de connexion externe
 
         def authenticate(self, *args, **kwargs) -> Union[Response, models.User]:
-            pass # doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d'identités
+            pass # doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d'identité
 
         def authorize(self):
             # appeler par /auth/authorize si redirection d'un portail de connexion externe
@@ -93,7 +93,7 @@ Si les protocoles de connexion que nous avons implémentés ne vous suffisent pa
             class SchemaConf(ProviderConfigurationSchema):
                 VAR = fields.String(required=True)
             configuration = SchemaConf().load(configuration) # Si besoin d'un processus de validation
-            ...# Configuration du fournisseur d'identités
+            ...# Configuration du fournisseur d'identité
 
 
 .. note::
@@ -103,7 +103,13 @@ Si les protocoles de connexion que nous avons implémentés ne vous suffisent pa
 Désactiver l'authentification par défaut
 ````````````````````````````````````````
 
-Si vous souhaitez désactiver l'authentification par défaut au profit d'un ou plusieurs autres fournisseurs d'identités, il suffit de ne pas déclarer celui-ci dans la section `[[AUTHENTICATION.PROVIDERS]]` dans la partie `AUTHENTICATION` de la configuration.
+Si vous souhaitez désactiver l'authentification par défaut au profit d'un ou plusieurs autres fournisseurs d'identité, il suffit de ne pas déclarer celui-ci dans la section ``[[AUTHENTICATION.PROVIDERS]]`` dans la partie `AUTHENTICATION` de la configuration.
 
 .. note:: 
-    Si un seul fournisseur d'identités (différent de l'authentification par défaut) est déclaré dans la section `[[AUTHENTICATION.PROVIDERS]]` de la configuration, l'utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.
+    Si un seul fournisseur d'identité (différent de l'authentification par défaut) est déclaré dans la section ``[[AUTHENTICATION.PROVIDERS]]`` de la configuration, l'utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.
+
+Hiérarchiser différents fournisseurs d'identité
+```````````````````````````````````````````````
+
+L'attribut ``is_secondary`` permet de hiérarchiser l'affichage des fournisseurs d'identité lorsque plusieurs sont activés. Il suffit d'ajouter la ligne ``is_secondary = true`` à la configuration ``[[AUTHENTICATION.PROVIDERS]]`` d'un fournisseur d'identité pour qu'il s'affiche derrière un composant `details`.
+Les autres fournisseurs d'identité ont par défaut le paramètre ``is_secondary = false`` et restent visibles. L'ordre d'affichage au sein de chaque section (fournisseurs principaux et fournisseurs secondaires) dépend de leur ordre dans le fichier de configuration.
