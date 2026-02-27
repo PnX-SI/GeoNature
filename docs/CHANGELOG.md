@@ -1,25 +1,15 @@
 # CHANGELOG
 
-## 2.17.0 (unreleased)
+## 2.17.0 - Pipistrellus kuhlii (unreleased)
 
 ### ▶️ En bref
 
-- Nouvelles fonctionnalités dans le module d'import :
-  - Possibilité de définir des valeurs fixes dans un plusieurs champs
+- Nouvelles fonctionnalités dans le module d'Import :
+  - Possibilité de définir des valeurs fixes dans un ou plusieurs champs
   - Possibilité de faire correspondre des observateurs présents dans le fichier avec des utilisateurs dans GeoNature
-  - Import Multi-JDD
-- Ajout de la fiche observateurs. Cette permet d'afficher les observations, les taxons observés et les médias déposés par un utilisateur. Cette dernière est accessible depuis le bouton `Ma fiche observateur` dans le menu de déroulant 👤 dans le barre supérieure.
-- Optimisation des performances du module Validation
-
-### ⚠️ Notes de version
-
-**🌪️ Modules externes** Le bon fonctionnement des modules externes avec cette nouvelle version de GeoNature 2.17.0, les modules suivants doivent être mis à jours :
-
-- Monitoring [1.2.7](https://github.com/PnX-SI/gn_module_monitoring/releases/tag/1.2.7)
-- Dashboard [1.6.1](https://github.com/PnX-SI/gn_module_dashboard/releases/tag/1.6.1)
-
-**💻 Développeur** Dans le cadre de la mise à jour de Utils-Flask-SQLAlchemy, la mise à jour du module marshmallow apporte son lot de modification. Notamment, l'arrêt du
-support `marshmallow-geojson`.
+  - Import de données dans plusieurs jeu de données en une fois
+  - Développements en vue de l'import dans le module Monitoring
+- Ajout de la fiche observateurs. Elle permet d'afficher les observations, les taxons observés et les médias déposés par un utilisateur. Cette dernière est accessible depuis le bouton `Ma fiche observateur` dans le menu de déroulant 👤 dans le barre supérieure.
 
 ### 🚀 Nouveautés
 
@@ -27,7 +17,7 @@ support `marshmallow-geojson`.
 - [Import] Ajout des destinations Monitoring et ses sous-modules, permettant de faire des imports dans les sous-modules de suivi du module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457)
 - [Import] Possibilité de choisir des valeurs constantes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
 - [Import] Possibilité de faire des imports multi-JDD et déplacement de la selection du JDD à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
-- [Import] Ajout d'une étape de mapping des observateurs. Seulement activé sur les imports Monitoring pour le moment ? Et Occhab ? En attendant de clarifier le fonctionnement côté Synthèse (entre le champs texte des observateurs et la table de correspondance..) ? (#3775 par @jacquesfize)
+- [Import] Ajout d'une étape de mapping des observateurs. Disponible dans l'import Synthèse, Occhab et Monitoring. Cette fonctionnalité est désactivable à l'aide du paramètre `IMPORT.ALLOW_USER_MAPPING` (#3875 par @jacquesfize)
 - [Synthèse] Fiche observateur accessible à chaque utilisateur depuis son compte (#2982 par @edelclaux)
 - [Occhab] Correction de l'utilisation du CRUVED dans les boutons de occhab (#3852 par @christophe-ramet)
 - [Permission] Amélioration de la recherche de zonages dans les permissions (par @christophe-ramet et @jacquesfize)
@@ -39,6 +29,7 @@ support `marshmallow-geojson`.
 - [Import] Correction de la prise en compte des géométries dans l'import de fichiers CSV si le SRID de l'instance GN était en 2146 (#3848 par @Pierre-Narcisi)
 - [Métadonnées] Ajout de la possibilité de préremplir le formulaire de création de cadre d'acquisition avec des valeurs prises dans l'url (#3781 par par @VincentCauchois)
 - [Media form] Ajout de la possibilité d'annuler l'ajout d'un média (#3829) (par @Pierre-Narcisi)
+- [TaxHub] Mise à jour en [2.3.0](https://github.com/PnX-SI/TaxHub/releases/tag/2.3.0)
 
 ### 🐛 Corrections
 
@@ -53,6 +44,23 @@ support `marshmallow-geojson`.
 - [Général] Correction de l'affichage des modules dans le menu latéral. Si un administrateur n'avait pas dans un module (par ex. Validation), le module était quand même affiché (jacques et pierre
 - [Général] Correction des icônes manquantes (#3761 par @jacquesfize)
 - [Général] Les médias ne sont supprimés que si le formulaire est validé (#3706 par @christophe-ramet)
+
+### ⚠️ Notes de version
+
+**🌪️ Modules externes** Certains modules doivent être mis à jour pour fonctionner avec cette nouvelle version :
+
+- Monitoring [1.2.7](https://github.com/PnX-SI/gn_module_monitoring/releases/tag/1.2.7)
+- Dashboard [1.6.1](https://github.com/PnX-SI/gn_module_dashboard/releases/tag/1.6.1)
+
+**🔑 Authentification**
+
+- Ajout de contrainte d'unicité sur la colonne `identifiant` de la table des utilisateurs et `nom_organisme` dans la table des organismes
+- Désormais les créations de MDP ont des contraintes par défaut (modifiables/désactivables). Au moment de la création de compte, mais aussi de modification de MDP ?
+
+**🚨 BREAKING CHANGES**
+
+- Avec la mise à jour de Utils-Flask-SQLAlchemy, la mise à jour du module marshmallow ([>4.0](https://marshmallow.readthedocs.io/en/latest/changelog.html#id8)) apporte son lot de modifications. Faites les vérifications nécessaires concernant la compatibilité de cette nouvelle version.
+- Supression de la dépendance à `marshmallow-geojson`. Les schémas de validations de GeoJSON ont sont maintenant disponibles dans `utils_flask_sqla_geo.schema` (voir [#89](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49) pour plus de détails)
 
 ## 2.16.4 (2025-11-17)
 
