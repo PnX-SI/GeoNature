@@ -2,12 +2,24 @@
 
 ## 2.17.0 (unreleased)
 
-### En bref
+### ▶️ En bref
 
-- Import Monitoring
-- Constantes d'import
-- Correspondance des utilisateurs
-- Fiche observateurs
+- Nouvelles fonctionnalités dans le module d'import :
+  - Possibilité de définir des valeurs fixes dans un plusieurs champs
+  - Possibilité de faire correspondre des observateurs présents dans le fichier avec des utilisateurs dans GeoNature
+  - Import Multi-JDD
+- Ajout de la fiche observateurs. Cette permet d'afficher les observations, les taxons observés et les médias déposés par un utilisateur. Cette dernière est accessible depuis le bouton `Ma fiche observateur` dans le menu de déroulant 👤 dans le barre supérieure.
+- Optimisation des performances du module Validation
+
+### ⚠️ Notes de version
+
+**🌪️ Modules externes** Le bon fonctionnement des modules externes avec cette nouvelle version de GeoNature 2.17.0, les modules suivants doivent être mis à jours :
+
+- Monitoring [1.2.7](https://github.com/PnX-SI/gn_module_monitoring/releases/tag/1.2.7)
+- Dashboard [1.6.1](https://github.com/PnX-SI/gn_module_dashboard/releases/tag/1.6.1)
+
+**💻 Développeur** Dans le cadre de la mise à jour de Utils-Flask-SQLAlchemy, la mise à jour du module marshmallow apporte son lot de modification. Notamment, l'arrêt du
+support `marshmallow-geojson`.
 
 ### 🚀 Nouveautés
 
