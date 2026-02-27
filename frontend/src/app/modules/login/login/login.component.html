@@ -28,118 +28,61 @@
             </div>
             <div class="panel-body">
               <ng-container *ngIf="!login_or_pass_recovery; else logPwdRecoBlock">
-                <ng-container *ngIf="localProviderEnabled">
-                  <form
-                    (ngSubmit)="register(userForm.value)"
-                    #userForm="ngForm"
-                  >
-                    <div class="form-group">
-                      <i class="addon fa fa-user"></i>
-                      <input
-                        type="text"
-                        id="login"
-                        class="form-control"
-                        name="login"
-                        ngModel
-                        placeholder="Identifiant"
-                        autofocus
-                        data-qa="gn-connection-id"
+                <div>
+                  <ng-container *ngFor="let provider of primaryProviders">
+                    <div class="text-center">
+                      <ng-container
+                        *ngTemplateOutlet="providerTemplate; context: { provider: provider }"
                       />
                     </div>
-                    <div class="form-group password-field">
-                      <i class="addon fa fa-lock"></i>
-                      <input
-                        #password
-                        [type]="showPassword ? 'text' : 'password'"
-                        name="password"
-                        class="form-control"
-                        placeholder="Mot de passe"
-                        ngModel
-                        data-qa="gn-connection-pwd"
-                      />
-                      <button
-                        type="button"
-                        class="password-toggle-btn"
-                        (click)="togglePasswordVisibility()"
-                        [attr.aria-label]="
-                          showPassword
-                            ? ('Authentication.Messages.HidePassword' | translate)
-                            : ('Authentication.Messages.ShowPassword' | translate)
-                        "
-                        [matTooltip]="
-                          showPassword
-                            ? ('Authentication.Messages.HidePassword' | translate)
-                            : ('Authentication.Messages.ShowPassword' | translate)
-                        "
-                        matTooltipPosition="right"
-                        tabindex="-1"
-                      >
-                        <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                      </button>
-                    </div>
-                    <div
-                      *ngIf="enable_user_management"
-                      class="forgot"
-                      (click)="login_or_pass_recovery = true; _authService.loginError = false"
-                    >
-                      {{ 'Authentication.Messages.ForgotPasswordOrLogin' | translate }}
-                    </div>
+                    <br
+                      *ngIf="primaryProviders.length > 1 && primaryProviders.indexOf(provider) == 0"
+                    />
+                  </ng-container>
 
-                    <button
-                      class="btn btn-lg btn-success btn-block text-uppercase"
-                      type="submit"
-                      data-qa="gn-connection-button"
-                    >
-                      Se connecter
-                    </button>
-                  </form>
+                  <ng-container *ngIf="hasSecondaryProviders">
+                    <br />
+                    <details>
+                      <summary>{{ 'Authentication.OtherAuthProviders' | translate }}</summary>
+                      <br />
+                      <ng-container *ngFor="let provider of secondaryProviders">
+                        <div class="text-center">
+                          <ng-container
+                            *ngTemplateOutlet="providerTemplate; context: { provider: provider }"
+                          />
+                        </div>
+                        <br
+                          *ngIf="
+                            secondaryProviders.length > 1 &&
+                            secondaryProviders.indexOf(provider) != secondaryProviders.length - 1
+                          "
+                        />
+                      </ng-container>
+                    </details>
+                  </ng-container>
+                </div>
+
+                <div>
                   <hr />
-                </ng-container>
-
-                <ng-container *ngIf="isOtherProviders">
-                  <p>Se connecter avec :</p>
-                  <div class="row center">
-                    <div *ngFor="let provider of authProviders">
-                      <button
-                        *ngIf="!provider.is_external; else externalAuthBlock"
-                        (click)="openDialog(provider)"
-                        class="btn btn-primary rounded mr-2 mt-2"
-                      >
-                        <span [innerHTML]="provider.logo | safeHTML"></span>
-                        {{ provider.label }}
-                      </button>
-                      <ng-template #externalAuthBlock>
-                        <a
-                          [href]="getProviderLoginUrl(provider.id_provider)"
-                          class="btn btn-primary rounded mr-2 mt-2"
-                        >
-                          <span [innerHTML]="provider.logo | safeHTML"></span>
-                          {{ provider.label }}
-                        </a>
-                      </ng-template>
-                    </div>
-                  </div>
-                </ng-container>
-
-                <br />
-
-                <div *ngIf="enable_sign_up">
-                  <div class="inscription">
+                  <div
+                    *ngIf="enable_sign_up"
+                    class="inscription"
+                  >
                     <a routerLink="/login/inscription">
                       {{ 'Authentication.Actions.CreateAccount' | translate }}
                     </a>
                   </div>
-                </div>
-                <div
-                  *ngFor="let link of external_links"
-                  class="external_link"
-                >
-                  <a
-                    href="{{ link.url }}"
-                    target="_blank"
+                  <div
+                    *ngFor="let link of external_links"
+                    class="external_link"
                   >
-                    {{ link.label }}
-                  </a>
+                    <a
+                      href="{{ link.url }}"
+                      target="_blank"
+                    >
+                      {{ link.label }}
+                    </a>
+                  </div>
                 </div>
                 <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
               </ng-container>
@@ -148,12 +91,11 @@
                 <ng-container *ngIf="login_or_pass_recovery">
                   <div>
                     <small style="color: white !important">
-                      Veuillez renseigner votre adresse email utilisée lors de votre inscription.
+                      {{ 'Authentication.Messages.Recovery.MailAsked' | translate }}
                     </small>
                     <br />
                     <small style="color: white !important">
-                      Un message y sera envoyé avec votre identifiant et la possibilité de
-                      renouveler votre votre mot de passe.
+                      {{ 'Authentication.Messages.Recovery.Process' | translate }}
                     </small>
                   </div>
 
@@ -169,7 +111,7 @@
                         class="form-control"
                         name="email"
                         ngModel
-                        placeholder="Adresse mail"
+                        placeholder="{{ 'Authentication.Email' | translate }}"
                         autofocus
                         required
                         email
@@ -192,7 +134,7 @@
                       class="btn btn-lg btn-success btn-block text-uppercase"
                       type="submit"
                     >
-                      Envoyer
+                      {{ 'Authentication.Actions.Send' | translate }}
                     </button>
                   </form>
                 </ng-container>
@@ -240,16 +182,107 @@
   </ng-container>
 </div>
 
-<ng-template #noProvider>
-  <div class="container">
-    <div id="no-provider">
-      <div
-        class="alert alert-warning text-center p-3 mx-auto"
-        role="alert"
-        style="width: 50%"
-      >
-        <h1>Aucun fournisseur d'identités n'est configuré.</h1>
-      </div>
+<ng-template
+  #providerTemplate
+  let-provider="provider"
+>
+  <ng-container
+    *ngTemplateOutlet="
+      provider.id_provider === 'local_provider' ? localProviderForm : otherProvider;
+      context: { provider: provider }
+    "
+  />
+</ng-template>
+
+<ng-template #localProviderForm>
+  <ng-container *ngIf="!isLocalProviderOnlyPrimaryProvider">
+    {{ 'Authentication.Authentication' | translate }} GeoNature
+  </ng-container>
+  <form
+    (ngSubmit)="register(userForm.value)"
+    #userForm="ngForm"
+  >
+    <div class="form-group">
+      <i class="addon fa fa-user"></i>
+      <input
+        type="text"
+        id="login"
+        class="form-control"
+        name="login"
+        ngModel
+        placeholder="{{ 'Authentication.Username' | translate }}"
+        autofocus
+        data-qa="gn-connection-id"
+      />
     </div>
-  </div>
+    <div class="form-group password-field">
+      <i class="addon fa fa-lock"></i>
+      <input
+        #password
+        [type]="showPassword ? 'text' : 'password'"
+        name="password"
+        class="form-control"
+        placeholder="Mot de passe"
+        ngModel
+        data-qa="gn-connection-pwd"
+      />
+      <button
+        type="button"
+        class="password-toggle-btn"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="
+          showPassword
+            ? ('Authentication.Messages.HidePassword' | translate)
+            : ('Authentication.Messages.ShowPassword' | translate)
+        "
+        [matTooltip]="
+          showPassword
+            ? ('Authentication.Messages.HidePassword' | translate)
+            : ('Authentication.Messages.ShowPassword' | translate)
+        "
+        matTooltipPosition="right"
+        tabindex="-1"
+      >
+        <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </div>
+    <div
+      *ngIf="enable_user_management"
+      class="forgot"
+      (click)="login_or_pass_recovery = true; _authService.loginError = false"
+    >
+      {{ 'Authentication.Messages.Recovery.ForgotPasswordOrLogin' | translate }}
+    </div>
+
+    <button
+      class="btn btn-lg btn-success btn-block text-uppercase"
+      type="submit"
+      data-qa="gn-connection-button"
+    >
+      {{ 'Authentication.Actions.LogIn' | translate }}
+    </button>
+  </form>
+</ng-template>
+
+<ng-template
+  #otherProvider
+  let-provider="provider"
+>
+  <button
+    *ngIf="!provider.is_external; else externalAuthBlock"
+    (click)="openDialog(provider)"
+    class="btn btn-primary rounded mr-2 mt-2"
+  >
+    <span [innerHTML]="provider.logo | safeHTML"></span>
+    {{ provider.label }}
+  </button>
+  <ng-template #externalAuthBlock>
+    <a
+      [href]="getProviderLoginUrl(provider.id_provider)"
+      class="btn btn-primary rounded mr-2 mt-2"
+    >
+      <span [innerHTML]="provider.logo | safeHTML"></span>
+      {{ provider.label }}
+    </a>
+  </ng-template>
 </ng-template>
