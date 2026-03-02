@@ -9,49 +9,38 @@ from marshmallow import Schema, fields, missing, post_load
 import copy
 
 
-# Creates a partial version of a given Marshmallow schema.
-#
-# The generated schema:
-# - Makes all fields optional (required = False)
-# - Removes any load and dump default values
-# - Applies the transformation recursively to nested schemas
-# - Optionally excludes specific fields from the override process
-#
-# This is useful for defining partial configuration schemas where
-# provided values override a fully defined base configuration.
+import copy
+from marshmallow import Schema, missing
+
+
 def create_partial_schema(schema_cls: type[Schema], *, name=None, exclude=()):
-    cache = {}
+    """
+    Creates a partial version of a given Marshmallow schema.
 
-    def _make(schema_cls):
-        if schema_cls in cache:
-            return cache[schema_cls]
+    - Only top-level fields are made optional
+    - Removes load_default and dump_default at level 1
+    - Does NOT recursively modify nested schemas
+    - Nested schemas must remain fully valid if provided
+    """
 
-        new_fields = {}
+    new_fields = {}
 
-        for field_name, field in schema_cls._declared_fields.items():
-            if field_name in exclude:
-                continue
+    for field_name, field in schema_cls._declared_fields.items():
+        if field_name in exclude:
+            continue
 
-            field_copy = copy.deepcopy(field)
+        field_copy = copy.deepcopy(field)
 
-            field_copy.load_default = missing
-            field_copy.dump_default = missing
-            field_copy.required = False
+        field_copy.required = False
+        field_copy.load_default = missing
+        field_copy.dump_default = missing
 
-            # Recursively override nested schemas
-            if isinstance(field_copy, fields.Nested):
-                nested_schema_cls = field_copy.schema.__class__
-                partial_nested = _make(nested_schema_cls)
-                field_copy = fields.Nested(partial_nested)
+        new_fields[field_name] = field_copy
 
-            new_fields[field_name] = field_copy
-
-        new_schema = Schema.from_dict(new_fields, name=name or f"{schema_cls.__name__}Partial")
-
-        cache[schema_cls] = new_schema
-        return new_schema
-
-    return _make(schema_cls)
+    return Schema.from_dict(
+        new_fields,
+        name=name or f"{schema_cls.__name__}Partial",
+    )
 
 
 class MapListConfig(Schema):
