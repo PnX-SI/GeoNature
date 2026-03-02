@@ -39,7 +39,7 @@ from .repositories import (
     get_query_occtax_order,
 )
 from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
-from .utils import as_dict_with_add_cols, get_module_conf
+from .utils import as_dict_with_add_cols
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
@@ -66,6 +66,11 @@ def set_current_module(endpoint, values):
     g.current_module = db.first_or_404(
         select(TModules).filter_by(module_code=requested_module),
         description=f"No module name {requested_module}",
+    )
+    g.module_conf = (
+        current_app.config["OCCTAX"]
+        if requested_module == "OCCTAX"
+        else current_app.config["OCCTAX"]["additional_confs"][requested_module]
     )
 
 
@@ -604,8 +609,7 @@ def export(scope):
         obs_txt_column=blueprint.config["export_observer_txt_column"],
     )
 
-    module_conf = get_module_conf()
-    if module_conf["ADD_MEDIA_IN_EXPORT"]:
+    if g.module_conf["ADD_MEDIA_IN_EXPORT"]:
         q, columns = releve_repository.add_media_in_export(q, columns)
 
     data = db.session.execute(q)

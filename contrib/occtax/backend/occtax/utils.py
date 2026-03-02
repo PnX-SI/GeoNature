@@ -52,8 +52,7 @@ def as_dict_with_add_cols(
     export_view, row, additional_cols_key: str, addition_cols_to_export: list
 ):
     row_as_dict = export_view.as_dict(row)
-    module_conf = get_module_conf()
-    if module_conf["ADD_MEDIA_IN_EXPORT"]:
+    if g.module_conf["ADD_MEDIA_IN_EXPORT"]:
         row_as_dict["titreMedia"] = row.titreMedia
         row_as_dict["descMedia"] = row.descMedia
         if row.urlMedia:
@@ -68,14 +67,3 @@ def as_dict_with_add_cols(
     for col_name in addition_cols_to_export:
         row_as_dict[col_name] = additional_data.get(col_name, "")
     return row_as_dict
-
-
-def get_module_conf():
-    try:
-        module_code = g.current_module.module_code
-        if module_code == "OCCTAX":
-            return current_app.config["OCCTAX"]
-        return current_app.config["OCCTAX"]["additional_confs"][module_code]
-    except:
-        pass
-    return current_app.config["OCCTAX"]

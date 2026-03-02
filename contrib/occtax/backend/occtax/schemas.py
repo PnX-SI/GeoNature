@@ -12,7 +12,6 @@ from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.utils.env import MA
 from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccurrence
-from .utils import get_module_conf
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
@@ -112,13 +111,15 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     dataset = MA.Nested(DatasetSchema, dump_only=True)
     habitat = MA.Nested(HabrefSchema, dump_only=True)
 
-    # __init__ is overridden because get_module_conf() depends on g.current_module,
-    # which is only available during a request context (i.e., at instantiation time), not at class definition time.
+    # __init__ is overridden because g.module_conf is only available during
+    # a request context (i.e., at instantiation time), not at class definition time.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        module_conf = get_module_conf()
-        observers_allow_none = module_conf.get("observers_txt", True)
-        self.fields["observers"].allow_none = observers_allow_none
+        try:
+            observers_allow_none = g.module_conf.get("observers_txt", True)
+            self.fields["observers"].allow_none = observers_allow_none
+        except:
+            pass
 
     @pre_load
     def make_releve(self, data, **kwargs):
