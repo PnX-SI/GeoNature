@@ -630,8 +630,7 @@ def check_entity_data_consistency(imprt, entity, fields, grouping_field):
             grouping_col != None,
         ),
     )
-
-    columns = [getattr(transient_table.c, field.source_field) for field in fields.values()]
+    columns = [getattr(transient_table.c, field.source_column) for field in fields.values()]
 
     # hash the content of the entity to check for differences without
     # comparing each columns
