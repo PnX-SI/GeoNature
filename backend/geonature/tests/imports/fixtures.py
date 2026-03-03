@@ -14,7 +14,10 @@ from apptax.taxonomie.models import BibListes, Taxref
 from sqlalchemy.orm import joinedload
 
 
-tests_path = Path(__file__).parent
+@pytest.fixture(scope="class")
+def tests_path():
+    return Path(__file__).parent
+
 
 # ######################################################################################
 # Fixtures -- destination
@@ -430,7 +433,13 @@ def preset_fieldmapping():
 
 @pytest.fixture()
 def uploaded_import(
-    client, import_file_name, override_in_importfile, users, testfiles_folder, preset_fieldmapping
+    client,
+    tests_path,
+    import_file_name,
+    override_in_importfile,
+    users,
+    testfiles_folder,
+    preset_fieldmapping,
 ):
     set_logged_user(client, users["user"])
 
