@@ -4,12 +4,13 @@
 
 ### ▶️ En bref
 
-- Nouvelles fonctionnalités dans le module d'Import :
+- Nouvelles fonctionnalités dans le module Import :
   - Possibilité de définir des valeurs fixes dans un ou plusieurs champs
   - Possibilité de faire correspondre des observateurs présents dans le fichier avec des utilisateurs dans GeoNature
   - Import de données dans plusieurs jeu de données en une fois
   - Développements en vue de l'import dans le module Monitoring
-- Ajout de la fiche observateurs. Elle permet d'afficher les observations, les taxons observés et les médias déposés par un utilisateur. Cette dernière est accessible depuis le bouton `Ma fiche observateur` dans le menu de déroulant 👤 dans le barre supérieure.
+- Ajout d'une fiche observateur. Elle permet d'afficher les observations, les taxons observés et les médias déposés par un utilisateur. Cette dernière est accessible depuis le bouton `Ma fiche observateur` dans le menu de déroulant 👤 dans le barre supérieure.
+- Ajout du support de Debian 13 (le support de Debian 11 sera arrêté dans la prochaine version 2.18.0)
 
 ### 🚀 Nouveautés
 
@@ -18,8 +19,8 @@
 - [Import] Possibilité de choisir des valeurs constantes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
 - [Import] Possibilité de faire des imports multi-JDD et déplacement de la selection du JDD à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
 - [Import] Ajout d'une étape de mapping des observateurs. Disponible dans l'import Synthèse, Occhab et Monitoring. Cette fonctionnalité est désactivable à l'aide du paramètre `IMPORT.ALLOW_USER_MAPPING` (#3875 par @jacquesfize)
-- [Synthèse] Fiche observateur accessible à chaque utilisateur depuis son compte (#2982 par @edelclaux)
-- [Occhab] Correction de l'utilisation du CRUVED dans les boutons de occhab (#3852 par @christophe-ramet)
+- [Synthèse] Fiche observateur accessible à chaque utilisateur depuis son compte, désactivable avec le paramètre `ENABLE_OBSERVER_SHEETS` (#2982 par @edelclaux)
+- [Occhab] Correction de l'utilisation des permissions dans les boutons de Occhab (#3852 par @christophe-ramet)
 - [Permission] Amélioration de la recherche de zonages dans les permissions (par @christophe-ramet et @jacquesfize)
 - [Synthèse] Ajout de la fiche Observateur (#3768 par @edelclaux). Cette fonctionnalité permet d'afficher une synthèse des observations, des médias et des taxons observés que l'utilisateur a observé. Cette fonctionnalité est activable/désactivable à l'aide de la variable de configuration `ENABLE_OBSERVER_SHEETS`. Chaque onglet est désactivable à l'aide de `ENABLE_TAB_TAXA` et `ENABLE_TAB_MEDIA`.
 - [Validation] Amélioration des performances. Dans le bloc `Dernières Validations` de la page d'accueil, cette dernière affiche maintenant seulement les dernières validations et non les derniers taxons dont le statut de validation a changé. (par @jacquesfize)
@@ -45,22 +46,29 @@
 - [Général] Correction des icônes manquantes (#3761 par @jacquesfize)
 - [Général] Les médias ne sont supprimés que si le formulaire est validé (#3706 par @christophe-ramet)
 
+### 💻 Développement
+
+- Avec la mise à jour de Utils-Flask-SQLAlchemy, la mise à jour du module marshmallow ([>4.0](https://marshmallow.readthedocs.io/en/latest/changelog.html#id8)) apporte son lot de modifications. Faites les vérifications nécessaires sur vos modules GeoNature, concernant la compatibilité de cette nouvelle version.
+- Supression de la dépendance à `marshmallow-geojson`. Les schémas de validation de GeoJSON sont maintenant disponibles dans `utils_flask_sqla_geo.schema` (voir [Utils-Flask-SQLAlchemy-Geo#89](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49) pour plus de détails).
+
 ### ⚠️ Notes de version
 
-**🌪️ Modules externes** Certains modules doivent être mis à jour pour fonctionner avec cette nouvelle version :
+**Modules externes 🌪️** 
+
+Certains modules doivent être mis à jour pour fonctionner avec cette nouvelle version :
 
 - Monitoring [1.2.7](https://github.com/PnX-SI/gn_module_monitoring/releases/tag/1.2.7)
 - Dashboard [1.6.1](https://github.com/PnX-SI/gn_module_dashboard/releases/tag/1.6.1)
+- Export [1.8.2](https://github.com/PnX-SI/gn_module_export/releases/tag/1.8.2)
 
-**🔑 Authentification**
+Si vous utilisez d'autres modules, vérifiez qu'ils disposent d'une version compatible avec GeoNature 2.17.0 (ou plus).
 
-- Ajout de contrainte d'unicité sur la colonne `identifiant` de la table des utilisateurs et `nom_organisme` dans la table des organismes
-- Désormais les créations de MDP ont des contraintes par défaut (modifiables/désactivables). Au moment de la création de compte, mais aussi de modification de MDP ?
+**Authentification 🔑**
 
-**🚨 BREAKING CHANGES**
+- Ajout de contraintes d'unicité sur les colonnes `identifiant` de la table des utilisateurs et `nom_organisme` dans la table des organismes
+- Désormais les créations de mot de passe ont des contraintes par défaut (modifiables/désactivables).
 
-- Avec la mise à jour de Utils-Flask-SQLAlchemy, la mise à jour du module marshmallow ([>4.0](https://marshmallow.readthedocs.io/en/latest/changelog.html#id8)) apporte son lot de modifications. Faites les vérifications nécessaires concernant la compatibilité de cette nouvelle version.
-- Supression de la dépendance à `marshmallow-geojson`. Les schémas de validations de GeoJSON ont sont maintenant disponibles dans `utils_flask_sqla_geo.schema` (voir [#89](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49) pour plus de détails)
+**📝 Merci aux contributeurs**
 
 ## 2.16.4 (2025-11-17)
 
