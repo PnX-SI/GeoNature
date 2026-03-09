@@ -1,8 +1,11 @@
 from pathlib import Path
 
+from geonature.core.gn_synthese.imports.actions import SyntheseImportActions
+from geonature.core.imports.actions import ImportActions
+from gn_module_occhab.imports.actions import OcchabImportActions
 import pytest
 from sqlalchemy import select
-from flask import url_for
+from flask import current_app, url_for
 from werkzeug.exceptions import Unauthorized, Forbidden
 from jsonschema import validate as validate_json
 
@@ -84,3 +87,39 @@ class TestImportsRoute:
         )
         assert r.status_code == 200, r.data
         assert r.json["detected_encoding"] == "utf-8"
+
+    def test_observation_mapping_enabled(self, users, imports_all, monkeypatch):
+        set_logged_user(self.client, users["user"])
+        monkeypatch.setitem(current_app.config["IMPORT"], "ALLOW_USER_MAPPING", True)
+        assert ImportActions.is_observer_mapping_enabled() is True
+        assert SyntheseImportActions.is_observer_mapping_enabled() is True
+        monkeypatch.setitem(current_app.config["IMPORT"], "ALLOW_USER_MAPPING", False)
+        assert ImportActions.is_observer_mapping_enabled() is False
+        assert SyntheseImportActions.is_observer_mapping_enabled() is False
+
+        monkeypatch.setitem(current_app.config["IMPORT"], "ALLOW_USER_MAPPING", True)
+        monkeypatch.setitem(current_app.config["OCCHAB"], "OBSERVER_AS_TXT", True)
+        assert OcchabImportActions.is_observer_mapping_enabled() is False
+        monkeypatch.setitem(current_app.config["OCCHAB"], "OBSERVER_AS_TXT", False)
+        assert OcchabImportActions.is_observer_mapping_enabled() is True
+
+        assert (
+            self.client.get(
+                url_for("import.is_observer_mapping_enabled", destination="synthese")
+            ).json["allowed"]
+            is True
+        )
+        monkeypatch.setitem(current_app.config["OCCHAB"], "OBSERVER_AS_TXT", True)
+        assert (
+            self.client.get(
+                url_for("import.is_observer_mapping_enabled", destination="occhab")
+            ).json["allowed"]
+            is False
+        )
+        monkeypatch.setitem(current_app.config["OCCHAB"], "OBSERVER_AS_TXT", False)
+        assert (
+            self.client.get(
+                url_for("import.is_observer_mapping_enabled", destination="occhab")
+            ).json["allowed"]
+            is True
+        )

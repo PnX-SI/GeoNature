@@ -98,6 +98,9 @@
   "Observer": "Observer",
   "Observers?": "Observers",
   "Observers": "Observer(s)",
+  "Observation": "Observation",
+  "Observations": "Observations",
+  "Observations?": "Observation(s)",
   "Digitiser": "Creator",
   "Digitisers": "Creators",
   "Digitisers?": "Creator(s)",
@@ -118,7 +121,6 @@
   "Datasets": "Datasets",
   "AcquisitionFramework": "Acquisition Framework",
   "AcquisitionFrameworks": "Acquisition Frameworks",
-  "Observations": "Observations",
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Species",
@@ -393,11 +395,15 @@
       "AddComment": "Add a comment",
       "DeleteComment": "Delete a comment",
       "ChangeValidStatus": "Change validation status",
-      "RedirectToModule": "View in the data entry module"
+      "RedirectToModule": "View in the data entry module",
+      "PinObservation": "Pin the observation",
+      "UnpinObservation": "Unpin the observation"
     },
     "Messages": {
       "Copied": "Copied to clipboard!",
-      "DeleteSuccess": "Observation deleted successfully"
+      "DeleteSuccess": "Observation deleted successfully",
+      "Pinned": "Pinned successfully",
+      "Unpinned": "Unpinned successfully"
     },
     "Errors": {
       "PeriodCompleteness": "The 'start period' and 'end period' fields must be filled if you want to search by period"
@@ -545,6 +551,7 @@
         "InDatabase": "In GeoNature"
       },
       "Messages": {
+        "MappingNotAllowed": "The mapping of observers is not allowed for this import destination.",
         "NoObserverMapping": "No field linked to observers has been mapped (or the column in the file is empty)."
       }
     },

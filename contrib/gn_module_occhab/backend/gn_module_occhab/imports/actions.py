@@ -438,7 +438,7 @@ class OcchabImportActions(ImportActions):
         # check_types overriding generated values during SQL checks.
         OcchabImportActions.check_station_dataframe(imprt)
         OcchabImportActions.check_habitat_dataframe(imprt)
-
+        task.update_state(state="PROGRESS", meta={"progress": 0.5})
         OcchabImportActions.check_station_sql(imprt)
         OcchabImportActions.check_habitat_sql(imprt)
 
@@ -484,13 +484,14 @@ class OcchabImportActions(ImportActions):
             parent_line_no_field_name="station_line_no",
             parent_id_field_name="id_station",
         )
-
         for entity in entities.values():
 
             fields = {
                 ef.field.name_field: ef.field for ef in entity.fields if ef.field.dest_field != None
             }
             insert_fields = {fields["id_station"]}
+            literals = [sa.literal(imprt.id_import).label("id_import")]
+            names = ["id_import"]
             for field_name, mapping in imprt.fieldmapping.items():
                 if field_name not in fields:  # not a destination field
                     continue
@@ -509,6 +510,13 @@ class OcchabImportActions(ImportActions):
             if entity.code == "station":
                 insert_fields |= {fields["id_dataset"]}
                 insert_fields |= {fields["geom_4326"], fields["geom_local"]}
+                # If not given in the mapping
+                if not "id_digitiser" in imprt.fieldmapping:
+
+                    names += ["id_digitiser"]
+                    literals += [
+                        sa.literal(imprt.authors[0].id_role).label("id_digitiser"),
+                    ]
                 # TODO@TestImportsOcchab.test_import_valid_file: add testcase
                 if imprt.fieldmapping.get("altitudes_generate", False):
                     insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
@@ -520,10 +528,11 @@ class OcchabImportActions(ImportActions):
                 insert_fields -= {fields["unique_id_sinp_station"], fields["id_station_source"]}
                 # The field is either generated, or marked as mandatory
                 insert_fields |= {fields["unique_id_sinp_habitat"]}
-            names = ["id_import"] + [field.dest_field for field in insert_fields]
+            names += [field.dest_field for field in insert_fields]
+
             select_stmt = (
                 sa.select(
-                    sa.literal(imprt.id_import).label("id_import"),
+                    *literals,
                     *[transient_table.c[field.dest_field] for field in insert_fields],
                 )
                 .where(transient_table.c.id_import == imprt.id_import)
@@ -552,21 +561,27 @@ class OcchabImportActions(ImportActions):
         #  - OBSERVER_AS_TXT is false, observers are stored in correspondance table
         #  - OBSERVER_AS_TXT is true, observers are stored in text field
         # user mapping is only possible when OBSERVER_AS_TXT is false
-        if not config["OCCHAB"]["OBSERVER_AS_TXT"]:
-            if config["IMPORT"]["ALLOW_USER_MAPPING"]:
-                ImportActions.bind_matched_observers(
-                    imprt,
-                    Station,
-                    "observers_txt",
-                    "id_station",
-                    CorStationObserver,
-                    ["id_station", "id_role"],
-                )
+        if OcchabImportActions.is_observer_mapping_enabled():
+            ImportActions.bind_matched_observers(
+                imprt,
+                Station,
+                "observers_txt",
+                "id_station",
+                CorStationObserver,
+                ["id_station", "id_role"],
+            )
             db.session.execute(
                 sa.update(Station)
                 .where(Station.id_import == imprt.id_import)
                 .values({Station.observers_txt: None})
             )
+
+    @staticmethod
+    def is_observer_mapping_enabled() -> bool:
+        # if observer mapping is enable in the GN configureation and OBSERVER_AS_TXT is false, user mapping is allowed
+        return (
+            not config["OCCHAB"]["OBSERVER_AS_TXT"]
+        ) and ImportActions.is_observer_mapping_enabled()
 
     @staticmethod
     def report_plot(imprt: TImports) -> StandaloneEmbedJson:

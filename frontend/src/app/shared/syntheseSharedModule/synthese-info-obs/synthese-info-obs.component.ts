@@ -391,14 +391,14 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         content: '',
       })
       .subscribe(() => {
-        this._commonService.translateToaster('success', 'Epinglé !');
+        this._commonService.translateToaster('success', 'Synthese.Messages.Pinned');
         this.getReport('pin');
       });
   }
 
   deletePin() {
     this._dataService.deleteReport(this.pin.id_report).subscribe(() => {
-      this._commonService.translateToaster('info', 'Epingle supprimée !');
+      this._commonService.translateToaster('info', 'Synthese.Messages.Unpinned');
       this.pin = {};
     });
   }

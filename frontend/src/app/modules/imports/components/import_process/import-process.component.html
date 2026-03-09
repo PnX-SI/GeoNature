@@ -2,7 +2,10 @@
   <div class="card">
     <div class="card-header">
       <header-stepper />
-      <stepper [step]="step"></stepper>
+      <stepper
+        [step]="step"
+        [isObserverMappingAllowed]="isObserverMappingAllowed"
+      ></stepper>
     </div>
     <div class="card-body">
       <router-outlet (activate)="onActivate($event)"></router-outlet>

@@ -16,7 +16,10 @@ import sqlalchemy as sa
 revision = "a81f74d0a518"
 down_revision = None
 branch_labels = ("import-samples",)
-depends_on = "2b0b3bd0248c"
+depends_on = (
+    "2b0b3bd0248c",  # import@2b0b3bd0248c - "multidest"
+    "3d0bf4ee67d1",  # geonature-samples@3d0bf4ee67d1 - "geonature samples"
+)
 
 
 def upgrade():

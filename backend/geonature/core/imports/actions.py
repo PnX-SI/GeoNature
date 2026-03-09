@@ -224,6 +224,21 @@ class ImportActions:
         raise NotImplementedError
 
     @staticmethod
+    def is_observer_mapping_enabled() -> bool:
+        """
+        Check if observer mapping is a allowed for the current destination.
+
+        If not overridden, is_observer_mapping_enabled returns the value
+        of ALLOW_USER_MAPPING in the configuration file, which is True by default.
+
+        Returns
+        -------
+        bool
+            True if observer mapping is enabled
+        """
+        return config["IMPORT"]["ALLOW_USER_MAPPING"]
+
+    @staticmethod
     def bind_matched_observers(
         imprt: TImports,
         model,
@@ -291,6 +306,7 @@ class ImportActions:
                 isouter=True,
             )
             .join(User, User.id_role == observer_mapping.c.id_role, isouter=True)
+            .where(model_observers.c[model_id_column] != None)
         )
 
         aggregated_observers = db.session.execute(

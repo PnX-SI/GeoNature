@@ -97,3 +97,33 @@ div.c {
   vertical-align: middle;
   margin-left: 5px;
 }
+
+.statistic-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+
+  img {
+    width: 3em;
+    height: 3em;
+  }
+
+  .number-div {
+    flex-grow: 1;
+    justify-content: end;
+    display: flex;
+  }
+  .number {
+    font-size: 1.5rem;
+    color: white;
+    background-color: #888;
+    border-radius: 50%;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

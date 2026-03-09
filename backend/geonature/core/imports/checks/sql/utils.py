@@ -14,7 +14,12 @@ from geonature.core.imports.utils import generated_fields
 import pandas as pd
 
 
-__all__ = ["get_duplicates_query", "report_erroneous_rows"]
+__all__ = [
+    "get_duplicates_query",
+    "report_erroneous_rows",
+    "print_transient_table",
+    "transient_table_to_dataframe",
+]
 
 
 def get_duplicates_query(imprt, dest_field, whereclause=sa.true()):
@@ -165,10 +170,29 @@ def print_transient_table(imprt: TImports, columns=None):
         The columns to print. If None, all columns are printed.
 
     """
+    print(transient_table_to_dataframe(imprt, columns).to_string())
+
+
+def transient_table_to_dataframe(imprt: TImports, columns=None) -> pd.DataFrame:
+    """
+    Get the content of the transient table for a given import as a pandas DataFrame.
+
+    Parameters
+    ----------
+    imprt : TImports
+        The import to get.
+    columns : list, optional
+        The columns to include in the DataFrame. If None, all columns are included.
+
+    Returns
+    -------
+    pd.DataFrame
+        The content of the transient table as a DataFrame.
+    """
     trans_table = imprt.destination.get_transient_table()
     res = db.session.execute(
         sa.select(*([trans_table.c[col] for col in columns] if columns else [trans_table]))
         .where(imprt.id_import == trans_table.c.id_import)
         .order_by(trans_table.c.line_no)
     ).all()
-    print(pd.DataFrame(res, columns=columns).to_string())
+    return pd.DataFrame(res, columns=columns)

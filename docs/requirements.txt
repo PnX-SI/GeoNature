@@ -4,31 +4,33 @@
 #
 #    pip-compile requirements.in
 #
+accessible-pygments==0.0.5
+    # via furo
 alabaster==0.7.16
     # via sphinx
-astroid==3.3.5
+astroid==3.3.11
     # via sphinx-autoapi
-babel==2.16.0
+babel==2.18.0
     # via sphinx
-beautifulsoup4==4.12.3
+beautifulsoup4==4.14.3
     # via furo
-certifi==2024.8.30
+certifi==2026.1.4
     # via requests
-charset-normalizer==3.4.0
+charset-normalizer==3.4.4
     # via requests
 docutils==0.21.2
     # via
     #   myst-parser
     #   sphinx
-furo==2024.8.6
+furo==2025.12.19
     # via -r requirements.in
-idna==3.10
+idna==3.11
     # via requests
 imagesize==1.4.1
     # via sphinx
-importlib-metadata==8.5.0
+importlib-metadata==8.7.1
     # via sphinx
-jinja2==3.1.4
+jinja2==3.1.6
     # via
     #   myst-parser
     #   sphinx
@@ -37,7 +39,7 @@ markdown-it-py==3.0.0
     # via
     #   mdit-py-plugins
     #   myst-parser
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via jinja2
 mdit-py-plugins==0.4.2
     # via myst-parser
@@ -45,21 +47,22 @@ mdurl==0.1.2
     # via markdown-it-py
 myst-parser==3.0.1
     # via -r requirements.in
-packaging==24.1
+packaging==26.0
     # via sphinx
-pygments==2.18.0
+pygments==2.19.2
     # via
+    #   accessible-pygments
     #   furo
     #   sphinx
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   myst-parser
     #   sphinx-autoapi
-requests==2.32.3
+requests==2.32.5
     # via sphinx
-snowballstemmer==2.2.0
+snowballstemmer==3.0.1
     # via sphinx
-soupsieve==2.6
+soupsieve==2.8.3
     # via beautifulsoup4
 sphinx==7.4.7
     # via
@@ -69,7 +72,7 @@ sphinx==7.4.7
     #   sphinx-autoapi
     #   sphinx-basic-ng
     #   sphinx-copybutton
-sphinx-autoapi==3.3.3
+sphinx-autoapi==3.6.1
     # via -r requirements.in
 sphinx-basic-ng==1.0.0b2
     # via furo
@@ -87,13 +90,15 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
-stdlib-list==0.11.0
+stdlib-list==0.12.0
     # via sphinx-autoapi
-tomli==2.0.2
+tomli==2.4.0
     # via sphinx
-typing-extensions==4.12.2
-    # via astroid
-urllib3==2.2.3
+typing-extensions==4.15.0
+    # via
+    #   astroid
+    #   beautifulsoup4
+urllib3==2.6.3
     # via requests
-zipp==3.20.2
+zipp==3.23.0
     # via importlib-metadata
