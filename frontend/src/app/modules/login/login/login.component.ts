@@ -55,6 +55,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Error message passed via redirect query params after external auth failure.
+    const loginError = this.route.snapshot.queryParams['login_error'];
+    if (loginError) {
+      this.errorMsg = loginError;
+    }
     this._authService.getAuthProviders().subscribe((providers) => {
       this.authProviders = providers;
       this.isOtherProviders = this.authProviders.length > 1;
