@@ -1,10 +1,10 @@
 # CHANGELOG
 
-## 2.17.0 - Pipistrellus kuhlii (unreleased)
+## 2.17.0 - Pipistrellus kuhlii (2026-03-1X)
 
 ### ▶️ En bref
 
-- Nouvelles fonctionnalités dans le module Import :
+- Nouvelles fonctionnalités dans le module Import
   - Possibilité de définir des valeurs fixes dans un ou plusieurs champs
   - Possibilité de faire correspondre des observateurs présents dans le fichier avec des utilisateurs dans GeoNature
   - Import de données dans plusieurs jeu de données en une fois
@@ -14,16 +14,14 @@
 
 ### 🚀 Nouveautés
 
-- [Général] Ajout d'un trigger sur les mises à jour de ref_geo.l_areas permettant la mise à jour automatique de gn_synthese.cor_area_synthese (#3814 par @lpofredc).
-- [Import] Ajout des destinations Monitoring et ses sous-modules, permettant de faire des imports dans les sous-modules de suivi du module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457)
-- [Import] Possibilité de choisir des valeurs constantes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
-- [Import] Possibilité de faire des imports multi-JDD et déplacement de la selection du JDD à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
+- [Import] Ajout de fonctionnalité pour importer des données dans le module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457)
+- [Import] Possibilité de choisir des valeurs fixes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
+- [Import] Possibilité de faire des imports dans plusieurs jeu de données et déplacement de la sélection du jeu de données à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
 - [Import] Ajout d'une étape de mapping des observateurs. Disponible dans l'import Synthèse, Occhab et Monitoring. Cette fonctionnalité est désactivable à l'aide du paramètre `IMPORT.ALLOW_USER_MAPPING` (#3875 par @jacquesfize)
-- [Synthèse] Fiche observateur accessible à chaque utilisateur depuis son compte, désactivable avec le paramètre `ENABLE_OBSERVER_SHEETS` (#2982 par @edelclaux)
-- [Occhab] Correction de l'utilisation des permissions dans les boutons de Occhab (#3852 par @christophe-ramet)
+- [Général] Ajout d'un trigger sur les mises à jour de `ref_geo.l_areas` permettant la mise à jour automatique de `gn_synthese.cor_area_synthese` (#3814 par @lpofredc).
 - [Permission] Amélioration de la recherche de zonages dans les permissions (par @christophe-ramet et @jacquesfize)
-- [Synthèse] Ajout de la fiche Observateur (#3768 par @edelclaux). Cette fonctionnalité permet d'afficher une synthèse des observations, des médias et des taxons observés que l'utilisateur a observé. Cette fonctionnalité est activable/désactivable à l'aide de la variable de configuration `ENABLE_OBSERVER_SHEETS`. Chaque onglet est désactivable à l'aide de `ENABLE_TAB_TAXA` et `ENABLE_TAB_MEDIA`.
-- [Validation] Amélioration des performances. Dans le bloc `Dernières Validations` de la page d'accueil, cette dernière affiche maintenant seulement les dernières validations et non les derniers taxons dont le statut de validation a changé. (par @jacquesfize)
+- [Synthèse] Ajout de la fiche Observateur (#2982 par @edelclaux). Cette fonctionnalité permet d'afficher une synthèse des observations, des médias et des taxons observés que l'utilisateur a observé. Cette fonctionnalité est activable/désactivable à l'aide de la variable de configuration `ENABLE_OBSERVER_SHEETS`. Chaque onglet est désactivable à l'aide de `ENABLE_TAB_TAXA` et `ENABLE_TAB_MEDIA`.
+- [Validation] Amélioration des performances. Dans le bloc `Dernières Validations` de la page d'accueil, cette dernière affiche maintenant seulement les dernières validations et non les derniers taxons dont le statut de validation a changé. (#3839 #3928 par @jacquesfize)
 - [Authentification] Un email de confirmation est envoyé lors du changement de mail et de mot de passe (#3851 par @christophe-ramet)
 - [Métadonnées] Ajout de la possibilité de créer un organisme directement depuis le formulaire de création/modification de métadonnées (cadre d'acquisition et jeu de données) (#3803 par @VincentCauchois)
 - [Métadonnées] Ajout de la mécanique de champs additionnels dans les formulaires de cadre d'acquisition (#3744 par @VincentCauchois)
@@ -36,10 +34,11 @@
 
 - [Synthèse] La fenêtre ouverte lors d'un click sur un média fonctionne qu'importe le nombre de médias associées à une observation (#3840 par @jacquesfize)
 - [Monitoring] Correction du bouton de géolocalisation (#3689 par @Pierre-Narcisi et @jacquesfize)
+- [Occhab] Correction de l'utilisation des permissions dans les boutons de Occhab (#3852 par @christophe-ramet)
 - [Occhab] Prise en compte dans le calcul des permissions de l'`id_digitizer` (#3855 par @christophe-ramet)
 - [Dev] Correction de l'affichage d'erreur du dynamic form de type checkbox (#3867 par @jacquesfize)
 - [Général] Amélioration de l'affichage des messages dans le formulaire de zonages (#3870 par @edelclaux)
-- [Synthèse] Tri chronologique des messages dans l'onglet Discussions de la fiche d'observation (#3873 par @PaulLabruyere)
+- [Synthèse] Tri chronologique des messages dans l'onglet _Discussions_ de la fiche d'observation (#3873 par @PaulLabruyere)
 - [Métadonnées] Acceptation de différents types d'UUID dans le formulaire d'édition du cadre d'acquisition (#3882 par @christophe-ramet)
 - [Authentification] Correction des messages d'erreurs (#3790 par @christophe-ramet)
 - [Général] Correction de l'affichage des modules dans le menu latéral. Si un administrateur n'avait pas dans un module (par ex. Validation), le module était quand même affiché (jacques et pierre
@@ -48,12 +47,12 @@
 
 ### 💻 Développement
 
-- Avec la mise à jour de Utils-Flask-SQLAlchemy, la mise à jour du module marshmallow ([>4.0](https://marshmallow.readthedocs.io/en/latest/changelog.html#id8)) apporte son lot de modifications. Faites les vérifications nécessaires sur vos modules GeoNature, concernant la compatibilité de cette nouvelle version.
-- Supression de la dépendance à `marshmallow-geojson`. Les schémas de validation de GeoJSON sont maintenant disponibles dans `utils_flask_sqla_geo.schema` (voir [Utils-Flask-SQLAlchemy-Geo#89](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49) pour plus de détails).
+- Avec la mise à jour de _Utils-Flask-SQLAlchemy_, la mise à jour du module marshmallow ([>4.0](https://marshmallow.readthedocs.io/en/latest/changelog.html#id8)) apporte son lot de modifications. Faites les vérifications nécessaires sur vos modules GeoNature, concernant la compatibilité de cette nouvelle version.
+- Suppression de la dépendance à _marshmallow-geojson_. Les schémas de validation de GeoJSON sont maintenant disponibles dans `utils_flask_sqla_geo.schema` (voir [Utils-Flask-SQLAlchemy-Geo#89](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49) pour plus de détails).
 
 ### ⚠️ Notes de version
 
-**Modules externes 🌪️** 
+**Modules externes 🌪️**
 
 Certains modules doivent être mis à jour pour fonctionner avec cette nouvelle version :
 
@@ -68,7 +67,7 @@ Si vous utilisez d'autres modules, vérifiez qu'ils disposent d'une version comp
 - Ajout de contraintes d'unicité sur les colonnes `identifiant` de la table des utilisateurs et `nom_organisme` dans la table des organismes
 - Désormais les créations de mot de passe ont des contraintes par défaut (modifiables/désactivables).
 
-**📝 Merci aux contributeurs**
+**📝 Merci aux contribut.rice.eur.s**
 
 ## 2.16.4 (2025-11-17)
 
