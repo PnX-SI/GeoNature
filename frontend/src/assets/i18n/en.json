@@ -60,7 +60,9 @@
         "LowerCase": "The password must contain at least one lowercase letter.",
         "Digit": "The password must contain at least one digit.",
         "SpecialChar": "The password must contain at least one special character."
-      }
+      },
+    "PendingValidationAlreadyExists": "This account is pending validation by an administrator.",
+    "Generic": "An error occurred during your authentication."
     },
     "Messages": {
       "ForgotPasswordOrLogin": "Forgot username or password?",

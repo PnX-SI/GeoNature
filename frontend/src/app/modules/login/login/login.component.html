@@ -19,7 +19,7 @@
               >
                 <button
                   mat-mini-fab
-                  (click)="login_or_pass_recovery = false; errorMsg = ''"
+                  (click)="login_or_pass_recovery = false; _authService.clearMessage()"
                 >
                   <mat-icon>arrow_back</mat-icon>
                 </button>
@@ -60,7 +60,11 @@
                     <div
                       *ngIf="enable_user_management"
                       class="forgot"
-                      (click)="login_or_pass_recovery = true; _authService.loginError = false"
+                      (click)="
+                        login_or_pass_recovery = true;
+                        _authService.loginError = false;
+                        _authService.clearMessage()
+                      "
                     >
                       {{ 'Authentication.Messages.ForgotPasswordOrLogin' | translate }}
                     </div>
@@ -179,15 +183,16 @@
               </ng-template>
 
               <p
-                *ngIf="_authService.loginError || errorMsg"
-                class="alert alert-danger"
+                *ngIf="_authService.loginError || currentMessage"
+                class="alert"
+                [ngClass]="
+                  currentMessage?.alertType === 'success' ? 'alert-success' : 'alert-danger'
+                "
                 role="alert"
                 style="margin-top: 5px"
               >
                 <strong>
-                  {{
-                    errorMsg ? errorMsg : ('Authentication.Errors.WrongLoginOrPassword' | translate)
-                  }}
+                  {{ currentMessage?.translationKey | translate }}
                 </strong>
               </p>
               <img

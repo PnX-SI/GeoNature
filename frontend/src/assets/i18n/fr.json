@@ -59,7 +59,9 @@
         "LowerCase": "Le mot de passe doit contenir au moins une minuscule.",
         "Digit": "Le mot de passe doit contenir au moins un chiffre.",
         "SpecialChar": "Le mot de passe doit contenir au moins un caractère spécial."
-      }
+      },
+      "PendingValidationAlreadyExists": "Ce compte est en attente de validation par un administrateur.",
+      "Generic": "Une erreur s'est produit lors de votre authentification."
     },
     "Messages": {
       "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",

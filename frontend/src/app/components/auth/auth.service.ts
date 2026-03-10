@@ -1,5 +1,5 @@
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -11,6 +11,7 @@ import { ModuleService } from '../../services/module.service';
 import { RoutingService } from '@geonature/routing/routing.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { Provider } from '@geonature/modules/login/providers';
+import { LoginDialog } from '@geonature/modules/login/login/external-login-dialog';
 
 export interface User {
   user_login: string;
@@ -22,6 +23,11 @@ export interface User {
   providers?: string[];
 }
 
+export interface AuthMessage {
+  translationKey: string;
+  alertType: 'danger' | 'success';
+}
+
 @Injectable()
 export class AuthService {
   authentified = false;
@@ -30,6 +36,9 @@ export class AuthService {
   loginError: boolean;
   public isLoading = false;
   private prefix: string = 'gn_';
+  private _currentMessage = new BehaviorSubject<AuthMessage | null>(null);
+  currentMessage$ = this._currentMessage.asObservable();
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -185,9 +194,51 @@ export class AuthService {
     return this._cookie.check('gn_id_token') && this._cookie.get('gn_id_token') !== null;
   }
 
-  handleLoginError() {
+  // Permet de mapper les codes renseignés dans GN ou renvoyés par UsersHubs vers des traductions.
+  private errorCodeMappings: Record<string, AuthMessage> = {
+    INCORRECT_LOGIN: {
+      translationKey: 'Authentication.Errors.WrongLoginOrPassword',
+      alertType: 'danger',
+    },
+    PENDING_VALIDATION_ALREADY_EXISTS: {
+      translationKey: 'Authentication.Errors.PendingValidationAlreadyExists',
+      alertType: 'danger',
+    },
+    PENDING_VALIDATION: {
+      translationKey: 'MyAccount.Messages.AdminAccountEmailConfirmation',
+      alertType: 'success',
+    },
+    WRONG_MAIL_ADRESS: {
+      translationKey: 'Authentication.Errors.WrongMailAddress',
+      alertType: 'danger',
+    },
+    UNEXPECTED_ERROR: {
+      translationKey: 'Authentication.Errors.UnexpectedError',
+      alertType: 'danger',
+    },
+  };
+
+  handleLoginError(apiError?: { error_code?: string; message?: string }) {
     this.isLoading = false;
     this.loginError = true;
+    this.handleLoginMessage(apiError.error_code, apiError.message);
+  }
+
+  handleLoginMessage(errorCode?: string, message?: string) {
+    if (errorCode && this.errorCodeMappings[errorCode]) {
+      this._currentMessage.next(this.errorCodeMappings[errorCode]);
+    } else if (message) {
+      this._currentMessage.next({ translationKey: message, alertType: 'danger' });
+    } else {
+      this._currentMessage.next({
+        translationKey: 'Authentication.Errors.Generic',
+        alertType: 'danger',
+      });
+    }
+  }
+
+  clearMessage() {
+    this._currentMessage.next(null);
   }
 
   enableLoader() {

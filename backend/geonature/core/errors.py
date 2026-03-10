@@ -14,13 +14,15 @@ from marshmallow.exceptions import ValidationError
 def handle_unauthenticated_request(e):
     if request.accept_mimetypes.best == "application/json":
         response = e.get_response()
-        response.data = json.dumps(
-            {
-                "code": e.code,
-                "name": e.name,
-                "description": e.description,
-            }
-        )
+        data = {
+            "code": e.code,
+            "name": e.name,
+            "description": e.description,
+        }
+        # Add an error code for better handling in the frontend
+        if hasattr(e, "error_code"):
+            data["error_code"] = e.error_code
+        response.data = json.dumps(data)
         response.content_type = "application/json"
         return response
     else:

@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CommonService } from '@geonature_common/service/common.service';
 
 import { CookieService } from 'ng2-cookies';
-import { AuthService } from '../../../components/auth/auth.service';
+import { AuthMessage, AuthService } from '../../../components/auth/auth.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,7 +33,6 @@ export class LoginComponent implements OnInit {
   public authProviders: Array<Provider>;
   public localProviderEnabled: boolean = true;
   public isOtherProviders: boolean = false;
-  public errorMsg = '';
 
   constructor(
     public _authService: AuthService, //FIXME : change to private (html must be modified)
@@ -43,8 +42,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private _routingService: RoutingService,
-    public dialog: MatDialog,
-    private translate: TranslateService
+    public dialog: MatDialog
   ) {
     this.enablePublicAccess = this.config.PUBLIC_ACCESS_USERNAME;
     this.APP_NAME = this.config.appName;
@@ -53,12 +51,13 @@ export class LoginComponent implements OnInit {
       this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
     this.external_links = this.config['ACCOUNT_MANAGEMENT']['EXTERNAL_LINKS'];
   }
+  currentMessage?: AuthMessage | null;
 
   ngOnInit() {
     // Error message passed via redirect query params after external auth failure.
-    const loginError = this.route.snapshot.queryParams['login_error'];
-    if (loginError) {
-      this.errorMsg = loginError;
+    const loginErrorCode = this.route.snapshot.queryParams['login_error'];
+    if (loginErrorCode) {
+      this._authService.handleLoginMessage(loginErrorCode);
     }
     this._authService.getAuthProviders().subscribe((providers) => {
       this.authProviders = providers;
@@ -76,15 +75,19 @@ export class LoginComponent implements OnInit {
         window.location.href = this.getProviderLoginUrl(provider.id_provider);
       }
     });
+    this._authService.currentMessage$.subscribe((msg) => {
+      this.currentMessage = msg;
+    });
   }
 
   async register(form) {
     this._authService.enableLoader();
+    this._authService.clearMessage();
     const data = await this._authService
       .signinUser(form)
       .toPromise()
-      .catch(() => {
-        this._authService.handleLoginError();
+      .catch((auth_error: any) => {
+        this._authService.handleLoginError(auth_error.error);
       });
     this.handleRegister(data);
     this._authService.disableLoader();
@@ -94,15 +97,15 @@ export class LoginComponent implements OnInit {
     const data = await this._authService
       .signinPublicUser()
       .toPromise()
-      .catch(() => {
-        this._authService.handleLoginError();
+      .catch((auth_error: any) => {
+        this._authService.handleLoginError(auth_error.error);
       });
     this.handleRegister(data);
   }
 
   loginOrPwdRecovery(data) {
     this.disableSubmit = true;
-    this.errorMsg = '';
+    this._authService.clearMessage();
     this._authService
       .loginOrPwdRecovery(data)
       .subscribe(
@@ -113,17 +116,10 @@ export class LoginComponent implements OnInit {
           );
         },
         (error) => {
-          if (error.status === 400) {
-            // Ajouter une clé de traduction
-            this.translate
-              .get('Authentication.Errors.WrongMailAddress')
-              .subscribe((translation) => {
-                this.errorMsg = translation;
-              });
+          if (error.status === 400 || error.status === 401) {
+            this._authService.handleLoginError(error);
           } else {
-            this.translate.get('Authentication.Errors.UnexpectedError').subscribe((translation) => {
-              this.errorMsg = translation;
-            });
+            this._authService.handleLoginMessage('UNEXPECTED_ERROR');
           }
         }
       )
