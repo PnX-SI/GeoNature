@@ -196,7 +196,7 @@ export class SyntheseComponent implements OnInit {
   private displayMessageGeomAbsence() {
     if (this.noGeomMessage) {
       this.toasterService.warning(
-        "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible"
+        "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’agrégation n'est pas disponible"
       );
     }
   }
