@@ -10,6 +10,7 @@ from geonature.utils.env import db
 from geonature.utils.config_schema import GnPySchemaConf
 from geonature.utils.utilstoml import *
 from geonature.utils.errors import GeoNatureError, ConfigError
+from geonature.utils.module import alembic_branch_in_use
 from jsonschema import validate
 from json import loads
 
@@ -133,6 +134,9 @@ class TestUtils:
                     config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"]
                     == expected_enable_tab_profile
                 )
+
+    def test_alembic_branch_in_use(self):
+        assert alembic_branch_in_use(branch_name="occhab", directory=None, x_arg=[])
 
 
 pagination_schema = {
