@@ -263,7 +263,7 @@ export class ImportListComponent implements OnInit {
     const statistics = this._getStatistics(row);
     return Object.keys(statistics)
       .filter((statkey) => this.getStatisticsLabel(row, statkey) != null) // filter out statistics with no label
-      .map((statkey) => this.getStatisticsLabel(row, statkey) + ': ' + statistics[statkey])
+      .map((statkey) => this.getStatisticsLabel(row, statkey) + ' : ' + statistics[statkey])
       .join('\n');
   }
 
