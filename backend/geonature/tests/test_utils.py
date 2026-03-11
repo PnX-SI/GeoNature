@@ -1,6 +1,8 @@
 import tempfile
 
 import pytest
+from unittest.mock import MagicMock
+
 import sqlalchemy as sa
 from flask import g
 
@@ -10,7 +12,7 @@ from geonature.utils.env import db
 from geonature.utils.config_schema import GnPySchemaConf
 from geonature.utils.utilstoml import *
 from geonature.utils.errors import GeoNatureError, ConfigError
-from geonature.utils.module import alembic_branch_in_use
+from geonature.utils.module import alembic_branch_in_use, is_module_installed
 from jsonschema import validate
 from json import loads
 
@@ -137,6 +139,22 @@ class TestUtils:
 
     def test_alembic_branch_in_use(self):
         assert alembic_branch_in_use(branch_name="occhab", directory=None, x_arg=[])
+
+    def test_is_module_not_installed_because_python_package_not_installed(self):
+        assert not is_module_installed(module_name="gn_module_dashboard")
+
+    def test_is_module_installed_case_with_migrations(self):
+        assert is_module_installed(module_name="gn_module_occhab")
+
+    def test_is_module_installed_case_without_migrations(self):
+        assert is_module_installed(module_name="gn_module_occhab", migrations_dir="wrong_directory")
+
+    def test_is_module_not_installed_because_alembic_branch_not_up_todate(self, monkeypatch):
+        mock_is_alembic_branch_up_to_date = MagicMock(return_value=False)
+        monkeypatch.setattr(
+            "geonature.utils.module.is_alembic_branch_up_to_date", mock_is_alembic_branch_up_to_date
+        )
+        assert not is_module_installed(module_name="gn_module_occhab")
 
 
 pagination_schema = {
