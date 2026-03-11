@@ -78,21 +78,54 @@ def iterate_revisions(script, base_revision):
         todo |= rev.nextrev - yelded
 
 
-def alembic_branch_in_use(branch_name, directory, x_arg):
-    """
-    Return true if at least one revision of the given branch is applied.
-    """
-    db = current_app.extensions["sqlalchemy"].db
+def get_script_from_config(directory: str, x_arg: []) -> ScriptDirectory:
     migrate = current_app.extensions["migrate"].migrate
     config = migrate.get_config(directory, x_arg)
     script = ScriptDirectory.from_config(config)
-    base_revision = script.get_revision(script.as_revision_number(branch_name))
-    branch_revisions = set(iterate_revisions(script, base_revision.revision))
+    return script
+
+
+def get_all_current_alembic_heads(directory: str, x_arg: []) -> set:
+    script = get_script_from_config(directory, x_arg)
+
+    db = current_app.extensions["sqlalchemy"].db
     migration_context = MigrationContext.configure(db.session.connection())
     current_heads = migration_context.get_current_heads()
-    # get_current_heads does not return implicit revision through dependencies, get_all_current does
-    current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
-    return not branch_revisions.isdisjoint(current_heads)
+    # get_current_heads does not return implicit revision through dependencies,
+    # while get_all_current does
+    all_current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
+
+    return all_current_heads
+
+
+def get_script_and_base_revision_for_one_branch(branch_name: str, directory, x_arg) -> ():
+    script = get_script_from_config(directory, x_arg)
+    base_revision = script.get_revision(script.as_revision_number(branch_name))
+    return script, base_revision
+
+
+def get_all_revisions_for_one_branch(branch_name: str, directory, x_arg) -> set:
+    script, base_revision = get_script_and_base_revision_for_one_branch(
+        branch_name, directory, x_arg
+    )
+    branch_revisions = set(iterate_revisions(script, base_revision.revision))
+    return branch_revisions
+
+
+def alembic_branch_in_use(branch_name: str, directory, x_arg):
+    """Is an Alembic branch in use.
+
+    Return `True` if at least one revision of the given branch is stamped.
+
+    Returns
+    -------
+    bool
+        `True` if the Alembic branch has at least one revision stamped,
+        `False` otherwise.
+    """
+    branch_revisions = get_all_revisions_for_one_branch(branch_name, directory, x_arg)
+    all_current_alembic_heads = get_all_current_alembic_heads(directory, x_arg)
+    return not branch_revisions.isdisjoint(all_current_alembic_heads)
 
 
 def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]):
