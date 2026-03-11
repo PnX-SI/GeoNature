@@ -14,7 +14,7 @@ from shapely.geometry import Point
 
 from geonature.core.imports.models import TImports, Destination, BibFields
 from geonature.core.imports.checks.dataframe import *
-from geonature.core.imports.checks.dataframe.cast import convert_to_datetime, check_array_int_field
+from geonature.core.imports.checks.dataframe.cast import convert_to_datetime, check_array_field
 from geonature.core.imports.checks.dataframe.geometry import (
     check_wkt_inside_area_id,
     check_geometry_inside_l_areas,
@@ -22,6 +22,11 @@ from geonature.core.imports.checks.dataframe.geometry import (
 from ref_geo.models import LAreas
 from geonature.utils.env import db
 import sqlalchemy as sa
+
+
+def check_array_int_field(*args, **kwargs):
+    kwargs["element_type"] = int
+    return check_array_field(*args, **kwargs)
 
 
 Error = namedtuple("Error", ["error_code", "column", "invalid_rows"], defaults=([],))
