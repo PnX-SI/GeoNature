@@ -70,7 +70,7 @@ def set_current_module(endpoint, values):
     g.module_conf = (
         current_app.config["OCCTAX"]
         if requested_module == "OCCTAX"
-        else current_app.config["OCCTAX"]["additional_confs"][requested_module]
+        else current_app.config["OCCTAX"]["MODULE_CONFS"][requested_module]
     )
 
 

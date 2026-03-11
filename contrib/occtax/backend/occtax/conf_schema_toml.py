@@ -228,27 +228,25 @@ class GnModuleSchemaConf(Schema):
     ID_LIST_HABITAT = fields.Integer(load_default=None)
     CD_TYPO_HABITAT = fields.Integer(load_default=None)
     EXPANDED_TAXON_ADVANCED_DETAILS = fields.Boolean(load_default=False)
-    additional_confs = fields.Dict(
+    MODULE_CONFS = fields.Dict(
         keys=fields.String(),
         values=fields.Nested(lambda: AdditionalGnModuleSchemaConf),
         load_default=dict,
     )
 
-    # Shallow merge Occtax conf in all additional_confs
+    # Shallow merge Occtax conf in all MODULE_CONFS
     @post_load
     def apply_occax_conf_to_additionals(self, data, **kwargs):
-        additional_confs = data.get("additional_confs")
-        if not additional_confs:
+        MODULE_CONFS = data.get("MODULE_CONFS")
+        if not MODULE_CONFS:
             return data
 
-        root_defaults = {k: v for k, v in data.items() if k != "additional_confs"}
+        root_defaults = {k: v for k, v in data.items() if k != "MODULE_CONFS"}
 
-        for key, conf in additional_confs.items():
-            additional_confs[key] = copy.deepcopy(root_defaults) | conf
+        for key, conf in MODULE_CONFS.items():
+            MODULE_CONFS[key] = copy.deepcopy(root_defaults) | conf
 
         return data
 
 
-AdditionalGnModuleSchemaConf = create_partial_schema(
-    GnModuleSchemaConf, exclude=("additional_confs",)
-)
+AdditionalGnModuleSchemaConf = create_partial_schema(GnModuleSchemaConf, exclude=("MODULE_CONFS",))

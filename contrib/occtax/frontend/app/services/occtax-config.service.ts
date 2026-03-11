@@ -13,10 +13,10 @@ export class OcctaxConfigService {
   ) {
     const main = { ...this.config.OCCTAX };
     try {
-      Object.entries(main.additional_confs).forEach(([key, value]) => {
+      Object.entries(main.MODULE_CONFS).forEach(([key, value]) => {
         this.confs[key] = value;
       });
-      delete main.additional_confs;
+      delete main.MODULE_CONFS;
     } catch (error) {}
     this.confs["OCCTAX"] = main;
   }

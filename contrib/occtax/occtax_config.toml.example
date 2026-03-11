@@ -199,16 +199,17 @@ MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_typ
     place_name = false
     precision = false
 
-# Additional configuration allowing a duplicated OCCTAX module to override it.
+# Duplicated OCCTAX module configurations
+# If a property is not defined, the value from OCCTAX configuration is used
 # If you need to override a property of type list or dict, you must enterely redefined this property
 # 
 # Example if module_code = "FLORE"
-# [additional_confs.FLORE]
+# [MODULE_CONFS.FLORE]
 # observers_txt = true
 # 
 # All fields defined in [form_fields] above must be redefined here,
 # not only the ones you want to change.
-# [additional_confs.FLORE.form_fields]
+# [MODULE_CONFS.FLORE.form_fields]
 # date_min = true
 # date_max = true
 # hour_min = true
