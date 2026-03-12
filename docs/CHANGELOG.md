@@ -85,7 +85,11 @@ Si vous utilisez d'autres modules externes, vérifiez qu'ils disposent d'une ver
 **Authentification 🔑**
 
 - Ajout de contraintes d'unicité sur les colonnes `identifiant` de la table des utilisateurs et `nom_organisme` dans la table des organismes
-- Désormais les créations de mot de passe ont des contraintes de sécurité par défaut (modifiables/désactivables).
+- Désormais les créations de mot de passe ont des contraintes de sécurité par défaut (modifiables/désactivables)
+
+**Base de données 🗂️**
+
+- Les évolutions de la base de données depuis la version 2.16 sont documentées automatiquement [ici](https://github.com/PnX-SI/GeoNature/commit/4975566d1cebc68b14502f4eec59572079791c1b)
 
 **📝 Merci aux contribut.rice.eur.s**
 
