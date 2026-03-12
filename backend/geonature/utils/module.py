@@ -16,7 +16,7 @@ from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
-from sqlalchemy import select
+from sqlalchemy import exists, select
 
 
 def iter_modules_dist():
@@ -160,8 +160,22 @@ def is_alembic_branch_up_to_date(branch_name: str, directory: str = None, x_arg:
     return head_revision_of_branch in all_current_alembic_heads
 
 
+def exists_in_t_modules(module_code: str):
+    """
+    Returns True if a module with the given code exists in the database
+
+    Parameters
+    ----------
+    module_code : str
+        The code of the module (for ex. : SYNTHESE, OCCHAB, etc...)
+    """
+    return db.session.execute(
+        exists(TModules).where(TModules.module_code == module_code).select()
+    ).scalar()
+
+
 def is_module_installed(
-    module_name: str, migrations_dir: str = None, alembic_branch_name: str = None
+    python_module_name: str, migrations_dir: str = None, alembic_branch_name: str = None
 ):
     """Is a GeoNature module installed.
 
@@ -172,11 +186,12 @@ def is_module_installed(
             or
             there is no Alembic migration at all for the module
         )
+        and the module is registered in the database
 
     Parameters
     ----------
-    module_name : str
-        The name of the module.
+    python_module_name : str
+        The name of the python module.
         Can be found in the root file "setup.py" of the module repository.
         Examples:
             - "gn_module_occhab"
@@ -185,7 +200,7 @@ def is_module_installed(
             - "gn_module_dashboard"
             - "gn_module_export"
             - "gn_module_monitoring"
-    mgirations_dir : str
+    migrations_dir : str
         The name of the directory containing the migrations files for the branch.
         Value of `None` defaults to "migrations".
 
@@ -197,14 +212,19 @@ def is_module_installed(
     """
     try:
         # Verify if the module Python package is actually installed
-        init_module = __import__(module_name + ".__init__")
+        init_module = __import__(python_module_name + ".__init__")
         module_code = init_module.MODULE_CODE
     except ImportError:
         # Module not installed because Python package not installed
         return False
+
+    # Verify if the module is registered in the database
+    if not exists_in_t_modules(module_code):
+        # Module not installed because not registered in the database
+        return False
     try:
         # Verify if there are migrations
-        str_import_path_migrations_dir = module_name
+        str_import_path_migrations_dir = python_module_name
         if not migrations_dir:
             str_import_path_migrations_dir += ".migrations"
         else:
