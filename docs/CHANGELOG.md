@@ -1,91 +1,95 @@
 # CHANGELOG
 
-## 2.17.0 - Pipistrellus kuhlii (2026-03-1X)
+## 2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-1X)
 
 ### ▶️ En bref
 
 - Nouvelles fonctionnalités dans le module Import
   - Possibilité de définir des valeurs fixes dans un ou plusieurs champs
-  - Possibilité de faire correspondre des observateurs présents dans le fichier avec des utilisateurs dans GeoNature
-  - Import de données dans plusieurs jeu de données en une fois
+  - Possibilité de faire correspondre des observateurs présents dans le fichier source avec des utilisateurs dans GeoNature
+  - Possibilité d'importer des données dans plusieurs jeux de données en une fois
   - Possibilité d'importer dans le module Monitoring
-- Ajout d'une fiche observateur. Elle permet d'afficher les observations, les taxons observés et les médias déposés par un utilisateur. Cette dernière est accessible depuis le bouton `Ma fiche observateur` dans le menu de déroulant 👤 dans le barre supérieure.
+- Ajout d'une fiche observateur. Elle permet à un utilisateur d'afficher ses observations, ses taxons observés et ses médias. Cette dernière est accessible depuis le bouton `Ma fiche observateur` dans le menu de déroulant 👤 de le barre supérieure.
 - Ajout du support de Debian 13 (le support de Debian 11 sera arrêté dans la prochaine version 2.18.0)
 
 ### 🚀 Nouveautés
 
-- [Import] Ajout de fonctionnalité pour importer des données dans le module Monitoring (http://github.com/PnX-SI/gn_module_monitoring/issues/457)
+- [Import] Ajout de fonctionnalités pour importer des données dans le module Monitoring (https://github.com/PnX-SI/gn_module_monitoring/issues/457)
 - [Import] Possibilité de choisir des valeurs fixes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
-- [Import] Possibilité de faire des imports dans plusieurs jeu de données et déplacement de la sélection du jeu de données à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
-- [Import] Ajout d'une étape de mapping des observateurs. Disponible dans l'import Synthèse, Occhab et Monitoring. Cette fonctionnalité est désactivable à l'aide du paramètre `IMPORT.ALLOW_USER_MAPPING` (#3875 par @jacquesfize)
+- [Import] Possibilité de faire des imports dans plusieurs jeux de données et déplacement de la sélection du jeu de données à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
+- [Import] Ajout d'une étape de correspondance des observateurs. Disponible dans l'import Synthèse, Occhab et Monitoring. Cette fonctionnalité est désactivable à l'aide du paramètre `IMPORT.ALLOW_USER_MAPPING` (#3875 par @jacquesfize)
+- [Import] Remplissage du champ `id_digitiser` avec l'identifiant de l'utilisateur connecté lors des imports Occhab et Monitoring (#3920 par @jacquesfize)
+- [Synthèse] Ajout de la fiche Observateur (#2982 par @edelclaux). Cette fonctionnalité permet d'afficher une synthèse des observations, des médias et des taxons observés que l'utilisateur a observé. Cette fonctionnalité est activable/désactivable à l'aide du paramètre de configuration `ENABLE_OBSERVER_SHEETS`. Chaque onglet est désactivable à l'aide des paramètres `ENABLE_TAB_TAXA` et `ENABLE_TAB_MEDIA`.
+- [Métadonnées] Pagination de la liste des cadres d'acquisition côté serveur pour en améliorer les performances (#3819 par @christophe-ramet)
+- [Métadonnées] Possibilité de créer un organisme directement depuis le formulaire de création/modification de métadonnées, avec la nouvelle permission "GEONATURE - Ajouter des organismes" (#3795 par @VincentCauchois)
+- [Métadonnées] Ajout de la mécanique de champs additionnels dans les formulaires de cadre d'acquisition (#3744 par @VincentCauchois)
+- [Métadonnées] Amélioration du message d'aide du champs "Actif" dans les formulaires des jeux de données (#3748 par @jacquesfize)
+- [Métadonnées] Possibilité de préremplir le formulaire de création de cadre d'acquisition avec des valeurs transmises dans l'URL (#3781 par par @VincentCauchois)
+- [Métadonnées] Possibilité de saisir ou modifier un UUID non V4 dans les formulaires de métadonnées (#3881 par @christophe-ramet)
+- [Métadonnées] Possibilité de définir des modules associés par défaut à un nouveau JDD (#3806 par @VincentCauchois)
+- [Authentification] Possibilité de définir des critères de niveau de sécurité pour la création de mot de passe, avec les paramètres `MIN_PASSWORD_LENGTH`, `REQUIRE_SPECIAL_CHARACTER`, `REQUIRE_DIGIT`, `REQUIRE_MULTIPLE_CASE` activés par défaut (#3789 par @christophe-ramet)
+- [Authentification] Un email de confirmation est envoyé lors du changement de mail et de mot de passe (#3851 par @christophe-ramet)
+- [Occtax] Amélioration du lien vers la fiche profil du taxon observé (#3833 par @edelclaux)
+- [Occtax] Possibilité de copier coller les coordonnées X et Y ensemble pour localiser un relevé (#3723 par @pierre56)
+- [Validation] Amélioration des performances de récupération des validations. Dans le bloc "Dernières Validations" de la page d'accueil, cette dernière affiche maintenant seulement les dernières validations et non les derniers taxons dont le statut de validation a changé. (#3835 par @jacquesfize)
+- [Cartes] Amélioration de la superposition des objets vectoriels msur les cartes, en plaçant les points sur les lignes, eux-mêmes sur les polygones (#1381 par @TheoLechemia)
 - [Général] Ajout d'un trigger sur les mises à jour de `ref_geo.l_areas` permettant la mise à jour automatique de `gn_synthese.cor_area_synthese` (#3814 par @lpofredc)
 - [Général] Amélioration de l'affichage des tooltips (#3886 par @jacquesfize)
 - [Général] Amélioration de l'ordre des valeurs dans les champs de type `datalist` (#3749 par @jacquesfize)
-- [Permissions] Amélioration de la recherche de zonages dans les permissions (par @christophe-ramet et @jacquesfize)
-- [Synthèse] Ajout de la fiche Observateur (#2982 par @edelclaux). Cette fonctionnalité permet d'afficher une synthèse des observations, des médias et des taxons observés que l'utilisateur a observé. Cette fonctionnalité est activable/désactivable à l'aide de la variable de configuration `ENABLE_OBSERVER_SHEETS`. Chaque onglet est désactivable à l'aide de `ENABLE_TAB_TAXA` et `ENABLE_TAB_MEDIA`.
-- [Validation] Amélioration des performances de récupération des validations. Dans le bloc "Dernières Validations" de la page d'accueil, cette dernière affiche maintenant seulement les dernières validations et non les derniers taxons dont le statut de validation a changé. (#3835 par @jacquesfize)
-- [Authentification] Possibilité de définir des critères de niveau de sécurité pour la création de mot de passe, avec les paramètres `MIN_PASSWORD_LENGTH`, `REQUIRE_SPECIAL_CHARACTER`, `REQUIRE_DIGIT`, `REQUIRE_MULTIPLE_CASE` activés par défaut (#3789 par @christophe-ramet)
-- [Authentification] Un email de confirmation est envoyé lors du changement de mail et de mot de passe (#3851 par @christophe-ramet)
-- [Métadonnées] Pagination de la liste des cadres d'acquisition côté serveurs (#3819 par @christophe-ramet)
-- [Métadonnées] Ajout de la possibilité de créer un organisme directement depuis le formulaire de création/modification de métadonnées et la permission associée "GEONATURE - Ajouter des organismes" (#3795 par @VincentCauchois)
-- [Métadonnées] Ajout de la mécanique de champs additionnels dans les formulaires de cadre d'acquisition (#3744 par @VincentCauchois)
-- [Métadonnées] Amélioration du message d'aide du champs "Actif" dans les formulaires des jeux de données (#3748 par @jacquesfize)
-- [Import] Correction de la prise en compte des géométries dans l'import de fichiers CSV si le SRID de l'instance GN était en 2146 (#3848 par @Pierre-Narcisi)
-- [Métadonnées] Ajout de la possibilité de préremplir le formulaire de création de cadre d'acquisition avec des valeurs prises dans l'url (#3781 par par @VincentCauchois)
-- [Métadonnées] Possibilité de saisir ou modifier un UUID non V4 dans les formulaires de métadonnées (#3881 par @christophe-ramet)
-- [Media] Ajout de la possibilité d'annuler l'ajout d'un média (#3829 par @Pierre-Narcisi)
-- [Occtax] Amélioration du lien vers la fiche profil du taxon observé (#3833 par @edelclaux)
-- [Occtax] Possibilité de copier colle les coordonnées X et Y ensemble pour localiser un relevé (#3723 par @pierre56)
+- [Média] Possibilité d'annuler l'ajout d'un média (#3829 par @Pierre-Narcisi)
 - [Permissions] Amélioration de la liste déroulante des zonages (#3769 par @christophe-ramet)
 - [TaxHub] Mise à jour en version [2.3.0](https://github.com/PnX-SI/TaxHub/releases/tag/2.3.0)
 
 ### 🐛 Corrections
 
-- [Synthèse] La fenêtre ouverte lors d'un click sur un média fonctionne qu'importe le nombre de médias associées à une observation (#3840 par @jacquesfize)
-- [Synthèse] Correction de l'ordre des messages dans les discussions des fiches observation (#3872 par @PaulLabruyere)
+- [Synthèse] Correction de l'ordre d'affichage des messages dans les discussions des fiches observation (#3872 par @PaulLabruyere)
 - [Synthèse] Possibilité de rechercher en combinant des zonages de différents types (#3918 par @jacquesfize)
 - [Monitoring] Correction du bouton de géolocalisation (#3689 par @Pierre-Narcisi et @jacquesfize)
-- [Occhab] Correction de l'utilisation des permissions dans les boutons de Occhab (#3852 par @christophe-ramet)
+- [Occhab] Correction de l'utilisation des permissions pour l'affichage des boutons de Occhab (#3785 par @christophe-ramet)
 - [Occhab] Correction de la prise en compte des portées des permissions pour les imports vers le module Occhab (#3846 par @jacquesfize)
-- [Occtax] Correction des messages d'erreur sur les champs additionnels (#3861 par @jacquesfize)
-- [Occhab] Prise en compte de l'`id_digitizer` dans le calcul des permissions (#3854 par @christophe-ramet)
+- [Occhab] Prise en compte de l'`id_digitiser` dans le calcul des permissions (#3854 par @christophe-ramet)
 - [Occhab] Correction de la création de stations d'habitat quand on est en mode `OBSERVER_AS_TXT` (#3787 par @christophe-ramet)
-- [Dev] Correction de l'affichage d'erreur du dynamic form de type checkbox (#3867 par @jacquesfize)
+- [Import] Correction de la prise en compte des géométries dans l'import de fichiers CSV si le SRID de l'instance est en 4326 (#3848 par @Pierre-Narcisi)
+- [Import] Définition d'une taille maximum de longueur des contenus des champs dans les fichiers CSV importés, modifiable avec le paramètre (#3762 par @MoulinZ et @jacquesfize)
 - [Général] Amélioration de l'affichage des messages dans le champ de recherche de zonages (#3869 par @edelclaux)
-- [Synthèse] Tri chronologique des messages dans l'onglet _Discussions_ de la fiche d'observation (#3873 par @PaulLabruyere)
 - [Métadonnées] Acceptation de différents types d'UUID dans le formulaire d'édition du cadre d'acquisition (#3882 par @christophe-ramet)
 - [Accueil] Correction de la route `/validation` quand on modifie la configuration du module Validation, introduit dans la 2.16.4 (#3902 par @jacquesfize)
 - [Authentification] Correction des messages d'erreurs (#3790 par @christophe-ramet)
 - [Authentification] Ne pas générer de mot de passe MD5 quand le paramètre n'est pas activé, introduit dans la 2.16.4 (#3921 par @jacquesfize)
 - [Occtax] Correction des pictos manquants (#3734 par @jacquesfize)
+- [Occtax] Les médias ne sont supprimés que si le formulaire est validé (#3645 par @christophe-ramet)
+- [Occtax] Correction des messages d'erreur sur les champs additionnels (#3861 par @jacquesfize)
 - [Général] Correction de l'affichage de la modale des médias (#3838 par @jacquesfize)
-- [Général] Les médias ne sont supprimés que si le formulaire est validé (#3706 par @christophe-ramet)
 - [Général] Correction de l'affichage des modules selon les permissions quand on a accès au module Admin (#3862 par @jacquesfize)
 
 ### 💻 Développement
 
 - Avec la nouvelle version de _Utils-Flask-SQLAlchemy_, la mise à jour de marshmallow ([>4.0](https://marshmallow.readthedocs.io/en/latest/changelog.html#id8)) apporte son lot de modifications. Faites les vérifications nécessaires sur vos modules GeoNature, concernant la compatibilité de cette nouvelle version.
 - Suppression de la dépendance à _marshmallow-geojson_. Les schémas de validation de GeoJSON sont maintenant disponibles dans `utils_flask_sqla_geo.schema` (voir [Utils-Flask-SQLAlchemy-Geo#89](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49) pour plus de détails).
-- Affichage sur l'interface lors d'erreurs de traduction (#3856 par jacquesfize)
+- Compatibilité avec Debian 13 (#3469 par @bouttier)
+- Affichage sur l'interface lors d'erreurs de traduction (#3856 par @jacquesfize)
+- Tests python non lancés automatiquement quand seulement le frontend est modifié (#3832 par @jacquesfize)
 
 ### ⚠️ Notes de version
 
 **Modules externes 🌪️**
 
-Certains modules doivent être mis à jour pour fonctionner avec cette nouvelle version :
+Certains modules externes doivent être mis à jour pour fonctionner avec cette nouvelle version :
 
 - Monitoring [1.3.0](https://github.com/PnX-SI/gn_module_monitoring/releases/tag/1.3.0)
 - Dashboard [1.6.1](https://github.com/PnX-SI/gn_module_dashboard/releases/tag/1.6.1)
 - Export [1.8.2](https://github.com/PnX-SI/gn_module_export/releases/tag/1.8.2)
 
-Si vous utilisez d'autres modules, vérifiez qu'ils disposent d'une version compatible avec GeoNature 2.17.0 (ou plus).
+Si vous utilisez d'autres modules externes, vérifiez qu'ils disposent d'une version compatible avec GeoNature 2.17.0 (ou plus).
 
 **Authentification 🔑**
 
 - Ajout de contraintes d'unicité sur les colonnes `identifiant` de la table des utilisateurs et `nom_organisme` dans la table des organismes
-- Désormais les créations de mot de passe ont des contraintes par défaut (modifiables/désactivables).
+- Désormais les créations de mot de passe ont des contraintes de sécurité par défaut (modifiables/désactivables).
 
 **📝 Merci aux contribut.rice.eur.s**
+
+@jacquesfize, @Pierre-Narcisi, @christophe-ramet, @VincentCauchois, @camillemonchicourt, @amandine-sahl, @lpofredc, @edelclaux, @PaulLabruyere, @CynthiaBorotPNV, @20cents, @JulienCorny, @andriacap, @bouttier, @IdrissaD, @TheoLechemia, @pierre56, @MoulinZ
 
 ## 2.16.4 (2025-11-17)
 
