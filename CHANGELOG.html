@@ -454,10 +454,10 @@
 <ul class="simple">
 <li><p>Nouvelles fonctionnalités dans le module Import</p>
 <ul>
+<li><p>Possibilité d’importer dans le module Monitoring</p></li>
 <li><p>Possibilité de définir des valeurs fixes dans un ou plusieurs champs</p></li>
 <li><p>Possibilité de faire correspondre des observateurs présents dans le fichier source avec des utilisateurs dans GeoNature</p></li>
 <li><p>Possibilité d’importer des données dans plusieurs jeux de données en une fois</p></li>
-<li><p>Possibilité d’importer dans le module Monitoring</p></li>
 </ul>
 </li>
 <li><p>Ajout d’une fiche observateur. Elle permet à un utilisateur d’afficher ses observations, ses taxons observés et ses médias. Cette dernière est accessible depuis le bouton <code class="docutils literal notranslate"><span class="pre">Ma</span> <span class="pre">fiche</span> <span class="pre">observateur</span></code> dans le menu de déroulant 👤 de le barre supérieure.</p></li>
@@ -469,7 +469,7 @@
 <ul class="simple">
 <li><p>[Import] Ajout de fonctionnalités pour importer des données dans le module Monitoring (https://github.com/PnX-SI/gn_module_monitoring/issues/457)</p></li>
 <li><p>[Import] Possibilité de choisir des valeurs fixes pour les champs que l’on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par &#64;20cents)</p></li>
-<li><p>[Import] Possibilité de faire des imports dans plusieurs jeux de données et déplacement de la sélection du jeu de données à l’étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par &#64;edelclaux)</p></li>
+<li><p>[Import] Possibilité de faire des imports dans plusieurs jeux de données en renseignant leur UUID, et déplacement de la sélection du jeu de données à l’étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par &#64;edelclaux)</p></li>
 <li><p>[Import] Ajout d’une étape de correspondance des observateurs. Disponible dans l’import Synthèse, Occhab et Monitoring. Cette fonctionnalité est désactivable à l’aide du paramètre <code class="docutils literal notranslate"><span class="pre">IMPORT.ALLOW_USER_MAPPING</span></code> (#3875 par &#64;jacquesfize)</p></li>
 <li><p>[Import] Remplissage du champ <code class="docutils literal notranslate"><span class="pre">id_digitiser</span></code> avec l’identifiant de l’utilisateur connecté lors des imports Occhab et Monitoring (#3920 par &#64;jacquesfize)</p></li>
 <li><p>[Synthèse] Ajout de la fiche Observateur (#2982 par &#64;edelclaux). Cette fonctionnalité permet d’afficher une synthèse des observations, des médias et des taxons observés que l’utilisateur a observé. Cette fonctionnalité est activable/désactivable à l’aide du paramètre de configuration <code class="docutils literal notranslate"><span class="pre">ENABLE_OBSERVER_SHEETS</span></code>. Chaque onglet est désactivable à l’aide des paramètres <code class="docutils literal notranslate"><span class="pre">ENABLE_TAB_TAXA</span></code> et <code class="docutils literal notranslate"><span class="pre">ENABLE_TAB_MEDIA</span></code>.</p></li>
@@ -491,7 +491,7 @@
 <li><p>[Général] Amélioration de l’ordre des valeurs dans les champs de type <code class="docutils literal notranslate"><span class="pre">datalist</span></code> (#3749 par &#64;jacquesfize)</p></li>
 <li><p>[Média] Possibilité d’annuler l’ajout d’un média (#3829 par &#64;Pierre-Narcisi)</p></li>
 <li><p>[Permissions] Amélioration de la liste déroulante des zonages (#3769 par &#64;christophe-ramet)</p></li>
-<li><p>[TaxHub] Mise à jour en version <a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases/tag/2.3.0">2.3.0</a></p></li>
+<li><p>[TaxHub] Mise à jour de la version 2.2.3 vers la version <a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases">2.3.1</a> (intégration des commandes d’imports de médias Wikidata et GBIF, amélioration et documentation du stockage des médias sur un serveur S3, amélioration des filtres et corrections diverses)</p></li>
 </ul>
 </section>
 <section id="corrections">
@@ -525,13 +525,13 @@
 <li><p>Suppression de la dépendance à <em>marshmallow-geojson</em>. Les schémas de validation de GeoJSON sont maintenant disponibles dans <code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.schema</span></code> (voir <a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49">Utils-Flask-SQLAlchemy-Geo#89</a> pour plus de détails).</p></li>
 <li><p>Compatibilité avec Debian 13 (#3469 par &#64;bouttier)</p></li>
 <li><p>Affichage sur l’interface lors d’erreurs de traduction (#3856 par &#64;jacquesfize)</p></li>
-<li><p>[CI] Les tests backends ne sont plus lancés automatiquement quand seul le frontend est modifié (#3832 par &#64;jacquesfize)</p></li>
+<li><p>[CI] Les tests backend ne sont plus lancés automatiquement quand seul le frontend est modifié (#3832 par &#64;jacquesfize)</p></li>
 </ul>
 </section>
 <section id="notes-de-version">
 <h3>⚠️ Notes de version<a class="headerlink" href="#notes-de-version" title="Lien vers cette rubrique">¶</a></h3>
 <p><strong>Modules externes 🌪️</strong></p>
-<p>Certains modules externes doivent être mis à jour pour fonctionner avec cette nouvelle version :</p>
+<p>Certains modules externes doivent être mis à jour dans ces versions minimales :</p>
 <ul class="simple">
 <li><p>Monitoring <a class="reference external" href="https://github.com/PnX-SI/gn_module_monitoring/releases/tag/1.3.0">1.3.0</a></p></li>
 <li><p>Dashboard <a class="reference external" href="https://github.com/PnX-SI/gn_module_dashboard/releases/tag/1.6.1">1.6.1</a></p></li>
@@ -541,7 +541,11 @@
 <p><strong>Authentification 🔑</strong></p>
 <ul class="simple">
 <li><p>Ajout de contraintes d’unicité sur les colonnes <code class="docutils literal notranslate"><span class="pre">identifiant</span></code> de la table des utilisateurs et <code class="docutils literal notranslate"><span class="pre">nom_organisme</span></code> dans la table des organismes</p></li>
-<li><p>Désormais les créations de mot de passe ont des contraintes de sécurité par défaut (modifiables/désactivables).</p></li>
+<li><p>Désormais les créations de mot de passe ont des contraintes de sécurité par défaut (modifiables/désactivables)</p></li>
+</ul>
+<p><strong>Base de données 🗂️</strong></p>
+<ul class="simple">
+<li><p>Les évolutions de la base de données depuis la version 2.16 sont documentées automatiquement <a class="reference external" href="https://github.com/PnX-SI/GeoNature/commit/4975566d1cebc68b14502f4eec59572079791c1b">ici</a></p></li>
 </ul>
 <p><strong>📝 Merci aux contribut.rice.eur.s</strong></p>
 <p>&#64;jacquesfize, &#64;Pierre-Narcisi, &#64;christophe-ramet, &#64;VincentCauchois, &#64;camillemonchicourt, &#64;amandine-sahl, &#64;lpofredc, &#64;edelclaux, &#64;PaulLabruyere, &#64;CynthiaBorotPNV, &#64;20cents, &#64;JulienCorny, &#64;andriacap, &#64;bouttier, &#64;IdrissaD, &#64;TheoLechemia, &#64;pierre56, &#64;MoulinZ</p>
