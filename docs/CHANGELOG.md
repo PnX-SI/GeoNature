@@ -30,7 +30,7 @@
 - [Authentification] Possibilité de définir des critères de niveau de sécurité pour la création de mot de passe, avec les paramètres `MIN_PASSWORD_LENGTH`, `REQUIRE_SPECIAL_CHARACTER`, `REQUIRE_DIGIT`, `REQUIRE_MULTIPLE_CASE` activés par défaut (#3789 par @christophe-ramet)
 - [Authentification] Un email de confirmation est envoyé lors du changement de mail et de mot de passe (#3851 par @christophe-ramet)
 - [Occtax] Amélioration du lien vers la fiche profil du taxon observé (#3833 par @edelclaux)
-- [Occtax] Possibilité de copier coller les coordonnées X et Y ensemble pour localiser un relevé (#3723 par @pierre56)
+- [Occtax] Possibilité de copier-coller les coordonnées X et Y ensemble pour localiser un relevé (#3723 par @pierre56)
 - [Validation] Amélioration des performances de récupération des validations. Dans le bloc "Dernières Validations" de la page d'accueil, cette dernière affiche maintenant seulement les dernières validations et non les derniers taxons dont le statut de validation a changé. (#3835 par @jacquesfize)
 - [Cartes] Amélioration de la superposition des objets vectoriels msur les cartes, en plaçant les points sur les lignes, eux-mêmes sur les polygones (#1381 par @TheoLechemia)
 - [Général] Ajout d'un trigger sur les mises à jour de `ref_geo.l_areas` permettant la mise à jour automatique de `gn_synthese.cor_area_synthese` (#3814 par @lpofredc)
@@ -68,7 +68,7 @@
 - Suppression de la dépendance à _marshmallow-geojson_. Les schémas de validation de GeoJSON sont maintenant disponibles dans `utils_flask_sqla_geo.schema` (voir [Utils-Flask-SQLAlchemy-Geo#89](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49) pour plus de détails).
 - Compatibilité avec Debian 13 (#3469 par @bouttier)
 - Affichage sur l'interface lors d'erreurs de traduction (#3856 par @jacquesfize)
-- Tests python non lancés automatiquement quand seulement le frontend est modifié (#3832 par @jacquesfize)
+- [CI] Les tests backends ne sont plus lancés automatiquement quand seul le frontend est modifié (#3832 par @jacquesfize)
 
 ### ⚠️ Notes de version
 
