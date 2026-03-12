@@ -20,6 +20,8 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 })
 export class AcquisitionFrameworksComponent extends GenericFormComponent implements OnInit {
   @Input() acquisitionFrameworks: Observable<Array<any>>;
+  protected isLoading: Boolean = true;
+
   constructor(private _dfs: DataFormService) {
     super();
   }
@@ -36,6 +38,10 @@ export class AcquisitionFrameworksComponent extends GenericFormComponent impleme
         return data.items.sort((a, b) =>
           c.compare(a.acquisition_framework_name, b.acquisition_framework_name)
         );
+      }),
+      map((sortedData) => {
+        this.isLoading = false;
+        return sortedData;
       })
     );
   }
