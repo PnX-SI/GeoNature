@@ -5,10 +5,10 @@
 ### ▶️ En bref
 
 - Nouvelles fonctionnalités dans le module Import
+  - Possibilité d'importer dans le module Monitoring
   - Possibilité de définir des valeurs fixes dans un ou plusieurs champs
   - Possibilité de faire correspondre des observateurs présents dans le fichier source avec des utilisateurs dans GeoNature
   - Possibilité d'importer des données dans plusieurs jeux de données en une fois
-  - Possibilité d'importer dans le module Monitoring
 - Ajout d'une fiche observateur. Elle permet à un utilisateur d'afficher ses observations, ses taxons observés et ses médias. Cette dernière est accessible depuis le bouton `Ma fiche observateur` dans le menu de déroulant 👤 de le barre supérieure.
 - Ajout du support de Debian 13 (le support de Debian 11 sera arrêté dans la prochaine version 2.18.0)
 
@@ -16,7 +16,7 @@
 
 - [Import] Ajout de fonctionnalités pour importer des données dans le module Monitoring (https://github.com/PnX-SI/gn_module_monitoring/issues/457)
 - [Import] Possibilité de choisir des valeurs fixes pour les champs que l'on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par @20cents)
-- [Import] Possibilité de faire des imports dans plusieurs jeux de données et déplacement de la sélection du jeu de données à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
+- [Import] Possibilité de faire des imports dans plusieurs jeux de données en renseignant leur UUID, et déplacement de la sélection du jeu de données à l'étape de correspondance des champs (https://github.com/PnX-SI/gn_module_import/issues/493, #3289 par @edelclaux)
 - [Import] Ajout d'une étape de correspondance des observateurs. Disponible dans l'import Synthèse, Occhab et Monitoring. Cette fonctionnalité est désactivable à l'aide du paramètre `IMPORT.ALLOW_USER_MAPPING` (#3875 par @jacquesfize)
 - [Import] Remplissage du champ `id_digitiser` avec l'identifiant de l'utilisateur connecté lors des imports Occhab et Monitoring (#3920 par @jacquesfize)
 - [Synthèse] Ajout de la fiche Observateur (#2982 par @edelclaux). Cette fonctionnalité permet d'afficher une synthèse des observations, des médias et des taxons observés que l'utilisateur a observé. Cette fonctionnalité est activable/désactivable à l'aide du paramètre de configuration `ENABLE_OBSERVER_SHEETS`. Chaque onglet est désactivable à l'aide des paramètres `ENABLE_TAB_TAXA` et `ENABLE_TAB_MEDIA`.
@@ -38,7 +38,7 @@
 - [Général] Amélioration de l'ordre des valeurs dans les champs de type `datalist` (#3749 par @jacquesfize)
 - [Média] Possibilité d'annuler l'ajout d'un média (#3829 par @Pierre-Narcisi)
 - [Permissions] Amélioration de la liste déroulante des zonages (#3769 par @christophe-ramet)
-- [TaxHub] Mise à jour en version [2.3.0](https://github.com/PnX-SI/TaxHub/releases/tag/2.3.0)
+- [TaxHub] Mise à jour de la version 2.2.3 vers la version [2.3.1](https://github.com/PnX-SI/TaxHub/releases) (intégration des commandes d'imports de médias Wikidata et GBIF, amélioration et documentation du stockage des médias sur un serveur S3, amélioration des filtres et corrections diverses)
 
 ### 🐛 Corrections
 
@@ -68,13 +68,13 @@
 - Suppression de la dépendance à _marshmallow-geojson_. Les schémas de validation de GeoJSON sont maintenant disponibles dans `utils_flask_sqla_geo.schema` (voir [Utils-Flask-SQLAlchemy-Geo#89](https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49) pour plus de détails).
 - Compatibilité avec Debian 13 (#3469 par @bouttier)
 - Affichage sur l'interface lors d'erreurs de traduction (#3856 par @jacquesfize)
-- [CI] Les tests backends ne sont plus lancés automatiquement quand seul le frontend est modifié (#3832 par @jacquesfize)
+- [CI] Les tests backend ne sont plus lancés automatiquement quand seul le frontend est modifié (#3832 par @jacquesfize)
 
 ### ⚠️ Notes de version
 
 **Modules externes 🌪️**
 
-Certains modules externes doivent être mis à jour pour fonctionner avec cette nouvelle version :
+Certains modules externes doivent être mis à jour dans ces versions minimales :
 
 - Monitoring [1.3.0](https://github.com/PnX-SI/gn_module_monitoring/releases/tag/1.3.0)
 - Dashboard [1.6.1](https://github.com/PnX-SI/gn_module_dashboard/releases/tag/1.6.1)
