@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-1X)
+## 2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-12)
 
 ### ▶️ En bref
 
