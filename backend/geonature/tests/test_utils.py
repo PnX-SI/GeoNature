@@ -141,7 +141,12 @@ class TestUtils:
         assert alembic_branch_in_use(branch_name="occhab", directory=None, x_arg=[])
 
     def test_is_module_not_installed_because_python_package_not_installed(self):
-        assert not is_module_installed(python_module_name="gn_module_dashboard")
+        try:
+            import gn_module_dashboard
+
+            pytest.skip("gn_module_dashboard is installed, test skipped")
+        except ImportError:
+            assert not is_module_installed(python_module_name="gn_module_dashboard")
 
     def test_is_module_installed_case_with_migrations(self):
         assert is_module_installed(python_module_name="gn_module_occhab")
@@ -150,6 +155,13 @@ class TestUtils:
         assert is_module_installed(
             python_module_name="gn_module_occhab", migrations_dir="wrong_directory"
         )
+
+    def test_is_module_not_installed_because_not_in_t_modules(self):
+        with db.session.begin_nested():
+            module = TModules.query.filter_by(module_code="OCCHAB").one()
+            module.module_code = "OCCHAB2"
+            db.session.add(module)
+        assert not is_module_installed(python_module_name="gn_module_occhab")
 
     def test_is_module_not_installed_because_alembic_branch_not_up_todate(self, monkeypatch):
         mock_is_alembic_branch_up_to_date = MagicMock(return_value=False)
