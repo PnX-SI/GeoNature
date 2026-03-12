@@ -30,6 +30,8 @@ Package Contents
 
 
    .. py:attribute:: scheme
+      :value: None
+
 
 
    .. py:method:: __call__(environ, start_response)

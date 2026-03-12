@@ -20,6 +20,8 @@ Functions
    geonature.core.users.register_post_actions.create_dataset_user
    geonature.core.users.register_post_actions.inform_user
    geonature.core.users.register_post_actions.send_email_for_recovery
+   geonature.core.users.register_post_actions.send_email_for_mail_change
+   geonature.core.users.register_post_actions.send_email_to_old_mail
 
 
 Module Contents
@@ -80,4 +82,8 @@ Module Contents
    user : dict
        The user data
 
+
+.. py:function:: send_email_for_mail_change(new_mail: str, user: pypnusershub.db.models.User)
+
+.. py:function:: send_email_to_old_mail(user: pypnusershub.db.models.User)
 

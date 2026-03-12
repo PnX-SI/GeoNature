@@ -24,6 +24,7 @@ Attributes
    geonature.core.imports.config_schema.ALLOWED_EXTENSIONS
    geonature.core.imports.config_schema.DEFAULT_COUNT_VALUE
    geonature.core.imports.config_schema.ALLOW_VALUE_MAPPING
+   geonature.core.imports.config_schema.DEFAULT_OBSERVER_FIELD_SEPARATORS
    geonature.core.imports.config_schema.DEFAULT_VALUE_MAPPING_ID
    geonature.core.imports.config_schema.DEFAULT_RANK
 
@@ -75,6 +76,10 @@ Module Contents
    :value: True
 
 
+.. py:data:: DEFAULT_OBSERVER_FIELD_SEPARATORS
+   :value: [';', ',', '|']
+
+
 .. py:data:: DEFAULT_VALUE_MAPPING_ID
    :value: 3
 
@@ -113,6 +118,9 @@ Module Contents
 
 
    .. py:attribute:: ALLOW_VALUE_MAPPING
+
+
+   .. py:attribute:: ALLOW_USER_MAPPING
 
 
    .. py:attribute:: DEFAULT_VALUE_MAPPING_ID
@@ -158,5 +166,11 @@ Module Contents
 
 
    .. py:attribute:: INSERT_BATCH_SIZE
+
+
+   .. py:attribute:: CSV_FIELD_SIZE_LIMIT
+
+
+   .. py:attribute:: OBSERVER_FIELD_SEPARATORS
 
 

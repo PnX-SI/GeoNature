@@ -11,11 +11,13 @@ Functions
 
    geonature.core.imports.checks.dataframe.cast.convert_to_datetime
    geonature.core.imports.checks.dataframe.cast.convert_to_uuid
+   geonature.core.imports.checks.dataframe.cast.is_valid_uuid
    geonature.core.imports.checks.dataframe.cast.convert_to_integer
    geonature.core.imports.checks.dataframe.cast.check_datetime_field
    geonature.core.imports.checks.dataframe.cast.check_uuid_field
    geonature.core.imports.checks.dataframe.cast.check_integer_field
    geonature.core.imports.checks.dataframe.cast.check_numeric_field
+   geonature.core.imports.checks.dataframe.cast.check_array_field
    geonature.core.imports.checks.dataframe.cast.check_unicode_field
    geonature.core.imports.checks.dataframe.cast.check_boolean_field
    geonature.core.imports.checks.dataframe.cast.check_anytype_field
@@ -43,6 +45,8 @@ Module Contents
 
 
 .. py:function:: convert_to_uuid(value)
+
+.. py:function:: is_valid_uuid(value)
 
 .. py:function:: convert_to_integer(value)
 
@@ -170,7 +174,40 @@ Module Contents
        - INVALID_NUMERIC: the value is not of numeric type.
 
 
-.. py:function:: check_unicode_field(df: pandas.DataFrame, field: str, field_length: Optional[int]) -> Iterator[Dict[str, Any]]
+.. py:function:: check_array_field(df: pandas.DataFrame, source_field: str, target_field: str, required: bool, element_type: type = str) -> Set[str]
+
+   Check if column values are arrays (list/tuple) of a given type.
+
+   Parameters
+   ----------
+   df : pandas.DataFrame
+       The dataframe to check.
+   source_field : str
+       The name of the column to check.
+   target_field : str
+       The name of the column where to store the result.
+   required : bool
+       Whether the column is mandatory or not.
+   element_type : type, optional
+       The expected type of each element in the array (default: str).
+
+   Yields
+   ------
+   dict
+       A dictionary containing an error code, the column name, and the invalid rows.
+
+   Returns
+   -------
+   set
+       Set containing the name of the target field.
+
+   Notes
+   -----
+   The error codes are:
+       - UNKNOWN_ERROR: the value is not an array of the expected element type.
+
+
+.. py:function:: check_unicode_field(df: pandas.DataFrame, source_col: str, dest_col: str, field_length: Optional[int]) -> Iterator[Dict[str, Any]]
 
    Check if column values have the right length.
 

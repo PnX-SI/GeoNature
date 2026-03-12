@@ -73,6 +73,8 @@ Module Contents
 
 
    .. py:attribute:: status_code
+      :value: 500
+
 
 
    .. py:method:: to_dict()

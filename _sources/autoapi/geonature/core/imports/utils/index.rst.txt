@@ -146,7 +146,7 @@ Module Contents
 
 
 
-.. py:function:: preprocess_value(dataframe: pandas.DataFrame, field: geonature.core.imports.models.BibFields, source_col: str) -> pandas.Series
+.. py:function:: preprocess_value(imprt: geonature.core.imports.models.TImports, dataframe: pandas.DataFrame, field: geonature.core.imports.models.BibFields, source_col: Optional[Union[str, List[str]]], constant_value: Optional[Any]) -> pandas.Series
 
    Preprocesses values in a DataFrame depending if the field contains multiple values (e.g. additional_data) or not.
 
@@ -283,7 +283,7 @@ Module Contents
 
 .. py:function:: get_required(import_: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity)
 
-.. py:function:: compute_bounding_box(imprt: geonature.core.imports.models.TImports, geom_entity_code: str, geom_4326_field_name: str, *, child_entity_code: str = None, transient_where_clause=None, destination_where_clause=None)
+.. py:function:: compute_bounding_box(imprt: geonature.core.imports.models.TImports, geom_entity_code: str, geom_4326_field_name__transient: str, geom_4326_field_name__destination: str, *, child_entity_code: str = None, transient_where_clause=None, destination_where_clause=None)
 
    Compute the bounding box of an entity with a geometry in the given import, based on its
    entities tree (e.g. Station -> Habitat; Site -> Visite -> Observation).

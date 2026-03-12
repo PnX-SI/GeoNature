@@ -37,7 +37,7 @@ Module Contents
    If new_code is None, error is deleted
 
 
-.. py:function:: report_error(imprt, entity, df, error)
+.. py:function:: report_error(imprt: geonature.core.imports.models.TImports, entity, df, error)
 
    Reports an error found in the dataframe, updates the validity column and insert
    the error in the `t_user_errors` table.

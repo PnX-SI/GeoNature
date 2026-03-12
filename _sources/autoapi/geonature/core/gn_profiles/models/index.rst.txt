@@ -11,7 +11,7 @@ Classes
 
    geonature.core.gn_profiles.models.VmCorTaxonPhenology
    geonature.core.gn_profiles.models.VmValidProfiles
-   geonature.core.gn_profiles.models.VConsistancyData
+   geonature.core.gn_profiles.models.VConsistencyData
    geonature.core.gn_profiles.models.VSyntheseForProfiles
    geonature.core.gn_profiles.models.TParameters
    geonature.core.gn_profiles.models.CorTaxonParameters
@@ -97,7 +97,7 @@ Module Contents
    .. py:attribute:: active_life_stage
 
 
-.. py:class:: VConsistancyData
+.. py:class:: VConsistencyData
 
    Bases: :py:obj:`geonature.utils.env.DB.Model`
 

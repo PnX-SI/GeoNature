@@ -1,0 +1,50 @@
+geonature.core.gn_synthese.utils.pagination_sorting
+===================================================
+
+.. py:module:: geonature.core.gn_synthese.utils.pagination_sorting
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.utils.pagination_sorting.PaginationSortingUtils
+
+
+Module Contents
+---------------
+
+.. py:class:: PaginationSortingUtils
+
+   .. py:class:: SortOrder
+
+      Bases: :py:obj:`enum.Enum`
+
+
+      Generic enumeration.
+
+      Derive from this class to define new enumerations.
+
+
+      .. py:attribute:: ASC
+         :value: 'asc'
+
+
+
+      .. py:attribute:: DESC
+         :value: 'desc'
+
+
+
+
+   .. py:method:: update_query_with_sorting(query: sqlalchemy.orm.Query, sort_by: str, sort_order: SortOrder) -> sqlalchemy.orm.Query
+      :staticmethod:
+
+
+
+   .. py:method:: paginate(query: sqlalchemy.orm.Query, page: int, per_page: int) -> flask_sqlalchemy.pagination.Pagination
+      :staticmethod:
+
+
+

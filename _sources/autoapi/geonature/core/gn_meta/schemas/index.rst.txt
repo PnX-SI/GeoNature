@@ -52,7 +52,7 @@ Module Contents
    .. py:method:: make_dataset_actor(data, **kwargs)
 
 
-.. py:class:: DatasetSchema
+.. py:class:: DatasetSchema(*args, **kwargs)
 
    Bases: :py:obj:`geonature.utils.schema.CruvedSchemaMixin`, :py:obj:`utils_flask_sqla.schema.SmartRelationshipsMixin`, :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
 
@@ -126,6 +126,9 @@ Module Contents
 
 
    .. py:attribute:: sources
+
+
+   .. py:attribute:: mobile_app
 
 
    .. py:method:: module_input(item, original, many, **kwargs)

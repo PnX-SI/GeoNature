@@ -24,6 +24,8 @@ Functions
    geonature.core.imports.checks.sql.extra.check_digital_proof_urls
    geonature.core.imports.checks.sql.extra.check_entity_data_consistency
    geonature.core.imports.checks.sql.extra.disable_duplicated_rows
+   geonature.core.imports.checks.sql.extra.generate_entity_id
+   geonature.core.imports.checks.sql.extra.set_parent_id_from_line_no
 
 
 Module Contents
@@ -112,7 +114,7 @@ Module Contents
        The field to check.
 
 
-.. py:function:: check_existing_uuid(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, uuid_field: geonature.core.imports.models.BibFields, whereclause: Any = sa.true(), skip=False)
+.. py:function:: check_existing_uuid(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, uuid_field: geonature.core.imports.models.BibFields, id_dataset_field: geonature.core.imports.models.BibFields = None, skip=False)
 
    Check if there is already a record with the same uuid in the destination table.
    Include an error in the report for each existing uuid in the destination table.
@@ -123,9 +125,10 @@ Module Contents
    entity : Entity
        The entity to check.
    uuid_field : BibFields
-       The field to check.
-   whereclause : BooleanClause
-       The WHERE clause to apply to the check.
+       The field to check
+   id_dataset_field : BibFields
+       if defnied, the uuid existence is checked for the given dataset. Otherwise, it is checked globally
+
    skip: Boolean
        Raise SKIP_EXISTING_UUID instead of EXISTING_UUID and set row validity to None (do not import)
 
@@ -262,5 +265,29 @@ Module Contents
 
    When several rows have the same value in grouping field (typically UUID) field,
    first one is untouched but following rows have validity set to None (do not import).
+
+
+.. py:function:: generate_entity_id(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, schema_name: str, table_name: str, uuid_field_name: str, id_field_name: str) -> None
+
+   Generate the id for each new valid entity
+
+   Parameters
+   ----------
+   imprt : TImports
+       _description_
+   entity : Entity
+       entity
+
+
+.. py:function:: set_parent_id_from_line_no(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, parent_line_no_field_name: str, parent_id_field_name: str) -> None
+
+   Set the parent id of each entity in the transient table using the line_no of the corresponding parent.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import object containing the destination.
+   entity : Entity
+       entity
 
 

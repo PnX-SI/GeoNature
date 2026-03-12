@@ -10,7 +10,7 @@ Parc national des Écrins
 * Jacques Fize
 * Camille Monchicourt
 
-.. image:: http://geonature.fr/img/logo-pne.jpg
+.. image:: https://geonature.fr/img/logo-pne.jpg
     :target: http://www.ecrins-parcnational.fr
 
 Parc national des Cevennes
@@ -20,14 +20,28 @@ Parc national des Cevennes
 * Frédéric Fidon
 * Joël Clément
 
-.. image:: http://geonature.fr/img/logo-pnc.jpg
+.. image:: https://geonature.fr/img/logo-pnc.jpg
     :target: http://www.cevennes-parcnational.fr
+
+PatriNat
+--------
+
+* Antoine Cecchi
+* Judith Panijel
+* Alain Laupin
+* Vincent Cauchois
+* Pierre Narcisi
+* Christophe Ramet
+
+.. image:: https://geonature.fr/img/logo-patrinat.jpg?
+    :target: https://www.patrinat.fr
 
 Contributeurs
 -------------
 
 * Quang Pham (Parc national des Écrins)
 * Claire Lagaye (Parc national de la Vanoise)
+* Cynthia Borot (Parc national de la Vanoise)
 * Xavier Arbez (Parc naturel régional du Pilat)
 * Kevin Samuel
 * Donovan Maillard (Flavia)
@@ -35,11 +49,10 @@ Contributeurs
 * Etienne Trimaille (Parc national de Guadeloupe)
 * Fred Cloitre (LPO Ardèche)
 * Daniel Thonon (LPO Isère)
+* Blaise Picinbono (LPO Occitanie)
 * Richard Vergely (Parc national des Écrins)
 * Robin Elzeard (Parc national des Écrins)
 * Sylvain Montagner (Parc naturel régional de Normandie-Maine)
-* Patrick Kappeler (Natural Solutions)
-* Julien Corny (Natural Solutions)
 * Jean-Brieuc Lehébel-Péron (GRETIA)
 * Jean-Baptiste Desbas (Picardie Nature)
 * Romain Baghi (NEO)
@@ -51,16 +64,13 @@ Contributeurs
 * Aboubakr Oudghiri (Ouidou)
 * Matthieu Etourneau (Geofit)
 * Florent Richard (Geofit)
-* Antoine Cecchi (UMS Patrinat)
-* Judith Panijel (UMS Patrinat)
-* Alain Laupin (UMS Patrinat)
-* Vincent Cauchois (UMS Patrinat)
-* Pierre Narcisi (UMS Patrinat)
 * Ludovic Le Pontois (Parc national des Pyrénées)
 * Vincent Prunet (Parc national du Mercantour)
 * David Michallet (CEN 38)
 * Rhandy Grard (Freelance / Natural Solutions)
 * Maxime Toma (LPO France)
+* Patrick Kappeler (Natural Solutions)
+* Julien Corny (Natural Solutions)
 * Adrien Pajot (Natural Solutions)
 * Maxime Vergez (Natural Solutions)
 * Aurélie Jambon (Natural Solutuons)
@@ -68,6 +78,9 @@ Contributeurs
 * Ophélie Da Silva (Natural Solutions)
 * Andria Capai (Natural Solutions)
 * Etienne Delclaux (Natural Solutions)
+* Jules Jean-Louis (Natural Solutions)
+* Mathilde Leclerc (Natural Solutions)
+* Vincent Bourgeois (Natural Solutions)
 * Gaëtan Bruel (JDev)
 * Pierre Jégo (JDev)
 * Pierre Le Dorze (Bretagne Vivante)
@@ -76,3 +89,6 @@ Contributeurs
 * Mathieu Roudaut (CREA Mont-Blanc)
 * Marie-Laure Séguin (CEN Normandie)
 * Zacharie Moulin (RNF)
+* Paul Labruyere (Picardie Nature)
+* Jacques Blenner (SFEPM)
+* Jerome Maruejouls (Nature en Occitanie)

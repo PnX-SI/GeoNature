@@ -12,8 +12,31 @@ Classes
    geonature.utils.json.MyJSONProvider
 
 
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.utils.json.pagination_schema
+
+
 Module Contents
 ---------------
+
+.. py:function:: pagination_schema(schema)
+
+   Context manager to set the pagination schema for a given model.
+
+   Parameters
+   ----------
+   schema : Model schema to use for pagination.
+
+   Notes
+   -----
+   Usage:
+       with pagination_schema(UserSchema):
+           return jsonify(pagination)
+
 
 .. py:class:: MyJSONProvider
 

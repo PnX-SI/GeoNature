@@ -12,8 +12,18 @@ Classes
    geonature.core.gn_synthese.imports.actions.SyntheseImportActions
 
 
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.imports.actions.get_boolean_value
+
+
 Module Contents
 ---------------
+
+.. py:function:: get_boolean_value(bib_field: geonature.core.imports.models.BibFields, default_value: bool) -> bool
 
 .. py:class:: SyntheseImportActions
 
@@ -24,9 +34,42 @@ Module Contents
       :staticmethod:
 
 
+      Return a list of key-value pairs describing the statistics of the import process.
 
-   .. py:method:: preprocess_transient_data(imprt: geonature.core.imports.models.TImports, df) -> set
+      Returns
+      -------
+      list[ImportStatisticsLabels]
+          A list of key-value pairs. Each key-value pair is a dictionary with two keys:
+          'key' and 'value'. The 'key' key contains the label of the metric, the 'value'
+          key contains the value of the metric.
+
+      Raises
+      ------
+      NotImplementedError
+          If the method is not implemented in the child class.
+
+
+
+   .. py:method:: preprocess_transient_data(imprt: geonature.core.imports.models.TImports, df) -> None
       :staticmethod:
+
+
+      Preprocess the transient data for the given import.
+
+      Parameters
+      ----------
+      imprt : TImports
+          The import object containing metadata about the import process.
+      df : pandas.DataFrame
+          The DataFrame containing the transient data.
+
+      Notes
+      -----
+      This method is responsible for performing any necessary data
+      transformation on the transient data before it is controlled by `check_transient_data`
+      imported into the destination database.
+
+      The method is optional and can be omitted if no preprocessing is needed.
 
 
 
@@ -34,14 +77,40 @@ Module Contents
       :staticmethod:
 
 
+      Validate and process the transient data for the given import.
+
+      Parameters
+      ----------
+      task : Any
+          The task object associated with the import process. Used by celery.
+      logger : Any
+          Logger instance for logging information during validation. Used by celery.
+      imprt : TImports
+          The import object containing metadata about the import process.
+
+      Raises
+      ------
+      NotImplementedError
+          If the method is not implemented.
+
+
 
    .. py:method:: import_data_to_destination(imprt: geonature.core.imports.models.TImports) -> None
       :staticmethod:
 
 
+      Import data to the destination database for a given import.
 
-   .. py:method:: remove_data_from_destination(imprt: geonature.core.imports.models.TImports) -> None
-      :staticmethod:
+      Parameters
+      ----------
+      imprt : TImports
+          The import object containing information about the data to be imported.
+
+      Notes
+      -----
+      The data to be imported is initially available in a transient table. This method
+      processes and transfers the data from the transient table to the destination
+      database.
 
 
 
@@ -49,9 +118,42 @@ Module Contents
       :staticmethod:
 
 
+      Generate the report plot for the given import. The plot must be realized using the Bokeh library.
+      Plot must be return as JSON using the Bokeh `json_item` function.
+
+      Parameters
+      ----------
+      imprt : TImports
+          The import object containing information about the import process.
+
+      Returns
+      -------
+      plot : StandaloneEmbedJson
+          The standalone embed json data for the report plot.
+
+      Notes
+      -----
+      The report plot is a visualization of the imported data. It is used
+      to provide a quick overview of the import data to the user.
+
+
 
    .. py:method:: compute_bounding_box(imprt: geonature.core.imports.models.TImports)
       :staticmethod:
+
+
+      Calculate the bounding box for the imported data.
+
+      Parameters
+      ----------
+      imprt : TImports
+          The import object containing information about the import process.
+
+      Notes
+      -----
+      This method calculates the smallest polygon (bounding box) that contains all the
+      geographic data imported. The bounding box is to be displayed in the import report
+      once all data has been validated.
 
 
 

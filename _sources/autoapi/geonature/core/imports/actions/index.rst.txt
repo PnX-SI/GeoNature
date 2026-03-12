@@ -73,11 +73,60 @@ Module Contents
       :abstractmethod:
 
 
+      Return a list of key-value pairs describing the statistics of the import process.
 
-   .. py:method:: preprocess_transient_data(imprt: geonature.core.imports.models.TImports, df) -> set
+      Returns
+      -------
+      list[ImportStatisticsLabels]
+          A list of key-value pairs. Each key-value pair is a dictionary with two keys:
+          'key' and 'value'. The 'key' key contains the label of the metric, the 'value'
+          key contains the value of the metric.
+
+      Raises
+      ------
+      NotImplementedError
+          If the method is not implemented in the child class.
+
+
+
+   .. py:method:: process_fields(destination, fields)
       :staticmethod:
 
-      :abstractmethod:
+
+      Process the given fields for the specified destination.
+
+      Used for monitoring to replace monitoring configuration variables (e.g. __MODULE.ID_LIST_TAXONOMY) in field parameters.
+
+      Parameters
+      ----------
+      destination : Any
+          The destination object where fields are to be processed.
+      fields : List[BibFields]
+          A list of fields to be processed, originating from `bib_fields`.
+
+
+
+
+   .. py:method:: preprocess_transient_data(imprt: geonature.core.imports.models.TImports, df) -> None
+      :staticmethod:
+
+
+      Preprocess the transient data for the given import.
+
+      Parameters
+      ----------
+      imprt : TImports
+          The import object containing metadata about the import process.
+      df : pandas.DataFrame
+          The DataFrame containing the transient data.
+
+      Notes
+      -----
+      This method is responsible for performing any necessary data
+      transformation on the transient data before it is controlled by `check_transient_data`
+      imported into the destination database.
+
+      The method is optional and can be omitted if no preprocessing is needed.
 
 
 
@@ -87,6 +136,23 @@ Module Contents
       :abstractmethod:
 
 
+      Validate and process the transient data for the given import.
+
+      Parameters
+      ----------
+      task : Any
+          The task object associated with the import process. Used by celery.
+      logger : Any
+          Logger instance for logging information during validation. Used by celery.
+      imprt : TImports
+          The import object containing metadata about the import process.
+
+      Raises
+      ------
+      NotImplementedError
+          If the method is not implemented.
+
+
 
    .. py:method:: import_data_to_destination(imprt: geonature.core.imports.models.TImports) -> None
       :staticmethod:
@@ -94,11 +160,41 @@ Module Contents
       :abstractmethod:
 
 
+      Import data to the destination database for a given import.
+
+      Parameters
+      ----------
+      imprt : TImports
+          The import object containing information about the data to be imported.
+
+      Notes
+      -----
+      The data to be imported is initially available in a transient table. This method
+      processes and transfers the data from the transient table to the destination
+      database.
+
+
 
    .. py:method:: remove_data_from_destination(imprt: geonature.core.imports.models.TImports) -> None
       :staticmethod:
 
-      :abstractmethod:
+
+      Remove data from destination database for a given import.
+
+      Parameters
+      ----------
+      imprt : TImports
+          The import to remove data from.
+
+      Notes
+      -----
+      This method is called when an import is deleted.
+      It removes from the destination database all data that was created
+      by the import.
+
+      If a child entity (e.g. Habitat) was created later on an imported
+      parent entity (e.g. Station), deleting the imported entity will
+      be refused !
 
 
 
@@ -108,11 +204,65 @@ Module Contents
       :abstractmethod:
 
 
+      Generate the report plot for the given import. The plot must be realized using the Bokeh library.
+      Plot must be return as JSON using the Bokeh `json_item` function.
+
+      Parameters
+      ----------
+      imprt : TImports
+          The import object containing information about the import process.
+
+      Returns
+      -------
+      plot : StandaloneEmbedJson
+          The standalone embed json data for the report plot.
+
+      Notes
+      -----
+      The report plot is a visualization of the imported data. It is used
+      to provide a quick overview of the import data to the user.
+
+
 
    .. py:method:: compute_bounding_box(imprt: geonature.core.imports.models.TImports) -> None
       :staticmethod:
 
       :abstractmethod:
+
+
+      Calculate the bounding box for the imported data.
+
+      Parameters
+      ----------
+      imprt : TImports
+          The import object containing information about the import process.
+
+      Notes
+      -----
+      This method calculates the smallest polygon (bounding box) that contains all the
+      geographic data imported. The bounding box is to be displayed in the import report
+      once all data has been validated.
+
+
+
+   .. py:method:: is_observer_mapping_enabled() -> bool
+      :staticmethod:
+
+
+      Check if observer mapping is a allowed for the current destination.
+
+      If not overridden, is_observer_mapping_enabled returns the value
+      of ALLOW_USER_MAPPING in the configuration file, which is True by default.
+
+      Returns
+      -------
+      bool
+          True if observer mapping is enabled
+
+
+
+   .. py:method:: bind_matched_observers(imprt: geonature.core.imports.models.TImports, model, model_user_column: str, model_id_column: str, correspondence_model, correspondence_model_columns: List[str]) -> None
+      :staticmethod:
 
 
 

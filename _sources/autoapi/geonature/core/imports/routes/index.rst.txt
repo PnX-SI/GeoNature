@@ -72,6 +72,9 @@ Package Contents
    .. py:attribute:: table_name
 
 
+   .. py:attribute:: active
+
+
    .. py:attribute:: module
 
 

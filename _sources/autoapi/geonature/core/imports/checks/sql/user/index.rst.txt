@@ -1,0 +1,68 @@
+geonature.core.imports.checks.sql.user
+======================================
+
+.. py:module:: geonature.core.imports.checks.sql.user
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.imports.checks.sql.user.UserMatchingSchema
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.imports.checks.sql.user.user_matching
+   geonature.core.imports.checks.sql.user.map_observer_matching
+
+
+Module Contents
+---------------
+
+.. py:class:: UserMatchingSchema
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: user_to_match
+
+
+   .. py:attribute:: id_role
+
+
+   .. py:attribute:: identifiant
+
+
+   .. py:attribute:: nom_complet
+
+
+.. py:function:: user_matching(imprt: geonature.core.imports.models.TImports, field: geonature.core.imports.models.BibFields)
+
+   Find matching user for a given transient table and csv column.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import object which contains the transient table.
+   field : BibFields
+       field use to fetch user name strings
+
+   Returns
+   -------
+   dict
+       A dictionary of users name (as it appears in the source file) as key and a dictionary of matching information as value.
+       The matching information contains id_role, identifiant, nom_complet.
+
+   Notes
+   -----
+   The matching is done by computing the similarity between the source file usernames and the
+   nom_complet of the users in the `utilisateurs.t_roles` table.
+
+
+.. py:function:: map_observer_matching(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, observer_field: geonature.core.imports.models.BibFields)
+

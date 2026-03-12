@@ -11,6 +11,7 @@ Classes
 
    geonature.core.imports.schemas.DestinationSchema
    geonature.core.imports.schemas.MappingSchema
+   geonature.core.imports.schemas.ImportSchema
 
 
 Module Contents
@@ -74,5 +75,34 @@ Module Contents
 
 
    .. py:attribute:: owners
+
+
+.. py:class:: ImportSchema
+
+   Bases: :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+
+   .. py:class:: Meta
+
+      .. py:attribute:: model
+
+
+      .. py:attribute:: include_fk
+         :value: True
+
+
+
+      .. py:attribute:: load_instance
+         :value: True
+
+
+
+      .. py:attribute:: sqla_session
+
+
+      .. py:attribute:: exclude
+         :value: ('source_file', 'errors_count')
+
+
 
 

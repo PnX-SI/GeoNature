@@ -9,33 +9,12 @@ Classes
 
 .. autoapisummary::
 
-   geonature.core.gn_synthese.utils.taxon_sheet.SortOrder
    geonature.core.gn_synthese.utils.taxon_sheet.TaxonSheet
    geonature.core.gn_synthese.utils.taxon_sheet.TaxonSheetUtils
 
 
 Module Contents
 ---------------
-
-.. py:class:: SortOrder
-
-   Bases: :py:obj:`enum.Enum`
-
-
-   Generic enumeration.
-
-   Derive from this class to define new enumerations.
-
-
-   .. py:attribute:: ASC
-      :value: 'asc'
-
-
-
-   .. py:attribute:: DESC
-      :value: 'desc'
-
-
 
 .. py:class:: TaxonSheet(cd_ref)
 
@@ -46,16 +25,6 @@ Module Contents
 
 
 .. py:class:: TaxonSheetUtils
-
-   .. py:method:: update_query_with_sorting(query: sqlalchemy.orm.Query, sort_by: str, sort_order: SortOrder) -> sqlalchemy.orm.Query
-      :staticmethod:
-
-
-
-   .. py:method:: paginate(query: sqlalchemy.orm.Query, page: int, per_page: int) -> flask_sqlalchemy.pagination.Pagination
-      :staticmethod:
-
-
 
    .. py:method:: get_cd_nom_list_from_cd_ref(cd_ref: int) -> List[int]
       :staticmethod:

@@ -29,6 +29,7 @@ Classes
 
 .. autoapisummary::
 
+   geonature.core.gn_monitoring.models.CorVisitObserver
    geonature.core.gn_monitoring.models.BibTypeSite
    geonature.core.gn_monitoring.models.TBaseVisits
    geonature.core.gn_monitoring.models.TBaseSites
@@ -41,6 +42,14 @@ Module Contents
 ---------------
 
 .. py:data:: cor_visit_observer
+
+.. py:class:: CorVisitObserver
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   .. py:attribute:: __table__
+
 
 .. py:data:: cor_site_module
 
@@ -142,6 +151,9 @@ Module Contents
    .. py:attribute:: dataset
 
 
+   .. py:attribute:: id_import
+
+
 .. py:class:: TBaseSites
 
    Bases: :py:obj:`geonature.utils.env.DB.Model`
@@ -182,6 +194,9 @@ Module Contents
    .. py:attribute:: geom
 
 
+   .. py:attribute:: geom_local
+
+
    .. py:attribute:: uuid_base_site
 
 
@@ -207,6 +222,9 @@ Module Contents
 
 
    .. py:attribute:: modules
+
+
+   .. py:attribute:: id_import
 
 
 .. py:data:: corIndividualModule
@@ -243,6 +261,9 @@ Module Contents
 
 
    .. py:attribute:: uuid_observation
+
+
+   .. py:attribute:: id_import
 
 
    .. py:attribute:: id_individual

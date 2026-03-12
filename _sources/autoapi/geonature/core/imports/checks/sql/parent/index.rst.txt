@@ -18,7 +18,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: set_id_parent_from_destination(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_field: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
+.. py:function:: set_id_parent_from_destination(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, entity: geonature.core.imports.models.Entity, id_field: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
 
    Complete the id_parent column in the transient table of an import when the parent already exists in the destination table.
 
@@ -28,15 +28,15 @@ Module Contents
        The import to update.
    parent_entity : Entity
        The entity of the parent.
-   child_entity : Entity
-       The entity of the child.
+   entity : Entity
+       The current entity.
    id_field : BibFields
        The field containing the id of the parent.
    fields : List[BibFields]
        The fields to use for matching the child with its parent in the destination table.
 
 
-.. py:function:: set_parent_line_no(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_parent: geonature.core.imports.models.BibFields, parent_line_no: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
+.. py:function:: set_parent_line_no(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, entity: geonature.core.imports.models.Entity, parent_line_no: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
 
    Set parent_line_no on child entities when:
    - no parent entity on same line
@@ -49,8 +49,8 @@ Module Contents
        The import to update.
    parent_entity : Entity
        The entity of the parent.
-   child_entity : Entity
-       The entity of the child.
+   entity : Entity
+       The current entity.
    id_parent : BibFields
        The field containing the id of the parent.
    parent_line_no : BibFields
@@ -59,7 +59,7 @@ Module Contents
        The fields to use for matching the child with its parent in the destination table.
 
 
-.. py:function:: check_no_parent_entity(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_parent: geonature.core.imports.models.BibFields, parent_line_no: geonature.core.imports.models.BibFields) -> None
+.. py:function:: check_no_parent_entity(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, entity: geonature.core.imports.models.Entity, id_parent: geonature.core.imports.models.BibFields, parent_line_no: geonature.core.imports.models.BibFields) -> None
 
    Station may be referenced:
    - on the same line (station_validity is not None)
@@ -72,15 +72,15 @@ Module Contents
        The import to check.
    parent_entity : Entity
        The entity of the parent.
-   child_entity : Entity
-       The entity of the child.
+   entity : Entity
+       The current entity.
    id_parent : BibFields
        The field containing the id of the parent.
    parent_line_no : BibFields
        The field containing the line number of the parent.
 
 
-.. py:function:: check_erroneous_parent_entities(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, parent_line_no: geonature.core.imports.models.BibFields) -> None
+.. py:function:: check_erroneous_parent_entities(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, entity: geonature.core.imports.models.Entity, parent_line_no: geonature.core.imports.models.BibFields) -> None
 
    Check for erroneous (not valid) parent entities in the transient table of an import.
 
@@ -90,8 +90,8 @@ Module Contents
        The import to check.
    parent_entity : Entity
        The entity of the parent.
-   child_entity : Entity
-       The entity of the child.
+   entity : Entity
+       The current entity.
    parent_line_no : BibFields
        The field containing the line number of the parent.
 

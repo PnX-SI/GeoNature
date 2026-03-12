@@ -35,7 +35,6 @@ Functions
    geonature.core.gn_meta.routes.update_dataset
    geonature.core.gn_meta.routes.get_export_pdf_dataset
    geonature.core.gn_meta.routes.get_acquisition_frameworks
-   geonature.core.gn_meta.routes.get_acquisition_frameworks_list
    geonature.core.gn_meta.routes.get_export_pdf_acquisition_frameworks
    geonature.core.gn_meta.routes.get_acquisition_framework
    geonature.core.gn_meta.routes.delete_acquisition_framework
@@ -125,24 +124,11 @@ Module Contents
 
 .. py:function:: get_acquisition_frameworks()
 
-   Get a simple list of AF without any nested relationships
+   Get a simple list of AF without any nested relationships. The response is paginated, you can specify the number of
+   items per page with the `per_page` parameter and the the page number with parameter `page`.
+   The default value is 50 items per page. If you specify -1 for `per_page`, all items will be returned.
    Use for AF select in form
    Get the GeoNature CRUVED
-
-
-.. py:function:: get_acquisition_frameworks_list(scope)
-
-   Get all AF with their datasets
-   Use in metadata module for list of AF and DS
-   Add the CRUVED permission for each row (Dataset and AD)
-
-   DEPRECATED use get_acquisition_frameworks instead
-
-   .. :quickref: Metadata;
-
-   :qparam list excluded_fields: fields excluded from serialization
-   :qparam boolean nested: Default False - serialized relationships. If false: remove add all relationships in excluded_fields
-
 
 
 .. py:function:: get_export_pdf_acquisition_frameworks(id_acquisition_framework)

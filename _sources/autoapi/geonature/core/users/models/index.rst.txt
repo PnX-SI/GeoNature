@@ -96,23 +96,37 @@ Module Contents
 .. py:class:: UserRigth(id_role=None, id_organisme=None, code_action=None, value_filter=None, module_code=None, nom_role=None, prenom_role=None)
 
    .. py:attribute:: id_role
+      :value: None
+
 
 
    .. py:attribute:: id_organisme
+      :value: None
+
 
 
    .. py:attribute:: value_filter
+      :value: None
+
 
 
    .. py:attribute:: code_action
+      :value: None
+
 
 
    .. py:attribute:: module_code
+      :value: None
+
 
 
    .. py:attribute:: nom_role
+      :value: None
+
 
 
    .. py:attribute:: prenom_role
+      :value: None
+
 
 

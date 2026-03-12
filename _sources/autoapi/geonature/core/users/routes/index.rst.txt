@@ -28,6 +28,8 @@ Functions
    geonature.core.users.routes.get_roles
    geonature.core.users.routes.get_organismes
    geonature.core.users.routes.get_organismes_jdd
+   geonature.core.users.routes.get_organism
+   geonature.core.users.routes.create_organism
    geonature.core.users.routes.check_sign_up_enabled
    geonature.core.users.routes.inscription
    geonature.core.users.routes.login_recovery
@@ -35,6 +37,8 @@ Functions
    geonature.core.users.routes.update_role
    geonature.core.users.routes.change_password_route
    geonature.core.users.routes.new_password
+   geonature.core.users.routes.new_mail
+   geonature.core.users.routes.confirm_new_mail
 
 
 Module Contents
@@ -50,7 +54,7 @@ Module Contents
 
 .. py:data:: organism_fields
 
-.. py:function:: get_roles_by_menu_id(id_menu)
+.. py:function:: get_roles_by_menu_id(id_menu=None)
 
    Returns the list of roles associated with a menu
 
@@ -61,10 +65,12 @@ Module Contents
    nom_complet : str, optional
        Beginning of complete name of the role
 
-   Returns
-   -------
-   list of dict
-       List of roles associated with the menu
+   GET parameters
+   --------------
+
+   :param id_menu: the id of user list (utilisateurs.bib_list)
+   :type id_menu: int
+   :query str nom_complet: beginning of complet name of the role
 
 
 .. py:function:: get_roles_by_menu_code(code_liste)
@@ -123,6 +129,37 @@ Module Contents
    .. :quickref: User;
 
 
+.. py:function:: get_organism(id_organisme)
+
+   Get complete organism details by ID
+
+   .. :quickref: User;
+
+   Returns:
+       dict: Complete organism information including all fields
+
+
+.. py:function:: create_organism() -> dict
+
+   Create a new organism
+
+   .. :quickref: User;
+
+   Request body should contain:
+   - nom_organisme (required): organism name
+   - adresse_organisme (optional): address
+   - cp_organisme (optional): postal code
+   - ville_organisme (optional): city
+   - tel_organisme (optional): telephone
+   - fax_organisme (optional): fax
+   - email_organisme (optional): email
+   - url_organisme (optional): website URL
+   - url_logo (optional): logo URL
+
+   Returns:
+       dict: The created organism with its ID
+
+
 .. py:function:: check_sign_up_enabled(key)
 
    Decorator to check if a user management feature is enabled.
@@ -166,5 +203,19 @@ Module Contents
 
    Changes the password of a user after they requested a password recovery
    Requires a token sent by mail to the user
+
+
+.. py:function:: new_mail()
+
+   Send a mail to the user with a link to confirm his new mail address
+
+
+.. py:function:: confirm_new_mail()
+
+   Change the email address of the user.
+
+   Notes
+   -----
+   Not required but this route is meant to be called after the `new mail` route.
 
 

@@ -204,6 +204,9 @@ Module Contents
    .. py:method:: get_query()
 
 
+   .. py:method:: get_list(term: str, offset: int = 0, limit: int = 10) -> Any
+
+
 .. py:class:: TaxrefAjaxModelLoader
 
    Bases: :py:obj:`flask_admin.contrib.sqla.ajax.QueryAjaxModelLoader`

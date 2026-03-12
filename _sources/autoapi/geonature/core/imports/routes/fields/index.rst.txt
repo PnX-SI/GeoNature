@@ -16,7 +16,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: get_fields(scope, destination)
+.. py:function:: get_fields(scope, destination: geonature.core.imports.models.Destination)
 
    .. :quickref: Import; Get synthesis fields.
 

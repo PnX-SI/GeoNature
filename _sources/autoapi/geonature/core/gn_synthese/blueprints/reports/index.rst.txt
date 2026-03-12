@@ -20,6 +20,7 @@ Functions
    geonature.core.gn_synthese.blueprints.reports.create_report
    geonature.core.gn_synthese.blueprints.reports.notify_new_report_change
    geonature.core.gn_synthese.blueprints.reports.update_content_report
+   geonature.core.gn_synthese.blueprints.reports.sort_reports
    geonature.core.gn_synthese.blueprints.reports.list_all_reports
    geonature.core.gn_synthese.blueprints.reports.list_reports
    geonature.core.gn_synthese.blueprints.reports.delete_report
@@ -50,6 +51,27 @@ Module Contents
    -------
        report: `json`:
            Every occurrence's report
+
+
+.. py:function:: sort_reports(query, orderby, sort='asc')
+
+   Utility function. Sort a reports query according to given params,
+   or raise an error if these params are invalid.
+
+   Params
+   ------
+       query: `sa query`:
+           The query, sorted according to given params
+       orderby: `string`:
+           Field name to sort the query on. Must be one of
+           the fieldnames listed in SORT_COLUMNS.
+       sort: `string`:
+           The order of the sort. Default is ascending order.
+
+   Returns
+   -------
+       query: `sa query`:
+           The query, sorted according to given params
 
 
 .. py:function:: list_all_reports(permissions)

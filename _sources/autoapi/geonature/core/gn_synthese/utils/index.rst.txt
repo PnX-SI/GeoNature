@@ -11,7 +11,9 @@ Submodules
    :maxdepth: 1
 
    /autoapi/geonature/core/gn_synthese/utils/blurring/index
+   /autoapi/geonature/core/gn_synthese/utils/observers/index
    /autoapi/geonature/core/gn_synthese/utils/orm/index
+   /autoapi/geonature/core/gn_synthese/utils/pagination_sorting/index
    /autoapi/geonature/core/gn_synthese/utils/process/index
    /autoapi/geonature/core/gn_synthese/utils/query_select_sqla/index
    /autoapi/geonature/core/gn_synthese/utils/taxon_sheet/index

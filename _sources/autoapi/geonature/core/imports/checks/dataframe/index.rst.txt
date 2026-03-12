@@ -90,7 +90,7 @@ Package Contents
 .. py:function:: check_datasets(imprt: geonature.core.imports.models.TImports, df: pandas.DataFrame, uuid_field: geonature.core.imports.models.BibFields, id_field: geonature.core.imports.models.BibFields, module_code: str, object_code: Optional[str] = None) -> Set[str]
 
    Check if datasets exist and are authorized for the user and import.
-
+   It also fill the id_field based on the content of uuid_field
    Parameters
    ----------
    imprt : TImports

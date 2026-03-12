@@ -21,6 +21,7 @@ Functions
    geonature.core.imports.routes.imports.get_import_list
    geonature.core.imports.routes.imports.get_one_import
    geonature.core.imports.routes.imports.upload_file
+   geonature.core.imports.routes.imports.update_import
    geonature.core.imports.routes.imports.decode_file
    geonature.core.imports.routes.imports.set_import_field_mapping
    geonature.core.imports.routes.imports.load_import
@@ -37,6 +38,8 @@ Functions
    geonature.core.imports.routes.imports.export_pdf
    geonature.core.imports.routes.imports.get_foreign_key_attr
    geonature.core.imports.routes.imports.report_plot
+   geonature.core.imports.routes.imports.generate_matching
+   geonature.core.imports.routes.imports.is_observer_mapping_enabled
 
 
 Module Contents
@@ -69,7 +72,15 @@ Module Contents
    Add an import or update an existing import.
 
    :form file: file to import
-   :form int datasetId: dataset ID to which import data
+
+
+.. py:function:: update_import(scope, imprt, destination=None)
+
+   .. :quickref: Import; Add an import or update an existing import.
+
+   Add an import or update an existing import.
+
+   :form file: file to import
 
 
 .. py:function:: decode_file(scope, imprt)
@@ -162,4 +173,8 @@ Module Contents
 
 
 .. py:function:: report_plot(scope, imprt: geonature.core.imports.models.TImports)
+
+.. py:function:: generate_matching(scope, imprt: geonature.core.imports.models.TImports)
+
+.. py:function:: is_observer_mapping_enabled(destination)
 

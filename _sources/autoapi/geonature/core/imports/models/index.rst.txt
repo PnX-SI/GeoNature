@@ -31,6 +31,7 @@ Classes
    geonature.core.imports.models.MappingTemplate
    geonature.core.imports.models.FieldMapping
    geonature.core.imports.models.ContentMapping
+   geonature.core.imports.models.ObserverMapping
 
 
 Functions
@@ -159,6 +160,9 @@ Module Contents
 
 
    .. py:attribute:: table_name
+
+
+   .. py:attribute:: active
 
 
    .. py:attribute:: module
@@ -350,6 +354,9 @@ Module Contents
    .. py:attribute:: id_unique_column
 
 
+   .. py:attribute:: id_uuid_column
+
+
    .. py:attribute:: id_parent
 
 
@@ -365,7 +372,19 @@ Module Contents
    .. py:attribute:: unique_column
 
 
+   .. py:attribute:: uuid_column
+
+
+   .. py:attribute:: id_object
+
+
+   .. py:attribute:: object
+
+
    .. py:method:: get_destination_table()
+
+
+   .. py:method:: __repr__()
 
 
 .. py:class:: InstancePermissionMixin
@@ -431,9 +450,6 @@ Module Contents
    .. py:attribute:: full_file_name
 
 
-   .. py:attribute:: id_dataset
-
-
    .. py:attribute:: date_create_import
 
 
@@ -473,9 +489,6 @@ Module Contents
    .. py:attribute:: processed
 
 
-   .. py:attribute:: dataset
-
-
    .. py:attribute:: source_file
 
 
@@ -486,6 +499,9 @@ Module Contents
 
 
    .. py:attribute:: contentmapping
+
+
+   .. py:attribute:: observermapping
 
 
    .. py:attribute:: task_id
@@ -554,6 +570,9 @@ Module Contents
    .. py:attribute:: type_field
 
 
+   .. py:attribute:: type_field_params
+
+
    .. py:attribute:: mandatory
 
 
@@ -587,7 +606,7 @@ Module Contents
    .. py:property:: dest_column
 
 
-   .. py:method:: __str__()
+   .. py:method:: __repr__()
 
 
 .. py:data:: cor_role_mapping
@@ -731,6 +750,33 @@ Module Contents
 
    .. py:attribute:: __tablename__
       :value: 't_contentmappings'
+
+
+
+   .. py:attribute:: __table_args__
+
+
+   .. py:attribute:: id
+
+
+   .. py:attribute:: values
+
+
+   .. py:attribute:: __mapper_args__
+
+
+   .. py:method:: validate_values(values, destination=None)
+      :staticmethod:
+
+
+
+.. py:class:: ObserverMapping
+
+   Bases: :py:obj:`MappingTemplate`
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_observermappings'
 
 
 

@@ -1,0 +1,32 @@
+geonature.core.gn_synthese.blueprints.observer
+==============================================
+
+.. py:module:: geonature.core.gn_synthese.blueprints.observer
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.observer.observer_info_routes
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.blueprints.observer.observer_stats
+
+
+Module Contents
+---------------
+
+.. py:data:: observer_info_routes
+
+.. py:function:: observer_stats(scope, observer)
+
+   Return stats for a specific taxon
+
+

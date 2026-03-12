@@ -58,7 +58,7 @@ Module Contents
        The field for non-digital proof, if any.
 
 
-.. py:function:: check_nomenclature_blurring(imprt, entity, blurring_field, id_dataset_field, uuid_dataset_field)
+.. py:function:: check_nomenclature_blurring(imprt, entity, blurring_field, id_dataset_field)
 
    Raise an error if blurring not set.
    Required if the dataset is private.

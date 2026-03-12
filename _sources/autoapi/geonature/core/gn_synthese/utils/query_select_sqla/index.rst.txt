@@ -90,9 +90,13 @@ Module Contents
 
 
    .. py:attribute:: query_joins
+      :value: None
+
 
 
    .. py:attribute:: geom_column
+      :value: None
+
 
 
    .. py:attribute:: srid

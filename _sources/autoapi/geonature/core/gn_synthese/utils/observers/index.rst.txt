@@ -1,0 +1,27 @@
+geonature.core.gn_synthese.utils.observers
+==========================================
+
+.. py:module:: geonature.core.gn_synthese.utils.observers
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.utils.observers.ObserversUtils
+
+
+Module Contents
+---------------
+
+.. py:class:: ObserversUtils
+
+   .. py:method:: get_observers_subquery(name: str)
+      :staticmethod:
+
+
+      Return a subquery yielding synthese ids filtered by observer name.
+
+
+

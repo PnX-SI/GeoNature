@@ -11,6 +11,7 @@ Submodules
    :maxdepth: 1
 
    /autoapi/geonature/core/gn_synthese/blueprints/exports/index
+   /autoapi/geonature/core/gn_synthese/blueprints/observer/index
    /autoapi/geonature/core/gn_synthese/blueprints/others/index
    /autoapi/geonature/core/gn_synthese/blueprints/reports/index
    /autoapi/geonature/core/gn_synthese/blueprints/statistics/index
@@ -27,6 +28,7 @@ Attributes
    geonature.core.gn_synthese.blueprints.synthese_routes
    geonature.core.gn_synthese.blueprints.statistics_routes
    geonature.core.gn_synthese.blueprints.taxon_info_routes
+   geonature.core.gn_synthese.blueprints.observer_info_routes
    geonature.core.gn_synthese.blueprints.other_routes
    geonature.core.gn_synthese.blueprints.export_routes
 
@@ -41,6 +43,8 @@ Package Contents
 .. py:data:: statistics_routes
 
 .. py:data:: taxon_info_routes
+
+.. py:data:: observer_info_routes
 
 .. py:data:: other_routes
 

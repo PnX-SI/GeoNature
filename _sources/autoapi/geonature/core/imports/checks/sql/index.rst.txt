@@ -15,6 +15,7 @@ Submodules
    /autoapi/geonature/core/imports/checks/sql/geo/index
    /autoapi/geonature/core/imports/checks/sql/nomenclature/index
    /autoapi/geonature/core/imports/checks/sql/parent/index
+   /autoapi/geonature/core/imports/checks/sql/user/index
    /autoapi/geonature/core/imports/checks/sql/utils/index
 
 
@@ -62,6 +63,8 @@ Functions
    geonature.core.imports.checks.sql.check_digital_proof_urls
    geonature.core.imports.checks.sql.check_entity_data_consistency
    geonature.core.imports.checks.sql.disable_duplicated_rows
+   geonature.core.imports.checks.sql.generate_entity_id
+   geonature.core.imports.checks.sql.set_parent_id_from_line_no
    geonature.core.imports.checks.sql.set_id_parent_from_destination
    geonature.core.imports.checks.sql.set_parent_line_no
    geonature.core.imports.checks.sql.check_no_parent_entity
@@ -79,7 +82,7 @@ Package Contents
      - True: the row contains data for the given entity, and data are valid
 
 
-.. py:function:: check_orphan_rows(imprt)
+.. py:function:: check_orphan_rows(imprt: geonature.core.imports.models.TImports)
 
 .. py:function:: do_nomenclatures_mapping(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, fields: Mapping[str, geonature.core.imports.models.BibFields], fill_with_defaults: bool = False) -> None
 
@@ -120,7 +123,7 @@ Package Contents
        The field for non-digital proof, if any.
 
 
-.. py:function:: check_nomenclature_blurring(imprt, entity, blurring_field, id_dataset_field, uuid_dataset_field)
+.. py:function:: check_nomenclature_blurring(imprt, entity, blurring_field, id_dataset_field)
 
    Raise an error if blurring not set.
    Required if the dataset is private.
@@ -696,6 +699,9 @@ Package Contents
    .. py:attribute:: type_field
 
 
+   .. py:attribute:: type_field_params
+
+
    .. py:attribute:: mandatory
 
 
@@ -729,7 +735,7 @@ Package Contents
    .. py:property:: dest_column
 
 
-   .. py:method:: __str__()
+   .. py:method:: __repr__()
 
 
 .. py:class:: Entity
@@ -775,6 +781,9 @@ Package Contents
    .. py:attribute:: id_unique_column
 
 
+   .. py:attribute:: id_uuid_column
+
+
    .. py:attribute:: id_parent
 
 
@@ -790,7 +799,19 @@ Package Contents
    .. py:attribute:: unique_column
 
 
+   .. py:attribute:: uuid_column
+
+
+   .. py:attribute:: id_object
+
+
+   .. py:attribute:: object
+
+
    .. py:method:: get_destination_table()
+
+
+   .. py:method:: __repr__()
 
 
 .. py:class:: TImports
@@ -849,9 +870,6 @@ Package Contents
    .. py:attribute:: full_file_name
 
 
-   .. py:attribute:: id_dataset
-
-
    .. py:attribute:: date_create_import
 
 
@@ -891,9 +909,6 @@ Package Contents
    .. py:attribute:: processed
 
 
-   .. py:attribute:: dataset
-
-
    .. py:attribute:: source_file
 
 
@@ -904,6 +919,9 @@ Package Contents
 
 
    .. py:attribute:: contentmapping
+
+
+   .. py:attribute:: observermapping
 
 
    .. py:attribute:: task_id
@@ -934,17 +952,52 @@ Package Contents
 
 .. py:function:: get_duplicates_query(imprt, dest_field, whereclause=sa.true())
 
-.. py:function:: report_erroneous_rows(imprt, entity, error_type, error_column, whereclause, level_validity_mapping={'ERROR': False})
+.. py:function:: report_erroneous_rows(imprt, entity, error_type, error_column, whereclause, error_comment=None, level_validity_mapping={'ERROR': False})
 
-   This function report errors where whereclause in true.
-   But the function also set validity column to False for errors with ERROR level.
-   Warning: level of error "ERROR", the entity must be defined
+   Report erroneous rows in a transient table and update validity of rows based on error level.
 
-   level_validity_mapping may be used to override default behavior:
-     - level does not exist in dict: row validity is untouched
-     - level exists in dict: row validity is set accordingly:
-       - False: row is marked as erroneous
-       - None: row is marked as should not be imported
+   This function reports errors found in imported data based on a WHERE clause, and updates the validity
+   column of affected rows if the error level is specified in `level_validity_mapping`.
+   By default, errors with the level "ERROR" mark the row as invalid.
+
+   Parameters
+   ----------
+   imprt : TImport
+       The current import object.
+   entity : Entity
+       The entity associated with the error. Must be defined if the error level is "ERROR".
+   error_type : str
+       Type of error to report. Must correspond to a record in `ImportUserErrorType`.
+   error_column : str
+       Name of the column where the error is detected. Can be mapped via `imprt.fieldmapping`.
+   whereclause : sqlalchemy.sql.elements.ClauseElement
+       SQL clause defining the rows affected by the error.
+   error_comment : str, optional
+       Optional comment to include extra explanation to describe the error in the current import context.
+   level_validity_mapping : dict, optional
+       Dictionary mapping error levels to validity values:
+       - If the level is not in the dictionary, the row validity remains unchanged.
+       - If the level is present, validity is set according to the associated value:
+         - `False`: The row is marked as erroneous.
+         - `None`: The row is marked as should not be imported.
+       By default, only the level "ERROR" is mapped to `False`.
+
+   Raises
+   ------
+   AssertionError
+       If `entity` is not defined for an error of level "ERROR".
+
+   Examples
+   --------
+   >>> # Example usage for reporting an "ERROR" level error
+   >>> report_erroneous_rows(
+   ...     imprt=my_import,
+   ...     entity=my_entity,
+   ...     error_type="MISSING_VALUE",
+   ...     error_column="customer_name",
+   ...     whereclause=(transient_table.c.customer_name == None),
+   ...     error_comment="Customer name missing",
+   ... )
 
 
 .. py:function:: check_referential(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, field: geonature.core.imports.models.BibFields, reference_field: sqlalchemy.Column, error_type: str, reference_table: Optional[sqlalchemy.Table] = None) -> None
@@ -1030,7 +1083,7 @@ Package Contents
        The field to check.
 
 
-.. py:function:: check_existing_uuid(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, uuid_field: geonature.core.imports.models.BibFields, whereclause: Any = sa.true(), skip=False)
+.. py:function:: check_existing_uuid(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, uuid_field: geonature.core.imports.models.BibFields, id_dataset_field: geonature.core.imports.models.BibFields = None, skip=False)
 
    Check if there is already a record with the same uuid in the destination table.
    Include an error in the report for each existing uuid in the destination table.
@@ -1041,9 +1094,10 @@ Package Contents
    entity : Entity
        The entity to check.
    uuid_field : BibFields
-       The field to check.
-   whereclause : BooleanClause
-       The WHERE clause to apply to the check.
+       The field to check
+   id_dataset_field : BibFields
+       if defnied, the uuid existence is checked for the given dataset. Otherwise, it is checked globally
+
    skip: Boolean
        Raise SKIP_EXISTING_UUID instead of EXISTING_UUID and set row validity to None (do not import)
 
@@ -1182,7 +1236,31 @@ Package Contents
    first one is untouched but following rows have validity set to None (do not import).
 
 
-.. py:function:: set_id_parent_from_destination(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_field: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
+.. py:function:: generate_entity_id(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, schema_name: str, table_name: str, uuid_field_name: str, id_field_name: str) -> None
+
+   Generate the id for each new valid entity
+
+   Parameters
+   ----------
+   imprt : TImports
+       _description_
+   entity : Entity
+       entity
+
+
+.. py:function:: set_parent_id_from_line_no(imprt: geonature.core.imports.models.TImports, entity: geonature.core.imports.models.Entity, parent_line_no_field_name: str, parent_id_field_name: str) -> None
+
+   Set the parent id of each entity in the transient table using the line_no of the corresponding parent.
+
+   Parameters
+   ----------
+   imprt : TImports
+       The import object containing the destination.
+   entity : Entity
+       entity
+
+
+.. py:function:: set_id_parent_from_destination(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, entity: geonature.core.imports.models.Entity, id_field: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
 
    Complete the id_parent column in the transient table of an import when the parent already exists in the destination table.
 
@@ -1192,15 +1270,15 @@ Package Contents
        The import to update.
    parent_entity : Entity
        The entity of the parent.
-   child_entity : Entity
-       The entity of the child.
+   entity : Entity
+       The current entity.
    id_field : BibFields
        The field containing the id of the parent.
    fields : List[BibFields]
        The fields to use for matching the child with its parent in the destination table.
 
 
-.. py:function:: set_parent_line_no(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_parent: geonature.core.imports.models.BibFields, parent_line_no: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
+.. py:function:: set_parent_line_no(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, entity: geonature.core.imports.models.Entity, parent_line_no: geonature.core.imports.models.BibFields, fields: List[geonature.core.imports.models.BibFields]) -> None
 
    Set parent_line_no on child entities when:
    - no parent entity on same line
@@ -1213,8 +1291,8 @@ Package Contents
        The import to update.
    parent_entity : Entity
        The entity of the parent.
-   child_entity : Entity
-       The entity of the child.
+   entity : Entity
+       The current entity.
    id_parent : BibFields
        The field containing the id of the parent.
    parent_line_no : BibFields
@@ -1223,7 +1301,7 @@ Package Contents
        The fields to use for matching the child with its parent in the destination table.
 
 
-.. py:function:: check_no_parent_entity(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, id_parent: geonature.core.imports.models.BibFields, parent_line_no: geonature.core.imports.models.BibFields) -> None
+.. py:function:: check_no_parent_entity(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, entity: geonature.core.imports.models.Entity, id_parent: geonature.core.imports.models.BibFields, parent_line_no: geonature.core.imports.models.BibFields) -> None
 
    Station may be referenced:
    - on the same line (station_validity is not None)
@@ -1236,15 +1314,15 @@ Package Contents
        The import to check.
    parent_entity : Entity
        The entity of the parent.
-   child_entity : Entity
-       The entity of the child.
+   entity : Entity
+       The current entity.
    id_parent : BibFields
        The field containing the id of the parent.
    parent_line_no : BibFields
        The field containing the line number of the parent.
 
 
-.. py:function:: check_erroneous_parent_entities(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, child_entity: geonature.core.imports.models.Entity, parent_line_no: geonature.core.imports.models.BibFields) -> None
+.. py:function:: check_erroneous_parent_entities(imprt: geonature.core.imports.models.TImports, parent_entity: geonature.core.imports.models.Entity, entity: geonature.core.imports.models.Entity, parent_line_no: geonature.core.imports.models.BibFields) -> None
 
    Check for erroneous (not valid) parent entities in the transient table of an import.
 
@@ -1254,8 +1332,8 @@ Package Contents
        The import to check.
    parent_entity : Entity
        The entity of the parent.
-   child_entity : Entity
-       The entity of the child.
+   entity : Entity
+       The current entity.
    parent_line_no : BibFields
        The field containing the line number of the parent.
 
