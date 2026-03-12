@@ -5,13 +5,11 @@ Routes for gn_meta
 import datetime as dt
 import json
 import logging
-from lxml import etree as ET
 
 from flask import Blueprint, current_app, request, Response, g, render_template, jsonify
 
-from sqlalchemy import inspect
 from sqlalchemy.exc import DatabaseError
-from sqlalchemy.sql import text, select
+from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError
@@ -20,7 +18,10 @@ from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 
-from geonature.utils.config import config
+from geonature.core.gn_meta.utils import (
+    get_acquisition_framework_stats,
+    MetadataPdfBuilder,
+)
 from geonature.utils.env import db
 from geonature.core.gn_commons.routes import _get_additional_fields
 from geonature.core.gn_synthese.models import (
@@ -48,13 +49,8 @@ from utils_flask_sqla.db import ordered
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
-import geonature.utils.filemanager as fm
 
 from ref_geo.models import LAreas
-
-# FIXME: remove any reference to external modules from GeoNature core
-if "OCCHAB" in config:
-    from gn_module_occhab.models import OccurenceHabitat, Station
 
 routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 
@@ -297,7 +293,8 @@ def sensi_report(ds_id=None):
         .outerjoin(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
         .outerjoin(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
         .outerjoin(
-            TNomenclatures, TNomenclatures.id_nomenclature == Synthese.id_nomenclature_sensitivity
+            TNomenclatures,
+            TNomenclatures.id_nomenclature == Synthese.id_nomenclature_sensitivity,
         )
         .where(LAreas.id_type == func.ref_geo.get_id_area_type("DEP"))
         .where(Synthese.id_module == id_module if id_module else True)
@@ -420,7 +417,8 @@ def create_dataset():
     """
     return DatasetSchema().jsonify(
         datasetHandler(
-            dataset=TDatasets(id_digitizer=g.current_user.id_role), data=request.get_json()
+            dataset=TDatasets(id_digitizer=g.current_user.id_role),
+            data=request.get_json(),
         )
     )
 
@@ -462,27 +460,17 @@ def get_export_pdf_dataset(id_dataset, scope):
     )
     dataset = dataset_schema.dump(dataset)
     if len(dataset.get("dataset_desc")) > 240:
-        dataset["dataset_desc"] = dataset.get("dataset_desc")[:240] + "..."
+        dataset["dataset_desc"] = dataset["dataset_desc"][:240] + "..."
+    url = current_app.config["URL_APPLICATION"] + "/#/metadata/dataset_detail/" + id_dataset
+    pdf = (
+        MetadataPdfBuilder("dataset_template_pdf.html", dataset)
+        .add_css()
+        .add_footer(url)
+        .add_chart_if_provided(request)
+        .add_title(current_app.config["METADATA"]["DS_PDF_TITLE"])
+    )
 
-    dataset["css"] = {
-        "logo": "Logo_pdf.png",
-        "bandeau": "Bandeau_pdf.png",
-        "entite": "sinp",
-    }
-    dataset["title"] = current_app.config["METADATA"]["DS_PDF_TITLE"]
-
-    date = dt.datetime.now().strftime("%d/%m/%Y")
-
-    dataset["footer"] = {
-        "url": current_app.config["URL_APPLICATION"] + "/#/metadata/dataset_detail/" + id_dataset,
-        "date": date,
-    }
-    # chart
-    if request.is_json and request.json is not None:
-        dataset["chart"] = request.json["chart"]
-    # create PDF file
-    pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset)
-    return current_app.response_class(pdf_file, content_type="application/pdf")
+    return current_app.response_class(pdf.build(), content_type="application/pdf")
 
 
 @routes.route("/acquisition_frameworks", methods=["GET", "POST"])
@@ -596,84 +584,18 @@ def get_acquisition_frameworks():
 
 
 @routes.route(
-    "/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["POST", "GET"]
+    "/acquisition_frameworks/export_pdf/<id_acquisition_framework>",
+    methods=["POST", "GET"],
 )
 @permissions.check_cruved_scope("E", module_code="METADATA")
 def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     """
-    Get a PDF export of one acquisition
+    Get a PDF export of one acquisition framework
     """
     # Recuperation des données
     af = db.session.get(TAcquisitionFramework, id_acquisition_framework)
-    acquisition_framework = af.as_dict(True, depth=2)
-    dataset_ids = [d.id_dataset for d in af.datasets]
-    nb_data = len(dataset_ids)
 
-    query = (
-        select(func.count(Synthese.cd_nom))
-        .select_from(Synthese)
-        .where(Synthese.id_dataset.in_(dataset_ids))
-    )
-    nb_taxons = db.session.scalar(query.distinct())
-    nb_observations = db.session.scalar(query)
-
-    nb_habitat = 0
-
-    # Check if pr_occhab exist
-    check_schema_query = (
-        select(func.count(text("schema_name")))
-        .select_from(text("information_schema.schemata"))
-        .where(text("schema_name = 'pr_occhab'"))
-    )
-    if db.session.execute(check_schema_query).scalar_one() > 0 and nb_data > 0:
-        query = (
-            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
-        ("
-            + str(dataset_ids).strip("[]")
-            + ")"
-        )
-
-        nb_habitat = db.engine.execute(text(query)).first()[0]
-
-    acquisition_framework["stats"] = {
-        "nb_data": nb_data,
-        "nb_taxons": nb_taxons,
-        "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat,
-    }
-
-    if request.is_json and request.json is not None:
-        acquisition_framework["chart"] = request.json["chart"]
-
-    if acquisition_framework:
-        acquisition_framework["nomenclature_territorial_level"] = (
-            af.nomenclature_territorial_level.as_dict()
-        )
-        acquisition_framework["nomenclature_financing_type"] = (
-            af.nomenclature_financing_type.as_dict()
-        )
-        if acquisition_framework["acquisition_framework_start_date"]:
-            acquisition_framework["acquisition_framework_start_date"] = (
-                af.acquisition_framework_start_date.strftime("%d/%m/%Y")
-            )
-        if acquisition_framework["acquisition_framework_end_date"]:
-            acquisition_framework["acquisition_framework_end_date"] = (
-                af.acquisition_framework_end_date.strftime("%d/%m/%Y")
-            )
-        acquisition_framework["css"] = {
-            "logo": "Logo_pdf.png",
-            "bandeau": "Bandeau_pdf.png",
-            "entite": "sinp",
-        }
-        acquisition_framework["pdf_title"] = current_app.config["METADATA"]["AF_PDF_TITLE"]
-        date = dt.datetime.now().strftime("%d/%m/%Y")
-        acquisition_framework["footer"] = {
-            "url": current_app.config["URL_APPLICATION"]
-            + "/#/metadata/af-card/"
-            + id_acquisition_framework,
-            "date": date,
-        }
-    else:
+    if not af:
         return (
             render_template(
                 "error.html",
@@ -682,6 +604,27 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
             ),
             404,
         )
+
+    acquisition_framework = af.as_dict(True, depth=2)
+
+    acquisition_framework["stats"] = get_acquisition_framework_stats(id_acquisition_framework)
+
+    acquisition_framework["nomenclature_territorial_level"] = (
+        af.nomenclature_territorial_level.as_dict()
+    )
+
+    acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
+
+    if acquisition_framework["acquisition_framework_start_date"]:
+        acquisition_framework["acquisition_framework_start_date"] = (
+            af.acquisition_framework_start_date.strftime("%d/%m/%Y")
+        )
+
+    if acquisition_framework["acquisition_framework_end_date"]:
+        acquisition_framework["acquisition_framework_end_date"] = (
+            af.acquisition_framework_end_date.strftime("%d/%m/%Y")
+        )
+
     if af.initial_closing_date:
         acquisition_framework["initial_closing_date"] = af.initial_closing_date.strftime(
             "%d-%m-%Y %H:%M"
@@ -705,9 +648,20 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
                 ][name_additional_field]
         acquisition_framework["additional_data"] = updated_additional_data
 
-    # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf("acquisition_framework_template_pdf.html", acquisition_framework)
-    return current_app.response_class(pdf_file, content_type="application/pdf")
+    url = current_app.config["URL_APPLICATION"] + "/#/metadata/af-card/" + id_acquisition_framework
+
+    pdf = (
+        MetadataPdfBuilder(
+            "acquisition_framework_template_pdf.html",
+            acquisition_framework,
+        )
+        .add_css()
+        .add_footer(url)
+        .add_chart_if_provided(request)
+        .add_title(current_app.config["METADATA"]["AF_PDF_TITLE"])
+    )
+
+    return current_app.response_class(pdf.build(), content_type="application/pdf")
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
@@ -869,49 +823,14 @@ def updateAcquisitionFramework(id_acquisition_framework, scope):
 @routes.route("/acquisition_framework/<id_acquisition_framework>/stats", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="METADATA")
 @json_resp
-def get_acquisition_framework_stats(id_acquisition_framework):
+def get_acquisition_framework_stats_route(id_acquisition_framework):
     """
     Get stats from one AF
     .. :quickref: Metadata;
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """
-    dataset_ids = db.session.scalars(
-        select(TDatasets.id_dataset).where(
-            TDatasets.id_acquisition_framework == id_acquisition_framework
-        )
-    ).all()
-
-    nb_datasets = len(dataset_ids)
-
-    nb_taxons = db.session.execute(
-        select(func.count(func.distinct(Synthese.cd_nom))).where(
-            Synthese.id_dataset.in_(dataset_ids)
-        )
-    ).scalar_one()
-
-    nb_observations = db.session.execute(
-        select(func.count("*"))
-        .select_from(Synthese)
-        .where(Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework))
-    ).scalar_one()
-
-    nb_habitats = 0
-
-    if "OCCHAB" in config and nb_datasets > 0:
-        nb_habitats = db.session.execute(
-            select(func.count("*"))
-            .select_from(OccurenceHabitat)
-            .join(Station)
-            .where(Station.id_dataset.in_(dataset_ids))
-        ).scalar_one()
-
-    return dict(
-        nb_dataset=nb_datasets,
-        nb_taxons=nb_taxons,
-        nb_observations=nb_observations,
-        nb_habitats=nb_habitats,
-    )
+    return get_acquisition_framework_stats(id_acquisition_framework)
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/bbox", methods=["GET"])
@@ -931,11 +850,6 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
         )
     ).all()
 
-    geojsonData = db.session.scalars(
-        select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        .where(Synthese.id_dataset.in_(dataset_ids))
-        .limit(1)
-    ).first()
     # geojsonData will never be empty, if no entries matching the query condition(s), it will contains [(None,)]
     geojsonData = db.session.execute(
         select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
@@ -1010,7 +924,7 @@ def publish_acquisition_framework(af_id):
         log.error(
             f"Erreur de type {type(error).__name__} lors de la publication du cadre : {error}"
         )
-        raise Exception(f"Erreur lors de la publication du cadre, cadre non publié")
+        raise Exception("Erreur lors de la publication du cadre, cadre non publié")
     else:
         db.session.commit()  # On commit que si tout a bien fonctionné
 

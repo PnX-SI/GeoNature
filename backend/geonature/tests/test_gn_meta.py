@@ -642,7 +642,7 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for(
-                "gn_meta.get_acquisition_framework_stats",
+                "gn_meta.get_acquisition_framework_stats_route",
                 id_acquisition_framework=af.id_acquisition_framework,
             )
         )
