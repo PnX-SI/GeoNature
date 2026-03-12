@@ -175,16 +175,23 @@ def exists_in_t_modules(module_code: str):
 
 
 def is_module_installed(
-    python_module_name: str, migrations_dir: str = None, alembic_branch_name: str = None
+    python_module_name: str,
+    migrations_dir: str = None,
+    alembic_branch_name: str = None,
+    check_if_all_revisions_have_been_applied: bool = True,
 ):
     """Is a GeoNature module installed.
 
     We consider a module is installed if and only if:
     - The Python package is installed
         and (
-            all its Alembic migrations are stamped
-            or
-            there is no Alembic migration at all for the module
+            `check_if_all_revisions_have_been_applied` == true
+            and
+             (
+                all its Alembic migrations are stamped
+                or
+                there is no Alembic migration at all for the module
+            )
         )
         and the module is registered in the database
 
@@ -203,6 +210,11 @@ def is_module_installed(
     migrations_dir : str
         The name of the directory containing the migrations files for the branch.
         Value of `None` defaults to "migrations".
+    alembic_branch_name : str
+        The name of the Alembic branch.
+        Value of `None` defaults to the module code in lowercase.
+    check_if_all_revisions_have_been_applied : bool
+        Check if all revisions of the module have been applied.
 
     Returns
     -------
@@ -222,27 +234,29 @@ def is_module_installed(
     if not exists_in_t_modules(module_code):
         # Module not installed because not registered in the database
         return False
-    try:
-        # Verify if there are migrations
-        str_import_path_migrations_dir = python_module_name
-        if not migrations_dir:
-            str_import_path_migrations_dir += ".migrations"
-        else:
-            str_import_path_migrations_dir += f".{migrations_dir}"
-        __import__(str_import_path_migrations_dir)
-        # If there are migrations, check if the branch is up to date
-        if not alembic_branch_name:
-            alembic_branch_name = module_code.lower()
-        if alembic_branch_name and is_alembic_branch_up_to_date(
-            alembic_branch_name, migrations_dir
-        ):
-            # Module installed, case with Alembic migrations
+    if check_if_all_revisions_have_been_applied:
+        try:
+            # Verify if there are migrations
+            str_import_path_migrations_dir = python_module_name
+            if not migrations_dir:
+                str_import_path_migrations_dir += ".migrations"
+            else:
+                str_import_path_migrations_dir += f".{migrations_dir}"
+            __import__(str_import_path_migrations_dir)
+            # If there are migrations, check if the branch is up to date
+            if not alembic_branch_name:
+                alembic_branch_name = module_code.lower()
+            if alembic_branch_name and is_alembic_branch_up_to_date(
+                alembic_branch_name, migrations_dir
+            ):
+                # Module installed, case with Alembic migrations
+                return True
+        except ImportError:
+            # Module installed, case without Alembic migrations
             return True
-    except ImportError:
-        # Module installed, case without Alembic migrations
-        return True
-    # Module not installed because Alembic branch not up to date
-    return False
+        # Module not installed because Alembic branch not up to date
+        return False
+    return True
 
 
 def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]):

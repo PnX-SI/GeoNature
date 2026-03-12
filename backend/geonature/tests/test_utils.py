@@ -141,12 +141,8 @@ class TestUtils:
         assert alembic_branch_in_use(branch_name="occhab", directory=None, x_arg=[])
 
     def test_is_module_not_installed_because_python_package_not_installed(self):
-        try:
-            import gn_module_dashboard
 
-            pytest.skip("gn_module_dashboard is installed, test skipped")
-        except ImportError:
-            assert not is_module_installed(python_module_name="gn_module_dashboard")
+        assert not is_module_installed(python_module_name="module_not_installed")
 
     def test_is_module_installed_case_with_migrations(self):
         assert is_module_installed(python_module_name="gn_module_occhab")
