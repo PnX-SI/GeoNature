@@ -245,7 +245,8 @@
       "FiledAF": "Le cadre d'acquisition a déjà été déposé",
       "EmptyAF": "Le cadre d'acquisition est vide",
       "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
-      "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}"
+      "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}",
+      "ImpossibleActionAFClosed": "Cadre d'acquisition fermé, action impossible"
     },
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",

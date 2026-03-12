@@ -11,6 +11,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 const NOMENCLATURES = [
   'TECHNIQUE_OBS',
@@ -53,6 +54,10 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     return this.occtaxData.getValue() ? this.occtaxData.getValue().properties : null;
   }
 
+  get afOpened() {
+    return this.occtaxData.getValue() ? this.occtaxData.getValue().af_opened : false;
+  }
+
   get id() {
     return this.occtaxData.getValue() ? this.occtaxData.getValue().id : null;
   }
@@ -88,7 +93,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private dataFormS: DataFormService,
     public ms: MediaService,
     private _moduleService: ModuleService,
-    public config: ConfigService
+    public config: ConfigService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -250,4 +256,34 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   sortingFunction = (a, b) => {
     return a.key > b.key ? -1 : 1;
   };
+
+  private getTooltip(action: 'U' | 'D', label: string): string {
+    if (!this.afOpened) {
+      return this.translate.instant('MetaData.Messages.ImpossibleActionAFClosed');
+    }
+    if (!this.userReleveCruved?.[action]) {
+      return this.translate.instant('Errors.NotAllowed');
+    }
+    return label;
+  }
+
+  isActionAllowed(action: 'U' | 'D'): boolean {
+    return !!this.userReleveCruved?.[action] && this.afOpened;
+  }
+
+  tooltipUpdate(): string {
+    return this.getTooltip('U', `Editez le releve ${this.id}`);
+  }
+
+  tooltipDelete(): string {
+    return this.getTooltip('D', `Supprimer le relevé ${this.id}`);
+  }
+
+  isDeletable(): boolean {
+    return this.isActionAllowed('D');
+  }
+
+  isUpdatable(): boolean {
+    return this.isActionAllowed('U');
+  }
 }
