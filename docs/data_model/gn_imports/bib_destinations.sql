@@ -5,7 +5,8 @@ CREATE TABLE gn_imports.bib_destinations (
     id_module integer,
     code character varying(64),
     label character varying(128),
-    table_name character varying(64)
+    table_name character varying(64),
+    active boolean DEFAULT true
 );
 
 CREATE SEQUENCE gn_imports.bib_destinations_id_destination_seq

@@ -7,7 +7,6 @@ CREATE TABLE gn_imports.t_imports (
     separator character varying,
     encoding character varying,
     full_file_name character varying(255),
-    id_dataset integer,
     date_create_import timestamp without time zone DEFAULT now(),
     date_update_import timestamp without time zone DEFAULT now(),
     date_end_import timestamp without time zone,
@@ -29,7 +28,8 @@ CREATE TABLE gn_imports.t_imports (
     erroneous_rows integer[],
     loaded boolean DEFAULT false NOT NULL,
     id_destination integer NOT NULL,
-    statistics json DEFAULT '{}'::jsonb NOT NULL
+    statistics json DEFAULT '{}'::jsonb NOT NULL,
+    observermapping json DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE gn_imports.t_imports_id_import_seq
@@ -44,9 +44,6 @@ ALTER SEQUENCE gn_imports.t_imports_id_import_seq OWNED BY gn_imports.t_imports.
 
 ALTER TABLE ONLY gn_imports.t_imports
     ADD CONSTRAINT pk_gn_imports_t_imports PRIMARY KEY (id_import);
-
-ALTER TABLE ONLY gn_imports.t_imports
-    ADD CONSTRAINT fk_gn_meta_t_datasets FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY gn_imports.t_imports
     ADD CONSTRAINT t_imports_id_destination_fkey FOREIGN KEY (id_destination) REFERENCES gn_imports.bib_destinations(id_destination) ON DELETE RESTRICT;

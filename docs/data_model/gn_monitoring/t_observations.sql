@@ -7,7 +7,8 @@ CREATE TABLE gn_monitoring.t_observations (
     comments text,
     uuid_observation uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     id_digitiser integer NOT NULL,
-    id_individual integer
+    id_individual integer,
+    id_import integer
 );
 
 CREATE SEQUENCE gn_monitoring.t_observations_id_observation_seq

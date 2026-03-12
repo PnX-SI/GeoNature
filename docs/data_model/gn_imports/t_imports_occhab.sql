@@ -10,7 +10,6 @@ CREATE TABLE gn_imports.t_imports_occhab (
     src_unique_id_sinp_station character varying,
     unique_id_sinp_station uuid,
     src_unique_dataset_id character varying,
-    unique_dataset_id uuid,
     id_dataset integer,
     src_date_min character varying,
     date_min timestamp without time zone,

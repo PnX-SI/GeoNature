@@ -52,6 +52,8 @@ CREATE TRIGGER tri_transform_geom_insert BEFORE INSERT ON ref_geo.l_areas FOR EA
 
 CREATE TRIGGER tri_transform_geom_update BEFORE UPDATE ON ref_geo.l_areas FOR EACH ROW EXECUTE FUNCTION ref_geo.fct_tri_transform_geom();
 
+CREATE TRIGGER tri_update_cor_area_synthese AFTER UPDATE ON ref_geo.l_areas REFERENCING NEW TABLE AS new FOR EACH STATEMENT EXECUTE FUNCTION gn_synthese.fct_trig_l_areas_update_cor_area_synthese_on_each_statement();
+
 ALTER TABLE ONLY ref_geo.l_areas
     ADD CONSTRAINT fk_l_areas_id_type FOREIGN KEY (id_type) REFERENCES ref_geo.bib_areas_types(id_type) ON UPDATE CASCADE;
 

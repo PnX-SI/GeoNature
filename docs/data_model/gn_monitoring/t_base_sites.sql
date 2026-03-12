@@ -15,6 +15,7 @@ CREATE TABLE gn_monitoring.t_base_sites (
     uuid_base_site uuid DEFAULT public.uuid_generate_v4(),
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
+    id_import integer,
     CONSTRAINT enforce_dims_geom CHECK ((public.st_ndims(geom) = 2)),
     CONSTRAINT enforce_srid_geom CHECK ((public.st_srid(geom) = 4326))
 );
