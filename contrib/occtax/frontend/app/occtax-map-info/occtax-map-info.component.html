@@ -22,23 +22,24 @@
                   Relevé n°{{ id }}
 
                   <ng-container *ngIf="releve">
+                    <!-- We don't use disabled here because with it we can't print tooltip when disabled -->
                     <button
                       mat-mini-fab
-                      [disabled]="userReleveCruved?.D == false"
-                      matTooltip="Supprimer le relevé {{ id }}"
+                      [matTooltip]="tooltipDelete()"
                       color="warn"
                       class="float-right"
-                      (click)="openModalDelete(modalDelete)"
+                      [class.disabled-look]="!isDeletable()"
+                      (click)="isDeletable() ? openModalDelete(modalDelete) : null"
                     >
                       <mat-icon>delete</mat-icon>
                     </button>
                     <button
                       mat-mini-fab
                       color="primary"
-                      matTooltip="Editez le relevé {{ id }}"
+                      [matTooltip]="tooltipUpdate()"
                       class="float-right mr-2"
-                      [disabled]="userReleveCruved?.U == false"
-                      (click)="goToEdit(id)"
+                      (click)="isUpdatable() ? goToEdit(id) : null"
+                      [class.disabled-look]="!isUpdatable()"
                     >
                       <mat-icon>edit</mat-icon>
                     </button>

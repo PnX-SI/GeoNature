@@ -70,3 +70,8 @@
     margin-right: 16px;
   }
 }
+
+button.disabled-look {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,12 +1,10 @@
 from geoalchemy2 import Geometry
-from sqlalchemy import FetchedValue, ForeignKey, not_
-from sqlalchemy.sql import select, func, and_
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import FetchedValue, ForeignKey
+from sqlalchemy.sql import select, func
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
-from werkzeug.exceptions import Forbidden
 from flask import g
 
-from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from pypn_habref_api.models import Habref
 from apptax.taxonomie.models import Taxref

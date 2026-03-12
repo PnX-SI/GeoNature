@@ -20,6 +20,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { OcctaxMapListService } from './occtax-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-occtax-map-list',
@@ -59,7 +60,8 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     public mediaService: MediaService,
     public occtaxMapListS: OcctaxMapListService,
     private _moduleService: ModuleService,
-    public config: ConfigService
+    public config: ConfigService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -328,5 +330,18 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
 
     feature.properties['leaflet_popup'] = leafletPopup;
     return feature;
+  }
+  getRowTooltip(row: any, action: 'U' | 'D', label: string): string {
+  if (!row.dataset.acquisition_framework.opened) {
+    return this.translate.instant('MetaData.Messages.ImpossibleActionAFClosed');
+  }
+  if (!row.rights[action]) {
+    return this.translate.instant('Errors.NotAllowed');
+  }
+  return this.translate.instant(label);
+  }
+
+  isRowActionAllowed(row: any, action: 'U' | 'D'): boolean {
+    return !!row.rights[action] && row.dataset.acquisition_framework.opened;
   }
 }
