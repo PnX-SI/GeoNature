@@ -79,9 +79,9 @@ def list_stations(scope):
     stations = stations.order_by(Station.date_min.desc()).options(
         raiseload("*"),
         joinedload(Station.observers).options(joinedload(User.organisme)),
-        joinedload(Station.dataset).options(*joinedload_when_scope),
+        joinedload(Station.dataset).options(*joinedload_when_scope).joinedload(TDatasets.acquisition_framework),
     )
-    only = ["observers", "dataset", "+cruved"]
+    only = ["observers", "dataset", "dataset.acquisition_framework.opened", "+cruved"]
     if request.args.get("habitats", default=False, type=int):
         only.extend(
             [
@@ -134,7 +134,7 @@ def get_station(id_station, scope):
             .options(
                 raiseload("*"),
                 joinedload(Station.observers),
-                joinedload(Station.dataset).options(*joinedload_when_scope),
+                joinedload(Station.dataset).options(*joinedload_when_scope).joinedload(TDatasets.acquisition_framework),
                 joinedload(Station.habitats).options(
                     joinedload(OccurenceHabitat.habref),
                     *[
@@ -157,6 +157,7 @@ def get_station(id_station, scope):
     only = [
         "observers",
         "dataset",
+        "dataset.acquisition_framework.opened",
         "habitats",
         *Station.__nomenclatures__,
         *[f"habitats.{nomenclature}" for nomenclature in OccurenceHabitat.__nomenclatures__],

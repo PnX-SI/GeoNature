@@ -169,10 +169,12 @@
                 <button
                   class="btn btn-row"
                   [routerLink]="['edit', row.id_station]"
-                  [disabled]="!row.cruved.U"
+                  [disabled]="!isRowActionAllowed(row, 'U')"
+                  [matTooltip]="getRowTooltip(row, 'U', 'Occhab.Station.Actions.Edit')"
                 >
                   <i
                     class="fa fa-pencil-square-o"
+                    [ngClass]="{ disabled: !isRowActionAllowed(row, 'U') }"
                     aria-hidden="true"
                   ></i>
                 </button>
@@ -190,10 +192,12 @@
                 <button
                   class="btn btn-row"
                   (click)="openDeleteModal(row, deleteModal)"
-                  [disabled]="!row.cruved.D"
+                  [disabled]="!isRowActionAllowed(row, 'D')"
+                  [matTooltip]="getRowTooltip(row, 'D', 'Occhab.Station.Actions.Delete')"
                 >
                   <i
                     class="fa fa-trash-o"
+                    [ngClass]="{ disabled: !isRowActionAllowed(row, 'D') }"
                     aria-hidden="true"
                   ></i>
                 </button>
