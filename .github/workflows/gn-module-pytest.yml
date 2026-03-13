@@ -140,7 +140,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Test with pytest
         run: |
-          pytest -v --cov=${{ env.MODULE_DIR }} --cov-report xml
+          pytest -v --cov --cov-report=xml:${{ github.workspace }}/coverage.xml
         working-directory: ${{ env.MODULE_DIR }}
         env:
           GEONATURE_CONFIG_FILE: ${{ github.workspace }}/config/test_config.toml
