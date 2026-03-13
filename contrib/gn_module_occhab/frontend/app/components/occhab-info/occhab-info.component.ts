@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
+import { TranslateService } from '@ngx-translate/core';
 
 import { StationFeature } from '../../models';
 
@@ -26,7 +27,9 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
     private _dataService: DataFormService,
     private modal: NgbModal,
     private _ngbModal: NgbModal,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private translate: TranslateService
+
   ) {}
 
   ngOnInit() {
@@ -65,4 +68,17 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {}
+  getTooltip(action: 'U' | 'D', label: string): string {
+    if (!this.station?.properties.dataset?.acquisition_framework.opened) {
+      return this.translate.instant('MetaData.Messages.ImpossibleActionAFClosed');
+    }
+    if (!this.station?.properties.cruved[action]) {
+      return this.translate.instant('Errors.NotAllowed');
+    }
+    return label;
+  }
+
+  isActionAllowed(action: 'U' | 'D'): boolean {
+    return this.station?.properties.cruved[action] && this.station?.properties.dataset?.acquisition_framework.opened;
+  }
 }

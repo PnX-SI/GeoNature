@@ -14,3 +14,8 @@
   height: 87vh;
   overflow-y: auto;
 }
+
+button.disabled-look {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
