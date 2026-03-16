@@ -131,6 +131,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # Affiche la carte des 100 dernieres observations sur la page d'accueil
     DISPLAY_MAP_LAST_OBS = true
+    # Affiche la liste des 100 dernieres observations sur la page d'accueil
+    # Si DISPLAY_MAP_LAST_OBS = true, la carte reste prioritaire sur la liste
+    DISPLAY_LIST_LAST_OBS = false
 
     # Affiche le selecteur de langue dans l'interface
     MULTILINGUAL = false

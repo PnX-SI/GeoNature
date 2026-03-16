@@ -281,6 +281,7 @@ class GnFrontEndConf(Schema):
     DISPLAY_STAT_BLOC = fields.Boolean(load_default=True)
     STAT_BLOC_TTL = fields.Integer(load_default=3600)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(load_default=True)
+    DISPLAY_LIST_LAST_OBS = fields.Boolean(load_default=False)
     MULTILINGUAL = fields.Boolean(load_default=False)
     ENABLE_PROFILES = fields.Boolean(load_default=True)
 
