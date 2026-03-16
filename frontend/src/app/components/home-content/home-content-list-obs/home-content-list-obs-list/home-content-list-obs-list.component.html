@@ -1,0 +1,32 @@
+<gn-loadable-layout [isLoading]="isLoading">
+  <ngx-datatable
+    class="material striped table-size"
+    [rows]="observations"
+    columnMode="force"
+    [draggable]="false"
+    headerHeight="50"
+    footerHeight="50"
+    rowHeight="50"
+    [count]="observations.length"
+  >
+    <ngx-datatable-column
+      name="Taxon"
+      prop="nom_vern_or_lb_nom"
+    ></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Date"
+      prop="date_min"
+    >
+      <ng-template
+        ngx-datatable-cell-template
+        let-row="row"
+      >
+        {{ renderDate(row.date_min) }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Observateur"
+      prop="observers"
+    ></ngx-datatable-column>
+  </ngx-datatable>
+</gn-loadable-layout>
