@@ -1,3 +1,23 @@
 :host {
   display: block;
 }
+
+:host ::ng-deep .ngx-datatable.material {
+  font-size: 0.9rem;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-header .datatable-header-cell {
+  padding: 0.35rem 0.5rem;
+  font-weight: 600;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
+  padding: 0.25rem 0.5rem;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-footer {
+  padding-top: 0;
+}
