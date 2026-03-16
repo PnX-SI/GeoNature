@@ -12,7 +12,7 @@ from flask import (
     jsonify,
     g,
 )
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Conflict
 from geojson import FeatureCollection, Feature
 from pypnusershub.db.models import User
 from sqlalchemy import func, distinct, select
@@ -190,6 +190,7 @@ def create_or_update_station(id_station=None):
         station = db.session.get(Station, id_station)
         if not station.has_instance_permission(scopes["U"]):
             raise Forbidden("You do not have update permission on this station.")
+
     # Allows habitats
     # Allows only observers.id_role
     # Dataset are not accepted as we expect id_dataset on station directly
@@ -207,6 +208,10 @@ def create_or_update_station(id_station=None):
             raise BadRequest("Unexisting dataset")
         if not dataset.has_instance_permission(scopes["C"]):
             raise Forbidden("You do not have access to this dataset.")
+        if not dataset.acquisition_framework.opened:
+            raise Conflict(
+                "You cannot create or update a station on a closed acquisition framework."
+            )
     station.id_digitiser = g.current_user.id_role
     db.session.add(station)
     db.session.commit()
@@ -225,6 +230,8 @@ def delete_station(id_station, scope):
     station = db.get_or_404(Station, id_station)
     if not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
+    if not station.dataset.acquisition_framework.opened:
+        raise Conflict("You cannot create or update a station on a closed acquisition framework.")
     db.session.delete(station)
     db.session.commit()
     return "", 204
