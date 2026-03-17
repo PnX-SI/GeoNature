@@ -29,6 +29,11 @@ mat-sidenav-content {
   color: white !important;
 }
 
+button.disabled-look {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .right-aligned-header > .mat-content {
   justify-content: space-between !important;
 }

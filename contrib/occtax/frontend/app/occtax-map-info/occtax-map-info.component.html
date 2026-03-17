@@ -25,10 +25,10 @@
                     <!-- We don't use disabled here because with it we can't print tooltip when disabled -->
                     <button
                       mat-mini-fab
-                      [matTooltip]="tooltipDelete()"
+                      [matTooltip]="getTooltip('D')"
                       color="warn"
                       class="float-right"
-                      [class.disabled-look]="!isDeletable()"
+                      [class.disabled-look]="!isActionAllowed('D')"
                       (click)="isDeletable() ? openModalDelete(modalDelete) : null"
                     >
                       <mat-icon>delete</mat-icon>
@@ -36,10 +36,10 @@
                     <button
                       mat-mini-fab
                       color="primary"
-                      [matTooltip]="tooltipUpdate()"
+                      [matTooltip]="getTooltip('U')"
                       class="float-right mr-2"
-                      (click)="isUpdatable() ? goToEdit(id) : null"
-                      [class.disabled-look]="!isUpdatable()"
+                      (click)="isActionAllowed('U') ? goToEdit(id) : null"
+                      [class.disabled-look]="!isActionAllowed('U')"
                     >
                       <mat-icon>edit</mat-icon>
                     </button>

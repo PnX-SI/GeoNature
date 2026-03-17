@@ -1,13 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { OccHabDataService } from '../../services/data.service';
-import { Subscription } from 'rxjs/Subscription';
-import { ActivatedRoute } from '@angular/router';
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CommonService } from '@geonature_common/service/common.service';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {OccHabDataService} from '../../services/data.service';
+import {Subscription} from 'rxjs/Subscription';
+import {ActivatedRoute} from '@angular/router';
+import {DataFormService} from '@geonature_common/form/data-form.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {CommonService} from '@geonature_common/service/common.service';
+import {TranslateService} from '@ngx-translate/core';
+import {ActionService} from '@geonature/services/action.service';
 
-import { StationFeature } from '../../models';
+import {StationFeature} from '../../models';
 
 @Component({
   selector: 'pnx-occhab-info',
@@ -28,12 +29,13 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
     private modal: NgbModal,
     private _ngbModal: NgbModal,
     private _commonService: CommonService,
-    private translate: TranslateService
-
-  ) {}
+    private translate: TranslateService,
+    private actionService: ActionService,
+  ) {
+  }
 
   ngOnInit() {
-    this._route.data.subscribe(({ station }) => {
+    this._route.data.subscribe(({station}) => {
       this.station = station;
     });
   }
@@ -60,25 +62,30 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
   }
 
   openModal(modal) {
-    this.modal.open(modal, { size: 'lg' });
+    this.modal.open(modal, {size: 'lg'});
   }
 
   openDeleteModal(modalDelete) {
     this._ngbModal.open(modalDelete);
   }
 
-  ngOnDestroy() {}
-  getTooltip(action: 'U' | 'D', label: string): string {
-    if (!this.station?.properties.dataset?.acquisition_framework.opened) {
-      return this.translate.instant('MetaData.Messages.ImpossibleActionAFClosed');
-    }
-    if (!this.station?.properties.cruved[action]) {
-      return this.translate.instant('Errors.NotAllowed');
-    }
-    return label;
+  ngOnDestroy() {
   }
 
+  getTooltip(action: 'U' | 'D'): string {
+    return this.actionService.getActionTooltip(
+      this.station?.properties.cruved,
+      this.station?.properties.dataset?.acquisition_framework.opened,
+      action,
+      'Occhab',
+      'Station',
+      {id: this.station?.id},
+      this.translate
+    );
+  }
+
+
   isActionAllowed(action: 'U' | 'D'): boolean {
-    return this.station?.properties.cruved[action] && this.station?.properties.dataset?.acquisition_framework.opened;
+    return this.actionService.isActionAllowed(this.station?.properties.cruved, this.station?.properties.dataset?.acquisition_framework.opened, action);
   }
 }

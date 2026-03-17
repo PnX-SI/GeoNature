@@ -6,8 +6,8 @@
         "Add": "Add a survey",
         "Save": "Save the survey",
         "AddTaxon": "Add a taxon to this survey",
-        "Edit": "Edit the survey",
-        "Delete": "Delete the survey",
+        "Edit": "Edit the survey {{ id }}",
+        "Delete": "Delete the  {{ id }}",
         "Validate": "Validate the survey",
         "UnValidate": "Invalidate the survey"
       },

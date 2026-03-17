@@ -508,7 +508,9 @@
       "ChooseDataset": "Choose a dataset",
       "ChooseDestination": "Choose a destination",
       "ImportFile": "Import a file (CSV)",
-      "ChooseFile": "Choose your file"
+      "ChooseFile": "Choose your file",
+      "Update": "Update import",
+      "Delete": "Delete import"
     },
     "FileName": "File name",
     "Mapping": {

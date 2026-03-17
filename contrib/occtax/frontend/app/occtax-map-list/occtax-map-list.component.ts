@@ -6,21 +6,24 @@ import {
   ViewChild,
   Renderer2,
 } from '@angular/core';
-import { MapListService } from '@geonature_common/map-list/map-list.service';
-import { MapService } from '@geonature_common/map/map.service';
-import { OcctaxDataService } from '../services/occtax-data.service';
-import { CommonService } from '@geonature_common/service/common.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { UntypedFormGroup } from '@angular/forms';
-import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
+import {MapListService} from '@geonature_common/map-list/map-list.service';
+import {MapService} from '@geonature_common/map/map.service';
+import {OcctaxDataService} from '../services/occtax-data.service';
+import {CommonService} from '@geonature_common/service/common.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {DatatableComponent} from '@swimlane/ngx-datatable';
+import {TaxonomyComponent} from '@geonature_common/form/taxonomy/taxonomy.component';
+import {UntypedFormGroup} from '@angular/forms';
+import {
+  GenericFormGeneratorComponent
+} from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
 import * as moment from 'moment';
-import { MediaService } from '@geonature_common/service/media.service';
-import { OcctaxMapListService } from './occtax-map-list.service';
-import { ModuleService } from '@geonature/services/module.service';
-import { ConfigService } from '@geonature/services/config.service';
-import { TranslateService } from '@ngx-translate/core';
+import {MediaService} from '@geonature_common/service/media.service';
+import {OcctaxMapListService} from './occtax-map-list.service';
+import {ModuleService} from '@geonature/services/module.service';
+import {ConfigService} from '@geonature/services/config.service';
+import {TranslateService} from '@ngx-translate/core';
+import {ActionService} from '@geonature/services/action.service';
 
 @Component({
   selector: 'pnx-occtax-map-list',
@@ -61,8 +64,10 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     public occtaxMapListS: OcctaxMapListService,
     private _moduleService: ModuleService,
     public config: ConfigService,
-    private translate: TranslateService
-  ) {}
+    private translate: TranslateService,
+    private actionService: ActionService,
+  ) {
+  }
 
   ngOnInit() {
     const currentModule = this._moduleService.currentModule;
@@ -79,7 +84,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     this.mapListService.idName = 'id_releve_occtax';
     this.apiEndPoint = `occtax/${this._moduleService.currentModule.module_code}/releves`;
     this.calculateNbRow();
-    const params = [{ param: 'limit', value: this.occtaxMapListS.rowPerPage }];
+    const params = [{param: 'limit', value: this.occtaxMapListS.rowPerPage}];
 
     // parameters for maplist
     // columns to be default displayed
@@ -175,14 +180,14 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     // prevent erreur link to the component
     iElement &&
-      iElement.parentElement &&
-      iElement.parentElement.parentElement &&
-      iElement.parentElement.parentElement.blur();
+    iElement.parentElement &&
+    iElement.parentElement.parentElement &&
+    iElement.parentElement.parentElement.blur();
     this.ngbModal.open(modal);
   }
 
   openModalDownload(event, modal) {
-    this.ngbModal.open(modal, { size: 'lg' });
+    this.ngbModal.open(modal, {size: 'lg'});
   }
 
   toggle(col) {
@@ -217,7 +222,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     while (
       i < this.mapListService.displayColumns.length &&
       this.mapListService.displayColumns[i].prop !== col.prop
-    ) {
+      ) {
       i = i + 1;
     }
     return i === this.mapListService.displayColumns.length ? false : true;
@@ -242,8 +247,8 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     return element.date_min == element.date_max
       ? moment(element.date_min).format('DD-MM-YYYY')
       : `Du ${moment(element.date_min).format('DD-MM-YYYY')} au ${moment(element.date_max).format(
-          'DD-MM-YYYY'
-        )}`;
+        'DD-MM-YYYY'
+      )}`;
   }
 
   /**
@@ -269,7 +274,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
             .filter((m) => !!m);
           icons = medias.map((media) => this.mediaService.tooltip(media)).join(' ');
         }
-        tooltip.push({ taxName, icons, medias });
+        tooltip.push({taxName, icons, medias});
       }
     }
     return tooltip.sort((a, b) => (a.taxName < b.taxName ? -1 : 1));
@@ -331,17 +336,20 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     feature.properties['leaflet_popup'] = leafletPopup;
     return feature;
   }
-  getRowTooltip(row: any, action: 'U' | 'D', label: string): string {
-  if (!row.dataset.acquisition_framework.opened) {
-    return this.translate.instant('MetaData.Messages.ImpossibleActionAFClosed');
-  }
-  if (!row.rights[action]) {
-    return this.translate.instant('Errors.NotAllowed');
-  }
-  return this.translate.instant(label);
+
+  getTooltip(row: any, action: 'U' | 'D'): string {
+    return this.actionService.getActionTooltip(
+      row.rights,
+      row.dataset?.acquisition_framework.opened,
+      action,
+      'Occtax',
+      'Releve',
+      {id: row.id_releve_occtax},
+      this.translate
+    );
   }
 
-  isRowActionAllowed(row: any, action: 'U' | 'D'): boolean {
-    return !!row.rights[action] && row.dataset.acquisition_framework.opened;
+  isActionAllowed(row: any, action: 'U' | 'D'): boolean {
+    return this.actionService.isActionAllowed(row.rights, row.dataset.acquisition_framework?.opened, action);
   }
 }

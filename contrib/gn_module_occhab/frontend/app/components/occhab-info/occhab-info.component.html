@@ -15,7 +15,7 @@
           mat-mini-fab
           class="button-success float-right"
           type="button"
-          [matTooltip]="getTooltip('U', 'Editer le relevé ' + station?.id)"
+          [matTooltip]="getTooltip('U')"
           [class.disabled-look]="!isActionAllowed('U')"
           (click)="isActionAllowed('U') ? null : null"
           [routerLink]="isActionAllowed('U') ? ['/occhab/edit', station?.id] : null"
@@ -26,7 +26,7 @@
           mat-mini-fab
           color="warn"
           type="button"
-          [matTooltip]="getTooltip('D', 'Supprimer le relevé ' + station?.id)"
+          [matTooltip]="getTooltip('D')"
           class="float-right mr-1"
           [class.disabled-look]="!isActionAllowed('D')"
           (click)="isActionAllowed('D') ? openDeleteModal(deleteModal) : null"
