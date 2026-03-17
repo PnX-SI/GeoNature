@@ -9,7 +9,7 @@ from flask import (
     jsonify,
     g,
 )
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Conflict
 from sqlalchemy import func, distinct, select
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload, Load
@@ -336,6 +336,7 @@ def releveHandler(request, *, releve, scope):
     except ValidationError as error:
         log.exception(error.messages)
         raise BadRequest(error.messages)
+    dataset = db.session.get(TDatasets, releve.id_dataset)
     # Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
         scope = get_scopes_by_action()["U"]
@@ -346,13 +347,14 @@ def releveHandler(request, *, releve, scope):
     # if creation
     else:
         # Check if user can add a releve in the current dataset
-        dataset = db.session.get(TDatasets, releve.id_dataset)
         if not dataset.has_instance_permission(scope):
             raise Forbidden(
                 f"User {g.current_user.id_role} has no right in dataset {releve.id_dataset}"
             )
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
+    if not dataset.acquisition_framework.opened:
+        raise Conflict("Cannot create or update a releve on a closed acquisition framework.")
     DB.session.add(releve)
     DB.session.commit()
     return releve
@@ -427,7 +429,8 @@ def occurrenceHandler(request, *, occurrence, scope):
     releve = db.get_or_404(TRelevesOccurrence, occurrence.id_releve_occtax)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
-
+    if not releve.dataset.acquisition_framework.opened:
+        raise Conflict("Cannot create an occurence on a closed acquisition framework.")
     occurrenceSchema = OccurrenceSchema()
     try:
         occurrence = occurrenceSchema.load(request.get_json(), instance=occurrence)
@@ -485,6 +488,8 @@ def deleteOneReleve(id_releve, scope):
     releve = db.get_or_404(TRelevesOccurrence, id_releve)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
+    if not releve.dataset.acquisition_framework.opened:
+        raise Conflict("Cannot deleted a releve on a closed acquisition framework.")
     db.session.delete(releve)
     db.session.commit()
     return jsonify({"message": "deleted with success"})
@@ -505,7 +510,8 @@ def deleteOneOccurence(id_occ, scope):
 
     if not occ.releve.has_instance_permission(scope):
         raise Forbidden()
-
+    if not occ.releve.dataset.acquisition_framework.opened:
+        raise Conflict("Cannot delete an occurence on a closed acquisition framework.")
     DB.session.delete(occ)
     DB.session.commit()
 
@@ -526,6 +532,8 @@ def deleteOneOccurenceCounting(scope, id_count):
     ccc = db.get_or_404(CorCountingOccurrence, id_count)
     if not ccc.occurrence.releve.has_instance_permission(scope):
         raise Forbidden
+    if not ccc.occurrence.releve.dataset.acquisition_framework.opened:
+        raise Conflict("Cannot create an occurence on a closed acquisition framework.")
     DB.session.delete(ccc)
     DB.session.commit()
     return "", 204
