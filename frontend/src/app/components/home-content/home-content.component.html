@@ -3,7 +3,11 @@
   data-qa="pnx-home-content"
 >
   <div class="row">
-    <div [className]="showLastObsMap || showLastObsList ? 'col-xs-12 col-sm-12 col-md-6 col-lg-6' : 'col-12'">
+    <div
+      [className]="
+        showLastObsMap || showLastObsList ? 'col-xs-12 col-sm-12 col-md-6 col-lg-6' : 'col-12'
+      "
+    >
       <pnx-introduction></pnx-introduction>
     </div>
     <div
@@ -28,16 +32,16 @@
             </button>
           </div>
         </div>
-
-        <div id="map-title"></div>
-
         <pnx-map
           *ngIf="showLastObsMap"
           class="map-card panel-body-intro"
           height="100%"
         ></pnx-map>
 
-        <pnx-home-content-list-obs *ngIf="showLastObsList"></pnx-home-content-list-obs>
+        <pnx-home-content-list-obs
+          class="home-content-list-obs"
+          *ngIf="showLastObsList"
+        ></pnx-home-content-list-obs>
       </div>
     </div>
   </div>

@@ -17,6 +17,8 @@ interface HomeContentListObservationItem {
   imports: [GN2CommonModule, CommonModule],
 })
 export class HomeContentListObsListComponent {
+  readonly pageSize = 1;
+
   @Input() observations: HomeContentListObservationItem[] = [];
   @Input() isLoading = false;
 
