@@ -12,6 +12,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionService } from '@geonature/services/action.service';
 
 const NOMENCLATURES = [
   'TECHNIQUE_OBS',
@@ -49,6 +50,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   public releveAddFields: Array<any> = [];
   public occurrenceAddFields: Array<any> = [];
   public countingAddFields: Array<any> = [];
+
 
   get releve() {
     return this.occtaxData.getValue() ? this.occtaxData.getValue().properties : null;
@@ -94,7 +96,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     public ms: MediaService,
     private _moduleService: ModuleService,
     public config: ConfigService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private actionService: ActionService,
   ) {}
 
   ngOnInit() {
@@ -257,33 +260,20 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     return a.key > b.key ? -1 : 1;
   };
 
-  private getTooltip(action: 'U' | 'D', label: string): string {
-    if (!this.afOpened) {
-      return this.translate.instant('MetaData.Messages.ImpossibleActionAFClosed');
-    }
-    if (!this.userReleveCruved?.[action]) {
-      return this.translate.instant('Errors.NotAllowed');
-    }
-    return label;
+  getTooltip(action: 'U' | 'D'): string {
+    return this.actionService.getActionTooltip(
+      this.userReleveCruved,
+      this.afOpened,
+      action,
+      'Occtax',
+      'Releve',
+      { id: this.id },
+      this.translate
+    );
   }
+
 
   isActionAllowed(action: 'U' | 'D'): boolean {
-    return !!this.userReleveCruved?.[action] && this.afOpened;
-  }
-
-  tooltipUpdate(): string {
-    return this.getTooltip('U', `Editez le releve ${this.id}`);
-  }
-
-  tooltipDelete(): string {
-    return this.getTooltip('D', `Supprimer le relevé ${this.id}`);
-  }
-
-  isDeletable(): boolean {
-    return this.isActionAllowed('D');
-  }
-
-  isUpdatable(): boolean {
-    return this.isActionAllowed('U');
+    return this.actionService.isActionAllowed(this.userReleveCruved, this.afOpened, action);
   }
 }

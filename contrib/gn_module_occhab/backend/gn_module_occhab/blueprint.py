@@ -1,33 +1,26 @@
 import datetime
 import json
-import geojson
 from geonature.core.gn_meta.models.aframework import TAcquisitionFramework
 from geonature.core.gn_meta.models.commons import CorAcquisitionFrameworkActor, CorDatasetActor
 from geonature.core.gn_meta.models.datasets import TDatasets
-from marshmallow import EXCLUDE, INCLUDE
+from marshmallow import EXCLUDE
 
 from flask import (
     Blueprint,
-    current_app,
-    session,
     send_from_directory,
     request,
-    render_template,
     jsonify,
     g,
 )
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from geojson import FeatureCollection, Feature
-from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
 from sqlalchemy import func, distinct, select
-from sqlalchemy.sql import text
 from sqlalchemy.orm import raiseload, joinedload
 
 
 from pypnnomenclature.models import TNomenclatures
-from utils_flask_sqla.response import json_resp, to_csv_resp, to_json_resp
-from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
+from utils_flask_sqla.response import to_csv_resp, to_json_resp
 from utils_flask_sqla_geo.utils import geojsonify
 from utils_flask_sqla_geo.generic import GenericTableGeo
 from ref_geo.utils import get_local_srid
@@ -37,11 +30,14 @@ from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_meta.models import TDatasets as Dataset
 from geonature.utils.env import db
-from geonature.utils.errors import GeonatureApiError
 from geonature.utils import filemanager
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
+# This module MUST be registered here so Occhab is considered as installed but there is no circular import
 from .module import OcchabModule
+
+__all__ = ["OcchabModule"]
+
 from .models import (
     Station,
     OccurenceHabitat,
@@ -79,7 +75,9 @@ def list_stations(scope):
     stations = stations.order_by(Station.date_min.desc()).options(
         raiseload("*"),
         joinedload(Station.observers).options(joinedload(User.organisme)),
-        joinedload(Station.dataset).options(*joinedload_when_scope).joinedload(TDatasets.acquisition_framework),
+        joinedload(Station.dataset)
+        .options(*joinedload_when_scope)
+        .joinedload(TDatasets.acquisition_framework),
     )
     only = ["observers", "dataset", "dataset.acquisition_framework.opened", "+cruved"]
     if request.args.get("habitats", default=False, type=int):
@@ -134,7 +132,9 @@ def get_station(id_station, scope):
             .options(
                 raiseload("*"),
                 joinedload(Station.observers),
-                joinedload(Station.dataset).options(*joinedload_when_scope).joinedload(TDatasets.acquisition_framework),
+                joinedload(Station.dataset)
+                .options(*joinedload_when_scope)
+                .joinedload(TDatasets.acquisition_framework),
                 joinedload(Station.habitats).options(
                     joinedload(OccurenceHabitat.habref),
                     *[
@@ -185,7 +185,7 @@ def create_or_update_station(id_station=None):
     if id_station is None:
         station = None  # Station()
         if scopes["C"] < 1:
-            raise Forbidden(f"You do not have create permission on stations.")
+            raise Forbidden("You do not have create permission on stations.")
     else:
         station = db.session.get(Station, id_station)
         if not station.has_instance_permission(scopes["U"]):

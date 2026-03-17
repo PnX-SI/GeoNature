@@ -486,7 +486,9 @@
       "ChooseDataset": "Choisir un jeu de données",
       "ChooseDestination": "Choisir une destination",
       "ImportFile": "Importer un fichier (CSV)",
-      "ChooseFile": "Choisissez votre fichier"
+      "ChooseFile": "Choisissez votre fichier",
+      "Update": "Editer l'import",
+      "Delete": "Supprimer l'import"
     },
     "FileName": "Nom du fichier",
     "Mapping": {

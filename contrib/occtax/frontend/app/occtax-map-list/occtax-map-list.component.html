@@ -191,13 +191,13 @@
               <button
                 class="btn btn-row"
                 [routerLink]="['form/releve', row.id_releve_occtax]"
-                [disabled]="!isRowActionAllowed(row, 'U')"
-                [matTooltip]="getRowTooltip(row, 'U', 'Occtax.Releve.Actions.Edit')"
+                [disabled]="!isActionAllowed(row, 'U')"
+                [matTooltip]="getTooltip(row, 'U')"
                 data-qa="edit-releve"
               >
                 <i
                   class="fa fa-pencil-square-o"
-                  [ngClass]="{ disabled: !isRowActionAllowed(row, 'U') }"
+                  [ngClass]="{ disabled: !isActionAllowed(row, 'U') }"
                   aria-hidden="true"
                 ></i>
               </button>
@@ -231,14 +231,14 @@
             >
               <button
                 class="btn btn-row"
-                [disabled]="!isRowActionAllowed(row, 'D')"
-                [matTooltip]="getRowTooltip(row, 'D', 'Occtax.Releve.Actions.Delete')"
+                [disabled]="!isActionAllowed(row, 'D')"
+                [matTooltip]="getTooltip(row, 'D')"
                 (click)="openDeleteModal($event, modalConfirm, iElement, row)"
                 data-qa="pnx-occtax-delete-taxa"
               >
                 <i
                   class="fa fa-trash-o"
-                  [ngClass]="{ disabled: !isRowActionAllowed(row, 'D') }"
+                  [ngClass]="{ disabled: !isActionAllowed(row, 'D') }"
                   aria-hidden="true"
                 ></i>
               </button>

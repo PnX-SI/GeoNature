@@ -2,8 +2,8 @@
   "Occhab": {
     "Station":{
       "Actions": {
-        "Edit": "Editer la station",
-        "Delete": "Supprimer la station"
+        "Update": "Éditer la station {{ id }}",
+        "Delete": "Supprimer la station {{ id }}"
       }
     }
   }
