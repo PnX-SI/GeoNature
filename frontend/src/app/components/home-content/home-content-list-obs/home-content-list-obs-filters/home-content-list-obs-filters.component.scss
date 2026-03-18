@@ -2,8 +2,32 @@
   display: flex;
   flex-flow: row nowrap;
   gap: 0.5rem;
+  align-items: center;
 
   ng-select {
     width: 200px !important;
+  }
+
+  &__checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0;
+    padding-left: 0;
+    white-space: nowrap;
+
+    .form-check-input {
+      margin: 0;
+      position: static;
+      flex: 0 0 auto;
+      transform: none;
+    }
+
+    .form-check-label {
+      display: inline-block;
+      // color: #6c757d;
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
   }
 }
