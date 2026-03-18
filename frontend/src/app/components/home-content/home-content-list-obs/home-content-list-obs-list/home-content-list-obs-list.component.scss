@@ -1,14 +1,26 @@
 :host {
-  display: block;
+  display: flex;
+  min-height: 0;
+}
+
+:host ::ng-deep gn-loadable-layout {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 :host ::ng-deep .ngx-datatable.material {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   font-size: 0.9rem;
 }
 
 :host ::ng-deep .ngx-datatable.material .datatable-header {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
 }
 
 :host ::ng-deep .ngx-datatable.material .datatable-header .datatable-header-inner {
@@ -24,7 +36,12 @@
   align-items: center;
 }
 
-:host ::ng-deep .ngx-datatable.material .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap {
+:host
+  ::ng-deep
+  .ngx-datatable.material
+  .datatable-header
+  .datatable-header-cell
+  .datatable-header-cell-template-wrap {
   display: flex;
   align-items: center;
   min-height: 100%;
@@ -39,16 +56,21 @@
 
 :host ::ng-deep .ngx-datatable.material .datatable-footer {
   padding-top: 0;
+  flex: 0 0 auto;
 }
 
 ::ng-deep .ngx-datatable {
   height: 100%;
   box-shadow: none !important;
   ::ng-deep .visible {
-    height: inherit;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
     .datatable-body {
-      height: 80% !important;
-      overflow-y: scroll;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
       overflow-x: hidden;
     }
   }

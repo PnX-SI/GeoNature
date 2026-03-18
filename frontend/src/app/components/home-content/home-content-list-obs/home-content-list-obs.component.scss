@@ -1,9 +1,12 @@
 .home-content-list-obs {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   height: 100%;
+  min-height: 0;
   padding: 0.5rem;
   &-list {
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
   }
 }

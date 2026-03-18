@@ -62,3 +62,20 @@ ngx-datatable-column {
 .home-content-list-obs {
   height: 100%;
 }
+
+.home-content-side-panel {
+  display: flex;
+  min-height: 0;
+}
+
+.home-content-last-obs-panel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.home-content-last-obs-body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
