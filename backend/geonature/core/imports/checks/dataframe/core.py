@@ -1,8 +1,7 @@
-from typing import Dict, Optional, Set
+from typing import Dict, Optional, Set, Generator
 from functools import reduce
 
 from geonature.core.imports.checks.errors import ImportCodeError
-import numpy as np
 import pandas as pd
 import sqlalchemy as sa
 
@@ -191,9 +190,10 @@ def check_datasets(
     id_field: BibFields,
     module_code: str,
     object_code: Optional[str] = None,
-) -> Set[str]:
+) -> Generator[dict, None, Set[str]]:
     """
-    Check if datasets exist and are authorized for the user and import.
+    Check if datasets exist and are authorized for the user and import. Also check if the acquisition framework linked
+    to the dataset is opened.
     It also fill the id_field based on the content of uuid_field
     Parameters
     ----------
@@ -225,7 +225,6 @@ def check_datasets(
     uuid_col = uuid_field.source_column
     if uuid_col not in df:
         return updated_cols
-    uuid = df[uuid_col].unique().tolist()
 
     # check uuid format
     valid_uuid_mask = df[uuid_col].apply(lambda x: is_valid_uuid(x))
@@ -245,6 +244,7 @@ def check_datasets(
         str(ds.unique_dataset_id): ds
         for ds in TDatasets.query.filter(TDatasets.unique_dataset_id.in_(uuid))
         .options(sa.orm.joinedload(TDatasets.nomenclature_data_origin))
+        .options(sa.orm.joinedload(TDatasets.acquisition_framework))
         .options(sa.orm.raiseload("*"))
         .all()
     }
@@ -258,8 +258,6 @@ def check_datasets(
         }
 
     filtered_ds_mask = filtered_ds_mask & valid_ds_mask
-    uuid = df[filtered_ds_mask][uuid_col].unique().tolist()
-
     # check dataset active status
     active_ds = [uuid for uuid, ds in datasets.items() if ds.active]
     active_ds_mask = df[uuid_col].isin(active_ds)
@@ -272,6 +270,22 @@ def check_datasets(
             "invalid_rows": df[inactive_ds_mask],
         }
     filtered_ds_mask = filtered_ds_mask & active_ds_mask
+
+    # check dataset acquisition framework opened status
+    opened_af_ds = [
+        uuid
+        for uuid, ds in datasets.items()
+        if ds.acquisition_framework and ds.acquisition_framework.opened
+    ]
+    opened_af_mask = df[uuid_col].isin(opened_af_ds)
+    closed_af_mask = ~opened_af_mask & filtered_ds_mask
+    if closed_af_mask.any():
+        yield {
+            "error_code": ImportCodeError.CLOSED_ACQUISITION_FRAMEWORK,
+            "column": uuid_field.name_field,
+            "invalid_rows": df[closed_af_mask],
+        }
+    filtered_ds_mask = filtered_ds_mask & opened_af_mask
     uuid = df[filtered_ds_mask][uuid_col].unique().tolist()
 
     # check dataset authorized

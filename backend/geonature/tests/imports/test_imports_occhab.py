@@ -76,6 +76,7 @@ def override_in_importfile(
         "@INACTIVE_DATASET_UUID@": str(import_datasets["user--inactive"].unique_dataset_id),
         "@DATASET_NOT_FOUND@": "03905a03-c7fa-4642-b143-5005fa805377",
         "@COORD_STATION@": to_wkt(coord_station_test_file[0]),
+        "@CLOSED_AF_DATASET_UID@": str(import_datasets["user--closed-af"].unique_dataset_id),
     }
 
 
@@ -201,6 +202,12 @@ class TestImportsOcchab:
                     frozenset({44}),
                 ),
                 (
+                    ImportCodeError.CLOSED_ACQUISITION_FRAMEWORK,
+                    "station",
+                    "unique_dataset_id",
+                    frozenset({45}),
+                ),
+                (
                     ImportCodeError.INVALID_UUID,
                     "station",
                     "unique_id_sinp_station",
@@ -259,7 +266,7 @@ class TestImportsOcchab:
                     ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({5, 6, 9, 24, 44}),
+                    frozenset({5, 6, 9, 24, 44, 45}),
                 ),
                 (
                     ImportCodeError.NO_PARENT_ENTITY,
