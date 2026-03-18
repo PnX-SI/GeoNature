@@ -204,6 +204,21 @@ class AuthenticationFrontendConfig(AuthenticationConfig):
         return data
 
 
+class ListLastObsConfig(Schema):
+    class ColumnConfig(Schema):
+        prop = fields.String(required=True)
+        name = fields.String(required=True)
+
+    COLUMNS = fields.List(
+        fields.Nested(ColumnConfig),
+        load_default=[
+            {"prop": "nom_vern_or_lb_nom", "name": "Taxon"},
+            {"prop": "date_min", "name": "Date"},
+            {"prop": "observers", "name": "Observateur"},
+        ],
+    )
+
+
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
@@ -282,6 +297,10 @@ class GnFrontEndConf(Schema):
     STAT_BLOC_TTL = fields.Integer(load_default=3600)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(load_default=True)
     DISPLAY_LIST_LAST_OBS = fields.Boolean(load_default=False)
+    LIST_LAST_OBS_CONFIG = fields.Nested(
+        ListLastObsConfig,
+        load_default=ListLastObsConfig().load({}),
+    )
     MULTILINGUAL = fields.Boolean(load_default=False)
     ENABLE_PROFILES = fields.Boolean(load_default=True)
 
