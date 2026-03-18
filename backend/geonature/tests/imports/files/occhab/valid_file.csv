@@ -42,3 +42,4 @@ technique collect vaut « autre » mais pas de précision fournise;OK !;CONDITIO
 technique collect vaut « autre » et une précision est bien fournies;OK !;OK !;;;@VALID_DATASET_UUID@;17/11/2023;17/11/2023;import user;;@COORD_STATION@;St;;prairie;24;moyen précis;10
 L’habitat est crée dans une station que existe en base mais sur laquelle nous n’avons pas les droits;DATASET_NOT_AUTHORIZED(unique_dataset_id);OK !;;@STRANGER_STATION_UUID@;;;;;;;;;prairie;24;moyen précis;10
 jeu de données pas actif;DATASET_NOT_ACTIVE;ERRONEOUS_PARENT_ENTITY;;;@INACTIVE_DATASET_UUID@;17/11/2023;17/11/2023;import user;;@COORD_STATION@;St;;prairie;24;moyen précis;10
+ca fermé;CA_CLOSED;ERRONEOUS_PARENT_ENTITY;;;@CLOSED_AF_DATASET_UID@;17/11/2023;17/11/2023;import user;;@COORD_STATION@;St;;prairie;24;moyen précis;10

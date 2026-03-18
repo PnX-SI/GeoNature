@@ -106,7 +106,9 @@ def import_dataset(import_datasets):
     return import_datasets["user"]
 
 
-def create_dataset(client, module_code, user, active=True, private=False):
+def create_dataset(
+    client, module_code, user, active=True, private=False, acquisition_framework_opened=True
+):
     """ """
     set_logged_user(client, user)
 
@@ -122,6 +124,9 @@ def create_dataset(client, module_code, user, active=True, private=False):
     new_acquisition_framework = db.session.get(
         TAcquisitionFramework, r_af.get_json()["id_acquisition_framework"]
     )
+    if not acquisition_framework_opened:
+        new_acquisition_framework.opened = False
+        db.session.commit()
 
     # Get module
     r_module = client.get(url_for("gn_commons.get_module", module_code=module_code))
@@ -198,6 +203,9 @@ def import_datasets(client, module_code, users):
         "user--private": create_dataset(client, module_code, users["user"], private=True),
         "user--inactive": create_dataset(client, module_code, users["user"], active=False),
         "admin": create_dataset(client, module_code, users["admin_user"]),
+        "user--closed-af": create_dataset(
+            client, module_code, users["user"], acquisition_framework_opened=False
+        ),
     }
     return datasets
 
