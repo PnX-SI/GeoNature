@@ -12,6 +12,11 @@ interface HomeContentListObservationItem {
   observers: string | null;
 }
 
+interface HomeContentListObsFilters {
+  taxonomy_group2_inpn?: string[];
+  taxonomy_group3_inpn?: string[];
+}
+
 @Component({
   standalone: true,
   selector: 'pnx-home-content-list-obs',
@@ -22,6 +27,7 @@ interface HomeContentListObservationItem {
 export class HomeContentListObsComponent implements OnInit, OnDestroy {
   observations: HomeContentListObservationItem[] = [];
   isLoading = false;
+  filters: HomeContentListObsFilters = {};
 
   private destroy$ = new Subject<void>();
 
@@ -36,10 +42,15 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onFiltersChange(filters: HomeContentListObsFilters) {
+    this.filters = filters;
+    this._fetchObservations();
+  }
+
   private _fetchObservations() {
     this.isLoading = true;
     this._syntheseDataService
-      .getSyntheseData({}, { limit: 100, format: 'ungrouped_geom' })
+      .getSyntheseData(this.filters, { limit: 100, format: 'ungrouped_geom' })
       .pipe(
         map((data) =>
           (data?.features ?? [])

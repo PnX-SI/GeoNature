@@ -1,1 +1,9 @@
+.home-content-list-obs-filters {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.5rem;
 
+  ng-select {
+    width: 200px !important;
+  }
+}
