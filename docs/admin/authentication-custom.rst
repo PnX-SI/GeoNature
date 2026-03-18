@@ -1,6 +1,6 @@
 
 Se connecter à d'autres fournisseurs d'identité
-""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""
 Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l'aide de fournisseurs d'identité externes (comme Google, GitHub ou INPN).
 Pour cela, il est nécessaire d'implémenter le protocole de connexion pour permettre à GeoNature de communiquer avec ces fournisseurs.
 Actuellement, GeoNature vient avec plusieurs protocoles de connexion implémentés, tels que :
