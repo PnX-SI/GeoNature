@@ -124,6 +124,10 @@ def create_dataset(
     new_acquisition_framework = db.session.get(
         TAcquisitionFramework, r_af.get_json()["id_acquisition_framework"]
     )
+    if not acquisition_framework_opened:
+        new_acquisition_framework.opened = False
+        db.session.commit()
+
     # Get module
     r_module = client.get(url_for("gn_commons.get_module", module_code=module_code))
     assert r_module.status_code == 200
@@ -188,9 +192,6 @@ def create_dataset(
         url_for("gn_meta.create_dataset"),
         json=json,
     )
-    if not acquisition_framework_opened:
-        new_acquisition_framework.opened = False
-        db.session.commit()
 
     return db.session.get(TDatasets, response.get_json()["id_dataset"])
 
