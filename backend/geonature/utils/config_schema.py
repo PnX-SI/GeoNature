@@ -209,6 +209,10 @@ class ListLastObsConfig(Schema):
         prop = fields.String(required=True)
         name = fields.String(required=True)
 
+    class FiltersConfig(Schema):
+        TAXONOMY_GROUP2_INPN = fields.Boolean(load_default=True)
+        TAXONOMY_GROUP3_INPN = fields.Boolean(load_default=True)
+
     COLUMNS = fields.List(
         fields.Nested(ColumnConfig),
         load_default=[
@@ -216,6 +220,10 @@ class ListLastObsConfig(Schema):
             {"prop": "date_min", "name": "Date"},
             {"prop": "observers", "name": "Observateur"},
         ],
+    )
+    FILTERS = fields.Nested(
+        FiltersConfig,
+        load_default=FiltersConfig().load({}),
     )
 
 

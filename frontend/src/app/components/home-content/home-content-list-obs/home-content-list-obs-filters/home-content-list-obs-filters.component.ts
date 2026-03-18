@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -32,47 +33,62 @@ export class HomeContentListObsFiltersComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private readonly dataFormService: DataFormService) {}
+  constructor(
+    private readonly dataFormService: DataFormService,
+    private readonly config: ConfigService
+  ) {}
+
+  get showGroup2Filter(): boolean {
+    return this.config.FRONTEND?.LIST_LAST_OBS_CONFIG?.FILTERS?.TAXONOMY_GROUP2_INPN ?? true;
+  }
+
+  get showGroup3Filter(): boolean {
+    return this.config.FRONTEND?.LIST_LAST_OBS_CONFIG?.FILTERS?.TAXONOMY_GROUP3_INPN ?? true;
+  }
 
   ngOnInit() {
-    this.dataFormService
-      .getRegneAndGroup2Inpn()
-      .pipe(
-        map((data) => {
-          const allGroups = new Set<string>();
+    if (this.showGroup2Filter) {
+      this.dataFormService
+        .getRegneAndGroup2Inpn()
+        .pipe(
+          map((data) => {
+            const allGroups = new Set<string>();
 
-          Object.values(data ?? {}).forEach((groups: string[]) => {
-            groups.forEach((group) => {
-              if (group) {
-                allGroups.add(group);
-              }
+            Object.values(data ?? {}).forEach((groups: string[]) => {
+              groups.forEach((group) => {
+                if (group) {
+                  allGroups.add(group);
+                }
+              });
             });
-          });
 
-          return Array.from(allGroups)
-            .sort((a, b) => a.localeCompare(b))
-            .map((value) => ({ value }));
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((options) => {
-        this.group2InpnOptions = options;
-      });
+            return Array.from(allGroups)
+              .sort((a, b) => a.localeCompare(b))
+              .map((value) => ({ value }));
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((options) => {
+          this.group2InpnOptions = options;
+        });
+    }
 
-    this.dataFormService
-      .getGroup3Inpn()
-      .pipe(
-        map((data) =>
-          (data ?? [])
-            .filter((value): value is string => typeof value === 'string' && value.length > 0)
-            .sort((a, b) => a.localeCompare(b))
-            .map((value) => ({ value }))
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((options) => {
-        this.group3InpnOptions = options;
-      });
+    if (this.showGroup3Filter) {
+      this.dataFormService
+        .getGroup3Inpn()
+        .pipe(
+          map((data) =>
+            (data ?? [])
+              .filter((value): value is string => typeof value === 'string' && value.length > 0)
+              .sort((a, b) => a.localeCompare(b))
+              .map((value) => ({ value }))
+          ),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((options) => {
+          this.group3InpnOptions = options;
+        });
+    }
 
     this.group2InpnControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this._emitFilters();
@@ -91,11 +107,19 @@ export class HomeContentListObsFiltersComponent implements OnInit, OnDestroy {
   private _emitFilters() {
     const filters: HomeContentListObsFilters = {};
 
-    if (typeof this.group2InpnControl.value === 'string' && this.group2InpnControl.value.length > 0) {
+    if (
+      this.showGroup2Filter &&
+      typeof this.group2InpnControl.value === 'string' &&
+      this.group2InpnControl.value.length > 0
+    ) {
       filters.taxonomy_group2_inpn = [this.group2InpnControl.value];
     }
 
-    if (typeof this.group3InpnControl.value === 'string' && this.group3InpnControl.value.length > 0) {
+    if (
+      this.showGroup3Filter &&
+      typeof this.group3InpnControl.value === 'string' &&
+      this.group3InpnControl.value.length > 0
+    ) {
       filters.taxonomy_group3_inpn = [this.group3InpnControl.value];
     }
 

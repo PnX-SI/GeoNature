@@ -159,6 +159,10 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         { prop = "observers", name = "Observateur" },
     ]
 
+[FRONTEND.LIST_LAST_OBS_CONFIG.FILTERS]
+    TAXONOMY_GROUP2_INPN = true
+    TAXONOMY_GROUP3_INPN = true
+
 # Configuration des paramètres des permissions
 [PERMISSIONS]
     # Types de zonages accessibles pour les filtres géographiques

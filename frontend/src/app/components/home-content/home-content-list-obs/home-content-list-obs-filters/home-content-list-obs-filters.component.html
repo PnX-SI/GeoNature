@@ -1,5 +1,6 @@
 <div class="home-content-list-obs-filters">
   <ng-select
+    *ngIf="showGroup2Filter"
     [items]="group2InpnOptions"
     [formControl]="group2InpnControl"
     bindLabel="value"
@@ -10,6 +11,7 @@
   ></ng-select>
 
   <ng-select
+    *ngIf="showGroup3Filter"
     [items]="group3InpnOptions"
     [formControl]="group3InpnControl"
     bindLabel="value"
