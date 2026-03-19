@@ -8,7 +8,7 @@ from io import BytesIO, StringIO, TextIOWrapper
 from urllib.parse import quote as url_quote
 
 from flask import current_app, g, jsonify, request, send_file, stream_with_context
-from flask_login import current_user, login_required
+from flask_login import login_required
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.imports.blueprint import blueprint
@@ -34,7 +34,6 @@ from geonature.core.imports.utils import (
     get_file_size,
     insert_import_data_in_transient_table,
 )
-from geonature.utils.config import config
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
 from marshmallow import EXCLUDE
@@ -42,7 +41,7 @@ from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from sqlalchemy import delete, desc, func, or_, select
 from sqlalchemy.inspection import inspect
-from sqlalchemy.orm import Load, contains_eager, joinedload, load_only, undefer
+from sqlalchemy.orm import contains_eager, joinedload
 from sqlalchemy.orm.attributes import set_committed_value
 from sqlalchemy.sql.expression import collate, exists
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, Gone, NotFound
@@ -121,7 +120,6 @@ def get_import_list(scope, destination=None):
         query = query.where(TImports.destination == destination)
 
     imports = db.paginate(query, page=page, error_out=False, max_per_page=limit)
-
     data = {
         "imports": [imprt.as_dict() for imprt in imports.items],
         "count": imports.total,
@@ -178,6 +176,7 @@ def upload_file(scope, imprt, destination=None):  # destination is set when impr
         db.session.add(imprt)
 
     else:
+        imprt.raise_on_closed_af()
         # If imprt exists, remove observer mapping
         imprt.observermapping = {}
     # Process field mapping
@@ -235,7 +234,7 @@ def update_import(scope, imprt, destination=None):  # destination is set when im
     if imprt:
         if not imprt.has_instance_permission(scope, action_code="C"):
             raise Forbidden
-        destination = imprt.destination
+        imprt.raise_on_closed_af()
     else:
         raise BadRequest("Import with id {} does not exist")
 
@@ -259,6 +258,7 @@ def update_import(scope, imprt, destination=None):  # destination is set when im
 def decode_file(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
+    imprt.raise_on_closed_af()
     if imprt.source_file is None:
         raise BadRequest(description="A file must be first uploaded.")
     if "encoding" not in request.json:
@@ -323,6 +323,7 @@ def decode_file(scope, imprt):
 def set_import_field_mapping(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
+    imprt.raise_on_closed_af()
     try:
         FieldMapping.validate_values(request.json)
     except ValueError as e:
@@ -338,6 +339,7 @@ def set_import_field_mapping(scope, imprt):
 def load_import(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
+    imprt.raise_on_closed_af()
     if imprt.source_file is None:
         raise BadRequest(description="A file must be first uploaded.")
     if imprt.fieldmapping is None:
@@ -432,6 +434,7 @@ def get_import_values(scope, imprt):
 def set_import_content_mapping(scope, imprt):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
+    imprt.raise_on_closed_af()
     try:
         ContentMapping.validate_values(request.json)
     except ValueError as e:
@@ -450,7 +453,7 @@ def prepare_import(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-
+    imprt.raise_on_closed_af()
     # Check preconditions to execute this action
     if not imprt.loaded:
         raise Conflict("Field data must have been loaded before executing this action.")
@@ -493,6 +496,7 @@ def preview_valid_data(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
+    imprt.raise_on_closed_af()
     if not imprt.processed:
         raise Conflict("Import must have been prepared before executing this action.")
 
@@ -659,6 +663,7 @@ def import_valid_data(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
+    imprt.raise_on_closed_af()
     if not imprt.processed:
         raise Forbidden("L’import n’a pas été préalablement vérifié.")
     transient_table = imprt.destination.get_transient_table()
@@ -692,6 +697,7 @@ def delete_import(scope, imprt):
     """
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
+    imprt.raise_on_closed_af()
     ImportUserError.query.filter_by(imprt=imprt).delete()
     transient_table = imprt.destination.get_transient_table()
     db.session.execute(
@@ -769,7 +775,7 @@ def report_plot(scope, imprt: TImports):
 def generate_matching(scope, imprt: TImports):
     if not imprt.has_instance_permission(scope, action_code="C"):
         raise Forbidden
-
+    imprt.raise_on_closed_af()
     if imprt.destination.actions.is_observer_mapping_enabled():
         fields = db.session.scalars(
             select(BibFields).where(

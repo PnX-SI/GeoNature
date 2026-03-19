@@ -334,6 +334,17 @@ class TestImportsSynthese:
         )
         assert transient_rows_count == 0
 
+    def test_update_import_on_closed_af(self, users, imported_import):
+        set_logged_user(self.client, users["admin_user"])
+        imprt = imported_import
+        obs = db.session.execute(
+            select(Synthese).where(Synthese.id_import == imprt.id_import).limit(1)
+        ).scalar_one_or_none()
+        obs.dataset.acquisition_framework.opened = False
+        db.session.flush()
+        r = self.client.delete(url_for("import.delete_import", import_id=imprt.id_import))
+        assert r.status_code == 409, r.data
+
     def test_import_upload(self, users):
 
         with open(tests_path / "files" / "synthese" / "simple_file.csv", "rb") as f:
