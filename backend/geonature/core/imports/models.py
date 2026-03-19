@@ -350,8 +350,6 @@ cor_role_import = db.Table(
         "destination.label",
         "destination.statistics_labels",
         "destination.module",
-        "errors.type",
-        "errors.entity",
     ]
 )
 class TImports(InstancePermissionMixin, db.Model):
@@ -411,13 +409,6 @@ class TImports(InstancePermissionMixin, db.Model):
         back_populates="imprt",
         order_by="ImportUserError.id_type",  # TODO order by type.category
         cascade="all, delete-orphan",
-    )
-
-    datasets = db.relationship(
-        "CorImportDataset",
-        back_populates="imprt",
-        cascade="all, delete-orphan",
-        passive_deletes=True,
     )
 
     @property
@@ -523,27 +514,6 @@ class TImports(InstancePermissionMixin, db.Model):
             if extension in TImports.AVAILABLE_FORMATS:
                 import_as_dict["detected_format"] = extension
         return import_as_dict
-
-
-class CorImportDataset(db.Model):
-    __tablename__ = "cor_import_datasets"
-    __table_args__ = {"schema": "gn_imports"}
-
-    id_import = db.Column(
-        db.Integer,
-        db.ForeignKey("gn_imports.t_imports.id_import", ondelete="CASCADE"),
-        primary_key=True,
-        nullable=False,
-    )
-    id_dataset = db.Column(
-        db.Integer,
-        db.ForeignKey("gn_meta.t_datasets.id_dataset", ondelete="CASCADE"),
-        primary_key=True,
-        nullable=False,
-    )
-
-    imprt = db.relationship("TImports", back_populates="datasets")
-    dataset = db.relationship("TDatasets")
 
 
 @serializable
