@@ -126,6 +126,36 @@ class ImportActions:
         raise NotImplementedError
 
     @staticmethod
+    def get_dataset_where_clause(imprt: TImports) -> sa.sql.elements.BinaryExpression:
+        """
+        Generate a SQLAlchemy where clause to retrieve all datasets associated with a given import.
+
+        This method constructs a filter condition that will be used in a SQLAlchemy query to select
+        all datasets whose id_import matches the provided import_id.
+
+        Parameters
+        ----------
+        import : TImports
+            The import object to filter datasets by.
+
+        Returns
+        -------
+        sqlalchemy.sql.elements.BinaryExpression
+            A SQLAlchemy where clause expression that filters datasets by id_import.
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in the child class.
+
+        Notes
+        -----
+        This method should be implemented by subclasses for specific destinations
+        to provide the appropriate table structure and column names for filtering datasets.
+        """
+        raise NotImplementedError
+
+    @staticmethod
     def remove_data_from_destination(imprt: TImports) -> None:
         """
         Remove data from destination database for a given import.
