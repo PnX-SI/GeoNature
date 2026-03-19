@@ -1,7 +1,7 @@
 from datetime import datetime
 from collections.abc import Mapping
 import re
-from typing import Any, Iterable, List, Optional, Set
+from typing import Any, Iterable, List, Optional
 from packaging import version
 
 from flask import g
@@ -16,6 +16,8 @@ from jsonschema.exceptions import ValidationError as JSONValidationError
 from jsonschema import validate as validate_json
 from celery.result import AsyncResult
 import flask_sqlalchemy
+from werkzeug.exceptions import Conflict
+
 
 if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
     from flask_sqlalchemy.query import Query
@@ -31,6 +33,7 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_commons.models import TModules
 from pypnnomenclature.models import BibNomenclaturesTypes
 from pypnusershub.db.models import User
+from sqlalchemy import select, exists
 
 
 class ImportModule(TModules):
@@ -431,6 +434,36 @@ class TImports(InstancePermissionMixin, db.Model):
             return None
         else:
             return -1
+
+    @property
+    def has_closed_af(self):
+        """
+        Check if one AF of the import has been closed.
+        Returns
+        -------
+
+        """
+        from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
+
+        where_clause = self.destination.actions.get_dataset_where_clause(self)
+        if where_clause:
+            query = select(
+                exists().where(
+                    where_clause,
+                    TDatasets.id_acquisition_framework
+                    == TAcquisitionFramework.id_acquisition_framework,
+                    TAcquisitionFramework.opened.is_(False),
+                )
+            )
+            return db.session.scalar(query)
+        else:
+            return False
+
+    def raise_on_closed_af(self):
+        if self.has_closed_af:
+            raise Conflict(
+                description="This import is linked to an already closed acquisition framework."
+            )
 
     def has_instance_permission(self, scope, user=None, action_code="C"):
 
