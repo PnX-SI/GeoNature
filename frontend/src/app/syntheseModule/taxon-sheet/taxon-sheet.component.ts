@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { InfosComponent } from './infos/infos.component';
 import {
@@ -68,6 +68,7 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
 
   constructor(
     private _route: ActivatedRoute,
+    private _router: Router,
     private _tss: TaxonSheetService,
     public routes: TaxonSheetRouteService
   ) {
@@ -90,6 +91,13 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
         this.startLoading();
         this.setIndicators(null);
         this._tss.fetchTaxonByCdRef(cd_ref);
+
+        if (!this._route.firstChild) {
+          const defaultTab = this.routes.TAB_LINKS[0]?.path;
+          if (defaultTab) {
+            this._router.navigate(['./', defaultTab], { relativeTo: this._route });
+          }
+        }
       }
     });
   }
