@@ -89,12 +89,32 @@ export class GeojsonComponent implements OnInit, OnChanges {
       }
     }
     if (changes.style && changes.style.currentValue !== undefined) {
-      if (this.currentGeojson) {
-        for (const key of Object.keys(this.currentGeojson['_layers'])) {
-          const layer = this.currentGeojson['_layers'][key];
-          layer.setStyle(changes.style.currentValue);
-        }
-      }
+      this.applyStyle(changes.style.currentValue);
+    }
+  }
+
+  private applyStyle(style) {
+    if (!this.currentGeojson) {
+      return;
+    }
+
+    this.applyStyleToLayer(this.currentGeojson, style);
+  }
+
+  private applyStyleToLayer(layer, style) {
+    if (layer.eachLayer) {
+      layer.eachLayer((childLayer) => {
+        this.applyStyleToLayer(childLayer, style);
+      });
+    }
+
+    if (!layer.setStyle) {
+      return;
+    }
+
+    const nextStyle = typeof style === 'function' ? style(layer.feature) : style;
+    if (nextStyle) {
+      layer.setStyle(nextStyle);
     }
   }
 }

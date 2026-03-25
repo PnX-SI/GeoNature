@@ -47,6 +47,19 @@
   min-height: 100%;
 }
 
+:host ::ng-deep .ngx-datatable.material .datatable-body .datatable-body-row {
+  cursor: pointer;
+}
+
+:host
+  ::ng-deep
+  .ngx-datatable.material
+  .datatable-body
+  .datatable-body-row.is-selected
+  .datatable-row-group {
+  background-color: rgb(117, 227, 118) !important;
+}
+
 :host ::ng-deep .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
   padding: 0.25rem 0.5rem;
   line-height: 1.2;
@@ -74,4 +87,32 @@
       overflow-x: hidden;
     }
   }
+}
+
+
+.TaxonCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.TaxonCell__thumbnail {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+}
+
+.TaxonCell__thumbnailImage {
+  width: 2rem;
+  height: 2rem;
+  object-fit: cover;
+  border-radius: 0.25rem;
+}
+
+.TaxonCell__label {
+  min-width: 0;
 }

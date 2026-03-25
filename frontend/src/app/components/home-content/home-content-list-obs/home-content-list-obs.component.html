@@ -2,9 +2,30 @@
   <pnx-home-content-list-obs-filters
     (filtersChange)="onFiltersChange($event)"
   ></pnx-home-content-list-obs-filters>
-  <pnx-home-content-list-obs-list
-    class="home-content-list-obs-list"
-    [observations]="observations"
-    [isLoading]="isLoading"
-  ></pnx-home-content-list-obs-list>
+  <div class="home-content-list-obs-content">
+    <pnx-home-content-list-obs-list
+      class="home-content-list-obs-list"
+      [observations]="observations"
+      [isLoading]="isLoading"
+      [currentPage]="currentPage"
+      [selectedObservationId]="selectedObservationId"
+      (pageChange)="onPageChange($event)"
+      (observationSelect)="onObservationSelect($event)"
+    ></pnx-home-content-list-obs-list>
+    <div class="home-content-list-obs-map">
+      <pnx-map
+        height="100%"
+        [searchBar]="false"
+      >
+        <pnx-geojson
+          [geojson]="observationsGeoJson"
+          [onEachFeature]="onEachFeature"
+          [style]="mapFeatureStyle"
+          [asCluster]="true"
+          [zoomOnLayer]="observationsGeoJson.features.length > 0"
+          [zoomOnFirstTime]="true"
+        ></pnx-geojson>
+      </pnx-map>
+    </div>
+  </div>
 </div>

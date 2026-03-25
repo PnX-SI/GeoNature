@@ -5,8 +5,38 @@
   height: 100%;
   min-height: 0;
   padding: 0.5rem;
-  &-list {
+
+  &-content {
+    display: flex;
+    gap: 1rem;
     flex: 1 1 auto;
     min-height: 0;
+  }
+
+  &-list {
+    flex: 1 1 55%;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  &-map {
+    flex: 1 1 45%;
+    min-width: 0;
+    min-height: 420px;
+    border: 1px solid #dfe3e8;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .home-content-list-obs {
+    &-content {
+      flex-direction: column;
+    }
+
+    &-map {
+      min-height: 320px;
+    }
   }
 }

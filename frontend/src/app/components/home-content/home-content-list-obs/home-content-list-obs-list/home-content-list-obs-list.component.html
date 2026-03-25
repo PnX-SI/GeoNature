@@ -1,7 +1,9 @@
 <gn-loadable-layout [isLoading]="isLoading">
   <ngx-datatable
     class="material striped table-size"
-    [rows]="observations"
+    [rows]="tableRows"
+    [offset]="currentPage"
+    [rowClass]="getRowClass"
     columnMode="force"
     [draggable]="false"
     headerHeight="38"
@@ -9,6 +11,8 @@
     rowHeight="36"
     [limit]="pageSize"
     [count]="observations.length"
+    (page)="onPage($event)"
+    (activate)="onActivate($event)"
   >
     <ngx-datatable-column
       *ngFor="let column of columns"
@@ -19,7 +23,23 @@
         ngx-datatable-cell-template
         let-row="row"
       >
-        {{ getCellValue(row, column.prop) }}
+        <div
+          *ngIf="column.prop === 'nom_vern_or_lb_nom'; else defaultCell"
+          class="TaxonCell"
+        >
+          <span class="TaxonCell__thumbnail">
+            <img
+              *ngIf="hasTaxonThumbnail(row)"
+              class="TaxonCell__thumbnailImage"
+              [src]="getTaxonThumbnailUrl(row)"
+              alt=""
+            />
+          </span>
+          <span class="TaxonCell__label">{{ getCellValue(row, column.prop) }}</span>
+        </div>
+        <ng-template #defaultCell>
+          {{ getCellValue(row, column.prop) }}
+        </ng-template>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
