@@ -6,28 +6,43 @@
 
   ng-select {
     width: 200px !important;
+    font-size: 0.875rem;
   }
 
-  &__checkbox {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-bottom: 0;
-    padding-left: 0;
+  ::ng-deep ng-select .ng-select-container {
+    min-height: 34px;
+    padding: 0 0.35rem;
+  }
+
+  ::ng-deep ng-select .ng-value-container {
+    padding-left: 0.1rem;
+  }
+
+  ::ng-deep ng-select .ng-input {
+    top: 6px;
+    padding-left: 0.1rem;
+  }
+
+  ::ng-deep ng-select .ng-placeholder,
+  ::ng-deep ng-select .ng-value-label,
+  ::ng-deep ng-select .ng-input input {
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+
+  ::ng-deep ng-select .ng-clear-wrapper,
+  ::ng-deep ng-select .ng-arrow-wrapper {
+    padding-left: 0.3rem;
+    padding-right: 0.1rem;
+  }
+
+  ::ng-deep ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
     white-space: nowrap;
+  }
 
-    .form-check-input {
-      margin: 0;
-      position: static;
-      flex: 0 0 auto;
-      transform: none;
-    }
-
-    .form-check-label {
-      display: inline-block;
-      // color: #6c757d;
-      font-size: 0.9rem;
-      line-height: 1.2;
-    }
+  ::ng-deep ng-dropdown-panel .ng-dropdown-panel-items .ng-option span {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
   }
 }

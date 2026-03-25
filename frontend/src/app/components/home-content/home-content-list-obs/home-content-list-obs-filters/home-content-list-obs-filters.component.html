@@ -20,22 +20,4 @@
     [searchable]="true"
     placeholder="Groupe 3 INPN"
   ></ng-select>
-
-  <div
-    *ngIf="showStatusFilter"
-    class="form-check home-content-list-obs-filters__checkbox"
-  >
-    <input
-      id="home-content-list-obs-status-filter"
-      class="form-check-input"
-      type="checkbox"
-      [formControl]="statusControl"
-    />
-    <label
-      class="form-check-label"
-      for="home-content-list-obs-status-filter"
-    >
-      {{ statusFilterLabel }}
-    </label>
-  </div>
 </div>
