@@ -26,7 +26,7 @@ export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> =
     label: 'Observations',
     path: 'observations',
     component: ObservationsComponent,
-    configEnabledField: null, // make it always available !
+    configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
   },
   {
     label: 'Taxons',

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -61,6 +62,8 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
   private readonly _destroy$ = new Subject<void>();
 
   constructor(
+    private _route: ActivatedRoute,
+    private _router: Router,
     public routes: ObserverSheetRouteService,
     private _oss: ObserverSheetService
   ) {
@@ -73,6 +76,13 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
       if (observer) {
         this.startLoading();
         this.setIndicators(null);
+
+        if (!this._route.firstChild) {
+          const defaultTab = this.routes.TAB_LINKS[0]?.path;
+          if (defaultTab) {
+            this._router.navigate(['./', defaultTab], { relativeTo: this._route });
+          }
+        }
       }
     });
 
