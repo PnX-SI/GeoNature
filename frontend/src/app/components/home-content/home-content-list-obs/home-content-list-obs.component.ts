@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { GeojsonComponent } from '@geonature_common/map/geojson/geojson.component';
 import { MapService } from '@geonature_common/map/map.service';
 import { Feature, FeatureCollection, Geometry } from 'geojson';
 import { Layer } from 'leaflet';
 import { Subject } from 'rxjs';
-import { Router } from '@angular/router';
 import { map, takeUntil } from 'rxjs/operators';
 import { HomeContentListObsFiltersComponent } from './home-content-list-obs-filters/home-content-list-obs-filters.component';
 import { HomeContentListObsListComponent } from './home-content-list-obs-list/home-content-list-obs-list.component';
-import { GeojsonComponent } from '@geonature_common/map/geojson/geojson.component';
 
 interface HomeContentListObservationItem {
   id_synthese: number;
@@ -41,6 +41,19 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
   @ViewChild(GeojsonComponent) private _geojsonComponent?: GeojsonComponent;
 
   readonly pageSize = 9;
+  readonly defaultMapFeatureStyle = {
+    color: '#3388FF',
+    weight: 3,
+    fill: false,
+    radius: 6,
+  };
+  readonly selectedMapFeatureStyle = {
+    color: '#FF0000',
+    weight: 3,
+    fill: false,
+    radius: 6,
+  };
+
   observations: HomeContentListObservationItem[] = [];
   observationsGeoJson: HomeContentListObservationFeatureCollection = {
     type: 'FeatureCollection',
@@ -50,12 +63,11 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
   filters: HomeContentListObsFilters = {};
   currentPage = 0;
   selectedObservationId: number | null = null;
-  private visibleObservationIds = new Set<number>();
+
   private featureLayers = new Map<number, Layer>();
+  private selectedLayer: Layer | null = null;
   private taxonThumbnailUrls = new Map<number, string | null>();
   private loadingTaxonThumbnailIds = new Set<number>();
-  mapFeatureStyle = this._buildMapFeatureStyle();
-
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -77,16 +89,20 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
   onFiltersChange(filters: HomeContentListObsFilters) {
     this.filters = filters;
     this.currentPage = 0;
-    this.selectedObservationId = null;
+    this._clearSelection(false);
     this._fetchObservations();
   }
 
   onPageChange(offset: number) {
     this.currentPage = offset;
-    this._syncVisibleObservationsWithPage();
   }
 
   onObservationSelect(idSynthese: number) {
+    if (this.selectedObservationId === idSynthese) {
+      this._clearSelection(true);
+      return;
+    }
+
     this._showObservationPage(idSynthese);
     this._selectObservation(idSynthese, true, true);
   }
@@ -94,13 +110,24 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
   readonly onEachFeature = (feature: HomeContentListObservationFeature, layer: Layer) => {
     const idSynthese = feature.properties.id_synthese;
     this.featureLayers.set(idSynthese, layer);
+    this._applyStyleToLayer(layer, this.defaultMapFeatureStyle);
 
     if ('bindPopup' in layer && typeof layer.bindPopup === 'function') {
       layer.bindPopup(this._buildPopupContent(feature.properties));
     }
 
+    if (idSynthese === this.selectedObservationId) {
+      this.selectedLayer = layer;
+      this._applyStyleToLayer(layer, this.selectedMapFeatureStyle);
+    }
+
     if ('on' in layer && typeof layer.on === 'function') {
       layer.on('click', () => {
+        if (this.selectedObservationId === idSynthese) {
+          this._clearSelection(true);
+          return;
+        }
+
         this._showObservationPage(idSynthese);
         this._selectObservation(idSynthese, false, false);
       });
@@ -110,6 +137,7 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
   private _fetchObservations() {
     this.isLoading = true;
     this.featureLayers.clear();
+    this.selectedLayer = null;
     this._syntheseDataService
       .getSyntheseData(this.filters, { limit: 100, format: 'ungrouped_geom' })
       .pipe(
@@ -134,7 +162,6 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
             features: features.filter((feature) => !!feature.geometry),
           };
           this._prefetchTaxonThumbnails();
-          this._syncVisibleObservationsWithPage();
           this.isLoading = false;
         },
         error: () => {
@@ -143,7 +170,6 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
             type: 'FeatureCollection',
             features: [],
           };
-          this._syncVisibleObservationsWithPage();
           this.isLoading = false;
         },
       });
@@ -198,15 +224,6 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _syncVisibleObservationsWithPage() {
-    const start = this.currentPage * this.pageSize;
-    const end = start + this.pageSize;
-    this.visibleObservationIds = new Set(
-      this.observations.slice(start, end).map((observation) => observation.id_synthese)
-    );
-    this.mapFeatureStyle = this._buildMapFeatureStyle();
-  }
-
   private _showObservationPage(idSynthese: number) {
     const observationIndex = this.observations.findIndex(
       (observation) => observation.id_synthese === idSynthese
@@ -216,19 +233,46 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
     }
 
     this.currentPage = Math.floor(observationIndex / this.pageSize);
-    this._syncVisibleObservationsWithPage();
+  }
+
+  private _clearSelection(shouldClosePopup: boolean) {
+    this.selectedObservationId = null;
+
+    if (!this.selectedLayer) {
+      return;
+    }
+
+    this._applyStyleToLayer(this.selectedLayer, this.defaultMapFeatureStyle);
+
+    if (shouldClosePopup && 'closePopup' in this.selectedLayer && typeof this.selectedLayer.closePopup === 'function') {
+      this.selectedLayer.closePopup();
+    }
+
+    this.selectedLayer = null;
   }
 
   private _selectObservation(idSynthese: number, shouldOpenPopup: boolean, shouldCenterMap: boolean) {
     this.selectedObservationId = idSynthese;
-    this.mapFeatureStyle = this._buildMapFeatureStyle();
+
+    if (this.selectedLayer) {
+      this._applyStyleToLayer(this.selectedLayer, this.defaultMapFeatureStyle);
+    }
 
     const layer = this.featureLayers.get(idSynthese);
     if (!layer) {
+      this.selectedLayer = null;
       return;
     }
 
+    this.selectedLayer = layer;
+    this._applyStyleToLayer(layer, this.selectedMapFeatureStyle);
     this._focusLayer(layer, shouldOpenPopup, shouldCenterMap);
+  }
+
+  private _applyStyleToLayer(layer: Layer, style) {
+    if ('setStyle' in layer && typeof layer.setStyle === 'function') {
+      layer.setStyle(style);
+    }
   }
 
   private _focusLayer(layer: Layer, shouldOpenPopup: boolean, shouldCenterMap: boolean) {
@@ -274,33 +318,6 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
         map.fitBounds(bounds, { maxZoom: 14 });
       }
     }
-  }
-
-  private _buildMapFeatureStyle() {
-    return (feature: HomeContentListObservationFeature) => {
-      const isSelected = this.selectedObservationId === feature.properties.id_synthese;
-      const isVisible = this.visibleObservationIds.has(feature.properties.id_synthese);
-
-      if (isSelected) {
-        return {
-          color: '#d46b08',
-          fillColor: '#d46b08',
-          weight: 3,
-          radius: 8,
-          opacity: 1,
-          fillOpacity: 0.95,
-        };
-      }
-
-      return {
-        color: '#287d7d',
-        fillColor: '#287d7d',
-        weight: 2,
-        radius: 6,
-        opacity: isVisible ? 1 : 0.35,
-        fillOpacity: isVisible ? 0.85 : 0.2,
-      };
-    };
   }
 
   private _buildPopupContent(observation: HomeContentListObservationItem): string {

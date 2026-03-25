@@ -172,21 +172,17 @@ export class MapService {
   }
 
   createGeojson(geojson, asCluster: boolean, onEachFeature?, style?): GeoJSON {
-    const resolveStyle = (feature) => {
-      const fallbackStyle =
-        feature.geometry.type === 'LineString' ? this.lineStyle() : this.defaultStyle();
-
-      if (typeof style === 'function') {
-        return style(feature) || fallbackStyle;
-      }
-
-      return style || fallbackStyle;
-    };
-
     const geojsonLayer = L.geoJSON(geojson?.features || geojson, {
-      style: (feature) => resolveStyle(feature),
+      style: (feature) => {
+        switch (feature.geometry.type) {
+          case 'LineString':
+            return style || this.lineStyle();
+          default:
+            return style || this.defaultStyle();
+        }
+      },
       pointToLayer: (feature, latlng) => {
-        return L.circleMarker(latlng, resolveStyle(feature));
+        return L.circleMarker(latlng, style || this.defaultStyle());
       },
       onEachFeature: onEachFeature,
     });
