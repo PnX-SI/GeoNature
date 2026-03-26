@@ -41,7 +41,7 @@ bokeh==3.4.1
     # via -r requirements-common.in
 brotli==1.2.0
     # via fonttools
-celery[redis]==5.6.2
+celery[redis]==5.6.3
     # via -r requirements-common.in
 certifi==2026.2.25
     # via
