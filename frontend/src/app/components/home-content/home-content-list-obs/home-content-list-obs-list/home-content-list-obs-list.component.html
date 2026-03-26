@@ -35,7 +35,18 @@
               alt=""
             />
           </span>
-          <span class="TaxonCell__label">{{ getCellValue(row, column.prop) }}</span>
+          <a
+            *ngIf="hasTaxonSheetLink(row); else taxonLabel"
+            class="TaxonCell__link"
+            [routerLink]="getTaxonSheetUrl(row.cd_nom!)"
+            matTooltip="Afficher la fiche du taxon"
+            (click)="$event.stopPropagation()"
+          >
+            <span class="TaxonCell__label">{{ getCellValue(row, column.prop) }}</span>
+          </a>
+          <ng-template #taxonLabel>
+            <span class="TaxonCell__label">{{ getCellValue(row, column.prop) }}</span>
+          </ng-template>
         </div>
         <ng-template #defaultCell>
           {{ getCellValue(row, column.prop) }}

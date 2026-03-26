@@ -89,30 +89,40 @@
   }
 }
 
-
 .TaxonCell {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   min-width: 0;
-}
 
-.TaxonCell__thumbnail {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  flex: 0 0 2rem;
-}
+  &__thumbnail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
 
-.TaxonCell__thumbnailImage {
-  width: 2rem;
-  height: 2rem;
-  object-fit: cover;
-  border-radius: 0.25rem;
-}
+    &Image {
+      width: 2rem;
+      height: 2rem;
+      object-fit: cover;
+      border-radius: 0.25rem;
+    }
+  }
 
-.TaxonCell__label {
-  min-width: 0;
+  &__label {
+    min-width: 0;
+  }
+
+  &__link {
+    min-width: 0;
+    color: var(--purple);
+    filter: brightness(70%);
+    text-decoration: none;
+
+    &:hover .TaxonCell__label {
+      text-decoration: underline;
+    }
+  }
 }

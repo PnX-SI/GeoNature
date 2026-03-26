@@ -8,9 +8,11 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { ConfigService } from '@geonature/services/config.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { getTaxonSheetRoute } from '@geonature/syntheseModule/taxon-sheet/taxon-sheet.route.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -33,7 +35,7 @@ interface HomeContentListObservationColumn {
   selector: 'pnx-home-content-list-obs-list',
   templateUrl: './home-content-list-obs-list.component.html',
   styleUrls: ['./home-content-list-obs-list.component.scss'],
-  imports: [GN2CommonModule, CommonModule],
+  imports: [GN2CommonModule, CommonModule, RouterModule],
 })
 export class HomeContentListObsListComponent implements OnChanges, OnDestroy {
   readonly pageSize = 9;
@@ -143,5 +145,13 @@ export class HomeContentListObsListComponent implements OnChanges, OnDestroy {
 
   renderDate(date: string | null): string {
     return date ? new Date(date).toLocaleDateString() : '';
+  }
+
+  hasTaxonSheetLink(row: HomeContentListObservationItem): boolean {
+    return this.config.SYNTHESE?.ENABLE_TAXON_SHEETS && typeof row.cd_nom === 'number';
+  }
+
+  getTaxonSheetUrl(cdNom: number): [string] {
+    return getTaxonSheetRoute(cdNom);
   }
 }
