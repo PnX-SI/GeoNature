@@ -9,7 +9,7 @@
   [clearable]="clearable"
   [virtualScroll]="true"
   [formControl]="parentFormControl"
-  [loading]="(acquisitionFrameworks | async) === null"
+  [loading]="isLoading"
 >
   <ng-template
     ng-option-tmp
