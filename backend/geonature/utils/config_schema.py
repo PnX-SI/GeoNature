@@ -209,30 +209,9 @@ class ListLastObsColumnConfig(Schema):
     name = fields.String(required=True)
 
 
-class ListLastObsStatusFilterItemConfig(Schema):
-    key = fields.String(required=True)
-    values = fields.List(fields.String(), load_default=[])
-
-
-class ListLastObsStatusFilterConfig(Schema):
-    ENABLED = fields.Boolean(load_default=True)
-    LABEL = fields.String(load_default="Avec statuts")
-    ITEMS = fields.List(
-        fields.Nested(ListLastObsStatusFilterItemConfig),
-        load_default=[
-            {"key": "protections_protection_status", "values": ["PN", "PR"]},
-            {"key": "worldwide_red_lists", "values": ["CR", "EN"]},
-        ],
-    )
-
-
 class ListLastObsFiltersConfig(Schema):
     TAXONOMY_GROUP2_INPN = fields.Boolean(load_default=True)
     TAXONOMY_GROUP3_INPN = fields.Boolean(load_default=True)
-    STATUS = fields.Nested(
-        ListLastObsStatusFilterConfig,
-        load_default=ListLastObsStatusFilterConfig().load({}),
-    )
 
 
 class ListLastObsConfig(Schema):

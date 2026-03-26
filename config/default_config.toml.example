@@ -163,14 +163,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     TAXONOMY_GROUP2_INPN = true
     TAXONOMY_GROUP3_INPN = true
 
-[FRONTEND.LIST_LAST_OBS_CONFIG.FILTERS.STATUS]
-    ENABLED = true
-    LABEL = "Avec statuts"
-    ITEMS = [
-        { key = "protections_protection_status", values = ["PN", "PR"] },
-        { key = "worldwide_red_lists", values = ["CR", "EN"] },
-    ]
-
 # Configuration des paramètres des permissions
 [PERMISSIONS]
     # Types de zonages accessibles pour les filtres géographiques
