@@ -18,8 +18,6 @@ Cypress.Commands.add('interceptGlobalConfig', (overrides) => {
       },
     };
 
-    cy.intercept('GET', `${Cypress.env('apiEndpoint')}gn_commons/config`, mockedConfig).as(
-      'globalConfig'
-    );
+    cy.intercept('GET', '**/gn_commons/config*', mockedConfig).as('globalConfig');
   });
 });
