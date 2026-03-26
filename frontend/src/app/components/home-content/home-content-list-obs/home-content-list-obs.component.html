@@ -4,7 +4,7 @@
   ></pnx-home-content-list-obs-filters>
   <div class="home-content-list-obs-content">
     <pnx-home-content-list-obs-list
-      class="home-content-list-obs-list"
+      class="home-content-list-obs-content-list"
       [observations]="observations"
       [isLoading]="isLoading"
       [currentPage]="currentPage"
@@ -12,7 +12,7 @@
       (pageChange)="onPageChange($event)"
       (observationSelect)="onObservationSelect($event)"
     ></pnx-home-content-list-obs-list>
-    <div class="home-content-list-obs-map">
+    <div class="home-content-list-obs-content-map">
       <pnx-map
         height="100%"
         [searchBar]="false"
