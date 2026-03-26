@@ -96,7 +96,7 @@ export class HomeContentListObsListComponent implements OnChanges, OnDestroy {
   }
 
   getTaxonThumbnailUrl(row: HomeContentListObservationItem): string {
-    return typeof row.cd_nom === 'number' ? this._taxonThumbnailUrls.get(row.cd_nom) ?? '' : '';
+    return typeof row.cd_nom === 'number' ? (this._taxonThumbnailUrls.get(row.cd_nom) ?? '') : '';
   }
 
   private _prefetchTaxonThumbnails() {

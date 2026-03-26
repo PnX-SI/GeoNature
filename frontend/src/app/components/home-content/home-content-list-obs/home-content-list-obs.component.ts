@@ -23,7 +23,10 @@ interface HomeContentListObservationItem {
 }
 
 type HomeContentListObservationFeature = Feature<Geometry, HomeContentListObservationItem>;
-type HomeContentListObservationFeatureCollection = FeatureCollection<Geometry, HomeContentListObservationItem>;
+type HomeContentListObservationFeatureCollection = FeatureCollection<
+  Geometry,
+  HomeContentListObservationItem
+>;
 
 interface HomeContentListObsFilters {
   taxonomy_group2_inpn?: string[];
@@ -35,7 +38,12 @@ interface HomeContentListObsFilters {
   selector: 'pnx-home-content-list-obs',
   templateUrl: './home-content-list-obs.component.html',
   styleUrls: ['./home-content-list-obs.component.scss'],
-  imports: [CommonModule, GN2CommonModule, HomeContentListObsFiltersComponent, HomeContentListObsListComponent],
+  imports: [
+    CommonModule,
+    GN2CommonModule,
+    HomeContentListObsFiltersComponent,
+    HomeContentListObsListComponent,
+  ],
 })
 export class HomeContentListObsComponent implements OnInit, OnDestroy {
   @ViewChild(GeojsonComponent) private _geojsonComponent?: GeojsonComponent;
@@ -141,13 +149,12 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
     this._syntheseDataService
       .getSyntheseData(this.filters, { limit: 100, format: 'ungrouped_geom' })
       .pipe(
-        map(
-          (data) =>
-            ((data?.features ?? []) as HomeContentListObservationFeature[]).sort((a, b) => {
-              const aTime = a.properties?.date_min ? new Date(a.properties.date_min).getTime() : 0;
-              const bTime = b.properties?.date_min ? new Date(b.properties.date_min).getTime() : 0;
-              return bTime - aTime;
-            })
+        map((data) =>
+          ((data?.features ?? []) as HomeContentListObservationFeature[]).sort((a, b) => {
+            const aTime = a.properties?.date_min ? new Date(a.properties.date_min).getTime() : 0;
+            const bTime = b.properties?.date_min ? new Date(b.properties.date_min).getTime() : 0;
+            return bTime - aTime;
+          })
         ),
         takeUntil(this.destroy$)
       )
@@ -216,7 +223,11 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
       .filter((observation) => observation.cd_nom === cdNom)
       .forEach((observation) => {
         const layer = this.featureLayers.get(observation.id_synthese);
-        if (!layer || !('setPopupContent' in layer) || typeof layer.setPopupContent !== 'function') {
+        if (
+          !layer ||
+          !('setPopupContent' in layer) ||
+          typeof layer.setPopupContent !== 'function'
+        ) {
           return;
         }
 
@@ -244,14 +255,22 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
 
     this._applyStyleToLayer(this.selectedLayer, this.defaultMapFeatureStyle);
 
-    if (shouldClosePopup && 'closePopup' in this.selectedLayer && typeof this.selectedLayer.closePopup === 'function') {
+    if (
+      shouldClosePopup &&
+      'closePopup' in this.selectedLayer &&
+      typeof this.selectedLayer.closePopup === 'function'
+    ) {
       this.selectedLayer.closePopup();
     }
 
     this.selectedLayer = null;
   }
 
-  private _selectObservation(idSynthese: number, shouldOpenPopup: boolean, shouldCenterMap: boolean) {
+  private _selectObservation(
+    idSynthese: number,
+    shouldOpenPopup: boolean,
+    shouldCenterMap: boolean
+  ) {
     this.selectedObservationId = idSynthese;
 
     if (this.selectedLayer) {
@@ -328,7 +347,7 @@ export class HomeContentListObsComponent implements OnInit, OnDestroy {
 
     const thumbnailUrl =
       typeof observation.cd_nom === 'number'
-        ? this.taxonThumbnailUrls.get(observation.cd_nom) ?? ''
+        ? (this.taxonThumbnailUrls.get(observation.cd_nom) ?? '')
         : '';
 
     return `
