@@ -65,6 +65,11 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    if (!this._config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS']) {
+      this._router.navigate(['/404'], { skipLocationChange: true });
+      return of(false);
+    }
+
     return this._loadObserver(route).pipe(
       tap((observer) => this._oss.setObserver(observer)),
       map(() => true),
