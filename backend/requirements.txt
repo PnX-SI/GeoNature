@@ -79,7 +79,7 @@ cligj==0.7.2
     # via fiona
 contourpy==1.3.0
     # via bokeh
-cryptography==46.0.5
+cryptography==46.0.6
     # via authlib
 cssselect2==0.8.0
     # via weasyprint
