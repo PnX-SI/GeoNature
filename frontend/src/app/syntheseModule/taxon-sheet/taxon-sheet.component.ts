@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { InfosComponent } from './infos/infos.component';
 import {
@@ -15,6 +15,8 @@ import { CD_REF_PARAM_NAME, TaxonSheetRouteService } from './taxon-sheet.route.s
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { Loadable } from '../sheets/loadable';
 import { ObservationsFiltersService } from '../sheets/observations/observations-filters.service';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
@@ -59,6 +61,7 @@ const INDICATORS: Array<IndicatorDescription> = [
 })
 export class TaxonSheetComponent extends Loadable implements OnInit {
   taxon: Taxon | null = null;
+  private readonly _destroy$ = new Subject<void>();
 
   get isLoadingIndicators() {
     return this.isLoading;
@@ -76,35 +79,52 @@ export class TaxonSheetComponent extends Loadable implements OnInit {
   }
 
   ngOnInit() {
-    this._tss.taxon.subscribe((taxon: Taxon | null) => {
+    this._tss.taxon.pipe(takeUntil(this._destroy$)).subscribe((taxon: Taxon | null) => {
       this.taxon = taxon;
     });
 
-    this._tss.taxonStats.subscribe((stats: TaxonStats | null) => {
+    this._tss.taxonStats.pipe(takeUntil(this._destroy$)).subscribe((stats: TaxonStats | null) => {
       this.stopLoading();
       this.setIndicators(stats);
     });
 
-    this._route.params.subscribe((params) => {
+    this._route.params.pipe(takeUntil(this._destroy$)).subscribe((params) => {
       const cd_ref = params[CD_REF_PARAM_NAME];
       if (cd_ref) {
         this.startLoading();
         this.setIndicators(null);
         this._tss.fetchTaxonByCdRef(cd_ref);
-
-        if (!this._route.firstChild) {
-          const defaultTab = this.routes.TAB_LINKS[0]?.path;
-          if (defaultTab) {
-            this._router.navigate(['./', defaultTab], { relativeTo: this._route });
-          }
-        }
+        this.redirectToDefaultTabIfNeeded();
       }
     });
+
+    this._router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this._destroy$)
+      )
+      .subscribe(() => this.redirectToDefaultTabIfNeeded());
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   setIndicators(stats: any) {
     this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
       computeIndicatorFromStats(indicatorConfig, stats)
     );
+  }
+
+  private redirectToDefaultTabIfNeeded() {
+    if (!this._route.snapshot.params[CD_REF_PARAM_NAME] || this._route.firstChild) {
+      return;
+    }
+
+    const defaultTab = this.routes.TAB_LINKS[0]?.path;
+    if (defaultTab) {
+      this._router.navigate(['./', defaultTab], { relativeTo: this._route });
+    }
   }
 }
