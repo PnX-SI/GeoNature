@@ -30,6 +30,7 @@ setuptools.setup(
             "blueprint = gn_module_occhab.blueprint:blueprint",
             "config_schema = gn_module_occhab.conf_schema_toml:GnModuleSchemaConf",
             "migrations = gn_module_occhab:migrations",
+            "statistics = gn_module_occhab:statistics",
         ],
     },
     classifiers=[
