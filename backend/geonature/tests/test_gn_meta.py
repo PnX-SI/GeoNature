@@ -660,6 +660,30 @@ class TestGNMeta:
         # synthese is at least 1 taxon
         assert data["nb_taxons"] == len(set([s.cd_nom for s in obs]))
 
+    def test_get_dataset_stats(self, users, datasets, synthese_data):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.get(
+            url_for(
+                "gn_meta.get_dataset_stats",
+                id_dataset=ds.id_dataset,
+            )
+        )
+        data = response.json
+        data_dict_nb_obs = data["dict_nb_obs"]
+
+        assert response.status_code == 200
+        expected_nb_observations_habitats = 0
+        assert data_dict_nb_obs["OCCHAB"] == expected_nb_observations_habitats
+        obs = [s for s in synthese_data.values() if s.dataset == ds]
+        expected_nb_observations_synthese = len(obs)
+        assert data_dict_nb_obs["SYNTHESE"] == expected_nb_observations_synthese
+        expected_nb_observations = (
+            expected_nb_observations_synthese + expected_nb_observations_habitats
+        )
+        assert data["total_nb_obs"] == expected_nb_observations
+
     def test_dataset_nb_observations_hybrid_property(self, users, datasets, synthese_data):
         ds = datasets["own_dataset"]
         set_logged_user(self.client, users["user"])

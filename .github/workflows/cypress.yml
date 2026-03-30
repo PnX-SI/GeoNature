@@ -67,6 +67,9 @@ jobs:
           python -m pip install \
             pytest-cov \
             -e ..[tests] \
+            -e '../contrib/occtax' \
+            -e '../contrib/gn_module_occhab' \
+            -e '../contrib/gn_module_validation' \
             -r requirements-dev.txt
         working-directory: ./backend
         # FRONTEND
