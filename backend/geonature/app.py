@@ -27,7 +27,7 @@ from geonature.utils.config import config
 
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
-from geonature.utils.module import iter_modules_dist
+from geonature.utils.module import is_module_installed, iter_modules_dist
 from geonature.utils.json import MyJSONProvider
 from geonature.core.admin.admin import admin
 from geonature.middlewares import SchemeFix, RequestID
@@ -253,10 +253,14 @@ def create_app(with_external_mods=True):
 
         # Loading third-party modules
         if with_external_mods:
+            dict_modules_is_installed = {}
             for module_dist in iter_modules_dist():
                 module_code = module_dist.entry_points["code"].load()
                 if module_code in config["DISABLED_MODULES"]:
                     continue
+                module_name = module_dist.name
+                dict_modules_is_installed[module_name] = is_module_installed(module_name)
+                app.dict_modules_is_installed = dict_modules_is_installed
                 try:
                     module_blueprint = module_dist.entry_points["blueprint"].load()
                 except Exception as e:
