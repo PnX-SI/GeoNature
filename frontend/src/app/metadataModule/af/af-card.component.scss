@@ -3,6 +3,10 @@
   flex-flow: row nowrap;
   justify-content: space-between;
 
+  h5 {
+    font-weight: bold;
+  }
+
   &__left {
     display: flex;
     flex-flow: column nowrap;
@@ -76,9 +80,12 @@ div.c {
 
 .card-header {
   padding: 1rem 1.5rem;
-  margin-bottom: 0;
+  padding-bottom: 0.5rem;
   background-color: transparent;
   border-bottom: 1px solid #edf2f9;
+  h5 {
+    font-weight: bold;
+  }
 }
 
 .bold {
@@ -106,8 +113,8 @@ div.c {
   gap: 10px;
 
   img {
-    width: 3em;
-    height: 3em;
+    width: 4rem;
+    height: 4rem;
   }
 
   .number-div {
@@ -115,15 +122,32 @@ div.c {
     justify-content: end;
     display: flex;
   }
+  .label h5 {
+    margin-bottom: 0 !important;
+    font-weight: bold;
+  }
   .number {
-    font-size: 1.5rem;
-    color: white;
-    background-color: #888;
-    border-radius: 50%;
-    width: 2.2rem;
-    height: 2.2rem;
+    font-size: 1.2rem;
+    // background-color: #666;
+    color: #666;
+    border-radius: 5px;
+    padding: 0px 10px 0px 10px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
+}
+
+.associated-datasets {
+  max-height: 30vh;
+  overflow-y: scroll;
+}
+
+.statistic-card-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
 }
