@@ -385,6 +385,7 @@
       "NameRequired": "Le nom de l'organisme est obligatoire",
       "InvalidEmail": "Veuillez saisir une adresse email valide",
       "SimilarNamesWarning": "Attention : Des organismes avec des noms similaires existent déjà :",
+      "ExactMatchExists": "Un organisme avec ce nom existe déjà vous devez l'utiliser ou saisir un autre nom",
       "NoAdditionalInfo": "Aucune information supplémentaire disponible pour cet organisme.",
       "ShowingResults": "Affichage des résultats",
       "Of": "sur",
