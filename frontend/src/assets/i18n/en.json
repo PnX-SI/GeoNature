@@ -316,6 +316,8 @@
     "Reference": "Reference",
     "ObservationsSyntheseTooltip": "Synthese",
     "ObservationsOcchabTooltip": "Habitats",
+    "DatasetSyntheseButtonTooltipNoData": "There is no data in Synthese for this dataset",
+    "DatasetSyntheseButtonTooltipExistData": "Display data in Synthese",
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Display data"
