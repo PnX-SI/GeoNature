@@ -116,4 +116,12 @@ export class MetadataDatasetComponent implements OnInit {
       return 'MetaData.DatasetSyntheseButtonTooltipExistData';
     }
   }
+
+  getDatasetDeleteButtonTooltip(isForExistData: boolean) {
+    if (isForExistData) {
+      return 'MetaData.DatasetDeleteButtonTooltipNotPossibleExistData';
+    } else {
+      return 'MetaData.DatasetDeleteButtonTooltipNotPossibleMissingPermissions';
+    }
+  }
 }

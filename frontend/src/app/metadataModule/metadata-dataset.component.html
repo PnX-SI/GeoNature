@@ -97,22 +97,22 @@
     </button>
   </ng-template>
 
-  <ng-container *ngIf="!dataset.cruved.D || (dataset?.dict_stats.total_nb_obs || 0) > 0; else elseblock">
-    <button
-      mat-icon-button
-      [disabled]="true"
-      [attr.data-qa]="'pnx-metadata-jdd-delete-' + dataset.unique_dataset_id"
+  <ng-container
+    *ngIf="!dataset.cruved.D || (dataset?.dict_stats.total_nb_obs || 0) > 0; else elseblock"
+  >
+    <span
+      [matTooltip]="
+        getDatasetDeleteButtonTooltip((dataset?.dict_stats.total_nb_obs || 0) > 0) | translate
+      "
     >
-      <mat-icon
-        [matTooltip]="
-          (dataset?.dict_stats.total_nb_obs || 0) > 0
-            ? 'Ce jeu de données contient des données et ne peut pas être supprimé'
-            : 'Vous n\'avez pas les droits nécessaires pour supprimer ce jeu de données'
-        "
+      <button
+        mat-icon-button
+        [disabled]="true"
+        [attr.data-qa]="'pnx-metadata-jdd-delete-' + dataset.unique_dataset_id"
       >
-        delete
-      </mat-icon>
-    </button>
+        <mat-icon>delete</mat-icon>
+      </button>
+    </span>
   </ng-container>
   <ng-template #elseblock>
     <button
@@ -120,8 +120,9 @@
       class="delete-btn"
       (click)="deleteDs(dataset)"
       [attr.data-qa]="'pnx-metadata-jdd-delete-' + dataset.unique_dataset_id"
+      matTooltip="{{ 'MetaData.DatasetDeleteButtonTooltipPossible' | translate }}"
     >
-      <mat-icon matTooltip="Supprimer le jeu de données">delete</mat-icon>
+      <mat-icon>delete</mat-icon>
     </button>
   </ng-template>
 </td>
