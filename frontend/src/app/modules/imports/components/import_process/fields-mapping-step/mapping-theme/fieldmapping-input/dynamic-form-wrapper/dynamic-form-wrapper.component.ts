@@ -25,7 +25,7 @@ export class DynamicFormWrapperComponent {
     if (!this._control) {
       return;
     }
-    if (!value) {
+    if (value == null) {
       this._control.reset();
       return;
     }
