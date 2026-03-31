@@ -348,6 +348,8 @@
     "AdditionalInformation": "Informations additionnelles",
     "ObservationsSyntheseTooltip": "Synthèse ",
     "ObservationsOcchabTooltip": "Habitats ",
+    "DatasetSyntheseButtonTooltipNoData": "Ce jeu de données ne comporte aucune donnée dans la Synthèse",
+    "DatasetSyntheseButtonTooltipExistData": "Afficher les données dans la Synthèse",
 
     "DatasetCard": {
       "Actions": {

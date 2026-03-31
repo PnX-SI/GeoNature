@@ -64,23 +64,17 @@
     <mat-icon>info</mat-icon>
   </a>
 
-  <a
-    mat-icon-button
-    [disabled]="dataset?.synthese_records_count == 0"
-    [routerLink]="['/synthese']"
-    [queryParams]="{ id_dataset: dataset.id_dataset }"
-    [attr.data-qa]="'pnx-metadata-jdd-display-data-' + dataset.unique_dataset_id"
-  >
-    <mat-icon
-      *ngIf="dataset?.synthese_records_count == 0; else elseSynthese"
-      matTooltip="Ce jeu de données ne comporte aucune donnée dans la Synthèse"
+  <span [matTooltip]="getDatasetSyntheseButtonTooltip(dataset?.synthese_records_count) | translate">
+    <a
+      mat-icon-button
+      [disabled]="dataset?.synthese_records_count == 0"
+      [routerLink]="['/synthese']"
+      [queryParams]="{ id_dataset: dataset.id_dataset }"
+      [attr.data-qa]="'pnx-metadata-jdd-display-data-' + dataset.unique_dataset_id"
     >
-      room
-    </mat-icon>
-    <ng-template #elseSynthese>
-      <mat-icon matTooltip="Afficher les données dans la Synthèse">room</mat-icon>
-    </ng-template>
-  </a>
+      <mat-icon>room</mat-icon>
+    </a>
+  </span>
 
   <!-- Button update -->
   <ng-container *ngIf="dataset.cruved.U; else noUpdateButton">

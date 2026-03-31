@@ -108,4 +108,12 @@ export class MetadataDatasetComponent implements OnInit {
       )
       .join('\n');
   }
+
+  getDatasetSyntheseButtonTooltip(nbObservationsSynthese: number) {
+    if (nbObservationsSynthese == 0) {
+      return 'MetaData.DatasetSyntheseButtonTooltipNoData';
+    } else {
+      return 'MetaData.DatasetSyntheseButtonTooltipExistData';
+    }
+  }
 }
