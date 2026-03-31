@@ -314,6 +314,9 @@
     "ObservationsOcchabTooltip": "Habitats ",
     "DatasetSyntheseButtonTooltipNoData": "Ce jeu de données ne comporte aucune donnée dans la Synthèse",
     "DatasetSyntheseButtonTooltipExistData": "Afficher les données dans la Synthèse",
+    "DatasetDeleteButtonTooltipNotPossibleExistData": "Ce jeu de données contient des données et ne peut donc pas être supprimé",
+    "DatasetDeleteButtonTooltipNotPossibleMissingPermissions": "Vous n'avez pas les droits nécessaires pour supprimer ce jeu de données",
+    "DatasetDeleteButtonTooltipPossible": "Supprimer le jeu de données",
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Afficher les données"

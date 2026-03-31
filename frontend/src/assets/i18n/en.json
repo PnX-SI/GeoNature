@@ -318,6 +318,9 @@
     "ObservationsOcchabTooltip": "Habitats",
     "DatasetSyntheseButtonTooltipNoData": "There is no data in Synthese for this dataset",
     "DatasetSyntheseButtonTooltipExistData": "Display data in Synthese",
+    "DatasetDeleteButtonTooltipNotPossibleExistData": "This dataset contains data and thus cannot be deleted",
+    "DatasetDeleteButtonTooltipNotPossibleMissingPermissions": "You do not have the necessary permissions to delete this dataset",
+    "DatasetDeleteButtonTooltipPossible": "Delete the dataset",
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Display data"
