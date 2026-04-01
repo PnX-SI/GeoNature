@@ -199,6 +199,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         for (const key in areaDict) {
           this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
         }
+        this.formatedAreas.sort((a, b) => a.area_type.localeCompare(b.area_type, undefined, { numeric: true }));
 
         if (this.selectedObs['unique_id_sinp']) {
           this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
