@@ -273,6 +273,7 @@ class TAcquisitionFramework(db.Model):
         name = params.get("name")
         date = params.get("date")
         is_parent = params.get("is_parent")
+        opened = params.get("opened")
         query = (
             query.where(
                 TAcquisitionFramework.unique_acquisition_framework_id == uuid if uuid else True
@@ -284,6 +285,7 @@ class TAcquisitionFramework(db.Model):
             )
             .where(TAcquisitionFramework.acquisition_framework_start_date == date if date else True)
             .where(TAcquisitionFramework.is_parent == is_parent if is_parent is not None else True)
+            .where(TAcquisitionFramework.opened == opened if opened is not None else True)
         )
 
         actors = []
