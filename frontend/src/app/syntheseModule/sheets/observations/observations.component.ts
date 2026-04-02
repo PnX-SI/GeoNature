@@ -92,7 +92,6 @@ export class ObservationsComponent extends Loadable implements OnInit {
   }
 
   updateObservations() {
-    console.log('updateObservations');
     this.startLoading();
 
     const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
