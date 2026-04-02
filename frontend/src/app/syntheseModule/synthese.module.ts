@@ -52,14 +52,6 @@ const routes: Routes = [
     canActivate: [TaxonSheetRouteService],
     canActivateChild: [TaxonSheetRouteService],
     children: [
-      // auto redirect to the first mandatory tab
-      {
-        path: '',
-        redirectTo: ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.find(
-          (path) => path.configEnabledField === null
-        ).path,
-        pathMatch: 'full',
-      },
       ...ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES.map((tab) => {
         return {
           path: tab.path,
@@ -74,16 +66,6 @@ const routes: Routes = [
     canActivate: [ObserverSheetRouteService],
     canActivateChild: [ObserverSheetRouteService],
     children: [
-      // auto redirect to the first mandatory tab
-      {
-        path: '',
-        redirectTo: ALL_OBSERVERS_ADVANCED_INFOS_ROUTES.find(
-          (path) => path.configEnabledField === null
-        ).path,
-        pathMatch: 'full',
-      },
-      // The tabs are all optional. therefore, we can't apply redireciotn here.
-      // A redirection from parent to child is apply in canActivate
       ...ALL_OBSERVERS_ADVANCED_INFOS_ROUTES.map((tab) => {
         return {
           path: tab.path,

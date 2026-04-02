@@ -466,6 +466,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     ENABLE_OBSERVER_SHEETS = true
     [SYNTHESE.OBSERVER_SHEET]
         # Options dédiées à la fiche observateur
+        # Permet d'activer ou non la section "Observations"
+        ENABLE_TAB_OBSERVATIONS = true
         # Permet d'activer ou non la section "Medias"
         ENABLE_TAB_MEDIA = true
         # Affiche la section overview
