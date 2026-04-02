@@ -35,11 +35,9 @@ class ReleveRepository:
     def filter_query_with_autorization(self, user, scope):
         """
         Filter with autorized data via cruved
-        and via the current_module (only datasets of this module)
+        and via the current_module
         """
-        q = select(self.model).where(
-            self.model.id_dataset.in_(tuple(map(lambda x: x.id_dataset, g.current_module.datasets)))
-        )
+        q = select(self.model).where(self.model.id_module == g.current_module.id_module)
         allowed_datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).unique().all()
         allowed_datasets = [dataset.id_dataset for dataset in allowed_datasets]
         if scope == 2:
