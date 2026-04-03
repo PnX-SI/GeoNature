@@ -160,7 +160,6 @@
       }
     }],
     "CD_NOMENCLATURE_ROLE_TYPE_AF": [],
-    "ENABLE_CLOSE_AF": false,
     "CLOSED_MODAL_CONTENT": "L'action de fermeture est irr\u00e9versible. Il ne sera\n    plus possible d'ajouter des jeux de donn\u00e9es au cadre d'acquisition par la suite.",
     "CLOSED_AF_TITLE": "",
     "CD_NOMENCLATURE_ROLE_TYPE_DS": [],
