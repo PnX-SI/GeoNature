@@ -608,8 +608,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 [METADATA]
     # Nombre de cadre d'acquisition affiché sur la liste
     NB_AF_DISPLAYED = 100
-    # activer la fonctionalité de dépot/publication
-    ENABLE_CLOSE_AF = false
 
     AF_PDF_TITLE = ""
     DS_PDF_TITLE = ""
