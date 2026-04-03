@@ -216,6 +216,11 @@ export class MetadataComponent implements OnInit {
     this.modal.dismissAll();
   }
 
+  openAf(click_event: MouseEvent, af_id: number) {
+    click_event.stopPropagation(); // so we don't open/close the accordion
+    this._dfs.openAf(af_id).subscribe((res) => this.metadataService.getMetadata());
+  }
+
   get totalItems(): number {
     return this.metadataService.totalItems.value;
   }
