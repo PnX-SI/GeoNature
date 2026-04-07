@@ -42,6 +42,11 @@ export class NavHomeComponent implements OnInit {
     return this.i18nService.currentLang;
   }
 
+  get displayName(): string {
+    const { prenom_role, nom_role, user_login } = this.currentUser ?? {};
+    return prenom_role && nom_role ? `${prenom_role} ${nom_role}` : user_login;
+  }
+
   ngOnInit() {
     // Set the current module name in the navbar
     this.onModuleChange();

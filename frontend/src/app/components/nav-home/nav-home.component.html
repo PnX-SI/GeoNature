@@ -64,9 +64,7 @@
             [matMenuTriggerFor]="userMenu"
           >
             <mat-icon>person</mat-icon>
-            <span class="user-name">
-              {{ currentUser?.prenom_role }} {{ currentUser?.nom_role }}
-            </span>
+            <span class="user-name">{{ displayName }}</span>
           </button>
 
           <mat-menu #userMenu>
@@ -105,9 +103,7 @@
         <ng-template #userDisplay>
           <div class="UserDisplay">
             <mat-icon>person</mat-icon>
-            <span class="user-name">
-              {{ currentUser?.prenom_role }} {{ currentUser?.nom_role }}
-            </span>
+            <span class="user-name">{{ displayName }}</span>
           </div>
         </ng-template>
 
