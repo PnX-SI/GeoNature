@@ -17,6 +17,7 @@
   </div>
   <div class="row">
     <div class="col-8">
+      <!-- title -->
       <div class="card">
         <div class="card-body af-card-header">
           <div class="af-card-header__left">
@@ -66,90 +67,98 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div
-    *ngIf="stats"
-    class="row col-8 statistic-card-container"
-  >
-    <!-- Nombre de JDD -->
-    <div class="col">
-      <div class="card">
-        <div class="card-body">
-          <div class="statistic-card">
-            <img src="./assets/images/JDD_icon.svg" />
-            <div class="label">
-              <h5>Jeu de données</h5>
+      <!-- stats -->
+      <div
+        *ngIf="stats"
+        class="row statistic-card-container"
+      >
+        <!-- Nombre de JDD -->
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="statistic-card">
+                <img
+                  src="./assets/images/JDD_icon.svg"
+                  alt="Icône Jeu de données"
+                />
+                <div class="label">
+                  <h5>Jeu de données</h5>
+                </div>
+                <div class="number-div">
+                  <span class="number">{{ stats.nb_dataset }}</span>
+                </div>
+              </div>
             </div>
-            <div class="number-div">
-              <span class="number">{{ stats.nb_dataset }}</span>
+          </div>
+        </div>
+
+        <!-- Nombre d'observation -->
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="statistic-card">
+                <img
+                  src="./assets/images/Donnee_icon.svg"
+                  alt="Icône Donnée"
+                />
+                <div class="label">
+                  <h5>Observations</h5>
+                </div>
+                <div class="number-div">
+                  <span class="number">{{ stats.nb_observations }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nombre de taxons -->
+        <div
+          *ngIf="stats.nb_taxons"
+          class="col"
+        >
+          <div class="card">
+            <div class="card-body">
+              <div class="statistic-card">
+                <img
+                  src="./assets/images/Taxon_icon.svg"
+                  alt="Icône Taxon"
+                />
+                <div class="label">
+                  <h5>Taxons</h5>
+                </div>
+                <div class="number-div">
+                  <span class="number">{{ stats.nb_taxons }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nombre d'habitats -->
+        <div
+          *ngIf="stats.nb_habitats"
+          class="col"
+        >
+          <div class="card">
+            <div class="card-body">
+              <div class="statistic-card">
+                <img
+                  src="./assets/images/Habitat_icon.svg"
+                  alt="Icône Habitat"
+                />
+                <div class="label">
+                  <h5>Habitats</h5>
+                </div>
+                <div class="number-div">
+                  <span class="number">{{ stats.nb_habitats }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Nombre d'observation -->
-    <div class="col">
-      <div class="card">
-        <div class="card-body">
-          <div class="statistic-card">
-            <img src="./assets/images/Donnee_icon.svg" />
-            <div class="label">
-              <h5>Observations</h5>
-            </div>
-            <div class="number-div">
-              <span class="number">{{ stats.nb_observations }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Nombre de taxons -->
-    <div
-      *ngIf="stats.nb_taxons"
-      class="col"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="statistic-card">
-            <img src="./assets/images/Taxon_icon.svg" />
-            <div class="label">
-              <h5>Taxons</h5>
-            </div>
-            <div class="number-div">
-              <span class="number">{{ stats.nb_taxons }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Nombre d'habitats -->
-    <div
-      *ngIf="stats.nb_habitats"
-      class="col"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="statistic-card">
-            <img src="./assets/images/Habitat_icon.svg" />
-            <div class="label">
-              <h5>Habitats</h5>
-            </div>
-            <div class="number-div">
-              <span class="number">{{ stats.nb_habitats }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8">
+      <!-- ca des -->
       <div class="card">
         <div class="card-header">
           <h5>Fiche descriptive</h5>
@@ -322,8 +331,7 @@
         </div>
       </div>
     </div>
-
-    <div class="col-xs-6 col-sm-4">
+    <div class="col-4">
       <!-- BBOX -->
       <div
         *ngIf="bbox"
