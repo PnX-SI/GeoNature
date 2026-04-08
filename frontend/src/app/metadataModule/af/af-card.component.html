@@ -3,7 +3,7 @@
   *ngIf="af"
 >
   <div class="row">
-    <div class="col-5">
+    <div class="col-12 col-md-6">
       <a
         mat-raised-button
         routerLink="/metadata"
@@ -16,7 +16,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-8">
+    <div class="col-12 col-xl-8">
       <!-- title -->
       <div class="card">
         <div class="card-body af-card-header">
@@ -26,14 +26,13 @@
               {{ af?.acquisition_framework_name }}
             </h4>
           </div>
-          <div class="af-card-header__right">
+          <div class="af-card-header__right mt-2 mt-lg-0">
             <button
               [routerLink]="['/metadata/af', af?.id_acquisition_framework]"
               [disabled]="!af?.cruved?.U"
               mat-mini-fab
-              style="color: #fff; background-color: #f39c12"
+              class="mr-2 af-edit-button"
               matTooltip="Editer le cadre d'acquisition"
-              class="mr-2"
             >
               <mat-icon>create</mat-icon>
             </button>
@@ -70,10 +69,10 @@
       <!-- stats -->
       <div
         *ngIf="stats"
-        class="row statistic-card-container"
+        class="row"
       >
         <!-- Nombre de JDD -->
-        <div class="col">
+        <div class="col-12 col-sm-6 col-lg-4 mb-3">
           <div class="card">
             <div class="card-body">
               <div class="statistic-card">
@@ -93,7 +92,7 @@
         </div>
 
         <!-- Nombre d'observation -->
-        <div class="col">
+        <div class="col-12 col-sm-6 col-lg-4 mb-3">
           <div class="card">
             <div class="card-body">
               <div class="statistic-card">
@@ -115,7 +114,7 @@
         <!-- Nombre de taxons -->
         <div
           *ngIf="stats.nb_taxons"
-          class="col"
+          class="col-12 col-sm-6 col-lg-4 mb-3"
         >
           <div class="card">
             <div class="card-body">
@@ -138,7 +137,7 @@
         <!-- Nombre d'habitats -->
         <div
           *ngIf="stats.nb_habitats"
-          class="col"
+          class="col-12 col-sm-6 col-lg-4 mb-3"
         >
           <div class="card">
             <div class="card-body">
@@ -331,7 +330,7 @@
         </div>
       </div>
     </div>
-    <div class="col-4">
+    <div class="col-12 col-xl-4">
       <!-- BBOX -->
       <div
         *ngIf="bbox"
@@ -362,7 +361,7 @@
           <h5>Répartition des espèces</h5>
         </div>
         <div class="card-body">
-          <div style="display: block">
+          <div class="chart-wrapper">
             <canvas
               baseChart
               *ngIf="pieChartData[0].data.length"
@@ -411,7 +410,7 @@
               <td>
                 <a
                   [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
-                  style="color: black"
+                  class="text-dark"
                 >
                   {{ dataset.dataset_name }}
                 </a>
