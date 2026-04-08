@@ -125,6 +125,8 @@
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Espèces",
+  "Habitat": "Habitat",
+  "Habitats": "Habitats",
 
   "Sex": "Sexe",
   "LifeStage": "Stade de vie",
@@ -164,6 +166,7 @@
   "All": "Tous",
   "Aim": "Objectif",
   "Aims": "Objectifs",
+  "Objectives": "Objectifs",
   "Title": "Titre",
   "Description": "Description",
   "Validable": "Validable",
@@ -172,6 +175,7 @@
   "Active": "Actif",
 
   "Date": "Date",
+  "Dates": "Dates",
   "MaxDate": "Date fin",
   "MinDate": "Date début",
   "HourMin": "Heure début",
@@ -183,6 +187,7 @@
   "MaxDepth": "Profondeur max",
   "HourFormat": "hh:mm",
   "Label": "Libellé",
+  "Url": "URL",
   "Keywords": "Mots-clés",
 
   "Detail": "Détail",
@@ -263,6 +268,25 @@
     "DataAmount": "Nombre de données",
     "StakeholderOrganization": "Acteur (organisme)",
     "DataSources": "Sources des données",
+    "DescriptiveForm": "Fiche descriptive",
+    "ID": "Identification",
+    "IDSINPCA": "Identifiant SINP du cadre d'acquisition",
+    "IDGeoNature": "Identifiant GeoNature du cadre d'acquisition",
+    "IsParent": "Est un méta-cadre",
+    "ParentID": "Identifiant du méta-cadre",
+    "StartDate": "Date de lancement du cadre d'acquisition",
+    "EndDate": "Date de clôture du cadre d'acquisition",
+    "CoveredTerritories": "Territoires concernés",
+    "TerritorialExtent": "Étendue territoriale",
+    "TaxonomicTarget": "Cible taxonomique",
+    "Creator": "Créateur du cadre d'acquisition",
+    "FinancingType": "Type de financement",
+    "Financing": "Financement",
+    "BibliographicalReferences": "Références bibliographiques",
+    "GeographicalArea": "Zone géographique",
+    "SpeciesDistribution": "Répartition des espèces",
+    "AssociatedDatasets": "Jeux de données associés",
+    "Reference": "Référence",
 
     "DatasetCard": {
       "Actions": {

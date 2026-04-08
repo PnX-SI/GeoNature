@@ -124,6 +124,8 @@
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Species",
+  "Habitat": "Habitat",
+  "Habitats": "Habitats",
 
   "Sex": "Sex",
   "LifeStage": "Life Stage",
@@ -164,6 +166,7 @@
   "All": "All",
   "Aim": "Objective",
   "Aims": "Objectives",
+  "Objectives": "Objectives",
   "Title": "Title",
   "Description": "Description",
   "Validable": "Validable",
@@ -172,6 +175,7 @@
   "Active": "Active",
 
   "Date": "Date",
+  "Dates": "Dates",
   "MaxDate": "End Date",
   "MinDate": "Start Date",
   "HourMin": "Start Time",
@@ -183,6 +187,7 @@
   "MaxDepth": "Max Depth",
   "HourFormat": "hh:mm",
   "Label": "Label",
+  "Url": "URL",
   "Keywords": "Keywords",
 
   "Detail": "Detail",
@@ -263,6 +268,25 @@
     "DataAmount": "Amount of data",
     "StakeholderOrganization": "Stakeholder (organization)",
     "DataSources": "Data sources",
+    "DescriptiveForm": "Descriptive form",
+    "ID": "Identification",
+    "IDSINPCA": "SINP ID of the acquisition framework",
+    "IDGeoNature": "GeoNature ID of the acquisition framework",
+    "IsParent": "Is a meta framework",
+    "ParentID": "Meta framework ID",
+    "StartDate": "Start date of the acquisition framework",
+    "EndDate": "End date of the acquisition framework",
+    "CoveredTerritories": "Covered territories",
+    "TerritorialExtent": "Territorial extent",
+    "TaxonomicTarget": "Taxonomic target",
+    "Creator": "Acquisition framework creator",
+    "FinancingType": "Funding type",
+    "Financing": "Funding",
+    "BibliographicalReferences": "Bibliographical references",
+    "GeographicalArea": "Geographical area",
+    "SpeciesDistribution": "Species distribution",
+    "AssociatedDatasets": "Associated datasets",
+    "Reference": "Reference",
 
     "DatasetCard": {
       "Actions": {
