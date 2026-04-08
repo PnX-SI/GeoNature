@@ -43,8 +43,8 @@ export class NavHomeComponent implements OnInit {
   }
 
   get displayName(): string {
-    const { prenom_role, nom_role, user_login } = this.currentUser ?? {};
-    return prenom_role && nom_role ? `${prenom_role} ${nom_role}` : user_login;
+    const { nom_complet, user_login } = this.currentUser ?? {};
+    return nom_complet ? nom_complet : user_login;
   }
 
   ngOnInit() {
