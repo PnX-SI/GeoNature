@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2.17.1 (2026-04-09)
+
+### 🚀 Nouveautés
+
+- [Métadonnées] Amélioration de la page de détail des cadres d'acquisition(#4063 et #4050 par @jacquesfize)
+- [Synthèse] Ajout d'une clé étrangère sur la colonne `id_import` de `gn_synthese.synthese` (#4000 par @jacquesfize)
+- [Accueil] Affichage du nom et du prénom au lieu de l'identifiant dans la barre de navigation (#4043 par @edelclaux)
+- [Développement] Ajout de la fonction `is_module_installed` dans `module.py` (#3971 par @VincentCauchois)
+- [Import] Le paramètre `default_value_mapping` supporte désormais plusieurs destinations (#3801 par @VincentCauchois)
+
+### 🐛 Corrections
+
+- [Général] Correction du filtre sur `id_module` (#4048 par @TheoLechemia)
+- [Import] La valeur booléenne `false` n'est plus interprétée comme `null` dans le formulaire de type checkbox (#4039 par @edelclaux)
+- [Import] Affichage des erreurs dans le rapport PDF d'import (#4045 par @VincentCauchois)
+- [MétaDonnées] Correction des statistiques et refactorisation de la génération des PDF (#3985 par @christophe-ramet)
+- [FicheTaxon] Correction de l'affichage de la carte dans la section profil de la fiche taxon (#4052 par @jacquesfize)
+- [FicheTaxon] Correction du chargement de la carte dans l'onglet "Observations" de la fiche taxon (#4051 par @jacquesfize)
+- [FicheTaxon] Correction de la configuration des fiches (#3997 par @edelclaux)
+- [Métadonnées] Suppression d'un double appel API à l'initialisation du composant des cadres d'acquisition (#3988 par @VincentCauchois)
+
 ## 2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-12)
 
 ### ▶️ En bref
