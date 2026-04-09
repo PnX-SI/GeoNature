@@ -1,20 +1,22 @@
 import pathlib
-from io import TextIOWrapper
 from contextlib import ExitStack, nullcontext
+from io import TextIOWrapper
 from zipfile import ZipFile
 
 import click
 from flask import Blueprint, current_app
-from sqlalchemy import func, select
-from sqlalchemy.schema import Table
-
 from geonature.utils.env import db
-
+from sqlalchemy import func, select
+from sqlalchemy.orm import aliased
+from sqlalchemy.schema import Table
 from utils_flask_sqla.utils import remote_file
 
-from .models import SensitivityRule
-from .utils import remove_sensitivity_referential, insert_sensitivity_referential
-
+from geonature.core.sensitivity.models import SensitivityRule
+from apptax.taxonomie.models import Taxref, TaxrefTree
+from geonature.core.sensitivity.utils import (
+    insert_sensitivity_referential,
+    remove_sensitivity_referential,
+)
 
 routes = Blueprint("sensitivity", __name__)
 
@@ -32,18 +34,17 @@ def info():
     )
     total_count = db.session.scalar(select(func.count("*")).select_from(SensitivityRule))
 
-    click.echo("Nombre de règle de sensibilité :")
-    click.echo("\tTotal : {}".format(total_count))
+    click.echo(f"Nombre total de règle de sensibilité :{total_count}")
     click.echo(
-        "\tRègles actives : {}".format(
+        "Nombre de règles actives : {}".format(
             db.session.scalar(
                 select(func.count("*")).select_from(SensitivityRule).filter_by(active=True)
             )
         )
     )
     click.echo(
-        "\tRègles actives extrapolées aux taxons enfants : {}".format(
-            db.session.scalar(select(func.count(SensitivityRuleCache.c.id_sensitivity)))
+        "Nombre de taxons concernés par les règles actives : {}".format(
+            db.session.scalar(select(func.count(func.distinct(SensitivityRuleCache.c.cd_ref))))
         )
     )
 
@@ -61,38 +62,6 @@ def info():
         )
         for source, active_count, total_count in db.session.execute(q).all():
             click.echo(f"\t{source} : {active_count} / {total_count}")
-
-    click.echo(f"Nombre de taxons :")
-    click.echo(
-        "\tTotal : {}".format(
-            db.session.scalar(
-                select(func.count("*"))
-                .select_from(SensitivityRule)
-                .distinct(SensitivityRule.cd_nom)
-                .group_by(SensitivityRule.cd_nom)
-                .order_by(SensitivityRule.cd_nom)
-            )
-        )
-    )
-    click.echo(
-        "\tRègles actives : {}".format(
-            db.session.scalar(
-                select(func.count("*"))
-                .select_from(SensitivityRule)
-                .filter_by(active=True)
-                .distinct(SensitivityRule.cd_nom)
-                .group_by(SensitivityRule.cd_nom)
-                .order_by(SensitivityRule.cd_nom)
-            )
-        )
-    )
-    click.echo(
-        "\tRègles actives extrapolées aux taxons enfants : {}".format(
-            db.session.scalar(
-                select(func.count(func.distinct(SensitivityRuleCache.c.cd_nom)).label("count"))
-            )
-        )
-    )
 
 
 @routes.cli.command()
