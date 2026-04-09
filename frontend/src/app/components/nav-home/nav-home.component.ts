@@ -47,6 +47,10 @@ export class NavHomeComponent implements OnInit {
     return nom_complet ? nom_complet : user_login;
   }
 
+  get displayOrganism(): string | null {
+    return this.currentUser?.nom_organisme ?? null;
+  }
+
   ngOnInit() {
     // Set the current module name in the navbar
     this.onModuleChange();

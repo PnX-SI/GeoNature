@@ -16,6 +16,7 @@ export interface User {
   user_login: string;
   id_role: string;
   id_organisme: number;
+  nom_organisme?: string;
   prenom_role?: string;
   nom_role?: string;
   nom_complet?: string;
@@ -99,6 +100,7 @@ export class AuthService {
       nom_role: data.user.nom_role,
       nom_complet: data.user.nom_role + ' ' + data.user.prenom_role,
       id_organisme: data.user.id_organisme,
+      nom_organisme: data.user.organisme?.nom_organisme,
       providers: data.user.providers.map((provider) => provider.name),
     };
     this.setCurrentUser(userForFront);
