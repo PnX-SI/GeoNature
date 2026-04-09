@@ -29,7 +29,7 @@
     </div>
     <!-- Warning for similar organism names -->
     <div
-      *ngIf="showSimilarWarning"
+      *ngIf="showSimilarWarning && !exactMatchExists"
       class="similar-warning"
     >
       <mat-icon class="warning-icon">warning</mat-icon>
