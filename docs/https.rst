@@ -108,7 +108,6 @@ UsersHub avec les nouvelles urls en "https" dans ~/usershub/config/config.py :
 et dans ~/usershub/config/settings.ini :
 
 ::
->
   url_application=https://mondomaine.fr/usershub
 
 
