@@ -34,7 +34,7 @@ def info():
     )
     total_count = db.session.scalar(select(func.count("*")).select_from(SensitivityRule))
 
-    click.echo(f"Nombre total de règle de sensibilité :{total_count}")
+    click.echo(f"Nombre total de règles de sensibilité : {total_count}")
     click.echo(
         "Nombre de règles actives : {}".format(
             db.session.scalar(
