@@ -1,5 +1,6 @@
 import datetime as dt
 from geonature.utils.env import db
+from geonature.utils.module import is_module_installed
 from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
 from geonature.core.gn_synthese.models import Synthese
@@ -34,7 +35,11 @@ def get_acquisition_framework_stats(id_acquisition_framework):
 
     nb_habitats = 0
 
-    if "OCCHAB" in config and nb_datasets > 0:
+    if (
+        is_module_installed("gn_module_occhab", check_if_all_revisions_have_been_applied=False)
+        and nb_datasets > 0
+    ):
+
         nb_habitats = db.session.execute(
             select(func.count("*"))
             .select_from(OccurenceHabitat)
