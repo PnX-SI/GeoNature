@@ -668,6 +668,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     id_nomenclature_behaviour = DB.Column(DB.Integer)
+    id_nomenclature_biogeo_status = DB.Column(DB.Integer)
     reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
