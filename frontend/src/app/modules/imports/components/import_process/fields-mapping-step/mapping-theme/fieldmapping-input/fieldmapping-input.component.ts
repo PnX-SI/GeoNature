@@ -277,7 +277,10 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   switchInputType() {
     if (this.inputState == InputStackState.INPUT_FILE) {
       this.inputState = InputStackState.CONSTANT;
-      if (this.constantValue == null && this._field.type_field === 'boolean') {
+      if (
+        this.constantValue == null &&
+        ['boolean', 'bool_checkbox'].includes(this._field.type_field)
+      ) {
         this.constantValue = false;
       }
       this.value = this.constantValue != null ? { constant_value: this.constantValue } : null;
