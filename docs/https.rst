@@ -94,4 +94,24 @@ Modifier les éléments suivants :
 
 Pour que ces modifications soient prises en compte, exécuter les :ref:`actions à effecture après modification de la configuration <post_config_change>`.
 
+Configuration de l'application UsersHub
+---------------------------------------
+
+Il est aussi nécessaire de mettre à jour les fichiers de configuration de
+UsersHub avec les nouvelles urls en "https" dans ~/usershub/config/config.py :
+
+.. code:: python
+	
+  URL_APPLICATION = 'https://mondomaine.fr/usershub'
+
+
+et dans ~/usershub/config/settings.in :
+
+.. code:: ini
+>
+  url_application=https://mondomaine.fr/usershub
+
+
+Puis de suivre les instructions de l’installation de UsersHub
+
 Les applications sont désormais accessibles sur votre domaine sécurisé en HTTPS !
