@@ -26,6 +26,33 @@ mat-form-field {
   display: block;
 }
 
+.exact-match-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background-color: #fee;
+  border: 1px solid #ff0707;
+  border-radius: 4px;
+  color: #ff0707;
+
+  .error-icon {
+    color: #ff0707;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .error-content {
+    flex: 1;
+
+    strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+  }
+}
+
 .similar-warning {
   display: flex;
   align-items: flex-start;
