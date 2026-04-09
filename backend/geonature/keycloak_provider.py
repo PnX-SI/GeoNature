@@ -164,7 +164,7 @@ class KeycloakOrganismProvider(OpenIDConnectProvider):
                 resp.status_code,
                 resp.text[:200],
             )
-        if 'search_resp' in locals() and not search_resp.ok:
+        if "search_resp" in locals() and not search_resp.ok:
             current_app.logger.warning(
                 "Keycloak groups search failed for %s: %s - %s",
                 leaf_name,
@@ -217,7 +217,11 @@ class KeycloakOrganismProvider(OpenIDConnectProvider):
             organism_by_uuid = db.session.execute(
                 sa.select(models.Organisme).where(models.Organisme.uuid_organisme == org_uuid)
             ).scalar_one_or_none()
-            if organism and organism_by_uuid and organism.id_organisme != organism_by_uuid.id_organisme:
+            if (
+                organism
+                and organism_by_uuid
+                and organism.id_organisme != organism_by_uuid.id_organisme
+            ):
                 current_app.logger.warning(
                     "Organism mismatch between id_organisme=%s and uuid_organisme=%s",
                     org_id,
@@ -266,9 +270,7 @@ class KeycloakOrganismProvider(OpenIDConnectProvider):
 
         user_info = token["userinfo"]
         source_groups = (
-            user_info[self.group_claim_name]
-            if self.group_claim_name in user_info
-            else []
+            user_info[self.group_claim_name] if self.group_claim_name in user_info else []
         )
 
         organism = self._resolve_organism(user_info, source_groups)
