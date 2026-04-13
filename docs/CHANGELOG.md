@@ -9,7 +9,7 @@
 - [Accueil] Affichage du nom et du prénom au lieu de l'identifiant dans la barre de navigation (#4043 par @edelclaux)
 - [Développement] Ajout de la fonction `is_module_installed` dans `module.py` (#3971 par @VincentCauchois)
 - [Import] Le paramètre `DEFAULT_VALUE_MAPPINGS` remplace `DEFAULT_VALUE_MAPPING_ID` et supporte désormais un ID de mapping de nomenclature par défaut par destination (#3801 par @VincentCauchois)
-- [Documentation] Compléments concernant UsersHub dans la section du passage en HTTPS
+- [Documentation] Compléments concernant UsersHub dans la section du passage en HTTPS (#4073 par @tsevere-cenpaca)
 
 ### 🐛 Corrections
 
