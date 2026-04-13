@@ -201,6 +201,8 @@ CREATE TRIGGER tri_update_calculate_sensitivity BEFORE UPDATE OF date_min, date_
 CREATE TRIGGER tri_update_cor_area_synthese AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese FOR EACH ROW EXECUTE FUNCTION gn_synthese.fct_trig_update_in_cor_area_synthese();
 
 ALTER TABLE ONLY gn_synthese.synthese
+
+ALTER TABLE ONLY gn_synthese.synthese
     ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY gn_synthese.synthese
