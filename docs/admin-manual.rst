@@ -1021,32 +1021,23 @@ Supervision des services
 Supervision de Celery
 """""""""""""""""""""
 
-GeoNature lance un worker Celery en arrière plan, notamment pour lancer des tâches programmées (validation automatique, génération d'exports, synchronisation des médias...).
+GeoNature utilise [Celery](https://docs.celeryq.dev/en/main/getting-started/introduction.html) pour lancer en arrière-plan des tâches asynchrones, qui peuvent prendre du temps (validation automatique, génération d'exports, import de données, synchronisation des médias, etc.).
 
 La commande ``systemctl status geonature-worker`` permet de connaître l'état du worker Celery et de visualiser la commande qui a été utilisée pour le lancer.
 
 Celery propose `de nombreuses commandes <https://docs.celeryq.dev/en/stable/userguide/monitoring.html#management-command-line-utilities-inspect-control>`_ utiles pour la supervision du worker. Elles peuvent être utilisées pour avoir des stats sur le worker, pour voir la liste des tâches enregistrées, planifiées ou révoquées, ou encore lancer une tâche manuellement.
 
-Notes :
+.. note::
 
 - Les commandes Celery doivent être lancées depuis l'environnement de GeoNature, donc après un``source backend/venv/bin/activate``
 - Le nom de l'application, à passer via l'argument ``-A proj``, est celui qui a été utilisé pour lancer le worker
 
-En cas de modification d'une tâche, il faut relancer le service geonature (``systemctl restart geonature``) puis le worker (``systemctl restart geonature-worker``) pour que les modifs soient prises en compte.
-
-Pour lancer manuellement le worker en mode debug, et avoir des logs plus complets dans la console (à lancer dans un shell séparé) :
+Pour une analyse d'erreur plus fine, il est possible de relancer le worker en changeant le niveau de log à l'aide du paramètre ``--loglevel`` (https://docs.celeryq.dev/en/main/reference/cli.html#cmdoption-celery-worker-l) dans celery.
 
 .. code-block:: console
 
-    sudo systemctl stop geonature-worker
-
+    # Ne pas oublier de désactiver le worker
     celery -A geonature.celery_app:app worker --beat --logfile=/var/log/geonature/geonature-worker.log --loglevel=DEBUG
-                                                       ^ optionnelle, pour avoir les logs
-                                                         au même endroit que les logs de prod
-
-    # ctrl + D pour interrompre le worker de test
-
-    sudo systemctl start geonature-worker
 
 Maintenance
 """""""""""
