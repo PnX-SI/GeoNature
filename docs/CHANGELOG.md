@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2.17.1 (2026-04-13)
+
+### 🚀 Nouveautés
+
+- [Métadonnées] Amélioration de la page de détail des cadres d'acquisition (#4063 et #4050 par @jacquesfize)
+- [Synthèse] Ajout d'une clé étrangère sur la colonne `id_import` de `gn_synthese.synthese` vers `gn_imports.t_imports` (#4000 par @jacquesfize)
+- [Accueil] Affichage du nom et du prénom au lieu de l'identifiant dans la barre de navigation (#4043 par @edelclaux)
+- [Développement] Ajout de la fonction `is_module_installed` dans `module.py` (#3971 par @VincentCauchois)
+- [Import] Le paramètre `DEFAULT_VALUE_MAPPINGS` remplace `DEFAULT_VALUE_MAPPING_ID` et supporte désormais un ID de mapping de nomenclature par défaut par destination (#3801 par @VincentCauchois)
+
+### 🐛 Corrections
+
+- [Occtax] Correction du filtre sur `id_module` (#4048 par @TheoLechemia)
+- [Import] La valeur booléenne `false` n'est plus interprétée comme `null` dans le formulaire de type checkbox (#4039 par @edelclaux)
+- [Import] Affichage des erreurs dans le rapport PDF d'import (#4045 par @VincentCauchois)
+- [Métadonnées] Correction des statistiques et refactorisation de la génération des PDF (#3985 par @christophe-ramet)
+- [Fiche Taxon] Correction de l'affichage de la carte dans l'onglet "Profil" des fiches taxon (#4052 par @jacquesfize)
+- [Fiche Taxon] Correction du chargement de la carte dans l'onglet "Observations" des fiches taxon (#4051 par @jacquesfize)
+- [Fiche Taxon] Correction de la configuration de l'affichage des onglets des fiches (#3997 par @edelclaux)
+- [Métadonnées] Suppression d'un double appel API à l'initialisation du composant des cadres d'acquisition (#3988 par @VincentCauchois)
+
 ## 2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-12)
 
 ### ▶️ En bref
