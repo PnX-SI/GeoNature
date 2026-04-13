@@ -1028,6 +1028,7 @@ La commande ``systemctl status geonature-worker`` permet de connaître l'état d
 Celery propose `de nombreuses commandes <https://docs.celeryq.dev/en/stable/userguide/monitoring.html#management-command-line-utilities-inspect-control>`_ utiles pour la supervision du worker. Elles peuvent être utilisées pour avoir des stats sur le worker, pour voir la liste des tâches enregistrées, planifiées ou révoquées, ou encore lancer une tâche manuellement.
 
 Notes :
+
 - Les commandes Celery doivent être lancées depuis l'environnement de GeoNature, donc après un``source backend/venv/bin/activate``
 - Le nom de l'application, à passer via l'argument ``-A proj``, est celui qui a été utilisé pour lancer le worker
 
@@ -1036,6 +1037,7 @@ En cas de modification d'une tâche, il faut relancer le service geonature (``sy
 Pour lancer manuellement le worker en mode debug, et avoir des logs plus complets dans la console (à lancer dans un shell séparé) :
 
 .. code-block:: console
+
     sudo systemctl stop geonature-worker
 
     celery -A geonature.celery_app:app worker --beat --logfile=/var/log/geonature/geonature-worker.log --loglevel=DEBUG
