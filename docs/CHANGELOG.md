@@ -21,7 +21,7 @@
 - [Fiche Taxon] Correction du chargement de la carte dans l'onglet "Observations" des fiches taxon (#4051 par @jacquesfize)
 - [Fiche Taxon] Correction de la configuration de l'affichage des onglets des fiches (#3997 par @edelclaux)
 - [Métadonnées] Suppression d'un double appel API à l'initialisation du composant des cadres d'acquisition (#3988 par @VincentCauchois)
-- [Métadonnées] Remplacement de l'erreur remonté lors de la création d'un organisme avec un nom déjà utilisé(#3990 par @christophe-ramet)
+- [Métadonnées] Remplacement de l'erreur affichée lors de la création d'un organisme avec un nom déjà utilisé (#3990 par @christophe-ramet)
 
 ## 2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-12)
 
