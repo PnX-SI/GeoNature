@@ -9,6 +9,7 @@
 - [Accueil] Affichage du nom et du prénom au lieu de l'identifiant dans la barre de navigation (#4043 par @edelclaux)
 - [Développement] Ajout de la fonction `is_module_installed` dans `module.py` (#3971 par @VincentCauchois)
 - [Import] Le paramètre `DEFAULT_VALUE_MAPPINGS` remplace `DEFAULT_VALUE_MAPPING_ID` et supporte désormais un ID de mapping de nomenclature par défaut par destination (#3801 par @VincentCauchois)
+- [Documentation] Compléments concernant UsersHub dans la section du passage en HTTPS (#4073 par @tsevere-cenpaca)
 
 ### 🐛 Corrections
 
@@ -20,6 +21,7 @@
 - [Fiche Taxon] Correction du chargement de la carte dans l'onglet "Observations" des fiches taxon (#4051 par @jacquesfize)
 - [Fiche Taxon] Correction de la configuration de l'affichage des onglets des fiches (#3997 par @edelclaux)
 - [Métadonnées] Suppression d'un double appel API à l'initialisation du composant des cadres d'acquisition (#3988 par @VincentCauchois)
+- [Métadonnées] Remplacement de l'erreur affichée lors de la création d'un organisme avec un nom déjà utilisé (#3990 par @christophe-ramet)
 
 ## 2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-12)
 
