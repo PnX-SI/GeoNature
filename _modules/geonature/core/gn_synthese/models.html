@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/LogoGeonature.jpg" as="image">
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.gn_synthese.models - Documentation GeoNature 2.17.0</title>
+        <title>geonature.core.gn_synthese.models - Documentation GeoNature 2.17.1</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.0</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -186,7 +186,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.0</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -249,6 +249,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_meta/repositories/index.html">geonature.core.gn_meta.repositories</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html">geonature.core.gn_meta.routes</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_meta/schemas/index.html">geonature.core.gn_meta.schemas</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_meta/utils/index.html">geonature.core.gn_meta.utils</a></li>
 </ul>
 </li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_monitoring/index.html">geonature.core.gn_monitoring</a><input aria-label="Toggle navigation of geonature.core.gn_monitoring" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -445,7 +446,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sa</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">and_</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">or_</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">or_</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">relationship</span><span class="p">,</span>
     <span class="n">column_property</span><span class="p">,</span>
@@ -456,7 +457,7 @@
     <span class="n">deferred</span><span class="p">,</span>
     <span class="n">query_expression</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">exists</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">FetchedValue</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.dialects.postgresql</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">JSONB</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geoalchemy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span>
@@ -472,9 +473,6 @@
 <span class="k">else</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">flask_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseQuery</span> <span class="k">as</span> <span class="n">Query</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotFound</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.datastructures</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiDict</span>
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">pypnnomenclature.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TNomenclatures</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pypnusershub.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">utils_flask_sqla.serializers</span><span class="w"> </span><span class="kn">import</span> <span class="n">serializable</span><span class="p">,</span> <span class="n">SERIALIZERS</span>
@@ -485,15 +483,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.imports.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TImports</span> <span class="k">as</span> <span class="n">Import</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ref_geo.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">LAreas</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_meta.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TDatasets</span><span class="p">,</span> <span class="n">TAcquisitionFramework</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_meta.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TDatasets</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_commons.models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">THistoryActions</span><span class="p">,</span>
     <span class="n">TValidations</span><span class="p">,</span>
     <span class="n">last_validation</span><span class="p">,</span>
     <span class="n">TMedias</span><span class="p">,</span>
     <span class="n">TModules</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_permissions.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Permission</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.utils.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">DB</span><span class="p">,</span> <span class="n">db</span>
 
 
@@ -742,7 +738,6 @@
         <span class="k">if</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">())</span>
         <span class="k">elif</span> <span class="n">scope</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="n">ors</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">datasets</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
                 <span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_readable</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">with_entities</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">)</span>
             <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
@@ -871,7 +866,8 @@
 <div class="viewcode-block" id="Synthese.dataset">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_synthese/models/index.html#geonature.core.gn_synthese.models.Synthese.dataset">[docs]</a>
     <span class="n">dataset</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
-        <span class="n">TDatasets</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="n">DB</span><span class="o">.</span><span class="n">backref</span><span class="p">(</span><span class="s2">&quot;synthese_records&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;dynamic&quot;</span><span class="p">,</span> <span class="n">cascade_backrefs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">TDatasets</span><span class="p">,</span>
+        <span class="n">backref</span><span class="o">=</span><span class="n">DB</span><span class="o">.</span><span class="n">backref</span><span class="p">(</span><span class="s2">&quot;synthese_records&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;dynamic&quot;</span><span class="p">,</span> <span class="n">cascade_backrefs</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Synthese.grp_method">
@@ -1313,7 +1309,9 @@
 <div class="viewcode-block" id="Synthese.medias">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_synthese/models/index.html#geonature.core.gn_synthese.models.Synthese.medias">[docs]</a>
     <span class="n">medias</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
-        <span class="n">TMedias</span><span class="p">,</span> <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">TMedias</span><span class="o">.</span><span class="n">uuid_attached_row</span> <span class="o">==</span> <span class="n">foreign</span><span class="p">(</span><span class="n">unique_id_sinp</span><span class="p">)),</span> <span class="n">uselist</span><span class="o">=</span><span class="kc">True</span>
+        <span class="n">TMedias</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">TMedias</span><span class="o">.</span><span class="n">uuid_attached_row</span> <span class="o">==</span> <span class="n">foreign</span><span class="p">(</span><span class="n">unique_id_sinp</span><span class="p">)),</span>
+        <span class="n">uselist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -1418,7 +1416,6 @@
         <span class="k">if</span> <span class="n">scope</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">())</span>
         <span class="k">elif</span> <span class="n">scope</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="n">ors</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">datasets</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
                 <span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_readable</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">with_entities</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">)</span>
             <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
@@ -1927,7 +1924,7 @@
 <span class="sd">    Il rajoute la fonction as_dict_ordered qui conserve l&#39;ordre des attributs tel que definit dans le model</span>
 <span class="sd">    (fonctions utilisees pour les exports) et qui redefinit le nom des colonnes tel qu&#39;ils sont nommes en configuration</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">EXPORT_COLUMNS</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">][</span><span class="s2">&quot;EXPORT_COLUMNS&quot;</span><span class="p">]</span>
+    <span class="n">EXPORT_COLUMNS</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">][</span><span class="s2">&quot;EXPORT_COLUMNS&quot;</span><span class="p">]</span>
     <span class="c1"># tab of cls attributes from EXPORT COLUMNS</span>
     <span class="n">formated_default_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">EXPORT_COLUMNS</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
 
@@ -1962,7 +1959,7 @@
         <span class="k">return</span> <span class="n">order_dict</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">serialize_geofn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geoCol</span><span class="p">,</span> <span class="n">idCol</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geoCol</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geoCol</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">geometry</span> <span class="o">=</span> <span class="n">to_shape</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geoCol</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">geometry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Point&quot;</span><span class="p">,</span> <span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
@@ -2192,7 +2189,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=614517fa"></script>
+</div><script src="../../../../_static/documentation_options.js?v=c53d93e3"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

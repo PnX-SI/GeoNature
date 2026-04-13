@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../_static/LogoGeonature.jpg" as="image">
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.utils.module - Documentation GeoNature 2.17.0</title>
+        <title>geonature.utils.module - Documentation GeoNature 2.17.1</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Documentation GeoNature 2.17.0</div></a>
+      <a href="../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -186,7 +186,7 @@
     <img class="sidebar-logo" src="../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.0</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -249,6 +249,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../autoapi/geonature/core/gn_meta/repositories/index.html">geonature.core.gn_meta.repositories</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../autoapi/geonature/core/gn_meta/routes/index.html">geonature.core.gn_meta.routes</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../autoapi/geonature/core/gn_meta/schemas/index.html">geonature.core.gn_meta.schemas</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../autoapi/geonature/core/gn_meta/utils/index.html">geonature.core.gn_meta.utils</a></li>
 </ul>
 </li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../autoapi/geonature/core/gn_monitoring/index.html">geonature.core.gn_monitoring</a><input aria-label="Toggle navigation of geonature.core.gn_monitoring" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -457,7 +458,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.utils.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">CONFIG_FILE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_commons.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TModules</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">exists</span><span class="p">,</span> <span class="n">select</span>
 
 
 <div class="viewcode-block" id="iter_modules_dist">
@@ -534,23 +535,211 @@
 
 
 
-<div class="viewcode-block" id="alembic_branch_in_use">
-<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.alembic_branch_in_use">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">alembic_branch_in_use</span><span class="p">(</span><span class="n">branch_name</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return true if at least one revision of the given branch is applied.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;sqlalchemy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">db</span>
+<div class="viewcode-block" id="get_script_from_config">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.get_script_from_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_script_from_config</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">:</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">ScriptDirectory</span><span class="p">:</span>
     <span class="n">migrate</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;migrate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">migrate</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">migrate</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
     <span class="n">script</span> <span class="o">=</span> <span class="n">ScriptDirectory</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    <span class="n">base_revision</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_revision</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">as_revision_number</span><span class="p">(</span><span class="n">branch_name</span><span class="p">))</span>
-    <span class="n">branch_revisions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">iterate_revisions</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">base_revision</span><span class="o">.</span><span class="n">revision</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">script</span></div>
+
+
+
+<div class="viewcode-block" id="get_all_current_alembic_heads">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.get_all_current_alembic_heads">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_all_current_alembic_heads</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">:</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+    <span class="n">script</span> <span class="o">=</span> <span class="n">get_script_from_config</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;sqlalchemy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">db</span>
     <span class="n">migration_context</span> <span class="o">=</span> <span class="n">MigrationContext</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">connection</span><span class="p">())</span>
     <span class="n">current_heads</span> <span class="o">=</span> <span class="n">migration_context</span><span class="o">.</span><span class="n">get_current_heads</span><span class="p">()</span>
-    <span class="c1"># get_current_heads does not return implicit revision through dependencies, get_all_current does</span>
-    <span class="n">current_heads</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rev</span><span class="p">:</span> <span class="n">rev</span><span class="o">.</span><span class="n">revision</span><span class="p">,</span> <span class="n">script</span><span class="o">.</span><span class="n">get_all_current</span><span class="p">(</span><span class="n">current_heads</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="ow">not</span> <span class="n">branch_revisions</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">current_heads</span><span class="p">)</span></div>
+    <span class="c1"># get_current_heads does not return implicit revision through dependencies,</span>
+    <span class="c1"># while get_all_current does</span>
+    <span class="n">all_current_heads</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rev</span><span class="p">:</span> <span class="n">rev</span><span class="o">.</span><span class="n">revision</span><span class="p">,</span> <span class="n">script</span><span class="o">.</span><span class="n">get_all_current</span><span class="p">(</span><span class="n">current_heads</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">all_current_heads</span></div>
+
+
+
+<div class="viewcode-block" id="get_script_and_base_revision_for_one_branch">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.get_script_and_base_revision_for_one_branch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_script_and_base_revision_for_one_branch</span><span class="p">(</span><span class="n">branch_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">():</span>
+    <span class="n">script</span> <span class="o">=</span> <span class="n">get_script_from_config</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
+    <span class="n">base_revision</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_revision</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">as_revision_number</span><span class="p">(</span><span class="n">branch_name</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">script</span><span class="p">,</span> <span class="n">base_revision</span></div>
+
+
+
+<div class="viewcode-block" id="get_all_revisions_for_one_branch">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.get_all_revisions_for_one_branch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_all_revisions_for_one_branch</span><span class="p">(</span><span class="n">branch_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+    <span class="n">script</span><span class="p">,</span> <span class="n">base_revision</span> <span class="o">=</span> <span class="n">get_script_and_base_revision_for_one_branch</span><span class="p">(</span>
+        <span class="n">branch_name</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span>
+    <span class="p">)</span>
+    <span class="n">branch_revisions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">iterate_revisions</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">base_revision</span><span class="o">.</span><span class="n">revision</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">branch_revisions</span></div>
+
+
+
+<div class="viewcode-block" id="get_last_revision_for_one_branch">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.get_last_revision_for_one_branch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_last_revision_for_one_branch</span><span class="p">(</span><span class="n">branch_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+    <span class="n">script</span><span class="p">,</span> <span class="n">base_revision</span> <span class="o">=</span> <span class="n">get_script_and_base_revision_for_one_branch</span><span class="p">(</span>
+        <span class="n">branch_name</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span>
+    <span class="p">)</span>
+    <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="n">last_revision</span> <span class="o">=</span> <span class="n">iterate_revisions</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">base_revision</span><span class="o">.</span><span class="n">revision</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">last_revision</span></div>
+
+
+
+<div class="viewcode-block" id="alembic_branch_in_use">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.alembic_branch_in_use">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">alembic_branch_in_use</span><span class="p">(</span><span class="n">branch_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Is an Alembic branch in use.</span>
+
+<span class="sd">    Return `True` if at least one revision of the given branch is stamped.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        `True` if the Alembic branch has at least one revision stamped,</span>
+<span class="sd">        `False` otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">branch_revisions</span> <span class="o">=</span> <span class="n">get_all_revisions_for_one_branch</span><span class="p">(</span><span class="n">branch_name</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
+    <span class="n">all_current_alembic_heads</span> <span class="o">=</span> <span class="n">get_all_current_alembic_heads</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">branch_revisions</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">all_current_alembic_heads</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="is_alembic_branch_up_to_date">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.is_alembic_branch_up_to_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_alembic_branch_up_to_date</span><span class="p">(</span><span class="n">branch_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Is a specific Alembic branch fully stamped.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    branch_name : str</span>
+<span class="sd">        The name of the Alembic branch.</span>
+<span class="sd">    directory : str</span>
+<span class="sd">        The name of the directory containing the migrations files for the branch.</span>
+<span class="sd">        Value of `None` defaults to &quot;migrations&quot;.</span>
+<span class="sd">    x_arg : list</span>
+<span class="sd">        Additional arguments consumed by custom `env.py` scripts.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        `True` if the Alembic branch has all its revisions stamped,</span>
+<span class="sd">        `False` otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">head_revision_of_branch</span> <span class="o">=</span> <span class="n">get_last_revision_for_one_branch</span><span class="p">(</span><span class="n">branch_name</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
+    <span class="n">all_current_alembic_heads</span> <span class="o">=</span> <span class="n">get_all_current_alembic_heads</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">head_revision_of_branch</span> <span class="ow">in</span> <span class="n">all_current_alembic_heads</span></div>
+
+
+
+<div class="viewcode-block" id="exists_in_t_modules">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.exists_in_t_modules">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">exists_in_t_modules</span><span class="p">(</span><span class="n">module_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns True if a module with the given code exists in the database</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    module_code : str</span>
+<span class="sd">        The code of the module (for ex. : SYNTHESE, OCCHAB, etc...)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">exists</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TModules</span><span class="o">.</span><span class="n">module_code</span> <span class="o">==</span> <span class="n">module_code</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="is_module_installed">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.is_module_installed">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_module_installed</span><span class="p">(</span>
+    <span class="n">python_module_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">migrations_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">alembic_branch_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">check_if_all_revisions_have_been_applied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Is a GeoNature module installed.</span>
+
+<span class="sd">    We consider a module is installed if and only if:</span>
+<span class="sd">    - The Python package is installed</span>
+<span class="sd">        and (</span>
+<span class="sd">            `check_if_all_revisions_have_been_applied` == true</span>
+<span class="sd">            and</span>
+<span class="sd">             (</span>
+<span class="sd">                all its Alembic migrations are stamped</span>
+<span class="sd">                or</span>
+<span class="sd">                there is no Alembic migration at all for the module</span>
+<span class="sd">            )</span>
+<span class="sd">        )</span>
+<span class="sd">        and the module is registered in the database</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    python_module_name : str</span>
+<span class="sd">        The name of the python module.</span>
+<span class="sd">        Can be found in the root file &quot;setup.py&quot; of the module repository.</span>
+<span class="sd">        Examples:</span>
+<span class="sd">            - &quot;gn_module_occhab&quot;</span>
+<span class="sd">            - &quot;occtax&quot;</span>
+<span class="sd">            - &quot;gn_module_validation&quot;</span>
+<span class="sd">            - &quot;gn_module_dashboard&quot;</span>
+<span class="sd">            - &quot;gn_module_export&quot;</span>
+<span class="sd">            - &quot;gn_module_monitoring&quot;</span>
+<span class="sd">    migrations_dir : str</span>
+<span class="sd">        The name of the directory containing the migrations files for the branch.</span>
+<span class="sd">        Value of `None` defaults to &quot;migrations&quot;.</span>
+<span class="sd">    alembic_branch_name : str</span>
+<span class="sd">        The name of the Alembic branch.</span>
+<span class="sd">        Value of `None` defaults to the module code in lowercase.</span>
+<span class="sd">    check_if_all_revisions_have_been_applied : bool</span>
+<span class="sd">        Check if all revisions of the module have been applied.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        `True` if the module is installed,</span>
+<span class="sd">        `False` otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Verify if the module Python package is actually installed</span>
+        <span class="n">init_module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">python_module_name</span> <span class="o">+</span> <span class="s2">&quot;.__init__&quot;</span><span class="p">)</span>
+        <span class="n">module_code</span> <span class="o">=</span> <span class="n">init_module</span><span class="o">.</span><span class="n">MODULE_CODE</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="c1"># Module not installed because Python package not installed</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Verify if the module is registered in the database</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exists_in_t_modules</span><span class="p">(</span><span class="n">module_code</span><span class="p">):</span>
+        <span class="c1"># Module not installed because not registered in the database</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">check_if_all_revisions_have_been_applied</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Verify if there are migrations</span>
+            <span class="n">str_import_path_migrations_dir</span> <span class="o">=</span> <span class="n">python_module_name</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">migrations_dir</span><span class="p">:</span>
+                <span class="n">str_import_path_migrations_dir</span> <span class="o">+=</span> <span class="s2">&quot;.migrations&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">str_import_path_migrations_dir</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">migrations_dir</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="nb">__import__</span><span class="p">(</span><span class="n">str_import_path_migrations_dir</span><span class="p">)</span>
+            <span class="c1"># If there are migrations, check if the branch is up to date</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">alembic_branch_name</span><span class="p">:</span>
+                <span class="n">alembic_branch_name</span> <span class="o">=</span> <span class="n">module_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">alembic_branch_name</span> <span class="ow">and</span> <span class="n">is_alembic_branch_up_to_date</span><span class="p">(</span>
+                <span class="n">alembic_branch_name</span><span class="p">,</span> <span class="n">migrations_dir</span>
+            <span class="p">):</span>
+                <span class="c1"># Module installed, case with Alembic migrations</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="c1"># Module installed, case without Alembic migrations</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="c1"># Module not installed because Alembic branch not up to date</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 
@@ -663,7 +852,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=614517fa"></script>
+</div><script src="../../../_static/documentation_options.js?v=c53d93e3"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

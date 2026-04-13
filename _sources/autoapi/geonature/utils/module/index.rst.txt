@@ -14,7 +14,15 @@ Functions
    geonature.utils.module.get_module_config
    geonature.utils.module.get_dist_from_code
    geonature.utils.module.iterate_revisions
+   geonature.utils.module.get_script_from_config
+   geonature.utils.module.get_all_current_alembic_heads
+   geonature.utils.module.get_script_and_base_revision_for_one_branch
+   geonature.utils.module.get_all_revisions_for_one_branch
+   geonature.utils.module.get_last_revision_for_one_branch
    geonature.utils.module.alembic_branch_in_use
+   geonature.utils.module.is_alembic_branch_up_to_date
+   geonature.utils.module.exists_in_t_modules
+   geonature.utils.module.is_module_installed
    geonature.utils.module.module_db_upgrade
    geonature.utils.module.get_module_version
 
@@ -36,9 +44,103 @@ Module Contents
    Useful to find all revisions of a given branch.
 
 
-.. py:function:: alembic_branch_in_use(branch_name, directory, x_arg)
+.. py:function:: get_script_from_config(directory: str, x_arg: []) -> alembic.script.ScriptDirectory
 
-   Return true if at least one revision of the given branch is applied.
+.. py:function:: get_all_current_alembic_heads(directory: str, x_arg: []) -> set
+
+.. py:function:: get_script_and_base_revision_for_one_branch(branch_name: str, directory, x_arg) -> ()
+
+.. py:function:: get_all_revisions_for_one_branch(branch_name: str, directory, x_arg) -> set
+
+.. py:function:: get_last_revision_for_one_branch(branch_name: str, directory, x_arg) -> set
+
+.. py:function:: alembic_branch_in_use(branch_name: str, directory, x_arg)
+
+   Is an Alembic branch in use.
+
+   Return `True` if at least one revision of the given branch is stamped.
+
+   Returns
+   -------
+   bool
+       `True` if the Alembic branch has at least one revision stamped,
+       `False` otherwise.
+
+
+.. py:function:: is_alembic_branch_up_to_date(branch_name: str, directory: str = None, x_arg: list = []) -> bool
+
+   Is a specific Alembic branch fully stamped.
+
+   Parameters
+   ----------
+   branch_name : str
+       The name of the Alembic branch.
+   directory : str
+       The name of the directory containing the migrations files for the branch.
+       Value of `None` defaults to "migrations".
+   x_arg : list
+       Additional arguments consumed by custom `env.py` scripts.
+
+   Returns
+   -------
+   bool
+       `True` if the Alembic branch has all its revisions stamped,
+       `False` otherwise.
+
+
+.. py:function:: exists_in_t_modules(module_code: str)
+
+   Returns True if a module with the given code exists in the database
+
+   Parameters
+   ----------
+   module_code : str
+       The code of the module (for ex. : SYNTHESE, OCCHAB, etc...)
+
+
+.. py:function:: is_module_installed(python_module_name: str, migrations_dir: str = None, alembic_branch_name: str = None, check_if_all_revisions_have_been_applied: bool = True)
+
+   Is a GeoNature module installed.
+
+   We consider a module is installed if and only if:
+   - The Python package is installed
+       and (
+           `check_if_all_revisions_have_been_applied` == true
+           and
+            (
+               all its Alembic migrations are stamped
+               or
+               there is no Alembic migration at all for the module
+           )
+       )
+       and the module is registered in the database
+
+   Parameters
+   ----------
+   python_module_name : str
+       The name of the python module.
+       Can be found in the root file "setup.py" of the module repository.
+       Examples:
+           - "gn_module_occhab"
+           - "occtax"
+           - "gn_module_validation"
+           - "gn_module_dashboard"
+           - "gn_module_export"
+           - "gn_module_monitoring"
+   migrations_dir : str
+       The name of the directory containing the migrations files for the branch.
+       Value of `None` defaults to "migrations".
+   alembic_branch_name : str
+       The name of the Alembic branch.
+       Value of `None` defaults to the module code in lowercase.
+   check_if_all_revisions_have_been_applied : bool
+       Check if all revisions of the module have been applied.
+
+   Returns
+   -------
+   bool
+       `True` if the module is installed,
+       `False` otherwise.
 
 
 .. py:function:: module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[])

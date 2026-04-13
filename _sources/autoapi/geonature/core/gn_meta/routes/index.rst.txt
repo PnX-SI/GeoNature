@@ -41,7 +41,7 @@ Functions
    geonature.core.gn_meta.routes.acquisitionFrameworkHandler
    geonature.core.gn_meta.routes.create_acquisition_framework
    geonature.core.gn_meta.routes.updateAcquisitionFramework
-   geonature.core.gn_meta.routes.get_acquisition_framework_stats
+   geonature.core.gn_meta.routes.get_acquisition_framework_stats_route
    geonature.core.gn_meta.routes.get_acquisition_framework_bbox
    geonature.core.gn_meta.routes.call_extended_af_publish
    geonature.core.gn_meta.routes.publish_acquisition_framework
@@ -133,7 +133,7 @@ Module Contents
 
 .. py:function:: get_export_pdf_acquisition_frameworks(id_acquisition_framework)
 
-   Get a PDF export of one acquisition
+   Get a PDF export of one acquisition framework
 
 
 .. py:function:: get_acquisition_framework(scope, id_acquisition_framework)
@@ -166,7 +166,7 @@ Module Contents
    .. :quickref: Metadata;
 
 
-.. py:function:: get_acquisition_framework_stats(id_acquisition_framework)
+.. py:function:: get_acquisition_framework_stats_route(id_acquisition_framework)
 
    Get stats from one AF
    .. :quickref: Metadata;

@@ -26,6 +26,7 @@ Attributes
    geonature.core.imports.config_schema.ALLOW_VALUE_MAPPING
    geonature.core.imports.config_schema.DEFAULT_OBSERVER_FIELD_SEPARATORS
    geonature.core.imports.config_schema.DEFAULT_VALUE_MAPPING_ID
+   geonature.core.imports.config_schema.DEFAULT_VALUE_MAPPINGS
    geonature.core.imports.config_schema.DEFAULT_RANK
 
 
@@ -84,6 +85,8 @@ Module Contents
    :value: 3
 
 
+.. py:data:: DEFAULT_VALUE_MAPPINGS
+
 .. py:data:: DEFAULT_RANK
    :value: 'regne'
 
@@ -124,6 +127,9 @@ Module Contents
 
 
    .. py:attribute:: DEFAULT_VALUE_MAPPING_ID
+
+
+   .. py:attribute:: DEFAULT_VALUE_MAPPINGS
 
 
    .. py:attribute:: FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE

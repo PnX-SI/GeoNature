@@ -478,6 +478,9 @@ Module Contents
    Bases: :py:obj:`marshmallow.Schema`
 
 
+   .. py:attribute:: ENABLE_TAB_OBSERVATIONS
+
+
    .. py:attribute:: ENABLE_TAB_OBSERVERS
 
 
@@ -493,6 +496,9 @@ Module Contents
 .. py:class:: ObserverSheet
 
    Bases: :py:obj:`marshmallow.Schema`
+
+
+   .. py:attribute:: ENABLE_TAB_OBSERVATIONS
 
 
    .. py:attribute:: ENABLE_TAB_TAXA

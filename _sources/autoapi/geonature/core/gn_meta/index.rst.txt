@@ -14,5 +14,6 @@ Submodules
    /autoapi/geonature/core/gn_meta/repositories/index
    /autoapi/geonature/core/gn_meta/routes/index
    /autoapi/geonature/core/gn_meta/schemas/index
+   /autoapi/geonature/core/gn_meta/utils/index
 
 

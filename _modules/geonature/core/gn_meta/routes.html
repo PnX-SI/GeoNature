@@ -6,7 +6,7 @@
         <link rel="prefetch" href="../../../../_static/LogoGeonature.jpg" as="image">
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.gn_meta.routes - Documentation GeoNature 2.17.0</title>
+        <title>geonature.core.gn_meta.routes - Documentation GeoNature 2.17.1</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.0</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -186,7 +186,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.0</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -249,6 +249,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_meta/repositories/index.html">geonature.core.gn_meta.repositories</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html">geonature.core.gn_meta.routes</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_meta/schemas/index.html">geonature.core.gn_meta.schemas</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_meta/utils/index.html">geonature.core.gn_meta.utils</a></li>
 </ul>
 </li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../../autoapi/geonature/core/gn_monitoring/index.html">geonature.core.gn_monitoring</a><input aria-label="Toggle navigation of geonature.core.gn_monitoring" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -446,13 +447,11 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">lxml</span><span class="w"> </span><span class="kn">import</span> <span class="n">etree</span> <span class="k">as</span> <span class="n">ET</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">Response</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">jsonify</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">inspect</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.exc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatabaseError</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span><span class="p">,</span> <span class="n">select</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">func</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Load</span><span class="p">,</span> <span class="n">joinedload</span><span class="p">,</span> <span class="n">undefer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Conflict</span><span class="p">,</span> <span class="n">BadRequest</span><span class="p">,</span> <span class="n">Forbidden</span><span class="p">,</span> <span class="n">InternalServerError</span>
@@ -461,7 +460,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.exc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegrityError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">psycopg2.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniqueViolation</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">geonature.utils.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_meta.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_acquisition_framework_stats</span><span class="p">,</span>
+    <span class="n">MetadataPdfBuilder</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.utils.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_commons.routes</span><span class="w"> </span><span class="kn">import</span> <span class="n">_get_additional_fields</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_synthese.models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -489,13 +491,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.datastructures</span><span class="w"> </span><span class="kn">import</span> <span class="n">Headers</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_permissions</span><span class="w"> </span><span class="kn">import</span> <span class="n">decorators</span> <span class="k">as</span> <span class="n">permissions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_permissions.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_scopes_by_action</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">geonature.utils.filemanager</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fm</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">ref_geo.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">LAreas</span>
-
-<span class="c1"># FIXME: remove any reference to external modules from GeoNature core</span>
-<span class="k">if</span> <span class="s2">&quot;OCCHAB&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">gn_module_occhab.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">OccurenceHabitat</span><span class="p">,</span> <span class="n">Station</span>
 
 <div class="viewcode-block" id="routes">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.routes">[docs]</a>
@@ -761,7 +758,8 @@
         <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">CorAreaSynthese</span><span class="p">,</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_synthese</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">)</span>
         <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">LAreas</span><span class="p">,</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">id_area</span> <span class="o">==</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_area</span><span class="p">)</span>
         <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span>
-            <span class="n">TNomenclatures</span><span class="p">,</span> <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">id_nomenclature</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span>
+            <span class="n">TNomenclatures</span><span class="p">,</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">id_nomenclature</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">id_type</span> <span class="o">==</span> <span class="n">func</span><span class="o">.</span><span class="n">ref_geo</span><span class="o">.</span><span class="n">get_id_area_type</span><span class="p">(</span><span class="s2">&quot;DEP&quot;</span><span class="p">))</span>
         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_module</span> <span class="o">==</span> <span class="n">id_module</span> <span class="k">if</span> <span class="n">id_module</span> <span class="k">else</span> <span class="kc">True</span><span class="p">)</span>
@@ -893,7 +891,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">DatasetSchema</span><span class="p">()</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span>
         <span class="n">datasetHandler</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">=</span><span class="n">TDatasets</span><span class="p">(</span><span class="n">id_digitizer</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+            <span class="n">dataset</span><span class="o">=</span><span class="n">TDatasets</span><span class="p">(</span><span class="n">id_digitizer</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">(),</span>
         <span class="p">)</span>
     <span class="p">)</span></div>
 
@@ -941,27 +940,17 @@
     <span class="p">)</span>
     <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset_schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_desc&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">240</span><span class="p">:</span>
-        <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;dataset_desc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_desc&quot;</span><span class="p">)[:</span><span class="mi">240</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
+        <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;dataset_desc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;dataset_desc&quot;</span><span class="p">][:</span><span class="mi">240</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/#/metadata/dataset_detail/&quot;</span> <span class="o">+</span> <span class="n">id_dataset</span>
+    <span class="n">pdf</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">MetadataPdfBuilder</span><span class="p">(</span><span class="s2">&quot;dataset_template_pdf.html&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add_css</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">add_footer</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add_chart_if_provided</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add_title</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;DS_PDF_TITLE&quot;</span><span class="p">])</span>
+    <span class="p">)</span>
 
-    <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;css&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;logo&quot;</span><span class="p">:</span> <span class="s2">&quot;Logo_pdf.png&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bandeau&quot;</span><span class="p">:</span> <span class="s2">&quot;Bandeau_pdf.png&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;entite&quot;</span><span class="p">:</span> <span class="s2">&quot;sinp&quot;</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;DS_PDF_TITLE&quot;</span><span class="p">]</span>
-
-    <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
-
-    <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;footer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/#/metadata/dataset_detail/&quot;</span> <span class="o">+</span> <span class="n">id_dataset</span><span class="p">,</span>
-        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="c1"># chart</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_json</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span>
-    <span class="c1"># create PDF file</span>
-    <span class="n">pdf_file</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">generate_pdf</span><span class="p">(</span><span class="s2">&quot;dataset_template_pdf.html&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">current_app</span><span class="o">.</span><span class="n">response_class</span><span class="p">(</span><span class="n">pdf_file</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/pdf&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_app</span><span class="o">.</span><span class="n">response_class</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">build</span><span class="p">(),</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/pdf&quot;</span><span class="p">)</span></div>
 
 
 
@@ -1079,86 +1068,20 @@
 
 
 <span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
-    <span class="s2">&quot;/acquisition_frameworks/export_pdf/&lt;id_acquisition_framework&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">]</span>
+    <span class="s2">&quot;/acquisition_frameworks/export_pdf/&lt;id_acquisition_framework&gt;&quot;</span><span class="p">,</span>
+    <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="get_export_pdf_acquisition_frameworks">
 <a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_export_pdf_acquisition_frameworks">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_export_pdf_acquisition_frameworks</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get a PDF export of one acquisition</span>
+<span class="sd">    Get a PDF export of one acquisition framework</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Recuperation des données</span>
     <span class="n">af</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">,</span> <span class="n">id_acquisition_framework</span><span class="p">)</span>
-    <span class="n">acquisition_framework</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">dataset_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id_dataset</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">af</span><span class="o">.</span><span class="n">datasets</span><span class="p">]</span>
-    <span class="n">nb_data</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">)</span>
 
-    <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">))</span>
-    <span class="p">)</span>
-    <span class="n">nb_taxons</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">distinct</span><span class="p">())</span>
-    <span class="n">nb_observations</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-
-    <span class="n">nb_habitat</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="c1"># Check if pr_occhab exist</span>
-    <span class="n">check_schema_query</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;schema_name&quot;</span><span class="p">)))</span>
-        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;information_schema.schemata&quot;</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;schema_name = &#39;pr_occhab&#39;&quot;</span><span class="p">))</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">check_schema_query</span><span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">nb_data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in </span><span class="se">\</span>
-<span class="s2">        (&quot;</span>
-            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;[]&quot;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-        <span class="p">)</span>
-
-        <span class="n">nb_habitat</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;stats&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;nb_data&quot;</span><span class="p">:</span> <span class="n">nb_data</span><span class="p">,</span>
-        <span class="s2">&quot;nb_taxons&quot;</span><span class="p">:</span> <span class="n">nb_taxons</span><span class="p">,</span>
-        <span class="s2">&quot;nb_observations&quot;</span><span class="p">:</span> <span class="n">nb_observations</span><span class="p">,</span>
-        <span class="s2">&quot;nb_habitats&quot;</span><span class="p">:</span> <span class="n">nb_habitat</span><span class="p">,</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_json</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">acquisition_framework</span><span class="p">:</span>
-        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;nomenclature_territorial_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">af</span><span class="o">.</span><span class="n">nomenclature_territorial_level</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;nomenclature_financing_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">af</span><span class="o">.</span><span class="n">nomenclature_financing_type</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_start_date&quot;</span><span class="p">]:</span>
-            <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_start_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">af</span><span class="o">.</span><span class="n">acquisition_framework_start_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_end_date&quot;</span><span class="p">]:</span>
-            <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_end_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">af</span><span class="o">.</span><span class="n">acquisition_framework_end_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;css&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;logo&quot;</span><span class="p">:</span> <span class="s2">&quot;Logo_pdf.png&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;bandeau&quot;</span><span class="p">:</span> <span class="s2">&quot;Bandeau_pdf.png&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;entite&quot;</span><span class="p">:</span> <span class="s2">&quot;sinp&quot;</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;pdf_title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;AF_PDF_TITLE&quot;</span><span class="p">]</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
-        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;footer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span>
-            <span class="o">+</span> <span class="s2">&quot;/#/metadata/af-card/&quot;</span>
-            <span class="o">+</span> <span class="n">id_acquisition_framework</span><span class="p">,</span>
-            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">af</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="n">render_template</span><span class="p">(</span>
                 <span class="s2">&quot;error.html&quot;</span><span class="p">,</span>
@@ -1167,6 +1090,27 @@
             <span class="p">),</span>
             <span class="mi">404</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="n">acquisition_framework</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;stats&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_acquisition_framework_stats</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">)</span>
+
+    <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;nomenclature_territorial_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">af</span><span class="o">.</span><span class="n">nomenclature_territorial_level</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;nomenclature_financing_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">nomenclature_financing_type</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_start_date&quot;</span><span class="p">]:</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_start_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">af</span><span class="o">.</span><span class="n">acquisition_framework_start_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_end_date&quot;</span><span class="p">]:</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_end_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">af</span><span class="o">.</span><span class="n">acquisition_framework_end_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
     <span class="k">if</span> <span class="n">af</span><span class="o">.</span><span class="n">initial_closing_date</span><span class="p">:</span>
         <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;initial_closing_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">initial_closing_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y %H:%M&quot;</span>
@@ -1190,9 +1134,20 @@
                 <span class="p">][</span><span class="n">name_additional_field</span><span class="p">]</span>
         <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;additional_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_additional_data</span>
 
-    <span class="c1"># Appel de la methode pour generer un pdf</span>
-    <span class="n">pdf_file</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">generate_pdf</span><span class="p">(</span><span class="s2">&quot;acquisition_framework_template_pdf.html&quot;</span><span class="p">,</span> <span class="n">acquisition_framework</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">current_app</span><span class="o">.</span><span class="n">response_class</span><span class="p">(</span><span class="n">pdf_file</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/pdf&quot;</span><span class="p">)</span></div>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/#/metadata/af-card/&quot;</span> <span class="o">+</span> <span class="n">id_acquisition_framework</span>
+
+    <span class="n">pdf</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">MetadataPdfBuilder</span><span class="p">(</span>
+            <span class="s2">&quot;acquisition_framework_template_pdf.html&quot;</span><span class="p">,</span>
+            <span class="n">acquisition_framework</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">add_css</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">add_footer</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add_chart_if_provided</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add_title</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;AF_PDF_TITLE&quot;</span><span class="p">])</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">current_app</span><span class="o">.</span><span class="n">response_class</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">build</span><span class="p">(),</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/pdf&quot;</span><span class="p">)</span></div>
 
 
 
@@ -1370,51 +1325,16 @@
 <span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/&lt;id_acquisition_framework&gt;/stats&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
 <span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
 <span class="nd">@json_resp</span>
-<div class="viewcode-block" id="get_acquisition_framework_stats">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_acquisition_framework_stats">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_acquisition_framework_stats</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">):</span>
+<div class="viewcode-block" id="get_acquisition_framework_stats_route">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_acquisition_framework_stats_route">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_acquisition_framework_stats_route</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get stats from one AF</span>
 <span class="sd">    .. :quickref: Metadata;</span>
 <span class="sd">    :param id_acquisition_framework: the id_acquisition_framework</span>
 <span class="sd">    :param type: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dataset_ids</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
-        <span class="n">select</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-            <span class="n">TDatasets</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="o">==</span> <span class="n">id_acquisition_framework</span>
-        <span class="p">)</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-    <span class="n">nb_datasets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">)</span>
-
-    <span class="n">nb_taxons</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">)))</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-            <span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">)</span>
-        <span class="p">)</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
-
-    <span class="n">nb_observations</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="o">==</span> <span class="n">id_acquisition_framework</span><span class="p">))</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
-
-    <span class="n">nb_habitats</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">if</span> <span class="s2">&quot;OCCHAB&quot;</span> <span class="ow">in</span> <span class="n">config</span> <span class="ow">and</span> <span class="n">nb_datasets</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">nb_habitats</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
-            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">OccurenceHabitat</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Station</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Station</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">))</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
-        <span class="n">nb_dataset</span><span class="o">=</span><span class="n">nb_datasets</span><span class="p">,</span>
-        <span class="n">nb_taxons</span><span class="o">=</span><span class="n">nb_taxons</span><span class="p">,</span>
-        <span class="n">nb_observations</span><span class="o">=</span><span class="n">nb_observations</span><span class="p">,</span>
-        <span class="n">nb_habitats</span><span class="o">=</span><span class="n">nb_habitats</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">get_acquisition_framework_stats</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">)</span></div>
 
 
 
@@ -1437,11 +1357,6 @@
         <span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 
-    <span class="n">geojsonData</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
-        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_AsGeoJSON</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_Extent</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">the_geom_4326</span><span class="p">)))</span>
-        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
     <span class="c1"># geojsonData will never be empty, if no entries matching the query condition(s), it will contains [(None,)]</span>
     <span class="n">geojsonData</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
         <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_AsGeoJSON</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_Extent</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">the_geom_4326</span><span class="p">)))</span>
@@ -1522,7 +1437,7 @@
         <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Erreur de type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> lors de la publication du cadre : </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Erreur lors de la publication du cadre, cadre non publié&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Erreur lors de la publication du cadre, cadre non publié&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># On commit que si tout a bien fonctionné</span>
 
@@ -1560,7 +1475,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=614517fa"></script>
+</div><script src="../../../../_static/documentation_options.js?v=c53d93e3"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

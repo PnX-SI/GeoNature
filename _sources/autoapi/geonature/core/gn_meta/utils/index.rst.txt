@@ -1,0 +1,68 @@
+geonature.core.gn_meta.utils
+============================
+
+.. py:module:: geonature.core.gn_meta.utils
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.utils.MetadataPdfBuilder
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.utils.get_acquisition_framework_stats
+
+
+Module Contents
+---------------
+
+.. py:function:: get_acquisition_framework_stats(id_acquisition_framework)
+
+.. py:class:: MetadataPdfBuilder(template, data)
+
+   Utility class to build PDF responses for GeoNature metadata exports
+
+
+   .. py:attribute:: DEFAULT_CSS
+
+
+   .. py:attribute:: template
+
+
+   .. py:attribute:: data
+
+
+   .. py:method:: add_css(css: dict = None)
+
+      Attach CSS assets
+
+
+
+   .. py:method:: add_footer(url_path)
+
+      Attach footer
+
+
+
+   .. py:method:: add_chart_if_provided(request)
+
+      Attach chart if provided in request
+
+
+
+   .. py:method:: add_title(title: str = None)
+
+
+   .. py:method:: build()
+
+      Generate PDF response
+
+
+
