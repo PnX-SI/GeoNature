@@ -48,6 +48,7 @@ export class NavHomeComponent implements OnInit {
   }
 
   get displayOrganism(): string | null {
+    if (!this.config.FRONTEND.DISPLAY_USER_ORGANISM) return null;
     return this.currentUser?.nom_organisme ?? null;
   }
 

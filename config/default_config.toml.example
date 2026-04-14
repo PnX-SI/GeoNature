@@ -146,6 +146,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Activer l'affichage des informations liées aux profils de taxons (dans les modules Validation, Synthèse et Occtax)
     ENABLE_PROFILES = true
 
+    # Afficher l'organisme de l'utilisateur dans la barre de navigation (true / false)
+    DISPLAY_USER_ORGANISM = true
+
 # Configuration des paramètres des permissions
 [PERMISSIONS]
     # Types de zonages accessibles pour les filtres géographiques
