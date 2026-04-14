@@ -12,23 +12,23 @@
     background-color: white !important;
     outline: none;
   }
-  .user-button{
+  .user-button {
     height: 40px;
   }
   .user-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      line-height: 1.2;
-      &__name {
-        font-size: 15px;
-      }
-      &__organism {
-        font-size: 0.8em;
-        color: inherit;
-        opacity: 0.5;
-      }
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.2;
+    &__name {
+      font-size: 15px;
     }
+    &__organism {
+      font-size: 0.8em;
+      color: inherit;
+      opacity: 0.5;
+    }
+  }
   #documentation_link {
     color: black !important;
   }
