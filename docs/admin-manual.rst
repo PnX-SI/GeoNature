@@ -1018,6 +1018,27 @@ Supervision des services
 - Vérifier que le fichier de logs de GeoNature n'est pas trop volumineux pour la capacité du serveur
 - Vérifier que les services nécessaires au fonctionnement de l'application tournent bien (Apache, PostgreSQL)
 
+Supervision de Celery
+"""""""""""""""""""""
+
+GeoNature utilise [Celery](https://docs.celeryq.dev/en/main/getting-started/introduction.html) pour lancer en arrière-plan des tâches asynchrones, qui peuvent prendre du temps (validation automatique, génération d'exports, import de données, synchronisation des médias, etc.).
+
+La commande ``systemctl status geonature-worker`` permet de connaître l'état du worker Celery et de visualiser la commande qui a été utilisée pour le lancer.
+
+Celery propose `de nombreuses commandes <https://docs.celeryq.dev/en/stable/userguide/monitoring.html#management-command-line-utilities-inspect-control>`_ utiles pour la supervision du worker. Elles peuvent être utilisées pour avoir des stats sur le worker, pour voir la liste des tâches enregistrées, planifiées ou révoquées, ou encore lancer une tâche manuellement.
+
+.. note::
+
+- Les commandes Celery doivent être lancées depuis l'environnement de GeoNature, donc après un``source backend/venv/bin/activate``
+- Le nom de l'application, à passer via l'argument ``-A proj``, est celui qui a été utilisé pour lancer le worker
+
+Pour une analyse d'erreur plus fine, il est possible de relancer le worker en changeant le niveau de log à l'aide du paramètre ``--loglevel`` (https://docs.celeryq.dev/en/main/reference/cli.html#cmdoption-celery-worker-l) dans celery.
+
+.. code-block:: console
+
+    # Ne pas oublier de désactiver le worker
+    celery -A geonature.celery_app:app worker --beat --logfile=/var/log/geonature/geonature-worker.log --loglevel=DEBUG
+
 Maintenance
 """""""""""
 
