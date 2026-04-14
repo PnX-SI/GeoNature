@@ -21,12 +21,19 @@
     align-items: flex-start;
     line-height: 1.2;
     &__name {
+      min-width: 200px;
       font-size: 15px;
+      padding-right: 1rem;
     }
     &__organism {
       font-size: 0.8em;
       color: inherit;
       opacity: 0.5;
+      width: 0;
+      min-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
   #documentation_link {
@@ -51,4 +58,5 @@
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  column-gap: 0.5rem;
 }
