@@ -224,7 +224,7 @@ numpy==2.0.2
     #   contourpy
     #   pandas
     #   shapely
-packaging==26.0
+packaging==26.1
     # via
     #   -r requirements-common.in
     #   bokeh
@@ -349,6 +349,7 @@ tornado==6.5.5
 typing-extensions==4.15.0
     # via
     #   alembic
+    #   cryptography
     #   exceptiongroup
     #   marshmallow
     #   marshmallow-sqlalchemy
