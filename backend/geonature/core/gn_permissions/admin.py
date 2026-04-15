@@ -405,7 +405,11 @@ class UserAjaxModelLoader(QueryAjaxModelLoader):
 
 class AreaAjaxModelLoader(QueryAjaxModelLoader):
     def format(self, area):
-        return (area.id_area, f"{area.area_name} ({area.area_type.type_name})")
+        if area.area_type.type_code == "COM":
+            label = f"{area.area_name} - {area.area_code[:2]} ({area.area_type.type_name})"
+        else:
+            label = f"{area.area_name} ({area.area_type.type_name})"
+        return (area.id_area, label)
 
     def get_one(self, pk):
         # prevent autoflush from occuring during populate_obj
