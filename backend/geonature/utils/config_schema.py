@@ -288,6 +288,8 @@ class GnFrontEndConf(Schema):
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(load_default=True)
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
 
+    DISPLAY_USER_ORGANISM = fields.Boolean(load_default=True)
+
 
 class ExportObservationSchema(Schema):
     label = fields.String(required=True)
