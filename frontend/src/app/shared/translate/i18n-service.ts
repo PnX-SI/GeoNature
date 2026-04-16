@@ -18,6 +18,8 @@ export class I18nService {
     private activatedRoute: ActivatedRoute
   ) {
     this.currentLang = this.translateService.getDefaultLang();
+    console.log(`I18nService initialized with default language: ${this.currentLang}`);
+    document.documentElement.lang = this.currentLang; // Set initial lang attribute
 
     this.extractLocaleFromUrl();
 
@@ -37,6 +39,7 @@ export class I18nService {
   private subscribeToRootLangChange() {
     this.translateService.onLangChange.subscribe((event) => {
       this.currentLang = event.lang;
+      document.documentElement.lang = event.lang; // Update lang attribute on language change
       this._onLangChange.next({ lang: event.lang });
     });
   }

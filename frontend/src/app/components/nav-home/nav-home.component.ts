@@ -59,7 +59,7 @@ export class NavHomeComponent implements OnInit {
     this.useLocalProvider = this.authService.canBeLoggedWithLocalProvider();
   }
 
-  changeLanguage(lang) {
+  changeLanguage(lang: any) {
     this.translateService.use(lang);
   }
 
