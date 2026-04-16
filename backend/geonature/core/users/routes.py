@@ -59,6 +59,7 @@ organism_fields = {
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
 @routes.route("/menu/", methods=["GET"])
+@permissions.login_required
 @json_resp
 def get_roles_by_menu_id(id_menu=None):
     """
@@ -91,6 +92,7 @@ def get_roles_by_menu_id(id_menu=None):
 
 
 @routes.route("/menu_from_code/<string:code_liste>", methods=["GET"])
+@permissions.login_required
 @json_resp
 def get_roles_by_menu_code(code_liste):
     """
@@ -127,6 +129,7 @@ def get_roles_by_menu_code(code_liste):
 
 
 @routes.route("/listes", methods=["GET"])
+@permissions.login_required
 @json_resp
 def get_listes():
     query = select(UserList)
