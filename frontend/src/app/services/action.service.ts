@@ -8,10 +8,10 @@ export class ActionService {
   constructor(private translate: TranslateService) {}
 
   /**
-   * Returns the tooltip for an action (Edit/Delete)
+   * Returns the tooltip for an action (Create/Edit/Delete)
    * @param cruved cruved concerned
    * @param afOpened allows to know if the related acquisition framework is open
-   * @param action 'U' for Edit or 'D' for Delete
+   * @param action 'C' for Create, 'U' for Edit or 'D' for Delete
    * @param moduleName Module name for translation keys (Occhab, Occtax or Import for example)
    * @param objectName Object name for translation keys (Station for Occhab for example)
    * @param tooltipParams Parameters for interpolation in the translation (ex: { id: 123 })
@@ -21,7 +21,7 @@ export class ActionService {
   getActionTooltip(
     cruved: any,
     afOpened: boolean,
-    action: 'U' | 'D',
+    action: 'C' | 'U' | 'D',
     moduleName: string,
     objectName?: string,
     tooltipParams: any = {},
@@ -35,7 +35,7 @@ export class ActionService {
     if (!cruved?.[action]) {
       return translate.instant('Errors.NotAllowed');
     }
-    const actionType = action === 'D' ? 'Delete' : 'Update';
+    const actionType = action === 'D' ? 'Delete' : action === 'C' ? 'Create' : 'Update';
     const translateKey = objectName
       ? `${moduleName}.${objectName}.Actions.${actionType}`
       : `${moduleName}.Actions.${actionType}`;
@@ -43,7 +43,7 @@ export class ActionService {
     return translate.instant(translateKey, tooltipParams);
   }
 
-  isActionAllowed(cruved: any, afOpened: boolean, action: 'U' | 'D'): boolean {
+  isActionAllowed(cruved: any, afOpened: boolean, action: 'C' | 'U' | 'D'): boolean {
     const hasRights = cruved?.[action];
     return hasRights && afOpened;
   }
