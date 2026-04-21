@@ -243,7 +243,7 @@ pillow==11.3.0
     #   weasyprint
 prompt-toolkit==3.0.52
     # via click-repl
-psycopg2==2.9.11
+psycopg2==2.9.12
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
@@ -349,6 +349,7 @@ tornado==6.5.5
 typing-extensions==4.15.0
     # via
     #   alembic
+    #   cryptography
     #   exceptiongroup
     #   marshmallow
     #   marshmallow-sqlalchemy
