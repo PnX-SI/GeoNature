@@ -16,6 +16,10 @@ def dataframe_check(check_function):
     Decorator for check functions.
     Check functions must yield errors, and return updated_cols
     (or None if no column have been modified).
+
+    The error level (ERROR or WARNING) is determined by the ImportUserErrorType.level column.
+    - If level == "ERROR": the row is marked as invalid
+    - If level == "WARNING": the error is reported but row remains valid
     """
 
     parameters = signature(check_function).parameters
@@ -128,7 +132,7 @@ def report_error(imprt: TImports, entity, df, error):
     Returns
     -------
     set
-        set containing the name of the entity validity column.
+        set containing the name of the entity validity column (only if error level is "ERROR").
 
     Raises
     ------
@@ -142,9 +146,11 @@ def report_error(imprt: TImports, entity, df, error):
     except NoResultFound:
         raise Exception(f"Error code '{error['error_code']}' not found.")
     invalid_rows = error["invalid_rows"]
-    df.loc[invalid_rows.index, entity.validity_column] = False
-    # df['gn_invalid_reason'][invalid_rows.index.intersection(df['gn_invalid_reason'].isnull())] = \
-    #        f'{error_type.name}'  # FIXME comment
+
+    # Only mark row as invalid if error level is "ERROR"
+    if error_type.level == "ERROR":
+        df.loc[invalid_rows.index, entity.validity_column] = False
+
     ordered_invalid_rows = sorted(invalid_rows["line_no"])
     column = generated_fields.get(error["column"], error["column"])
     column = imprt.fieldmapping.get(column, {}).get("column_src", column)
@@ -168,4 +174,6 @@ def report_error(imprt: TImports, entity, df, error):
         },
     )
     db.session.execute(stmt)
-    return {entity.validity_column}
+
+    if error_type.level == "ERROR":
+        return {entity.validity_column}

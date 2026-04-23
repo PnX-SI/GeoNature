@@ -95,8 +95,9 @@ def check_geometry(
     """
 
     What this check do:
-    - check there is at least a wkt, a x/y or a code defined for each row
-      (report NO-GEOM if there are not, or MULTIPLE_ATTACHMENT_TYPE_CODE if several are defined)
+    - check there is at least a wkt, a x/y or a code defined for each row. If multiple are defined, we use this priority:
+    `wkt > x/y> code`
+      (report NO-GEOM if there are not, or MULTIPLE_GEO_INFO_WARNING if several are defined)
     - set geom_local or geom_4326 or both (depending of file_srid) from wkt or x/y
       - check wkt validity
       - check x/y validity
@@ -148,6 +149,12 @@ def check_geometry(
 
     geom = pd.Series(name="geom", index=df.index, dtype="object")
 
+    wkt_mask = pd.Series(False, index=df.index)
+    xy_mask = pd.Series(False, index=df.index)
+    codemaille_mask = pd.Series(False, index=df.index)
+    codecommune_mask = pd.Series(False, index=df.index)
+    codedepartement_mask = pd.Series(False, index=df.index)
+
     if wkt_col and wkt_col in df:
         wkt_mask = df[wkt_col].notnull()
         if wkt_mask.any():
@@ -159,34 +166,23 @@ def check_geometry(
                     "column": "WKT",
                     "invalid_rows": invalid_wkt,
                 }
-    else:
-        wkt_mask = pd.Series(False, index=df.index)
+
     if latitude_col and latitude_col in df and longitude_col and longitude_col in df:
-        # take xy when no wkt and xy are not null
         xy_mask = df[latitude_col].notnull() & df[longitude_col].notnull()
+        xy_mask_effective = (
+            xy_mask & ~wkt_mask
+        )  # This mask is necessary so we don't override wkt if it already exists.
         if xy_mask.any():
-            geom.loc[xy_mask] = df[xy_mask].apply(
+            geom.loc[xy_mask_effective] = df[xy_mask_effective].apply(
                 lambda row: xy_to_geometry(row[longitude_col], row[latitude_col]), axis=1
             )
-            invalid_xy = df[xy_mask & geom.isnull()]
+            invalid_xy = df[xy_mask_effective & geom.isnull()]
             if not invalid_xy.empty:
                 yield {
                     "error_code": ImportCodeError.INVALID_GEOMETRY,
                     "column": "longitude",
                     "invalid_rows": invalid_xy,
                 }
-    else:
-        xy_mask = pd.Series(False, index=df.index)
-
-    # Check multiple geo-referencement
-    multiple_georef = df[wkt_mask & xy_mask]
-    if len(multiple_georef):
-        geom[wkt_mask & xy_mask] = None
-        yield {
-            "error_code": ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE,
-            "column": "Champs géométriques",
-            "invalid_rows": multiple_georef,
-        }
 
     # Check out-of-bound geo-referencement
     for mask, column in [(wkt_mask, "WKT"), (xy_mask, "longitude")]:
@@ -204,32 +200,27 @@ def check_geometry(
 
     if codecommune_col and codecommune_col in df:
         codecommune_mask = df[codecommune_col].notnull()
-    else:
-        codecommune_mask = pd.Series(False, index=df.index)
+
     if codemaille_col and codemaille_col in df:
         codemaille_mask = df[codemaille_col].notnull()
-    else:
-        codemaille_mask = pd.Series(False, index=df.index)
+
     if codedepartement_col and codedepartement_col in df:
         codedepartement_mask = df[codedepartement_col].notnull()
-    else:
-        codedepartement_mask = pd.Series(False, index=df.index)
 
     # Check for multiple code when no wkt or xy
-    multiple_code = df[
-        ~wkt_mask
-        & ~xy_mask
-        & (
-            (codecommune_mask & codemaille_mask)
-            | (codecommune_mask & codedepartement_mask)
-            | (codemaille_mask & codedepartement_mask)
-        )
-    ]
-    if len(multiple_code):
+    num_geom_types = (
+        wkt_mask.astype(int)
+        + xy_mask.astype(int)
+        + codecommune_mask.astype(int)
+        + codemaille_mask.astype(int)
+        + codedepartement_mask.astype(int)
+    )
+    multiple_geom_types = df[num_geom_types >= 2]
+    if len(multiple_geom_types):
         yield {
-            "error_code": ImportCodeError.MULTIPLE_CODE_ATTACHMENT,
+            "error_code": ImportCodeError.MULTIPLE_GEO_INFO_WARNING,
             "column": "Champs géométriques",
-            "invalid_rows": multiple_code,
+            "invalid_rows": multiple_geom_types,
         }
 
     if file_srid == 4326:

@@ -299,7 +299,7 @@ class TestChecks:
                 Error(
                     error_code=ImportCodeError.GEOMETRY_OUT_OF_BOX,
                     column="WKT",
-                    invalid_rows=frozenset([5]),
+                    invalid_rows=frozenset([5, 7]),
                 ),
                 Error(
                     error_code=ImportCodeError.GEOMETRY_OUT_OF_BOX,
@@ -307,14 +307,9 @@ class TestChecks:
                     invalid_rows=frozenset([6]),
                 ),
                 Error(
-                    error_code=ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE,
+                    error_code=ImportCodeError.MULTIPLE_GEO_INFO_WARNING,
                     column="Champs géométriques",
-                    invalid_rows=frozenset([7]),
-                ),
-                Error(
-                    error_code=ImportCodeError.MULTIPLE_CODE_ATTACHMENT,
-                    column="Champs géométriques",
-                    invalid_rows=frozenset([8, 9, 10, 11]),
+                    invalid_rows=frozenset([7, 8, 9, 10, 11, 17, 18]),
                 ),
                 Error(
                     error_code=ImportCodeError.INVALID_WKT,
