@@ -86,16 +86,14 @@ describe('Import List - Toolbar - Destinations', () => {
             // Select every destination, one after the other
             for (const destinationKey of destinations) {
               cy.get(SELECTOR_IMPORT_LIST_TOOLBAR).within(() => {
-                cy.get(SELECTOR_DESTINATIONS, { force: true })
-                  .should('exist')
-                  .click()
-                  .get('ng-dropdown-panel')
-                  .get('.ng-option')
-                  .contains(destinationKey)
-                  .then((destination) => {
-                    cy.wrap(destination).should('exist').click();
-                  });
+                cy.get(SELECTOR_DESTINATIONS, { force: true }).should('exist').click();
               });
+              cy.get('ng-dropdown-panel')
+                .get('.ng-option')
+                .contains(destinationKey)
+                .then((destination) => {
+                  cy.wrap(destination).should('exist').click();
+                });
               cy.checkImportListSize(user.destinations[destinationKey].count);
             }
             // Clear selection

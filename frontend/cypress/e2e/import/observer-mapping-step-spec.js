@@ -115,11 +115,7 @@ describe('Import - Observer Mapping step', () => {
             .click()
             .then(() => {
               // Select second option instead of first for more meaningful reset test
-              cy.wrap($form)
-                .find('ng-dropdown-panel')
-                .find('.ng-option')
-                .eq(1)
-                .click({ force: true });
+              cy.get('ng-dropdown-panel').find('.ng-option').eq(1).click({ force: true });
             });
 
           cy.wait(200);
@@ -161,11 +157,7 @@ describe('Import - Observer Mapping step', () => {
             .click()
             .then(() => {
               // Select second option instead of first
-              cy.wrap($form)
-                .find('ng-dropdown-panel')
-                .find('.ng-option')
-                .eq(1)
-                .click({ force: true });
+              cy.get('ng-dropdown-panel').find('.ng-option').eq(1).click({ force: true });
             });
 
           cy.wait(200);
