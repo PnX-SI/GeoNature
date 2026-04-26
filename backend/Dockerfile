@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1.2
+ARG PYTHON_IMAGE=python:3.11-bookworm
+ARG NODE_IMAGE=node:alpine
 
-FROM python:3.11-bookworm AS build
+FROM ${PYTHON_IMAGE} AS build
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
@@ -98,7 +100,7 @@ COPY /contrib/gn_module_validation/README.rst .
 RUN python setup.py bdist_wheel
 
 
-FROM node:alpine AS node
+FROM ${NODE_IMAGE} AS node
 
 WORKDIR /dist/
 COPY /backend/static/package*.json .
@@ -106,7 +108,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
 
-FROM python:3.9-bullseye AS wheels-light
+FROM ${PYTHON_IMAGE} AS wheels-light
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
