@@ -33,10 +33,10 @@ Il est possible d\'ajouter d\'autres protocoles dans GeoNature sous
 forme de modules.
 
 Une instance de démo est disponible sur
-<http://demo.geonature.fr/geonature> (admin / admin).
+<https://demo.geonature.fr/geonature> (admin / admin).
 
-Présentation de GeoNature sur <http://geonature.fr> et dans
-<http://geonature.fr/documents>
+Présentation de GeoNature sur <https://geonature.fr> et dans
+<https://geonature.fr/documents>
 
 Modules et projets liés
 =======================
@@ -58,11 +58,11 @@ Modules et projets liés
     <https://github.com/PnX-SI/gn_mobile_core>
 -   GeoNature module Export :
     <https://github.com/PnX-SI/gn_module_export>
--   GeoNature module Import :
+-   GeoNature module Import (intégré) :
     <https://github.com/PnX-SI/gn_module_import>
 -   GeoNature module Dashboard :
     <https://github.com/PnX-SI/gn_module_dashboard>
--   GeoNature module Validation :
+-   GeoNature module Validation (intégré) :
     <https://github.com/PnX-SI/gn_module_validation>
 -   GeoNature module Flore prioritaire :
     <https://github.com/PnX-SI/gn_module_flore_prioritaire>
@@ -124,7 +124,7 @@ certaines espèces ou groupes. Voir d\'ajouter des informations
 spécifiques sur chaque taxons (patrimonialité, statuts\...).
 
 Pour cela GeoNature s\'appuie sur l\'application TaxHub et sa structure
-de BDD qui est dupliquée dans le schéma `taxonomie`. Détails sur
+de BDD qui est intégrée dans le schéma `taxonomie`. Détails sur
 <https://github.com/PnX-SI/TaxHub>
 
 [![image](https://geonature.fr/documents/logo-geonature.jpg)](https://geonature.fr)
@@ -133,9 +133,11 @@ Licence
 =======
 
 -   OpenSource - GPL-3.0
--   Copyleft 2014-2023 - Parc National des Écrins - Parc national des
-    Cévennes
+-   Copyleft 2014-2026 - Parc National des Écrins - Parc national des
+    Cévennes - PatriNat
 
 [![image](https://geonature.fr/img/logo-pne.jpg)](https://www.ecrins-parcnational.fr)
 
 [![image](https://geonature.fr/img/logo-pnc.jpg)](https://www.cevennes-parcnational.fr)
+
+[![image](https://geonature.fr/img/logo-patrinat.jpg?)](https://www.patrinat.fr)

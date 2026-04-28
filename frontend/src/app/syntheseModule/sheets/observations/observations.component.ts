@@ -34,8 +34,8 @@ interface MapAreasStyle {
 export class ObservationsComponent extends Loadable implements OnInit {
   areasEnable: boolean;
   areasLegend: any;
-  private _areasLabelSwitchBtn;
-  styleTabGeoJson: {};
+  private _areasLabelSwitchBtn: any;
+  styleTabGeoJson: any = {};
 
   yearInterval: YearInterval | null = null;
   yearIntervalBoundaries: YearInterval | null = null;
@@ -74,12 +74,13 @@ export class ObservationsComponent extends Loadable implements OnInit {
 
   ngOnInit() {
     this._os.filters.subscribe((filters: Filters | null) => {
-      if (!filters) {
+      if (filters == null) {
         this.styleTabGeoJson = undefined;
         this.clearObservationLayers();
         return;
+      } else {
+        this.updateObservations();
       }
-      this.updateObservations();
     });
 
     this._os.yearIntervalBoundaries.subscribe((boundaries: YearInterval | null) => {
@@ -283,6 +284,7 @@ export class ObservationsComponent extends Loadable implements OnInit {
 
   private clearObservationLayers() {
     const map = this._ms.map;
+    if (!map) return;
     map.eachLayer((layer) => {
       if (!(layer instanceof L.TileLayer)) {
         map.removeLayer(layer);

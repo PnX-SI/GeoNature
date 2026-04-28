@@ -16,7 +16,9 @@ CREATE TABLE utilisateurs.t_roles (
     active boolean DEFAULT true,
     champs_addi jsonb,
     date_insert timestamp without time zone,
-    date_update timestamp without time zone
+    date_update timestamp without time zone,
+    api_key text,
+    api_secret text
 );
 
 CREATE SEQUENCE utilisateurs.t_roles_id_role_seq
@@ -33,13 +35,21 @@ ALTER TABLE ONLY utilisateurs.t_roles
     ADD CONSTRAINT pk_t_roles PRIMARY KEY (id_role);
 
 ALTER TABLE ONLY utilisateurs.t_roles
+    ADD CONSTRAINT t_roles_api_key_key UNIQUE (api_key);
+
+ALTER TABLE ONLY utilisateurs.t_roles
     ADD CONSTRAINT t_roles_uuid_un UNIQUE (uuid_role);
+
+ALTER TABLE ONLY utilisateurs.t_roles
+    ADD CONSTRAINT uq_t_roles_uuid_role UNIQUE (uuid_role);
 
 CREATE INDEX i_utilisateurs_active ON utilisateurs.t_roles USING btree (active);
 
 CREATE INDEX i_utilisateurs_groupe ON utilisateurs.t_roles USING btree (groupe);
 
 CREATE INDEX i_utilisateurs_nom_prenom ON utilisateurs.t_roles USING btree (nom_role, prenom_role);
+
+CREATE UNIQUE INDEX uq_t_roles_identifiant ON utilisateurs.t_roles USING btree (identifiant) WHERE (((identifiant)::text <> ''::text) AND (identifiant IS NOT NULL));
 
 CREATE TRIGGER tri_modify_date_insert_t_roles BEFORE INSERT ON utilisateurs.t_roles FOR EACH ROW EXECUTE FUNCTION utilisateurs.modify_date_insert();
 

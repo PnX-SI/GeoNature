@@ -75,7 +75,7 @@
     "MyObserverSheet": "Ma fiche observateur",
     "EmailChangeTitle": "Changement d'adresse mail",
     "EmailChangeDescription": "La modification de votre adresse email nécessite une validation. Un lien de confirmation sera envoyé à votre nouvelle adresse email et le changement d'adresse sera pris en compte après avoir cliqué sur le lien reçu.",
-        "EmailChangeValidationTitle": "Validation du changement d'adresse mail",
+    "EmailChangeValidationTitle": "Validation du changement d'adresse mail",
     "EmailChangeConfirmationTitle": "Confirmer le changement d'adresse e-mail",
     "EmailChangeConfirmationText": "Votre nouvelle adresse mail sera :",
     "CurrentEmail": "Adresse email actuelle",
@@ -99,6 +99,9 @@
   "Observer": "Observateur",
   "Observers": "Observateurs",
   "Observers?": "Observateur(s)",
+  "Observation": "Observation",
+  "Observations": "Observations",
+  "Observations?": "Observation(s)",
   "Digitiser": "Créateur",
   "Digitisers": "Créateurs",
   "Digitisers?": "Créateur(s)",
@@ -119,10 +122,11 @@
   "Datasets": "Jeux de données",
   "AcquisitionFramework": "Cadre d'acquisition",
   "AcquisitionFrameworks": "Cadres d'acquisition",
-  "Observations": "Observations",
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Espèces",
+  "Habitat": "Habitat",
+  "Habitats": "Habitats",
 
   "Sex": "Sexe",
   "LifeStage": "Stade de vie",
@@ -162,6 +166,7 @@
   "All": "Tous",
   "Aim": "Objectif",
   "Aims": "Objectifs",
+  "Objectives": "Objectifs",
   "Title": "Titre",
   "Description": "Description",
   "Validable": "Validable",
@@ -170,6 +175,7 @@
   "Active": "Actif",
 
   "Date": "Date",
+  "Dates": "Dates",
   "MaxDate": "Date fin",
   "MinDate": "Date début",
   "HourMin": "Heure début",
@@ -181,6 +187,7 @@
   "MaxDepth": "Profondeur max",
   "HourFormat": "hh:mm",
   "Label": "Libellé",
+  "Url": "URL",
   "Keywords": "Mots-clés",
 
   "Detail": "Détail",
@@ -261,6 +268,25 @@
     "DataAmount": "Nombre de données",
     "StakeholderOrganization": "Acteur (organisme)",
     "DataSources": "Sources des données",
+    "DescriptiveForm": "Fiche descriptive",
+    "ID": "Identification",
+    "IDSINPCA": "Identifiant SINP du cadre d'acquisition",
+    "IDGeoNature": "Identifiant GeoNature du cadre d'acquisition",
+    "IsParent": "Est un méta-cadre",
+    "ParentID": "Identifiant du méta-cadre",
+    "StartDate": "Date de lancement du cadre d'acquisition",
+    "EndDate": "Date de clôture du cadre d'acquisition",
+    "CoveredTerritories": "Territoires concernés",
+    "TerritorialExtent": "Étendue territoriale",
+    "TaxonomicTarget": "Cible taxonomique",
+    "Creator": "Créateur du cadre d'acquisition",
+    "FinancingType": "Type de financement",
+    "Financing": "Financement",
+    "BibliographicalReferences": "Références bibliographiques",
+    "GeographicalArea": "Zone géographique",
+    "SpeciesDistribution": "Répartition des espèces",
+    "AssociatedDatasets": "Jeux de données associés",
+    "Reference": "Référence",
 
     "DatasetCard": {
       "Actions": {
@@ -359,6 +385,7 @@
       "NameRequired": "Le nom de l'organisme est obligatoire",
       "InvalidEmail": "Veuillez saisir une adresse email valide",
       "SimilarNamesWarning": "Attention : Des organismes avec des noms similaires existent déjà :",
+      "ExactMatchExists": "Un organisme avec ce nom existe déjà vous devez l'utiliser ou saisir un autre nom",
       "NoAdditionalInfo": "Aucune information supplémentaire disponible pour cet organisme.",
       "ShowingResults": "Affichage des résultats",
       "Of": "sur",
@@ -393,11 +420,15 @@
       "AddComment": "Ajouter un commentaire",
       "DeleteComment": "Supprimer un commentaire",
       "ChangeValidStatus": "Modifier le statut de validation",
-      "RedirectToModule": "Voir dans le module de saisie"
+      "RedirectToModule": "Voir dans le module de saisie",
+      "PinObservation": "Épingler l'observation",
+      "UnpinObservation": "Supprimer l'épingle sur l'observation"
     },
     "Messages": {
       "Copied": "Copié dans le presse-papier !",
-      "DeleteSuccess": "Observation supprimée avec succès"
+      "DeleteSuccess": "Observation supprimée avec succès",
+      "Pinned": "Épinglé avec succès",
+      "Unpinned": "Épingle supprimé avec succès"
     },
     "Errors": {
       "PeriodCompleteness": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
@@ -550,6 +581,7 @@
         "ResetMapping": "Réinitialiser"
       },
       "Messages": {
+        "MappingNotAllowed": "Le mapping des observateurs n'est pas autorisé pour cette destination d'import.",
         "NoObserverMapping": "Aucun champ lié à des observateurs n'a été mappé (ou la colonne dans le fichier source est vide)."
       }
     },

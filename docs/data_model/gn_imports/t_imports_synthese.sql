@@ -110,7 +110,6 @@ CREATE TABLE gn_imports.t_imports_synthese (
     meta_update_date timestamp without time zone,
     id_area_attachment integer,
     src_unique_dataset_id character varying,
-    unique_dataset_id uuid,
     id_dataset integer
 );
 

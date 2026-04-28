@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { tap, map } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { ModuleService } from '@geonature/services/module.service';
   templateUrl: './af-card.component.html',
   styleUrls: ['./af-card.component.scss'],
 })
-export class AfCardComponent implements OnInit {
+export class AfCardComponent implements OnInit, OnDestroy {
   public id_af: number;
   public af: any;
   public stats: any;
@@ -71,6 +71,7 @@ export class AfCardComponent implements OnInit {
   public spinner = true;
 
   public additionalFields: Array<any> = [];
+  private resizeTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private _dfs: DataFormService,
@@ -164,10 +165,41 @@ export class AfCardComponent implements OnInit {
           this.pieChartLabels.push(row['group']);
         }
 
-        setTimeout(() => {
-          this.chart && this.chart.chart.update();
-        }, 1000);
+        this.refreshChart(1000);
       });
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    if (this.resizeTimer) {
+      clearTimeout(this.resizeTimer);
+    }
+
+    this.resizeTimer = setTimeout(() => {
+      this.refreshChart();
+    }, 150);
+  }
+
+  ngOnDestroy() {
+    if (this.resizeTimer) {
+      clearTimeout(this.resizeTimer);
+    }
+  }
+
+  private refreshChart(delay = 0) {
+    if (!this.chart?.chart) {
+      return;
+    }
+
+    setTimeout(() => {
+      const chart = this.chart?.chart;
+      if (!chart) {
+        return;
+      }
+
+      chart.resize();
+      chart.update();
+    }, delay);
   }
 
   getPdf() {

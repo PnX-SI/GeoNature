@@ -18,6 +18,7 @@ export class OrganismFormDialogComponent implements OnInit, OnDestroy {
   showSimilarWarning: boolean = false;
   selectedOrganism: any = null;
   loadingOrganismDetails: boolean = false;
+  exactMatchExists: boolean = false;
 
   // Pagination for similar organisms
   currentPage: number = 0;
@@ -112,6 +113,7 @@ export class OrganismFormDialogComponent implements OnInit, OnDestroy {
     if (!inputName) {
       this.similarOrganisms = [];
       this.showSimilarWarning = false;
+      this.exactMatchExists = false;
       return;
     }
 
@@ -121,6 +123,7 @@ export class OrganismFormDialogComponent implements OnInit, OnDestroy {
       this.currentPage = 0;
 
       this.showSimilarWarning = this.similarOrganisms.length > 0;
+      this.exactMatchExists = this.similarOrganisms.some((org) => org.nom_organisme === inputName);
     });
   }
 

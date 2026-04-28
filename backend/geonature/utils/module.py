@@ -16,7 +16,7 @@ from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
-from sqlalchemy import select
+from sqlalchemy import exists, select
 
 
 def iter_modules_dist():
@@ -78,21 +78,185 @@ def iterate_revisions(script, base_revision):
         todo |= rev.nextrev - yelded
 
 
-def alembic_branch_in_use(branch_name, directory, x_arg):
-    """
-    Return true if at least one revision of the given branch is applied.
-    """
-    db = current_app.extensions["sqlalchemy"].db
+def get_script_from_config(directory: str, x_arg: []) -> ScriptDirectory:
     migrate = current_app.extensions["migrate"].migrate
     config = migrate.get_config(directory, x_arg)
     script = ScriptDirectory.from_config(config)
-    base_revision = script.get_revision(script.as_revision_number(branch_name))
-    branch_revisions = set(iterate_revisions(script, base_revision.revision))
+    return script
+
+
+def get_all_current_alembic_heads(directory: str, x_arg: []) -> set:
+    script = get_script_from_config(directory, x_arg)
+
+    db = current_app.extensions["sqlalchemy"].db
     migration_context = MigrationContext.configure(db.session.connection())
     current_heads = migration_context.get_current_heads()
-    # get_current_heads does not return implicit revision through dependencies, get_all_current does
-    current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
-    return not branch_revisions.isdisjoint(current_heads)
+    # get_current_heads does not return implicit revision through dependencies,
+    # while get_all_current does
+    all_current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
+
+    return all_current_heads
+
+
+def get_script_and_base_revision_for_one_branch(branch_name: str, directory, x_arg) -> ():
+    script = get_script_from_config(directory, x_arg)
+    base_revision = script.get_revision(script.as_revision_number(branch_name))
+    return script, base_revision
+
+
+def get_all_revisions_for_one_branch(branch_name: str, directory, x_arg) -> set:
+    script, base_revision = get_script_and_base_revision_for_one_branch(
+        branch_name, directory, x_arg
+    )
+    branch_revisions = set(iterate_revisions(script, base_revision.revision))
+    return branch_revisions
+
+
+def get_last_revision_for_one_branch(branch_name: str, directory, x_arg) -> set:
+    script, base_revision = get_script_and_base_revision_for_one_branch(
+        branch_name, directory, x_arg
+    )
+    *_, last_revision = iterate_revisions(script, base_revision.revision)
+    return last_revision
+
+
+def alembic_branch_in_use(branch_name: str, directory, x_arg):
+    """Is an Alembic branch in use.
+
+    Return `True` if at least one revision of the given branch is stamped.
+
+    Returns
+    -------
+    bool
+        `True` if the Alembic branch has at least one revision stamped,
+        `False` otherwise.
+    """
+    branch_revisions = get_all_revisions_for_one_branch(branch_name, directory, x_arg)
+    all_current_alembic_heads = get_all_current_alembic_heads(directory, x_arg)
+    return not branch_revisions.isdisjoint(all_current_alembic_heads)
+
+
+def is_alembic_branch_up_to_date(branch_name: str, directory: str = None, x_arg: list = []) -> bool:
+    """Is a specific Alembic branch fully stamped.
+
+    Parameters
+    ----------
+    branch_name : str
+        The name of the Alembic branch.
+    directory : str
+        The name of the directory containing the migrations files for the branch.
+        Value of `None` defaults to "migrations".
+    x_arg : list
+        Additional arguments consumed by custom `env.py` scripts.
+
+    Returns
+    -------
+    bool
+        `True` if the Alembic branch has all its revisions stamped,
+        `False` otherwise.
+    """
+    head_revision_of_branch = get_last_revision_for_one_branch(branch_name, directory, x_arg)
+    all_current_alembic_heads = get_all_current_alembic_heads(directory, x_arg)
+    return head_revision_of_branch in all_current_alembic_heads
+
+
+def exists_in_t_modules(module_code: str):
+    """
+    Returns True if a module with the given code exists in the database
+
+    Parameters
+    ----------
+    module_code : str
+        The code of the module (for ex. : SYNTHESE, OCCHAB, etc...)
+    """
+    return db.session.execute(
+        exists(TModules).where(TModules.module_code == module_code).select()
+    ).scalar()
+
+
+def is_module_installed(
+    python_module_name: str,
+    migrations_dir: str = None,
+    alembic_branch_name: str = None,
+    check_if_all_revisions_have_been_applied: bool = True,
+):
+    """Is a GeoNature module installed.
+
+    We consider a module is installed if and only if:
+    - The Python package is installed
+        and (
+            `check_if_all_revisions_have_been_applied` == true
+            and
+             (
+                all its Alembic migrations are stamped
+                or
+                there is no Alembic migration at all for the module
+            )
+        )
+        and the module is registered in the database
+
+    Parameters
+    ----------
+    python_module_name : str
+        The name of the python module.
+        Can be found in the root file "setup.py" of the module repository.
+        Examples:
+            - "gn_module_occhab"
+            - "occtax"
+            - "gn_module_validation"
+            - "gn_module_dashboard"
+            - "gn_module_export"
+            - "gn_module_monitoring"
+    migrations_dir : str
+        The name of the directory containing the migrations files for the branch.
+        Value of `None` defaults to "migrations".
+    alembic_branch_name : str
+        The name of the Alembic branch.
+        Value of `None` defaults to the module code in lowercase.
+    check_if_all_revisions_have_been_applied : bool
+        Check if all revisions of the module have been applied.
+
+    Returns
+    -------
+    bool
+        `True` if the module is installed,
+        `False` otherwise.
+    """
+    try:
+        # Verify if the module Python package is actually installed
+        init_module = __import__(python_module_name + ".__init__")
+        module_code = init_module.MODULE_CODE
+    except ImportError:
+        # Module not installed because Python package not installed
+        return False
+
+    # Verify if the module is registered in the database
+    if not exists_in_t_modules(module_code):
+        # Module not installed because not registered in the database
+        return False
+    if check_if_all_revisions_have_been_applied:
+        try:
+            # Verify if there are migrations
+            str_import_path_migrations_dir = python_module_name
+            if not migrations_dir:
+                str_import_path_migrations_dir += ".migrations"
+            else:
+                str_import_path_migrations_dir += f".{migrations_dir}"
+            __import__(str_import_path_migrations_dir)
+            # If there are migrations, check if the branch is up to date
+            if not alembic_branch_name:
+                alembic_branch_name = module_code.lower()
+            if alembic_branch_name and is_alembic_branch_up_to_date(
+                alembic_branch_name, migrations_dir
+            ):
+                # Module installed, case with Alembic migrations
+                return True
+        except ImportError:
+            # Module installed, case without Alembic migrations
+            return True
+        # Module not installed because Alembic branch not up to date
+        return False
+    return True
 
 
 def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]):

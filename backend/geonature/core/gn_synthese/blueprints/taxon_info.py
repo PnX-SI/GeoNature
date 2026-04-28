@@ -245,7 +245,8 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
         """Return stats for a specific taxon"""
         area_type = request.args.get("area_type")
         field_separators = request.args.get(
-            "field_separators", app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"]
+            "field_separators",
+            app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"],
         )
         if not sheet.has_instance_permission(permissions=permissions):
             raise Forbidden
@@ -337,7 +338,8 @@ if app.config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_OBSERVERS"]:
             "sort_order", PaginationSortingUtils.SortOrder.ASC, PaginationSortingUtils.SortOrder
         )
         field_separators = request.args.get(
-            "field_separators", app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"]
+            "field_separators",
+            app.config["SYNTHESE"]["FIELD_OBSERVERS_SEPARATORS"],
         )
         # Handle sorting
         if sort_by not in ["observer", "date_min", "date_max", "observation_count", "media_count"]:

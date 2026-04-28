@@ -1,0 +1,12 @@
+<button
+  mat-raised-button
+  id="import-btn"
+  *ngIf="this.canImport"
+  color="primary"
+  class="btn-action uppercase float-right"
+  [routerLink]="[importRoute]"
+  [queryParams]="properties"
+>
+  Importer
+  <mat-icon>file_upload</mat-icon>
+</button>

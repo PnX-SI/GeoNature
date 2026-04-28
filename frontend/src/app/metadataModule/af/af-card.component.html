@@ -1,6 +1,9 @@
-<div class="container-fluid mt-4">
+<div
+  class="container-fluid mt-4"
+  *ngIf="af"
+>
   <div class="row">
-    <div class="col-5">
+    <div class="col-12 col-md-6">
       <a
         mat-raised-button
         routerLink="/metadata"
@@ -13,232 +16,161 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-8">
+    <div class="col-12 col-xl-8">
+      <!-- title -->
       <div class="card">
         <div class="card-body af-card-header">
-          <div class="af-card-header__left">
-            <h5 class="text-muted">Cadre d'acquisition</h5>
-            <h4>
-              {{ af?.acquisition_framework_name }}
-            </h4>
-          </div>
-          <div class="af-card-header__right">
-            <button
-              [routerLink]="['/metadata/af', af?.id_acquisition_framework]"
-              [disabled]="!af?.cruved?.U"
-              mat-mini-fab
-              color="primary"
-              matTooltip="Editer le cadre d'acquisition"
-              class="mr-2 float-right"
-            >
-              <mat-icon>create</mat-icon>
-            </button>
-            <gn-button-delete-af
-              [acquisitionFramework]="af"
-              buttonType="Floating"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="getPdf()"
-            [disabled]="!af.cruved.E"
-          >
-            Export PDF
-            <mat-icon>file_download</mat-icon>
-          </button>
-          <br />
-          <span *ngIf="af && !af?.opened">
-            <b>{{ config.METADATA.AF_SHEET_CLOSED_LINK_NAME }}</b>
-            :
-            <a
-              href="{{ config.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
-                af?.id_acquisition_framework
-              }}"
-              target="_blank"
-            >
-              {{ config.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
-                af?.id_acquisition_framework
-              }}
-            </a>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    *ngIf="stats"
-    class="row"
-  >
-    <!-- Nombre de JDD -->
-    <div class="col-3">
-      <div class="card">
-        <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Jeux de données</h5>
-              <br />
-              <div class="center">{{ stats.nb_dataset || 0 }}</div>
+              <h3>{{ 'AcquisitionFramework' | translate }}</h3>
+              <h4 class="text-muted">
+                {{ af?.acquisition_framework_name }}
+              </h4>
             </div>
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/JDD_icon.svg"
-                width="60"
+            <div class="col action-buttons">
+              <button
+                [routerLink]="['/metadata/af', af?.id_acquisition_framework]"
+                [disabled]="!af?.cruved?.U"
+                mat-mini-fab
+                class="mr-2 af-edit-button"
+                matTooltip="Éditer le cadre d'acquisition"
+              >
+                <mat-icon>create</mat-icon>
+              </button>
+              <gn-button-delete-af
+                [acquisitionFramework]="af"
+                buttonType="Floating"
               />
+              <button
+                mat-mini-fab
+                color="primary"
+                (click)="getPdf()"
+                [disabled]="!af.cruved.E"
+                class="mr-2"
+                matTooltip="Exporter le PDF"
+              >
+                <mat-icon>file_download</mat-icon>
+              </button>
+              <span *ngIf="af && !af?.opened">
+                <a
+                  mat-mini-fab
+                  color="primary"
+                  href="{{ config.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
+                    af?.id_acquisition_framework
+                  }}"
+                  target="_blank"
+                  [matTooltip]="config.METADATA.AF_SHEET_CLOSED_LINK_NAME"
+                >
+                  <mat-icon fontSet="material-icons-round">file_open</mat-icon>
+                </a>
+              </span>
+            </div>
+
+            <div
+              *ngIf="stats"
+              class="af-card-header__badges mt-2 col-12"
+            >
+              <span class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge">
+                <img
+                  src="./assets/images/JDD_icon.svg"
+                  alt="Icône Jeu de données"
+                />
+                <span>{{ 'Datasets' | translate }}</span>
+                <span class="af-stat-badge__value">{{ stats.nb_dataset }}</span>
+              </span>
+              <span class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge">
+                <img
+                  src="./assets/images/Donnee_icon.svg"
+                  alt="Icône Donnée"
+                />
+                <span>{{ 'Observations' | translate }}</span>
+                <span class="af-stat-badge__value">{{ stats.nb_observations }}</span>
+              </span>
+              <span
+                *ngIf="stats.nb_taxons"
+                class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge"
+              >
+                <img
+                  src="./assets/images/Taxon_icon.svg"
+                  alt="Icône Taxon"
+                />
+                <span>{{ 'Taxons' | translate }}</span>
+                <span class="af-stat-badge__value">{{ stats.nb_taxons }}</span>
+              </span>
+              <span
+                *ngIf="stats.nb_habitats"
+                class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge"
+              >
+                <img
+                  src="./assets/images/Habitat_icon.svg"
+                  alt="Icône Habitat"
+                />
+                <span>{{ 'Habitats' | translate }}</span>
+                <span class="af-stat-badge__value">{{ stats.nb_habitats }}</span>
+              </span>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Nombre d'observation -->
-    <div class="col-3">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Observations</h5>
-              <br />
-              <div class="center">{{ stats.nb_observations }}</div>
-            </div>
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/Donnee_icon.svg"
-                width="60"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Nombre de taxons -->
-    <div
-      *ngIf="stats.nb_taxons"
-      class="col-3"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Taxons</h5>
-              <br />
-              <div class="center">{{ stats.nb_taxons }}</div>
-            </div>
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/Taxon_icon.svg"
-                width="60"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Nombre d'habitats -->
-    <div
-      *ngIf="stats.nb_habitats"
-      class="col-3"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Habitats</h5>
-              <br />
-              <div class="center">{{ stats.nb_habitats }}</div>
-            </div>
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/Habitat_icon.svg"
-                width="60"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8">
+      <!-- ca des -->
       <div class="card">
         <div class="card-header">
-          <h5>Fiche descriptive</h5>
+          <h3>{{ 'MetaData.DescriptiveForm' | translate }}</h3>
         </div>
         <div class="card-body">
-          <div class="b">Identification</div>
+          <div class="b">{{ 'MetaData.ID' | translate }}</div>
           <div
             class="a"
             data-qa="pnx-metadata-acq-framework-name"
           >
-            <b>Nom :</b>
+            <b>{{ 'Name' | translate }} :</b>
             {{ af?.acquisition_framework_name }}
           </div>
           <div class="a">
-            <b>Identifiant SINP du cadre d'acquisition :</b>
+            <b>{{ 'MetaData.IDSINPCA' | translate }} :</b>
             {{ af?.unique_acquisition_framework_id }}
           </div>
           <div
             class="a"
             data-qa="pnx-metadata-acq-framework-id"
           >
-            <b>Identifiant GeoNature du cadre d'acquisition :</b>
+            <b>{{ 'MetaData.IDGeoNature' | translate }} :</b>
             {{ af?.id_acquisition_framework }}
           </div>
 
           <br />
 
-          <div class="b">Description</div>
+          <div class="b">{{ 'Description' | translate }}</div>
           <div class="a">
-            <b>Description :</b>
+            <b>{{ 'Description' | translate }} :</b>
             {{ af?.acquisition_framework_desc }}
           </div>
           <div class="a">
-            <b>Est un méta-cadre :</b>
+            <b>{{ 'MetaData.IsParent' | translate }} :</b>
             {{ af?.is_parent ? 'Oui' : 'Non' }}
           </div>
           <div
             class="a"
             *ngIf="!af?.is_parent"
           >
-            Identifiant du méta-cadre : {{ af?.acquisition_framework_parent_id }}
+            <b>{{ 'MetaData.ParentID' | translate }} :</b>
+            {{ af?.acquisition_framework_parent_id }}
           </div>
           <br />
 
-          <div class="b">Dates</div>
+          <div class="b">{{ 'Dates' | translate }}</div>
           <div class="a">
-            <b>Date de lancement du cadre d'acquisition :</b>
+            <b>{{ 'MetaData.StartDate' | translate }} :</b>
             {{ af?.acquisition_framework_start_date }}
           </div>
           <div class="a">
-            <b>Date de clôture du cadre d'acquisition :</b>
+            <b>{{ 'MetaData.EndDate' | translate }} :</b>
             {{ af?.acquisition_framework_end_date }}
           </div>
           <br />
 
           <div *ngIf="af?.cor_objectifs">
-            <div class="b">Objectifs</div>
+            <div class="b">{{ 'Objectives' | translate }}</div>
             <div
               *ngFor="let objectif of af?.cor_objectifs"
               class="a"
@@ -249,12 +181,12 @@
           </div>
 
           <div>
-            <div class="b">Territoires concernés</div>
+            <div class="b">{{ 'MetaData.CoveredTerritories' | translate }}</div>
             <ul class="a">
               <li *ngFor="let ter of af?.cor_territories">- {{ ter.label_default }}</li>
             </ul>
             <div class="a">
-              <b>Etendue territoriale :</b>
+              <b>{{ 'MetaData.TerritorialExtent' | translate }} :</b>
               {{ af?.nomenclature_territorial_level?.label_default }}
             </div>
 
@@ -262,16 +194,16 @@
           </div>
 
           <div *ngIf="af?.target_description">
-            <div class="b">Cible taxonomique</div>
+            <div class="b">{{ 'MetaData.TaxonomicTarget' | translate }}</div>
             <div class="a">
-              <b>Description :</b>
+              <b>{{ 'Description' | translate }} :</b>
               {{ af?.target_description }}
             </div>
             <br />
           </div>
 
           <div *ngIf="af?.cor_af_actor">
-            <div class="b">Acteurs</div>
+            <div class="b">{{ 'Actors' | translate }}</div>
             <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
               <div
                 class="a"
@@ -294,38 +226,38 @@
             <br />
           </div>
 
-          <div class="b">Créateur</div>
+          <div class="b">{{ 'Digitiser' | translate }}</div>
 
           <div class="a">
-            <b>Créateur du cadre d'acquisition :</b>
+            <b>{{ 'MetaData.Creator' | translate }} :</b>
             {{ af?.creator?.nom_complet || 'Non renseigné' }}
           </div>
 
           <br />
 
-          <div class="b">Type de financement :</div>
+          <div class="b">{{ 'MetaData.FinancingType' | translate }}</div>
 
           <div class="a">
-            <b>Financement :</b>
+            <b>{{ 'MetaData.Financing' | translate }} :</b>
             {{ af?.nomenclature_financing_type?.label_default }}
           </div>
 
           <br />
 
           <div *ngIf="af?.keywords">
-            <div class="b">Mots-clés</div>
+            <div class="b">{{ 'Keywords' | translate }}</div>
             <div class="a">{{ af?.keywords }}</div>
             <br />
           </div>
 
           <div *ngIf="af?.bibliographical_references">
-            <div class="b">Référence bibliographiques</div>
+            <div class="b">{{ 'MetaData.BibliographicalReferences' | translate }}</div>
             <ul class="a">
               <li *ngFor="let ref of af?.bibliographical_references">
                 -
-                <b>Url :</b>
+                <b>{{ 'Url' | translate }} :</b>
                 <a [href]="ref.publication_url">{{ ref.publication_url }}</a>
-                <b>rérérence :</b>
+                <b>{{ 'MetaData.Reference' | translate }} :</b>
                 {{ ref.publication_reference }}
               </li>
             </ul>
@@ -354,26 +286,25 @@
         </div>
       </div>
     </div>
-
-    <div class="col-xs-6 col-sm-4">
+    <div class="col-12 col-xl-4">
       <!-- BBOX -->
       <div
         *ngIf="bbox"
         class="card"
       >
         <div class="card-header">
-          <h5>Zone géographique</h5>
-          <div class="card-body">
-            <pnx-map
-              height="40vh"
-              searchBar="false"
-            >
-              <pnx-geojson
-                [geojson]="bbox"
-                [zoomOnFirstTime]="true"
-              ></pnx-geojson>
-            </pnx-map>
-          </div>
+          <h3>{{ 'MetaData.GeographicalArea' | translate }}</h3>
+        </div>
+        <div class="card-body">
+          <pnx-map
+            height="40vh"
+            searchBar="false"
+          >
+            <pnx-geojson
+              [geojson]="bbox"
+              [zoomOnFirstTime]="true"
+            ></pnx-geojson>
+          </pnx-map>
         </div>
       </div>
 
@@ -383,10 +314,10 @@
         class="card"
       >
         <div class="card-header">
-          <h5>Répartition des espèces</h5>
+          <h3>{{ 'MetaData.SpeciesDistribution' | translate }}</h3>
         </div>
         <div class="card-body">
-          <div style="display: block">
+          <div class="chart-wrapper">
             <canvas
               baseChart
               *ngIf="pieChartData[0].data.length"
@@ -407,9 +338,9 @@
         class="card"
       >
         <div class="card-header">
-          <h5>Jeux de données associés</h5>
+          <h3>{{ 'MetaData.AssociatedDatasets' | translate }}</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body associated-datasets">
           <table>
             <tr *ngFor="let dataset of af?.datasets">
               <td [ngSwitch]="dataset.nomenclature_data_type.cd_nomenclature">
@@ -435,7 +366,7 @@
               <td>
                 <a
                   [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
-                  style="color: black"
+                  class="text-dark"
                 >
                   {{ dataset.dataset_name }}
                 </a>

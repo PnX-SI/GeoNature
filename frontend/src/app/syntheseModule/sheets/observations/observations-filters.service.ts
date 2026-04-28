@@ -3,7 +3,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { SheetStats } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { BehaviorSubject } from 'rxjs';
 
-export type Filters = Record<string, string | number | number[]>;
+export type Filters = Record<string, string | number | number[]> | null;
 
 export interface YearInterval {
   min: number;
@@ -13,7 +13,7 @@ export interface YearInterval {
 @Injectable()
 export class ObservationsFiltersService {
   // Filter - can hold  filter by observer, taxon, etc.
-  filters: BehaviorSubject<Filters> = new BehaviorSubject<Filters>({});
+  filters: BehaviorSubject<Filters> = new BehaviorSubject<Filters>(null);
 
   // Filter - yearInterval management - reference, and user setup
   yearIntervalBoundaries: BehaviorSubject<YearInterval | null> =

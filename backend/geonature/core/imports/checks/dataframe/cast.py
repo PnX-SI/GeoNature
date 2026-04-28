@@ -8,10 +8,12 @@ from geonature.core.imports.checks.errors import ImportCodeError
 import numpy as np
 import pandas as pd
 from sqlalchemy.sql import sqltypes
-from sqlalchemy.dialects.postgresql import UUID as UUIDType
-
+from sqlalchemy.dialects.postgresql import (
+    UUID as UUIDType,
+)
 from geonature.core.imports.models import BibFields, Entity
 from .utils import dataframe_check
+from utils_flask_sqla.utils import strtobool
 
 
 def convert_to_datetime(value_raw):
@@ -301,11 +303,15 @@ def check_numeric_field(
     return {target_field}
 
 
-def check_array_int_field(
-    df: pd.DataFrame, source_field: str, target_field: str, required: bool
+def check_array_field(
+    df: pd.DataFrame,
+    source_field: str,
+    target_field: str,
+    required: bool,
+    element_type: type = str,
 ) -> Set[str]:
     """
-    Check if column values are arrays (list/tuple) of integers.
+    Check if column values are arrays (list/tuple) of a given type.
 
     Parameters
     ----------
@@ -317,6 +323,8 @@ def check_array_int_field(
         The name of the column where to store the result.
     required : bool
         Whether the column is mandatory or not.
+    element_type : type, optional
+        The expected type of each element in the array (default: str).
 
     Yields
     ------
@@ -331,47 +339,39 @@ def check_array_int_field(
     Notes
     -----
     The error codes are:
-        - INVALID_ARRAY: the value is not an array of integers.
+        - UNKNOWN_ERROR: the value is not an array of the expected element type.
     """
 
-    def to_int_array(x):
-        # Si x est un ndarray, on le convertit en liste
+    def to_typed_array(x):
         if isinstance(x, np.ndarray):
             x = x.tolist()
 
-        # Si c'est une valeur manquante (scalar NaN/None), on la renvoie telle quelle
         if not isinstance(x, (list, tuple)) and pd.isna(x):
             return x
 
-        # Si c'est une liste ou tuple, on vérifie que tous les éléments sont des int
-        if isinstance(x, (list, tuple)) and all(isinstance(elem, int) for elem in x):
+        if isinstance(x, (list, tuple)) and all(isinstance(elem, element_type) for elem in x):
             return list(x)
 
-        # Sinon conversion impossible → None
         return None
 
-    # Application sur la colonne sans condition externe
-    array_col = df[source_field].apply(to_int_array)
+    array_col = df[source_field].apply(to_typed_array)
 
-    # Définition des lignes invalides
     if required:
-        # Si le champ est obligatoire, toutes les valeurs non converties (None ou NaN) sont considérées comme invalides
         invalid_rows = df[array_col.isna()]
     else:
-        # Sinon, seules les valeurs non nulles mais non converties sont considérées comme invalides
         invalid_rows = df[array_col.isna() & df[source_field].notna()]
 
-    # Stockage du résultat dans la colonne cible
     df[target_field] = array_col
 
-    # Préparation du message d'erreur en listant les valeurs problématiques
     values_error = invalid_rows[source_field]
     if len(invalid_rows) > 0:
+        type_label = element_type.__name__
         yield dict(
             error_code=ImportCodeError.UNKNOWN_ERROR,
             invalid_rows=invalid_rows,
-            comment="Les valeurs suivantes ne sont pas des tableaux d'entiers : {}".format(
-                ", ".join(map(lambda x: str(x), values_error))
+            comment="Les valeurs suivantes ne sont pas des tableaux de {} : {}".format(
+                type_label,
+                ", ".join(map(str, values_error)),
             ),
         )
 
@@ -443,7 +443,7 @@ def check_boolean_field(df, source_col, dest_col, required):
         - INVALID_BOOL: the value is not a boolean.
 
     """
-    df[dest_col] = df[source_col].apply(int).apply(bool)
+    df[dest_col] = df[source_col].apply(lambda x: strtobool(x) if pd.notnull(x) else x)
 
     if required:  # FIXME: to remove as done in check_required_value
         invalid_mask = df[dest_col].apply(lambda x: type(x) != bool and pd.isnull(x))
@@ -505,10 +505,11 @@ def check_anytype_field(
         updated_cols |= yield from check_boolean_field(df, source_col, dest_col, required)
     elif isinstance(field_type, sqltypes.Numeric):
         updated_cols |= yield from check_numeric_field(df, source_col, dest_col, required)
-    elif isinstance(field_type, sqltypes.ARRAY) and isinstance(
-        field_type.item_type, sqltypes.Integer
-    ):
-        updated_cols |= yield from check_array_int_field(df, source_col, dest_col, required)
+    elif isinstance(field_type, sqltypes.ARRAY):
+        if isinstance(field_type.item_type, sqltypes.String):
+            updated_cols |= yield from check_array_field(df, source_col, dest_col, required, str)
+        elif isinstance(field_type.item_type, sqltypes.Integer):
+            updated_cols |= yield from check_array_field(df, source_col, dest_col, required, int)
     else:
         raise Exception(
             "Unknown type {} for field {}".format(type(field_type), dest_col)

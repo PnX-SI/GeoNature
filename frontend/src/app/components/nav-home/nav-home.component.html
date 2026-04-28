@@ -58,15 +58,21 @@
           "
         >
           <button
-            class="mx-1"
+            class="user-button mx-1"
             mat-raised-button
             matTooltip="Ouvrir le menu de mon profil"
             [matMenuTriggerFor]="userMenu"
           >
             <mat-icon>person</mat-icon>
-            <span class="user-name">
-              {{ currentUser?.user_login }}
-            </span>
+            <div class="user-info">
+              <div class="user-info__name">{{ displayName }}</div>
+              <div
+                *ngIf="displayOrganism"
+                class="user-info__organism"
+              >
+                {{ displayOrganism }}
+              </div>
+            </div>
           </button>
 
           <mat-menu #userMenu>
@@ -105,9 +111,15 @@
         <ng-template #userDisplay>
           <div class="UserDisplay">
             <mat-icon>person</mat-icon>
-            <span class="user-name">
-              {{ currentUser?.user_login }}
-            </span>
+            <div class="user-info">
+              <div class="user-info__name">{{ displayName }}</div>
+              <div
+                *ngIf="displayOrganism"
+                class="user-info__organism"
+              >
+                {{ displayOrganism }}
+              </div>
+            </div>
           </div>
         </ng-template>
 

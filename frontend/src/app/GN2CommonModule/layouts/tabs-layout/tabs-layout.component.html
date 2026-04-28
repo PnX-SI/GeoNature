@@ -3,6 +3,7 @@
     mat-tab-nav-bar
     class="Tabs__navBar"
     [tabPanel]="tabPanel"
+    data-qa="tabs-layout-nav"
   >
     <a
       *ngFor="let tab of tabs"
@@ -11,6 +12,7 @@
       routerLinkActive
       #rla="routerLinkActive"
       [active]="rla.isActive"
+      [attr.data-qa]="'tabs-layout-tab-' + tab.path"
     >
       {{ tab.label }}
     </a>

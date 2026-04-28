@@ -11,7 +11,7 @@ from geoalchemy2.elements import WKTElement
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_profiles.models import (
-    VConsistancyData,
+    VConsistencyData,
     VmCorTaxonPhenology,
     VmValidProfiles,
     TParameters,
@@ -172,7 +172,7 @@ class TestGnProfiles:
         assert profile is not None
 
         consistancy_data = db.session.execute(
-            sa.select(VConsistancyData).filter_by(id_synthese=valid_new_obs.id_synthese)
+            sa.select(VConsistencyData).filter_by(id_synthese=valid_new_obs.id_synthese)
         ).scalar_one()
         assert consistancy_data.valid_distribution is True
         assert consistancy_data.valid_altitude is True
@@ -200,8 +200,8 @@ class TestGnProfiles:
         assert profile is not None
 
         consistancy_data = db.session.execute(
-            sa.select(VConsistancyData).where(
-                VConsistancyData.id_synthese == wrong_new_obs.id_synthese
+            sa.select(VConsistencyData).where(
+                VConsistencyData.id_synthese == wrong_new_obs.id_synthese
             )
         ).scalar_one()
 

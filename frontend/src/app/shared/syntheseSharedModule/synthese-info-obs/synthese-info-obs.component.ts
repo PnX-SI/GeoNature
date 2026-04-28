@@ -199,6 +199,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         for (const key in areaDict) {
           this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
         }
+        this.formatedAreas.sort((a, b) =>
+          a.area_type.localeCompare(b.area_type, undefined, { numeric: true })
+        );
 
         if (this.selectedObs['unique_id_sinp']) {
           this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
@@ -391,14 +394,14 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         content: '',
       })
       .subscribe(() => {
-        this._commonService.translateToaster('success', 'Epinglé !');
+        this._commonService.translateToaster('success', 'Synthese.Messages.Pinned');
         this.getReport('pin');
       });
   }
 
   deletePin() {
     this._dataService.deleteReport(this.pin.id_report).subscribe(() => {
-      this._commonService.translateToaster('info', 'Epingle supprimée !');
+      this._commonService.translateToaster('info', 'Synthese.Messages.Unpinned');
       this.pin = {};
     });
   }

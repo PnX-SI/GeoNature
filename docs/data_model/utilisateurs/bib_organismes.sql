@@ -34,6 +34,9 @@ ALTER TABLE ONLY utilisateurs.bib_organismes
 ALTER TABLE ONLY utilisateurs.bib_organismes
     ADD CONSTRAINT pk_bib_organismes PRIMARY KEY (id_organisme);
 
+ALTER TABLE ONLY utilisateurs.bib_organismes
+    ADD CONSTRAINT uq_bib_organismes_nom_organisme UNIQUE (nom_organisme);
+
 CREATE TRIGGER tri_meta_dates_change_organisms BEFORE INSERT OR UPDATE ON utilisateurs.bib_organismes FOR EACH ROW EXECUTE FUNCTION utilisateurs.fct_trg_meta_dates_change();
 
 ALTER TABLE ONLY utilisateurs.bib_organismes

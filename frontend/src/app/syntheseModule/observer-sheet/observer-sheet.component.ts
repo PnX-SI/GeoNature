@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { CommonModule } from '@angular/common';
 import { InfosComponent } from './infos/infos.component';
@@ -61,6 +62,8 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
   private readonly _destroy$ = new Subject<void>();
 
   constructor(
+    private _route: ActivatedRoute,
+    private _router: Router,
     public routes: ObserverSheetRouteService,
     private _oss: ObserverSheetService
   ) {
@@ -73,6 +76,7 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
       if (observer) {
         this.startLoading();
         this.setIndicators(null);
+        this.redirectToDefaultTabIfNeeded();
       }
     });
 
@@ -84,6 +88,13 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
         }
         this.setIndicators(stats);
       });
+
+    this._router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this._destroy$)
+      )
+      .subscribe(() => this.redirectToDefaultTabIfNeeded());
   }
 
   ngOnDestroy(): void {
@@ -95,5 +106,16 @@ export class ObserverSheetComponent extends Loadable implements OnInit {
     this.indicators = INDICATORS.map((indicatorConfig: IndicatorDescription) =>
       computeIndicatorFromStats(indicatorConfig, stats)
     );
+  }
+
+  private redirectToDefaultTabIfNeeded() {
+    if (!this.observer || this._route.firstChild) {
+      return;
+    }
+
+    const defaultTab = this.routes.TAB_LINKS[0]?.path;
+    if (defaultTab) {
+      this._router.navigate(['./', defaultTab], { relativeTo: this._route });
+    }
   }
 }

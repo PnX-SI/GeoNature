@@ -99,6 +99,7 @@
           <a
             class="Link"
             [routerLink]="getTaxonSheetUrl(row.cd_nom)"
+            data-qa="synthese-list-taxon-sheet-link"
             *ngIf="
               config.SYNTHESE.ENABLE_TAXON_SHEETS && row.hasOwnProperty('cd_nom');
               else cellDefault

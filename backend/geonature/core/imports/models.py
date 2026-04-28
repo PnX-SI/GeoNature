@@ -346,6 +346,8 @@ cor_role_import = db.Table(
         "destination.label",
         "destination.statistics_labels",
         "destination.module",
+        "errors.type",
+        "errors.entity",
     ]
 )
 class TImports(InstancePermissionMixin, db.Model):

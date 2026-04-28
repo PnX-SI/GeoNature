@@ -4,7 +4,7 @@ from typing import List
 
 import sqlalchemy as sa
 import datetime
-from sqlalchemy import ForeignKey, Unicode, and_, DateTime, or_
+from sqlalchemy import ForeignKey, Unicode, DateTime, or_
 from sqlalchemy.orm import (
     relationship,
     column_property,
@@ -15,7 +15,7 @@ from sqlalchemy.orm import (
     deferred,
     query_expression,
 )
-from sqlalchemy.sql import select, func, exists
+from sqlalchemy.sql import select, func
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
@@ -31,9 +31,6 @@ if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
 else:
     from flask_sqlalchemy import BaseQuery as Query
 
-from werkzeug.exceptions import NotFound
-from werkzeug.datastructures import MultiDict
-
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable, SERIALIZERS
@@ -44,15 +41,13 @@ from apptax.taxonomie.models import Taxref, TaxrefTree
 from geonature.core.imports.models import TImports as Import
 from ref_geo.models import LAreas
 
-from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
+from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_commons.models import (
-    THistoryActions,
     TValidations,
     last_validation,
     TMedias,
     TModules,
 )
-from geonature.core.gn_permissions.models import Permission
 from geonature.utils.env import DB, db
 
 
@@ -207,7 +202,6 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
         if scope == 0:
             self = self.where(sa.false())
         elif scope in (1, 2):
-            ors = []
             datasets = db.session.scalars(
                 TDatasets.filter_by_readable(user).with_entities(TDatasets.id_dataset)
             ).all()
@@ -273,7 +267,8 @@ class Synthese(DB.Model):
     entity_source_pk_value = DB.Column(DB.Unicode)
     id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
     dataset = DB.relationship(
-        TDatasets, backref=DB.backref("synthese_records", lazy="dynamic", cascade_backrefs=False)
+        TDatasets,
+        backref=DB.backref("synthese_records", lazy="dynamic", cascade_backrefs=False),
     )
     grp_method = DB.Column(DB.Unicode(length=255))
 
@@ -451,7 +446,9 @@ class Synthese(DB.Model):
     validations = relationship(TValidations, backref="attached_row")
     last_validation = relationship(last_validation, uselist=False, viewonly=True)
     medias = relationship(
-        TMedias, primaryjoin=(TMedias.uuid_attached_row == foreign(unique_id_sinp)), uselist=True
+        TMedias,
+        primaryjoin=(TMedias.uuid_attached_row == foreign(unique_id_sinp)),
+        uselist=True,
     )
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
@@ -535,7 +532,6 @@ class Synthese(DB.Model):
         if scope == 0:
             query = query.where(sa.false())
         elif scope in (1, 2):
-            ors = []
             datasets = db.session.scalars(
                 TDatasets.filter_by_readable(user).with_entities(TDatasets.id_dataset)
             ).all()
@@ -672,6 +668,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     id_nomenclature_behaviour = DB.Column(DB.Integer)
+    id_nomenclature_biogeo_status = DB.Column(DB.Integer)
     reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
@@ -704,7 +701,7 @@ def synthese_export_serialization(cls):
     Il rajoute la fonction as_dict_ordered qui conserve l'ordre des attributs tel que definit dans le model
     (fonctions utilisees pour les exports) et qui redefinit le nom des colonnes tel qu'ils sont nommes en configuration
     """
-    EXPORT_COLUMNS = config["SYNTHESE"]["EXPORT_COLUMNS"]
+    EXPORT_COLUMNS = current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]
     # tab of cls attributes from EXPORT COLUMNS
     formated_default_columns = [key for key, value in EXPORT_COLUMNS.items()]
 
@@ -739,7 +736,7 @@ def synthese_export_serialization(cls):
         return order_dict
 
     def serialize_geofn(self, geoCol, idCol):
-        if not getattr(self, geoCol) is None:
+        if getattr(self, geoCol) is not None:
             geometry = to_shape(getattr(self, geoCol))
         else:
             geometry = {"type": "Point", "coordinates": [0, 0]}

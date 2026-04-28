@@ -26,7 +26,7 @@ export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> =
     label: 'Observations',
     path: 'observations',
     component: ObservationsComponent,
-    configEnabledField: null, // make it always available !
+    configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
   },
   {
     label: 'Taxons',
@@ -65,6 +65,11 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    if (!this._config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS']) {
+      this._router.navigate(['/404'], { skipLocationChange: true });
+      return of(false);
+    }
+
     return this._loadObserver(route).pipe(
       tap((observer) => this._oss.setObserver(observer)),
       map(() => true),

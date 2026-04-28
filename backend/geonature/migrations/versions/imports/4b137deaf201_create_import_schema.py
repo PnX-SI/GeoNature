@@ -6,10 +6,12 @@ Create Date: 2021-03-29 18:38:24.512562
 
 """
 
+from importlib.resources import files as resource_files
+
 from alembic import op, context
 import sqlalchemy as sa
-import pkg_resources
-from distutils.util import strtobool
+
+from utils_flask_sqla.utils import strtobool
 
 
 # revision identifiers, used by Alembic.
@@ -28,9 +30,9 @@ def upgrade():
     if strtobool(context.get_x_argument(as_dictionary=True).get("default-mappings", "true")):
         sql_files += ["default_mappings_data.sql"]
     for sql_file in sql_files:
-        operations = pkg_resources.resource_string(
-            "geonature.migrations", f"data/imports/{sql_file}"
-        ).decode("utf-8")
+        operations = (
+            resource_files("geonature.migrations").joinpath(f"data/imports/{sql_file}").read_text()
+        )
         op.execute(operations)
 
 

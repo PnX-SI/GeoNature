@@ -18,10 +18,18 @@
         {{ 'MetaData.Organisms.NameRequired' | translate }}
       </mat-error>
     </mat-form-field>
-
+    <div
+      *ngIf="exactMatchExists"
+      class="exact-match-error"
+    >
+      <mat-icon class="error-icon">error</mat-icon>
+      <div class="warning-content">
+        <strong>{{ 'MetaData.Organisms.ExactMatchExists' | translate }}</strong>
+      </div>
+    </div>
     <!-- Warning for similar organism names -->
     <div
-      *ngIf="showSimilarWarning"
+      *ngIf="showSimilarWarning && !exactMatchExists"
       class="similar-warning"
     >
       <mat-icon class="warning-icon">warning</mat-icon>
@@ -314,7 +322,7 @@
     color="primary"
     class="button-success"
     (click)="onSubmit()"
-    [disabled]="!organismForm.valid"
+    [disabled]="!organismForm.valid || exactMatchExists"
     data-qa="organism-dialog-save"
   >
     {{ 'Actions.Validate' | translate }}

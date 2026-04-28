@@ -14,7 +14,8 @@ CREATE TABLE gn_monitoring.t_base_visits (
     uuid_base_visit uuid DEFAULT public.uuid_generate_v4(),
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
-    observers_txt text
+    observers_txt text,
+    id_import integer
 );
 
 CREATE SEQUENCE gn_monitoring.t_base_visits_id_base_visit_seq

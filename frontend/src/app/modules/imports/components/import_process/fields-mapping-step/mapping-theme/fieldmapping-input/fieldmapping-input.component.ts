@@ -277,7 +277,13 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   switchInputType() {
     if (this.inputState == InputStackState.INPUT_FILE) {
       this.inputState = InputStackState.CONSTANT;
-      this.value = this.constantValue ? { constant_value: this.constantValue } : null;
+      if (
+        this.constantValue == null &&
+        ['boolean', 'bool_checkbox'].includes(this._field.type_field)
+      ) {
+        this.constantValue = false;
+      }
+      this.value = this.constantValue != null ? { constant_value: this.constantValue } : null;
     } else if (this.inputState == InputStackState.CONSTANT) {
       this.inputState = InputStackState.INPUT_FILE;
       this.value = this._csvColumn ? { column_src: this._csvColumn } : null;

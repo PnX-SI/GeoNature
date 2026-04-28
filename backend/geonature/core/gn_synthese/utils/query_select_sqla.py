@@ -555,13 +555,7 @@ class SyntheseQuery:
                         self.query = self.query.where(
                             func.ST_Intersects(self.geom_column, l_areas_cte.c.geom_4326)
                         )
-                else:
-                    self.add_join(
-                        CorAreaSynthese,
-                        CorAreaSynthese.id_synthese,
-                        self.model.id_synthese,
-                    )
-                    self.query = self.query.where(CorAreaSynthese.id_area.in_(value))
+
             elif colname.startswith("id_"):
                 col = getattr(self.model, colname)
                 if isinstance(value, list):
@@ -577,6 +571,23 @@ class SyntheseQuery:
                         self.query = self.query.where(col == value)
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value)))
+
+        if self.geom_column.class_ == self.model:
+            areas = []
+            for colname, value in self.filters.items():
+                if colname.startswith("area"):
+                    if isinstance(value, list):
+                        areas.extend(value)
+                    else:
+                        areas.append(value)
+
+            if len(areas) > 0:
+                self.query = self.query.where(
+                    sa.exists(CorAreaSynthese).where(
+                        CorAreaSynthese.id_synthese == self.model.id_synthese,
+                        CorAreaSynthese.id_area.in_(areas),
+                    )
+                )
 
     def apply_all_filters(self, user, permissions):
         if type(permissions) == int:  # scope

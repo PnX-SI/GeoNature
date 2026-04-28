@@ -126,6 +126,7 @@ $icon-size: 19px;
       }
 
       &Tooltip {
+        white-space: pre-line;
         filter: opacity(0.6);
 
         &--disabled {
