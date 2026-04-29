@@ -451,12 +451,12 @@ def get_export_pdf_dataset(id_dataset, scope):
     dataset_schema = DatasetSchema(
         only=[
             "nomenclature_data_type",
-            "nomenclature_dataset_objectif",
             "nomenclature_collecting_method",
             "acquisition_framework",
             "cor_dataset_actor.nomenclature_actor_role",
             "cor_dataset_actor.organism",
             "cor_dataset_actor.role",
+            "cor_objectifs",
         ]
     )
     dataset = dataset_schema.dump(dataset)
