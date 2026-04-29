@@ -384,7 +384,8 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
 
 def datasetHandler(dataset, data):
     datasetSchema = DatasetSchema(
-        only=["cor_dataset_actor", "modules", "cor_territories"], unknown=EXCLUDE
+        only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
+        unknown=EXCLUDE,
     )
     try:
         dataset = datasetSchema.load(data, instance=dataset)

@@ -65,7 +65,6 @@ export class DatasetFormService {
       keywords: null,
       terrestrial_domain: null,
       marine_domain: null,
-      id_nomenclature_dataset_objectif: [null, Validators.required],
       id_nomenclature_collecting_method: [null, Validators.required],
       id_nomenclature_data_origin: [null, Validators.required],
       id_nomenclature_source_status: [null, Validators.required],
@@ -74,6 +73,7 @@ export class DatasetFormService {
       active: [null, Validators.required],
       id_taxa_list: null,
       modules: [[]],
+      cor_objectifs: [[], Validators.required],
       cor_territories: [[], Validators.required],
       cor_dataset_actor: this.fb.array(
         [],

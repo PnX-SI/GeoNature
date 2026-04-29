@@ -157,9 +157,11 @@
 
           <div>
             <pnx-nomenclature
-              label="{{ 'Aim' | translate }}"
-              [parentFormControl]="form.get('id_nomenclature_dataset_objectif')"
+              [multiSelect]="true"
+              label="{{ 'Objective(s)' | translate }}"
+              [parentFormControl]="form.get('cor_objectifs')"
               codeNomenclatureType="JDD_OBJECTIFS"
+              [bindAllItem]="true"
               data-qa="pnx-dataset-form-objectif"
             ></pnx-nomenclature>
           </div>
