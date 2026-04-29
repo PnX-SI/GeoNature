@@ -64,6 +64,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     nomenclature_data_origin = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_source_status = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_resource_type = MA.Nested(NomenclatureSchema, dump_only=True)
+    cor_objectifs = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)

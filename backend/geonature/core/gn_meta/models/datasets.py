@@ -123,6 +123,13 @@ class TDatasets(db.Model):
         foreign_keys=[id_nomenclature_resource_type],
     )
 
+    cor_objectifs = DB.relationship(
+        TNomenclatures,
+        secondary=cor_dataset_objectif,
+        # TODO: check what is the use of the following / no reference to "objectif_dataset" needed elsewhere
+        backref=DB.backref("objectif_dataset"),
+    )
+
     cor_territories = DB.relationship(
         TNomenclatures,
         secondary=cor_dataset_territory,
