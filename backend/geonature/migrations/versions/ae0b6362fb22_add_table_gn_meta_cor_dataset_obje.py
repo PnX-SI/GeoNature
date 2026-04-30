@@ -70,6 +70,9 @@ def upgrade():
         SELECT id_dataset, id_nomenclature_dataset_objectif FROM gn_meta.t_datasets;
         """)
 
+    # Remove "old" field
+    op.drop_column("t_datasets", "id_nomenclature_dataset_objectif", schema="gn_meta")
+
     # Add a trigger that add a new entry in the new table for each new entry in t_datasets
     op.execute("""
         CREATE FUNCTION gn_meta.fct_trg_add_new_entry_in_cor_dataset_objectif()
@@ -110,6 +113,34 @@ def downgrade():
             Please clean the table `cor_dataset_objectif` to keep at most one objective per dataset.
             """)
     else:
+        # Create "old" field back
+        op.add_column(
+            "t_datasets",
+            sa.Column(
+                "id_nomenclature_dataset_objectif",
+                sa.Integer,
+                nullable=False,
+                server_default=sa.text(
+                    "ref_nomenclatures.get_default_nomenclature_value('JDD_OBJECTIFS')"
+                ),
+            ),
+            schema="gn_meta",
+        )
+        op.execute("""
+            COMMENT ON COLUMN gn_meta.t_datasets.id_nomenclature_dataset_objectif IS
+            'Correspondance standard SINP = objectifJdd : Objectif du jeu de données tel que défini par la nomenclature ObjectifJeuDonneesValue - OBLIGATOIRE';
+            """)
+        op.execute("""
+            ALTER TABLE ONLY gn_meta.t_datasets
+            ADD CONSTRAINT fk_t_datasets_objectif FOREIGN KEY (id_nomenclature_dataset_objectif)
+            REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+        """)
+        op.execute("""
+            ALTER TABLE gn_meta.t_datasets
+            ADD CONSTRAINT check_t_datasets_objectif
+            CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_dataset_objectif,'JDD_OBJECTIFS')) NOT VALID;
+        """)
+
         # Repopulate `t_datasets.id_nomenclature_dataset_objectif` from single objectives in `cor_dataset_objectif`
         op.execute("""
             UPDATE gn_meta.t_datasets

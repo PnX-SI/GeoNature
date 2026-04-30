@@ -59,7 +59,6 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
 
     creator = MA.Nested(UserSchema, dump_only=True)
     nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)
-    nomenclature_dataset_objectif = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_collecting_method = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_data_origin = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_source_status = MA.Nested(NomenclatureSchema, dump_only=True)
