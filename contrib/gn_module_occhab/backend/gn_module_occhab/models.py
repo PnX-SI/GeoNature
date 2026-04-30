@@ -1,11 +1,12 @@
 from datetime import datetime
+from typing import Any, Optional
 
 import sqlalchemy as sa
 from flask import g
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, synonym, deferred
+from sqlalchemy.orm import relationship, synonym, deferred, Mapped, mapped_column
 from sqlalchemy.schema import FetchedValue, UniqueConstraint
 from sqlalchemy.sql import func, select
 
@@ -40,20 +41,20 @@ class Station(NomenclaturesMixin, db.Model):
     __tablename__ = "t_stations"
     __table_args__ = {"schema": "pr_occhab"}
 
-    id_station = db.Column(db.Integer, primary_key=True)
-    id_station_source = db.Column(db.String)
-    unique_id_sinp_station = db.Column(
+    id_station: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id_station_source: Mapped[Optional[str]] = mapped_column(db.String)
+    unique_id_sinp_station: Mapped[Optional[Any]] = mapped_column(
         UUID(as_uuid=True),
         server_default=select(func.uuid_generate_v4()),
     )
-    id_dataset = db.Column(db.Integer, ForeignKey(Dataset.id_dataset), nullable=False)
+    id_dataset: Mapped[int] = mapped_column(db.Integer, ForeignKey(Dataset.id_dataset))
     dataset = relationship(Dataset)
-    date_min = db.Column(db.DateTime, server_default=FetchedValue())
-    date_max = db.Column(db.DateTime, server_default=FetchedValue())
-    observers_txt = db.Column(db.Unicode(length=500))
-    station_name = db.Column(db.Unicode(length=1000))
+    date_min: Mapped[Optional[datetime]] = mapped_column(db.DateTime, server_default=FetchedValue())
+    date_max: Mapped[Optional[datetime]] = mapped_column(db.DateTime, server_default=FetchedValue())
+    observers_txt: Mapped[Optional[str]] = mapped_column(db.Unicode(length=500))
+    station_name: Mapped[Optional[str]] = mapped_column(db.Unicode(length=1000))
     # is_habitat_complex = db.Column(db.Boolean)
-    id_nomenclature_type_mosaique_habitat = db.Column(
+    id_nomenclature_type_mosaique_habitat: Mapped[Optional[int]] = mapped_column(
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
     )
@@ -61,17 +62,17 @@ class Station(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_type_mosaique_habitat],
     )
-    altitude_min = db.Column(db.Integer)
-    altitude_max = db.Column(db.Integer)
-    depth_min = db.Column(db.Integer)
-    depth_max = db.Column(db.Integer)
-    area = db.Column(db.BigInteger)
-    comment = db.Column(db.Unicode)
-    precision = db.Column(db.Integer)
-    id_digitiser = db.Column(db.Integer)
-    geom_local = deferred(db.Column(Geometry("GEOMETRY")))
-    geom_4326 = db.Column(Geometry("GEOMETRY", 4326))
-    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
+    altitude_min: Mapped[Optional[int]]
+    altitude_max: Mapped[Optional[int]]
+    depth_min: Mapped[Optional[int]]
+    depth_max: Mapped[Optional[int]]
+    area: Mapped[Optional[int]] = mapped_column(db.BigInteger)
+    comment: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    precision: Mapped[Optional[int]]
+    id_digitiser: Mapped[Optional[int]]
+    geom_local: Mapped[Optional[Any]] = deferred(mapped_column(Geometry("GEOMETRY")))
+    geom_4326: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY", 4326))
+    id_import: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey(Import.id_import))
 
     habitats = relationship(
         "OccurenceHabitat",
@@ -86,7 +87,7 @@ class Station(NomenclaturesMixin, db.Model):
         lazy="joined",
     )
 
-    id_nomenclature_exposure = db.Column(
+    id_nomenclature_exposure: Mapped[Optional[int]] = mapped_column(
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
     )
@@ -94,7 +95,7 @@ class Station(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_exposure],
     )
-    id_nomenclature_area_surface_calculation = db.Column(
+    id_nomenclature_area_surface_calculation: Mapped[Optional[int]] = mapped_column(
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
     )
@@ -102,14 +103,14 @@ class Station(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_area_surface_calculation],
     )
-    id_nomenclature_geographic_object = db.Column(
+    id_nomenclature_geographic_object: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(Nomenclature.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_geographic_object = db.relationship(
         Nomenclature,
         foreign_keys=[id_nomenclature_geographic_object],
     )
-    id_nomenclature_type_sol = db.Column(
+    id_nomenclature_type_sol: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(Nomenclature.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_type_sol = db.relationship(
@@ -203,41 +204,40 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     __tablename__ = "t_habitats"
     __table_args__ = {"schema": "pr_occhab"}
 
-    id_habitat = db.Column(db.Integer, primary_key=True)
-    id_station = db.Column(db.Integer, ForeignKey(Station.id_station), nullable=False)
+    id_habitat: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id_station: Mapped[int] = mapped_column(db.Integer, ForeignKey(Station.id_station))
     station = db.relationship(
         Station, lazy="joined", back_populates="habitats"
     )  # TODO: remove joined
-    unique_id_sinp_hab = db.Column(
+    unique_id_sinp_hab: Mapped[Optional[Any]] = mapped_column(
         UUID(as_uuid=True),
         server_default=select(func.uuid_generate_v4()),
     )
-    cd_hab = db.Column(db.Integer, ForeignKey("ref_habitats.habref.cd_hab"), nullable=False)
+    cd_hab: Mapped[int] = mapped_column(db.Integer, ForeignKey("ref_habitats.habref.cd_hab"))
     habref = db.relationship("Habref", lazy="joined")
-    nom_cite = db.Column(db.Unicode, nullable=False)
-    determiner = db.Column(db.Unicode)
-    recovery_percentage = db.Column(db.Float)
-    technical_precision = db.Column(db.Unicode)
-    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
+    nom_cite: Mapped[str] = mapped_column(db.Unicode)
+    determiner: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    recovery_percentage: Mapped[Optional[float]] = mapped_column(db.Float)
+    technical_precision: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    id_import: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey(Import.id_import))
 
-    id_nomenclature_determination_type = db.Column(
+    id_nomenclature_determination_type: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(Nomenclature.id_nomenclature)
     )
     nomenclature_determination_type = db.relationship(
         Nomenclature,
         foreign_keys=[id_nomenclature_determination_type],
     )
-    id_nomenclature_collection_technique = db.Column(
+    id_nomenclature_collection_technique: Mapped[int] = mapped_column(
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
-        nullable=False,
         server_default=FetchedValue(),
     )
     nomenclature_collection_technique = db.relationship(
         Nomenclature,
         foreign_keys=[id_nomenclature_collection_technique],
     )
-    id_nomenclature_abundance = db.Column(
+    id_nomenclature_abundance: Mapped[Optional[int]] = mapped_column(
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
     )
@@ -245,7 +245,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_abundance],
     )
-    id_nomenclature_sensitivity = db.Column(
+    id_nomenclature_sensitivity: Mapped[Optional[int]] = mapped_column(
         "id_nomenclature_sensitvity",  # TODO fix db column typo
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
@@ -254,7 +254,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_sensitivity],
     )
-    id_nomenclature_community_interest = db.Column(
+    id_nomenclature_community_interest: Mapped[Optional[int]] = mapped_column(
         "id_nomenclature_community_interest",
         db.Integer,
         ForeignKey(Nomenclature.id_nomenclature),
@@ -269,6 +269,6 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
 class DefaultNomenclatureValue(db.Model):
     __tablename__ = "defaults_nomenclatures_value"
     __table_args__ = {"schema": "pr_occhab"}
-    mnemonique_type = db.Column(db.Integer, primary_key=True)
-    id_organism = db.Column(db.Integer, primary_key=True)
-    id_nomenclature = db.Column(db.Integer, primary_key=True)
+    mnemonique_type: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id_organism: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id_nomenclature: Mapped[int] = mapped_column(db.Integer, primary_key=True)

@@ -1,7 +1,9 @@
+from typing import Any, Optional
+
 from geoalchemy2 import Geometry
-from sqlalchemy import FetchedValue, ForeignKey
-from sqlalchemy.sql import select, func
-from sqlalchemy.orm import relationship
+from sqlalchemy import FetchedValue, ForeignKey, not_
+from sqlalchemy.sql import select, func, and_
+from sqlalchemy.orm import relationship, backref, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from flask import g
 
@@ -20,23 +22,21 @@ from geonature.utils.env import DB, db
 class corRoleRelevesOccurrence(DB.Model):
     __tablename__ = "cor_role_releves_occtax"
     __table_args__ = {"schema": "pr_occtax"}
-    unique_id_cor_role_releve = DB.Column(
+    unique_id_cor_role_releve: Mapped[Any] = mapped_column(
         "unique_id_cor_role_releve",
         UUID(as_uuid=True),
         default=select(func.uuid_generate_v4()),
         primary_key=True,
     )
-    id_releve_occtax = DB.Column(
+    id_releve_occtax: Mapped[Optional[int]] = mapped_column(
         "id_releve_occtax",
         DB.Integer,
         ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax"),
-        primary_key=False,
     )
-    id_role = DB.Column(
+    id_role: Mapped[Optional[int]] = mapped_column(
         "id_role",
         DB.Integer,
         ForeignKey("utilisateurs.t_roles.id_role"),
-        primary_key=False,
     )
 
 
@@ -44,26 +44,29 @@ class corRoleRelevesOccurrence(DB.Model):
 class CorCountingOccurrence(DB.Model):
     __tablename__ = "cor_counting_occtax"
     __table_args__ = {"schema": "pr_occtax"}
-    id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
-    unique_id_sinp_occtax = DB.Column(
-        UUID(as_uuid=True), default=select(func.uuid_generate_v4()), nullable=False
+    id_counting_occtax: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    unique_id_sinp_occtax: Mapped[Any] = mapped_column(
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
     )
-    id_occurrence_occtax = DB.Column(
+    id_occurrence_occtax: Mapped[int] = mapped_column(
         DB.Integer,
         ForeignKey("pr_occtax.t_occurrences_occtax.id_occurrence_occtax"),
-        nullable=False,
     )
-    id_nomenclature_life_stage = DB.Column(
-        DB.Integer, nullable=False, server_default=FetchedValue()
+    id_nomenclature_life_stage: Mapped[int] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
     )
-    id_nomenclature_sex = DB.Column(DB.Integer, nullable=False, server_default=FetchedValue())
-    id_nomenclature_obj_count = DB.Column(DB.Integer, nullable=False, server_default=FetchedValue())
-    id_nomenclature_type_count = DB.Column(DB.Integer, server_default=FetchedValue())
-    count_min = DB.Column(DB.Integer)
-    count_max = DB.Column(DB.Integer)
+    id_nomenclature_sex: Mapped[int] = mapped_column(DB.Integer, server_default=FetchedValue())
+    id_nomenclature_obj_count: Mapped[int] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_type_count: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    count_min: Mapped[Optional[int]]
+    count_max: Mapped[Optional[int]]
 
     # additional fields dans occtax MET 14/10/2020
-    additional_fields = DB.Column(JSONB)
+    additional_fields: Mapped[Optional[Any]] = mapped_column(JSONB)
     occurrence = db.relationship("TOccurrencesOccurrence", back_populates="cor_counting_occtax")
     readonly_fields = [
         "id_counting_occtax",
@@ -85,37 +88,57 @@ class CorCountingOccurrence(DB.Model):
 class TOccurrencesOccurrence(DB.Model):
     __tablename__ = "t_occurrences_occtax"
     __table_args__ = {"schema": "pr_occtax"}
-    id_occurrence_occtax = DB.Column(DB.Integer, primary_key=True)
-    id_releve_occtax = DB.Column(
+    id_occurrence_occtax: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    id_releve_occtax: Mapped[Optional[int]] = mapped_column(
         DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
     )
     releve = relationship("TRelevesOccurrence", back_populates="t_occurrences_occtax")
-    id_nomenclature_obs_technique = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_bio_condition = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_bio_status = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_naturalness = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_exist_proof = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_observation_status = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_blurring = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_source_status = DB.Column(DB.Integer, server_default=FetchedValue())
-    determiner = DB.Column(DB.Unicode)
-    id_nomenclature_determination_method = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_behaviour = DB.Column(DB.Integer, server_default=FetchedValue())
-    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
-    nom_cite = DB.Column(DB.Unicode)
-    meta_v_taxref = DB.Column(
+    id_nomenclature_obs_technique: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_bio_condition: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_bio_status: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_naturalness: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_exist_proof: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_observation_status: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_blurring: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_source_status: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    determiner: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_nomenclature_determination_method: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_behaviour: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    cd_nom: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey(Taxref.cd_nom))
+    nom_cite: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    meta_v_taxref: Mapped[Optional[str]] = mapped_column(
         DB.Unicode,
         default=select(func.gn_commons.get_default_parameter("taxref_version")),
     )
-    sample_number_proof = DB.Column(DB.Unicode)
-    digital_proof = DB.Column(DB.Unicode)
-    non_digital_proof = DB.Column(DB.Unicode)
-    comment = DB.Column(DB.Unicode)
+    sample_number_proof: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    digital_proof: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    non_digital_proof: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    comment: Mapped[Optional[str]] = mapped_column(DB.Unicode)
 
     # additional fields dans occtax MET 28/09/2020
-    additional_fields = DB.Column(JSONB)
+    additional_fields: Mapped[Optional[Any]] = mapped_column(JSONB)
 
-    unique_id_occurence_occtax = DB.Column(
+    unique_id_occurence_occtax: Mapped[Optional[Any]] = mapped_column(
         UUID(as_uuid=True),
         default=select(func.uuid_generate_v4()),
     )
@@ -137,34 +160,46 @@ class TOccurrencesOccurrence(DB.Model):
 class TRelevesOccurrence(DB.Model):
     __tablename__ = "t_releves_occtax"
     __table_args__ = {"schema": "pr_occtax"}
-    id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
-    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
-    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
-    id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_nomenclature_grp_typ = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_module = DB.Column(DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), nullable=False)
-    grp_method = DB.Column(DB.Unicode)
-    observers_txt = DB.Column(DB.Unicode)
-    date_min = DB.Column(DB.DateTime)
-    date_max = DB.Column(DB.DateTime)
-    hour_min = DB.Column(DB.DateTime)
-    hour_max = DB.Column(DB.DateTime)
-    altitude_min = DB.Column(DB.Integer)
-    altitude_max = DB.Column(DB.Integer)
-    depth_min = DB.Column(DB.Integer)
-    depth_max = DB.Column(DB.Integer)
-    id_nomenclature_tech_collect_campanule = DB.Column(DB.Integer, server_default=FetchedValue())
-    id_nomenclature_geo_object_nature = DB.Column(DB.Integer, server_default=FetchedValue())
-    meta_device_entry = DB.Column(DB.Unicode)
-    comment = DB.Column(DB.Unicode)
-    place_name = DB.Column(DB.Unicode)
-    geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    geom_local = DB.Column(Geometry("GEOMETRY"))
-    cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
-    precision = DB.Column(DB.Integer)
+    id_releve_occtax: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    unique_id_sinp_grp: Mapped[Optional[Any]] = mapped_column(
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
+    id_dataset: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset")
+    )
+    id_digitiser: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey("utilisateurs.t_roles.id_role")
+    )
+    id_nomenclature_grp_typ: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_module: Mapped[int] = mapped_column(DB.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    grp_method: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    observers_txt: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    date_min: Mapped[Optional[Any]] = mapped_column(DB.DateTime)
+    date_max: Mapped[Optional[Any]] = mapped_column(DB.DateTime)
+    hour_min: Mapped[Optional[Any]] = mapped_column(DB.DateTime)
+    hour_max: Mapped[Optional[Any]] = mapped_column(DB.DateTime)
+    altitude_min: Mapped[Optional[int]]
+    altitude_max: Mapped[Optional[int]]
+    depth_min: Mapped[Optional[int]]
+    depth_max: Mapped[Optional[int]]
+    id_nomenclature_tech_collect_campanule: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_geo_object_nature: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, server_default=FetchedValue()
+    )
+    meta_device_entry: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    comment: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    place_name: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    geom_4326: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY", 4326))
+    geom_local: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY"))
+    cd_hab: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey(Habref.cd_hab))
+    precision: Mapped[Optional[int]]
 
     habitat = relationship(Habref, lazy="select")
-    additional_fields = DB.Column(JSONB)
+    additional_fields: Mapped[Optional[Any]] = mapped_column(JSONB)
 
     t_occurrences_occtax = relationship(
         "TOccurrencesOccurrence",
@@ -243,6 +278,6 @@ class TRelevesOccurrence(DB.Model):
 class DefaultNomenclaturesValue(DB.Model):
     __tablename__ = "defaults_nomenclatures_value"
     __table_args__ = {"schema": "pr_occtax"}
-    mnemonique_type = DB.Column(DB.Integer, primary_key=True)
-    id_organism = DB.Column(DB.Integer, primary_key=True)
-    id_nomenclature = DB.Column(DB.Integer, primary_key=True)
+    mnemonique_type: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    id_organism: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    id_nomenclature: Mapped[int] = mapped_column(DB.Integer, primary_key=True)

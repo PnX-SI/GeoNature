@@ -1,4 +1,7 @@
+from typing import Optional
+
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from sqlalchemy.sql import select, func
@@ -11,21 +14,21 @@ from geonature.utils.env import DB
 class VUserslistForallMenu(DB.Model):
     __tablename__ = "v_userslist_forall_menu"
     __table_args__ = {"schema": "utilisateurs"}
-    id_role = DB.Column(DB.Integer, primary_key=True)
-    nom_role = DB.Column(DB.Unicode)
-    prenom_role = DB.Column(DB.Unicode)
-    nom_complet = DB.Column(DB.Unicode)
-    id_menu = DB.Column(DB.Integer, primary_key=True)
+    id_role: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    nom_role: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    prenom_role: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    nom_complet: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_menu: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
 
 
 @serializable
 class CorRole(DB.Model):
     __tablename__ = "cor_roles"
     __table_args__ = {"schema": "utilisateurs", "extend_existing": True}
-    id_role_groupe = DB.Column(
+    id_role_groupe: Mapped[int] = mapped_column(
         DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"), primary_key=True
     )
-    id_role_utilisateur = DB.Column(DB.Integer, primary_key=True)
+    id_role_utilisateur: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
     role = DB.relationship(
         User,
         primaryjoin=(User.id_role == id_role_groupe),
@@ -41,10 +44,10 @@ class CorRole(DB.Model):
 class TApplications(DB.Model):
     __tablename__ = "t_applications"
     __table_args__ = {"schema": "utilisateurs", "extend_existing": True}
-    id_application = DB.Column(DB.Integer, primary_key=True)
-    nom_application = DB.Column(DB.Unicode)
-    desc_application = DB.Column(DB.Unicode)
-    id_parent = DB.Column(DB.Integer)
+    id_application: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    nom_application: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    desc_application: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_parent: Mapped[Optional[int]]
 
 
 class UserRigth:
