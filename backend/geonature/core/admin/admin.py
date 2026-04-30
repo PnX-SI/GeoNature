@@ -57,6 +57,8 @@ class ProtectedTNomenclaturesAdmin(
     object_code = "NOMENCLATURES"
 
 
+from flask_admin.theme import Bootstrap4Theme
+
 ## déclaration de la page d'admin
 admin = Admin(
     name="Administration GeoNature",
