@@ -10,7 +10,8 @@ from flask import current_app, render_template
 from pypnusershub.db.models import User
 import sqlalchemy as sa
 from sqlalchemy import func, select, delete
-from chardet.universaldetector import UniversalDetector
+from chardet.detector import UniversalDetector
+
 from sqlalchemy.sql.expression import select, insert
 import pandas as pd
 import numpy as np
