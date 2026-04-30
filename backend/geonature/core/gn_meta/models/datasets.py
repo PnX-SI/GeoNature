@@ -50,11 +50,6 @@ class TDatasets(db.Model):
     keywords = DB.Column(DB.Unicode)
     marine_domain = DB.Column(DB.Boolean)
     terrestrial_domain = DB.Column(DB.Boolean)
-    id_nomenclature_dataset_objectif = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS"),
-    )
     bbox_west = DB.Column(DB.Float)
     bbox_east = DB.Column(DB.Float)
     bbox_south = DB.Column(DB.Float)
@@ -101,10 +96,6 @@ class TDatasets(db.Model):
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
         foreign_keys=[id_nomenclature_data_type],
-    )
-    nomenclature_dataset_objectif = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[id_nomenclature_dataset_objectif],
     )
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,
