@@ -3,6 +3,7 @@ from flask import Blueprint
 from geonature.utils.env import db
 import redis
 from flask import current_app
+from sqlalchemy import text
 
 routes = Blueprint("health", __name__)
 
@@ -25,7 +26,7 @@ def check_all_dependencies():
     }
 
     try:
-        db.session.execute("SELECT 1")
+        db.session.execute(text("SELECT 1"))
     except Exception as e:
         check["database_connection"] = {
             "status": False,
