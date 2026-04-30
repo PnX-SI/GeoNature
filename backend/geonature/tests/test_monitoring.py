@@ -10,8 +10,6 @@ from geonature.core.gn_permissions.models import PermAction, PermObject, Permiss
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
 
 
-from .fixtures import *
-
 CD_NOM = 212
 
 
@@ -105,7 +103,7 @@ def set_permissions(module, role, scope_value, action="R", **kwargs):
     return perm
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestMonitoring:
     def test_get_individuals_forbidden(self, users, module):
         set_logged_user_cookie(self.client, users["self_user"])

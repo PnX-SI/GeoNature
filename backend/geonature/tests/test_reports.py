@@ -14,7 +14,6 @@ from geonature.core.gn_synthese.models import BibReportsTypes, Synthese, TReport
 from geonature.core.notifications.models import Notification, NotificationRule
 from geonature.utils.env import db
 
-from .fixtures import *
 from .utils import logged_user_headers, set_logged_user
 
 
@@ -50,7 +49,7 @@ def self_user_notification_rule(users):
     return add_notification_rule(users["self_user"])
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestReports:
     def test_create_report(self, synthese_data, users):
         url = "gn_synthese.reports.create_report"
@@ -274,7 +273,7 @@ class TestReports:
                 assert names == sorted(names, reverse=reverse_sort)
 
 
-@pytest.mark.usefixtures("client_class", "notifications_enabled", "temporary_transaction")
+@pytest.mark.usefixtures("client_class", "notifications_enabled")
 class TestReportsNotifications:
     def post_comment(self, synthese, user):
         """Post a comment on a synthese row as a user"""

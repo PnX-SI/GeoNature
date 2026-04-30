@@ -19,9 +19,7 @@ def module_code():
     return "SYNTHESE"
 
 
-@pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "default_import_destination", "module_code"
-)
+@pytest.mark.usefixtures("client_class", "default_import_destination", "module_code")
 class TestFields:
     def test_fields(self, users):
         assert self.client.get(url_for("import.get_fields")).status_code == Unauthorized.code

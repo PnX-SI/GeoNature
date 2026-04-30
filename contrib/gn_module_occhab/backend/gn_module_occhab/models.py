@@ -139,7 +139,7 @@ class Station(NomenclaturesMixin, db.Model):
         params = TypeConversionDict(**params)
         id_dataset = params.get("id_dataset", type=int)
         if id_dataset:
-            query = query.filter_by(id_dataset=id_dataset)
+            query = query.where(Station.id_dataset == id_dataset)
 
         cd_hab = params.get("cd_hab", type=int)
         if cd_hab:
@@ -184,9 +184,8 @@ class Station(NomenclaturesMixin, db.Model):
         if scope == 0:
             return False
         elif scope in (1, 2):
-            ds_list = Dataset.filter_by_scope(scope, user=user).with_only_columns(
-                Dataset.id_dataset
-            )
+            ds_query = Dataset.filter_by_scope(scope, user=user)
+            ds_list = select(Dataset.id_dataset).select_entity_from(ds_query)
 
             return sa.or_(
                 Station.observers.any(id_role=user.id_role),

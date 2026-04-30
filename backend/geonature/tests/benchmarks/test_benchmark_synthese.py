@@ -7,7 +7,6 @@ from geonature.core.gn_synthese.models import Synthese
 from .utils import activate_profiling_sql
 
 from .benchmark_generator import BenchmarkTest, CLater
-from geonature.tests.fixtures import users
 
 logging.basicConfig()
 logger = logging.getLogger("logger-name")
@@ -22,7 +21,7 @@ SYNTHESE_EXPORT_TAXON_WEB_URL = """url_for("gn_synthese.exports.export_taxon_web
 
 
 @pytest.mark.benchmark(group="synthese")
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "activate_profiling_sql")
+@pytest.mark.usefixtures("client_class", "activate_profiling_sql")
 class TestBenchmarkSynthese:
     # GET NOMENCLATURE
     test_get_default_nomenclatures = BenchmarkTest(

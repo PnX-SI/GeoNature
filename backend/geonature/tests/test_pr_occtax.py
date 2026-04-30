@@ -15,7 +15,7 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.config import config
 from .utils import set_logged_user
-from .fixtures import *
+
 
 occtax = pytest.importorskip("occtax")
 pytestmark = pytest.mark.skipif("OCCTAX" in config["DISABLED_MODULES"], reason="OccTax is disabled")
@@ -258,7 +258,7 @@ def unexisting_id_releve():
     ) + 1
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
+@pytest.mark.usefixtures("client_class", "datasets")
 class TestOcctaxReleve:
     def test_get_releve(self, users: dict, releve_occtax: Any):
         set_logged_user(self.client, users["user"])
@@ -431,7 +431,7 @@ class TestOcctaxReleve:
             assert response.status_code == Conflict.code
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
+@pytest.mark.usefixtures("client_class", "datasets", "module")
 class TestOcctaxOccurrence:
     def test_post_occurrence(self, users: dict, occurrence_data: dict[str, Any]):
         set_logged_user(self.client, users["stranger_user"])
@@ -558,7 +558,7 @@ class TestOcctaxOccurrence:
             assert response.status_code == Conflict.code
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
+@pytest.mark.usefixtures("client_class", "datasets", "module")
 class TestOcctax:
     def test_post_releve_in_module_bis(
         self,
@@ -651,7 +651,7 @@ class TestOcctax:
         assert len(permission_available) == 5
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestOcctaxGetReleveFilter:
     def test_get_releve_filter_observers_not_present(self, users: dict, releve_occtax: Any):
         query_string = {"observers": [users["admin_user"].id_role]}
@@ -818,7 +818,7 @@ class TestOcctaxGetReleveFilter:
         assert response.status_code == 200
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 @pytest.mark.parametrize(
     "wrong_value",
     (

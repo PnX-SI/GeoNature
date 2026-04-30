@@ -16,7 +16,6 @@ from geonature.utils.module import alembic_branch_in_use, is_module_installed
 from jsonschema import validate
 from json import loads
 
-from .fixtures import *
 
 #############################################################################
 # BASIC TEMPLATE CONFIG FILE
@@ -90,7 +89,6 @@ TEMPLATE_TAXON_SHEET_CONFIG_FILE = """
     """
 
 
-@pytest.mark.usefixtures("temporary_transaction")
 class TestUtils:
     def test_utilstoml(self):
         # Test if file not exists

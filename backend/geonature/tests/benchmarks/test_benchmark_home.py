@@ -14,7 +14,7 @@ from .utils import CLIENT_GET, CLIENT_POST
 
 
 @pytest.mark.benchmark(group="home")
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "activate_profiling_sql")
+@pytest.mark.usefixtures("client_class", "activate_profiling_sql")
 class TestBenchmarkHome:
 
     test_general_stats = BenchmarkTest(

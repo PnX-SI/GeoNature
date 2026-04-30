@@ -58,6 +58,7 @@ doc = ["sphinx", "furo", "myst-parser", "sphinx-autoapi", "sphinx-copybutton"]
 minversion = "6.0"
 testpaths = ["backend/geonature/tests/"]
 addopts = "--benchmark-skip"
+norecursedirs = ["imports"]
 
 [tool.coverage.run]
 source = [

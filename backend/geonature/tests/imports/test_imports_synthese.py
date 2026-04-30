@@ -26,7 +26,6 @@ from geonature.core.gn_permissions.tools import (
 from geonature.core.gn_permissions.models import PermAction, Permission, PermObject
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import CorObserverSynthese, Synthese
-from geonature.tests.fixtures import synthese_data, celery_eager
 
 from pypnusershub.db.models import User, Organisme
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
@@ -116,7 +115,6 @@ def per_dataset_uuid_check(monkeypatch):
 
 @pytest.mark.usefixtures(
     "client_class",
-    "temporary_transaction",
     "celery_eager",
     "import_destination",
     "default_import_destination",
