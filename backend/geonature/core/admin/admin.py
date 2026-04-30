@@ -85,7 +85,7 @@ admin.add_link(
 admin.add_view(
     ProtectedBibNomenclaturesTypesAdmin(
         BibNomenclaturesTypes,
-        db.session,
+        db,
         name="Type de nomenclatures",
         category="Nomenclatures",
     )
@@ -94,7 +94,7 @@ admin.add_view(
 admin.add_view(
     ProtectedTNomenclaturesAdmin(
         TNomenclatures,
-        db.session,
+        db,
         name="Items de nomenclatures",
         category="Nomenclatures",
     )
@@ -105,7 +105,7 @@ admin.add_view(
 admin.add_view(
     NotificationTemplateAdmin(
         NotificationTemplate,
-        db.session,
+        db,
         name="Templates des notifications",
         category="Notifications",
     )
@@ -114,7 +114,7 @@ admin.add_view(
 admin.add_view(
     NotificationCategoryAdmin(
         NotificationCategory,
-        db.session,
+        db,
         name="Catégories des notifications",
         category="Notifications",
     )
@@ -123,7 +123,7 @@ admin.add_view(
 admin.add_view(
     NotificationMethodAdmin(
         NotificationMethod,
-        db.session,
+        db,
         name="Méthodes de notification",
         category="Notifications",
     )
@@ -132,7 +132,7 @@ admin.add_view(
 admin.add_view(
     BibFieldAdmin(
         TAdditionalFields,
-        db.session,
+        db,
         name="Champs additionnels",
         category="Autres",
     )
@@ -141,7 +141,7 @@ admin.add_view(
 admin.add_view(
     TMobileAppsAdmin(
         TMobileApps,
-        db.session,
+        db,
         name="Applications mobiles",
         category="Autres",
     )
@@ -150,7 +150,7 @@ admin.add_view(
 admin.add_view(
     TModulesAdmin(
         TModules,
-        db.session,
+        db,
         name="Modules",
         category="Autres",
     )

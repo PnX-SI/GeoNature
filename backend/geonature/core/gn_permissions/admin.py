@@ -773,7 +773,7 @@ class UserPermAdmin(RolePermAdmin):
 admin.add_view(
     GroupPermAdmin(
         User,
-        db.session,
+        db,
         name="Par groupes",
         category="Permissions",
         endpoint="permissions/group",
@@ -784,7 +784,7 @@ admin.add_view(
 admin.add_view(
     UserPermAdmin(
         User,
-        db.session,
+        db,
         name="Par utilisateurs",
         category="Permissions",
         endpoint="permissions/user",
@@ -806,7 +806,7 @@ admin.add_view(
 admin.add_view(
     PermissionAdmin(
         Permission,
-        db.session,
+        db,
         name="Permissions",
         category="Permissions",
         endpoint="permissions/permission",
