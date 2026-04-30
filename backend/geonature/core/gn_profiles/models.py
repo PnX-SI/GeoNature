@@ -58,7 +58,9 @@ class VmValidProfiles(DB.Model):
 class VConsistencyData(DB.Model):
     __tablename__ = "v_consistancy_data"
     __table_args__ = {"schema": "gn_profiles"}
-    id_synthese: Mapped[int] = mapped_column(DB.Integer, ForeignKey(Synthese.id_synthese), primary_key=True)
+    id_synthese: Mapped[int] = mapped_column(
+        DB.Integer, ForeignKey(Synthese.id_synthese), primary_key=True
+    )
     synthese = relationship(Synthese, backref=backref("profile", uselist=False))
     id_sinp: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True))
     cd_ref: Mapped[Optional[int]]
@@ -90,7 +92,9 @@ class VSyntheseForProfiles(db.Model):
     __tablename__ = "v_synthese_for_profiles"
     __table_args__ = {"schema": "gn_profiles"}
 
-    id_synthese: Mapped[int] = mapped_column(db.Integer, ForeignKey(Synthese.id_synthese), primary_key=True)
+    id_synthese: Mapped[int] = mapped_column(
+        db.Integer, ForeignKey(Synthese.id_synthese), primary_key=True
+    )
     synthese = relationship(Synthese)
     cd_nom: Mapped[Optional[int]]
     nom_cite: Mapped[Optional[str]] = mapped_column(db.Unicode(length=1000))
@@ -104,11 +108,15 @@ class VSyntheseForProfiles(db.Model):
     altitude_min: Mapped[Optional[int]]
     altitude_max: Mapped[Optional[int]]
 
-    id_nomenclature_life_stage: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_life_stage: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
     nomenclature_life_stage = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_life_stage]
     )
-    id_nomenclature_valid_status: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_valid_status: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
     nomenclature_valid_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
     )

@@ -140,20 +140,30 @@ class TBaseVisits(DB.Model):
     __tablename__ = "t_base_visits"
     __table_args__ = {"schema": "gn_monitoring"}
     id_base_visit: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
-    id_base_site: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey("gn_monitoring.t_base_sites.id_base_site"))
-    id_digitiser: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_dataset: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
+    id_base_site: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey("gn_monitoring.t_base_sites.id_base_site")
+    )
+    id_digitiser: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey("utilisateurs.t_roles.id_role")
+    )
+    id_dataset: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset")
+    )
     # Pour le moment non défini comme une clé étrangère
     #   pour les questions de perfs
     #   a voir en fonction des usage
-    id_module: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_module: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey("gn_commons.t_modules.id_module")
+    )
 
     visit_date_min: Mapped[Optional[datetime]] = mapped_column(DB.DateTime)
     visit_date_max: Mapped[Optional[datetime]] = mapped_column(DB.DateTime)
     id_nomenclature_tech_collect_campanule: Mapped[Optional[int]]
     id_nomenclature_grp_typ: Mapped[Optional[int]]
     comments: Mapped[Optional[str]] = mapped_column(DB.Unicode)
-    uuid_base_visit: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    uuid_base_visit: Mapped[Optional[Any]] = mapped_column(
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
 
     meta_create_date: Mapped[Optional[datetime]] = mapped_column(DB.DateTime)
     meta_update_date: Mapped[Optional[datetime]] = mapped_column(DB.DateTime)
@@ -191,15 +201,21 @@ class TBaseSites(DB.Model):
     __tablename__ = "t_base_sites"
     __table_args__ = {"schema": "gn_monitoring"}
     id_base_site: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
-    id_inventor: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_digitiser: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_inventor: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey("utilisateurs.t_roles.id_role")
+    )
+    id_digitiser: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey("utilisateurs.t_roles.id_role")
+    )
     base_site_name: Mapped[Optional[str]] = mapped_column(DB.Unicode)
     base_site_description: Mapped[Optional[str]] = mapped_column(DB.Unicode)
     base_site_code: Mapped[Optional[str]] = mapped_column(DB.Unicode)
     first_use_date: Mapped[Optional[datetime]] = mapped_column(DB.DateTime)
     geom: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY", 4326))
     geom_local: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY"))
-    uuid_base_site: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    uuid_base_site: Mapped[Optional[Any]] = mapped_column(
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
 
     meta_create_date: Mapped[Optional[datetime]] = mapped_column(DB.DateTime)
     meta_update_date: Mapped[Optional[datetime]] = mapped_column(DB.DateTime)
@@ -250,16 +266,24 @@ class TObservations(DB.Model):
     __tablename__ = "t_observations"
     __table_args__ = {"schema": "gn_monitoring"}
     id_observation: Mapped[int] = mapped_column(DB.Integer, primary_key=True, unique=True)
-    id_base_visit: Mapped[Optional[int]] = mapped_column(DB.ForeignKey("gn_monitoring.t_base_visits.id_base_visit"))
-    id_digitiser: Mapped[Optional[int]] = mapped_column(DB.Integer, DB.ForeignKey("utilisateurs.t_roles.id_role"))
+    id_base_visit: Mapped[Optional[int]] = mapped_column(
+        DB.ForeignKey("gn_monitoring.t_base_visits.id_base_visit")
+    )
+    id_digitiser: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, DB.ForeignKey("utilisateurs.t_roles.id_role")
+    )
     digitiser = DB.relationship(
         User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
     )
     cd_nom: Mapped[int] = mapped_column(DB.Integer, DB.ForeignKey("taxonomie.taxref.cd_nom"))
     comments: Mapped[Optional[str]] = mapped_column(DB.String)
-    uuid_observation: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    uuid_observation: Mapped[Optional[Any]] = mapped_column(
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
     id_import: Mapped[Optional[int]]
-    id_individual: Mapped[Optional[int]] = mapped_column(DB.ForeignKey("gn_monitoring.t_individuals.id_individual"))
+    id_individual: Mapped[Optional[int]] = mapped_column(
+        DB.ForeignKey("gn_monitoring.t_individuals.id_individual")
+    )
 
 
 @serializable
@@ -268,7 +292,9 @@ class TMarkingEvent(DB.Model):
     __table_args__ = {"schema": "gn_monitoring"}
 
     id_marking: Mapped[int] = mapped_column(DB.Integer, primary_key=True, autoincrement=True)
-    uuid_marking: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    uuid_marking: Mapped[Optional[Any]] = mapped_column(
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
     id_individual: Mapped[int] = mapped_column(
         DB.ForeignKey(f"gn_monitoring.t_individuals.id_individual", ondelete="CASCADE"),
     )
@@ -282,7 +308,9 @@ class TMarkingEvent(DB.Model):
     )
     marking_date: Mapped[datetime] = mapped_column(DB.DateTime(timezone=False))
     id_operator: Mapped[int] = mapped_column(DB.ForeignKey("utilisateurs.t_roles.id_role"))
-    id_base_marking_site: Mapped[Optional[int]] = mapped_column(DB.ForeignKey("gn_monitoring.t_base_sites.id_base_site"))
+    id_base_marking_site: Mapped[Optional[int]] = mapped_column(
+        DB.ForeignKey("gn_monitoring.t_base_sites.id_base_site")
+    )
     id_nomenclature_marking_type: Mapped[int] = mapped_column(
         DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
     )

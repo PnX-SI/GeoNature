@@ -131,7 +131,9 @@ class PermissionAvailable(db.Model):
         default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
         primary_key=True,
     )
-    id_action: Mapped[int] = mapped_column(db.Integer, ForeignKey(PermAction.id_action), primary_key=True)
+    id_action: Mapped[int] = mapped_column(
+        db.Integer, ForeignKey(PermAction.id_action), primary_key=True
+    )
     label: Mapped[Optional[str]] = mapped_column(db.Unicode)
 
     module = db.relationship("TModules")
@@ -259,7 +261,9 @@ class Permission(db.Model):
         ForeignKey(PermObject.id_object),
         default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
     )
-    created_on: Mapped[Optional[datetime]] = mapped_column(sa.DateTime, server_default=sa.func.now())
+    created_on: Mapped[Optional[datetime]] = mapped_column(
+        sa.DateTime, server_default=sa.func.now()
+    )
     expire_on: Mapped[Optional[datetime]] = mapped_column(db.DateTime)
     validated: Mapped[Optional[bool]] = mapped_column(sa.Boolean, server_default=sa.true())
 

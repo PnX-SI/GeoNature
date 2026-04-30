@@ -48,11 +48,17 @@ class NotificationCategory(db.Model):
     label: Mapped[Optional[str]] = mapped_column(db.Unicode)
     description: Mapped[Optional[str]] = mapped_column(db.UnicodeText)
 
-    id_module: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_module: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey("gn_commons.t_modules.id_module")
+    )
     module = relationship(TModules)
-    id_object: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey("gn_permissions.t_objects.id_object"))
+    id_object: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey("gn_permissions.t_objects.id_object")
+    )
     object = relationship(PermObject)
-    id_action: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey("gn_permissions.bib_actions.id_action"))
+    id_action: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey("gn_permissions.bib_actions.id_action")
+    )
     action = relationship(PermAction)
 
     def is_allowed(self, user=None) -> bool:
@@ -88,7 +94,9 @@ class NotificationTemplate(db.Model):
         ForeignKey(NotificationCategory.code),
         primary_key=True,
     )
-    code_method: Mapped[str] = mapped_column(db.Unicode, ForeignKey(NotificationMethod.code), primary_key=True)
+    code_method: Mapped[str] = mapped_column(
+        db.Unicode, ForeignKey(NotificationMethod.code), primary_key=True
+    )
     content: Mapped[Optional[str]] = mapped_column(db.UnicodeText)
 
     category = db.relationship(NotificationCategory)
@@ -108,7 +116,9 @@ class Notification(db.Model):
     content: Mapped[Optional[str]] = mapped_column(db.UnicodeText)
     url: Mapped[Optional[str]] = mapped_column(db.Unicode)
     code_status: Mapped[Optional[str]] = mapped_column(db.Unicode)
-    creation_date: Mapped[Optional[datetime.datetime]] = mapped_column(db.DateTime(), default=datetime.datetime.utcnow)
+    creation_date: Mapped[Optional[datetime.datetime]] = mapped_column(
+        db.DateTime(), default=datetime.datetime.utcnow
+    )
 
     user = db.relationship(User)
 
