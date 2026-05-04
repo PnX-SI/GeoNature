@@ -57,7 +57,7 @@ def set_geom_columns_from_area_codes(
     transient_table = imprt.destination.get_transient_table()
 
     for field, area_type_filter in [
-        (codemaille_field, BibAreasTypes.type_code.in_(["M1", "M5", "M10"])),
+        (codemaille_field, BibAreasTypes.type_code.in_(["M1", "M2", "M5", "M10", "M20", "M50"])),
         (codecommune_field, BibAreasTypes.type_code == "COM"),
         (codedepartement_field, BibAreasTypes.type_code == "DEP"),
     ]:
