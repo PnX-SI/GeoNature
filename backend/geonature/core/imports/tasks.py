@@ -11,8 +11,7 @@ from geonature.utils.celery import celery_app
 
 from geonature.core.notifications.utils import dispatch_notifications
 
-from geonature.core.imports.models import BibFields, Entity, EntityField, TImports
-from geonature.core.imports.checks.sql import init_rows_validity, check_orphan_rows
+from geonature.core.imports.models import BibFields, Entity, EntityField, TImports, CorImportDataset
 
 
 logger = get_task_logger(__name__)
@@ -127,6 +126,8 @@ def do_import_in_destination(self, import_id):
         .where(sa.or_(*[transient_table.c[entity.validity_column] != False for entity in entities]))
     ).scalar()
 
+    _fill_cor_dataset_import(imprt, transient_table)
+
     # Clear transient data
     db.session.execute(
         delete(transient_table).where(transient_table.c.id_import == imprt.id_import)
@@ -147,6 +148,50 @@ def do_import_in_destination(self, import_id):
     notify_import_done(imprt)
 
     db.session.commit()
+
+
+def _fill_cor_dataset_import(imprt: TImports, transient_table: sa.sql.schema.Table) -> None:
+    """
+    Fills the correlation dataset for a specific import and its associated transient table.
+
+    Parameters
+    ----------
+    imprt : Import
+        The import object containing the ID and destination data needed for dataset correlation.
+    transient_table : sqlalchemy.sql.schema.Table
+        The transient table linked to the import, used to fetch dataset IDs.
+
+    """
+    dataset_col_name = imprt.destination.actions.get_dataset_transient_column_name()
+
+    id_dataset_col = transient_table.c[dataset_col_name]
+
+    distinct_dataset_ids = db.session.scalars(
+        select(id_dataset_col)
+        .where(transient_table.c.id_import == imprt.id_import)
+        .where(id_dataset_col.isnot(None))
+        .distinct()
+    ).all()
+
+    db.session.execute(
+        delete(CorImportDataset).where(CorImportDataset.id_import == imprt.id_import)
+    )
+    db.session.bulk_save_objects(
+        [
+            CorImportDataset(id_import=imprt.id_import, id_dataset=ds_id)
+            for ds_id in distinct_dataset_ids
+        ]
+    )
+
+    db.session.execute(
+        delete(CorImportDataset).where(CorImportDataset.id_import == imprt.id_import)
+    )
+    db.session.bulk_save_objects(
+        [
+            CorImportDataset(id_import=imprt.id_import, id_dataset=ds_id)
+            for ds_id in distinct_dataset_ids
+        ]
+    )
 
 
 # Send notification

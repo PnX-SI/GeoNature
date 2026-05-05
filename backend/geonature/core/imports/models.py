@@ -34,6 +34,7 @@ from geonature.core.gn_commons.models import TModules
 from pypnnomenclature.models import BibNomenclaturesTypes
 from pypnusershub.db.models import User
 from sqlalchemy import select, exists
+from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 
 
 class ImportModule(TModules):
@@ -412,6 +413,13 @@ class TImports(InstancePermissionMixin, db.Model):
         cascade="all, delete-orphan",
     )
 
+    datasets = db.relationship(
+        "CorImportDataset",
+        back_populates="imprt",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+
     @property
     def cruved(self):
 
@@ -445,27 +453,21 @@ class TImports(InstancePermissionMixin, db.Model):
         -------
 
         """
-        from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
-
-        where_clause = self.destination.actions.get_dataset_where_clause(self)
-        if where_clause:
-            query = select(
+        return db.session.scalar(
+            select(
                 exists().where(
-                    where_clause,
+                    CorImportDataset.id_import == self.id_import,
+                    CorImportDataset.id_dataset == TDatasets.id_dataset,
                     TDatasets.id_acquisition_framework
                     == TAcquisitionFramework.id_acquisition_framework,
                     TAcquisitionFramework.opened.is_(False),
                 )
             )
-            return db.session.scalar(query)
-        else:
-            return False
+        )
 
     def raise_on_closed_af(self):
         if self.has_closed_af:
-            raise Conflict(
-                description="This import is linked to an already closed acquisition framework."
-            )
+            raise Conflict(description="This import is linked to a closed acquisition framework.")
 
     def has_instance_permission(self, scope, user=None, action_code="C"):
 
@@ -521,6 +523,27 @@ class TImports(InstancePermissionMixin, db.Model):
             if extension in TImports.AVAILABLE_FORMATS:
                 import_as_dict["detected_format"] = extension
         return import_as_dict
+
+
+class CorImportDataset(db.Model):
+    __tablename__ = "cor_import_datasets"
+    __table_args__ = {"schema": "gn_imports"}
+
+    id_import = db.Column(
+        db.Integer,
+        db.ForeignKey("gn_imports.t_imports.id_import", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+    )
+    id_dataset = db.Column(
+        db.Integer,
+        db.ForeignKey("gn_meta.t_datasets.id_dataset", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+    )
+
+    imprt = db.relationship("TImports", back_populates="datasets")
+    dataset = db.relationship("TDatasets")
 
 
 @serializable
