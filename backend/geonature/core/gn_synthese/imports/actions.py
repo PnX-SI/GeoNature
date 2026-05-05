@@ -442,13 +442,6 @@ class SyntheseImportActions(ImportActions):
         return taxon_distribution_plot(imprt)
 
     @staticmethod
-    def get_dataset_where_clause(imprt: TImports) -> sa.sql.elements.BinaryExpression:
-        return sa.and_(
-            Synthese.id_import == imprt.id_import,
-            Synthese.id_dataset == TDatasets.id_dataset,
-        )
-
-    @staticmethod
     def compute_bounding_box(imprt: TImports):
         return compute_bounding_box(
             imprt=imprt,
