@@ -599,18 +599,3 @@ class OcchabImportActions(ImportActions):
             geom_4326_field_name__destination="geom_4326",
             child_entity_code="habitat",
         )
-
-    @staticmethod
-    def get_dataset_where_clause(imprt: TImports) -> sa.sql.elements.BinaryExpression:
-        return sa.or_(
-            # Stations
-            sa.and_(
-                Station.id_import == imprt.id_import,
-                Station.id_dataset == TDatasets.id_dataset,
-            ),
-            # Habitats
-            sa.and_(
-                OccurenceHabitat.id_import == imprt.id_import,
-                OccurenceHabitat.station.has(Station.id_dataset == TDatasets.id_dataset),
-            ),
-        )
