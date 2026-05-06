@@ -1862,13 +1862,17 @@ Par défaut :
 .. code:: toml
 
     default_maplist_columns = [
-        { prop = "taxons", name = "Taxon" },
-        { prop = "date_min", name = "Date début" },
+        { prop = "taxons", name = "Taxon(s)" },
         { prop = "observateurs", name = "Observateurs" },
-        { prop = "dataset_name", name = "Jeu de données" }
+        { prop = "date", name = "Date" },
+        { prop = "dataset", name = "Jeu de données" },
     ]
 
-Voir la vue ``occtax.v_releve_list`` pour voir les champs disponibles.
+La clé prop de ces dictionnaire peut prendre les valeurs ``date``, ``nb_taxons``, ``taxons``, ``observateurs`` et ``dataset``.
+Elle peut également prendre le nom de n'importe quelle nom de colonne de la table ``t_releves_occtax``
+
+Le paramètre ``available_maplist_column`` contient quant à lui la liste totale des champs pouvant être affichés ou masqués dans ce tableau.
+Si un élément est présent dans ``default_maplist_columns`` mais pas dans ``available_maplist_column``, il sera toujours affiché et ne pourra pas être masqué.
 
 Ajouter une contrainte d'échelle de saisie sur la carte
 ```````````````````````````````````````````````````````
