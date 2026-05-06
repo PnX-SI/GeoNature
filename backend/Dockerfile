@@ -108,7 +108,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
 
-FROM ${PYTHON_IMAGE} AS wheels-light
+FROM ${PYTHON_IMAGE} AS base
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
@@ -125,10 +125,43 @@ RUN mkdir -p media/attachments
 
 WORKDIR /dist/geonature
 
-COPY /backend/requirements-dev.txt .
-RUN sed -i 's/^-e .*/# &/' requirements-dev.txt
+COPY --chmod=755 /install/03b_populate_db.sh /populate_db.sh
+COPY --chmod=755 /install/assets/docker_entrypoint.sh /entrypoint.sh
+
+ENV GEONATURE_CONFIG_FILE ""
+
+EXPOSE 8000
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD [ "gunicorn", "geonature:create_app()", \
+    "--name=geonature", \
+    "--workers=2", \
+    "--threads=2", \
+    "--access-logfile=-", \
+    "--bind=0.0.0.0:8000" \
+]
+
+
+FROM base AS dev
+
+WORKDIR /sources/GeoNature
+
+# rw required by --editable to write .egg-info stuffs
 RUN --mount=type=cache,target=/root/.cache \
-    pip install -r requirements-dev.txt
+    --mount=type=bind,source=.,target=/sources/GeoNature,rw \
+    cd backend && pip install -e .. -r requirements-dev.txt
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,source=.,target=/sources/GeoNature,rw \
+    pip install \
+      -e contrib/occtax \
+      -e contrib/gn_module_occhab \
+      -e contrib/gn_module_validation
+
+CMD [ "geonature", "dev-back" ]
+
+
+FROM base AS wheels-light
 
 COPY --from=build-habref /build/dist/*.whl .
 COPY --from=build-nomenclature /build/dist/*.whl .
@@ -139,22 +172,6 @@ COPY --from=build-taxhub /build/dist/*.whl .
 COPY --from=build-utils /build/dist/*.whl .
 COPY --from=build-utils-geo /build/dist/*.whl .
 COPY --from=build-geonature /build/dist/*.whl .
-
-COPY --chmod=755 /install/03b_populate_db.sh /populate_db.sh
-COPY --chmod=755 /install/assets/docker_entrypoint.sh /entrypoint.sh
-
-ENV GEONATURE_CONFIG_FILE ""
-
-EXPOSE 8000
-
-ENTRYPOINT ["/entrypoint.sh"]
-CMD [ "gunicorn", "geonature:create_app()", \
-    "--name=geonature", \
-    "--workers=2", \
-    "--threads=2", \
-    "--access-logfile=-", \
-    "--bind=0.0.0.0:8000" \
-]
 
 
 FROM wheels-light AS wheels
