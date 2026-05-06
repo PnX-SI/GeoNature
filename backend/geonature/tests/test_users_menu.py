@@ -1,3 +1,4 @@
+from pypnusershub.tests.utils import set_logged_user
 import pytest
 from flask import url_for
 from sqlalchemy import func, select
@@ -5,6 +6,7 @@ from sqlalchemy.sql import and_
 
 from geonature.core.users.models import VUserslistForallMenu
 from geonature.utils.env import db
+
 
 from pypnusershub.db.models import UserList
 
@@ -24,6 +26,7 @@ def tlist(users):
     """
     Create a list if there is no list in the database
     """
+
     with db.session.begin_nested():
         test_list = UserList(code_liste="testCode", nom_liste="testNom", desc_liste="testDesc")
         db.session.add(test_list)
@@ -58,7 +61,8 @@ class TestApiUsersMenu:
     """
 
     @pytest.mark.parametrize("id_menu", [None, 1])
-    def test_menu_exists(self, id_menu):
+    def test_menu_exists(self, users, id_menu):
+        set_logged_user(self.client, users["user"])
         resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=id_menu))
         users = resp.json
         mandatory_attr = ["id_role", "nom_role", "prenom_role"]
@@ -68,6 +72,7 @@ class TestApiUsersMenu:
         assert resp.status_code == 200
 
     def test_menu_by_id_with_nomcomplet(self, users, user_tlist):
+        set_logged_user(self.client, users["user"])
         nom_complet = users["user"].nom_complet
 
         resp = self.client.get(url_for("users.get_roles_by_menu_id", nom_complet=nom_complet))
@@ -80,13 +85,15 @@ class TestApiUsersMenu:
         # (upper(a.nom_role::text) || ' '::text) || a.prenom_role::text AS nom_complet,
         assert users_[0]["nom_complet"].lower() == nom_complet.lower()
 
-    def test_menu_notexists(self, unavailable_menu_id):
+    def test_menu_notexists(self, users, unavailable_menu_id):
+        set_logged_user(self.client, users["user"])
         resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=unavailable_menu_id))
 
         assert resp.status_code == 200
         assert len(resp.json) == 0
 
-    def test_get_roles_by_menu_code(self, user_tlist):
+    def test_get_roles_by_menu_code(self, users, user_tlist):
+        set_logged_user(self.client, users["user"])
         resp = self.client.get(
             url_for("users.get_roles_by_menu_code", code_liste=user_tlist.code_liste)
         )
@@ -95,7 +102,8 @@ class TestApiUsersMenu:
         assert resp.status_code == 200
         assert user_tlist.nom_complet in [resp["nom_complet"] for resp in json_resp]
 
-    def test_get_listes(self, user_tlist):
+    def test_get_listes(self, users, user_tlist):
+        set_logged_user(self.client, users["user"])
         resp = self.client.get(url_for("users.get_listes"))
 
         assert resp.status_code == 200
