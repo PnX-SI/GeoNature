@@ -1,7 +1,6 @@
-import typing
+from typing import Optional, List, Union
 from math import ceil
 
-from geonature.utils.config import config
 import sqlalchemy as sa
 from apptax.taxonomie.models import Taxref
 from bokeh.embed.standalone import StandaloneEmbedJson
@@ -14,7 +13,6 @@ from geonature.core.gn_synthese.models import (
 )
 from geonature.core.imports.actions import (
     ImportActions,
-    ImportInputUrl,
     ImportStatisticsLabels,
 )
 from geonature.core.imports.checks.dataframe import (
@@ -62,14 +60,16 @@ from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
 
 
-def get_boolean_value(bib_field: BibFields, default_value: bool) -> bool:
+def get_boolean_value(bib_field: Optional[dict], default_value: bool) -> Union[bool, dict]:
+    if not bib_field:
+        return default_value
     return bib_field.get("constant_value", default_value)
 
 
 class SyntheseImportActions(ImportActions):
 
     @staticmethod
-    def statistics_labels() -> typing.List[ImportStatisticsLabels]:
+    def statistics_labels() -> List[ImportStatisticsLabels]:
         return [
             {"key": "import_count", "value": "Nombre d'observations importées"},
             {"key": "taxa_count", "value": "Nombre de taxons"},
@@ -125,14 +125,14 @@ class SyntheseImportActions(ImportActions):
             offset = batch * batch_size
             updated_cols = set()
 
-            logger.info(f"[{batch+1}/{batch_count}] Loading import data in dataframe…")
+            logger.info(f"[{batch + 1}/{batch_count}] Loading import data in dataframe…")
             with start_sentry_child(op="check.df", description="load dataframe"):
                 df = load_transient_data_in_dataframe(
                     imprt, entity, source_cols, offset=offset, limit=batch_size
                 )
             update_batch_progress(batch, 1)
 
-            logger.info(f"[{batch+1}/{batch_count}] Concat dates…")
+            logger.info(f"[{batch + 1}/{batch_count}] Concat dates…")
             with start_sentry_child(op="check.df", description="concat dates"):
                 updated_cols |= concat_dates(
                     df,
@@ -145,17 +145,17 @@ class SyntheseImportActions(ImportActions):
                 )
             update_batch_progress(batch, 2)
 
-            logger.info(f"[{batch+1}/{batch_count}] Check required values…")
+            logger.info(f"[{batch + 1}/{batch_count}] Check required values…")
             with start_sentry_child(op="check.df", description="check required values"):
                 updated_cols |= check_required_values(imprt, entity, df, fields)
             update_batch_progress(batch, 3)
 
-            logger.info(f"[{batch+1}/{batch_count}] Check types…")
+            logger.info(f"[{batch + 1}/{batch_count}] Check types…")
             with start_sentry_child(op="check.df", description="check types"):
                 updated_cols |= check_types(imprt, entity, df, fields)
             update_batch_progress(batch, 4)
 
-            logger.info(f"[{batch+1}/{batch_count}] Check dataset rows")
+            logger.info(f"[{batch + 1}/{batch_count}] Check dataset rows")
             with start_sentry_child(op="check.df", description="check datasets rows"):
                 updated_cols |= check_datasets(
                     imprt,
@@ -166,7 +166,7 @@ class SyntheseImportActions(ImportActions):
                     module_code="SYNTHESE",
                 )
             update_batch_progress(batch, 5)
-            logger.info(f"[{batch+1}/{batch_count}] Check geography…")
+            logger.info(f"[{batch + 1}/{batch_count}] Check geography…")
             with start_sentry_child(op="check.df", description="set geography"):
                 updated_cols |= check_geometry(
                     imprt,
@@ -184,7 +184,7 @@ class SyntheseImportActions(ImportActions):
                 )
             update_batch_progress(batch, 6)
 
-            logger.info(f"[{batch+1}/{batch_count}] Check counts…")
+            logger.info(f"[{batch + 1}/{batch_count}] Check counts…")
             with start_sentry_child(op="check.df", description="check count"):
                 updated_cols |= check_counts(
                     imprt,
@@ -196,7 +196,7 @@ class SyntheseImportActions(ImportActions):
                 )
             update_batch_progress(batch, 7)
 
-            logger.info(f"[{batch+1}/{batch_count}] Updating import data from dataframe…")
+            logger.info(f"[{batch + 1}/{batch_count}] Updating import data from dataframe…")
             with start_sentry_child(op="check.df", description="save dataframe"):
                 update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
             update_batch_progress(batch, 8)
@@ -275,7 +275,7 @@ class SyntheseImportActions(ImportActions):
             check_duplicate_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
 
         altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
-        if altitudes_generate_field and get_boolean_value(
+        if get_boolean_value(
             altitudes_generate_field,
             False,
         ):
@@ -302,7 +302,8 @@ class SyntheseImportActions(ImportActions):
                     selected_fields["unique_id_sinp"],
                 )
         unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
-        if unique_id_sinp_generate_field and get_boolean_value(
+
+        if get_boolean_value(
             unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
