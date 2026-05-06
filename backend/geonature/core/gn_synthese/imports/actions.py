@@ -1,4 +1,4 @@
-from typing import Optional, List, Union
+from typing import List
 from math import ceil
 
 import sqlalchemy as sa
@@ -51,19 +51,15 @@ from geonature.core.imports.utils import (
     compute_bounding_box,
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
+    get_constant_value_from_mapping,
 )
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
 from sqlalchemy import distinct, func, select
 from sqlalchemy.dialects.postgresql import JSONB
+
 from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
-
-
-def get_boolean_value(bib_field: Optional[dict], default_value: bool) -> Union[bool, dict]:
-    if not bib_field:
-        return default_value
-    return bib_field.get("constant_value", default_value)
 
 
 class SyntheseImportActions(ImportActions):
@@ -274,8 +270,8 @@ class SyntheseImportActions(ImportActions):
         if "entity_source_pk_value" in selected_fields:
             check_duplicate_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
 
-        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
-        if get_boolean_value(
+        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", None)
+        if get_constant_value_from_mapping(
             altitudes_generate_field,
             False,
         ):
@@ -301,9 +297,9 @@ class SyntheseImportActions(ImportActions):
                     entity,
                     selected_fields["unique_id_sinp"],
                 )
-        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
+        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", None)
 
-        if get_boolean_value(
+        if get_constant_value_from_mapping(
             unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
@@ -355,15 +351,15 @@ class SyntheseImportActions(ImportActions):
             fields["id_dataset"],
         }
 
-        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", False)
-        if unique_id_sinp_generate_field and get_boolean_value(
+        unique_id_sinp_generate_field = imprt.fieldmapping.get("unique_id_sinp_generate", None)
+        if unique_id_sinp_generate_field and get_constant_value_from_mapping(
             unique_id_sinp_generate_field,
             current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"],
         ):
             insert_fields |= {fields["unique_id_sinp"]}
 
-        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", False)
-        if altitudes_generate_field and get_boolean_value(
+        altitudes_generate_field = imprt.fieldmapping.get("altitudes_generate", None)
+        if altitudes_generate_field and get_constant_value_from_mapping(
             altitudes_generate_field,
             False,
         ):

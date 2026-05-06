@@ -712,3 +712,9 @@ def compute_bounding_box(
     # If a valid bbox is found, return it
     if valid_bbox:
         return json.loads(valid_bbox)
+
+
+def get_constant_value_from_mapping(mapping: Optional[dict], default_value: Any) -> Any:
+    if mapping is None:
+        return default_value
+    return mapping.get("constant_value", default_value)

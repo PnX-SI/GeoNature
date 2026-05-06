@@ -4,7 +4,6 @@ from functools import partial
 from operator import or_
 from functools import reduce
 import csv
-import json
 
 from geonature.core.imports.checks.errors import ImportCodeError
 from geonature.core.imports.checks.sql.user import user_matching
@@ -26,7 +25,6 @@ from geonature.core.gn_permissions.tools import (
 )
 from geonature.core.gn_permissions.models import PermAction, Permission, PermObject
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.gn_synthese.models import CorObserverSynthese, Synthese
 from geonature.tests.fixtures import synthese_data, celery_eager
 
@@ -671,7 +669,7 @@ class TestImportsSynthese:
         )
         assert len(r.json) == len(valid_file_expected_errors)
 
-    def _test_import_valid_file(self, fieldmapping, import_file_name):
+    def import_valid_file(self, fieldmapping, import_file_name):
 
         # Upload step
         with open(tests_path / "files" / "synthese" / import_file_name, "rb") as f:
@@ -829,7 +827,7 @@ class TestImportsSynthese:
 
     def test_import_valid_file(self, users, fieldmapping, import_file_name):
         set_logged_user(self.client, users["user"])
-        imprt = self._test_import_valid_file(fieldmapping, import_file_name)
+        imprt = self.import_valid_file(fieldmapping, import_file_name)
         # Delete step
         r = self.client.delete(url_for("import.delete_import", import_id=imprt.id_import))
         assert r.status_code == 200, r.data
@@ -844,7 +842,7 @@ class TestImportsSynthese:
         db.session.commit()
         field_mapping_without_autogenerate = fieldmapping.copy()
         field_mapping_without_autogenerate.pop("unique_id_sinp_generate", None)
-        imprt = self._test_import_valid_file(field_mapping_without_autogenerate, import_file_name)
+        imprt = self.import_valid_file(field_mapping_without_autogenerate, import_file_name)
         synthese_records = db.session.scalars(
             sa.select(Synthese).where(Synthese.id_import == imprt.id_import)
         ).all()
@@ -856,7 +854,7 @@ class TestImportsSynthese:
         assert r.status_code == 200, r.data
 
         current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"] = False
-        imprt = self._test_import_valid_file(field_mapping_without_autogenerate, import_file_name)
+        imprt = self.import_valid_file(field_mapping_without_autogenerate, import_file_name)
         synthese_records = db.session.scalars(
             sa.select(Synthese).where(Synthese.id_import == imprt.id_import)
         ).all()
