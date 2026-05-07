@@ -246,7 +246,8 @@
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
       "AddAF": "Ajouter un cadre d'acquisition",
-      "SubmitAF": "Déposer le cadre d'acquisition",
+      "CloseAF": "Fermer le cadre d'acquisition",
+      "OpenAF": "Ouvrir le cadre d'acquisition",
       "EditAF": "Editer ce cadre d'acquisition",
       "EditDataset": "Éditer le jeu de données",
       "DeleteDataset": "Supprimer le jeu de données",
