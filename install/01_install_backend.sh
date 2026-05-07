@@ -48,6 +48,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 parseScriptOptions "${@}"
 
 
+my_url="${host_protocol}://${domain_name}${base_path}/"
+api_endpoint="${host_protocol}://${domain_name}${base_path}/api"
+
 cd "${BASE_DIR}"
 
 if [ -f config/geonature_config.toml ]; then
@@ -57,8 +60,8 @@ else
   cp config/geonature_config.toml.sample config/geonature_config.toml
   echo "Préparation du fichier de configuration..."
   sed -i "s|^SQLALCHEMY_DATABASE_URI = .*$|SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name?application_name=geonature\"|" config/geonature_config.toml
-  sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${my_url}geonature'|" config/geonature_config.toml
-  sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${my_url}geonature\/api'|" config/geonature_config.toml 
+  sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${my_url}'|" config/geonature_config.toml
+  sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${api_endpoint}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
   sed -i "s|^DEFAULT_LANGUAGE = .*$|DEFAULT_LANGUAGE = '${default_language}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
