@@ -173,19 +173,34 @@
                         'pnx-metadata-af-delete-name-' + af.acquisition_framework_name
                       "
                     />
-                    <button
-                      *ngIf="config.METADATA?.ENABLE_CLOSE_AF"
-                      type="button"
-                      mat-icon-button
-                      [disabled]="!af.opened || !af.cruved.U"
-                      (click)="
-                        openPublishModalAf($event, af.id_acquisition_framework, publishModal)
+                    <ng-container
+                      *ngIf="
+                        config.METADATA?.AF_OPENABLE && !af.opened && af.cruved.U;
+                        else closeButton
                       "
                     >
-                      <mat-icon matTooltip="{{ 'MetaData.Actions.SubmitAF' | translate }}">
-                        gavel
-                      </mat-icon>
-                    </button>
+                      <button
+                        type="button"
+                        mat-icon-button
+                        (click)="openAf($event, af.id_acquisition_framework)"
+                        matTooltip="{{ 'MetaData.Actions.OpenAF' | translate }}"
+                      >
+                        <mat-icon>lock_open</mat-icon>
+                      </button>
+                    </ng-container>
+                    <ng-template #closeButton>
+                      <button
+                        type="button"
+                        mat-icon-button
+                        [disabled]="!af.opened || !af.cruved.U"
+                        (click)="
+                          openPublishModalAf($event, af.id_acquisition_framework, publishModal)
+                        "
+                        matTooltip="{{ 'MetaData.Actions.CloseAF' | translate }}"
+                      >
+                        <mat-icon>gavel</mat-icon>
+                      </button>
+                    </ng-template>
                   </div>
                 </mat-panel-title>
               </mat-expansion-panel-header>

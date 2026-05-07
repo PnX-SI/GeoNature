@@ -251,6 +251,8 @@
       "AddDataset": "Add a dataset",
       "AddAF": "Add an acquisition framework",
       "SubmitAF": "Submit the acquisition framework",
+      "CloseAF": "Close this acquisition framework",
+      "OpenAF": "Open this acquisition framework",
       "EditAF": "Edit this acquisition framework",
       "EditDataset": "Edit the dataset",
       "DeleteDataset": "Delete the dataset",

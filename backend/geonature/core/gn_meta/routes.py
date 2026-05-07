@@ -12,7 +12,7 @@ from sqlalchemy.exc import DatabaseError
 from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError
+from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError, NotFound
 from werkzeug.datastructures import MultiDict, TypeConversionDict
 from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.exc import IntegrityError
@@ -876,12 +876,29 @@ def call_extended_af_publish(af_id):
             )
 
 
+@routes.route("/acquisition_framework/open/<int:af_id>", methods=["GET"])
+@permissions.check_cruved_scope("U", module_code="METADATA")
+@json_resp
+def open_acquisition_framework(af_id):
+    """
+    Open an acquisition framework
+    """
+    if not current_app.config["METADATA"]["AF_OPENABLE"]:
+        raise GeoNatureError("Acquisition Frameworks are not openable")
+    af = db.session.get(TAcquisitionFramework, af_id)
+    if not af:
+        raise NotFound(f"Acquisition framework {af_id} not found")
+    af.opened = True
+    db.session.commit()
+    return af.as_dict()
+
+
 @routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
 @permissions.check_cruved_scope("U", module_code="METADATA")
 @json_resp
-def publish_acquisition_framework(af_id):
+def close_acquisition_framework(af_id):
     """
-    Publish an acquisition framework
+    close an acquisition framework
     .. :quickref: Metadata;
     """
 
