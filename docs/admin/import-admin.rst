@@ -287,7 +287,19 @@ De manière générale, nous séparons les contrôles de données en deux catég
    8.  Vérification des preuves numériques
    9.  Vérification de l’intersection entre chaque géométrie et la géométrie de la zone autorisée.
 
+**Priorisation des géométries**
 
+Lorsque plusieurs géométries sont fournies pour une même ligne (par exemple, à la fois des coordonnées X/Y et un WKT, ou une commune ET une maille), un système de priorisation est appliqué pour sélectionner automatiquement la géométrie la plus précise. Un avertissement est généré dans ce cas.
+
+L'ordre de priorité des géométries est le suivant :
+
+1. **WKT**
+2. **X/Y**
+3. **Maille**
+4. **Commune**
+5. **Département**
+
+La géométrie avec la priorité la plus élevée est alors utilisée pour géoréférencer la ligne, tandis que les autres géométries sont ignorées.
 
 Modèle de données
 """""""""""""""""

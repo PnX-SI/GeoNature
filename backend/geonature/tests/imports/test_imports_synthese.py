@@ -31,7 +31,8 @@ from geonature.tests.fixtures import synthese_data, celery_eager
 from pypnusershub.db.models import User, Organisme
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from ref_geo.tests.test_ref_geo import has_french_dem
-from ref_geo.models import LAreas
+from ref_geo.models import LAreas, BibAreasTypes
+from geoalchemy2.elements import WKTElement
 
 from geonature.core.imports.models import (
     TImports,
@@ -878,11 +879,10 @@ class TestImportsSynthese:
                 (ImportCodeError.INVALID_ATTACHMENT_CODE, "codecommune", frozenset([3])),
                 (ImportCodeError.INVALID_ATTACHMENT_CODE, "codedepartement", frozenset([5])),
                 (ImportCodeError.INVALID_ATTACHMENT_CODE, "codemaille", frozenset([7])),
-                (ImportCodeError.MULTIPLE_CODE_ATTACHMENT, "Champs géométriques", frozenset([8])),
                 (
-                    ImportCodeError.MULTIPLE_ATTACHMENT_TYPE_CODE,
+                    ImportCodeError.MULTIPLE_GEO_INFO_WARNING,
                     "Champs géométriques",
-                    frozenset([11, 15]),
+                    frozenset([8, 9, 10, 11, 15, 22]),
                 ),
                 (ImportCodeError.NO_GEOM, "Champs géométriques", frozenset([16])),
                 (ImportCodeError.INVALID_GEOMETRY, "WKT", frozenset([17])),
@@ -891,6 +891,58 @@ class TestImportsSynthese:
                 (ImportCodeError.MISSING_VALUE, "longitude", frozenset([20])),
             },
         )
+        transient_table = prepared_import.destination.get_transient_table()
+
+        geoms = db.session.execute(
+            select(
+                transient_table.c.line_no,
+                transient_table.c.the_geom_local,
+            )
+            .where(transient_table.c.id_import == prepared_import.id_import)
+            .order_by(transient_table.c.line_no)
+        ).fetchall()
+
+        def get_geom_from_code(code: str) -> WKTElement:
+            return db.session.execute(select(LAreas.geom).where(LAreas.area_code == code)).scalar()
+
+        def geom_are_equal(geom1, geom2):
+            return db.session.execute(select(func.ST_Equals(geom1, geom2))).scalar()
+
+        line_expected_geom = {
+            "maille": [8],
+            "commune": [2, 22],
+            "département": [4],
+            "wkt": [9, 11, 12, 15],
+            "x/y": [10, 13, 14],
+        }
+        for line_no, geom in geoms:
+            if line_no in line_expected_geom["commune"]:
+                assert geom is not None, f"Ligne {line_no}: géométrie manquante"
+                assert geom_are_equal(
+                    geom, get_geom_from_code("13088")
+                ), f"Ligne {line_no}: géométrie ne correspond pas, type attendu commune"
+            if line_no in line_expected_geom["département"]:
+                assert geom is not None, f"Ligne {line_no}: géométrie manquante"
+                assert geom_are_equal(
+                    geom, get_geom_from_code("13")
+                ), f"Ligne {line_no}: géométrie ne correspond pas, type attendu département"
+            elif line_no in line_expected_geom["maille"]:
+                assert geom is not None, f"Ligne {line_no}: géométrie manquante"
+                assert geom_are_equal(
+                    geom, get_geom_from_code("5kmL93E0905N6250")
+                ), f"Ligne {line_no}: géométrie ne correspond pas, type attendu maille"
+            elif line_no == line_expected_geom["wkt"]:
+                assert geom is not None, f"Ligne {line_no}: géométrie WKT manquante"
+                expected = WKTElement("POINT(5.4877 43.3056)", srid=geom.srid)
+                assert geom_are_equal(
+                    geom, expected
+                ), f"Ligne {line_no}: géométrie WKT ne correspond pas"
+            elif line_no == line_expected_geom["x/y"]:
+                assert geom is not None, f"Ligne {line_no}: géométrie X/Y manquante"
+                expected = WKTElement("POINT(5.6 43.5)", srid=geom.srid)
+                assert geom_are_equal(
+                    geom, expected, 0
+                ), f"Ligne {line_no}: géométrie X/Y ne correspond pas"
 
     @pytest.mark.parametrize("import_file_name,fieldmapping_preset_name", [("cd_file.csv", None)])
     def test_import_cd_file(self, change_id_list_conf, prepared_import):
