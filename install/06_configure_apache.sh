@@ -15,9 +15,9 @@ export STATIC_URL=$(geonature get-config STATIC_URL)
 export FRONTEND_FOLDER="${BASE_DIR}"/frontend/dist
 export FRONTEND_PREFIX=$(geonature get-config URL_APPLICATION | python -c "import sys; from urllib.parse import urlsplit; print(urlsplit(sys.stdin.read()).path)")
 export GUNICORN_URL="http://127.0.0.1:${BACKEND_PORT}"
-export GEONATURE_APP_NAME="${GEONATURE_APP_NAME:-geonature}"
-export BACKEND_PORT="${BACKEND_PORT:-8000}"
-export DOMAIN_NAME=${DOMAIN_NAME:-test.geonature.fr}
+export GEONATURE_APP_NAME="${geonature_app_name:-geonature}"
+export BACKEND_PORT="${backend_port:-8000}"
+export DOMAIN_NAME=${domain_name:-localhost}
 
 deactivate
 

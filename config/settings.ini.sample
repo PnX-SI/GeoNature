@@ -2,9 +2,9 @@
 
 # Set mode to 'dev' to install GeoNature in dev mode
 MODE=prod
-GEONATURE_APP_NAME="geonature"
-BACKEND_PORT=8000
-DOMAIN_NAME="localhost"
+geonature_app_name="geonature"
+backend_port=8000
+domaine__name="localhost"
 
 
 # Langue du serveur

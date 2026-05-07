@@ -11,8 +11,8 @@ if [[ "${MODE}" = "dev" ]]; then
 fi
 
 # Définir le nom de l'application (par défaut "geonature" si non défini)
-export GEONATURE_APP_NAME="${GEONATURE_APP_NAME:-geonature}"
-export BACKEND_PORT="${BACKEND_PORT:-8000}"
+export GEONATURE_APP_NAME="${geonature_app_name:-geonature}"
+export BACKEND_PORT="${backend_port:-8000}"
 export BASE_DIR
 
 echo "Installation de la configuration systemd-tmpfiles…"
