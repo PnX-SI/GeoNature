@@ -1,6 +1,6 @@
 [Unit]
-Description=Reload GeoNature
+Description=Reload GeoNature - ${GEONATURE_APP_NAME}
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/systemctl reload geonature
+ExecStart=/usr/bin/systemctl reload ${GEONATURE_APP_NAME}
