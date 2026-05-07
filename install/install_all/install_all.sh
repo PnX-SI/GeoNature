@@ -118,6 +118,10 @@ sed -i "s/install_module_validation=.*$/install_module_validation=$install_modul
 sed -i "s/install_module_occhab=.*$/install_module_occhab=$install_module_occhab/g" config/settings.ini
 sed -i "s/proxy_http=.*$/proxy_http=$proxy_http/g" config/settings.ini
 sed -i "s/proxy_https=.*$/proxy_https=$proxy_https/g" config/settings.ini
+sed -i "s/geonature_app_name=.*$/geonature_app_name=$geonature_app_name/g" config/settings.ini
+sed -i "s/backend_port=.*$/backend_port=$backend_port/g" config/settings.ini
+sed -i "s/domain_name=.*$/domain_name=$domain_name/g" config/settings.ini
+
 
 cd "${GEONATURE_DIR}/install"
 
