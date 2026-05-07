@@ -158,8 +158,7 @@ class MetadataConfig(Schema):
     EXTENDED_AF_PUBLISH_ROUTE_NAME = fields.String(load_default="")
     CLOSED_MODAL_LABEL = fields.String(load_default="Fermer un cadre d'acquisition")
     CLOSED_MODAL_CONTENT = fields.String(
-        load_default="""L'action de fermeture est irréversible. Il ne sera
-    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite."""
+        load_default="""La fermeture du cadre d'acquisition entrainera l'inactivation de tous les jeux de données liés."""
     )
     CD_NOMENCLATURE_ROLE_TYPE_DS = fields.List(fields.Str(), load_default=[])
     CD_NOMENCLATURE_ROLE_TYPE_AF = fields.List(fields.Str(), load_default=[])
