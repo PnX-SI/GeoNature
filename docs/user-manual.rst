@@ -160,6 +160,27 @@ Cela permet notamment de réduire le nombre de taxons proposés à la saisie dan
 
 Cette association se fait depuis le formulaire de création/d'édition du jeu de données.
 
+**Désactiver un jeu de données**
+
+Il est possible de désactiver un jeu de données en décochant la case "Actif à la saisie" dans le formulaire d'édition du jeu de données. Un jeu de données désactivé n'apparaîtra plus lors de la saisie et l'import de données.
+Les données d'un jeu de données inactif restent consultables et modifiables ; seule la création de nouvelles données dans ce jeu de données n'est plus proposée aux utilisateurs.
+
+**Fermer un cadre d'acquisition**
+
+GeoNature permet de fermer un cadre d'acquisition afin de rendre ses données non modifiables. La fermeture d'un cadre d'acquisition entraîne les conséquences suivantes :
+
+- Tous les jeux de données associés au cadre d'acquisition sont automatiquement désactivés
+- Il n'est plus possible de créer, modifier ou supprimer des données rattachées au cadre d'acquisition
+- Les jeux de données associés ne peuvent pas être réactivés tant que le cadre reste fermé
+
+La fermeture d'un cadre d'acquisition s'effectue depuis la page d'accueil du module Métadonnées. Dans l'image ci-dessous,
+le verrou ouvert permet d'ouvrir un CA fermé, tandis que le marteau permet de fermer un CA ouvert.
+
+.. image:: images/close_or_open_af.png
+
+Selon la configuration de l'instance (voir paramètre `AF_OPENABLE`), il est possible de ré-ouvrir un cadre d'acquisition fermé. La réouverture permet de débloquer la modification des données, mais ne réactive pas automatiquement les jeux de données : ceux-ci doivent être réactivés manuellement si nécessaire.
+
+
 
 OccTax
 ------
