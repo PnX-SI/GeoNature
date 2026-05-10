@@ -1,6 +1,5 @@
 import pytest
 import logging
-import json
 import datetime
 from unittest.mock import patch
 
@@ -16,8 +15,10 @@ from geonature.core.notifications.models import (
     NotificationTemplate,
 )
 from geonature.core.notifications import utils
+from geonature.tests.utils import assert_mock_called_partial, assert_mock_not_called_partial
 from geonature.tests.fixtures import celery_eager, notifications_enabled
 
+from pypnusershub.db.models import User
 
 from sqlalchemy import select, exists, delete
 from .utils import set_logged_user
@@ -26,8 +27,8 @@ log = logging.getLogger()
 
 
 @pytest.fixture(scope="class")
-def clear_default_notification_rules():
-    db.session.execute(delete(NotificationRule).where(NotificationRule.id_role.is_(None)))
+def clear_notification_rules():
+    db.session.execute(delete(NotificationRule))
 
 
 @pytest.fixture()
@@ -115,9 +116,9 @@ def notification_rule(users, rule_method, rule_category):
     "client_class",
     "temporary_transaction",
     "notifications_enabled",
-    "clear_default_notification_rules",
+    "clear_notification_rules",
 )
-class TestNotification:
+class TestNotificationsAPI:
     def test_list_database_notification(self, users, notification_data):
         # Init data for test
         url = "notifications.list_database_notification"
@@ -360,9 +361,17 @@ class TestNotification:
         data = response.get_json()
         assert len(data) > 0
 
+
+@pytest.mark.usefixtures(
+    "client_class",
+    "temporary_transaction",
+    "notifications_enabled",
+    "clear_notification_rules",
+)
+class TestNotificationsCategoriesDelivery:
     # test only notification insertion in database whitout dispatch
-    def test_send_db_notification(self, users):
-        result = utils.send_db_notification(
+    def test_send_notification_to_db(self, users):
+        result = utils.send_notification_to_db(
             users["admin_user"], "test creation", "no templating", "https://geonature.fr"
         )
         assert result is not None
@@ -454,9 +463,8 @@ class TestNotification:
             context=context,
         )
 
-        notif = db.session.execute(
-            select(Notification).filter_by(id_role=role.id_role)
-        ).scalar_one()
+        notif = db.session.execute(select(Notification).filter_by(id_role=role.id_role)).scalar()
+        assert notif
         assert notif.title == title
         assert notif.content == content
         assert notif.url == url
@@ -500,3 +508,177 @@ class TestNotification:
             )
             # user should not be notified as template evaluate to empty string
             mock.assert_called_once_with("admin@geonature.fr", f"[GeoNature] {title}", "msg")
+
+
+@pytest.fixture()
+def user1():
+    with db.session.begin_nested():
+        user = User(identifiant="Notification user 1")
+        db.session.add(user)
+    return user
+
+
+@pytest.fixture()
+def user2():
+    with db.session.begin_nested():
+        user = User(identifiant="Notification user 2")
+        db.session.add(user)
+    return user
+
+
+@pytest.mark.usefixtures(
+    "client_class",
+    "temporary_transaction",
+    "notifications_enabled",
+    "clear_notification_rules",
+)
+class TestNotificationsDispatching:
+    def test_dispatch_notifications_without_default(self, user1, user2, rule_category, rule_method):
+        kwargs = {
+            "code_categories": [rule_category.code],
+            "id_roles": [user1.id_role, user2.id_role],
+            "title": "test",
+            "content": "test",
+            "context": {},
+        }
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            # no rules, the notification is not dispatched
+            mock.assert_not_called()
+
+        # Create a user rule
+        with db.session.begin_nested():
+            user1_rule = NotificationRule(
+                id_role=user1.id_role,
+                code_category=rule_category.code,
+                code_method=rule_method.code,
+                subscribed=True,
+            )
+            db.session.add(user1_rule)
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            mock.assert_called_once()
+            assert_mock_called_partial(mock, rule_category, rule_method, user1)
+
+        with db.session.begin_nested():
+            user1_rule.subscribed = False
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            mock.assert_not_called()
+
+    def test_dispatch_notifications_with_default(self, user1, user2, rule_category, rule_method):
+        kwargs = {
+            "code_categories": [rule_category.code],
+            "id_roles": [user1.id_role, user2.id_role],
+            "title": "test",
+            "content": "test",
+            "context": {},
+        }
+
+        # Create a default rule
+        with db.session.begin_nested():
+            default_rule = NotificationRule(
+                id_role=None,
+                code_category=rule_category.code,
+                code_method=rule_method.code,
+                subscribed=False,
+            )
+            db.session.add(default_rule)
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            # the default rule is subscribed=False
+            mock.assert_not_called()
+
+        with db.session.begin_nested():
+            default_rule.subscribed = True
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            assert_mock_called_partial(mock, rule_category, rule_method, user1)
+            assert_mock_called_partial(mock, rule_category, rule_method, user2)
+
+        with db.session.begin_nested():
+            default_rule.subscribed = False
+
+        # Create a user rule
+        with db.session.begin_nested():
+            user_rule = NotificationRule(
+                id_role=user1.id_role,
+                code_category=rule_category.code,
+                code_method=rule_method.code,
+                subscribed=False,
+            )
+            db.session.add(user_rule)
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            mock.assert_not_called()
+
+        with db.session.begin_nested():
+            user_rule.subscribed = True
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            # default=False but user=True -> True
+            assert_mock_called_partial(mock, rule_category, rule_method, user1)
+            assert_mock_not_called_partial(mock, rule_category, rule_method, user2)
+
+        with db.session.begin_nested():
+            default_rule.subscribed = True
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            # default=True + user=True -> True
+            assert_mock_called_partial(mock, rule_category, rule_method, user1)
+            assert_mock_called_partial(mock, rule_category, rule_method, user2)
+
+        with db.session.begin_nested():
+            user_rule.subscribed = False
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(**kwargs)
+            # default=True but user=False -> False
+            assert_mock_not_called_partial(mock, rule_category, rule_method, user1)
+            assert_mock_called_partial(mock, rule_category, rule_method, user2)
+
+    def test_dispatch_notifications_with_category_pattern_matching(
+        self, user1, user2, rule_category, rule_category_1, rule_method
+    ):
+        kwargs = {
+            "id_roles": [user1.id_role, user2.id_role],
+            "title": "test",
+            "content": "test",
+            "context": {},
+        }
+
+        with db.session.begin_nested():
+            user_rule = NotificationRule(
+                id_role=user1.id_role,
+                code_category=rule_category.code,
+                code_method=rule_method.code,
+                subscribed=True,
+            )
+            db.session.add(user_rule)
+            user_rule_1 = NotificationRule(
+                id_role=user2.id_role,
+                code_category=rule_category_1.code,
+                code_method=rule_method.code,
+                subscribed=True,
+            )
+            db.session.add(user_rule_1)
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(code_categories=["Code_%"], **kwargs)
+            assert mock.call_count == 2
+            assert_mock_called_partial(mock, rule_category, rule_method, user1)
+            assert_mock_called_partial(mock, rule_category_1, rule_method, user2)
+
+        with patch("geonature.core.notifications.utils.send_notification") as mock:
+            utils.dispatch_notifications(code_categories=["Code_%_1"], **kwargs)
+            assert mock.call_count == 1
+            assert_mock_not_called_partial(mock, rule_category, rule_method, user1)
+            assert_mock_called_partial(mock, rule_category_1, rule_method, user2)

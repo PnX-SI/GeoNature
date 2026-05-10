@@ -67,13 +67,17 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
             if not notification_content.strip():
                 continue
 
-        if rule.code_method == "DB":
-            send_db_notification(role, title, notification_content, url)
-        elif rule.code_method == "EMAIL":
-            send_mail_notification(role, title, notification_content)
+        send_notification(rule.category, rule.method, role, title, url, notification_content)
 
 
-def send_db_notification(role, title, content, url):
+def send_notification(category, method, role, title, url, content):
+    if method.code == "DB":
+        send_notification_to_db(role, title, content, url)
+    elif method.code == "EMAIL":
+        send_notification_to_email(role, title, content)
+
+
+def send_notification_to_db(role, title, content, url):
     # Save notification in database as UNREAD
     current_app.logger.info(f"Send database notification to {role}")
     notification = Notification(
@@ -87,7 +91,7 @@ def send_db_notification(role, title, content, url):
     return notification
 
 
-def send_mail_notification(role, title, content):
+def send_notification_to_email(role, title, content):
     if not role.email:
         return
     current_app.logger.info(f"Send email notification to {role} ({role.email})")
