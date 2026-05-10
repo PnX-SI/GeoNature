@@ -4,14 +4,34 @@ from flask import current_app
 import sqlalchemy as sa
 
 from celery.utils.log import get_task_logger
+from celery.schedules import crontab
 
 from geonature.utils.env import db
 from geonature.utils.celery import celery_app
+from geonature.utils.config import config
 from geonature.utils.contextmanagers import trigger_disabled
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.notifications.utils import dispatch_notifications, NOTIFY_EVERYONE
 
 logger = get_task_logger(__name__)
+
+
+@celery_app.on_after_finalize.connect
+def setup_periodic_tasks(sender, **kwargs):
+    ct = config["SYNTHESE"]["NOTIFICATIONS_CRONTAB"]
+    if ct:
+        minute, hour, day_of_month, month_of_year, day_of_week = ct.split(" ")
+        sender.add_periodic_task(
+            crontab(
+                minute=minute,
+                hour=hour,
+                day_of_week=day_of_week,
+                day_of_month=day_of_month,
+                month_of_year=month_of_year,
+            ),
+            send_synthese_notifications.s(),
+            name="synthese notifications",
+        )
 
 
 @celery_app.task
