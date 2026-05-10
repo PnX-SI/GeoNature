@@ -1,6 +1,6 @@
 from itertools import chain, groupby, product
 
-from jinja2 import Template
+from jinja2 import Environment
 from flask import current_app
 import sqlalchemy as sa
 
@@ -19,6 +19,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 NOTIFY_EVERYONE = object()  # sentinel object
+
+
+class SkipNotification(Exception):
+    pass
 
 
 def get_expanded_notification_rules():
@@ -152,7 +156,7 @@ def get_effective_rules(rules=None, id_role=User.id_role):
 
 
 def dispatch_notifications(
-    code_categories, id_roles, title=None, url=None, *, content=None, **kwargs
+    code_categories, id_roles, title=None, url=None, *, content=None, context={}, **kwargs
 ):
     if not current_app.config["NOTIFICATIONS_ENABLED"]:
         return
@@ -194,10 +198,13 @@ def dispatch_notifications(
         stmt = stmt.where(User.id_role.in_(id_roles))
     results = db.session.execute(stmt).all()
 
+    environment = Environment()
+
     for (category, method), group in groupby(
         results, key=lambda res: (res[1], res[2])  # (category, method)
     ):
-        notification_kwargs = {"content": content, **kwargs}
+        notification_kwargs = {"content": content, "context": context, **kwargs}
+        template = None
         if not content:
             template = db.session.scalars(
                 sa.select(NotificationTemplate).filter_by(category=category, method=method)
@@ -205,20 +212,33 @@ def dispatch_notifications(
             if not template:
                 # There are no templates for this category/method, and not content have been provided: do not notify
                 continue
-            notification_kwargs["template"] = template
+            notification_kwargs["template"] = environment.from_string(template.content)
         for role, _, _ in group:
+            # The context may be a callable, which will be called for each user
+            # This allows to use a different context for each user
+            if template and callable(context):
+                try:
+                    notification_kwargs["context"] = context(
+                        category,
+                        method,
+                        role,
+                        environment=environment,
+                        template=template.content,
+                    )
+                except SkipNotification:
+                    continue
             send_notification(
                 category,
                 method,
                 role,
-                title,
-                url,
+                title=title,
+                url=url,
                 **notification_kwargs,
             )
 
 
 def send_notification(
-    category, method, role, title, url, *, content=None, template=None, context={}
+    category, method, role, *, title, url, content=None, template=None, context={}
 ):
     """
     Send a notification of a given category to a given role using a specific method.
@@ -228,7 +248,7 @@ def send_notification(
     else:
         # add role, title and url to rendering context
         context = {"role": role, "title": title, "url": url, **context}
-        notification_content = Template(template.content).render(context)
+        notification_content = template.render(context)
         if not notification_content.strip():
             return
 

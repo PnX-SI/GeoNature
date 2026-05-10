@@ -552,10 +552,7 @@ def user3(group1, group2):
 
 
 @pytest.mark.usefixtures(
-    "client_class",
-    "temporary_transaction",
-    "notifications_enabled",
-    "clear_notification_rules",
+    "client_class", "temporary_transaction", "notifications_enabled", "clear_notification_rules"
 )
 class TestNotificationsDispatching:
     def test_dispatch_notifications_without_default_for_everyone(
