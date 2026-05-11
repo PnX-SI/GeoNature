@@ -806,6 +806,17 @@ class TestGNMeta:
 
         assert set(response.json.keys()) == {"data"}
 
+    def get_test_dataset_json(self, id_acquisition_framework):
+        return {
+            "id_acquisition_framework": id_acquisition_framework,
+            "dataset_name": "test",
+            "dataset_shortname": "test",
+            "dataset_desc": "test",
+            "terrestrial_domain": True,
+            "marine_domain": False,
+            "unique_dataset_id": None,
+        }
+
     def test_create_dataset(self, users, datasets):
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == Unauthorized.code
@@ -820,6 +831,42 @@ class TestGNMeta:
         ds["id_dataset"] = "takeonme"
         response = self.client.post(url_for("gn_meta.create_dataset"), json=ds)
         assert response.status_code == BadRequest.code
+        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        response = self.client.post(
+            url_for("gn_meta.create_dataset"),
+            json=ds_json,
+        )
+        assert response.status_code == 200
+
+    def test_dataset_with_closed_af(self, users, datasets):
+        set_logged_user(self.client, users["admin_user"])
+        datasets["own_dataset"].acquisition_framework.opened = False
+        db.session.flush()
+        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        response = self.client.post(
+            url_for("gn_meta.create_dataset"),
+            json=ds_json,
+        )
+        assert response.status_code == 400
+        # We check if error is linked to the acquisition framework
+        assert response.json["description"].get("id_acquisition_framework")
+
+        # Now post the dataset with af opened, close it and try to update its active status
+        datasets["own_dataset"].acquisition_framework.opened = True
+        db.session.flush()
+        ds_json["active"] = False
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds_json)
+        assert response.status_code == 200
+        id_dataset = response.json["id_dataset"]
+
+        datasets["own_dataset"].acquisition_framework.opened = False
+        db.session.flush()
+        ds_json["active"] = True
+        response = self.client.post(
+            url_for("gn_meta.update_dataset", id_dataset=id_dataset), json=ds_json
+        )
+        assert response.status_code == 400
+        assert response.json["description"].get("active")
 
     def test_get_dataset(self, users, datasets):
         ds = datasets["own_dataset"]

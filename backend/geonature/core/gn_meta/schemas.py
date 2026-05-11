@@ -1,5 +1,5 @@
 from sqlalchemy import inspect
-from marshmallow import pre_load, post_dump, fields, EXCLUDE
+from marshmallow import pre_load, post_dump, fields, EXCLUDE, validates_schema, ValidationError
 from flask import g
 
 from .models import (
@@ -9,7 +9,7 @@ from .models import (
     CorDatasetActor,
     TBibliographicReference,
 )
-from geonature.utils.env import MA
+from geonature.utils.env import MA, db
 from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
@@ -71,6 +71,30 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.mobile_app = kwargs.get("mobile_app", False)
+
+    @validates_schema
+    def validate_acquisition_framework_opened(self, data, **kwargs):
+        """Check if the acquisition framework is opened before creating or updating active status on a dataset."""
+        af_id = data.get("id_acquisition_framework")
+
+        if not af_id and self.instance:
+            af = self.instance.acquisition_framework
+        else:
+            af = db.session.get(TAcquisitionFramework, af_id)
+        is_creation = self.instance is None or self.instance.id_dataset is None
+
+        # If we try to create a dataset on a closed acquisition framework, raise an error
+        if not af.opened and is_creation:
+            raise ValidationError(
+                "Can't create a dataset on a closed acquisition framework.",
+                field_name="id_acquisition_framework",
+            )
+
+        if not af.opened and data.get("active", self.instance.active) != self.instance.active:
+            raise ValidationError(
+                "Can't change the active status of a dataset if the acquisition framework is not opened.",
+                field_name="active",
+            )
 
     @post_dump(pass_collection=False, pass_original=True)
     def module_input(self, item, original, many, **kwargs):

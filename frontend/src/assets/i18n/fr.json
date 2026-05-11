@@ -260,6 +260,10 @@
       "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
       "FillOwnUUID": "Saisie manuelle de l'UUID"
     },
+    "Tooltips": {
+      "DatasetActive": "Le jeu de données est actif",
+      "DatasetInactive": "Le jeu de données est inactif"
+    },
     "UUIDField": "UUID du {{ entity }}",
     "AdvancedSearch": "Recherche avancée",
     "AFAndDatasetsList": "Liste des cadres d'acquisition et des jeux de données associés",

@@ -260,6 +260,10 @@
       "SeeAFSheet": "View the acquisition framework sheet",
       "FillOwnUUID": "I indicate my own SINP UUID"
     },
+    "Tooltips": {
+      "DatasetActive": "The dataset is active",
+      "DatasetInactive": "The dataset is inactive"
+    },
     "UUIDField": "UUID ID",
     "AdvancedSearch": "Advanced search",
     "AFAndDatasetsList": "List of acquisition frameworks and associated datasets",
