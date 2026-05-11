@@ -4,14 +4,12 @@
 <td>
   <span class="float-left">
     <!-- Button to switch dataset active/inactive -->
-    <ng-container *ngIf="dataset.cruved.U; else noSwitchButton">
+    <ng-container *ngIf="isSwitchable(); else noSwitchButton">
       <mat-slide-toggle
         class="custom-toggle"
         *ngIf="!stateChangeSaving"
         [checked]="dataset.active"
-        [matTooltip]="
-          dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'
-        "
+        [matTooltip]="getSwitchTooltip()"
         (change)="switchDatasetState($event)"
         [attr.data-qa]="'pnx-metadata-jdd-actif-' + dataset.unique_dataset_id"
       ></mat-slide-toggle>
@@ -26,9 +24,7 @@
         [checked]="dataset.active"
         [disabled]="true"
         color="primary"
-        [matTooltip]="
-          dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'
-        "
+        [matTooltip]="getSwitchTooltip()"
         [attr.data-qa]="'pnx-metadata-jdd-inactif-' + dataset.unique_dataset_id"
       ></mat-slide-toggle>
     </ng-template>

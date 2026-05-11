@@ -32,6 +32,7 @@ class MetadataFilterSchema(ma.Schema):
     areas = ma.fields.List(ma.fields.Integer())
     search = ma.fields.String()
     is_parent = ma.fields.Boolean(allow_none=True)
+    opened = ma.fields.Boolean(allow_none=True)
 
     @ma.post_load(pass_collection=False)
     def convert_date(self, data, **kwargs):

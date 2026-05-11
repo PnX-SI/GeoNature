@@ -27,6 +27,7 @@ export class DatasetFormComponent implements OnInit {
   public taxaBibList: number;
   public uuidEditionEnabled: boolean = true;
   public entityLabel: string;
+  public isAcquisitionFrameworkOpened: boolean = true;
 
   constructor(
     private _route: ActivatedRoute,
@@ -47,20 +48,41 @@ export class DatasetFormComponent implements OnInit {
     this._route.params
       .pipe(
         switchMap((params) => {
-          return params['id'] ? this._dfs.getDataset(params['id']) : of(null);
+          if (params['id']) {
+            // Update
+            return this._dfs.getDataset(params['id']);
+          }
+          // Creation
+          return of(null);
         })
       )
-      .subscribe((dataset) => this.datasetFormS.dataset.next(dataset));
-
+      .subscribe((dataset) => {
+        if (dataset) {
+          this.datasetFormS.dataset.next(dataset);
+          this.updateFormControlsState(dataset);
+        }
+        if (dataset?.acquisition_framework?.opened === false) {
+          // If AF closed, we only get the AF of the current dataset
+          this.acquisitionFrameworks = of([dataset.acquisition_framework]);
+        } else {
+          // If AF opened or it is a creation, we get the list of AF
+          this.acquisitionFrameworks = this._dfs
+            .getAcquisitionFrameworksList({ opened: true }, {}, 1, -1)
+            .pipe(map((response) => response.items));
+        }
+      });
     this.form = this.datasetFormS.form;
-
     this._dfs.getTaxaBibList().subscribe((d) => (this.taxaBibList = d));
-
-    this.acquisitionFrameworks = this._dfs
-      .getAcquisitionFrameworksList({}, {}, 1, -1)
-      .pipe(map((response) => response.items));
     this.uuidEditionEnabled = this._config.METADATA.ENABLE_UUID_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('Dataset');
+  }
+
+  updateFormControlsState(dataset: any): void {
+    // if the af is closed, we disable the acquisition_framework selection and active fields
+    if (dataset && dataset.acquisition_framework?.opened === false) {
+      this.form.get('active')?.disable();
+      this.form.get('id_acquisition_framework')?.disable();
+    }
   }
 
   genericActorFormSubmit(result) {
