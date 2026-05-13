@@ -18,7 +18,7 @@ attrs==26.1.0
     #   fiona
     #   jsonschema
     #   referencing
-authlib==1.6.9
+authlib==1.6.12
     # via pypnusershub
 babel==2.18.0
     # via flask-babel
@@ -349,6 +349,7 @@ tornado==6.5.5
 typing-extensions==4.15.0
     # via
     #   alembic
+    #   cryptography
     #   exceptiongroup
     #   marshmallow
     #   marshmallow-sqlalchemy
