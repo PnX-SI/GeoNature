@@ -245,7 +245,9 @@
       "FiledAF": "The acquisition framework has already been filed",
       "EmptyAF": "The acquisition framework is empty",
       "NoMetadata": "Oops! There is no metadata to display.",
-      "UUIDFormPlaceHolder": "If not specified, identifier will be generated when the JDD is created."
+      "UUIDFormPlaceHolder": "If not specified, identifier will be generated when the JDD is created.",
+      "ImpossibleActionAFClosed": "Acquisition framework is closed, action cannot be performed",
+      "OpenAFImpossible": "A previously closed acquisition framework cannot be reopened"
     },
     "Actions": {
       "AddDataset": "Add a dataset",
@@ -258,7 +260,9 @@
       "DeleteDataset": "Delete the dataset",
       "ResetSearch": "Reset search",
       "SeeAFSheet": "View the acquisition framework sheet",
-      "FillOwnUUID": "I indicate my own SINP UUID"
+      "FillOwnUUID": "I indicate my own SINP UUID",
+      "Open/Close": "Open/close",
+      "Activate/Deactivate": "Activate/Deactivate"
     },
     "Tooltips": {
       "DatasetActive": "The dataset is active",

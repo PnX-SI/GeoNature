@@ -75,9 +75,10 @@
             *ngIf="!isLoading"
           >
             <div class="col-md-1">ID</div>
+            <div class="col-md-1">{{ 'MetaData.Actions.Open/Close' | translate }}</div>
             <div class="col-md-2">{{ 'Name' | translate }}</div>
             <div class="col-md-2">{{ 'MetaData.CreationDate' | translate }}</div>
-            <div class="col-md-5">{{ 'MetaData.Stakeholders' | translate }}</div>
+            <div class="col-md-4">{{ 'MetaData.Stakeholders' | translate }}</div>
             <div class="col-md-1">{{ 'Actions.Plural' | translate }}</div>
           </div>
           <mat-spinner
@@ -105,6 +106,38 @@
                   style="margin-top: 2.5%; margin-bottom: 1.2%"
                 >
                   <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
+                  <div class="col-md-1">
+                    <ng-container *ngIf="!af.opened; else closeButton">
+                      <span class="float-left">
+                        <button
+                          type="button"
+                          [class.disabled-look]="!isOpenable(af)"
+                          mat-icon-button
+                          (click)="
+                            isOpenable(af) ? openAf($event, af.id_acquisition_framework) : null
+                          "
+                          [matTooltip]="getOpenCloseTooltip(af)"
+                        >
+                          <mat-icon>lock_open</mat-icon>
+                        </button>
+                      </span>
+                    </ng-container>
+                    <ng-template #closeButton>
+                      <span class="float-left">
+                        <button
+                          type="button"
+                          mat-icon-button
+                          [disabled]="!af.cruved.U"
+                          (click)="
+                            openPublishModalAf($event, af.id_acquisition_framework, publishModal)
+                          "
+                          [matTooltip]="getOpenCloseTooltip(af)"
+                        >
+                          <mat-icon>lock</mat-icon>
+                        </button>
+                      </span>
+                    </ng-template>
+                  </div>
                   <div class="col-md-2">
                     <a
                       [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
@@ -120,7 +153,7 @@
                   <div class="col-md-2">
                     {{ af.acquisition_framework_start_date | date: 'd/MM/yyyy' }}
                   </div>
-                  <section class="col-md-5">
+                  <section class="col-md-4">
                     <span *ngIf="af.creator">
                       <b>{{ af.creator?.nom_complet }} :</b>
                       {{ 'Creator' | translate }}
@@ -173,34 +206,6 @@
                         'pnx-metadata-af-delete-name-' + af.acquisition_framework_name
                       "
                     />
-                    <ng-container
-                      *ngIf="
-                        config.METADATA?.AF_OPENABLE && !af.opened && af.cruved.U;
-                        else closeButton
-                      "
-                    >
-                      <button
-                        type="button"
-                        mat-icon-button
-                        (click)="openAf($event, af.id_acquisition_framework)"
-                        matTooltip="{{ 'MetaData.Actions.OpenAF' | translate }}"
-                      >
-                        <mat-icon>lock_open</mat-icon>
-                      </button>
-                    </ng-container>
-                    <ng-template #closeButton>
-                      <button
-                        type="button"
-                        mat-icon-button
-                        [disabled]="!af.opened || !af.cruved.U"
-                        (click)="
-                          openPublishModalAf($event, af.id_acquisition_framework, publishModal)
-                        "
-                        matTooltip="{{ 'MetaData.Actions.CloseAF' | translate }}"
-                      >
-                        <mat-icon>gavel</mat-icon>
-                      </button>
-                    </ng-template>
                   </div>
                 </mat-panel-title>
               </mat-expansion-panel-header>
@@ -208,6 +213,7 @@
                 <thead class="bold">
                   <tr>
                     <td style="width: 1%">Id</td>
+                    <td>{{ 'MetaData.Actions.Activate/Deactivate' | translate }}</td>
                     <td>{{ 'MetaData.DatasetName' | translate }}</td>
                     <td>{{ 'MetaData.CreationDate' | translate }}</td>
                     <td>{{ 'MetaData.Stakeholders' | translate }}</td>

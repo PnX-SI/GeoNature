@@ -174,7 +174,7 @@ GeoNature permet de fermer un cadre d'acquisition afin de rendre ses données no
 - Les jeux de données associés ne peuvent pas être réactivés tant que le cadre reste fermé
 
 La fermeture d'un cadre d'acquisition s'effectue depuis la page d'accueil du module Métadonnées. Dans l'image ci-dessous,
-le verrou ouvert permet d'ouvrir un CA fermé, tandis que le marteau permet de fermer un CA ouvert.
+le verrou ouvert permet d'ouvrir un CA fermé, tandis que celui fermé permet de fermer un CA ouvert.
 
 .. image:: images/close_or_open_af.png
 
