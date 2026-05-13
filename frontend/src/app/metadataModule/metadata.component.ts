@@ -3,6 +3,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { NgbDateParserFormatter, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, combineLatest } from 'rxjs';
 import { map, distinctUntilChanged, debounceTime, tap, switchMap, startWith } from 'rxjs/operators';
 import { omitBy } from 'lodash';
@@ -57,7 +58,8 @@ export class MetadataComponent implements OnInit {
     public metadataService: MetadataService,
     private _commonService: CommonService,
     public config: ConfigService,
-    public dateParser: NgbDateParserFormatter
+    public dateParser: NgbDateParserFormatter,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -193,6 +195,22 @@ export class MetadataComponent implements OnInit {
   }
   deleteAf(af_id) {
     this._dfs.deleteAf(af_id).subscribe((res) => this.metadataService.getMetadata());
+  }
+
+  isOpenable(af: any): boolean {
+    return this.config.METADATA?.AF_OPENABLE && af.cruved.U && !af.opened;
+  }
+
+  getOpenCloseTooltip(af: any): string {
+    if (!af.cruved.U) {
+      return this.translate.instant('Errors.NotAllowed');
+    }
+    if (!this.config.METADATA?.AF_OPENABLE && !af.opened) {
+      return this.translate.instant('MetaData.Messages.OpenAFImpossible');
+    }
+    return af.opened
+      ? this.translate.instant('MetaData.Actions.CloseAF')
+      : this.translate.instant('MetaData.Actions.OpenAF');
   }
 
   openPublishModalAf(e, af_id, publishModal) {

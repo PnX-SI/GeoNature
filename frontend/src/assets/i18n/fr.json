@@ -241,7 +241,8 @@
       "EmptyAF": "Le cadre d'acquisition est vide",
       "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
       "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}",
-      "ImpossibleActionAFClosed": "Cadre d'acquisition fermé, action impossible"
+      "ImpossibleActionAFClosed": "Cadre d'acquisition fermé, action impossible",
+      "OpenAFImpossible": "L'ouverture d'un cadre d'acquisition préalablement fermé n'est pas autorisée"
     },
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
@@ -253,7 +254,9 @@
       "DeleteDataset": "Supprimer le jeu de données",
       "ResetSearch": "Réinitialiser la recherche",
       "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
-      "FillOwnUUID": "Saisie manuelle de l'UUID"
+      "FillOwnUUID": "Saisie manuelle de l'UUID",
+      "Open/Close": "Ouvrir/Fermer",
+      "Activate/Deactivate": "Activer/Désactiver"
     },
     "Tooltips": {
       "DatasetActive": "Le jeu de données est actif",

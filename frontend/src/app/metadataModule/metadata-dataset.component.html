@@ -2,7 +2,7 @@
   {{ dataset.id_dataset }}
 </td>
 <td>
-  <span class="float-left">
+  <span>
     <!-- Button to switch dataset active/inactive -->
     <ng-container *ngIf="isSwitchable(); else noSwitchButton">
       <mat-slide-toggle
@@ -29,7 +29,8 @@
       ></mat-slide-toggle>
     </ng-template>
   </span>
-
+</td>
+<td>
   <a
     [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
     [attr.data-qa]="'pnx-metadata-jdd-' + dataset.unique_dataset_id"
