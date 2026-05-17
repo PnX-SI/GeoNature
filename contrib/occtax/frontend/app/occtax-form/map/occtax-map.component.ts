@@ -3,7 +3,7 @@ import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { CommonService } from '@geonature_common/service/common.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { OcctaxFormMapService } from './occtax-map.service';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 @Component({
   selector: 'pnx-occtax-form-map',
@@ -21,7 +21,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     public ms: OcctaxFormMapService,
     private _commonService: CommonService,
     private _mapService: MapService,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {

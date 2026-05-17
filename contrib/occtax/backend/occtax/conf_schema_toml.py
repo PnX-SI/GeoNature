@@ -4,7 +4,43 @@ Fichier spécifiant les types des paramètres et leurs valeurs par défaut
 Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
 """
 
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields, missing, post_load
+
+import copy
+
+
+import copy
+from marshmallow import Schema, missing
+
+
+def create_partial_schema(schema_cls: type[Schema], *, name=None, exclude=()):
+    """
+    Creates a partial version of a given Marshmallow schema.
+
+    - Only top-level fields are made optional
+    - Removes load_default and dump_default at level 1
+    - Does NOT recursively modify nested schemas
+    - Nested schemas must remain fully valid if provided
+    """
+
+    new_fields = {}
+
+    for field_name, field in schema_cls._declared_fields.items():
+        if field_name in exclude:
+            continue
+
+        field_copy = copy.deepcopy(field)
+
+        field_copy.required = False
+        field_copy.load_default = missing
+        field_copy.dump_default = missing
+
+        new_fields[field_name] = field_copy
+
+    return Schema.from_dict(
+        new_fields,
+        name=name or f"{schema_cls.__name__}Partial",
+    )
 
 
 class MapListConfig(Schema):
@@ -192,3 +228,25 @@ class GnModuleSchemaConf(Schema):
     ID_LIST_HABITAT = fields.Integer(load_default=None)
     CD_TYPO_HABITAT = fields.Integer(load_default=None)
     EXPANDED_TAXON_ADVANCED_DETAILS = fields.Boolean(load_default=False)
+    MODULE_CONFS = fields.Dict(
+        keys=fields.String(),
+        values=fields.Nested(lambda: AdditionalGnModuleSchemaConf),
+        load_default=dict,
+    )
+
+    # Shallow merge Occtax conf in all MODULE_CONFS
+    @post_load
+    def apply_occax_conf_to_additionals(self, data, **kwargs):
+        MODULE_CONFS = data.get("MODULE_CONFS")
+        if not MODULE_CONFS:
+            return data
+
+        root_defaults = {k: v for k, v in data.items() if k != "MODULE_CONFS"}
+
+        for key, conf in MODULE_CONFS.items():
+            MODULE_CONFS[key] = copy.deepcopy(root_defaults) | conf
+
+        return data
+
+
+AdditionalGnModuleSchemaConf = create_partial_schema(GnModuleSchemaConf, exclude=("MODULE_CONFS",))

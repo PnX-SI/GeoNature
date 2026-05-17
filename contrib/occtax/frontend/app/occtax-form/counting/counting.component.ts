@@ -7,6 +7,7 @@ import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormCountingService } from './counting.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 import { ValidationErrorsId } from '@geonature/services/validators';
 import { ViewChild } from '@angular/core';
@@ -37,7 +38,8 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
     public occtaxFormService: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingService: OcctaxFormCountingService,
-    public config: ConfigService
+    public config: ConfigService,
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   // Expose enum to html

@@ -10,7 +10,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../services/occtax-config.service';
 
 const NOMENCLATURES = [
   'TECHNIQUE_OBS',
@@ -88,7 +88,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private dataFormS: DataFormService,
     public ms: MediaService,
     private _moduleService: ModuleService,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {

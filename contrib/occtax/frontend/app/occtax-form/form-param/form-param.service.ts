@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 interface OCCTAX_FORM_PARAM {
   geometry?: any;
@@ -113,6 +113,8 @@ export class OcctaxFormParamService {
   occurrenceState: BehaviorSubject<boolean> = new BehaviorSubject(false);
   countingState: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  constructor(public occtaxConfig: OcctaxConfigService) {}
+
   get geometry() {
     return this.geometryState.getValue() ? this.parameters.geometry : null;
   }
@@ -135,14 +137,12 @@ export class OcctaxFormParamService {
     );
   }
 
-  constructor(public config: ConfigService) {}
-
   get(element: string) {
     let keys = element.split('.');
     let temp_value = this.parameters;
     let value = null;
     //vérification de l'activation du paramètre en config occtax
-    if (this.config.OCCTAX.ENABLE_SETTINGS_TOOLS) {
+    if (this.occtaxConfig.moduleConf.ENABLE_SETTINGS_TOOLS) {
       for (let i = 0; i < keys.length; i++) {
         //si les changement de paramètre sont désactivé ou si la clé fournie n'existe pas
         if (temp_value === null || temp_value[keys[i]] === undefined) {

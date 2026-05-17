@@ -10,7 +10,7 @@ import { OcctaxTaxaListService } from './taxa-list.service';
 import { MediaService } from '@geonature_common/service/media.service';
 
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 @Component({
   selector: 'pnx-occtax-form-taxa-list',
@@ -28,7 +28,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
     public ms: MediaService,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {

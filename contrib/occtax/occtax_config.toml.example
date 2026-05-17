@@ -201,3 +201,24 @@ MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_typ
     geo_object_nature = false
     place_name = false
     precision = false
+
+# Duplicated OCCTAX module configurations
+# If a property is not defined, the value from OCCTAX configuration is used
+# If you need to override a property of type list or dict, you must enterely redefined this property
+# 
+# Example if module_code = "FLORE"
+# [MODULE_CONFS.FLORE]
+# observers_txt = true
+# 
+# All fields defined in [form_fields] above must be redefined here,
+# not only the ones you want to change.
+# [MODULE_CONFS.FLORE.form_fields]
+# date_min = true
+# date_max = true
+# hour_min = true
+# ...
+# 
+# Same with all properties of type list or dict
+# export_available_format = ['csv', 'geojson', 'shapefile', 'gpkg', 'ADDITIONAL_EXPORT_FORMAT']
+# 
+# etc...
