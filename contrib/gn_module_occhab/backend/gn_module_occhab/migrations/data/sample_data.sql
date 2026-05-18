@@ -45,7 +45,6 @@ INSERT INTO gn_meta.t_datasets (
     keywords,
     marine_domain,
     terrestrial_domain,
-    id_nomenclature_dataset_objectif,
     bbox_west,
     bbox_east,
     bbox_south,
@@ -69,7 +68,6 @@ INSERT INTO gn_meta.t_datasets (
     'Habitat',
     false,
     true,
-    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
     4.85695,
     6.85654,
     44.5020,
@@ -94,7 +92,6 @@ INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nome
     (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
     ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
 );
-
 
 INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
 SELECT gn_commons.get_id_module_bycode('OCCHAB'), id_dataset
