@@ -1,0 +1,24 @@
+<ng-container *ngIf="isSwitchable(); else noSwitchButton">
+  <mat-slide-toggle
+    class="custom-toggle"
+    *ngIf="!stateChangeSaving"
+    [checked]="dataset.active"
+    [matTooltip]="getTooltip()"
+    (change)="switchDatasetState($event)"
+    [attr.data-qa]="'pnx-metadata-jdd-actif-' + dataset.unique_dataset_id"
+  ></mat-slide-toggle>
+  <mat-spinner
+    *ngIf="stateChangeSaving"
+    diameter="25"
+    strokeWidth="2"
+  ></mat-spinner>
+</ng-container>
+<ng-template #noSwitchButton>
+  <mat-slide-toggle
+    [checked]="dataset.active"
+    [disabled]="true"
+    color="primary"
+    [matTooltip]="getTooltip()"
+    [attr.data-qa]="'pnx-metadata-jdd-inactif-' + dataset.unique_dataset_id"
+  ></mat-slide-toggle>
+</ng-template>

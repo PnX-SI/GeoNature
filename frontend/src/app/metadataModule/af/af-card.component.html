@@ -3,7 +3,7 @@
   *ngIf="af"
 >
   <div class="row">
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-5">
       <a
         mat-raised-button
         routerLink="/metadata"
@@ -37,6 +37,12 @@
               >
                 <mat-icon>create</mat-icon>
               </button>
+              <gn-button-close-af
+                [acquisitionFramework]="af"
+                buttonType="Floating"
+                (afClosed)="onAfClosed()"
+                (afOpened)="onAfOpened()"
+              />
               <gn-button-delete-af
                 [acquisitionFramework]="af"
                 buttonType="Floating"
